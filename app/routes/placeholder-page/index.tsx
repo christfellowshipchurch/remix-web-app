@@ -1,4 +1,4 @@
-import { StaticPage } from "./demo-page";
+import { StaticPage } from "./placeholder-page";
 
 export { loader } from "./loader";
 export { action } from "./action";
