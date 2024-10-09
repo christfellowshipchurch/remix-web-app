@@ -12,10 +12,9 @@ export type LoaderReturnType = {
   content: string;
 };
 
-export const loader: LoaderFunction = async ({
-  params,
-}): Promise<ReturnType<typeof json<LoaderReturnType>>> => {
-  console.log({ params });
+export const loader: LoaderFunction = async (): Promise<
+  ReturnType<typeof json<LoaderReturnType>>
+> => {
   // Fetch random article
   const res = await fetch(
     `${baseUrl}ContentChannelItems?$filter=Id%20eq%2012284&loadAttributes=simple`,
