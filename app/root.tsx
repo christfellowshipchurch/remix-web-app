@@ -8,7 +8,7 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 
 import "./styles/tailwind.css";
-import { Navbar } from "./components/Navbar/Navbar";
+import Navbar from "./components/navbar";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

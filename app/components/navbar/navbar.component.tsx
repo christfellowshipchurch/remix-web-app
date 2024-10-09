@@ -1,6 +1,7 @@
 // import AuthModal from "components/AuthModal"
+import Button from "~/primitives/button";
 import logo from "/logo.png";
-import { Button } from "~/primitives/Button";
+
 //import { MinistriesNavItem, WatchReadListenNavItem } from "./DropDownItems";
 
 export function Navbar({ bg = "white" }: { bg?: string }) {
