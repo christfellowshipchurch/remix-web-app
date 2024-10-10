@@ -28,6 +28,7 @@ const button = cva(
           "hover:enabled:bg-primary",
           "hover:enabled:text-white",
         ],
+        white: ["bg-white", "text-primary", "hover:enabled:bg-[#D9D9D9]"],
       },
       size: {
         sm: ["min-w-20", "h-full", "min-h-10", "text-sm", "px-4"],
