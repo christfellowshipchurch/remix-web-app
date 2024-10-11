@@ -1,9 +1,11 @@
-import { find, startCase } from "lodash";
+import * as pkg from "lodash";
 import { campusLinks } from "./locationsSingleData";
 import { Link } from "@remix-run/react";
 import Button from "~/primitives/Button";
 
 export const PastorCard = ({ name }: { name: string }) => {
+  const { find, startCase } = pkg;
+
   const campusLink = find(campusLinks, { name: startCase(name) });
 
   const pastorCardBottom = name === "cf-everywhere" ? "-100px" : "-380px";

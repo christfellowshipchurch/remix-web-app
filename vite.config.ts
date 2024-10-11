@@ -13,4 +13,10 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  ssr: {
+    optimizeDeps: {
+      include: ["lodash"],
+    },
+    noExternal: ["lodash", "foo"],
+  },
 });
