@@ -1,6 +1,7 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import "./Accordion.css";
+import "./accordion.css";
+import HTMLRenderer from "~/primitives/HTMLRenderer";
 
 type AccordionDataType = {
   bg?: string;
@@ -31,7 +32,9 @@ const StyledAccordion = ({ data, bg }: AccordionDataType) => {
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content className="AccordionContent pb-6">
-              <div className="AccordionContentText">{item?.content}</div>
+              <div className="AccordionContentText">
+                <HTMLRenderer html={item?.content} />
+              </div>
             </Accordion.Content>
           </Accordion.Item>
         );

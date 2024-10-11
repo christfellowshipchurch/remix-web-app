@@ -1,6 +1,6 @@
 import { kebabCase } from "lodash";
 import { useState } from "react";
-import LocationCard from "./locationCard.partial";
+import LocationCard from "./locationsSearchCard.partial";
 import { LocationsLoader } from "./locationsSkeleton.partial";
 import { Link } from "@remix-run/react";
 
