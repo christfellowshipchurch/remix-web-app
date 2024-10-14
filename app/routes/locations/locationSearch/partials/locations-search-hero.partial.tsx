@@ -1,5 +1,5 @@
 import Button from "~/primitives/button";
-import Video from "~/primitives/Video";
+import Video from "~/primitives/video";
 
 type SearchProps = {
   setAddress: (address: string) => void;

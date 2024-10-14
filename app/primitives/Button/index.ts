@@ -1,3 +1,3 @@
-import { Button } from "./Button.primitive";
+import Button from "./button.primitive";
 
 export default Button;
