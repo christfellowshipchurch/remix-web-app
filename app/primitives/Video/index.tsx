@@ -1,3 +1,3 @@
-import { Video } from "./video.primitive";
+import { Video } from "./Video.primitive";
 
 export default Video;
