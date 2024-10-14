@@ -2,6 +2,10 @@ const plugin = require("tailwindcss/plugin");
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 import customColors from "./app/styles/colors";
+import {
+  navbarAnimations,
+  navbarKeyframes,
+} from "./app/components/navbar/navbar.styles";
 
 export default {
   darkMode: ["class"],
@@ -68,6 +72,12 @@ export default {
       },
       minWidth: {
         ...defaultTheme.minWidth,
+      },
+      keyframes: {
+        ...navbarKeyframes,
+      },
+      animation: {
+        ...navbarAnimations,
       },
       borderRadius: {
         lg: "var(--radius)",

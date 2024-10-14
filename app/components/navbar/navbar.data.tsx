@@ -1,0 +1,118 @@
+export const ministriesData = {
+  mainContent: [
+    {
+      title: "NEXT GEN",
+      items: [
+        { title: "Kids", description: "Ages Birth - Grade 5", url: "#" },
+        { title: "Students", description: "Grades 6 - 12", url: "#" },
+        { title: "Young Adults", description: "Age College - 30s", url: "#" },
+        {
+          title: "Special Needs",
+          description:
+            "Support, resources, and community for children and adults with disabilities",
+          url: "#",
+        },
+      ],
+      link: "View all ministries →",
+    },
+    {
+      title: "ADULTS",
+      items: [
+        { title: "Men", description: "Find your band of brothers", url: "#" },
+        {
+          title: "Women",
+          description: "For every girl from every generation",
+          url: "#",
+        },
+        {
+          title: "Marriage",
+          description: "Lorem ipsum dolor sit amet",
+          url: "#",
+        },
+        {
+          title: "Care",
+          description:
+            "Find healing and freedom from hurts, habits, and hangups.",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "GROUPS & CLASSES",
+      items: [
+        {
+          title: "Group Finder",
+          description: "Lorem ipsum dolor sit amet",
+          url: "#",
+        },
+        {
+          title: "Class Finder",
+          description: "Lorem ipsum dolor sit amet",
+          url: "#",
+        },
+        {
+          title: "My Groups & Classes",
+          description: "Lorem ipsum dolor sit amet",
+          url: "#",
+        },
+        {
+          title: "Volunteer",
+          description: "Lorem ipsum dolor sit amet",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  additionalContent: [
+    {
+      title: "NEW CLASSES",
+      link: "Take the Journey",
+    },
+    {
+      title: "FIND A FRIEND",
+      link: "Get Baptized",
+    },
+    {
+      title: "NEW",
+      link: "Volunteer Opportunities",
+    },
+  ],
+};
+
+export const watchReadListenData = {
+  mainContent: [
+    {
+      title: "WATCH",
+      items: [
+        { title: "Messages", url: "#" },
+        { title: "Live Broadcast", url: "#" },
+      ],
+    },
+    {
+      title: "READ",
+      items: [
+        { title: "Articles", url: "#" },
+        { title: "Devotionals", url: "#" },
+      ],
+    },
+    {
+      title: "LISTEN",
+      items: [
+        { title: "So Good Sisterhood Podcast", url: "#" },
+        { title: "Crew Cast Podcast", url: "#" },
+        { title: "Young & Adulting Podcast", url: "#" },
+        { title: "MVMT Music", url: "#" },
+      ],
+    },
+  ],
+  additionalContent: [
+    {
+      title: "LATEST MESSAGE",
+      link: "Don't waste your time",
+    },
+    {
+      title: "NEW ARTICLE",
+      link: "Master Your Money",
+    },
+  ],
+};
