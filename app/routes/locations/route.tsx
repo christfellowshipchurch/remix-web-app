@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Locations } from "./partials/locations.partial";
-import { Search } from "./partials/locationsSearch.partial";
+import { Locations } from "./locationSearch/partials/locations.partial";
+import { Search } from "./locationSearch/partials/locationsSearch.partial";
 
 export type LocationSearchResultsType = {
   results: [

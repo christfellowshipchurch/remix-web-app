@@ -1,6 +1,4 @@
-"use client";
-
-import Button from "~/primitives/Button";
+import Button from "~/primitives/button";
 import Video from "~/primitives/Video";
 
 type SearchProps = {

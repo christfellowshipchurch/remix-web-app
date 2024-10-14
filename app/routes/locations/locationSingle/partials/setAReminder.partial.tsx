@@ -1,9 +1,9 @@
 import SetAReminderModal from "~/components/modals/setAReminder";
-import Button from "~/primitives/Button";
+import Button from "~/primitives/button";
 import Modal from "~/primitives/Modal";
 import Video from "~/primitives/Video";
 
-const SetAReminder = () => {
+export const SetAReminder = () => {
   return (
     <div
       className="flex w-full justify-center bg-[#F5F5F7] py-16 lg:py-20"
