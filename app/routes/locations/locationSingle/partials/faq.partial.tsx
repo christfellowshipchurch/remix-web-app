@@ -1,7 +1,7 @@
 import StyledAccordion from "~/components/styled-accordion";
 import Button from "~/primitives/button";
-import { faqData } from "../locationsSingle.data";
-import { CampusName } from "../locationSingle.types";
+import { faqData } from "../locations-single.data";
+import { CampusName } from "../location-single.types";
 
 export const LocationFAQ = ({ name }: CampusName) => {
   return (

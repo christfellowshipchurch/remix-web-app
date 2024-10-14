@@ -1,8 +1,8 @@
 import { find } from "lodash";
-import { headerData } from "../locationsSingle.data";
+import { headerData } from "../locations-single.data";
 
 import Button from "~/primitives/button";
-import { CampusName } from "../locationSingle.types";
+import { CampusName } from "../location-single.types";
 
 export const LocationsHero = ({ name }: CampusName) => {
   const headerContent = find(headerData, { name });

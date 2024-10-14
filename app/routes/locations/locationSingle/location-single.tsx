@@ -1,12 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import { loader } from "./loader";
-import { testimonialData } from "./locationsSingle.data";
+import { testimonialData } from "./locations-single.data";
 
 //Partials
 import { LocationsHero } from "./partials/hero.partial";
-import { CampusInfo } from "./partials/campusInfo.partial";
-import { SetAReminder } from "./partials/setAReminder.partial";
-import { AtThisLocation } from "./partials/atThisLocation.partial";
+import { CampusInfo } from "./partials/campus-info.partial";
+import { SetAReminder } from "./partials/set-a-reminder.partial";
+import { AtThisLocation } from "./partials/at-this-location.partial";
 import { Testimonials } from "./partials/testimonials.partial";
 import { LocationFAQ } from "./partials/faq.partial";
 

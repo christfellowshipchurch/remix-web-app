@@ -1,4 +1,4 @@
-import { LocationSinglePage } from "./locations/locationSingle/locationSingle";
+import { LocationSinglePage } from "./locations/locationSingle/location-single";
 
 export { loader } from "./locations/locationSingle/loader";
 

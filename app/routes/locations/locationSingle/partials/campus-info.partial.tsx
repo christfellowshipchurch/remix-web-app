@@ -4,7 +4,7 @@ import {
   WaysToJoinOnlineMobile,
 } from "../components/mainCampusInfo.component";
 import PastorCard from "../components/pastorCard.component";
-import { CampusName } from "../locationSingle.types";
+import { CampusName } from "../location-single.types";
 
 export const CampusInfo = ({ name }: CampusName) => {
   return (

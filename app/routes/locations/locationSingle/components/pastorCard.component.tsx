@@ -1,5 +1,5 @@
 import { find, startCase } from "lodash";
-import { campusLinks } from "../locationsSingle.data";
+import { campusLinks } from "../locations-single.data";
 import { Link } from "@remix-run/react";
 import Button from "~/primitives/button";
 
