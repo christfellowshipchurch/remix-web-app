@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import Button from "~/primitives/button";
-import { whatToExpectData } from "../locationsSingle.data";
+import { whatToExpectData } from "../locations-single.data";
 import { startCase } from "lodash";
 
 /**
