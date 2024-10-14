@@ -1,40 +1,98 @@
-// import AuthModal from "components/AuthModal"
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuLink,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
+} from "@radix-ui/react-navigation-menu";
+import { ChevronDown } from "lucide-react";
+
 import Button from "~/primitives/button";
+import { cn } from "~/lib/utils";
 import logo from "/logo.png";
+import { ministriesData, watchReadListenData } from "./navbar.data";
+import { MenuContent } from "./menu-content.component";
+import {
+  angleDownIconStyle,
+  navigationMenuContentStyle,
+  navigationMenuTriggerStyle,
+} from "./navbar.styles";
 
-//import { MinistriesNavItem, WatchReadListenNavItem } from "./DropDownItems";
+const mainLinks = [
+  { title: "About", url: "#" },
+  { title: "Locations", url: "#" },
+  { title: "Events", url: "#" },
+];
 
-export function Navbar({ bg = "white" }: { bg?: string }) {
+const menuLinks = [
+  { title: "Ministries", content: ministriesData },
+  { title: "Watch, Read, Listen", content: watchReadListenData },
+];
+
+export function Navbar() {
   return (
-    <div
-      className="inline-flex h-[72px] w-full items-center 
-      justify-between px-12 py-5 shadow lg:px-8 xl:px-12"
-      style={{ backgroundColor: bg ? bg : "transparent" }}
-    >
-      <div className="flex items-center justify-center gap-10 xl:gap-16">
+    <div className="z-50 w-screen bg-transparent h-[72px] shadow-sm px-16 flex justify-between items-center font-bold">
+      {/* Left Section: Logo and Links */}
+      <div className="flex items-center space-x-16">
+        {/* Logo */}
         <a
           href="/"
           className="relative flex items-center justify-center gap-2.5"
         >
-          <img alt="cf logo" src={logo} width={144} height={50} />
+          <img alt="cf logo" src={logo} width={102} height={44} />
         </a>
-        <div className="hidden gap-[40px] font-semibold lg:flex">
-          <a href="/about">About</a>
-          <a href="/locations">Locations</a>
-          <a href="/events">Events</a>
-          {/* <MinistriesNavItem />
-          <WatchReadListenNavItem /> */}
+
+        {/* Mobile view still needs to designed 👀 */}
+        <div className="hidden lg:inline">
+          <NavigationMenu>
+            <NavigationMenuList className="flex items-center space-x-10">
+              {/* Links */}
+              {mainLinks.map((link) => (
+                <NavigationMenuItem key={link.title}>
+                  <NavigationMenuLink
+                    href={link.url}
+                    className="hover:text-primary"
+                  >
+                    {link.title}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+
+              {/* Menu Dropdowns */}
+              {menuLinks.map((menuLink) => (
+                <NavigationMenuItem key={menuLink.title}>
+                  <NavigationMenuTrigger
+                    className={cn(navigationMenuTriggerStyle(), "group")}
+                  >
+                    {menuLink.title}
+                    <ChevronDown
+                      className={angleDownIconStyle()}
+                      aria-hidden="true"
+                    />
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent
+                    className={cn(
+                      "relative z-10 bg-white shadow-lg", // Adjusting to make it a lower z-index and positioned correctly
+                      navigationMenuContentStyle()
+                    )}
+                  >
+                    <MenuContent
+                      mainContent={menuLink.content.mainContent}
+                      additionalContent={menuLink.content.additionalContent}
+                    />
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
       </div>
-      <div className="flex items-center justify-center gap-3">
-        {/* Authentication Modal */}
-        {/* <AuthModal /> */}
-        <Button size="sm" intent="primary" href="/give">
-          Give now
-        </Button>
-        <div className="MenuText flex items-center justify-center gap-1 lg:hidden">
-          <div className="CustomMenu flex size-5 items-center justify-center px-px py-1" />
-        </div>
+
+      {/* Right Section: Call to Actions */}
+      <div className="flex space-x-8">
+        {/* Give Now Button */}
+        <Button size={"md"}>Give now</Button>
       </div>
     </div>
   );
