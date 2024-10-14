@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "~/primitives/Button";
+import Video from "~/primitives/Video";
 
 type SearchProps = {
   setAddress: (address: string) => void;
@@ -22,8 +23,8 @@ export const Search = ({
   return (
     <div className="flex h-[70vh] w-full items-center justify-center md:h-[82vh]">
       <div className="relative flex size-full">
-        <video
-          src="/location-pages/locations-bg-vid.mp4"
+        <Video
+          wistiaId="padj4c4xoh"
           autoPlay
           loop
           muted

@@ -11,36 +11,56 @@ import { AtThisLocation } from "./locations/partials/atThisLocation.partial";
 import StyledAccordion from "~/components/styled-accordion";
 import Button from "~/primitives/Button";
 import { useLoaderData } from "@remix-run/react";
+import { mapKeys, mapValues, camelCase } from "lodash";
+import { CampusData } from "~/libs/rockTypes";
+
+const baseUrl = process.env.ROCK_API;
+const defaultHeaders = {
+  "Content-Type": "application/json",
+  "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+};
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.location, "No Campus");
-  //   if (!contact) {
-  //     throw new Response("Not Found", { status: 404 });
-  //   }
+  function normalize(data: object): object {
+    if (Array.isArray(data)) return data.map((n) => normalize(n));
+    if (typeof data !== "object" || data === null) return data;
+    const normalizedValues = mapValues(data, (n) => normalize(n));
+    return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
+  }
 
-  const campusName = params?.location;
-  return { campusName };
+  // Fetch Campus Data
+  const res = await fetch(
+    `${baseUrl}Campuses?$filter=Url eq '${params?.location}'&loadAttributes=simple`,
+    {
+      headers: {
+        ...defaultHeaders,
+      },
+    }
+  );
+  const data = await res.json();
+  return { data: normalize(data) as CampusData[] };
 };
 
 export default function LocationSinglePage() {
-  const { campusName } = useLoaderData<typeof loader>();
-  console.log(campusName);
+  const { data } = useLoaderData<typeof loader>();
+  const { name, phoneNumber, serviceTimes, attributeValues } = data[0];
 
   // TODO: Change return based on location (Spanish locations vs English locations)
   return (
     <div className="w-full">
-      <LocationsHero name={campusName} />
+      <LocationsHero name={name} />
       <SetAReminder />
       <Testimonials
         testimonies={
-          campusName === "cf-everywhere"
+          name === "cf-everywhere"
             ? testimonialData.cfEverywhere
-            : campusName.includes("iglesia")
+            : name.includes("iglesia")
             ? testimonialData.españolCampuses
             : testimonialData.default
         }
       />
-      <AtThisLocation name={campusName} />
+      <AtThisLocation name={name} />
 
       {/* FAQ Section */}
       <div className="flex flex-col items-center gap-14 bg-[#F5F5F7] pb-24 pt-14">
@@ -48,7 +68,7 @@ export default function LocationSinglePage() {
           Frequently Asked Questions
         </h2>
         {/* TODO: Change from params.title to the name fetched from the query */}
-        <StyledAccordion data={faqData(campusName)} bg="white" />
+        <StyledAccordion data={faqData(name)} bg="white" />
         <div className="flex flex-col items-center gap-5 text-center">
           <div className="text-[26px] font-bold">
             Have additional questions?

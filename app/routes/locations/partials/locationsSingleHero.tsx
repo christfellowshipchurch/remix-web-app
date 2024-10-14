@@ -4,7 +4,7 @@ import Button from "~/primitives/Button";
 import { Link } from "@remix-run/react";
 import { PastorCard } from "./pastorCard";
 
-export type Location = {
+type Location = {
   name: string;
 };
 
