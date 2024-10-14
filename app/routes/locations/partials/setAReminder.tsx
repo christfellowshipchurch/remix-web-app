@@ -1,7 +1,7 @@
 import SetAReminderModal from "~/components/modals/setAReminder";
-import Video from "~/components/video";
 import Button from "~/primitives/Button";
 import Modal from "~/primitives/Modal";
+import Video from "~/primitives/Video";
 
 const SetAReminder = () => {
   return (

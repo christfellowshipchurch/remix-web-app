@@ -3,12 +3,13 @@ import { useState } from "react";
 import LocationCard from "./locationsSearchCard.partial";
 import { LocationsLoader } from "./locationsSkeleton.partial";
 import { Link } from "@remix-run/react";
+import prisonLocationImage from "../../../assets/prison-locations.jpg";
 
 const heroBgImgStyles = (image?: string) => {
   return {
     backgroundImage: image?.includes("https")
       ? `url(${image}&width=1200)`
-      : `url(${image}`,
+      : image,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -80,7 +81,7 @@ export const Locations = ({ data, loading }: LocationsProps) => {
       <div className="mt-12">
         <Link to="/locations/prison-locations">
           <div
-            style={heroBgImgStyles("/location-pages/prison-location.jpeg")}
+            style={heroBgImgStyles(prisonLocationImage)}
             className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3"
           >
             <div
