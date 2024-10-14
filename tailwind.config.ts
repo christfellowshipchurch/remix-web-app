@@ -1,6 +1,11 @@
+const plugin = require("tailwindcss/plugin");
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 import customColors from "./app/styles/colors";
+import {
+  navbarAnimations,
+  navbarKeyframes,
+} from "./app/components/navbar/navbar.styles";
 
 export default {
   darkMode: ["class"],
@@ -12,7 +17,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        /** Our CF Branded Color */
         ...customColors,
+        /** Shadcn Colors */
+        /** Note: Removed colors that would interfere with the CF Branded Colors */
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -22,14 +30,6 @@ export default {
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -73,16 +73,11 @@ export default {
       minWidth: {
         ...defaultTheme.minWidth,
       },
-      keyframes: {},
+      keyframes: {
+        ...navbarKeyframes,
+      },
       animation: {
-        dialogOverlayShow:
-          "dialogOverlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)",
-        dialogContentShow:
-          "dialogContentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)",
-        dialogOverlayHide:
-          "dialogOverlayHide 150ms cubic-bezier(0.16, 1, 0.3, 1)",
-        dialogContentHide:
-          "dialogContentHide 150ms cubic-bezier(0.16, 1, 0.3, 1)",
+        ...navbarAnimations,
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -91,5 +86,20 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(
+      ({
+        matchUtilities,
+      }: {
+        matchUtilities: (utilities: Record<string, any>) => void;
+      }) => {
+        matchUtilities({
+          perspective: (value: any) => ({
+            perspective: value,
+          }),
+        });
+      }
+    ),
+  ],
 } satisfies Config;
