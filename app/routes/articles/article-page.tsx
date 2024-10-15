@@ -2,13 +2,29 @@ import React from "react";
 import { LoaderReturnType } from "./loader";
 import { useLoaderData } from "@remix-run/react";
 
+import { ArticleHero } from "./partials/hero.partial";
+import { ArticleContent } from "./partials/content.partial";
+import { ArticleNewsletter } from "./partials/newsletter.partial";
+import { RelatedArticles } from "./partials/related-articles.partial";
+
+import { mockRelatedArticles } from "./mockData";
+
 export const ArticlePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>(); // Correctly fetch the data from the loader
 
   return (
-    <div className="p-32">
-      <h1 className="text-4xl font-bold mb-32">{data.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: data.content }} />
-    </div>
+    <>
+      <section className="bg-gradient-to-b from-white to-background_to dark:bg-gray-900">
+        <ArticleHero {...data} />
+        <div className="align-center mx-auto flex w-full flex-col items-center border-y border-solid border-slate-100">
+          <ArticleContent htmlContent={data.content} />
+          <ArticleNewsletter />
+          <RelatedArticles
+            tagId={mockRelatedArticles.tagId}
+            articles={mockRelatedArticles.articles}
+          />
+        </div>
+      </section>
+    </>
   );
 };
