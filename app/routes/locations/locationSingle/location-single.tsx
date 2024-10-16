@@ -20,7 +20,6 @@ export function LocationSinglePage() {
 
   // TODO: Way to access data in parents? so no need to pass it down so much??
   const { name, attributeValues } = data[0];
-  console.log(attributeValues);
   return (
     <div className="w-full">
       <LocationsHero name={name} />
