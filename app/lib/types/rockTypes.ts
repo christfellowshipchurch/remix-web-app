@@ -1,11 +1,11 @@
-export type attributeValues = {
+export type attributeValuesProps = {
   [key: string]: {
     value: string;
     valueFormatted: string;
   };
 };
 
-export type attributes = {
+export type attributeProps = {
   [key: string]: {
     key: string;
     name: string;

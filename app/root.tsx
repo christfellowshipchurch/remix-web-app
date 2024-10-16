@@ -5,10 +5,11 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
 
 import "./styles/tailwind.css";
 import Navbar from "./components/navbar";
+
+export { ErrorBoundary } from "./error";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

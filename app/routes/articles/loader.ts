@@ -1,39 +1,89 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-
-const baseUrl = `${process.env.ROCK_API}`;
-const defaultHeaders = {
-  "Content-Type": "application/json",
-  "Authorization-Token": `${process.env.ROCK_TOKEN}`,
-};
+import { fetchRockData, getImages } from "~/lib/server/fetchRockData.server";
+import { AuthorProps } from "./partials/hero.partial";
+import { format } from "date-fns";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type LoaderReturnType = {
+  hostUrl: string;
   title: string;
   content: string;
+  summary: string;
+  coverImage: string;
+  author: AuthorProps;
+  publishDate: string;
+  readTime: number;
 };
 
-export const loader: LoaderFunction = async (): Promise<
-  ReturnType<typeof json<LoaderReturnType>>
-> => {
-  // Fetch random article
-  const res = await fetch(
-    `${baseUrl}ContentChannelItems?$filter=Id%20eq%2012284&loadAttributes=simple`,
-    {
-      headers: {
-        ...defaultHeaders,
-      },
-    }
-  );
+const fetchArticleData = async (articlePath: string) => {
+  return fetchRockData("ContentChannelItems/GetByAttributeValue", {
+    attributeKey: "Url",
+    value: articlePath,
+    loadAttributes: "simple",
+  });
+};
 
-  const data = await res.json();
+const fetchAuthorId = async (authorId: string) => {
+  return fetchRockData("PersonAlias", {
+    $filter: `Guid eq guid'${authorId}'`,
+    $select: "PersonId",
+  });
+};
 
-  const { Title, Content } = data[0];
+const fetchAuthorData = async (authorId: string) => {
+  return fetchRockData("People", {
+    $filter: `Id eq ${authorId}`,
+    $expand: "Photo",
+  });
+};
+
+const getAuthorDetails = async (authorId: string) => {
+  const { personId } = await fetchAuthorId(authorId);
+  const authorData = await fetchAuthorData(personId);
+
+  return {
+    fullName: `${authorData.firstName} ${authorData.lastName}`,
+    photo: {
+      uri: createImageUrlFromGuid(authorData.photo?.guid),
+    },
+    authorAttributes: {
+      authorId: personId,
+    },
+  };
+};
+
+export const loader: LoaderFunction = async ({ params }) => {
+  const articlePath = params?.path || "";
+
+  const articleData = await fetchArticleData(articlePath);
+
+  if (!articleData) {
+    // This should stop execution and propagate the error to Remix's error boundary
+    throw new Response("Article not found at: /articles/" + articlePath, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
+  const { title, content, createdDateTime, attributeValues, attributes } =
+    articleData;
+
+  const coverImage = await getImages({ attributeValues, attributes });
+  const { summary, author } = attributeValues;
+
+  const authorDetails = await getAuthorDetails(author.value);
 
   const pageData: LoaderReturnType = {
-    title: Title,
-    content: Content,
+    hostUrl: process.env.HOST_URL || "host-url-not-found",
+    title,
+    content,
+    summary: summary.value,
+    coverImage: coverImage[0],
+    author: authorDetails,
+    publishDate: format(new Date(createdDateTime), "d MMM yyyy"),
+    readTime: Math.round(content.split(" ").length / 200),
   };
 
-  // Return the data as JSON
   return json<LoaderReturnType>(pageData);
 };
