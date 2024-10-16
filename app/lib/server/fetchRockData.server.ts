@@ -1,5 +1,5 @@
 import { createImageUrlFromGuid, normalize } from "~/lib/utils";
-import { attributeProps, attributeValuesProps } from "./rockTypes";
+import { attributeProps, attributeValuesProps } from "../types/rockTypes";
 
 const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {

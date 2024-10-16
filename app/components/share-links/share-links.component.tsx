@@ -33,7 +33,6 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
     const socialLink = socialMedia?.find(
       (media) => media?.type === icon?.name
     )?.url;
-    // Todo: Add a copy to clipboard functionality for the Share icon
     if (socialLink) {
       return (
         <a

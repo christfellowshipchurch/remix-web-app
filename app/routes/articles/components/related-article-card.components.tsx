@@ -15,7 +15,10 @@ export function RelatedArticleCard({
     return (
       <Link
         to={href}
-        prefetch="viewport"
+        /**
+         * TODO : Re add this prefetch once Related Articles API is implemented
+         */
+        //prefetch="viewport"
         className="flex flex-1 cursor-pointer flex-col overflow-hidden rounded-lg bg-transparent transition-transform duration-300 hover:-translate-y-3"
       >
         <img
