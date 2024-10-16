@@ -56,18 +56,27 @@ const getAuthorDetails = async (authorId: string) => {
 export const loader: LoaderFunction = async ({ params }) => {
   const articlePath = params?.path || "";
 
+  const articleData = await fetchArticleData(articlePath);
+
+  if (!articleData) {
+    throw new Error(
+      "Article not found at the following path: /articles/" + articlePath
+    );
+  }
+
   const { title, content, createdDateTime, attributeValues, attributes } =
-    await fetchArticleData(articlePath);
+    articleData;
+
   const coverImage = await getImages({ attributeValues, attributes });
   const { summary, author } = attributeValues;
 
   const authorDetails = await getAuthorDetails(author.value);
 
   const pageData: LoaderReturnType = {
+    hostUrl: process.env.HOST_URL || "host-url-not-found",
     title,
     content,
     summary: summary.value,
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
     coverImage: coverImage[0],
     author: authorDetails,
     publishDate: format(new Date(createdDateTime), "d MMM yyyy"),

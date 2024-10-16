@@ -293,15 +293,14 @@
 
   /* ------------ Merriweather ------------ */
   /* Light */
-  /* todo : need to convert */
-  /* @font-face {
-    font-family: 'Merriweather';
-    src: url('/fonts/merriweather/light.woff2');
-    
+  @font-face {
+    font-family: "Merriweather";
+    src: url("/fonts/merriweather/light.woff2");
+
     font-style: normal;
     font-weight: 200;
     font-stretch: normal;
-} */
+  }
 
   @font-face {
     font-family: "Merriweather";
