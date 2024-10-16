@@ -4,18 +4,24 @@ import {
   WaysToJoinOnlineMobile,
 } from "../components/mainCampusInfo.component";
 import PastorCard from "../components/pastorCard.component";
-import { CampusName } from "../location-single.types";
+import { CampusInfoTypes } from "../location-single.types";
 
-export const CampusInfo = ({ name }: CampusName) => {
+export const CampusInfo = ({
+  name,
+  campusMap,
+  campusInstagram,
+}: CampusInfoTypes) => {
   return (
     <>
       <ServiceTimes />
       {/* TODO: Pass Data */}
-
       {name === "cf-everywhere" && <WaysToJoinOnlineMobile />}
-
       <div className="flex w-full flex-col items-center">
-        <PastorCard name={name} />
+        <PastorCard
+          name={name}
+          campusMap={campusMap}
+          campusInstagram={campusInstagram}
+        />
       </div>
       <MainCampusInfo name={name} />
     </>

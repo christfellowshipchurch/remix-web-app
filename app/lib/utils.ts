@@ -12,3 +12,11 @@ export function normalize(data: object): object {
   const normalizedValues = mapValues(data, (n) => normalize(n));
   return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
 }
+
+export const enforceProtocol = (uri: string) =>
+  uri.startsWith("//") ? `https:${uri}` : uri;
+
+export const createImageUrlFromGuid = (uri: string) =>
+  uri.split("-").length === 5
+    ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
+    : enforceProtocol(uri);

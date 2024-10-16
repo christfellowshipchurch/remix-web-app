@@ -1,11 +1,8 @@
-import { find, startCase } from "lodash";
-import { campusLinks } from "../locations-single.data";
 import { Link } from "@remix-run/react";
 import Button from "~/primitives/button";
+import { CampusInfoTypes } from "../location-single.types";
 
-const PastorCard = ({ name }: { name: string }) => {
-  const campusLink = find(campusLinks, { name: startCase(name) });
-
+const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
   const pastorCardBottom = name === "cf-everywhere" ? "-100px" : "-380px";
 
   return (
@@ -45,7 +42,7 @@ const PastorCard = ({ name }: { name: string }) => {
               {name !== "cf-everywhere" && (
                 <>
                   <img
-                    src={`/location-pages/maps/${name}.jpg`}
+                    src={campusMap}
                     alt="Campus Map"
                     width={250}
                     height={150}
@@ -91,7 +88,7 @@ const PastorCard = ({ name }: { name: string }) => {
               </Link>
               <Link
                 to={
-                  campusLink?.instagram ||
+                  campusInstagram ||
                   "https://www.instagram.com/christfellowship.church/"
                 }
               >
@@ -138,7 +135,7 @@ const PastorCard = ({ name }: { name: string }) => {
             {name !== "cf-everywhere" && (
               <>
                 <img
-                  src={`/location-pages/maps/${name}.jpg`}
+                  src={campusMap}
                   alt="Campus Map"
                   width={250}
                   height={150}
@@ -181,7 +178,7 @@ const PastorCard = ({ name }: { name: string }) => {
             </Link>
             <Link
               to={
-                campusLink?.instagram ||
+                campusInstagram ||
                 "https://www.instagram.com/christfellowship.church/"
               }
             >

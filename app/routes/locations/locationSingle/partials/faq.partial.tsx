@@ -1,9 +1,9 @@
 import StyledAccordion from "~/components/styled-accordion";
 import Button from "~/primitives/button";
-import { faqData } from "../locations-single.data";
-import { CampusName } from "../location-single.types";
+import { CampusInfoTypes } from "../location-single.types";
+import { faqData } from "~/lib/faqData";
 
-export const LocationFAQ = ({ name }: CampusName) => {
+export const LocationFAQ = ({ name }: CampusInfoTypes) => {
   return (
     <div className="flex flex-col items-center gap-14 bg-[#F5F5F7] pb-24 pt-14">
       <h2 className=" max-w-[90vw] text-center text-[2rem] font-bold text-secondary">

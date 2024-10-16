@@ -9,15 +9,27 @@ import { SetAReminder } from "./partials/set-a-reminder.partial";
 import { AtThisLocation } from "./partials/at-this-location.partial";
 import { Testimonials } from "./partials/testimonials.partial";
 import { LocationFAQ } from "./partials/faq.partial";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export function LocationSinglePage() {
   const { data } = useLoaderData<typeof loader>();
+  if (data?.length === 0) {
+    // redirect to 404 page
+    throw new Response("Not Found", { status: 404 });
+  }
 
-  const { name } = data[0];
+  // TODO: Way to access data in parents? so no need to pass it down so much??
+  const { name, attributeValues } = data[0];
+  console.log(attributeValues);
   return (
     <div className="w-full">
       <LocationsHero name={name} />
-      <CampusInfo name={name} />
+      <CampusInfo
+        name={name}
+        campusMap={createImageUrlFromGuid(
+          attributeValues?.campusMapImage?.value
+        )}
+      />
       <SetAReminder />
       <Testimonials
         testimonies={
