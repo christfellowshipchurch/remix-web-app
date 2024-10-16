@@ -1,7 +1,7 @@
 import { kebabCase } from "lodash";
 import { useState } from "react";
-import LocationCard from "./locations-search-card.partial";
-import { LocationsLoader } from "./locations-skeleton.partial";
+import LocationCard from "../components/locations-search-card.component";
+import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "@remix-run/react";
 import prisonLocationImage from "../../../assets/prison-locations.jpg";
 
@@ -47,7 +47,6 @@ export const Locations = ({ data, loading }: LocationsProps) => {
 
   return (
     <div className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2">
-      {/* Turn into grid */}
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
         {onlineCampus && (
           <LocationCard
