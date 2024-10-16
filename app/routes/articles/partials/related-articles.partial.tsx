@@ -1,5 +1,7 @@
 import Button from "~/primitives/button";
 import { RelatedArticleCard } from "../components/related-article-card.components";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
 
 export const RelatedArticles = ({
   tagId,
@@ -8,6 +10,9 @@ export const RelatedArticles = ({
   tagId: string;
   articles: any[];
 }) => {
+  const { relatedArticles } = useLoaderData<LoaderReturnType>();
+  // Use the relatedArticles from the loader data if it exists
+
   const viewMoreLink = `/related-articles/${tagId}`;
 
   return (

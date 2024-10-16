@@ -22,13 +22,17 @@
     "clsx": "^2.1.1",
     "color": "^4.2.3",
     "date-fns": "^4.1.0",
+    "fs": "^0.0.1-security",
     "isbot": "^4.1.0",
     "lucide-react": "^0.451.0",
+    "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind": "^4.0.0",
     "tailwind-merge": "^2.5.3",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "url": "^0.11.4",
+    "yaml": "^2.6.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.12.1",
