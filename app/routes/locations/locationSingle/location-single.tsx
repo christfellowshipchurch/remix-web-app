@@ -1,6 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "./loader";
-import { testimonialData } from "./locations-single.data";
 
 //Partials
 import { LocationsHero } from "./partials/hero.partial";
@@ -9,13 +8,15 @@ import { SetAReminder } from "./partials/set-a-reminder.partial";
 import { AtThisLocation } from "./partials/at-this-location.partial";
 import { Testimonials } from "./partials/testimonials.partial";
 import { LocationFAQ } from "./partials/faq.partial";
+import { testimonialData } from "./locations-single.data";
+import { ComingUpSoon } from "./partials/coming-up-soon.partial";
 
 export function LocationSinglePage() {
   const { name } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="w-full">
-      <LocationsHero name={name} />
+      <LocationsHero />
       <CampusInfo />
       <SetAReminder />
       <Testimonials
@@ -27,8 +28,9 @@ export function LocationSinglePage() {
             : testimonialData.default
         }
       />
-      <AtThisLocation name={name} />
-      <LocationFAQ name={name} />
+      <AtThisLocation />
+      <ComingUpSoon />
+      <LocationFAQ />
     </div>
   );
 }

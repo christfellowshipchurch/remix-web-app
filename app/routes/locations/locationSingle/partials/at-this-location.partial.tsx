@@ -1,4 +1,9 @@
-export const AtThisLocation = ({ name }: { name: string }) => {
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
+
+export const AtThisLocation = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
+
   const mockData = [
     {
       title: "For Kids",

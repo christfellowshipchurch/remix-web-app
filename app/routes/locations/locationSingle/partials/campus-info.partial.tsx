@@ -4,7 +4,6 @@ import {
   WaysToJoinOnlineMobile,
 } from "../components/mainCampusInfo.component";
 import PastorCard from "../components/pastorCard.component";
-import { CampusInfoTypes } from "../location-single.types";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 
@@ -16,13 +15,9 @@ export const CampusInfo = () => {
       {/* TODO: Pass Data */}
       {name === "cf-everywhere" && <WaysToJoinOnlineMobile />}
       <div className="flex w-full flex-col items-center">
-        <PastorCard
-          name={name}
-          // campusMap={campusMap}
-          // campusInstagram={campusInstagram}
-        />
+        <PastorCard />
       </div>
-      <MainCampusInfo name={name} />
+      <MainCampusInfo />
     </>
   );
 };

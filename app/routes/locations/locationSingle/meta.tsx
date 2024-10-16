@@ -14,10 +14,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }: any) => {
       }`,
       description: `Join us at Christ Fellowship Church in`,
       keywords: `church in ${data[0]?.name} fl,  churches in ${data[0]?.name} fl, church in palm beach county, churches in palm beach county, christ fellowship church in ${data[0]?.name} fl, church near me, churches near me, church in my area, churches in my area, christian church near me, christian churches near me, non denominational church near me, non denominational churches near me, church service near me`,
-      // TODO: Fix this
-      // image: createImageUrlFromGuid(
-      //   data[0]?.attributeValues?.campusImage?.value
-      // ),
+      image: data[0]?.campusImage,
       url: `https://rock.christfellowship.church/locations/${data[0]?.url}`,
     },
   ];

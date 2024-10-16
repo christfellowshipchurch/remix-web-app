@@ -1,7 +1,8 @@
-import { Link } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
 import { whatToExpectData } from "../locations-single.data";
 import { startCase } from "lodash";
+import { LoaderReturnType } from "../loader";
 
 /**
  * this will include the following:
@@ -10,14 +11,12 @@ import { startCase } from "lodash";
  * - Ways to Join Online(Cf Everywhere)
  */
 
-interface MainCampusInfoProps {
-  name: string;
-}
+export function MainCampusInfo() {
+  const { name } = useLoaderData<LoaderReturnType>();
 
-export function MainCampusInfo({ name }: MainCampusInfoProps) {
   return (
     <div className="flex w-full justify-center">
-      <div className="flex w-full max-w-[1240px] flex-col gap-10 pb-16 lg:pb-32 lg:pl-6 lg:pt-10 xl:pl-4">
+      <div className="flex w-full max-w-[1240px] flex-col gap-10 pb-16 lg:pb-24 lg:pl-6 lg:pt-10 xl:pl-4">
         {!name?.includes("cf-everywhere") && (
           <div className="my-8 flex flex-col items-center gap-4 text-center lg:mt-0 lg:flex-row lg:items-start lg:gap-5 lg:text-start xl:gap-6">
             <div className="mx-auto w-4/5 border-t border-[#cecece] lg:hidden" />
