@@ -1,7 +1,17 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
-import { CampusData } from "~/lib/types/rockTypes";
+import { attributes, attributeValues } from "~/lib/types/rockTypes";
 import { normalize } from "~/lib/utils";
+
+export type LoaderReturnType = {
+  name: string;
+  phoneNumber: string;
+  url: string;
+  serviceTimes: string;
+  atributtes: attributes[];
+  attributeValues: attributeValues[];
+  // Add other properties as needed
+};
 
 const baseUrl = process.env.ROCK_API;
 const defaultHeaders = {
@@ -22,5 +32,5 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     }
   );
   const data = await res.json();
-  return { data: normalize(data) as CampusData[] };
+  return { data: normalize(data) as LoaderReturnType[] };
 };
