@@ -1,7 +1,5 @@
-"use client";
-
 import { Link } from "@remix-run/react";
-import "./LocationSkeleton.css";
+import "./location-search-skeleton.css";
 
 const heroBgImgStyles = (image?: string) => {
   return {
@@ -31,6 +29,7 @@ const LocationSkeletonCard = () => {
 };
 
 export function LocationsLoader() {
+  // Create an array of 15 (number of campuses) empty objects to map over and create skeleton cards
   const data = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
   return (
     <div className="flex flex-col items-center py-12">

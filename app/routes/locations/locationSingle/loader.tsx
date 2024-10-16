@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { attributes, attributeValues } from "~/lib/types/rockTypes";
 import { normalize } from "~/lib/utils";
 
-export type LoaderReturnType = {
+type LoaderReturnType = {
   name: string;
   phoneNumber: string;
   url: string;
@@ -32,5 +32,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     }
   );
   const data = await res.json();
+  if (!data) {
+    throw new Error("No data found");
+  }
   return { data: normalize(data) as LoaderReturnType[] };
 };

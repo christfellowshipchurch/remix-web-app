@@ -14,7 +14,7 @@ import { createImageUrlFromGuid } from "~/lib/utils";
 export function LocationSinglePage() {
   const { data } = useLoaderData<typeof loader>();
   if (data?.length === 0) {
-    // redirect to 404 page
+    // displays a 404 page
     throw new Response("Not Found", { status: 404 });
   }
 
