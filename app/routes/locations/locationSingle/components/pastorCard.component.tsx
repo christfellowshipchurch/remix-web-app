@@ -1,9 +1,26 @@
-import { Link } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
-import { CampusInfoTypes } from "../location-single.types";
+import { LoaderReturnType } from "../loader";
 
-const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
-  const pastorCardBottom = name === "cf-everywhere" ? "-100px" : "-380px";
+const PastorCard = () => {
+  // address, campusInstagram
+  const {
+    street1,
+    street2,
+    city,
+    state,
+    postalCode,
+    name,
+    campusPastors,
+    mapLink,
+    campusInstagram,
+    campusMapImage,
+    phoneNumber,
+    url,
+    youtube,
+    facebook,
+  } = useLoaderData<LoaderReturnType>();
+  const pastorCardBottom = url === "cf-everywhere" ? "-100px" : "-380px";
 
   return (
     <>
@@ -22,7 +39,7 @@ const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
             <div className="flex w-full items-center justify-center gap-4">
               <div className="h-1 w-24 border-b border-secondary_subdued" />
               <img
-                src="/location-pages/pastors.png"
+                src={campusPastors?.image}
                 alt="Campus Pastors"
                 width={120}
                 height={120}
@@ -30,37 +47,42 @@ const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
               />
               <div className="h-1 w-24 border-b border-secondary_subdued" />
             </div>
-            <h3 className="pt-3 text-2xl font-bold">Dave and Rhonda Simiele</h3>
+            <h3 className="pt-3 text-2xl font-bold">{campusPastors?.name}</h3>
             <p className="italic">Campus Pastors</p>
           </div>
-          {name !== "cf-everywhere" && (
+          {url !== "cf-everywhere" && (
             <div className="border-b border-secondary_subdued py-6" />
           )}
           <div className="pb-6 pt-5">
             {/* Campus Location */}
             <div className="flex w-full flex-col items-center">
-              {name !== "cf-everywhere" && (
+              {url !== "cf-everywhere" && (
                 <>
-                  <img
-                    src={campusMap}
-                    alt="Campus Map"
-                    width={250}
-                    height={150}
-                  />
+                  <a target="_blank" href={mapLink}>
+                    <img
+                      src={campusMapImage}
+                      alt="Campus Map"
+                      width={250}
+                      height={150}
+                    />
+                  </a>
                   <div className="mt-4 flex flex-col items-center">
                     <h3 className="text-xl font-bold">Address</h3>
                     <a
-                      href="#fix"
+                      target="_blank"
+                      href={mapLink}
                       className="max-w-[270px] text-primary underline"
                     >
-                      5343 Northlake Blvd. Palm Beach Gardens, FL 33418
+                      {street1} {street2}
+                      <br />
+                      {city}, {state} {postalCode}
                     </a>
                     <h3 className="mt-3 text-xl font-bold">Phone</h3>
                     <a
-                      className="text-primary underline"
                       href="tel:561-799-7600"
+                      className="text-primary underline"
                     >
-                      (561) 799-7600
+                      {phoneNumber}
                     </a>
                   </div>
                 </>
@@ -78,35 +100,30 @@ const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
             </div>
             {/* Social Medias */}
             <div className="mt-10 flex items-center justify-center gap-2">
-              <Link to="https://www.facebook.com/CFimpact">
+              <a target="_blank" href={facebook}>
                 <img
                   src="/icons/cotton-candy-facebook.svg"
                   alt="Facebook"
                   width={32}
                   height={32}
                 />
-              </Link>
-              <Link
-                to={
-                  campusInstagram ||
-                  "https://www.instagram.com/christfellowship.church/"
-                }
-              >
+              </a>
+              <a target="_blank" href={campusInstagram}>
                 <img
                   src="/icons/cotton-candy-instagram.svg"
                   alt="Instagram"
                   width={32}
                   height={32}
                 />
-              </Link>
-              <Link to="https://www.youtube.com/user/christfellowship">
+              </a>
+              <a target="_blank" href={youtube}>
                 <img
                   src="/icons/cotton-candy-youtube.svg"
                   alt="Youtube"
                   width={32}
                   height={32}
                 />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -132,18 +149,21 @@ const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
         <div className="pb-6 pt-5">
           {/* Campus Location */}
           <div className="flex w-full flex-col items-center">
-            {name !== "cf-everywhere" && (
+            {url !== "cf-everywhere" && (
               <>
-                <img
-                  src={campusMap}
-                  alt="Campus Map"
-                  width={250}
-                  height={150}
-                />
+                <a target="_blank" href={mapLink}>
+                  <img
+                    src={campusMapImage}
+                    alt="Campus Map"
+                    width={250}
+                    height={150}
+                  />
+                </a>
                 <div className="mt-4 flex flex-col items-center">
                   <h3 className="text-xl font-bold">Address</h3>
                   <a
-                    href="#fix"
+                    target="_blank"
+                    href={mapLink}
                     className="max-w-[270px] text-primary underline"
                   >
                     5343 Northlake Blvd. Palm Beach Gardens, FL 33418
@@ -168,35 +188,30 @@ const PastorCard = ({ name, campusMap, campusInstagram }: CampusInfoTypes) => {
           </div>
           {/* Social Medias */}
           <div className="mt-8 flex items-center justify-center gap-2">
-            <Link to="https://www.facebook.com/CFimpact">
+            <a target="_blank" href={facebook}>
               <img
                 src="/icons/cotton-candy-facebook.svg"
                 alt="Facebook"
                 width={32}
                 height={32}
               />
-            </Link>
-            <Link
-              to={
-                campusInstagram ||
-                "https://www.instagram.com/christfellowship.church/"
-              }
-            >
+            </a>
+            <a target="_blank" href={campusInstagram}>
               <img
                 src="/icons/cotton-candy-instagram.svg"
                 alt="Instagram"
                 width={32}
                 height={32}
               />
-            </Link>
-            <Link to="https://www.youtube.com/user/christfellowship">
+            </a>
+            <a target="_blank" href={youtube}>
               <img
                 src="/icons/cotton-candy-youtube.svg"
                 alt="Youtube"
                 width={32}
                 height={32}
               />
-            </Link>
+            </a>
           </div>
         </div>
       </div>

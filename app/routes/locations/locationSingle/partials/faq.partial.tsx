@@ -1,9 +1,12 @@
 import StyledAccordion from "~/components/styled-accordion";
 import Button from "~/primitives/button";
-import { CampusInfoTypes } from "../location-single.types";
 import { faqData } from "~/lib/faqData";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
 
-export const LocationFAQ = ({ name }: CampusInfoTypes) => {
+export const LocationFAQ = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
+
   return (
     <div className="flex flex-col items-center gap-14 bg-[#F5F5F7] pb-24 pt-14">
       <h2 className=" max-w-[90vw] text-center text-[2rem] font-bold text-secondary">

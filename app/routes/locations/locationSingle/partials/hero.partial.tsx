@@ -2,9 +2,11 @@ import { find } from "lodash";
 import { headerData } from "../locations-single.data";
 
 import Button from "~/primitives/button";
-import { CampusName } from "../location-single.types";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
 
-export const LocationsHero = ({ name }: CampusName) => {
+export const LocationsHero = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
   const headerContent = find(headerData, { name });
 
   const videoSrc =
