@@ -1,6 +1,6 @@
 import React from "react";
 import { LoaderReturnType } from "./loader";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useRouteError } from "@remix-run/react";
 
 import { ArticleHero } from "./partials/hero.partial";
 import { ArticleContent } from "./partials/content.partial";
@@ -10,7 +10,7 @@ import { RelatedArticles } from "./partials/related-articles.partial";
 import { mockRelatedArticles } from "./mockData";
 
 export const ArticlePage: React.FC = () => {
-  const data = useLoaderData<LoaderReturnType>(); // Correctly fetch the data from the loader
+  const data = useLoaderData<LoaderReturnType>();
 
   return (
     <>
