@@ -6,6 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Server Utils */
 export function normalize(data: object): object {
   if (Array.isArray(data)) return data.map((n) => normalize(n));
   if (typeof data !== "object" || data === null) return data;
