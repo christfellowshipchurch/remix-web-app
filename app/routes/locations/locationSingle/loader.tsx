@@ -1,39 +1,43 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { json, LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
-import { attributeProps, attributeValuesProps } from "~/lib/types/rockTypes";
-import { normalize } from "~/lib/utils";
+import { fetchRockData } from "~/lib/server/fetchRockData.server";
 
-type LoaderReturnType = {
+export type LoaderReturnType = {
   name: string;
   phoneNumber: string;
-  url: string;
-  serviceTimes: string;
-  atributtes: attributeProps[];
-  attributeValues: attributeValuesProps[];
+  // address: string;
+  // url: string;
+  // serviceTimes: string;
+  // campusMap: string;
+  // instagram: string;
+  // facebook: string;
+  // youtube: string;
   // Add other properties as needed
 };
 
-const baseUrl = process.env.ROCK_API;
-const defaultHeaders = {
-  "Content-Type": "application/json",
-  "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+const fetchCampusData = async (campusUrl: string) => {
+  return fetchRockData("Campuses", {
+    $filter: `Url eq '${campusUrl}'`,
+    loadAttributes: "simple",
+  });
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.location, "No Campus");
 
-  // Fetch Campus Data
-  const res = await fetch(
-    `${baseUrl}Campuses?$filter=Url eq '${params?.location}'&loadAttributes=simple`,
-    {
-      headers: {
-        ...defaultHeaders,
-      },
-    }
-  );
-  const data = await res.json();
+  const campusUrl = params.location as string;
+  const data = await fetchCampusData(campusUrl);
+
   if (!data) {
     throw new Error("No data found");
   }
-  return { data: normalize(data) as LoaderReturnType[] };
+
+  const { name, phoneNumber } = data;
+
+  const pageData: LoaderReturnType = {
+    name,
+    phoneNumber,
+  };
+
+  return json<LoaderReturnType>(pageData);
 };

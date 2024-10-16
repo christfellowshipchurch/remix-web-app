@@ -5,12 +5,11 @@ import {
 } from "../components/mainCampusInfo.component";
 import PastorCard from "../components/pastorCard.component";
 import { CampusInfoTypes } from "../location-single.types";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
 
-export const CampusInfo = ({
-  name,
-  campusMap,
-  campusInstagram,
-}: CampusInfoTypes) => {
+export const CampusInfo = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
   return (
     <>
       <ServiceTimes />
@@ -19,8 +18,8 @@ export const CampusInfo = ({
       <div className="flex w-full flex-col items-center">
         <PastorCard
           name={name}
-          campusMap={campusMap}
-          campusInstagram={campusInstagram}
+          // campusMap={campusMap}
+          // campusInstagram={campusInstagram}
         />
       </div>
       <MainCampusInfo name={name} />
