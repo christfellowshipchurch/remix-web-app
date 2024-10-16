@@ -1,7 +1,7 @@
 import { kebabCase } from "lodash";
 import { useState } from "react";
-import LocationCard from "./locationsSearchCard.partial";
-import { LocationsLoader } from "./locationsSkeleton.partial";
+import LocationCard from "./locations-search-card.partial";
+import { LocationsLoader } from "./locations-skeleton.partial";
 import { Link } from "@remix-run/react";
 import prisonLocationImage from "../../../assets/prison-locations.jpg";
 

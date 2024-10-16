@@ -1,5 +1,5 @@
 import parse, { attributesToProps } from "html-react-parser";
-import "./Renderer.css";
+import "./html-renderer.css";
 
 export const HTMLRenderer = ({ html }: { html: string }) => {
   const options = {

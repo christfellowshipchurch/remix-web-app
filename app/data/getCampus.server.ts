@@ -1,6 +1,3 @@
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-
 const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {
   "Content-Type": "application/json",
@@ -86,51 +83,3 @@ export type ReturnType = {
     uri: string;
   };
 };
-
-export async function loader({
-  latitude,
-  longitude,
-}: {
-  latitude: number;
-  longitude: number;
-}): Promise<ReturnType> {
-  let res = await fetch(
-    `${baseUrl}Campuses?$expand=Location&$filter=IsActive eq true&loadAttributes=simple`,
-    {
-      headers: {
-        ...defaultHeaders,
-      },
-    }
-  );
-
-  let data = await res.json();
-  if (latitude && longitude) {
-    data = data.map((campus: CampusModel) => ({
-      ...campus,
-      distanceFromLocation: latLonDistance(
-        latitude,
-        longitude,
-        campus.location.latitude,
-        campus.location.longitude
-      ),
-    }));
-  }
-
-  data = data.sort(
-    (a: CampusModel, b: CampusModel) =>
-      (a?.distanceFromLocation ?? 0) - (b?.distanceFromLocation ?? 0)
-  );
-
-  console.log(data);
-  const { id, name, image, distanceFromLocation } = data[0];
-
-  const pageData: ReturnType = {
-    id: id,
-    image: image,
-    name: name,
-    distanceFromLocation: distanceFromLocation,
-  };
-
-  // Return the data as JSON
-  return pageData;
-}
