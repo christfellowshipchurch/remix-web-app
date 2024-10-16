@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
-import { attributes, attributeValues } from "~/lib/types/rockTypes";
+import { attributeProps, attributeValuesProps } from "~/lib/types/rockTypes";
 import { normalize } from "~/lib/utils";
 
 type LoaderReturnType = {
@@ -8,8 +8,8 @@ type LoaderReturnType = {
   phoneNumber: string;
   url: string;
   serviceTimes: string;
-  atributtes: attributes[];
-  attributeValues: attributeValues[];
+  atributtes: attributeProps[];
+  attributeValues: attributeValuesProps[];
   // Add other properties as needed
 };
 
