@@ -59,9 +59,11 @@ export const loader: LoaderFunction = async ({ params }) => {
   const articleData = await fetchArticleData(articlePath);
 
   if (!articleData) {
-    throw new Error(
-      "Article not found at the following path: /articles/" + articlePath
-    );
+    // This should stop execution and propagate the error to Remix's error boundary
+    throw new Response("Article not found at: /articles/" + articlePath, {
+      status: 404,
+      statusText: "Not Found",
+    });
   }
 
   const { title, content, createdDateTime, attributeValues, attributes } =
