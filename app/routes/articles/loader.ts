@@ -75,7 +75,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const { guid, title, content, createdDateTime, attributeValues, attributes } =
     articleData;
 
-  const coverImage = await getImages({ attributeValues, attributes });
+  const coverImage = getImages({ attributeValues, attributes });
   const { summary, author } = attributeValues;
 
   const authorDetails = await getAuthorDetails(author.value);

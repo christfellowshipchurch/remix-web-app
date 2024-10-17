@@ -27,11 +27,13 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
 
     // Find tags for the current article
     const taggedItems = await getTaggedItemsByEntityGuid(guid);
-    const tagIds = getValidTagIds(taggedItems, RELATED_ARTICLES_EXCLUDE_TAGS);
+    const tagIds = await getValidTagIds(
+      taggedItems,
+      RELATED_ARTICLES_EXCLUDE_TAGS
+    );
 
     // Determine the tag to use for related articles
-    const relatedArticleTag =
-      (await tagIds).length > 0 ? (await tagIds)[0] : DEFAULT_TAG_ID;
+    const relatedArticleTag = tagIds.length > 0 ? tagIds[0] : DEFAULT_TAG_ID;
     const relatedTaggedItems = await fetchRelatedTaggedItems({
       tagId: relatedArticleTag,
       entityId: guid,
@@ -65,29 +67,29 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
     const tag = await fetchTag(relatedArticleTag);
     const firstThreeArticles = relatedArticles.slice(0, 3);
 
-    //Format data for the related articles
-    const formattedArticles = firstThreeArticles.map(async (article) => {
-      const { title, attributeValues, attributes, content, createdDateTime } =
-        article;
-      const { author, summary, url } = attributeValues;
+    // Format data for the related articles
+    const formattedArticles = await Promise.all(
+      firstThreeArticles.map(async (article) => {
+        const { title, attributeValues, attributes, content, createdDateTime } =
+          article;
+        const { author, summary, url } = attributeValues;
 
-      return {
-        title,
-        summary: summary?.value,
-        url: url?.value,
-        coverImage: await getImages({ attributeValues, attributes }),
-        publishDate: format(new Date(createdDateTime), "d MMM yyyy"),
-        readTime: Math.round(content.split(" ").length / 200),
-        author: await getAuthorDetails(author?.value),
-      };
-    });
-
-    // Return the formatted related articles(Promise pending isssue...)
+        return {
+          title,
+          summary: summary?.value,
+          url: url?.value,
+          coverImage: getImages({ attributeValues, attributes }),
+          publishDate: format(new Date(createdDateTime), "d MMM yyyy"),
+          readTime: Math.round(content.split(" ").length / 200),
+          author: await getAuthorDetails(author?.value),
+        };
+      })
+    );
 
     return {
       tag: tag?.name,
       tagId: tag?.guid, // todo: add encryption
-      articles: await formattedArticles,
+      articles: await Promise.all(formattedArticles),
     };
   } catch (error: any) {
     throw new Error("Error fetching related articles: " + error.message);
