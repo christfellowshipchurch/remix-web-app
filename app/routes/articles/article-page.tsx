@@ -7,8 +7,6 @@ import { ArticleContent } from "./partials/content.partial";
 import { ArticleNewsletter } from "./partials/newsletter.partial";
 import { RelatedArticles } from "./partials/related-articles.partial";
 
-import { mockRelatedArticles } from "./mockData";
-
 export const ArticlePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
 
@@ -19,10 +17,7 @@ export const ArticlePage: React.FC = () => {
         <div className="align-center mx-auto flex w-full flex-col items-center border-y border-solid border-slate-100">
           <ArticleContent htmlContent={data.content} />
           <ArticleNewsletter />
-          <RelatedArticles
-            tagId={mockRelatedArticles.tagId}
-            articles={mockRelatedArticles.articles}
-          />
+          <RelatedArticles />
         </div>
       </section>
     </>

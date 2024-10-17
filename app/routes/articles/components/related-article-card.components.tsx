@@ -14,7 +14,7 @@ export function RelatedArticleCard({
   if (href) {
     return (
       <Link
-        to={href}
+        to={`/articles/${href}`}
         /**
          * TODO : Re add this prefetch once Related Articles API is implemented
          */

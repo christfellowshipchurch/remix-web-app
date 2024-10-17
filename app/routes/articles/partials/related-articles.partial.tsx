@@ -3,15 +3,10 @@ import { RelatedArticleCard } from "../components/related-article-card.component
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 
-export const RelatedArticles = ({
-  tagId,
-  articles,
-}: {
-  tagId: string;
-  articles: any[];
-}) => {
+export const RelatedArticles = () => {
   const { relatedArticles } = useLoaderData<LoaderReturnType>();
-  // Use the relatedArticles from the loader data if it exists
+  const tagId = relatedArticles?.tagId;
+  const articles = relatedArticles?.articles;
 
   const viewMoreLink = `/related-articles/${tagId}`;
 
