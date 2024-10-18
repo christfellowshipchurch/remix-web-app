@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
 import { useLoaderData } from "@remix-run/react";
-import { loader } from "./loader";
+import { clientLoader } from "./clientLoader";
 
 export type LocationSearchResultsType = {
   results: [
@@ -23,10 +23,11 @@ export function LocationSearchPage() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [locationActive, setLocationActive] = useState(true);
 
-  // const data = useLoaderData<typeof loader>({
+  const data = useLoaderData<typeof clientLoader>();
+  // Pass in the following: {
   //   latitude: results[0].geometry.location.lat,
   //   longitude: results[0].geometry.location.lng,
-  // });
+  // }
 
   useEffect(() => {
     searchCurrentLocation();
@@ -101,7 +102,7 @@ export function LocationSearchPage() {
         locationActive={locationActive}
       />
       {/* Search Section */}
-      {/* <Locations data={data} loading={loading} /> */}
+      {/* <Locations data={data} loading={!data || data?.length === 0} /> */}
     </div>
   );
 }

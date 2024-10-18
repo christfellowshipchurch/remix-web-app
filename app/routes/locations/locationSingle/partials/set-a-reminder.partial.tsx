@@ -1,7 +1,7 @@
-import SetAReminderModal from "~/components/modals/setAReminder";
+import SetAReminderModal from "~/components/modals/set-a-reminder";
 import Button from "~/primitives/button";
-import Modal from "~/primitives/modal";
-import Video from "~/primitives/video";
+import Modal from "~/primitives/Modal";
+import Video from "~/primitives/Video";
 
 export const SetAReminder = () => {
   return (
@@ -25,6 +25,7 @@ export const SetAReminder = () => {
             {/* TODO: Setup Wistia Videos */}
             <Video wistiaId="hokgxn0k8r" className="rounded-lg" />
           </div>
+          {/* Desktop */}
           <div className="hidden h-full flex-col justify-center gap-6 lg:flex">
             <div className="flex max-w-[280px] items-start gap-5">
               <img
@@ -84,6 +85,7 @@ export const SetAReminder = () => {
               </Modal.Content>
             </Modal>
           </div>
+          {/* Mobile */}
           <Modal>
             <Modal.Button asChild>
               <Button

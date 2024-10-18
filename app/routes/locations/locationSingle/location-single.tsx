@@ -12,7 +12,7 @@ import { testimonialData } from "./locations-single.data";
 import { ComingUpSoon } from "./partials/coming-up-soon.partial";
 
 export function LocationSinglePage() {
-  const { name } = useLoaderData<LoaderReturnType>();
+  const { url } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="w-full">
@@ -21,9 +21,9 @@ export function LocationSinglePage() {
       <SetAReminder />
       <Testimonials
         testimonies={
-          name === "cf-everywhere"
+          url === "cf-everywhere"
             ? testimonialData.cfEverywhere
-            : name.includes("iglesia")
+            : url.includes("iglesia")
             ? testimonialData.españolCampuses
             : testimonialData.default
         }

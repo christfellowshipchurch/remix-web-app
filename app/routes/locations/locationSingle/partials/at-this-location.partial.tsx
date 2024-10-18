@@ -2,7 +2,7 @@ import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 
 export const AtThisLocation = () => {
-  const { name } = useLoaderData<LoaderReturnType>();
+  const { url } = useLoaderData<LoaderReturnType>();
 
   const mockData = [
     {
@@ -19,7 +19,7 @@ export const AtThisLocation = () => {
   return (
     <div className="flex w-full flex-col items-center bg-[#F5F5F7] py-10 lg:py-20 xl:py-24">
       <h1 className="text-3xl font-bold text-secondary">
-        {name === "cf-everywhere"
+        {url === "cf-everywhere"
           ? "Digital Offerings for Everyone"
           : "At This Location"}
       </h1>

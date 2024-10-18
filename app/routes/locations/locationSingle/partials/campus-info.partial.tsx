@@ -8,12 +8,12 @@ import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 
 export const CampusInfo = () => {
-  const { name } = useLoaderData<LoaderReturnType>();
+  const { url } = useLoaderData<LoaderReturnType>();
   return (
     <>
       <ServiceTimes />
       {/* TODO: Pass Data */}
-      {name === "cf-everywhere" && <WaysToJoinOnlineMobile />}
+      {url === "cf-everywhere" && <WaysToJoinOnlineMobile />}
       <div className="flex w-full flex-col items-center">
         <PastorCard />
       </div>

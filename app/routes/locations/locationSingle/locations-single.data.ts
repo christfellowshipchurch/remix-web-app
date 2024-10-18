@@ -352,20 +352,6 @@ const setReminderVideos = {
   iglesiaRoyalPalmBeach: "nyx9edzvy4",
 };
 
-const whatToExpectVideos = {
-  palmBeachGardens: "beicrozg21",
-  portStLucie: "o6a8iuvvdu",
-  royalPalmBeach: "u93xzcwt29",
-  boyntonBeach: "7wyyrqlswt",
-  stuart: "8tqzbalj93",
-  okeechobee: "tvib7cnu9b",
-  belleGlade: "tn3c9wnvqj",
-  veroBeach: "5cv4gg1zty",
-  westlake: "wnrnvrukyc",
-  trinity: "w6w5d4sra8",
-  cfe: "ue0vgo44c1",
-};
-
 const setReminderData = {
   title: "Set a Reminder for an Upcoming Service",
   subtitle:
@@ -446,7 +432,6 @@ const thisWeekFeatureId =
 export {
   headerData,
   setReminderVideos,
-  whatToExpectVideos,
   setReminderData,
   setReminderEspanolData,
   thisWeekFeatureId,
