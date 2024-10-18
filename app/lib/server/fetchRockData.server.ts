@@ -23,7 +23,10 @@ export const fetchRockData = async (
   const data = await res
     .json()
     .then((data) => normalize(data))
-    .then((data: any) => (Array.isArray(data) ? data[0] : data));
+    // The following line returns the first element of the array if it is an array, otherwise it returns the data object.
+    .then((data: any) =>
+      Array.isArray(data) && data?.length === 1 ? data[0] : data
+    );
 
   return data;
 };
