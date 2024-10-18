@@ -31,16 +31,17 @@ const fetchAuthorId = async (authorId: string) => {
   });
 };
 
-const fetchAuthorData = async (authorId: string) => {
+export const fetchAuthorData = async ({ authorId }: { authorId: string }) => {
   return fetchRockData("People", {
     $filter: `Id eq ${authorId}`,
     $expand: "Photo",
+    loadAttributes: "simple",
   });
 };
 
 const getAuthorDetails = async (authorId: string) => {
   const { personId } = await fetchAuthorId(authorId);
-  const authorData = await fetchAuthorData(personId);
+  const authorData = await fetchAuthorData({ authorId: personId });
 
   return {
     fullName: `${authorData.firstName} ${authorData.lastName}`,
