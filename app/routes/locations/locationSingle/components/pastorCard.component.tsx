@@ -10,7 +10,6 @@ const PastorCard = () => {
     city,
     state,
     postalCode,
-    name,
     campusPastors,
     mapLink,
     campusInstagram,
@@ -135,7 +134,7 @@ const PastorCard = () => {
           <div className="flex w-full items-center justify-center gap-4">
             <div className="h-1 w-24 border-b border-secondary_subdued" />
             <img
-              src="/location-pages/pastors.png"
+              src={campusPastors?.image}
               alt="Campus Pastors"
               width={120}
               height={120}
@@ -143,7 +142,7 @@ const PastorCard = () => {
             />
             <div className="h-1 w-24 border-b border-secondary_subdued" />
           </div>
-          <h3 className="pt-3 text-2xl font-bold">Dave and Rhonda Simiele</h3>
+          <h3 className="pt-3 text-2xl font-bold">{campusPastors?.name}</h3>
           <p className="italic">Campus Pastors</p>
         </div>
         <div className="pb-6 pt-5">
@@ -166,11 +165,13 @@ const PastorCard = () => {
                     href={mapLink}
                     className="max-w-[270px] text-primary underline"
                   >
-                    5343 Northlake Blvd. Palm Beach Gardens, FL 33418
+                    {street1} {street2}
+                    <br />
+                    {city}, {state} {postalCode}
                   </a>
                   <h3 className="mt-3 text-xl font-bold">Phone</h3>
                   <a href="tel:561-799-7600" className="text-primary underline">
-                    (561) 799-7600
+                    {phoneNumber}
                   </a>
                 </div>
               </>
