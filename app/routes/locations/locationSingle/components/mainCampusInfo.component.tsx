@@ -14,7 +14,8 @@ import { WhatToExpectModal } from "~/components/modals/what-to-expect";
  */
 
 export function MainCampusInfo() {
-  const { name, url } = useLoaderData<LoaderReturnType>();
+  const { name, url, weekdaySchedules } = useLoaderData<LoaderReturnType>();
+
   const camelCaseName = camelCase(name) as
     | "palmBeachGardens"
     | "portStLucie"
@@ -38,67 +39,26 @@ export function MainCampusInfo() {
               During the Week
             </h3>
             <div className="flex flex-col gap-10 lg:flex-row xl:gap-14">
-              <div className="flex flex-col">
-                <h4 className="text-[20px] font-bold">Tuesday</h4>
-                <div className="flex items-center">
-                  <p>6:15 PM - Kids University </p>
-                  <Link to="#share" className="pl-1">
-                    <img
-                      src="/icons/share.svg"
-                      alt="share"
-                      width={12}
-                      height={12}
-                    />
-                  </Link>
+              {Object.entries(weekdaySchedules).map(([day, events]) => (
+                <div key={day} className="flex flex-col">
+                  <h4 className="text-[20px] font-bold">{startCase(day)}</h4>
+                  {events.map((event: any, index: number) => (
+                    <div key={index} className="flex items-center">
+                      <p>
+                        {event.time} - {event.title}
+                      </p>
+                      <Link to={event.url} className="pl-1">
+                        <img
+                          src="/icons/share.svg"
+                          alt="share"
+                          width={12}
+                          height={12}
+                        />
+                      </Link>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center">
-                  <p>6:15 PM - Kids University </p>
-                  <Link to="#share" className="pl-1">
-                    <img
-                      src="/icons/share.svg"
-                      alt="share"
-                      width={12}
-                      height={12}
-                    />
-                  </Link>
-                </div>
-                <div className="flex items-center">
-                  <p>6:15 PM - Kids University </p>
-                  <Link to="#share" className="pl-1">
-                    <img
-                      src="/icons/share.svg"
-                      alt="share"
-                      width={12}
-                      height={12}
-                    />
-                  </Link>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <h4 className="text-[20px] font-bold">Wednesday</h4>
-                <div className="flex items-center">
-                  <p>6:15 PM - Kids University </p>
-                  <Link to="#share" className="pl-1">
-                    <img
-                      src="/icons/share.svg"
-                      alt="share"
-                      width={12}
-                      height={12}
-                    />
-                  </Link>
-                </div>
-                <div className="flex items-center">
-                  <p>6:15 PM - Kids University </p>
-                  <Link to="#share" className="pl-1">
-                    <img
-                      src="/icons/share.svg"
-                      alt="share"
-                      width={12}
-                      height={12}
-                    />
-                  </Link>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         )}
