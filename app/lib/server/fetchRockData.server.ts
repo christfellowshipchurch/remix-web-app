@@ -9,8 +9,7 @@ const defaultHeaders = {
 
 export const fetchRockData = async (
   endpoint: string,
-  queryParams: Record<string, string>,
-  returnFirstItem: boolean = true
+  queryParams: Record<string, string>
 ) => {
   try {
     const queryString = new URLSearchParams(queryParams).toString();
@@ -33,8 +32,8 @@ export const fetchRockData = async (
       .json()
       .then((data) => normalize(data))
       .then((data: any) =>
-        returnFirstItem && Array.isArray(data) ? data[0] : data
-      );
+        Array.isArray(data) && data?.length === 1 ? data[0] : data
+      ); // if only one item, return it directly
 
     return data;
   } catch (error) {
