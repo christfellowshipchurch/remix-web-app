@@ -37,7 +37,7 @@ export const AtThisLocation = () => {
           >
             <div className="relative h-[210px] w-full">
               <img
-                src="/location-pages/kids-image.jpg"
+                src="https://picsum.photos/380/210" // placeholder image
                 alt={data?.title}
                 className="size-full"
               />
