@@ -10,15 +10,19 @@ export const AuthorPage: React.FC = () => {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-white to-background_to dark:bg-gray-900">
+      <section className="dark:bg-gray-900 max-w-[1440px] mx-auto grid grid-cols-4">
         {/* Content */}
-        <div className="col-span-2 px-8">
+        <div className="col-span-4 md:col-span-2 py-14 px-8">
           {/* Title */}
           <div className="flex flex-col items-start gap-4">
             <BackButton />
             {/* Mobile Bio */}
             <div className="mb-8 md:hidden">
-              {/* <AuthorBioMobile {...data} /> */}
+              <AuthorBioMobile
+                fullName={data?.fullName}
+                profilePhoto={data?.profilePhoto}
+                authorAttributes={data?.authorAttributes}
+              />
             </div>
             <h1 className="hidden text-[40px] font-semibold md:block">
               {data?.fullName}
@@ -28,7 +32,7 @@ export const AuthorPage: React.FC = () => {
           <AuthorTabs articles={data?.authorAttributes?.publications} />
         </div>
         {/* Desktop Bio */}
-        <div className="col-span-1 hidden px-8 md:block">
+        <div className="border-l col-span-2 hidden py-14 px-8 md:block">
           <AuthorBioDesktop
             fullName={data?.fullName}
             profilePhoto={data?.profilePhoto}

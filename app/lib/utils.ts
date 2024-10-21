@@ -15,9 +15,9 @@ export function normalize(data: object): object {
 }
 
 export const createImageUrlFromGuid = (uri: string) =>
-  uri.split("-").length === 5
+  uri?.split("-").length === 5
     ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
     : enforceProtocol(uri);
 
 export const enforceProtocol = (uri: string) =>
-  uri.startsWith("//") ? `https:${uri}` : uri;
+  uri?.startsWith("//") ? `https:${uri}` : uri;
