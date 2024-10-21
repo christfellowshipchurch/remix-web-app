@@ -70,7 +70,7 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
     // Format data for the related articles
     const formattedArticles = await Promise.all(
       firstThreeArticles.map(async (article) => {
-        const { title, attributeValues, attributes, content, createdDateTime } =
+        const { title, attributeValues, attributes, content, startDateTime } =
           article;
         const { author, summary, url } = attributeValues;
 
@@ -79,9 +79,9 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
           summary: summary?.value,
           url: url?.value,
           coverImage: getImages({ attributeValues, attributes }),
-          publishDate: format(new Date(createdDateTime), "d MMM yyyy"),
+          publishDate: format(new Date(startDateTime), "d MMM yyyy"),
           readTime: Math.round(content.split(" ").length / 200),
-          author: await getAuthorDetails(author?.value),
+          author: author?.value ? await getAuthorDetails(author?.value) : null,
         };
       })
     );
@@ -107,12 +107,17 @@ const fetchTag = async (
 };
 
 const getValidTagIds = async (
-  taggedItems: any[],
+  taggedItems: any[] | any,
   excludeTags: number[]
 ): Promise<number[]> => {
+  // Ensure taggedItems is an array
+  if (!Array.isArray(taggedItems)) {
+    taggedItems = [taggedItems];
+  }
+
   return taggedItems
-    .map((taggedItem) => taggedItem.tagId)
-    .filter((tagId) => !excludeTags.includes(tagId));
+    .map((taggedItem: any) => taggedItem.tagId)
+    .filter((tagId: number) => !excludeTags.includes(tagId));
 };
 
 const fetchRelatedTaggedItems = async ({
@@ -129,6 +134,11 @@ const fetchRelatedTaggedItems = async ({
 };
 
 const fetchRelatedContent = async (taggedItems: any[]): Promise<any[]> => {
+  // Ensure taggedItems is an array
+  if (!Array.isArray(taggedItems)) {
+    taggedItems = [taggedItems];
+  }
+
   return flatten(
     await Promise.all(
       taggedItems.map(async (taggedItem) => {
