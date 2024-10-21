@@ -29,14 +29,14 @@ export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
 
   return personAlias?.guid;
 };
-export const fetchArticlesByAttributeValue = async (
-  personAliasGuid: string
-) => {
+export const fetchAuthorArticles = async (personAliasGuid: string) => {
   const articles = await fetchRockData(
     "ContentChannelItems/GetByAttributeValue",
     {
       attributeKey: "Author",
       value: personAliasGuid,
+      $filter: "Status eq '2' and ContentChannelId eq 43",
+      $orderby: "StartDateTime desc",
       $top: "6",
       loadAttributes: "simple",
     }
@@ -56,7 +56,7 @@ const getAuthorDetails = async (personId: string) => {
   );
 
   // Get articles by the author
-  const authorArticles = await fetchArticlesByAttributeValue(personAliasGuid);
+  const authorArticles = await fetchAuthorArticles(personAliasGuid);
 
   // Get the author's social links
   const socialLinks = [
@@ -80,7 +80,7 @@ const getAuthorDetails = async (personId: string) => {
         return {
           title: article.title,
           readTime: Math.round(article.content.split(" ").length / 200),
-          publishDate: format(new Date(article?.createdDateTime), "d MMM yyyy"),
+          publishDate: format(new Date(article?.startDateTime), "d MMM yyyy"),
           coverImage: createImageUrlFromGuid(
             article.attributeValues?.image?.value
           ),
