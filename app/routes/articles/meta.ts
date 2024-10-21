@@ -13,7 +13,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   return [
-    { title: data.title },
+    { title: `${data.title} | Christ Fellowship Church` },
     { name: "description", content: data.summary },
   ];
 };

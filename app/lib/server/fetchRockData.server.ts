@@ -11,21 +11,35 @@ export const fetchRockData = async (
   endpoint: string,
   queryParams: Record<string, string>
 ) => {
-  const queryString = new URLSearchParams(queryParams).toString();
-  const url = `${baseUrl}${endpoint}?${queryString}`;
+  try {
+    const queryString = new URLSearchParams(queryParams).toString();
+    const url = `${baseUrl}${endpoint}?${queryString}`;
 
-  const res = await fetch(url, {
-    headers: {
-      ...defaultHeaders,
-    },
-  });
+    const res = await fetch(url, {
+      headers: {
+        ...defaultHeaders,
+      },
+    });
 
-  const data = await res
-    .json()
-    .then((data) => normalize(data))
-    .then((data: any) => (Array.isArray(data) ? data[0] : data));
+    if (!res.ok) {
+      const errorDetails = await res.text();
+      throw new Error(
+        `⚠️ Error Fetching Rock Data status: ${res.status}, details: ${errorDetails}, path: ${url}`
+      );
+    }
 
-  return data;
+    const data = await res
+      .json()
+      .then((data) => normalize(data))
+      .then((data: any) =>
+        Array.isArray(data) && data?.length === 1 ? data[0] : data
+      ); // if only one item, return it directly
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching rock data:", error);
+    throw error;
+  }
 };
 
 export const attributeIsImage = ({
