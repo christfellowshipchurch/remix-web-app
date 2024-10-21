@@ -6,15 +6,8 @@ const tabStyles =
 
 const tabContentStyles = "flex flex-col";
 
-type AuthorTabsProps = {
-  articles: {
-    title: string;
-    readTime: number;
-    publishDate: string;
-    coverImage: string;
-    summary: string;
-    url: string;
-  }[];
+export type AuthorTabsProps = {
+  articles: AuthorArticleProps[];
   books?: AuthorArticleProps[];
   podcasts?: AuthorArticleProps[];
 };

@@ -2,6 +2,8 @@ import { json, LoaderFunction } from "@remix-run/node";
 import { fetchRockData } from "~/lib/server/fetchRockData.server";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/loader";
+import { AuthorArticleProps } from "./components/author-content";
+import { format } from "date-fns";
 
 type SocialMedia = {
   type: string;
@@ -16,14 +18,7 @@ export type LoaderReturnType = {
     bio: string;
     jobTitle: string;
     socialLinks: SocialMedia[];
-    publications: {
-      title: string;
-      readTime: number;
-      publishDate: string;
-      coverImage: string;
-      summary: string;
-      url: string;
-    };
+    publications: AuthorArticleProps[];
   };
 };
 
@@ -42,6 +37,7 @@ export const fetchArticlesByAttributeValue = async (
     {
       attributeKey: "Author",
       value: personAliasGuid,
+      $top: "6",
       loadAttributes: "simple",
     }
   );
@@ -80,7 +76,18 @@ const getAuthorDetails = async (personId: string) => {
       authorId: personId,
       jobTitle: authorData?.attributeValues?.jobTitle?.value,
       socialLinks: socialLinks,
-      publications: authorArticles,
+      publications: authorArticles.map((article: any) => {
+        return {
+          title: article.title,
+          readTime: Math.round(article.content.split(" ").length / 200),
+          publishDate: format(new Date(article?.createdDateTime), "d MMM yyyy"),
+          coverImage: createImageUrlFromGuid(
+            article.attributeValues?.image?.value
+          ),
+          summary: article.attributeValues?.summary?.value,
+          url: article.attributeValues?.url?.value,
+        };
+      }),
     },
   };
 };

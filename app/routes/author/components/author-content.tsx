@@ -26,19 +26,19 @@ export function AuthorArticle({
   return (
     <Link
       to={`/articles/${url}`}
-      className="flex flex-col-reverse gap-y-4 border-b-2 border-neutral-300 py-4 hover:bg-neutral-100 sm:grid sm:grid-cols-3"
+      className="flex flex-col-reverse gap-y-4 border-b-2 lg:gap-x-2 xl:gap-x-0 border-neutral-300 py-4 hover:bg-neutral-100 lg:grid lg:grid-cols-3"
     >
       <div className="flex flex-col gap-2 sm:col-span-2">
         <h2 className="text-2xl font-semibold">{title}</h2>
         <div className="flex gap-2 text-sm font-light text-neutral-600">
           <p>{publishDate}</p> <p>•</p> <p>{`${readTime} min read`}</p>
         </div>
-        <p className="font-light">{summary}</p>
+        <p className="font-light lg:max-w-[380px]">{summary}</p>
       </div>
       {coverImage && coverImage?.length > 0 && (
         <div className="relative h-44 w-full overflow-hidden rounded-lg sm:col-span-1 sm:h-32">
           <img
-            src={`${coverImage[0]}&width=500`}
+            src={`${coverImage}&width=500`}
             style={{ objectFit: "cover" }}
             alt={`Author Article - ${title}`}
             className="size-full"

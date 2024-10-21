@@ -1,6 +1,7 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import ShareLinks from "~/components/share-links/share-links.component";
 import { CircleLoader } from "~/primitives/loaders/circle-loader.primitive";
+import { AuthorArticleProps } from "../components/author-content";
 
 type SocialMedia = {
   type: string;
@@ -14,14 +15,7 @@ type AuthorProps = {
     bio: string;
     jobTitle: string;
     socialLinks: SocialMedia[];
-    publications: {
-      title: string;
-      readTime: number;
-      publishDate: string;
-      coverImage: string;
-      summary: string;
-      url: string;
-    };
+    publications: AuthorArticleProps[];
   };
 };
 
@@ -68,7 +62,7 @@ export function AuthorBioMobile({
       <div className="flex items-center gap-4">
         <Avatar.Root>
           <Avatar.Image
-            className="size-20 rounded-full"
+            className="w-32 rounded-full"
             src={profilePhoto}
             alt={fullName}
           />
