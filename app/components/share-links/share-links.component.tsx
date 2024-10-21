@@ -1,7 +1,7 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import { useLoaderData, useLocation } from "@remix-run/react";
 import CopyLink from "./copy-link.component";
-import { CircleLoader } from "~/primitives/loaders/circle-loader.primitive";
+import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
 
 import shareIcon from "~/assets/icons/share.svg";
 import linkedInIcon from "~/assets/icons/indeed.svg";
