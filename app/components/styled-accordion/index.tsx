@@ -26,7 +26,7 @@ const StyledAccordion = ({ data, bg }: AccordionDataType) => {
             value={`item-${index + 1}`}
           >
             <Accordion.Header className="AccordionHeader flex py-5 text-lg font-bold">
-              <Accordion.Trigger className="AccordionTrigger inline-flex w-full items-center justify-between">
+              <Accordion.Trigger className="AccordionTrigger inline-flex w-full text-start items-center justify-between">
                 {item?.title}
                 <ChevronDownIcon className="AccordionChevron" aria-hidden />
               </Accordion.Trigger>
