@@ -1,6 +1,6 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import { cva, VariantProps } from "class-variance-authority";
-import { CircleLoader } from "~/primitives/loaders/circle-loader.primitive";
+import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
 
 export const CardAuthor = ({
   name,

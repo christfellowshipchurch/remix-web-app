@@ -4,6 +4,7 @@ import { fetchRockData, getImages } from "~/lib/server/fetchRockData.server";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
 import { createImageUrlFromGuid } from "~/lib/utils";
+import { getRelatedArticlesByContentItem } from "~/lib/server/fetchRelatedArticles.server";
 
 export type LoaderReturnType = {
   hostUrl: string;
@@ -14,6 +15,11 @@ export type LoaderReturnType = {
   author: AuthorProps;
   publishDate: string;
   readTime: number;
+  relatedArticles?: {
+    tag: string;
+    tagId: string;
+    articles: any[];
+  };
 };
 
 const fetchArticleData = async (articlePath: string) => {
@@ -39,7 +45,7 @@ export const fetchAuthorData = async ({ authorId }: { authorId: string }) => {
   });
 };
 
-const getAuthorDetails = async (authorId: string) => {
+export const getAuthorDetails = async (authorId: string) => {
   const { personId } = await fetchAuthorId(authorId);
   const authorData = await fetchAuthorData({ authorId: personId });
 
@@ -67,13 +73,15 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const { title, content, createdDateTime, attributeValues, attributes } =
+  const { guid, title, content, createdDateTime, attributeValues, attributes } =
     articleData;
 
-  const coverImage = await getImages({ attributeValues, attributes });
+  const coverImage = getImages({ attributeValues, attributes });
   const { summary, author } = attributeValues;
 
   const authorDetails = await getAuthorDetails(author.value);
+
+  const relatedArticles = await getRelatedArticlesByContentItem(guid);
 
   const pageData: LoaderReturnType = {
     hostUrl: process.env.HOST_URL || "host-url-not-found",
@@ -84,6 +92,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     author: authorDetails,
     publishDate: format(new Date(createdDateTime), "d MMM yyyy"),
     readTime: Math.round(content.split(" ").length / 200),
+    relatedArticles,
   };
 
   return json<LoaderReturnType>(pageData);
