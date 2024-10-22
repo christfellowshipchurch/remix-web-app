@@ -1,7 +1,10 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { camelCase } from "lodash";
 import invariant from "tiny-invariant";
 import {
   fetchCampusData,
+  fetchComingUpTitle,
+  fetchComingUpChildren,
   fetchPastorData,
   fetchPastorIdByAlias,
   fetchWeekdaySchedules,
@@ -11,6 +14,15 @@ import { createImageUrlFromGuid } from "~/lib/utils";
 export type dayTimes = {
   day: string;
   hour: string[];
+};
+
+export type ContentItem = {
+  title: string;
+  attributeValues: {
+    summary: { value: string };
+    image: { value: string };
+    url: { value: string };
+  };
 };
 
 export type LoaderReturnType = {
@@ -23,6 +35,15 @@ export type LoaderReturnType = {
     image: string;
   };
   city: string;
+  comingUpSoon: {
+    title: string;
+    cards: {
+      title: string;
+      description: string;
+      image: string;
+      url: string;
+    }[];
+  };
   facebook: string;
   mapLink: string;
   name: string;
@@ -59,6 +80,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     location,
     leaderPersonAliasId,
   } = data;
+
+  // TODO: Not completely accurate
+  const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
+  // Get Coming Up Soon Data
+  const comingUpChildren = await fetchComingUpChildren(comingUpSoonId);
+  const comingUpChildrenTrimmed = comingUpChildren.slice(0, 3);
+  const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
 
   const {
     campusImage,
@@ -106,6 +134,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       image: createImageUrlFromGuid(pastorData?.photo?.guid),
     },
     city: location?.city,
+    comingUpSoon: {
+      title: comingUpTitle,
+      cards: comingUpChildrenTrimmed.map((child: ContentItem) => {
+        return {
+          title: child?.title,
+          description: child?.attributeValues?.summary?.value,
+          image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
+          url: child.attributeValues?.url?.value,
+        };
+      }),
+    },
     facebook,
     mapLink: mapLink?.value,
     name,

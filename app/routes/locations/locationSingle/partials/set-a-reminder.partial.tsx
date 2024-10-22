@@ -1,9 +1,18 @@
-import SetAReminderModal from "~/components/modals/set-a-reminder";
-import Button from "~/primitives/button";
-import Modal from "~/primitives/Modal";
+import { useLoaderData } from "@remix-run/react";
 import Video from "~/primitives/Video";
+import { LoaderReturnType } from "../loader";
+import { camelCase } from "lodash";
+import { setReminderVideos } from "../locations-single.data";
+import {
+  CfEveywhereSetReminder,
+  DefaultSetReminder,
+} from "./reminder-blocks.partial";
 
 export const SetAReminder = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
+  const setReminderVideo =
+    setReminderVideos[camelCase(name) as keyof typeof setReminderVideos];
+
   return (
     <div
       className="flex w-full justify-center bg-[#F5F5F7] py-16 lg:py-20"
@@ -20,85 +29,20 @@ export const SetAReminder = () => {
             reminder. Here’s how to do it.
           </p>
         </div>
-        <div className="flex flex-col items-center gap-8 lg:mx-8 lg:flex-row lg:items-start xl:gap-20">
-          <div className="mt-8 w-[90vw] overflow-hidden rounded-lg md:w-[80vw] lg:mt-0 lg:max-w-[760px] xl:w-[820px]">
-            {/* TODO: Setup Wistia Videos */}
-            <Video wistiaId="hokgxn0k8r" className="rounded-lg" />
-          </div>
-          {/* Desktop */}
-          <div className="hidden h-full flex-col justify-center gap-6 lg:flex">
-            <div className="flex max-w-[280px] items-start gap-5">
-              <img
-                src="/icons/cotton-candy-pencil.svg"
-                alt="icon"
-                width={28}
-                height={28}
-              />
-              <div className="flex flex-col">
-                <h3 className="text-xl font-bold leading-5">Step 1</h3>
-                <p>
-                  Fill out your information and select the service you plan to
-                  attend.
-                </p>
-              </div>
+        <div className="flex flex-col items-center gap-8 lg:mx-8 lg:flex-row xl:gap-20">
+          {name !== "Online (CF Everywhere)" && (
+            <div className="mt-8 w-[90vw] overflow-hidden rounded-lg md:w-[80vw] lg:mt-0 lg:max-w-[760px] xl:w-[820px]">
+              {/* TODO: Setup Wistia Videos */}
+              <Video wistiaId={setReminderVideo} className="rounded-lg" />
             </div>
-            <div className="flex max-w-[280px] items-start gap-5">
-              <img
-                src="/icons/cotton-candy-bell.svg"
-                alt="icon"
-                width={28}
-                height={28}
-              />
-              <div className="flex flex-col">
-                <h3 className="text-xl font-bold leading-5">Step 2</h3>
-                <p>Receive a friendly reminder so you don’t miss service.</p>
-              </div>
-            </div>
-            <div className="flex max-w-[280px] items-start gap-5">
-              <img
-                src="/icons/cotton-candy-bible.svg"
-                alt="icon"
-                width={28}
-                height={28}
-              />
-              <div className="flex flex-col">
-                <h3 className="text-xl font-bold leading-5">Step 3</h3>
-                <p>
-                  Attend a Sunday service and start living the life you were
-                  created for.
-                </p>
-              </div>
-            </div>
-            {/* TODO: Add On Clicks */}
-            <Modal>
-              <Modal.Button asChild>
-                <Button
-                  intent="secondary"
-                  size="sm"
-                  className="ml-[47px] mt-2 hidden h-auto w-[170px] rounded-lg lg:block"
-                >
-                  Set a Reminder
-                </Button>
-              </Modal.Button>
-              <Modal.Content title="Modal Title">
-                <SetAReminderModal />
-              </Modal.Content>
-            </Modal>
-          </div>
-          {/* Mobile */}
-          <Modal>
-            <Modal.Button asChild>
-              <Button
-                intent="primary"
-                className="h-auto w-[90vw] rounded-lg md:w-[360px] lg:hidden"
-              >
-                Set a Reminder
-              </Button>
-            </Modal.Button>
-            <Modal.Content title="Modal Title">
-              <SetAReminderModal />
-            </Modal.Content>
-          </Modal>
+          )}
+          {name === "Online (CF Everywhere)" ? (
+            // CF Everywhere
+            <CfEveywhereSetReminder />
+          ) : (
+            // Other Locations
+            <DefaultSetReminder />
+          )}
         </div>
       </div>
     </div>
