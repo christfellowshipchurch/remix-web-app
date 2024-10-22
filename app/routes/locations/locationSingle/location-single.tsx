@@ -5,11 +5,11 @@ import { LoaderReturnType } from "./loader";
 import { LocationsHero } from "./partials/hero.partial";
 import { CampusInfo } from "./partials/campus-info.partial";
 import { SetAReminder } from "./partials/set-a-reminder.partial";
-import { AtThisLocation } from "./partials/at-this-location.partial";
 import { Testimonials } from "./partials/testimonials.partial";
 import { LocationFAQ } from "./partials/faq.partial";
 import { testimonialData } from "./locations-single.data";
 import { ComingUpSoon } from "./partials/coming-up-soon.partial";
+import { LocationBlock } from "./partials/location-block.partial";
 
 export function LocationSinglePage() {
   const { url } = useLoaderData<LoaderReturnType>();
@@ -28,7 +28,7 @@ export function LocationSinglePage() {
             : testimonialData.default
         }
       />
-      <AtThisLocation />
+      <LocationBlock />
       <ComingUpSoon />
       <LocationFAQ />
     </div>
