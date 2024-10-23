@@ -59,11 +59,6 @@ export const testimonialData = {
 const headerData = [
   {
     name: "Palm Beach Gardens",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/a2d8ff303071438c901c358dc99d9c82.mp4",
@@ -75,11 +70,6 @@ const headerData = [
   },
   {
     name: "Port St. Lucie",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/b7c69eddef263f8642c3cf6a40119da6.mp4",
@@ -91,11 +81,6 @@ const headerData = [
   },
   {
     name: "Boynton Beach",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/dfdb08cf10f9fadfcfd9d121eb6c42bc.mp4",
@@ -107,11 +92,6 @@ const headerData = [
   },
   {
     name: "Belle Glade",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/0f8b817c7df7a8da80d2c6f87010f071.mp4",
@@ -123,11 +103,6 @@ const headerData = [
   },
   {
     name: "Downtown West Palm Beach",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/1d08e68f264c1e3f0cf3af7d7aa66381.mp4",
@@ -139,11 +114,6 @@ const headerData = [
   },
   {
     name: "Royal Palm Beach",
-    primaryButton: {
-      modal: "SetReminder",
-      call: "Set a Reminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/b47e8645abe7867dd93f49d8659ae7a4.mp4",
@@ -154,11 +124,6 @@ const headerData = [
   },
   {
     name: "Jupiter",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/7303cac0c27c67523dd7f79bfc1c1127.mp4",
@@ -170,11 +135,6 @@ const headerData = [
   },
   {
     name: "Stuart",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/cd692559bc51a345d790b4cb20f0d570.mp4",
@@ -186,11 +146,6 @@ const headerData = [
   },
   {
     name: "Vero Beach",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/5949fa11ef3e52831f37aa37964eea62.mp4",
@@ -202,11 +157,6 @@ const headerData = [
   },
   {
     name: "Riviera Beach",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/ab8b6ebede5bb73ef96e0d3daa0bb5ae.mp4",
@@ -218,11 +168,6 @@ const headerData = [
   },
   {
     name: "Boca Raton",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/cae05954d1c14267bad9342bf65642bd.mp4",
@@ -234,11 +179,6 @@ const headerData = [
   },
   {
     name: "Okeechobee",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/df01e5a40919c9bb9c43624af6bcde5e.mp4",
@@ -250,11 +190,6 @@ const headerData = [
   },
   {
     name: "Trinity",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/fec8203d81f5a4982e2196cce1bd27e9.mp4",
@@ -266,11 +201,6 @@ const headerData = [
   },
   {
     name: "Westlake",
-    primaryButton: {
-      call: "Set a Reminder",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/fa7adf01b9dfec9d86eba123b6c2e3f8.mp4",
@@ -280,11 +210,6 @@ const headerData = [
   },
   {
     name: "Online (CF Everywhere)",
-    primaryButton: {
-      call: "Join Us Online",
-      action: "https://www.youtube.com/user/christfellowship",
-      newTab: true,
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/a4bd8b00db57ac41a7feda8ac3d3117b.mp4",
@@ -294,16 +219,6 @@ const headerData = [
   },
   {
     name: "Christ Fellowship Español Palm Beach Gardens",
-    primaryButton: {
-      call: "Recuérdame",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
-    secondaryButton: {
-      call: "Conéctate",
-      modal: "ConnectCardModal",
-      newTab: true,
-    },
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/efbb9c66ac0701d5c012282d10c4c0ef.mp4",
@@ -314,16 +229,7 @@ const headerData = [
   },
   {
     name: "Christ Fellowship Español Royal Palm Beach",
-    primaryButton: {
-      call: "Recuérdame",
-      modal: "SetReminder",
-      id: "set-reminder",
-    },
-    secondaryButton: {
-      call: "Conéctate",
-      modal: "ConnectCardModal",
-      newTab: true,
-    },
+
     backgroundVideo: {
       mobile:
         "https://embed.wistia.com/deliveries/5383e69f71e195050df7b6cd778f8ab4.mp4",
@@ -352,69 +258,23 @@ const setReminderVideos = {
   iglesiaRoyalPalmBeach: "nyx9edzvy4",
 };
 
-const setReminderData = {
-  title: "Set a Reminder for an Upcoming Service",
-  subtitle:
-    "Attending church for the first time has never been easier. We’ve created a simple way for you to schedule a visit and receive a reminder. Here’s how to do it.",
-  cardColor: "primary",
-  cards: [
-    {
-      title: "Step 1",
-      description:
-        "Fill out your information and select the service you plan to attend. ",
-      icon: "pen",
-    },
-    {
-      title: "Step 2",
-      description: "Receive a friendly reminder so you don’t miss service.",
-      icon: "notification",
-    },
-    {
-      title: "Step 3",
-      description:
-        "Attend a Sunday service and start living the life you were created for.",
-      icon: "bible",
-    },
-  ],
-};
-
-const setReminderEspanolData = {
-  title: "Establece un recordatorio para el próximo servicio",
-  subtitle:
-    "Atender a la iglesia por primera vez no es fácil. Es por esto que hemos creado una forma sencilla para que puedas programar una visita y recibir un recordatorio. Aquí te explicamos cómo hacerlo.",
-  cardColor: "primary",
-  cards: [
-    {
-      title: "Paso 1",
-      description:
-        "Completa tu información y selecciona el servicio al que planeas asistir.",
-      icon: "pen",
-    },
-    {
-      title: "Paso 2",
-      description: "Recibe un recordatorio para no perderte el servicio.",
-      icon: "notification",
-    },
-    {
-      title: "Paso 3",
-      description:
-        "Asiste a un servicio de domingo y comienza a vivir la vida para la que fuiste creado.",
-      icon: "bible",
-    },
-  ],
-};
-
 const whatToExpectData = (name: string) => {
+  if (name.includes("Espanol")) {
+    return {
+      title: `¿Qué puedo esperar?`,
+      htmlContent: `En Christ Fellowship Español puedes ser parte de nuestros servicios que cuentan con música y espacios de adoración edificantes, mensajes alentadores de nuestros pastores, programación especial para tu familia y oportunidades para encontrar personas con quienes puedes caminar por la vida y hacer comunidad durante toda la semana—¡todo comienza aquí!`,
+      linkTitle: "Mira lo que puedes esperar aquí",
+    };
+  }
+
   return {
-    name,
-    title: `What to Expect at ${
-      name === "Cf Everywhere" ? "Christ Fellowship Everywhere" : name
-    }`,
+    title: `What to Expect?`,
     htmlContent: `${
       name === "Cf Everywhere"
         ? "Here at Christ Fellowship Everywhere"
         : "Here at Christ Fellowship Church in " + name
     }, you can expect to experience church services with uplifting worship music, encouraging messages from our pastors, special programming for your family, and opportunities for you to find people to do life with all throughout the week—it all starts here!`,
+    linkTitle: "See what to expect here!",
   };
 };
 
@@ -966,11 +826,4 @@ const locationBlockData = (campus: string) => {
   }
 };
 
-export {
-  headerData,
-  locationBlockData,
-  setReminderVideos,
-  setReminderData,
-  setReminderEspanolData,
-  whatToExpectData,
-};
+export { headerData, locationBlockData, setReminderVideos, whatToExpectData };

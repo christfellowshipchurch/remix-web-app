@@ -3,7 +3,6 @@ import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
 
 const PastorCard = () => {
-  // address, campusInstagram
   const {
     street1,
     street2,
@@ -20,6 +19,7 @@ const PastorCard = () => {
     facebook,
   } = useLoaderData<LoaderReturnType>();
   const pastorCardBottom = url === "cf-everywhere" ? "-100px" : "-380px";
+  const cfe = url.includes("iglesia");
 
   return (
     <>
@@ -66,7 +66,9 @@ const PastorCard = () => {
                     />
                   </a>
                   <div className="mt-4 flex flex-col items-center">
-                    <h3 className="text-xl font-bold">Address</h3>
+                    <h3 className="text-xl font-bold">
+                      {cfe ? "Dirección" : "Address"}
+                    </h3>
                     <a
                       target="_blank"
                       href={mapLink}
@@ -76,7 +78,9 @@ const PastorCard = () => {
                       <br />
                       {city}, {state} {postalCode}
                     </a>
-                    <h3 className="mt-3 text-xl font-bold">Phone</h3>
+                    <h3 className="mt-3 text-xl font-bold">
+                      {cfe ? "Teléfono" : "Phone"}
+                    </h3>
                     <a
                       href="tel:561-799-7600"
                       className="text-primary underline"
@@ -90,10 +94,10 @@ const PastorCard = () => {
               <div className="mt-4 flex gap-3">
                 {/* TODO: Open Share Screen on Mobile */}
                 <Button intent="secondary" size="sm">
-                  INVITE A FRIEND
+                  {cfe ? "INVITA A UN AMIGO" : "INVITE A FRIEND"}
                 </Button>
                 <Button intent="primary" size="sm" href="/locations">
-                  MORE LOCATIONS
+                  {cfe ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
                 </Button>
               </div>
             </div>

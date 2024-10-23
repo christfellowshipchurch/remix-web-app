@@ -16,13 +16,19 @@ export const ComingUpSoon = () => {
 
   return (
     <div className="flex w-full flex-col items-center py-10 md:py-16 lg:py-20 xl:py-24 gap-12">
-      <h1 className="text-3xl font-bold text-secondary">Coming Up Soon</h1>
-      <div className="flex gap-4 justify-center max-w-[1440px]">
+      <h1 className="text-3xl font-bold text-secondary">
+        {comingUpSoon?.title}
+      </h1>
+      <div className="flex gap-4 justify-start lg:justify-center overflow-scroll w-[100vw] lg:overflow-hidden lg:max-w-[1440px]">
         {comingUpSoon?.cards?.map((card, index) => (
           <Link
             to={card.url}
             key={index}
-            style={heroBgImgStyles(card.image)}
+            style={{
+              marginLeft: index === 0 ? 16 : 0,
+              marginRight: index === comingUpSoon.cards.length - 1 ? 16 : 0,
+              ...heroBgImgStyles(card.image),
+            }}
             className="w-[90vw] lg:w-[370px] h-[450px] rounded-md flex items-center relative transition-transform duration-300 hover:-translate-y-3"
           >
             <div
@@ -40,7 +46,7 @@ export const ComingUpSoon = () => {
         ))}
       </div>
       <Button href="/events" intent="secondary" size="md">
-        See More
+        {comingUpSoon?.buttonTitle}
       </Button>
     </div>
   );

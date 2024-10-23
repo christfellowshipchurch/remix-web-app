@@ -1,3 +1,6 @@
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
+
 export type Testimonies = {
   testimonies: {
     name: string;
@@ -7,10 +10,14 @@ export type Testimonies = {
 };
 
 export const Testimonials = ({ testimonies }: Testimonies) => {
+  const { name } = useLoaderData<LoaderReturnType>();
+
   return (
     <div className="flex flex-col items-center gap-12 bg-white px-8 py-20 lg:py-28">
       <h2 className="text-center text-4xl font-bold text-secondary lg:text-start lg:text-[2.5rem]">
-        See What Others Are Saying
+        {name.includes("Español")
+          ? "Mira lo que otros dicen"
+          : "See What Others Are Saying"}
       </h2>
       <div className="flex flex-col gap-8 lg:flex-row">
         {testimonies?.map((item, index) => (
