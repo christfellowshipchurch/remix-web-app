@@ -63,7 +63,7 @@ export function Button({
   underline,
   ...props
 }: ButtonProps) {
-  if (href && target !== "_blank") {
+  if ((href && target !== "_blank") || href?.includes("http") === false) {
     return (
       <Link to={href}>
         <button
@@ -74,7 +74,7 @@ export function Button({
         </button>
       </Link>
     );
-  } else if (href && target === "_blank") {
+  } else if ((href && target === "_blank") || href?.includes("http")) {
     return (
       <a href={href} target="_blank">
         <button
