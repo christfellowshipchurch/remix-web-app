@@ -49,20 +49,26 @@ export interface ButtonProps
     VariantProps<typeof button> {
   underline?: boolean;
   href?: string;
+  target?: string;
   onClick?: () => void;
 }
 
 export function Button({
   className,
+  target,
   intent,
+  href,
   onClick,
   size,
   underline,
   ...props
 }: ButtonProps) {
-  if (props?.href) {
+  if (href) {
     return (
-      <Link to={props?.href}>
+      <Link
+        to={href}
+        target={target ? target : href?.includes("http") ? "_blank" : ""}
+      >
         <button
           className={twMerge(button({ intent, size, className, underline }))}
           {...props}
