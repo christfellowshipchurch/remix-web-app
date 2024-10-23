@@ -49,20 +49,23 @@ export interface ButtonProps
     VariantProps<typeof button> {
   underline?: boolean;
   href?: string;
+  target?: string;
   onClick?: () => void;
 }
 
 export function Button({
   className,
+  target,
   intent,
+  href,
   onClick,
   size,
   underline,
   ...props
 }: ButtonProps) {
-  if (props?.href) {
+  if (href && target !== "_blank") {
     return (
-      <Link to={props?.href}>
+      <Link to={href}>
         <button
           className={twMerge(button({ intent, size, className, underline }))}
           {...props}
@@ -70,6 +73,17 @@ export function Button({
           {props.children}
         </button>
       </Link>
+    );
+  } else if (href && target === "_blank") {
+    return (
+      <a href={href} target="_blank">
+        <button
+          className={twMerge(button({ intent, size, className, underline }))}
+          {...props}
+        >
+          {props.children}
+        </button>
+      </a>
     );
   }
 
