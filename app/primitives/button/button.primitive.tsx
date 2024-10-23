@@ -63,9 +63,12 @@ export function Button({
   underline,
   ...props
 }: ButtonProps) {
-  if ((href && target !== "_blank") || href?.includes("http") === false) {
+  if (href) {
     return (
-      <Link to={href}>
+      <Link
+        to={href}
+        target={target ? target : href?.includes("http") ? "_blank" : ""}
+      >
         <button
           className={twMerge(button({ intent, size, className, underline }))}
           {...props}
@@ -73,17 +76,6 @@ export function Button({
           {props.children}
         </button>
       </Link>
-    );
-  } else if ((href && target === "_blank") || href?.includes("http")) {
-    return (
-      <a href={href} target="_blank">
-        <button
-          className={twMerge(button({ intent, size, className, underline }))}
-          {...props}
-        >
-          {props.children}
-        </button>
-      </a>
     );
   }
 
