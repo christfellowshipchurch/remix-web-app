@@ -10,9 +10,11 @@ import { LocationFAQ } from "./partials/faq.partial";
 import { testimonialData } from "./locations-single.data";
 import { ComingUpSoon } from "./partials/coming-up-soon.partial";
 import { LocationBlock } from "./partials/location-block.partial";
+import { TodaLaSemana } from "./partials/spanish/toda-la-semana.partial";
 
 export function LocationSinglePage() {
-  const { url } = useLoaderData<LoaderReturnType>();
+  const { name } = useLoaderData<LoaderReturnType>();
+  const cfe = name?.includes("Español");
 
   return (
     <div className="w-full">
@@ -21,14 +23,14 @@ export function LocationSinglePage() {
       <SetAReminder />
       <Testimonials
         testimonies={
-          url === "cf-everywhere"
+          name === "Online (CF Everywhere)"
             ? testimonialData.cfEverywhere
-            : url.includes("iglesia")
+            : cfe
             ? testimonialData.españolCampuses
             : testimonialData.default
         }
       />
-      <LocationBlock />
+      {cfe ? <TodaLaSemana /> : <LocationBlock />}
       <ComingUpSoon />
       <LocationFAQ />
     </div>
