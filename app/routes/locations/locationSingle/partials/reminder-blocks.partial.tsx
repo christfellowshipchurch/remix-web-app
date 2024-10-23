@@ -1,21 +1,22 @@
+import { useLoaderData } from "@remix-run/react";
 import SetAReminderModal from "~/components/modals/set-a-reminder";
 import Button from "~/primitives/button";
 import Modal from "~/primitives/Modal";
+import { LoaderReturnType } from "../loader";
 
 export const CfEveywhereSetReminder = () => {
-  // TODO: Update icons to white versions
   const stepsData = [
     {
-      icon: "/icons/cotton-candy-pencil.svg",
+      icon: "/icons/white-pencil.svg",
       description:
         "Fill out your information and select the service you plan to attend.",
     },
     {
-      icon: "/icons/cotton-candy-pencil.svg",
+      icon: "/icons/white-bell.svg",
       description: "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: "/icons/cotton-candy-pencil.svg",
+      icon: "/icons/white-bible.svg",
       description:
         "Attend a Sunday service and start living the life you were created for.",
     },
@@ -52,11 +53,12 @@ export const CfEveywhereSetReminder = () => {
               Set a Reminder
             </Button>
           </Modal.Button>
-          <Modal.Content title="Modal Title">
+          <Modal.Content title="Set a Reminder">
             <SetAReminderModal />
           </Modal.Content>
         </Modal>
       </div>
+
       {/* Mobile */}
       <div className="flex flex-col items-center text-center lg:hidden gap-6 mt-8">
         {stepsData.map((step, index) => (
@@ -81,7 +83,7 @@ export const CfEveywhereSetReminder = () => {
             Set a Reminder
           </Button>
         </Modal.Button>
-        <Modal.Content title="Modal Title">
+        <Modal.Content title="Set a Reminder">
           <SetAReminderModal />
         </Modal.Content>
       </Modal>
@@ -90,32 +92,41 @@ export const CfEveywhereSetReminder = () => {
 };
 
 export const DefaultSetReminder = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
+  const cfe = name?.includes("Español");
   const stepsData = [
     {
       icon: "/icons/cotton-candy-pencil.svg",
-      description:
-        "Fill out your information and select the service you plan to attend.",
+      description: cfe
+        ? "Completa tu información y selecciona el servicio al que planeas asistir."
+        : "Fill out your information and select the service you plan to attend.",
     },
     {
       icon: "/icons/cotton-candy-pencil.svg",
-      description: "Receive a friendly reminder so you don’t miss service.",
+      description: cfe
+        ? "Recibe un recordatorio para no perderte el servicio."
+        : "Receive a friendly reminder so you don’t miss service.",
     },
     {
       icon: "/icons/cotton-candy-pencil.svg",
-      description:
-        "Attend a Sunday service and start living the life you were created for.",
+      description: cfe
+        ? "Asiste a un servicio de domingo y comienza a vivir la vida para la que fuiste creado."
+        : "Attend a Sunday service and start living the life you were created for.",
     },
   ];
+  const title = cfe ? "Recuérdame" : "Set a Reminder";
 
   return (
     <>
       {/* Desktop */}
       <div className="hidden h-full flex-col justify-center gap-6 lg:flex">
         {stepsData.map((step, index) => (
-          <div className="flex max-w-[280px] items-start gap-5">
+          <div key={index} className="flex max-w-[280px] items-start gap-5">
             <img src={step.icon} alt="icon" width={28} height={28} />
             <div className="flex flex-col">
-              <h3 className="text-xl font-bold leading-5">Step {index + 1}</h3>
+              <h3 className="text-xl font-bold leading-5">
+                {cfe ? "Paso" : "Step"} {index + 1}
+              </h3>
               <p>{step.description}</p>
             </div>
           </div>
@@ -128,14 +139,15 @@ export const DefaultSetReminder = () => {
               size="sm"
               className="ml-[47px] mt-2 hidden h-auto w-[170px] rounded-lg lg:block"
             >
-              Set a Reminder
+              {title}
             </Button>
           </Modal.Button>
-          <Modal.Content title="Modal Title">
+          <Modal.Content title={title}>
             <SetAReminderModal />
           </Modal.Content>
         </Modal>
       </div>
+
       {/* Mobile */}
       <Modal>
         <Modal.Button asChild>
@@ -143,10 +155,10 @@ export const DefaultSetReminder = () => {
             intent="primary"
             className="h-auto w-[90vw] mt-4 rounded-lg md:w-[360px] lg:hidden"
           >
-            Set a Reminder
+            {title}
           </Button>
         </Modal.Button>
-        <Modal.Content title="Modal Title">
+        <Modal.Content title={title}>
           <SetAReminderModal />
         </Modal.Content>
       </Modal>

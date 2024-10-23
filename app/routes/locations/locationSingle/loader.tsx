@@ -43,6 +43,7 @@ export type LoaderReturnType = {
       image: string;
       url: string;
     }[];
+    buttonTitle: string;
   };
   facebook: string;
   mapLink: string;
@@ -81,9 +82,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     leaderPersonAliasId,
   } = data;
 
-  // TODO: Not completely accurate
+  // TODO: Order is not accurate
   const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
-  // Get Coming Up Soon Data
   const comingUpChildren = await fetchComingUpChildren(comingUpSoonId);
   const comingUpChildrenTrimmed = comingUpChildren.slice(0, 3);
   const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
@@ -144,6 +144,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
           url: child.attributeValues?.url?.value,
         };
       }),
+      buttonTitle: name.includes("Español") ? "Ver Más" : "See More",
     },
     facebook,
     mapLink: mapLink?.value,

@@ -9,7 +9,7 @@ export const LocationFAQ = () => {
   const cfe = name.includes("Español");
 
   return (
-    <div className="flex flex-col items-center gap-14 bg-[#F5F5F7] pb-24 pt-14">
+    <div className="flex flex-col px-4 items-center gap-14 bg-[#F5F5F7] pb-24 pt-14">
       <h2 className=" max-w-[90vw] text-center text-[2rem] font-bold text-secondary">
         {cfe ? `Preguntas Frequentes` : `Frequently Asked Questions`}
       </h2>
