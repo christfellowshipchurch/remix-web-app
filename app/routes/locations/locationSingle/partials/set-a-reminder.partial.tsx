@@ -14,7 +14,6 @@ export const SetAReminder = () => {
   const setReminderVideo =
     setReminderVideos[camelCase(name) as keyof typeof setReminderVideos];
 
-  console.log(camelCase(url));
   return (
     <div
       className="flex w-full justify-center bg-[#F5F5F7] py-16 lg:py-20"
