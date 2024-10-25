@@ -19,7 +19,7 @@ export function MainCampusInfo() {
   const { name } = useLoaderData<LoaderReturnType>();
 
   const expectData = whatToExpectData(startCase(name));
-  const cfe = name?.includes("Español");
+  const isEspanol = name?.includes("Español");
   const camelCaseName = camelCase(name) as
     | "palmBeachGardens"
     | "portStLucie"
@@ -64,17 +64,21 @@ export function MainCampusInfo() {
                     </div>
                   </Modal.Button>
                   <Modal.Content
-                    title={`${cfe ? "¿Qué puedo esperar?" : "What to Expect"}`}
+                    title={`${
+                      isEspanol ? "¿Qué puedo esperar?" : "What to Expect"
+                    }`}
                   >
                     {/* Add Wisita Video */}
-                    <WhatToExpectModal name={cfe ? "cfe" : camelCaseName} />
+                    <WhatToExpectModal
+                      name={isEspanol ? "cfe" : camelCaseName}
+                    />
                   </Modal.Content>
                 </Modal>
               </div>
             )}
           </div>
         </div>
-        {cfe && <TenemoMasParaTi />}
+        {isEspanol && <TenemoMasParaTi />}
       </div>
     </div>
   );
@@ -146,20 +150,22 @@ export function WaysToJoinOnlineDesktop() {
 
 export function DuringTheWeek() {
   const { name, weekdaySchedules } = useLoaderData<LoaderReturnType>();
-  const cfe = name?.includes("Español");
+  const isEspanol = name?.includes("Español");
 
   return (
     <div className="my-8 flex flex-col items-center gap-4 text-center lg:mt-0 lg:flex-row lg:items-start lg:gap-5 lg:text-start xl:gap-6">
       <div className="mx-auto w-4/5 border-t border-[#cecece] lg:hidden" />
       <h3 className="mt-12 text-[1.375rem] font-bold text-wordOfChrist md:text-2xl lg:mt-0 lg:w-36">
-        {cfe ? "Durante la Semana" : "During the Week"}
+        {isEspanol ? "Durante la Semana" : "During the Week"}
       </h3>
       <div className="flex flex-col gap-10 lg:flex-row xl:gap-14">
         {Object.entries(weekdaySchedules).map(([day, events]) => (
           <div key={day} className="flex flex-col">
             <h4 className="text-xl font-bold">
               {/* Translates day to Spanish if in Spanish page */}
-              {cfe ? weekdaySpanishTranslation(startCase(day)) : startCase(day)}
+              {isEspanol
+                ? weekdaySpanishTranslation(startCase(day))
+                : startCase(day)}
             </h4>
             {events.map((event: any, index: number) => (
               <div key={index} className="flex items-center">

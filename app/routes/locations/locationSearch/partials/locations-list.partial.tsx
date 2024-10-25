@@ -4,7 +4,7 @@ import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "@remix-run/react";
 import prisonLocationImage from "../../../assets/prison-locations.jpg";
-import { heroBgImgStyles } from "~/lib/utils";
+import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type Campus = {
   name: string;

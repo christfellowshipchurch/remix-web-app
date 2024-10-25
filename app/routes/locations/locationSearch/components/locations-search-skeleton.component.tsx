@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import "./location-search-skeleton.css";
-import { heroBgImgStyles } from "~/lib/utils";
+import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 const LocationSkeletonCard = () => {
   return (

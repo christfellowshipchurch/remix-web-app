@@ -1,6 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import { heroBgImgStyles } from "~/lib/utils";
+
 import { LoaderReturnType } from "../loader";
+import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export const ThisWeek = () => {
   const { thisWeek } = useLoaderData<LoaderReturnType>();
