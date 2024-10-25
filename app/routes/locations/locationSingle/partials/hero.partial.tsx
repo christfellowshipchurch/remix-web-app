@@ -12,7 +12,7 @@ export const LocationsHero = () => {
   const headerContent = find(headerData, { name });
   const videoSrc = headerContent?.backgroundVideo?.desktop;
 
-  const cfe = name?.includes("Español");
+  const isEspanol = name?.includes("Español");
   return (
     <div className="relative h-[780px] w-full">
       <video
@@ -41,14 +41,14 @@ export const LocationsHero = () => {
             intent="primary"
             className="w-full rounded-xl"
           >
-            {cfe
+            {isEspanol
               ? "Recuérdame"
               : name?.includes("Online")
               ? "Join Us Online"
               : "Set a Reminder"}
           </Button>
           <Button intent="white" className="rounded-xl border-0">
-            {cfe ? "Conéctate" : "Get Connected"}
+            {isEspanol ? "Conéctate" : "Get Connected"}
           </Button>
         </div>
       </div>

@@ -93,28 +93,28 @@ export const CfEveywhereSetReminder = () => {
 
 export const DefaultSetReminder = () => {
   const { name } = useLoaderData<LoaderReturnType>();
-  const cfe = name?.includes("Español");
+  const isEspanol = name?.includes("Español");
   const stepsData = [
     {
       icon: "/icons/cotton-candy-pencil.svg",
-      description: cfe
+      description: isEspanol
         ? "Completa tu información y selecciona el servicio al que planeas asistir."
         : "Fill out your information and select the service you plan to attend.",
     },
     {
       icon: "/icons/cotton-candy-pencil.svg",
-      description: cfe
+      description: isEspanol
         ? "Recibe un recordatorio para no perderte el servicio."
         : "Receive a friendly reminder so you don’t miss service.",
     },
     {
       icon: "/icons/cotton-candy-pencil.svg",
-      description: cfe
+      description: isEspanol
         ? "Asiste a un servicio de domingo y comienza a vivir la vida para la que fuiste creado."
         : "Attend a Sunday service and start living the life you were created for.",
     },
   ];
-  const title = cfe ? "Recuérdame" : "Set a Reminder";
+  const title = isEspanol ? "Recuérdame" : "Set a Reminder";
 
   return (
     <>
@@ -125,7 +125,7 @@ export const DefaultSetReminder = () => {
             <img src={step.icon} alt="icon" width={28} height={28} />
             <div className="flex flex-col">
               <h3 className="text-xl font-bold leading-5">
-                {cfe ? "Paso" : "Step"} {index + 1}
+                {isEspanol ? "Paso" : "Step"} {index + 1}
               </h3>
               <p>{step.description}</p>
             </div>

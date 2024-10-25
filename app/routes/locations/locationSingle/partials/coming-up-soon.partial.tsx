@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
-import { heroBgImgStyles } from "~/lib/utils";
+import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export const ComingUpSoon = () => {
   const { comingUpSoon } = useLoaderData<LoaderReturnType>();

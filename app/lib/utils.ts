@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { camelCase, mapKeys, mapValues } from "lodash";
 import { twMerge } from "tailwind-merge";
+import { ShareMessages } from "./types/messaging";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -40,33 +41,6 @@ export const getIdentifierType = (identifier: any) => {
   }
 
   return { type: "custom", value: identifier, query: null };
-};
-
-// due to CSS rendering issues, we needed to move these styles to a separate function to show correctly...
-export const heroBgImgStyles = (image?: string) => {
-  return {
-    backgroundImage: image?.includes("https")
-      ? `url(${image}&width=1200)`
-      : `url(${image}`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  };
-};
-
-type ShareMessages = {
-  title: string;
-  url: string;
-  shareMessages: {
-    title?: string;
-    faceBook: string;
-    twitter: string;
-    email: {
-      subject: string;
-      body: string;
-    };
-    sms: string;
-  };
 };
 
 export const shareMessaging = ({

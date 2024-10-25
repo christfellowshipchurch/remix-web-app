@@ -15,7 +15,7 @@ import { ThisWeek } from "./partials/this-week";
 
 export function LocationSinglePage() {
   const { name } = useLoaderData<LoaderReturnType>();
-  const cfe = name?.includes("Español");
+  const isEspanol = name?.includes("Español");
 
   return (
     <div className="w-full overflow-hidden">
@@ -23,16 +23,8 @@ export function LocationSinglePage() {
       <CampusInfo />
       {name === "Online (CF Everywhere)" && <ThisWeek />}
       <SetAReminder />
-      <Testimonials
-        testimonies={
-          name === "Online (CF Everywhere)"
-            ? testimonialData.cfEverywhere
-            : cfe
-            ? testimonialData.españolCampuses
-            : testimonialData.default
-        }
-      />
-      {cfe ? <TodaLaSemana /> : <LocationBlock />}
+      <Testimonials />
+      {isEspanol ? <TodaLaSemana /> : <LocationBlock />}
       <ComingUpSoon />
       <LocationFAQ />
     </div>

@@ -28,7 +28,7 @@ const DesktopPastorCard = () => {
     facebook,
   } = useLoaderData<LoaderReturnType>();
   const pastorCardBottom = url === "cf-everywhere" ? "-100px" : "-380px";
-  const cfe = url.includes("iglesia");
+  const isEspanol = url.includes("iglesia");
   const online = url === "cf-everywhere";
 
   return (
@@ -75,7 +75,7 @@ const DesktopPastorCard = () => {
                 </a>
                 <div className="mt-4 flex flex-col items-center">
                   <h3 className="text-xl font-bold">
-                    {cfe ? "Dirección" : "Address"}
+                    {isEspanol ? "Dirección" : "Address"}
                   </h3>
                   <a
                     target="_blank"
@@ -87,7 +87,7 @@ const DesktopPastorCard = () => {
                     {city}, {state} {postalCode}
                   </a>
                   <h3 className="mt-3 text-xl font-bold">
-                    {cfe ? "Teléfono" : "Phone"}
+                    {isEspanol ? "Teléfono" : "Phone"}
                   </h3>
                   <a href="tel:561-799-7600" className="text-primary underline">
                     {phoneNumber}
@@ -105,14 +105,14 @@ const DesktopPastorCard = () => {
                 }
                 size="sm"
               >
-                {cfe
+                {isEspanol
                   ? "INVITA A UN AMIGO"
                   : online
                   ? "CONTACT US"
                   : "INVITE A FRIEND"}
               </Button>
               <Button intent="primary" size="sm" href="/locations">
-                {cfe ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
+                {isEspanol ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
               </Button>
             </div>
           </div>
@@ -166,7 +166,7 @@ const MobilePastorCard = () => {
     youtube,
     facebook,
   } = useLoaderData<LoaderReturnType>();
-  const cfe = url.includes("iglesia");
+  const isEspanol = url.includes("iglesia");
   const online = url === "cf-everywhere";
   const shareMessage = {
     title: `${name} - Christ Fellowship Church`,
@@ -212,7 +212,7 @@ const MobilePastorCard = () => {
               </a>
               <div className="mt-4 flex flex-col items-center">
                 <h3 className="text-xl font-bold">
-                  {cfe ? "Dirección" : "Address"}
+                  {isEspanol ? "Dirección" : "Address"}
                 </h3>
                 <a
                   target="_blank"
@@ -224,7 +224,7 @@ const MobilePastorCard = () => {
                   {city}, {state} {postalCode}
                 </a>
                 <h3 className="mt-3 text-xl font-bold">
-                  {cfe ? "Teléfono" : "Phone"}
+                  {isEspanol ? "Teléfono" : "Phone"}
                 </h3>
                 <a href="tel:561-799-7600" className="text-primary underline">
                   {phoneNumber}
@@ -258,14 +258,14 @@ const MobilePastorCard = () => {
               }
               size="sm"
             >
-              {cfe
+              {isEspanol
                 ? "INVITA A UN AMIGO"
                 : online
                 ? "CONTACT US"
                 : "INVITE A FRIEND"}
             </Button>
             <Button intent="primary" size="sm" href="/locations">
-              {cfe ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
+              {isEspanol ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
             </Button>
           </div>
         </div>

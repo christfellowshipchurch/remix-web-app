@@ -10,7 +10,7 @@ import {
 
 export const SetAReminder = () => {
   const { name, url } = useLoaderData<LoaderReturnType>();
-  const cfe = name?.includes("Español");
+  const isEspanol = name?.includes("Español");
   const setReminderVideo =
     setReminderVideos[camelCase(name) as keyof typeof setReminderVideos];
 
@@ -22,12 +22,12 @@ export const SetAReminder = () => {
       <div className="flex max-w-[1240px] flex-col items-center lg:gap-8">
         <div className="flex flex-col items-center text-center">
           <h1 className="text-4xl font-bold text-wordOfChrist">
-            {cfe
+            {isEspanol
               ? "Establece un recordatorio para el próximo servicio"
               : "Set a Reminder for an Upcoming Service"}
           </h1>
           <p className="max-w-[90vw] pt-6 text-lg leading-6 md:max-w-[80vw] lg:max-w-[800px]">
-            {cfe
+            {isEspanol
               ? "Atender a la iglesia por primera vez no es fácil. Es por esto que hemos creado una forma sencilla para que puedas programar una visita y recibir un recordatorio. Aquí te explicamos cómo hacerlo."
               : "Attending church for the first time has never been easier. We’ve created a simple way for you to schedule a visit and receive a reminder. Here’s how to do it."}
           </p>
@@ -38,7 +38,7 @@ export const SetAReminder = () => {
               {/* TODO: Add wisita videos to Campuses in Rock*/}
               <Video
                 wistiaId={
-                  cfe
+                  isEspanol
                     ? setReminderVideos[
                         camelCase(url) as keyof typeof setReminderVideos
                       ]

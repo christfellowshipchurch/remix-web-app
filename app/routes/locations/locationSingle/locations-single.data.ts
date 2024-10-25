@@ -559,7 +559,7 @@ const CfEverywhereBlockData = [
       sources: [
         {
           __typename: "ImageMediaSource",
-          uri: "/location-pages/cf-everywhere/cf-everywhere-groups&classes.png",
+          uri: "https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/cf-everywhere-groups-classes-min.png",
         },
       ],
     },
@@ -593,7 +593,7 @@ const CfEverywhereBlockData = [
       sources: [
         {
           __typename: "ImageMediaSource",
-          uri: "/location-pages/cf-everywhere/cf-everywhere-kids.jpeg",
+          uri: "https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/cf-everywhere-kids.jpeg",
         },
       ],
     },
@@ -627,7 +627,7 @@ const CfEverywhereBlockData = [
       sources: [
         {
           __typename: "ImageMediaSource",
-          uri: "/location-pages/cf-everywhere/cf-everywhere-students.jpeg",
+          uri: "https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/cf-everywhere-students.jpeg",
         },
       ],
     },
@@ -661,7 +661,7 @@ const CfEverywhereBlockData = [
       sources: [
         {
           __typename: "ImageMediaSource",
-          uri: "/location-pages/cf-everywhere/cf-everywhere-young-adults.jpeg",
+          uri: "https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/cf-everywhere-young-adults.jpeg",
         },
       ],
     },
@@ -813,8 +813,8 @@ const CfeBlockData = [
 ];
 
 const locationBlockData = (campus: string) => {
-  const cfe = campus?.includes("Español");
-  if (cfe) return CfeBlockData;
+  const isEspanol = campus?.includes("Español");
+  if (isEspanol) return CfeBlockData;
 
   switch (campus) {
     case "Online (CF Everywhere)":

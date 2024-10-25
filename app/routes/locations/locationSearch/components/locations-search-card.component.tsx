@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { heroBgImgStyles } from "~/lib/utils";
+import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type LocationCardProps = {
   name: string;

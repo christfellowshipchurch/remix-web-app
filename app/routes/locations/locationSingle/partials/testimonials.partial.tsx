@@ -1,5 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
+import { testimonialData } from "../locations-single.data";
 
 export type Testimonies = {
   testimonies: {
@@ -9,8 +10,15 @@ export type Testimonies = {
   }[];
 };
 
-export const Testimonials = ({ testimonies }: Testimonies) => {
+export const Testimonials = () => {
   const { name } = useLoaderData<LoaderReturnType>();
+  const isEspanol = name?.includes("Español");
+  const testimonies: Testimonies["testimonies"] =
+    name === "Online (CF Everywhere)"
+      ? testimonialData.cfEverywhere
+      : isEspanol
+      ? testimonialData.españolCampuses
+      : testimonialData.default;
 
   return (
     <div className="flex flex-col items-center gap-12 bg-white px-8 py-20 lg:py-28">
