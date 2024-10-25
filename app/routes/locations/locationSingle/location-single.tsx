@@ -18,7 +18,7 @@ export function LocationSinglePage() {
   const cfe = name?.includes("Español");
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       <LocationsHero />
       <CampusInfo />
       {name === "Online (CF Everywhere)" && <ThisWeek />}

@@ -7,11 +7,12 @@ export const ComingUpSoon = () => {
   const { comingUpSoon } = useLoaderData<LoaderReturnType>();
 
   return (
-    <div className="flex w-full flex-col items-center py-10 md:py-16 lg:py-20 xl:py-24 gap-12">
-      <h1 className="text-3xl font-bold text-secondary">
+    <div className="flex w-full flex-col items-start py-10 md:py-16 lg:py-20 xl:py-24 gap-12 lg:items-center">
+      <h1 className="text-3xl text-center w-full font-bold text-secondary">
         {comingUpSoon?.title}
       </h1>
-      <div className="flex gap-4 justify-start lg:justify-center overflow-scroll w-[100vw] lg:overflow-visible lg:max-w-[1440px]">
+
+      <div className="flex gap-4 overflow-x-auto max-w-full lg:justify-center lg:items-center lg:w-full lg:overflow-visible lg:max-w-[1440px]">
         {comingUpSoon?.cards?.map((card, index) => (
           <Link
             to={card.url}
@@ -21,7 +22,7 @@ export const ComingUpSoon = () => {
               marginRight: index === comingUpSoon.cards.length - 1 ? 16 : 0,
               ...heroBgImgStyles(card.image),
             }}
-            className="w-[90vw] lg:w-[370px] h-[450px] rounded-md flex items-center relative transition-transform duration-300 hover:-translate-y-3"
+            className="w-[90vw] lg:w-[370px] h-[450px] rounded-md flex items-center relative transition-transform duration-300 hover:-translate-y-3 shrink-0"
           >
             <div
               className="absolute size-full opacity-80"
@@ -37,9 +38,12 @@ export const ComingUpSoon = () => {
           </Link>
         ))}
       </div>
-      <Button href="/events" intent="secondary" size="md">
-        {comingUpSoon?.buttonTitle}
-      </Button>
+
+      <div className="w-full flex justify-center">
+        <Button href="/events" intent="secondary" size="md">
+          {comingUpSoon?.buttonTitle}
+        </Button>
+      </div>
     </div>
   );
 };
