@@ -1,5 +1,4 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { camelCase } from "lodash";
 import invariant from "tiny-invariant";
 import {
   fetchCampusData,
@@ -25,6 +24,13 @@ export type ContentItem = {
   };
 };
 
+export type ThisWeekCard = {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+};
+
 export type LoaderReturnType = {
   additionalInfo: string[];
   campusImage: string;
@@ -35,6 +41,9 @@ export type LoaderReturnType = {
     image: string;
   };
   city: string;
+  thisWeek: {
+    cards: ThisWeekCard[];
+  };
   comingUpSoon: {
     title: string;
     cards: {
@@ -86,6 +95,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
   const comingUpChildren = await fetchComingUpChildren(comingUpSoonId);
   const comingUpChildrenTrimmed = comingUpChildren.slice(0, 3);
+  const thisWeek = await fetchComingUpChildren("8168");
   const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
 
   const {
@@ -123,6 +133,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     weekdaySchedule?.value
   );
 
+  // const thisWeekCards = []
   /** Return Page Data */
   const pageData: LoaderReturnType = {
     additionalInfo: additionalInfoFormatted,
@@ -134,6 +145,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       image: createImageUrlFromGuid(pastorData?.photo?.guid),
     },
     city: location?.city,
+    thisWeek: name.includes("Online") && {
+      thisWeek: thisWeek.reverse(),
+      cards: thisWeek.map((child: ContentItem) => {
+        return {
+          title: child?.title,
+          description: child?.attributeValues?.summary?.value,
+          image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
+          url: child.attributeValues?.url?.value,
+        };
+      }),
+    },
     comingUpSoon: {
       title: comingUpTitle,
       cards: comingUpChildrenTrimmed.map((child: ContentItem) => {

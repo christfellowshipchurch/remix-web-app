@@ -1,16 +1,6 @@
 import { Link } from "@remix-run/react";
 import "./location-search-skeleton.css";
-
-const heroBgImgStyles = (image?: string) => {
-  return {
-    backgroundImage: image?.includes("https")
-      ? `url(${image}&width=1200)`
-      : `url(${image}`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  };
-};
+import { heroBgImgStyles } from "~/lib/utils";
 
 const LocationSkeletonCard = () => {
   return (

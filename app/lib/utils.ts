@@ -41,3 +41,52 @@ export const getIdentifierType = (identifier: any) => {
 
   return { type: "custom", value: identifier, query: null };
 };
+
+// due to CSS rendering issues, we needed to move these styles to a separate function to show correctly...
+export const heroBgImgStyles = (image?: string) => {
+  return {
+    backgroundImage: image?.includes("https")
+      ? `url(${image}&width=1200)`
+      : `url(${image}`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  };
+};
+
+type ShareMessages = {
+  title: string;
+  url: string;
+  shareMessages: {
+    title?: string;
+    faceBook: string;
+    twitter: string;
+    email: {
+      subject: string;
+      body: string;
+    };
+    sms: string;
+  };
+};
+
+export const shareMessaging = ({
+  title,
+  shareMessages,
+  url,
+}: ShareMessages) => {
+  const defaultShareMessages = {
+    title: `${title}`,
+    faceBook: `Check out this article from Christ Fellowship Church!`,
+    twitter: `${title} at Christ Fellowship Church`,
+    email: {
+      subject: `${title} - Christ Fellowship Church`,
+      body: `I thought you might be interested in this article from Christ Fellowship: ${url} \n\n`,
+    },
+    sms: `I thought you might be interested in this article from Christ Fellowship: ${url}`,
+  };
+  const messages = {
+    ...defaultShareMessages,
+    ...shareMessages,
+  };
+  return messages;
+};

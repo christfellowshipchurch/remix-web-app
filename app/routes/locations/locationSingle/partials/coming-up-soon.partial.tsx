@@ -1,25 +1,17 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
+import { heroBgImgStyles } from "~/lib/utils";
 
 export const ComingUpSoon = () => {
   const { comingUpSoon } = useLoaderData<LoaderReturnType>();
-
-  const heroBgImgStyles = (image?: string) => {
-    return {
-      backgroundImage: `url(${image})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-    };
-  };
 
   return (
     <div className="flex w-full flex-col items-center py-10 md:py-16 lg:py-20 xl:py-24 gap-12">
       <h1 className="text-3xl font-bold text-secondary">
         {comingUpSoon?.title}
       </h1>
-      <div className="flex gap-4 justify-start lg:justify-center overflow-scroll w-[100vw] lg:overflow-hidden lg:max-w-[1440px]">
+      <div className="flex gap-4 justify-start lg:justify-center overflow-scroll w-[100vw] lg:overflow-visible lg:max-w-[1440px]">
         {comingUpSoon?.cards?.map((card, index) => (
           <Link
             to={card.url}

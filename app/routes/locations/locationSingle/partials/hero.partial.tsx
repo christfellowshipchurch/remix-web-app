@@ -4,16 +4,15 @@ import { headerData } from "../locations-single.data";
 import Button from "~/primitives/button";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
+import { HeroTitleSection } from "../components/hero-title-section.component";
 
 export const LocationsHero = () => {
-  // TODO: Get header video from Rock
+  // TODO: Get header videos from Rock
   const { name } = useLoaderData<LoaderReturnType>();
   const headerContent = find(headerData, { name });
   const videoSrc = headerContent?.backgroundVideo?.desktop;
 
   const cfe = name?.includes("Español");
-  // Remove "Español" from name
-  const spanishTrimmedName = name?.replace("Español", "").trim();
   return (
     <div className="relative h-[780px] w-full">
       <video
@@ -29,7 +28,7 @@ export const LocationsHero = () => {
 
       {/* Hero Content */}
       <div className="absolute top-0 flex size-full flex-col justify-between gap-4 px-4 py-8 text-white md:top-[40%] md:h-auto md:w-full md:justify-start md:px-6 lg:px-10 xl:left-1/2 xl:top-1/2 xl:w-screen xl:max-w-[1240px] xl:-translate-x-1/2 xl:-translate-y-1/2">
-        <TitleSection name={name} />
+        <HeroTitleSection name={name} />
         <div className="w-3/5 md:mt-12 md:border-t md:border-[#E7E7E7]" />
         <div className="flex w-full flex-col gap-4 md:flex-row md:pt-6">
           {/* Add onClick modals */}
@@ -53,50 +52,6 @@ export const LocationsHero = () => {
           </Button>
         </div>
       </div>
-    </div>
-  );
-};
-
-const TitleSection = ({ name }: { name: string }) => {
-  if (name.includes("Español")) {
-    const spanishLocation = name?.includes("Gardens")
-      ? "Palm Beach Gardens"
-      : "Royal Palm Beach";
-    return (
-      <div className="flex flex-col">
-        <h1 className="text-4xl font-extrabold md:text-6xl">
-          Christ Fellowship Church Español <br className="hidden md:block" /> en{" "}
-          <br className="md:hidden" />
-          {spanishLocation}
-        </h1>
-        <p className="mt-2 max-w-[320px] text-xl font-semibold md:max-w-none">
-          Una iglesia que quiere ayudarte a vivir la vida para la que fuiste
-          creado.
-        </p>
-      </div>
-    );
-  } else if (name.includes("Online")) {
-    return (
-      <div className="flex flex-col">
-        <h1 className="text-4xl font-extrabold md:text-6xl">
-          Christ Fellowship Everywhere
-        </h1>
-        <p className="mt-2 max-w-[320px] text-2xl font-semibold md:max-w-none">
-          Christ Fellowship Church Online
-        </p>
-      </div>
-    );
-  }
-  return (
-    <div className="flex flex-col">
-      <h1 className="text-4xl font-extrabold md:text-6xl">
-        Christ Fellowship Church <br className="hidden md:block" /> in{" "}
-        <br className="md:hidden" />
-        {name}
-      </h1>
-      <p className="mt-2 max-w-[320px] text-xl font-semibold md:max-w-none">
-        A church that wants to help you live the life you were created for.
-      </p>
     </div>
   );
 };

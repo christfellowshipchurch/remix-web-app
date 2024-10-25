@@ -1,5 +1,6 @@
 import ShareLinks from "~/components/share-links/share-links.component";
 import ArticleAuthor from "../components/article-author.component";
+import { heroBgImgStyles } from "~/lib/utils";
 
 export interface AuthorProps {
   fullName: string;
@@ -19,16 +20,6 @@ export interface ArticleHeroProps extends React.HTMLAttributes<HTMLElement> {
   publishDate?: string;
   readTime?: number;
 }
-
-// due to CSS rendering issues, we needed to move these styles to a separate function to show correctly...
-const heroBgImgStyles = (image?: string) => {
-  return {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  };
-};
 
 export const ArticleHero: React.FC<ArticleHeroProps> = ({
   coverImage,
