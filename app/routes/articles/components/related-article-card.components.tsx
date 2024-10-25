@@ -24,7 +24,7 @@ export function RelatedArticleCard({
         <img
           className="relative h-60 w-full sm:h-80 md:h-96 lg:h-64 lg:w-full xl:h-72 object-cover"
           src={image}
-          alt="title"
+          alt={title}
         />
         <div className="flex grow flex-col justify-between bg-white p-6">
           <div>

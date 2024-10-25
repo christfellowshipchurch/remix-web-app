@@ -30,7 +30,7 @@ export const SetAReminder = () => {
             <div className="flex max-w-[280px] items-start gap-5">
               <img
                 src="/icons/cotton-candy-pencil.svg"
-                alt="icon"
+                alt="pencil"
                 width={28}
                 height={28}
               />
@@ -45,7 +45,7 @@ export const SetAReminder = () => {
             <div className="flex max-w-[280px] items-start gap-5">
               <img
                 src="/icons/cotton-candy-bell.svg"
-                alt="icon"
+                alt="bell"
                 width={28}
                 height={28}
               />
@@ -57,7 +57,7 @@ export const SetAReminder = () => {
             <div className="flex max-w-[280px] items-start gap-5">
               <img
                 src="/icons/cotton-candy-bible.svg"
-                alt="icon"
+                alt="bible"
                 width={28}
                 height={28}
               />

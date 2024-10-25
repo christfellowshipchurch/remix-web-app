@@ -8,6 +8,7 @@ import {
 
 import "./styles/tailwind.css";
 import Navbar from "./components/navbar";
+import Footer from "./components/footer";
 
 export { ErrorBoundary } from "./error";
 
@@ -23,6 +24,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <Navbar />
         {children}
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>
