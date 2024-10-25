@@ -11,6 +11,7 @@ import { testimonialData } from "./locations-single.data";
 import { ComingUpSoon } from "./partials/coming-up-soon.partial";
 import { LocationBlock } from "./partials/location-block.partial";
 import { TodaLaSemana } from "./partials/spanish/toda-la-semana.partial";
+import { ThisWeek } from "./partials/this-week";
 
 export function LocationSinglePage() {
   const { name } = useLoaderData<LoaderReturnType>();
@@ -20,6 +21,7 @@ export function LocationSinglePage() {
     <div className="w-full">
       <LocationsHero />
       <CampusInfo />
+      {name === "Online (CF Everywhere)" && <ThisWeek />}
       <SetAReminder />
       <Testimonials
         testimonies={
