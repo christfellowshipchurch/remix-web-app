@@ -15,11 +15,11 @@ export function ErrorBoundary() {
     );
   } else if (error instanceof Error) {
     return (
-      <div>
-        <h1>Error</h1>
-        <p>{error.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error.stack}</pre>
+      <div className="p-6">
+        <h1 className="text-4xl font-bold mb-6">Error</h1>
+        <p className="text-lg italic">{error.message}</p>
+        <p className="text-lg font-bold mt-10">The stack trace is:</p>
+        <pre className="text-wrap mx-10">{error.stack}</pre>
       </div>
     );
   } else {
