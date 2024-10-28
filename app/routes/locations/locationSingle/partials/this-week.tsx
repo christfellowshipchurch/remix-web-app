@@ -15,7 +15,7 @@ export const ThisWeek = () => {
       <div className="lg:max-w-[1080px] w-full xl:max-w-[1240px] flex flex-col">
         <BigCard card={thisWeek?.cards[0]} />
         {/* Grid of Smaller Cards */}
-        <div className="grid grid-cols-4 w-full">
+        <div className="grid grid-cols-4 md:gap-4 w-full">
           {thisWeek?.cards.slice(1).map((card, index) => (
             <SmallCard key={index} card={card} />
           ))}
@@ -59,7 +59,7 @@ const SmallCard = ({ card }: { card: ThisWeekCard }) => {
         boxShadow:
           "0 10px 15px -3px rgba(0, 0, 0, 0.2),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
       }}
-      className="flex gap-4 col-span-4 bg-white overflow-hidden w-[90vw] lg:w-full md:h-24 lg:h-32 mb-4 transition-transform duration-300 hover:scale-[1.02] rounded-md"
+      className="flex col-span-4 md:col-span-2 bg-white overflow-hidden w-[90vw] lg:w-full md:h-24 lg:h-28 mb-4 transition-transform duration-300 hover:scale-[1.02] rounded-md gap-4"
     >
       <img src={card.image} className="h-full w-40 lg:w-44" />
       <div className="flex flex-col justify-center gap-1 py-2 pr-4 ">

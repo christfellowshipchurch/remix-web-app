@@ -6,6 +6,8 @@ import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
 import { WhatToExpectModal } from "~/components/modals/what-to-expect";
 import { weekdaySpanishTranslation } from "../util";
+import { FaCirclePlay } from "react-icons/fa6";
+import { RiShareBoxLine } from "react-icons/ri";
 
 /**
  * This file will include the following:
@@ -55,12 +57,7 @@ export function MainCampusInfo() {
                       <div className="font-bold italic text-primary underline">
                         {expectData?.linkTitle}
                       </div>
-                      <img
-                        src="/icons/blue-play.svg"
-                        alt="play"
-                        width={24}
-                        height={24}
-                      />
+                      <FaCirclePlay size={24} color="#0092bc" />
                     </div>
                   </Modal.Button>
                   <Modal.Content
@@ -173,12 +170,7 @@ export function DuringTheWeek() {
                   {event.time} - {event.title}
                 </p>
                 <Link to={event.url} className="pl-1">
-                  <img
-                    src="/icons/share.svg"
-                    alt="share"
-                    width={12}
-                    height={12}
-                  />
+                  <RiShareBoxLine size={12} />
                 </Link>
               </div>
             ))}

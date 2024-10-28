@@ -1,6 +1,8 @@
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { testimonialData } from "../locations-single.data";
+import { AiFillStar } from "react-icons/ai";
+import googleReviews from "~/assets/icons/google-reviews.svg";
 
 export type Testimonies = {
   testimonies: {
@@ -40,12 +42,11 @@ export const Testimonials = () => {
                 item?.region ? "lg:items-center" : "lg:items-start"
               }`}
             >
-              <img
-                src="/icons/stars.svg"
-                width={100}
-                height={20}
-                alt="5 stars"
-              />
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <AiFillStar key={i} size={28} color="#FCD757" />
+                ))}
+              </div>
               <p className={`${item?.region ? "text-center" : ""}`}>
                 {item?.description}
               </p>
@@ -54,7 +55,7 @@ export const Testimonials = () => {
               {!item?.region && (
                 <div className="relative size-[34px] lg:size-[56px]">
                   <img
-                    src="/icons/google-reviews.svg"
+                    src={googleReviews}
                     className="size-full"
                     alt="Google Reviews"
                   />

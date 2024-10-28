@@ -7,14 +7,14 @@ import shareIcon from "~/assets/icons/share.svg";
 import linkedInIcon from "~/assets/icons/indeed.svg";
 import twitterIcon from "~/assets/icons/x.svg";
 import facebookIcon from "~/assets/icons/facebook.svg";
-// import instagramIcon from "~/assets/icons/instagram.svg";
+import instagramIcon from "~/assets/icons/instagram.svg";
 
 const socialIcons = [
   { name: "Share", src: shareIcon },
   { name: "linkedIn", src: linkedInIcon },
   { name: "twitter", src: twitterIcon },
   { name: "facebook", src: facebookIcon },
-  //TODO: { name: "instagram", src: instagramIcon }, // Missing Icon from Figma/Assets
+  { name: "instagram", src: instagramIcon },
 ];
 
 type ShareLinksProps = {

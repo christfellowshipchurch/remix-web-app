@@ -3,20 +3,23 @@ import SetAReminderModal from "~/components/modals/set-a-reminder";
 import Button from "~/primitives/button";
 import Modal from "~/primitives/Modal";
 import { LoaderReturnType } from "../loader";
+import { FaRegBell } from "react-icons/fa";
+import { HiOutlinePencil } from "react-icons/hi";
+import { LiaBibleSolid } from "react-icons/lia";
 
 export const CfEveywhereSetReminder = () => {
   const stepsData = [
     {
-      icon: "/icons/white-pencil.svg",
+      icon: <HiOutlinePencil size={28} />,
       description:
         "Fill out your information and select the service you plan to attend.",
     },
     {
-      icon: "/icons/white-bell.svg",
+      icon: <FaRegBell size={28} />,
       description: "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: "/icons/white-bible.svg",
+      icon: <LiaBibleSolid size={28} />,
       description:
         "Attend a Sunday service and start living the life you were created for.",
     },
@@ -32,7 +35,7 @@ export const CfEveywhereSetReminder = () => {
               key={index}
               className="flex flex-col bg-primary rounded-md py-6 px-8 text-white max-w-[300px] items-center gap-5"
             >
-              <img src={step.icon} alt="icon" width={28} height={28} />
+              {step?.icon}
               <div className="flex flex-col">
                 <h3 className="text-xl font-bold leading-5">
                   Step {index + 1}
@@ -66,7 +69,7 @@ export const CfEveywhereSetReminder = () => {
             key={index}
             className="flex flex-col bg-primary rounded-md p-8 text-white max-w-[320px] items-center gap-3"
           >
-            <img src={step.icon} alt="icon" width={28} height={28} />
+            {step?.icon}
             <div className="flex flex-col items-center">
               <h3 className="text-xl font-bold leading-5">Step {index + 1}</h3>
               <p className="mt-3">{step.description}</p>
@@ -94,21 +97,22 @@ export const CfEveywhereSetReminder = () => {
 export const DefaultSetReminder = () => {
   const { name } = useLoaderData<LoaderReturnType>();
   const isEspanol = name?.includes("Español");
+  // TODO: Icon Sizes are off?
   const stepsData = [
     {
-      icon: "/icons/cotton-candy-pencil.svg",
+      icon: <HiOutlinePencil size={48} color="#6BCABA" />,
       description: isEspanol
         ? "Completa tu información y selecciona el servicio al que planeas asistir."
         : "Fill out your information and select the service you plan to attend.",
     },
     {
-      icon: "/icons/cotton-candy-pencil.svg",
+      icon: <FaRegBell size={36} color="#6BCABA" />,
       description: isEspanol
         ? "Recibe un recordatorio para no perderte el servicio."
         : "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: "/icons/cotton-candy-pencil.svg",
+      icon: <LiaBibleSolid size={48} color="#6BCABA" />,
       description: isEspanol
         ? "Asiste a un servicio de domingo y comienza a vivir la vida para la que fuiste creado."
         : "Attend a Sunday service and start living the life you were created for.",
@@ -122,7 +126,7 @@ export const DefaultSetReminder = () => {
       <div className="hidden h-full flex-col justify-center gap-6 lg:flex">
         {stepsData.map((step, index) => (
           <div key={index} className="flex max-w-[280px] items-start gap-5">
-            <img src={step.icon} alt="icon" width={28} height={28} />
+            {step?.icon}
             <div className="flex flex-col">
               <h3 className="text-xl font-bold leading-5">
                 {isEspanol ? "Paso" : "Step"} {index + 1}
