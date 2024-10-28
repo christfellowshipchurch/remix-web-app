@@ -6,7 +6,7 @@ import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
 import { WhatToExpectModal } from "~/components/modals/what-to-expect";
 import { weekdaySpanishTranslation } from "../util";
-import { FaCirclePlay } from "react-icons/fa6";
+import { FaCirclePlay, FaFacebook, FaYoutube } from "react-icons/fa6";
 import { RiShareBoxLine } from "react-icons/ri";
 
 /**
@@ -91,13 +91,13 @@ export function WaysToJoinOnlineMobile() {
         Ways to Join Online
       </h3>
       <div className="flex gap-4 px-4">
-        {/* TODO: Figure out Icons -> Already have but need to change the fill */}
         <Button
           href="https://www.youtube.com/c/ChristFellowshipWelcomeHome"
           intent="secondary"
           className="flex items-center justify-center"
           size="md"
         >
+          <FaYoutube size={24} className="mr-1" />
           Youtube
         </Button>
         <Button
@@ -106,6 +106,7 @@ export function WaysToJoinOnlineMobile() {
           className="flex items-center justify-center"
           size="md"
         >
+          <FaFacebook size={24} className="mr-1" />
           Facebook Live
         </Button>
       </div>
@@ -123,13 +124,13 @@ export function WaysToJoinOnlineDesktop() {
         Ways to Join Online
       </h3>
       <div className="flex gap-4 px-4">
-        {/* TODO: Figure out Icons -> Already have but need to change the fill */}
         <Button
           href="https://www.youtube.com/c/ChristFellowshipWelcomeHome"
           intent="secondary"
           className="flex items-center justify-center"
           size="md"
         >
+          <FaYoutube size={24} className="mr-1" />
           Youtube
         </Button>
         <Button
@@ -138,6 +139,7 @@ export function WaysToJoinOnlineDesktop() {
           className="flex items-center justify-center"
           size="md"
         >
+          <FaFacebook size={24} className="mr-1" />
           Facebook Live
         </Button>
       </div>

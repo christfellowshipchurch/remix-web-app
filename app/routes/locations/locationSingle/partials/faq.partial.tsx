@@ -13,7 +13,6 @@ export const LocationFAQ = () => {
       <h2 className=" max-w-[90vw] text-center text-[2rem] font-bold text-secondary">
         {isEspanol ? `Preguntas Frequentes` : `Frequently Asked Questions`}
       </h2>
-      {/* TODO: Change from params.title to the name fetched from the query */}
       <StyledAccordion data={faqData(name)} bg="white" />
       <div className="flex flex-col items-center gap-5 text-center">
         <div className="text-[26px] font-bold">

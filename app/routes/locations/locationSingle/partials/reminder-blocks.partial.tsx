@@ -3,7 +3,7 @@ import SetAReminderModal from "~/components/modals/set-a-reminder";
 import Button from "~/primitives/button";
 import Modal from "~/primitives/Modal";
 import { LoaderReturnType } from "../loader";
-import { FaRegBell } from "react-icons/fa";
+import { FaBible, FaRegBell } from "react-icons/fa";
 import { HiOutlinePencil } from "react-icons/hi";
 import { LiaBibleSolid } from "react-icons/lia";
 
@@ -19,7 +19,7 @@ export const CfEveywhereSetReminder = () => {
       description: "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: <LiaBibleSolid size={28} />,
+      icon: <LiaBibleSolid size={32} />,
       description:
         "Attend a Sunday service and start living the life you were created for.",
     },
@@ -106,13 +106,13 @@ export const DefaultSetReminder = () => {
         : "Fill out your information and select the service you plan to attend.",
     },
     {
-      icon: <FaRegBell size={36} color="#6BCABA" />,
+      icon: <FaRegBell stroke="red" size={37} color="#6BCABA" />,
       description: isEspanol
         ? "Recibe un recordatorio para no perderte el servicio."
         : "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: <LiaBibleSolid size={48} color="#6BCABA" />,
+      icon: <FaBible stroke="white" size={48} color="#6BCABA" />,
       description: isEspanol
         ? "Asiste a un servicio de domingo y comienza a vivir la vida para la que fuiste creado."
         : "Attend a Sunday service and start living the life you were created for.",
