@@ -28,7 +28,6 @@ export const LocationBlock = () => {
                 "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
             }}
           >
-            {/* TODO: Store cf-everywhere images in Rock */}
             <div className="relative sm:h-[320px] h-[240px] md:h-[190px] lg:h-[250px] w-full">
               <img
                 src={data?.coverImage?.sources[0]?.uri}

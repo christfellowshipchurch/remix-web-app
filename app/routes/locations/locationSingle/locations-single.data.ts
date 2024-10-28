@@ -538,7 +538,6 @@ const trinityBlockData = [
   },
 ];
 
-// TODO: Store cf-everywhere images in Rock
 const CfEverywhereBlockData = [
   {
     __typename: "ContentBlockFeature",

@@ -32,7 +32,7 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
   const fullPath = `${hostUrl}${pathname}`;
 
   return socialIcons?.map((icon, index) => {
-    // TODO: Review?
+    // TODO: Review .svgs used here and if instagram is working.
     const socialLink = socialMedia?.find(
       (media) => media?.type === icon?.name
     )?.url;

@@ -97,13 +97,14 @@ const DesktopPastorCard = () => {
             )}
             {/* Buttons */}
             <div className="mt-4 flex gap-3">
-              {/* TODO: Open Share Screen - Designed? */}
+              {/* TODO: Open DESKTOP Share Popup - Designed? */}
               <Button
                 intent="secondary"
                 href={
                   online ? "mailto:online@christfellowship.church" : undefined
                 }
                 size="sm"
+                className="font-bold"
               >
                 {isEspanol
                   ? "INVITA A UN AMIGO"
@@ -111,7 +112,12 @@ const DesktopPastorCard = () => {
                   ? "CONTACT US"
                   : "INVITE A FRIEND"}
               </Button>
-              <Button intent="primary" size="sm" href="/locations">
+              <Button
+                intent="primary"
+                size="sm"
+                href="/locations"
+                className="font-bold"
+              >
                 {isEspanol ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
               </Button>
             </div>
@@ -219,7 +225,6 @@ const MobilePastorCard = () => {
           )}
           {/* Buttons */}
           <div className="mt-4 flex gap-3">
-            {/* TODO: Open Share Screen on Mobile */}
             <Button
               intent="secondary"
               href={
@@ -242,6 +247,7 @@ const MobilePastorCard = () => {
                   : undefined
               }
               size="sm"
+              className="font-bold"
             >
               {isEspanol
                 ? "INVITA A UN AMIGO"
@@ -249,7 +255,12 @@ const MobilePastorCard = () => {
                 ? "CONTACT US"
                 : "INVITE A FRIEND"}
             </Button>
-            <Button intent="primary" size="sm" href="/locations">
+            <Button
+              className="font-bold"
+              intent="primary"
+              size="sm"
+              href="/locations"
+            >
               {isEspanol ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
             </Button>
           </div>
