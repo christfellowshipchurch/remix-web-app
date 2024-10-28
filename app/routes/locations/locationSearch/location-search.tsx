@@ -46,7 +46,6 @@ export function LocationSearchPage() {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
       );
-      console.log(response);
       const data: LocationSearchResultsType = (await response?.json()) as any;
       setResults(data?.results);
     } else {
