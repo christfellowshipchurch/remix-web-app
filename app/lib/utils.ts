@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { camelCase, mapKeys, mapValues } from "lodash";
 import { twMerge } from "tailwind-merge";
+import { ShareMessages } from "./types/messaging";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -40,4 +41,26 @@ export const getIdentifierType = (identifier: any) => {
   }
 
   return { type: "custom", value: identifier, query: null };
+};
+
+export const shareMessaging = ({
+  title,
+  shareMessages,
+  url,
+}: ShareMessages) => {
+  const defaultShareMessages = {
+    title: `${title}`,
+    faceBook: `Check out this article from Christ Fellowship Church!`,
+    twitter: `${title} at Christ Fellowship Church`,
+    email: {
+      subject: `${title} - Christ Fellowship Church`,
+      body: `I thought you might be interested in this article from Christ Fellowship: ${url} \n\n`,
+    },
+    sms: `I thought you might be interested in this article from Christ Fellowship: ${url}`,
+  };
+  const messages = {
+    ...defaultShareMessages,
+    ...shareMessages,
+  };
+  return messages;
 };
