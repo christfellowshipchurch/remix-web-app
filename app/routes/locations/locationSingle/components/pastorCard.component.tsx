@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
-
+import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 const PastorCard = () => {
   return (
     <>
@@ -119,28 +119,13 @@ const DesktopPastorCard = () => {
           {/* Social Medias */}
           <div className="mt-10 flex items-center justify-center gap-2">
             <a target="_blank" href={facebook}>
-              <img
-                src="/icons/cotton-candy-facebook.svg"
-                alt="Facebook"
-                width={32}
-                height={32}
-              />
+              <FaFacebook size={32} color="#6BCABA" />
             </a>
             <a target="_blank" href={campusInstagram}>
-              <img
-                src="/icons/cotton-candy-instagram.svg"
-                alt="Instagram"
-                width={32}
-                height={32}
-              />
+              <FaInstagram size={32} color="#6BCABA" />
             </a>
             <a target="_blank" href={youtube}>
-              <img
-                src="/icons/cotton-candy-youtube.svg"
-                alt="Youtube"
-                width={32}
-                height={32}
-              />
+              <FaYoutube size={32} color="#6BCABA" />
             </a>
           </div>
         </div>
@@ -272,28 +257,13 @@ const MobilePastorCard = () => {
         {/* Social Medias */}
         <div className="mt-8 flex items-center justify-center gap-2">
           <a target="_blank" href={facebook}>
-            <img
-              src="/icons/cotton-candy-facebook.svg"
-              alt="Facebook"
-              width={32}
-              height={32}
-            />
+            <FaFacebook size={32} color="#6BCABA" />
           </a>
           <a target="_blank" href={campusInstagram}>
-            <img
-              src="/icons/cotton-candy-instagram.svg"
-              alt="Instagram"
-              width={32}
-              height={32}
-            />
+            <FaInstagram size={32} color="#6BCABA" />
           </a>
           <a target="_blank" href={youtube}>
-            <img
-              src="/icons/cotton-candy-youtube.svg"
-              alt="Youtube"
-              width={32}
-              height={32}
-            />
+            <FaYoutube size={32} color="#6BCABA" />
           </a>
         </div>
       </div>
