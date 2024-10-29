@@ -1,10 +1,10 @@
 import { ActionFunction, json } from "@remix-run/node";
+import { requestSmsLogin } from "~/lib/.server/authentication/smsAuthentication";
 import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
 } from "~/lib/.server/errorTypes";
-import { requestSmsLogin } from "~/lib/.server/smsAuthentication";
 
 export const action: ActionFunction = async ({
   request,

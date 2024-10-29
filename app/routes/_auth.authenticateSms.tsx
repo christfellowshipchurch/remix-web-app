@@ -1,6 +1,6 @@
 import { ActionFunction, json } from "@remix-run/node";
 import { isRouteErrorResponse } from "@remix-run/react";
-import { authenticateWithSms } from "~/lib/.server/smsAuthentication";
+import { authenticateWithSms } from "~/lib/.server/authentication/authenticateUserSms";
 
 export const action: ActionFunction = async ({
   request,

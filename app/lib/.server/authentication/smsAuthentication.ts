@@ -1,3 +1,6 @@
+/**
+ * This file contains our SMS authentication functions.
+ */
 import crypto from "crypto";
 import { parsePhoneNumber } from "awesome-phonenumber";
 
@@ -7,27 +10,22 @@ import { User_Auth_Status } from "~/providers/auth-provider";
 import {
   deleteRockData,
   fetchRockData,
-  patchRockData,
   postRockData,
 } from "~/lib/.server/fetchRockData";
 import { fieldsAsObject } from "~/lib/utils";
 import { sendSms } from "~/lib/.server/twilio";
-import { authenticateUser } from "~/lib/.server/authenticateUser";
-import { createUserProfile } from "~/lib/.server/fetchRockAuthentication";
-import { checkUserExists, fetchUserLogin } from "~/routes/_auth.userExists";
+import { createUserProfile, fetchUserLogin } from "./rockAuthentication";
+import { checkUserExists } from "~/routes/_auth.userExists";
+import { SmsPinResult } from "./authentication.types";
 
-interface AuthParams {
-  pin: string;
-  phoneNumber: string;
-  userProfile: any[];
-}
-
-export type SmsPinResult = {
-  success?: boolean;
-  userAuthStatus?: User_Auth_Status;
-};
-
-const parsePhoneNumberUtil = (phoneNumber: string) => {
+export const parsePhoneNumberUtil = (
+  phoneNumber: string
+): {
+  valid: boolean;
+  significantNumber: string;
+  countryCode: number | undefined;
+  e164: string;
+} => {
   const parsedNumber = parsePhoneNumber(phoneNumber, { regionCode: "US" });
 
   return {
@@ -38,17 +36,20 @@ const parsePhoneNumberUtil = (phoneNumber: string) => {
   };
 };
 
-const hashPassword = (pin: string) =>
+export const hashPassword = (pin: string): string =>
   crypto.createHash("sha256").update(`${pin}${secret}`).digest("hex");
 
-const generateSmsPinAndPassword = () => {
+export const generateSmsPinAndPassword = (): {
+  pin: string;
+  password: string;
+} => {
   const pin = `${Math.floor(Math.random() * 1000000)}`.padStart(6, "0");
   const password = hashPassword(pin);
 
   return { pin, password };
 };
 
-const createPhoneNumber = async ({
+export const createPhoneNumberInRock = async ({
   personId,
   phoneNumber,
   countryCode,
@@ -56,23 +57,30 @@ const createPhoneNumber = async ({
   personId: string;
   phoneNumber: string;
   countryCode: number;
-}) =>
-  postRockData("PhoneNumbers", {
-    PersonId: personId,
-    Number: phoneNumber,
-    CountryCode: countryCode,
-    IsMessagingEnabled: true,
-    IsSystem: false,
-    NumberTypeValueId: 13,
-  });
+}): Promise<boolean> => {
+  try {
+    await postRockData("PhoneNumbers", {
+      PersonId: personId,
+      Number: phoneNumber,
+      CountryCode: countryCode,
+      IsMessagingEnabled: true,
+      IsSystem: false,
+      NumberTypeValueId: 13,
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to create phone number in Rock:", error);
+    return false;
+  }
+};
 
-const createOrFindSmsLoginUserId = async ({
+export const createOrFindSmsLoginUserId = async ({
   phoneNumber,
   userProfile,
 }: {
   phoneNumber: string;
   userProfile: any[];
-}) => {
+}): Promise<string> => {
   const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
 
   const existingPhoneNumbers = await fetchRockData("PhoneNumbers", {
@@ -90,7 +98,7 @@ const createOrFindSmsLoginUserId = async ({
   if (!countryCode) {
     throw new AuthenticationError("Country code is required for phone number");
   }
-  await createPhoneNumber({ personId, phoneNumber, countryCode });
+  await createPhoneNumberInRock({ personId, phoneNumber, countryCode });
 
   return personId;
 };
@@ -109,10 +117,7 @@ export const requestSmsLogin = async (
 
   const { pin, password } = generateSmsPinAndPassword();
 
-  const existingUserLogin = await fetchRockData(`UserLogins`, {
-    $filter: `UserName eq '${significantNumber}'`,
-    $top: "1",
-  });
+  const existingUserLogin = await fetchUserLogin(significantNumber);
 
   let personOptions = {};
 
@@ -161,41 +166,6 @@ export const requestSmsLogin = async (
     success: true,
     userAuthStatus: existingUserLogin ? ExistingAppUser : None,
   };
-};
-
-export const authenticateWithSms = async ({
-  pin,
-  phoneNumber,
-  userProfile,
-}: AuthParams) => {
-  const { significantNumber } = parsePhoneNumberUtil(phoneNumber);
-
-  const userLogin = await fetchUserLogin(significantNumber);
-
-  if (!userLogin) {
-    throw new AuthenticationError("Invalid input");
-  }
-
-  if (userLogin && userLogin.personId === null) {
-    const personId = await createOrFindSmsLoginUserId({
-      phoneNumber,
-      userProfile: userProfile || [],
-    });
-
-    await patchRockData(`UserLogins/${userLogin?.id}`, {
-      PersonId: personId,
-    });
-  }
-
-  const identity = phoneNumber;
-  const password = hashPassword(pin);
-
-  const { encryptedToken } = await authenticateUser(
-    identity as string,
-    password as string
-  );
-
-  return encryptedToken;
 };
 
 export const userExists = async (

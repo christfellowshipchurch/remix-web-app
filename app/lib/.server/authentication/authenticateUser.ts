@@ -5,10 +5,7 @@ import {
 } from "~/lib/.server/errorTypes";
 import { generateToken } from "~/lib/.server/token";
 import { encrypt } from "~/lib/.server/encrypt";
-import {
-  createRockSession,
-  fetchUserCookie,
-} from "~/lib/.server/fetchRockAuthentication";
+import { createRockSession, fetchUserCookie } from "./rockAuthentication";
 
 export type AuthenticationReturnType = {
   encryptedToken: string;

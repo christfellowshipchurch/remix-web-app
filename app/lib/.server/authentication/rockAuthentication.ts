@@ -1,6 +1,10 @@
-import { AuthenticationError, RockAPIError } from "./errorTypes";
-import { fetchRockData } from "./fetchRockData";
-import { createPerson } from "./rockPerson";
+/**
+ * This file contains our main authentication functions for Rock.
+ */
+import { AuthenticationError, RockAPIError } from "../errorTypes";
+import { fetchRockData } from "../fetchRockData";
+import { createPerson } from "../rockPerson";
+import { RockUserLogin } from "./authentication.types";
 
 export const fetchUserCookie = async (
   Username: string,
@@ -55,7 +59,7 @@ export const fetchUserCookie = async (
   }
 };
 
-export const getCurrentPerson = async (cookie: string) => {
+export const getCurrentPerson = async (cookie: string): Promise<any> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
   }
@@ -87,7 +91,7 @@ export const getCurrentPerson = async (cookie: string) => {
   }
 };
 
-export const createRockSession = async (cookie: string) => {
+export const createRockSession = async (cookie: string): Promise<any> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
   }
@@ -161,4 +165,21 @@ export const createUserProfile = async ({
   } catch (err) {
     throw new Error("Unable to create profile!");
   }
+};
+
+export const fetchUserLogin = async (
+  identity: string
+): Promise<RockUserLogin | null> => {
+  const userLogin = await fetchRockData("UserLogins", {
+    $filter: `UserName eq '${identity}'`,
+    $top: "1",
+  });
+
+  // If no login exists for the identity, return null
+  if (Array.isArray(userLogin) && userLogin.length === 0) {
+    return null;
+  }
+
+  // Ensures that the return value is an object
+  return Array.isArray(userLogin) ? userLogin[0] : userLogin;
 };
