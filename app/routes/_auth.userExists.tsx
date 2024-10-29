@@ -1,12 +1,5 @@
 import { ActionFunction, json } from "@remix-run/node";
-import { fetchRockData } from "~/lib/.server/fetchRockData";
-
-export const fetchUserLogin = async (identity: string) => {
-  return await fetchRockData("UserLogins", {
-    $filter: `UserName eq '${identity}'`,
-    $top: "1",
-  });
-};
+import { fetchUserLogin } from "~/lib/.server/authentication/rockAuthentication";
 
 export const checkUserExists = async (identity: string): Promise<boolean> => {
   const login = await fetchUserLogin(identity);

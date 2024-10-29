@@ -1,5 +1,5 @@
 import { ActionFunction, json } from "@remix-run/node";
-import { authenticateUser } from "~/lib/.server/authenticateUser";
+import { authenticateUser } from "~/lib/.server/authentication/authenticateUser";
 
 import {
   AuthenticationError,
