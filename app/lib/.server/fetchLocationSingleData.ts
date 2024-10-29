@@ -1,6 +1,6 @@
 import { includes, lowerCase } from "lodash";
 import { getIdentifierType } from "../utils";
-import { fetchRockData } from "./fetchRockData.server";
+import { fetchRockData } from "./fetchRockData";
 import { format } from "date-fns";
 
 export const fetchCampusData = async (campusUrl: string) => {

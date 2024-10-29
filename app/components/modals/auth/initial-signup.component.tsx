@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import TextFieldInput from "~/primitives/inputs/text-field/text-field.primitive";
 import Button from "~/primitives/button";
+import { useAuth } from "~/providers/auth-provider";
 
 interface InitialSignUpProps {
   onSubmit: (identity: string) => Promise<void>;
@@ -24,7 +25,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
   const [identity, setIdentity] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // const { checkUserExists } = useAuth()
+  const { checkUserExists } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -41,8 +42,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
       return;
     }
 
-    let userExists = true;
-    // const userExists = await checkUserExists(identity)
+    const userExists = await checkUserExists(identity);
 
     if (userExists) {
       setLoading(false);

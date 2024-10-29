@@ -2,6 +2,7 @@ import * as Form from "@radix-ui/react-form";
 import React, { useState } from "react";
 import Button from "~/primitives/button";
 import TextFieldInput from "~/primitives/inputs/text-field";
+import { useAuth } from "~/providers/auth-provider";
 // import { useAuth } from "providers/AuthProvider"
 
 interface LoginProps {
@@ -25,7 +26,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const [identity, setIdentity] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // const { checkUserExists } = useAuth()
+  const { checkUserExists } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -42,16 +43,16 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       return;
     }
 
-    let userExists = true;
-    // let userExists = false
-    // if (isEmail || isPhoneNumber) {
-    //   userExists = await checkUserExists(identity)
-    // }
-    if (!userExists) {
-      setLoading(false);
-      setError("DOES_NOT_EXIST");
-      return;
+    let userExists = false;
+    if (isEmail || isPhoneNumber) {
+      userExists = await checkUserExists(identity);
     }
+
+    // if (!userExists) {
+    //   setLoading(false);
+    //   setError("DOES_NOT_EXIST");
+    //   return;
+    // }
 
     try {
       await onSubmit(identity);

@@ -1,6 +1,9 @@
-"use client";
+/**
+ * This component is a flow for the user to login or sign up and determines which step/screen to render based on the user's input.
+ * It interacts with the AuthProvider to handle user registration, login, and pin verification.
+ */
 import React, { useEffect, useState } from "react";
-// import { useAuth } from "providers/AuthProvider"
+import { useAuth } from "~/providers/auth-provider";
 import AccountCreation from "./account-creation.component";
 import CreatePassword from "./create-password.component";
 import InitialSignUp from "./initial-signup.component";
@@ -41,13 +44,13 @@ const determineIdentityType = (
 };
 
 const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
-  const [step, setStep] = useState<LoginStep>(LoginStep.INITIAL_SIGNUP);
+  const [step, setStep] = useState<LoginStep>(LoginStep.LOGIN);
   const [identity, setIdentity] = useState("");
   const [identityType, setIdentityType] = useState<
     "email" | "phone" | "unknown"
   >("unknown");
   const [newUser, setNewUser] = useState<NewUser | null>(null);
-  // const { login, registerUser, requestSmsPin, loginWithSms } = useAuth()
+  const { login, registerUser, requestSmsPin, loginWithSms } = useAuth();
 
   useEffect(() => {
     setIdentityType(determineIdentityType(identity));
@@ -112,7 +115,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
           setStep(LoginStep.PASSWORD_SCREEN);
           break;
         case determineIdentityType(identityInput) === "phone":
-          // await requestSmsPin(identityInput)
+          await requestSmsPin(identityInput);
           setStep(LoginStep.PIN_SCREEN);
           break;
         default:
@@ -126,7 +129,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
 
   const handlePasswordLogin = async (password: string) => {
     try {
-      // await login(identity, password)
+      await login(identity, password);
     } catch (error) {
       console.error("Error logging in with password:", error);
     } finally {
@@ -148,7 +151,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
       };
       // await registerUser(userInputDataSms, "sms")
     } else {
-      // await loginWithSms(identity, pin)
+      await loginWithSms(identity, pin);
     }
     setOpenModal(false);
   };
@@ -171,7 +174,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
             onSubmit={handlePinLoginOrRegistration}
             phoneNumber={identity}
             onResend={async () => {
-              // await requestSmsPin(identity)
+              await requestSmsPin(identity);
             }}
           />
         );
