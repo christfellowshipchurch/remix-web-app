@@ -1,6 +1,6 @@
 import Button from "~/primitives/button";
-import Video from "~/primitives/video";
-import { TiLocationArrowOutline } from "react-icons/ti";
+import Video from "~/primitives/Video";
+import Icon from "~/primitives/icon";
 
 type SearchProps = {
   setAddress: (address: string) => void;
@@ -63,7 +63,7 @@ export const Search = ({
             >
               Use my current location
             </div>
-            <TiLocationArrowOutline size={20} />
+            <Icon size={20} name="location" />
           </div>
           {!locationActive && (
             <div className="mt-4 text-sm italic text-alert">

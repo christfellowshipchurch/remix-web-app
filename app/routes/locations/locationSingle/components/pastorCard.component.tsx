@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
-import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
+import Icon from "~/primitives/icon";
 const PastorCard = () => {
   return (
     <>
@@ -125,13 +125,15 @@ const DesktopPastorCard = () => {
           {/* Social Medias */}
           <div className="mt-10 flex items-center justify-center gap-2">
             <a target="_blank" href={facebook}>
-              <FaFacebook size={32} color="#6BCABA" />
+              <Icon name="facebook" size={32} color="#6BCABA" />
             </a>
+            {/* TODO: Icon won't expand */}
             <a target="_blank" href={campusInstagram}>
-              <FaInstagram size={32} color="#6BCABA" />
+              <Icon name="instagram" size={32} color="#6BCABA" />
             </a>
+            {/* TODO: Icon won't shrink */}
             <a target="_blank" href={youtube}>
-              <FaYoutube size={32} color="#6BCABA" />
+              <Icon name="youtube" height={20} width={32} color="#6BCABA" />
             </a>
           </div>
         </div>
@@ -268,13 +270,15 @@ const MobilePastorCard = () => {
         {/* Social Medias */}
         <div className="mt-8 flex items-center justify-center gap-2">
           <a target="_blank" href={facebook}>
-            <FaFacebook size={32} color="#6BCABA" />
+            <Icon name="facebook" size={32} color="#6BCABA" />
           </a>
+          {/* TODO: Icon won't expand */}
           <a target="_blank" href={campusInstagram}>
-            <FaInstagram size={32} color="#6BCABA" />
+            <Icon name="instagram" size={32} color="#6BCABA" />
           </a>
+          {/* TODO: Icon won't shrink */}
           <a target="_blank" href={youtube}>
-            <FaYoutube size={32} color="#6BCABA" />
+            <Icon name="youtube" height={24} width={40} color="#6BCABA" />
           </a>
         </div>
       </div>

@@ -3,23 +3,21 @@ import SetAReminderModal from "~/components/modals/set-a-reminder";
 import Button from "~/primitives/button";
 import Modal from "~/primitives/Modal";
 import { LoaderReturnType } from "../loader";
-import { FaBible, FaRegBell } from "react-icons/fa";
-import { HiOutlinePencil } from "react-icons/hi";
-import { LiaBibleSolid } from "react-icons/lia";
+import Icon from "~/primitives/icon";
 
 export const CfEveywhereSetReminder = () => {
   const stepsData = [
     {
-      icon: <HiOutlinePencil size={28} />,
+      icon: <Icon name="pencil" color="white" size={32} />,
       description:
         "Fill out your information and select the service you plan to attend.",
     },
     {
-      icon: <FaRegBell size={28} />,
+      icon: <Icon name="bell" color="white" size={32} />,
       description: "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: <LiaBibleSolid size={32} />,
+      icon: <Icon name="bible" size={32} />,
       description:
         "Attend a Sunday service and start living the life you were created for.",
     },
@@ -97,22 +95,21 @@ export const CfEveywhereSetReminder = () => {
 export const DefaultSetReminder = () => {
   const { name } = useLoaderData<LoaderReturnType>();
   const isEspanol = name?.includes("Español");
-  // TODO: Icon Sizes are off?
   const stepsData = [
     {
-      icon: <HiOutlinePencil size={48} color="#6BCABA" />,
+      icon: <Icon name="pencil" size={32} color="#6BCABA" />,
       description: isEspanol
         ? "Completa tu información y selecciona el servicio al que planeas asistir."
         : "Fill out your information and select the service you plan to attend.",
     },
     {
-      icon: <FaRegBell stroke="red" size={37} color="#6BCABA" />,
+      icon: <Icon name="bell" size={32} color="#6BCABA" />,
       description: isEspanol
         ? "Recibe un recordatorio para no perderte el servicio."
         : "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: <FaBible stroke="white" size={48} color="#6BCABA" />,
+      icon: <Icon name="bible" size={32} color="#6BCABA" />,
       description: isEspanol
         ? "Asiste a un servicio de domingo y comienza a vivir la vida para la que fuiste creado."
         : "Attend a Sunday service and start living the life you were created for.",

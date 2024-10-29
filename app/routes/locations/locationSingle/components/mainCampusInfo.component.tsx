@@ -6,8 +6,8 @@ import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
 import { WhatToExpectModal } from "~/components/modals/what-to-expect";
 import { weekdaySpanishTranslation } from "../util";
-import { FaCirclePlay, FaFacebook, FaYoutube } from "react-icons/fa6";
-import { RiShareBoxLine } from "react-icons/ri";
+import Icon from "~/primitives/icon";
+import { useState } from "react";
 
 /**
  * This file will include the following:
@@ -57,7 +57,7 @@ export function MainCampusInfo() {
                       <div className="font-bold italic text-primary underline">
                         {expectData?.linkTitle}
                       </div>
-                      <FaCirclePlay size={24} color="#0092bc" />
+                      <Icon size={24} name="circlePlay" color="#0092bc" />
                     </div>
                   </Modal.Button>
                   <Modal.Content
@@ -97,7 +97,13 @@ export function WaysToJoinOnlineMobile() {
           className="flex items-center justify-center"
           size="md"
         >
-          <FaYoutube size={24} className="mr-1" />
+          <Icon
+            height={24}
+            width={40}
+            name="youtube"
+            color="#0092bc"
+            className="mr-1"
+          />
           Youtube
         </Button>
         <Button
@@ -106,7 +112,7 @@ export function WaysToJoinOnlineMobile() {
           className="flex items-center justify-center"
           size="md"
         >
-          <FaFacebook size={24} className="mr-1" />
+          <Icon name="facebook" size={24} className="mr-1" />
           Facebook Live
         </Button>
       </div>
@@ -118,6 +124,8 @@ export function WaysToJoinOnlineMobile() {
  * Separating the following code into functions for readability purposes
  */
 export function WaysToJoinOnlineDesktop() {
+  const [isHovering, setIsHovering] = useState(false);
+
   return (
     <div className="hidden flex-col items-center gap-4 text-center lg:flex lg:flex-row lg:items-start lg:gap-5 lg:border-0 lg:text-start">
       <h3 className="pt-3 text-lg font-bold text-wordOfChrist md:text-2xl lg:w-36 lg:pt-0">
@@ -127,10 +135,19 @@ export function WaysToJoinOnlineDesktop() {
         <Button
           href="https://www.youtube.com/c/ChristFellowshipWelcomeHome"
           intent="secondary"
-          className="flex items-center justify-center"
+          className="flex items-center gap-1 justify-center"
           size="md"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
         >
-          <FaYoutube size={24} className="mr-1" />
+          <Icon
+            name="youtube"
+            // TODO: Icon won't shrink
+            color={isHovering ? "white" : "#0092BC"}
+            height={20}
+            width={36}
+            className="mr-1"
+          />
           Youtube
         </Button>
         <Button
@@ -139,7 +156,7 @@ export function WaysToJoinOnlineDesktop() {
           className="flex items-center justify-center"
           size="md"
         >
-          <FaFacebook size={24} className="mr-1" />
+          <Icon name="facebook" color="white" size={24} className="mr-1" />
           Facebook Live
         </Button>
       </div>
@@ -172,7 +189,8 @@ export function DuringTheWeek() {
                   {event.time} - {event.title}
                 </p>
                 <Link to={event.url} className="pl-1">
-                  <RiShareBoxLine size={12} />
+                  {/* TODO: Icon won't shrink */}
+                  <Icon name="linkExternal" size={12} color="#0092BC" />
                 </Link>
               </div>
             ))}
