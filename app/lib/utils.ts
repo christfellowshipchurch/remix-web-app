@@ -15,6 +15,15 @@ export function normalize(data: object): object {
   return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
 }
 
+export const fieldsAsObject = (fields: any[]) =>
+  fields.reduce(
+    (accum, { field, value }) => ({
+      ...accum,
+      [field]: typeof value === "string" ? value.trim() : value,
+    }),
+    {}
+  );
+
 export const enforceProtocol = (uri: string) =>
   uri?.startsWith("//") ? `https:${uri}` : uri;
 

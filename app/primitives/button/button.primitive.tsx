@@ -1,3 +1,4 @@
+import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import { Link } from "@remix-run/react";
@@ -53,39 +54,41 @@ export interface ButtonProps
   onClick?: () => void;
 }
 
-export function Button({
-  className,
-  target,
-  intent,
-  href,
-  onClick,
-  size,
-  underline,
-  ...props
-}: ButtonProps) {
-  if (href) {
-    return (
-      <Link
-        to={href}
-        target={target ? target : href?.includes("http") ? "_blank" : ""}
-      >
-        <button
-          className={twMerge(button({ intent, size, className, underline }))}
-          {...props}
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { className, target, intent, href, onClick, size, underline, ...props },
+    ref
+  ) => {
+    if (href) {
+      return (
+        <Link
+          to={href}
+          target={target ? target : href?.includes("http") ? "_blank" : ""}
         >
-          {props.children}
-        </button>
-      </Link>
+          <button
+            className={twMerge(button({ intent, size, className, underline }))}
+            ref={ref}
+            {...props}
+          >
+            {props.children}
+          </button>
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        className={twMerge(button({ intent, size, className, underline }))}
+        onClick={onClick}
+        ref={ref}
+        {...props}
+      >
+        {props.children}
+      </button>
     );
   }
+);
 
-  return (
-    <button
-      className={twMerge(button({ intent, size, className, underline }))}
-      onClick={onClick}
-      {...props}
-    >
-      {props.children}
-    </button>
-  );
-}
+Button.displayName = "Button";
+
+export { Button };

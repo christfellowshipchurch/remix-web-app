@@ -1,6 +1,6 @@
-import Config from "./config/config.server";
+import Config from "./config/config";
 import { flatten } from "lodash";
-import { fetchRockData, getImages } from "./fetchRockData.server";
+import { fetchRockData, getImages } from "./fetchRockData";
 import { format } from "date-fns";
 import { getAuthorDetails } from "~/routes/articles/loader";
 
