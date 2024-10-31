@@ -1,7 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { testimonialData } from "../locations-single.data";
-import googleReviews from "~/assets/google-reviews.svg";
 import Icon from "~/primitives/icon";
 
 export type Testimonies = {
@@ -60,13 +59,12 @@ export const Testimonials = () => {
             </div>
             <div className="flex flex-col-reverse items-center gap-4 lg:flex-row">
               {!item?.region && (
-                <div className="relative size-[34px] lg:size-[56px]">
-                  <img
-                    src={googleReviews}
-                    className="size-full"
-                    alt="Google Reviews"
-                  />
-                </div>
+                <Icon
+                  name="google"
+                  size={48}
+                  className="bg-white p-2 rounded-full"
+                  color="#CCCCCC"
+                />
               )}
               <div className="flex flex-col">
                 <p className="text-lg font-bold text-secondary">{item?.name}</p>

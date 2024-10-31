@@ -23,7 +23,6 @@ export const Icon = ({
 }) => {
   const path = icons[name];
 
-  // TODO: Icons won't shrink or expand
   if (Array.isArray(path)) {
     return (
       <svg
@@ -31,7 +30,7 @@ export const Icon = ({
         fill="none"
         fillRule={fillRule}
         clipRule={clipRule}
-        viewBox={`0 0 ${width || size} ${height || size}`}
+        viewBox={`0 0 24 24`}
         stroke={stroke}
         className={`overflow-visible flex items-center align-center self-center align-middle ${className}`}
         width={width || size}
@@ -50,7 +49,7 @@ export const Icon = ({
       fill="none"
       fillRule={fillRule}
       clipRule={clipRule}
-      viewBox={`0 0 ${width || size} ${height || size}`}
+      viewBox={`0 0 24 24`}
       stroke={stroke}
       className={`flex items-center align-center self-center align-middle ${className}`}
       width={width || size}

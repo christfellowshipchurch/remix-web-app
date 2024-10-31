@@ -3,10 +3,10 @@ import CopyLink from "./copy-link.component";
 import Icon from "~/primitives/icon";
 
 const socialIcons: {
-  name: "clip" | "linkedIn" | "twitter" | "facebook" | "instagram";
+  name: "linkAlt" | "linkedIn" | "twitter" | "facebook" | "instagram";
   color?: string;
 }[] = [
-  { name: "clip" },
+  { name: "linkAlt" },
   { name: "linkedIn" },
   { name: "twitter" },
   { name: "facebook" },
@@ -41,20 +41,20 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
         >
           <Icon
             name={icon?.name}
-            size={32}
+            size={48}
             color="#0092bc"
-            className="duration-300 hover:scale-105"
+            className="duration-300 hover:scale-105 p-1 rounded-full bg-[#EEE]"
           />
         </a>
       );
-    } else if (icon?.name === "clip") {
+    } else if (icon?.name === "linkAlt") {
       return (
         <div key={index}>
           <CopyLink textToCopy={fullPath}>
             <Icon
-              name="clip"
-              size={32}
-              className="duration-300 hover:scale-105"
+              name="linkAlt"
+              size={48}
+              className="duration-300 hover:scale-105 p-1 rounded-full bg-[#EEE]"
             />
           </CopyLink>
         </div>

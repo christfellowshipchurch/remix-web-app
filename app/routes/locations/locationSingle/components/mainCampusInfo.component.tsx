@@ -97,13 +97,7 @@ export function WaysToJoinOnlineMobile() {
           className="flex items-center justify-center"
           size="md"
         >
-          <Icon
-            height={24}
-            width={40}
-            name="youtube"
-            color="#0092bc"
-            className="mr-1"
-          />
+          <Icon size={28} name="youtube" color="#0092bc" className="mr-1" />
           Youtube
         </Button>
         <Button
@@ -112,7 +106,7 @@ export function WaysToJoinOnlineMobile() {
           className="flex items-center justify-center"
           size="md"
         >
-          <Icon name="facebook" size={24} className="mr-1" />
+          <Icon name="facebook" color="white" size={24} className="mr-1" />
           Facebook Live
         </Button>
       </div>
@@ -142,11 +136,8 @@ export function WaysToJoinOnlineDesktop() {
         >
           <Icon
             name="youtube"
-            // TODO: Icon won't shrink
             color={isHovering ? "white" : "#0092BC"}
-            height={20}
-            width={36}
-            className="mr-1"
+            size={28}
           />
           Youtube
         </Button>
@@ -189,7 +180,6 @@ export function DuringTheWeek() {
                   {event.time} - {event.title}
                 </p>
                 <Link to={event.url} className="pl-1">
-                  {/* TODO: Icon won't shrink */}
                   <Icon name="linkExternal" size={12} color="#0092BC" />
                 </Link>
               </div>
