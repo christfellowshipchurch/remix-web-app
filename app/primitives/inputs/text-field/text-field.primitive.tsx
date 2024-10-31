@@ -4,7 +4,6 @@
  */
 
 import React, { forwardRef, useEffect, useRef } from "react";
-import errorCircleIcon from "~/assets/icons/error-circle.svg";
 import Icon from "~/primitives/icon";
 
 export const defaultInputStyles =

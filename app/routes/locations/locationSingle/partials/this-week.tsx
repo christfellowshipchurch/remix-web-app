@@ -43,6 +43,7 @@ const BigCard = ({ card }: { card: ThisWeekCard }) => {
         ...heroBgImgStyles(card.image),
       }}
     >
+      <div className="absolute size-full bg-black bg-opacity-20" />
       <div className="flex flex-col absolute self-end p-4 text-white ">
         <h3 className="font-bold text-2xl">{card.title}</h3>
         <p>{card.description}</p>

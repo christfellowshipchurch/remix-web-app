@@ -63,7 +63,7 @@ export const Search = ({
             >
               Use my current location
             </div>
-            <Icon size={20} name="location" />
+            <Icon size={16} color="white" name="locationArrow" />
           </div>
           {!locationActive && (
             <div className="mt-4 text-sm italic text-alert">

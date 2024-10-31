@@ -17,7 +17,7 @@ export const CfEveywhereSetReminder = () => {
       description: "Receive a friendly reminder so you don’t miss service.",
     },
     {
-      icon: <Icon name="bible" size={32} />,
+      icon: <Icon name="bible" color="white" size={32} />,
       description:
         "Attend a Sunday service and start living the life you were created for.",
     },
@@ -122,9 +122,9 @@ export const DefaultSetReminder = () => {
       {/* Desktop */}
       <div className="hidden h-full flex-col justify-center gap-6 lg:flex">
         {stepsData.map((step, index) => (
-          <div key={index} className="flex max-w-[280px] items-start gap-5">
+          <div key={index} className="flex items-start gap-5">
             {step?.icon}
-            <div className="flex flex-col">
+            <div className="flex flex-col max-w-[250px]">
               <h3 className="text-xl font-bold leading-5">
                 {isEspanol ? "Paso" : "Step"} {index + 1}
               </h3>
