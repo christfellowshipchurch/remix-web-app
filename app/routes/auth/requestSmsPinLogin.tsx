@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { requestSmsLogin } from "~/lib/.server/authentication/smsAuthentication";
 import {
   AuthenticationError,
@@ -6,15 +6,8 @@ import {
   RockAPIError,
 } from "~/lib/.server/errorTypes";
 
-export const action: ActionFunction = async ({
-  request,
-}: {
-  request: Request;
-}) => {
+export const requestSmsPinLogin = async (phoneNumber: string) => {
   try {
-    const formData = await request.formData();
-    const phoneNumber = formData.get("phoneNumber");
-
     if (!phoneNumber) {
       return json({ error: "Phone number is required" }, { status: 400 });
     }

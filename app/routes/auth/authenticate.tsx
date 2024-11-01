@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { authenticateUser } from "~/lib/.server/authentication/authenticateUser";
 
 import {
@@ -7,16 +7,16 @@ import {
   RockAPIError,
 } from "~/lib/.server/errorTypes";
 
-export const action: ActionFunction = async ({
-  request,
-}: {
-  request: Request;
-}) => {
-  try {
-    const formData = await request.formData();
-    const identity = formData.get("identity");
-    const password = formData.get("password");
+type AuthenticateData = {
+  identity: string;
+  password: string;
+};
 
+export const authenticate = async ({
+  identity,
+  password,
+}: AuthenticateData) => {
+  try {
     if (!identity || !password) {
       return json(
         { error: "Identity and password are required" },

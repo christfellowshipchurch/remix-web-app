@@ -1,17 +1,18 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { isRouteErrorResponse } from "@remix-run/react";
 import { authenticateWithSms } from "~/lib/.server/authentication/authenticateUserSms";
 
-export const action: ActionFunction = async ({
-  request,
-}: {
-  request: Request;
-}) => {
-  const formData = await request.formData();
-  const pin = formData.get("pin");
-  const phoneNumber = formData.get("phoneNumber");
-  const userProfileString = formData.get("userProfile");
+type AuthenticateSmsData = {
+  pin: string;
+  phoneNumber: string;
+  userProfile?: string;
+};
 
+export const authenticateSms = async ({
+  pin,
+  phoneNumber,
+  userProfile: userProfileString,
+}: AuthenticateSmsData) => {
   if (!pin || !phoneNumber) {
     console.error("Missing required fields:", {
       pin,
@@ -25,18 +26,24 @@ export const action: ActionFunction = async ({
     );
   }
 
-  let userProfile = null;
-  try {
-    userProfile = JSON.parse(userProfileString as string);
-  } catch (parseError) {
-    console.error("Failed to parse userProfile:", parseError);
-    return json({ error: "Invalid user profile format" }, { status: 400 });
+  // todo : we need to review/implement this with  register user...
+  let userProfile;
+  if (
+    userProfileString !== undefined &&
+    typeof userProfileString !== "string"
+  ) {
+    try {
+      userProfile = JSON.parse(userProfileString);
+    } catch (parseError) {
+      console.error("Failed to parse userProfile:", parseError);
+      return json({ error: "Invalid user profile format" }, { status: 400 });
+    }
   }
 
   try {
     const encryptedToken = await authenticateWithSms({
-      pin: pin as string,
-      phoneNumber: phoneNumber as string,
+      pin,
+      phoneNumber,
       userProfile,
     });
 

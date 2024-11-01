@@ -1,4 +1,4 @@
-import { redirect, useFetcher } from "@remix-run/react";
+import { redirect, useNavigate, useRevalidator } from "@remix-run/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -13,7 +13,7 @@ export const useAuth = () => {
   return context;
 };
 
-const AUTH_TOKEN_KEY = "auth-token";
+export const AUTH_TOKEN_KEY = "auth-token";
 
 export enum User_Auth_Status {
   ExistingAppUser = "EXISTING_APP_USER",
@@ -23,14 +23,12 @@ export enum User_Auth_Status {
 
 export type User = {
   id: string;
-  profile: {
-    id: string;
-    fullName: string;
-    email: string;
-    guid: string;
-    gender: string;
-    birthDate: string;
-  };
+  fullName: string;
+  email: string;
+  guid: string;
+  gender: string;
+  birthDate: string;
+  photo: string;
 };
 
 export type UserProfileField = {
@@ -48,7 +46,7 @@ export type UserInputData = {
 export interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (identity: string, password: string) => Promise<void>;
+  loginWithEmail: (identity: string, password: string) => Promise<void>;
   logout: () => void;
   checkUserExists: (identity: string) => Promise<boolean>;
   registerUser: (
@@ -61,12 +59,14 @@ export interface AuthContextType {
 
 const handleError = (error: unknown, message: string) => {
   console.error(message, error);
+  // remove token from local storage and cookie
   localStorage.removeItem(AUTH_TOKEN_KEY);
+  document.cookie = `${AUTH_TOKEN_KEY}=; Max-Age=0; path=/;`;
   throw error;
 };
 
 const ROUTES = {
-  LOGIN: "/protected",
+  LOGIN: "/",
   LOGOUT: "/",
 } as const;
 
@@ -75,70 +75,78 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const fetcher = useFetcher();
+  const { revalidate } = useRevalidator();
   const [user, setUser] = useState<User | null>(null);
-  const [headerToken, setHeaderToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadToken = async () => {
       try {
         const encryptedToken = localStorage.getItem(AUTH_TOKEN_KEY);
         if (encryptedToken) {
-          const response = await fetch("/api/auth/decrypt", {
+          const formData = new FormData();
+          formData.append("formType", "currentUser");
+          formData.append("token", encryptedToken);
+          const response = await fetch("/auth", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ encryptedToken }),
+            body: formData,
           });
 
-          const { decryptedToken } = (await response.json()) as {
-            decryptedToken: string;
-          };
-          setHeaderToken(decryptedToken);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to fetch current user");
+          }
+
+          const currentUser = await response.json();
+
+          if (currentUser) {
+            setUser(currentUser);
+            document.cookie = `${AUTH_TOKEN_KEY}=${encryptedToken}; path=/;`;
+            setIsLoading(false);
+          } else {
+            setUser(null);
+            setIsLoading(false);
+            handleError("No user found", "Error loading user:");
+          }
         } else {
           setIsLoading(false);
         }
       } catch (error) {
-        handleError(error, "Error loading token:");
+        if (error instanceof Error) {
+          handleError(error.message, "Error loading token:");
+        } else {
+          handleError("Unknown error occurred", "Error loading token:");
+        }
         setIsLoading(false);
       }
     };
     loadToken();
   }, []);
 
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      if (headerToken) {
-        try {
-          // await checkCurrentUser();
-        } catch (error) {
-          handleError(error, "Error loading user:");
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-    fetchCurrentUser();
-  }, [headerToken]);
+  const handleLogin = (token: string) => {
+    document.cookie = `auth-token=${token}; path=/;`;
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    setUser(user);
+    revalidate();
+    navigate(ROUTES.LOGIN);
+  };
 
-  const login = async (identity: string, password: string) => {
+  const loginWithEmail = async (identity: string, password: string) => {
     try {
       const formData = new FormData();
+      formData.append("formType", "authenticate");
       formData.append("identity", identity);
       formData.append("password", password);
 
-      const response = await fetch("/authenticate", {
+      const response = await fetch("/auth", {
         method: "POST",
         body: formData,
       });
 
       const { encryptedToken } = await response.json();
 
-      localStorage.setItem(AUTH_TOKEN_KEY, encryptedToken);
-
-      redirect(ROUTES.LOGIN);
+      handleLogin(encryptedToken);
     } catch (error) {
       handleError(error, "Login error:");
     }
@@ -148,14 +156,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     redirect(ROUTES.LOGOUT);
     setUser(null);
     localStorage.removeItem(AUTH_TOKEN_KEY);
+    document.cookie = `${AUTH_TOKEN_KEY}=; Max-Age=0; path=/;`;
+    revalidate(); // revalidate the loader data to update page
   };
 
   const checkUserExists = async (identity: string): Promise<boolean> => {
     try {
       const formData = new FormData();
+      formData.append("formType", "checkUserExists");
       formData.append("identity", identity);
 
-      const response = await fetch("/userExists", {
+      const response = await fetch("/auth", {
         method: "POST",
         body: formData,
       });
@@ -169,6 +180,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // todo : implement registerUser
   const registerUser = async (
     userInputData: UserInputData,
     registrationType: string
@@ -194,10 +206,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const requestSmsPin = async (phoneNumber: string) => {
     try {
       const formData = new FormData();
+      formData.append("formType", "requestSmsPin");
       formData.append("phoneNumber", phoneNumber);
 
       //trigger SMS pin request action
-      await fetch("/requestSmsPinLogin", {
+      await fetch("/auth", {
         method: "POST",
         body: formData,
       });
@@ -209,11 +222,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginWithSms = async (phoneNumber: string, pin: string) => {
     try {
       const formData = new FormData();
+      formData.append("formType", "loginWithSms");
       formData.append("phoneNumber", phoneNumber);
       formData.append("pin", pin);
 
       // trigger SMS authentication action
-      const response = await fetch("/authenticateSms", {
+      const response = await fetch("/auth", {
         method: "POST",
         body: formData,
       });
@@ -225,9 +239,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const { encryptedToken } = await response.json();
 
-      localStorage.setItem(AUTH_TOKEN_KEY, encryptedToken);
-
-      redirect(ROUTES.LOGIN);
+      handleLogin(encryptedToken);
     } catch (error) {
       console.error("SMS login error:", error);
     }
@@ -236,7 +248,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const contextValue: AuthContextType = {
     user,
     isLoading,
-    login,
+    loginWithEmail,
     logout,
     checkUserExists,
     registerUser,
