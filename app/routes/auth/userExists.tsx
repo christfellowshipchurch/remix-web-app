@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { fetchUserLogin } from "~/lib/.server/authentication/rockAuthentication";
 
 export const checkUserExists = async (identity: string): Promise<boolean> => {
@@ -16,14 +16,7 @@ export const checkUserExists = async (identity: string): Promise<boolean> => {
   return false;
 };
 
-export const action: ActionFunction = async ({
-  request,
-}: {
-  request: Request;
-}) => {
-  const formData = await request.formData();
-  const identity = formData.get("identity");
-
+export const userExists = async (identity: string) => {
   try {
     const userExists = await checkUserExists(identity as string);
     return json({ userExists });

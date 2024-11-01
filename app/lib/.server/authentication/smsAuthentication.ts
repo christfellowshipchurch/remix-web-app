@@ -15,8 +15,8 @@ import {
 import { fieldsAsObject } from "~/lib/utils";
 import { sendSms } from "~/lib/.server/twilio";
 import { createUserProfile, fetchUserLogin } from "./rockAuthentication";
-import { checkUserExists } from "~/routes/_auth.userExists";
 import { SmsPinResult } from "./authentication.types";
+import { checkUserExists } from "~/routes/auth/userExists";
 
 export const parsePhoneNumberUtil = (
   phoneNumber: string

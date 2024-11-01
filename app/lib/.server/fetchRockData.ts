@@ -143,6 +143,7 @@ export const patchRockData = async (endpoint: string, body: any) => {
   return response.json();
 };
 
+// Todo : move to utils
 export const attributeIsImage = ({
   key,
   attributeValues,

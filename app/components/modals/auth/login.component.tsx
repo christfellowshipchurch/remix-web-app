@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Button from "~/primitives/button";
 import TextFieldInput from "~/primitives/inputs/text-field";
 import { useAuth } from "~/providers/auth-provider";
-// import { useAuth } from "providers/AuthProvider"
 
 interface LoginProps {
   onSubmit: (identity: string) => Promise<void>;
@@ -48,11 +47,11 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       userExists = await checkUserExists(identity);
     }
 
-    // if (!userExists) {
-    //   setLoading(false);
-    //   setError("DOES_NOT_EXIST");
-    //   return;
-    // }
+    if (!userExists) {
+      setLoading(false);
+      setError("DOES_NOT_EXIST");
+      return;
+    }
 
     try {
       await onSubmit(identity);
