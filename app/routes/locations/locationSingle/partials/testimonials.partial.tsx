@@ -1,6 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { testimonialData } from "../locations-single.data";
+import Icon from "~/primitives/icon";
 
 export type Testimonies = {
   testimonies: {
@@ -40,25 +41,30 @@ export const Testimonials = () => {
                 item?.region ? "lg:items-center" : "lg:items-start"
               }`}
             >
-              <img
-                src="/icons/stars.svg"
-                width={100}
-                height={20}
-                alt="5 stars"
-              />
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Icon
+                    key={i}
+                    name="star"
+                    size={28}
+                    fillRule="nonzero"
+                    clipRule="nonzero"
+                    color="#FCD757"
+                  />
+                ))}
+              </div>
               <p className={`${item?.region ? "text-center" : ""}`}>
                 {item?.description}
               </p>
             </div>
             <div className="flex flex-col-reverse items-center gap-4 lg:flex-row">
               {!item?.region && (
-                <div className="relative size-[34px] lg:size-[56px]">
-                  <img
-                    src="/icons/google-reviews.svg"
-                    className="size-full"
-                    alt="Google Reviews"
-                  />
-                </div>
+                <Icon
+                  name="google"
+                  size={48}
+                  className="bg-white p-2 rounded-full"
+                  color="#CCCCCC"
+                />
               )}
               <div className="flex flex-col">
                 <p className="text-lg font-bold text-secondary">{item?.name}</p>
