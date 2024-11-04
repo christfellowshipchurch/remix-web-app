@@ -16,7 +16,7 @@ export default function ServiceTimes() {
       <div className="relative flex w-full max-w-[1240px] flex-col items-center gap-1 md:py-2 md:pl-6 lg:flex-row lg:gap-4 xl:gap-6 xl:pl-4">
         <div className="mb-2 flex flex-col justify-center md:pr-2 lg:mb-0 lg:gap-0 xl:pr-8">
           <h2 className="text-2xl font-bold">
-            {/* TODO: If there are other days map those too?? */}
+            {/* TODO: If there are other service days, map those too?? */}
             {title}
           </h2>
           <p className="hidden max-w-[18vw] text-sm lg:block xl:max-w-[600px]">
