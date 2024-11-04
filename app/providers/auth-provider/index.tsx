@@ -144,11 +144,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: formData,
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Unknown error occurred");
+      }
+
       const { encryptedToken } = await response.json();
 
       handleLogin(encryptedToken);
     } catch (error) {
       handleError(error, "Login error:");
+      throw error; // Re-throw the error to be caught by the caller
     }
   };
 

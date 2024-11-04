@@ -50,6 +50,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
     "email" | "phone" | "unknown"
   >("unknown");
   const [newUser, setNewUser] = useState<NewUser | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { loginWithEmail, registerUser, requestSmsPin, loginWithSms } =
     useAuth();
 
@@ -131,10 +132,9 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   const handlePasswordLogin = async (password: string) => {
     try {
       await loginWithEmail(identity, password);
-    } catch (error) {
-      console.error("Error logging in with password:", error);
-    } finally {
       setOpenModal(false);
+    } catch (error) {
+      throw error;
     }
   };
 
