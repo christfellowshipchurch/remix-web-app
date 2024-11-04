@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const fetcher = useFetcher();
   const [user, setUser] = useState<User | null>(null);
-  const { logout } = useAuth();
+  const { logout, isLoading } = useAuth();
 
   useEffect(() => {
     if (fetcher.state === "idle") {
@@ -51,7 +51,9 @@ export default function Index() {
           <Button href="/articles/10-ways-to-be-generous">
             Check out a new Article
           </Button>
-          {user ? (
+          {isLoading ? (
+            <>Loading...</>
+          ) : user ? (
             <>
               <Button intent={"secondary"} onClick={logout}>
                 Logout

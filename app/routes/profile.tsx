@@ -28,7 +28,7 @@ export default function MyProfile() {
   const { logout } = useAuth();
 
   return (
-    <div className="p-10 text-wrap space-y-4">
+    <div className="p-10 text-wrap space-y-4 flex flex-col items-center pt-32">
       <img src={photo} alt="User profile" className="rounded-full w-32 h-32" />
       {fullName ? (
         <p className="text-xl font-bold">{fullName}</p>
