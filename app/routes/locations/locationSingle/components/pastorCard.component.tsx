@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
-
+import Icon from "~/primitives/icon";
 const PastorCard = () => {
   return (
     <>
@@ -18,14 +18,10 @@ const DesktopPastorCard = () => {
     city,
     state,
     postalCode,
-    campusPastors,
     mapLink,
-    campusInstagram,
     campusMapImage,
     phoneNumber,
     url,
-    youtube,
-    facebook,
   } = useLoaderData<LoaderReturnType>();
   const pastorCardBottom = url === "cf-everywhere" ? "-100px" : "-380px";
   const isEspanol = url.includes("iglesia");
@@ -41,22 +37,7 @@ const DesktopPastorCard = () => {
           bottom: pastorCardBottom,
         }}
       >
-        {/* Pastors img */}
-        <div className="flex w-full flex-col items-center pt-5">
-          <div className="flex w-full items-center justify-center gap-4">
-            <div className="h-1 w-24 border-b border-secondary_subdued" />
-            <img
-              src={campusPastors?.image}
-              alt="Campus Pastors"
-              width={120}
-              height={120}
-              className="rounded-full"
-            />
-            <div className="h-1 w-24 border-b border-secondary_subdued" />
-          </div>
-          <h3 className="pt-3 text-2xl font-bold">{campusPastors?.name}</h3>
-          <p className="italic">Campus Pastors</p>
-        </div>
+        <PastorsImage />
         {url !== "cf-everywhere" && (
           <div className="border-b border-secondary_subdued py-6" />
         )}
@@ -97,13 +78,14 @@ const DesktopPastorCard = () => {
             )}
             {/* Buttons */}
             <div className="mt-4 flex gap-3">
-              {/* TODO: Open Share Screen - Designed? */}
+              {/* TODO: Open DESKTOP Share Popup - Designed? */}
               <Button
                 intent="secondary"
                 href={
                   online ? "mailto:online@christfellowship.church" : undefined
                 }
                 size="sm"
+                className="font-bold"
               >
                 {isEspanol
                   ? "INVITA A UN AMIGO"
@@ -111,38 +93,17 @@ const DesktopPastorCard = () => {
                   ? "CONTACT US"
                   : "INVITE A FRIEND"}
               </Button>
-              <Button intent="primary" size="sm" href="/locations">
+              <Button
+                intent="primary"
+                size="sm"
+                href="/locations"
+                className="font-bold"
+              >
                 {isEspanol ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
               </Button>
             </div>
           </div>
-          {/* Social Medias */}
-          <div className="mt-10 flex items-center justify-center gap-2">
-            <a target="_blank" href={facebook}>
-              <img
-                src="/icons/cotton-candy-facebook.svg"
-                alt="Facebook"
-                width={32}
-                height={32}
-              />
-            </a>
-            <a target="_blank" href={campusInstagram}>
-              <img
-                src="/icons/cotton-candy-instagram.svg"
-                alt="Instagram"
-                width={32}
-                height={32}
-              />
-            </a>
-            <a target="_blank" href={youtube}>
-              <img
-                src="/icons/cotton-candy-youtube.svg"
-                alt="Youtube"
-                width={32}
-                height={32}
-              />
-            </a>
-          </div>
+          <LocationSocialMedias />
         </div>
       </div>
     </div>
@@ -156,15 +117,11 @@ const MobilePastorCard = () => {
     city,
     state,
     postalCode,
-    campusPastors,
     mapLink,
-    campusInstagram,
     campusMapImage,
     name,
     phoneNumber,
     url,
-    youtube,
-    facebook,
   } = useLoaderData<LoaderReturnType>();
   const isEspanol = url.includes("iglesia");
   const online = url === "cf-everywhere";
@@ -181,22 +138,7 @@ const MobilePastorCard = () => {
 
   return (
     <div className="flex w-full flex-col pb-5 pt-4 text-center lg:hidden">
-      {/* Pastors Image */}
-      <div className="flex w-full flex-col items-center pt-5">
-        <div className="flex w-full items-center justify-center gap-4">
-          <div className="h-1 w-24 border-b border-secondary_subdued" />
-          <img
-            src={campusPastors?.image}
-            alt="Campus Pastors"
-            width={120}
-            height={120}
-            className="rounded-full"
-          />
-          <div className="h-1 w-24 border-b border-secondary_subdued" />
-        </div>
-        <h3 className="pt-3 text-2xl font-bold">{campusPastors?.name}</h3>
-        <p className="italic">Campus Pastors</p>
-      </div>
+      <PastorsImage />
       <div className="pb-6 pt-5">
         {/* Campus Location */}
         <div className="flex w-full flex-col items-center">
@@ -234,7 +176,6 @@ const MobilePastorCard = () => {
           )}
           {/* Buttons */}
           <div className="mt-4 flex gap-3">
-            {/* TODO: Open Share Screen on Mobile */}
             <Button
               intent="secondary"
               href={
@@ -257,6 +198,7 @@ const MobilePastorCard = () => {
                   : undefined
               }
               size="sm"
+              className="font-bold"
             >
               {isEspanol
                 ? "INVITA A UN AMIGO"
@@ -264,39 +206,59 @@ const MobilePastorCard = () => {
                 ? "CONTACT US"
                 : "INVITE A FRIEND"}
             </Button>
-            <Button intent="primary" size="sm" href="/locations">
+            <Button
+              className="font-bold"
+              intent="primary"
+              size="sm"
+              href="/locations"
+            >
               {isEspanol ? "OTRAS UBICACIONES" : "MORE LOCATIONS"}
             </Button>
           </div>
         </div>
-        {/* Social Medias */}
-        <div className="mt-8 flex items-center justify-center gap-2">
-          <a target="_blank" href={facebook}>
-            <img
-              src="/icons/cotton-candy-facebook.svg"
-              alt="Facebook"
-              width={32}
-              height={32}
-            />
-          </a>
-          <a target="_blank" href={campusInstagram}>
-            <img
-              src="/icons/cotton-candy-instagram.svg"
-              alt="Instagram"
-              width={32}
-              height={32}
-            />
-          </a>
-          <a target="_blank" href={youtube}>
-            <img
-              src="/icons/cotton-candy-youtube.svg"
-              alt="Youtube"
-              width={32}
-              height={32}
-            />
-          </a>
-        </div>
+        <LocationSocialMedias />
       </div>
+    </div>
+  );
+};
+
+const PastorsImage = () => {
+  const { campusPastors } = useLoaderData<LoaderReturnType>();
+
+  return (
+    <div className="flex w-full flex-col items-center pt-5">
+      <div className="flex w-full items-center justify-center gap-4">
+        <div className="h-1 w-24 border-b border-secondary_subdued" />
+        <img
+          src={campusPastors?.image}
+          alt="Campus Pastors"
+          width={120}
+          height={120}
+          className="rounded-full"
+        />
+        <div className="h-1 w-24 border-b border-secondary_subdued" />
+      </div>
+      <h3 className="pt-3 text-2xl font-bold">{campusPastors?.name}</h3>
+      <p className="italic">Campus Pastors</p>
+    </div>
+  );
+};
+
+const LocationSocialMedias = () => {
+  const { campusInstagram, youtube, facebook } =
+    useLoaderData<LoaderReturnType>();
+
+  return (
+    <div className="mt-8 lg:mt-10 flex items-center justify-center gap-2">
+      <a target="_blank" href={facebook}>
+        <Icon name="facebook" size={32} color="#6BCABA" />
+      </a>
+      <a target="_blank" href={campusInstagram}>
+        <Icon name="instagram" size={34} color="#6BCABA" />
+      </a>
+      <a target="_blank" href={youtube}>
+        <Icon name="youtube" size={38} color="#6BCABA" />
+      </a>
     </div>
   );
 };

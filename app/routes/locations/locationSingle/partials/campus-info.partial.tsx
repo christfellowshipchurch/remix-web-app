@@ -12,7 +12,6 @@ export const CampusInfo = () => {
   return (
     <>
       <ServiceTimes />
-      {/* TODO: Pass Data */}
       {url === "cf-everywhere" && <WaysToJoinOnlineMobile />}
       <div className="flex w-full flex-col items-center">
         <PastorCard />
