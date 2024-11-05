@@ -37,7 +37,13 @@ export const Icon = ({
         height={height || size}
       >
         {path.map((d, i) => {
-          return <path d={d?.d} key={i} fill={color || d?.fill || "none"} />;
+          return (
+            <path
+              d={d?.d}
+              key={i}
+              fill={color || ("fill" in d ? d.fill : "black")}
+            />
+          );
         })}
       </svg>
     );
@@ -55,7 +61,7 @@ export const Icon = ({
       width={width || size}
       height={height || size}
     >
-      <path d={path} fill={color || "none"} />
+      <path d={path} fill={color || "black"} />
     </svg>
   );
 };
