@@ -2,13 +2,13 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import {
   fetchCampusData,
-  fetchComingUpTitle,
   fetchComingUpChildren,
+  fetchComingUpTitle,
   fetchPastorData,
   fetchPastorIdByAlias,
   fetchWeekdaySchedules,
-} from "~/lib/server/fetchLocationSingleData.server";
-import { createImageUrlFromGuid } from "~/lib/utils";
+} from "~/lib/.server/fetchLocationSingleData";
+import { createImageUrlFromGuid, getIdentifierType } from "~/lib/utils";
 
 export type dayTimes = {
   day: string;
