@@ -1,7 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import AuthModal from "~/components/modals/auth";
+import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
 import Button from "~/primitives/button";
 import { useAuth, User } from "~/providers/auth-provider";
 
@@ -12,27 +13,27 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+/** Example of how to return current user via sever-side */
+export const loader: LoaderFunction = async ({ request }) => {
+  const userData = await getUserFromRequest(request);
+
+  if (!userData) {
+    return null; // here you can redirect to a login page etc.
+  }
+
+  const user = await userData.json();
+
+  return user;
+};
+
 export default function Index() {
-  const fetcher = useFetcher();
+  const userData: User | null = useLoaderData(); // Get logged in user data server-side
   const [user, setUser] = useState<User | null>(null);
   const { logout, isLoading } = useAuth();
 
   useEffect(() => {
-    if (fetcher.state === "idle") {
-      fetcher.load("/profile?redirect=false");
-    }
-  }, []);
-
-  useEffect(() => {
-    const data = fetcher.data as { message?: string } | User;
-    if (data) {
-      if ("message" in data && data.message === "Token not found!") {
-        setUser(null);
-      } else {
-        setUser(data as User);
-      }
-    }
-  }, [fetcher.data]);
+    setUser(userData);
+  }, [userData]);
 
   return (
     <div className="flex h-screen items-center justify-center">
