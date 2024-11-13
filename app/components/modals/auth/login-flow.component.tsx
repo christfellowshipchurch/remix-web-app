@@ -3,7 +3,7 @@
  * It interacts with the AuthProvider to handle user registration, login, and pin verification.
  */
 import React, { useEffect, useState } from "react";
-import { useAuth } from "~/providers/auth-provider";
+import { RegistrationTypes, useAuth } from "~/providers/auth-provider";
 import AccountCreation from "./account-creation.component";
 import CreatePassword from "./create-password.component";
 import InitialSignUp from "./initial-signup.component";
@@ -26,6 +26,8 @@ export interface NewUser {
   lastName: string;
   birthDate: string;
   gender: string;
+  email?: string;
+  phone?: string;
 }
 
 interface LoginFlowProps {
@@ -44,13 +46,12 @@ const determineIdentityType = (
 };
 
 const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
-  const [step, setStep] = useState<LoginStep>(LoginStep.LOGIN);
+  const [step, setStep] = useState<LoginStep>(LoginStep.INITIAL_SIGNUP);
   const [identity, setIdentity] = useState("");
   const [identityType, setIdentityType] = useState<
     "email" | "phone" | "unknown"
   >("unknown");
   const [newUser, setNewUser] = useState<NewUser | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const { loginWithEmail, registerUser, requestSmsPin, loginWithSms } =
     useAuth();
 
@@ -70,6 +71,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   const handleAccountCreation = async (userData: NewUser) => {
     if (userData) {
       setNewUser(userData);
+      console.log(userData);
       switch (true) {
         case identityType === "email":
           setStep(LoginStep.CREATE_PASSWORD);
@@ -91,7 +93,8 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   const handleCreatePassword = async (password: string) => {
     if (password) {
       const userInputDataEmail = {
-        email: identityType === "email" ? identity : null,
+        phoneNumber: newUser?.phone || null,
+        email: identity as string,
         password,
         userProfile: [
           { field: "FirstName", value: newUser?.firstName || "" },
@@ -100,7 +103,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
           { field: "Gender", value: newUser?.gender || "" },
         ],
       };
-      // await registerUser(userInputDataEmail, "email")
+      await registerUser(userInputDataEmail, RegistrationTypes.EMAIL);
       setOpenModal(false);
     }
   };
@@ -162,7 +165,12 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
       case LoginStep.INITIAL_SIGNUP:
         return <InitialSignUp onSubmit={handleInitialSignUp} />;
       case LoginStep.ACCOUNT_CREATION:
-        return <AccountCreation onSubmit={handleAccountCreation} />;
+        return (
+          <AccountCreation
+            identityType={identityType}
+            onSubmit={handleAccountCreation}
+          />
+        );
       case LoginStep.CREATE_PASSWORD:
         return <CreatePassword onSubmit={handleCreatePassword} />;
       case LoginStep.LOGIN:

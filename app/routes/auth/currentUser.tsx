@@ -28,10 +28,12 @@ export const currentUser = async (token: string) => {
     if (!rockCookie) {
       throw new AuthenticationError("rockCookie is undefined");
     }
+
     const { id, fullName, photo, email } = await getCurrentPerson(rockCookie);
 
-    const userPhoto = createImageUrlFromGuid(photo.guid);
-
+    /**
+     * todo: Finish implementing the rest of the user data
+     */
     const currentUser: User = {
       id,
       fullName,
@@ -39,7 +41,7 @@ export const currentUser = async (token: string) => {
       birthDate: "",
       gender: "",
       guid: "",
-      photo: userPhoto,
+      photo: photo ? createImageUrlFromGuid(photo.guid) : "",
     };
 
     return json<User>(currentUser);

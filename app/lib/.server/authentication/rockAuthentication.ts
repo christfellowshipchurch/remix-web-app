@@ -1,10 +1,17 @@
 /**
  * This file contains our main authentication functions for Rock.
  */
+import { checkUserExists } from "~/routes/auth/userExists";
 import { AuthenticationError, RockAPIError } from "../errorTypes";
-import { fetchRockData } from "../fetchRockData";
+import { fetchRockData, postRockData } from "../fetchRockData";
 import { createPerson } from "../rockPerson";
 import { RockUserLogin } from "./authentication.types";
+import { fieldsAsObject } from "~/lib/utils";
+import { authenticateUser } from "./authenticateUser";
+import {
+  createPhoneNumberInRock,
+  parsePhoneNumberUtil,
+} from "./smsAuthentication";
 
 export const fetchUserCookie = async (
   Username: string,
@@ -69,6 +76,7 @@ export const getCurrentPerson = async (cookie: string): Promise<any> => {
       "People/GetCurrentPerson",
       {},
       {
+        "Authorization-Token": "",
         Cookie: cookie,
       }
     );
@@ -103,20 +111,16 @@ export const createRockSession = async (cookie: string): Promise<any> => {
   }
 
   try {
-    const response = await fetch(
-      `${process.env.ROCK_API}/InteractionSessions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization-Token": `${process.env.ROCK_TOKEN}`,
-          Cookie: cookie,
-        },
-        body: JSON.stringify({
-          PersonAliasId: currentPerson.primaryAliasId,
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.ROCK_API}InteractionSessions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+      },
+      body: JSON.stringify({
+        PersonAliasId: currentPerson.primaryAliasId,
+      }),
+    });
 
     if (!response.ok) {
       const errorDetails = await response.text();
@@ -127,6 +131,8 @@ export const createRockSession = async (cookie: string): Promise<any> => {
     }
 
     const data = await response.json();
+
+    console.log("Rock Session data:", data);
     if (!data) {
       throw new RockAPIError("Empty response from Rock Session creation", 500);
     }
@@ -182,4 +188,65 @@ export const fetchUserLogin = async (
 
   // Ensures that the return value is an object
   return Array.isArray(userLogin) ? userLogin[0] : userLogin;
+};
+
+export const createUserLogin = async (
+  identity: string,
+  password: string,
+  personId: number
+) => {
+  try {
+    return await postRockData("UserLogins", {
+      PersonId: personId,
+      EntityTypeId: 27, // A default setting we use in Rock-person-creation-flow
+      UserName: identity,
+      isConfirmed: true,
+      PlainTextPassword: password,
+      LastLoginDateTime: new Date(),
+    });
+  } catch (err) {
+    throw new Error("Unable to create user login!");
+  }
+};
+
+export const registerPersonWithEmail = async ({
+  email,
+  phoneNumber,
+  password,
+  userProfile,
+}: {
+  email: string;
+  phoneNumber?: string;
+  password: string;
+  userProfile: any;
+}) => {
+  const personExists = await checkUserExists(email);
+  if (personExists) throw new Error("User already exists!");
+
+  const profileFields = fieldsAsObject(userProfile || []);
+  const personId = await createUserProfile({ email, ...profileFields });
+
+  /**
+   * If the phone number is provided, we need to check if it already exists before creating it in Rock.
+   */
+  if (phoneNumber && phoneNumber !== "") {
+    const { significantNumber, countryCode } =
+      parsePhoneNumberUtil(phoneNumber);
+    const existingPhoneNumbers = await fetchRockData("PhoneNumbers", {
+      $select: "PersonId",
+      $filter: `Number eq '${significantNumber}'`,
+    });
+
+    if (existingPhoneNumbers) {
+      if (!countryCode) {
+        throw new Error("Country code is required for creating phone number");
+      }
+      await createPhoneNumberInRock({ personId, phoneNumber, countryCode });
+    }
+  }
+
+  await createUserLogin(email, password, personId);
+
+  const token = await authenticateUser(email, password);
+  return token;
 };
