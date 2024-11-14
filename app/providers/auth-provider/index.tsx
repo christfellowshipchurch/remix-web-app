@@ -192,7 +192,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // todo : implement registerUser
   const registerUser = async (
     userInputData: UserInputData,
     registrationType: RegistrationTypes
@@ -208,9 +207,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: formData,
       });
 
-      const { token } = await response.json();
+      const { encryptedToken } = await response.json();
 
-      handleLogin(token);
+      handleLogin(encryptedToken);
     } catch (error) {
       handleError(error, "Person registration error:");
     }

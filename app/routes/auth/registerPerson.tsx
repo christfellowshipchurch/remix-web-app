@@ -1,6 +1,7 @@
 import { json } from "@remix-run/node";
 import { registerPersonWithEmail } from "~/lib/.server/authentication/rockAuthentication";
 import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
+import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
 
 type RegisterPersonType = {
   registrationType: RegistrationTypes;
@@ -18,11 +19,16 @@ export const registerPerson = async ({
 
   switch (registrationType) {
     case "sms":
-      // todo : implement SMS registration
-      break;
+      try {
+        const token = await authenticateOrRegisterWithSms(registrationData);
+        return json({ encryptedToken: token });
+      } catch (error: any) {
+        return json({ error: error.message }, { status: error.statusCode });
+      }
     case "email":
       try {
-        await registerPersonWithEmail(registrationData);
+        const token = await registerPersonWithEmail(registrationData);
+        return json({ encryptedToken: token });
       } catch (error: any) {
         return json({ error: error.message }, { status: error.statusCode });
       }

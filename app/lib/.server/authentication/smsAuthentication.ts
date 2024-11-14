@@ -77,9 +77,11 @@ export const createPhoneNumberInRock = async ({
 export const createOrFindSmsLoginUserId = async ({
   phoneNumber,
   userProfile,
+  email = null,
 }: {
   phoneNumber: string;
   userProfile: any[];
+  email?: string | null;
 }): Promise<string> => {
   const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
 
@@ -88,12 +90,13 @@ export const createOrFindSmsLoginUserId = async ({
     $filter: `Number eq '${significantNumber}'`,
   });
 
+  /** if the phone number in Rock already is attached to a person we will just return that person instead */
   if (existingPhoneNumbers.length > 0) {
     return existingPhoneNumbers[0].personId;
   }
 
   const profileFields = fieldsAsObject(userProfile || []);
-  const personId = await createUserProfile({ email: null, ...profileFields });
+  const personId = await createUserProfile({ email, ...profileFields });
 
   if (!countryCode) {
     throw new AuthenticationError("Country code is required for phone number");
