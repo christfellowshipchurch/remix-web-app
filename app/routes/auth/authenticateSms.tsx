@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { isRouteErrorResponse } from "@remix-run/react";
-import { authenticateWithSms } from "~/lib/.server/authentication/authenticateUserSms";
+import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
 
 type AuthenticateSmsData = {
   pin: string;
@@ -11,7 +11,6 @@ type AuthenticateSmsData = {
 export const authenticateSms = async ({
   pin,
   phoneNumber,
-  userProfile: userProfileString,
 }: AuthenticateSmsData) => {
   if (!pin || !phoneNumber) {
     console.error("Missing required fields:", {
@@ -26,25 +25,11 @@ export const authenticateSms = async ({
     );
   }
 
-  // todo : we need to review/implement this with  register user...
-  let userProfile;
-  if (
-    userProfileString !== undefined &&
-    typeof userProfileString !== "string"
-  ) {
-    try {
-      userProfile = JSON.parse(userProfileString);
-    } catch (parseError) {
-      console.error("Failed to parse userProfile:", parseError);
-      return json({ error: "Invalid user profile format" }, { status: 400 });
-    }
-  }
-
   try {
-    const encryptedToken = await authenticateWithSms({
+    const encryptedToken = await authenticateOrRegisterWithSms({
       pin,
       phoneNumber,
-      userProfile,
+      userProfile: [], //not creating new profile, just authenticating
     });
 
     return json({ encryptedToken });

@@ -71,14 +71,13 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   const handleAccountCreation = async (userData: NewUser) => {
     if (userData) {
       setNewUser(userData);
-      console.log(userData);
       switch (true) {
         case identityType === "email":
           setStep(LoginStep.CREATE_PASSWORD);
           break;
         // If using a phone number, we'll request a pin and register the user with it
         case identityType === "phone":
-          // await requestSmsPin(identity)
+          await requestSmsPin(identity);
           setStep(LoginStep.PIN_SCREEN);
           break;
         default:
@@ -144,7 +143,8 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   const handlePinLoginOrRegistration = async (pin: string) => {
     if (newUser) {
       const userInputDataSms = {
-        phoneNumber: identityType === "phone" ? identity : null,
+        phoneNumber: identity,
+        email: newUser.email || null,
         pin,
         userProfile: [
           { field: "FirstName", value: newUser?.firstName || "" },
@@ -153,7 +153,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
           { field: "Gender", value: newUser?.gender || "" },
         ],
       };
-      // await registerUser(userInputDataSms, "sms")
+      await registerUser(userInputDataSms, RegistrationTypes.SMS);
     } else {
       await loginWithSms(identity, pin);
     }

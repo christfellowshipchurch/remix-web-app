@@ -132,7 +132,6 @@ export const createRockSession = async (cookie: string): Promise<any> => {
 
     const data = await response.json();
 
-    console.log("Rock Session data:", data);
     if (!data) {
       throw new RockAPIError("Empty response from Rock Session creation", 500);
     }
@@ -247,6 +246,5 @@ export const registerPersonWithEmail = async ({
 
   await createUserLogin(email, password, personId);
 
-  const token = await authenticateUser(email, password);
-  return token;
+  return await authenticateUser(email, password);
 };
