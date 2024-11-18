@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ConnectCard from "./card";
 import ConnectCardConfirmation from "./confirmation";
+import ConnectCardForm from "./form";
 
 interface ConnectCardFlowProps {
   setOpenModal: (open: boolean) => void;
@@ -16,16 +16,16 @@ const ConnectCardFlow: React.FC<ConnectCardFlowProps> = ({ setOpenModal }) => {
     ConnectCardStep.CONNECT_CARD
   );
 
-  const handleConnectSubmit = async (connectInput: string): Promise<void> => {
-    if (connectInput === "Connect") {
-      setStep(ConnectCardStep.CONFIRMATION);
-    }
-  };
-
   const renderStep = () => {
     switch (step) {
       case ConnectCardStep.CONNECT_CARD:
-        return <ConnectCard onSubmit={handleConnectSubmit} />;
+        return (
+          <ConnectCardForm
+            campuses={[]}
+            checkboxes={[]}
+            onSuccess={() => setStep(ConnectCardStep.CONFIRMATION)}
+          />
+        );
       case ConnectCardStep.CONFIRMATION:
         return <ConnectCardConfirmation />;
       default:
