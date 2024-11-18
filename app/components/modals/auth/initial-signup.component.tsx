@@ -70,9 +70,9 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
           <Form.Label>Mobile Number or Email*</Form.Label>
           <Form.Control asChild>
             <TextFieldInput
-              identity={identity}
+              value={identity}
               error={error}
-              setIdentity={setIdentity}
+              setValue={setIdentity}
               setError={setError}
             />
           </Form.Control>
