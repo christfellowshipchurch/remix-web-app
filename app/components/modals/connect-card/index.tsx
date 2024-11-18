@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Modal from "~/primitives/Modal";
 import Button from "~/primitives/button";
-import ReminderFlow from "./reminder-flow";
+import ConnectCardFlow from "./connect-card-flow";
 
-export default function SetAReminderModal({
+export default function ConnectCardModal({
   isEspanol,
 }: {
   isEspanol?: boolean;
@@ -13,12 +13,12 @@ export default function SetAReminderModal({
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
       <Modal.Button asChild className="mr-2">
-        <Button intent="primary" className="w-full rounded-xl">
-          {isEspanol ? "Recuérdame" : "Set a Reminder"}
+        <Button intent="white" className="rounded-xl border-0">
+          {isEspanol ? "Conéctate" : "Get Connected"}
         </Button>
       </Modal.Button>
       <Modal.Content>
-        <ReminderFlow setOpenModal={setOpenModal} />
+        <ConnectCardFlow setOpenModal={setOpenModal} />
       </Modal.Content>
     </Modal>
   );

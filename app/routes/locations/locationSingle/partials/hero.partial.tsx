@@ -5,10 +5,15 @@ import Button from "~/primitives/button";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
+import Modal from "~/primitives/Modal";
+import ConnectCardFlow from "~/components/modals/connect-card/connect-card-flow";
+import { useState } from "react";
+import ReminderFlow from "~/components/modals/set-a-reminder/reminder-flow";
 
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock
   const { name } = useLoaderData<LoaderReturnType>();
+  const [openModal, setOpenModal] = useState(false);
   const headerContent = find(headerData, { name });
   const videoSrc = headerContent?.backgroundVideo?.desktop;
 
@@ -31,25 +36,39 @@ export const LocationsHero = () => {
         <HeroTitleSection name={name} />
         <div className="w-3/5 md:mt-12 md:border-t md:border-[#E7E7E7]" />
         <div className="flex w-full flex-col gap-4 md:flex-row md:pt-6">
-          {/* Add onClick modals */}
-          <Button
-            href={`${
-              name?.includes("Online")
-                ? "https://www.youtube.com/user/christfellowship"
-                : "#set-a-reminder"
-            }`}
-            intent="primary"
-            className="w-full rounded-xl"
-          >
-            {isEspanol
-              ? "Recuérdame"
-              : name?.includes("Online")
-              ? "Join Us Online"
-              : "Set a Reminder"}
-          </Button>
-          <Button intent="white" className="rounded-xl border-0">
-            {isEspanol ? "Conéctate" : "Get Connected"}
-          </Button>
+          {!name?.includes("Online") ? (
+            <Modal open={openModal} onOpenChange={setOpenModal}>
+              <Modal.Button asChild className="mr-2">
+                <Button intent="primary" className="w-full rounded-xl">
+                  {isEspanol ? "Recuérdame" : "Set a Reminder"}
+                </Button>
+              </Modal.Button>
+              <Modal.Content>
+                <ReminderFlow
+                  isEspanol={isEspanol}
+                  setOpenModal={setOpenModal}
+                />
+              </Modal.Content>
+            </Modal>
+          ) : (
+            <Button
+              href="https://www.youtube.com/user/christfellowship"
+              intent="primary"
+              className="w-full rounded-xl"
+            >
+              Join Us Online
+            </Button>
+          )}
+          <Modal open={openModal} onOpenChange={setOpenModal}>
+            <Modal.Button asChild className="mr-2">
+              <Button intent="white" className="rounded-xl border-0">
+                {isEspanol ? "Conéctate" : "Get Connected"}
+              </Button>
+            </Modal.Button>
+            <Modal.Content>
+              <ConnectCardFlow setOpenModal={setOpenModal} />
+            </Modal.Content>
+          </Modal>
         </div>
       </div>
     </div>
