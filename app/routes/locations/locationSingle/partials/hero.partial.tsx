@@ -39,7 +39,7 @@ export const LocationsHero = () => {
           {!name?.includes("Online") ? (
             <Modal open={openModal} onOpenChange={setOpenModal}>
               <Modal.Button asChild className="mr-2">
-                <Button intent="primary" className="w-full rounded-xl">
+                <Button intent="primary" className="rounded-xl">
                   {isEspanol ? "Recuérdame" : "Set a Reminder"}
                 </Button>
               </Modal.Button>
@@ -54,7 +54,7 @@ export const LocationsHero = () => {
             <Button
               href="https://www.youtube.com/user/christfellowship"
               intent="primary"
-              className="w-full rounded-xl"
+              className="rounded-xl"
             >
               Join Us Online
             </Button>
