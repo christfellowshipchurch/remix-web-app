@@ -1,3 +1,3 @@
-import { ConnectCardModal } from "./modal.component";
+import ConnectCardModal from "./modal.component";
 
 export default ConnectCardModal;

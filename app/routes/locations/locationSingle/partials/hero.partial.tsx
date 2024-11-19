@@ -6,9 +6,9 @@ import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
 import Modal from "~/primitives/Modal";
-import ConnectCardFlow from "~/components/modals/connect-card/connect-card-flow.component";
 import { useState } from "react";
 import ReminderFlow from "~/components/modals/set-a-reminder/reminder-flow";
+import ConnectCardModal from "~/components/modals/connect-card";
 
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock
@@ -59,16 +59,7 @@ export const LocationsHero = () => {
               Join Us Online
             </Button>
           )}
-          <Modal open={openModal} onOpenChange={setOpenModal}>
-            <Modal.Button asChild className="mr-2">
-              <Button intent="white" className="rounded-xl border-0">
-                {isEspanol ? "Conéctate" : "Get Connected"}
-              </Button>
-            </Modal.Button>
-            <Modal.Content>
-              <ConnectCardFlow setOpenModal={setOpenModal} />
-            </Modal.Content>
-          </Modal>
+          <ConnectCardModal isEspanol={isEspanol} />
         </div>
       </div>
     </div>

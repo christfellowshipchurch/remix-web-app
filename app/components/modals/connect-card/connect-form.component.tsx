@@ -7,27 +7,20 @@ import { useFetcher } from "@remix-run/react";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 interface ConnectCardProps {
+  formFieldData: ConnectCardLoaderReturnType;
   onSuccess: () => void;
 }
 
-const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
+const ConnectCardForm: React.FC<ConnectCardProps> = ({
+  formFieldData,
+  onSuccess,
+}) => {
   const [isOther, setIsOther] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fetcher = useFetcher();
-  const [data, setData] = useState<ConnectCardLoaderReturnType>({
-    campuses: [],
-    allThatApplies: [],
-  });
 
   useEffect(() => {
-    fetcher.load("/connect-card");
-  }, []);
-
-  useEffect(() => {
-    if (fetcher.data) {
-      setData(fetcher.data as ConnectCardLoaderReturnType);
-    }
     if (fetcher.state === "idle" && fetcher.data) {
       setLoading(false);
     }
@@ -60,7 +53,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
   };
 
-  const { campuses, allThatApplies } = data;
+  const { campuses, allThatApplies } = formFieldData;
 
   const otherCheckbox = allThatApplies.find(
     (checkbox) => checkbox.value === "Other"
@@ -75,7 +68,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     type: string,
     requiredMessage: string
   ) => (
-    <Form.Field name={name} className="flex flex-col">
+    <Form.Field name={name} className="flex flex-col mb-4">
       <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
       <Form.Control asChild>
         <input type={type} required className={defaultInputStyles} />
@@ -104,7 +97,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       <h2 className="mb-6 text-3xl text-secondary font-bold">Get Connected</h2>
       <Form.Root
         onSubmit={handleSubmit}
-        className="grid text-left grid-cols-1 gap-6 md:grid-cols-2"
+        className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"
       >
         {renderInputField(
           "firstName",
@@ -159,7 +152,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name="decision" className="flex gap-2 md:items-center">
+        <Form.Field name="decision" className="flex gap-2 md:items-center mt-3">
           <Form.Control asChild>
             <input
               className="mb-1"
@@ -210,7 +203,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
 
         {error && <p className="text-alert col-span-2">{error}</p>}
 
-        <Form.Submit className="mt-2 mx-auto col-span-1 md:col-span-2" asChild>
+        <Form.Submit className="mt-6 mx-auto col-span-1 md:col-span-2" asChild>
           <Button
             className="w-40 h-12"
             size="md"
