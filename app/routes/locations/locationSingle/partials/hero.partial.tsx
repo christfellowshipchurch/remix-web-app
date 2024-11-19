@@ -6,7 +6,7 @@ import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
 import Modal from "~/primitives/Modal";
-import ConnectCardFlow from "~/components/modals/connect-card/connect-card-flow";
+import ConnectCardFlow from "~/components/modals/connect-card/connect-card-flow.component";
 import { useState } from "react";
 import ReminderFlow from "~/components/modals/set-a-reminder/reminder-flow";
 
