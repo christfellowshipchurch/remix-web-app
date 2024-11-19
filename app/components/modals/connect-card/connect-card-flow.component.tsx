@@ -1,13 +1,14 @@
 import { useState } from "react";
 import ConnectCardConfirmation from "./confirmation.component";
 import ConnectCardForm from "./connect-form.component";
+import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 enum ConnectCardStep {
   CONNECT_CARD,
   CONFIRMATION,
 }
 
-const ConnectCardFlow: React.FC = () => {
+const ConnectCardFlow: React.FC<ConnectCardLoaderReturnType> = (data) => {
   const [step, setStep] = useState<ConnectCardStep>(
     ConnectCardStep.CONNECT_CARD
   );
@@ -17,6 +18,7 @@ const ConnectCardFlow: React.FC = () => {
       case ConnectCardStep.CONNECT_CARD:
         return (
           <ConnectCardForm
+            formFieldData={data}
             onSuccess={() => setStep(ConnectCardStep.CONFIRMATION)}
           />
         );

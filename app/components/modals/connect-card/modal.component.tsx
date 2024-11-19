@@ -10,9 +10,6 @@ export default function ConnectCardModal({
   isEspanol?: boolean;
 }) {
   const [openModal, setOpenModal] = useState(false);
-  /**
-   * Todo : This is a custom hook that fetches the connect card data that we want to switch over to so we fetch the form data on page load
-   */
   const connectCardData = useConnectCardData();
 
   return (
@@ -23,9 +20,7 @@ export default function ConnectCardModal({
         </Button>
       </Modal.Button>
       <Modal.Content>
-        <ConnectCardFlow
-        //connectCardData={connectCardData}
-        />
+        <ConnectCardFlow {...connectCardData} />
       </Modal.Content>
     </Modal>
   );
