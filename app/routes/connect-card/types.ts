@@ -4,5 +4,9 @@ export type ConnectFormType = {
   Campus: string;
   Email: string;
   PhoneNumber: string;
-  Decision?: boolean;
+};
+
+export type ConnectCardLoaderReturnType = {
+  campuses: string[];
+  allThatApplies: { guid: string; value: string }[];
 };

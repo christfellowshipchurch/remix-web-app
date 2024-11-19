@@ -1,17 +1,13 @@
 import { useState } from "react";
-import ConnectCardConfirmation from "./confirmation";
-import ConnectCardForm from "./form";
-
-interface ConnectCardFlowProps {
-  setOpenModal: (open: boolean) => void;
-}
+import ConnectCardConfirmation from "./confirmation.component";
+import ConnectCardForm from "./connect-form.component";
 
 enum ConnectCardStep {
   CONNECT_CARD,
   CONFIRMATION,
 }
 
-const ConnectCardFlow: React.FC<ConnectCardFlowProps> = ({ setOpenModal }) => {
+const ConnectCardFlow: React.FC = () => {
   const [step, setStep] = useState<ConnectCardStep>(
     ConnectCardStep.CONNECT_CARD
   );
@@ -21,8 +17,6 @@ const ConnectCardFlow: React.FC<ConnectCardFlowProps> = ({ setOpenModal }) => {
       case ConnectCardStep.CONNECT_CARD:
         return (
           <ConnectCardForm
-            campuses={[]}
-            checkboxes={[]}
             onSuccess={() => setStep(ConnectCardStep.CONFIRMATION)}
           />
         );
