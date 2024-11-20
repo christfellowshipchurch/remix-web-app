@@ -8,7 +8,13 @@ enum ConnectCardStep {
   CONFIRMATION,
 }
 
-const ConnectCardFlow: React.FC<ConnectCardLoaderReturnType> = (data) => {
+const ConnectCardFlow = ({
+  data,
+  setOpenModal,
+}: {
+  data: ConnectCardLoaderReturnType;
+  setOpenModal: (open: boolean) => void;
+}) => {
   const [step, setStep] = useState<ConnectCardStep>(
     ConnectCardStep.CONNECT_CARD
   );
@@ -23,14 +29,19 @@ const ConnectCardFlow: React.FC<ConnectCardLoaderReturnType> = (data) => {
           />
         );
       case ConnectCardStep.CONFIRMATION:
-        return <ConnectCardConfirmation />;
+        return (
+          <ConnectCardConfirmation
+            // Close modal on success
+            onSuccess={() => setOpenModal(false)}
+          />
+        );
       default:
         return null;
     }
   };
 
   return (
-    <div className="text-center text-text_primary px-8 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-[50vw]">
+    <div className="text-center text-text_primary px-8 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full md:max-w-[55vw]">
       {renderStep()}
     </div>
   );

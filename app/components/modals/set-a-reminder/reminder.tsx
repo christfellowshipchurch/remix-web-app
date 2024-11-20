@@ -29,14 +29,13 @@ interface ReminderProps {
 }
 
 const Reminder: React.FC<ReminderProps> = ({ onSubmit }) => {
-  const [campus, setCampus] = useState("");
+  const [campus, setCampus] = useState(""); // Get campus from path
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  // TODO: OTHER CHECKBOXES?
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -46,17 +45,10 @@ const Reminder: React.FC<ReminderProps> = ({ onSubmit }) => {
     /** We may be able to remove this error checking since RadixUI already handles some of it... */
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isPhoneNumber = /^\d{10}$/.test(phoneNumber); // Adjust regex for phone number format as needed
-    const isCampus = campus !== "Select a Campus";
 
     if (!isEmail && !isPhoneNumber) {
       setLoading(false);
       setError("Please enter a valid email or phone number.");
-      return;
-    }
-
-    if (!isCampus) {
-      setLoading(false);
-      setError("Please select a Campus");
       return;
     }
 

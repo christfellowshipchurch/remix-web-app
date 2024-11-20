@@ -167,7 +167,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
           </Form.Label>
         </Form.Field>
 
-        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-secondary">
+        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-secondary md:mt-8 ">
           I am looking to:
         </h3>
         {checkboxes.map(renderCheckboxField)}
