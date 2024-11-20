@@ -1,32 +1,15 @@
 import { useState, ReactNode } from "react";
 import Modal from "~/primitives/Modal";
-import Button from "~/primitives/button";
 import ReminderFlow from "./reminder-flow";
-
-interface ModalButtonProps {
-  children: ReactNode;
-  className?: string;
-  onClick?: () => void;
-}
-
-const DefaultModalButton = ({
-  children,
-  className,
-  onClick,
-}: ModalButtonProps) => (
-  <Button onClick={onClick} className={`rounded-xl ${className}`}>
-    {children}
-  </Button>
-);
-
+import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 interface SetAReminderModalProps {
   campus?: string;
-  ModalButton?: React.ComponentType<ModalButtonProps>;
+  ModalButton?: React.ComponentType<ButtonProps>;
 }
 
 export default function SetAReminderModal({
   campus,
-  ModalButton = DefaultModalButton,
+  ModalButton = Button,
 }: SetAReminderModalProps) {
   const [openModal, setOpenModal] = useState(false);
 
