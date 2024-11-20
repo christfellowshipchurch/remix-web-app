@@ -5,15 +5,12 @@ import Button from "~/primitives/button";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
-import Modal from "~/primitives/Modal";
-import { useState } from "react";
-import ReminderFlow from "~/components/modals/set-a-reminder/reminder-flow";
+import SetAReminderModal from "~/components/modals/set-a-reminder";
 import ConnectCardModal from "~/components/modals/connect-card";
 
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock
   const { name } = useLoaderData<LoaderReturnType>();
-  const [openModal, setOpenModal] = useState(false);
   const headerContent = find(headerData, { name });
   const videoSrc = headerContent?.backgroundVideo?.desktop;
 
@@ -37,19 +34,7 @@ export const LocationsHero = () => {
         <div className="w-3/5 md:mt-12 md:border-t md:border-[#E7E7E7]" />
         <div className="flex w-full flex-col gap-4 md:flex-row md:pt-6">
           {!name?.includes("Online") ? (
-            <Modal open={openModal} onOpenChange={setOpenModal}>
-              <Modal.Button asChild className="mr-2">
-                <Button intent="primary" className="rounded-xl">
-                  {isEspanol ? "Recuérdame" : "Set a Reminder"}
-                </Button>
-              </Modal.Button>
-              <Modal.Content>
-                <ReminderFlow
-                  isEspanol={isEspanol}
-                  setOpenModal={setOpenModal}
-                />
-              </Modal.Content>
-            </Modal>
+            <SetAReminderModal campus={name} />
           ) : (
             <Button
               href="https://www.youtube.com/user/christfellowship"

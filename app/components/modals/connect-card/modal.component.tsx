@@ -1,26 +1,50 @@
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import Modal from "~/primitives/Modal";
 import Button from "~/primitives/button";
 import { useConnectCardData } from "./connect-card.data";
 import ConnectCardFlow from "./connect-card-flow.component";
 
+interface ModalButtonProps {
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+const DefaultModalButton = ({
+  children,
+  className,
+  onClick,
+}: ModalButtonProps) => (
+  <Button
+    intent="white"
+    onClick={onClick}
+    className={`rounded-xl border-0 ${className}`}
+  >
+    {children}
+  </Button>
+);
+
+interface ConnectCardModalProps {
+  isEspanol?: boolean;
+  ModalButton?: React.ComponentType<ModalButtonProps>;
+}
+
 export default function ConnectCardModal({
   isEspanol,
-}: {
-  isEspanol?: boolean;
-}) {
+  ModalButton = DefaultModalButton,
+}: ConnectCardModalProps) {
   const [openModal, setOpenModal] = useState(false);
   const connectCardData = useConnectCardData();
 
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
       <Modal.Button asChild className="mr-2">
-        <Button intent="white" className="rounded-xl border-0">
+        <ModalButton onClick={() => setOpenModal(true)}>
           {isEspanol ? "Conéctate" : "Get Connected"}
-        </Button>
+        </ModalButton>
       </Modal.Button>
       <Modal.Content>
-        <ConnectCardFlow {...connectCardData} />
+        <ConnectCardFlow data={connectCardData} setOpenModal={setOpenModal} />
       </Modal.Content>
     </Modal>
   );
