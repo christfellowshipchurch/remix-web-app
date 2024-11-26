@@ -23,8 +23,14 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data) {
       setLoading(false);
+      const data = fetcher.data as { error?: string };
+      if (data.error) {
+        setError(data.error);
+      } else {
+        onSuccess();
+      }
     }
-  }, [fetcher.state, fetcher.data]);
+  }, [fetcher.state, fetcher.data, onSuccess]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,22 +39,12 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
     const formData = new FormData(event.currentTarget);
 
     try {
-      await fetcher.submit(formData, {
+      fetcher.submit(formData, {
         method: "post",
         action: "/connect-card",
       });
-
-      if (fetcher.state === "idle" && fetcher.data) {
-        const data = fetcher.data as { error?: string };
-        if (data.error) {
-          setError(data.error);
-        } else {
-          onSuccess();
-        }
-      }
     } catch (err) {
       setError("An error occurred. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -139,9 +135,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
                 }}
               >
                 <option value={""}>Select a Campus</option>
-                {campuses.map((campus, index) => (
-                  <option key={index} value={campus}>
-                    {campus}
+                {campuses.map(({ guid, name }, index) => (
+                  <option key={index} value={guid}>
+                    {name}
                   </option>
                 ))}
               </select>
@@ -159,7 +155,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               type="checkbox"
               id="decision"
               name="decision"
-              value="decision"
+              value="I made a decision to follow Christ today."
             />
           </Form.Control>
           <Form.Label className="font-bold text-secondary leading-4">
@@ -201,7 +197,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
           </>
         )}
 
-        {error && <p className="text-alert col-span-2">{error}</p>}
+        {error && <p className="text-alert col-span-2 text-center">{error}</p>}
 
         <Form.Submit className="mt-6 mx-auto col-span-1 md:col-span-2" asChild>
           <Button

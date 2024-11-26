@@ -14,11 +14,11 @@ export const loader: LoaderFunction = async () => {
   const campuses = await fetchRockData("Campuses", {
     $filter: "IsActive eq true",
     $orderby: "Order",
-    $select: "Name",
+    $select: "Name, Guid",
   });
 
   const data: ConnectCardLoaderReturnType = {
-    campuses: campuses.map((campus: { name: string }) => campus.name),
+    campuses: campuses,
     allThatApplies: rockDefineTypes,
   };
 
