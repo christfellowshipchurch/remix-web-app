@@ -89,7 +89,7 @@ export const deleteRockData = async (endpoint: string) => {
  */
 export const postRockData = async (endpoint: string, body: any) => {
   try {
-    const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
+    const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +100,6 @@ export const postRockData = async (endpoint: string, body: any) => {
 
     if (!response.ok) {
       const errorDetails = await response.text();
-      console.error("Error details:", errorDetails);
       throw new Error(
         `Failed to post data: ${response.status}, details: ${errorDetails}`
       );
@@ -113,7 +112,6 @@ export const postRockData = async (endpoint: string, body: any) => {
 
     return JSON.parse(responseBody);
   } catch (error) {
-    console.error("Error in postRockData:", error);
     throw error;
   }
 };
