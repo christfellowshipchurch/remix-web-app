@@ -20,6 +20,8 @@
     "@radix-ui/react-navigation-menu": "^1.2.1",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-visually-hidden": "^1.1.0",
+    "@relume_io/relume-tailwind": "^0.7.0",
+    "@relume_io/relume-ui": "^0.7.0",
     "@remix-run/node": "^2.12.1",
     "@remix-run/react": "^2.12.1",
     "@remix-run/serve": "^2.12.1",

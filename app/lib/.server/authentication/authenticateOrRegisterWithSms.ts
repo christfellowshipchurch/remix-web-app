@@ -9,10 +9,11 @@ import { authenticateUser } from "./authenticateUser";
 import { SmsAuthParams } from "./authentication.types";
 import { fetchUserLogin } from "./rockAuthentication";
 
-export const authenticateWithSms = async ({
+export const authenticateOrRegisterWithSms = async ({
   pin,
   phoneNumber,
   userProfile,
+  email,
 }: SmsAuthParams) => {
   const { significantNumber } = parsePhoneNumberUtil(phoneNumber);
 
@@ -26,6 +27,7 @@ export const authenticateWithSms = async ({
     const personId = await createOrFindSmsLoginUserId({
       phoneNumber,
       userProfile: userProfile || [],
+      email,
     });
 
     await patchRockData(`UserLogins/${userLogin?.id}`, {

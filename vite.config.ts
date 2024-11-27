@@ -13,9 +13,14 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  optimizeDeps: {
+    include: ["lodash"],
+    exclude: ["awesome-phonenumber", "twilio"],
+  },
   ssr: {
     optimizeDeps: {
       include: ["lodash"],
+      exclude: ["awesome-phonenumber", "twilio"],
     },
     noExternal: ["lodash", "foo"],
   },
