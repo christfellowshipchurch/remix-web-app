@@ -1,20 +1,16 @@
-import * as Avatar from "@radix-ui/react-avatar";
 import { useLoaderData, useLocation } from "@remix-run/react";
 import CopyLink from "./copy-link.component";
-import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
+import Icon from "~/primitives/icon";
 
-import shareIcon from "~/assets/icons/share.svg";
-import linkedInIcon from "~/assets/icons/indeed.svg";
-import twitterIcon from "~/assets/icons/x.svg";
-import facebookIcon from "~/assets/icons/facebook.svg";
-// import instagramIcon from "~/assets/icons/instagram.svg";
-
-const socialIcons = [
-  { name: "Share", src: shareIcon },
-  { name: "linkedIn", src: linkedInIcon },
-  { name: "twitter", src: twitterIcon },
-  { name: "facebook", src: facebookIcon },
-  //TODO: { name: "instagram", src: instagramIcon }, // Missing Icon from Figma/Assets
+const socialIcons: {
+  name: "linkAlt" | "linkedIn" | "twitter" | "facebook" | "instagram";
+  color?: string;
+}[] = [
+  { name: "linkAlt" },
+  { name: "linkedIn" },
+  { name: "twitter" },
+  { name: "facebook" },
+  { name: "instagram" },
 ];
 
 type ShareLinksProps = {
@@ -32,7 +28,6 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
   const fullPath = `${hostUrl}${pathname}`;
 
   return socialIcons?.map((icon, index) => {
-    // TODO: Review?
     const socialLink = socialMedia?.find(
       (media) => media?.type === icon?.name
     )?.url;
@@ -44,32 +39,23 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
           href={socialLink && socialLink}
           rel="noreferrer"
         >
-          <Avatar.Root className="flex cursor-pointer duration-300 hover:scale-105">
-            <Avatar.Image
-              className={`size-${size} rounded-full`}
-              src={icon.src}
-              alt={icon.name}
-            />
-            <Avatar.Fallback className="flex size-full">
-              <CircleLoader size={size} />
-            </Avatar.Fallback>
-          </Avatar.Root>
+          <Icon
+            name={icon?.name}
+            size={48}
+            color="#0092bc"
+            className="duration-300 hover:scale-105 p-1 rounded-full bg-[#EEE]"
+          />
         </a>
       );
-    } else if (icon?.name === "Share") {
+    } else if (icon?.name === "linkAlt") {
       return (
         <div key={index}>
           <CopyLink textToCopy={fullPath}>
-            <Avatar.Root className="flex cursor-pointer duration-300 hover:scale-105">
-              <Avatar.Image
-                className={`size-${size} rounded-full`}
-                src={icon?.src}
-                alt={icon.name}
-              />
-              <Avatar.Fallback className="flex size-full">
-                <CircleLoader size={size} />
-              </Avatar.Fallback>
-            </Avatar.Root>
+            <Icon
+              name="linkAlt"
+              size={48}
+              className="duration-300 hover:scale-105 p-1 rounded-full bg-[#EEE]"
+            />
           </CopyLink>
         </div>
       );

@@ -6,6 +6,10 @@ import {
   navbarAnimations,
   navbarKeyframes,
 } from "./app/components/navbar/navbar.styles";
+import {
+  modalAnimations,
+  modalKeyframes,
+} from "./app/primitives/Modal/modal.styles";
 
 export default {
   darkMode: ["class"],
@@ -75,9 +79,11 @@ export default {
       },
       keyframes: {
         ...navbarKeyframes,
+        ...modalKeyframes,
       },
       animation: {
         ...navbarAnimations,
+        ...modalAnimations,
       },
       borderRadius: {
         lg: "var(--radius)",

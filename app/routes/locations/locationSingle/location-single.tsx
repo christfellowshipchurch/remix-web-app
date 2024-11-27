@@ -5,30 +5,26 @@ import { LoaderReturnType } from "./loader";
 import { LocationsHero } from "./partials/hero.partial";
 import { CampusInfo } from "./partials/campus-info.partial";
 import { SetAReminder } from "./partials/set-a-reminder.partial";
-import { AtThisLocation } from "./partials/at-this-location.partial";
 import { Testimonials } from "./partials/testimonials.partial";
 import { LocationFAQ } from "./partials/faq.partial";
 import { testimonialData } from "./locations-single.data";
 import { ComingUpSoon } from "./partials/coming-up-soon.partial";
+import { LocationBlock } from "./partials/location-block.partial";
+import { TodaLaSemana } from "./partials/spanish/toda-la-semana.partial";
+import { ThisWeek } from "./partials/this-week";
 
 export function LocationSinglePage() {
-  const { url } = useLoaderData<LoaderReturnType>();
+  const { name } = useLoaderData<LoaderReturnType>();
+  const isEspanol = name?.includes("Español");
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       <LocationsHero />
       <CampusInfo />
+      {name === "Online (CF Everywhere)" && <ThisWeek />}
       <SetAReminder />
-      <Testimonials
-        testimonies={
-          url === "cf-everywhere"
-            ? testimonialData.cfEverywhere
-            : url.includes("iglesia")
-            ? testimonialData.españolCampuses
-            : testimonialData.default
-        }
-      />
-      <AtThisLocation />
+      <Testimonials />
+      {isEspanol ? <TodaLaSemana /> : <LocationBlock />}
       <ComingUpSoon />
       <LocationFAQ />
     </div>

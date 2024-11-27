@@ -4,7 +4,8 @@
  */
 
 import React, { forwardRef, useEffect, useRef } from "react";
-import errorCircleIcon from "~/assets/icons/error-circle.svg";
+import Icon from "~/primitives/icon";
+import colors from "~/styles/colors";
 
 export const defaultInputStyles =
   "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-primary focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
@@ -37,12 +38,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
           readOnly
         />
         <span className="absolute right-3 top-2.5 text-gray-500">
-          <img
-            src={errorCircleIcon}
-            alt="cross circled icon"
-            width={24}
-            height={24}
-          />
+          <Icon name="errorCircle" color={colors.alert} />
         </span>
       </div>
     ) : (
