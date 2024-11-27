@@ -7,9 +7,13 @@ import Button from "~/primitives/button";
 
 interface AccountCreationProps {
   onSubmit: (userData: NewUser) => Promise<void>;
+  identityType: "email" | "phone" | "unknown";
 }
 
-const AccountCreation: React.FC<AccountCreationProps> = ({ onSubmit }) => {
+const AccountCreation: React.FC<AccountCreationProps> = ({
+  identityType,
+  onSubmit,
+}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
@@ -22,11 +26,13 @@ const AccountCreation: React.FC<AccountCreationProps> = ({ onSubmit }) => {
     setBirthDateError(null);
 
     const formData = new FormData(event.currentTarget);
+    const additionalField = identityType === "email" ? "phone" : "email"; // we want to add the field that the user has not already entered into the form
     const userData: NewUser = {
       firstName: formData.get("firstName") as string,
       lastName: formData.get("lastName") as string,
       birthDate: formData.get("birthDate") as string,
       gender: selectedGender,
+      [additionalField]: formData.get(additionalField) as string,
     };
 
     // Validate birth date
@@ -102,6 +108,21 @@ const AccountCreation: React.FC<AccountCreationProps> = ({ onSubmit }) => {
             Please enter your birth date
           </Form.Message>
           {birthDateError && <p className="text-alert">{birthDateError}</p>}
+        </Form.Field>
+        {/* Email or Phone */}
+        <Form.Field
+          name={identityType === "email" ? "phone" : "email"}
+          className="flex flex-col"
+        >
+          <Form.Label>
+            {identityType === "email" ? "Phone" : "Email"}
+          </Form.Label>
+          <Form.Control asChild>
+            <input type="text" required className={defaultInputStyles} />
+          </Form.Control>
+          <Form.Message className="text-alert" match="valueMissing">
+            Please enter your email
+          </Form.Message>
         </Form.Field>
         {/* Gender */}
         <Form.Field name="gender" className="flex flex-col">

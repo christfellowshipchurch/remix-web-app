@@ -138,7 +138,7 @@ export const patchRockData = async (endpoint: string, body: any) => {
     );
   }
 
-  return response.json();
+  return response.status;
 };
 
 // Todo : move to utils
