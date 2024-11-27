@@ -1,6 +1,7 @@
 import * as Form from "@radix-ui/react-form";
 import React, { useState } from "react";
 import Button from "~/primitives/button";
+import Icon from "~/primitives/icon";
 import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 
 interface CreatePasswordProps {
@@ -66,14 +67,9 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
             </Form.Control>
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 text-gray-500"
+              className="absolute right-3 top-2 text-gray-500"
             >
-              <img
-                src={`/icons/eye${!showPassword ? "-slash" : ""}.svg`}
-                alt="cross circled icon"
-                width={20}
-                height={20}
-              />
+              <Icon name={showPassword ? "eye" : "eyeSlash"} size={24} />
             </span>
           </div>
           <Form.Message className="text-alert" match="valueMissing">

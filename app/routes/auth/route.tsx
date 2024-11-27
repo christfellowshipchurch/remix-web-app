@@ -4,6 +4,8 @@ import { requestSmsPinLogin } from "./requestSmsPinLogin";
 import { authenticateSms } from "./authenticateSms";
 import { currentUser } from "./currentUser";
 import { userExists } from "./userExists";
+import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
+import { registerPerson } from "./registerPerson";
 
 /**
  * In order to consolidate all of our auth route functions we decided to setup a single action function that will handle all of the different form types that we have. This will allow us to have a single route file for all of our auth routes.
@@ -37,6 +39,13 @@ export const action: ActionFunction = async ({ request }) => {
     case "checkUserExists":
       const checkIdentity = formData.get("identity");
       return await userExists(checkIdentity as string);
+    case "registerPerson":
+      const registrationType = formData.get("registrationType");
+      const userInputData = formData.get("userInputData");
+      return await registerPerson({
+        registrationType: registrationType as RegistrationTypes,
+        userInputData: userInputData as unknown as UserInputData,
+      });
     default:
       return json({ error: "Invalid form type" }, { status: 400 });
   }
