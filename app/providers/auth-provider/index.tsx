@@ -21,6 +21,11 @@ export enum User_Auth_Status {
   None = "NONE",
 }
 
+export enum RegistrationTypes {
+  EMAIL = "email",
+  SMS = "sms",
+}
+
 export type User = {
   id: string;
   fullName: string;
@@ -37,9 +42,10 @@ export type UserProfileField = {
 };
 
 export type UserInputData = {
-  phoneNumber?: string | null;
-  email?: string | null;
-  pin: string | null;
+  phoneNumber: string | null;
+  email: string | null;
+  pin?: string | null;
+  password?: string | null;
   userProfile: UserProfileField[];
 };
 
@@ -51,7 +57,7 @@ export interface AuthContextType {
   checkUserExists: (identity: string) => Promise<boolean>;
   registerUser: (
     userInputData: UserInputData,
-    registrationType: string
+    registrationType: RegistrationTypes
   ) => Promise<void>;
   requestSmsPin: (phoneNumber: string) => Promise<void>;
   loginWithSms: (phoneNumber: string, pin: string) => Promise<void>;
@@ -186,26 +192,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // todo : implement registerUser
   const registerUser = async (
     userInputData: UserInputData,
-    registrationType: string
+    registrationType: RegistrationTypes
   ) => {
     try {
-      const registerMutation: any = async () => {}; // placeholder function
-      const { data } = await registerMutation();
-      if (data) {
-        const registeredUserData =
-          registrationType === "email"
-            ? data.registerPerson
-            : data.registerWithSms;
-        const { token, user } = registeredUserData;
-        // await storeEncryptedToken(token);
-        setUser(user);
-        redirect(ROUTES.LOGIN);
-      }
+      const formData = new FormData();
+      formData.append("formType", "registerPerson");
+      formData.append("registrationType", registrationType);
+      formData.append("userInputData", JSON.stringify(userInputData));
+
+      const response = await fetch("/auth", {
+        method: "POST",
+        body: formData,
+      });
+
+      const { encryptedToken } = await response.json();
+
+      handleLogin(encryptedToken);
     } catch (error) {
-      handleError(error, "Registration error:");
+      handleError(error, "Person registration error:");
     }
   };
 
