@@ -1,5 +1,5 @@
 import { json, LoaderFunction } from "@remix-run/node";
-import { fetchRockData } from "~/lib/server/fetchRockData.server";
+import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/loader";
 import { AuthorArticleProps } from "./components/author-content";

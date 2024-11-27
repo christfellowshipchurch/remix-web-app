@@ -1,3 +1,8 @@
+import { useLoaderData } from "@remix-run/react";
+import { LoaderReturnType } from "../loader";
+import { testimonialData } from "../locations-single.data";
+import Icon from "~/primitives/icon";
+
 export type Testimonies = {
   testimonies: {
     name: string;
@@ -6,11 +11,22 @@ export type Testimonies = {
   }[];
 };
 
-export const Testimonials = ({ testimonies }: Testimonies) => {
+export const Testimonials = () => {
+  const { name } = useLoaderData<LoaderReturnType>();
+  const isEspanol = name?.includes("Español");
+  const testimonies: Testimonies["testimonies"] =
+    name === "Online (CF Everywhere)"
+      ? testimonialData.cfEverywhere
+      : isEspanol
+      ? testimonialData.españolCampuses
+      : testimonialData.default;
+
   return (
     <div className="flex flex-col items-center gap-12 bg-white px-8 py-20 lg:py-28">
       <h2 className="text-center text-4xl font-bold text-secondary lg:text-start lg:text-[2.5rem]">
-        See What Others Are Saying
+        {name.includes("Español")
+          ? "Mira lo que otros dicen"
+          : "See What Others Are Saying"}
       </h2>
       <div className="flex flex-col gap-8 lg:flex-row">
         {testimonies?.map((item, index) => (
@@ -25,25 +41,30 @@ export const Testimonials = ({ testimonies }: Testimonies) => {
                 item?.region ? "lg:items-center" : "lg:items-start"
               }`}
             >
-              <img
-                src="/icons/stars.svg"
-                width={100}
-                height={20}
-                alt="5 stars"
-              />
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Icon
+                    key={i}
+                    name="star"
+                    size={28}
+                    fillRule="nonzero"
+                    clipRule="nonzero"
+                    color="#FCD757"
+                  />
+                ))}
+              </div>
               <p className={`${item?.region ? "text-center" : ""}`}>
                 {item?.description}
               </p>
             </div>
             <div className="flex flex-col-reverse items-center gap-4 lg:flex-row">
               {!item?.region && (
-                <div className="relative size-[34px] lg:size-[56px]">
-                  <img
-                    src="/icons/google-reviews.svg"
-                    className="size-full"
-                    alt="Google Reviews"
-                  />
-                </div>
+                <Icon
+                  name="google"
+                  size={48}
+                  className="bg-white p-2 rounded-full"
+                  color="#CCCCCC"
+                />
               )}
               <div className="flex flex-col">
                 <p className="text-lg font-bold text-secondary">{item?.name}</p>

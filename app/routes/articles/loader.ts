@@ -1,10 +1,10 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { fetchRockData, getImages } from "~/lib/server/fetchRockData.server";
+import { fetchRockData, getImages } from "~/lib/.server/fetchRockData";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { getRelatedArticlesByContentItem } from "~/lib/server/fetchRelatedArticles.server";
+import { getRelatedArticlesByContentItem } from "~/lib/.server/fetchRelatedArticles";
 
 export type LoaderReturnType = {
   hostUrl: string;

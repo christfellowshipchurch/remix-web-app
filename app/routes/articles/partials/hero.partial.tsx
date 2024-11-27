@@ -1,5 +1,7 @@
 import ShareLinks from "~/components/share-links/share-links.component";
 import ArticleAuthor from "../components/article-author.component";
+import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import { LoaderReturnType } from "../loader";
 
 export interface AuthorProps {
   fullName: string;
@@ -11,33 +13,14 @@ export interface AuthorProps {
   };
 }
 
-export interface ArticleHeroProps extends React.HTMLAttributes<HTMLElement> {
-  coverImage?: string;
-  title?: string;
-  summary?: string;
-  author?: AuthorProps;
-  publishDate?: string;
-  readTime?: number;
-}
-
-// due to CSS rendering issues, we needed to move these styles to a separate function to show correctly...
-const heroBgImgStyles = (image?: string) => {
-  return {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  };
-};
-
-export const ArticleHero: React.FC<ArticleHeroProps> = ({
+export const ArticleHero: React.FC<LoaderReturnType> = ({
   coverImage,
   title,
   summary,
   author,
   publishDate,
   readTime,
-}) => {
+}: LoaderReturnType) => {
   return (
     <div style={heroBgImgStyles(coverImage)} className={`mx-auto w-full`}>
       <div className="mx:px-2 flex h-full justify-center bg-white/80 px-6 pb-10 pt-16 backdrop-blur-lg lg:px-12 lg:py-56">

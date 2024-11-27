@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { camelCase, mapKeys, mapValues } from "lodash";
 import { twMerge } from "tailwind-merge";
+import { ShareMessages } from "./types/messaging";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -13,6 +14,15 @@ export function normalize(data: object): object {
   const normalizedValues = mapValues(data, (n) => normalize(n));
   return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
 }
+
+export const fieldsAsObject = (fields: any[]) =>
+  fields.reduce(
+    (accum, { field, value }) => ({
+      ...accum,
+      [field]: typeof value === "string" ? value.trim() : value,
+    }),
+    {}
+  );
 
 export const enforceProtocol = (uri: string) =>
   uri?.startsWith("//") ? `https:${uri}` : uri;
@@ -40,4 +50,26 @@ export const getIdentifierType = (identifier: any) => {
   }
 
   return { type: "custom", value: identifier, query: null };
+};
+
+export const shareMessaging = ({
+  title,
+  shareMessages,
+  url,
+}: ShareMessages) => {
+  const defaultShareMessages = {
+    title: `${title}`,
+    faceBook: `Check out this article from Christ Fellowship Church!`,
+    twitter: `${title} at Christ Fellowship Church`,
+    email: {
+      subject: `${title} - Christ Fellowship Church`,
+      body: `I thought you might be interested in this article from Christ Fellowship: ${url} \n\n`,
+    },
+    sms: `I thought you might be interested in this article from Christ Fellowship: ${url}`,
+  };
+  const messages = {
+    ...defaultShareMessages,
+    ...shareMessages,
+  };
+  return messages;
 };
