@@ -1,58 +1,107 @@
+// TODO: Add a check for #connect-card here so that it can open the modal on any page, unlike current site.
+
+import { ContactInfo } from "./footer-contact.partial";
+import { FooterLinks } from "./footer-links.partial";
+
 export const Footer = () => {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="flex flex-col justify-between gap-10 bg-screen px-[10%] py-12 text-lg text-[#D0D0CE] md:flex-row lg:gap-[10%] lg:px-[8%] lg:py-16 xl:gap-[18%] xl:px-[15%]">
-      <div className="flex flex-col gap-4">
-        <img
-          src="../app/assets/footer-logo.png"
-          alt="Christ Fellowship"
-          width={158}
-          height={55}
-        />
-        <div className="flex flex-col">
-          <a href="tel:5617997600">(561) 799-7600</a>
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="mailto:hello@christfellowship.church"
-          >
-            hello@christfellowship.church
-          </a>
+    <footer className="flex flex-col items-center w-full bg-screen px-4">
+      <div className="flex flex-col tems-center w-full max-w-[95vw] xl:max-w-[1480px] relative mx-4">
+        <div className="absolute w-full h-4 bg-primary -top-2"></div>
+        {/* Contact Info */}
+        <ContactInfo />
+
+        {/* Info Section */}
+        <div className="w-full grid-cols-2 border-t border-[#417890] justify-between py-14 text-lg text-[#D0D0CE] grid md:grid-cols-5 gap-y-8">
+          <div className="flex flex-col items-center md:items-start gap-8 col-span-2 md:col-span-1 mb-12">
+            <img
+              src="../app/assets/light-logo.png"
+              alt="Christ Fellowship"
+              width={158}
+              height={55}
+            />
+            <div className="flex flex-col gap-3">
+              <FooterLinks />
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h2 className="text-2xl font-bold text-white">Resources</h2>
+            <a className="text-lg font-light" href="/locations/cf-everywhere">
+              Church Online
+            </a>
+            <a
+              className="text-lg font-light"
+              href="https://www.youtube.com/playlist?list=PLUQ7jSnRB_efXMDq9Lka6stS02awWoaz4"
+            >
+              Past Messages
+            </a>
+            <a className="text-lg font-light" href="/give">
+              Give Online
+            </a>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h2 className="text-2xl text-white font-bold">Connect</h2>
+            {/* TODO: OPEN CONNECT CARD MODAL */}
+            <a className="text-lg font-light" href="/">
+              Connect Card
+            </a>
+            <a
+              className="text-lg font-light"
+              href="https://rock.gocf.org/RequestPrayer"
+            >
+              Request Prayer
+            </a>
+            <a
+              className="text-lg font-light"
+              href="https://church.us11.list-manage.com/subscribe?u=76848e191018191e2e2d01d77&id=3265404466"
+            >
+              Subscribe to Updates
+            </a>
+            <a className="text-lg font-light" href="/contactus">
+              Contact Us
+            </a>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h2 className="text-2xl text-white font-bold">About</h2>
+            <a className="text-lg font-light" href="/about">
+              Our Leadership
+            </a>
+            <a className="text-lg font-light" href="/career-opportunities">
+              Career Opportunities
+            </a>
+            <a className="text-lg font-light" href="/privacy-policy">
+              Privacy Policy
+            </a>
+            <a className="text-lg font-light" href="/terms-of-use">
+              Terms of Use
+            </a>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h2 className="text-2xl text-white font-bold">More</h2>
+            <a
+              className="text-lg font-light"
+              href="https://www.christfellowshipconference.com/"
+            >
+              CF Conference
+            </a>
+            <a className="text-lg font-light" href="https://www.cfseu.com/">
+              Get Your Degree
+            </a>
+            <a
+              className="text-lg font-light"
+              href="https://cf-church.square.site/home"
+            >
+              Shop Online
+            </a>
+          </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-6 xl:gap-16 lg:flex">
-        <div className="flex flex-col">
-          <h2 className="text-2xl text-white">Resources</h2>
-          <a href="/locations/cf-everywhere">Church Online</a>
-          <a href="https://www.youtube.com/playlist?list=PLUQ7jSnRB_efXMDq9Lka6stS02awWoaz4">
-            Past Messages
-          </a>
-          <a href="/give">Give Online</a>
-        </div>
-        <div className="flex flex-col">
-          <h2 className="text-2xl text-white">Connect</h2>
-          {/* OPEN CONNECT CARD MODAL */}
-          <a href="/">Connect Card</a>
-          <a href="https://rock.gocf.org/RequestPrayer">Request Prayer</a>
-          <a href="https://church.us11.list-manage.com/subscribe?u=76848e191018191e2e2d01d77&id=3265404466">
-            Subscribe to Updates
-          </a>
-          <a href="/contactus">Contact Us</a>
-        </div>
-        <div className="flex flex-col">
-          <h2 className="text-2xl text-white">About</h2>
-          <a href="/about">Our Leadership</a>
-          <a href="/career-opportunities">Career Opportunities</a>
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="/terms-of-use">Terms of Use</a>
-        </div>
-        <div className="flex flex-col">
-          <h2 className="text-2xl text-white">More</h2>
-          <a href="https://www.christfellowshipconference.com/">
-            CF Conference
-          </a>
-          <a href="https://www.cfseu.com/">Get Your Degree</a>
-          <a href="https://cf-church.square.site/home">Shop Online</a>
-        </div>
+
+      {/* Copyright */}
+      <div className="flex justify-center w-full border-t py-8 text-[#D0D0CE] border-[#417890]">
+        <h4>© {year} Christ Fellowship Church. All Rights Reserved</h4>
       </div>
     </footer>
   );
