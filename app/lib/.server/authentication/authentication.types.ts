@@ -4,6 +4,7 @@ export interface SmsAuthParams {
   pin: string;
   phoneNumber: string;
   userProfile: any[];
+  email?: string | null;
 }
 
 export type SmsPinResult = {
