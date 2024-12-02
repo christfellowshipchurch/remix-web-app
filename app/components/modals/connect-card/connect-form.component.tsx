@@ -90,7 +90,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
 
   return (
     <>
-      <h2 className="mb-6 text-3xl text-secondary font-bold">Get Connected</h2>
+      <h2 className="mb-6 text-3xl text-navy font-bold">Get Connected</h2>
       <Form.Root
         onSubmit={handleSubmit}
         className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"
@@ -158,12 +158,12 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               value="I made a decision to follow Christ today."
             />
           </Form.Control>
-          <Form.Label className="font-bold text-secondary leading-4">
+          <Form.Label className="font-bold text-navy leading-4">
             I made a decision to follow Christ today
           </Form.Label>
         </Form.Field>
 
-        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-secondary md:mt-8 ">
+        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-navy md:mt-8 ">
           I am looking to:
         </h3>
         {checkboxes.map(renderCheckboxField)}
