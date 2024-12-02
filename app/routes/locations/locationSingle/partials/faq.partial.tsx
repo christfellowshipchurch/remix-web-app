@@ -10,7 +10,7 @@ export const LocationFAQ = () => {
 
   return (
     <div className="flex flex-col px-4 items-center gap-14 bg-[#F5F5F7] pb-24 pt-14">
-      <h2 className=" max-w-[90vw] text-center text-[2rem] font-bold text-secondary">
+      <h2 className=" max-w-[90vw] text-center heading-h3 text-navy">
         {isEspanol ? `Preguntas Frequentes` : `Frequently Asked Questions`}
       </h2>
       <StyledAccordion data={faqData(name)} bg="white" />
