@@ -1,12 +1,8 @@
 import { useState } from "react";
 import ReminderConfirmation from "./confirmation.component";
-import ReminderForm from "./reminder.component";
-import { dayTimes } from "~/routes/locations/locationSingle/loader";
+import ReminderForm from "./reminder-form.component";
 
 interface ReminderFlowProps {
-  campus: string;
-  isEspanol?: boolean;
-  serviceTimes: dayTimes[];
   setOpenModal: (open: boolean) => void;
 }
 
@@ -15,12 +11,7 @@ enum ReminderStep {
   CONFIRMATION,
 }
 
-const ReminderFlow: React.FC<ReminderFlowProps> = ({
-  campus,
-  isEspanol,
-  serviceTimes,
-  setOpenModal,
-}) => {
+const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
   const [step, setStep] = useState<ReminderStep>(ReminderStep.REMINDER);
 
   // English flow for setting a reminder
@@ -28,11 +19,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({
     switch (step) {
       case ReminderStep.REMINDER:
         return (
-          <ReminderForm
-            campus={campus}
-            serviceTimes={serviceTimes}
-            onSuccess={() => setStep(ReminderStep.CONFIRMATION)}
-          />
+          <ReminderForm onSuccess={() => setStep(ReminderStep.CONFIRMATION)} />
         );
       case ReminderStep.CONFIRMATION:
         return <ReminderConfirmation onSuccess={() => setOpenModal(false)} />;
