@@ -5,6 +5,8 @@ import Button from "~/primitives/button";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
+import SetAReminderModal from "~/components/modals/set-a-reminder";
+import ConnectCardModal from "~/components/modals/connect-card";
 
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock
@@ -31,25 +33,18 @@ export const LocationsHero = () => {
         <HeroTitleSection name={name} />
         <div className="w-3/5 md:mt-12 md:border-t md:border-[#E7E7E7]" />
         <div className="flex w-full flex-col gap-4 md:flex-row md:pt-6">
-          {/* Add onClick modals */}
-          <Button
-            href={`${
-              name?.includes("Online")
-                ? "https://www.youtube.com/user/christfellowship"
-                : "#set-a-reminder"
-            }`}
-            intent="primary"
-            className="w-full rounded-xl"
-          >
-            {isEspanol
-              ? "Recuérdame"
-              : name?.includes("Online")
-              ? "Join Us Online"
-              : "Set a Reminder"}
-          </Button>
-          <Button intent="white" className="rounded-xl border-0">
-            {isEspanol ? "Conéctate" : "Get Connected"}
-          </Button>
+          {!name?.includes("Online") ? (
+            <SetAReminderModal campus={name} />
+          ) : (
+            <Button
+              href="https://www.youtube.com/user/christfellowship"
+              intent="primary"
+              className="rounded-xl"
+            >
+              Join Us Online
+            </Button>
+          )}
+          <ConnectCardModal isEspanol={isEspanol} />
         </div>
       </div>
     </div>

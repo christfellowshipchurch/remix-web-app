@@ -11,14 +11,15 @@ export const defaultInputStyles =
   "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-primary focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
 interface TextFieldInputProps {
-  identity: string;
+  className?: string;
+  value: string;
   error: string | null;
-  setIdentity: (value: string) => void;
+  setValue: (value: string) => void;
   setError: (value: string | null) => void;
 }
 
 const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
-  ({ identity, error, setIdentity, setError }, ref) => {
+  ({ className, value, error, setValue, setError }, ref) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
           ref={ref}
           className="w-full rounded-md border-2 border-alert p-2"
           type="text"
-          value={identity}
+          value={value}
           onFocus={() => setError(null)}
           readOnly
         />
@@ -53,10 +54,10 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
             ref.current = el;
           }
         }}
-        className={defaultInputStyles}
+        className={`${defaultInputStyles} ${className}`}
         type="text"
-        value={identity}
-        onChange={(e) => setIdentity(e.target.value)}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
       />
     );
   }
