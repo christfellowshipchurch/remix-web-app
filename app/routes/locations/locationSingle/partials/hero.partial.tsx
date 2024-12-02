@@ -10,7 +10,7 @@ import ConnectCardModal from "~/components/modals/connect-card";
 
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock
-  const { name } = useLoaderData<LoaderReturnType>();
+  const { name, serviceTimes } = useLoaderData<LoaderReturnType>();
   const headerContent = find(headerData, { name });
   const videoSrc = headerContent?.backgroundVideo?.desktop;
 
@@ -34,7 +34,7 @@ export const LocationsHero = () => {
         <div className="w-3/5 md:mt-12 md:border-t md:border-[#E7E7E7]" />
         <div className="flex w-full flex-col gap-4 md:flex-row md:pt-6">
           {!name?.includes("Online") ? (
-            <SetAReminderModal campus={name} />
+            <SetAReminderModal campus={name} serviceTimes={serviceTimes} />
           ) : (
             <Button
               href="https://www.youtube.com/user/christfellowship"
