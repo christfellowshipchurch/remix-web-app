@@ -8,9 +8,9 @@ export const ComingUpSoon = () => {
 
   return (
     <div className="flex w-full flex-col items-start py-10 md:py-16 lg:py-20 xl:py-24 gap-12 lg:items-center">
-      <h1 className="text-3xl text-center w-full font-bold text-secondary">
+      <h2 className="heading-h3 w-full text-center text-navy">
         {comingUpSoon?.title}
-      </h1>
+      </h2>
 
       <div className="flex gap-4 overflow-x-auto max-w-full lg:justify-center lg:items-center lg:w-full lg:overflow-visible lg:max-w-[1440px]">
         {comingUpSoon?.cards?.map((card, index) => (
