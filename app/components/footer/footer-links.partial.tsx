@@ -19,8 +19,8 @@ const links: { name: "youtube" | "instagram" | "linkedIn"; url: string }[] = [
 export const FooterLinks = () => {
   return (
     <div className="flex gap-2">
-      {links.map((link) => (
-        <a href={link?.url}>
+      {links.map((link, index) => (
+        <a href={link?.url} key={index}>
           <Icon name={link?.name} size={36} color="white" />
         </a>
       ))}
