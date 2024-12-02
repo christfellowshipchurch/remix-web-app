@@ -1,25 +1,32 @@
 import { ActionFunction, json } from "@remix-run/node";
 import { SetAReminderType } from "./types";
-import { postRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
 
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
 
-    const { email, firstName, lastName, phone, campus, servicetime } = formData;
+    const { email, firstName, lastName, phone, campus, serviceTime } = formData;
+
+    const getCampusGuid: string = await fetchRockData("Campuses", {
+      $filter: `Name eq '${campus}'`,
+      $select: "Guid",
+    });
 
     const connectFormSubmission: SetAReminderType = {
       FirstName: firstName as string,
       LastName: lastName as string,
-      Campus: campus as string, // TODO: campus guid??
+      Campus: getCampusGuid,
       Email: email as string,
       PhoneNumber: phone as string,
-      ServiceTime: servicetime as string,
+      ServiceTime: serviceTime as string,
     };
+
+    console.log(connectFormSubmission, getCampusGuid);
 
     // TODO: Update
     // const sendForm = await postRockData(
-    //   `Workflows/LaunchWorkflow/0?workflowTypeId=902&workflowName=CFDP%20Web%20Connect%20Card`,
+    //   `Workflows/LaunchWorkflow/0?workflowTypeId=936&workflowName=Set%20a%20Reminder`,
     //   connectFormSubmission
     // );
 

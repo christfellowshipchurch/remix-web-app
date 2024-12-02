@@ -71,6 +71,13 @@ const colors = {
   peach: PEACH,
   lemon: LEMON,
 
+  //System Colors
+  alert: ERROR_RED,
+  alertLight: ERROR_RED_LIGHT,
+  success: SUCCESS_GREEN,
+  successLight: SUCCESS_GREEN_LIGHT,
+  warning: WARNING,
+
   // Neutral
   neutral: {
     lightest: NEUTRAL_LIGHTEST,

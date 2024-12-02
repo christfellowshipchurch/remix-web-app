@@ -1,35 +1,29 @@
-import { useState, ReactNode } from "react";
+import { useState } from "react";
 import Modal from "~/primitives/Modal";
 import ReminderFlow from "./reminder-flow.component";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
-import { dayTimes } from "~/routes/locations/locationSingle/loader";
+import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";
+import { useLoaderData } from "@remix-run/react";
 
 interface SetAReminderModalProps {
-  campus: string;
   ModalButton?: React.ComponentType<ButtonProps>;
-  serviceTimes: dayTimes[];
 }
 
 export function SetAReminderModal({
-  campus,
   ModalButton = Button,
-  serviceTimes,
 }: SetAReminderModalProps) {
   const [openModal, setOpenModal] = useState(false);
+  const { name } = useLoaderData<LoaderReturnType>();
 
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
       <Modal.Button asChild className="mr-2">
         <ModalButton onClick={() => setOpenModal(true)}>
-          {campus?.includes("Español") ? "Recuérdame" : "Set a Reminder"}
+          {name?.includes("Español") ? "Recuérdame" : "Set a Reminder"}
         </ModalButton>
       </Modal.Button>
       <Modal.Content>
-        <ReminderFlow
-          serviceTimes={serviceTimes}
-          campus={campus}
-          setOpenModal={setOpenModal}
-        />
+        <ReminderFlow setOpenModal={setOpenModal} />
       </Modal.Content>
     </Modal>
   );

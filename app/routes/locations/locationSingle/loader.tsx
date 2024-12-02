@@ -8,7 +8,7 @@ import {
   fetchPastorIdByAlias,
   fetchWeekdaySchedules,
 } from "~/lib/.server/fetchLocationSingleData";
-import { createImageUrlFromGuid, getIdentifierType } from "~/lib/utils";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type dayTimes = {
   day: string;

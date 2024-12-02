@@ -3,23 +3,22 @@ import { useEffect, useState } from "react";
 import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
 import Button from "~/primitives/button";
 import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher } from "@remix-run/react";
-import { dayTimes } from "~/routes/locations/locationSingle/loader";
+import { useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  dayTimes,
+  LoaderReturnType,
+} from "~/routes/locations/locationSingle/loader";
 import { renderInputField } from "../connect-card/connect-form.component";
 
 interface ReminderProps {
-  serviceTimes: dayTimes[];
   onSuccess: () => void;
-  campus: string;
 }
 
-const ReminderForm: React.FC<ReminderProps> = ({
-  campus,
-  onSuccess,
-  serviceTimes,
-}) => {
+const ReminderForm: React.FC<ReminderProps> = ({ onSuccess }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { name: campus, serviceTimes } = useLoaderData<LoaderReturnType>(); // grabs campus information from the current page were on
+
   const fetcher = useFetcher();
 
   useEffect(() => {
@@ -39,6 +38,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
     setError(null);
     setLoading(true);
     const formData = new FormData(event.currentTarget);
+    formData.append("campus", campus); //ensure campus is included in the form data
 
     try {
       fetcher.submit(formData, {
@@ -51,7 +51,6 @@ const ReminderForm: React.FC<ReminderProps> = ({
     }
   };
 
-  console.log(serviceTimes);
   return (
     <>
       <h2 className="mb-6 text-3xl text-secondary font-bold">
@@ -91,22 +90,21 @@ const ReminderForm: React.FC<ReminderProps> = ({
           <Form.Control asChild>
             <select
               className={`appearance-none ${defaultInputStyles}`}
-              disabled
               required
+              disabled
               style={{
                 backgroundImage: `url(${chevronDownIcon})`,
                 backgroundSize: "24px",
                 backgroundPosition: "calc(100% - 2%) center",
                 backgroundRepeat: "no-repeat",
               }}
-              defaultValue={campus}
             >
-              <option value={campus}>{campus}</option>
+              <option>{campus}</option>
             </select>
           </Form.Control>
         </Form.Field>
 
-        <Form.Field name="campus" className="flex flex-col">
+        <Form.Field name="serviceTime" className="flex flex-col">
           <Form.Label className="font-bold text-sm mb-2">
             Service Time
           </Form.Label>
