@@ -2,11 +2,13 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/**/*.ts",
+    "**/**/*.tsx",
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
-, "app/components/modals/auth/.component.tsx"],
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["@remix-run/node", "vite/client"],
