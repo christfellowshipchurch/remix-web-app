@@ -10,7 +10,7 @@ interface ConnectCardModalProps {
   TriggerButton?: React.ComponentType<ButtonProps>;
 }
 
-export default function ConnectCardModal({
+export function ConnectCardModal({
   isEspanol,
   TriggerButton = Button,
 }: ConnectCardModalProps) {

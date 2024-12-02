@@ -11,6 +11,36 @@ interface ConnectCardProps {
   onSuccess: () => void;
 }
 
+export const renderInputField = (
+  name: string,
+  label: string,
+  type: string,
+  requiredMessage: string
+) => (
+  <Form.Field name={name} className="flex flex-col mb-4">
+    <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
+    <Form.Control asChild>
+      <input type={type} required className={defaultInputStyles} />
+    </Form.Control>
+    <Form.Message className="text-sm text-alert" match="valueMissing">
+      {requiredMessage}
+    </Form.Message>
+  </Form.Field>
+);
+
+export const renderCheckboxField = (checkbox: any, index: number) => (
+  <Form.Field
+    key={index}
+    name={`allThatApplies-${index}`}
+    className="flex gap-2 md:items-center"
+  >
+    <Form.Control asChild>
+      <input type="checkbox" id={checkbox.guid} value={checkbox.guid} />
+    </Form.Control>
+    <Form.Label className="font-bold leading-4">{checkbox.value}</Form.Label>
+  </Form.Field>
+);
+
 const ConnectCardForm: React.FC<ConnectCardProps> = ({
   formFieldData,
   onSuccess,
@@ -56,36 +86,6 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
   );
   const checkboxes = allThatApplies.filter(
     (checkbox) => checkbox.value !== "Other"
-  );
-
-  const renderInputField = (
-    name: string,
-    label: string,
-    type: string,
-    requiredMessage: string
-  ) => (
-    <Form.Field name={name} className="flex flex-col mb-4">
-      <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
-      <Form.Control asChild>
-        <input type={type} required className={defaultInputStyles} />
-      </Form.Control>
-      <Form.Message className="text-sm text-alert" match="valueMissing">
-        {requiredMessage}
-      </Form.Message>
-    </Form.Field>
-  );
-
-  const renderCheckboxField = (checkbox: any, index: number) => (
-    <Form.Field
-      key={index}
-      name={`allThatApplies-${index}`}
-      className="flex gap-2 md:items-center"
-    >
-      <Form.Control asChild>
-        <input type="checkbox" id={checkbox.guid} value={checkbox.guid} />
-      </Form.Control>
-      <Form.Label className="font-bold leading-4">{checkbox.value}</Form.Label>
-    </Form.Field>
   );
 
   return (

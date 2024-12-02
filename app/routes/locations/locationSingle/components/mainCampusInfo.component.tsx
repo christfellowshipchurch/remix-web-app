@@ -4,7 +4,7 @@ import { whatToExpectData } from "../locations-single.data";
 import { camelCase, startCase } from "lodash";
 import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
-import { WhatToExpectModal } from "~/components/modals/what-to-expect";
+import WhatToExpectModal from "~/components/modals/what-to-expect";
 import { weekdaySpanishTranslation } from "../util";
 import Icon from "~/primitives/icon";
 import { useState } from "react";
