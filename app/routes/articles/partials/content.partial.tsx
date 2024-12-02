@@ -12,7 +12,7 @@ export const ArticleContent = ({
     <div className="article-content flex w-full max-w-screen-md flex-col px-6 py-10 md:px-10 lg:max-w-screen-md lg:px-6 lg:py-16">
       <h3 className="my-4">IN THIS ARTICLE</h3>
       <HTMLRenderer html={htmlContent || ""} />
-      <div className="mb-3 mt-6 h-2 w-full bg-wordOfChrist" />
+      <div className="mb-3 mt-6 h-2 w-full bg-navy" />
       <div>Resources</div>
       <div className="border-l-2 border-primary">
         {resources?.map(
