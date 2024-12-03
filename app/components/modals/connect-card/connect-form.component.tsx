@@ -15,12 +15,18 @@ export const renderInputField = (
   name: string,
   label: string,
   type: string,
-  requiredMessage: string
+  requiredMessage: string,
+  defaultValue?: string
 ) => (
   <Form.Field name={name} className="flex flex-col mb-4">
     <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
     <Form.Control asChild>
-      <input type={type} required className={defaultInputStyles} />
+      <input
+        type={type}
+        required
+        defaultValue={defaultValue}
+        className={defaultInputStyles}
+      />
     </Form.Control>
     <Form.Message className="text-sm text-alert" match="valueMissing">
       {requiredMessage}

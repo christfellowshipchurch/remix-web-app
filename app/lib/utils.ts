@@ -1,7 +1,16 @@
 import { clsx, type ClassValue } from "clsx";
-import { camelCase, mapKeys, mapValues } from "lodash";
+import { camelCase, isString, mapKeys, mapValues, uniqueId } from "lodash";
 import { twMerge } from "tailwind-merge";
 import { ShareMessages } from "./types/messaging";
+import {
+  addMinutes,
+  setMinutes,
+  setHours,
+  setSeconds,
+  parseISO,
+  format,
+  nextSunday,
+} from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,3 +82,94 @@ export const shareMessaging = ({
   };
   return messages;
 };
+
+interface EventDetails {
+  title: string;
+  description: string;
+  address: string;
+  startTime: string | Date;
+  endTime: string | Date;
+  url?: string;
+}
+
+export const icsLink = (event: EventDetails): string => {
+  let { title, description, address, startTime, endTime, url } = event;
+
+  if (isString(startTime) || isString(endTime)) {
+    startTime = parseISO(startTime as string);
+    endTime = parseISO(endTime as string);
+  }
+
+  const icsString = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//www.cf.church//Christ Fellowship Church",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `DTSTAMP:${format(new Date(), "yyyyMMddhhmmss")}Z`,
+    `UID:${uniqueId()}-@christfellowship.church`,
+    `DTSTART;TZID=America/New_York:${format(startTime, "yyyyMMdd'T'HHmmss")}`,
+    `DTEND;TZID=America/New_York:${format(endTime, "yyyyMMdd'T'HHmmss")}`,
+    `SUMMARY:${title}`,
+    `URL:${url ?? document?.URL ?? "https://www.christfellowship.church"}`,
+    `DESCRIPTION:${description}`,
+    `LOCATION:${address}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\n");
+
+  // We use blob method and removed `charset=utf8` in order to be compatible with Safari IOS
+  let blob = new Blob([icsString], { type: "text/calendar" });
+  let calendarLink = window.URL.createObjectURL(blob);
+
+  return calendarLink;
+};
+
+function parseTimeAsInt(_time: string) {
+  const time = _time?.toString().trim().toUpperCase();
+  const a = time.match(/(AM)|(PM)/g)?.join();
+  const [hour, minute] = time
+    .replace(/(AM)|(PM)/g, "")
+    .trim()
+    .split(":")
+    .map((n) => parseInt(n));
+  let hour24 = a === "PM" ? hour + 12 : hour;
+
+  return [hour24, minute];
+}
+
+interface ServiceTime {
+  day: string;
+  time: string;
+}
+
+export function icsLinkEvents(
+  serviceTimes: ServiceTime[],
+  address: string,
+  campusName: string,
+  url?: string
+) {
+  return serviceTimes.map(({ day, time }) => {
+    let now = new Date();
+    let [hour, minute] = parseTimeAsInt(time);
+    let sunday = nextSunday(now);
+    sunday = setMinutes(sunday, minute ?? 0);
+    sunday = setHours(sunday, hour ?? 0);
+    sunday = setSeconds(sunday, 0);
+
+    return {
+      label: `${time}`,
+      event: {
+        title:
+          campusName !== "Trinity"
+            ? `Sunday service at Christ Fellowship Church in ${campusName}`
+            : "Sunday service at Trinity Church by Christ Fellowship",
+        description: `Join us this Sunday!`,
+        address,
+        startTime: sunday,
+        endTime: addMinutes(sunday, 90),
+        url: url ? url : "https://www.christfellowship.church",
+      },
+    };
+  });
+}
