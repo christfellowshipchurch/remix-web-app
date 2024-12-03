@@ -22,8 +22,6 @@ export const action: ActionFunction = async ({ request }) => {
       ServiceTime: serviceTime as string,
     };
 
-    console.log(formSubmission);
-
     // Trigger the workflow for setting a reminder
     await postRockData(
       `Workflows/LaunchWorkflow/0?workflowTypeId=936&workflowName=Set%20a%20Reminder`,
