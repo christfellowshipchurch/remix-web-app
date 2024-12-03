@@ -8,27 +8,27 @@ export const action: ActionFunction = async ({ request }) => {
 
     const { email, firstName, lastName, phone, campus, serviceTime } = formData;
 
-    const getCampusGuid: string = await fetchRockData("Campuses", {
+    const getCampusGuid: { guid: string } = await fetchRockData("Campuses", {
       $filter: `Name eq '${campus}'`,
       $select: "Guid",
     });
 
-    const connectFormSubmission: SetAReminderType = {
+    const formSubmission: SetAReminderType = {
       FirstName: firstName as string,
       LastName: lastName as string,
-      Campus: getCampusGuid,
+      CampusLocation: getCampusGuid?.guid,
       Email: email as string,
       PhoneNumber: phone as string,
       ServiceTime: serviceTime as string,
     };
 
-    console.log(connectFormSubmission, getCampusGuid);
+    console.log(formSubmission);
 
-    // TODO: Update
-    // const sendForm = await postRockData(
-    //   `Workflows/LaunchWorkflow/0?workflowTypeId=936&workflowName=Set%20a%20Reminder`,
-    //   connectFormSubmission
-    // );
+    // Trigger the workflow for setting a reminder
+    await postRockData(
+      `Workflows/LaunchWorkflow/0?workflowTypeId=936&workflowName=Set%20a%20Reminder`,
+      formSubmission
+    );
 
     return json({ success: true });
   } catch (error) {
