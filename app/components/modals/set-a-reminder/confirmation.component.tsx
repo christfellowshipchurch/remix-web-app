@@ -27,11 +27,11 @@ const ReminderConfirmation = ({
   return (
     <div className="flex flex-col items-center gap-4 p-8">
       <Icon name="check" size={96} color="#1ec27f" />
-      <h1 className="font-bold text-2xl text-navy">
+      <h2 className="font-bold text-2xl text-navy">
         {isEspanol
           ? "Asegúrese de revisar su correo electrónico para obtener más detalles y nos vemos este domingo."
-          : "Be sure to check out your email for more details and we'll see you thisSunday."}
-      </h1>
+          : "Be sure to check out your email for more details and we'll see you this Sunday!"}
+      </h2>
       <div className="flex gap-2 mt-4">
         <Button
           href={icsLink(events[0].event)}
