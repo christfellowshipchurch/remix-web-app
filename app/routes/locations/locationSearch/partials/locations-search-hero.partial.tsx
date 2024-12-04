@@ -5,14 +5,12 @@ import Icon from "~/primitives/icon";
 type SearchProps = {
   setAddress: (address: string) => void;
   getCoordinates: () => void;
-  refetch?: () => void;
   searchScroll: () => void;
   searchCurrentLocation: () => void;
   locationActive: boolean;
 };
 
 export const Search = ({
-  refetch,
   setAddress,
   searchCurrentLocation,
   searchScroll,
@@ -50,7 +48,6 @@ export const Search = ({
               onClick={() => {
                 searchScroll();
                 getCoordinates();
-                if (refetch) refetch();
               }}
             >
               <Button size="md">Find a Location</Button>
