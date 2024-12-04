@@ -29,7 +29,9 @@ export const currentUser = async (token: string) => {
       throw new AuthenticationError("rockCookie is undefined");
     }
 
-    const { id, fullName, photo, email } = await getCurrentPerson(rockCookie);
+    const { id, fullName, phoneNumbers, photo, email } = await getCurrentPerson(
+      rockCookie
+    );
 
     /**
      * todo: Finish implementing the rest of the user data
@@ -38,6 +40,7 @@ export const currentUser = async (token: string) => {
       id,
       fullName,
       email,
+      phoneNumber: phoneNumbers[0]?.number,
       birthDate: "",
       gender: "",
       guid: "",

@@ -34,7 +34,7 @@ export const LocationsHero = () => {
         <div className="w-3/5 md:mt-12 md:border-t md:border-[#E7E7E7]" />
         <div className="flex w-full flex-col gap-4 md:flex-row md:pt-6">
           {!name?.includes("Online") ? (
-            <SetAReminderModal campus={name} />
+            <SetAReminderModal />
           ) : (
             <Button
               href="https://www.youtube.com/user/christfellowship"

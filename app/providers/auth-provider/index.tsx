@@ -30,6 +30,7 @@ export type User = {
   id: string;
   fullName: string;
   email: string;
+  phoneNumber: string;
   guid: string;
   gender: string;
   birthDate: string;
