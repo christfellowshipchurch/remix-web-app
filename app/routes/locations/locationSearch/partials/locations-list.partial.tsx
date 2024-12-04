@@ -3,50 +3,34 @@ import { useState } from "react";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "@remix-run/react";
-import prisonLocationImage from "../../../assets/prison-locations.jpg";
+import prisonLocationImage from "../../../../assets/prison-location.jpeg";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type Campus = {
   name: string;
-  image: {
-    uri: string;
+  location: {
+    image: {
+      guid: string;
+    };
   };
   distanceFromLocation?: number;
 };
 
 export type LocationsProps = {
-  data: {
-    getCampuses: Campus[];
-  };
+  campuses: Campus[];
   loading: boolean;
 };
 
-export const Locations = ({ data, loading }: LocationsProps) => {
-  const [onlineCampus, setOnlineCampus] = useState<Campus | null>(null);
+export const Locations = ({ campuses, loading }: LocationsProps) => {
   if (loading) {
     return <LocationsLoader />;
-  }
-
-  const onlineCampusIndex = data?.getCampuses.findIndex((campus) => {
-    return campus.name === "Online (CF Everywhere)";
-  });
-  if (onlineCampusIndex !== -1 && data?.getCampuses[onlineCampusIndex]) {
-    setOnlineCampus(data?.getCampuses[onlineCampusIndex]);
-    data?.getCampuses.splice(onlineCampusIndex, 1);
   }
 
   return (
     <div className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2">
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
-        {onlineCampus && (
-          <LocationCard
-            link="cf-everywhere"
-            name={onlineCampus?.name}
-            image={onlineCampus?.image?.uri}
-            distanceFromLocation={onlineCampus?.distanceFromLocation}
-          />
-        )}
-        {data?.getCampuses?.map((campus, index) => {
+        {campuses?.map((campus, index) => {
           let cfe = "";
           if (campus?.name?.includes("Español")) {
             cfe = campus?.name.substring(25, campus?.name.length);
@@ -54,7 +38,7 @@ export const Locations = ({ data, loading }: LocationsProps) => {
           return (
             <LocationCard
               name={campus?.name}
-              image={campus?.image?.uri}
+              image={createImageUrlFromGuid(campus?.location?.image?.guid)}
               distanceFromLocation={campus?.distanceFromLocation}
               key={index}
               link={
