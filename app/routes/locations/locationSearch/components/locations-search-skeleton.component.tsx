@@ -32,7 +32,9 @@ export function LocationsLoader() {
       <div className="mt-12">
         <Link to="/locations/prison-locations">
           <div
-            style={heroBgImgStyles("/location-pages/prison-location.jpeg")}
+            style={heroBgImgStyles(
+              "../app/assets/images/prison-locations-hero-bg.jpg"
+            )}
             className="relative h-[150px] w-[90vw] rounded-md md:h-[250px] md:w-[600px]"
           >
             <div

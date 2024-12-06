@@ -1,77 +1,38 @@
-import ShareLinks from "~/components/share-links/share-links.component";
-import ArticleAuthor from "../components/article-author.component";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
-import { LoaderReturnType } from "../loader";
+import Button from "~/primitives/button";
+import Icon from "~/primitives/icon";
 
-export interface AuthorProps {
-  fullName: string;
-  photo?: {
-    uri: string;
-  };
-  authorAttributes?: {
-    authorId: string;
-  };
-}
-
-export const ArticleHero: React.FC<LoaderReturnType> = ({
-  coverImage,
-  title,
-  summary,
-  author,
-  publishDate,
-  readTime,
-}: LoaderReturnType) => {
+export const ArticlesHeroPartial = () => {
   return (
-    <div style={heroBgImgStyles(coverImage)} className={`mx-auto w-full`}>
-      <div className="mx:px-2 flex h-full justify-center bg-white/80 px-6 pb-10 pt-16 backdrop-blur-lg lg:px-12 lg:py-56">
-        <div className="flex w-full max-w-screen-xl flex-col md:flex-row md:items-center lg:items-start ">
-          <div className="flex flex-col justify-center lg:w-2/5">
-            {title && (
-              <h1
-                className="mb-4 max-w-2xl text-pretty text-5xl font-bold leading-tight tracking-tight text-text_primary dark:text-white  md:leading-tight xl:text-6xl"
-                dangerouslySetInnerHTML={{ __html: title }}
-              />
-            )}
-            {summary && (
-              <p
-                className="mb-6 hidden max-w-2xl font-light text-link_secondary md:block  md:text-xl lg:mb-8"
-                dangerouslySetInnerHTML={{ __html: summary }}
-              />
-            )}
-            {/* Author */}
-            {author && (
-              <ArticleAuthor
-                author={author}
-                publishDate={publishDate || ""}
-                readTime={readTime || 0}
-              />
-            )}
-
-            {/* Share Links */}
-            <h2 className="mt-10 hidden text-2xl font-semibold md:block">
-              Share this Article
-            </h2>
-            <div className="mt-3 flex">
-              <div className="flex gap-2">
-                <ShareLinks
-                  size={10}
-                  socialMedia={[
-                    { type: "twitter", url: "/twitter" },
-                    { type: "facebook", url: "/facebook" },
-                    { type: "linkedIn", url: "/linkedIn" },
-                  ]}
-                />
-              </div>
-            </div>
+    <div
+      className="flex items-center justify-start self-stretch h-[640px]"
+      style={{
+        background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${"../app/assets/images/articles-hero-bg.jpg"}) lightgray 50% / cover no-repeat`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="flex flex-col gap-12 w-full pb-16 px-36 items-start justify-end self-stretch">
+        <h1 className="font-extrabold text-[100px] text-white">Articles</h1>
+        <div className="h-[2px] self-stretch bg-[#D9D9D9]" />
+        <div className="flex items-center justify-between self-stretch">
+          <div className="flex items-center gap-4 text-[#ADA09B]">
+            <p>Home</p>
+            <Icon color="ocean" size={32} name="check" />
+            <p>Articles</p>
           </div>
-          {/* Cover Image */}
-          <div className="mt-10 h-60 w-full sm:h-80 md:ml-6 md:w-96 lg:my-0 lg:w-3/5 xl:h-[400px]">
-            <img
-              className="rounded-md relative flex size-full justify-center"
-              src={coverImage}
-              alt={title || "Hero"}
-              style={{ objectFit: "cover" }}
-            />
+          <div className="flex relative pr-4">
+            <Button intent="secondary" className="text-white border-white">
+              Call to Action
+            </Button>
+            <div className="rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]">
+              <Icon
+                style={{ transform: "rotate(135deg)" }}
+                name="arrowBack"
+                size={26}
+                color="white"
+              />
+            </div>
           </div>
         </div>
       </div>

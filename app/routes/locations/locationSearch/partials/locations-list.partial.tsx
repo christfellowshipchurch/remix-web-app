@@ -70,7 +70,7 @@ export const Locations = ({ data, loading }: LocationsProps) => {
       <div className="mt-12">
         <Link to="/locations/prison-locations">
           <div
-            style={heroBgImgStyles(prisonLocationImage)}
+            style={heroBgImgStyles("../app/assets/prison-locations.jpg")}
             className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3"
           >
             <div
