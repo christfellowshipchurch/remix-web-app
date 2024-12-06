@@ -1,19 +1,13 @@
 import { kebabCase } from "lodash";
-import { useState } from "react";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "@remix-run/react";
 import prisonLocationImage from "../../../../assets/prison-location.jpeg";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
-import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type Campus = {
   name: string;
-  location: {
-    image: {
-      guid: string;
-    };
-  };
+  image: string;
   distanceFromLocation?: number;
 };
 
@@ -38,7 +32,7 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
           return (
             <LocationCard
               name={campus?.name}
-              image={createImageUrlFromGuid(campus?.location?.image?.guid)}
+              image={campus?.image}
               distanceFromLocation={campus?.distanceFromLocation}
               key={index}
               link={

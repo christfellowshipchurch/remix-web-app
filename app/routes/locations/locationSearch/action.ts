@@ -1,7 +1,7 @@
 import { ActionFunction, json } from "@remix-run/node";
 import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
 import { Campus } from "./partials/locations-list.partial";
-import { latLonDistance } from "~/lib/utils";
+import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = Object.fromEntries(await request.formData());
@@ -10,7 +10,16 @@ export const action: ActionFunction = async ({ request }) => {
 
   const campuses = await fetchRockData("Campuses", {
     $filter: `IsActive eq true`,
-    $expand: "Location, Location/Image",
+    $expand: "Location",
+    loadAttributes: "simple",
+  });
+
+  campuses.forEach((campus: any) => {
+    if (campus && campus.attributeValues.campusImage.value) {
+      campus.image = createImageUrlFromGuid(
+        campus.attributeValues.campusImage.value
+      );
+    }
   });
 
   return json(await getByLocation({ latitude, longitude, campuses }));
@@ -29,7 +38,6 @@ export const getByLocation = async ({
     name.includes("Online")
   );
   campuses = campuses.filter(({ name }: Campus) => !name.includes("Online"));
-  console.log(campuses);
 
   campuses = campuses.map((campus: any) => ({
     ...campus,
@@ -46,7 +54,7 @@ export const getByLocation = async ({
       (a.distanceFromLocation ?? 0) - (b.distanceFromLocation ?? 0)
   );
 
-  // campuses = [...onlineCampus, ...campuses];
+  campuses = [...onlineCampus, ...campuses];
 
   return campuses as Campus[];
 };
