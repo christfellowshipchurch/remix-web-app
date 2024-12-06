@@ -18,7 +18,7 @@ export const Search = ({
   locationActive,
 }: SearchProps) => {
   return (
-    <div className="flex h-[70vh] w-full items-center justify-center md:h-[82vh]">
+    <div className="flex h-[70vh] w-full items-center justify-center md:h-[78vh]">
       <div className="relative flex size-full overflow-hidden">
         <Video
           wistiaId="padj4c4xoh"
