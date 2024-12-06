@@ -54,7 +54,7 @@ export function MainCampusInfo() {
                 <Modal>
                   <Modal.Button>
                     <div className="flex gap-2">
-                      <div className="font-bold italic text-primary underline">
+                      <div className="font-bold italic text-ocean underline">
                         {expectData?.linkTitle}
                       </div>
                       <Icon size={24} name="circlePlay" color="#0092bc" />
@@ -205,7 +205,7 @@ export function TenemoMasParaTi() {
           href={`/locations/iglesia-${
             name.includes("Gardens") ? "royal-palm-beach" : "palm-beach-gardens"
           }`}
-          className="text-primary"
+          className="text-ocean"
         >
           Christ Fellowship Church Español en{" "}
           {`${

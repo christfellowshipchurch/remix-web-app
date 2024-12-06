@@ -138,7 +138,7 @@ const PinScreen: React.FC<PinScreenProps> = ({
             <button
               type="button"
               onClick={handleResend}
-              className="pl-1 font-semibold hover:text-primary"
+              className="pl-1 font-semibold hover:text-ocean"
             >
               Resend
             </button>

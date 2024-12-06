@@ -31,7 +31,7 @@ export const MenuContent: React.FC<MenuContentProps> = ({
         <hr className="my-4 border-t border-gray-200" />
         <ul className="mt-4 space-y-6">
           {section.items.map((item, idx) => (
-            <li key={idx} className="hover:text-primary text_text_primary">
+            <li key={idx} className="hover:text-ocean text-black">
               <a className="flex flex-col" href={item.url}>
                 <h4 className="font-semibold">{item.title}</h4>
                 <p className="font-light">{item.description}</p>
@@ -40,7 +40,7 @@ export const MenuContent: React.FC<MenuContentProps> = ({
           ))}
         </ul>
         {section.link && (
-          <a href="#" className="text-primary mt-4 block">
+          <a href="#" className="text-ocean mt-4 block">
             {section.link}
           </a>
         )}
