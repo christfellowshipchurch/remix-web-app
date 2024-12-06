@@ -4,7 +4,7 @@ import { Search } from "./partials/locations-search-hero.partial";
 import { Campus, Locations } from "./partials/locations-list.partial";
 import { useFetcher } from "@remix-run/react";
 
-export type LocationSearchResultsType = {
+export type LocationSearchcoordinatesType = {
   results: [
     {
       geometry: {
@@ -19,60 +19,78 @@ export type LocationSearchResultsType = {
 
 export function LocationSearchPage() {
   const [address, setAddress] = useState<string>("");
-  const [results, setResults] = useState<any[]>([]);
+  const [coordinates, setCoordinates] = useState<any[]>([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [locationActive, setLocationActive] = useState(true);
-  const [data, setData] = useState<Campus[]>([]);
+  const [results, setResults] = useState<Campus[]>([]);
 
-  const fetcher = useFetcher();
+  const campusFetcher = useFetcher();
   const googleFetcher = useFetcher();
 
   useEffect(() => {
-    if (results.length > 0) {
+    if (coordinates?.length > 0) {
       const formData = new FormData();
-      formData.append("latitude", results[0].geometry.location.lat.toString());
-      formData.append("longitude", results[0].geometry.location.lng.toString());
+      formData.append(
+        "latitude",
+        coordinates[0].geometry.location.lat.toString()
+      );
+      formData.append(
+        "longitude",
+        coordinates[0].geometry.location.lng.toString()
+      );
 
       try {
-        fetcher.submit(formData, {
+        campusFetcher.submit(formData, {
           method: "post",
           action: "/locations",
         });
       } catch (error) {
         console.log(error);
       }
+    }
+  }, [coordinates]);
 
-      if (fetcher.data) {
-        if (Array.isArray(fetcher.data)) {
-          setData(fetcher.data as Campus[]);
-        }
+  useEffect(() => {
+    if (campusFetcher.data) {
+      if (Array.isArray(campusFetcher.data)) {
+        setResults(campusFetcher.data as Campus[]);
       }
     }
-  }, [results]);
+  }, [campusFetcher.data]);
+
+  useEffect(() => {
+    if (googleFetcher.data) {
+      setCoordinates(
+        (googleFetcher.data as LocationSearchcoordinatesType).results
+      );
+    }
+  }, [googleFetcher.data]);
 
   useEffect(() => {
     searchCurrentLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Gets coordinates from user inputted address
   const getCoordinates = async () => {
     if (address) {
-      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-      // TODO: Switch to using fetcher from the Google endpoint in our site
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
-      );
-      const data: LocationSearchResultsType = (await response?.json()) as any;
-      setResults(data?.results);
+      const formData = new FormData();
+      formData.append("address", address);
+
+      try {
+        googleFetcher.submit(formData, {
+          method: "post",
+          action: "/google-geocode",
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      // if no address is entered, set results to an empty array
-      setResults([{ geometry: { location: {} } }]);
+      setCoordinates([]);
     }
   };
 
   function searchScroll() {
-    let scrollTo = document.getElementById("results");
+    let scrollTo = document.getElementById("coordinates");
     if (scrollTo) {
       scrollTo.scrollIntoView({ behavior: "smooth" });
     }
@@ -82,7 +100,7 @@ export function LocationSearchPage() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationActive(true);
-        setResults([
+        setCoordinates([
           {
             geometry: {
               location: {
@@ -108,7 +126,6 @@ export function LocationSearchPage() {
 
   return (
     <div className="flex w-full flex-col">
-      {/* Hero Section */}
       <Search
         searchScroll={searchScroll}
         searchCurrentLocation={searchCurrentLocation}
@@ -116,8 +133,10 @@ export function LocationSearchPage() {
         getCoordinates={getCoordinates}
         locationActive={locationActive}
       />
-      {/* Locations Section */}
-      <Locations campuses={data} loading={!data || data.length === 0} />
+      <Locations
+        campuses={results}
+        loading={!results || results.length === 0}
+      />
     </div>
   );
 }
