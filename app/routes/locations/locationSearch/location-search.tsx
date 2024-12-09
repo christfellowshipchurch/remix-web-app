@@ -16,6 +16,7 @@ export type LocationSearchCoordinatesType = {
       };
     }
   ];
+  status: string;
 };
 
 export function LocationSearchPage() {
