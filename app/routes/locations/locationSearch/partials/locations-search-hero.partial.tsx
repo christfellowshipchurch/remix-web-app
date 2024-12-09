@@ -18,7 +18,7 @@ export const Search = ({
   locationActive,
 }: SearchProps) => {
   return (
-    <div className="flex h-[70vh] w-full items-center justify-center md:h-[78vh]">
+    <div className="flex h-[56vw] w-full items-center justify-center">
       <div className="relative flex size-full overflow-hidden">
         <Video
           wistiaId="padj4c4xoh"
@@ -53,20 +53,22 @@ export const Search = ({
               <Button size="md">Find a Location</Button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <div
-              className="cursor-pointer italic underline"
-              onClick={() => searchCurrentLocation()}
-            >
-              Use my current location
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex gap-2">
+              <div
+                className="cursor-pointer italic underline"
+                onClick={() => searchCurrentLocation()}
+              >
+                Use my current location
+              </div>
+              <Icon size={16} color="white" name="locationArrow" />
             </div>
-            <Icon size={16} color="white" name="locationArrow" />
+            {!locationActive && (
+              <div className="text-sm italic text-alert">
+                Enable Location Access & Try Again.
+              </div>
+            )}
           </div>
-          {!locationActive && (
-            <div className="mt-4 text-sm italic text-alert">
-              Enable Location Access & Try Again.
-            </div>
-          )}
         </div>
       </div>
     </div>
