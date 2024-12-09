@@ -13,6 +13,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const campuses: Campus[] = await fetchRockData("Campuses", {
     $filter: `IsActive eq true`,
     $expand: "Location",
+    $orderby: "Order",
     loadAttributes: "simple",
   });
 
