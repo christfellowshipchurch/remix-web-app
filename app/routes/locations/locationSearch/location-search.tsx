@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
 import { Campus, Locations } from "./partials/locations-list.partial";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
+import { CampusesReturnType } from "./loader";
 
-export type LocationSearchcoordinatesType = {
+export type LocationSearchCoordinatesType = {
   results: [
     {
       geometry: {
@@ -26,6 +27,8 @@ export function LocationSearchPage() {
 
   const campusFetcher = useFetcher();
   const googleFetcher = useFetcher();
+
+  const { campuses } = useLoaderData<CampusesReturnType>();
 
   useEffect(() => {
     if (coordinates?.length > 0) {
@@ -61,7 +64,7 @@ export function LocationSearchPage() {
   useEffect(() => {
     if (googleFetcher.data) {
       setCoordinates(
-        (googleFetcher.data as LocationSearchcoordinatesType).results
+        (googleFetcher.data as LocationSearchCoordinatesType).results
       );
     }
   }, [googleFetcher.data]);
@@ -120,6 +123,7 @@ export function LocationSearchPage() {
         }
         setHasLoaded(true);
         console.log(error);
+        setResults(campuses);
       }
     );
   }
