@@ -9,7 +9,7 @@ export const TodaLaSemana = () => {
 
   return (
     <div className="flex px-4 w-full flex-col items-center bg-[#F5F5F7] py-10 md:py-16 lg:py-20 xl:py-24">
-      <h1 className="text-3xl font-bold text-secondary mb-3">Toda la semana</h1>
+      <h1 className="text-3xl font-bold text-navy mb-3">Toda la semana</h1>
       <p className="italic text-center">
         *Opciones en español disponibles.{" "}
         <span className="font-bold">

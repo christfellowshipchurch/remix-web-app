@@ -11,6 +11,42 @@ interface ConnectCardProps {
   onSuccess: () => void;
 }
 
+export const renderInputField = (
+  name: string,
+  label: string,
+  type: string,
+  requiredMessage: string,
+  defaultValue?: string
+) => (
+  <Form.Field name={name} className="flex flex-col mb-4">
+    <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
+    <Form.Control asChild>
+      <input
+        type={type}
+        required
+        defaultValue={defaultValue}
+        className={defaultInputStyles}
+      />
+    </Form.Control>
+    <Form.Message className="text-sm text-alert" match="valueMissing">
+      {requiredMessage}
+    </Form.Message>
+  </Form.Field>
+);
+
+export const renderCheckboxField = (checkbox: any, index: number) => (
+  <Form.Field
+    key={index}
+    name={`allThatApplies-${index}`}
+    className="flex gap-2 md:items-center"
+  >
+    <Form.Control asChild>
+      <input type="checkbox" id={checkbox.guid} value={checkbox.guid} />
+    </Form.Control>
+    <Form.Label className="font-bold leading-4">{checkbox.value}</Form.Label>
+  </Form.Field>
+);
+
 const ConnectCardForm: React.FC<ConnectCardProps> = ({
   formFieldData,
   onSuccess,
@@ -58,39 +94,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
     (checkbox) => checkbox.value !== "Other"
   );
 
-  const renderInputField = (
-    name: string,
-    label: string,
-    type: string,
-    requiredMessage: string
-  ) => (
-    <Form.Field name={name} className="flex flex-col mb-4">
-      <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
-      <Form.Control asChild>
-        <input type={type} required className={defaultInputStyles} />
-      </Form.Control>
-      <Form.Message className="text-sm text-alert" match="valueMissing">
-        {requiredMessage}
-      </Form.Message>
-    </Form.Field>
-  );
-
-  const renderCheckboxField = (checkbox: any, index: number) => (
-    <Form.Field
-      key={index}
-      name={`allThatApplies-${index}`}
-      className="flex gap-2 md:items-center"
-    >
-      <Form.Control asChild>
-        <input type="checkbox" id={checkbox.guid} value={checkbox.guid} />
-      </Form.Control>
-      <Form.Label className="font-bold leading-4">{checkbox.value}</Form.Label>
-    </Form.Field>
-  );
-
   return (
     <>
-      <h2 className="mb-6 text-3xl text-secondary font-bold">Get Connected</h2>
+      <h2 className="mb-6 text-3xl text-navy font-bold">Get Connected</h2>
       <Form.Root
         onSubmit={handleSubmit}
         className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"
@@ -158,12 +164,12 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               value="I made a decision to follow Christ today."
             />
           </Form.Control>
-          <Form.Label className="font-bold text-secondary leading-4">
+          <Form.Label className="font-bold text-navy leading-4">
             I made a decision to follow Christ today
           </Form.Label>
         </Form.Field>
 
-        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-secondary md:mt-8 ">
+        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-navy md:mt-8 ">
           I am looking to:
         </h3>
         {checkboxes.map(renderCheckboxField)}

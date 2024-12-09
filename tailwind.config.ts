@@ -10,6 +10,7 @@ import {
   modalAnimations,
   modalKeyframes,
 } from "./app/primitives/Modal/modal.styles";
+import { desktopHeadings } from "./app/styles/desktopHeadings";
 
 export default {
   darkMode: ["class"],
@@ -22,12 +23,19 @@ export default {
   presets: [require("@relume_io/relume-tailwind")],
   theme: {
     extend: {
+      fontSize: {
+        h1: ["40px", { lineHeight: "120%" }], // Mobile sizes
+        h2: ["36px", { lineHeight: "120%" }],
+        h3: ["32px", { lineHeight: "120%" }],
+        h4: ["24px", { lineHeight: "140%" }],
+        h5: ["20px", { lineHeight: "140%" }],
+        h6: ["18px", { lineHeight: "140%" }],
+      },
       colors: {
         /** Our CF Branded Color */
         ...customColors,
         /** Shadcn Colors */
         /** Note: Removed colors that would interfere with the CF Branded Colors */
-        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
@@ -49,7 +57,6 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
-        border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         chart: {
@@ -109,5 +116,6 @@ export default {
         });
       }
     ),
+    desktopHeadings, // Adds desktop headings sizes
   ],
 } satisfies Config;

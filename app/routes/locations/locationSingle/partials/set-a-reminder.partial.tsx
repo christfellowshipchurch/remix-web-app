@@ -21,7 +21,7 @@ export const SetAReminder = () => {
     >
       <div className="flex max-w-[1240px] flex-col items-center lg:gap-8">
         <div className="flex flex-col items-center text-center">
-          <h1 className="text-4xl font-bold text-wordOfChrist">
+          <h1 className="text-4xl font-bold text-navy">
             {isEspanol
               ? "Establece un recordatorio para el próximo servicio"
               : "Set a Reminder for an Upcoming Service"}

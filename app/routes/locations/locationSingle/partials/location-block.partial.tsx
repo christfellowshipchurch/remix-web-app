@@ -8,7 +8,7 @@ export const LocationBlock = () => {
 
   return (
     <div className="flex w-full flex-col items-center bg-[#F5F5F7] py-10 md:py-16 lg:py-20 xl:py-24">
-      <h1 className="text-3xl font-bold text-secondary">
+      <h1 className="heading-h3 text-navy">
         {name === "Online (CF Everywhere)"
           ? "Digital Offerings for Everyone"
           : "At This Location"}
@@ -32,7 +32,7 @@ export const LocationBlock = () => {
               <img
                 src={data?.coverImage?.sources[0]?.uri}
                 alt={data?.title}
-                className="size-full"
+                className="size-full object-cover"
               />
             </div>
             <div className="flex flex-col gap-2 p-6">
