@@ -1,6 +1,8 @@
 import Button from "~/primitives/button";
 import Video from "~/primitives/Video";
 import Icon from "~/primitives/icon";
+import { CampusesReturnType } from "../loader";
+import { useLoaderData } from "@remix-run/react";
 
 type SearchProps = {
   setAddress: (address: string) => void;
@@ -17,11 +19,13 @@ export const Search = ({
   getCoordinates,
   locationActive,
 }: SearchProps) => {
+  const { bgVideo } = useLoaderData<CampusesReturnType>();
+
   return (
     <div className="flex h-[56vw] w-full items-center justify-center">
       <div className="relative flex size-full overflow-hidden">
         <Video
-          wistiaId="padj4c4xoh"
+          src={bgVideo}
           autoPlay
           loop
           muted
