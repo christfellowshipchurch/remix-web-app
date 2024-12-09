@@ -1,5 +1,6 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
+import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
 import {
   fetchCampusData,
   fetchComingUpChildren,
@@ -8,7 +9,7 @@ import {
   fetchPastorIdByAlias,
   fetchWeekdaySchedules,
 } from "~/lib/.server/fetchLocationSingleData";
-import { createImageUrlFromGuid, getIdentifierType } from "~/lib/utils";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type dayTimes = {
   day: string;
@@ -63,6 +64,7 @@ export type LoaderReturnType = {
   state: string;
   street1: string;
   street2: string;
+  user: any;
   url: string;
   youtube: string;
   weekdaySchedules: any[];
@@ -72,10 +74,13 @@ const youtube = "https://www.youtube.com/user/christfellowship";
 const facebook = "https://www.facebook.com/CFimpact";
 const defaultInstagram = "https://www.instagram.com/christfellowship.church/";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.location, "No Campus");
   const campusUrl = params.location as string;
   const data = await fetchCampusData(campusUrl);
+
+  const userData = await getUserFromRequest(request);
+  const user = userData ? await userData.json() : null;
 
   if (!data) {
     throw new Error("No data found");
@@ -178,6 +183,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     street1: location?.street1,
     street2: location?.street2,
     url,
+    user: user,
     youtube,
     weekdaySchedules: weekdaySchedulesFormatted,
   };

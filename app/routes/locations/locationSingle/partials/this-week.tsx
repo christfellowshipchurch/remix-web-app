@@ -8,7 +8,7 @@ export const ThisWeek = () => {
 
   return (
     <div className="flex flex-col items-center gap-12 bg-[#F5F5F7] px-8 pt-20 pb-12 lg:pt-28">
-      <h2 className="text-center text-4xl font-bold text-secondary lg:text-start lg:text-[2.5rem]">
+      <h2 className="text-center text-4xl font-bold text-navy lg:text-start lg:text-[2.5rem]">
         This Week
       </h2>
       {/* Big Card */}

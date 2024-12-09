@@ -4,7 +4,7 @@ import { whatToExpectData } from "../locations-single.data";
 import { camelCase, startCase } from "lodash";
 import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
-import { WhatToExpectModal } from "~/components/modals/what-to-expect";
+import WhatToExpectModal from "~/components/modals/what-to-expect";
 import { weekdaySpanishTranslation } from "../util";
 import Icon from "~/primitives/icon";
 import { useState } from "react";
@@ -42,7 +42,7 @@ export function MainCampusInfo() {
         {name === "Online (CF Everywhere)" && <WaysToJoinOnlineDesktop />}
         <div className="mx-auto w-4/5 border-t border-[#cecece] lg:hidden" />
         <div className="flex flex-col items-center gap-1 text-center lg:flex-row lg:items-start lg:gap-5 lg:border-0 lg:text-start">
-          <h3 className="mt-8 text-[1.375rem] font-bold text-wordOfChrist md:text-2xl lg:mt-0 lg:w-36">
+          <h3 className="mt-8 text-[1.375rem] font-bold text-navy md:text-2xl lg:mt-0 lg:w-36">
             {expectData?.title}
           </h3>
           <div className="flex flex-col items-center gap-4 lg:items-start">
@@ -87,7 +87,7 @@ export function MainCampusInfo() {
 export function WaysToJoinOnlineMobile() {
   return (
     <div className="flex flex-col items-center gap-4 pb-12 pt-5 text-center lg:hidden lg:flex-row lg:items-start lg:border-0 lg:text-start">
-      <h3 className="pt-3 text-lg font-bold text-wordOfChrist md:text-2xl lg:w-36 lg:pt-0">
+      <h3 className="pt-3 text-lg font-bold text-navy md:text-2xl lg:w-36 lg:pt-0">
         Ways to Join Online
       </h3>
       <div className="flex gap-4 px-4">
@@ -122,7 +122,7 @@ export function WaysToJoinOnlineDesktop() {
 
   return (
     <div className="hidden flex-col items-center gap-4 text-center lg:flex lg:flex-row lg:items-start lg:gap-5 lg:border-0 lg:text-start">
-      <h3 className="pt-3 text-lg font-bold text-wordOfChrist md:text-2xl lg:w-36 lg:pt-0">
+      <h3 className="pt-3 text-lg font-bold text-navy md:text-2xl lg:w-36 lg:pt-0">
         Ways to Join Online
       </h3>
       <div className="flex gap-4 px-4">
@@ -162,7 +162,7 @@ export function DuringTheWeek() {
   return (
     <div className="my-8 flex flex-col items-center gap-4 text-center lg:mt-0 lg:flex-row lg:items-start lg:gap-5 lg:text-start xl:gap-6">
       <div className="mx-auto w-4/5 border-t border-[#cecece] lg:hidden" />
-      <h3 className="mt-12 text-[1.375rem] font-bold text-wordOfChrist md:text-2xl lg:mt-0 lg:w-36">
+      <h3 className="mt-12 text-[1.375rem] font-bold text-navy md:text-2xl lg:mt-0 lg:w-36">
         {isEspanol ? "Durante la Semana" : "During the Week"}
       </h3>
       <div className="flex flex-col gap-10 lg:flex-row xl:gap-14">
@@ -196,7 +196,7 @@ export function TenemoMasParaTi() {
 
   return (
     <div className="flex flex-col items-center gap-1 text-center lg:flex-row lg:items-start lg:gap-5 lg:border-0 lg:text-start">
-      <h3 className="mt-8 text-[1.375rem] font-bold text-wordOfChrist md:text-2xl lg:mt-0 lg:w-36">
+      <h3 className="mt-8 text-[1.375rem] font-bold text-navy md:text-2xl lg:mt-0 lg:w-36">
         Tenemos más para ti
       </h3>
       <p className="italic px-4 md:max-w-[420px] lg:w-[42vw] lg:max-w-[600px] lg:px-0 xl:w-auto xl:max-w-[650px]">

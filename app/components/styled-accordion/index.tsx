@@ -22,7 +22,7 @@ const StyledAccordion = ({ data, bg }: AccordionDataType) => {
           <Accordion.Item
             key={index}
             style={{ backgroundColor: bg ? bg : `#E7F9FE` }}
-            className={`AccordionItem w-[90vw] rounded-lg px-6 sm:w-[560px] lg:w-[768px]`}
+            className={`AccordionItem w-[90vw] rounded-lg px-6 md:w-[560px] lg:w-[768px]`}
             value={`item-${index + 1}`}
           >
             <Accordion.Header className="AccordionHeader flex py-5 text-lg font-bold">

@@ -23,7 +23,7 @@ export const Testimonials = () => {
 
   return (
     <div className="flex flex-col items-center gap-12 bg-white px-8 py-20 lg:py-28">
-      <h2 className="text-center text-4xl font-bold text-secondary lg:text-start lg:text-[2.5rem]">
+      <h2 className="text-center heading-h3 text-navy">
         {name.includes("Español")
           ? "Mira lo que otros dicen"
           : "See What Others Are Saying"}
@@ -67,7 +67,7 @@ export const Testimonials = () => {
                 />
               )}
               <div className="flex flex-col">
-                <p className="text-lg font-bold text-secondary">{item?.name}</p>
+                <p className="text-lg font-bold text-navy">{item?.name}</p>
                 <p
                   className={`${
                     !item?.region ? "hidden" : ""

@@ -11,7 +11,6 @@ const button = cva(
     "rounded-md",
     "text-center",
     "border",
-    "border-primary",
     "transition-colors",
     "delay-50",
   ],
@@ -19,17 +18,19 @@ const button = cva(
     variants: {
       intent: {
         primary: [
-          "bg-primary-500",
+          "bg-ocean",
           "text-white",
-          "hover:enabled:bg-primary-700",
+          "border-transparent",
+          "hover:enabled:bg-navy",
         ],
         secondary: [
           "bg-transparent",
-          "text-primary-500",
-          "hover:enabled:bg-primary",
+          "text-ocean",
+          "border-ocean",
+          "hover:enabled:bg-ocean",
           "hover:enabled:text-white",
         ],
-        white: ["bg-white", "text-primary", "hover:enabled:bg-[#D9D9D9]"],
+        white: ["bg-white", "text-ocean", "hover:enabled:bg-[#D9D9D9]"],
       },
       size: {
         sm: ["min-w-20", "h-full", "min-h-10", "text-sm", "px-4"],

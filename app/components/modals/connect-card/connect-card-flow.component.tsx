@@ -30,10 +30,7 @@ const ConnectCardFlow = ({
         );
       case ConnectCardStep.CONFIRMATION:
         return (
-          <ConnectCardConfirmation
-            // Close modal on success
-            onSuccess={() => setOpenModal(false)}
-          />
+          <ConnectCardConfirmation onSuccess={() => setOpenModal(false)} />
         );
       default:
         return null;
