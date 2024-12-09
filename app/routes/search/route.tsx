@@ -16,7 +16,11 @@ export default function TestingSearch() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
-  const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY);
+  const searchClient = algoliasearch(
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
+    {}
+  );
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
@@ -30,6 +34,9 @@ export default function TestingSearch() {
         <InstantSearch
           indexName="production_ContentItems"
           searchClient={searchClient}
+          future={{
+            preserveSharedStateOnUnmount: true, // Set this to true to adopt the new behavior
+          }}
         >
           {/* Search Box */}
           <div className="mb-6">
@@ -83,11 +90,14 @@ export default function TestingSearch() {
 
 // Custom Component for Displaying Individual Hits
 function HitComponent({ hit }: { hit: ContentItemHit }) {
+  const pathname = hit.routing?.pathname || "#not-found";
+  const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
+
   return (
     <div className="p-4 h-full mb-4 bg-gray-100 rounded-lg shadow-sm hover:scale-105 transition-transform">
-      <a href={hit.routing.pathname}>
+      <a href={pathname}>
         <img
-          src={hit.coverImage.sources[0].uri}
+          src={coverImage}
           alt={hit.title}
           className="w-full h-48 object-cover mb-4 rounded-lg"
         />
