@@ -1,12 +1,18 @@
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
 
+// Turn into more flexible component that other pages can use, like the All Messages Page, look at Figma for reference.
 export const ArticlesHeroPartial = () => {
+  // Update the component to be able to pass down the urlBgPath
+  const urlBgPath = "../app/assets/images/articles-hero-bg.jpg";
+  // Get from url
+  const pagePath = "Articles";
+
   return (
     <div
       className="flex items-center justify-start self-stretch h-[640px]"
       style={{
-        background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${"../app/assets/images/articles-hero-bg.jpg"}) lightgray 50% / cover no-repeat`,
+        background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${urlBgPath}) lightgray 50% / cover no-repeat`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -19,7 +25,7 @@ export const ArticlesHeroPartial = () => {
           <div className="flex items-center gap-4 text-[#ADA09B]">
             <p>Home</p>
             <Icon color="ocean" size={32} name="check" />
-            <p>Articles</p>
+            <p>{pagePath}</p>
           </div>
           <div className="flex relative pr-4">
             <Button intent="secondary" className="text-white border-white">
