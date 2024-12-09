@@ -22,7 +22,10 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2">
+    <div
+      className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
+      id="campuses"
+    >
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
         {campuses?.map((campus, index) => {
           let cfe = "";

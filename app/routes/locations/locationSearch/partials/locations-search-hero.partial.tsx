@@ -2,7 +2,7 @@ import Button from "~/primitives/button";
 import Video from "~/primitives/Video";
 import Icon from "~/primitives/icon";
 import { CampusesReturnType } from "../loader";
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 
 type SearchProps = {
   setAddress: (address: string) => void;
@@ -40,7 +40,14 @@ export const Search = ({
             Christ Fellowship is one church with many locations across South
             Florida, and online—wherever you are!
           </p>
-          <div className="flex flex-col items-center gap-2.5">
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              searchScroll();
+              getCoordinates();
+            }}
+            className="flex flex-col items-center gap-2.5"
+          >
             <div className="flex w-[60vw] justify-between md:w-[440px] ">
               <input
                 className="w-full rounded-md bg-white px-6 py-3  text-center text-xl text-black"
@@ -48,15 +55,10 @@ export const Search = ({
                 onChange={(e) => setAddress(e.target.value)}
               />
             </div>
-            <div
-              onClick={() => {
-                searchScroll();
-                getCoordinates();
-              }}
-            >
-              <Button size="md">Find a Location</Button>
-            </div>
-          </div>
+            <Button type="submit" size="md">
+              Find a Location
+            </Button>
+          </Form>
           <div className="flex flex-col items-center gap-2">
             <div className="flex gap-2">
               <div

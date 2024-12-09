@@ -93,7 +93,7 @@ export function LocationSearchPage() {
   };
 
   function searchScroll() {
-    let scrollTo = document.getElementById("coordinates");
+    let scrollTo = document.getElementById("campuses");
     if (scrollTo) {
       scrollTo.scrollIntoView({ behavior: "smooth" });
     }
@@ -103,6 +103,7 @@ export function LocationSearchPage() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationActive(true);
+        searchScroll();
         setCoordinates([
           {
             geometry: {
@@ -113,9 +114,6 @@ export function LocationSearchPage() {
             },
           },
         ]);
-        if (hasLoaded) {
-          searchScroll();
-        }
       },
       (error) => {
         if (hasLoaded) {
@@ -139,7 +137,12 @@ export function LocationSearchPage() {
       />
       <Locations
         campuses={results}
-        loading={!results || results.length === 0}
+        loading={
+          !results ||
+          results.length === 0 ||
+          campusFetcher.state === "loading" ||
+          googleFetcher.state === "loading"
+        }
       />
     </div>
   );
