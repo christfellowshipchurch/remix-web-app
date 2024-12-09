@@ -22,7 +22,7 @@ export const Search = ({
   const { bgVideo } = useLoaderData<CampusesReturnType>();
 
   return (
-    <div className="flex h-[56vw] w-full items-center justify-center">
+    <div className="flex h-[70vh] w-full items-center justify-center md:h-[78vh]">
       <div className="relative flex size-full overflow-hidden">
         <Video
           src={bgVideo}
