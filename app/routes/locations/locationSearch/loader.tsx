@@ -2,9 +2,11 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid } from "~/lib/utils";
+import { fetchWistiaData } from "~/lib/.server/fetchWistiaData";
 
 export type CampusesReturnType = {
   campuses: Campus[];
+  bgVideo: string;
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -22,5 +24,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     }
   });
 
-  return { campuses };
+  const bgVideo = await fetchWistiaData({ id: "padj4c4xoh", size: 1280 });
+
+  return { bgVideo, campuses };
 }
