@@ -2,7 +2,7 @@ import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
 import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
 import Button from "~/primitives/button";
-import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";
 import { renderInputField } from "../connect-card/connect-form.component";
@@ -112,7 +112,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           <Form.Label className="font-bold text-sm mb-2">Campus</Form.Label>
           <Form.Control asChild>
             <select
-              className={`appearance-none ${defaultInputStyles}`}
+              className={`appearance-none ${defaultTextInputStyles}`}
               required
               disabled
               style={{
@@ -134,7 +134,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           <Form.Control asChild>
             {serviceTimes && (
               <select
-                className={`appearance-none ${defaultInputStyles}`}
+                className={`appearance-none ${defaultTextInputStyles}`}
                 required
                 onChange={(e) => setServiceTime(e.target.value)}
                 style={{

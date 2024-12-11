@@ -59,7 +59,7 @@ export default function Index() {
               <Button intent={"secondary"} onClick={logout}>
                 Logout
               </Button>
-              <a className="text-primary underline" href="/profile">
+              <a className="text-ocean underline" href="/profile">
                 Go to Profile
               </a>
             </>
