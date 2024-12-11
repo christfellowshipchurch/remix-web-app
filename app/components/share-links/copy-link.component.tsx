@@ -10,7 +10,7 @@ const CopyToClipboard = ({
       {/**
        * TODO : Add a confirmation message that link has been copied
        */}
-      {/* <span className="absolute text-primary bg-white px-2 rounded">
+      {/* <span className="absolute text-ocean bg-white px-2 rounded">
         Copied to Clipboard
       </span> */}
       <button

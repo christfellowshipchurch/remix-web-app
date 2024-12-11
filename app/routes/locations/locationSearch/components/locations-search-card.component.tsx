@@ -35,7 +35,7 @@ const LocationCard = ({
         </h3>
         {coverLabel && distanceFromLocation && (
           <div className="absolute right-0 top-0 mr-[5px] mt-2 rounded-md bg-white">
-            <p className="px-3 py-0.5 text-[0.75rem] font-bold tracking-widest text-primary">
+            <p className="px-3 py-0.5 text-[0.75rem] font-bold tracking-widest text-ocean">
               {!name?.includes("Online")
                 ? `${Number(distanceFromLocation).toFixed(1)} MILES`
                 : "RIGHT HERE!"}
