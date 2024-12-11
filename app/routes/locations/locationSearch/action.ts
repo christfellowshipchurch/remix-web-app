@@ -1,5 +1,5 @@
 import { ActionFunction, json } from "@remix-run/node";
-import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";
 

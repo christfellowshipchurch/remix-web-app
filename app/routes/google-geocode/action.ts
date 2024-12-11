@@ -23,7 +23,7 @@ export const action: ActionFunction = async ({ request }) => {
     const data: LocationSearchCoordinatesType = (await response.json()) as any;
 
     if (data.status === "ZERO_RESULTS") {
-      return json({ data, error: "Enter a valid zip code" });
+      return json({ data, error: "Zipcode does not exist, please try again" });
     }
 
     return json(data);
