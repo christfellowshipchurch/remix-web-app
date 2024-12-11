@@ -1,10 +1,13 @@
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
 
+export type DynamicHeroTypes = {
+  imagePath: string;
+  ctas?: { url: string; text: string }[];
+};
+
 // Turn into more flexible component that other pages can use, like the All Messages Page, look at Figma for reference.
-export const ArticlesHeroPartial = () => {
-  // Update the component to be able to pass down the urlBgPath
-  const urlBgPath = "../app/assets/images/articles-hero-bg.jpg";
+export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
   // Get from url
   const pagePath = "Articles";
 
@@ -12,25 +15,31 @@ export const ArticlesHeroPartial = () => {
     <div
       className="flex items-center justify-start self-stretch h-[640px]"
       style={{
-        background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${urlBgPath}) lightgray 50% / cover no-repeat`,
+        background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${imagePath}) lightgray 50% / cover no-repeat`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
       <div className="flex flex-col gap-12 w-full pb-16 px-36 items-start justify-end self-stretch">
-        <h1 className="font-extrabold text-[100px] text-white">Articles</h1>
+        <h1 className="font-extrabold text-[100px] text-white">{pagePath}</h1>
         <div className="h-[2px] self-stretch bg-[#D9D9D9]" />
         <div className="flex items-center justify-between self-stretch">
           <div className="flex items-center gap-4 text-[#ADA09B]">
             <p>Home</p>
-            <Icon color="ocean" size={32} name="check" />
+            <Icon color="#0092BC" size={20} name="caretRight" />
             <p>{pagePath}</p>
           </div>
-          <div className="flex relative pr-4">
-            <Button intent="secondary" className="text-white border-white">
-              Call to Action
-            </Button>
+          <div className="flex gap-6 relative pr-4">
+            {ctas?.map((cta, i) => (
+              <Button
+                href={cta.url}
+                intent="secondary"
+                className="text-white border-white rounded-none"
+              >
+                {cta.text}
+              </Button>
+            ))}
             <div className="rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]">
               <Icon
                 style={{ transform: "rotate(135deg)" }}

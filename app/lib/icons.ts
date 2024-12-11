@@ -14,6 +14,7 @@ export const icons = {
       fill: "currentColor",
     },
   ],
+  caretRight: "M9 18.9997L17 11.9997L9 4.99973V18.9997Z",
   check:
     "M9.99997 15.5858L6.70697 12.2928L5.29297 13.7068L9.99997 18.4138L19.707 8.70675L18.293 7.29276L9.99997 15.5858Z",
   chevronDown:
