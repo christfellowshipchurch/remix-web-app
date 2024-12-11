@@ -7,17 +7,17 @@ import { Form, useLoaderData } from "@remix-run/react";
 type SearchProps = {
   setAddress: (address: string) => void;
   getCoordinates: () => void;
-  searchScroll: () => void;
   searchCurrentLocation: () => void;
   locationActive: boolean;
+  error?: string | null;
 };
 
 export const Search = ({
   setAddress,
   searchCurrentLocation,
-  searchScroll,
   getCoordinates,
   locationActive,
+  error,
 }: SearchProps) => {
   const { bgVideo } = useLoaderData<CampusesReturnType>();
 
@@ -43,7 +43,6 @@ export const Search = ({
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              searchScroll();
               getCoordinates();
             }}
             className="flex flex-col items-center gap-2.5"
@@ -69,6 +68,7 @@ export const Search = ({
               </div>
               <Icon size={16} color="white" name="locationArrow" />
             </div>
+            {error && <div className="text-sm italic text-alert">{error}</div>}
             {!locationActive && (
               <div className="text-sm italic text-alert">
                 Enable Location Access & Try Again.
