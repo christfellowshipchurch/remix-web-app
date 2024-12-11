@@ -17,6 +17,7 @@ export type LocationSearchCoordinatesType = {
     }
   ];
   status: string;
+  error: string | undefined | null;
 };
 
 export function LocationSearchPage() {
@@ -25,6 +26,7 @@ export function LocationSearchPage() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [locationActive, setLocationActive] = useState(true);
   const [results, setResults] = useState<Campus[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const campusFetcher = useFetcher();
   const googleFetcher = useFetcher();
@@ -48,7 +50,9 @@ export function LocationSearchPage() {
           method: "post",
           action: "/locations",
         });
+        searchScroll();
       } catch (error) {
+        setError("An error occurred while fetching campus data");
         console.log(error);
       }
     }
@@ -67,6 +71,12 @@ export function LocationSearchPage() {
       setCoordinates(
         (googleFetcher.data as LocationSearchCoordinatesType).results
       );
+      console.log((googleFetcher.data as LocationSearchCoordinatesType).error);
+      if ((googleFetcher.data as LocationSearchCoordinatesType).error) {
+        setError(
+          (googleFetcher.data as LocationSearchCoordinatesType).error ?? null
+        );
+      }
     }
   }, [googleFetcher.data]);
 
@@ -75,8 +85,11 @@ export function LocationSearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isValidZip = (zip: string) => /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
+
   const getCoordinates = async () => {
-    if (address) {
+    if (isValidZip(address)) {
+      setError(null);
       const formData = new FormData();
       formData.append("address", address);
 
@@ -86,9 +99,11 @@ export function LocationSearchPage() {
           action: "/google-geocode",
         });
       } catch (error) {
-        console.log(error);
+        setError("Please enter a valid zip code");
+        // console.log(error);
       }
     } else {
+      setError("Please enter a valid zip code");
       setCoordinates([]);
     }
   };
@@ -105,6 +120,7 @@ export function LocationSearchPage() {
       (position) => {
         setLocationActive(true);
         searchScroll();
+        setError(null);
         setCoordinates([
           {
             geometry: {
@@ -130,11 +146,11 @@ export function LocationSearchPage() {
   return (
     <div className="flex w-full flex-col">
       <Search
-        searchScroll={searchScroll}
         searchCurrentLocation={searchCurrentLocation}
         setAddress={setAddress}
         getCoordinates={getCoordinates}
         locationActive={locationActive}
+        error={error}
       />
       <Locations
         campuses={results}
