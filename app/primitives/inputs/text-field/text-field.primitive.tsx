@@ -1,14 +1,14 @@
 /**
  * @name TextFieldInput
- * @description This component is a text input field that can be used in forms. It was mainly created inorder to be able to place icons inside the input field when there is an error. If icon is not needed, a normal text input field can be used with the defaultInputStyles.
+ * @description This component is a text input field that can be used in forms. It was mainly created inorder to be able to place icons inside the input field when there is an error. If icon is not needed, a normal text input field can be used with the defaultTextInputStyles.
  */
 
 import React, { forwardRef, useEffect, useRef } from "react";
 import Icon from "~/primitives/icon";
 import colors from "~/styles/colors";
 
-export const defaultInputStyles =
-  "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-primary focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
+export const defaultTextInputStyles =
+  "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
 interface TextFieldInputProps {
   className?: string;
@@ -54,7 +54,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
             ref.current = el;
           }
         }}
-        className={`${defaultInputStyles} ${className}`}
+        className={`${defaultTextInputStyles} ${className}`}
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}

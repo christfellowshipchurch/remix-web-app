@@ -25,7 +25,7 @@ export const Video = (props: VideoProps) => {
           autoPlay={props.autoPlay || false}
           loop={props.loop || false}
           muted={props.muted || false}
-          controls={props.controls || true}
+          controls={props.controls || undefined}
           className={props.className}
         />
       )}
