@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "@remix-run/node";
+import { ActionFunction, data } from "react-router";
 import { LocationSearchCoordinatesType } from "../locations/locationSearch/location-search";
 import {
   AuthenticationError,

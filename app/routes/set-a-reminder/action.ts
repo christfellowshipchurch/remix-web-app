@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "@remix-run/node";
+import { ActionFunction, data } from "react-router";
 import { SetAReminderType } from "./types";
 import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
 

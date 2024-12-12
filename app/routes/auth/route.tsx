@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "@remix-run/node";
+import { ActionFunction, data } from "react-router";
 import { authenticate } from "./authenticate";
 import { requestSmsPinLogin } from "./requestSmsPinLogin";
 import { authenticateSms } from "./authenticateSms";

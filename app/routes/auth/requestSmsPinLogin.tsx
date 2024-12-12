@@ -1,4 +1,4 @@
-import { data } from "@remix-run/node";
+import { data } from "react-router";
 import { requestSmsLogin } from "~/lib/.server/authentication/smsAuthentication";
 import {
   AuthenticationError,
@@ -12,9 +12,12 @@ export const requestSmsPinLogin = async (phoneNumber: string) => {
       return data({ error: "Phone number is required" }, { status: 400 });
     }
 
-    const res = await requestSmsLogin(phoneNumber as string);
+    await requestSmsLogin(phoneNumber as string);
 
-    return { res };
+    return new Response(
+      JSON.stringify({ success: true, message: "SMS PIN sent successfully" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
     if (error instanceof AuthenticationError) {
       console.error("AuthenticationError:", error.message);

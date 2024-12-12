@@ -1,4 +1,4 @@
-import { ActionFunction } from "@remix-run/node";
+import { ActionFunction } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";

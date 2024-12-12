@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "@remix-run/node";
+import { ActionFunction, data } from "react-router";
 import { ConnectFormType } from "./types";
 import { postRockData } from "~/lib/.server/fetchRockData";
 
@@ -42,7 +42,12 @@ export const action: ActionFunction = async ({ request }) => {
       connectFormSubmission
     );
 
-    return { success: true };
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof Error) {
       return data({ error: error.message }, { status: 400 });
