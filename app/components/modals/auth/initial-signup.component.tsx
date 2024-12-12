@@ -88,12 +88,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
         <Form.Field className="mt-4" name="agreement">
           <div className="flex items-center gap-3">
             <Form.Control asChild>
-              <input
-                id="c1"
-                type="checkbox"
-                className="text-primary"
-                required
-              />
+              <input id="c1" type="checkbox" className="text-ocean" required />
             </Form.Control>
             <label className="text-xs" htmlFor="c1">
               I agree to the Terms of Use and Privacy Policy laid out by Christ

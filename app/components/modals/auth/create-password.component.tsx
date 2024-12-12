@@ -2,7 +2,7 @@ import * as Form from "@radix-ui/react-form";
 import React, { useState } from "react";
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
-import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 
 interface CreatePasswordProps {
   onSubmit: (password: string) => void;
@@ -62,7 +62,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className={defaultInputStyles}
+                className={defaultTextInputStyles}
               />
             </Form.Control>
             <span
@@ -89,7 +89,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className={defaultInputStyles}
+              className={defaultTextInputStyles}
             />
           </Form.Control>
           <Form.Message className="text-sm text-alert" match="valueMissing">
