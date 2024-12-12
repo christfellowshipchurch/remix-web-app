@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { data, redirect } from "@remix-run/node";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -7,7 +7,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const content = formData.get("content");
 
   if (typeof title !== "string" || typeof content !== "string") {
-    return json(
+    return data(
       {
         errors: { title: "Title is required", content: "Content is required" },
       },

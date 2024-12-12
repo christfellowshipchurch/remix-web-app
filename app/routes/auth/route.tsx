@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { ActionFunction, data } from "@remix-run/node";
 import { authenticate } from "./authenticate";
 import { requestSmsPinLogin } from "./requestSmsPinLogin";
 import { authenticateSms } from "./authenticateSms";
@@ -47,6 +47,6 @@ export const action: ActionFunction = async ({ request }) => {
         userInputData: userInputData as unknown as UserInputData,
       });
     default:
-      return json({ error: "Invalid form type" }, { status: 400 });
+      return data({ error: "Invalid form type" }, { status: 400 });
   }
 };

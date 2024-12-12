@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { authenticateUser } from "~/lib/.server/authentication/authenticateUser";
 
 import {
@@ -18,7 +18,7 @@ export const authenticate = async ({
 }: AuthenticateData) => {
   try {
     if (!identity || !password) {
-      return json(
+      return data(
         { error: "Identity and password are required" },
         { status: 400 }
       );
@@ -29,19 +29,19 @@ export const authenticate = async ({
       password as string
     );
 
-    return json({ encryptedToken });
+    return { encryptedToken };
   } catch (error) {
     if (error instanceof AuthenticationError) {
-      return json({ error: error.message }, { status: 401 });
+      return data({ error: error.message }, { status: 401 });
     }
     if (error instanceof RockAPIError) {
-      return json({ error: error.message }, { status: error.statusCode });
+      return data({ error: error.message }, { status: error.statusCode });
     }
     if (error instanceof EncryptionError) {
-      return json({ error: error.message }, { status: 400 });
+      return data({ error: error.message }, { status: 400 });
     }
     console.error("Unhandled authentication error:", error);
-    return json(
+    return data(
       { error: "An unexpected error occurred during authentication" },
       { status: 500 }
     );

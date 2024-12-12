@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { fetchUserLogin } from "~/lib/.server/authentication/rockAuthentication";
 
 export const checkUserExists = async (identity: string): Promise<boolean> => {
@@ -19,11 +19,11 @@ export const checkUserExists = async (identity: string): Promise<boolean> => {
 export const userExists = async (identity: string) => {
   try {
     const userExists = await checkUserExists(identity as string);
-    return json({ userExists });
+    return { userExists };
   } catch (error) {
     if (error instanceof Error) {
-      return json({ error: error.message }, { status: 400 });
+      return data({ error: error.message }, { status: 400 });
     }
-    return json({ error: "An unknown error occurred" }, { status: 400 });
+    return data({ error: "An unknown error occurred" }, { status: 400 });
   }
 };

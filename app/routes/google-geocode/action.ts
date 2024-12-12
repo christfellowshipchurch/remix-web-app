@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { ActionFunction, data } from "@remix-run/node";
 import { LocationSearchCoordinatesType } from "../locations/locationSearch/location-search";
 import {
   AuthenticationError,
@@ -23,18 +23,18 @@ export const action: ActionFunction = async ({ request }) => {
     const data: LocationSearchCoordinatesType = (await response.json()) as any;
 
     if (data.status === "ZERO_RESULTS") {
-      return json({ data, error: "Zipcode does not exist, please try again" });
+      return { data, error: "Zipcode does not exist, please try again" };
     }
 
-    return json(data);
+    return data;
   } catch (error) {
     if (
       error instanceof AuthenticationError ||
       error instanceof EncryptionError ||
       error instanceof RockAPIError
     ) {
-      return json({ error: error.message }, { status: 400 });
+      return data({ error: error.message }, { status: 400 });
     }
-    return json({ error: "An unexpected error occurred" }, { status: 500 });
+    return data({ error: "An unexpected error occurred" }, { status: 500 });
   }
 };
