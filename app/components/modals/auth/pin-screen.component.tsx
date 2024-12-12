@@ -1,7 +1,7 @@
 import * as Form from "@radix-ui/react-form";
 import React, { useEffect, useRef, useState } from "react";
 import Button from "~/primitives/button";
-import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 
 interface PinScreenProps {
   onSubmit: (pin: string) => Promise<void>;
@@ -124,7 +124,7 @@ const PinScreen: React.FC<PinScreenProps> = ({
               ref={(el) => {
                 inputRefs.current[index] = el;
               }}
-              className={`${defaultInputStyles} w-15 h-16 rounded-xl text-center ${
+              className={`${defaultTextInputStyles} w-15 h-16 rounded-xl text-center ${
                 error ? "border-[#f76052]" : ""
               }`}
             />
@@ -138,7 +138,7 @@ const PinScreen: React.FC<PinScreenProps> = ({
             <button
               type="button"
               onClick={handleResend}
-              className="pl-1 font-semibold hover:text-primary"
+              className="pl-1 font-semibold hover:text-ocean"
             >
               Resend
             </button>
