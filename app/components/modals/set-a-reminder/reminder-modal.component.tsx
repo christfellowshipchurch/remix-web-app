@@ -3,7 +3,7 @@ import Modal from "~/primitives/Modal";
 import ReminderFlow from "./reminder-flow.component";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 
 interface SetAReminderModalProps {
   ModalButton?: React.ComponentType<ButtonProps>;

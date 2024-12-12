@@ -1,5 +1,5 @@
-import { LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunction, redirect } from "react-router";
+import { useLoaderData } from "react-router";
 import AuthModal from "~/components/modals/auth";
 import Button from "~/primitives/button";
 import { useAuth } from "~/providers/auth-provider";

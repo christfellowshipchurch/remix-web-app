@@ -4,7 +4,7 @@ import {
   WaysToJoinOnlineMobile,
 } from "../components/mainCampusInfo.component";
 import PastorCard from "../components/pastorCard.component";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 
 export const CampusInfo = () => {

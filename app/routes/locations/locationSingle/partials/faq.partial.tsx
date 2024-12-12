@@ -1,7 +1,7 @@
 import StyledAccordion from "~/components/styled-accordion";
 import Button from "~/primitives/button";
 import { faqData } from "~/lib/faqData";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 
 export const LocationFAQ = () => {

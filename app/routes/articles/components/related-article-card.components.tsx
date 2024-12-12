@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { CardAuthor, CardProps } from "./card-author.component";
 
 export function RelatedArticleCard({

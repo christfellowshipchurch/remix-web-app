@@ -1,4 +1,4 @@
-import { data } from "@remix-run/node";
+import { data } from "react-router";
 import { registerPersonWithEmail } from "~/lib/.server/authentication/rockAuthentication";
 import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
 import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
@@ -21,14 +21,24 @@ export const registerPerson = async ({
     case "sms":
       try {
         const token = await authenticateOrRegisterWithSms(registrationData);
-        return { encryptedToken: token };
+        return new Response(JSON.stringify({ encryptedToken: token }), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       } catch (error: any) {
         return data({ error: error.message }, { status: error.statusCode });
       }
     case "email":
       try {
         const token = await registerPersonWithEmail(registrationData);
-        return { encryptedToken: token };
+        return new Response(JSON.stringify({ encryptedToken: token }), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       } catch (error: any) {
         return data({ error: error.message }, { status: error.statusCode });
       }

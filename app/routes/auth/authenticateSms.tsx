@@ -1,5 +1,5 @@
-import { data } from "@remix-run/node";
-import { isRouteErrorResponse } from "@remix-run/react";
+import { data } from "react-router";
+import { isRouteErrorResponse } from "react-router";
 import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
 
 type AuthenticateSmsData = {
@@ -32,7 +32,12 @@ export const authenticateSms = async ({
       userProfile: [], //not creating new profile, just authenticating
     });
 
-    return { encryptedToken };
+    return new Response(JSON.stringify({ encryptedToken }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     if (isRouteErrorResponse(error)) {
       return error;

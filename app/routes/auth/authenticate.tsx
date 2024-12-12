@@ -1,4 +1,4 @@
-import { data } from "@remix-run/node";
+import { data } from "react-router";
 import { authenticateUser } from "~/lib/.server/authentication/authenticateUser";
 
 import {
@@ -29,7 +29,12 @@ export const authenticate = async ({
       password as string
     );
 
-    return { encryptedToken };
+    return new Response(JSON.stringify({ encryptedToken }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof AuthenticationError) {
       return data({ error: error.message }, { status: 401 });

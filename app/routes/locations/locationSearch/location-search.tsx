@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
 import { Campus, Locations } from "./partials/locations-list.partial";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "react-router";
 import { CampusesReturnType } from "./loader";
 
 export type LocationSearchCoordinatesType = {

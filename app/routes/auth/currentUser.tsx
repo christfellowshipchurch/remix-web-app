@@ -1,4 +1,4 @@
-import { data } from "@remix-run/node";
+import { data } from "react-router";
 import { getCurrentPerson } from "~/lib/.server/authentication/rockAuthentication";
 import { decrypt } from "~/lib/.server/decrypt";
 import { registerToken } from "~/lib/.server/token";
@@ -47,7 +47,12 @@ export const currentUser = async (token: string) => {
       photo: photo ? createImageUrlFromGuid(photo.guid) : "",
     };
 
-    return currentUser;
+    return new Response(JSON.stringify(currentUser), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof AuthenticationError) {
       return data({ error: error.message }, { status: 401 });

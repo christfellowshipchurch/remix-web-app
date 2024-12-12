@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import Button from "~/primitives/button";
 import { whatToExpectData } from "../locations-single.data";
 import { camelCase, startCase } from "lodash";
