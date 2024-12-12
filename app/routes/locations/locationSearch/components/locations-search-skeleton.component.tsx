@@ -1,6 +1,5 @@
 import { Link } from "@remix-run/react";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
-import prisonLocationImage from "../../../../assets/prison-location.jpeg";
 import "./locations-search-skeleton.css";
 
 const LocationSkeletonCard = () => {
@@ -33,9 +32,7 @@ export function LocationsLoader() {
       <div className="mt-12">
         <Link to="/locations/prison-locations">
           <div
-            style={heroBgImgStyles(
-              "../app/assets/images/prison-locations-hero-bg.jpg"
-            )}
+            style={heroBgImgStyles("../app/assets/images/prison-location.jpg")}
             className="relative h-[150px] w-[90vw] rounded-md md:h-[250px] md:w-[600px]"
           >
             <div

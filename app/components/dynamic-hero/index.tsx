@@ -6,9 +6,8 @@ export type DynamicHeroTypes = {
   ctas?: { url: string; text: string }[];
 };
 
-// Turn into more flexible component that other pages can use, like the All Messages Page, look at Figma for reference.
 export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
-  // Get from url
+  // TODO: Get from url
   const pagePath = "Articles";
 
   return (
@@ -33,6 +32,7 @@ export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
           <div className="flex gap-6 relative pr-4">
             {ctas?.map((cta, i) => (
               <Button
+                key={i}
                 href={cta.url}
                 intent="secondary"
                 className="text-white border-white rounded-none"

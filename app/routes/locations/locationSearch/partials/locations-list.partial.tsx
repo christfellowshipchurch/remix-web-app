@@ -2,7 +2,6 @@ import { kebabCase } from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "@remix-run/react";
-import prisonLocationImage from "../../../../assets/prison-location.jpeg";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type Campus = {
@@ -51,7 +50,7 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
       <div className="mt-12">
         <Link to="/locations/prison-locations">
           <div
-            style={heroBgImgStyles("../app/assets/prison-locations.jpg")}
+            style={heroBgImgStyles("../app/assets/images/prison-location.jpg")}
             className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3"
           >
             <div
