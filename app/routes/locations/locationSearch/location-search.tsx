@@ -71,7 +71,6 @@ export function LocationSearchPage() {
       setCoordinates(
         (googleFetcher.data as LocationSearchCoordinatesType).results
       );
-      console.log((googleFetcher.data as LocationSearchCoordinatesType).error);
       if ((googleFetcher.data as LocationSearchCoordinatesType).error) {
         setError(
           (googleFetcher.data as LocationSearchCoordinatesType).error ?? null
@@ -100,7 +99,6 @@ export function LocationSearchPage() {
         });
       } catch (error) {
         setError("Please enter a valid zip code");
-        // console.log(error);
       }
     } else {
       setError("Please enter a valid zip code");
