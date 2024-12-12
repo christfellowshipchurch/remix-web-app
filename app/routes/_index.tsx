@@ -21,9 +21,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return null; // here you can redirect to a login page etc.
   }
 
-  const user = await userData.json();
-
-  return user;
+  return userData;
 };
 
 export default function Index() {

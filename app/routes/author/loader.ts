@@ -1,4 +1,4 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { LoaderFunction } from "@remix-run/node";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/loader";
@@ -112,5 +112,5 @@ export const loader: LoaderFunction = async ({ params }) => {
     authorAttributes: data.authorAttributes,
   };
 
-  return json<LoaderReturnType>(authorData);
+  return <LoaderReturnType>authorData;
 };

@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { registerPersonWithEmail } from "~/lib/.server/authentication/rockAuthentication";
 import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
 import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
@@ -13,7 +13,7 @@ export const registerPerson = async ({
   userInputData,
 }: RegisterPersonType) => {
   if (!userInputData) {
-    return json({ error: "User input data is required" }, { status: 400 });
+    return data({ error: "User input data is required" }, { status: 400 });
   }
   const registrationData = JSON.parse(userInputData as unknown as string);
 
@@ -21,18 +21,18 @@ export const registerPerson = async ({
     case "sms":
       try {
         const token = await authenticateOrRegisterWithSms(registrationData);
-        return json({ encryptedToken: token });
+        return { encryptedToken: token };
       } catch (error: any) {
-        return json({ error: error.message }, { status: error.statusCode });
+        return data({ error: error.message }, { status: error.statusCode });
       }
     case "email":
       try {
         const token = await registerPersonWithEmail(registrationData);
-        return json({ encryptedToken: token });
+        return { encryptedToken: token };
       } catch (error: any) {
-        return json({ error: error.message }, { status: error.statusCode });
+        return data({ error: error.message }, { status: error.statusCode });
       }
     default:
-      return json({ error: "Invalid registration type" }, { status: 400 });
+      return data({ error: "Invalid registration type" }, { status: 400 });
   }
 };

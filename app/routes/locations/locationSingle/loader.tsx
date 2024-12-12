@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
 import {
@@ -80,7 +80,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const data = await fetchCampusData(campusUrl);
 
   const userData = await getUserFromRequest(request);
-  const user = userData ? await userData.json() : null;
+  const user = userData ? await userData : null;
 
   if (!data) {
     throw new Error("No data found");
@@ -188,5 +188,5 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     weekdaySchedules: weekdaySchedulesFormatted,
   };
 
-  return json<LoaderReturnType>(pageData);
+  return pageData;
 };

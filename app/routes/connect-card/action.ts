@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { ActionFunction, data } from "@remix-run/node";
 import { ConnectFormType } from "./types";
 import { postRockData } from "~/lib/.server/fetchRockData";
 
@@ -42,11 +42,11 @@ export const action: ActionFunction = async ({ request }) => {
       connectFormSubmission
     );
 
-    return json({ success: true });
+    return { success: true };
   } catch (error) {
     if (error instanceof Error) {
-      return json({ error: error.message }, { status: 400 });
+      return data({ error: error.message }, { status: 400 });
     }
-    return json({ error: "Network error please try again" }, { status: 400 });
+    return data({ error: "Network error please try again" }, { status: 400 });
   }
 };

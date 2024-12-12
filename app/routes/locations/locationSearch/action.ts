@@ -1,4 +1,4 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { ActionFunction } from "@remix-run/node";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";
@@ -22,7 +22,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
   });
 
-  return json(await getByLocation({ latitude, longitude, campuses }));
+  return await getByLocation({ latitude, longitude, campuses });
 };
 
 export const getByLocation = async ({
