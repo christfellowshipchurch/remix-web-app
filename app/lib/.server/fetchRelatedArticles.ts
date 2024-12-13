@@ -2,7 +2,7 @@ import Config from "./config/config";
 import { flatten } from "lodash";
 import { fetchRockData, getImages } from "./fetchRockData";
 import { format } from "date-fns";
-import { getAuthorDetails } from "~/routes/articles/dynamic/loader";
+import { getAuthorDetails } from "~/routes/articles/article-single/loader";
 
 const DEFAULT_TAG_ID = 1533; // "For You" - default tag id
 const TOP_TAGGED_ITEMS_LIMIT = 20;

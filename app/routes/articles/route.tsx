@@ -1,4 +1,4 @@
-import { AllArticlesPage } from "./articles-page";
+import { AllArticlesPage } from "./all-articles-page";
 
 export { loader } from "./loader";
 

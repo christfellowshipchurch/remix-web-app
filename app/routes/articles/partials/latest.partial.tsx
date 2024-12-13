@@ -13,8 +13,8 @@ export const LatestArticles = () => {
       {articles &&
         articles.length > 0 &&
         articles.map((article, i) => (
-          <>
-            <div className="flex items-center gap-5" key={i}>
+          <div key={i}>
+            <div className="flex items-center gap-5">
               <img src={article.image} className="size-18 object-cover" />
               <div className="flex flex-col max-w-[220px]">
                 <p className="text-sm text-[#444]">{article.startDate}</p>
@@ -24,7 +24,7 @@ export const LatestArticles = () => {
               </div>
             </div>
             <Divider />
-          </>
+          </div>
         ))}
       <div>
         <h2 className="font-extrabold text-2xl">Article Category</h2>
