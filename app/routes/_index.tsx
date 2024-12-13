@@ -1,5 +1,5 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import type { LoaderFunction, MetaFunction } from "react-router";
+import { useLoaderData } from "react-router";
 import { useEffect, useState } from "react";
 import AuthModal from "~/components/modals/auth";
 import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
@@ -8,8 +8,8 @@ import { useAuth, User } from "~/providers/auth-provider";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Christ Fellowship Web App v3" },
+    { name: "description", content: "Welcome to the CFDP!" },
   ];
 };
 
@@ -21,9 +21,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return null; // here you can redirect to a login page etc.
   }
 
-  const user = await userData.json();
-
-  return user;
+  return userData;
 };
 
 export default function Index() {
