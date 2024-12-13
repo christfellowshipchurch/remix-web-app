@@ -10,6 +10,7 @@ export const Icon = ({
   size = 24,
   stroke = "none",
   width,
+  style,
 }: {
   className?: string;
   clipRule?: string;
@@ -20,6 +21,7 @@ export const Icon = ({
   stroke?: string;
   size?: number;
   width?: number;
+  style?: React.CSSProperties;
 }) => {
   const path = icons[name];
 
@@ -35,6 +37,7 @@ export const Icon = ({
         className={`overflow-visible flex items-center align-center self-center align-middle ${className}`}
         width={width || size}
         height={height || size}
+        style={style}
       >
         {path.map((d, i) => {
           return (
@@ -60,6 +63,7 @@ export const Icon = ({
       className={`flex items-center align-center self-center align-middle ${className}`}
       width={width || size}
       height={height || size}
+      style={style}
     >
       <path d={path} fill={color || "black"} />
     </svg>
