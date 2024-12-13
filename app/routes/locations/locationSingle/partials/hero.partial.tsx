@@ -2,7 +2,7 @@ import { find } from "lodash";
 import { headerData } from "../locations-single.data";
 
 import Button from "~/primitives/button";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
 import SetAReminderModal from "~/components/modals/set-a-reminder";
