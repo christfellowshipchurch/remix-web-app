@@ -2,7 +2,6 @@ import { kebabCase } from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "react-router";
-import prisonLocationImage from "../../../../assets/prison-location.jpeg";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type Campus = {
@@ -50,10 +49,7 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
       {/* Prison Location */}
       <div className="mt-12">
         <Link to="/locations/prison-locations">
-          <div
-            style={heroBgImgStyles(prisonLocationImage)}
-            className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3"
-          >
+          <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
               className="absolute size-full opacity-80"
               style={{
