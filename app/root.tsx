@@ -1,12 +1,5 @@
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 
-import "./styles/tailwind.css";
 import Navbar from "./components/navbar";
 import { AuthProvider } from "./providers/auth-provider";
 
@@ -16,6 +9,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Moved tailwind import here to support SSR better */}
+        <link rel="stylesheet" href="../app/styles/tailwind.css" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />

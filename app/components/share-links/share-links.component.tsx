@@ -1,4 +1,4 @@
-import { useLoaderData, useLocation } from "@remix-run/react";
+import { useLoaderData, useLocation } from "react-router";
 import CopyLink from "./copy-link.component";
 import Icon from "~/primitives/icon";
 

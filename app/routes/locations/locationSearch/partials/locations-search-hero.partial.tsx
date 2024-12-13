@@ -3,7 +3,7 @@ import Video from "~/primitives/Video";
 import Icon from "~/primitives/icon";
 import { CampusesReturnType } from "../loader";
 import * as Form from "@radix-ui/react-form";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useEffect, useState } from "react";
 import { set } from "lodash";
