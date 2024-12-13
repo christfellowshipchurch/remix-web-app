@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "react-router";
 import { fetchRockData, getImages } from "~/lib/.server/fetchRockData";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
