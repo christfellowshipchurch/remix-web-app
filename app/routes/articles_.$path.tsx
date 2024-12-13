@@ -1,8 +1,8 @@
-import { ArticlePage } from "./articles/dynamic/article-page";
+import { ArticlePage } from "./articles/article-single/article-page";
 
-export { loader } from "./articles/dynamic/loader";
-export { action } from "./articles/dynamic/action";
-export { meta } from "./articles/dynamic/meta";
+export { loader } from "./articles/article-single/loader";
+export { action } from "./articles/article-single/action";
+export { meta } from "./articles/article-single/meta";
 
 // Using root ErrorBoundary
 export { ErrorBoundary } from "../error";
