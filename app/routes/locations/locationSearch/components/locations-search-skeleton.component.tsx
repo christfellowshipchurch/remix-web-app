@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
 import prisonLocationImage from "../../../../assets/prison-location.jpeg";
 import "./locations-search-skeleton.css";

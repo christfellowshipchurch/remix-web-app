@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import { AUTH_TOKEN_KEY } from "~/providers/auth-provider";
 import { currentUser } from "~/routes/auth/currentUser";
 
@@ -14,7 +13,7 @@ export const getUserFromRequest = async (request: Request) => {
     if (isRedirect !== "false") {
       return null; // Indicate that redirection is needed
     }
-    return json({ message: "Token not found!" });
+    return { message: "Token not found!" };
   }
 
   return await currentUser(token);

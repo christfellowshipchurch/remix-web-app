@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";

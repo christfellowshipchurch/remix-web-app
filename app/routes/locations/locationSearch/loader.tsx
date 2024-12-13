@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid } from "~/lib/utils";
