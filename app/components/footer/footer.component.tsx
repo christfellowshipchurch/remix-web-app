@@ -7,9 +7,9 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="flex flex-col items-center w-full bg-screen px-4">
+    <footer className="flex flex-col items-center w-full bg-navy px-4">
       <div className="flex flex-col tems-center w-full max-w-[95vw] xl:max-w-[1480px] relative mx-4">
-        <div className="absolute w-full h-4 bg-primary -top-2"></div>
+        <div className="absolute w-full h-4 bg-ocean -top-2"></div>
         {/* Contact Info */}
         <ContactInfo />
 
