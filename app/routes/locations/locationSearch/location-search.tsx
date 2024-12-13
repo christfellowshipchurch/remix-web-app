@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
-import { useLoaderData } from "@remix-run/react";
-import { clientLoader } from "./clientLoader";
+import { Campus, Locations } from "./partials/locations-list.partial";
+import { useFetcher, useLoaderData } from "react-router";
+import { CampusesReturnType } from "./loader";
 
-export type LocationSearchResultsType = {
+export type LocationSearchCoordinatesType = {
   results: [
     {
       geometry: {
@@ -15,47 +16,100 @@ export type LocationSearchResultsType = {
       };
     }
   ];
+  status: string;
+  error: string | undefined | null;
 };
 
 export function LocationSearchPage() {
   const [address, setAddress] = useState<string>("");
-  const [results, setResults] = useState<any[]>([]);
+  const [coordinates, setCoordinates] = useState<any[]>([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [locationActive, setLocationActive] = useState(true);
+  const [results, setResults] = useState<Campus[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const data = useLoaderData<typeof clientLoader>();
-  // Pass in the following: {
-  //   latitude: results[0].geometry.location.lat,
-  //   longitude: results[0].geometry.location.lng,
-  // }
+  const campusFetcher = useFetcher();
+  const googleFetcher = useFetcher();
+
+  const { campuses } = useLoaderData<CampusesReturnType>();
+
+  useEffect(() => {
+    if (coordinates?.length > 0) {
+      const formData = new FormData();
+      formData.append(
+        "latitude",
+        coordinates[0].geometry.location.lat.toString()
+      );
+      formData.append(
+        "longitude",
+        coordinates[0].geometry.location.lng.toString()
+      );
+
+      try {
+        campusFetcher.submit(formData, {
+          method: "post",
+          action: "/locations",
+        });
+        searchScroll();
+      } catch (error) {
+        setError("An error occurred while fetching campus data");
+        console.log(error);
+      }
+    }
+  }, [coordinates]);
+
+  useEffect(() => {
+    if (campusFetcher.data) {
+      if (Array.isArray(campusFetcher.data)) {
+        setResults(campusFetcher.data as Campus[]);
+      }
+    }
+  }, [campusFetcher.data]);
+
+  useEffect(() => {
+    if (googleFetcher.data) {
+      setCoordinates(
+        (googleFetcher.data as LocationSearchCoordinatesType).results
+      );
+      console.log((googleFetcher.data as LocationSearchCoordinatesType).error);
+      if ((googleFetcher.data as LocationSearchCoordinatesType).error) {
+        setError(
+          (googleFetcher.data as LocationSearchCoordinatesType).error ?? null
+        );
+      }
+    }
+  }, [googleFetcher.data]);
 
   useEffect(() => {
     searchCurrentLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    // refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [results]);
+  const isValidZip = (zip: string) => /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
 
-  // Gets coordinates from user inputted address
   const getCoordinates = async () => {
-    if (address) {
-      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
-      );
-      const data: LocationSearchResultsType = (await response?.json()) as any;
-      setResults(data?.results);
+    if (isValidZip(address)) {
+      setError(null);
+      const formData = new FormData();
+      formData.append("address", address);
+
+      try {
+        googleFetcher.submit(formData, {
+          method: "post",
+          action: "/google-geocode",
+        });
+      } catch (error) {
+        setError("Please enter a valid zip code");
+        // console.log(error);
+      }
     } else {
-      // if no address is entered, set results to an empty array
-      setResults([{ geometry: { location: {} } }]);
+      setError("Please enter a valid zip code");
+      setCoordinates([]);
     }
   };
 
   function searchScroll() {
-    let scrollTo = document.getElementById("results");
+    let scrollTo = document.getElementById("campuses");
     if (scrollTo) {
       scrollTo.scrollIntoView({ behavior: "smooth" });
     }
@@ -65,7 +119,9 @@ export function LocationSearchPage() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationActive(true);
-        setResults([
+        searchScroll();
+        setError(null);
+        setCoordinates([
           {
             geometry: {
               location: {
@@ -75,9 +131,6 @@ export function LocationSearchPage() {
             },
           },
         ]);
-        if (hasLoaded) {
-          searchScroll();
-        }
       },
       (error) => {
         if (hasLoaded) {
@@ -85,23 +138,29 @@ export function LocationSearchPage() {
         }
         setHasLoaded(true);
         console.log(error);
+        setResults(campuses);
       }
     );
   }
 
   return (
     <div className="flex w-full flex-col">
-      {/* Hero Section */}
       <Search
-        searchScroll={searchScroll}
         searchCurrentLocation={searchCurrentLocation}
         setAddress={setAddress}
-        // refetch={refetch}
         getCoordinates={getCoordinates}
         locationActive={locationActive}
+        error={error}
       />
-      {/* Search Section */}
-      {/* <Locations data={data} loading={!data || data?.length === 0} /> */}
+      <Locations
+        campuses={results}
+        loading={
+          !results ||
+          results.length === 0 ||
+          campusFetcher.state === "loading" ||
+          googleFetcher.state === "loading"
+        }
+      />
     </div>
   );
 }

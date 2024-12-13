@@ -2,8 +2,8 @@ import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
 import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
 import Button from "~/primitives/button";
-import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher } from "@remix-run/react";
+import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import { useFetcher } from "react-router";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 interface ConnectCardProps {
@@ -25,7 +25,7 @@ export const renderInputField = (
         type={type}
         required
         defaultValue={defaultValue}
-        className={defaultInputStyles}
+        className={defaultTextInputStyles}
       />
     </Form.Control>
     <Form.Message className="text-sm text-alert" match="valueMissing">
@@ -131,7 +131,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
           <Form.Control asChild>
             {campuses && (
               <select
-                className={`appearance-none ${defaultInputStyles}`}
+                className={`appearance-none ${defaultTextInputStyles}`}
                 required
                 style={{
                   backgroundImage: `url(${chevronDownIcon})`,
@@ -197,7 +197,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
             <div />
             <Form.Field name="otherContent" className="flex flex-col">
               <Form.Control asChild>
-                <input type="text" className={defaultInputStyles} />
+                <input type="text" className={defaultTextInputStyles} />
               </Form.Control>
             </Form.Field>
           </>

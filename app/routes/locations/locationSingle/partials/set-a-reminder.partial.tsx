@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import Video from "~/primitives/Video";
 import { LoaderReturnType } from "../loader";
 import { camelCase } from "lodash";
@@ -15,7 +15,7 @@ export const SetAReminder = () => {
     setReminderVideos[camelCase(name) as keyof typeof setReminderVideos];
 
   return (
-    <div
+    (<div
       className="flex w-full justify-center bg-[#F5F5F7] py-16 lg:py-20"
       id="set-a-reminder"
     >
@@ -35,7 +35,7 @@ export const SetAReminder = () => {
         <div className="flex flex-col items-center gap-8 lg:mx-8 lg:flex-row xl:gap-20">
           {name !== "Online (CF Everywhere)" && (
             <div className="mt-8 w-[90vw] overflow-hidden rounded-lg md:w-[80vw] lg:mt-0 lg:max-w-[760px] xl:w-[820px]">
-              {/* TODO: Add wisita videos to Campuses in Rock*/}
+              {/* TODO: Add wisita videos to Campuses in Rock and pull them here*/}
               <Video
                 wistiaId={
                   isEspanol
@@ -50,14 +50,14 @@ export const SetAReminder = () => {
           )}
           {name === "Online (CF Everywhere)" ? (
             // CF Everywhere
-            <CfEveywhereSetReminder />
+            (<CfEveywhereSetReminder />)
           ) : (
             // Other Locations
-            <DefaultSetReminder />
+            (<DefaultSetReminder />)
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 

@@ -1,7 +1,7 @@
 import * as Form from "@radix-ui/react-form";
 import React, { useState } from "react";
 import { NewUser } from "./login-flow.component";
-import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
 import Button from "~/primitives/button";
 
@@ -82,7 +82,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         <Form.Field name="firstName" className="flex flex-col">
           <Form.Label>First Name*</Form.Label>
           <Form.Control asChild>
-            <input type="text" required className={defaultInputStyles} />
+            <input type="text" required className={defaultTextInputStyles} />
           </Form.Control>
           <Form.Message className="text-alert" match="valueMissing">
             Please enter your first name
@@ -92,7 +92,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         <Form.Field name="lastName" className="flex flex-col">
           <Form.Label>Last Name*</Form.Label>
           <Form.Control asChild>
-            <input type="text" required className={defaultInputStyles} />
+            <input type="text" required className={defaultTextInputStyles} />
           </Form.Control>
           <Form.Message className="text-alert" match="valueMissing">
             Please enter your last name
@@ -102,7 +102,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         <Form.Field name="birthDate" className="flex flex-col">
           <Form.Label>Birth Date*</Form.Label>
           <Form.Control asChild>
-            <input type="date" required className={defaultInputStyles} />
+            <input type="date" required className={defaultTextInputStyles} />
           </Form.Control>
           <Form.Message className="text-alert" match="valueMissing">
             Please enter your birth date
@@ -118,7 +118,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
             {identityType === "email" ? "Phone" : "Email"}
           </Form.Label>
           <Form.Control asChild>
-            <input type="text" required className={defaultInputStyles} />
+            <input type="text" required className={defaultTextInputStyles} />
           </Form.Control>
           <Form.Message className="text-alert" match="valueMissing">
             Please enter your email

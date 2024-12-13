@@ -52,7 +52,7 @@ export function Navbar() {
                 <NavigationMenuItem key={link.title}>
                   <NavigationMenuLink
                     href={link.url}
-                    className="hover:text-primary"
+                    className="hover:text-ocean"
                   >
                     {link.title}
                   </NavigationMenuLink>

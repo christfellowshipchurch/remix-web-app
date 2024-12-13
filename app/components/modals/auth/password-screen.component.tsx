@@ -3,7 +3,7 @@ import { includes } from "lodash";
 import React, { useEffect, useState } from "react";
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
-import { defaultInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 
 interface PasswordScreenProps {
   onSubmit: (password: string) => Promise<void>;
@@ -77,7 +77,7 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
                 className={
                   error
                     ? "w-full rounded-md border-2 border-alert p-2 focus:outline-none focus:ring-0"
-                    : defaultInputStyles
+                    : defaultTextInputStyles
                 }
               />
             </Form.Control>
