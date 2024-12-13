@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
 import Button from "~/primitives/button";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher } from "react-router";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 interface ConnectCardProps {

@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 
 export type ConnectCardDataType = {
@@ -24,5 +23,5 @@ export const fetchConnectCardData = async () => {
     allThatApplies: rockDefineTypes,
   };
 
-  return json<ConnectCardDataType>(formData);
+  return <ConnectCardDataType>formData;
 };
