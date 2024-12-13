@@ -1,5 +1,7 @@
 import Icon from "~/primitives/icon";
 
+const linkStyle = "text-white hover:text-ocean transition-colors heading-h5";
+
 export const ContactInfo = () => {
   return (
     <div className="flex flex-col items-center lg:items-start lg:flex-row py-12">
@@ -10,7 +12,9 @@ export const ContactInfo = () => {
         </div>
         <div className="flex flex-col h-full justify-center">
           <h2 className="text-lg text-[#D0D0CE]">Call Us</h2>
-          <p className="text-2xl text-white font-bold">(561) 799-7600</p>
+          <a className={linkStyle} href="tel:5617997600">
+            (561) 799-7600
+          </a>
         </div>
       </div>
 
@@ -21,9 +25,12 @@ export const ContactInfo = () => {
         </div>
         <div className="flex flex-col h-full justify-center">
           <h2 className="text-lg text-[#D0D0CE]">Need Support</h2>
-          <p className="text-2xl text-white font-bold w-[324px]">
+          <a
+            href="mailto:hello@christfellowship.church"
+            className={`${linkStyle} w-[324px]`}
+          >
             hello@christfellowship.church
-          </p>
+          </a>
         </div>
       </div>
 
@@ -34,10 +41,14 @@ export const ContactInfo = () => {
         </div>
         <div className="flex flex-col h-full justify-center">
           <h2 className="text-lg text-[#D0D0CE]">Main Campus Office</h2>
-          <p className="text-2xl text-white font-bold max-w-xxs lg:max-w-full ">
+          <a
+            target="_blank"
+            href="https://goo.gl/maps/Uv6zB3aFzr8pkfzz9"
+            className={`${linkStyle} max-w-xxs lg:max-w-full`}
+          >
             5343 Northlake Blvd <br className="hidden xl:block" /> Palm Beach
             Gardens, FL 33418
-          </p>
+          </a>
         </div>
       </div>
     </div>
