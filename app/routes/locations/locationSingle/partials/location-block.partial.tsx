@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { locationBlockData } from "../locations-single.data";
 

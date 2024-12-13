@@ -22,7 +22,7 @@
 
 ### 4. Data Fetching
 - Fetch location data using functions from [app/lib/.server/fetchLocationSingleData.ts](app/lib/.server/fetchLocationSingleData.ts).
-- Use the `useLoaderData` hook from `@remix-run/react` to access loader data in components.
+- Use the `useLoaderData` hook from `react-router` to access loader data in components.
 
 ### 5. Styling
 - Follow the Tailwind CSS configuration in [tailwind.config.ts](tailwind.config.ts).
@@ -54,7 +54,7 @@ function ExampleComponent() {
 ```tsx
 export default ExampleComponent;
 
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { currentUser } from "~/routes/auth/currentUser";
 
 export async function loader() {

@@ -1,5 +1,5 @@
 /** Root Error Boundary */
-import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { isRouteErrorResponse, useRouteError } from "react-router";
 
 export function ErrorBoundary() {
   const error = useRouteError();

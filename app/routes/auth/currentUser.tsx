@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { data } from "react-router";
 import { getCurrentPerson } from "~/lib/.server/authentication/rockAuthentication";
 import { decrypt } from "~/lib/.server/decrypt";
 import { registerToken } from "~/lib/.server/token";
@@ -47,14 +47,19 @@ export const currentUser = async (token: string) => {
       photo: photo ? createImageUrlFromGuid(photo.guid) : "",
     };
 
-    return json<User>(currentUser);
+    return new Response(JSON.stringify(currentUser), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof AuthenticationError) {
-      return json({ error: error.message }, { status: 401 });
+      return data({ error: error.message }, { status: 401 });
     }
     if (error instanceof RockAPIError) {
-      return json({ error: error.message }, { status: error.statusCode });
+      return data({ error: error.message }, { status: error.statusCode });
     }
-    return json({ error: "An unexpected error occurred" }, { status: 500 });
+    return data({ error: "An unexpected error occurred" }, { status: 500 });
   }
 };

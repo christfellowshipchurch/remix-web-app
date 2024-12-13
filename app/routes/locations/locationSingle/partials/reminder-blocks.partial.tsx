@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import SetAReminderModal from "~/components/modals/set-a-reminder";
 import Button from "~/primitives/button";
 import Modal from "~/primitives/Modal";

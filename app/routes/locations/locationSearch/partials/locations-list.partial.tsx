@@ -1,7 +1,7 @@
 import { kebabCase } from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type Campus = {

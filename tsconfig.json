@@ -11,12 +11,12 @@
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@remix-run/node", "vite/client"],
+    "types": ["@react-router/node", "vite/client"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
-    "module": "es2020",
+    "module": "ESNext",
     "resolveJsonModule": true,
     "target": "ES2022",
     "strict": true,
@@ -27,7 +27,7 @@
     "paths": {
       "~/*": ["./app/*"]
     },
-
+    "rootDirs": [".", "./.react-router/types"],
     // Vite takes care of building everything, not tsc.
     "noEmit": true
   }
