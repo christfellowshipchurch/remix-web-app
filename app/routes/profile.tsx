@@ -1,5 +1,5 @@
-import { json, LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunction, redirect } from "react-router";
+import { useLoaderData } from "react-router";
 import AuthModal from "~/components/modals/auth";
 import Button from "~/primitives/button";
 import { useAuth } from "~/providers/auth-provider";
@@ -12,17 +12,17 @@ export const loader: LoaderFunction = async ({ request }) => {
     return redirect("/"); // Redirect if no token is found
   }
 
-  const user = await userData.json();
+  const user = await userData;
 
   // Add other data you want to include in the loader
   const someOtherData = {
     message: "This is additional data from the profile loader",
   };
 
-  return json({
+  return {
     user,
     ...someOtherData,
-  });
+  };
 };
 
 export default function MyProfile() {
