@@ -1,4 +1,4 @@
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/loader";

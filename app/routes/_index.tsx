@@ -8,8 +8,8 @@ import { useAuth, User } from "~/providers/auth-provider";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Christ Fellowship Web App v3" },
+    { name: "description", content: "Welcome to the CFDP!" },
   ];
 };
 
