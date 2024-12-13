@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { ArticlesReturnType } from "../loader";
 
 export const Divider = () => <div className="bg-black/30 w-full h-[1px]" />;
