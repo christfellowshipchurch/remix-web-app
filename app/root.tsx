@@ -1,6 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 
 import Navbar from "./components/navbar";
+import Footer from "./components/footer";
 import { AuthProvider } from "./providers/auth-provider";
 
 export { ErrorBoundary } from "./error";
@@ -19,6 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <Navbar />
         <AuthProvider>{children}</AuthProvider>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>
