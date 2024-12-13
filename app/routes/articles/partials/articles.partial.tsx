@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { Article, ArticlesReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 import { Divider } from "./latest.partial";
