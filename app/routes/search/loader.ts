@@ -1,4 +1,4 @@
-import { LoaderFunction, json } from "@remix-run/node";
+import { LoaderFunction } from "react-router";
 import { AuthenticationError } from "~/lib/.server/errorTypes";
 
 export type LoaderReturnType = {
@@ -14,8 +14,8 @@ export const loader: LoaderFunction = async () => {
     throw new AuthenticationError("Algolia credentials not found");
   }
 
-  return json({
+  return {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
-  });
+  };
 };
