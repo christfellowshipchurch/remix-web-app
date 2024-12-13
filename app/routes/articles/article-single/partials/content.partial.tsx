@@ -14,13 +14,13 @@ export const ArticleContent = ({
       <HTMLRenderer html={htmlContent || ""} />
       <div className="mb-3 mt-6 h-2 w-full bg-navy" />
       <div>Resources</div>
-      <div className="border-l-2 border-primary">
+      <div className="border-l-2 border-ocean">
         {resources?.map(
           (data: { resource: string; url: string }, index: number) => (
             <a
               href={data?.url}
               key={index}
-              className="mt-1 pl-2 text-text_primary"
+              className="mt-1 pl-2 text-text-primary"
             >
               {data?.resource}
             </a>

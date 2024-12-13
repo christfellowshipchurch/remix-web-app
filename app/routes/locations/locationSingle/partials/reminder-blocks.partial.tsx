@@ -31,7 +31,7 @@ export const CfEveywhereSetReminder = () => {
           {stepsData.map((step, index) => (
             <div
               key={index}
-              className="flex flex-col bg-primary rounded-md py-6 px-8 text-white max-w-[300px] items-center gap-5"
+              className="flex flex-col bg-ocean rounded-md py-6 px-8 text-white max-w-[300px] items-center gap-5"
             >
               {step?.icon}
               <div className="flex flex-col">
@@ -65,7 +65,7 @@ export const CfEveywhereSetReminder = () => {
         {stepsData.map((step, index) => (
           <div
             key={index}
-            className="flex flex-col bg-primary rounded-md p-8 text-white max-w-[320px] items-center gap-3"
+            className="flex flex-col bg-ocean rounded-md p-8 text-white max-w-[320px] items-center gap-3"
           >
             {step?.icon}
             <div className="flex flex-col items-center">
