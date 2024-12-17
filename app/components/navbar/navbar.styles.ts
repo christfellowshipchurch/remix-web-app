@@ -55,5 +55,5 @@ export const navigationMenuContentStyle = cva(
 );
 
 export const angleDownIconStyle = cva(
-  "relative top-[1px] ml-1 size-6 transition duration-200 group-data-[state=open]:rotate-180"
+  "relative top-[1px] ml-0 lg:ml-1 size-4 lg:size-6 transition duration-200 group-data-[state=open]:rotate-180"
 );
