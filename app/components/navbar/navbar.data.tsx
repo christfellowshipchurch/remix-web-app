@@ -13,7 +13,7 @@ export const ministriesData = {
           url: "#",
         },
       ],
-      link: "View all ministries →",
+      link: "View all ministries",
     },
     {
       title: "ADULTS",
@@ -65,16 +65,8 @@ export const ministriesData = {
   ],
   additionalContent: [
     {
-      title: "NEW CLASSES",
-      link: "Take the Journey",
-    },
-    {
-      title: "FIND A FRIEND",
-      link: "Get Baptized",
-    },
-    {
-      title: "NEW",
-      link: "Volunteer Opportunities",
+      title: "Take the Journey",
+      link: "/",
     },
   ],
 };

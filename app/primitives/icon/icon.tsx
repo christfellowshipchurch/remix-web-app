@@ -44,7 +44,7 @@ export const Icon = ({
             <path
               d={d?.d}
               key={i}
-              fill={color || ("fill" in d ? d.fill : "black")}
+              fill={color || ("fill" in d ? d.fill : "currentColor")}
             />
           );
         })}
@@ -65,7 +65,7 @@ export const Icon = ({
       height={height || size}
       style={style}
     >
-      <path d={path} fill={color || "black"} />
+      <path d={path} fill={color || "currentColor"} />
     </svg>
   );
 };
