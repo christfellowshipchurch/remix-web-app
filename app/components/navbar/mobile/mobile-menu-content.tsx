@@ -3,7 +3,11 @@
  */
 import { useState } from "react";
 import Icon from "~/primitives/icon";
-import { ministriesData, watchReadListenData } from "../navbar.data";
+import {
+  locationsData,
+  ministriesData,
+  watchReadListenData,
+} from "../navbar.data";
 import Button from "~/primitives/button";
 import { NavCard } from "../nav-cards.component";
 
@@ -15,7 +19,7 @@ interface MenuScreen {
 
 const mainMenuItems: MenuScreen[] = [
   { id: "about", title: "About" },
-  { id: "locations", title: "Locations" },
+  { id: "locations", title: "Locations", content: locationsData },
   { id: "events", title: "Events" },
   { id: "ministries", title: "Get Involved", content: ministriesData },
   { id: "media", title: "Media", content: watchReadListenData },
@@ -39,9 +43,12 @@ export default function MobileMenuContent() {
       <div
         className={`absolute inset-0 transition-transform duration-300 overflow-y-auto`}
       >
-        <div className="flex justify-end ml-4 mb-6 border-b-2 border-b-ocean pb-6">
+        <div className="flex justify-between items-center ml-4 mb-6 border-b-2 border-b-ocean pb-6">
+          <Button intent="primary" size={"sm"}>
+            Give Now
+          </Button>
           <Button intent="secondary" size={"sm"}>
-            Give now
+            Join Us Online
           </Button>
         </div>
         <ul className="flex flex-col gap-6 p-4">
@@ -75,10 +82,9 @@ export default function MobileMenuContent() {
                 {activeScreen.title}
               </h2>
             </div>
-            <div className="p-4 overflow-y-auto">
-              {activeScreen.content.mainContent.map(
+            <div className="p-4 overflow-y-auto h-[calc(100vh-10rem)]">
+              {activeScreen.content.mainContent?.map(
                 (section: any, idx: number) => {
-                  console.log({ activeScreen });
                   return (
                     <div key={idx} className="mb-6">
                       <h3 className="font-medium mb-2 text-link-secondary border-b border-b-gray-200 pb-2">
@@ -100,15 +106,32 @@ export default function MobileMenuContent() {
                   );
                 }
               )}
+
               {activeScreen.content.additionalContent.length > 0 &&
-                activeScreen.content.additionalContent.map(
-                  (content: any, idx: number) => {
-                    return (
+                (activeScreen.id === "locations" ? (
+                  // Locations menu - simple links
+                  <ul className="space-y-6">
+                    {activeScreen.content.additionalContent.map(
+                      (content: any, idx: number) => (
+                        <li key={idx}>
+                          <a
+                            href={content.url}
+                            className="text-text-primary text-lg font-bold"
+                          >
+                            {content.title}
+                          </a>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                ) : (
+                  // Other menus - NavCards
+                  activeScreen.content.additionalContent.map(
+                    (content: any, idx: number) => (
                       <div
                         key={idx}
                         className={`mb-4 ${idx === 0 ? "mt-10" : ""}`}
                       >
-                        {/* For mobile, we will only show the Navcard not HeroNavCard for user friendliness */}
                         <NavCard
                           title={content.title}
                           url={content.link}
@@ -117,9 +140,9 @@ export default function MobileMenuContent() {
                           linkText="Learn More"
                         />
                       </div>
-                    );
-                  }
-                )}
+                    )
+                  )
+                ))}
             </div>
           </>
         )}
