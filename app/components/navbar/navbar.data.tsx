@@ -108,3 +108,25 @@ export const watchReadListenData = {
     },
   ],
 };
+
+export const locationsData = {
+  mainContent: [],
+  additionalContent: [
+    { title: "Palm Beach Gardens", url: "#" },
+    { title: "Port St. Lucie", url: "#" },
+    { title: "Royal Palm Beach", url: "#" },
+    { title: "Boynton Beach", url: "#" },
+    { title: "Downtown West Palm Beach", url: "#" },
+    { title: "Jupiter", url: "#" },
+    { title: "Stuart", url: "#" },
+    { title: "Okeechobee", url: "#" },
+    { title: "Belle Glade", url: "#" },
+    { title: "Vero Beach", url: "#" },
+    { title: "Boca Raton", url: "#" },
+    { title: "Riviera Beach", url: "#" },
+    { title: "Trinity Church", url: "#" },
+    { title: "Westlake", url: "#" },
+    { title: "En Español Palm Beach Gardens", url: "#" },
+    { title: "En Español Royal Palm Beach", url: "#" },
+  ],
+};
