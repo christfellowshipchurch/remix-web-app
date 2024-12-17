@@ -3,6 +3,7 @@
  */
 
 import { useState } from "react";
+import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { ImageLoader } from "~/primitives/loading-states/image-loader.primitive";
 
@@ -12,6 +13,7 @@ export interface NavCardProps {
   url: string;
   coverImage: string;
   linkText: string;
+  variant?: "mobile" | "desktop";
 }
 
 export function HeroNavCard({
@@ -20,13 +22,17 @@ export function HeroNavCard({
   url,
   coverImage,
   linkText,
+  variant = "desktop",
 }: NavCardProps) {
   const [loaded, setLoaded] = useState(false);
 
   return (
     <a
       href={url}
-      className="bg-white p-4 rounded-lg shadow-medium hover:scale-105 transition-transform max-w-xxs"
+      className={cn(
+        "bg-white p-4 rounded-lg shadow-medium hover:scale-105 transition-transform max-w-xxs",
+        variant === "mobile" && "p-3"
+      )}
     >
       {!loaded && <ImageLoader height={280} />}
       <img

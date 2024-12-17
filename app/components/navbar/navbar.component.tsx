@@ -18,6 +18,7 @@ import {
   navigationMenuContentStyle,
   navigationMenuTriggerStyle,
 } from "./navbar.styles";
+import MobileMenu from "./mobile/mobile-menu.components";
 
 const mainLinks = [
   { title: "About", url: "#" },
@@ -32,13 +33,13 @@ const menuLinks = [
 
 export function Navbar() {
   return (
-    <div className="z-50 w-screen bg-transparent h-[72px] shadow-sm px-16 flex justify-between items-center font-bold">
+    <div className="z-50 w-screen bg-transparent h-[72px] shadow-sm px-6 md:px-16 flex justify-between items-center font-bold">
       {/* Logo */}
       <a href="/" className="relative flex items-center justify-center gap-2.5">
         <img alt="cf logo" src={logo} width={102} height={44} />
       </a>
 
-      {/* Mobile view still needs to designed 👀 */}
+      {/* Desktop view */}
       <div className="hidden md:inline">
         <NavigationMenu>
           <NavigationMenuList className="flex items-center space-x-4 lg:space-x-10">
@@ -87,9 +88,12 @@ export function Navbar() {
       </div>
 
       {/* Give Now Button */}
-      <div>
+      <div className="items-center gap-4 hidden md:flex">
         <Button size={"md"}>Give now</Button>
       </div>
+
+      {/* Mobile view */}
+      <MobileMenu />
     </div>
   );
 }
