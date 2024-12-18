@@ -1,8 +1,8 @@
 import { usePagination, UsePaginationProps } from "react-instantsearch";
+import Icon from "~/primitives/icon";
 
 export const CustomPagination = (props: UsePaginationProps) => {
   const {
-    pages,
     currentRefinement,
     nbPages,
     isFirstPage,
@@ -10,29 +10,36 @@ export const CustomPagination = (props: UsePaginationProps) => {
     refine,
     createURL,
   } = usePagination(props);
-  const firstPageIndex = 0;
   const previousPageIndex = currentRefinement - 1;
   const nextPageIndex = currentRefinement + 1;
-  const lastPageIndex = nbPages - 1;
 
+  // TODO: Update the < and > to be icons
   return (
-    <div className="flex gap-2">
+    <div className="flex items-center justify-center gap-2">
       <PaginationItem
         isDisabled={isFirstPage}
         href={createURL(previousPageIndex)}
         onClick={() => refine(previousPageIndex)}
       >
-        {"<"}
+        <Icon
+          name="chevronLeft"
+          size={32}
+          color={isFirstPage ? "#CECECE" : "#0092BC"}
+        />
       </PaginationItem>
       <p>
-        {currentRefinement} of {nbPages}
+        {currentRefinement + 1} of {nbPages}
       </p>
       <PaginationItem
         isDisabled={isLastPage}
         href={createURL(nextPageIndex)}
         onClick={() => refine(nextPageIndex)}
       >
-        {">"}
+        <Icon
+          name="chevronRight"
+          size={32}
+          color={isLastPage ? "#CECECE" : "#0092BC"}
+        />
       </PaginationItem>
     </div>
   );

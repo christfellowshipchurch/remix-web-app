@@ -144,7 +144,7 @@ export const GroupSearch = () => {
               }}
               hitComponent={HitComponent}
             />
-            <div className="mt-6">
+            <div className="mt-6 flex justify-end">
               <CustomPagination />
             </div>
           </div>
