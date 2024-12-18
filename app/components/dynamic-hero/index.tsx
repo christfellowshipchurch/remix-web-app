@@ -3,7 +3,7 @@ import Icon from "~/primitives/icon";
 
 export type DynamicHeroTypes = {
   imagePath: string;
-  ctas?: { url: string; text: string }[];
+  ctas?: { href: string; title: string }[];
 };
 
 export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
@@ -33,14 +33,18 @@ export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
             {ctas?.map((cta, i) => (
               <Button
                 key={i}
-                href={cta.url}
+                href={cta.href}
                 intent="secondary"
-                className="text-white border-white rounded-none"
+                className="text-white border-white rounded-none hover:enabled:bg-slate-300/20"
               >
-                {cta.text}
+                {cta.title}
               </Button>
             ))}
-            <div className="rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]">
+            <div
+              className={`${
+                (ctas?.length ?? 0) < 1 ? "hidden" : ""
+              } rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]`}
+            >
               <Icon
                 style={{ transform: "rotate(135deg)" }}
                 name="arrowBack"

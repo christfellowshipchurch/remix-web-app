@@ -22,7 +22,10 @@ export const GroupSearch = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 items-center w-full max-w-[1440px] px-4 md:px-8 py-12 ">
+    <div
+      className="flex flex-col gap-4 items-center w-full max-w-[1440px] px-4 md:px-8 py-12"
+      id="search"
+    >
       <h1 className="heading-h1 w-full">Find Your Community</h1>
       <InstantSearch
         indexName="production_Groups"
