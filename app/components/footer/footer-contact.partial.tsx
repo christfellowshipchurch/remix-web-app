@@ -1,14 +1,17 @@
 import Icon from "~/primitives/icon";
 
 const linkStyle = "text-white hover:text-ocean transition-colors heading-h5";
+const SideDivider = () => (
+  <div className="hidden lg:block w-[1px] h-18 bg-[#D9D9D9]/30" />
+);
 
 export const ContactInfo = () => {
   return (
-    <div className="flex flex-col items-center lg:items-start lg:flex-row py-12">
+    <div className="flex flex-col items-center lg:flex-row py-12 lg:gap-6 xl:gap-24">
       {/* Call */}
-      <div className="flex justify-center items-center w-full pb-6 lg:pb-0 gap-4 lg:pr-6 lg:justify-start  xl:pr-16">
+      <div className="flex justify-center items-center w-full pb-6 lg:pb-0 gap-4 lg:justify-start">
         <div className="min-w-12">
-          <Icon name="call" size={50} color="white" />
+          <Icon name="call" size={50} color="#D0D0CE" />
         </div>
         <div className="flex flex-col h-full justify-center">
           <h2 className="text-lg text-[#D0D0CE]">Call Us</h2>
@@ -17,34 +20,34 @@ export const ContactInfo = () => {
           </a>
         </div>
       </div>
-
+      <SideDivider />
       {/* Email */}
-      <div className="flex justify-center items-center w-full gap-4 border-y py-6 lg:py-0 lg:px-6 lg:border-y-0 lg:border-x border-[#D9D9D9]lg:justify-start xl:px-16">
+      <div className="flex justify-center items-center w-full gap-4 border-y py-6 lg:py-0 lg:border-y-0 border-[#D9D9D9]/30 lg:justify-start">
         <div className="min-w-12">
-          <Icon name="envelope" size={50} color="white" />
+          <Icon name="envelope" size={50} color="#D0D0CE" />
         </div>
         <div className="flex flex-col h-full justify-center">
           <h2 className="text-lg text-[#D0D0CE]">Need Support</h2>
           <a
             href="mailto:hello@christfellowship.church"
-            className={`${linkStyle} w-[324px]`}
+            className={`${linkStyle} w-full max-w-[324px]`}
           >
             hello@christfellowship.church
           </a>
         </div>
       </div>
-
+      <SideDivider />
       {/* Location */}
-      <div className="flex justify-center items-center w-full gap-4 pt-6 lg:pt-0 lg:pl-6 lg:justify-start xl:pl-16">
+      <div className="flex justify-center items-center w-full gap-4 pt-6 lg:pt-0 lg:justify-start lg:w-full lg:min-w-[408px]">
         <div className="min-w-12">
-          <Icon name="world" size={50} color="white" />
+          <Icon name="world" size={50} color="#D0D0CE" />
         </div>
         <div className="flex flex-col h-full justify-center">
           <h2 className="text-lg text-[#D0D0CE]">Main Campus Office</h2>
           <a
             target="_blank"
             href="https://goo.gl/maps/Uv6zB3aFzr8pkfzz9"
-            className={`${linkStyle} max-w-xxs lg:max-w-full`}
+            className={linkStyle}
           >
             5343 Northlake Blvd <br className="hidden xl:block" /> Palm Beach
             Gardens, FL 33418
