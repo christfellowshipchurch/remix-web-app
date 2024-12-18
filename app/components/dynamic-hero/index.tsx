@@ -20,7 +20,7 @@ export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col gap-12 w-full pb-16 px-36 items-start justify-end self-stretch">
+      <div className="flex flex-col gap-12 w-full px-10 pb-16 md:px-36 items-start justify-end self-stretch">
         <h1 className="font-extrabold text-[100px] text-white">{pagePath}</h1>
         <div className="h-[2px] self-stretch bg-[#D9D9D9]" />
         <div className="flex items-center justify-between self-stretch">
