@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { testimonialData } from "../locations-single.data";
 import Icon from "~/primitives/icon";

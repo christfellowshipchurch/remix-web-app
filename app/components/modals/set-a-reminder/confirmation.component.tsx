@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { icsLink, icsLinkEvents } from "~/lib/utils";
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";

@@ -47,7 +47,7 @@ export const navbarAnimations = {
 };
 
 export const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-10 w-max items-center justify-center text-sm font-medium transition-colors focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=open]:border-b-3 border-primary text-base font-bold"
+  "group inline-flex h-10 w-max items-center justify-center text-sm font-medium transition-colors focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=open]:border-b-3 border-ocean text-base font-bold"
 );
 
 export const navigationMenuContentStyle = cva(
@@ -55,5 +55,5 @@ export const navigationMenuContentStyle = cva(
 );
 
 export const angleDownIconStyle = cva(
-  "relative top-[1px] ml-1 size-6 transition duration-200 group-data-[state=open]:rotate-180"
+  "relative top-[1px] ml-0 lg:ml-1 size-4 lg:size-6 transition duration-200 group-data-[state=open]:rotate-180"
 );

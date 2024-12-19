@@ -13,7 +13,7 @@ export const ministriesData = {
           url: "#",
         },
       ],
-      link: "View all ministries →",
+      link: "View all ministries",
     },
     {
       title: "ADULTS",
@@ -65,16 +65,8 @@ export const ministriesData = {
   ],
   additionalContent: [
     {
-      title: "NEW CLASSES",
-      link: "Take the Journey",
-    },
-    {
-      title: "FIND A FRIEND",
-      link: "Get Baptized",
-    },
-    {
-      title: "NEW",
-      link: "Volunteer Opportunities",
+      title: "Take the Journey",
+      link: "/",
     },
   ],
 };
@@ -114,5 +106,27 @@ export const watchReadListenData = {
       title: "NEW ARTICLE",
       link: "Master Your Money",
     },
+  ],
+};
+
+export const locationsData = {
+  mainContent: [],
+  additionalContent: [
+    { title: "Palm Beach Gardens", url: "#" },
+    { title: "Port St. Lucie", url: "#" },
+    { title: "Royal Palm Beach", url: "#" },
+    { title: "Boynton Beach", url: "#" },
+    { title: "Downtown West Palm Beach", url: "#" },
+    { title: "Jupiter", url: "#" },
+    { title: "Stuart", url: "#" },
+    { title: "Okeechobee", url: "#" },
+    { title: "Belle Glade", url: "#" },
+    { title: "Vero Beach", url: "#" },
+    { title: "Boca Raton", url: "#" },
+    { title: "Riviera Beach", url: "#" },
+    { title: "Trinity Church", url: "#" },
+    { title: "Westlake", url: "#" },
+    { title: "En Español Palm Beach Gardens", url: "#" },
+    { title: "En Español Royal Palm Beach", url: "#" },
   ],
 };

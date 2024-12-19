@@ -1,7 +1,7 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { LoaderFunction } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { fetchAuthorData } from "../articles/loader";
+import { fetchAuthorData } from "../articles/article-single/loader";
 import { AuthorArticleProps } from "./components/author-content";
 import { format } from "date-fns";
 
@@ -112,5 +112,5 @@ export const loader: LoaderFunction = async ({ params }) => {
     authorAttributes: data.authorAttributes,
   };
 
-  return json<LoaderReturnType>(authorData);
+  return <LoaderReturnType>authorData;
 };

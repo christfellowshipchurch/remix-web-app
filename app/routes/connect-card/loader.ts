@@ -1,4 +1,4 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { LoaderFunction } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetchRockData";
 import { ConnectCardLoaderReturnType } from "./types";
 
@@ -22,5 +22,5 @@ export const loader: LoaderFunction = async () => {
     allThatApplies: rockDefineTypes,
   };
 
-  return json<ConnectCardLoaderReturnType>(data);
+  return <ConnectCardLoaderReturnType>data;
 };
