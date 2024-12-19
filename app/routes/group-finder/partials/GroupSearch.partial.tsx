@@ -10,6 +10,8 @@ import { HitComponent } from "../components/Hit.component";
 import { CustomPagination } from "../components/CustomPagination.component";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
+import { MenuSelect } from "../components/CustomMenu.component";
+import { CustomClearRefinements } from "../components/CustomeClearRefinements.component";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -49,37 +51,20 @@ export const GroupSearch = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Refinement List */}
           <div className="flex flex-col gap-12 bg-white p-4 frounded-lg shadow-md col-span-1">
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 text-black">
+              {/* TODO: Update styling  */}
+              <CustomClearRefinements />
               <h3 className="heading-h6">Campus</h3>
-              <RefinementList
-                classNames={{
-                  list: "flex flex-col gap-3",
-                  checkbox: "hidden",
-                  count: "hidden",
-                  labelText: "text-xl font-bold",
-                  item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-                  selectedItem:
-                    "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-                  label:
-                    "flex items-center justify-center w-full max-w-80 gap-2 py-2",
-                }}
+              <MenuSelect
+                placeholder="Select a campus..."
                 attribute="campusName"
+                limit={20}
               />
             </div>
             <div className="flex flex-col gap-3">
               <h3 className="heading-h6">Meeting Type</h3>
-              <RefinementList
-                classNames={{
-                  list: "flex flex-col gap-3",
-                  checkbox: "hidden",
-                  count: "hidden",
-                  labelText: "text-xl font-bold",
-                  item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-                  selectedItem:
-                    "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-                  label:
-                    "flex items-center justify-center w-full max-w-80 gap-2 py-2",
-                }}
+              <MenuSelect
+                placeholder="Select a meeting type..."
                 attribute="meetingType"
               />
             </div>
@@ -97,7 +82,7 @@ export const GroupSearch = () => {
                   label:
                     "flex items-center justify-center w-full max-w-80 gap-2 py-2",
                 }}
-                attribute="hubs"
+                attribute="preferences"
               />
             </div>
             <div className="flex flex-col gap-3">

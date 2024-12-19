@@ -13,7 +13,6 @@ export const CustomPagination = (props: UsePaginationProps) => {
   const previousPageIndex = currentRefinement - 1;
   const nextPageIndex = currentRefinement + 1;
 
-  // TODO: Update the < and > to be icons
   return (
     <div className="flex items-center justify-center gap-2">
       <PaginationItem
