@@ -69,7 +69,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
             <img
               className="rounded-md relative flex size-full justify-center"
               src={coverImage}
-              alt={title || "Hero"}
+              alt={title || "Cover"}
               style={{ objectFit: "cover" }}
             />
           </div>

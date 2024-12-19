@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 
 import { LoaderReturnType } from "../loader";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";

@@ -10,6 +10,7 @@ export const Icon = ({
   size = 24,
   stroke = "none",
   width,
+  style,
 }: {
   className?: string;
   clipRule?: string;
@@ -20,6 +21,7 @@ export const Icon = ({
   stroke?: string;
   size?: number;
   width?: number;
+  style?: React.CSSProperties;
 }) => {
   const path = icons[name];
 
@@ -35,13 +37,14 @@ export const Icon = ({
         className={`overflow-visible flex items-center align-center self-center align-middle ${className}`}
         width={width || size}
         height={height || size}
+        style={style}
       >
         {path.map((d, i) => {
           return (
             <path
               d={d?.d}
               key={i}
-              fill={color || ("fill" in d ? d.fill : "black")}
+              fill={color || ("fill" in d ? d.fill : "currentColor")}
             />
           );
         })}
@@ -60,8 +63,9 @@ export const Icon = ({
       className={`flex items-center align-center self-center align-middle ${className}`}
       width={width || size}
       height={height || size}
+      style={style}
     >
-      <path d={path} fill={color || "black"} />
+      <path d={path} fill={color || "currentColor"} />
     </svg>
   );
 };

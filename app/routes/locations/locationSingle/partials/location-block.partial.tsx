@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { locationBlockData } from "../locations-single.data";
 
@@ -37,7 +37,7 @@ export const LocationBlock = () => {
             </div>
             <div className="flex flex-col gap-2 p-6">
               <h2 className="text-2xl font-bold">{data?.title}</h2>
-              <h3 className="text-sm font-semibold text-primary">
+              <h3 className="text-sm font-semibold text-ocean">
                 {data?.subtitle}
               </h3>
               <p>{data?.htmlContent}</p>

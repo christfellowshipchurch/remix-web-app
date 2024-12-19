@@ -1,52 +1,32 @@
 import { kebabCase } from "lodash";
-import { useState } from "react";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
-import { Link } from "@remix-run/react";
-import prisonLocationImage from "../../../assets/prison-locations.jpg";
+import { Link } from "react-router";
 import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type Campus = {
   name: string;
-  image: {
-    uri: string;
-  };
+  image: string;
   distanceFromLocation?: number;
 };
 
 export type LocationsProps = {
-  data: {
-    getCampuses: Campus[];
-  };
+  campuses: Campus[];
   loading: boolean;
 };
 
-export const Locations = ({ data, loading }: LocationsProps) => {
-  const [onlineCampus, setOnlineCampus] = useState<Campus | null>(null);
+export const Locations = ({ campuses, loading }: LocationsProps) => {
   if (loading) {
     return <LocationsLoader />;
   }
 
-  const onlineCampusIndex = data?.getCampuses.findIndex((campus) => {
-    return campus.name === "Online (CF Everywhere)";
-  });
-  if (onlineCampusIndex !== -1 && data?.getCampuses[onlineCampusIndex]) {
-    setOnlineCampus(data?.getCampuses[onlineCampusIndex]);
-    data?.getCampuses.splice(onlineCampusIndex, 1);
-  }
-
   return (
-    <div className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2">
+    <div
+      className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
+      id="campuses"
+    >
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
-        {onlineCampus && (
-          <LocationCard
-            link="cf-everywhere"
-            name={onlineCampus?.name}
-            image={onlineCampus?.image?.uri}
-            distanceFromLocation={onlineCampus?.distanceFromLocation}
-          />
-        )}
-        {data?.getCampuses?.map((campus, index) => {
+        {campuses?.map((campus, index) => {
           let cfe = "";
           if (campus?.name?.includes("Español")) {
             cfe = campus?.name.substring(25, campus?.name.length);
@@ -54,7 +34,7 @@ export const Locations = ({ data, loading }: LocationsProps) => {
           return (
             <LocationCard
               name={campus?.name}
-              image={campus?.image?.uri}
+              image={campus?.image}
               distanceFromLocation={campus?.distanceFromLocation}
               key={index}
               link={
@@ -69,10 +49,7 @@ export const Locations = ({ data, loading }: LocationsProps) => {
       {/* Prison Location */}
       <div className="mt-12">
         <Link to="/locations/prison-locations">
-          <div
-            style={heroBgImgStyles(prisonLocationImage)}
-            className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3"
-          >
+          <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
               className="absolute size-full opacity-80"
               style={{

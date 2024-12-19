@@ -1,6 +1,5 @@
-import { Link } from "@remix-run/react";
-import "./location-search-skeleton.css";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import { Link } from "react-router";
+import "./locations-search-skeleton.css"; // todo : figure out how load in css SSR, to remove error on console
 
 const LocationSkeletonCard = () => {
   return (
@@ -31,10 +30,7 @@ export function LocationsLoader() {
       {/* Prison Location */}
       <div className="mt-12">
         <Link to="/locations/prison-locations">
-          <div
-            style={heroBgImgStyles("/location-pages/prison-location.jpeg")}
-            className="relative h-[150px] w-[90vw] rounded-md md:h-[250px] md:w-[600px]"
-          >
+          <div className="relative h-[150px] w-[90vw] rounded-md md:h-[250px] md:w-[600px]">
             <div
               className="absolute size-full opacity-80"
               style={{

@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";
@@ -61,7 +61,7 @@ const DesktopPastorCard = () => {
                   <a
                     target="_blank"
                     href={mapLink}
-                    className="max-w-[270px] text-primary underline"
+                    className="max-w-[270px] text-ocean underline"
                   >
                     {street1} {street2}
                     <br />
@@ -70,7 +70,7 @@ const DesktopPastorCard = () => {
                   <h3 className="mt-3 text-xl font-bold">
                     {isEspanol ? "Teléfono" : "Phone"}
                   </h3>
-                  <a href="tel:561-799-7600" className="text-primary underline">
+                  <a href="tel:561-799-7600" className="text-ocean underline">
                     {phoneNumber}
                   </a>
                 </div>
@@ -159,7 +159,7 @@ const MobilePastorCard = () => {
                 <a
                   target="_blank"
                   href={mapLink}
-                  className="max-w-[270px] text-primary underline"
+                  className="max-w-[270px] text-ocean underline"
                 >
                   {street1} {street2}
                   <br />
@@ -168,7 +168,7 @@ const MobilePastorCard = () => {
                 <h3 className="mt-3 text-xl font-bold">
                   {isEspanol ? "Teléfono" : "Phone"}
                 </h3>
-                <a href="tel:561-799-7600" className="text-primary underline">
+                <a href="tel:561-799-7600" className="text-ocean underline">
                   {phoneNumber}
                 </a>
               </div>
