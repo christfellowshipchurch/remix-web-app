@@ -7,7 +7,7 @@ export function AllArticlesPage() {
     <div className="flex flex-col items-center">
       <DynamicHero
         imagePath="../app/assets/images/articles-hero-bg.jpg"
-        ctas={[{ url: "#testing", text: "Call to Action" }]}
+        ctas={[{ href: "#testing", title: "Call to Action" }]}
       />
       <div className="flex-col flex md:flex-row justify-between gap-8 max-w-[1600px] md:px-8 lg:px-20 xl:px-36 py-28">
         <Articles />
