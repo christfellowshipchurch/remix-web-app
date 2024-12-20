@@ -3,7 +3,7 @@ import Icon from "~/primitives/icon";
 
 export type DynamicHeroTypes = {
   imagePath: string;
-  ctas?: { url: string; text: string }[];
+  ctas?: { href: string; title: string }[];
 };
 
 export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
@@ -20,7 +20,7 @@ export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col gap-12 w-full pb-16 px-36 items-start justify-end self-stretch">
+      <div className="flex flex-col gap-12 w-full px-10 pb-16 md:px-36 items-start justify-end self-stretch">
         <h1 className="font-extrabold text-[100px] text-white">{pagePath}</h1>
         <div className="h-[2px] self-stretch bg-[#D9D9D9]" />
         <div className="flex items-center justify-between self-stretch">
@@ -33,14 +33,18 @@ export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
             {ctas?.map((cta, i) => (
               <Button
                 key={i}
-                href={cta.url}
+                href={cta.href}
                 intent="secondary"
-                className="text-white border-white rounded-none"
+                className="text-white border-white rounded-none hover:enabled:bg-slate-300/20"
               >
-                {cta.text}
+                {cta.title}
               </Button>
             ))}
-            <div className="rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]">
+            <div
+              className={`${
+                (ctas?.length ?? 0) < 1 ? "hidden" : ""
+              } rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]`}
+            >
               <Icon
                 style={{ transform: "rotate(135deg)" }}
                 name="arrowBack"
