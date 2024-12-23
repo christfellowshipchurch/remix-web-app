@@ -1,4 +1,5 @@
 import SectionTitle from "~/components/section-title";
+import { ContentCard } from "~/primitives/content-card/content.card.primitive";
 
 export type Tag = {
   label: string;
@@ -47,7 +48,7 @@ const MessageCard = () => {
 };
 
 // TODO: Add filter buttons
-const FilterButtons = ({ tags }: { tags: Tag[] }) => {
+export const FilterButtons = ({ tags }: { tags: Tag[] }) => {
   return (
     <div className="h-14 justify-start items-center gap-6 inline-flex">
       {tags.map((tag, index) => (
@@ -83,7 +84,19 @@ export default function AllMessages() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {Array.from({ length: 6 }).map((_, index) => (
-            <MessageCard key={`message-card-${index}`} />
+            <ContentCard
+              key={`message-card-${index}`}
+              image="https://cloudfront.christfellowship.church/GetImage.ashx?guid=1d311eaf-39ef-40cc-ad42-3e11b89d0051"
+              title="Message Title"
+              subheadings={[
+                { title: "Series Name" },
+                { icon: "user", title: "Pastor Name" },
+              ]}
+              cta={{
+                title: "Learn More",
+                href: "#",
+              }}
+            />
           ))}
         </div>
       </div>

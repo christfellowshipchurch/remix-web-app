@@ -1,6 +1,6 @@
 import { Event } from "../loader";
 
-export const LargeCard = ({ card }: { card: Event }) => {
+export const FeaturedCard = ({ card }: { card: Event }) => {
   return (
     <div
       className="relative w-[90vw] aspect-[16/9] md:w-full max-w-[1440px] inset-0 bg-cover bg-center object-cover"
@@ -8,7 +8,7 @@ export const LargeCard = ({ card }: { card: Event }) => {
         backgroundImage: `url(${card.image})`,
       }}
     >
-      <div className="absolute right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pb-2 pl-12 pt-12 xxl:pl-16 h-[270px] lg:w-[776px] xl:w-[90vw] xl:max-w-[900px] xxl:max-w-[988px] xxl:pt-16 ">
+      <div className="absolute w-2/3 right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-16 pt-16 pb-4">
         <div className="flex flex-col gap-2">
           <h2 className="font-medium text-[16px] text-[#666666]">
             HAPPENING AT ALL CAMPUS LOCATIONS
