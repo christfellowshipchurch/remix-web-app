@@ -1,9 +1,10 @@
 import { DynamicHero } from "~/components/dynamic-hero";
-import { Event, EventReturnType } from "./loader";
+import { EventReturnType } from "./loader";
 import { LargeCard } from "./components/LargeCard.component";
 import { useLoaderData } from "react-router";
-import { EventsForYou } from "./partials/EventsForYou.partial";
+import { EventsForYou } from "./partials/events-for-you.partial";
 import { EventCard } from "./components/EventCard.component";
+import SectionTitle from "~/components/section-title";
 
 export function AllEventsPage() {
   const { featuredEvents } = useLoaderData<EventReturnType>();
@@ -18,6 +19,7 @@ export function AllEventsPage() {
       />
       <div className="flex-col flex gap-8 max-w-[1600px] md:px-8 py-28">
         {/* Featured Events */}
+        <SectionTitle sectionTitle="featured events." />
         <div className="flex flex-col gap-16">
           <LargeCard card={firstEvent} />
           <div className="flex gap-4 xxl:gap-0 w-full justify-between">
