@@ -20,7 +20,7 @@ export function AllEventsPage() {
         {/* Featured Events */}
         <div className="flex flex-col gap-16">
           <LargeCard card={firstEvent} />
-          <div className="flex w-full justify-between">
+          <div className="flex gap-4 xxl:gap-0 w-full justify-between">
             {otherEvents.map((event, i) => (
               <EventCard key={i} data={event} />
             ))}
