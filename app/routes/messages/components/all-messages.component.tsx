@@ -1,4 +1,4 @@
-import SectionTitle from "./section-title.component";
+import SectionTitle from "~/components/section-title";
 
 const MessageCard = () => {
   return (
