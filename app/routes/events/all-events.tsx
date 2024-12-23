@@ -1,34 +1,16 @@
 import { DynamicHero } from "~/components/dynamic-hero";
-import { EventReturnType } from "./loader";
-import { LargeCard } from "./components/LargeCard.component";
-import { useLoaderData } from "react-router";
 import { EventsForYou } from "./partials/events-for-you.partial";
-import { EventCard } from "./components/EventCard.component";
-import SectionTitle from "~/components/section-title";
+import { FeaturedEvents } from "./partials/featured-events.partial";
 
 export function AllEventsPage() {
-  const { featuredEvents } = useLoaderData<EventReturnType>();
-  const firstEvent = featuredEvents[0];
-  const otherEvents = featuredEvents.slice(1);
-
   return (
     <div className="flex flex-col items-center">
       <DynamicHero
         imagePath="../app/assets/images/events-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       />
-      <div className="flex-col flex gap-8 max-w-[1600px] md:px-8 py-28">
-        {/* Featured Events */}
-        <SectionTitle sectionTitle="featured events." />
-        <div className="flex flex-col gap-16">
-          <LargeCard card={firstEvent} />
-          <div className="flex gap-4 xxl:gap-0 w-full justify-between">
-            {otherEvents.map((event, i) => (
-              <EventCard key={i} data={event} />
-            ))}
-          </div>
-        </div>
-        {/* Events for you */}
+      <div className="flex-col flex gap-8 max-w-xxl mx-8 py-28">
+        <FeaturedEvents />
         <EventsForYou />
       </div>
     </div>

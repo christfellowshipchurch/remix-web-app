@@ -10,7 +10,7 @@ export type EventReturnType = {
 export type Event = {
   campus?: string;
   title: string;
-  eventDate: string; // Formatted date
+  date: string; // Formatted date
   expireDateTime: string; // Rock date
   startDate: string; // Formatted date
   startDateTime: string; // Rock date
@@ -46,10 +46,10 @@ const getUpcomingEvents = async () => {
   });
 
   upcomingEvents.forEach((event: Event) => {
-    // substract 1 day from the expire date
+    // To find the date of the event, we need to subtract 1 day from the expired dateTime. This may change in the future.
     const expireDate = new Date(event.expireDateTime);
     expireDate.setDate(expireDate.getDate() - 1);
-    event.eventDate = formatDate(expireDate, "MMMM d, yyyy");
+    event.date = formatDate(expireDate, "MMMM d, yyyy");
   });
 
   return upcomingEvents;
