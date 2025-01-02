@@ -2,7 +2,7 @@ import Button from "~/primitives/button";
 
 export const ArticleNewsletter = () => {
   return (
-    <div className="mb-12 w-full bg-gradient-to-b from-newsletter_from to-newsletter_to py-12 text-white lg:py-24">
+    <div className="mb-12 w-full bg-[#00354D] py-12 text-white lg:py-24">
       <div className="mx-auto flex max-w-3xl flex-col justify-between px-6 lg:max-w-5xl lg:flex-row xl:max-w-7xl">
         {/* Left */}
         <div className="">
@@ -19,7 +19,7 @@ export const ArticleNewsletter = () => {
           {/* Form */}
           <form className="mb-4 flex w-full flex-col gap-4 sm:flex-row">
             <input
-              className="w-full max-w-96 rounded-md p-3 text-base text-text_primary"
+              className="w-full max-w-96 p-3 text-base"
               type="email"
               placeholder="Enter your email"
             />

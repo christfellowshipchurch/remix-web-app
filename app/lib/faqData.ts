@@ -309,7 +309,10 @@ export const faqCfEverywhereData = [
 ];
 
 // TODO: Update faqEventData here
-export const faqEventData = [{ title: "", content: "" }];
+export const faqEventData = [
+  { title: "Question 1", content: "Response 1" },
+  { title: "Question 2", content: "Response 2" },
+];
 
 export const faqData = (campus: string) => {
   switch (campus) {
