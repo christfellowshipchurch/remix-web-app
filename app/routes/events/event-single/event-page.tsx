@@ -4,8 +4,9 @@ import { useLoaderData } from "react-router";
 import { DynamicHero } from "~/components/dynamic-hero";
 import StyledAccordion from "~/components/styled-accordion";
 import { faqEventData } from "~/lib/faqData";
-import { EventDetails } from "./partials/event-details.partial";
+import { TimesLocations } from "./partials/times-and-locations";
 import { EventContent } from "./partials/event-content.partial";
+import SectionTitle from "~/components/section-title";
 
 export const EventPage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
@@ -22,11 +23,14 @@ export const EventPage: React.FC = () => {
           ]}
           customTitle={data.title}
         />
-        <div className="flex w-full justify-center gap-16 pt-16 pb-24 max-w-[1440px]">
-          <EventDetails />
-          <div className="flex flex-col gap-16">
-            <EventContent htmlContent={data.content} />
-            <StyledAccordion data={faqEventData} />
+        <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-[1440px]">
+          <SectionTitle sectionTitle="event details." />
+          <div className="flex w-full justify-center gap-16">
+            <TimesLocations />
+            <div className="flex flex-col gap-16">
+              <EventContent htmlContent={data.content} />
+              <StyledAccordion data={faqEventData} />
+            </div>
           </div>
         </div>
       </section>
