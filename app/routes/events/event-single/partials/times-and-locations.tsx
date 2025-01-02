@@ -1,4 +1,4 @@
-export const EventDetails = () => {
+export const TimesLocations = () => {
   return (
     <div className="w-80">
       <div>
