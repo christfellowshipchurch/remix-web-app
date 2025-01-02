@@ -24,6 +24,7 @@ export default function TestingSearch() {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
+      {/* TODO: What was the intended max-w ? max-w-4xl does not exist */}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           Testing Algolia Search

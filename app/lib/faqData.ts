@@ -308,6 +308,9 @@ export const faqCfEverywhereData = [
   },
 ];
 
+// TODO: Update faqEventData here
+export const faqEventData = [{ title: "", content: "" }];
+
 export const faqData = (campus: string) => {
   switch (campus) {
     case "Downtown West Palm Beach":

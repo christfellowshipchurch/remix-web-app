@@ -22,8 +22,10 @@ export type Event = {
     image: {
       value: string;
     };
+    url: {
+      value: string;
+    };
   };
-  url: string;
 };
 
 const getUpcomingEvents = async () => {
