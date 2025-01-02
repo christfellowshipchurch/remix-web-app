@@ -13,7 +13,7 @@ export const LocationFAQ = () => {
       <h2 className=" max-w-[90vw] text-center heading-h3 text-navy">
         {isEspanol ? `Preguntas Frequentes` : `Frequently Asked Questions`}
       </h2>
-      <StyledAccordion data={faqData(name)} bg="white" />
+      <StyledAccordion data={faqData(name)} bg="white" center />
       <div className="flex flex-col items-center gap-5 text-center">
         <div className="text-[26px] font-bold">
           {isEspanol

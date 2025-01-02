@@ -9,7 +9,7 @@ export const FeaturedCard = ({ card }: { card: Event }) => {
         backgroundImage: `url(${card.image})`,
       }}
     >
-      <div className="absolute w-2/3 right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-16 pt-16 pb-4">
+      <div className="absolute w-[67.5%] xl:w-[70%] right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-12 pt-12 xl:pl-16 xl:pt-16 pb-4">
         <div className="flex flex-col gap-2">
           <h2 className="font-medium text-[16px] text-[#666666]">
             HAPPENING AT ALL CAMPUS LOCATIONS
