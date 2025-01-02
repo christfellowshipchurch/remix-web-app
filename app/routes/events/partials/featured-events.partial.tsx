@@ -24,7 +24,7 @@ export function FeaturedEvents() {
             ]}
             cta={{
               title: "Learn More",
-              href: `/events/${event.url}`,
+              href: `/events/${event.attributeValues.url.value}`,
             }}
           />
         ))}

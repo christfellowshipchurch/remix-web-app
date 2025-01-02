@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Event } from "../loader";
 
 export const FeaturedCard = ({ card }: { card: Event }) => {
@@ -20,7 +21,12 @@ export const FeaturedCard = ({ card }: { card: Event }) => {
           <p className="font-normal text-[#666666]">
             {card.attributeValues.summary.value}
           </p>
-          <a className="underline font-bold cursor-pointer">Learn More</a>
+          <Link
+            to={`/events/${card.attributeValues.url.value}`}
+            className="underline font-bold cursor-pointer"
+          >
+            Learn More
+          </Link>
         </div>
       </div>
     </div>

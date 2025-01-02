@@ -30,7 +30,7 @@ export const EventsForYou = () => {
             ]}
             cta={{
               title: "Learn More",
-              href: `/events/${event.url}`,
+              href: `/events/${event.attributeValues.url.value}`,
             }}
           />
         ))}
