@@ -1,6 +1,6 @@
 import { DynamicHero } from "~/components/dynamic-hero";
-import CurrentSeries from "./components/current-messages.component";
-import AllMessages from "./components/messages.component";
+import CurrentSeries from "./components/current-series.component";
+import AllMessages from "./components/all-messages.component";
 
 export default function MessagesPage() {
   return (
