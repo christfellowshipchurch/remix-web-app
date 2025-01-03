@@ -5,7 +5,7 @@ import { ContentCard } from "~/primitives/content-card/content.card.primitive";
 import {
   FilterButtons,
   mockTags,
-} from "~/routes/messages/partials/all-messages.partial";
+} from "~/routes/messages/all-messages/components/all-messages.component";
 
 export const EventsForYou = () => {
   const { upcomingEvents } = useLoaderData<EventReturnType>();
