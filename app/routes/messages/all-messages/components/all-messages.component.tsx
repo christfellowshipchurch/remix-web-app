@@ -69,7 +69,7 @@ export const FilterButtons = ({ tags }: { tags: Tag[] }) => {
   );
 };
 
-export default function AllMessages() {
+export default function Messages() {
   return (
     <section className="relative py-32 p-8 min-h-screen bg-white">
       <div className="relative max-w-xxl mx-auto">
