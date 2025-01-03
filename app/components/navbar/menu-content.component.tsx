@@ -49,7 +49,7 @@ export const MenuContent: React.FC<MenuContentProps> = ({
           {section.link && (
             <a
               href="#"
-              className="text-text-primary mt-4 flex hover:text-ocean transition-colors"
+              className="mt-4 flex hover:text-ocean transition-colors"
             >
               <span>{section.link}</span>
               <Icon name="arrowRight" />

@@ -1,18 +1,34 @@
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
+import { useLocation } from "react-router";
+import Breadcrumbs from "../breadcrumbs";
 
 export type DynamicHeroTypes = {
   imagePath: string;
-  ctas?: { url: string; text: string }[];
+  ctas?: { href: string; title: string }[];
+  customTitle?: string;
 };
 
-export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
-  // TODO: Get from url
-  const pagePath = "Articles";
+export const DynamicHero = ({
+  imagePath,
+  ctas,
+  customTitle,
+}: DynamicHeroTypes) => {
+  const location = useLocation();
+  const pagePath =
+    location.pathname
+      .split("/")
+      .filter(Boolean)
+      .map((segment) =>
+        segment
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+      )[0] || "Home";
 
   return (
     <div
-      className="flex items-center justify-start self-stretch h-[640px]"
+      className="flex items-center justify-start self-stretch h-[640px] px-10"
       style={{
         background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${imagePath}) lightgray 50% / cover no-repeat`,
         backgroundSize: "cover",
@@ -20,33 +36,33 @@ export const DynamicHero = ({ imagePath, ctas }: DynamicHeroTypes) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col gap-12 w-full pb-16 px-36 items-start justify-end self-stretch">
-        <h1 className="font-extrabold text-[100px] text-white">{pagePath}</h1>
+      <div className="flex flex-col gap-12 w-full pb-16 max-w-xxl mx-auto items-start justify-end self-stretch">
+        <h1 className="font-extrabold heading-h1 xxl:text-[100px] text-white">
+          {customTitle || pagePath}
+        </h1>
         <div className="h-[2px] self-stretch bg-[#D9D9D9]" />
         <div className="flex items-center justify-between self-stretch">
-          <div className="flex items-center gap-4 text-[#ADA09B]">
-            <p>Home</p>
-            <Icon color="#0092BC" size={20} name="caretRight" />
-            <p>{pagePath}</p>
-          </div>
-          <div className="flex gap-6 relative pr-4">
+          {/* Breadcrumbs */}
+          <Breadcrumbs />
+
+          {/* CTAs */}
+          <div className="flex gap-6 relative pr-4 group">
             {ctas?.map((cta, i) => (
               <Button
                 key={i}
-                href={cta.url}
+                href={cta.href}
                 intent="secondary"
-                className="text-white border-white rounded-none"
+                className="text-white border-white rounded-none hover:enabled:bg-slate-300/20"
               >
-                {cta.text}
+                {cta.title}
               </Button>
             ))}
-            <div className="rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%]">
-              <Icon
-                style={{ transform: "rotate(135deg)" }}
-                name="arrowBack"
-                size={26}
-                color="white"
-              />
+            <div
+              className={`${
+                (ctas?.length ?? 0) < 1 ? "hidden" : ""
+              } rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%] rotate-[135deg] group-hover:rotate-180 transition-all duration-300`}
+            >
+              <Icon name="arrowBack" size={26} color="white" />
             </div>
           </div>
         </div>
