@@ -44,7 +44,7 @@ export function HeroNavCard({
       <h5 className="font-medium text-text-secondary text-xs mt-2">
         {subtitle}
       </h5>
-      <h3 className="text-text-primary heading-h5">{title}</h3>
+      <h3 className="heading-h5">{title}</h3>
       <div className="mt-3 font-semibold flex text-ocean w-full justify-between">
         <span>{linkText}</span>
         <Icon name="arrowRight" />
@@ -82,7 +82,7 @@ export function NavCard({
         <h5 className="font-medium text-text-secondary text-xs mt-2 uppercase">
           {subtitle}
         </h5>
-        <h3 className="text-text-primary font-semibold">{title}</h3>
+        <h3 className="font-semibold">{title}</h3>
         <div className="mt-3 font-semibold flex text-text-secondary text-sm w-full justify-between">
           <span>{linkText}</span>
           <Icon name="arrowRight" />

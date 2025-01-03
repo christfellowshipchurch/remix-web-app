@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { Article, ArticlesReturnType } from "../loader";
 
 export const Divider = () => <div className="bg-black/30 w-full h-[1px]" />;
@@ -27,7 +27,10 @@ export const LatestArticles = () => {
         articles.length > 0 &&
         articles.map((article, i) => (
           <div key={i} className="flex flex-col gap-6">
-            <div className="flex items-center gap-5">
+            <Link
+              to={`/articles/${article.attributeValues.url.value}`}
+              className="flex items-center gap-5 cursor-pointer"
+            >
               <img src={article.image} className="size-18 object-cover" />
               <div className="flex flex-col max-w-[220px]">
                 <p className="text-sm text-[#444]">{article.startDate}</p>
@@ -35,7 +38,7 @@ export const LatestArticles = () => {
                   {article.title}
                 </h3>
               </div>
-            </div>
+            </Link>
             <Divider />
           </div>
         ))}
