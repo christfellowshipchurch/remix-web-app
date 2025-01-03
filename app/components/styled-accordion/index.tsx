@@ -5,23 +5,29 @@ import HTMLRenderer from "~/primitives/html-renderer";
 
 type AccordionDataType = {
   bg?: string;
+  center?: boolean;
+  border?: string;
   data: {
     title: string;
     content: string;
   }[];
 };
 
-const StyledAccordion = ({ data, bg }: AccordionDataType) => {
+const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
   return (
     <Accordion.Root
-      className="AccordionRoot flex w-full max-w-screen-md flex-col items-center gap-4 "
+      className="AccordionRoot flex w-full max-w-screen-md flex-col gap-4"
       type="multiple"
+      style={{ alignItems: `${center ? "center" : "flex-start"}` }}
     >
       {data?.map((item, index) => {
         return (
           <Accordion.Item
             key={index}
-            style={{ backgroundColor: bg ? bg : `#E7F9FE` }}
+            style={{
+              backgroundColor: bg ? bg : `#E7F9FE`,
+              border: `${border ? `1px solid ${border}` : ""}`,
+            }}
             className={`AccordionItem w-[90vw] rounded-lg px-6 md:w-[560px] lg:w-[768px]`}
             value={`item-${index + 1}`}
           >

@@ -1,7 +1,7 @@
 import React from "react";
+import SectionTitle from "~/components/section-title";
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
-import SectionTitle from "./section-title.component";
 
 const CurrentSeries: React.FC = () => {
   return (
@@ -13,6 +13,7 @@ const CurrentSeries: React.FC = () => {
       <div className="relative max-w-xxl mx-auto">
         {/* Title Section */}
         <SectionTitle
+          className="mb-8"
           sectionTitle="current series."
           title="Timeless Truths For Truthless Times"
         />
@@ -31,7 +32,7 @@ const CurrentSeries: React.FC = () => {
           {/* Text Section */}
           <div className="absolute bottom-0 left-0 w-full md:w-[45%] bg-white px-10 py-16 space-y-4">
             <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
-            <h2 className="text-[40px] font-bold text-gray-900">
+            <h2 className="text-[40px] font-bold text-text-primary">
               What is Truth?
             </h2>
             <p className="font-bold">Pastor Ryan McDermott</p>
