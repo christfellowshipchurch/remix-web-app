@@ -8,7 +8,6 @@ const button = cva(
     "justify-center",
     "inline-flex",
     "items-center",
-    "rounded-md",
     "text-center",
     "border",
     "transition-colors",

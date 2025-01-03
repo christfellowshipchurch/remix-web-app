@@ -21,9 +21,9 @@ import {
 import MobileMenu from "./mobile/mobile-menu.components";
 
 const mainLinks = [
-  { title: "About", url: "#" },
-  { title: "Locations", url: "#" },
-  { title: "Events", url: "#" },
+  { title: "About", url: "/about" },
+  { title: "Locations", url: "/locations" },
+  { title: "Events", url: "/events" },
 ];
 
 const menuLinks = [
