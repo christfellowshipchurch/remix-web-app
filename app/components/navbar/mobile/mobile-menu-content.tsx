@@ -56,7 +56,7 @@ export default function MobileMenuContent() {
             <li className="border-b border-b-gray-200 pb-6" key={item.id}>
               <button
                 onClick={() => handleMenuItemClick(item)}
-                className="flex items-center justify-between w-full text-lg font-bold text-text-primary"
+                className="flex items-center justify-between w-full text-lg font-bold "
               >
                 {item.title}
                 {item.content && (
@@ -78,9 +78,7 @@ export default function MobileMenuContent() {
               <button onClick={handleBack}>
                 <Icon className="text-text-primary/75" name="arrowBack" />
               </button>
-              <h2 className="text-lg text-text-primary font-bold">
-                {activeScreen.title}
-              </h2>
+              <h2 className="text-lg  font-bold">{activeScreen.title}</h2>
             </div>
             <div className="p-4 overflow-y-auto h-[calc(100vh-10rem)]">
               {activeScreen.content.mainContent?.map(
@@ -93,10 +91,7 @@ export default function MobileMenuContent() {
                       <ul className="space-y-2">
                         {section.items.map((item: any, itemIdx: number) => (
                           <li key={itemIdx}>
-                            <a
-                              href={item.url}
-                              className="text-text-primary font-bold"
-                            >
+                            <a href={item.url} className=" font-bold">
                               {item.title}
                             </a>
                           </li>
@@ -114,10 +109,7 @@ export default function MobileMenuContent() {
                     {activeScreen.content.additionalContent.map(
                       (content: any, idx: number) => (
                         <li key={idx}>
-                          <a
-                            href={content.url}
-                            className="text-text-primary text-lg font-bold"
-                          >
+                          <a href={content.url} className=" text-lg font-bold">
                             {content.title}
                           </a>
                         </li>

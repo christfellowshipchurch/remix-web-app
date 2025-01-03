@@ -11,12 +11,12 @@ export const RelatedArticles = () => {
   const viewMoreLink = `/related-articles/${tagId}`;
 
   return (
-    <div className="flex w-full max-w-3xl flex-col items-center px-6 py-12 md:py-24 lg:max-w-6xl xl:max-w-7xl">
+    <div className="bg-gradient-to-b from-white to-[#EEEEEE] flex w-full max-w-3xl flex-col items-center px-6 py-12 md:py-24 lg:max-w-6xl xl:max-w-7xl">
       {/* Header */}
       <div className="w-full ">
         <div className=" text-5xl font-semibold ">Related Reading</div>
         <div className="flex items-end justify-between text-lg font-light">
-          <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </div>
+          <div>Explore more articles that you might find interesting.</div>
           <Button
             href={viewMoreLink}
             className="hidden lg:block"
