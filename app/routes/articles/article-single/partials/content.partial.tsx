@@ -17,11 +17,7 @@ export const ArticleContent = ({
       <div className="border-l-2 border-ocean">
         {resources?.map(
           (data: { resource: string; url: string }, index: number) => (
-            <a
-              href={data?.url}
-              key={index}
-              className="mt-1 pl-2 text-text-primary"
-            >
+            <a href={data?.url} key={index} className="mt-1 pl-2">
               {data?.resource}
             </a>
           )

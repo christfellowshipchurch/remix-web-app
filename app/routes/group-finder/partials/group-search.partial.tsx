@@ -6,12 +6,14 @@ import {
   SearchBox,
   RefinementList,
 } from "react-instantsearch";
-import { HitComponent } from "../components/Hit.component";
-import { CustomPagination } from "../components/CustomPagination.component";
+
+import { CustomPagination } from "../components/custom-pagination.component";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
-import { MenuSelect } from "../components/CustomMenu.component";
-import { CustomClearRefinements } from "../components/CustomeClearRefinements.component";
+import { MenuSelect } from "../components/custom-menu.component";
+import { CustomClearRefinements } from "../components/custom-clear-refinements.component";
+import { HitComponent } from "../components/Hit.component";
+import SectionTitle from "~/components/section-title";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -25,10 +27,13 @@ export const GroupSearch = () => {
 
   return (
     <div
-      className="flex flex-col gap-4 items-center w-full max-w-[1440px] px-4 md:px-8 py-12"
+      className="flex flex-col gap-4 w-full max-w-[1440px] px-4 md:px-8 py-12"
       id="search"
     >
-      <h1 className="heading-h1 w-full">Find Your Community</h1>
+      <SectionTitle
+        sectionTitle="search all groups."
+        title="Find Your Community"
+      />
       <InstantSearch
         indexName="production_Groups"
         searchClient={searchClient}

@@ -13,12 +13,9 @@ export type Article = {
   startDateTime: string;
   image: string;
   attributeValues: {
-    summary: {
-      value: string;
-    };
-    image: {
-      value: string;
-    };
+    summary: { value: string };
+    image: { value: string };
+    url: { value: string };
   };
 };
 
