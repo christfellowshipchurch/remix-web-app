@@ -45,9 +45,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
               {meetingType}
             </div>
             <div className="flex flex-col">
-              <h3 className="text-lg font-bold leading-6 text-text-primary">
-                {hit.title}
-              </h3>
+              <h3 className="text-lg font-bold leading-6">{hit.title}</h3>
               <p className="text-sm text-black">{tags}</p>
             </div>
           </div>
@@ -63,11 +61,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
                 <p className="text-sm font-semibold">{hit.meetingDay}</p>
               </div>
               <div>
-                <p
-                  className={`text-sm text-text-primary ${
-                    isExpanded ? "" : "line-clamp-3"
-                  }`}
-                >
+                <p className={`text-sm ${isExpanded ? "" : "line-clamp-3"}`}>
                   {hit.summary}
                 </p>
                 {hit.summary.length > 132 && (

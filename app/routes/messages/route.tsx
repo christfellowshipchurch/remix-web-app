@@ -1,3 +1,3 @@
-import MessagesPage from "./all-messages/all-messages-page";
+import MessagesPage from "./all-messages/messages-page";
 
 export default MessagesPage;

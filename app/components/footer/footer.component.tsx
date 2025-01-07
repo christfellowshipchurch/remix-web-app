@@ -1,5 +1,6 @@
 // TODO: Add a check for #connect-card here so that it can open the modal on any page, unlike current site.
 
+import ConnectCardModal from "../modals/connect-card";
 import { ContactInfo } from "./footer-contact.partial";
 import { FooterLinks } from "./footer-links.partial";
 
@@ -43,10 +44,10 @@ export const Footer = () => {
           </div>
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl text-white font-bold">Connect</h2>
-            {/* TODO: OPEN CONNECT CARD MODAL */}
-            <a className="text-lg font-light" href="/">
-              Connect Card
-            </a>
+            <ConnectCardModal
+              triggerStyles="text-lg font-light text-[#D0D0CE] m-0 p-0 border-0 rounded-none bg-transparent items-start justify-start min-h-0 min-w-0 hover:enabled:bg-transparent "
+              buttonTitle="Connect Card"
+            />
             <a
               className="text-lg font-light"
               href="https://rock.gocf.org/RequestPrayer"
