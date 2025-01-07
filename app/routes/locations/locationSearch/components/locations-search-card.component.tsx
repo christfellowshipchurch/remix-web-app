@@ -17,7 +17,8 @@ const LocationCard = ({
   const coverLabel = distanceFromLocation || name?.includes("Online");
   return (
     <Link
-      to={`/locations/${link}`}
+      to={`/locations${link}`}
+      prefetch="viewport"
       className="col-span-12 md:col-span-6 lg:col-span-4"
     >
       <div
