@@ -10,14 +10,16 @@ import {
 import Button from "~/primitives/button";
 import { cn } from "~/lib/utils";
 import { ministriesData, watchReadListenData } from "./navbar.data";
-import { MenuContent } from "./menu-content.component";
+import { MenuContent } from "./desktop/menu-content.component";
 import {
   angleDownIconStyle,
   navigationMenuContentStyle,
   navigationMenuTriggerStyle,
 } from "./navbar.styles";
-import MobileMenu from "./mobile/mobile-menu.components";
+import MobileMenu from "./mobile/mobile-menu.component";
 import Icon from "~/primitives/icon";
+import { useLocation } from "react-router";
+import { shouldUseDarkMode } from "./navbar-routes";
 
 const mainLinks = [
   { title: "About", url: "/about" },
@@ -31,7 +33,8 @@ const menuLinks = [
 ];
 
 export function Navbar() {
-  const mode = "light"; //or "dark"
+  const { pathname } = useLocation();
+  const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
 
   return (
     <nav className="group">
@@ -125,7 +128,7 @@ export function Navbar() {
                 : "text-white group-hover:text-text"
             } hover:text-ocean transition-colors`}
           />
-          <Button size={"md"}>Give now</Button>
+          <Button size={"md"}>Find a Service</Button>
         </a>
 
         {/* Mobile view */}
