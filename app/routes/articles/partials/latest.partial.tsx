@@ -1,7 +1,18 @@
 import { useLoaderData } from "react-router";
 import { Article, ArticlesReturnType } from "../loader";
 
-export const Divider = () => <div className="bg-black/30 w-full h-[1px]" />;
+export const Divider = ({
+  bg = "black",
+  opacity = "30%",
+}: {
+  bg?: string;
+  opacity?: string;
+}) => (
+  <div
+    style={{ backgroundColor: `${bg}` || undefined, opacity: `${opacity}` }}
+    className="w-full h-[1px]"
+  />
+);
 
 export type Category = {
   amount: number;

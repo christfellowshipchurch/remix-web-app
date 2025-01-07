@@ -1,56 +1,56 @@
 import Button from "~/primitives/button";
 import { useLoaderData } from "react-router";
-import { RelatedArticleCard } from "~/routes/articles/article-single/components/related-article-card.components";
+import { RelatedMessageCard } from "../components/related-message-card.component";
+import { Message, MessageReturnType } from "../loader";
+import SectionTitle from "~/components/section-title";
 
 /**
  * todo : turn this into Related Messages, currently articles...
  */
 
 export const RelatedMessages = () => {
-  const { relatedArticles } = useLoaderData<any>();
-  const tagId = relatedArticles?.tagId;
-  const articles = relatedArticles?.articles;
+  const { relatedMessages } = useLoaderData<MessageReturnType>();
+  const tagId = relatedMessages?.tagId;
+  const messages = relatedMessages?.messages;
 
-  const viewMoreLink = `/related-articles/${tagId}`;
+  const viewMoreLink = `/related-messages/${tagId}`;
 
   return (
-    <div className="flex w-full max-w-3xl flex-col items-center px-6 py-12 md:py-24 lg:max-w-6xl xl:max-w-7xl">
-      {/* Header */}
-      <div className="w-full ">
-        <div className=" text-5xl font-semibold ">Related Reading</div>
-        <div className="flex items-end justify-between text-lg font-light">
-          <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </div>
-          <Button
-            href={viewMoreLink}
-            className="hidden lg:block"
-            intent="secondary"
-          >
-            View More
-          </Button>
+    <div className="bg-white w-full flex justify-center">
+      <div className="flex w-full max-w-xxl flex-col items-center py-12 md:py-24 lg:max-w-xl xl:max-w-xxl ">
+        {/* Header */}
+        <div className="w-full flex justify-between">
+          <div>
+            <SectionTitle sectionTitle="related series." />
+            <h2 className="text-text font-extrabold lg:text-[46px] xl:text-[52px] leading-none">
+              Message Series On This Topic
+            </h2>
+          </div>
+          <div className="flex items-end justify-between text-lg font-semibold">
+            <Button
+              href={viewMoreLink}
+              size="md"
+              className="hidden lg:block"
+              intent="primary"
+            >
+              View All
+            </Button>
+          </div>
         </div>
+        <div className="my-4 flex w-full flex-col justify-center gap-6 md:my-8 lg:my-20 lg:flex-row">
+          {messages?.map((message: Message, i: number) => (
+            <RelatedMessageCard key={i} message={message} />
+          ))}
+        </div>
+        <Button
+          className="mt-4 block px-6 py-4 text-xl md:mt-0 md:px-8 md:py-6 lg:hidden"
+          size="sm"
+          intent="primary"
+          href={viewMoreLink}
+        >
+          View More
+        </Button>
       </div>
-      <div className="my-4 flex w-full flex-col justify-center gap-6 md:my-8 lg:my-20 lg:flex-row">
-        {articles?.map((article: any, i: number) => (
-          <RelatedArticleCard
-            key={i}
-            title={article.title}
-            description={article.summary}
-            href={article.url}
-            image={article.coverImage[0]}
-            date={article.publishDate}
-            author={article.author}
-            readTime={article.readTime}
-          />
-        ))}
-      </div>
-      <Button
-        className="mt-4 block px-6 py-4 text-xl md:mt-0 md:px-8 md:py-6 lg:hidden"
-        size="sm"
-        intent="secondary"
-        href={viewMoreLink}
-      >
-        View More
-      </Button>
     </div>
   );
 };
