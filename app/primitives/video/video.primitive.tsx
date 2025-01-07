@@ -2,13 +2,13 @@ import { WistiaPlayer } from "./wistia-player.component";
 
 type VideoProps = {
   src?: string;
+  wistiaId?: string;
   autoPlay?: boolean;
   loop?: boolean;
   muted?: boolean;
   controls?: boolean;
-  wistiaId?: string;
   className?: string;
-};
+} & ({ src: string } | { wistiaId: string });
 
 export const Video = (props: VideoProps) => {
   return (
