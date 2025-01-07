@@ -162,18 +162,13 @@ export const getImages = ({
   attributeValues: attributeValuesProps;
   attributes: attributeProps;
 }) => {
-  const imageKeys = attributes
-    ? Object.keys(attributes).filter((key) =>
-        attributeIsImage({
-          key,
-          attributeValues,
-        })
-      )
-    : [];
-
-  if (imageKeys) {
-    return imageKeys.map((key) =>
-      createImageUrlFromGuid(attributeValues[key].value)
-    );
-  }
+  const imageKeys = Object.keys(attributes).filter((key) =>
+    attributeIsImage({
+      key,
+      attributeValues,
+    })
+  );
+  return imageKeys.map((key) =>
+    createImageUrlFromGuid(attributeValues[key].value)
+  );
 };
