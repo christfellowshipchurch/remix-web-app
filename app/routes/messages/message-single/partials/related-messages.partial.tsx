@@ -1,12 +1,8 @@
 import Button from "~/primitives/button";
 import { useLoaderData } from "react-router";
-import { RelatedMessageCard } from "../components/related-message-card.component";
-import { Message, MessageReturnType } from "../loader";
+import { MessageReturnType } from "../loader";
 import SectionTitle from "~/components/section-title";
-
-/**
- * todo : turn this into Related Messages, currently articles...
- */
+import { MessagesCarousel } from "../components/messages-carousel.component";
 
 export const RelatedMessages = () => {
   const { relatedMessages } = useLoaderData<MessageReturnType>();
@@ -17,7 +13,7 @@ export const RelatedMessages = () => {
 
   return (
     <div className="bg-white w-full flex justify-center">
-      <div className="flex w-full max-w-xxl flex-col items-center py-12 md:py-24 lg:max-w-xl xl:max-w-xxl ">
+      <div className="flex w-full  flex-col items-center py-12 md:py-24 lg:max-w-xl xl:max-w-xxl ">
         {/* Header */}
         <div className="w-full flex justify-between">
           <div>
@@ -37,19 +33,7 @@ export const RelatedMessages = () => {
             </Button>
           </div>
         </div>
-        <div className="my-4 flex w-full flex-col justify-center gap-6 md:my-8 lg:my-20 lg:flex-row">
-          {messages?.map((message: Message, i: number) => (
-            <RelatedMessageCard key={i} message={message} />
-          ))}
-        </div>
-        <Button
-          className="mt-4 block px-6 py-4 text-xl md:mt-0 md:px-8 md:py-6 lg:hidden"
-          size="sm"
-          intent="primary"
-          href={viewMoreLink}
-        >
-          View More
-        </Button>
+        <MessagesCarousel messages={messages} />
       </div>
     </div>
   );

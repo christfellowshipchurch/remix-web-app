@@ -1,6 +1,7 @@
 import type { LoaderFunction } from "react-router";
 import { fetchRockData, getImages } from "~/lib/.server/fetchRockData";
 import { format } from "date-fns";
+import { mockInThisSeries } from "./components/mockData";
 
 export type Message = {
   hostUrl: string;
@@ -57,9 +58,7 @@ const fetchMessageData = async (path: string) => {
 
 export const loader: LoaderFunction = async ({ params }) => {
   const path = params?.path || "";
-  console.log("path", path);
   const messageData = await fetchMessageData(path);
-  console.log("messageData", messageData);
 
   if (!messageData) {
     throw new Response("Article not found at: /articles/" + path, {
@@ -75,7 +74,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   // TODO: Get Related Messages
   const relatedMessages: RelatedMessages = {
-    messages: [],
+    messages: mockInThisSeries,
     tagId: "todo",
   };
 

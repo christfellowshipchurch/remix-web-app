@@ -4,7 +4,7 @@ import { Event } from "../loader";
 export const FeaturedCard = ({ card }: { card: Event }) => {
   return (
     <div
-      className="relative w-[90vw] aspect-[16/9] md:w-full max-w-[1440px] inset-0 bg-cover bg-center object-cover"
+      className="relative w-[90vw] aspect-video md:w-full max-w-[1440px] inset-0 bg-cover bg-center object-cover"
       style={{
         backgroundImage: `url(${card.image})`,
       }}
