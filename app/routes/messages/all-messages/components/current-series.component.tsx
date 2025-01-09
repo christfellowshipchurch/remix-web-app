@@ -19,7 +19,7 @@ const CurrentSeries: React.FC = () => {
         />
 
         {/* Content Section */}
-        <div className="relative w-full aspect-[16/9]">
+        <div className="relative w-full aspect-video">
           {/* Background Image */}
           <div
             className="absolute inset-0 bg-cover bg-center"
