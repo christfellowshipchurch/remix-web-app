@@ -9,7 +9,7 @@ import {
   watchReadListenData,
 } from "../navbar.data";
 import Button from "~/primitives/button";
-import { NavCard } from "../nav-cards.component";
+import { NavCard } from "../desktop/nav-cards.component";
 
 interface MenuScreen {
   id: string;
