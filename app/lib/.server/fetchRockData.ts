@@ -13,18 +13,20 @@ const defaultHeaders = {
  * @param endpoint - the Rock endpoint to fetch data from
  * @param queryParams - query parameters to append to the request
  * @param customHeaders - additional headers to include in the request eg. Rock Cookie
+ * @param noCache - if true, the data will not be cached
  * @returns Either the response data as JSON(array if multiple items, object if single item) or an error
  */
 
 export const fetchRockData = async (
   endpoint: string,
   queryParams: Record<string, string>,
-  customHeaders: Record<string, string> = {}
+  customHeaders: Record<string, string> = {},
+  noCache: boolean = false
 ) => {
   const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
   const cachedData = await redis.get(cacheKey);
 
-  if (cachedData) {
+  if (cachedData && !noCache) {
     return JSON.parse(cachedData);
   }
 
