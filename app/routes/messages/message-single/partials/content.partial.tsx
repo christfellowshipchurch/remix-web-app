@@ -6,7 +6,7 @@ export const MessageContent = ({}) => {
   const { message } = useLoaderData<MessageReturnType>();
 
   return (
-    <div className="flex w-full max-w-3xl flex-col gap-24 pt-10 pb-2 lg:max-w-xl xl:max-w-xxl">
+    <div className="flex w-full flex-col gap-24 pt-10 pb-2 lg:max-w-xl xl:max-w-xxl">
       {/* Content */}
       <div className="flex flex-col gap-6">
         {/* Speaker/Date Section */}

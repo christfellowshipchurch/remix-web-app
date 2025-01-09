@@ -20,8 +20,8 @@ export const DynamicVideoHeader = ({
   // TODO: Make sure videos in Wistia have the controls removed and the theme is set to what it's in Figma...
   // TODO: Update margin top once the navbar is updated?
   return (
-    <div className="flex items-center justify-start self-stretch h-[1080px] px-10">
-      <div className="flex flex-col gap-12 w-full pb-16 max-w-xxl mx-auto items-start justify-end self-stretch">
+    <div className="flex items-center justify-start self-stretch h-[920px] xl:h-[1000px] px-10 ">
+      <div className="flex flex-col gap-12 w-full pb-16 mx-auto lg:max-w-xl xl:max-w-xxl items-start justify-end self-stretch">
         {wistiaId ? (
           <div className="w-full">
             <Video wistiaId={wistiaId} />
