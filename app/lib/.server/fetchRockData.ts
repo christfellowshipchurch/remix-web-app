@@ -1,5 +1,6 @@
 import { createImageUrlFromGuid, normalize } from "~/lib/utils";
 import { attributeProps, attributeValuesProps } from "../types/rockTypes";
+import redis from "./redis-config";
 
 const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {
@@ -14,11 +15,19 @@ const defaultHeaders = {
  * @param customHeaders - additional headers to include in the request eg. Rock Cookie
  * @returns Either the response data as JSON(array if multiple items, object if single item) or an error
  */
+
 export const fetchRockData = async (
   endpoint: string,
   queryParams: Record<string, string>,
   customHeaders: Record<string, string> = {}
 ) => {
+  const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+  const cachedData = await redis.get(cacheKey);
+
+  if (cachedData) {
+    return JSON.parse(cachedData);
+  }
+
   try {
     const queryString = new URLSearchParams(queryParams).toString();
     const url = `${baseUrl}${endpoint}?${queryString}`;
@@ -42,7 +51,9 @@ export const fetchRockData = async (
       .then((data) => normalize(data))
       .then((data: any) =>
         Array.isArray(data) && data?.length === 1 ? data[0] : data
-      ); // if only one item, return it directly
+      );
+
+    await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
 
     return data;
   } catch (error) {
