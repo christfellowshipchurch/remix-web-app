@@ -11,7 +11,7 @@ export const RelatedArticles = () => {
   const viewMoreLink = `/related-articles/${tagId}`;
 
   return (
-    <div className="bg-gradient-to-b from-white to-[#EEEEEE] flex w-full max-w-3xl flex-col items-center px-6 py-12 md:py-24 lg:max-w-6xl xl:max-w-7xl">
+    <div className="bg-gradient-to-b from-white to-[#EEEEEE] flex w-full flex-col items-center px-6 py-12 md:py-24 lg:max-w-6xl xl:max-w-7xl">
       {/* Header */}
       <div className="w-full ">
         <div className=" text-5xl font-semibold ">Related Reading</div>

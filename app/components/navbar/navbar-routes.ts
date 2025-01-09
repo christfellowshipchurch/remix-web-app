@@ -12,6 +12,8 @@ export const darkModeRoutes: RoutePattern[] = [
   { path: "/events/", isDynamic: true }, // This will match /events/[slug]
   { path: "/locations" },
   { path: "/locations/", isDynamic: true }, // This will match /locations/[slug]
+  { path: "/messages" },
+  { path: "/messages/", isDynamic: true }, // This will match /messages/[slug]
   // Add more routes as needed
 ];
 

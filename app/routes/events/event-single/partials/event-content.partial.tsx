@@ -1,3 +1,5 @@
+import HTMLRenderer from "~/primitives/html-renderer";
+
 export const EventContent = ({ htmlContent }: { htmlContent: string }) => {
   return (
     <div className="w-full flex flex-col gap-8">
@@ -6,7 +8,7 @@ export const EventContent = ({ htmlContent }: { htmlContent: string }) => {
         <p>Details about what to expect at the event will go here.</p>
       </div>
       {/* Content */}
-      <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+      <HTMLRenderer html={htmlContent} />
     </div>
   );
 };

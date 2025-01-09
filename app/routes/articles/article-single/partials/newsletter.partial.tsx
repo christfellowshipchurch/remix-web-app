@@ -3,7 +3,7 @@ import Button from "~/primitives/button";
 export const ArticleNewsletter = () => {
   return (
     <div className="mb-12 w-full bg-[#00354D] py-12 text-white lg:py-24">
-      <div className="mx-auto flex max-w-3xl flex-col justify-between px-6 lg:max-w-5xl lg:flex-row xl:max-w-7xl">
+      <div className="mx-auto flex flex-col justify-between px-6 lg:max-w-5xl lg:flex-row xl:max-w-7xl">
         {/* Left */}
         <div className="">
           <div className="mb-4 text-3xl font-semibold">
