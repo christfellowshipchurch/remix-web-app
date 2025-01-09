@@ -78,7 +78,8 @@ export const getCurrentPerson = async (cookie: string): Promise<any> => {
       {
         "Authorization-Token": "",
         Cookie: cookie,
-      }
+      },
+      true // no cache
     );
 
     if (!person) {
