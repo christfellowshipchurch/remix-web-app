@@ -2,6 +2,7 @@ import Icon from "~/primitives/icon";
 import { GroupHit } from "../types";
 import { useState } from "react";
 import Button from "~/primitives/button";
+import ContactModal from "~/components/modals/group-contact";
 
 export function HitComponent({ hit }: { hit: GroupHit }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -74,8 +75,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
                 )}
               </div>
             </div>
-            {/* TODO: Open Contact Group Leader Modal */}
-            <Button className="rounded-lg font-semibold h-12">Contact</Button>
+            <ContactModal groupName={hit.title} />
           </div>
         </div>
       </div>
