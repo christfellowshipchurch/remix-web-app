@@ -12,7 +12,7 @@ import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { MenuSelect } from "../components/custom-menu.component";
 import { CustomClearRefinements } from "../components/custom-clear-refinements.component";
-import { HitComponent } from "../components/Hit.component";
+import { HitComponent } from "../components/hit-component.component";
 import SectionTitle from "~/components/section-title";
 
 export const GroupSearch = () => {
