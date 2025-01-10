@@ -16,7 +16,7 @@ export default function ArticleAuthor({
       <a href={`/author/${author?.authorAttributes?.authorId}`}>
         <Avatar.Root className="flex cursor-pointer duration-300 hover:scale-105">
           <Avatar.Image
-            className="size-20 rounded-full"
+            className="size-16 rounded-full"
             src={author?.photo?.uri}
             alt={author?.fullName}
           />
@@ -27,8 +27,8 @@ export default function ArticleAuthor({
       </a>
 
       <div className="ml-4 flex flex-col justify-center">
-        <h2>{author?.fullName || "Full Name"}</h2>
-        <div className="flex">
+        <h2 className="semibold mb-2">{author?.fullName || "Full Name"}</h2>
+        <div className="flex text-neutral-500 font-normal">
           {publishDate && (
             <p>
               {publishDate}
