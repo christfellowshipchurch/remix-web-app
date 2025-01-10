@@ -18,8 +18,8 @@ export const ArticlePage: React.FC = () => {
         <div className="align-center mx-auto flex w-full flex-col items-center border-y border-solid border-slate-100">
           <ArticleContent htmlContent={data.content} />
           <ArticleNewsletter />
-          <RelatedArticles />
         </div>
+        <RelatedArticles />
       </section>
     </>
   );

@@ -19,7 +19,7 @@ export const ArticleNewsletter = () => {
           {/* Form */}
           <form className="mb-4 flex w-full flex-col gap-4 sm:flex-row">
             <input
-              className="w-full max-w-96 p-3 text-base"
+              className="w-full max-w-96 p-3 text-base rounded"
               type="email"
               placeholder="Enter your email"
             />
