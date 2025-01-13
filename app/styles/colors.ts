@@ -1,8 +1,9 @@
 // Primitive Colors
 const BLACK = "#000000";
 const WHITE = "#FFFFFF";
-const GRAY = "#F5F5F7";
+const GRAY = "#F3F5FA";
 const SOFT_WHITE = "#FAFAFC";
+const DARK_NAVY = "#00354D";
 const NAVY = "#004F71";
 const NAVY_SUBDUED = "#DAEAF1";
 const OCEAN = "#0092BC";
@@ -58,8 +59,10 @@ const LINK_ALTERNATE = WHITE;
 const colors = {
   // Primitive
   black: BLACK,
+  gray: GRAY,
   white: WHITE,
   softWhite: SOFT_WHITE,
+  darkNavy: DARK_NAVY,
   navy: NAVY,
   navySubdued: NAVY_SUBDUED,
   ocean: OCEAN,
