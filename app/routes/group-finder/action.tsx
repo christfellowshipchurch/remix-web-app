@@ -1,14 +1,14 @@
 import { ActionFunction, data } from "react-router";
 import { ContactFormType } from "./types";
 import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
-import { AUTH_TOKEN_KEY, RegistrationTypes } from "~/providers/auth-provider";
+import { AUTH_TOKEN_KEY } from "~/providers/auth-provider";
 import {
   fetchUserLogin,
   getCurrentPerson,
+  registerPersonWithEmail,
 } from "~/lib/.server/authentication/rockAuthentication";
 import { registerToken } from "~/lib/.server/token";
 import { decrypt } from "~/lib/.server/decrypt";
-import { registerPerson } from "../auth/registerPerson";
 
 const getPersonId = async ({
   token,
@@ -27,55 +27,43 @@ const getPersonId = async ({
   gender?: string;
   birthDate?: string;
 }) => {
-  console.log("here");
   // Checking CurrentUser - If we will not have login on our platform this can be removed.
   if (token) {
-    console.log("token exists", token);
     const { rockCookie } = registerToken(decrypt(token as string));
     if (rockCookie) {
       const { id } = await getCurrentPerson(rockCookie);
-      console.log("rockCookies exists", id);
       return id;
     }
   }
 
   //   TODO: Optional - If found user does not have email or phone number add the missing one.
   // Checking UserLogins to see if the user exists and get the Id
-  console.log("checking logins with email", email);
   let userLogin = await fetchUserLogin(email as string);
   if (!userLogin) {
-    console.log("checking logins with phoneNumber", phoneNumber);
     userLogin = await fetchUserLogin(phoneNumber as string);
   }
   if (userLogin) {
-    console.log("userLogin exists", userLogin);
     return userLogin?.personId;
   }
 
-  // TODO: Create a new user since no user was found
-  console.log("creating new person");
-  const newPerson = await registerPerson({
-    registrationType: RegistrationTypes.EMAIL,
-    userInputData: {
-      email: email as string,
-      phoneNumber: phoneNumber as string,
-      userProfile: [
-        { field: "FirstName", value: firstName as string },
-        { field: "LastName", value: lastName as string },
-        { field: "Gender", value: gender as string },
-        { field: "BirthDate", value: birthDate as string },
-      ],
-    },
-  });
-  console.log("newPerson", newPerson);
-  //   return newPerson;
+  const userData = {
+    email: email as string,
+    phoneNumber: phoneNumber as string,
+    password: Math.random().toString(36).slice(-8), // Generate 8-char random password
+    userProfile: [
+      { field: "FirstName", value: firstName as string },
+      { field: "LastName", value: lastName as string },
+      { field: "BirthDate", value: birthDate as string },
+      { field: "Gender", value: gender as string },
+    ],
+  };
+  const { personId } = await registerPersonWithEmail(userData);
+  return personId.toString() as string;
 };
 
 export const action: ActionFunction = async ({ request }) => {
   try {
-    console.log("here");
     const formData = Object.fromEntries(await request.formData());
-    console.log("formData1", formData);
 
     const email = formData.email?.toString();
     const phoneNumber = formData.phoneNumber?.toString();
@@ -85,7 +73,6 @@ export const action: ActionFunction = async ({ request }) => {
     const birthDate = formData.birthDate?.toString();
     const groupName = formData.groupName?.toString();
 
-    console.log("formData2", formData);
     const token = request.headers
       .get("Cookie")
       ?.match(new RegExp(`${AUTH_TOKEN_KEY}=([^;]+)`))?.[1];
@@ -106,16 +93,15 @@ export const action: ActionFunction = async ({ request }) => {
       birthDate,
     });
 
-    console.log("personId", personId);
-    // const contactFormSubmission: ContactFormType = {
-    //   GroupId: groupId as string,
-    //   PersonId: personId as number,
-    // };
+    const contactFormSubmission: ContactFormType = {
+      GroupId: groupId.id as string,
+      PersonId: personId as string,
+    };
 
-    // await postRockData(
-    //   `Workflows/LaunchWorkflow/0?workflowTypeId=654&workflowName=Add%20To%20Group/Class`,
-    //   contactFormSubmission
-    // );
+    await postRockData(
+      `Workflows/LaunchWorkflow/0?workflowTypeId=654&workflowName=Add%20To%20Group/Class`,
+      contactFormSubmission
+    );
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
