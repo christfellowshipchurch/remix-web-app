@@ -41,6 +41,7 @@ const GroupContactForm: React.FC<ConnectCardProps> = ({
 
     const formData = new FormData(event.currentTarget);
     formData.append("groupName", groupName);
+    formData.append("gender", selectedGender);
 
     // Validate birth date
     const birthDate = new Date(formData.get("birthDate") as string);

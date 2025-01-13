@@ -32,7 +32,7 @@ export const registerPerson = async ({
       }
     case "email":
       try {
-        const token = await registerPersonWithEmail(registrationData);
+        const { token } = await registerPersonWithEmail(registrationData);
         return new Response(JSON.stringify({ encryptedToken: token }), {
           status: 200,
           headers: {
