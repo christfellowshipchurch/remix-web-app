@@ -2,7 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { AuthorArticle, AuthorArticleProps } from "./author-content";
 
 const tabStyles =
-  "border-ocean p-5 data-[state=active]:border-b-2 data-[state=inactive]:text-neutral-500 mb-[-2px] hover:bg-neutral-100";
+  "border-ocean text-lg data-[state=active]:font-semibold px-5 py-3 data-[state=active]:border-b-2 data-[state=inactive]:text-neutral-500 mb-[-2px] hover:bg-neutral-100";
 
 const tabContentStyles = "flex flex-col";
 

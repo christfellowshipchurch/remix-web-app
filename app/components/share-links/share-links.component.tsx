@@ -41,9 +41,9 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
         >
           <Icon
             name={icon?.name}
-            size={48}
+            size={38}
             color="#0092bc"
-            className="duration-300 hover:scale-105 p-1 rounded-full bg-[#EEE]"
+            className="duration-300 hover:scale-105 p-1 rounded-full bg-neutral-lightest"
           />
         </a>
       );
@@ -53,8 +53,8 @@ export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
           <CopyLink textToCopy={fullPath}>
             <Icon
               name="linkAlt"
-              size={48}
-              className="duration-300 hover:scale-105 p-1 rounded-full bg-[#EEE]"
+              size={38}
+              className="duration-300 hover:scale-105 p-1 rounded-full bg-neutral-lightest"
             />
           </CopyLink>
         </div>
