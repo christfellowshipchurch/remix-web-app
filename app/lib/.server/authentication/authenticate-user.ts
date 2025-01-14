@@ -2,10 +2,10 @@ import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/errorTypes";
+} from "~/lib/.server/error-types";
 import { generateToken } from "~/lib/.server/token";
 import { encrypt } from "~/lib/.server/encrypt";
-import { createRockSession, fetchUserCookie } from "./rockAuthentication";
+import { createRockSession, fetchUserCookie } from "./rock-authentication";
 
 export type AuthenticationReturnType = {
   encryptedToken: string;

@@ -1,10 +1,10 @@
 import { data } from "react-router";
-import { requestSmsLogin } from "~/lib/.server/authentication/smsAuthentication";
+import { requestSmsLogin } from "~/lib/.server/authentication/sms-authentication";
 import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/errorTypes";
+} from "~/lib/.server/error-types";
 
 export const requestSmsPinLogin = async (phoneNumber: string) => {
   try {

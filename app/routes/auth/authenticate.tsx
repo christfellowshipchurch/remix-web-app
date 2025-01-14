@@ -1,11 +1,11 @@
 import { data } from "react-router";
-import { authenticateUser } from "~/lib/.server/authentication/authenticateUser";
+import { authenticateUser } from "~/lib/.server/authentication/authenticate-user";
 
 import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/errorTypes";
+} from "~/lib/.server/error-types";
 
 type AuthenticateData = {
   identity: string;

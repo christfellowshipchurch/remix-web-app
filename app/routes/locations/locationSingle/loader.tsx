@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
-import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
+import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import {
   fetchCampusData,
   fetchComingUpChildren,
@@ -8,7 +8,7 @@ import {
   fetchPastorData,
   fetchPastorIdByAlias,
   fetchWeekdaySchedules,
-} from "~/lib/.server/fetchLocationSingleData";
+} from "~/lib/.server/fetch-location-single-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type dayTimes = {
@@ -49,11 +49,12 @@ export type LoaderReturnType = {
     title: string;
     cards: {
       title: string;
-      description: string;
-      image: string;
-      url: string;
+      // description: string;
+      // image: string;
+      // url: string;
     }[];
     buttonTitle: string;
+    buttonUrl: string;
   };
   facebook: string;
   mapLink: string;
@@ -99,6 +100,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   // TODO: Order is not accurate
   const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
   const comingUpChildren = await fetchComingUpChildren(comingUpSoonId);
+  console.log(comingUpChildren);
+  console.log(comingUpChildren.length);
+
   const comingUpChildrenTrimmed = comingUpChildren.slice(0, 3);
   const thisWeek = await fetchComingUpChildren("8168");
   const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
@@ -166,12 +170,17 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       cards: comingUpChildrenTrimmed.map((child: ContentItem) => {
         return {
           title: child?.title,
-          description: child?.attributeValues?.summary?.value,
-          image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
-          url: child.attributeValues?.url?.value,
+          // description: child?.attributeValues?.summary?.value,
+          // image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
+          // url: child.attributeValues?.url?.value,
         };
       }),
+
+      // TODO: Create the endpoints for this button (See All Events pages)
       buttonTitle: name.includes("Español") ? "Ver Más" : "See More",
+      buttonUrl: name.includes("Español")
+        ? "/events/proximamente"
+        : "/events/coming-up",
     },
     facebook,
     mapLink: mapLink?.value,

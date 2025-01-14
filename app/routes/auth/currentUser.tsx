@@ -1,12 +1,12 @@
 import { data } from "react-router";
-import { getCurrentPerson } from "~/lib/.server/authentication/rockAuthentication";
+import { getCurrentPerson } from "~/lib/.server/authentication/rock-authentication";
 import { decrypt } from "~/lib/.server/decrypt";
 import { registerToken } from "~/lib/.server/token";
 import {
   AuthenticationError,
   RockAPIError,
   EncryptionError,
-} from "~/lib/.server/errorTypes";
+} from "~/lib/.server/error-types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { User } from "~/providers/auth-provider";
 

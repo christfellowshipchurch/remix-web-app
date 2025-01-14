@@ -3,7 +3,7 @@ import { useLoaderData } from "react-router";
 import AuthModal from "~/components/modals/auth";
 import Button from "~/primitives/button";
 import { useAuth } from "~/providers/auth-provider";
-import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
+import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userData = await getUserFromRequest(request);

@@ -1,6 +1,6 @@
 import { includes, lowerCase } from "lodash";
 import { getIdentifierType } from "../utils";
-import { fetchRockData } from "./fetchRockData";
+import { fetchRockData } from "./fetch-rock-data";
 import { format } from "date-fns";
 
 export const fetchCampusData = async (campusUrl: string) => {
@@ -14,7 +14,6 @@ export const fetchCampusData = async (campusUrl: string) => {
 export const fetchComingUpTitle = async (id: string) => {
   const { title } = await fetchRockData(`ContentChannelItems`, {
     $filter: `Id eq ${id}`,
-    $select: "Title",
   });
 
   return title;
@@ -23,6 +22,7 @@ export const fetchComingUpTitle = async (id: string) => {
 export const fetchComingUpChildren = async (id: string) => {
   return fetchRockData(`ContentChannelItems/GetChildren/${id}`, {
     loadAttributes: "simple",
+    $top: "3",
   });
 };
 

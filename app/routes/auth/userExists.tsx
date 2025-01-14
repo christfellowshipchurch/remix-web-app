@@ -1,5 +1,5 @@
 import { data } from "react-router";
-import { fetchUserLogin } from "~/lib/.server/authentication/rockAuthentication";
+import { fetchUserLogin } from "~/lib/.server/authentication/rock-authentication";
 
 export const checkUserExists = async (identity: string): Promise<boolean> => {
   const login = await fetchUserLogin(identity);

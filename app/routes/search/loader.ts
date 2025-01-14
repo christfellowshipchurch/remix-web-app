@@ -1,5 +1,5 @@
 import { LoaderFunction } from "react-router";
-import { AuthenticationError } from "~/lib/.server/errorTypes";
+import { AuthenticationError } from "~/lib/.server/error-types";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
