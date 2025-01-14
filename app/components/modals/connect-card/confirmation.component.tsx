@@ -1,7 +1,24 @@
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
+import { useNavigate } from "react-router";
 
-const ConnectCardConfirmation = ({ onSuccess }: { onSuccess: () => void }) => {
+interface ConnectCardConfirmationProps {
+  onSuccess?: () => void;
+}
+
+const ConnectCardConfirmation: React.FC<ConnectCardConfirmationProps> = ({
+  onSuccess,
+}) => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-4 p-8">
       <Icon name="check" size={64} color="#1ec27f" />
@@ -9,9 +26,7 @@ const ConnectCardConfirmation = ({ onSuccess }: { onSuccess: () => void }) => {
       <Button
         intent="primary"
         className="rounded-xl w-52"
-        onClick={() => {
-          onSuccess();
-        }}
+        onClick={handleClose}
       >
         Continue
       </Button>
