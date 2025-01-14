@@ -10,7 +10,7 @@ import {
   modalAnimations,
   modalKeyframes,
 } from "./app/primitives/Modal/modal.styles";
-import { desktopHeadings } from "./app/styles/desktopHeadings";
+import { desktopHeadings } from "./app/styles/desktop-headings";
 
 export default {
   darkMode: ["class"],
