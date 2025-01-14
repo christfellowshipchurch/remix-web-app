@@ -78,7 +78,8 @@ export const getCurrentPerson = async (cookie: string): Promise<any> => {
       {
         "Authorization-Token": "",
         Cookie: cookie,
-      }
+      },
+      true // no cache
     );
 
     if (!person) {
@@ -175,10 +176,15 @@ export const createUserProfile = async ({
 export const fetchUserLogin = async (
   identity: string
 ): Promise<RockUserLogin | null> => {
-  const userLogin = await fetchRockData("UserLogins", {
-    $filter: `UserName eq '${identity}'`,
-    $top: "1",
-  });
+  const userLogin = await fetchRockData(
+    "UserLogins",
+    {
+      $filter: `UserName eq '${identity}'`,
+      $top: "1",
+    },
+    undefined,
+    true // no cache
+  );
 
   // If no login exists for the identity, return null
   if (Array.isArray(userLogin) && userLogin.length === 0) {
@@ -231,10 +237,15 @@ export const registerPersonWithEmail = async ({
   if (phoneNumber && phoneNumber !== "") {
     const { significantNumber, countryCode } =
       parsePhoneNumberUtil(phoneNumber);
-    const existingPhoneNumbers = await fetchRockData("PhoneNumbers", {
-      $select: "PersonId",
-      $filter: `Number eq '${significantNumber}'`,
-    });
+    const existingPhoneNumbers = await fetchRockData(
+      "PhoneNumbers",
+      {
+        $select: "PersonId",
+        $filter: `Number eq '${significantNumber}'`,
+      },
+      undefined,
+      true // no cache
+    );
 
     if (existingPhoneNumbers) {
       if (!countryCode) {

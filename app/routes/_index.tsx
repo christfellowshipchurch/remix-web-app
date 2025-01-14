@@ -1,5 +1,5 @@
 import type { LoaderFunction, MetaFunction } from "react-router";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { useEffect, useState } from "react";
 import AuthModal from "~/components/modals/auth";
 import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
@@ -47,9 +47,9 @@ export default function Index() {
           <p className="leading-6 text-gray-700 dark:text-gray-200">
             What&apos;s next?
           </p>
-          <Button href="/articles/10-ways-to-be-generous">
+          <Link prefetch="intent" to="/articles/10-ways-to-be-generous">
             Check out a new Article
-          </Button>
+          </Link>
           {isLoading ? (
             <>Loading...</>
           ) : user ? (
