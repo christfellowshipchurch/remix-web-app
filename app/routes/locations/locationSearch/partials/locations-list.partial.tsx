@@ -54,7 +54,7 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
 
       {/* Prison Location */}
       <div className="mt-12">
-        <Link to="/locations/prison-locations">
+        <Link to="/locations/prison-locations" prefetch="intent">
           <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
               className="absolute size-full opacity-80"
