@@ -1,6 +1,6 @@
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { parseISO, isValid, getMonth, getDate, getYear } from "date-fns";
-import { fetchRockData, postRockData } from "./fetchRockData";
+import { fetchRockData, postRockData } from "./fetch-rock-data";
 
 export enum Gender {
   Female = "Female",

@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "react-router";
-import { fetchRockData, getImages } from "~/lib/.server/fetchRockData";
+import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { format } from "date-fns";
 
 // TODO: Figure out how to get the read event date-time

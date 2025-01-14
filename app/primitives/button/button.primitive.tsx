@@ -64,8 +64,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
         <Link
           to={href}
-          target={target ? target : href?.includes("http") ? "_blank" : ""}
           prefetch="intent"
+          target={target ? target : href?.includes("http") ? "_blank" : ""}
         >
           <button
             className={twMerge(button({ intent, size, className, underline }))}

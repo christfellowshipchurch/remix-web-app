@@ -68,7 +68,6 @@ const SmallCard = ({ card, fill }: { card: ThisWeekCard; fill?: boolean }) => {
           "0 10px 15px -3px rgba(0, 0, 0, 0.2),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
         gridColumn: fill ? "span 4" : undefined,
       }}
-      // TODO: Update col-span-2 to col-span-4 only for the last card if odd number of cards (maybe pass a prop to the component)
       className={`flex col-span-4 lg:col-span-2 bg-white overflow-hidden w-[90vw] lg:w-full md:h-24 lg:h-28 mb-4 transition-transform duration-300 hover:scale-[1.02] rounded-md gap-4`}
     >
       <img src={card.image} className="h-full w-40 lg:w-44" />

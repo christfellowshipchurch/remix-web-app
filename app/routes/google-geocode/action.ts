@@ -4,7 +4,7 @@ import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/errorTypes";
+} from "~/lib/.server/error-types";
 
 export const action: ActionFunction = async ({ request }) => {
   try {
