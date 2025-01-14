@@ -5,12 +5,12 @@ import { useFetcher } from "react-router";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
 
-interface ConnectCardProps {
+interface GroupConnectFormProps {
   groupName: string;
   onSuccess: () => void;
 }
 
-const GroupContactForm: React.FC<ConnectCardProps> = ({
+const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
   groupName,
   onSuccess,
 }) => {
@@ -164,4 +164,4 @@ const GroupContactForm: React.FC<ConnectCardProps> = ({
   );
 };
 
-export default GroupContactForm;
+export default GroupConnectForm;

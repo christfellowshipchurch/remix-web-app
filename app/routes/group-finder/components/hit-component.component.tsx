@@ -1,8 +1,7 @@
 import Icon from "~/primitives/icon";
 import { GroupHit } from "../types";
 import { useState } from "react";
-import Button from "~/primitives/button";
-import ContactModal from "~/components/modals/group-contact";
+import GroupConnectModal from "~/components/modals/group-connect";
 
 export function HitComponent({ hit }: { hit: GroupHit }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -75,7 +74,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
                 )}
               </div>
             </div>
-            <ContactModal groupName={hit.title} />
+            <GroupConnectModal groupName={hit.title} />
           </div>
         </div>
       </div>

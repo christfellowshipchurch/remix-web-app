@@ -1,6 +1,6 @@
 import Button from "~/primitives/button";
 
-const GroupContactConfirmation = ({ onSuccess }: { onSuccess: () => void }) => {
+const GroupConnectConfirmation = ({ onSuccess }: { onSuccess: () => void }) => {
   return (
     <div className="flex flex-col items-center gap-4 p-8">
       <h1 className="font-bold text-2xl text-navy">Request has been sent!</h1>
@@ -18,4 +18,4 @@ const GroupContactConfirmation = ({ onSuccess }: { onSuccess: () => void }) => {
   );
 };
 
-export default GroupContactConfirmation;
+export default GroupConnectConfirmation;

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import Modal from "~/primitives/Modal";
-import GroupContactFlow from "./contact-flow.component";
+import GroupContactFlow from "./group-connect-flow.component";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 
-interface ContactModalProps {
+interface GroupConnectModalProps {
   ModalButton?: React.ComponentType<ButtonProps>;
   groupName: string;
 }
 
-export function ContactModal({
+export function GroupConnectModal({
   ModalButton = Button,
   groupName,
-}: ContactModalProps) {
+}: GroupConnectModalProps) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
