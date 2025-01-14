@@ -3,10 +3,12 @@ import invariant from "tiny-invariant";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import {
   fetchCampusData,
-  fetchComingUpChildren,
+  fetchChildrenByAssociation,
   fetchComingUpTitle,
+  fetchContentItemById,
   fetchPastorData,
   fetchPastorIdByAlias,
+  fetchThisWeek,
   fetchWeekdaySchedules,
 } from "~/lib/.server/fetch-location-single-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
@@ -49,9 +51,9 @@ export type LoaderReturnType = {
     title: string;
     cards: {
       title: string;
-      // description: string;
-      // image: string;
-      // url: string;
+      description: string;
+      image: string;
+      url: string;
     }[];
     buttonTitle: string;
     buttonUrl: string;
@@ -99,12 +101,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   // TODO: Order is not accurate
   const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
-  const comingUpChildren = await fetchComingUpChildren(comingUpSoonId);
-  console.log(comingUpChildren);
-  console.log(comingUpChildren.length);
+  const childrenByAssociation = await fetchChildrenByAssociation(
+    comingUpSoonId
+  );
+  console.log(childrenByAssociation);
 
-  const comingUpChildrenTrimmed = comingUpChildren.slice(0, 3);
-  const thisWeek = await fetchComingUpChildren("8168");
+  // TODO: Get children by ID by mapping childrenByAssociation and fetching the children by ID
+  const comingUpChildren = await Promise.all(
+    childrenByAssociation.map((child: any) =>
+      fetchContentItemById(child.childContentChannelItemId)
+    )
+  );
+
+  const thisWeek = await fetchThisWeek("8168");
   const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
 
   const {
@@ -167,12 +176,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     },
     comingUpSoon: {
       title: comingUpTitle,
-      cards: comingUpChildrenTrimmed.map((child: ContentItem) => {
+      cards: comingUpChildren.map((child: ContentItem) => {
         return {
           title: child?.title,
-          // description: child?.attributeValues?.summary?.value,
-          // image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
-          // url: child.attributeValues?.url?.value,
+          description: child?.attributeValues?.summary?.value,
+          image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
+          url: child.attributeValues?.url?.value,
         };
       }),
 
