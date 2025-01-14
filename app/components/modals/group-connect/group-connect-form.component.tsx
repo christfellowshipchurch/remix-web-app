@@ -76,7 +76,13 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
   return (
     <>
-      <h2 className="mb-6 text-3xl text-navy font-bold">Get Connected</h2>
+      <h2 className="mb-6 text-3xl text-navy font-bold">
+        Connect with a Leader
+      </h2>
+      <p className="mb-10 max-w-xs text-pretty">
+        Please fill out the form below let a group leader know you are
+        interested.
+      </p>
       <Form.Root
         onSubmit={handleSubmit}
         className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"

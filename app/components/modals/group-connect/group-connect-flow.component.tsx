@@ -41,7 +41,7 @@ const GroupConnectFlow = ({
   };
 
   return (
-    <div className="text-center text-text_primary px-8 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full md:max-w-[55vw]">
+    <div className="text-center text-text_primary px-8 md:px-4 lg:px-16 pb-10 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
       {renderStep()}
     </div>
   );
