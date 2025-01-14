@@ -92,7 +92,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
               <div
                 className={`rounded-full bg-ocean ml-[-10px] rotate-[135deg] p-2 group-hover:rotate-180 transition-all duration-300`}
               >
-                <Icon name="arrowBack" size={28} color="white" />
+                <Icon name="arrowBack" size={26} color="white" />
               </div>
             </div>
           </div>

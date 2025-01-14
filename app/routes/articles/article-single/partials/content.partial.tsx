@@ -17,11 +17,11 @@ export const ArticleContent = ({
   resources = mockResources,
 }: ArticleContentProps) => {
   return (
-    <div className="article-content flex w-full max-w-screen-lg flex-col px-6 py-10 md:px-10 lg:max-w-screen-md lg:px-6 lg:py-16">
+    <div className="article-content flex w-full mx-auto max-w-screen-lg flex-col px-6 py-10 md:px-10 lg:max-w-screen-md lg:px-6 lg:py-16">
       <h3 className="my-4 text-xl font-semibold">IN THIS ARTICLE</h3>
       <HTMLRenderer html={htmlContent || ""} />
       {/* Call to action */}
-      <div className="my-8 flex w-full items-center justify-between border-solid border-2 border-neutral-lighter bg-[#F3F5FA] p-8">
+      <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between border-solid border-2 border-neutral-lighter bg-[#F3F5FA] py-10 px-8 mt-10">
         <div className="flex flex-col">
           <h3 className="text-xl font-semibold">
             Call to action heading goes here
@@ -30,15 +30,15 @@ export const ArticleContent = ({
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </p>
         </div>
-        <Button intent="primary" href="#testing">
+        <Button className="mt-4 md:mt-0" intent="primary" href="#testing">
           Learn more
         </Button>
       </div>
       {/* Bottom Divider */}
-      <div className="mb-3 mt-6 h-2 w-full bg-navy" />
+      <div className="h-2 w-full bg-navy mt-10" />
       {/* Resources */}
-      <div className="text-xl font-semibold mb-4 my-8">Resources</div>
-      <div className="flex flex-col border-l-2 border-ocean">
+      <div className="text-xl font-semibold mt-10">Resources</div>
+      <div className="flex flex-col border-l-2 border-ocean mt-3">
         {resources?.map(
           (data: { resource: string; url: string }, index: number) => (
             <a
