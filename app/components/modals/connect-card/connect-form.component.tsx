@@ -7,7 +7,6 @@ import { useFetcher } from "react-router";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 interface ConnectCardProps {
-  formFieldData: ConnectCardLoaderReturnType;
   onSuccess: () => void;
 }
 
@@ -47,31 +46,48 @@ export const renderCheckboxField = (checkbox: any, index: number) => (
   </Form.Field>
 );
 
-const ConnectCardForm: React.FC<ConnectCardProps> = ({
-  formFieldData,
-  onSuccess,
-}) => {
+const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const [isOther, setIsOther] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fetcher = useFetcher();
 
+  const [formFieldData, setFormFieldData] =
+    useState<ConnectCardLoaderReturnType>({
+      campuses: [],
+      allThatApplies: [],
+    });
+
+  // Effect for initial data loading
+  useEffect(() => {
+    fetcher.load("/connect-card");
+  }, []);
+
+  // Effect for handling form data and submissions
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data) {
       setLoading(false);
-      const data = fetcher.data as { error?: string };
-      if (data.error) {
-        setError(data.error);
+
+      if ("campuses" in fetcher.data && "allThatApplies" in fetcher.data) {
+        // This was the initial data load
+        setFormFieldData(fetcher.data as ConnectCardLoaderReturnType);
+      } else if ("error" in fetcher.data) {
+        setError(fetcher.data.error || "An unexpected error occurred");
       } else {
+        // This was a successful form submission
+        setError(null);
         onSuccess();
       }
+    }
+
+    if (fetcher.state === "submitting") {
+      setLoading(true);
+      setError(null);
     }
   }, [fetcher.state, fetcher.data, onSuccess]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
-    setLoading(true);
     const formData = new FormData(event.currentTarget);
 
     try {
@@ -80,7 +96,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
         action: "/connect-card",
       });
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError(
+        "An error occurred while submitting the form. Please try again."
+      );
       setLoading(false);
     }
   };

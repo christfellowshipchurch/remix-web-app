@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Modal from "~/primitives/Modal";
-import { useConnectCardData } from "./connect-card.data";
 import ConnectCardFlow from "./connect-card-flow.component";
 import Button from "~/primitives/button";
 import { ButtonProps } from "~/primitives/button/button.primitive";
@@ -19,7 +18,6 @@ export function ConnectCardModal({
   TriggerButton = Button,
 }: ConnectCardModalProps) {
   const [openModal, setOpenModal] = useState(false);
-  const connectCardData = useConnectCardData();
 
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
@@ -33,7 +31,7 @@ export function ConnectCardModal({
         </TriggerButton>
       </Modal.Button>
       <Modal.Content>
-        <ConnectCardFlow data={connectCardData} setOpenModal={setOpenModal} />
+        <ConnectCardFlow setOpenModal={setOpenModal} />
       </Modal.Content>
     </Modal>
   );
