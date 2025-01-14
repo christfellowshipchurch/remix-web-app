@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 
 export const ComingUpSoon = () => {
   const { comingUpSoon } = useLoaderData<LoaderReturnType>();

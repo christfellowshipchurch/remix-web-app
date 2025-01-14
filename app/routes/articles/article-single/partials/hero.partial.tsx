@@ -1,6 +1,6 @@
 import ShareLinks from "~/components/share-links/share-links.component";
 import ArticleAuthor from "../components/article-author.component";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { LoaderReturnType } from "../loader";
 
 export interface AuthorProps {

@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router";
 
 import { LoaderReturnType } from "../loader";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 
 export const ThisWeek = () => {
   const { thisWeek } = useLoaderData<LoaderReturnType>();
