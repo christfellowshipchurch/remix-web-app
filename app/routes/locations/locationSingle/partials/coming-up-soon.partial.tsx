@@ -16,6 +16,7 @@ export const ComingUpSoon = () => {
         {comingUpSoon?.cards?.map((card, index) => (
           <Link
             to={card.url}
+            prefetch="intent"
             key={index}
             style={{
               marginLeft: index === 0 ? 16 : 0,

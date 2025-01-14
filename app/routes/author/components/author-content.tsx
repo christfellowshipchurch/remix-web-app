@@ -26,6 +26,7 @@ export function AuthorArticle({
   return (
     <Link
       to={`/articles/${url}`}
+      prefetch="intent"
       className="flex flex-col-reverse gap-y-4 border-b-2 lg:gap-x-2 xl:gap-x-0 border-neutral-300 py-4 hover:bg-neutral-100 lg:grid lg:grid-cols-3"
     >
       <div className="flex flex-col gap-2 sm:col-span-2">

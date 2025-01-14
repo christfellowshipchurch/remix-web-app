@@ -35,6 +35,7 @@ export type ThisWeekCard = {
 const BigCard = ({ card }: { card: ThisWeekCard }) => {
   return (
     <Link
+      prefetch="viewport"
       to={card.url}
       className="mb-4 relative flex col-span-4 h-64 md:h-80 lg:h-[440px] xl:h-[480px] w-[90vw] lg:w-full transition-transform duration-300 rounded-md hover:scale-[1.02]"
       style={{
@@ -55,6 +56,7 @@ const BigCard = ({ card }: { card: ThisWeekCard }) => {
 const SmallCard = ({ card }: { card: ThisWeekCard }) => {
   return (
     <Link
+      prefetch="intent"
       to={card.url}
       style={{
         boxShadow:
