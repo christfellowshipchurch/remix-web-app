@@ -1,6 +1,6 @@
 import { ActionFunction, data } from "react-router";
 import { SetAReminderType } from "./types";
-import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData, postRockData } from "~/lib/.server/fetch-rock-data";
 
 export const action: ActionFunction = async ({ request }) => {
   try {

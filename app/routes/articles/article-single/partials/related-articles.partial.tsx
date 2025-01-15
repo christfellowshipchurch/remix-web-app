@@ -11,43 +11,45 @@ export const RelatedArticles = () => {
   const viewMoreLink = `/related-articles/${tagId}`;
 
   return (
-    <div className="bg-gradient-to-b from-white to-[#EEEEEE] flex w-full flex-col items-center px-6 py-12 md:py-24 lg:max-w-6xl xl:max-w-7xl">
+    <div className="bg-gradient-to-b from-white to-[#EEEEEE] flex w-full flex-col items-center px-6 py-12 md:py-24">
       {/* Header */}
-      <div className="w-full ">
-        <div className=" text-5xl font-semibold ">Related Reading</div>
-        <div className="flex items-end justify-between text-lg font-light">
-          <div>Explore more articles that you might find interesting.</div>
-          <Button
-            href={viewMoreLink}
-            className="hidden lg:block"
-            intent="secondary"
-          >
-            View More
-          </Button>
+      <div className="lg:max-w-6xl xl:max-w-7xl">
+        <div className="w-full ">
+          <div className=" text-5xl font-semibold ">Related Reading</div>
+          <div className="flex items-end justify-between text-lg font-light">
+            <div>Explore more articles that you might find interesting.</div>
+            <Button
+              href={viewMoreLink}
+              className="hidden lg:block"
+              intent="secondary"
+            >
+              View More
+            </Button>
+          </div>
         </div>
+        <div className="my-4 flex w-full flex-col justify-center gap-6 md:my-8 lg:my-20 lg:flex-row">
+          {articles?.map((article: any, i: number) => (
+            <RelatedArticleCard
+              key={i}
+              title={article.title}
+              description={article.summary}
+              href={article.url}
+              image={article.coverImage[0]}
+              date={article.publishDate}
+              author={article.author}
+              readTime={article.readTime}
+            />
+          ))}
+        </div>
+        <Button
+          className="mt-4 block px-6 py-4 text-xl md:mt-0 md:px-8 md:py-6 lg:hidden"
+          size="sm"
+          intent="secondary"
+          href={viewMoreLink}
+        >
+          View More
+        </Button>
       </div>
-      <div className="my-4 flex w-full flex-col justify-center gap-6 md:my-8 lg:my-20 lg:flex-row">
-        {articles?.map((article: any, i: number) => (
-          <RelatedArticleCard
-            key={i}
-            title={article.title}
-            description={article.summary}
-            href={article.url}
-            image={article.coverImage[0]}
-            date={article.publishDate}
-            author={article.author}
-            readTime={article.readTime}
-          />
-        ))}
-      </div>
-      <Button
-        className="mt-4 block px-6 py-4 text-xl md:mt-0 md:px-8 md:py-6 lg:hidden"
-        size="sm"
-        intent="secondary"
-        href={viewMoreLink}
-      >
-        View More
-      </Button>
     </div>
   );
 };

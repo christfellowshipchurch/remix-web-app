@@ -1,6 +1,6 @@
 // encrypt.tsx
 import crypto from "crypto";
-import { EncryptionError } from "./errorTypes";
+import { EncryptionError } from "./error-types";
 
 const CRYPTO_IV = process.env.CRYPTO_IV;
 const CRYPTO_SECRET = process.env.CRYPTO_SECRET;

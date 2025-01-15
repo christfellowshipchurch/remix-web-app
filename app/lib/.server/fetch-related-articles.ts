@@ -1,6 +1,6 @@
 import Config from "./config/config";
 import { flatten } from "lodash";
-import { fetchRockData, getImages } from "./fetchRockData";
+import { fetchRockData, getImages } from "./fetch-rock-data";
 import { format } from "date-fns";
 import { getAuthorDetails } from "~/routes/articles/article-single/loader";
 
@@ -41,8 +41,11 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
 
     // Fetch, filter, and sort the related articles
     const relatedContent = await fetchRelatedContent(relatedTaggedItems);
+    // Ensure the content is from the articles channel and has active status
     const relatedArticles = relatedContent.filter(
-      (contentItem) => contentItem?.contentChannelId === articles[0]
+      (contentItem) =>
+        contentItem?.contentChannelId === articles[0] &&
+        contentItem?.status === 2
     );
 
     // Sort the related articles by priority and author

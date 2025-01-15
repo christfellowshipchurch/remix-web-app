@@ -1,7 +1,7 @@
 import { data } from "react-router";
-import { registerPersonWithEmail } from "~/lib/.server/authentication/rockAuthentication";
+import { registerPersonWithEmail } from "~/lib/.server/authentication/rock-authentication";
 import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
-import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
+import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";
 
 type RegisterPersonType = {
   registrationType: RegistrationTypes;

@@ -421,11 +421,13 @@
     --chart-5: 340 75% 55%;
   }
 }
-@layer base {
+
+/* TODO: I think this is related to the relume preset in tailwind.config.ts. Once we fix relume, we can add this back in */
+/* @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */

@@ -3,7 +3,7 @@ import { LoaderReturnType } from "./loader";
 import { useLoaderData } from "react-router";
 import { DynamicHero } from "~/components/dynamic-hero";
 import StyledAccordion from "~/components/styled-accordion";
-import { faqEventData } from "~/lib/faqData";
+import { faqEventData } from "~/lib/faq-data.data";
 import { TimesLocations } from "./partials/times-and-locations";
 import { EventContent } from "./partials/event-content.partial";
 import SectionTitle from "~/components/section-title";

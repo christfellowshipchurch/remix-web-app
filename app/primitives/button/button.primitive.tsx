@@ -64,6 +64,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
         <Link
           to={href}
+          prefetch="intent"
           target={target ? target : href?.includes("http") ? "_blank" : ""}
         >
           <button
