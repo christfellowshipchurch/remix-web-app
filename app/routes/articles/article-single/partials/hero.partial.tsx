@@ -2,6 +2,9 @@ import ShareLinks from "~/components/share-links/share-links.component";
 import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { LoaderReturnType } from "../loader";
+import Breadcrumbs from "~/components/breadcrumbs";
+import Button from "~/primitives/button";
+import { Icon } from "~/primitives/icon/icon";
 
 export interface AuthorProps {
   fullName: string;
@@ -21,57 +24,77 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
   publishDate,
   readTime,
 }: LoaderReturnType) => {
+  console.log(coverImage);
   return (
-    <div style={heroBgImgStyles(coverImage)} className={`mx-auto w-full`}>
-      <div className="mx:px-2 flex h-full justify-center bg-white/80 px-6 pb-10 pt-16 backdrop-blur-lg lg:px-12 lg:py-56">
-        <div className="flex w-full max-w-screen-xl flex-col md:flex-row md:items-center lg:items-start ">
-          <div className="flex flex-col justify-center lg:w-2/5">
-            {title && (
-              <h1
-                className="mb-4 max-w-2xl text-pretty text-5xl font-bold leading-tight tracking-tight text-text_primary dark:text-white  md:leading-tight xl:text-6xl"
-                dangerouslySetInnerHTML={{ __html: title }}
-              />
-            )}
-            {summary && (
-              <p
-                className="mb-6 hidden max-w-2xl font-light text-link_secondary md:block  md:text-xl lg:mb-8"
-                dangerouslySetInnerHTML={{ __html: summary }}
-              />
-            )}
-            {/* Author */}
-            {author && (
-              <ArticleAuthor
-                author={author}
-                publishDate={publishDate || ""}
-                readTime={readTime || 0}
-              />
-            )}
-
-            {/* Share Links */}
-            <h2 className="mt-10 hidden text-2xl font-semibold md:block">
-              Share this Article
-            </h2>
-            <div className="mt-3 flex">
-              <div className="flex gap-2">
-                <ShareLinks
-                  size={10}
-                  socialMedia={[
-                    { type: "twitter", url: "/twitter" },
-                    { type: "facebook", url: "/facebook" },
-                    { type: "linkedIn", url: "/linkedIn" },
-                  ]}
+    <div style={heroBgImgStyles(coverImage)}>
+      <div className="bg-white/80 backdrop-blur-lg px-6 md:px-16">
+        <div className="flex py-10">
+          <div className="flex flex-col sm:flex-col-reverse md:flex-row md:items-center lg:items-start mx-auto justify-between w-full max-w-[1438px]">
+            <div className="flex flex-col justify-center lg:w-2/5 mt-4 md:mt-24 mr-10 mb-6 md:mb-0">
+              {title && (
+                <h1
+                  className="mb-8 md:mb-4 max-w-2xl text-pretty heading-h1 leading-tight tracking-tight text-text_primary dark:text-white  md:leading-tight xl:text-6xl"
+                  dangerouslySetInnerHTML={{ __html: title }}
                 />
+              )}
+              {summary && (
+                <p
+                  className="mb-6 hidden max-w-2xl font-light text-neutral-500 md:block  md:text-xl lg:mb-8"
+                  dangerouslySetInnerHTML={{ __html: summary }}
+                />
+              )}
+              {/* Author */}
+              {author && (
+                <ArticleAuthor
+                  author={author}
+                  publishDate={publishDate || ""}
+                  readTime={readTime || 0}
+                />
+              )}
+
+              {/* Share Links */}
+              <h2 className="mt-10 hidden text-xl font-semibold md:block">
+                Share this Article
+              </h2>
+              <div className="mt-3 flex">
+                <div className="flex gap-2">
+                  <ShareLinks
+                    size={10}
+                    socialMedia={[
+                      { type: "twitter", url: "/twitter" },
+                      { type: "facebook", url: "/facebook" },
+                      { type: "linkedIn", url: "/linkedIn" },
+                    ]}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          {/* Cover Image */}
-          <div className="mt-10 h-60 w-full sm:h-80 md:ml-6 md:w-96 lg:my-0 lg:w-3/5 xl:h-[400px]">
+            {/* Cover Image - 4:3 ratio on lg screens */}
             <img
-              className="rounded-md relative flex size-full justify-center"
+              className="rounded-md h-full w-full object-cover md:max-w-[250px] lg:max-w-[600px] xl:max-w-[800px]"
               src={coverImage}
               alt={title || "Cover"}
-              style={{ objectFit: "cover" }}
             />
+          </div>
+        </div>
+        <div className="max-w-[1438px] mx-auto">
+          <hr className="border-neutral-lighter" />
+          <div className="flex flex-col md:flex-row justify-between items-center py-10">
+            <Breadcrumbs />
+            <div className="flex items-center group mt-10 md:mt-0">
+              <Button
+                href={"#cta"}
+                intent="secondary"
+                className="rounded-none hover:enabled:bg-slate-300/20"
+              >
+                Call to Action
+              </Button>
+              <div
+                className={`rounded-full bg-ocean ml-[-10px] rotate-[135deg] p-2 group-hover:rotate-180 transition-all duration-300`}
+              >
+                <Icon name="arrowBack" size={26} color="white" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
