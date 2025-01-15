@@ -81,6 +81,9 @@ export default {
         "8": "8px",
         DEFAULT: "1px",
       },
+      maxWidth: {
+        "screen-content": "1428px", // this is our default max width for content on the site
+      },
       minHeight: {
         ...defaultTheme.minHeight,
       },
