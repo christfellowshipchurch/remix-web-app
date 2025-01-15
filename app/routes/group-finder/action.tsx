@@ -1,14 +1,58 @@
 import { ActionFunction, data } from "react-router";
 import { ContactFormType } from "./types";
-import { fetchRockData, postRockData } from "~/lib/.server/fetchRockData";
+import {
+  fetchRockData,
+  patchRockData,
+  postRockData,
+} from "~/lib/.server/fetch-rock-data";
 import { AUTH_TOKEN_KEY } from "~/providers/auth-provider";
 import {
   fetchUserLogin,
   getCurrentPerson,
   registerPersonWithEmail,
-} from "~/lib/.server/authentication/rockAuthentication";
+} from "~/lib/.server/authentication/rock-authentication";
 import { registerToken } from "~/lib/.server/token";
 import { decrypt } from "~/lib/.server/decrypt";
+import { createPhoneNumberInRock } from "~/lib/.server/authentication/sms-authentication";
+import { parsePhoneNumberUtil } from "~/lib/.server/authentication/sms-authentication";
+
+const updatePerson = async (id: string, data: any) => {
+  // Update User email if user does not have one in the system
+  const emailInSystem = await fetchRockData(`People/${id}`, {
+    $select: "Email",
+  });
+  if (!emailInSystem.email) {
+    await patchRockData(`People/${id}`, {
+      Email: data.email,
+    });
+  }
+
+  // Create Phone Number in Rock
+  const { significantNumber, countryCode } = parsePhoneNumberUtil(
+    data.phoneNumber
+  );
+
+  const existingPhoneNumbers = await fetchRockData(
+    "PhoneNumbers",
+    {
+      $select: "PersonId",
+      $filter: `Number eq '${significantNumber}'`,
+    },
+    undefined,
+    true // no cache
+  );
+
+  if (!existingPhoneNumbers || existingPhoneNumbers.length === 0) {
+    if (!countryCode) {
+      throw new Error("Country code is required for creating phone number");
+    }
+    await createPhoneNumberInRock({
+      personId: id,
+      phoneNumber: data.phoneNumber,
+      countryCode,
+    });
+  }
+};
 
 const getPersonId = async ({
   token,
@@ -32,23 +76,29 @@ const getPersonId = async ({
     const { rockCookie } = registerToken(decrypt(token as string));
     if (rockCookie) {
       const { id } = await getCurrentPerson(rockCookie);
+      await updatePerson(id, { email: email, phoneNumber: phoneNumber });
       return id;
     }
   }
 
-  //   TODO: Optional - If found user does not have email or phone number add the missing one.
   // Checking UserLogins to see if the user exists and get the Id
   let userLogin = await fetchUserLogin(email as string);
   if (!userLogin) {
     userLogin = await fetchUserLogin(phoneNumber as string);
   }
   if (userLogin) {
+    await updatePerson(userLogin?.personId.toString(), {
+      email: email,
+      phoneNumber: phoneNumber,
+    });
     return userLogin?.personId;
   }
 
+  // If user does not exist, we need to create a new user.
   const userData = {
     email: email as string,
     phoneNumber: phoneNumber as string,
+    // Random Password is being generated since one is needed to create a user login in Rock.
     password: Math.random().toString(36).slice(-8), // Generate 8-char random password
     userProfile: [
       { field: "FirstName", value: firstName as string },
