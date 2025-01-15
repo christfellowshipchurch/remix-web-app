@@ -25,9 +25,9 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        h1: ["40px", { lineHeight: "120%" }], // Mobile sizes
-        h2: ["36px", { lineHeight: "120%" }],
-        h3: ["32px", { lineHeight: "120%" }],
+        h1: ["40px", { lineHeight: "120%" }], // These are mobile sizes.
+        h2: ["36px", { lineHeight: "120%" }], // See desktop-headings.ts
+        h3: ["32px", { lineHeight: "120%" }], // below for desktop.
         h4: ["24px", { lineHeight: "140%" }],
         h5: ["20px", { lineHeight: "140%" }],
         h6: ["18px", { lineHeight: "140%" }],
