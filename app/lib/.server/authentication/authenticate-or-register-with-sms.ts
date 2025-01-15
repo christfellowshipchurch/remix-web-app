@@ -2,12 +2,12 @@ import {
   createOrFindSmsLoginUserId,
   hashPassword,
   parsePhoneNumberUtil,
-} from "./smsAuthentication";
-import { AuthenticationError } from "../errorTypes";
-import { patchRockData } from "../fetchRockData";
-import { authenticateUser } from "./authenticateUser";
+} from "./sms-authentication";
+import { AuthenticationError } from "../error-types";
+import { patchRockData } from "../fetch-rock-data";
+import { authenticateUser } from "./authenticate-user";
 import { SmsAuthParams } from "./authentication.types";
-import { fetchUserLogin } from "./rockAuthentication";
+import { fetchUserLogin } from "./rock-authentication";
 
 export const authenticateOrRegisterWithSms = async ({
   pin,

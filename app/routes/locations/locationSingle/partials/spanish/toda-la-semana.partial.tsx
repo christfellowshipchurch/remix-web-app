@@ -23,6 +23,7 @@ export const TodaLaSemana = () => {
         {blockData?.map((data, index) => (
           <Link
             to={data?.actions[0]?.relatedNode?.url}
+            prefetch="intent"
             key={index}
             className="w-[90vw] overflow-hidden rounded-lg bg-white md:max-w-[340px] lg:max-w-[410px] lg:w-[410px] transition-transform duration-300 hover:-translate-y-3"
             style={{

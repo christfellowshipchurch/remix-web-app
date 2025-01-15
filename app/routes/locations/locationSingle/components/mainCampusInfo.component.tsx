@@ -179,7 +179,7 @@ export function DuringTheWeek() {
                 <p>
                   {event.time} - {event.title}
                 </p>
-                <Link to={event.url} className="pl-1">
+                <Link to={event.url} prefetch="intent" className="pl-1">
                   <Icon name="linkExternal" size={12} color="#0092BC" />
                 </Link>
               </div>
