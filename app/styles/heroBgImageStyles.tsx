@@ -2,8 +2,8 @@
 const heroBgImgStyles = (image?: string) => {
   return {
     backgroundImage: image?.includes("https")
-      ? `url(${image}&width=100)`
-      : `url(${image}`,
+      ? `url(${image})`
+      : `url(${image})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",

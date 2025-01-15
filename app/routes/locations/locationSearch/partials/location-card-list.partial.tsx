@@ -36,7 +36,7 @@ export const LocationCardList = ({
           return (
             <LocationCard
               name={campus?.name}
-              image={campus?.image}
+              image={`${campus?.image}&width=350`}
               distanceFromLocation={campus?.distanceFromLocation}
               key={index}
               link={
