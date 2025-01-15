@@ -15,6 +15,25 @@ import { CustomClearRefinements } from "../components/custom-clear-refinements.c
 import { HitComponent } from "../components/hit-component.component";
 import SectionTitle from "~/components/section-title";
 
+const CustomRefinementList = ({ attribute }: { attribute: string }) => {
+  return (
+    <RefinementList
+      classNames={{
+        list: "flex flex-col gap-3",
+        checkbox: "hidden",
+        count: "hidden",
+        labelText: "text-xl font-bold",
+        item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
+        selectedItem:
+          "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
+        label:
+          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
+      }}
+      attribute={attribute}
+    />
+  );
+};
+
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
@@ -75,54 +94,15 @@ export const GroupSearch = () => {
             </div>
             <div className="flex flex-col gap-3">
               <h3 className="heading-h6">Hubs</h3>
-              <RefinementList
-                classNames={{
-                  list: "flex flex-col gap-3",
-                  checkbox: "hidden",
-                  count: "hidden",
-                  labelText: "text-xl font-bold",
-                  item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-                  selectedItem:
-                    "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-                  label:
-                    "flex items-center justify-center w-full max-w-80 gap-2 py-2",
-                }}
-                attribute="preferences"
-              />
+              <CustomRefinementList attribute="preferences" />
             </div>
             <div className="flex flex-col gap-3">
               <h3 className="heading-h6">Types of Groups</h3>
-              <RefinementList
-                classNames={{
-                  list: "flex flex-col gap-3",
-                  checkbox: "hidden",
-                  count: "hidden",
-                  labelText: "text-xl font-bold",
-                  item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-                  selectedItem:
-                    "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-                  label:
-                    "flex items-center justify-center w-full max-w-80 gap-2 py-2",
-                }}
-                attribute="subPreferences"
-              />
+              <CustomRefinementList attribute="subPreferences" />
             </div>
             <div className="flex flex-col gap-3">
               <h3 className="heading-h6">Meeting Day</h3>
-              <RefinementList
-                classNames={{
-                  list: "flex flex-col gap-3",
-                  checkbox: "hidden",
-                  count: "hidden",
-                  labelText: "text-xl font-bold",
-                  item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-                  selectedItem:
-                    "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-                  label:
-                    "flex items-center justify-center w-full max-w-80 gap-2 py-2",
-                }}
-                attribute="meetingDay"
-              />
+              <CustomRefinementList attribute="meetingDay" />
             </div>
           </div>
 
