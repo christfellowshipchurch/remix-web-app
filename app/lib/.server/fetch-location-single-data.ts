@@ -1,6 +1,6 @@
 import { includes, lowerCase } from "lodash";
 import { getIdentifierType } from "../utils";
-import { fetchRockData } from "./fetchRockData";
+import { fetchRockData } from "./fetch-rock-data";
 import { format } from "date-fns";
 
 export const fetchCampusData = async (campusUrl: string) => {
@@ -14,14 +14,30 @@ export const fetchCampusData = async (campusUrl: string) => {
 export const fetchComingUpTitle = async (id: string) => {
   const { title } = await fetchRockData(`ContentChannelItems`, {
     $filter: `Id eq ${id}`,
-    $select: "Title",
   });
 
   return title;
 };
 
-export const fetchComingUpChildren = async (id: string) => {
+export const fetchThisWeek = async (id: string) => {
   return fetchRockData(`ContentChannelItems/GetChildren/${id}`, {
+    loadAttributes: "simple",
+  });
+};
+
+export const fetchChildrenByAssociation = async (id: string) => {
+  return fetchRockData(`ContentChannelItemAssociations`, {
+    $filter: `ContentChannelItemId eq ${id}`,
+    $select: "ChildContentChannelItemId",
+    $top: "3",
+    $orderby: "Order asc",
+    loadAttributes: "simple",
+  });
+};
+
+export const fetchContentItemById = async (id: string) => {
+  return fetchRockData(`ContentChannelItems`, {
+    $filter: `Id eq ${id}`,
     loadAttributes: "simple",
   });
 };

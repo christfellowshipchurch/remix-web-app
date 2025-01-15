@@ -1,11 +1,11 @@
 import { ActionFunction, data } from "react-router";
 import { authenticate } from "./authenticate";
-import { requestSmsPinLogin } from "./requestSmsPinLogin";
-import { authenticateSms } from "./authenticateSms";
-import { currentUser } from "./currentUser";
+import { requestSmsPinLogin } from "./request-sms-pin-login";
+import { authenticateSms } from "./authenticate-sms";
+import { currentUser } from "./current-user";
 import { userExists } from "./userExists";
 import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
-import { registerPerson } from "./registerPerson";
+import { registerPerson } from "./register-person";
 
 /**
  * In order to consolidate all of our auth route functions we decided to setup a single action function that will handle all of the different form types that we have. This will allow us to have a single route file for all of our auth routes.

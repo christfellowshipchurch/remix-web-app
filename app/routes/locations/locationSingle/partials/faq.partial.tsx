@@ -1,6 +1,6 @@
 import StyledAccordion from "~/components/styled-accordion";
 import Button from "~/primitives/button";
-import { faqData } from "~/lib/faqData";
+import { faqData } from "~/lib/faq-data.data";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 

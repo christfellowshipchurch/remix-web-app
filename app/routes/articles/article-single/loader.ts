@@ -1,9 +1,9 @@
 import type { LoaderFunction } from "react-router";
-import { fetchRockData, getImages } from "~/lib/.server/fetchRockData";
+import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { getRelatedArticlesByContentItem } from "~/lib/.server/fetchRelatedArticles";
+import { getRelatedArticlesByContentItem } from "~/lib/.server/fetch-related-articles";
 
 export type LoaderReturnType = {
   hostUrl: string;

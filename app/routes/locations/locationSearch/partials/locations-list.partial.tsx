@@ -2,7 +2,7 @@ import { kebabCase } from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "react-router";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 
 export type Campus = {
   name: string;
@@ -27,10 +27,13 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
     >
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
         {campuses?.map((campus, index) => {
-          let cfe = "";
+          let url = "";
           if (campus?.name?.includes("Español")) {
-            cfe = campus?.name.substring(25, campus?.name.length);
+            url = campus?.name.substring(25, campus?.name.length);
+          } else if (campus?.name?.includes("Online")) {
+            url = "cf-everywhere";
           }
+
           return (
             <LocationCard
               name={campus?.name}
@@ -38,17 +41,20 @@ export const Locations = ({ campuses, loading }: LocationsProps) => {
               distanceFromLocation={campus?.distanceFromLocation}
               key={index}
               link={
-                !campus?.name.includes("Español")
+                campus?.name?.includes("Online")
+                  ? `/${url}`
+                  : !campus?.name.includes("Español")
                   ? `/${kebabCase(campus?.name)}`
-                  : `/iglesia-${kebabCase(cfe)}`
+                  : `/iglesia-${kebabCase(url)}`
               }
             />
           );
         })}
       </div>
+
       {/* Prison Location */}
       <div className="mt-12">
-        <Link to="/locations/prison-locations">
+        <Link to="/locations/prison-locations" prefetch="intent">
           <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
               className="absolute size-full opacity-80"
