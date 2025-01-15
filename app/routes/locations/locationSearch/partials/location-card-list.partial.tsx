@@ -2,7 +2,6 @@ import { kebabCase } from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "react-router";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
 
 export type Campus = {
   name: string;
@@ -10,12 +9,15 @@ export type Campus = {
   distanceFromLocation?: number;
 };
 
-export type LocationsProps = {
+export type LocationCardListProps = {
   campuses: Campus[];
   loading: boolean;
 };
 
-export const Locations = ({ campuses, loading }: LocationsProps) => {
+export const LocationCardList = ({
+  campuses,
+  loading,
+}: LocationCardListProps) => {
   if (loading) {
     return <LocationsLoader />;
   }
