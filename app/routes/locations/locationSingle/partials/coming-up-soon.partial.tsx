@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router";
 import Button from "~/primitives/button";
 import { LoaderReturnType } from "../loader";
-import heroBgImgStyles from "~/styles/heroBgImageStyles";
+import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 
 export const ComingUpSoon = () => {
   const { comingUpSoon } = useLoaderData<LoaderReturnType>();
@@ -16,8 +16,10 @@ export const ComingUpSoon = () => {
         {comingUpSoon?.cards?.map((card, index) => (
           <Link
             to={card.url}
+            prefetch="intent"
             key={index}
             style={{
+              boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.25)",
               marginLeft: index === 0 ? 16 : 0,
               marginRight: index === comingUpSoon.cards.length - 1 ? 16 : 0,
               ...heroBgImgStyles(card.image),
@@ -40,7 +42,7 @@ export const ComingUpSoon = () => {
       </div>
 
       <div className="w-full flex justify-center">
-        <Button href="/events" intent="secondary" size="md">
+        <Button href={comingUpSoon?.buttonUrl} intent="secondary" size="md">
           {comingUpSoon?.buttonTitle}
         </Button>
       </div>

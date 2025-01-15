@@ -1,6 +1,6 @@
 import { data } from "react-router";
 import { isRouteErrorResponse } from "react-router";
-import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticateOrRegisterWithSms";
+import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";
 
 type AuthenticateSmsData = {
   pin: string;

@@ -1,5 +1,5 @@
 import { createImageUrlFromGuid, normalize } from "~/lib/utils";
-import { attributeProps, attributeValuesProps } from "../types/rockTypes";
+import { attributeProps, attributeValuesProps } from "../types/rock-types";
 import redis from "./redis-config";
 
 const baseUrl = `${process.env.ROCK_API}`;

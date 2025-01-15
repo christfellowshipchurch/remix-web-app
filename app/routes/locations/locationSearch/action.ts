@@ -1,5 +1,5 @@
 import { ActionFunction } from "react-router";
-import { fetchRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";
 
