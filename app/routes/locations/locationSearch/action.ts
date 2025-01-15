@@ -1,6 +1,6 @@
 import { ActionFunction } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { Campus } from "./partials/locations-list.partial";
+import { Campus } from "./partials/location-card-list.partial";
 import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";
 
 export const action: ActionFunction = async ({ request }) => {
