@@ -1,4 +1,4 @@
-import { fetchRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 
 export type ConnectCardDataType = {
   campuses: string[];

@@ -1,14 +1,16 @@
 import { LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
-import { getUserFromRequest } from "~/lib/.server/authentication/getUserFromRequest";
+import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import {
   fetchCampusData,
-  fetchComingUpChildren,
+  fetchChildrenByAssociation,
   fetchComingUpTitle,
+  fetchContentItemById,
   fetchPastorData,
   fetchPastorIdByAlias,
+  fetchThisWeek,
   fetchWeekdaySchedules,
-} from "~/lib/.server/fetchLocationSingleData";
+} from "~/lib/.server/fetch-location-single-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type dayTimes = {
@@ -54,6 +56,7 @@ export type LoaderReturnType = {
       url: string;
     }[];
     buttonTitle: string;
+    buttonUrl: string;
   };
   facebook: string;
   mapLink: string;
@@ -98,9 +101,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   // TODO: Order is not accurate
   const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
-  const comingUpChildren = await fetchComingUpChildren(comingUpSoonId);
-  const comingUpChildrenTrimmed = comingUpChildren.slice(0, 3);
-  const thisWeek = await fetchComingUpChildren("8168");
+  const childrenByAssociation = await fetchChildrenByAssociation(
+    comingUpSoonId
+  );
+  console.log(childrenByAssociation);
+
+  // TODO: Get children by ID by mapping childrenByAssociation and fetching the children by ID
+  const comingUpChildren = await Promise.all(
+    childrenByAssociation.map((child: any) =>
+      fetchContentItemById(child.childContentChannelItemId)
+    )
+  );
+
+  const thisWeek = await fetchThisWeek("8168");
   const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
 
   const {
@@ -163,7 +176,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     },
     comingUpSoon: {
       title: comingUpTitle,
-      cards: comingUpChildrenTrimmed.map((child: ContentItem) => {
+      cards: comingUpChildren.map((child: ContentItem) => {
         return {
           title: child?.title,
           description: child?.attributeValues?.summary?.value,
@@ -171,7 +184,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
           url: child.attributeValues?.url?.value,
         };
       }),
+
+      // TODO: Create the endpoints for this button (See All Events pages)
       buttonTitle: name.includes("Español") ? "Ver Más" : "See More",
+      buttonUrl: name.includes("Español")
+        ? "/events/proximamente"
+        : "/events/coming-up",
     },
     facebook,
     mapLink: mapLink?.value,

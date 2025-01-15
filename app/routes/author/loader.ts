@@ -1,5 +1,5 @@
 import { LoaderFunction } from "react-router";
-import { fetchRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/article-single/loader";
 import { AuthorArticleProps } from "./components/author-content";

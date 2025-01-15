@@ -40,6 +40,7 @@ export const LatestArticles = () => {
           <div key={i} className="flex flex-col gap-6">
             <Link
               to={`/articles/${article.attributeValues.url.value}`}
+              prefetch="intent"
               className="flex items-center gap-5 cursor-pointer"
             >
               <img src={article.image} className="size-18 object-cover" />

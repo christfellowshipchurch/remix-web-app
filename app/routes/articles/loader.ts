@@ -1,5 +1,5 @@
 import { formatDate } from "date-fns";
-import { fetchRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type ArticlesReturnType = {

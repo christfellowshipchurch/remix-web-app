@@ -23,6 +23,7 @@ export const FeaturedCard = ({ card }: { card: Event }) => {
           </p>
           <Link
             to={`/events/${card.attributeValues.url.value}`}
+            prefetch="intent"
             className="underline font-bold cursor-pointer"
           >
             Learn More
