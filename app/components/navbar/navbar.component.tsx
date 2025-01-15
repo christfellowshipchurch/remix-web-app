@@ -43,7 +43,7 @@ export function Navbar() {
           mode == "light"
             ? "relative bg-white"
             : "absolute hover:bg-white bg-transparent transition-colors duration-200"
-        } py-5 shadow-sm px-6 md:px-16 lg:px-24 xl:px-36 flex justify-between items-center font-bold`}
+        } py-5 shadow-sm flex justify-between items-center font-bold max-w-screen-content mx-auto px-6 md:px-10`}
       >
         {/* Logo */}
         <a
@@ -63,7 +63,7 @@ export function Navbar() {
         {/* Desktop view */}
         <div className="hidden md:inline">
           <NavigationMenu>
-            <NavigationMenuList className="flex items-center space-x-4 lg:space-x-10">
+            <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
               {/* Links */}
               {mainLinks.map((link) => (
                 <NavigationMenuItem key={link.title}>
@@ -73,7 +73,7 @@ export function Navbar() {
                       mode === "light"
                         ? "text-neutral-dark"
                         : "text-white group-hover:text-text"
-                    } transition-colors text-sm lg:text-base xl:text-lg`}
+                    } transition-colors xl:text-lg`}
                   >
                     <span className="hover:text-ocean">{link.title}</span>
                   </NavigationMenuLink>
@@ -86,7 +86,7 @@ export function Navbar() {
                   <NavigationMenuTrigger
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "text-sm lg:text-base xl:text-lg",
+                      "xl:text-lg",
                       `${
                         mode === "light"
                           ? "text-neutral-dark"
