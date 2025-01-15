@@ -1,6 +1,6 @@
 import { ActionFunction, data } from "react-router";
 import { ConnectFormType } from "./types";
-import { postRockData } from "~/lib/.server/fetchRockData";
+import { postRockData } from "~/lib/.server/fetch-rock-data";
 
 export const action: ActionFunction = async ({ request }) => {
   try {

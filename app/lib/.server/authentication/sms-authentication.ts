@@ -4,17 +4,17 @@
 import crypto from "crypto";
 import { parsePhoneNumber } from "awesome-phonenumber";
 
-import { AuthenticationError } from "~/lib/.server/errorTypes";
+import { AuthenticationError } from "~/lib/.server/error-types";
 import { secret } from "~/lib/.server/token";
 import { User_Auth_Status } from "~/providers/auth-provider";
 import {
   deleteRockData,
   fetchRockData,
   postRockData,
-} from "~/lib/.server/fetchRockData";
+} from "~/lib/.server/fetch-rock-data";
 import { fieldsAsObject } from "~/lib/utils";
 import { sendSms } from "~/lib/.server/twilio";
-import { createUserProfile, fetchUserLogin } from "./rockAuthentication";
+import { createUserProfile, fetchUserLogin } from "./rock-authentication";
 import { SmsPinResult } from "./authentication.types";
 import { checkUserExists } from "~/routes/auth/userExists";
 

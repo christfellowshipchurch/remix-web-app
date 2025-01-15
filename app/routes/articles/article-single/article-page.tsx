@@ -15,11 +15,9 @@ export const ArticlePage: React.FC = () => {
       <section className="bg-white">
         {/* TODO: Fix Error */}
         <ArticleHero {...data} />
-        <div className="align-center mx-auto flex w-full flex-col items-center border-y border-solid border-slate-100">
-          <ArticleContent htmlContent={data.content} />
-          <ArticleNewsletter />
-          <RelatedArticles />
-        </div>
+        <ArticleContent htmlContent={data.content} />
+        <ArticleNewsletter />
+        <RelatedArticles />
       </section>
     </>
   );

@@ -2,16 +2,16 @@
  * This file contains our main authentication functions for Rock.
  */
 import { checkUserExists } from "~/routes/auth/userExists";
-import { AuthenticationError, RockAPIError } from "../errorTypes";
-import { fetchRockData, postRockData } from "../fetchRockData";
-import { createPerson } from "../rockPerson";
+import { AuthenticationError, RockAPIError } from "../error-types";
+import { fetchRockData, postRockData } from "../fetch-rock-data";
+import { createPerson } from "../rock-person";
 import { RockUserLogin } from "./authentication.types";
 import { fieldsAsObject } from "~/lib/utils";
-import { authenticateUser } from "./authenticateUser";
+import { authenticateUser } from "./authenticate-user";
 import {
   createPhoneNumberInRock,
   parsePhoneNumberUtil,
-} from "./smsAuthentication";
+} from "./sms-authentication";
 
 export const fetchUserCookie = async (
   Username: string,

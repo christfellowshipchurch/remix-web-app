@@ -1,5 +1,5 @@
 import { LoaderFunction } from "react-router";
-import { fetchRockData } from "~/lib/.server/fetchRockData";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { ConnectCardLoaderReturnType } from "./types";
 
 export const loader: LoaderFunction = async () => {
