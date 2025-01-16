@@ -85,15 +85,14 @@ export const createOrFindSmsLoginUserId = async ({
 }): Promise<string> => {
   const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
 
-  const existingPhoneNumbers = await fetchRockData(
-    "PhoneNumbers",
-    {
+  const existingPhoneNumbers = await fetchRockData({
+    endpoint: "PhoneNumbers",
+    queryParams: {
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    undefined,
-    true // no cache
-  );
+    noCache: true,
+  });
 
   /** if the phone number in Rock already is attached to a person we will just return that person instead */
   if (existingPhoneNumbers.length > 0) {

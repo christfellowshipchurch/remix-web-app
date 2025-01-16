@@ -33,15 +33,14 @@ const findPersonByEmailAndName = async (
   lastName: string,
   email: string
 ) => {
-  return await fetchRockData(
-    "People",
-    {
+  return await fetchRockData({
+    endpoint: "People",
+    queryParams: {
       $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
       $select: "Id",
     },
-    undefined,
-    true // no cache
-  );
+    noCache: true,
+  });
 };
 
 const findPersonByPhoneAndName = async (
@@ -50,15 +49,14 @@ const findPersonByPhoneAndName = async (
   phoneNumber: string
 ) => {
   const { significantNumber } = parsePhoneNumberUtil(phoneNumber);
-  const existingPhoneNumbers = await fetchRockData(
-    "PhoneNumbers",
-    {
+  const existingPhoneNumbers = await fetchRockData({
+    endpoint: "PhoneNumbers",
+    queryParams: {
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    undefined,
-    true // no cache
-  );
+    noCache: true,
+  });
 
   // Convert to array if single object
   const phoneEntries = Array.isArray(existingPhoneNumbers)
@@ -75,15 +73,14 @@ const findPersonByPhoneAndName = async (
   for (const phoneEntry of phoneEntries) {
     if (!phoneEntry.personId) continue;
 
-    const personDetails = await fetchRockData(
-      "People",
-      {
+    const personDetails = await fetchRockData({
+      endpoint: "People",
+      queryParams: {
         $filter: `Id eq ${phoneEntry.personId}`,
         $select: "FirstName, LastName",
       },
-      undefined,
-      true // no cache
-    );
+      noCache: true,
+    });
 
     const namesMatch =
       personDetails.firstName?.toLowerCase() === firstName.toLowerCase() &&
@@ -164,15 +161,14 @@ export const action: ActionFunction = async ({ request }) => {
     const formData = Object.fromEntries(await request.formData());
 
     // Get group ID
-    const groupId = await fetchRockData(
-      "Groups",
-      {
+    const groupId = await fetchRockData({
+      endpoint: "Groups",
+      queryParams: {
         $filter: `Name eq '${formData.groupName}'`,
         $select: "Id",
       },
-      undefined,
-      true // no cache
-    );
+      noCache: true,
+    });
 
     // Get or create person
     const personId = await getPersonIdFromGroupForm({

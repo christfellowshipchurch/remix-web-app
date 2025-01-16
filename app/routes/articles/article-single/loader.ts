@@ -22,15 +22,15 @@ export type LoaderReturnType = {
 };
 
 const fetchArticleData = async (articlePath: string) => {
-  const rockData = await fetchRockData(
-    "ContentChannelItems/GetByAttributeValue",
-    {
+  const rockData = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
+    queryParams: {
       attributeKey: "Url",
       $filter: "Status eq '2' and ContentChannelId eq 43",
       value: articlePath,
       loadAttributes: "simple",
-    }
-  );
+    },
+  });
 
   if (rockData.length > 1) {
     console.error(
@@ -43,17 +43,23 @@ const fetchArticleData = async (articlePath: string) => {
 };
 
 const fetchAuthorId = async (authorId: string) => {
-  return fetchRockData("PersonAlias", {
-    $filter: `Guid eq guid'${authorId}'`,
-    $select: "PersonId",
+  return fetchRockData({
+    endpoint: "PersonAlias",
+    queryParams: {
+      $filter: `Guid eq guid'${authorId}'`,
+      $select: "PersonId",
+    },
   });
 };
 
 export const fetchAuthorData = async ({ authorId }: { authorId: string }) => {
-  return fetchRockData("People", {
-    $filter: `Id eq ${authorId}`,
-    $expand: "Photo",
-    loadAttributes: "simple",
+  return fetchRockData({
+    endpoint: "People",
+    queryParams: {
+      $filter: `Id eq ${authorId}`,
+      $expand: "Photo",
+      loadAttributes: "simple",
+    },
   });
 };
 
