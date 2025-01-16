@@ -91,7 +91,7 @@ export const createOrFindSmsLoginUserId = async ({
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    noCache: true,
+    cache: false,
   });
 
   /** if the phone number in Rock already is attached to a person we will just return that person instead */

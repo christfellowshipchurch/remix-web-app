@@ -79,7 +79,7 @@ export const getCurrentPerson = async (cookie: string): Promise<any> => {
         "Authorization-Token": "",
         Cookie: cookie,
       },
-      noCache: true,
+      cache: false,
     });
 
     if (!person) {
@@ -182,7 +182,7 @@ export const fetchUserLogin = async (
       $filter: `UserName eq '${identity}'`,
       $top: "1",
     },
-    noCache: true,
+    cache: false,
   });
 
   // If no login exists for the identity, return null
@@ -242,7 +242,7 @@ export const registerPersonWithEmail = async ({
         $select: "PersonId",
         $filter: `Number eq '${significantNumber}'`,
       },
-      noCache: true,
+      cache: false,
     });
 
     if (existingPhoneNumbers) {

@@ -37,7 +37,7 @@ export const updatePerson = async (
     queryParams: {
       $select: "Email",
     },
-    noCache: true, // no cache
+    cache: false, // no cache
   });
   if (!emailInRock.email) {
     await patchRockData(`People/${id}`, {
@@ -56,7 +56,7 @@ export const updatePerson = async (
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    noCache: true, // no cache
+    cache: false, // no cache
   });
 
   if (!existingPhoneNumbers || existingPhoneNumbers.length === 0) {
@@ -129,7 +129,7 @@ export const getFromId = async (
       $expand: "Photo",
       $filter: `Id eq ${id}${loadAttributes ? "&loadAttributes=simple" : ""}`,
     },
-    noCache: true, //no cache
+    cache: false, //no cache
   });
   return person[0];
 };
