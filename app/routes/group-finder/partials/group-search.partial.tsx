@@ -74,7 +74,7 @@ export const GroupSearch = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Refinement List */}
-          <div className="flex flex-col gap-12 bg-white p-4 frounded-lg shadow-md col-span-1">
+          <div className="flex flex-col gap-12 bg-white p-4 frounded-lg shadow-md col-span-1 h-fit">
             <div className="flex flex-col gap-3 text-black">
               {/* TODO: Update styling  */}
               <CustomClearRefinements />
