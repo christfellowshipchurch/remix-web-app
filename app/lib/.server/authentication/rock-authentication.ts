@@ -200,13 +200,16 @@ export const createUserLogin = async (
   personId: number
 ) => {
   try {
-    return await postRockData("UserLogins", {
-      PersonId: personId,
-      EntityTypeId: 27, // A default setting we use in Rock-person-creation-flow
-      UserName: identity,
-      isConfirmed: true,
-      PlainTextPassword: password,
-      LastLoginDateTime: new Date(),
+    return await postRockData({
+      endpoint: "UserLogins",
+      body: {
+        PersonId: personId,
+        EntityTypeId: 27, // A default setting we use in Rock-person-creation-flow
+        UserName: identity,
+        isConfirmed: true,
+        PlainTextPassword: password,
+        LastLoginDateTime: new Date(),
+      },
     });
   } catch (err) {
     throw new Error("Unable to create user login!");

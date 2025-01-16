@@ -59,13 +59,16 @@ export const createPhoneNumberInRock = async ({
   countryCode: number;
 }): Promise<boolean> => {
   try {
-    await postRockData("PhoneNumbers", {
-      PersonId: personId,
-      Number: phoneNumber,
-      CountryCode: countryCode,
-      IsMessagingEnabled: true,
-      IsSystem: false,
-      NumberTypeValueId: 13,
+    await postRockData({
+      endpoint: "PhoneNumbers",
+      body: {
+        PersonId: personId,
+        Number: phoneNumber,
+        CountryCode: countryCode,
+        IsMessagingEnabled: true,
+        IsSystem: false,
+        NumberTypeValueId: 13,
+      },
     });
     return true;
   } catch (error) {
@@ -143,12 +146,15 @@ export const requestSmsLogin = async (
     }
   }
 
-  const createNewLogin = await postRockData(`UserLogins`, {
-    UserName: significantNumber,
-    PlainTextPassword: password,
-    EntityTypeId: 27,
-    isConfirmed: true,
-    ...personOptions,
+  const createNewLogin = await postRockData({
+    endpoint: "UserLogins",
+    body: {
+      UserName: significantNumber,
+      PlainTextPassword: password,
+      EntityTypeId: 27,
+      isConfirmed: true,
+      ...personOptions,
+    },
   });
 
   // Create new login should return an ID

@@ -30,8 +30,11 @@ export const authenticateOrRegisterWithSms = async ({
       email,
     });
 
-    await patchRockData(`UserLogins/${userLogin?.id}`, {
-      PersonId: personId,
+    await patchRockData({
+      endpoint: `UserLogins/${userLogin?.id}`,
+      body: {
+        PersonId: personId,
+      },
     });
   }
 

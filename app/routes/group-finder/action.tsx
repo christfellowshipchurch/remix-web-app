@@ -181,10 +181,10 @@ export const action: ActionFunction = async ({ request }) => {
     });
 
     // Submit contact form
-    await postRockData(
-      `Workflows/LaunchWorkflow/0?workflowTypeId=654&workflowName=Add%20To%20Group/Class`,
-      { GroupId: groupId.id, PersonId: personId } as ContactFormType
-    );
+    await postRockData({
+      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=654&workflowName=Add%20To%20Group/Class`,
+      body: { GroupId: groupId.id, PersonId: personId },
+    });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

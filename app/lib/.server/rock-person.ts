@@ -20,10 +20,13 @@ const RockGenderMap: { [key in Gender]: number } = {
 
 export const createPerson = async (profile: any | any) => {
   const inputProfileFields = await mapInputFieldsToRock(profile);
-  return await postRockData("People", {
-    Gender: 0, // required by Rock. Listed first so it can be overridden.
-    ...inputProfileFields,
-    IsSystem: false, // required by rock
+  return await postRockData({
+    endpoint: "People",
+    body: {
+      Gender: 0,
+      ...inputProfileFields,
+      IsSystem: false,
+    },
   });
 };
 
@@ -40,8 +43,11 @@ export const updatePerson = async (
     cache: false, // no cache
   });
   if (!emailInRock.email) {
-    await patchRockData(`People/${id}`, {
-      Email: fields.email,
+    await patchRockData({
+      endpoint: `People/${id}`,
+      body: {
+        Email: fields.email,
+      },
     });
   }
 
