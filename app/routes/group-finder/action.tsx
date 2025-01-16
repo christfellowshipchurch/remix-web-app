@@ -7,6 +7,7 @@ import {
   createOrFindSmsLoginUserId,
   parsePhoneNumberUtil,
 } from "~/lib/.server/authentication/sms-authentication";
+import { isObject } from "lodash";
 
 // Types
 interface PersonFormData {
@@ -32,10 +33,15 @@ const findPersonByEmailAndName = async (
   lastName: string,
   email: string
 ) => {
-  return await fetchRockData("People", {
-    $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
-    $select: "Id",
-  });
+  return await fetchRockData(
+    "People",
+    {
+      $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
+      $select: "Id",
+    },
+    undefined,
+    true // no cache
+  );
 };
 
 const findPersonByPhoneAndName = async (
@@ -51,22 +57,43 @@ const findPersonByPhoneAndName = async (
       $filter: `Number eq '${significantNumber}'`,
     },
     undefined,
-    true
+    true // no cache
   );
 
-  for (const phoneEntry of existingPhoneNumbers) {
-    const personDetails = await fetchRockData("People", {
-      $filter: `Id eq ${phoneEntry.personId}`,
-      $select: "FirstName, LastName",
-    });
+  // Convert to array if single object
+  const phoneEntries = Array.isArray(existingPhoneNumbers)
+    ? existingPhoneNumbers
+    : isObject(existingPhoneNumbers)
+    ? [existingPhoneNumbers]
+    : [];
 
-    if (
-      personDetails.firstName === firstName &&
-      personDetails.lastName === lastName
-    ) {
-      return { ...phoneEntry, found: true };
+  if (phoneEntries.length === 0) {
+    return { found: false };
+  }
+
+  // Check each phone entry
+  for (const phoneEntry of phoneEntries) {
+    if (!phoneEntry.personId) continue;
+
+    const personDetails = await fetchRockData(
+      "People",
+      {
+        $filter: `Id eq ${phoneEntry.personId}`,
+        $select: "FirstName, LastName",
+      },
+      undefined,
+      true // no cache
+    );
+
+    const namesMatch =
+      personDetails.firstName?.toLowerCase() === firstName.toLowerCase() &&
+      personDetails.lastName?.toLowerCase() === lastName.toLowerCase();
+
+    if (namesMatch) {
+      return { personId: phoneEntry.personId, found: true };
     }
   }
+
   return { found: false };
 };
 
@@ -92,9 +119,16 @@ const getPersonIdFromGroupForm = async ({
     lastName,
     email
   );
-  if (emailExists) {
-    await updatePerson(emailExists.id.toString(), { email, phoneNumber });
-    return emailExists.id;
+  let existingPerson = emailExists;
+
+  // Ensure existingPerson is an object
+  if (Array.isArray(emailExists) && emailExists.length > 0) {
+    existingPerson = emailExists[0];
+  }
+
+  if (existingPerson && existingPerson.id) {
+    await updatePerson(existingPerson.id.toString(), { email, phoneNumber });
+    return existingPerson.id;
   }
 
   // Check for existing person by phone and name
@@ -103,6 +137,7 @@ const getPersonIdFromGroupForm = async ({
     lastName,
     phoneNumber
   );
+
   if (phoneExists.found) {
     await updatePerson(phoneExists.personId.toString(), { email, phoneNumber });
     return phoneExists.personId.toString();
@@ -129,10 +164,15 @@ export const action: ActionFunction = async ({ request }) => {
     const formData = Object.fromEntries(await request.formData());
 
     // Get group ID
-    const groupId = await fetchRockData("Groups", {
-      $filter: `Name eq '${formData.groupName}'`,
-      $select: "Id",
-    });
+    const groupId = await fetchRockData(
+      "Groups",
+      {
+        $filter: `Name eq '${formData.groupName}'`,
+        $select: "Id",
+      },
+      undefined,
+      true // no cache
+    );
 
     // Get or create person
     const personId = await getPersonIdFromGroupForm({
