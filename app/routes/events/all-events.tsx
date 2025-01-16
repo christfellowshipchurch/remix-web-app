@@ -9,7 +9,7 @@ export function AllEventsPage() {
         imagePath="../app/assets/images/events-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       />
-      <div className="flex-col flex gap-8 max-w-xxl mx-8 py-28">
+      <div className="flex-col flex gap-8 max-w-6xl mx-8 py-28">
         <FeaturedEvents />
         <EventsForYou />
       </div>
