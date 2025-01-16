@@ -1,6 +1,10 @@
 import { createImageUrlFromGuid, normalize } from "~/lib/utils";
 import { attributeProps, attributeValuesProps } from "../types/rock-types";
 import redis from "./redis-config";
+interface RockDataRequest {
+  endpoint: string;
+  body: Record<string, unknown>;
+}
 
 const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {
@@ -100,12 +104,12 @@ export const deleteRockData = async (endpoint: string) => {
 };
 
 /**
- *
- * @param endpoint - Rock endpoint to post to
- * @param body - the body of the post request
+ * Posts data to a Rock endpoint
+ * @param params.endpoint - Rock endpoint to post to
+ * @param params.body - the body of the post request
  * @returns response body as JSON
  */
-export const postRockData = async (endpoint: string, body: any) => {
+export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
   try {
     const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
       method: "POST",
@@ -135,12 +139,12 @@ export const postRockData = async (endpoint: string, body: any) => {
 };
 
 /**
- *
- * @param endpoint - Rock endpoint to patch
- * @param body - the body of the patch request
- * @returns response body as JSON
+ * Updates data at a Rock endpoint using PATCH
+ * @param params.endpoint - Rock endpoint to patch
+ * @param params.body - the body of the patch request
+ * @returns response status code
  */
-export const patchRockData = async (endpoint: string, body: any) => {
+export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
     method: "PATCH",
     headers: {
