@@ -1,37 +1,49 @@
 import { ActionFunction, data } from "react-router";
 import { ContactFormType } from "./types";
+import { fetchRockData, postRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchUserLogin } from "~/lib/.server/authentication/rock-authentication";
+import { updatePerson } from "~/lib/.server/rock-person";
 import {
-  fetchRockData,
-  patchRockData,
-  postRockData,
-} from "~/lib/.server/fetch-rock-data";
-import { AUTH_TOKEN_KEY } from "~/providers/auth-provider";
-import {
-  fetchUserLogin,
-  getCurrentPerson,
-  registerPersonWithEmail,
-} from "~/lib/.server/authentication/rock-authentication";
-import { registerToken } from "~/lib/.server/token";
-import { decrypt } from "~/lib/.server/decrypt";
-import { createPhoneNumberInRock } from "~/lib/.server/authentication/sms-authentication";
-import { parsePhoneNumberUtil } from "~/lib/.server/authentication/sms-authentication";
+  createOrFindSmsLoginUserId,
+  parsePhoneNumberUtil,
+} from "~/lib/.server/authentication/sms-authentication";
 
-const updatePerson = async (id: string, data: any) => {
-  // Update User email if user does not have one in the system
-  const emailInSystem = await fetchRockData(`People/${id}`, {
-    $select: "Email",
-  });
-  if (!emailInSystem.email) {
-    await patchRockData(`People/${id}`, {
-      Email: data.email,
-    });
+// Types
+interface PersonFormData {
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  gender?: string;
+  birthDate: string;
+}
+
+// Helper functions
+const findUserByLogin = async (email: string, phoneNumber: string) => {
+  let userLogin = await fetchUserLogin(email);
+  if (!userLogin) {
+    userLogin = await fetchUserLogin(phoneNumber);
   }
+  return userLogin;
+};
 
-  // Create Phone Number in Rock
-  const { significantNumber, countryCode } = parsePhoneNumberUtil(
-    data.phoneNumber
-  );
+const findPersonByEmailAndName = async (
+  firstName: string,
+  lastName: string,
+  email: string
+) => {
+  return await fetchRockData("People", {
+    $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
+    $select: "Id",
+  });
+};
 
+const findPersonByPhoneAndName = async (
+  firstName: string,
+  lastName: string,
+  phoneNumber: string
+) => {
+  const { significantNumber } = parsePhoneNumberUtil(phoneNumber);
   const existingPhoneNumbers = await fetchRockData(
     "PhoneNumbers",
     {
@@ -39,125 +51,108 @@ const updatePerson = async (id: string, data: any) => {
       $filter: `Number eq '${significantNumber}'`,
     },
     undefined,
-    true // no cache
+    true
   );
 
-  if (!existingPhoneNumbers || existingPhoneNumbers.length === 0) {
-    if (!countryCode) {
-      throw new Error("Country code is required for creating phone number");
-    }
-    await createPhoneNumberInRock({
-      personId: id,
-      phoneNumber: data.phoneNumber,
-      countryCode,
+  for (const phoneEntry of existingPhoneNumbers) {
+    const personDetails = await fetchRockData("People", {
+      $filter: `Id eq ${phoneEntry.personId}`,
+      $select: "FirstName, LastName",
     });
+
+    if (
+      personDetails.firstName === firstName &&
+      personDetails.lastName === lastName
+    ) {
+      return { ...phoneEntry, found: true };
+    }
   }
+  return { found: false };
 };
 
-const getPersonId = async ({
-  token,
+// Main functions
+const getPersonIdFromGroupForm = async ({
   email,
   phoneNumber,
   firstName,
   lastName,
   gender,
   birthDate,
-}: {
-  token?: string;
-  email?: string;
-  phoneNumber?: string;
-  firstName?: string;
-  lastName?: string;
-  gender?: string;
-  birthDate?: string;
-}) => {
-  // Checking CurrentUser - If we will not have login on our platform this can be removed.
-  if (token) {
-    const { rockCookie } = registerToken(decrypt(token as string));
-    if (rockCookie) {
-      const { id } = await getCurrentPerson(rockCookie);
-      await updatePerson(id, { email: email, phoneNumber: phoneNumber });
-      return id;
-    }
-  }
-
-  // Checking UserLogins to see if the user exists and get the Id
-  let userLogin = await fetchUserLogin(email as string);
-  if (!userLogin) {
-    userLogin = await fetchUserLogin(phoneNumber as string);
-  }
+}: PersonFormData): Promise<string> => {
+  // Check for existing user login
+  const userLogin = await findUserByLogin(email, phoneNumber);
   if (userLogin) {
-    await updatePerson(userLogin?.personId.toString(), {
-      email: email,
-      phoneNumber: phoneNumber,
-    });
-    return userLogin?.personId;
+    await updatePerson(userLogin.personId.toString(), { email, phoneNumber });
+    return userLogin.personId.toString();
   }
 
-  // If user does not exist, we need to create a new user.
+  // Check for existing person by email and name
+  const emailExists = await findPersonByEmailAndName(
+    firstName,
+    lastName,
+    email
+  );
+  if (emailExists) {
+    await updatePerson(emailExists.id.toString(), { email, phoneNumber });
+    return emailExists.id;
+  }
+
+  // Check for existing person by phone and name
+  const phoneExists = await findPersonByPhoneAndName(
+    firstName,
+    lastName,
+    phoneNumber
+  );
+  if (phoneExists.found) {
+    await updatePerson(phoneExists.personId.toString(), { email, phoneNumber });
+    return phoneExists.personId.toString();
+  }
+
+  // Create new user if no matches found
   const userData = {
-    email: email as string,
-    phoneNumber: phoneNumber as string,
-    // Random Password is being generated since one is needed to create a user login in Rock.
-    password: Math.random().toString(36).slice(-8), // Generate 8-char random password
+    email,
+    phoneNumber,
     userProfile: [
-      { field: "FirstName", value: firstName as string },
-      { field: "LastName", value: lastName as string },
-      { field: "BirthDate", value: birthDate as string },
-      { field: "Gender", value: gender as string },
+      { field: "FirstName", value: firstName },
+      { field: "LastName", value: lastName },
+      { field: "BirthDate", value: birthDate },
+      { field: "Gender", value: gender },
     ],
   };
-  const { personId } = await registerPersonWithEmail(userData);
-  return personId.toString() as string;
+
+  return (await createOrFindSmsLoginUserId(userData)).toString();
 };
 
+// Action
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
 
-    const email = formData.email?.toString();
-    const phoneNumber = formData.phoneNumber?.toString();
-    const firstName = formData.firstName?.toString();
-    const lastName = formData.lastName?.toString();
-    const gender = formData.gender?.toString();
-    const birthDate = formData.birthDate?.toString();
-    const groupName = formData.groupName?.toString();
-
-    const token = request.headers
-      .get("Cookie")
-      ?.match(new RegExp(`${AUTH_TOKEN_KEY}=([^;]+)`))?.[1];
-
-    // Fetch GroupId by it's name
+    // Get group ID
     const groupId = await fetchRockData("Groups", {
-      $filter: `Name eq '${groupName}'`,
+      $filter: `Name eq '${formData.groupName}'`,
       $select: "Id",
     });
 
-    const personId = await getPersonId({
-      token,
-      email,
-      phoneNumber,
-      firstName,
-      lastName,
-      gender,
-      birthDate,
+    // Get or create person
+    const personId = await getPersonIdFromGroupForm({
+      email: formData.email?.toString(),
+      phoneNumber: formData.phoneNumber?.toString(),
+      firstName: formData.firstName?.toString(),
+      lastName: formData.lastName?.toString(),
+      gender: formData.gender?.toString(),
+      birthDate: formData.birthDate?.toString(),
     });
 
-    const contactFormSubmission: ContactFormType = {
-      GroupId: groupId.id as string,
-      PersonId: personId as string,
-    };
-
+    // Submit contact form
     await postRockData(
       `Workflows/LaunchWorkflow/0?workflowTypeId=654&workflowName=Add%20To%20Group/Class`,
-      contactFormSubmission
+      { GroupId: groupId.id, PersonId: personId } as ContactFormType
     );
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     if (error instanceof Error) {

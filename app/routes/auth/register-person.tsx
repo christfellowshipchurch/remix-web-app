@@ -20,8 +20,10 @@ export const registerPerson = async ({
   switch (registrationType) {
     case "sms":
       try {
-        const token = await authenticateOrRegisterWithSms(registrationData);
-        return new Response(JSON.stringify({ encryptedToken: token }), {
+        const { encryptedToken } = await authenticateOrRegisterWithSms(
+          registrationData
+        );
+        return new Response(JSON.stringify({ encryptedToken }), {
           status: 200,
           headers: {
             "Content-Type": "application/json",
