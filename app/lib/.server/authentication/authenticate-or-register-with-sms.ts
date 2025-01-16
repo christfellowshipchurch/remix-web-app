@@ -43,5 +43,5 @@ export const authenticateOrRegisterWithSms = async ({
     password as string
   );
 
-  return encryptedToken;
+  return { encryptedToken, personId: userLogin.personId };
 };
