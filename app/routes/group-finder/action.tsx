@@ -32,10 +32,15 @@ const findPersonByEmailAndName = async (
   lastName: string,
   email: string
 ) => {
-  return await fetchRockData("People", {
-    $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
-    $select: "Id",
-  });
+  return await fetchRockData(
+    "People",
+    {
+      $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
+      $select: "Id",
+    },
+    undefined,
+    true // no cache
+  );
 };
 
 const findPersonByPhoneAndName = async (
@@ -51,14 +56,19 @@ const findPersonByPhoneAndName = async (
       $filter: `Number eq '${significantNumber}'`,
     },
     undefined,
-    true
+    true // no cache
   );
 
   for (const phoneEntry of existingPhoneNumbers) {
-    const personDetails = await fetchRockData("People", {
-      $filter: `Id eq ${phoneEntry.personId}`,
-      $select: "FirstName, LastName",
-    });
+    const personDetails = await fetchRockData(
+      "People",
+      {
+        $filter: `Id eq ${phoneEntry.personId}`,
+        $select: "FirstName, LastName",
+      },
+      undefined,
+      true // no cache
+    );
 
     if (
       personDetails.firstName === firstName &&
@@ -129,10 +139,15 @@ export const action: ActionFunction = async ({ request }) => {
     const formData = Object.fromEntries(await request.formData());
 
     // Get group ID
-    const groupId = await fetchRockData("Groups", {
-      $filter: `Name eq '${formData.groupName}'`,
-      $select: "Id",
-    });
+    const groupId = await fetchRockData(
+      "Groups",
+      {
+        $filter: `Name eq '${formData.groupName}'`,
+        $select: "Id",
+      },
+      undefined,
+      true // no cache
+    );
 
     // Get or create person
     const personId = await getPersonIdFromGroupForm({
