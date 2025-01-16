@@ -7,6 +7,7 @@ import {
   createOrFindSmsLoginUserId,
   parsePhoneNumberUtil,
 } from "~/lib/.server/authentication/sms-authentication";
+import { isObject } from "lodash";
 
 // Types
 interface PersonFormData {
@@ -59,7 +60,21 @@ const findPersonByPhoneAndName = async (
     true // no cache
   );
 
-  for (const phoneEntry of existingPhoneNumbers) {
+  // Convert to array if single object
+  const phoneEntries = Array.isArray(existingPhoneNumbers)
+    ? existingPhoneNumbers
+    : isObject(existingPhoneNumbers)
+    ? [existingPhoneNumbers]
+    : [];
+
+  if (phoneEntries.length === 0) {
+    return { found: false };
+  }
+
+  // Check each phone entry
+  for (const phoneEntry of phoneEntries) {
+    if (!phoneEntry.personId) continue;
+
     const personDetails = await fetchRockData(
       "People",
       {
@@ -70,13 +85,15 @@ const findPersonByPhoneAndName = async (
       true // no cache
     );
 
-    if (
-      personDetails.firstName === firstName &&
-      personDetails.lastName === lastName
-    ) {
-      return { ...phoneEntry, found: true };
+    const namesMatch =
+      personDetails.firstName?.toLowerCase() === firstName.toLowerCase() &&
+      personDetails.lastName?.toLowerCase() === lastName.toLowerCase();
+
+    if (namesMatch) {
+      return { personId: phoneEntry.personId, found: true };
     }
   }
+
   return { found: false };
 };
 
@@ -102,9 +119,16 @@ const getPersonIdFromGroupForm = async ({
     lastName,
     email
   );
-  if (emailExists) {
-    await updatePerson(emailExists.id.toString(), { email, phoneNumber });
-    return emailExists.id;
+  let existingPerson = emailExists;
+
+  // Ensure existingPerson is an object
+  if (Array.isArray(emailExists) && emailExists.length > 0) {
+    existingPerson = emailExists[0];
+  }
+
+  if (existingPerson && existingPerson.id) {
+    await updatePerson(existingPerson.id.toString(), { email, phoneNumber });
+    return existingPerson.id;
   }
 
   // Check for existing person by phone and name
@@ -113,6 +137,7 @@ const getPersonIdFromGroupForm = async ({
     lastName,
     phoneNumber
   );
+
   if (phoneExists.found) {
     await updatePerson(phoneExists.personId.toString(), { email, phoneNumber });
     return phoneExists.personId.toString();
