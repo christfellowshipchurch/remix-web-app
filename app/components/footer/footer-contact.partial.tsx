@@ -7,9 +7,9 @@ const SideDivider = () => (
 
 export const ContactInfo = () => {
   return (
-    <div className="flex flex-col items-center lg:flex-row py-12 lg:gap-6 xl:gap-10">
+    <div className="flex flex-col items-center lg:flex-row py-12 lg:gap-4 xl:gap-10">
       {/* Call */}
-      <div className="flex items-center w-full pb-6 lg:pb-0 gap-4 lg:justify-start">
+      <div className="flex items-center justify-center w-full pb-6 lg:pb-0 gap-4 ">
         <div className="min-w-12">
           <Icon name="call" size={50} color="#D0D0CE" />
         </div>
@@ -22,7 +22,7 @@ export const ContactInfo = () => {
       </div>
       <SideDivider />
       {/* Email */}
-      <div className="flex items-center w-full gap-4 border-y py-6 lg:py-0 lg:border-y-0 border-[#D9D9D9]/30 lg:justify-start">
+      <div className="flex items-center justify-center w-full gap-4 border-y py-6 lg:py-0 lg:border-y-0 border-[#D9D9D9]/30">
         <div className="min-w-12">
           <Icon name="envelope" size={50} color="#D0D0CE" />
         </div>
@@ -30,7 +30,7 @@ export const ContactInfo = () => {
           <h2 className="text-lg font-medium text-[#D0D0CE]">Email Us</h2>
           <a
             href="mailto:hello@christfellowship.church"
-            className={`${linkStyle} w-full max-w-[324px]`}
+            className={`${linkStyle} w-full`}
           >
             hello@christfellowship.church
           </a>
@@ -38,7 +38,7 @@ export const ContactInfo = () => {
       </div>
       <SideDivider />
       {/* Location */}
-      <div className="flex items-center w-full gap-4 pt-6 lg:pt-0 lg:justify-start lg:w-full lg:min-w-[408px]">
+      <div className="flex items-center justify-center w-full gap-4 pt-6 lg:pt-0 lg:w-full lg:min-w-[320px] ">
         <div className="min-w-12">
           <Icon name="map" size={50} color="#D0D0CE" />
         </div>
@@ -49,7 +49,8 @@ export const ContactInfo = () => {
             href="https://goo.gl/maps/Uv6zB3aFzr8pkfzz9"
             className={linkStyle}
           >
-            5343 Northlake Blvd <br className="hidden xl:block" /> Palm Beach
+            5343 Northlake Blvd{" "}
+            <br className="hidden sm:block md:hidden lg:block" /> Palm Beach
             Gardens, FL 33418
           </a>
         </div>

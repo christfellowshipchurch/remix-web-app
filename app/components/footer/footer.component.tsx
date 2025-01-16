@@ -8,14 +8,16 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="flex flex-col items-center w-full bg-navy px-4 max-w-screen-content">
-      <div className="flex flex-col tems-center w-full max-w-[95vw] xl:max-w-[1480px] relative mx-4">
-        <div className="absolute w-full h-4 bg-ocean -top-2"></div>
+    <footer className="flex flex-col items-center w-full bg-navy px-4">
+      <div className="flex flex-col tems-center w-full max-w-screen-content px-6 md:px-10 mx-4">
+        <div className="relative w-full">
+          <div className="absolute w-full h-4 bg-ocean -top-2" />
+        </div>
         {/* Contact Info */}
         <ContactInfo />
 
         {/* Info Section */}
-        <div className="w-full grid-cols-2 border-t border-[#417890] justify-between py-14 text-lg text-[#D0D0CE] grid md:grid-cols-5 gap-y-8">
+        <div className="w-full border-t border-[#417890] justify-between py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-5 gap-y-8">
           <div className="flex flex-col items-center md:items-start gap-8 col-span-2 md:col-span-1 mb-12">
             <img
               src="../app/assets/light-logo.png"
