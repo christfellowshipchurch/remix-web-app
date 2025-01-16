@@ -8,8 +8,8 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="flex flex-col items-center w-full bg-navy px-4">
-      <div className="flex flex-col tems-center w-full max-w-screen-content px-6 md:px-10 mx-4">
+    <footer className="flex flex-col items-center w-full bg-navy">
+      <div className="flex flex-col tems-center w-full max-w-screen-content px-5 md:px-10">
         <div className="relative w-full">
           <div className="absolute w-full h-4 bg-ocean -top-2" />
         </div>
@@ -17,8 +17,8 @@ export const Footer = () => {
         <ContactInfo />
 
         {/* Info Section */}
-        <div className="w-full border-t border-[#417890] justify-between py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-5 gap-y-8">
-          <div className="flex flex-col items-center md:items-start gap-8 col-span-2 md:col-span-1 mb-12">
+        <div className="w-full border-t border-[#417890] justify-between py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-5 gap-y-14 md:gap-y-8">
+          <div className="flex flex-col items-center md:items-start gap-8 col-span-2 md:col-span-1">
             <img
               src="../app/assets/light-logo.png"
               alt="Christ Fellowship"
@@ -103,7 +103,7 @@ export const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="flex justify-center w-full border-t py-8 text-[#D0D0CE] border-[#417890]">
+      <div className="flex justify-center w-full border-t py-8 text-xs md:text-base text-[#D0D0CE] border-[#417890]">
         <h4>© {year} Christ Fellowship Church. All Rights Reserved</h4>
       </div>
     </footer>
