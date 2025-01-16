@@ -25,11 +25,11 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        h1: ["40px", { lineHeight: "120%" }], // Mobile sizes
-        h2: ["36px", { lineHeight: "120%" }],
-        h3: ["32px", { lineHeight: "120%" }],
-        h4: ["24px", { lineHeight: "140%" }],
-        h5: ["20px", { lineHeight: "140%" }],
+        h1: ["52px", { lineHeight: "120%" }], // These are mobile sizes.
+        h2: ["48px", { lineHeight: "120%" }], // See desktop-headings.ts
+        h3: ["40px", { lineHeight: "120%" }], // below for desktop.
+        h4: ["28px", { lineHeight: "140%" }],
+        h5: ["24px", { lineHeight: "140%" }],
         h6: ["18px", { lineHeight: "140%" }],
       },
       colors: {
@@ -80,6 +80,9 @@ export default {
         "6": "6px",
         "8": "8px",
         DEFAULT: "1px",
+      },
+      maxWidth: {
+        "screen-content": "1428px", // this is our default max width for content on the site
       },
       minHeight: {
         ...defaultTheme.minHeight,
