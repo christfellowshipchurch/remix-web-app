@@ -60,3 +60,8 @@ export interface GroupHit {
   };
   __position: number;
 }
+
+export type ContactFormType = {
+  PersonId: string;
+  GroupId: string;
+};

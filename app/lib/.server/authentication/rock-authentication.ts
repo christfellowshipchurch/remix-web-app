@@ -257,5 +257,6 @@ export const registerPersonWithEmail = async ({
 
   await createUserLogin(email, password, personId);
 
-  return await authenticateUser(email, password);
+  const token = await authenticateUser(email, password);
+  return { personId, token };
 };
