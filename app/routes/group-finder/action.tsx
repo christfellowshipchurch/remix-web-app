@@ -39,7 +39,7 @@ const findPersonByEmailAndName = async (
       $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
       $select: "Id",
     },
-    noCache: true,
+    cache: false,
   });
 };
 
@@ -55,7 +55,7 @@ const findPersonByPhoneAndName = async (
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    noCache: true,
+    cache: false,
   });
 
   // Convert to array if single object
@@ -79,7 +79,7 @@ const findPersonByPhoneAndName = async (
         $filter: `Id eq ${phoneEntry.personId}`,
         $select: "FirstName, LastName",
       },
-      noCache: true,
+      cache: false,
     });
 
     const namesMatch =
@@ -167,7 +167,7 @@ export const action: ActionFunction = async ({ request }) => {
         $filter: `Name eq '${formData.groupName}'`,
         $select: "Id",
       },
-      noCache: true,
+      cache: false,
     });
 
     // Get or create person
