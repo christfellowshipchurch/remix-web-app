@@ -1,8 +1,8 @@
 import { LoaderFunctionArgs } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { Campus } from "./partials/locations-list.partial";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchWistiaData } from "~/lib/.server/fetch-wistia-data";
+import { Campus } from "./partials/location-card-list.partial";
 
 export type CampusesReturnType = {
   campuses: Campus[];
