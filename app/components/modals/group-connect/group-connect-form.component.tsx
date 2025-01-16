@@ -80,7 +80,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         Connect with a Leader
       </h2>
       <p className="mb-10 max-w-xs text-pretty">
-        Please fill out the form below let a group leader know you are
+        Please fill out the form below to let a group leader know you are
         interested.
       </p>
       <Form.Root
