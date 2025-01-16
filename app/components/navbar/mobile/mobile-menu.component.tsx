@@ -2,7 +2,7 @@ import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
 
-export default function MobileMenu() {
+export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Prevent background scroll when menu is open
@@ -18,7 +18,11 @@ export default function MobileMenu() {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden">
+    <div
+      className={`md:hidden ${
+        mode === "light" ? "text-neutral-dark" : "text-white"
+      }`}
+    >
       {/* Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
