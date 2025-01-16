@@ -20,15 +20,15 @@ export type LoaderReturnType = {
 };
 
 const fetchEventData = async (eventPath: string) => {
-  const rockData = await fetchRockData(
-    "ContentChannelItems/GetByAttributeValue",
-    {
+  const rockData = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
+    queryParams: {
       attributeKey: "Url",
       $filter: "Status eq 'Approved' and ContentChannelId eq 78",
       value: eventPath,
       loadAttributes: "simple",
-    }
-  );
+    },
+  });
 
   if (rockData.length > 1) {
     console.error(

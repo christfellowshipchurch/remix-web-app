@@ -36,15 +36,15 @@ export type MessageReturnType = {
 };
 
 const fetchMessageData = async (path: string) => {
-  const rockData = await fetchRockData(
-    "ContentChannelItems/GetByAttributeValue",
-    {
+  const rockData = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
+    queryParams: {
       attributeKey: "Url",
       $filter: "Status eq '2' and ContentChannelId eq 63",
       value: path,
       loadAttributes: "simple",
-    }
-  );
+    },
+  });
 
   if (rockData.length > 1) {
     console.error(

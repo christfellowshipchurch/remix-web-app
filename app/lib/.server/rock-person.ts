@@ -32,14 +32,13 @@ export const updatePerson = async (
   fields: { email: string; phoneNumber: string }
 ) => {
   // Update User email if user does not have one in Rock
-  const emailInRock = await fetchRockData(
-    `People/${id}`,
-    {
+  const emailInRock = await fetchRockData({
+    endpoint: `People/${id}`,
+    queryParams: {
       $select: "Email",
     },
-    undefined,
-    true // no cache
-  );
+    noCache: true, // no cache
+  });
   if (!emailInRock.email) {
     await patchRockData(`People/${id}`, {
       Email: fields.email,
@@ -51,15 +50,14 @@ export const updatePerson = async (
     fields.phoneNumber
   );
 
-  const existingPhoneNumbers = await fetchRockData(
-    "PhoneNumbers",
-    {
+  const existingPhoneNumbers = await fetchRockData({
+    endpoint: "PhoneNumbers",
+    queryParams: {
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    undefined,
-    true // no cache
-  );
+    noCache: true, // no cache
+  });
 
   if (!existingPhoneNumbers || existingPhoneNumbers.length === 0) {
     if (!countryCode) {
@@ -79,8 +77,11 @@ export const getPersonByAliasGuid = async (
   loadAttributes?: boolean
 ): Promise<any | null> => {
   const getPersonId = async () => {
-    const person = await fetchRockData("PersonAlias", {
-      $filter: `Guid eq guid'${guid}'`,
+    const person = await fetchRockData({
+      endpoint: "PersonAlias",
+      queryParams: {
+        $filter: `Guid eq guid'${guid}'`,
+      },
     });
     return person ? person[0]?.personId : null;
   };
@@ -99,7 +100,10 @@ export const getPersonByAliasGuid = async (
 
 // Uses the Person Alias ID to get the Person
 export const getPersonByAliasId = async (id: string): Promise<any | null> => {
-  const personAlias = await fetchRockData(`PersonAlias/${id}`, {});
+  const personAlias = await fetchRockData({
+    endpoint: `PersonAlias/${id}`,
+    queryParams: {},
+  });
   return personAlias ? personAlias?.person : null;
 };
 
@@ -107,7 +111,10 @@ export const getPersonByAliasId = async (id: string): Promise<any | null> => {
 export const getPersonAliasGuid = async (
   id: string
 ): Promise<string | null> => {
-  const personAlias = await fetchRockData(`PersonAlias/${id}`, {});
+  const personAlias = await fetchRockData({
+    endpoint: `PersonAlias/${id}`,
+    queryParams: {},
+  });
   return personAlias?.guid || null;
 };
 
@@ -116,15 +123,14 @@ export const getFromId = async (
   id: string,
   loadAttributes?: boolean
 ): Promise<any> => {
-  const person = await fetchRockData(
-    "People",
-    {
+  const person = await fetchRockData({
+    endpoint: "People",
+    queryParams: {
       $expand: "Photo",
       $filter: `Id eq ${id}${loadAttributes ? "&loadAttributes=simple" : ""}`,
     },
-    undefined,
-    true //no cache
-  );
+    noCache: true, //no cache
+  });
   return person[0];
 };
 

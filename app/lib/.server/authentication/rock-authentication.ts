@@ -72,15 +72,15 @@ export const getCurrentPerson = async (cookie: string): Promise<any> => {
   }
 
   try {
-    const person = await fetchRockData(
-      "People/GetCurrentPerson",
-      {},
-      {
+    const person = await fetchRockData({
+      endpoint: "People/GetCurrentPerson",
+      queryParams: {},
+      customHeaders: {
         "Authorization-Token": "",
         Cookie: cookie,
       },
-      true // no cache
-    );
+      noCache: true,
+    });
 
     if (!person) {
       throw new RockAPIError("Failed to fetch current person", 404);
@@ -176,15 +176,14 @@ export const createUserProfile = async ({
 export const fetchUserLogin = async (
   identity: string
 ): Promise<RockUserLogin | null> => {
-  const userLogin = await fetchRockData(
-    "UserLogins",
-    {
+  const userLogin = await fetchRockData({
+    endpoint: "UserLogins",
+    queryParams: {
       $filter: `UserName eq '${identity}'`,
       $top: "1",
     },
-    undefined,
-    true // no cache
-  );
+    noCache: true,
+  });
 
   // If no login exists for the identity, return null
   if (Array.isArray(userLogin) && userLogin.length === 0) {
@@ -237,15 +236,14 @@ export const registerPersonWithEmail = async ({
   if (phoneNumber && phoneNumber !== "") {
     const { significantNumber, countryCode } =
       parsePhoneNumberUtil(phoneNumber);
-    const existingPhoneNumbers = await fetchRockData(
-      "PhoneNumbers",
-      {
+    const existingPhoneNumbers = await fetchRockData({
+      endpoint: "PhoneNumbers",
+      queryParams: {
         $select: "PersonId",
         $filter: `Number eq '${significantNumber}'`,
       },
-      undefined,
-      true // no cache
-    );
+      noCache: true,
+    });
 
     if (existingPhoneNumbers) {
       if (!countryCode) {

@@ -102,9 +102,12 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
 const fetchTag = async (
   tagId: number
 ): Promise<{ name: string; guid: string }> => {
-  const tags = await fetchRockData("Tags", {
-    $filter: `Id eq ${tagId}`,
-    $select: "Name, Guid",
+  const tags = await fetchRockData({
+    endpoint: "Tags",
+    queryParams: {
+      $filter: `Id eq ${tagId}`,
+      $select: "Name, Guid",
+    },
   });
   return tags[0];
 };
@@ -130,9 +133,12 @@ const fetchRelatedTaggedItems = async ({
   tagId: number;
   entityId: string;
 }): Promise<any[]> => {
-  return await fetchRockData("TaggedItems", {
-    $filter: `TagId eq ${tagId} and EntityGuid ne guid'${entityId}'`,
-    $top: `${TOP_TAGGED_ITEMS_LIMIT}`,
+  return await fetchRockData({
+    endpoint: "TaggedItems",
+    queryParams: {
+      $filter: `TagId eq ${tagId} and EntityGuid ne guid'${entityId}'`,
+      $top: `${TOP_TAGGED_ITEMS_LIMIT}`,
+    },
   });
 };
 
@@ -154,16 +160,22 @@ const fetchRelatedContent = async (taggedItems: any[]): Promise<any[]> => {
 const getTaggedItemsByEntityGuid = async (
   entityGuid: string
 ): Promise<any[]> => {
-  const taggedItems = await fetchRockData("TaggedItems", {
-    $filter: `EntityGuid eq guid'${entityGuid}'`,
+  const taggedItems = await fetchRockData({
+    endpoint: "TaggedItems",
+    queryParams: {
+      $filter: `EntityGuid eq guid'${entityGuid}'`,
+    },
   });
 
   return taggedItems;
 };
 
 const getContentItemByGuid = async (guid: string): Promise<any> => {
-  return await fetchRockData("ContentChannelItems", {
-    $filter: `Guid eq guid'${guid}'`,
-    loadAttributes: "simple",
+  return await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `Guid eq guid'${guid}'`,
+      loadAttributes: "simple",
+    },
   });
 };

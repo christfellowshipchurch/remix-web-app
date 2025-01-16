@@ -20,11 +20,14 @@ export type Article = {
 };
 
 const getRecentArticles = async () => {
-  const recentArticles = await fetchRockData("ContentChannelItems", {
-    $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
-    $orderby: "StartDateTime desc",
-    $top: "5",
-    loadAttributes: "simple",
+  const recentArticles = await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
+      $orderby: "StartDateTime desc",
+      $top: "5",
+      loadAttributes: "simple",
+    },
   });
 
   recentArticles.forEach((article: Article) => {
@@ -46,11 +49,14 @@ const getRecentArticles = async () => {
 };
 
 const getUpcomingArticles = async () => {
-  const upcomingArticles = await fetchRockData("ContentChannelItems", {
-    $filter: `ContentChannelId eq 43 and Status eq 'PendingApproval'`,
-    $orderby: "StartDateTime desc",
-    $top: "5",
-    loadAttributes: "simple",
+  const upcomingArticles = await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `ContentChannelId eq 43 and Status eq 'PendingApproval'`,
+      $orderby: "StartDateTime desc",
+      $top: "5",
+      loadAttributes: "simple",
+    },
   });
 
   upcomingArticles.forEach((article: Article) => {

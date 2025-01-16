@@ -8,9 +8,12 @@ export const action: ActionFunction = async ({ request }) => {
 
     const { email, firstName, lastName, phone, campus, serviceTime } = formData;
 
-    const getCampusGuid: { guid: string } = await fetchRockData("Campuses", {
-      $filter: `Name eq '${campus}'`,
-      $select: "Guid",
+    const getCampusGuid: { guid: string } = await fetchRockData({
+      endpoint: "Campuses",
+      queryParams: {
+        $filter: `Name eq '${campus}'`,
+        $select: "Guid",
+      },
     });
 
     const formSubmission: SetAReminderType = {

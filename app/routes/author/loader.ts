@@ -23,24 +23,28 @@ export type LoaderReturnType = {
 };
 
 export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
-  const personAlias: any = await fetchRockData("PersonAlias", {
-    $filter: `Id eq ${primaryAliasId}`,
+  const personAlias: any = await fetchRockData({
+    endpoint: "PersonAlias",
+    queryParams: {
+      $filter: `Id eq ${primaryAliasId}`,
+    },
   });
 
   return personAlias?.guid;
 };
+
 export const fetchAuthorArticles = async (personAliasGuid: string) => {
-  const articles = await fetchRockData(
-    "ContentChannelItems/GetByAttributeValue",
-    {
+  const articles = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
+    queryParams: {
       attributeKey: "Author",
       value: personAliasGuid,
       $filter: "Status eq '2' and ContentChannelId eq 43",
       $orderby: "StartDateTime desc",
       $top: "6",
       loadAttributes: "simple",
-    }
-  );
+    },
+  });
 
   return articles;
 };

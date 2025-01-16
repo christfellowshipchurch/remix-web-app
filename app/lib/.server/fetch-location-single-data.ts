@@ -4,68 +4,96 @@ import { fetchRockData } from "./fetch-rock-data";
 import { format } from "date-fns";
 
 export const fetchCampusData = async (campusUrl: string) => {
-  return fetchRockData("Campuses", {
-    $filter: `Url eq '${campusUrl}'`,
-    $expand: "Location",
-    loadAttributes: "simple",
+  return fetchRockData({
+    endpoint: "Campuses",
+    queryParams: {
+      $filter: `Url eq '${campusUrl}'`,
+      $expand: "Location",
+      loadAttributes: "simple",
+    },
   });
 };
 
 export const fetchComingUpTitle = async (id: string) => {
-  const { title } = await fetchRockData(`ContentChannelItems`, {
-    $filter: `Id eq ${id}`,
+  const { title } = await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `Id eq ${id}`,
+    },
   });
 
   return title;
 };
 
 export const fetchThisWeek = async (id: string) => {
-  return fetchRockData(`ContentChannelItems/GetChildren/${id}`, {
-    loadAttributes: "simple",
+  return fetchRockData({
+    endpoint: "ContentChannelItems/GetChildren",
+    queryParams: {
+      $filter: `Id eq ${id}`,
+      loadAttributes: "simple",
+    },
   });
 };
 
 export const fetchChildrenByAssociation = async (id: string) => {
-  return fetchRockData(`ContentChannelItemAssociations`, {
-    $filter: `ContentChannelItemId eq ${id}`,
-    $select: "ChildContentChannelItemId",
-    $top: "3",
-    $orderby: "Order asc",
-    loadAttributes: "simple",
+  return fetchRockData({
+    endpoint: "ContentChannelItemAssociations",
+    queryParams: {
+      $filter: `ContentChannelItemId eq ${id}`,
+      $select: "ChildContentChannelItemId",
+      $top: "3",
+      $orderby: "Order asc",
+      loadAttributes: "simple",
+    },
   });
 };
 
 export const fetchContentItemById = async (id: string) => {
-  return fetchRockData(`ContentChannelItems`, {
-    $filter: `Id eq ${id}`,
-    loadAttributes: "simple",
+  return fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `Id eq ${id}`,
+      loadAttributes: "simple",
+    },
   });
 };
 
 export const fetchPastorIdByAlias = async (personAlias: string) => {
-  return fetchRockData("PersonAlias", {
-    $filter: `Id eq ${personAlias}`,
-    $select: "PersonId",
+  return fetchRockData({
+    endpoint: "PersonAlias",
+    queryParams: {
+      $filter: `Id eq ${personAlias}`,
+      $select: "PersonId",
+    },
   });
 };
 
 export const fetchPastorData = async (id: string) => {
-  return fetchRockData("People", {
-    $filter: `Id eq ${id}`,
-    $expand: "Photo",
+  return fetchRockData({
+    endpoint: "People",
+    queryParams: {
+      $filter: `Id eq ${id}`,
+      $expand: "Photo",
+    },
   });
 };
 
 export const getMatricesFromGuid = async (guid: string) => {
-  return fetchRockData("AttributeMatrices", {
-    $filter: `Guid eq guid'${guid}'`,
+  return fetchRockData({
+    endpoint: "AttributeMatrices",
+    queryParams: {
+      $filter: `Guid eq guid'${guid}'`,
+    },
   });
 };
 
 export const getMatrixItemsFromId = async (id: string) => {
-  return fetchRockData("AttributeMatrixItems", {
-    $filter: `AttributeMatrix/${getIdentifierType(id).query}`,
-    loadAttributes: "simple",
+  return fetchRockData({
+    endpoint: "AttributeMatrixItems",
+    queryParams: {
+      $filter: `AttributeMatrix/${getIdentifierType(id).query}`,
+      loadAttributes: "simple",
+    },
   });
 };
 

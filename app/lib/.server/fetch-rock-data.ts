@@ -17,12 +17,17 @@ const defaultHeaders = {
  * @returns Either the response data as JSON(array if multiple items, object if single item) or an error
  */
 
-export const fetchRockData = async (
-  endpoint: string,
-  queryParams: Record<string, string>,
-  customHeaders: Record<string, string> = {},
-  noCache: boolean = false
-) => {
+export const fetchRockData = async ({
+  endpoint,
+  queryParams = {},
+  customHeaders = {},
+  noCache = false,
+}: {
+  endpoint: string;
+  queryParams?: Record<string, string>;
+  customHeaders?: Record<string, string>;
+  noCache?: boolean;
+}) => {
   const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
   const cachedData = await redis.get(cacheKey);
 
