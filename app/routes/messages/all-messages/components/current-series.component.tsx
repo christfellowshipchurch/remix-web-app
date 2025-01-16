@@ -10,7 +10,7 @@ const CurrentSeries: React.FC = () => {
       <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[#F3F5FA]" />
 
       {/* Content Container */}
-      <div className="relative max-w-xxl mx-auto">
+      <div className="relative max-w-6xl mx-auto">
         {/* Title Section */}
         <SectionTitle
           className="mb-8"
