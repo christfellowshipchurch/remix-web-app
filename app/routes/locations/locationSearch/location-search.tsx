@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
-import { Campus, Locations } from "./partials/locations-list.partial";
+import {
+  Campus,
+  LocationCardList,
+} from "./partials/location-card-list.partial";
 import { useFetcher, useLoaderData } from "react-router";
 import { CampusesReturnType } from "./loader";
 
@@ -150,7 +153,7 @@ export function LocationSearchPage() {
         locationActive={locationActive}
         error={error}
       />
-      <Locations
+      <LocationCardList
         campuses={results}
         loading={
           !results ||
