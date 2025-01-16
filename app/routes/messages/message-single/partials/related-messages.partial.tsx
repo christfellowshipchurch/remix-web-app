@@ -13,7 +13,7 @@ export const RelatedMessages = () => {
 
   return (
     <div className="bg-white w-full flex justify-center">
-      <div className="flex w-full  flex-col items-center py-12 md:py-24 lg:max-w-xl xl:max-w-xxl ">
+      <div className="flex w-full  flex-col items-center py-12 md:py-24 lg:max-w-5xl xl:max-w-6xl ">
         {/* Header */}
         <div className="w-full flex justify-between">
           <div>

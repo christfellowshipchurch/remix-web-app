@@ -21,7 +21,7 @@ export const DynamicVideoHeader = ({
   // TODO: Update margin top once the navbar is updated?
   return (
     <div className="flex items-center justify-start self-stretch h-[920px] xl:h-[1000px] px-10 ">
-      <div className="flex flex-col gap-12 w-full pb-16 mx-auto lg:max-w-xl xl:max-w-xxl items-start justify-end self-stretch">
+      <div className="flex flex-col gap-12 w-full pb-16 mx-auto lg:max-w-5xl xl:max-w-6xl items-start justify-end self-stretch">
         {wistiaId ? (
           <div className="w-full">
             <Video wistiaId={wistiaId} />

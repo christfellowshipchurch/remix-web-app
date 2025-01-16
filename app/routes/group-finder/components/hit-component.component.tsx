@@ -1,7 +1,7 @@
 import Icon from "~/primitives/icon";
 import { GroupHit } from "../types";
 import { useState } from "react";
-import Button from "~/primitives/button";
+import GroupConnectModal from "~/components/modals/group-connect";
 
 export function HitComponent({ hit }: { hit: GroupHit }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -27,7 +27,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
           <div className="flex gap-1 absolute -bottom-4 lg:bottom-2 xl:-bottom-4 right-4">
             {hit?.leaders.map((leader, i) => (
               <img
-                className="rounded-lg border-[1.534px] border-[#EBEBEF] size-20"
+                className="rounded-lg border-[1.534px] border-[#EBEBEF] size-20 object-cover"
                 style={{
                   boxShadow:
                     "0px 5.114px 10.228px -2.557px rgba(0, 0, 0, 0.10), 0px 2.557px 5.114px -2.557px rgba(0, 0, 0, 0.06)",
@@ -74,8 +74,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
                 )}
               </div>
             </div>
-            {/* TODO: Open Contact Group Leader Modal */}
-            <Button className="rounded-lg font-semibold h-12">Contact</Button>
+            <GroupConnectModal groupName={hit.title} />
           </div>
         </div>
       </div>

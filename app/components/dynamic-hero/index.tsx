@@ -36,7 +36,7 @@ export const DynamicHero = ({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col gap-12 w-full pb-16 max-w-xxl mx-auto items-start justify-end self-stretch">
+      <div className="flex flex-col gap-12 w-full pb-16 max-w-6xl mx-auto items-start justify-end self-stretch">
         <h1 className="font-extrabold heading-h1 xxl:text-[100px] text-white">
           {customTitle || pagePath}
         </h1>

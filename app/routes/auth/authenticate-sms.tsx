@@ -26,7 +26,7 @@ export const authenticateSms = async ({
   }
 
   try {
-    const encryptedToken = await authenticateOrRegisterWithSms({
+    const { encryptedToken } = await authenticateOrRegisterWithSms({
       pin,
       phoneNumber,
       userProfile: [], //not creating new profile, just authenticating
