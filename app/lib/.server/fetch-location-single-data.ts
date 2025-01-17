@@ -27,9 +27,8 @@ export const fetchComingUpTitle = async (id: string) => {
 
 export const fetchThisWeek = async (id: string) => {
   return fetchRockData({
-    endpoint: "ContentChannelItems/GetChildren",
+    endpoint: `ContentChannelItems/GetChildren/${id}`,
     queryParams: {
-      $filter: `Id eq ${id}`,
       loadAttributes: "simple",
     },
   });

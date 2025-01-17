@@ -42,7 +42,7 @@ export function Navbar() {
         className={`z-50 ${
           mode == "light"
             ? "bg-white"
-            : "absolute hover:bg-white bg-transparent transition-colors duration-200"
+            : "absolute top-0 hover:bg-white bg-transparent transition-colors duration-200"
         } py-5 shadow-sm w-full px-6 md:px-10`}
       >
         <div className="max-w-screen-content mx-auto flex justify-between items-center font-bold">
