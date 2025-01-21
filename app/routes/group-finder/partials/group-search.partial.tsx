@@ -5,6 +5,7 @@ import {
   Hits,
   SearchBox,
   RefinementList,
+  Configure,
 } from "react-instantsearch";
 
 import { CustomPagination } from "../components/custom-pagination.component";
@@ -14,25 +15,9 @@ import { MenuSelect } from "../components/custom-menu.component";
 import { CustomClearRefinements } from "../components/custom-clear-refinements.component";
 import { HitComponent } from "../components/hit-component.component";
 import SectionTitle from "~/components/section-title";
-
-const CustomRefinementList = ({ attribute }: { attribute: string }) => {
-  return (
-    <RefinementList
-      classNames={{
-        list: "flex flex-col gap-3",
-        checkbox: "hidden",
-        count: "hidden",
-        labelText: "text-xl font-bold",
-        item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-        selectedItem:
-          "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-        label:
-          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
-      }}
-      attribute={attribute}
-    />
-  );
-};
+import { useMediaQuery } from "react-responsive";
+import { GroupFilters } from "~/components/modals/group-filters/group-filters";
+import { GroupFiltersModal } from "~/components/modals/group-filters/group-filters-modal";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -43,6 +28,8 @@ export const GroupSearch = () => {
     ALGOLIA_SEARCH_API_KEY,
     {}
   );
+
+  const isDesktop = useMediaQuery({ minWidth: 1024 });
 
   return (
     <div
@@ -60,6 +47,7 @@ export const GroupSearch = () => {
           preserveSharedStateOnUnmount: true, // Set this to true to adopt the new behavior
         }}
       >
+        <Configure hitsPerPage={isDesktop ? 9 : 6} />
         {/* Search Box */}
         <div className="mb-6 w-full">
           <SearchBox
@@ -72,45 +60,18 @@ export const GroupSearch = () => {
             }}
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 md:gap-6">
           {/* Refinement List */}
-          <div className="flex flex-col gap-12 bg-white p-4 col-span-1 h-fit">
-            <div className="flex flex-col gap-3 text-black">
-              {/* TODO: Update styling  */}
-              <div className="flex justify-between">
-                <h3 className="heading-h6">Campus</h3>
-                <CustomClearRefinements />
-              </div>
-              <MenuSelect
-                placeholder="Select a campus..."
-                attribute="campusName"
-                limit={20}
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Meeting Type</h3>
-              <MenuSelect
-                placeholder="Select a meeting type..."
-                attribute="meetingType"
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Hubs</h3>
-              <CustomRefinementList attribute="preferences" />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Types of Groups</h3>
-              <CustomRefinementList attribute="subPreferences" />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Meeting Day</h3>
-              <CustomRefinementList attribute="meetingDay" />
-            </div>
+          <div className="hidden lg:block">
+            <GroupFilters />
+          </div>
+          <div className="lg:hidden">
+            <GroupFiltersModal />
           </div>
 
           {/* Hits and Pagination */}
-          <div className="bg-white p-4 rounded-lg col-span-3">
-            <div className="flex w-full justify-end pb-9">
+          <div className="bg-white p-4 rounded-lg col-span-1 lg:col-span-3">
+            <div className="flex w-full justify-between lg:justify-end pb-9">
               <CustomClearRefinements />
             </div>
             <Hits
