@@ -24,7 +24,6 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
   publishDate,
   readTime,
 }: LoaderReturnType) => {
-  console.log(coverImage);
   return (
     <div style={heroBgImgStyles(coverImage)}>
       <div className="bg-white/80 backdrop-blur-lg px-6 md:px-16">

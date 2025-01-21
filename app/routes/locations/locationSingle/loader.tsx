@@ -104,7 +104,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const childrenByAssociation = await fetchChildrenByAssociation(
     comingUpSoonId
   );
-  console.log(childrenByAssociation);
 
   // TODO: Get children by ID by mapping childrenByAssociation and fetching the children by ID
   const comingUpChildren = await Promise.all(
