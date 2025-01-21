@@ -24,53 +24,14 @@ export default {
   // presets: [require("@relume_io/relume-tailwind")],
   theme: {
     extend: {
-      fontSize: {
-        h1: ["52px", { lineHeight: "120%" }], // These are mobile sizes.
-        h2: ["48px", { lineHeight: "120%" }], // See desktop-headings.ts
-        h3: ["40px", { lineHeight: "120%" }], // below for desktop.
-        h4: ["28px", { lineHeight: "140%" }],
-        h5: ["24px", { lineHeight: "140%" }],
-        h6: ["18px", { lineHeight: "140%" }],
+      animation: {
+        ...navbarAnimations,
+        ...modalAnimations,
       },
-      colors: {
-        /** Our CF Branded Color */
-        ...customColors,
-        /** Shadcn Colors */
-        /** Note: Removed colors that would interfere with the CF Branded Colors */
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
-      },
-      fontFamily: {
-        sans: ["Proxima-Nova", ...defaultTheme.fontFamily.sans],
-        serif: ["Merriweather", ...defaultTheme.fontFamily.serif],
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       borderWidth: {
         "0": "0",
@@ -81,6 +42,58 @@ export default {
         "8": "8px",
         DEFAULT: "1px",
       },
+      colors: {
+        /** Our CF Branded Color */
+        ...customColors,
+        /** Shadcn Colors */
+        /** Note: Removed colors that would interfere with the CF Branded Colors */
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        chart: {
+          "1": "hsl(var(--chart-1))",
+          "2": "hsl(var(--chart-2))",
+          "3": "hsl(var(--chart-3))",
+          "4": "hsl(var(--chart-4))",
+          "5": "hsl(var(--chart-5))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        foreground: "hsl(var(--foreground))",
+        input: "hsl(var(--input))",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        ring: "hsl(var(--ring))",
+      },
+      fontFamily: {
+        sans: ["Proxima-Nova", ...defaultTheme.fontFamily.sans],
+        serif: ["Merriweather", ...defaultTheme.fontFamily.serif],
+      },
+      fontSize: {
+        h1: ["52px", { lineHeight: "120%" }], // These are mobile sizes.
+        h2: ["48px", { lineHeight: "120%" }], // See desktop-headings.ts
+        h3: ["40px", { lineHeight: "120%" }], // below for desktop.
+        h4: ["28px", { lineHeight: "140%" }],
+        h5: ["24px", { lineHeight: "140%" }],
+        h6: ["18px", { lineHeight: "140%" }],
+      },
+      keyframes: {
+        ...navbarKeyframes,
+        ...modalKeyframes,
+      },
       maxWidth: {
         "screen-content": "1428px", // this is our default max width for content on the site
       },
@@ -90,18 +103,8 @@ export default {
       minWidth: {
         ...defaultTheme.minWidth,
       },
-      keyframes: {
-        ...navbarKeyframes,
-        ...modalKeyframes,
-      },
-      animation: {
-        ...navbarAnimations,
-        ...modalAnimations,
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      spacing: {
+        "18": "72px",
       },
     },
   },

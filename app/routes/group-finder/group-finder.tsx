@@ -11,7 +11,9 @@ export function GroupFinder() {
           { title: "Help me find a Group", href: "#search" },
         ]}
       />
-      <GroupSearch />
+      <div className="px-5 sm:px-12 lg:px-18">
+        <GroupSearch />
+      </div>
     </div>
   );
 }
