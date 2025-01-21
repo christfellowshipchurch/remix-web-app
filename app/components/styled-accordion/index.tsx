@@ -1,7 +1,6 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import HTMLRenderer from "~/primitives/html-renderer";
-import "./accordion.css";
 
 type AccordionDataType = {
   bg?: string;
@@ -32,9 +31,12 @@ const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
             value={`item-${index + 1}`}
           >
             <Accordion.Header className="AccordionHeader flex py-5 text-lg font-bold">
-              <Accordion.Trigger className="AccordionTrigger inline-flex w-full text-start items-center justify-between">
+              <Accordion.Trigger className="AccordionTrigger inline-flex w-full items-center justify-between text-start group">
                 {item?.title}
-                <ChevronDownIcon className="AccordionChevron" aria-hidden />
+                <ChevronDownIcon
+                  className="transition-transform duration-300 group-data-[state=open]:rotate-180"
+                  aria-hidden
+                />
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content className="AccordionContent pb-6">
