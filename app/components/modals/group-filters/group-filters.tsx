@@ -10,9 +10,9 @@ export const CustomRefinementList = ({ attribute }: { attribute: string }) => {
         checkbox: "hidden",
         count: "hidden",
         labelText: "text-xl font-bold",
-        item: "flex items-center justify-center rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
+        item: "flex items-center justify-center rounded-full border-2 border-[#D0D0CE] text-[#D0D0CE] px-12 text-center",
         selectedItem:
-          "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
+          "bg-oceanSubdued text-ocean border-2 border-ocean overflow-hidden rounded-full",
         label:
           "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
       }}
@@ -23,7 +23,7 @@ export const CustomRefinementList = ({ attribute }: { attribute: string }) => {
 
 export function GroupFilters() {
   return (
-    <div className="flex flex-col w-full gap-12 bg-white p-4 col-span-1 h-fit">
+    <div className="flex flex-col w-full gap-12 bg-white col-span-1 h-fit lg:min-w-[300px]">
       <div className="flex flex-col gap-3 text-black">
         <div className="flex justify-between">
           <h3 className="heading-h6">Campus</h3>
