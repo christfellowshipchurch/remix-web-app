@@ -74,11 +74,13 @@ export const GroupSearch = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Refinement List */}
-          <div className="flex flex-col gap-12 bg-white p-4 frounded-lg shadow-md col-span-1 h-fit">
+          <div className="flex flex-col gap-12 bg-white p-4 col-span-1 h-fit">
             <div className="flex flex-col gap-3 text-black">
               {/* TODO: Update styling  */}
-              <CustomClearRefinements />
-              <h3 className="heading-h6">Campus</h3>
+              <div className="flex justify-between">
+                <h3 className="heading-h6">Campus</h3>
+                <CustomClearRefinements />
+              </div>
               <MenuSelect
                 placeholder="Select a campus..."
                 attribute="campusName"
@@ -107,10 +109,10 @@ export const GroupSearch = () => {
           </div>
 
           {/* Hits and Pagination */}
-          <div className="bg-white p-4 rounded-lg shadow-md col-span-3">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Search Results
-            </h2>
+          <div className="bg-white p-4 rounded-lg col-span-3">
+            <div className="flex w-full justify-end pb-9">
+              <CustomClearRefinements />
+            </div>
             <Hits
               classNames={{
                 list: "grid md:grid-cols-2 lg:grid-cols-3 gap-6",
