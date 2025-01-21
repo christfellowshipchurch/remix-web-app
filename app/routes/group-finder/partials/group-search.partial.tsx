@@ -33,7 +33,7 @@ export const GroupSearch = () => {
 
   return (
     <div
-      className="flex flex-col gap-4 w-full max-w-[1440px] px-4 md:px-8 py-12"
+      className="flex flex-col gap-4 w-full max-w-screen-content py-12"
       id="search"
     >
       <SectionTitle
