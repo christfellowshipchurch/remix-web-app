@@ -6,7 +6,7 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div className="p-6">
+      <div className="p-6 mt-20">
         <h1 className="text-4xl font-bold mb-6">
           ⚠ {error.status} {error.statusText}
         </h1>
@@ -15,7 +15,7 @@ export function ErrorBoundary() {
     );
   } else if (error instanceof Error) {
     return (
-      <div className="p-6">
+      <div className="p-6 mt-20">
         <h1 className="text-4xl font-bold mb-6">Error</h1>
         <p className="text-lg italic">{error.message}</p>
         <p className="text-lg font-bold mt-10">The stack trace is:</p>
