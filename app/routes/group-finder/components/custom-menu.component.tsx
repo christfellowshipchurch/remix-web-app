@@ -15,7 +15,7 @@ export function MenuSelect({
 
   return (
     <select
-      className="w-full p-2 border-2 border-[#D0D0CE] rounded-md"
+      className="w-full px-2 py-1 border-2 border-[#D0D0CE] rounded-md"
       style={{
         appearance: "none",
         background:
