@@ -8,10 +8,13 @@ export const action: ActionFunction = async ({ request }) => {
   const longitude = parseFloat(formData.longitude as string);
   const latitude = parseFloat(formData.latitude as string);
 
-  const campuses = await fetchRockData("Campuses", {
-    $filter: `IsActive eq true`,
-    $expand: "Location",
-    loadAttributes: "simple",
+  const campuses = await fetchRockData({
+    endpoint: "Campuses",
+    queryParams: {
+      $filter: `IsActive eq true`,
+      $expand: "Location",
+      loadAttributes: "simple",
+    },
   });
 
   campuses.forEach((campus: any) => {
