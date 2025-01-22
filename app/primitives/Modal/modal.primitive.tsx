@@ -31,7 +31,7 @@ function ModalContent({
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=closed]:animate-dialogOverlayHide data-[state=open]:animate-dialogOverlayShow" />
-      <Dialog.Content className="fixed h-full sm:h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-scroll sm:rounded-2xl bg-white p-4 text-text-primary shadow data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow">
+      <Dialog.Content className="fixed h-[90vh] sm:h-auto max-h-[90vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-scroll rounded-2xl bg-white p-4 text-text-primary shadow data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow">
         <div
           className={`flex items-center ${
             title ? "justify-between" : "justify-end"
