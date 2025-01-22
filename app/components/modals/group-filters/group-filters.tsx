@@ -23,7 +23,7 @@ export const CustomRefinementList = ({ attribute }: { attribute: string }) => {
 
 export function GroupFilters() {
   return (
-    <div className="flex flex-col w-full gap-12 bg-white col-span-1 h-fit lg:min-w-[300px]">
+    <div className="flex flex-col w-full gap-12 bg-white col-span-1 h-fit min-w-[300px]">
       <div className="flex flex-col gap-3 text-black">
         <div className="flex justify-between">
           <h3 className="heading-h6">Campus</h3>
