@@ -58,19 +58,27 @@ export const GroupSearch = () => {
       >
         <Configure hitsPerPage={getHitsPerPage()} />
         {/* Search Box */}
-        <div className="mb-6 w-full">
-          {/* TODO: Add a search button/icon correctly... */}
+        <div className="mb-6 w-full relative flex items-center rounded-md border-neutral-lighter border-2 box-border focus-within:border-ocean py-2">
+          <Icon
+            name="searchAlt"
+            className="text-neutral-300 ml-3 hidden md:block"
+          />
           <SearchBox
             placeholder="Search for groups..."
             submitIconComponent={() => (
-              <Icon name="searchAlt" className="text-neutral-300" />
+              <>{!isSmall ? "Search" : <Icon name="searchAlt" />}</>
             )}
+            translations={{
+              submitButtonTitle: "Search",
+              resetButtonTitle: "Reset",
+            }}
             classNames={{
-              form: "flex flex-row-reverse items-center justify-center rounded-lg shadow-sm border-neutral-lighter border-2 focus:outline-none focus:border-ocean px-4 py-2",
+              root: "flex-grow",
+              form: "flex pr-10 md:pr-24",
               input: "w-full justify-center text-xl px-3 focus:outline-none",
-              // resetIcon: "hidden",
-              // submit: "hidden",
-              submitIcon: "hidden",
+              resetIcon: "hidden",
+              submit:
+                "absolute right-0 top-0 bottom-0 transition-colors bg-ocean text-white hover:bg-navy text-md px-3 md:px-5 h-[48px] translate-y-[-2px] translate-x-[2px] rounded-r-md",
             }}
           />
         </div>
@@ -79,13 +87,16 @@ export const GroupSearch = () => {
           <div className="hidden lg:block">
             <GroupFilters />
           </div>
-          <div className="lg:hidden">
-            <GroupFiltersModal />
+          <div className="flex justify-between lg:hidden">
+            <div>
+              <GroupFiltersModal />
+            </div>
+            <CustomPagination />
           </div>
 
           {/* Hits and Pagination */}
           <div className="bg-white rounded-lg col-span-1 lg:col-span-2 xl:col-span-3">
-            <div className="flex w-full justify-between lg:justify-end pb-9">
+            <div className="flex w-full justify-between lg:justify-end my-8 md:my-0 md:mb-9 md:hidden xl:flex">
               <CustomClearRefinements text="Clear all filters" />
             </div>
             <Hits
@@ -94,7 +105,7 @@ export const GroupSearch = () => {
               }}
               hitComponent={HitComponent}
             />
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-center lg:justify-end">
               <CustomPagination />
             </div>
           </div>
