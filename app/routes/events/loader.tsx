@@ -29,12 +29,14 @@ export type Event = {
 };
 
 const getUpcomingEvents = async () => {
-  const upcomingEvents = await fetchRockData("ContentChannelItems", {
-    // TODO: Update order by some sort of priority
-    $filter: `ContentChannelId eq 78 and Status eq 'Approved'`,
-    $orderby: "ExpireDateTime desc",
-    $top: "22",
-    loadAttributes: "simple",
+  const upcomingEvents = await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `ContentChannelId eq 78 and Status eq 'Approved'`,
+      $orderby: "ExpireDateTime desc",
+      $top: "22",
+      loadAttributes: "simple",
+    },
   });
 
   upcomingEvents.forEach((event: Event) => {
