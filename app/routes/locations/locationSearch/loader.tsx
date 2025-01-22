@@ -10,11 +10,14 @@ export type CampusesReturnType = {
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const campuses: Campus[] = await fetchRockData("Campuses", {
-    $filter: `IsActive eq true`,
-    $expand: "Location",
-    $orderby: "Order",
-    loadAttributes: "simple",
+  const campuses: Campus[] = await fetchRockData({
+    endpoint: "Campuses",
+    queryParams: {
+      $filter: `IsActive eq true`,
+      $expand: "Location",
+      $orderby: "Order",
+      loadAttributes: "simple",
+    },
   });
 
   campuses.forEach((campus: any) => {

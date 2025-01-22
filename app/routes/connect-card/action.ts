@@ -37,10 +37,10 @@ export const action: ActionFunction = async ({ request }) => {
       connectFormSubmission.Other = otherContent as string;
     }
 
-    const sendForm = await postRockData(
-      `Workflows/LaunchWorkflow/0?workflowTypeId=902&workflowName=CFDP%20Web%20Connect%20Card`,
-      connectFormSubmission
-    );
+    const sendForm = await postRockData({
+      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=902&workflowName=CFDP%20Web%20Connect%20Card`,
+      body: connectFormSubmission,
+    });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
