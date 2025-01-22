@@ -1,38 +1,17 @@
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 
-import {
-  InstantSearch,
-  Hits,
-  SearchBox,
-  RefinementList,
-} from "react-instantsearch";
+import { InstantSearch, Hits, SearchBox, Configure } from "react-instantsearch";
 
 import { CustomPagination } from "../components/custom-pagination.component";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
-import { MenuSelect } from "../components/custom-menu.component";
 import { CustomClearRefinements } from "../components/custom-clear-refinements.component";
 import { HitComponent } from "../components/hit-component.component";
 import SectionTitle from "~/components/section-title";
-
-const CustomRefinementList = ({ attribute }: { attribute: string }) => {
-  return (
-    <RefinementList
-      classNames={{
-        list: "flex flex-col gap-3",
-        checkbox: "hidden",
-        count: "hidden",
-        labelText: "text-xl font-bold",
-        item: "rounded-[24px] border border-[#D0D0CE] text-[#D0D0CE]",
-        selectedItem:
-          "bg-oceanSubdued text-ocean border-[#0092BC] overflow-hidden rounded-[24px]",
-        label:
-          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
-      }}
-      attribute={attribute}
-    />
-  );
-};
+import { useMediaQuery } from "react-responsive";
+import { GroupFilters } from "~/components/modals/group-filters/group-filters";
+import { GroupFiltersModal } from "~/components/modals/group-filters/group-filters-modal";
+import Icon from "~/primitives/icon";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -44,9 +23,26 @@ export const GroupSearch = () => {
     {}
   );
 
+  const isLarge = useMediaQuery({ minWidth: 1280 });
+  const isMedium = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
+  const isSmall = useMediaQuery({ maxWidth: 767 });
+
+  const getHitsPerPage = () => {
+    switch (true) {
+      case isLarge:
+        return 9;
+      case isMedium:
+        return 8;
+      case isSmall:
+        return 6;
+      default:
+        return 6; // Fallback value
+    }
+  };
+
   return (
     <div
-      className="flex flex-col gap-4 w-full max-w-[1440px] px-4 md:px-8 py-12"
+      className="flex flex-col gap-4 w-full max-w-screen-content py-12"
       id="search"
     >
       <SectionTitle
@@ -60,64 +56,56 @@ export const GroupSearch = () => {
           preserveSharedStateOnUnmount: true, // Set this to true to adopt the new behavior
         }}
       >
+        <Configure hitsPerPage={getHitsPerPage()} />
         {/* Search Box */}
-        <div className="mb-6 w-full">
+        <div className="mb-6 w-full relative flex items-center rounded-md border-neutral-lighter border-2 box-border focus-within:border-ocean py-2">
+          <Icon
+            name="searchAlt"
+            className="text-neutral-300 ml-3 hidden md:block"
+          />
           <SearchBox
-            placeholder="🔍 Search for groups..."
+            placeholder="Search for groups..."
+            submitIconComponent={() => (
+              <>{!isSmall ? "Search" : <Icon name="searchAlt" />}</>
+            )}
+            translations={{
+              submitButtonTitle: "Search",
+              resetButtonTitle: "Reset",
+            }}
             classNames={{
-              input:
-                "w-full justify-center text-xl px-4 py-2 rounded-lg shadow-sm border-gray-300 border-2",
-              submit: "hidden",
+              root: "flex-grow",
+              form: "flex pr-10 md:pr-24",
+              input: "w-full justify-center text-xl px-3 focus:outline-none",
               resetIcon: "hidden",
+              submit:
+                "absolute right-0 top-0 bottom-0 transition-colors bg-ocean text-white hover:bg-navy text-md px-3 md:px-5 h-[48px] translate-y-[-2px] translate-x-[2px] rounded-r-md",
             }}
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 md:gap-24">
           {/* Refinement List */}
-          <div className="flex flex-col gap-12 bg-white p-4 frounded-lg shadow-md col-span-1 h-fit">
-            <div className="flex flex-col gap-3 text-black">
-              {/* TODO: Update styling  */}
-              <CustomClearRefinements />
-              <h3 className="heading-h6">Campus</h3>
-              <MenuSelect
-                placeholder="Select a campus..."
-                attribute="campusName"
-                limit={20}
-              />
+          <div className="hidden lg:block">
+            <GroupFilters />
+          </div>
+          <div className="flex justify-between lg:hidden">
+            <div>
+              <GroupFiltersModal />
             </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Meeting Type</h3>
-              <MenuSelect
-                placeholder="Select a meeting type..."
-                attribute="meetingType"
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Hubs</h3>
-              <CustomRefinementList attribute="preferences" />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Types of Groups</h3>
-              <CustomRefinementList attribute="subPreferences" />
-            </div>
-            <div className="flex flex-col gap-3">
-              <h3 className="heading-h6">Meeting Day</h3>
-              <CustomRefinementList attribute="meetingDay" />
-            </div>
+            <CustomPagination />
           </div>
 
           {/* Hits and Pagination */}
-          <div className="bg-white p-4 rounded-lg shadow-md col-span-3">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Search Results
-            </h2>
+          <div className="bg-white rounded-lg col-span-1 lg:col-span-2 xl:col-span-3">
+            <div className="flex w-full justify-between lg:justify-end my-8 md:my-0 md:mb-9 md:hidden xl:flex">
+              <CustomClearRefinements text="Clear all filters" />
+            </div>
             <Hits
               classNames={{
-                list: "grid md:grid-cols-2 lg:grid-cols-3 gap-6",
+                list: "grid md:grid-cols-2 xl:grid-cols-3 gap-6",
               }}
               hitComponent={HitComponent}
             />
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-center lg:justify-end">
               <CustomPagination />
             </div>
           </div>

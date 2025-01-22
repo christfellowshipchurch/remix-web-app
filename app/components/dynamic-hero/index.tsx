@@ -28,7 +28,7 @@ export const DynamicHero = ({
 
   return (
     <div
-      className="flex items-center justify-start self-stretch h-[640px] px-5 md:px-10"
+      className="flex items-center justify-start self-stretch h-[640px] px-5 md:px-12 lg:px-18"
       style={{
         background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${imagePath}) lightgray 50% / cover no-repeat`,
         backgroundSize: "cover",
@@ -43,12 +43,12 @@ export const DynamicHero = ({
         <div className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9]" />
         <div className="flex items-center justify-between self-stretch">
           {/* Breadcrumbs */}
-          <div className="flex flex-col gap-3 w-full px-[14px] md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
+          <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
             <Breadcrumbs />
             <div className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]" />
 
             {/* CTAs */}
-            <div className="mt-5 md:mt-0 flex justify-between gap-6 relative pr-4 group">
+            <div className="mt-5 md:mt-0 flex justify-between gap-3 pr-1 md:pr-4 md:gap-4 relative group">
               {ctas?.map((cta, i) => (
                 <Link key={i} to={cta.href}>
                   <Button
@@ -57,15 +57,16 @@ export const DynamicHero = ({
                   >
                     {cta.title}
                   </Button>
+                  {/* TODO: incorporate this into the button component */}
+                  <div
+                    className={`${
+                      i < 1 ? "hidden" : ""
+                    } absolute rounded-full p-1 md:p-2 bg-ocean -right-5 top-[50%] translate-y-[-50%] rotate-[135deg] group-hover:rotate-180 transition-all duration-300`}
+                  >
+                    <Icon name="arrowBack" size={26} color="white" />
+                  </div>
                 </Link>
               ))}
-              <div
-                className={`${
-                  (ctas?.length ?? 0) < 1 ? "hidden" : ""
-                } rounded-full p-3 bg-ocean absolute -right-6 top-[50%] translate-y-[-50%] rotate-[135deg] group-hover:rotate-180 transition-all duration-300`}
-              >
-                <Icon name="arrowBack" size={26} color="white" />
-              </div>
             </div>
           </div>
         </div>
