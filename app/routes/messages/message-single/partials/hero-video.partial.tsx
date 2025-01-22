@@ -1,4 +1,4 @@
-import { DynamicVideoHeader } from "~/components/dynamic-video-header";
+import { DynamicVideoHeader } from "~/components/dynamic-video-hero";
 import { MessageReturnType } from "../loader";
 import { useLoaderData } from "react-router";
 
