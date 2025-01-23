@@ -1,5 +1,4 @@
 import { LoaderFunctionArgs } from "react-router";
-import invariant from "tiny-invariant";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import {
   fetchCampusData,
@@ -78,7 +77,6 @@ const facebook = "https://www.facebook.com/CFimpact";
 const defaultInstagram = "https://www.instagram.com/christfellowship.church/";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.location, "No Campus");
   const campusUrl = params.location as string;
   const data = await fetchCampusData(campusUrl);
 
