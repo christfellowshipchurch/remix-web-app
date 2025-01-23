@@ -1,7 +1,7 @@
 import Button from "~/primitives/button";
 import Icon from "~/primitives/icon";
 import Breadcrumbs from "../breadcrumbs";
-import Video from "~/primitives/Video";
+import Video from "~/primitives/video";
 import { MessageReturnType } from "~/routes/messages/message-single/loader";
 import { useLoaderData } from "react-router";
 import { Divider } from "~/routes/articles/partials/latest.partial";

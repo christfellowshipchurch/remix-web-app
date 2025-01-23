@@ -1,5 +1,4 @@
 import { useLoaderData } from "react-router";
-import Video from "~/primitives/Video";
 import { LoaderReturnType } from "../loader";
 import { camelCase } from "lodash";
 import { setReminderVideos } from "../locations-single.data";
@@ -7,6 +6,7 @@ import {
   CfEveywhereSetReminder,
   DefaultSetReminder,
 } from "./reminder-blocks.partial";
+import Video from "~/primitives/video";
 
 export const SetAReminder = () => {
   const { name, url } = useLoaderData<LoaderReturnType>();
