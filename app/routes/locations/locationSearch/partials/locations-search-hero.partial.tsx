@@ -1,5 +1,5 @@
 import Button from "~/primitives/button";
-import Video from "~/primitives/Video";
+import Video from "~/primitives/video";
 import Icon from "~/primitives/icon";
 import { CampusesReturnType } from "../loader";
 import * as Form from "@radix-ui/react-form";

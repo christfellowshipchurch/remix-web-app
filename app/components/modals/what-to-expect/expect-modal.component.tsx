@@ -1,4 +1,4 @@
-import Video from "~/primitives/Video";
+import Video from "~/primitives/video";
 
 const whatToExpectVideos = {
   palmBeachGardens: "beicrozg21",
