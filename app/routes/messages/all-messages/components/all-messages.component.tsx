@@ -1,5 +1,6 @@
 import SectionTitle from "~/components/section-title";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
+import { Icon } from "~/primitives/icon/icon";
 
 export type Tag = {
   label: string;
@@ -7,34 +8,36 @@ export type Tag = {
 };
 
 export const mockTags = [
-  { label: "Recent", isActive: true },
-  { label: "Topic or Tag", isActive: false },
-  { label: "Topic or Tag", isActive: false },
-  { label: "Topic or Tag", isActive: false },
-  { label: "Topic or Tag", isActive: false },
+  { label: "Tag", isActive: true },
+  { label: "Mens", isActive: false },
+  { label: "Women", isActive: false },
+  { label: "Kids & Students", isActive: false },
+  { label: "Young Adults", isActive: false },
+  { label: "Volunteer", isActive: false },
 ];
 
 // TODO: Add filter buttons using mock for now
 export const FilterButtons = ({ tags }: { tags: Tag[] }) => {
   return (
-    <div className="relative w-full">
-      <div className="flex overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex gap-4 flex-nowrap px-1 pb-4">
-          {tags.map((tag, index) => (
-            <div
-              key={`${tag.label}-${index}`}
-              className={`shrink-0 px-6 py-3 rounded-3xl justify-center items-center flex cursor-pointer whitespace-nowrap ${
-                tag.isActive
-                  ? "border border-neutral-600 text-neutral-600"
-                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-              }`}
-            >
-              <div className="text-xl font-semibold font-['Proxima Nova'] leading-7">
-                {tag.label}
-              </div>
+    <div className="relative w-full overflow-x-auto max-w-[90vw] md:max-w-full">
+      <div className="flex gap-6 flex-nowrap px-1 pb-4">
+        {tags.map((tag, index) => (
+          <div
+            key={`${tag.label}-${index}`}
+            className={`text-semiboldshrink-0 px-6 py-3 rounded-full justify-center items-center flex cursor-pointer whitespace-nowrap ${
+              tag.isActive
+                ? "border border-neutral-600 text-neutral-600"
+                : "bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300"
+            }`}
+          >
+            <div className="text-xl font-semibold font-['Proxima Nova'] leading-7">
+              {tag.label}
             </div>
-          ))}
-        </div>
+            {tag.isActive && (
+              <Icon className="text-ocean ml-2 mr-[-6px]" name="x" size={24} />
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
