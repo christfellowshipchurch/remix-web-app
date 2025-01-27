@@ -19,7 +19,7 @@ export const mockTags = [
 // TODO: Add filter buttons using mock for now
 export const FilterButtons = ({ tags }: { tags: Tag[] }) => {
   return (
-    <div className="relative w-full overflow-x-auto max-w-[90vw] md:max-w-full">
+    <div className="relative w-full overflow-x-auto max-w-[90vw]">
       <div className="flex gap-6 flex-nowrap px-1 pb-4">
         {tags.map((tag, index) => (
           <div
