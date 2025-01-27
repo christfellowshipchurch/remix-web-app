@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { Article, ArticlesReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 import { Divider } from "./latest.partial";
@@ -17,7 +17,11 @@ export const Articles = () => {
 
 const ArticlePanel = ({ article }: { article: Article }) => {
   return (
-    <div className="flex flex-col gap-5 w-full">
+    <Link
+      to={`/articles/${article.attributeValues.url.value}`}
+      prefetch="intent"
+      className="flex flex-col gap-5 w-full"
+    >
       <div className="flex flex-col gap-2">
         <div className="w-full">
           <img
@@ -43,6 +47,6 @@ const ArticlePanel = ({ article }: { article: Article }) => {
         <p className="break-words">{article.attributeValues.summary.value}</p>
         {/* TODO: Add CTA part */}
       </div>
-    </div>
+    </Link>
   );
 };
