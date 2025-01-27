@@ -11,7 +11,7 @@ export const Footer = () => {
 
   return (
     <footer className="flex flex-col items-center w-full bg-navy">
-      <div className="flex flex-col tems-center w-full max-w-screen-content px-5 md:px-10">
+      <div className="flex flex-col items-center w-full max-w-screen-content px-5 md:px-10">
         <div className="relative w-full">
           <div className="absolute w-full h-4 bg-ocean -top-2" />
         </div>
@@ -40,7 +40,9 @@ export const Footer = () => {
 
       {/* Copyright */}
       <div className="flex justify-center w-full border-t py-8 text-xs md:text-base text-[#D0D0CE] border-[#417890]">
-        <h4>© {year} Christ Fellowship Church. All Rights Reserved</h4>
+        <p className="text-[#D0D0CE]">
+          © {year} Christ Fellowship Church. All Rights Reserved
+        </p>
       </div>
     </footer>
   );
