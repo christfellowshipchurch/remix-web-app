@@ -17,22 +17,30 @@ export const Articles = () => {
 
 const ArticlePanel = ({ article }: { article: Article }) => {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 w-full">
       <div className="flex flex-col gap-2">
-        <img src={article.image} />
+        <div className="w-full">
+          <img
+            src={article.image}
+            className="w-full h-auto object-cover"
+            alt={article.title}
+          />
+        </div>
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <Icon name="calendarAlt" size={16} />
-            <p className="font-medium text-[#666666]">
+            <p className="font-medium text-[#666666] break-words">
               {article.startDate.toUpperCase()}
             </p>
           </div>
         </div>
         <Divider />
       </div>
-      <div>
-        <h3 className="font-extrabold text-[36px]">{article.title}</h3>
-        <p>{article.attributeValues.summary.value}</p>
+      <div className="w-full">
+        <h3 className="font-extrabold text-[36px] break-words">
+          {article.title}
+        </h3>
+        <p className="break-words">{article.attributeValues.summary.value}</p>
         {/* TODO: Add CTA part */}
       </div>
     </div>
