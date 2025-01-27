@@ -4,7 +4,7 @@ import Breadcrumbs from "../breadcrumbs";
 import Video from "~/primitives/Video";
 import { MessageReturnType } from "~/routes/messages/message-single/loader";
 import { useLoaderData } from "react-router";
-import { Divider } from "~/routes/articles/partials/latest.partial";
+import { Divider } from "~/routes/articles/all-articles/partials/latest.partial";
 
 export type DynamicVideoHeaderTypes = {
   ctas?: { href: string; title: string }[];
