@@ -45,8 +45,8 @@ export const FilterButtons = ({ tags }: { tags: Tag[] }) => {
 
 export default function Messages() {
   return (
-    <section className="relative py-32 p-8 min-h-screen bg-white">
-      <div className="relative max-w-6xl mx-auto">
+    <section className="relative py-32 min-h-screen bg-white content-padding">
+      <div className="relative max-w-screen-content mx-auto">
         <SectionTitle
           className="mb8"
           sectionTitle="all messages."
