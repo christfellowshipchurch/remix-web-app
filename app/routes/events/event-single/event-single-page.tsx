@@ -8,7 +8,7 @@ import { TimesLocations } from "./partials/times-and-locations";
 import { EventContent } from "./partials/event-content.partial";
 import SectionTitle from "~/components/section-title";
 
-export const EventPage: React.FC = () => {
+export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
 
   return (
