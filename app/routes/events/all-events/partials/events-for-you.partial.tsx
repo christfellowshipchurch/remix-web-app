@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router";
-import { EventReturnType } from "../all-events/loader";
+import { EventReturnType } from "../loader";
 import SectionTitle from "~/components/section-title";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
 import {
