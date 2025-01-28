@@ -23,7 +23,7 @@ export const EventPage: React.FC = () => {
           ]}
           customTitle={data.title}
         />
-        <div className="px-5 md:px-12 lg:px-18">
+        <div className="content-padding">
           <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-screen-content">
             <SectionTitle sectionTitle="event details." />
             <div className="flex w-full justify-center gap-16">
