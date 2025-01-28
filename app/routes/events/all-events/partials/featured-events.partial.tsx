@@ -1,4 +1,4 @@
-import { EventReturnType } from "../loader";
+import { EventReturnType } from "../all-events/loader";
 import { FeaturedCard } from "../components/featured-card.component";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
 import { useLoaderData } from "react-router";
