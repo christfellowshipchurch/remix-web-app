@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { Event } from "../loader";
 import { FeaturedCardMobile } from "./featured-card-mobile.component";
+import { Event } from "../loader";
 
 export const FeaturedCard = ({ card }: { card: Event }) => {
   return (
