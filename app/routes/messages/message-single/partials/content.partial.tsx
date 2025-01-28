@@ -6,9 +6,9 @@ export const MessageContent = ({}) => {
   const { message } = useLoaderData<MessageReturnType>();
 
   return (
-    <div className="flex w-full flex-col gap-24 pt-10 pb-2 lg:max-w-5xl xl:max-w-6xl">
+    <div className="flex w-full flex-col gap-24 pt-10 pb-2 content-padding">
       {/* Content */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 max-w-screen-content w-full mx-auto">
         {/* Speaker/Date Section */}
         <div className="flex flex-col">
           <h2 className="heading-h3">{message.summary}</h2>
