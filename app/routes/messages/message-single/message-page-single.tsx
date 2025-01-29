@@ -5,7 +5,7 @@ import { RelatedMessages } from "./partials/related-messages.partial";
 
 export function MessageSinglePage() {
   return (
-    <div className="flex flex-col items-center bg-gradient-to-br from-[#050A0D] to-[#5B5348] text-white pt-3 lg:pt-32">
+    <div className="flex flex-col items-center bg-gradient-to-br from-[#050A0D] to-[#5B5348] text-white pt-32">
       <MessageVideo />
       <MessageContent />
       <InThisSeries />
