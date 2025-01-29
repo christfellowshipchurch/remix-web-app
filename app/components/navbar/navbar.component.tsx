@@ -41,9 +41,9 @@ export function Navbar() {
       <div
         className={`z-50 ${
           mode == "light"
-            ? "bg-white"
+            ? "bg-white shadow-sm"
             : "absolute top-0 hover:bg-white bg-transparent transition-colors duration-200"
-        } py-5 shadow-sm w-full px-6 md:px-10`}
+        } py-5 w-full content-padding`}
       >
         <div className="max-w-screen-content mx-auto flex justify-between items-center font-bold">
           {/* Logo */}

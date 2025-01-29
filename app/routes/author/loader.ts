@@ -39,7 +39,7 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
     queryParams: {
       attributeKey: "Author",
       value: personAliasGuid,
-      $filter: "Status eq '2' and ContentChannelId eq 43",
+      $filter: "Status eq 'Approved' and ContentChannelId eq 43",
       $orderby: "StartDateTime desc",
       $top: "6",
       loadAttributes: "simple",
