@@ -40,7 +40,7 @@ const fetchMessageData = async (path: string) => {
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "Url",
-      $filter: "Status eq '2' and ContentChannelId eq 63",
+      $filter: "Status eq 'Approved' and ContentChannelId eq 63",
       value: path,
       loadAttributes: "simple",
     },

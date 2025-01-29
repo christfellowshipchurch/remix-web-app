@@ -19,7 +19,7 @@ export const HeroTitleSection = ({ name }: { name: string }) => {
 
   return (
     <div className="flex flex-col">
-      <h1 className="heading-h1">
+      <h1 className="text-white text-7xl font-bold">
         {title}{" "}
         {location && (
           <>
