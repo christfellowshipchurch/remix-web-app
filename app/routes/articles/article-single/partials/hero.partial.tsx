@@ -76,7 +76,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
             />
           </div>
         </div>
-        <div className="max-w-[1438px] mx-auto">
+        <div className="hidden md:block max-w-screen-content mx-auto">
           <hr className="border-neutral-lighter" />
           <div className="flex flex-col md:flex-row justify-between items-center py-10">
             <Breadcrumbs />
