@@ -32,7 +32,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
             <div className="flex flex-col justify-center lg:w-2/5 mt-4 md:mt-24 mr-10 mb-6 md:mb-0">
               {title && (
                 <h1
-                  className="mb-8 md:mb-4 max-w-2xl text-pretty heading-h1 leading-tight tracking-tight text-text_primary dark:text-white  md:leading-tight xl:text-6xl"
+                  className="mb-8 md:mb-4 max-w-2xl text-pretty heading-h1 leading-tight tracking-tight text-text_primary dark:text-white  md:leading-tight lg:text-6xl"
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
               )}
@@ -70,7 +70,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
             </div>
             {/* Cover Image - 4:3 ratio on lg screens */}
             <img
-              className="rounded-md h-full w-full object-cover md:max-w-[250px] lg:max-w-[600px] xl:max-w-[800px]"
+              className="rounded-md h-full w-full object-cover md:max-w-[250px] lg:max-w-[500px] xl:max-w-[800px]"
               src={coverImage}
               alt={title || "Cover"}
             />

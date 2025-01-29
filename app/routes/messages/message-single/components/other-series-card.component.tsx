@@ -10,7 +10,7 @@ type Series = {
 export const OtherSeriesCard = ({ series }: { series: Series }) => {
   return (
     <a href={series.attributeValues.url.value} className="w-full aspect-video">
-      <img src={series.coverImage} className="size-full" />
+      <img src={series.coverImage} className="size-full object-cover" />
     </a>
   );
 };
