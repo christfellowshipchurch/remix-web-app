@@ -3,8 +3,8 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import { AuthProvider } from "./providers/auth-provider";
-
 export { ErrorBoundary } from "./error";
+import "./styles/tailwind.css";
 
 export default function App() {
   return (
@@ -12,7 +12,6 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="../app/styles/tailwind.css" />
         <Meta />
         <Links />
       </head>

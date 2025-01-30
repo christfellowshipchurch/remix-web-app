@@ -1,46 +1,44 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
 FROM oven/bun:1 AS base
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json bun.lockb /temp/dev/
-RUN cd /temp/dev && bun install --frozen-lockfile
+# Install dependencies
+FROM base as deps
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
-# install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-COPY package.json bun.lockb /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile --production
+# Build the app
+FROM node:20-slim as builder
+WORKDIR /app
+ENV NODE_ENV=production
 
-# copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
-FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
+# Copy deps from bun stage
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Ensure Tailwind builds properly
+# Ensure Tailwind CSS is built before the main build
+RUN npx tailwindcss -o ./app/styles/tailwind.css --minify
+
+# Build using Node.js
+RUN npm install -g @react-router/dev @react-router/serve
+RUN npx react-router build
+
+# Production image
+FROM base as runner
 ENV NODE_ENV=production
-# Build Tailwind CSS first
-RUN bun run tailwindcss -i ./app/styles/tailwind.css -o ./public/styles/tailwind.css
-# Then build the application
-RUN bun run build
+ENV PORT=3000
 
-# copy production dependencies and source code into final image
-FROM base AS release
-WORKDIR /usr/src/app
-COPY --from=install /temp/prod/node_modules ./node_modules
-COPY ./package.json .
-COPY --from=prerelease /usr/src/app/build ./build
-COPY --from=prerelease /usr/src/app/public ./public
-# Ensure styles are copied correctly
-COPY ./app/styles ./app/styles
-COPY ./app/assets ./app/assets
-COPY .env .env
+# Copy built assets and ensure directory structure matches local development
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
 
-# run the app
-USER bun
-EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "start" ]
+# Create the app directory structure to match your local setup
+RUN mkdir -p app/styles
+COPY --from=builder /app/app/styles/tailwind.css ./app/styles/tailwind.css
+
+EXPOSE 3000
+
+# Start the app
+CMD ["bun", "run", "start"]
