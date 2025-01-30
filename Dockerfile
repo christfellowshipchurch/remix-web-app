@@ -13,15 +13,14 @@ FROM node:20-slim as builder
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Copy deps from bun stage
+# Copy deps from bun stage and source files
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Ensure Tailwind CSS is built before the main build
-RUN npx tailwindcss -o ./app/styles/tailwind.css --minify
+# Install build tools
+RUN npm install -g typescript ts-node @react-router/dev @react-router/serve
 
-# Build using Node.js
-RUN npm install -g @react-router/dev @react-router/serve
+# Build the app (this will process Tailwind through Vite)
 RUN npx react-router build
 
 # Production image
@@ -29,14 +28,13 @@ FROM base as runner
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy built assets and ensure directory structure matches local development
+# Copy all necessary files
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
-
-# Create the app directory structure to match your local setup
-RUN mkdir -p app/styles
-COPY --from=builder /app/app/styles/tailwind.css ./app/styles/tailwind.css
+COPY --from=builder /app/app ./app
+COPY --from=builder /app/tailwind.config.ts ./tailwind.config.ts
+COPY --from=builder /app/postcss.config.js ./postcss.config.js
 
 EXPOSE 3000
 
