@@ -15,7 +15,7 @@ export default defineConfig({
       include: ["lodash"],
       exclude: ["awesome-phonenumber", "twilio"],
     },
-    noExternal: ["lodash", "foo"],
+    noExternal: ["lodash"],
   },
   css: {
     postcss: {
