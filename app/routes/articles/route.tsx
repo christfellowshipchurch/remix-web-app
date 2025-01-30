@@ -1,5 +1,5 @@
-import { AllArticlesPage } from "./all-articles-page";
+import { AllArticlesPage } from "./all-articles/all-articles-page";
 
-export { loader } from "./loader";
+export { loader } from "./all-articles/loader";
 
 export default AllArticlesPage;

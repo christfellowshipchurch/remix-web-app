@@ -26,7 +26,7 @@ const fetchArticleData = async (articlePath: string) => {
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "Url",
-      $filter: "Status eq '2' and ContentChannelId eq 43",
+      $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
       value: articlePath,
       loadAttributes: "simple",
     },

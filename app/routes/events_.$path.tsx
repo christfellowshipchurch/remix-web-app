@@ -1,10 +1,10 @@
-import { EventPage } from "./events/event-single/event-page";
+import { EventSinglePage } from "./events/event-single/event-single-page";
 
 export { loader } from "./events/event-single/loader";
-export { action } from "./events/event-single/action";
+
 export { meta } from "./events/event-single/meta";
 
 // Using root ErrorBoundary
 export { ErrorBoundary } from "../error";
 
-export default EventPage;
+export default EventSinglePage;
