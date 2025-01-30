@@ -8,7 +8,7 @@ type RoutePattern = {
 // Include both static and dynamic routes
 export const darkModeRoutes: RoutePattern[] = [
   { path: "/about" },
-  { path: "/events" },
+  // { path: "/events" },
   { path: "/events/", isDynamic: true }, // This will match /events/[slug]
   { path: "/locations" },
   { path: "/locations/", isDynamic: true }, // This will match /locations/[slug]
