@@ -32,9 +32,18 @@ ENV PORT=3000
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/app ./app
+
+# Ensure app directory structure matches development
+COPY --from=builder /app/app/styles ./app/styles
+COPY --from=builder /app/app/assets ./app/assets
+
+# Copy config files
 COPY --from=builder /app/tailwind.config.ts ./tailwind.config.ts
 COPY --from=builder /app/postcss.config.js ./postcss.config.js
+
+# Create public assets directory and copy assets
+RUN mkdir -p public/assets
+COPY --from=builder /app/app/assets ./public/assets
 
 EXPOSE 3000
 
