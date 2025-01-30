@@ -18,7 +18,7 @@ export const EventsForYou = () => {
       />
       {/* Placeholder for filter buttons */}
       <FilterButtons tags={mockTags} />
-      <div className="grid grid-cols-3 gap-4 xl:gap-6 xxl:gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-8 xl:gap-6 xxl:gap-16 place-items-center md:place-items-start">
         {upcomingEvents.map((event, i) => (
           <ContentCard
             key={i}

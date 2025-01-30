@@ -9,9 +9,11 @@ export function AllArticlesPage() {
         imagePath="../app/assets/images/articles-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       />
-      <div className="flex-col flex md:flex-row justify-between gap-8 max-w-[1600px] md:px-8 lg:px-20 xl:px-36 py-28">
-        <Articles />
-        <LatestArticles />
+      <div className="px-5 md:px-12 lg:px-18 py-28">
+        <div className="flex-col flex md:flex-row justify-between gap-8 max-w-screen-content">
+          <Articles />
+          <LatestArticles />
+        </div>
       </div>
     </div>
   );

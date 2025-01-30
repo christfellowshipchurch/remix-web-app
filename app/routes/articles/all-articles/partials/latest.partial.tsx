@@ -20,24 +20,25 @@ export type Category = {
   articles: Article[];
 };
 
+const mockCategories: Category[] = [
+  { amount: 12, title: "Study The Bible", articles: [] },
+  { amount: 7, title: "Spiritual Growth", articles: [] },
+  { amount: 4, title: "Personal Growth", articles: [] },
+  { amount: 8, title: "Relationships", articles: [] },
+  { amount: 10, title: "Prayers", articles: [] },
+];
+
 export const LatestArticles = () => {
   const { recentArticles: articles } = useLoaderData<ArticlesReturnType>();
-  const mockCategories: Category[] = [
-    { amount: 12, title: "Study The Bible", articles: [] },
-    { amount: 7, title: "Spiritual Growth", articles: [] },
-    { amount: 4, title: "Personal Growth", articles: [] },
-    { amount: 8, title: "Relationships", articles: [] },
-    { amount: 10, title: "Prayers", articles: [] },
-  ];
 
   return (
-    <div className="flex flex-col h-full gap-6 p-8 border min-w-96 border-[#DCDCDC]">
+    <div className="flex flex-col h-full gap-6 p-8 border md:min-w-72 lg:min-w-96 border-[#DCDCDC]">
       <h2 className="font-extrabold text-2xl">Latest Posts</h2>
       <Divider />
       {articles &&
         articles.length > 0 &&
         articles.map((article, i) => (
-          <div key={i} className="flex flex-col gap-6">
+          <div key={i} className="flex flex-col gap-6 w-full">
             <Link
               to={`/articles/${article.attributeValues.url.value}`}
               prefetch="intent"

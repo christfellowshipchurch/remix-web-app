@@ -449,3 +449,25 @@ input[type="search"]:focus::-webkit-search-cancel-button {
   opacity: 0.3;
   pointer-events: all;
 }
+
+/* ------------ Content Padding ------------ */
+/* This is used to add padding to the content of the page along with side with the max-w-screen-content class */
+/* Replaces the px-5 md:px-12 lg:px-18 classes */
+@layer components {
+  .content-padding {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .content-padding {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .content-padding {
+      padding-left: 4.5rem;
+      padding-right: 4.5rem;
+    }
+  }
+}

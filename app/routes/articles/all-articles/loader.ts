@@ -52,8 +52,8 @@ const getUpcomingArticles = async () => {
   const upcomingArticles = await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {
-      $filter: `ContentChannelId eq 43 and Status eq 'PendingApproval'`,
-      $orderby: "StartDateTime desc",
+      $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
+      $orderby: "Order asc",
       $top: "5",
       loadAttributes: "simple",
     },

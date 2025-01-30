@@ -8,7 +8,13 @@ interface FooterColumnProps {
 export const FooterColumnComponent = ({ column }: FooterColumnProps) => {
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-2xl text-white font-bold">{column.title}</h2>
+      <div
+        className="text-2xl text-white font-bold"
+        role="heading"
+        aria-level={2}
+      >
+        {column.title}
+      </div>
       {column.links.map((link) =>
         link.url === "#connect-card" ? (
           <ConnectCardModal

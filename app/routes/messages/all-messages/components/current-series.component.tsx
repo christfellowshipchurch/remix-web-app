@@ -5,12 +5,12 @@ import Icon from "~/primitives/icon";
 
 const CurrentSeries: React.FC = () => {
   return (
-    <section className="relative py-32 p-8 min-h-screen bg-white">
+    <section className="relative py-32 min-h-screen bg-white content-padding">
       {/* Light Blue Background - Bottom Half */}
       <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[#F3F5FA]" />
 
       {/* Content Container */}
-      <div className="relative max-w-6xl mx-auto">
+      <div className="relative max-w-screen-content mx-auto">
         {/* Title Section */}
         <SectionTitle
           className="mb-8"

@@ -15,9 +15,9 @@ export const ContactInfo = () => {
           <Icon name="call" size={42} color="#D0D0CE" />
         </div>
         <div className="flex flex-col h-full justify-center">
-          <h2 className="text-sm md:text-lg font-medium text-[#D0D0CE]">
+          <p className="text-sm md:text-lg font-medium text-[#D0D0CE]">
             Call Us
-          </h2>
+          </p>
           <a className={linkStyle} href="tel:5617997600">
             (561) 799-7600
           </a>
@@ -30,9 +30,9 @@ export const ContactInfo = () => {
           <Icon name="envelope" size={42} color="#D0D0CE" />
         </div>
         <div className="flex flex-col h-full justify-center">
-          <h2 className="text-sm md:text-lg font-medium text-[#D0D0CE]">
+          <p className="text-sm md:text-lg font-medium text-[#D0D0CE]">
             Email Us
-          </h2>
+          </p>
           <a
             href="mailto:hello@christfellowship.church"
             className={`${linkStyle} w-full`}
@@ -48,16 +48,16 @@ export const ContactInfo = () => {
           <Icon name="map" size={42} color="#D0D0CE" />
         </div>
         <div className="flex flex-col h-full justify-center">
-          <h2 className="text-sm md:text-lg font-medium  text-[#D0D0CE]">
-            Visit Us
-          </h2>
+          <p className="text-sm md:text-lg font-medium text-[#D0D0CE]">
+            Find Us
+          </p>
           <a
-            target="_blank"
-            href="https://goo.gl/maps/Uv6zB3aFzr8pkfzz9"
+            href="https://goo.gl/maps/1234"
             className={linkStyle}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            5343 Northlake Blvd <br className="md:hidden lg:block" /> Palm Beach
-            Gardens, FL 33418
+            View Locations
           </a>
         </div>
       </div>

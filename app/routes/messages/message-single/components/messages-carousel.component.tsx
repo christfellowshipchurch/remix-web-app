@@ -4,7 +4,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "~/primitives/shadcn-promitives/carousel";
+} from "~/primitives/shadcn-primitives/carousel";
 import { OtherSeriesCard } from "./other-series-card.component";
 import { Message } from "../loader";
 
@@ -14,13 +14,13 @@ export function MessagesCarousel({ messages }: { messages: Message[] }) {
       opts={{
         align: "start",
       }}
-      className="w-full mt-8 relative"
+      className="w-full mt-8 relative mb-12"
     >
       <CarouselContent className="gap-6">
         {messages.map((message, index) => (
           <CarouselItem
             key={index}
-            className="w-full aspect-video basis-[31.5%] pl-0"
+            className="w-full aspect-video basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
           >
             <OtherSeriesCard series={message} />
           </CarouselItem>

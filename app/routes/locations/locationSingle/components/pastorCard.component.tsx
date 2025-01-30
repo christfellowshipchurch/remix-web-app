@@ -222,13 +222,17 @@ const MobilePastorCard = () => {
   );
 };
 
+const ImageBorder = () => (
+  <div className="h-1 w-24 border-b border-neutral-300" />
+);
+
 const PastorsImage = () => {
   const { campusPastors } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="flex w-full flex-col items-center pt-5">
       <div className="flex w-full items-center justify-center gap-4">
-        <div className="h-1 w-24 border-b border-secondary_subdued" />
+        <ImageBorder />
         <img
           src={campusPastors?.image}
           alt="Campus Pastors"
@@ -236,7 +240,7 @@ const PastorsImage = () => {
           height={120}
           className="rounded-full"
         />
-        <div className="h-1 w-24 border-b border-secondary_subdued" />
+        <ImageBorder />
       </div>
       <h3 className="pt-3 text-2xl font-bold">{campusPastors?.name}</h3>
       <p className="italic">Campus Pastors</p>

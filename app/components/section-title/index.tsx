@@ -15,12 +15,14 @@ export default function SectionTitle({
     <div className={`flex flex-col ${className || ""}`}>
       <div className="flex items-center gap-5">
         <div className="w-6 bg-ocean h-1 mb-4" />
-        <h2 className="text-lg font-extrabold text-ocean mb-4">
+        <h2 className="text-lg font-extrabold text-ocean mb-4 leading-none">
           {sectionTitle}
         </h2>
       </div>
       {title && (
-        <h1 className="text-[52px] font-bold text-text-primary">{title}</h1>
+        <h1 className="text-[52px] font-bold text-text-primary leading-tight">
+          {title}
+        </h1>
       )}
     </div>
   );

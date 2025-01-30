@@ -12,8 +12,8 @@ export const RelatedMessages = () => {
   const viewMoreLink = `/related-messages/${tagId}`;
 
   return (
-    <div className="bg-white w-full flex justify-center">
-      <div className="flex w-full  flex-col items-center py-12 md:py-24 lg:max-w-5xl xl:max-w-6xl ">
+    <div className="bg-white w-full flex justify-center content-padding">
+      <div className="flex w-full  flex-col items-center py-12 md:py-24 max-w-screen-content">
         {/* Header */}
         <div className="w-full flex justify-between">
           <div>

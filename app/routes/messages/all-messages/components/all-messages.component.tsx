@@ -1,5 +1,6 @@
 import SectionTitle from "~/components/section-title";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
+import { Icon } from "~/primitives/icon/icon";
 
 export type Tag = {
   label: string;
@@ -7,72 +8,45 @@ export type Tag = {
 };
 
 export const mockTags = [
-  { label: "Recent", isActive: true },
-  { label: "Topic or Tag", isActive: false },
-  { label: "Topic or Tag", isActive: false },
-  { label: "Topic or Tag", isActive: false },
-  { label: "Topic or Tag", isActive: false },
+  { label: "Tag", isActive: true },
+  { label: "Mens", isActive: false },
+  { label: "Women", isActive: false },
+  { label: "Kids & Students", isActive: false },
+  { label: "Young Adults", isActive: false },
+  { label: "Volunteer", isActive: false },
 ];
 
-const MessageCard = () => {
-  return (
-    <div className="w-96 flex flex-col gap-4">
-      <img
-        className="w-full h-72 object-cover"
-        src="https://cloudfront.christfellowship.church/GetImage.ashx?guid=1d311eaf-39ef-40cc-ad42-3e11b89d0051"
-        alt="Message thumbnail"
-      />
-
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-4">
-          <span className="text-stone-500 text-base font-medium uppercase">
-            Series Name
-          </span>
-          <span className="text-stone-500 text-base font-medium uppercase">
-            Pastor
-          </span>
-        </div>
-        <div className="h-px bg-neutral-600/20" />
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-neutral-800 text-3xl font-extrabold leading-tight">
-          Super Cool Event That is Happening very soon
-        </h3>
-        <a href="#" className="text-neutral-800 text-base font-bold underline">
-          Call to Action
-        </a>
-      </div>
-    </div>
-  );
-};
-
-// TODO: Add filter buttons
+// TODO: Add filter buttons using mock for now
 export const FilterButtons = ({ tags }: { tags: Tag[] }) => {
   return (
-    <div className="h-14 justify-start items-center gap-6 inline-flex">
-      {tags.map((tag, index) => (
-        <div
-          key={`${tag.label}-${index}`}
-          className={`px-6 py-3 rounded-3xl justify-center items-center gap-2 flex cursor-pointer ${
-            tag.isActive
-              ? "border border-neutral-600 text-neutral-600"
-              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-          }`}
-        >
-          <div className="text-xl font-semibold font-['Proxima Nova'] leading-7">
-            {tag.label}
+    <div className="relative w-full overflow-x-auto max-w-[90vw]">
+      <div className="flex gap-6 flex-nowrap px-1 pb-4">
+        {tags.map((tag, index) => (
+          <div
+            key={`${tag.label}-${index}`}
+            className={`text-semiboldshrink-0 px-6 py-3 rounded-full justify-center items-center flex cursor-pointer whitespace-nowrap ${
+              tag.isActive
+                ? "border border-neutral-600 text-neutral-600"
+                : "bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300"
+            }`}
+          >
+            <div className="text-xl font-semibold font-['Proxima Nova'] leading-7">
+              {tag.label}
+            </div>
+            {tag.isActive && (
+              <Icon className="text-ocean ml-2 mr-[-6px]" name="x" size={24} />
+            )}
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
 
 export default function Messages() {
   return (
-    <section className="relative py-32 p-8 min-h-screen bg-white">
-      <div className="relative max-w-6xl mx-auto">
+    <section className="relative py-32 min-h-screen bg-white content-padding">
+      <div className="relative max-w-screen-content mx-auto">
         <SectionTitle
           className="mb8"
           sectionTitle="all messages."
