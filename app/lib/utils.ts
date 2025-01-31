@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { camelCase, isString, mapKeys, mapValues, uniqueId } from "lodash";
+import lodash from "lodash";
 import { twMerge } from "tailwind-merge";
 import { ShareMessages } from "./types/messaging";
 import {
@@ -11,6 +11,8 @@ import {
   format,
   nextSunday,
 } from "date-fns";
+
+const { camelCase, isString, mapKeys, mapValues, uniqueId } = lodash;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

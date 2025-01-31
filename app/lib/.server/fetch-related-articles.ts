@@ -1,5 +1,5 @@
 import Config from "./config/config";
-import { flatten } from "lodash";
+import lodash from "lodash";
 import { fetchRockData, getImages } from "./fetch-rock-data";
 import { format } from "date-fns";
 import { getAuthorDetails } from "~/routes/articles/article-single/loader";
@@ -148,7 +148,7 @@ const fetchRelatedContent = async (taggedItems: any[]): Promise<any[]> => {
     taggedItems = [taggedItems];
   }
 
-  return flatten(
+  return lodash.flatten(
     await Promise.all(
       taggedItems.map(async (taggedItem) => {
         return await getContentItemByGuid(taggedItem.entityGuid);

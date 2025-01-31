@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router";
 import Button from "~/primitives/button";
 import { whatToExpectData } from "../locations-single.data";
-import { camelCase, startCase } from "lodash";
+import lodash from "lodash";
 import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
 import WhatToExpectModal from "~/components/modals/what-to-expect";
@@ -20,9 +20,9 @@ import { useState } from "react";
 export function MainCampusInfo() {
   const { name } = useLoaderData<LoaderReturnType>();
 
-  const expectData = whatToExpectData(startCase(name));
+  const expectData = whatToExpectData(lodash.startCase(name));
   const isEspanol = name?.includes("Español");
-  const camelCaseName = camelCase(name) as
+  const camelCaseName = lodash.camelCase(name) as
     | "palmBeachGardens"
     | "portStLucie"
     | "royalPalmBeach"
@@ -171,8 +171,8 @@ export function DuringTheWeek() {
             <h4 className="text-xl font-bold">
               {/* Translates day to Spanish if in Spanish page */}
               {isEspanol
-                ? weekdaySpanishTranslation(startCase(day))
-                : startCase(day)}
+                ? weekdaySpanishTranslation(lodash.startCase(day))
+                : lodash.startCase(day)}
             </h4>
             {events.map((event: any, index: number) => (
               <div key={index} className="flex items-center">

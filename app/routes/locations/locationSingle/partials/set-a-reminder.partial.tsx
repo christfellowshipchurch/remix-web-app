@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
-import Video from "~/primitives/Video";
+import Video from "~/primitives/video";
 import { LoaderReturnType } from "../loader";
-import { camelCase } from "lodash";
+import lodash from "lodash";
 import { setReminderVideos } from "../locations-single.data";
 import {
   CfEveywhereSetReminder,
@@ -12,7 +12,7 @@ export const SetAReminder = () => {
   const { name, url } = useLoaderData<LoaderReturnType>();
   const isEspanol = name?.includes("Español");
   const setReminderVideo =
-    setReminderVideos[camelCase(name) as keyof typeof setReminderVideos];
+    setReminderVideos[lodash.camelCase(name) as keyof typeof setReminderVideos];
 
   // TODO: Missing Jupiter video
   return (
@@ -41,7 +41,7 @@ export const SetAReminder = () => {
                 wistiaId={
                   isEspanol
                     ? setReminderVideos[
-                        camelCase(url) as keyof typeof setReminderVideos
+                        lodash.camelCase(url) as keyof typeof setReminderVideos
                       ]
                     : setReminderVideo
                 }
