@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 /* Importing fonts directly in tailwind.css */
 @layer base {
