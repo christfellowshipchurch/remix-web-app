@@ -1,25 +1,23 @@
-import tailwindcss from "tailwindcss";
-import autoprefixer from "autoprefixer";
 import { reactRouter } from "@react-router/dev/vite";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
-  plugins: [reactRouter(), tsconfigPaths()],
-  optimizeDeps: {
-    include: ["lodash"],
-    exclude: ["awesome-phonenumber", "twilio"],
+export default defineConfig(({ isSsrBuild, command }) => ({
+  build: {
+    rollupOptions: isSsrBuild
+      ? {
+          input: "./server/app.ts",
+        }
+      : {
+          external: ["fs", "path", "url"],
+        },
   },
   ssr: {
-    optimizeDeps: {
-      include: ["lodash"],
-      exclude: ["awesome-phonenumber", "twilio"],
-    },
-    noExternal: ["lodash", "foo"],
+    noExternal: command === "build" ? true : undefined,
   },
-  css: {
-    postcss: {
-      plugins: [tailwindcss, autoprefixer],
-    },
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  optimizeDeps: {
+    exclude: ["twilio"],
   },
-});
+}));

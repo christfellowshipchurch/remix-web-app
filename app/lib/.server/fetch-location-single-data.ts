@@ -1,4 +1,4 @@
-import { includes, lowerCase } from "lodash";
+import lodash from "lodash";
 import { getIdentifierType } from "../utils";
 import { fetchRockData } from "./fetch-rock-data";
 import { format } from "date-fns";
@@ -112,7 +112,7 @@ export const fetchWeekdaySchedules = async (matrixGuid: any) => {
   //Grab day, time, title, url from matrixItems
   let matrixItemValues = matrixItems?.flatMap((n: any) => {
     const { attributeValues } = n;
-    const day = lowerCase(attributeValues?.day?.valueFormatted);
+    const day = lodash.lowerCase(attributeValues?.day?.valueFormatted);
 
     // Check if the day is valid
     if (!day || day.trim() === "") {
@@ -121,7 +121,7 @@ export const fetchWeekdaySchedules = async (matrixGuid: any) => {
     }
 
     // If there are multiple days, split them into separate entries
-    if (includes(day, " ")) {
+    if (lodash.includes(day, " ")) {
       const days = day.split(" ");
       return days.map((d) => ({
         [d]: {

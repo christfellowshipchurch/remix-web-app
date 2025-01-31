@@ -1,10 +1,5 @@
-/*
- Due to PostCSS issues we cannot import fonts from separate css files. And must directyl import them in our tailwind.css
-*/
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 /* Importing fonts directly in tailwind.css */
 @layer base {
