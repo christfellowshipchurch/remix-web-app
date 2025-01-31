@@ -1,5 +1,4 @@
-import Config from "./config/config";
-import { flatten } from "lodash";
+import lodash from "lodash";
 import { fetchRockData, getImages } from "./fetch-rock-data";
 import { format } from "date-fns";
 import { getAuthorDetails } from "~/routes/articles/article-single/loader";
@@ -16,21 +15,14 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
   articles: any[];
 }> {
   try {
-    const {
-      ROCK_MAPPINGS: {
-        // Related Articles we don't want to show
-        RELATED_ARTICLES_EXCLUDE_TAGS,
-        // Content Channel ID for Articles
-        CONTENT_CHANNEL_PATHNAMES: { articles },
-      },
-    } = Config;
-
     // Find tags for the current article
     const taggedItems = await getTaggedItemsByEntityGuid(guid);
-    const tagIds = await getValidTagIds(
-      taggedItems,
-      RELATED_ARTICLES_EXCLUDE_TAGS
-    );
+    const tagIds = await getValidTagIds(taggedItems, [
+      1561, // Articles
+      1607, // All Messages
+      1558, // Every Month
+      1557, // Every Week
+    ]);
 
     // Determine the tag to use for related articles
     const relatedArticleTag = tagIds.length > 0 ? tagIds[0] : DEFAULT_TAG_ID;
@@ -44,8 +36,7 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
     // Ensure the content is from the articles channel and has active status
     const relatedArticles = relatedContent.filter(
       (contentItem) =>
-        contentItem?.contentChannelId === articles[0] &&
-        contentItem?.status === 2
+        contentItem?.contentChannelId === 43 && contentItem?.status === 2
     );
 
     // Sort the related articles by priority and author
@@ -148,7 +139,7 @@ const fetchRelatedContent = async (taggedItems: any[]): Promise<any[]> => {
     taggedItems = [taggedItems];
   }
 
-  return flatten(
+  return lodash.flatten(
     await Promise.all(
       taggedItems.map(async (taggedItem) => {
         return await getContentItemByGuid(taggedItem.entityGuid);
