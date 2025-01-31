@@ -7,7 +7,7 @@ import {
   createOrFindSmsLoginUserId,
   parsePhoneNumberUtil,
 } from "~/lib/.server/authentication/sms-authentication";
-import { isObject } from "lodash";
+import lodash from "lodash";
 
 // Types
 interface PersonFormData {
@@ -61,7 +61,7 @@ const findPersonByPhoneAndName = async (
   // Convert to array if single object
   const phoneEntries = Array.isArray(existingPhoneNumbers)
     ? existingPhoneNumbers
-    : isObject(existingPhoneNumbers)
+    : lodash.isObject(existingPhoneNumbers)
     ? [existingPhoneNumbers]
     : [];
 

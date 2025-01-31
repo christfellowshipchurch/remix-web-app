@@ -1,4 +1,4 @@
-import { find } from "lodash";
+import lodash from "lodash";
 import { headerData } from "../locations-single.data";
 
 import Button from "~/primitives/button";
@@ -11,7 +11,7 @@ import ConnectCardModal from "~/components/modals/connect-card";
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock
   const { name } = useLoaderData<LoaderReturnType>();
-  const headerContent = find(headerData, { name });
+  const headerContent = lodash.find(headerData, { name });
   const videoSrc = headerContent?.backgroundVideo?.desktop;
 
   const isEspanol = name?.includes("Español");

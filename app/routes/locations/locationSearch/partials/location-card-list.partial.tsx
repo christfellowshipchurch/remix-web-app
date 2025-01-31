@@ -1,4 +1,4 @@
-import { kebabCase } from "lodash";
+import lodash from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "react-router";
@@ -46,8 +46,8 @@ export const LocationCardList = ({
                 campus?.name?.includes("Online")
                   ? `/${url}`
                   : !campus?.name.includes("Español")
-                  ? `/${kebabCase(campus?.name)}`
-                  : `/iglesia-${kebabCase(url)}`
+                  ? `/${lodash.kebabCase(campus?.name)}`
+                  : `/iglesia-${lodash.kebabCase(url)}`
               }
             />
           );
