@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "~/primitives/Modal";
 import ConnectCardFlow from "./connect-card-flow.component";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { ButtonProps } from "~/primitives/button/button.primitive";
 
 interface ConnectCardModalProps {

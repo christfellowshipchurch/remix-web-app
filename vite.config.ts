@@ -46,7 +46,7 @@ export default defineConfig(({ command, mode }) => ({
     },
   },
   ssr: {
-    noExternal: true,
+    noExternal: command === "serve" ? [] : true,
     external: [
       "node:stream",
       "node:fs",
@@ -54,10 +54,14 @@ export default defineConfig(({ command, mode }) => ({
       "node:url",
       "express",
       "twilio",
+      "@react-router/express",
     ],
+    target: "node",
+    format: "esm",
   },
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   optimizeDeps: {
     exclude: ["twilio"],
+    include: ["@react-router/express"],
   },
 }));

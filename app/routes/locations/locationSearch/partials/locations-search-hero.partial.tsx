@@ -1,4 +1,4 @@
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import Video from "~/primitives/video";
 import Icon from "~/primitives/icon";
 import { CampusesReturnType } from "../loader";
