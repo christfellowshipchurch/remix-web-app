@@ -2,6 +2,7 @@ import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import path from "path";
 
 export default defineConfig(({ command, mode }) => ({
   build: {
@@ -40,11 +41,12 @@ export default defineConfig(({ command, mode }) => ({
   },
   resolve: {
     alias: {
+      "~": path.resolve(__dirname, "./app"),
       "@": "/app",
     },
   },
   ssr: {
-    noExternal: command === "build" ? true : undefined,
+    noExternal: true,
     external: [
       "node:stream",
       "node:fs",
