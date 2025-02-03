@@ -44,6 +44,7 @@ export default defineConfig(({ command, mode }) => ({
       "~": path.resolve(__dirname, "./app"),
       "@": "/app",
     },
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   ssr: {
     noExternal: command === "serve" ? [] : true,
