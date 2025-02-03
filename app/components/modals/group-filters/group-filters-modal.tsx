@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "~/primitives/Modal";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import { GroupFilters } from "./group-filters";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 interface GroupFiltersModalProps {
   ModalButton?: React.ComponentType<ButtonProps>;

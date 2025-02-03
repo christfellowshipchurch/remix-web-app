@@ -1,4 +1,4 @@
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { icons } from "~/lib/icons";
 import { Link } from "react-router";
 type IconName = keyof typeof icons;

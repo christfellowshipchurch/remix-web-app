@@ -1,5 +1,5 @@
 import { usePagination, UsePaginationProps } from "react-instantsearch";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 export const CustomPagination = (props: UsePaginationProps) => {
   const {

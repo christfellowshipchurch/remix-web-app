@@ -1,6 +1,6 @@
 import { useLoaderData, useLocation } from "react-router";
 import CopyLink from "./copy-link.component";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 const socialIcons: {
   name: "linkAlt" | "linkedIn" | "twitter" | "facebook" | "instagram";

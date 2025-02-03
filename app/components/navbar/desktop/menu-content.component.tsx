@@ -1,5 +1,5 @@
-import Icon from "~/primitives/icon";
-import { HeroNavCard, NavCard, NavCardProps } from "./nav-cards.component";
+import { HeroNavCard, NavCard } from "./nav-cards.component";
+import { Icon } from "~/primitives/icon/icon";
 
 interface MenuItem {
   title: string;

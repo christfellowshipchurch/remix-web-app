@@ -2,7 +2,7 @@
  * todo : Add link navigation to the menu items
  */
 import { useState } from "react";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import {
   locationsData,
   ministriesData,

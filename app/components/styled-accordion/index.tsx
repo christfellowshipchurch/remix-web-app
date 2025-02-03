@@ -1,6 +1,6 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import HTMLRenderer from "~/primitives/html-renderer";
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 
 type AccordionDataType = {
   bg?: string;

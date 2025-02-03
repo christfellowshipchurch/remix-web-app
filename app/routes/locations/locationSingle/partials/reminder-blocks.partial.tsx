@@ -3,7 +3,7 @@ import SetAReminderModal from "~/components/modals/set-a-reminder";
 import { Button } from "~/primitives/button/button.primitive";
 import Modal from "~/primitives/Modal";
 import { LoaderReturnType } from "../loader";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 export const CfEveywhereSetReminder = () => {
   const stepsData = [

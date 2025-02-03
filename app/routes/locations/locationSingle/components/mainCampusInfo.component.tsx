@@ -6,7 +6,7 @@ import { LoaderReturnType } from "../loader";
 import Modal from "~/primitives/Modal";
 import WhatToExpectModal from "~/components/modals/what-to-expect";
 import { weekdaySpanishTranslation } from "../util";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { useState } from "react";
 
 /**

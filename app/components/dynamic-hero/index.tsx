@@ -1,5 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { Link, useLocation } from "react-router";
 import Breadcrumbs from "../breadcrumbs";
 

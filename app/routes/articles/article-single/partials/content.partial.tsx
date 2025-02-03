@@ -1,6 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
-import HTMLRenderer from "~/primitives/html-renderer";
-
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 export interface ArticleContentProps extends React.HTMLAttributes<HTMLElement> {
   htmlContent?: string;
   resources?: { resource: string; url: string }[];

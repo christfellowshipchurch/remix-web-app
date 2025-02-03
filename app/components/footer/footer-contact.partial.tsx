@@ -1,4 +1,4 @@
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 const linkStyle =
   "font-bold text-xl text-white hover:text-ocean transition-colors md:heading-h5";

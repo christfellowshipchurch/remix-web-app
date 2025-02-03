@@ -1,6 +1,6 @@
 import { Button } from "~/primitives/button/button.primitive";
-import Video from "~/primitives/video";
-import Icon from "~/primitives/icon";
+import { Video } from "~/primitives/video/video.primitive";
+import { Icon } from "~/primitives/icon/icon";
 import { CampusesReturnType } from "../loader";
 import * as Form from "@radix-ui/react-form";
 import { useLoaderData } from "react-router";

@@ -1,4 +1,4 @@
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 const links: { name: "youtube" | "instagram" | "linkedIn"; url: string }[] = [
   {

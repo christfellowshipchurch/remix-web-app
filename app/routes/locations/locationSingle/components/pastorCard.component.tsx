@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
 import { Button } from "~/primitives/button/button.primitive";
 import { LoaderReturnType } from "../loader";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 const PastorCard = () => {
   return (
     <>
