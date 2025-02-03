@@ -1,5 +1,5 @@
 import type { MetaFunction } from "react-router";
-import { loader } from "./loader";
+import { loader, LoaderReturnType } from "./loader";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) {
@@ -12,8 +12,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     ];
   }
 
+  const typedData = data as LoaderReturnType;
+
   return [
-    { title: `${data?.fullName} | Christ Fellowship Church` },
-    { name: "description", content: data?.summary },
+    { title: `${typedData.fullName} | Christ Fellowship Church` },
+    { name: "description", content: typedData.authorAttributes.bio },
   ];
 };
