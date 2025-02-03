@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
 import {
