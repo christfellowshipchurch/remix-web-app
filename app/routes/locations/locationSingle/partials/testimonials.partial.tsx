@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { testimonialData } from "../locations-single.data";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 export type Testimonies = {
   testimonies: {

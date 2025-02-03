@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 export default function Breadcrumbs() {
   const location = useLocation();

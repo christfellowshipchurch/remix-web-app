@@ -1,7 +1,7 @@
 import { Button } from "~/primitives/button/button.primitive";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import Breadcrumbs from "../breadcrumbs";
-import Video from "~/primitives/video";
+import { Video } from "~/primitives/video/video.primitive";
 import { Divider } from "~/routes/articles/all-articles/partials/latest.partial";
 import { Link } from "react-router";
 

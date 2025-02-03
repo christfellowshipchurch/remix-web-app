@@ -1,7 +1,6 @@
 import { useLoaderData } from "react-router";
 import { MessageReturnType } from "../loader";
-import HTMLRenderer from "~/primitives/html-renderer";
-
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 export const MessageContent = ({}) => {
   const { message } = useLoaderData<MessageReturnType>();
 

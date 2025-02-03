@@ -4,7 +4,7 @@
  */
 
 import React, { forwardRef, useEffect, useRef } from "react";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import colors from "~/styles/colors";
 
 export const defaultTextInputStyles =

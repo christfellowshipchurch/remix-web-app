@@ -1,8 +1,7 @@
 import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "../../loader";
 import { locationBlockData } from "../../locations-single.data";
-import HTMLRenderer from "~/primitives/html-renderer";
-
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 export const TodaLaSemana = () => {
   const { name } = useLoaderData<LoaderReturnType>();
   const blockData = locationBlockData(name);

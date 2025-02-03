@@ -11,7 +11,7 @@ import SectionTitle from "~/components/section-title";
 import { useMediaQuery } from "react-responsive";
 import { GroupFilters } from "~/components/modals/group-filters/group-filters";
 import { GroupFiltersModal } from "~/components/modals/group-filters/group-filters-modal";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

@@ -17,7 +17,7 @@ import {
   navigationMenuTriggerStyle,
 } from "./navbar.styles";
 import MobileMenu from "./mobile/mobile-menu.component";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { useLocation } from "react-router";
 import { shouldUseDarkMode } from "./navbar-routes";
 

@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router";
 import { Article, ArticlesReturnType } from "../loader";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { Divider } from "./latest.partial";
 
 export const Articles = () => {

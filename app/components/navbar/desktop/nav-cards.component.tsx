@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import { cn } from "~/lib/utils";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { ImageLoader } from "~/primitives/loading-states/image-loader.primitive";
 
 export interface NavCardProps {

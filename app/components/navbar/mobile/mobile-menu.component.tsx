@@ -1,4 +1,4 @@
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
 

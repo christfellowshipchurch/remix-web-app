@@ -1,5 +1,4 @@
-import HTMLRenderer from "~/primitives/html-renderer";
-
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 export const EventContent = ({ htmlContent }: { htmlContent: string }) => {
   return (
     <div className="w-full flex flex-col gap-8">

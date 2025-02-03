@@ -2,7 +2,7 @@ import {
   useClearRefinements,
   UseClearRefinementsProps,
 } from "react-instantsearch";
-import Icon from "~/primitives/icon";
+import { Icon } from "~/primitives/icon/icon";
 
 interface CustomClearRefinementsProps extends UseClearRefinementsProps {
   text?: string;
