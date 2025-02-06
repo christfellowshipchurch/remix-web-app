@@ -49,7 +49,12 @@ export default defineConfig(({ command, mode }) => ({
     noExternal: [
       ...(command === "serve"
         ? []
-        : ["@react-router/express", "@react-router/node", "express"]),
+        : [
+            "@react-router/express",
+            "@react-router/node",
+            "express",
+            "react-router",
+          ]),
     ],
     external: ["node:stream", "node:fs", "node:path", "node:url", "twilio"],
     target: "node",
