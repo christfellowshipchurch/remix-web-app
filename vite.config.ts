@@ -47,23 +47,24 @@ export default defineConfig(({ command, mode }) => ({
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   ssr: {
-    noExternal: process.env.VERCEL
-      ? true
-      : [
-          ...(command === "serve"
-            ? []
-            : ["@react-router/express", "@react-router/node"]),
-        ],
-    external: process.env.VERCEL
-      ? []
-      : [
-          "node:stream",
-          "node:fs",
-          "node:path",
-          "node:url",
-          "express",
-          "twilio",
-        ],
+    ssr: {
+      noExternal:
+        command === "build"
+          ? true
+          : [
+              ...(command === "serve"
+                ? []
+                : ["@react-router/express", "@react-router/node"]),
+            ],
+    },
+    external: [
+      "node:stream",
+      "node:fs",
+      "node:path",
+      "node:url",
+      "express",
+      "twilio",
+    ],
     target: "node",
     format: "esm",
   },
