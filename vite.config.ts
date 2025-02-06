@@ -47,16 +47,14 @@ export default defineConfig(({ command, mode }) => ({
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   ssr: {
-    ssr: {
-      noExternal:
-        command === "build"
-          ? true
-          : [
-              ...(command === "serve"
-                ? []
-                : ["@react-router/express", "@react-router/node"]),
-            ],
-    },
+    noExternal:
+      command === "build"
+        ? true
+        : [
+            ...(command === "serve"
+              ? []
+              : ["@react-router/express", "@react-router/node"]),
+          ],
     external: [
       "node:stream",
       "node:fs",
