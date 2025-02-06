@@ -46,23 +46,7 @@ export default defineConfig(({ command, mode }) => ({
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   ssr: {
-    noExternal: [
-      ...(command === "serve"
-        ? []
-        : [
-            "cookie",
-            "@react-router/express",
-            "@react-router/node",
-            "@react-router/serve",
-            "@react-router/dev",
-            "@react-router/fs-routes",
-            "turbo-stream",
-            "express",
-            "react-router",
-            "react-router-dom",
-            "react",
-          ]),
-    ],
+    noExternal: true,
     external: ["node:stream", "node:fs", "node:path", "node:url", "twilio"],
     target: "node",
     format: "esm",
