@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     [
-      "default-src 'self'",
+      "default-src 'none'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
