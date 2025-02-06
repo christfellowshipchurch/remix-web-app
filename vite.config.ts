@@ -50,6 +50,7 @@ export default defineConfig(({ command, mode }) => ({
       ...(command === "serve"
         ? []
         : [
+            "cookie",
             "@react-router/express",
             "@react-router/node",
             "@react-router/serve",
