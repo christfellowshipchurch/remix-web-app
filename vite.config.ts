@@ -32,7 +32,6 @@ export default defineConfig(({ command, mode }) => ({
         "net",
         "async_hooks",
         "stream",
-        "express",
         "twilio",
       ],
     },
@@ -50,16 +49,9 @@ export default defineConfig(({ command, mode }) => ({
     noExternal: [
       ...(command === "serve"
         ? []
-        : ["@react-router/express", "@react-router/node"]),
+        : ["@react-router/express", "@react-router/node", "express"]),
     ],
-    external: [
-      "node:stream",
-      "node:fs",
-      "node:path",
-      "node:url",
-      "express",
-      "twilio",
-    ],
+    external: ["node:stream", "node:fs", "node:path", "node:url", "twilio"],
     target: "node",
     format: "esm",
   },
