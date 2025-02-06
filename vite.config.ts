@@ -54,6 +54,7 @@ export default defineConfig(({ command, mode }) => ({
             "@react-router/node",
             "express",
             "react-router",
+            "react",
           ]),
     ],
     external: ["node:stream", "node:fs", "node:path", "node:url", "twilio"],
