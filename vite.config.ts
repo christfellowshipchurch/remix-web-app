@@ -52,8 +52,13 @@ export default defineConfig(({ command, mode }) => ({
         : [
             "@react-router/express",
             "@react-router/node",
+            "@react-router/serve",
+            "@react-router/dev",
+            "@react-router/fs-routes",
+            "turbo-stream",
             "express",
             "react-router",
+            "react-router-dom",
             "react",
           ]),
     ],
