@@ -1,4 +1,4 @@
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 
 const GroupConnectConfirmation = ({ onSuccess }: { onSuccess: () => void }) => {
   return (
