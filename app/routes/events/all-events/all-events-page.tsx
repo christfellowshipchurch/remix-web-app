@@ -7,7 +7,7 @@ export function AllEventsPage() {
     <div className="flex flex-col items-center">
       {/* We will remove the dynamic hero for now */}
       {/* <DynamicHero
-        imagePath="../app/assets/images/events-hero-bg.jpg"
+        imagePath="/assets/images/events-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       /> */}
       <div className="px-5 md:px-12 lg:px-18 py-20">

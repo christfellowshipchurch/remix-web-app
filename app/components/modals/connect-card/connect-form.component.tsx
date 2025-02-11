@@ -1,7 +1,6 @@
 import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
-import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useFetcher } from "react-router";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
@@ -152,7 +151,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 className={`appearance-none ${defaultTextInputStyles}`}
                 required
                 style={{
-                  backgroundImage: `url(${chevronDownIcon})`,
+                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
                   backgroundSize: "24px",
                   backgroundPosition: "calc(100% - 2%) center",
                   backgroundRepeat: "no-repeat",

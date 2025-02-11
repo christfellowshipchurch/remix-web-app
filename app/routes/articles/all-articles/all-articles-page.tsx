@@ -6,7 +6,7 @@ export function AllArticlesPage() {
   return (
     <div className="flex flex-col items-center">
       <DynamicHero
-        imagePath="../app/assets/images/articles-hero-bg.jpg"
+        imagePath="/assets/images/articles-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       />
       <div className="px-5 md:px-12 lg:px-18 py-28">

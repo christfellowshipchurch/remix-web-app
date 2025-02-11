@@ -1,7 +1,7 @@
 import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
 import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useFetcher, useLoaderData } from "react-router";
 import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";

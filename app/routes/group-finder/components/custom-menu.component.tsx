@@ -15,11 +15,11 @@ export function MenuSelect({
 
   return (
     <select
-      className="w-full px-2 py-1 border-2 border-[#D0D0CE] rounded-md"
+      className="w-full px-2 py-1 border-2 border-[#D0D0CE] rounded-md focus:outline-none"
       style={{
         appearance: "none",
         background:
-          "url(../app/assets/icons/groups/chevron-down.svg) no-repeat right 0.5rem center/1.5rem",
+          "url('/assets/icons/chevron-down.svg') no-repeat right 0.5rem center/1.5rem",
       }}
       value={selectedValue}
       onChange={(event) => {

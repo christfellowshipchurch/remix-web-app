@@ -1,6 +1,6 @@
 import * as Form from "@radix-ui/react-form";
 import React, { useState } from "react";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 

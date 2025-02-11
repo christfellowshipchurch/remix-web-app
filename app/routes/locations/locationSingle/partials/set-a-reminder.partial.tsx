@@ -1,5 +1,6 @@
 import { useLoaderData } from "react-router";
-import Video from "~/primitives/video";
+import { Video } from "~/primitives/video/video.primitive";
+
 import { LoaderReturnType } from "../loader";
 import lodash from "lodash";
 import { setReminderVideos } from "../locations-single.data";
