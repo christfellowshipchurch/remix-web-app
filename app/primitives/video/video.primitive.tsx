@@ -1,4 +1,4 @@
-import { WistiaPlayer } from "./wistia-player.component";
+import { WistiaPlayer } from "./wistia-player";
 
 type VideoProps = {
   src?: string;

@@ -8,7 +8,7 @@ import {
   ministriesData,
   watchReadListenData,
 } from "../navbar.data";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { NavCard } from "../desktop/nav-cards.component";
 
 interface MenuScreen {

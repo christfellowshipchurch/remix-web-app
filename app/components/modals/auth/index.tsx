@@ -2,7 +2,7 @@ import { useState } from "react";
 // import { useAuth } from "providers/AuthProvider"
 import LoginFlow from "./login-flow.component";
 import Modal from "~/primitives/Modal";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 
 export default function AuthModal() {
   const [openModal, setOpenModal] = useState(false);

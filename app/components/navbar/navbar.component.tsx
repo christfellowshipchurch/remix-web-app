@@ -7,7 +7,7 @@ import {
   NavigationMenuTrigger,
 } from "@radix-ui/react-navigation-menu";
 
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { ministriesData, watchReadListenData } from "./navbar.data";
 import { MenuContent } from "./desktop/menu-content.component";

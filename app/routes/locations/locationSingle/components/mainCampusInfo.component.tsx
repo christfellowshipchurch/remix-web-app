@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { whatToExpectData } from "../locations-single.data";
 import lodash from "lodash";
 import { LoaderReturnType } from "../loader";

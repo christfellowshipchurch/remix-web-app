@@ -3,7 +3,7 @@ import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { LoaderReturnType } from "../loader";
 import Breadcrumbs from "~/components/breadcrumbs";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 
 export interface AuthorProps {

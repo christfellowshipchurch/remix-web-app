@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { NewUser } from "./login-flow.component";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 
 interface AccountCreationProps {
   onSubmit: (userData: NewUser) => Promise<void>;

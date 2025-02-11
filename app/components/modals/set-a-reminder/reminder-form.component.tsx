@@ -1,7 +1,6 @@
 import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
-import chevronDownIcon from "../../../assets/icons/chevron-down.svg";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useFetcher, useLoaderData } from "react-router";
 import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";
@@ -112,11 +111,11 @@ const ReminderForm: React.FC<ReminderProps> = ({
           <Form.Label className="font-bold text-sm mb-2">Campus</Form.Label>
           <Form.Control asChild>
             <select
-              className={`appearance-none ${defaultTextInputStyles}`}
+              className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
               required
               disabled
               style={{
-                backgroundImage: `url(${chevronDownIcon})`,
+                backgroundImage: `url('/assets/icons/chevron-down.svg')`,
                 backgroundSize: "24px",
                 backgroundPosition: "calc(100% - 2%) center",
                 backgroundRepeat: "no-repeat",
@@ -134,11 +133,11 @@ const ReminderForm: React.FC<ReminderProps> = ({
           <Form.Control asChild>
             {serviceTimes && (
               <select
-                className={`appearance-none ${defaultTextInputStyles}`}
+                className={`appearance-none ${defaultTextInputStyles} cursor-pointer`}
                 required
                 onChange={(e) => setServiceTime(e.target.value)}
                 style={{
-                  backgroundImage: `url(${chevronDownIcon})`,
+                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
                   backgroundSize: "24px",
                   backgroundPosition: "calc(100% - 2%) center",
                   backgroundRepeat: "no-repeat",

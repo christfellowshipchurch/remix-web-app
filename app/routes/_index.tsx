@@ -3,7 +3,7 @@ import { Link, useLoaderData } from "react-router";
 import { useEffect, useState } from "react";
 import AuthModal from "~/components/modals/auth";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { useAuth, User } from "~/providers/auth-provider";
 
 export const meta: MetaFunction = () => {

@@ -1,10 +1,8 @@
-// TODO: Add a check for #connect-card here so that it can open the modal on any page, unlike current site.
-
-import ConnectCardModal from "../modals/connect-card";
 import { ContactInfo } from "./footer-contact.partial";
 import { FooterLinks } from "./footer-links.partial";
 import { FooterColumnComponent } from "./footer-column.component";
 import { footerColumns } from "./footer-data";
+import { Icon } from "~/primitives/icon/icon";
 
 export const Footer = () => {
   const year = new Date().getFullYear();
@@ -19,14 +17,11 @@ export const Footer = () => {
         <ContactInfo />
 
         {/* Info Section */}
-        <div className="w-full border-t border-[#417890] justify-between py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-5 gap-y-14 md:gap-y-8">
+        <div className="w-full border-t border-[#417890] items-start py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-5 gap-y-14 md:gap-y-8">
           <div className="flex flex-col items-center md:items-start gap-8 col-span-2 md:col-span-1 mr-4">
-            <img
-              src="../app/assets/light-logo.png"
-              alt="Christ Fellowship"
-              width={158}
-              height={55}
-            />
+            <div>
+              <Icon name="logo" className="size-40" />
+            </div>
             <div className="flex flex-col gap-3">
               <FooterLinks />
             </div>

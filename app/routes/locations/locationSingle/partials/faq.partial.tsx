@@ -1,5 +1,5 @@
 import StyledAccordion from "~/components/styled-accordion";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { faqData } from "~/lib/faq-data.data";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";

@@ -1,4 +1,4 @@
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { RelatedArticleCard } from "../components/related-article-card.components";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";

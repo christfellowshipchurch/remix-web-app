@@ -1,6 +1,6 @@
 import React from "react";
 import SectionTitle from "~/components/section-title";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
 const CurrentSeries: React.FC = () => {

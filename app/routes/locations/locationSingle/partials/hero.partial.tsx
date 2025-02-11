@@ -1,7 +1,7 @@
 import lodash from "lodash";
 import { headerData } from "../locations-single.data";
 
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";

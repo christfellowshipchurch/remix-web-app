@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { LoaderReturnType } from "../loader";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 

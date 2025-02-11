@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import TextFieldInput from "~/primitives/inputs/text-field/text-field.primitive";
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import { useAuth } from "~/providers/auth-provider";
 
 interface InitialSignUpProps {
