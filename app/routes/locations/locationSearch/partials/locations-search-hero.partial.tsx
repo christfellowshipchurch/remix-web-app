@@ -1,11 +1,11 @@
 import { Button } from "~/primitives/button/button.primitive";
-import { Video } from "~/primitives/video/video.primitive";
 import Icon from "~/primitives/icon";
 import { CampusesReturnType } from "../loader";
 import * as Form from "@radix-ui/react-form";
 import { useLoaderData } from "react-router";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useEffect, useState } from "react";
+import { Video } from "~/primitives/video/video.primitive";
 
 type SearchProps = {
   setAddress: (address: string) => void;
@@ -64,7 +64,7 @@ export const Search = ({
                 className="flex w-[60vw] justify-between md:w-[440px] "
               >
                 <input
-                  className={`${defaultTextInputStyles} text-center text-black`}
+                  className={`${defaultTextInputStyles} text-center text-white focus:!border-neutral-500`}
                   placeholder="Enter zip code here"
                   onChange={(e) => {
                     setAddress(e.target.value);
