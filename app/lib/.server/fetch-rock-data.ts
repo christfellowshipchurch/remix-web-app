@@ -32,11 +32,17 @@ export const fetchRockData = async ({
   customHeaders?: Record<string, string>;
   cache?: boolean;
 }) => {
-  const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
-  const cachedData = await redis.get(cacheKey);
-
-  if (cachedData && cache === true) {
-    return JSON.parse(cachedData);
+  // Try to use Redis cache if available and caching is enabled
+  if (redis && cache) {
+    try {
+      const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+      const cachedData = await redis.get(cacheKey);
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
+    } catch (error) {
+      console.log("⚠️ Redis cache retrieval failed, falling back to API call");
+    }
   }
 
   try {
@@ -64,7 +70,15 @@ export const fetchRockData = async ({
         Array.isArray(data) && data?.length === 1 ? data[0] : data
       );
 
-    await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
+    // Try to cache the response if Redis is available and caching is enabled
+    if (redis && cache) {
+      try {
+        const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+        await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
+      } catch (error) {
+        console.log("⚠️ Redis cache storage failed");
+      }
+    }
 
     return data;
   } catch (error) {

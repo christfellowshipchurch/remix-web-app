@@ -1,4 +1,4 @@
-import Button from "~/primitives/button";
+import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { useNavigate } from "react-router";
 
