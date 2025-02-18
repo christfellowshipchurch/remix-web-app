@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import { AuthProvider } from "./providers/auth-provider";
+import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 
 import "./styles/tailwind.css";
 
@@ -30,13 +31,15 @@ export function Layout({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+      <CookieConsentProvider>
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+      </CookieConsentProvider>
     </AuthProvider>
   );
 }

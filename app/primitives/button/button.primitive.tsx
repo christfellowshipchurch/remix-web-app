@@ -13,6 +13,7 @@ const button = cva(
     "transition-colors",
     "delay-50",
     "rounded-md",
+    "cursor-pointer",
   ],
   {
     variants: {
