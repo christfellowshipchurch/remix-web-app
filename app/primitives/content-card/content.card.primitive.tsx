@@ -40,13 +40,11 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
         <div className="h-[2px] w-full bg-[#4E4E4E]/20" />
       </div>
       <div className="flex flex-col justify-between flex-1">
-        <h3 className="font-extrabold text-3xl leading-8">{title}</h3>
-        <Link
-          to={cta.href}
-          className="font-bold underline mt-2"
-          prefetch="intent"
-        >
-          {cta.title}
+        <h3 className="font-extrabold text-[28px] leading-8 text-pretty">
+          {title}
+        </h3>
+        <Link to={cta.href} className="font-bold mt-2" prefetch="intent">
+          <span className="underline">{cta.title}</span>
         </Link>
       </div>
     </div>
