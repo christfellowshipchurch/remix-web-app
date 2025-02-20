@@ -22,7 +22,7 @@ const CurrentSeries: React.FC = () => {
         <div className="relative w-full aspect-video">
           {/* Background Image */}
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="lg:absolute lg:inset-0 w-full aspect-video lg:h-full bg-cover bg-center"
             style={{
               backgroundImage:
                 "url('https://cloudfront.christfellowship.church/GetImage.ashx?guid=1d311eaf-39ef-40cc-ad42-3e11b89d0051')",
@@ -30,7 +30,7 @@ const CurrentSeries: React.FC = () => {
           />
 
           {/* Text Section */}
-          <div className="absolute bottom-0 left-0 w-full md:w-[45%] bg-white px-10 py-16 space-y-4">
+          <div className="lg:absolute bottom-0 left-0 w-full bg-white px-10 py-16 space-y-4 lg:w-[45%]">
             <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
             <h2 className="text-[40px] font-bold text-text-primary">
               What is Truth?
@@ -44,7 +44,7 @@ const CurrentSeries: React.FC = () => {
             </p>
 
             {/* Buttons */}
-            <div className="flex pt-10 space-x-4">
+            <div className="flex flex-col md:flex-row pt-10 space-y-4 md:space-x-4">
               <Button intent="secondary">Series & Resources</Button>
               <Button intent="primary" className="flex items-center gap-2">
                 Watch Message
