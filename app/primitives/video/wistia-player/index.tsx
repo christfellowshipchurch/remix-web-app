@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ClientOnly } from "~/components/client-only";
 
 export function WistiaPlayer({
   videoId,
@@ -32,7 +33,11 @@ export function WistiaPlayer({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [videoId, wrapper]);
 
-  return <div className={className} id={`${wrapper}`}></div>;
+  return (
+    <ClientOnly fallback={<div className={className} />}>
+      <div className={className} id={`${wrapper}`} />
+    </ClientOnly>
+  );
 }
