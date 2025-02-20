@@ -3,8 +3,7 @@ import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { LoaderReturnType } from "../loader";
 import Breadcrumbs from "~/components/breadcrumbs";
-import { Button } from "~/primitives/button/button.primitive";
-import { Icon } from "~/primitives/icon/icon";
+import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export interface AuthorProps {
   fullName: string;
@@ -80,20 +79,9 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
           <hr className="border-neutral-lighter" />
           <div className="flex flex-col md:flex-row justify-between items-center py-10">
             <Breadcrumbs />
-            <div className="flex items-center group mt-10 md:mt-0">
-              <Button
-                href={"#cta"}
-                intent="secondary"
-                className="rounded-none hover:enabled:bg-slate-300/20"
-              >
-                Call to Action
-              </Button>
-              <div
-                className={`rounded-full bg-ocean ml-[-10px] rotate-[135deg] p-2 group-hover:rotate-180 transition-all duration-300`}
-              >
-                <Icon name="arrowBack" size={26} color="white" />
-              </div>
-            </div>
+            <IconButton to="/messages/series" withRotatingArrow>
+              Call to Action
+            </IconButton>
           </div>
         </div>
       </div>

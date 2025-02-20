@@ -2,10 +2,9 @@ import React from "react";
 import { useLoaderData, Link } from "react-router-dom";
 import SectionTitle from "~/components/section-title";
 import { Button } from "~/primitives/button/button.primitive";
-import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 import type { LoaderReturnType } from "../loader";
-
+import { IconButton } from "~/primitives/button/icon-button.primitive";
 const CurrentSeries: React.FC = () => {
   const { currentSeries } = useLoaderData<LoaderReturnType>();
   const { currentSeriesTitle, latestMessage } = currentSeries;
@@ -55,20 +54,9 @@ const CurrentSeries: React.FC = () => {
                   Series & Resources
                 </Button>
               </Link>
-              <div className="group">
-                <Link to={latestMessage.path} className="flex">
-                  <Button
-                    intent="secondary"
-                    className="font-semibold border-ocean rounded-none hover:enabled:bg-ocean/10"
-                  >
-                    Watch Message
-                  </Button>
-                  <Icon
-                    name="arrowBack"
-                    className="ml-[-0.75rem] text-white rounded-full bg-ocean p-2 rotate-[135deg] transition-transform duration-300 group-hover:rotate-180 size-10"
-                  />
-                </Link>
-              </div>
+              <IconButton to="/messages/series" withRotatingArrow>
+                Watch Message
+              </IconButton>
             </div>
           </div>
         </div>
