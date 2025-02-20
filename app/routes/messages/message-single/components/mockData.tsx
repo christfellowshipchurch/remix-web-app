@@ -7,7 +7,7 @@ export const mockInThisSeries = [
     hostUrl: "https://example.com/message1",
     content: "Content for message 1",
     summary: "Summary for message 1",
-    coverImage: "../app/assets/images/articles-hero-bg.jpg",
+    coverImage: "/assets/images/articles-hero-bg.jpg",
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
@@ -42,7 +42,7 @@ export const mockInThisSeries = [
     hostUrl: "https://example.com/message2",
     content: "Content for message 2",
     summary: "Summary for message 2",
-    coverImage: "../app/assets/images/articles-hero-bg.jpg",
+    coverImage: "/assets/images/articles-hero-bg.jpg",
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
@@ -77,7 +77,7 @@ export const mockInThisSeries = [
     hostUrl: "https://example.com/message3",
     content: "Content for message 3",
     summary: "Summary for message 3",
-    coverImage: "../app/assets/images/articles-hero-bg.jpg",
+    coverImage: "/assets/images/articles-hero-bg.jpg",
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
@@ -112,7 +112,7 @@ export const mockInThisSeries = [
     hostUrl: "https://example.com/message4",
     content: "Content for message 4",
     summary: "Summary for message 4",
-    coverImage: "../app/assets/images/articles-hero-bg.jpg",
+    coverImage: "/assets/images/articles-hero-bg.jpg",
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
@@ -147,7 +147,7 @@ export const mockInThisSeries = [
     hostUrl: "https://example.com/message5",
     content: "Content for message 5",
     summary: "Summary for message 5",
-    coverImage: "../app/assets/images/articles-hero-bg.jpg",
+    coverImage: "/assets/images/articles-hero-bg.jpg",
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
