@@ -21,6 +21,17 @@ const defaultHeaders = {
  * @returns Either the response data as JSON(array if multiple items, object if single item) or an error
  */
 
+interface RockQueryParams {
+  $expand?: string; // Expands related entities inline
+  $filter?: string; // Filters results based on Boolean condition (e.g. ContentChannelId eq 63)
+  $select?: string; // Selects which properties to include in response
+  $orderby?: string; // Sorts results (e.g. StartDateTime desc)
+  $top?: string; // Returns only first n results
+  $skip?: string; // Skips first n results
+  loadAttributes?: "simple" | "expanded"; // Specify 'simple' or 'expanded' to load attributes
+  attributeKeys?: string; // Comma-delimited list of attribute keys to limit specific attributes
+}
+
 export const fetchRockData = async ({
   endpoint,
   queryParams = {},
@@ -28,7 +39,7 @@ export const fetchRockData = async ({
   cache = true,
 }: {
   endpoint: string;
-  queryParams?: Record<string, string>;
+  queryParams?: RockQueryParams;
   customHeaders?: Record<string, string>;
   cache?: boolean;
 }) => {
@@ -46,7 +57,9 @@ export const fetchRockData = async ({
   }
 
   try {
-    const queryString = new URLSearchParams(queryParams).toString();
+    const queryString = new URLSearchParams(
+      queryParams as Record<string, string>
+    ).toString();
     const url = `${baseUrl}${endpoint}?${queryString}`;
 
     const res = await fetch(url, {
