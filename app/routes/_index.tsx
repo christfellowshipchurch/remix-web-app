@@ -1,6 +1,5 @@
 import type { LoaderFunction, MetaFunction } from "react-router";
 import { Link, useLoaderData } from "react-router";
-import { useEffect, useState } from "react";
 import AuthModal from "~/components/modals/auth";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import { Button } from "~/primitives/button/button.primitive";
@@ -25,13 +24,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-  const userData: User | null = useLoaderData(); // Get logged in user data server-side
-  const [user, setUser] = useState<User | null>(null);
+  const userData: User | null = useLoaderData();
   const { logout, isLoading } = useAuth();
-
-  useEffect(() => {
-    setUser(userData);
-  }, [userData]);
 
   return (
     <div className="flex h-screen items-center justify-center">
@@ -39,7 +33,7 @@ export default function Index() {
         <header className="flex flex-col items-center gap-9">
           <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             <span>Welcome </span>
-            {user && <i>{user.fullName}</i>}
+            {userData && <i>{userData.fullName}</i>}
             <span> to </span>
             <span className="sr-only">Christ Fellowship Church</span>
           </div>
@@ -54,7 +48,7 @@ export default function Index() {
           </Link>
           {isLoading ? (
             <>Loading...</>
-          ) : user ? (
+          ) : userData ? (
             <>
               <Button intent={"secondary"} onClick={logout}>
                 Logout

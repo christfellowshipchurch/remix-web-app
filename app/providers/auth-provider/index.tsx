@@ -1,5 +1,6 @@
 import { redirect, useNavigate, useRevalidator } from "react-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useHydrated } from "~/hooks/use-hydrated";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -65,8 +66,9 @@ export interface AuthContextType {
 }
 
 const handleError = (error: unknown, message: string) => {
+  if (typeof window === "undefined") return; // Guard for server-side
+
   console.error(message, error);
-  // remove token from local storage and cookie
   localStorage.removeItem(AUTH_TOKEN_KEY);
   document.cookie = `${AUTH_TOKEN_KEY}=; Max-Age=0; path=/;`;
   throw error;
@@ -86,8 +88,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const isHydrated = useHydrated();
 
   useEffect(() => {
+    if (!isHydrated) return;
+
     const loadToken = async () => {
       try {
         const encryptedToken = localStorage.getItem(AUTH_TOKEN_KEY);
@@ -129,14 +134,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
     loadToken();
-  }, []);
+  }, [isHydrated]);
 
-  const handleLogin = (token: string) => {
+  const handleLogin = async (token: string) => {
+    if (!isHydrated) return;
+
     document.cookie = `auth-token=${token}; path=/;`;
     localStorage.setItem(AUTH_TOKEN_KEY, token);
-    setUser(user);
-    revalidate();
-    navigate(ROUTES.LOGIN);
+
+    // Fetch current user data after setting token
+    try {
+      const formData = new FormData();
+      formData.append("formType", "currentUser");
+      formData.append("token", token);
+      const response = await fetch("/auth", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data after login");
+      }
+
+      const currentUser = await response.json();
+      setUser(currentUser);
+      revalidate();
+      navigate(ROUTES.LOGIN);
+    } catch (error) {
+      handleError(error, "Error fetching user data after login:");
+    }
   };
 
   const loginWithEmail = async (identity: string, password: string) => {

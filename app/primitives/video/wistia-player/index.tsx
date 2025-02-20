@@ -1,15 +1,36 @@
-import { useEffect } from "react";
+// Declare Wistia types
+declare global {
+  interface Window {
+    _wq: Array<{
+      id: string;
+      onReady: () => void;
+    }>;
+  }
+}
+
+import { useEffect, useState } from "react";
 
 export function WistiaPlayer({
   videoId,
   wrapper,
   className,
+  fallback,
 }: {
   className?: string;
   videoId: string;
   wrapper: string;
+  fallback?: React.ReactNode;
 }) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     // Wistia embed code
     const script1 = document.createElement("script");
     script1.src = `https://fast.wistia.com/embed/medias/${videoId}.jsonp`;
@@ -25,14 +46,37 @@ export function WistiaPlayer({
       container.appendChild(script1);
       container.appendChild(script2);
       container.appendChild(div);
+
+      // Add event listener for Wistia player ready
+      window._wq = window._wq || [];
+      window._wq.push({
+        id: videoId,
+        onReady: () => {
+          setIsLoaded(true);
+        },
+      });
+
       return () => {
         // Cleanup code
         container.innerHTML = "";
+        setIsLoaded(false);
       };
     }
+  }, [videoId, wrapper, isMounted]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  if (!isMounted && fallback) {
+    return <>{fallback}</>;
+  }
 
-  return <div className={className} id={`${wrapper}`}></div>;
+  return (
+    <div className="relative">
+      {fallback && <div className="absolute inset-0 z-0">{fallback}</div>}
+      <div
+        className={`${className} relative z-10 transition-opacity duration-500 ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        }`}
+        id={`${wrapper}`}
+      />
+    </div>
+  );
 }
