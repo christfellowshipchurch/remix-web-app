@@ -79,7 +79,11 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
           <hr className="border-neutral-lighter" />
           <div className="flex flex-col md:flex-row justify-between items-center py-10">
             <Breadcrumbs mode="light" />
-            <IconButton to="/messages/series" withRotatingArrow>
+            <IconButton
+              className="hover:!text-ocean"
+              to="/messages/series"
+              withRotatingArrow
+            >
               Call to Action
             </IconButton>
           </div>

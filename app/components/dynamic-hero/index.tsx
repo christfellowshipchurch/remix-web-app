@@ -53,7 +53,7 @@ export const DynamicHero = ({
                   key={i}
                   to={cta.href}
                   className="text-white border-white"
-                  withRotatingArrow={i >= 1}
+                  withRotatingArrow={i === ctas.length - 1}
                 >
                   {cta.title}
                 </IconButton>
