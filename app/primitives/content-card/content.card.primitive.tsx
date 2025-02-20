@@ -24,9 +24,9 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
         <img
           src={image}
           alt={title}
-          className="w-full h-48 object-cover"
+          className="w-full aspect-[4/3] object-cover"
           loading="lazy"
-        />{" "}
+        />
         <ul className="flex gap-3 pt-1">
           {subheadings.map((subheading, index) => (
             <li key={index} className="flex gap-1">
@@ -40,13 +40,15 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
         <div className="h-[2px] w-full bg-[#4E4E4E]/20" />
       </div>
       <div className="flex flex-col justify-between flex-1">
-        <h3 className="font-extrabold text-3xl leading-8">{title}</h3>
+        <h3 className="font-extrabold text-[28px] leading-8 text-pretty">
+          {title}
+        </h3>
         <Link
           to={cta.href}
-          className="font-bold underline mt-2"
+          className="font-bold mt-2 hover:text-ocean"
           prefetch="intent"
         >
-          {cta.title}
+          <span className="underline">{cta.title}</span>
         </Link>
       </div>
     </div>
