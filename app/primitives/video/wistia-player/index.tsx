@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { ClientOnly } from "~/components/client-only";
+import { useEffect, useState } from "react";
 
 export function WistiaPlayer({
   videoId,
@@ -10,7 +9,15 @@ export function WistiaPlayer({
   videoId: string;
   wrapper: string;
 }) {
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     // Wistia embed code
     const script1 = document.createElement("script");
     script1.src = `https://fast.wistia.com/embed/medias/${videoId}.jsonp`;
@@ -31,13 +38,7 @@ export function WistiaPlayer({
         container.innerHTML = "";
       };
     }
+  }, [videoId, wrapper, isMounted]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoId, wrapper]);
-
-  return (
-    <ClientOnly fallback={<div className={className} />}>
-      <div className={className} id={`${wrapper}`} />
-    </ClientOnly>
-  );
+  return <div className={className} id={`${wrapper}`} />;
 }
