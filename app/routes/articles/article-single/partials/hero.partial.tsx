@@ -78,7 +78,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
         <div className="hidden md:block max-w-screen-content mx-auto">
           <hr className="border-neutral-lighter" />
           <div className="flex flex-col md:flex-row justify-between items-center py-10">
-            <Breadcrumbs />
+            <Breadcrumbs mode="light" />
             <IconButton to="/messages/series" withRotatingArrow>
               Call to Action
             </IconButton>

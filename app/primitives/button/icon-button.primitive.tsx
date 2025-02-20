@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, type LinkProps } from "react-router-dom";
 import { Button } from "./button.primitive";
 import Icon from "../icon";
 import { icons } from "~/lib/icons";
@@ -7,15 +7,11 @@ import { twMerge } from "tailwind-merge";
 
 type IconName = keyof typeof icons;
 
-export interface IconButtonProps {
+type BaseIconButtonProps = {
   /**
    * The text content of the button
    */
   children: React.ReactNode;
-  /**
-   * The path to navigate to (optional - if not provided, renders as button instead of link)
-   */
-  to?: string;
   /**
    * Whether to show the rotating arrow icon
    */
@@ -40,7 +36,13 @@ export interface IconButtonProps {
    * Optional click handler
    */
   onClick?: () => void;
-}
+};
+
+export type IconButtonProps = BaseIconButtonProps &
+  (
+    | ({ to: string } & Omit<LinkProps, keyof BaseIconButtonProps>)
+    | { to?: never }
+  );
 
 export const IconButton: React.FC<IconButtonProps> = ({
   children,
@@ -50,6 +52,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   iconName = "arrowBack",
   iconSize = 20,
   onClick,
+  ...linkProps
 }) => {
   const buttonStyles = twMerge(
     "font-semibold rounded-none",
@@ -59,7 +62,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   );
 
   const iconStyles =
-    "ml-[-0.75rem] text-white rounded-full p-2 rotate-[135deg] transition-transform duration-300 group-hover:rotate-180 size-10 bg-ocean";
+    "ml-[-0.75rem] text-white rounded-[100%] p-2 rotate-[135deg] transition-transform duration-300 group-hover:rotate-180 size-10 bg-ocean";
 
   const ButtonContent = () => (
     <>
@@ -75,7 +78,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   if (to) {
     return (
       <div className="group">
-        <Link to={to} className="flex">
+        <Link to={to} className="flex" {...linkProps}>
           <ButtonContent />
         </Link>
       </div>
