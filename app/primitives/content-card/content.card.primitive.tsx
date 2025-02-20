@@ -43,7 +43,11 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
         <h3 className="font-extrabold text-[28px] leading-8 text-pretty">
           {title}
         </h3>
-        <Link to={cta.href} className="font-bold mt-2" prefetch="intent">
+        <Link
+          to={cta.href}
+          className="font-bold mt-2 hover:text-ocean"
+          prefetch="intent"
+        >
           <span className="underline">{cta.title}</span>
         </Link>
       </div>

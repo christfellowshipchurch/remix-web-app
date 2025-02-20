@@ -34,27 +34,30 @@ const CurrentSeries: React.FC = () => {
           />
 
           {/* Text Section */}
-          <div className="lg:absolute bottom-0 left-0 w-full bg-white px-10 py-16 space-y-4 lg:w-[45%] md:max-h-[500px]">
+          <div className="lg:absolute bottom-0 left-0 w-full bg-white px-10 py-16 space-y-4 lg:w-[45%] md:max-h-[525px]">
             <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
             <h2 className="text-[40px] font-bold text-text-primary text-pretty">
               {latestMessage.title}
             </h2>
             <p className="font-bold">{latestMessage.authorName}</p>
-            <div className="text-gray-700 line-clamp-4 prose prose-p:my-0">
+            <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-3 xl:mb-12">
               <HTMLRenderer html={latestMessage.description} />
             </div>
 
             {/* Buttons */}
-            <div className="mt-5 md:mt-0 flex flex-col md:flex-row gap-3">
-              <Link to="/messages/series">
-                <Button
-                  intent="secondary"
-                  className="font-semibold border-ocean rounded-none hover:enabled:bg-ocean/10 px-6 py-3"
-                >
-                  Series & Resources
-                </Button>
-              </Link>
-              <IconButton to="/messages/series" withRotatingArrow>
+            <div className="mt-5 md:mt-0 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3">
+              <IconButton
+                to="/messages/series"
+                className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
+              >
+                Series & Resources
+              </IconButton>
+              <IconButton
+                to={`/messages/${latestMessage.path}`}
+                prefetch="viewport"
+                withRotatingArrow
+                className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
+              >
                 Watch Message
               </IconButton>
             </div>
