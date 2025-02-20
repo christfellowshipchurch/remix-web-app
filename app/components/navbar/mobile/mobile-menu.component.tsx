@@ -1,12 +1,16 @@
 import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
+import { useHydrated } from "~/hooks/use-hydrated";
 
 export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
   const [isOpen, setIsOpen] = useState(false);
+  const isHydrated = useHydrated();
 
   // Prevent background scroll when menu is open
   useEffect(() => {
+    if (!isHydrated) return;
+
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -15,7 +19,7 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, isHydrated]);
 
   return (
     <div

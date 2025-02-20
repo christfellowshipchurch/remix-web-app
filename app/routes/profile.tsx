@@ -4,6 +4,12 @@ import AuthModal from "~/components/modals/auth";
 import { Button } from "~/primitives/button/button.primitive";
 import { useAuth } from "~/providers/auth-provider";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
+import type { User } from "~/providers/auth-provider";
+
+interface LoaderData {
+  user: User;
+  message: string;
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userData = await getUserFromRequest(request);
@@ -12,22 +18,24 @@ export const loader: LoaderFunction = async ({ request }) => {
     return redirect("/"); // Redirect if no token is found
   }
 
-  const user = await userData;
-
-  // Add other data you want to include in the loader
-  const someOtherData = {
-    message: "This is additional data from the profile loader",
-  };
+  // Handle the Response object
+  if (userData instanceof Response) {
+    const user = await userData.json();
+    return {
+      user,
+      message: "This is additional data from the profile loader",
+    };
+  }
 
   return {
-    user,
-    ...someOtherData,
+    user: userData,
+    message: "This is additional data from the profile loader",
   };
 };
 
 export default function MyProfile() {
-  const { user, message }: any = useLoaderData();
-  const { email, fullName, photo } = user || {};
+  const { user, message } = useLoaderData<LoaderData>();
+  const { email, fullName, photo } = user;
   const { logout } = useAuth();
 
   return (
@@ -45,7 +53,7 @@ export default function MyProfile() {
         <p>Not logged in</p>
       )}
       <p>{email}</p>
-      <p className=" bg-gray-200 rounded p-2">{message}</p>
+      <p className="bg-gray-200 rounded p-2">{message}</p>
       {fullName ? <Button onClick={logout}>Logout</Button> : <AuthModal />}
     </div>
   );

@@ -8,10 +8,10 @@ import { LoaderReturnType } from "../loader";
 import { CustomClearRefinements } from "../components/custom-clear-refinements.component";
 import { HitComponent } from "../components/hit-component.component";
 import SectionTitle from "~/components/section-title";
-import { useMediaQuery } from "react-responsive";
 import { GroupFilters } from "~/components/modals/group-filters/group-filters";
 import { GroupFiltersModal } from "~/components/modals/group-filters/group-filters-modal";
 import Icon from "~/primitives/icon";
+import { useResponsive } from "~/hooks/use-responsive";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -23,9 +23,7 @@ export const GroupSearch = () => {
     {}
   );
 
-  const isLarge = useMediaQuery({ minWidth: 1280 });
-  const isMedium = useMediaQuery({ minWidth: 768, maxWidth: 1279 });
-  const isSmall = useMediaQuery({ maxWidth: 767 });
+  const { isSmall, isMedium, isLarge } = useResponsive();
 
   const getHitsPerPage = () => {
     switch (true) {
@@ -36,7 +34,7 @@ export const GroupSearch = () => {
       case isSmall:
         return 6;
       default:
-        return 6; // Fallback value
+        return 6;
     }
   };
 
@@ -53,7 +51,7 @@ export const GroupSearch = () => {
         indexName="production_Groups"
         searchClient={searchClient}
         future={{
-          preserveSharedStateOnUnmount: true, // Set this to true to adopt the new behavior
+          preserveSharedStateOnUnmount: true,
         }}
       >
         <Configure hitsPerPage={getHitsPerPage()} />
