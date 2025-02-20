@@ -30,7 +30,7 @@ const CurrentSeries: React.FC = () => {
           />
 
           {/* Text Section */}
-          <div className="lg:absolute bottom-0 left-0 w-full bg-white px-10 py-16 space-y-4 lg:w-[45%]">
+          <div className="lg:absolute bottom-0 left-0 w-full bg-white px-10 py-16 space-y-4 lg:w-[45%] max-h-[500px]">
             <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
             <h2 className="text-[40px] font-bold text-text-primary">
               What is Truth?
