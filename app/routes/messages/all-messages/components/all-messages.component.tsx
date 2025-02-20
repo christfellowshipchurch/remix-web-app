@@ -6,6 +6,7 @@ import {
   Configure,
   RefinementList,
 } from "react-instantsearch";
+import { useMemo } from "react";
 
 import SectionTitle from "~/components/section-title";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
@@ -75,14 +76,16 @@ export const FilterButtons = ({ tags = mockTags }: { tags?: Tag[] }) => {
   );
 };
 
+const createSearchClient = (appId: string, apiKey: string) =>
+  algoliasearch(appId, apiKey, {});
+
 export default function Messages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderData>();
 
-  const searchClient = algoliasearch(
-    ALGOLIA_APP_ID,
-    ALGOLIA_SEARCH_API_KEY,
-    {}
+  const searchClient = useMemo(
+    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
   return (
