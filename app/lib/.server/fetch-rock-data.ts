@@ -21,15 +21,33 @@ const defaultHeaders = {
  * @returns Either the response data as JSON(array if multiple items, object if single item) or an error
  */
 
+/**
+ * Interface for Rock API query parameters
+ */
 interface RockQueryParams {
-  $expand?: string; // Expands related entities inline
-  $filter?: string; // Filters results based on Boolean condition (e.g. ContentChannelId eq 63)
-  $select?: string; // Selects which properties to include in response
-  $orderby?: string; // Sorts results (e.g. StartDateTime desc)
-  $top?: string; // Returns only first n results
-  $skip?: string; // Skips first n results
-  loadAttributes?: "simple" | "expanded"; // Specify 'simple' or 'expanded' to load attributes
-  attributeKeys?: string; // Comma-delimited list of attribute keys to limit specific attributes
+  /** Expands related entities inline */
+  $expand?: string;
+
+  /** Filters results based on Boolean condition (e.g. ContentChannelId eq 63) */
+  $filter?: string;
+
+  /** Selects which properties to include in response */
+  $select?: string;
+
+  /** Sorts results (e.g. StartDateTime desc) */
+  $orderby?: string;
+
+  /** Returns only first n results */
+  $top?: string;
+
+  /** Skips first n results */
+  $skip?: string;
+
+  /** Specify 'simple' or 'expanded' to load attributes */
+  loadAttributes?: "simple" | "expanded";
+
+  /** Comma-delimited list of attribute keys to limit specific attributes */
+  attributeKeys?: string;
 }
 
 export const fetchRockData = async ({
