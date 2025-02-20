@@ -12,6 +12,7 @@ import SectionTitle from "~/components/section-title";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { ContentItemHit } from "~/routes/search/types";
+import { CustomPagination } from "./custom-pagination.component";
 
 interface LoaderData {
   ALGOLIA_APP_ID: string;
@@ -133,6 +134,8 @@ export default function Messages() {
               list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
             }}
           />
+
+          <CustomPagination />
         </InstantSearch>
       </div>
     </section>
