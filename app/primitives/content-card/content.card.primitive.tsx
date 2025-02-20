@@ -24,9 +24,9 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
         <img
           src={image}
           alt={title}
-          className="w-full h-48 object-cover"
+          className="w-full aspect-[4/3] object-cover"
           loading="lazy"
-        />{" "}
+        />
         <ul className="flex gap-3 pt-1">
           {subheadings.map((subheading, index) => (
             <li key={index} className="flex gap-1">

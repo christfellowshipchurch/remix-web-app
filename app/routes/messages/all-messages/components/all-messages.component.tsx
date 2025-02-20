@@ -93,12 +93,10 @@ export default function Messages() {
           sectionTitle="all messages."
           title="Christ Fellowship Church Messages"
         />
-
         {/* Filter Buttons - just placeholder ones for now. Eventually, we'll use the algolia filters */}
         <div className="mt-10 mb-12">
           <FilterButtons tags={mockTags} />
         </div>
-
         <InstantSearch
           indexName="production_ContentItems"
           searchClient={searchClient}
@@ -129,7 +127,7 @@ export default function Messages() {
           <Hits
             hitComponent={MessageHitComponent}
             classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10",
+              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
             }}
           />
         </InstantSearch>
