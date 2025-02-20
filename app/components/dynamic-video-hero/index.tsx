@@ -10,12 +10,14 @@ export type DynamicVideoHeaderTypes = {
   ctas?: { href: string; title: string }[];
   video?: string;
   wistiaId?: string;
+  fallback?: React.ReactNode;
 } & ({ video: string } | { wistiaId: string });
 
 export const DynamicVideoHeader = ({
   ctas,
   video,
   wistiaId,
+  fallback,
 }: DynamicVideoHeaderTypes) => {
   // TODO: Make sure videos in Wistia have the controls removed and the theme is set to what it's in Figma...
   // TODO: Update margin top once the navbar is updated?
@@ -24,10 +26,10 @@ export const DynamicVideoHeader = ({
       <div className="flex flex-col gap-12 w-full pb-16 mx-auto max-w-screen-content items-start justify-end self-stretch">
         {wistiaId ? (
           <div className="w-full">
-            <Video wistiaId={wistiaId} />
+            <Video wistiaId={wistiaId} fallback={fallback} />
           </div>
         ) : (
-          video && <Video src={video} />
+          video && <Video src={video} fallback={fallback} />
         )}
         <div className="flex items-center justify-between self-stretch">
           {/* Breadcrumbs */}

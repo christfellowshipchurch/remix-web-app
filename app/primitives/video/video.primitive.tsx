@@ -8,6 +8,7 @@ type VideoProps = {
   muted?: boolean;
   controls?: boolean;
   className?: string;
+  fallback?: React.ReactNode;
 } & ({ src: string } | { wistiaId: string });
 
 export const Video = (props: VideoProps) => {
@@ -18,6 +19,7 @@ export const Video = (props: VideoProps) => {
           videoId={props?.wistiaId}
           wrapper={`wistia-player-container-${props?.wistiaId}`}
           className={props?.className}
+          fallback={props?.fallback}
         />
       ) : (
         <video
