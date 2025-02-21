@@ -106,6 +106,10 @@ export const watchReadListenData = {
       title: "NEW ARTICLE",
       link: "Master Your Money",
     },
+    {
+      title: "NEW PODCAST",
+      link: "So Good Sisterhood",
+    },
   ],
 };
 

@@ -30,7 +30,7 @@ export function HeroNavCard({
     <a
       href={url}
       className={cn(
-        "bg-white p-4 rounded-lg shadow-medium hover:scale-105 transition-transform max-w-xxs",
+        "bg-white p-4 rounded-lg shadow-medium hover:text-ocean transition-colors max-w-xxs",
         variant === "mobile" && "p-3"
       )}
     >
@@ -44,8 +44,8 @@ export function HeroNavCard({
       <h5 className="font-medium text-text-secondary text-xs mt-2">
         {subtitle}
       </h5>
-      <h3 className="heading-h5">{title}</h3>
-      <div className="mt-3 font-semibold flex text-ocean w-full justify-between">
+      <h3 className="heading-h5 text-text-primary">{title}</h3>
+      <div className="mt-3 font-semibold flex w-full justify-between">
         <span>{linkText}</span>
         <Icon name="arrowRight" />
       </div>
@@ -64,7 +64,7 @@ export function NavCard({
   return (
     <a
       href={url}
-      className="bg-white p-2 rounded-lg shadow-medium hover:scale-105 transition-transform w-full grid grid-cols-5 gap-4"
+      className="bg-white p-2 rounded-lg shadow-medium text-text-secondary  hover:text-ocean transition-colors w-full grid grid-cols-5 gap-4"
     >
       <div className="col-span-2 relative pb-9/16">
         {!loaded && <ImageLoader height={90} />}
@@ -82,8 +82,8 @@ export function NavCard({
         <h5 className="font-medium text-text-secondary text-xs mt-2 uppercase">
           {subtitle}
         </h5>
-        <h3 className="font-semibold">{title}</h3>
-        <div className="mt-3 font-semibold flex text-text-secondary text-sm w-full justify-between">
+        <h3 className="font-semibold text-text-primary">{title}</h3>
+        <div className="mt-3 font-semibold flex text-sm w-full justify-between">
           <span>{linkText}</span>
           <Icon name="arrowRight" />
         </div>
