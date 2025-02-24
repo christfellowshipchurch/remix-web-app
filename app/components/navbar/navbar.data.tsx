@@ -1,116 +1,135 @@
-export const ministriesData = {
-  mainContent: [
-    {
-      title: "NEXT GEN",
-      items: [
-        { title: "Kids", description: "Ages Birth - Grade 5", url: "#" },
-        { title: "Students", description: "Grades 6 - 12", url: "#" },
-        { title: "Young Adults", description: "Age College - 30s", url: "#" },
-        {
-          title: "Special Needs",
-          description:
-            "Support, resources, and community for children and adults with disabilities",
-          url: "#",
+import { MenuLink } from "./types";
+
+export const ministriesData: MenuLink = {
+  title: "Get Involved",
+  content: {
+    mainContent: [
+      {
+        title: "NEXT GEN",
+        items: [
+          { title: "Kids", description: "Ages Birth - Grade 5", url: "#" },
+          { title: "Students", description: "Grades 6 - 12", url: "#" },
+          { title: "Young Adults", description: "Age College - 30s", url: "#" },
+          {
+            title: "Special Needs",
+            description:
+              "Support, resources, and community for children and adults with disabilities",
+            url: "#",
+          },
+        ],
+        link: "View all ministries",
+      },
+      {
+        title: "ADULTS",
+        items: [
+          { title: "Men", description: "Find your band of brothers", url: "#" },
+          {
+            title: "Women",
+            description: "For every girl from every generation",
+            url: "#",
+          },
+          {
+            title: "Marriage",
+            description: "Lorem ipsum dolor sit amet",
+            url: "#",
+          },
+          {
+            title: "Care",
+            description:
+              "Find healing and freedom from hurts, habits, and hangups.",
+            url: "#",
+          },
+        ],
+      },
+      {
+        title: "GROUPS & CLASSES",
+        items: [
+          {
+            title: "Group Finder",
+            description: "Lorem ipsum dolor sit amet",
+            url: "#",
+          },
+          {
+            title: "Class Finder",
+            description: "Lorem ipsum dolor sit amet",
+            url: "#",
+          },
+          {
+            title: "My Groups & Classes",
+            description: "Lorem ipsum dolor sit amet",
+            url: "#",
+          },
+          {
+            title: "Volunteer",
+            description: "Lorem ipsum dolor sit amet",
+            url: "#",
+          },
+        ],
+      },
+    ],
+    featureCards: [
+      {
+        title: "Take the Journey",
+        subtitle: "Journey to a new life in Christ",
+        callToAction: {
+          title: "Take the Journey",
+          url: "/",
         },
-      ],
-      link: "View all ministries",
-    },
-    {
-      title: "ADULTS",
-      items: [
-        { title: "Men", description: "Find your band of brothers", url: "#" },
-        {
-          title: "Women",
-          description: "For every girl from every generation",
-          url: "#",
-        },
-        {
-          title: "Marriage",
-          description: "Lorem ipsum dolor sit amet",
-          url: "#",
-        },
-        {
-          title: "Care",
-          description:
-            "Find healing and freedom from hurts, habits, and hangups.",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "GROUPS & CLASSES",
-      items: [
-        {
-          title: "Group Finder",
-          description: "Lorem ipsum dolor sit amet",
-          url: "#",
-        },
-        {
-          title: "Class Finder",
-          description: "Lorem ipsum dolor sit amet",
-          url: "#",
-        },
-        {
-          title: "My Groups & Classes",
-          description: "Lorem ipsum dolor sit amet",
-          url: "#",
-        },
-        {
-          title: "Volunteer",
-          description: "Lorem ipsum dolor sit amet",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  additionalContent: [
-    {
-      title: "Take the Journey",
-      link: "/",
-    },
-  ],
+        image: "https://picsum.photos/282/228",
+      },
+    ],
+  },
 };
 
-export const watchReadListenData = {
-  mainContent: [
-    {
-      title: "WATCH",
-      items: [
-        { title: "Messages", url: "#" },
-        { title: "Live Broadcast", url: "#" },
-      ],
-    },
-    {
-      title: "READ",
-      items: [
-        { title: "Articles", url: "#" },
-        { title: "Devotionals", url: "#" },
-      ],
-    },
-    {
-      title: "LISTEN",
-      items: [
-        { title: "So Good Sisterhood Podcast", url: "#" },
-        { title: "Crew Cast Podcast", url: "#" },
-        { title: "Young & Adulting Podcast", url: "#" },
-        { title: "MVMT Music", url: "#" },
-      ],
-    },
-  ],
-  additionalContent: [
-    {
-      title: "LATEST MESSAGE",
-      link: "Don't waste your time",
-    },
-    {
-      title: "NEW ARTICLE",
-      link: "Master Your Money",
-    },
-    {
-      title: "NEW PODCAST",
-      link: "So Good Sisterhood",
-    },
-  ],
+export const watchReadListenData: MenuLink = {
+  title: "Media",
+  content: {
+    mainContent: [
+      {
+        title: "WATCH",
+        items: [
+          { title: "Messages", url: "#" },
+          { title: "Live Broadcast", url: "#" },
+        ],
+      },
+      {
+        title: "READ",
+        items: [
+          { title: "Articles", url: "#" },
+          { title: "Devotionals", url: "#" },
+        ],
+      },
+      {
+        title: "LISTEN",
+        items: [
+          { title: "So Good Sisterhood Podcast", url: "#" },
+          { title: "Crew Cast Podcast", url: "#" },
+          { title: "Young & Adulting Podcast", url: "#" },
+          { title: "MVMT Music", url: "#" },
+        ],
+      },
+    ],
+    featureCards: [
+      {
+        title: "LATEST MESSAGE",
+        subtitle: "Don't waste your time",
+        callToAction: {
+          title: "Watch Now",
+          url: "/",
+        },
+        image: "https://picsum.photos/282/228",
+      },
+      {
+        title: "NEW ARTICLE",
+        subtitle: "Master Your Money",
+        callToAction: {
+          title: "Read Now",
+          url: "/",
+        },
+        image: "https://picsum.photos/282/228",
+      },
+    ],
+  },
 };
 
 export const locationsData = {
