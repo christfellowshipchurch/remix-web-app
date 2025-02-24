@@ -1,5 +1,11 @@
 import { MenuLink } from "./types";
 
+export const mainNavLinks = [
+  { title: "About", url: "/about" },
+  { title: "Locations", url: "/locations" },
+  { title: "Events", url: "/events" },
+];
+
 export const ministriesData: MenuLink = {
   title: "Get Involved",
   content: {
