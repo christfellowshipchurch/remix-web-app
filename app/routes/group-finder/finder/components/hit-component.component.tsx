@@ -1,7 +1,7 @@
 import Icon from "~/primitives/icon";
 import { GroupHit } from "../../types";
 import { useState } from "react";
-import GroupConnectModal from "~/components/modals/group-connect";
+import { Button } from "~/primitives/button/button.primitive";
 
 export function HitComponent({ hit }: { hit: GroupHit }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -74,7 +74,13 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
                 )}
               </div>
             </div>
-            <GroupConnectModal groupName={hit.title} />
+            <Button
+              type="submit"
+              intent="primary"
+              href={`/group-finder/${hit.title}`}
+            >
+              Learn More
+            </Button>
           </div>
         </div>
       </div>
