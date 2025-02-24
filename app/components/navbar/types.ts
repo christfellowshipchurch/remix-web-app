@@ -7,6 +7,7 @@ export interface FeatureCard {
     url: string;
   };
   image: string;
+  navMenu: string; // Which menu this card belongs to
 }
 
 export interface MenuItem {
