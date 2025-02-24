@@ -6,7 +6,6 @@ import {
   NavigationMenuContent,
   NavigationMenuTrigger,
 } from "@radix-ui/react-navigation-menu";
-
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { MenuContent } from "./desktop/menu-content.component";
@@ -19,26 +18,21 @@ import MobileMenu from "./mobile/mobile-menu.component";
 import Icon from "~/primitives/icon";
 import { useLocation, useFetcher } from "react-router-dom";
 import { shouldUseDarkMode } from "./navbar-routes";
-import { ministriesData, watchReadListenData } from "./navbar.data";
+import {
+  mainNavLinks,
+  ministriesData,
+  watchReadListenData,
+} from "./navbar.data";
+import { MenuLink } from "./types";
 import { useEffect } from "react";
-import { FeatureCard, MenuLink } from "./types";
-
-const mainLinks = [
-  { title: "About", url: "/about" },
-  { title: "Locations", url: "/locations" },
-  { title: "Events", url: "/events" },
-];
 
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
-  const fetcher = useFetcher<{
-    ministries: { featureCards: FeatureCard[] };
-    watchReadListen: { featureCards: FeatureCard[] };
-  }>();
+  const fetcher = useFetcher();
 
   useEffect(() => {
-    // Load the navbar data when the component mounts
+    // Load the navbar data when component mounts
     fetcher.load("/navbar");
   }, []);
 
@@ -89,7 +83,7 @@ export function Navbar() {
             <NavigationMenu>
               <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
                 {/* Links */}
-                {mainLinks.map((link) => (
+                {mainNavLinks.map((link) => (
                   <NavigationMenuItem key={link.title}>
                     <NavigationMenuLink
                       href={link.url}
