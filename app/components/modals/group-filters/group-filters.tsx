@@ -1,6 +1,6 @@
 import { RefinementList } from "react-instantsearch";
-import { CustomClearRefinements } from "~/routes/group-finder/components/custom-clear-refinements.component";
-import { MenuSelect } from "~/routes/group-finder/components/custom-menu.component";
+import { CustomClearRefinements } from "~/routes/group-finder/finder/components/custom-clear-refinements.component";
+import { MenuSelect } from "~/routes/group-finder/finder/components/custom-menu.component";
 
 export const CustomRefinementList = ({ attribute }: { attribute: string }) => {
   return (

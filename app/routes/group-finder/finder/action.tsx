@@ -1,5 +1,4 @@
 import { ActionFunction, data } from "react-router";
-import { ContactFormType } from "./types";
 import { fetchRockData, postRockData } from "~/lib/.server/fetch-rock-data";
 import { fetchUserLogin } from "~/lib/.server/authentication/rock-authentication";
 import { updatePerson } from "~/lib/.server/rock-person";

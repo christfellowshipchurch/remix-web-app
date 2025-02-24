@@ -1,5 +1,5 @@
 import Icon from "~/primitives/icon";
-import { GroupHit } from "../types";
+import { GroupHit } from "../../types";
 import { useState } from "react";
 import GroupConnectModal from "~/components/modals/group-connect";
 

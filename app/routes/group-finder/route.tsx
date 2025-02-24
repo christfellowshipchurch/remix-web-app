@@ -1,6 +1,6 @@
-import { GroupFinder } from "./group-finder";
+import { GroupFinderPage } from "./finder/group-finder";
 
-export { action } from "./action";
-export { loader } from "./loader";
+export { action } from "./finder/action";
+export { loader } from "./finder/loader";
 
-export default GroupFinder;
+export default GroupFinderPage;

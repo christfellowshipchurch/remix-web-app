@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router";
 import { icsLink, icsLinkEvents } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
-import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";
+import { LoaderReturnType } from "~/routes/locations/location-single/loader";
 
 const ReminderConfirmation = ({
   serviceTime,
