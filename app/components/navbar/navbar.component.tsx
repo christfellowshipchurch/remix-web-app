@@ -9,7 +9,6 @@ import {
 
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
-import { ministriesData, watchReadListenData } from "./navbar.data";
 import { MenuContent } from "./desktop/menu-content.component";
 import {
   angleDownIconStyle,
@@ -18,8 +17,11 @@ import {
 } from "./navbar.styles";
 import MobileMenu from "./mobile/mobile-menu.component";
 import Icon from "~/primitives/icon";
-import { useLocation } from "react-router";
+import { useLocation, useFetcher } from "react-router-dom";
 import { shouldUseDarkMode } from "./navbar-routes";
+import { ministriesData, watchReadListenData } from "./navbar.data";
+import { useEffect } from "react";
+import { FeatureCard, MenuLink } from "./types";
 
 const mainLinks = [
   { title: "About", url: "/about" },
@@ -27,14 +29,35 @@ const mainLinks = [
   { title: "Events", url: "/events" },
 ];
 
-const menuLinks = [
-  { title: "Get Involved", content: ministriesData },
-  { title: "Media", content: watchReadListenData },
-];
-
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
+  const fetcher = useFetcher<{
+    ministries: { featureCards: FeatureCard[] };
+    watchReadListen: { featureCards: FeatureCard[] };
+  }>();
+
+  useEffect(() => {
+    // Load the navbar data when the component mounts
+    fetcher.load("/navbar");
+  }, []);
+
+  const menuLinks: MenuLink[] = [
+    {
+      title: "Get Involved",
+      content: {
+        mainContent: ministriesData.content.mainContent,
+        featureCards: fetcher.data?.ministries?.featureCards || [],
+      },
+    },
+    {
+      title: "Media",
+      content: {
+        mainContent: watchReadListenData.content.mainContent,
+        featureCards: fetcher.data?.watchReadListen?.featureCards || [],
+      },
+    },
+  ];
 
   return (
     <nav className="group w-full">
@@ -113,7 +136,7 @@ export function Navbar() {
                     >
                       <MenuContent
                         mainContent={menuLink.content.mainContent}
-                        additionalContent={menuLink.content.additionalContent}
+                        featureCards={menuLink.content.featureCards}
                       />
                     </NavigationMenuContent>
                   </NavigationMenuItem>

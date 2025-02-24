@@ -1,31 +1,10 @@
 import Icon from "~/primitives/icon";
-import { HeroNavCard, NavCard, NavCardProps } from "./nav-cards.component";
+import { HeroNavCard, NavCard } from "./nav-cards.component";
+import { MenuLink } from "../types";
 
-interface MenuItem {
-  title: string;
-  description?: string;
-  url: string;
-}
-
-interface MenuSection {
-  title: string;
-  items: MenuItem[];
-  link?: string;
-}
-
-interface AdditionalContent {
-  title: string;
-  link: string;
-}
-
-interface MenuContentProps {
-  mainContent: MenuSection[];
-  additionalContent: AdditionalContent[];
-}
-
-export const MenuContent: React.FC<MenuContentProps> = ({
+export const MenuContent: React.FC<MenuLink["content"]> = ({
   mainContent,
-  additionalContent,
+  featureCards,
 }) => (
   <div className="lg:pl-8 bg-white w-screen shadow-lg flex flex-col lg:grid grid-cols-3">
     <div className="col-span-2 grid grid-cols-3">
@@ -60,27 +39,26 @@ export const MenuContent: React.FC<MenuContentProps> = ({
     </div>
     <div
       className={`p-6 flex flex-col gap-4 bg-background-secondary items-center ${
-        additionalContent.length > 1 && "pb-14"
+        featureCards.length > 1 && "pb-14"
       }`}
     >
-      {additionalContent.map((content, index) => {
-        return additionalContent.length > 1 ? (
+      {/* todo: finish updating feature card props */}
+      {featureCards.map((content, index) => {
+        return featureCards.length > 1 ? (
           <NavCard
             key={index}
             title={content.title}
-            subtitle="latest message"
-            url={content.link}
-            coverImage="https://picsum.photos/400/400"
-            linkText="Watch Now"
+            subtitle={content.subtitle}
+            callToAction={content.callToAction}
+            image={content.image}
           />
         ) : (
           <HeroNavCard
             key={index}
             title={content.title}
-            subtitle="YOUR FIRST STEP"
-            url={content.link}
-            coverImage="https://picsum.photos/282/228"
-            linkText="Save Your Spot"
+            subtitle={content.subtitle}
+            callToAction={content.callToAction}
+            image={content.image}
           />
         );
       })}
