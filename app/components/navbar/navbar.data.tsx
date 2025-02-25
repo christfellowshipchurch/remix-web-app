@@ -76,12 +76,13 @@ export const ministriesData: MenuLink = {
     featureCards: [
       {
         title: "Take the Journey",
-        subtitle: "Journey to a new life in Christ",
+        subtitle: "new classes",
         callToAction: {
-          title: "Take the Journey",
-          url: "/",
+          title: "Sign up now",
+          url: "/journey",
         },
         image: "https://picsum.photos/282/228",
+        navMenu: "ministries",
       },
     ],
   },
@@ -124,6 +125,7 @@ export const watchReadListenData: MenuLink = {
           url: "/",
         },
         image: "https://picsum.photos/282/228",
+        navMenu: "media",
       },
       {
         title: "NEW ARTICLE",
@@ -133,6 +135,7 @@ export const watchReadListenData: MenuLink = {
           url: "/",
         },
         image: "https://picsum.photos/282/228",
+        navMenu: "media",
       },
     ],
   },
