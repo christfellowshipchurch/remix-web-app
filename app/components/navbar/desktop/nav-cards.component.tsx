@@ -41,7 +41,6 @@ export function HeroNavCard({
         src={image}
         alt={title}
         className={`w-80 rounded-lg ${loaded ? "opacity-100" : "opacity-0"}`}
-        style={{ transition: "opacity 0.5s ease-in-out" }}
         onLoad={() => setLoaded(true)}
       />
       <h5 className="font-medium uppercase text-text-secondary text-xs mt-2">
@@ -76,7 +75,6 @@ export function NavCard({
           className={`absolute inset-0 w-full h-full object-cover rounded-lg ${
             loaded ? "opacity-100" : "opacity-0"
           }`}
-          style={{ transition: "opacity 0.5s ease-in-out" }}
           onLoad={() => setLoaded(true)}
         />
       </div>
