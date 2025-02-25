@@ -25,6 +25,7 @@ import {
 } from "./navbar.data";
 import { MenuLink } from "./types";
 import { useEffect } from "react";
+import lowerCase from "lodash/lowerCase";
 
 export function Navbar() {
   const { pathname } = useLocation();
@@ -35,6 +36,8 @@ export function Navbar() {
     // Load the navbar data when component mounts
     fetcher.load("/navbar");
   }, []);
+
+  const isLoading = fetcher.state === "loading";
 
   const menuLinks: MenuLink[] = [
     {
@@ -124,11 +127,13 @@ export function Navbar() {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent
                       className={cn(
-                        "relative z-10 bg-white shadow-lg", // Adjusting to make it a lower z-index and positioned correctly
+                        "relative z-10 bg-white shadow-lg",
                         navigationMenuContentStyle()
                       )}
                     >
                       <MenuContent
+                        menuType={lowerCase(menuLink.title)}
+                        isLoading={isLoading}
                         mainContent={menuLink.content.mainContent}
                         featureCards={menuLink.content.featureCards}
                       />
