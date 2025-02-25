@@ -6,12 +6,13 @@ import { useMemo } from "react";
 import { HitComponent } from "../../finder/components/hit-component.component";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
+import { useResponsive } from "~/hooks/use-responsive";
 
 const createSearchClient = (appId: string, apiKey: string) =>
   algoliasearch(appId, apiKey, {});
 
-export function RelatedGroupsPartial() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, tags } =
+export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
   const searchClient = useMemo(
@@ -19,16 +20,23 @@ export function RelatedGroupsPartial() {
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
+  const { isLarge, isXLarge } = useResponsive();
+
   return (
-    <div className="content-padding w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
-      <div className="mt-8 w-full flex flex-col gap-16 max-w-screen-content">
+    <div className="content-padding mt-16 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
+      <div className="w-full flex flex-col gap-6 md:gap-16 max-w-screen-content">
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-[32px] font-extrabold">Related Groups</h2>
-          <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
-            View More
-          </Button>
+          <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
+            Related Groups
+          </h2>
+          <div className="hidden md:block">
+            <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
+              View More
+            </Button>
+          </div>
         </div>
-        <div className="w-full flex gap-4">
+
+        <div className="w-full flex justify-center gap-4">
           <InstantSearch
             indexName="production_Groups"
             searchClient={searchClient}
@@ -36,15 +44,23 @@ export function RelatedGroupsPartial() {
               preserveSharedStateOnUnmount: true,
             }}
           >
-            <Configure filters={`preferences:"${tags[0]}"`} hitsPerPage={4} />
+            <Configure
+              filters={`preferences:"${tags[0]}"`}
+              hitsPerPage={isXLarge ? 4 : isLarge ? 3 : 4}
+            />
             {/* Results Grid */}
             <Hits
               hitComponent={HitComponent}
               classNames={{
-                list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-items-center",
+                list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 justify-center max-w-[400px] md:max-w-none",
               }}
             />
           </InstantSearch>
+        </div>
+        <div className="md:hidden w-full flex justify-center mt-6">
+          <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
+            View More
+          </Button>
         </div>
       </div>
     </div>

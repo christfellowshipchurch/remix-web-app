@@ -1,78 +1,160 @@
-import { useLoaderData } from "react-router";
 import Icon from "~/primitives/icon";
 import { Button } from "~/primitives/button/button.primitive";
 import type { LoaderReturnType } from "../loader";
+import { icons } from "~/lib/icons";
 
-export function GroupSingleSidebar() {
-  const data = useLoaderData<LoaderReturnType>();
+const Divider = () => (
+  <div className="w-full h-[1px] bg-[#6E6E6E] opacity-10" role="separator" />
+);
+
+interface InfoItemProps {
+  icon: keyof typeof icons;
+  color?: string;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+const InfoItem = ({
+  icon,
+  color = "#0092BC",
+  children,
+  style,
+}: InfoItemProps) => (
+  <div className="flex items-center gap-2 py-4 px-6 lg:p-6" style={style}>
+    <Icon name={icon} color={color} size={24} />
+    <div className="flex flex-col">{children}</div>
+  </div>
+);
+
+interface LeaderGalleryProps {
+  leaders: {
+    firstName: string;
+    lastName: string;
+    photo: { uri: string };
+  }[];
+}
+
+const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
+  <div className="flex flex-col gap-2 px-6">
+    <div className="flex gap-2">
+      {leaders?.map((leader, i) => (
+        <img
+          key={leader.firstName}
+          src={leader.photo.uri}
+          alt={`Group leader ${leader.firstName} ${leader.lastName}`}
+          className="w-24 h-24 rounded-xl object-cover"
+          loading="lazy"
+        />
+      ))}
+    </div>
+    <h2 className="text-sm font-semibold text-[#666666]">Hosted by</h2>
+    <div className="font-bold">
+      {leaders
+        ?.map((leader) => `${leader.firstName} ${leader.lastName}`)
+        .join(" & ")}
+    </div>
+  </div>
+);
+
+interface ContactSectionProps {
+  onJoinGroup: () => void;
+  onMessageLeader: () => void;
+}
+
+const ContactSection = ({
+  onJoinGroup,
+  onMessageLeader,
+}: ContactSectionProps) => (
+  <div className="bg-dark-navy w-full rounded-b-[1rem] md:rounded-b-none md:!rounded-r-[1rem] lg:!rounded-none lg:w-auto flex flex-col justify-center lg:justify-start gap-4 md:gap-6 py-8 px-6">
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-bold text-white">More Information</h3>
+        <p className="text-[#CCCCCC]">
+          If you need any help, please feel free to contact us.
+        </p>
+      </div>
+      <a
+        href="mailto:groups@christfellowship.church"
+        className="text-white underline hover:cursor-pointer hover:text-opacity-80 transition-colors"
+        aria-label="Email us at groups@christfellowship.church"
+      >
+        groups@christfellowship.church
+      </a>
+    </div>
+    <Button
+      intent="primary"
+      onClick={onJoinGroup}
+      className="w-full h-auto hover:!bg-white hover:text-navy transition-colors"
+    >
+      Join Group
+    </Button>
+    <Button
+      intent="primary"
+      onClick={onMessageLeader}
+      className="w-full h-auto hover:!bg-white hover:text-navy transition-colors"
+    >
+      Message Leader
+    </Button>
+  </div>
+);
+
+export function GroupSingleSidebar({
+  leaders,
+  meetingType,
+  meetingTime,
+  meetingDay,
+  campusName,
+}: {
+  leaders: LeaderGalleryProps["leaders"];
+  meetingType: string;
+  meetingTime: string;
+  meetingDay: string;
+  campusName: string;
+}) {
+  const handleJoinGroup = () => {
+    // TODO: Implement join group functionality
+    console.log("Join group clicked");
+  };
+
+  const handleMessageLeader = () => {
+    // TODO: Implement message leader functionality
+    console.log("Message leader clicked");
+  };
 
   return (
-    <div className="flex flex-col gap-2 pt-6 bg-[#F3F5FA] min-w-[324px]">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2 px-6">
-          <div className="flex gap-2">
-            {data.leaders?.map((leader, i) => (
-              <img
-                key={i}
-                src={leader.photo}
-                alt={leader.name}
-                className="w-24 h-24 rounded-xl object-cover"
-              />
-            ))}
-          </div>
-          <h2 className="text-sm font-semibold text-[#666666]">Hosted by</h2>
-          <div className="font-bold">
-            {data.leaders?.map((leader) => leader.name).join(" & ")}
-          </div>
-        </div>
+    <aside
+      className="flex flex-col max-w-[440px] md:max-w-none lg:min-w-[324px] md:flex-row lg:flex-col h-fit w-full lg:w-auto gap-2 pt-0 lg:pt-6 bg-[#F3F5FA] rounded-t-[1rem] md:rounded-t-none md:!rounded-l-[1rem] lg:!rounded-none"
+      aria-label="Group information"
+    >
+      <div className="flex w-full lg:w-auto flex-col gap-2 lg:gap-6 pt-6 lg:pt-0 ">
+        <LeaderGallery leaders={leaders} />
 
         <div className="flex flex-col mt-2">
-          <div className="flex items-center gap-2 border-t p-6 border-[#6E6E6E]">
-            <Icon name="calendarAlt" color="#0092BC" size={24} />
-            <span>Thursdays, Weekly</span>
-          </div>
-          <div className="flex items-center gap-2 border-t p-6 border-[#6E6E6E]">
-            <Icon name="alarm" size={24} color="#0092BC" />
-            <span>4:30 PM EST</span>
-          </div>
-          <div className="flex items-center gap-2 border-t p-6 border-[#6E6E6E]">
-            <Icon name="map" size={24} color="#0092BC" />
-            <div className="flex flex-col">
-              <span>In-person</span>
-              <span>Palm Beach Gardens</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="bg-dark-navy flex flex-col gap-6 py-8 px-6">
-        <div className="flex flex-col gap-4">
-          <div>
-            <h3 className="text-lg font-bold text-white">More Information</h3>
-            <p className="text-[#CCCCCC]">
-              If you need any help, please feel free to contact us.
-            </p>
-          </div>
-          <a
-            href="mailto:groups@christfellowship.church"
-            className="text-white underline hover:cursor-pointer"
-          >
-            groups@christfellowship.church
-          </a>
-        </div>
+          <Divider />
+          <InfoItem icon="calendarAlt">
+            <span>{meetingDay}</span>
+          </InfoItem>
 
-        <Button
-          intent="primary"
-          className="w-full hover:!bg-white hover:text-navy"
-        >
-          Join Group
-        </Button>
-        <Button
-          intent="primary"
-          className="w-full hover:!bg-white hover:text-navy"
-        >
-          Message Leader
-        </Button>
+          <Divider />
+          <InfoItem
+            icon="alarm"
+            style={{ display: `${meetingTime ? "block" : "none"}` }}
+          >
+            <span>{meetingTime}</span>
+          </InfoItem>
+
+          <Divider />
+          <InfoItem icon="map">
+            <span>{meetingType}</span>
+            <span>{campusName}</span>
+          </InfoItem>
+        </div>
       </div>
-    </div>
+
+      <ContactSection
+        onJoinGroup={handleJoinGroup}
+        onMessageLeader={handleMessageLeader}
+      />
+    </aside>
   );
 }

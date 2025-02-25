@@ -18,6 +18,8 @@ export function useResponsive() {
     maxWidth: breakpoints.lg - 1,
   });
   const isLarge = useMediaQuery({ minWidth: breakpoints.lg });
+  const isXLarge = useMediaQuery({ minWidth: breakpoints["xl"] });
+  const isXXLarge = useMediaQuery({ minWidth: breakpoints["2xl"] });
 
   // Return mobile-first defaults when not hydrated
   if (!isHydrated) {
@@ -25,6 +27,8 @@ export function useResponsive() {
       isSmall: true,
       isMedium: false,
       isLarge: false,
+      isXLarge: false,
+      isXXLarge: false,
       breakpoints,
     };
   }
@@ -33,6 +37,8 @@ export function useResponsive() {
     isSmall,
     isMedium,
     isLarge,
+    isXLarge,
+    isXXLarge,
     breakpoints,
   };
 }

@@ -32,7 +32,9 @@ export function FAQ({
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex justify-between gap-2 w-full"
       >
-        <h3 className="text-2xl font-semibold text-left">{question}</h3>
+        <h3 className="md:text-xl lg:text-2xl font-semibold text-left">
+          {question}
+        </h3>
         <div className="flex items-center gap-2">
           <div
             className={`transition-transform duration-200 ${
@@ -49,7 +51,7 @@ export function FAQ({
         }`}
       >
         <div className="overflow-hidden">
-          <p className="text-gray-600">{answer}</p>
+          <p className="text-gray-600 text-sm md:text-base">{answer}</p>
         </div>
       </div>
     </div>
@@ -58,8 +60,10 @@ export function FAQ({
 
 export const GroupFAQ = () => {
   return (
-    <div className="flex flex-col gap-12">
-      <h2 className="text-[32px] font-extrabold">Frequently Asked Questions</h2>
+    <div className="flex flex-col gap-6 md:gap-12">
+      <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
+        Frequently Asked Questions
+      </h2>
       <div className="flex flex-col gap-4">
         {faqData.map((faq) => (
           <FAQ key={faq.question} question={faq.question} answer={faq.answer} />
