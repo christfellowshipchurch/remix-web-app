@@ -5,7 +5,7 @@ import { loader } from "./loader";
  * todo : set up meta data for group single pages
  */
 interface GroupData {
-  title: string;
+  groupName: string;
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }: { data: any }) => {
@@ -21,10 +21,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }: { data: any }) => {
   }
 
   // TODO: Get group title from data
-  const groupTitle = groupData.title;
+  const groupName = groupData.groupName;
 
   return [
-    { title: `${groupTitle} | Christ Fellowship Church` },
+    { title: `${groupName} | Christ Fellowship Church` },
     // TODO: Add description
     { name: "description", content: "Messages from Christ Fellowship Church" },
   ];
