@@ -12,6 +12,7 @@ export interface GroupHit {
   priority: number;
   action: string;
   campusName: string;
+  meetingTime: string;
   meetingDay: string;
   meetingType: string;
   preferences: string[];
