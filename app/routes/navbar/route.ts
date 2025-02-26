@@ -11,7 +11,6 @@ const fetchFeatureCards = async () => {
         $filter: "DefinedTypeId eq 580",
         loadAttributes: "simple",
       },
-      cache: false,
     });
 
     return navCardDefinedValues;
