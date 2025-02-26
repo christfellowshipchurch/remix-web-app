@@ -6,10 +6,8 @@ import {
   NavigationMenuContent,
   NavigationMenuTrigger,
 } from "@radix-ui/react-navigation-menu";
-
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
-import { ministriesData, watchReadListenData } from "./navbar.data";
 import { MenuContent } from "./desktop/menu-content.component";
 import {
   angleDownIconStyle,
@@ -18,23 +16,45 @@ import {
 } from "./navbar.styles";
 import MobileMenu from "./mobile/mobile-menu.component";
 import Icon from "~/primitives/icon";
-import { useLocation } from "react-router";
+import { useLocation, useFetcher } from "react-router-dom";
 import { shouldUseDarkMode } from "./navbar-routes";
-
-const mainLinks = [
-  { title: "About", url: "/about" },
-  { title: "Locations", url: "/locations" },
-  { title: "Events", url: "/events" },
-];
-
-const menuLinks = [
-  { title: "Get Involved", content: ministriesData },
-  { title: "Media", content: watchReadListenData },
-];
+import {
+  mainNavLinks,
+  ministriesData,
+  watchReadListenData,
+} from "./navbar.data";
+import { MenuLink } from "./types";
+import { useEffect } from "react";
+import lowerCase from "lodash/lowerCase";
 
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    // Load the navbar data when component mounts
+    fetcher.load("/navbar");
+  }, []);
+
+  const isLoading = fetcher.state === "loading";
+
+  const menuLinks: MenuLink[] = [
+    {
+      title: "Get Involved",
+      content: {
+        mainContent: ministriesData.content.mainContent,
+        featureCards: fetcher.data?.ministries?.featureCards || [],
+      },
+    },
+    {
+      title: "Media",
+      content: {
+        mainContent: watchReadListenData.content.mainContent,
+        featureCards: fetcher.data?.watchReadListen?.featureCards || [],
+      },
+    },
+  ];
 
   return (
     <nav className="group w-full">
@@ -66,7 +86,7 @@ export function Navbar() {
             <NavigationMenu>
               <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
                 {/* Links */}
-                {mainLinks.map((link) => (
+                {mainNavLinks.map((link) => (
                   <NavigationMenuItem key={link.title}>
                     <NavigationMenuLink
                       href={link.url}
@@ -107,13 +127,15 @@ export function Navbar() {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent
                       className={cn(
-                        "relative z-10 bg-white shadow-lg", // Adjusting to make it a lower z-index and positioned correctly
+                        "relative z-10 bg-white shadow-lg",
                         navigationMenuContentStyle()
                       )}
                     >
                       <MenuContent
+                        menuType={lowerCase(menuLink.title)}
+                        isLoading={isLoading}
                         mainContent={menuLink.content.mainContent}
-                        additionalContent={menuLink.content.additionalContent}
+                        featureCards={menuLink.content.featureCards}
                       />
                     </NavigationMenuContent>
                   </NavigationMenuItem>
