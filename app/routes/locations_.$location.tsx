@@ -1,6 +1,6 @@
-import { LocationSinglePage } from "./locations/locationSingle/location-single";
+import { LocationSinglePage } from "./locations/location-single/location-single";
 
-export { loader } from "./locations/locationSingle/loader";
-export { meta } from "./locations/locationSingle/meta";
+export { loader } from "./locations/location-single/loader";
+export { meta } from "./locations/location-single/meta";
 
 export default LocationSinglePage;

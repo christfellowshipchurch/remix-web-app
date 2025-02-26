@@ -1,7 +1,7 @@
 import { DynamicHero } from "~/components/dynamic-hero";
 import { GroupSearch } from "./partials/group-search.partial";
 
-export function GroupFinder() {
+export function GroupFinderPage() {
   return (
     <div className="flex flex-col items-center">
       <DynamicHero
