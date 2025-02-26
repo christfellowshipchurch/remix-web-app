@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useFetcher, useLoaderData } from "react-router";
-import { LoaderReturnType } from "~/routes/locations/locationSingle/loader";
+import { LoaderReturnType } from "~/routes/locations/location-single/loader";
 import { renderInputField } from "../connect-card/connect-form.component";
 
 interface ReminderProps {

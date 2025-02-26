@@ -1,5 +1,5 @@
 import { ActionFunction, data } from "react-router";
-import { LocationSearchCoordinatesType } from "../locations/locationSearch/location-search";
+import { LocationSearchCoordinatesType } from "../locations/location-search/location-search";
 import {
   AuthenticationError,
   EncryptionError,
