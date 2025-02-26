@@ -38,7 +38,7 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
       {/* Menu Content */}
       <div
-        className={`fixed top-18 inset-0 bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        className={`fixed top-18 right-0 w-4/5 h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
           ${
             !isOpen
               ? "translate-x-full invisible opacity-0"
