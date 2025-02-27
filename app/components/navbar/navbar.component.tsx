@@ -26,7 +26,7 @@ import {
 import { MenuLink } from "./types";
 import { useEffect } from "react";
 import lowerCase from "lodash/lowerCase";
-
+import AuthModal from "../modals/auth";
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
@@ -140,22 +140,28 @@ export function Navbar() {
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 ))}
+
+                <Icon
+                  name="search"
+                  size={20}
+                  className={`${
+                    mode === "light"
+                      ? "text-neutral-dark"
+                      : "text-white group-hover:text-text"
+                  } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
+                />
               </NavigationMenuList>
             </NavigationMenu>
           </div>
 
           {/* Give Now Button */}
-          <a href="#search" className="items-center gap-8 hidden md:flex">
-            <Icon
-              name="search"
-              className={`${
-                mode === "light"
-                  ? "text-neutral-dark"
-                  : "text-white group-hover:text-text"
-              } hover:text-ocean transition-colors`}
-            />
-            <Button size={"md"}>Find a Service</Button>
-          </a>
+          <div className="flex items-center gap-6">
+            <AuthModal />
+            <Button className="font-semibold" size={"md"}>
+              <Icon name="mapFilled" size={20} className="mr-2" />
+              Find a Service
+            </Button>
+          </div>
 
           {/* Mobile view */}
           <MobileMenu mode={mode} />
