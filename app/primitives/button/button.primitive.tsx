@@ -14,6 +14,7 @@ const button = cva(
     "delay-50",
     "rounded-md",
     "cursor-pointer",
+    "font-semibold",
   ],
   {
     variants: {

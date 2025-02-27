@@ -166,3 +166,41 @@ export const ministriesItems: SubMenuItem[] = [
     to: "/ministries/care",
   },
 ];
+
+export const moreMenuItems: SubMenuItem[] = [
+  {
+    id: "about-us",
+    title: "About Us",
+    to: "/about",
+  },
+  {
+    id: "request-prayer",
+    title: "Request Prayer",
+    to: "/request-prayer",
+  },
+  {
+    id: "contact-us",
+    title: "Contact Us",
+    to: "/contact",
+  },
+  {
+    id: "resources",
+    title: "Resources",
+    to: "/resources",
+  },
+  {
+    id: "our-beliefs-and-values",
+    title: "Our Beliefs and Values",
+    to: "/our-beliefs-and-values",
+  },
+  {
+    id: "church-leadership",
+    title: "Church Leadership",
+    to: "/church-leadership",
+  },
+  {
+    id: "southeastern",
+    title: "Southeastern",
+    to: "/southeastern",
+  },
+];

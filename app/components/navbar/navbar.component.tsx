@@ -28,6 +28,13 @@ import { useEffect } from "react";
 import lowerCase from "lodash/lowerCase";
 import AuthModal from "../modals/auth";
 import { useAuth } from "~/providers/auth-provider";
+
+const authButtonStyle = (mode: "light" | "dark") => {
+  return `font-semibold cursor-pointer hover:text-ocean transition-colors ${
+    mode === "light" ? "text-neutral-dark" : "text-white group-hover:text-text"
+  }`;
+};
+
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
@@ -86,7 +93,7 @@ export function Navbar() {
           </a>
 
           {/* Desktop view */}
-          <div className="hidden xl:inline">
+          <div className="hidden lg:inline">
             <NavigationMenu>
               <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
                 {/* Links */}
@@ -160,21 +167,18 @@ export function Navbar() {
           </div>
 
           {/* Give Now Button */}
-          <div className="hidden xl:flex items-center gap-6">
-            {authLoading ? (
-              <div>loading</div>
-            ) : userData ? (
-              <button
-                className="font-semibold text-neutral-dark cursor-pointer hover:text-ocean transition-colors"
-                onClick={logout}
-              >
-                Log out
-              </button>
-            ) : (
-              <div className="pr-2">
-                <AuthModal />
-              </div>
-            )}
+          <div className="hidden lg:flex items-center gap-6">
+            <div className="min-w-[50px] flex justify-end">
+              {authLoading ? (
+                <div className={authButtonStyle(mode)}>Login</div> // optimistically show login button
+              ) : userData ? (
+                <button className={authButtonStyle(mode)} onClick={logout}>
+                  Logout
+                </button>
+              ) : (
+                <AuthModal buttonStyle={authButtonStyle(mode)} />
+              )}
+            </div>
             <Button className="font-semibold text-base">
               <Icon name="mapFilled" size={20} className="mr-2" />
               Find a Service
