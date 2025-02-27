@@ -5,7 +5,7 @@ export const welcomeMenuItems: MenuItem[] = [
     id: "about",
     title: "About Us",
     description: "Our beliefs and history",
-    icon: "bible",
+    icon: "church",
     to: "/about",
   },
   {
@@ -19,7 +19,7 @@ export const welcomeMenuItems: MenuItem[] = [
     id: "watch-live",
     title: "Watch Live",
     description: "Join us from anywhere",
-    icon: "circlePlay",
+    icon: "broadcast",
     to: "/watch",
   },
   {
@@ -36,14 +36,14 @@ export const getInvolvedItems: MenuItem[] = [
     id: "journey",
     title: "The Journey",
     description: "Lifes better together",
-    icon: "arrowRight",
+    icon: "arrowTopRight",
     to: "/journey",
   },
   {
     id: "volunteer",
     title: "Volunteer",
     description: "Serve with others",
-    icon: "user",
+    icon: "handHeart",
     to: "/volunteer",
   },
   {
@@ -57,7 +57,7 @@ export const getInvolvedItems: MenuItem[] = [
     id: "giving",
     title: "Giving",
     description: "Impact your world",
-    icon: "star",
+    icon: "heartHand",
     to: "/giving",
   },
 ];
@@ -66,25 +66,25 @@ export const nextStepsItems: SubMenuItem[] = [
   {
     id: "new-believer",
     title: "New Believer",
-    icon: "star",
+    icon: "heart",
     to: "/next-steps/new-believer",
   },
   {
     id: "baptism",
     title: "Baptism",
-    icon: "star",
+    icon: "waves",
     to: "/next-steps/baptism",
   },
   {
     id: "take-a-class",
     title: "Take a Class",
-    icon: "bible",
+    icon: "bookOpen",
     to: "/next-steps/classes",
   },
   {
     id: "join-a-group",
     title: "Join a Group",
-    icon: "user",
+    icon: "group",
     to: "/next-steps/groups",
   },
 ];
@@ -93,19 +93,19 @@ export const mediaItems: SubMenuItem[] = [
   {
     id: "messages",
     title: "Messages",
-    icon: "circlePlay",
+    icon: "video",
     to: "/media/messages",
   },
   {
     id: "articles",
     title: "Articles",
-    icon: "bible",
+    icon: "bookContent",
     to: "/media/articles",
   },
   {
     id: "podcasts",
     title: "Podcasts",
-    icon: "circlePlay",
+    icon: "microphone",
     to: "/media/podcasts",
   },
   {
