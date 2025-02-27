@@ -132,7 +132,7 @@ export function GroupSingleSidebar({
         <div className="flex flex-col mt-2">
           <Divider />
           <InfoItem icon="calendarAlt">
-            <span>{meetingDay}</span>
+            <span className="text-lg font-semibold">{meetingDay}</span>
           </InfoItem>
 
           <Divider />
@@ -140,13 +140,13 @@ export function GroupSingleSidebar({
             icon="alarm"
             style={{ display: `${meetingTime ? "block" : "none"}` }}
           >
-            <span>{meetingTime}</span>
+            <span className="text-lg font-semibold">{meetingTime}</span>
           </InfoItem>
 
           <Divider />
           <InfoItem icon="map">
-            <span>{meetingType}</span>
-            <span>{campusName}</span>
+            <span className="text-sm text-[#666666]">{meetingType}</span>
+            <span className="text-lg font-semibold">{campusName}</span>
           </InfoItem>
         </div>
       </div>
