@@ -115,6 +115,7 @@ export function Navbar() {
                       className={cn(
                         navigationMenuTriggerStyle(),
                         "xl:text-lg",
+                        "cursor-pointer",
                         `${
                           mode === "light"
                             ? "text-neutral-dark"
