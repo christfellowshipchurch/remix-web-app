@@ -23,7 +23,7 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
   return (
     <div
-      className={`md:hidden ${
+      className={`xl:hidden ${
         mode === "light" ? "text-neutral-dark" : "text-white"
       }`}
     >

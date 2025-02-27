@@ -27,10 +27,12 @@ import { MenuLink } from "./types";
 import { useEffect } from "react";
 import lowerCase from "lodash/lowerCase";
 import AuthModal from "../modals/auth";
+import { useAuth } from "~/providers/auth-provider";
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
   const fetcher = useFetcher();
+  const { logout, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     // Load the navbar data when component mounts
@@ -38,6 +40,8 @@ export function Navbar() {
   }, []);
 
   const isLoading = fetcher.state === "loading";
+
+  const userData = fetcher.data?.userData;
 
   const menuLinks: MenuLink[] = [
     {
@@ -82,7 +86,7 @@ export function Navbar() {
           </a>
 
           {/* Desktop view */}
-          <div className="hidden md:inline">
+          <div className="hidden xl:inline">
             <NavigationMenu>
               <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
                 {/* Links */}
@@ -155,9 +159,22 @@ export function Navbar() {
           </div>
 
           {/* Give Now Button */}
-          <div className="flex items-center gap-6">
-            <AuthModal />
-            <Button className="font-semibold" size={"md"}>
+          <div className="hidden xl:flex items-center gap-6">
+            {authLoading ? (
+              <div>loading</div>
+            ) : userData ? (
+              <button
+                className="font-semibold text-neutral-dark cursor-pointer hover:text-ocean transition-colors"
+                onClick={logout}
+              >
+                Log out
+              </button>
+            ) : (
+              <div className="pr-2">
+                <AuthModal />
+              </div>
+            )}
+            <Button className="font-semibold text-base">
               <Icon name="mapFilled" size={20} className="mr-2" />
               Find a Service
             </Button>
