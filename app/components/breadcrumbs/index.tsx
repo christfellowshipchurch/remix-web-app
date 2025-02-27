@@ -22,7 +22,9 @@ export default function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
       <div key={path} className={`flex items-center gap-4 ${textColor}`}>
         <Icon color="#0092BC" size={20} name="caretRight" />
         <Link to={path}>
-          <span className="hover:underline text-sm">{pageName}</span>
+          <span className="hover:underline text-sm">
+            {decodeURIComponent(pageName)}
+          </span>
         </Link>
       </div>
     );
