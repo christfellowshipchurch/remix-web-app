@@ -3,14 +3,14 @@ import Icon from "~/primitives/icon";
 import { MenuItem } from "./types";
 
 interface MenuSectionProps {
-  title: string;
+  title?: string;
   items: MenuItem[];
 }
 
 export function MenuSection({ title, items }: MenuSectionProps) {
   return (
-    <section>
-      <h2 className="heading-h6 text-navy mb-4">{title}</h2>
+    <section className="px-8 border-t border-gray-200 py-8">
+      {title && <h2 className="heading-h6 text-navy mb-4">{title}</h2>}
       <div className="space-y-6">
         {items.map((item) => (
           <Link key={item.id} to={item.to} className="flex items-start gap-4">
