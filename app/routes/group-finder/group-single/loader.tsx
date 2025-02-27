@@ -1,6 +1,5 @@
 import { LoaderFunctionArgs } from "react-router";
 import { AuthenticationError } from "~/lib/.server/error-types";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -18,7 +17,7 @@ export type LoaderReturnType = {
   }>;
 };
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const title = params.path as string;
 
   if (!title) {
@@ -35,6 +34,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   return {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
-    groupName: decodeURIComponent(title),
+    groupName: decodeURIComponent(title) || null,
   };
 }

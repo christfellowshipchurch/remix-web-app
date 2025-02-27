@@ -65,8 +65,8 @@ export const GroupFAQ = () => {
         Frequently Asked Questions
       </h2>
       <div className="flex flex-col gap-4">
-        {faqData.map((faq) => (
-          <FAQ key={faq.question} question={faq.question} answer={faq.answer} />
+        {faqData.map((faq, index) => (
+          <FAQ key={index} question={faq.question} answer={faq.answer} />
         ))}
       </div>
     </div>

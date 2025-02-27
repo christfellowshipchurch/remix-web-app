@@ -7,9 +7,7 @@ import { HitComponent } from "../../finder/components/hit-component.component";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { useResponsive } from "~/hooks/use-responsive";
-
-const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
+import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 
 export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
