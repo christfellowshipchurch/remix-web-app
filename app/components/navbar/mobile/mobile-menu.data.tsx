@@ -79,13 +79,13 @@ export const nextStepsItems: SubMenuItem[] = [
     id: "take-a-class",
     title: "Take a Class",
     icon: "bookOpen",
-    to: "/next-steps/classes",
+    to: "/group-finder",
   },
   {
     id: "join-a-group",
     title: "Join a Group",
     icon: "group",
-    to: "/next-steps/groups",
+    to: "/group-finder",
   },
 ];
 
@@ -94,25 +94,25 @@ export const mediaItems: SubMenuItem[] = [
     id: "messages",
     title: "Messages",
     icon: "video",
-    to: "/media/messages",
+    to: "/messages",
   },
   {
     id: "articles",
     title: "Articles",
     icon: "bookContent",
-    to: "/media/articles",
+    to: "/articles",
   },
   {
     id: "podcasts",
     title: "Podcasts",
     icon: "microphone",
-    to: "/media/podcasts",
+    to: "/podcasts",
   },
   {
     id: "devotional",
     title: "Daily Devotional",
     icon: "bible",
-    to: "/media/devotional",
+    to: "/devotionals",
   },
 ];
 
@@ -191,16 +191,16 @@ export const moreMenuItems: SubMenuItem[] = [
   {
     id: "our-beliefs-and-values",
     title: "Our Beliefs and Values",
-    to: "/our-beliefs-and-values",
+    to: "/about#our-beliefs-and-values",
   },
   {
     id: "church-leadership",
     title: "Church Leadership",
-    to: "/church-leadership",
+    to: "/about#church-leadership",
   },
   {
     id: "southeastern",
     title: "Southeastern",
-    to: "/southeastern",
+    to: "https://www.cfseu.com",
   },
 ];
