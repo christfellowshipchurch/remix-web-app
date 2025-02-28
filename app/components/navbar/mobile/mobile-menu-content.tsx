@@ -2,7 +2,6 @@
  * todo : Add link navigation to the menu items
  */
 import { useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
 import { MenuSection } from "./menu-section";
 import { AccordionSection } from "./accordion-section";
 import {
@@ -15,8 +14,15 @@ import {
 } from "./mobile-menu.data";
 import Icon from "~/primitives/icon";
 import { Link } from "react-router-dom";
+import AuthModal from "~/components/modals/auth";
 
-export default function MobileMenuContent() {
+interface MobileMenuContentProps {
+  closeMenu: () => void;
+}
+
+export default function MobileMenuContent({
+  closeMenu,
+}: MobileMenuContentProps) {
   const [openSection, setOpenSection] = useState<string | null>(null);
 
   const toggleSection = (sectionId: string) => {
@@ -29,7 +35,7 @@ export default function MobileMenuContent() {
         <MenuSection title="Welcome to Church" items={welcomeMenuItems} />
         <MenuSection title="Get Involved" items={getInvolvedItems} />
 
-        <section className="space-y-4">
+        <section>
           <AccordionSection
             id="next-steps"
             title="Next Steps"
@@ -60,16 +66,16 @@ export default function MobileMenuContent() {
           />
         </section>
 
-        <section className="p-8 border-t border-gray-200">
-          <div>
-            <h3 className="text-lg font-bold text-navy">My Church</h3>
-            <p className="text-text-primary text-sm font-normal">
-              Stay up to date with your groups, classes, and more.
-            </p>
-            <Button intent="primary" className="mt-4 w-full" size="sm">
-              Sign In
-            </Button>
-          </div>
+        <section className="p-8 border-t border-gray-200 flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-navy">My Church</h3>
+          <p className="text-text-primary text-sm font-normal mb-2">
+            Stay up to date with your groups, classes, and more.
+          </p>
+          <AuthModal
+            buttonStyle="bg-ocean text-white p-2 rounded-lg w-full font-medium"
+            buttonText="Sign In"
+            onClick={closeMenu}
+          />
         </section>
 
         {/* website feedback */}

@@ -13,9 +13,9 @@ export function MenuSection({ title, items }: MenuSectionProps) {
       {title && <h2 className="heading-h6 text-navy mb-4">{title}</h2>}
       <div className="space-y-6">
         {items.map((item) => (
-          <Link key={item.id} to={item.to} className="flex items-start gap-4">
+          <Link key={item.id} to={item.to} className="flex items-start gap-6">
             <div className="mt-1">
-              <Icon name={item.icon} className="size-6 text-gray-600" />
+              <Icon name={item.icon} className="size-6 text-text-primary" />
             </div>
             <div>
               <h3 className="font-semibold text-text-primary">{item.title}</h3>

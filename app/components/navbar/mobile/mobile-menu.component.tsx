@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
 import { useHydrated } from "~/hooks/use-hydrated";
 
+const mobileMenuButtonStyle =
+  "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";
+
 export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
   const [isOpen, setIsOpen] = useState(false);
   const isHydrated = useHydrated();
@@ -50,14 +53,18 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
         aria-hidden="true"
       />
 
-      {/* Menu Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-4 cursor-pointer transition-colors duration-300"
-      >
-        <Icon name="search" size={20} className="mb-[2px]" />
-        <Icon name="menu" />
-      </button>
+      {/* Search & Menu Buttons */}
+      <div className="flex items-center gap-4">
+        <button className={mobileMenuButtonStyle}>
+          <Icon name="search" size={20} className="mb-[2px]" />
+        </button>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={mobileMenuButtonStyle}
+        >
+          <Icon name="menu" />
+        </button>
+      </div>
 
       {/* Menu Content */}
       <div
@@ -72,7 +79,7 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
           className={`h-full flex flex-col transition-opacity duration-500
             ${isOpen ? "opacity-100" : "opacity-0"}`}
         >
-          <MobileMenuContent />
+          <MobileMenuContent closeMenu={() => setIsOpen(false)} />
         </div>
       </div>
     </div>

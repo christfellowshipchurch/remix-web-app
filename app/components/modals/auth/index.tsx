@@ -7,14 +7,20 @@ const defaultButtonStyle =
 
 export default function AuthModal({
   buttonStyle = defaultButtonStyle,
+  buttonText = "Login",
+  onClick = () => {},
 }: {
   buttonStyle?: string;
+  buttonText?: string;
+  onClick?: () => void;
 }) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
-      <Modal.Button className={buttonStyle}>Login</Modal.Button>
+      <Modal.Button className={buttonStyle} onClick={onClick}>
+        {buttonText}
+      </Modal.Button>
       <Modal.Content>
         <LoginFlow setOpenModal={setOpenModal} />
       </Modal.Content>
