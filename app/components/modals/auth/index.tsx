@@ -1,19 +1,26 @@
 import { useState } from "react";
-// import { useAuth } from "providers/AuthProvider"
 import LoginFlow from "./login-flow.component";
 import Modal from "~/primitives/Modal";
-import { Button } from "~/primitives/button/button.primitive";
 
-export default function AuthModal() {
+const defaultButtonStyle =
+  "mr-2 font-semibold text-neutral-dark cursor-pointer hover:text-ocean transition-colors";
+
+export default function AuthModal({
+  buttonStyle = defaultButtonStyle,
+  buttonText = "Login",
+  onClick = () => {},
+}: {
+  buttonStyle?: string;
+  buttonText?: string;
+  onClick?: () => void;
+}) {
   const [openModal, setOpenModal] = useState(false);
-  // const { user } = useAuth()
 
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
-      <Modal.Button asChild className="mr-2">
-        <Button intent={"secondary"}>Login/Sign Up</Button>
+      <Modal.Button className={buttonStyle} onClick={onClick}>
+        {buttonText}
       </Modal.Button>
-      {/* {user ? <a href="/protected">My Profile</a> : <Modal.Button className="mr-2">Sign Up</Modal.Button>} */}
       <Modal.Content>
         <LoginFlow setOpenModal={setOpenModal} />
       </Modal.Content>

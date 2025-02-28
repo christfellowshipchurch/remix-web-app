@@ -47,7 +47,7 @@ export const DynamicHero = ({
             <div className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]" />
 
             {/* CTAs */}
-            <div className="mt-5 md:mt-0 flex justify-between gap-3 pr-1 md:pr-4 md:gap-4">
+            <div className="mt-5 md:mt-0 flex flex-wrap justify-between gap-3 pr-1 md:pr-4 md:gap-4">
               {ctas?.map((cta, i) => (
                 <IconButton
                   key={i}
