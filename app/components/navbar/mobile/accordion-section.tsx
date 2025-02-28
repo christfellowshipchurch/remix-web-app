@@ -48,7 +48,7 @@ export function AccordionSection({
         </div>
         <Icon
           name="chevronDown"
-          className={`size-5 text-gray-400 transition-transform duration-300 ${
+          className={`size-6 text-text-primary transition-transform duration-300 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -66,22 +66,22 @@ export function AccordionSection({
                   <Link
                     key={item.id}
                     to={item.to}
-                    className="flex justify-start items-center gap-4"
+                    className="flex justify-start items-center gap-6"
                   >
                     <div className="mt-1">
                       {item.icon && (
                         <Icon
                           name={item.icon}
-                          className="size-6 text-gray-600"
+                          className="size-6 text-text-primary mb-1"
                         />
                       )}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-text-primary">
                         {item.title}
                       </h3>
                       {item.description && (
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-text-secondary text-sm">
                           {item.description}
                         </p>
                       )}
@@ -93,11 +93,11 @@ export function AccordionSection({
               <div className="grid grid-cols-2 gap-6">
                 {items.map((item) => (
                   <Link key={item.id} to={item.to} className="flex flex-col">
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-text-primary">
                       {item.title}
                     </h3>
                     {item.description && (
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-text-secondary text-sm">
                         {item.description}
                       </p>
                     )}
