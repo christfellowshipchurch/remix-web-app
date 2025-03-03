@@ -99,6 +99,7 @@ export const GroupSearch = () => {
             </div>
             <Hits
               classNames={{
+                item: "flex justify-center",
                 list: "grid md:grid-cols-2 xl:grid-cols-3 gap-6",
               }}
               hitComponent={HitComponent}

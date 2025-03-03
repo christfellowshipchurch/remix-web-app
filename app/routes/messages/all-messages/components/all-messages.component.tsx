@@ -77,7 +77,7 @@ export const FilterButtons = ({ tags = mockTags }: { tags?: Tag[] }) => {
   );
 };
 
-const createSearchClient = (appId: string, apiKey: string) =>
+export const createSearchClient = (appId: string, apiKey: string) =>
   algoliasearch(appId, apiKey, {});
 
 export default function Messages() {
