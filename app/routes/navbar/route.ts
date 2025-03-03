@@ -2,6 +2,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import type { FeatureCard } from "~/components/navbar/types";
 import { createImageUrlFromGuid } from "~/lib/utils";
+import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 
 const fetchFeatureCards = async () => {
   try {
@@ -22,6 +23,9 @@ const fetchFeatureCards = async () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
+    // Todo: fix user data for mobile/desktop nav menus. right now it's not returning the full user object, but is at least notifying is user is logged in or not. We will wait until the UI for the logged in experience is complete to fix this.
+    const userData = await getUserFromRequest(request);
+
     const rawFeatureCards = await fetchFeatureCards();
 
     // If the API call failed, return empty arrays
@@ -62,6 +66,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
 
     return Response.json({
+      userData,
       ministries: {
         featureCards: ministryCards,
       },

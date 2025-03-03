@@ -26,11 +26,20 @@ import {
 import { MenuLink } from "./types";
 import { useEffect } from "react";
 import lowerCase from "lodash/lowerCase";
+import AuthModal from "../modals/auth";
+import { useAuth } from "~/providers/auth-provider";
+
+const authButtonStyle = (mode: "light" | "dark") => {
+  return `font-semibold cursor-pointer hover:text-ocean transition-colors ${
+    mode === "light" ? "text-neutral-dark" : "text-white group-hover:text-text"
+  }`;
+};
 
 export function Navbar() {
   const { pathname } = useLocation();
   const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
   const fetcher = useFetcher();
+  const { logout, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     // Load the navbar data when component mounts
@@ -38,6 +47,8 @@ export function Navbar() {
   }, []);
 
   const isLoading = fetcher.state === "loading";
+
+  const userData = fetcher.data?.userData;
 
   const menuLinks: MenuLink[] = [
     {
@@ -82,7 +93,7 @@ export function Navbar() {
           </a>
 
           {/* Desktop view */}
-          <div className="hidden md:inline">
+          <div className="hidden lg:inline">
             <NavigationMenu>
               <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
                 {/* Links */}
@@ -111,6 +122,7 @@ export function Navbar() {
                       className={cn(
                         navigationMenuTriggerStyle(),
                         "xl:text-lg",
+                        "cursor-pointer",
                         `${
                           mode === "light"
                             ? "text-neutral-dark"
@@ -140,22 +152,38 @@ export function Navbar() {
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 ))}
+
+                <Icon
+                  name="search"
+                  size={20}
+                  className={`${
+                    mode === "light"
+                      ? "text-neutral-dark"
+                      : "text-white group-hover:text-text"
+                  } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
+                />
               </NavigationMenuList>
             </NavigationMenu>
           </div>
 
           {/* Give Now Button */}
-          <a href="#search" className="items-center gap-8 hidden md:flex">
-            <Icon
-              name="search"
-              className={`${
-                mode === "light"
-                  ? "text-neutral-dark"
-                  : "text-white group-hover:text-text"
-              } hover:text-ocean transition-colors`}
-            />
-            <Button size={"md"}>Find a Service</Button>
-          </a>
+          <div className="hidden lg:flex items-center gap-6">
+            <div className="min-w-[50px] flex justify-end">
+              {authLoading ? (
+                <div className={authButtonStyle(mode)}>Login</div> // optimistically show login button
+              ) : userData ? (
+                <button className={authButtonStyle(mode)} onClick={logout}>
+                  Logout
+                </button>
+              ) : (
+                <AuthModal buttonStyle={authButtonStyle(mode)} />
+              )}
+            </div>
+            <Button className="font-semibold text-base">
+              <Icon name="mapFilled" size={20} className="mr-2" />
+              Find a Service
+            </Button>
+          </div>
 
           {/* Mobile view */}
           <MobileMenu mode={mode} />

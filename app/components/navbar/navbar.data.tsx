@@ -53,17 +53,17 @@ export const ministriesData: MenuLink = {
           {
             title: "Group Finder",
             description: "Lorem ipsum dolor sit amet",
-            url: "#",
+            url: "/group-finder",
           },
           {
             title: "Class Finder",
             description: "Lorem ipsum dolor sit amet",
-            url: "#",
+            url: "/group-finder",
           },
           {
             title: "My Groups & Classes",
             description: "Lorem ipsum dolor sit amet",
-            url: "#",
+            url: "/group-finder",
           },
           {
             title: "Volunteer",
@@ -95,34 +95,35 @@ export const watchReadListenData: MenuLink = {
       {
         title: "WATCH",
         items: [
-          { title: "Messages", url: "#" },
-          { title: "Live Broadcast", url: "#" },
+          { title: "Messages", url: "/messages" },
+          { title: "Live Broadcast", url: "/watch" },
         ],
       },
       {
         title: "READ",
         items: [
-          { title: "Articles", url: "#" },
-          { title: "Devotionals", url: "#" },
+          { title: "Articles", url: "/articles" },
+          { title: "Devotionals", url: "/devotionals" },
         ],
       },
       {
         title: "LISTEN",
         items: [
-          { title: "So Good Sisterhood Podcast", url: "#" },
-          { title: "Crew Cast Podcast", url: "#" },
-          { title: "Young & Adulting Podcast", url: "#" },
-          { title: "MVMT Music", url: "#" },
+          { title: "So Good Sisterhood Podcast", url: "/podcasts" },
+          { title: "Crew Cast Podcast", url: "/podcasts" },
+          { title: "Young & Adulting Podcast", url: "/podcasts" },
+          { title: "MVMT Music", url: "/podcasts" },
         ],
       },
     ],
+    // We will primarily pull featureCards from Rock, but will have hardcoding options if needed
     featureCards: [
       {
         title: "LATEST MESSAGE",
         subtitle: "Don't waste your time",
         callToAction: {
           title: "Watch Now",
-          url: "/",
+          url: "/messages#latest",
         },
         image: "https://picsum.photos/282/228",
         navMenu: "media",
@@ -144,21 +145,30 @@ export const watchReadListenData: MenuLink = {
 export const locationsData = {
   mainContent: [],
   additionalContent: [
-    { title: "Palm Beach Gardens", url: "#" },
-    { title: "Port St. Lucie", url: "#" },
-    { title: "Royal Palm Beach", url: "#" },
-    { title: "Boynton Beach", url: "#" },
-    { title: "Downtown West Palm Beach", url: "#" },
-    { title: "Jupiter", url: "#" },
-    { title: "Stuart", url: "#" },
-    { title: "Okeechobee", url: "#" },
-    { title: "Belle Glade", url: "#" },
-    { title: "Vero Beach", url: "#" },
-    { title: "Boca Raton", url: "#" },
-    { title: "Riviera Beach", url: "#" },
-    { title: "Trinity Church", url: "#" },
-    { title: "Westlake", url: "#" },
-    { title: "En Español Palm Beach Gardens", url: "#" },
-    { title: "En Español Royal Palm Beach", url: "#" },
+    { title: "Palm Beach Gardens", url: "/location/palm-beach-gardens" },
+    { title: "Port St. Lucie", url: "/location/port-st-lucie" },
+    { title: "Royal Palm Beach", url: "/location/royal-palm-beach" },
+    { title: "Boynton Beach", url: "/location/boynton-beach" },
+    {
+      title: "Downtown West Palm Beach",
+      url: "/location/downtown-west-palm-beach",
+    },
+    { title: "Jupiter", url: "/location/jupiter" },
+    { title: "Stuart", url: "/location/stuart" },
+    { title: "Okeechobee", url: "/location/okeechobee" },
+    { title: "Belle Glade", url: "/location/belle-glade" },
+    { title: "Vero Beach", url: "/location/vero-beach" },
+    { title: "Boca Raton", url: "/location/boca-raton" },
+    { title: "Riviera Beach", url: "/location/riviera-beach" },
+    { title: "Trinity Church", url: "/location/trinity-church" },
+    { title: "Westlake", url: "/location/westlake" },
+    {
+      title: "En Español Palm Beach Gardens",
+      url: "/location/en-espanol-palm-beach-gardens",
+    },
+    {
+      title: "En Español Royal Palm Beach",
+      url: "/location/en-espanol-royal-palm-beach",
+    },
   ],
 };
