@@ -2,6 +2,8 @@ import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
 import { useHydrated } from "~/hooks/use-hydrated";
+import { useAuth } from "~/providers/auth-provider";
+import { useLoaderData } from "react-router";
 
 const mobileMenuButtonStyle =
   "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";
@@ -9,6 +11,8 @@ const mobileMenuButtonStyle =
 export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
   const [isOpen, setIsOpen] = useState(false);
   const isHydrated = useHydrated();
+  const { user, isLoading: authLoading, logout } = useAuth();
+  const loaderData = useLoaderData();
 
   // Prevent background scroll when menu is open
   useEffect(() => {
@@ -79,7 +83,14 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
           className={`h-full flex flex-col transition-opacity duration-500
             ${isOpen ? "opacity-100" : "opacity-0"}`}
         >
-          <MobileMenuContent closeMenu={() => setIsOpen(false)} />
+          <MobileMenuContent
+            closeMenu={() => setIsOpen(false)}
+            auth={{
+              authLoading,
+              logout,
+              user,
+            }}
+          />
         </div>
       </div>
     </div>
