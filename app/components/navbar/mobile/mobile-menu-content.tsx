@@ -31,6 +31,7 @@ export default function MobileMenuContent({
   auth,
 }: MobileMenuContentProps) {
   const [openSection, setOpenSection] = useState<string | null>(null);
+  // Todo: fix user data for mobile/desktop nav menus. Right now mobile is pulling user data client side from useAuth hook, but desktop is pulling user data from the loader data. We need to consolidate this into one source of truth.We will wait until the UI for the logged in experience is complete to fix this.
   const { authLoading, logout, user } = auth;
 
   const toggleSection = (sectionId: string) => {
@@ -41,8 +42,6 @@ export default function MobileMenuContent({
     logout();
     closeMenu();
   };
-
-  console.log(user);
 
   return (
     <div className="h-full overflow-y-auto bg-white">

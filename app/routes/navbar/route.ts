@@ -23,6 +23,7 @@ const fetchFeatureCards = async () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
+    // Todo: fix user data for mobile/desktop nav menus. right now it's not returning the full user object, but is at least notifying is user is logged in or not. We will wait until the UI for the logged in experience is complete to fix this.
     const userData = await getUserFromRequest(request);
 
     const rawFeatureCards = await fetchFeatureCards();
