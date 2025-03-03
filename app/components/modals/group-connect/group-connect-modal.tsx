@@ -5,11 +5,13 @@ import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 
 interface GroupConnectModalProps {
   ModalButton?: React.ComponentType<ButtonProps>;
+  buttonText?: string;
   groupName: string;
 }
 
 export function GroupConnectModal({
   ModalButton = Button,
+  buttonText = "Join Group",
   groupName,
 }: GroupConnectModalProps) {
   const [openModal, setOpenModal] = useState(false);
@@ -17,7 +19,9 @@ export function GroupConnectModal({
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
       <Modal.Button asChild className="mr-2">
-        <ModalButton onClick={() => setOpenModal(true)}>Contact</ModalButton>
+        <ModalButton onClick={() => setOpenModal(true)}>
+          {buttonText}
+        </ModalButton>
       </Modal.Button>
       <Modal.Content>
         <GroupContactFlow setOpenModal={setOpenModal} groupName={groupName} />

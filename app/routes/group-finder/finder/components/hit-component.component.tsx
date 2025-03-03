@@ -1,7 +1,7 @@
 import Icon from "~/primitives/icon";
 import { GroupHit } from "../../types";
 import { useState } from "react";
-import GroupConnectModal from "~/components/modals/group-connect";
+import { Button } from "~/primitives/button/button.primitive";
 
 export function HitComponent({ hit }: { hit: GroupHit }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -11,7 +11,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
 
   return (
     <div
-      className="h-full mb-4 bg-white rounded-lg overflow-hidden"
+      className="h-full mb-4 bg-white rounded-lg overflow-hidden max-w-[300px] xl:max-w-96"
       style={{
         boxShadow:
           "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -40,42 +40,50 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
           </div>
         </div>
         <div className="flex flex-col gap-2 xl:gap-4 px-4 h-full justify-between">
-          <div className="flex flex-col gap-1">
-            <div className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
-              {meetingType}
-            </div>
-            <div className="flex flex-col">
-              <h3 className="text-lg font-bold leading-6">{hit.title}</h3>
-              <p className="text-sm text-black">{tags}</p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Icon name="map" size={20} color="black" />
-                <p className="text-sm font-semibold">{hit.campusName}</p>
+          <div className="flex flex-col gap-4 lg:gap-6 xl:gap-8">
+            <div className="flex flex-col gap-1">
+              <div className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
+                {meetingType}
               </div>
+              <div className="flex flex-col">
+                <h3 className="text-lg font-bold leading-6">{hit.title}</h3>
+                <p className="text-sm text-black">{tags}</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Icon name="map" size={20} color="black" />
+                  <p className="text-sm font-semibold">{hit.campusName}</p>
+                </div>
 
-              <div className="flex items-center gap-2">
-                <Icon name="calendarAlt" size={20} color="black" />
-                <p className="text-sm font-semibold">{hit.meetingDay}</p>
-              </div>
-              <div>
-                <p className={`text-sm ${isExpanded ? "" : "line-clamp-3"}`}>
-                  {hit.summary}
-                </p>
-                {hit.summary.length > 132 && (
-                  <button
-                    className="text-ocean text-sm font-semibold text-start"
-                    onClick={() => setIsExpanded(!isExpanded)}
-                  >
-                    {isExpanded ? "See Less" : "See More"}
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  <Icon name="calendarAlt" size={20} color="black" />
+                  <p className="text-sm font-semibold">{hit.meetingDay}</p>
+                </div>
+                <div>
+                  <p className={`text-sm ${isExpanded ? "" : "line-clamp-3"}`}>
+                    {hit.summary}
+                  </p>
+                  {hit.summary.length > 132 && (
+                    <button
+                      className="text-ocean text-sm font-semibold text-start"
+                      onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                      {isExpanded ? "See Less" : "See More"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-            <GroupConnectModal groupName={hit.title} />
           </div>
+          <Button
+            type="submit"
+            intent="primary"
+            href={`/group-finder/${encodeURIComponent(hit.title)}`}
+          >
+            Learn More
+          </Button>
         </div>
       </div>
     </div>
