@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "./loader";
 import { GroupsSingleHero } from "./partials/hero.partial";
 import Breadcrumbs from "~/components/breadcrumbs";
@@ -12,6 +12,7 @@ import { GroupHit } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { SearchWrapper } from "./components/search-wrapper.component";
+import { Icon } from "~/primitives/icon/icon";
 
 export const GroupNotFound = () => {
   return (
@@ -42,7 +43,12 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
       <GroupsSingleHero imagePath={coverImage} />
       <div className="content-padding w-full flex flex-col items-center">
         <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
-          <Breadcrumbs />
+          <div className="flex gap-4 items-center">
+            <Link className="cursor-pointer" to="/group-finder">
+              <Icon name="arrowBack" color="#666666" className="size-6" />
+            </Link>
+            <Breadcrumbs />
+          </div>
           <div className="w-full flex flex-col items-center lg:flex-row lg:items-start lg:gap-20">
             <GroupSingleBasicContent
               tags={tags}
