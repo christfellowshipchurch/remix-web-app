@@ -15,19 +15,34 @@ import {
 import Icon from "~/primitives/icon";
 import { Link } from "react-router-dom";
 import AuthModal from "~/components/modals/auth";
+import { User } from "~/providers/auth-provider";
 
 interface MobileMenuContentProps {
   closeMenu: () => void;
+  auth: {
+    authLoading: boolean;
+    logout: () => void;
+    user: User | null;
+  };
 }
 
 export default function MobileMenuContent({
   closeMenu,
+  auth,
 }: MobileMenuContentProps) {
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const { authLoading, logout, user } = auth;
 
   const toggleSection = (sectionId: string) => {
     setOpenSection(openSection === sectionId ? null : sectionId);
   };
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+  };
+
+  console.log(user);
 
   return (
     <div className="h-full overflow-y-auto bg-white">
@@ -69,13 +84,29 @@ export default function MobileMenuContent({
         <section className="p-8 border-t border-gray-200 flex flex-col gap-2">
           <h3 className="text-lg font-bold text-navy">My Church</h3>
           <p className="text-text-primary text-sm font-normal mb-2">
-            Stay up to date with your groups, classes, and more.
+            {user
+              ? "Welcome, " + user.fullName
+              : "Stay up to date with your groups, classes, and more."}
           </p>
-          <AuthModal
-            buttonStyle="bg-ocean text-white p-2 rounded-lg w-full font-medium"
-            buttonText="Sign In"
-            onClick={closeMenu}
-          />
+
+          {authLoading ? (
+            <div className="bg-ocean text-white p-2 rounded-lg w-full font-medium text-center">
+              Loading...
+            </div>
+          ) : user ? (
+            <button
+              onClick={handleLogout}
+              className="bg-neutral-200 text-navy p-2 rounded-lg w-full font-medium"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <AuthModal
+              buttonStyle="bg-ocean text-white p-2 rounded-lg w-full font-medium"
+              buttonText="Sign In"
+              onClick={closeMenu}
+            />
+          )}
         </section>
 
         {/* website feedback */}
