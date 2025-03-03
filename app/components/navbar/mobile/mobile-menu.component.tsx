@@ -12,7 +12,6 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
   const [isOpen, setIsOpen] = useState(false);
   const isHydrated = useHydrated();
   const { user, isLoading: authLoading, logout } = useAuth();
-  const loaderData = useLoaderData();
 
   // Prevent background scroll when menu is open
   useEffect(() => {
