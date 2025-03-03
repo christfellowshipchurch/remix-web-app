@@ -2,10 +2,16 @@ import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
 import { useHydrated } from "~/hooks/use-hydrated";
+import { useAuth } from "~/providers/auth-provider";
+import { useLoaderData } from "react-router";
+
+const mobileMenuButtonStyle =
+  "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";
 
 export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
   const [isOpen, setIsOpen] = useState(false);
   const isHydrated = useHydrated();
+  const { user, isLoading: authLoading, logout } = useAuth();
 
   // Prevent background scroll when menu is open
   useEffect(() => {
@@ -23,22 +29,49 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
   return (
     <div
-      className={`md:hidden ${
-        mode === "light" ? "text-neutral-dark" : "text-white"
-      }`}
+      className={`lg:hidden ${mode === "light" ? "text-ocean" : "text-white"}`}
     >
-      {/* Menu Button */}
+      {/* Back Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1"
+        onClick={() => setIsOpen(false)}
+        className="text-white fixed left-4 top-1/2 -translate-y-1/2 z-[60] pointer-events-auto"
+        style={{
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? "auto" : "none",
+        }}
+        aria-label="Close menu"
       >
-        <Icon name={!isOpen ? "menuAltLeft" : "logout"} />
-        {!isOpen ? "Menu" : "Back"}
+        <Icon name="chevronLeft" size={50} />
       </button>
+
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 bg-black/50 z-10 transition-opacity duration-300 lg:hidden
+          ${
+            isOpen
+              ? "opacity-100 visible"
+              : "opacity-0 invisible pointer-events-none"
+          }`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Search & Menu Buttons */}
+      <div className="flex items-center gap-4">
+        <button className={mobileMenuButtonStyle}>
+          <Icon name="search" size={20} className="mb-[2px]" />
+        </button>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={mobileMenuButtonStyle}
+        >
+          <Icon name="menu" />
+        </button>
+      </div>
 
       {/* Menu Content */}
       <div
-        className={`fixed top-18 inset-0 bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        className={`fixed top-0 right-0 w-4/5 max-w-[400px] h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
           ${
             !isOpen
               ? "translate-x-full invisible opacity-0"
@@ -46,10 +79,17 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
           }`}
       >
         <div
-          className={`p-4 h-full flex flex-col transition-opacity duration-500
+          className={`h-full flex flex-col transition-opacity duration-500
             ${isOpen ? "opacity-100" : "opacity-0"}`}
         >
-          <MobileMenuContent />
+          <MobileMenuContent
+            closeMenu={() => setIsOpen(false)}
+            auth={{
+              authLoading,
+              logout,
+              user,
+            }}
+          />
         </div>
       </div>
     </div>
