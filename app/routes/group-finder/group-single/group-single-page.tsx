@@ -43,14 +43,14 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
       <GroupsSingleHero imagePath={coverImage} />
       <div className="content-padding w-full flex flex-col items-center">
         <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
-          <div className="flex gap-10 items-center">
+          <div className="flex gap-6 lg:gap-10 items-center">
             <Link
               className="cursor-pointer text-text-secondary hover:text-ocean"
               to="/group-finder"
             >
               <Icon name="arrowBack" className="size-6" />
             </Link>
-            <Breadcrumbs />
+            <Breadcrumbs hideHome />
           </div>
           <div className="w-full flex flex-col items-center lg:flex-row lg:items-start lg:gap-20">
             <GroupSingleBasicContent
