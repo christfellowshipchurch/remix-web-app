@@ -10,7 +10,7 @@ export function PodcastsPage() {
   return (
     <div className="flex flex-col items-center">
       <DynamicHero
-        imagePath="/assets/images/articles-hero-bg.jpg"
+        imagePath="/assets/images/podcasts/hero.jpg"
         customTitle="Podcasts"
         ctas={[{ href: "#latest", title: "Call to Action" }]}
       />
