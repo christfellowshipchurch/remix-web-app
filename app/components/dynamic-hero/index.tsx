@@ -39,7 +39,7 @@ export const DynamicHero = ({
         <h1 className="font-extrabold heading-h1 lg:text-7xl xl:text-8xl text-white">
           {customTitle || pagePath}
         </h1>
-        <div className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9]" />
+        <div className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50" />
         <div className="flex items-center justify-between self-stretch">
           {/* Breadcrumbs */}
           <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
