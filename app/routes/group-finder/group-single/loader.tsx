@@ -18,7 +18,7 @@ export type LoaderReturnType = {
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const title = params.path as string;
+  const title = params.path || "";
 
   if (!title) {
     throw new Error("Group not found");
@@ -34,6 +34,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
-    groupName: decodeURIComponent(title) || null,
+    groupName: decodeURIComponent(title),
   };
 }

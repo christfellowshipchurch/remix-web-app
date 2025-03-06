@@ -16,7 +16,7 @@ import { Icon } from "~/primitives/icon/icon";
 
 export const GroupNotFound = () => {
   return (
-    <div className="flex flex-col items-center gap-6 pt-24">
+    <div className="flex flex-col items-center gap-6 py-20">
       <h2 className="text-2xl font-bold text-center">Group Not Found</h2>
       <p className="text-neutral-500 text-center max-w-md">
         We couldn't find the group you're looking for. It may have been removed
