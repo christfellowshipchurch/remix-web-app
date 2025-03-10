@@ -18,7 +18,7 @@ export const DynamicInfo = () => {
           <div className="w-full flex flex-col gap-8">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <h2 className="text-[24px] md:text-[40px] text-[#222222] font-extrabold">
+                <h2 className="text-[24px] md:text-[40px] text-text-primary font-extrabold">
                   {title}
                 </h2>
                 <p className="text-[#666666] font-extrabold text-lg">

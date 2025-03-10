@@ -3,7 +3,7 @@ import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export const HeroFooter = () => {
   return (
-    <div className="content-padding">
+    <div className="hidden md:block content-padding">
       <div className="max-w-screen-content mx-auto">
         <div className="h-[2px] w-full bg-[#D9D9D9] opacity-50" />
         <div className="flex flex-col md:flex-row justify-between items-center py-10">
