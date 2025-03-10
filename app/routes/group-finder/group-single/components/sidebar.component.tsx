@@ -121,6 +121,14 @@ export function GroupSingleSidebar({
     console.log("Message leader clicked");
   };
 
+  const formattedMeetingTime = new Date(meetingTime).toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+
   return (
     <aside
       className="flex flex-col max-w-[440px] md:max-w-none lg:min-w-[324px] md:flex-row lg:flex-col h-fit w-full lg:w-auto gap-2 pt-0 lg:pt-6 bg-[#F3F5FA] rounded-t-[1rem] md:rounded-t-none md:!rounded-l-[1rem] lg:!rounded-none"
@@ -131,16 +139,21 @@ export function GroupSingleSidebar({
 
         <div className="flex flex-col mt-2">
           <Divider />
-          <InfoItem icon="calendarAlt">
+          <InfoItem
+            icon="calendarAlt"
+            style={{ display: `${meetingDay ? "flex" : "none"}` }}
+          >
             <span className="text-lg font-semibold">{meetingDay}</span>
           </InfoItem>
 
           <Divider />
           <InfoItem
             icon="alarm"
-            style={{ display: `${meetingTime ? "block" : "none"}` }}
+            style={{ display: `${meetingTime ? "flex" : "none"}` }}
           >
-            <span className="text-lg font-semibold">{meetingTime}</span>
+            <span className="text-lg font-semibold">
+              {formattedMeetingTime}
+            </span>
           </InfoItem>
 
           <Divider />

@@ -32,8 +32,14 @@ export const GroupNotFound = () => {
 export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const tags = hit.preferences;
-  const { leaders, meetingType, meetingTime, meetingDay, campusName, summary } =
-    hit;
+  const {
+    leaders,
+    meetingType,
+    dateTime: meetingTime,
+    meetingDay,
+    campusName,
+    summary,
+  } = hit;
 
   if (!hit) {
     return <GroupNotFound />;

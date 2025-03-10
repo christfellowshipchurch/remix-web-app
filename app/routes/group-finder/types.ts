@@ -2,6 +2,7 @@ export interface GroupHit {
   rockItemId: number;
   title: string;
   summary: string;
+  dateTime: string;
   leaders: {
     firstName: string;
     lastName: string;

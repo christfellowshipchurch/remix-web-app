@@ -5,7 +5,6 @@ export type Podcast = {
   seasons: Season[];
   coverImage: string;
   description: string;
-  id: string;
   shareLinks: {
     title: string;
     url: string;
@@ -13,13 +12,21 @@ export type Podcast = {
 };
 
 export type PodcastEpisode = {
+  show: string;
   title: string;
   season: string;
   episodeNumber: string;
-  audio: string;
+  audio: string; // TODO: Replace with wistiaId??? or Spotify embed??
   coverImage: string;
   description: string;
-  id: string;
+  authors: string;
+
+  content: string;
+  resources: {
+    title: string;
+    url: string;
+  }[];
+
   shareLinks: {
     title: string;
     url: string;
@@ -45,50 +52,61 @@ export async function getLatestEpisodes() {
 
 export const mockLatestEpisodes: PodcastEpisode[] = [
   {
-    id: "1",
-    title: "Podcast Episode 1",
-    description: "Description 1",
-    coverImage: "/assets/images/podcasts/hero.jpg",
-    season: "1",
-    episodeNumber: "1",
     audio: "/assets/audio/podcasts/podcast-1.mp3",
+    authors: "Pastor Julie Mullins",
+    content: "Content 1",
+    coverImage: "/assets/images/podcasts/hero.jpg",
+    description: "Description 1",
+    episodeNumber: "1",
+    resources: [],
+    season: "1",
     shareLinks: [],
+    show: "So Good Sisterhood",
+    title: "Podcast Episode 1",
   },
   {
-    id: "2",
-    title: "Podcast Episode 2",
-    description: "Description 2",
-    coverImage: "/assets/images/podcasts/hero.jpg",
-    season: "1",
-    episodeNumber: "2",
     audio: "/assets/audio/podcasts/podcast-2.mp3",
+    authors: "Pastor Julie Mullins",
+    content: "Content 2",
+    coverImage: "/assets/images/podcasts/hero.jpg",
+    description: "Description 2",
+    episodeNumber: "2",
+    resources: [],
+    season: "1",
     shareLinks: [],
+    show: "So Good Sisterhood",
+    title: "Podcast Episode 2",
   },
   {
-    id: "3",
-    title: "Podcast Episode 3",
-    description: "Description 3",
-    coverImage: "/assets/images/podcasts/hero.jpg",
-    season: "1",
-    episodeNumber: "3",
     audio: "/assets/audio/podcasts/podcast-3.mp3",
+    authors: "Pastor Julie Mullins",
+    content: "Content 3",
+    coverImage: "/assets/images/podcasts/hero.jpg",
+    description: "Description 3",
+    episodeNumber: "3",
+    resources: [],
+    season: "1",
     shareLinks: [],
+    show: "So Good Sisterhood",
+    title: "Podcast Episode 3",
   },
   {
-    id: "4",
-    title: "Podcast Episode 4",
-    description: "Description 4",
-    coverImage: "/assets/images/podcasts/hero.jpg",
-    season: "1",
-    episodeNumber: "4",
     audio: "/assets/audio/podcasts/podcast-4.mp3",
+    authors: "Pastor Julie Mullins",
+    content: "Content 4",
+    coverImage: "/assets/images/podcasts/hero.jpg",
+    description: "Description 4",
+    episodeNumber: "4",
+    resources: [],
+    season: "1",
     shareLinks: [],
+    show: "So Good Sisterhood",
+    title: "Podcast Episode 4",
   },
 ];
 
 export async function getPodcast(path: string) {
   const mockPodcast: Podcast = {
-    id: "1",
     title: "So Good Sisterhood",
     seasons: [
       {
