@@ -12,12 +12,12 @@ export const PodcastEpisodeCard = ({
   const { title, show, season, episodeNumber, coverImage } = podcastEpisode;
 
   return (
-    <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-[80vw] md:min-w-0 md:max-w-[340px]">
-      <div className="relative aspect-square md:size-[340px]">
+    <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
+      <div className="relative md:w-[340px] lg:w-full">
         <img
           src={coverImage}
           alt={title}
-          className="w-full relative aspect-square md:size-[340px] object-cover rounded-[0.5rem]"
+          className="w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]"
         />
         <Link
           to={`/podcasts/${kebabCase(show)}/${title}`}
