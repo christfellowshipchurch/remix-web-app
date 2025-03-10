@@ -14,7 +14,7 @@ export const LatestEpisodes = () => {
 
   return (
     <div className="w-full bg-white content-padding">
-      <div className="max-w-screen-content mx-auto py-28">
+      <div className="max-w-screen-content mx-auto py-16 md:py-28">
         <div className="flex flex-col gap-4">
           <h2 className="text-[28px] font-extrabold">Latest Episodes</h2>
           <Carousel
