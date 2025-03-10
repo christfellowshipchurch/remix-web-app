@@ -21,13 +21,13 @@ export const LatestEpisodes = () => {
             opts={{
               align: "start",
             }}
-            className="w-full mt-8 relative mb-12"
+            className="mt-8 relative mb-12"
           >
-            <CarouselContent className="flex pb-4 lg:pb-0 lg:max-w-full gap-6">
+            <CarouselContent className="flex pb-4 lg:pb-0 lg:max-w-full gap-6 lg:gap-10 xl:gap-8">
               {latestEpisodes.map((episode, index) => (
                 <CarouselItem
                   key={index}
-                  className="w-full aspect-video basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
+                  className="w-full aspect-video basis-[75%] md:basis-[50%] lg:basis-[38%] xl:basis-[29%] pl-0"
                 >
                   <PodcastEpisodeCard podcastEpisode={episode} />
                 </CarouselItem>
