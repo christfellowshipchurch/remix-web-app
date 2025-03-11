@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "react-router";
-import { PodcastEpisode } from "../podcasts-details/loader";
+import { PodcastEpisode } from "../types";
 
 export type LoaderReturnType = {
   episode: PodcastEpisode;
@@ -15,7 +15,20 @@ const mockPodcastEpiside: PodcastEpisode = {
   season: "11",
   episodeNumber: "4",
   authors: "Pastor Julie & Todd Mullins",
-  shareLinks: [],
+  shareLinks: [
+    {
+      title: "Apple Music",
+      url: "https://www.google.com",
+    },
+    {
+      title: "Spotify",
+      url: "https://www.google.com",
+    },
+    {
+      title: "Amazon Music",
+      url: "https://www.google.com",
+    },
+  ],
   content:
     "<ul style='list-style-type: disc; padding-left: 1rem;'><li>How Jesus treated women as examples, not exceptions.</li> <li>Why working on your insecurities will help you avoid toxic leadership.</li><li>What the Bible really says about topics like submission and using your voice.</li><li>The three categories of context for Scriptures about women in the Bible.</li><li>Pastor Donna and Pastor Julie's moments of failing forward in leadership</li><li>The difference between being entrusted as a leader rather than entitled.</li></ul>",
   resources: [

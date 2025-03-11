@@ -1,5 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
-import { PodcastEpisode } from "../../podcasts-details/loader";
+import { PodcastEpisode } from "../../types";
 
 export function EpisodeNotes({
   content,

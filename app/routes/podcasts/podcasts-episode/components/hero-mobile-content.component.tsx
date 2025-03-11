@@ -14,7 +14,7 @@ export const HeroMobileContent = ({
   authors: string;
 }) => {
   return (
-    <div className="w-full bg-white content-padding">
+    <div className="w-full bg-white content-padding md:hidden">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <div className="flex flex-col gap-8 pt-16 text-text-primary font-medium">
           <div className="flex flex-col gap-1">
