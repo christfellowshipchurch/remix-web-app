@@ -68,7 +68,7 @@ export default {
         },
       },
       maxWidth: {
-        "screen-content": "1428px",
+        "screen-content": "1432px",
       },
       minHeight: {
         ...defaultTheme.minHeight,

@@ -21,7 +21,7 @@ export const ArticleContent = ({
       <h3 className="my-4 text-xl font-semibold">IN THIS ARTICLE</h3>
       <HTMLRenderer html={htmlContent || ""} />
       {/* Call to action */}
-      <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between border-solid border-2 border-neutral-lighter bg-[#F3F5FA] py-10 px-8 mt-10">
+      <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between border-solid border-2 border-neutral-lighter bg-gray py-10 px-8 mt-10">
         <div className="flex flex-col">
           <h3 className="text-xl font-semibold">
             Call to action heading goes here

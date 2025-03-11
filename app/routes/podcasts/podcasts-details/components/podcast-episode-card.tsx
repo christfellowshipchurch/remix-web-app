@@ -1,5 +1,5 @@
 import { Icon } from "~/primitives/icon/icon";
-import { PodcastEpisode } from "../loader";
+import { PodcastEpisode } from "../../types";
 import { Link } from "react-router";
 import lodash from "lodash";
 

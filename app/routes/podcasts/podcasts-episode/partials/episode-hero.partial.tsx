@@ -1,4 +1,4 @@
-import { PodcastEpisode } from "../../podcasts-details/loader";
+import { PodcastEpisode } from "../../types";
 import { HeroContent } from "../components/hero-content.component";
 import { HeroFooter } from "../components/hero-footer.component";
 

@@ -1,25 +1,23 @@
+import { useLoaderData } from "react-router-dom";
 import { icons } from "~/lib/icons";
+import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 
 export const SubscribeSection = () => {
-  //TODO: Update href with the correct podcast URL
-  const links: { label: string; icon: keyof typeof icons; href: string }[] = [
-    {
-      label: "Apple Music",
-      icon: "appleLogo",
-      href: "#",
-    },
-    {
-      label: "Spotify",
-      icon: "appleLogo",
-      href: "#",
-    },
-    {
-      label: "Amazon Music",
-      icon: "appleLogo",
-      href: "#",
-    },
-  ];
+  const { podcast } = useLoaderData<LoaderReturnType>();
+  const { shareLinks } = podcast;
+
+  const platformToIcon: Record<string, keyof typeof icons> = {
+    "Apple Music": "appleLogo",
+    Spotify: "spotify",
+    "Amazon Music": "amazonMusic",
+  };
+
+  const links = shareLinks.map((link) => ({
+    label: link.title,
+    icon: platformToIcon[link.title] || "link",
+    href: link.url,
+  }));
 
   return (
     <div className="w-full bg-linear-to-br from-[#1C3647] to-[#004F71] content-padding">
@@ -35,9 +33,16 @@ export const SubscribeSection = () => {
                 key={index}
               >
                 <a href={link.href}>
-                  <Icon name={link.icon} size={52} />
+                  <Icon
+                    name={link.icon}
+                    size={link.icon === "amazonMusic" ? 62 : 52}
+                  />
                 </a>
-                <p className="text-[10px] md:text-xs font-extrabold">
+                <p
+                  className={`text-[10px] md:text-xs font-extrabold ${
+                    link.icon === "amazonMusic" ? "-mt-3" : ""
+                  }`}
+                >
                   {link.label}
                 </p>
               </div>

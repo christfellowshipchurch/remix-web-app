@@ -131,7 +131,7 @@ export function GroupSingleSidebar({
 
   return (
     <aside
-      className="flex flex-col max-w-[440px] md:max-w-none lg:min-w-[324px] md:flex-row lg:flex-col h-fit w-full lg:w-auto gap-2 pt-0 lg:pt-6 bg-[#F3F5FA] rounded-t-[1rem] md:rounded-t-none md:!rounded-l-[1rem] lg:!rounded-none"
+      className="flex flex-col max-w-[440px] md:max-w-none lg:min-w-[324px] md:flex-row lg:flex-col h-fit w-full lg:w-auto gap-2 pt-0 lg:pt-6 bg-gray rounded-t-[1rem] md:rounded-t-none md:!rounded-l-[1rem] lg:!rounded-none"
       aria-label="Group information"
     >
       <div className="flex w-full lg:w-auto flex-col gap-2 lg:gap-6 pt-6 lg:pt-0 ">

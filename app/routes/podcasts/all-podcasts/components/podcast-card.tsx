@@ -1,51 +1,137 @@
+import type { Podcast } from "../../types";
+import lodash from "lodash";
+import { Button } from "~/primitives/button/button.primitive";
+import Icon from "~/primitives/icon";
+import { icons } from "~/lib/icons";
 import { Link } from "react-router-dom";
-import type { PodcastType } from "../../types";
-import { Icon } from "~/primitives/icon/icon";
 
 type PodcastCardProps = {
-  podcast: PodcastType;
+  podcast: Podcast;
   className?: string;
 };
 
-const iconStyles =
-  "text-white rotate-[135deg] transition-transform duration-300 group-hover:rotate-180 size-10";
+export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
+  const { title, description, trailer, shareLinks } = podcast;
+  const { kebabCase } = lodash;
 
-export function PodcastCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, image, tags, href } = podcast;
+  const platformToIcon: Record<string, keyof typeof icons> = {
+    "Apple Music": "appleLogo",
+    Spotify: "spotify",
+    "Amazon Music": "amazonMusic",
+  };
+
+  const links = shareLinks.map((link) => ({
+    label: link.title,
+    icon: platformToIcon[link.title] || "link",
+    href: link.url,
+  }));
 
   return (
-    <Link
-      to={href}
-      className={`flex flex-col relative group overflow-hidden ${className} border-b-8 border-ocean group`}
+    <div
+      className={`flex relative overflow-hidden ${className} px-8 py-12 group w-full lg:justify-center`}
     >
-      <div className="relative aspect-square overflow-hidden">
+      {/* Desktop */}
+      <div className="hidden relative md:flex flex-col lg:flex-row lg:justify-between gap-8 max-w-screen-content">
         {/* Image */}
         <img
-          src={image}
+          src={"/assets/images/podcasts/temp-embed.jpg"}
           alt={title}
-          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+          className="object-cover bg-cover w-full h-[360px] lg:h-[282px] lg:w-[480px] xl:w-[590px] xl:h-[350px]"
         />
-        {/* content overlay */}
-        <div className="py-10 px-4 absolute bottom-0 left-0 w-full">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black/75 z-10" />
-          <div className="relative z-20">
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-4xl font-bold mb-3 text-white">{title}</h3>
-              <Icon name="arrowBack" className={iconStyles} />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
-                <span
+
+        {/* Content */}
+        <div className="flex flex-col justify-center gap-4">
+          <h3 className="text-[32px] font-extrabold">{title}</h3>
+          <p className="text-xl text-[#767676] lg:max-w-[540px]">
+            {description}
+          </p>
+          <div className="flex items-center gap-8 w-full">
+            <Button
+              intent="secondary"
+              href={`/podcasts/${kebabCase(title)}`}
+              className="h-full"
+            >
+              Episodes and More
+            </Button>
+
+            <div className="flex gap-2">
+              {links.map((link, index) => (
+                <Link
                   key={index}
-                  className="inline-block px-3 py-1 text-xs bg-transparent border border-white text-white rounded-full"
+                  to={link.href}
+                  className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
                 >
-                  {tag}
-                </span>
+                  <Icon
+                    name={link.icon}
+                    color="white"
+                    size={link.icon === "amazonMusic" ? 36 : 24}
+                    className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
+                  />
+                  <p
+                    className={`text-[7px] font-extrabold text-white ${
+                      link.icon === "amazonMusic" ? "-mt-2" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </p>
+                </Link>
               ))}
             </div>
           </div>
         </div>
       </div>
-    </Link>
+
+      {/* Mobile */}
+      <div className="relative max-w-screen-content md:hidden">
+        <div className="flex flex-col justify-center gap-2">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h3 className="text-[32px] font-extrabold">{title}</h3>
+              <p className="text-sm text-[#767676]">{description}</p>
+            </div>
+            <img
+              src={"/assets/images/podcasts/temp-embed.jpg"}
+              alt={title}
+              className="object-cover bg-cover w-full h-[360px]"
+            />
+          </div>
+
+          <div className="flex flex-col items-center gap-8 w-full">
+            <Button
+              intent="secondary"
+              href={`/podcasts/${kebabCase(title)}`}
+              linkClassName="w-full"
+              className="w-full"
+            >
+              Episodes and More
+            </Button>
+
+            <div className="flex gap-2">
+              {links.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.href}
+                  className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[72px]"
+                >
+                  <Icon
+                    name={link.icon}
+                    color="white"
+                    size={link.icon === "amazonMusic" ? 50 : 36}
+                    className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
+                  />
+                  <p
+                    className={`text-[7px] font-extrabold text-white ${
+                      link.icon === "amazonMusic" ? "-mt-2" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

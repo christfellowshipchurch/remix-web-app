@@ -1,4 +1,4 @@
-import { PodcastEpisode } from "../../podcasts-details/loader";
+import { PodcastEpisode } from "../../types";
 
 export function Episode({ audio }: { audio: PodcastEpisode["audio"] }) {
   // Update with embed audio playing system

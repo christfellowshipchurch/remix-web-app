@@ -1,4 +1,4 @@
-import { PodcastEpisode } from "../../podcasts-details/loader";
+import { PodcastEpisode } from "../../types";
 import { PodcastEpisodeCard } from "../../podcasts-details/components/podcast-episode-card";
 
 export function MoreEpisodes({
@@ -66,7 +66,7 @@ export function MoreEpisodes({
 
   return (
     <div className="w-full bg-white content-padding">
-      <div className="flex flex-col gap-6 lg:gap-16 max-w-screen-content mx-auto py-16 md:py-20">
+      <div className="flex flex-col gap-8 md:gap-7 max-w-screen-content mx-auto py-16 md:py-20">
         <h2 className="text-[28px] font-extrabold">More in this season</h2>
         <div className="flex overflow-x-auto md:overflow-x-hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {mockMoreEpisodes.map((episode, index) => (

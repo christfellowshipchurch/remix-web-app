@@ -1,44 +1,5 @@
 import { LoaderFunctionArgs } from "react-router";
-
-export type Podcast = {
-  title: string;
-  seasons: Season[];
-  coverImage: string;
-  description: string;
-  shareLinks: {
-    title: string;
-    url: string;
-  }[];
-};
-
-export type PodcastEpisode = {
-  show: string;
-  title: string;
-  season: string;
-  episodeNumber: string;
-  audio: string; // TODO: Replace with wistiaId??? or Spotify embed??
-  coverImage: string;
-  description: string;
-  authors: string;
-
-  content: string;
-  resources: {
-    title: string;
-    url: string;
-  }[];
-
-  shareLinks: {
-    title: string;
-    url: string;
-  }[];
-};
-
-export type Season = {
-  title: string;
-  description: string;
-  coverImage: string;
-  episodes: PodcastEpisode[];
-};
+import { PodcastEpisode, Podcast } from "../types";
 
 export type LoaderReturnType = {
   path: string;
@@ -108,6 +69,7 @@ export const mockLatestEpisodes: PodcastEpisode[] = [
 export async function getPodcast(path: string) {
   const mockPodcast: Podcast = {
     title: "So Good Sisterhood",
+    trailer: "/assets/videos/podcasts/sisterhood.mp4",
     seasons: [
       {
         title: "Season 1",
@@ -122,12 +84,13 @@ export async function getPodcast(path: string) {
         episodes: mockLatestEpisodes,
       },
     ],
+    tags: ["So Good Sisterhood"],
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi",
     coverImage: "/assets/images/podcasts/hero.jpg",
     shareLinks: [
       {
-        title: "AppleMusic",
+        title: "Apple Music",
         url: "https://www.facebook.com/sharer/sharer.php?u=https://www.google.com",
       },
       {
