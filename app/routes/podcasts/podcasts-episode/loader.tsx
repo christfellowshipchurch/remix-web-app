@@ -5,7 +5,7 @@ export type LoaderReturnType = {
   episode: PodcastEpisode;
 };
 
-const mockPodcastEpiside: PodcastEpisode = {
+const mockPodcastEpisode: PodcastEpisode = {
   title: "Don’t Let Doubt Take You Out With Pastor Todd Mullins",
   description:
     "What does God’s Word say about your leadership potential? In these two episodes, Pastor and author Donna Pisani shares what God’s Word says about women in leadership and how you can confidently rise to your calling.",
@@ -66,13 +66,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     throw new Response("Episode not found", { status: 404 });
   }
 
-  const podcastEpisode = await getPodcastEpiside(episode);
+  const podcastEpisode = await getPodcastEpisode(episode);
 
   return {
     episode: podcastEpisode,
   };
 };
 
-async function getPodcastEpiside(episode: string) {
-  return mockPodcastEpiside;
+async function getPodcastEpisode(episode: string) {
+  return mockPodcastEpisode;
 }

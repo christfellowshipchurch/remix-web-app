@@ -22,7 +22,7 @@ export function PodcastEpisode() {
         authors={episode.authors}
       />
       <EpisodeNotes content={episode.content} resources={episode.resources} />
-      <SubscribeSection />
+      <SubscribeSection shareLinks={episode.shareLinks} />
       <MoreEpisodes show={episode.show} season={episode.season} />
     </div>
   );
