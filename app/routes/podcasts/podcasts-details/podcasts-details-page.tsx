@@ -13,7 +13,7 @@ export function PodcastsDetailsPage() {
     <div className="flex flex-col items-center">
       <PodcastsHero podcast={podcast} />
       <LatestEpisodes />
-      <SubscribeSection />
+      <SubscribeSection shareLinks={podcast.shareLinks} />
       <DynamicInfo />
       <AllSeasons />
     </div>

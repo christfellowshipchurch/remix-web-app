@@ -1,12 +1,16 @@
-import { useLoaderData } from "react-router-dom";
 import { icons } from "~/lib/icons";
-import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 
-export const SubscribeSection = () => {
-  const { podcast } = useLoaderData<LoaderReturnType>();
-  const { shareLinks } = podcast;
+type ShareLink = {
+  title: string;
+  url: string;
+};
 
+export const SubscribeSection = ({
+  shareLinks,
+}: {
+  shareLinks: ShareLink[];
+}) => {
   const platformToIcon: Record<string, keyof typeof icons> = {
     "Apple Music": "appleLogo",
     Spotify: "spotify",
@@ -26,10 +30,10 @@ export const SubscribeSection = () => {
           <h2 className="text-[24px] md:text-[28px] font-extrabold leading-none">
             Subscribe and follow
           </h2>
-          <div className="flex gap-2 sm:gap-4 w-full sm:w-auto md:gap-12">
+          <div className="flex gap-4 w-full justify-center sm:w-auto md:gap-12">
             {links.map((link, index) => (
               <div
-                className="flex flex-col items-center gap-2 bg-[#0092BC] rounded-lg w-full p-2 sm:p-4 sm:w-[140px] md:p-8 md:w-[160px]"
+                className="flex flex-col items-center justify-center gap-2 bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
                 key={index}
               >
                 <a href={link.href}>
