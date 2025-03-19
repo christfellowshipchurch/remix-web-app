@@ -4,6 +4,7 @@ import MobileMenuContent from "./mobile-menu-content";
 import { useHydrated } from "~/hooks/use-hydrated";
 import { useAuth } from "~/providers/auth-provider";
 import { useLoaderData } from "react-router";
+import { Button } from "~/primitives/button/button.primitive";
 
 const mobileMenuButtonStyle =
   "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";
@@ -29,7 +30,9 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
   return (
     <div
-      className={`lg:hidden ${mode === "light" ? "text-ocean" : "text-white"}`}
+      className={`lg:hidden ${
+        mode === "light" ? "text-[#727272]" : "text-white"
+      }`}
     >
       {/* Back Button */}
       <button
@@ -58,6 +61,13 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
       {/* Search & Menu Buttons */}
       <div className="flex items-center gap-4">
+        <Button
+          className="font-semibold text-base"
+          linkClassName="hidden md:block"
+        >
+          <Icon name="mapFilled" size={20} className="mr-2" />
+          Find a Service
+        </Button>
         <button className={mobileMenuButtonStyle}>
           <Icon name="search" size={20} className="mb-[2px]" />
         </button>

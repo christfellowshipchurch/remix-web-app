@@ -12,7 +12,7 @@ const CurrentSeries: React.FC = () => {
   return (
     <section className="relative py-32 min-h-screen bg-white content-padding">
       {/* Light Blue Background - Bottom Half */}
-      <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[#F3F5FA]" />
+      <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gray" />
 
       {/* Content Container */}
       <div className="relative max-w-screen-content mx-auto">

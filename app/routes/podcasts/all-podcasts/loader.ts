@@ -1,47 +1,79 @@
 import type { LoaderFunctionArgs } from "react-router";
-import type { PodcastType, PodcastsLoaderData } from "../types";
+import type { Podcast } from "../types";
+
+export type PodcastsHubLoaderData = {
+  podcasts: Podcast[];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   // Mock data for now, until we configure Rock for new podcasts structure
-  const podcasts: PodcastType[] = [
+  const podcasts: Podcast[] = [
     {
-      id: "so-good-sisterhood",
       title: "So Good Sisterhood",
-      image: "/assets/images/podcasts/sisterhood.jpg",
+      trailer: "/assets/videos/podcasts/sisterhood.mp4",
+      coverImage: "/assets/images/podcasts/sisterhood.jpg",
+      description:
+        "Hosts James and Lisa Duvall share truths and lessons learned from their 30 years of marriage and over a decade of teaching, coaching, and speaking on marriage.",
+      seasons: [],
+      shareLinks: [
+        {
+          title: "Apple Music",
+          url: "https://www.facebook.com/sharer/sharer.php?u=https://www.rock.org/podcasts/so-good-sisterhood",
+        },
+        {
+          title: "Spotify",
+          url: "https://www.facebook.com/sharer/sharer.php?u=https://www.rock.org/podcasts/so-good-sisterhood",
+        },
+        {
+          title: "Amazon Music",
+          url: "https://www.facebook.com/sharer/sharer.php?u=https://www.rock.org/podcasts/so-good-sisterhood",
+        },
+      ],
       tags: ["Sisters", "Relationships"],
-      href: "/podcasts/so-good-sisterhood",
     },
     {
-      id: "young-and-adulting",
       title: "Young and Adulting",
-      image: "/assets/images/podcasts/young-adults.jpg",
+      trailer: "/assets/videos/podcasts/young-adults.mp4",
+      description:
+        "Hosts James and Lisa Duvall share truths and lessons learned from their 30 years of marriage and over a decade of teaching, coaching, and speaking on marriage.",
+      seasons: [],
+      shareLinks: [],
+      coverImage: "/assets/images/podcasts/young-adults.jpg",
       tags: ["Tag example", "Tag example"],
-      href: "/podcasts/young-and-adulting",
     },
     {
-      id: "crew-cast",
       title: "Crew Cast",
-      image: "/assets/images/podcasts/crew.jpg",
+      trailer: "/assets/videos/podcasts/crew.mp4",
+      description:
+        "Hosts James and Lisa Duvall share truths and lessons learned from their 30 years of marriage and over a decade of teaching, coaching, and speaking on marriage.",
+      seasons: [],
+      shareLinks: [],
+      coverImage: "/assets/images/podcasts/crew.jpg",
       tags: ["Men", "Leadership"],
-      href: "/podcasts/crew-cast",
     },
     {
-      id: "nexus",
       title: "Nexus",
-      image: "/assets/images/podcasts/nexus.jpg",
+      trailer: "/assets/videos/podcasts/nexus.mp4",
+      description:
+        "Hosts James and Lisa Duvall share truths and lessons learned from their 30 years of marriage and over a decade of teaching, coaching, and speaking on marriage.",
+      seasons: [],
+      shareLinks: [],
+      coverImage: "/assets/images/podcasts/nexus.jpg",
       tags: ["Leadership"],
-      href: "/podcasts/nexus",
     },
     {
-      id: "art-of-spousing",
       title: "Art of Spousing",
-      image: "/assets/images/podcasts/marriage.jpg",
+      trailer: "/assets/videos/podcasts/marriage.mp4",
+      description:
+        "Hosts James and Lisa Duvall share truths and lessons learned from their 30 years of marriage and over a decade of teaching, coaching, and speaking on marriage.",
+      seasons: [],
+      shareLinks: [],
+      coverImage: "/assets/images/podcasts/marriage.jpg",
       tags: ["Tag example", "Tag example"],
-      href: "/podcasts/art-of-spousing",
     },
   ];
 
-  const data: PodcastsLoaderData = {
+  const data: PodcastsHubLoaderData = {
     podcasts,
   };
 

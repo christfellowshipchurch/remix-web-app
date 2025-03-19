@@ -78,111 +78,124 @@ export function Navbar() {
       >
         <div className="max-w-screen-content mx-auto flex justify-between items-center font-bold">
           {/* Logo */}
-          <a
-            href="/"
-            className="relative flex items-center justify-center gap-2.5"
-          >
-            <Icon
-              name="logo"
-              className={`${
-                mode === "light"
-                  ? "text-ocean"
-                  : "text-white group-hover:text-ocean"
-              } size-32 my-[-48px]`}
-            />
-          </a>
+          <div className="flex items-center gap-8">
+            <a
+              href="/"
+              className="relative flex items-center justify-center gap-2.5"
+            >
+              <Icon
+                name="logo"
+                className={`${
+                  mode === "light"
+                    ? "text-ocean"
+                    : "text-white group-hover:text-ocean"
+                } size-32 my-[-48px]`}
+              />
+            </a>
 
-          {/* Desktop view */}
-          <div className="hidden lg:inline">
-            <NavigationMenu>
-              <NavigationMenuList className="flex items-center space-x-6 lg:space-x-10">
-                {/* Links */}
-                {mainNavLinks.map((link) => (
-                  <NavigationMenuItem key={link.title}>
-                    <NavigationMenuLink
-                      href={link.url}
-                      className={`${
-                        mode === "light"
-                          ? "text-neutral-dark"
-                          : "text-white group-hover:text-text"
-                      } transition-colors xl:text-lg`}
-                    >
-                      <span className="hover:text-ocean">{link.title}</span>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-
-                {/* Menu Dropdowns */}
-                {menuLinks.map((menuLink) => (
-                  <NavigationMenuItem
-                    value={menuLink.title}
-                    key={menuLink.title}
-                  >
-                    <NavigationMenuTrigger
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "xl:text-lg",
-                        "cursor-pointer",
-                        `${
+            {/* Desktop view */}
+            <div className="hidden lg:inline">
+              <NavigationMenu>
+                <NavigationMenuList className="flex items-center space-x-6 xl:space-x-10">
+                  {/* Links */}
+                  {mainNavLinks.map((link) => (
+                    <NavigationMenuItem key={link.title}>
+                      <NavigationMenuLink
+                        href={link.url}
+                        className={`${
                           mode === "light"
                             ? "text-neutral-dark"
                             : "text-white group-hover:text-text"
-                        }`
-                      )}
-                    >
-                      {menuLink.title}
-                      <Icon
-                        name="chevronDown"
-                        className={angleDownIconStyle()}
-                        aria-hidden="true"
-                      />
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent
-                      className={cn(
-                        "relative z-10 bg-white shadow-lg",
-                        navigationMenuContentStyle()
-                      )}
-                    >
-                      <MenuContent
-                        menuType={lowerCase(menuLink.title)}
-                        isLoading={isLoading}
-                        mainContent={menuLink.content.mainContent}
-                        featureCards={menuLink.content.featureCards}
-                      />
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                ))}
+                        } transition-colors xl:text-lg`}
+                      >
+                        <span className="hover:text-ocean">{link.title}</span>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ))}
 
-                <Icon
-                  name="search"
-                  size={20}
-                  className={`${
-                    mode === "light"
-                      ? "text-neutral-dark"
-                      : "text-white group-hover:text-text"
-                  } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
-                />
-              </NavigationMenuList>
-            </NavigationMenu>
+                  {/* Menu Dropdowns */}
+                  {menuLinks.map((menuLink) => (
+                    <NavigationMenuItem
+                      value={menuLink.title}
+                      key={menuLink.title}
+                    >
+                      <NavigationMenuTrigger
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "xl:text-lg",
+                          "cursor-pointer",
+                          `${
+                            mode === "light"
+                              ? "text-neutral-dark"
+                              : "text-white group-hover:text-text"
+                          }`
+                        )}
+                      >
+                        {menuLink.title}
+                        <Icon
+                          name="chevronDown"
+                          className={angleDownIconStyle()}
+                          aria-hidden="true"
+                        />
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent
+                        className={cn(
+                          "relative z-10 bg-white shadow-lg",
+                          navigationMenuContentStyle()
+                        )}
+                      >
+                        <MenuContent
+                          menuType={lowerCase(menuLink.title)}
+                          isLoading={isLoading}
+                          mainContent={menuLink.content.mainContent}
+                          featureCards={menuLink.content.featureCards}
+                        />
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
           </div>
 
-          {/* Give Now Button */}
+          {/* Desktop Buttons */}
           <div className="hidden lg:flex items-center gap-6">
-            <div className="min-w-[50px] flex justify-end">
-              {authLoading ? (
-                <div className={authButtonStyle(mode)}>Login</div> // optimistically show login button
-              ) : userData ? (
-                <button className={authButtonStyle(mode)} onClick={logout}>
-                  Logout
-                </button>
-              ) : (
-                <AuthModal buttonStyle={authButtonStyle(mode)} />
-              )}
+            <Icon
+              name="search"
+              size={20}
+              className={`${
+                mode === "light"
+                  ? "text-neutral-dark"
+                  : "text-white group-hover:text-text"
+              } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
+            />
+            <div className="flex gap-2">
+              {/* Auth Info / Button*/}
+              {/* <div className="min-w-[50px] flex justify-end">
+                {authLoading ? (
+                  <div className={authButtonStyle(mode)}>Login</div> // optimistically show login button
+                ) : userData ? (
+                  <button className={authButtonStyle(mode)} onClick={logout}>
+                    Logout
+                  </button>
+                ) : (
+                  <AuthModal buttonStyle={authButtonStyle(mode)} />
+                )}
+              </div> */}
+
+              <Button className="font-semibold text-base">
+                <Icon name="mapFilled" size={20} className="mr-2" />
+                Find a Service
+              </Button>
+              <Button
+                intent="secondary"
+                linkClassName="hidden xl:block"
+                className="font-semibold text-base"
+                href="/about"
+              >
+                My Church
+              </Button>
             </div>
-            <Button className="font-semibold text-base">
-              <Icon name="mapFilled" size={20} className="mr-2" />
-              Find a Service
-            </Button>
           </div>
 
           {/* Mobile view */}
