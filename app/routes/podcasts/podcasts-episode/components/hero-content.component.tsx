@@ -18,14 +18,14 @@ export const HeroContent = ({
           className="max-w-2xl font-extrabold text-pretty leading-tight tracking-tight text-3xl"
           dangerouslySetInnerHTML={{ __html: title }}
         />
-        <p className="text-xs font-medium">
+        <p className="text-xs font-medium uppercase">
           Season {season} | Episode {episodeNumber}
         </p>
         <p className="text-base font-normal">{authors}</p>
       </div>
       {description && (
         <p
-          className="mb-6 lg:mb-8 max-w-2xl"
+          className="mb-6 lg:mb-8 max-w-2xl font-medium text-lg"
           dangerouslySetInnerHTML={{ __html: description }}
         />
       )}
