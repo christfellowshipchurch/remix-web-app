@@ -11,17 +11,17 @@ export const HeroContent = ({
 }) => {
   return (
     <div className="flex px-6 md:px-16 pt-16 pb-6 md:pb-16 md:pt-24">
-      <div className="flex flex-col-reverse md:flex-row md:items-center lg:items-start mx-auto justify-between w-full max-w-[1438px]">
-        <div className="flex flex-col justify-center lg:w-2/5 xl:w-1/2 mt-4 md:mt-24 mr-10 mb-6 md:mb-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto w-full max-w-[1438px]">
+        <div className="flex flex-col justify-center order-2 md:order-1">
           {title && (
             <h1
-              className="mb-2 md:mb-4 max-w-2xl font-extrabold text-2xl text-pretty md:text-4xl leading-tight tracking-tight text-white  md:leading-tight lg:text-6xl"
+              className="mb-2 md:mb-4 max-w-2xl font-extrabold text-2xl text-pretty md:text-4xl leading-tight tracking-tight text-white md:leading-tight lg:text-6xl"
               dangerouslySetInnerHTML={{ __html: title }}
             />
           )}
           {description && (
             <p
-              className="mb-6 max-w-2xl font-medium text-white md:text-xl lg:mb-8"
+              className="mb-6 max-w-2xl font-medium text-white text-lg lg:mb-8"
               dangerouslySetInnerHTML={{ __html: description }}
             />
           )}
@@ -34,7 +34,7 @@ export const HeroContent = ({
         </div>
 
         <img
-          className="rounded-[1rem] h-[230px] md:h-full w-full object-cover md:max-w-[250px] lg:min-w-[570px] xl:min-w-[600px] "
+          className="rounded-[1rem] aspect-[4/3] md:aspect-[3/4] lg:aspect-[4/3] w-full object-cover order-1 md:order-2 mx-auto"
           src={coverImage}
           alt={title || "Cover"}
         />

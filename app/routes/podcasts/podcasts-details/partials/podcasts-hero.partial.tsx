@@ -14,7 +14,7 @@ export const PodcastsHero: React.FC<PodcastsHeroProps> = ({
 
   return (
     <div className="w-full" style={heroBgImgStyles(coverImage)}>
-      <div className="bg-white/80 backdrop-blur-lg">
+      <div className="bg-white/10 backdrop-blur-lg">
         <HeroContent
           title={title}
           description={description}
