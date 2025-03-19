@@ -13,7 +13,7 @@ export default function Breadcrumbs({
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
-  const textColor = mode === "light" ? "text-[#948984]" : "text-[#ADA09B]";
+  const textColor = mode === "light" ? "text-[#F4F4F4]" : "text-[#ADA09B]";
 
   const breadcrumbs = pathSegments.map((segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join("/")}`;

@@ -52,6 +52,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof button> {
   underline?: boolean;
+  linkClassName?: string;
   href?: string;
   target?: string;
   onClick?: () => void;
@@ -59,7 +60,17 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, target, intent, href, onClick, size, underline, ...props },
+    {
+      linkClassName,
+      className,
+      target,
+      intent,
+      href,
+      onClick,
+      size,
+      underline,
+      ...props
+    },
     ref
   ) => {
     if (href) {
@@ -68,6 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           to={href}
           prefetch="intent"
           target={target ? target : href?.includes("http") ? "_blank" : ""}
+          className={`${linkClassName}`}
         >
           <button
             className={twMerge(button({ intent, size, className, underline }))}
