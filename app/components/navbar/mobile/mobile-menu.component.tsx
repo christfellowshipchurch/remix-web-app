@@ -49,7 +49,7 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/50 z-10 transition-opacity duration-300 lg:hidden
+        className={`fixed md:top-[90px] inset-0 bg-black/50 z-10 transition-opacity duration-300 lg:hidden
           ${
             isOpen
               ? "opacity-100 visible"
@@ -61,13 +61,12 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
 
       {/* Search & Menu Buttons */}
       <div className="flex items-center gap-4">
-        <Button
-          className="font-semibold text-base"
-          linkClassName="hidden md:block"
-        >
-          <Icon name="mapFilled" size={20} className="mr-2" />
-          Find a Service
-        </Button>
+        <div className="hidden md:block">
+          <Button className="font-semibold text-base">
+            <Icon name="mapFilled" size={20} className="mr-2" />
+            Find a Service
+          </Button>
+        </div>
         <button className={mobileMenuButtonStyle}>
           <Icon name="search" size={20} className="mb-[2px]" />
         </button>
@@ -75,13 +74,17 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
           onClick={() => setIsOpen(!isOpen)}
           className={mobileMenuButtonStyle}
         >
-          <Icon name="menu" />
+          <Icon
+            name={isOpen ? "x" : "menu"}
+            size={isOpen ? 30 : 24}
+            className={`${!isOpen && "mr-[6px]"}`}
+          />
         </button>
       </div>
 
       {/* Menu Content */}
       <div
-        className={`fixed top-0 right-0 w-4/5 max-w-[400px] h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        className={`fixed top-0 md:top-[90px] right-0 w-4/5 max-w-[400px] h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
           ${
             !isOpen
               ? "translate-x-full invisible opacity-0"
