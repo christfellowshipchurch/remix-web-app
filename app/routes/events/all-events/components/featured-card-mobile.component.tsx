@@ -5,7 +5,7 @@ export const FeaturedCardMobile = ({ card }: { card: Event }) => {
   return (
     <div className="flex flex-col w-full gap-6">
       <div
-        className="w-full aspect-video bg-cover bg-center"
+        className="w-full aspect-[3/4] sm:aspect-video bg-cover bg-center"
         style={{
           backgroundImage: `url(${card.image})`,
         }}
