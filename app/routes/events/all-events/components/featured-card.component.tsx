@@ -13,12 +13,12 @@ export const FeaturedCard = ({ card }: { card: Event }) => {
       {/* Desktop version */}
       <div className="hidden md:block">
         <div
-          className="relative w-[90vw] aspect-video md:w-full max-w-[1440px] inset-0 bg-cover bg-center object-cover"
+          className="relative w-[90vw] aspect-video md:w-full max-w-[1440px] inset-0 bg-cover bg-center object-cover rounded-lg"
           style={{
             backgroundImage: `url(${card.image})`,
           }}
         >
-          <div className="absolute w-[67.5%] xl:w-[70%] right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-12 pt-12 xl:pl-16 xl:pt-16 pb-4">
+          <div className="absolute w-[67.5%] xl:w-[70%] right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-12 pt-12 xl:pl-16 xl:pt-16 pb-4 rounded-tl-lg">
             <div className="flex flex-col gap-2">
               <h2 className="font-medium text-[16px] text-[#666666]">
                 HAPPENING AT ALL CAMPUS LOCATIONS
