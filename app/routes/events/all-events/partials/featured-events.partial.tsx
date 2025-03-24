@@ -9,8 +9,9 @@ export function FeaturedEvents() {
   const featuredEvent = featuredEvents[0]; //TODO : We need still determine how we want to define a featured event from our platform. Just grabbing first one for now
   const otherEvents = featuredEvents.slice(1);
   return (
-    <div className="flex flex-col">
-      <SectionTitle sectionTitle="featured events." />
+    <div className="flex flex-col pt-20 z-10">
+      <SectionTitle sectionTitle="meaningful experiences." />
+      <h1 className="heading-h1 text-white">Events</h1>
       <FeaturedCard card={featuredEvent} />
       <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-16 place-items-center md:place-items-start">
         {otherEvents.map((event, i) => (
