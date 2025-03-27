@@ -3,13 +3,9 @@ import Icon from "~/primitives/icon";
 
 interface BreadcrumbsProps {
   mode?: "light" | "dark";
-  hideHome?: boolean;
 }
 
-export default function Breadcrumbs({
-  mode = "dark",
-  hideHome = false,
-}: BreadcrumbsProps) {
+export default function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
@@ -25,9 +21,7 @@ export default function Breadcrumbs({
     return (
       <div key={path} className={`flex items-center gap-4 ${textColor}`}>
         <Icon
-          className={`text-ocean min-w-[20px] ${
-            hideHome && index === 0 ? "hidden sm:block" : "block"
-          }`}
+          className="text-ocean min-w-[20px] block"
           size={20}
           name="caretRight"
         />
@@ -42,7 +36,7 @@ export default function Breadcrumbs({
 
   return (
     <div className={`flex items-center gap-4 ${textColor}`}>
-      <Link className={hideHome ? "hidden sm:block" : "block"} to="/">
+      <Link to="/">
         <span className="hover:underline text-sm">Home</span>
       </Link>
       {breadcrumbs}
