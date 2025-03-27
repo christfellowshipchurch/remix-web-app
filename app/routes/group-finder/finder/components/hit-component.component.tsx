@@ -3,6 +3,9 @@ import { GroupHit } from "../../types";
 import { useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 
+export const defaultLeaderPhoto =
+  "https://cloudfront.christfellowship.church/GetAvatar.ashx?PhotoId=&AgeClassification=Adult&Gender=Unknown&RecordTypeId=1&Text=JC&Size=180&Style=icon&BackgroundColor=E4E4E7&ForegroundColor=A1A1AA";
+
 export function HitComponent({ hit }: { hit: GroupHit }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
@@ -32,7 +35,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
                   boxShadow:
                     "0px 5.114px 10.228px -2.557px rgba(0, 0, 0, 0.10), 0px 2.557px 5.114px -2.557px rgba(0, 0, 0, 0.06)",
                 }}
-                src={leader.photo.uri}
+                src={leader.photo.uri || defaultLeaderPhoto}
                 key={i}
                 alt={leader.firstName}
               />
