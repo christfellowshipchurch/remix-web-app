@@ -24,7 +24,7 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
         <img
           src={image}
           alt={title}
-          className="w-full aspect-[4/3] object-cover"
+          className="w-full aspect-[4/3] object-cover rounded-lg"
           loading="lazy"
         />
         <ul className="flex gap-3 pt-1">

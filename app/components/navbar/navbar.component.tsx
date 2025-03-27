@@ -26,7 +26,6 @@ import {
 import { MenuLink } from "./types";
 import { useEffect } from "react";
 import lowerCase from "lodash/lowerCase";
-import AuthModal from "../modals/auth";
 import { useAuth } from "~/providers/auth-provider";
 
 const authButtonStyle = (mode: "light" | "dark") => {
@@ -190,7 +189,10 @@ export function Navbar() {
               <Button
                 intent="secondary"
                 linkClassName="hidden xl:block"
-                className="font-semibold text-base"
+                className={`font-semibold text-base ${
+                  mode === "dark" &&
+                  "border-white text-white group-hover:text-ocean group-hover:border-ocean"
+                }`}
                 href="/about"
               >
                 My Church
