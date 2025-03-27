@@ -2,6 +2,7 @@ import Icon from "~/primitives/icon";
 import { Button } from "~/primitives/button/button.primitive";
 import type { LoaderReturnType } from "../loader";
 import { icons } from "~/lib/icons";
+import { defaultLeaderPhoto } from "../../finder/components/hit-component.component";
 
 const Divider = () => (
   <div className="w-full h-[1px] bg-[#6E6E6E] opacity-10" role="separator" />
@@ -40,7 +41,7 @@ const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
       {leaders?.map((leader, i) => (
         <img
           key={leader.firstName}
-          src={leader.photo.uri}
+          src={leader.photo.uri || defaultLeaderPhoto}
           alt={`Group leader ${leader.firstName} ${leader.lastName}`}
           className="w-24 h-24 rounded-xl object-cover"
           loading="lazy"
@@ -48,7 +49,7 @@ const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
       ))}
     </div>
     <h2 className="text-sm font-semibold text-[#666666]">Hosted by</h2>
-    <div className="font-bold">
+    <div className="lg:text-lg font-bold">
       {leaders
         ?.map((leader) => `${leader.firstName} ${leader.lastName}`)
         .join(" & ")}
@@ -143,7 +144,7 @@ export function GroupSingleSidebar({
             icon="calendarAlt"
             style={{ display: `${meetingDay ? "flex" : "none"}` }}
           >
-            <span className="text-lg font-semibold">{meetingDay}</span>
+            <span className="lg:text-lg font-semibold">{meetingDay}</span>
           </InfoItem>
 
           <Divider />
@@ -151,7 +152,7 @@ export function GroupSingleSidebar({
             icon="alarm"
             style={{ display: `${meetingTime ? "flex" : "none"}` }}
           >
-            <span className="text-lg font-semibold">
+            <span className="lg:text-lg font-semibold">
               {formattedMeetingTime}
             </span>
           </InfoItem>
@@ -159,7 +160,7 @@ export function GroupSingleSidebar({
           <Divider />
           <InfoItem icon="map">
             <span className="text-sm text-[#666666]">{meetingType}</span>
-            <span className="text-lg font-semibold">{campusName}</span>
+            <span className="lg:text-lg font-semibold">{campusName}</span>
           </InfoItem>
         </div>
       </div>
