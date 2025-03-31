@@ -1,4 +1,5 @@
 export const TimesLocations = () => {
+  // TODO: Figure out how to do the times and locations from the event data in Rock
   return (
     <div className="min-w-80">
       {/* Times */}
