@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import Breadcrumbs from "~/components/breadcrumbs";
+import { Breadcrumbs } from "~/components";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 

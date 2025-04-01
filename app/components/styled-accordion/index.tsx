@@ -12,7 +12,12 @@ type AccordionDataType = {
   }[];
 };
 
-const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
+export const StyledAccordion = ({
+  data,
+  bg,
+  border,
+  center,
+}: AccordionDataType) => {
   return (
     <Accordion.Root
       className="AccordionRoot flex w-full flex-col gap-4"
@@ -50,5 +55,3 @@ const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
     </Accordion.Root>
   );
 };
-
-export default StyledAccordion;

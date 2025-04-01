@@ -5,7 +5,7 @@ interface BreadcrumbsProps {
   mode?: "light" | "dark" | "darker";
 }
 
-export default function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
+export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
 

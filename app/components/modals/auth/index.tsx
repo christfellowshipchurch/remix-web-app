@@ -5,7 +5,7 @@ import Modal from "~/primitives/Modal";
 const defaultButtonStyle =
   "mr-2 font-semibold text-neutral-dark cursor-pointer hover:text-ocean transition-colors";
 
-export default function AuthModal({
+export function AuthModal({
   buttonStyle = defaultButtonStyle,
   buttonText = "Login",
   onClick = () => {},

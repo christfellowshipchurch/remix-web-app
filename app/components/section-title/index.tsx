@@ -1,7 +1,7 @@
 /**
  * Section Title Component for our landing/hub pages and their different sections
  * */
-export default function SectionTitle({
+export function SectionTitle({
   className,
   title,
   sectionTitle,
