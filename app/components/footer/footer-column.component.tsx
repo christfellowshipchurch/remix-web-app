@@ -1,5 +1,5 @@
 import type { FooterColumn } from "./footer-data";
-import ConnectCardModal from "../modals/connect-card";
+import { ConnectCardModal } from "~/components";
 
 interface FooterColumnProps {
   column: FooterColumn;

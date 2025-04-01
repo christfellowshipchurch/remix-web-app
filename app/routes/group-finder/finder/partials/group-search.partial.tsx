@@ -1,17 +1,17 @@
+import { useLoaderData } from "react-router";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-
 import { InstantSearch, Hits, SearchBox, Configure } from "react-instantsearch";
 
+import { SectionTitle, GroupFiltersModal } from "~/components";
+import { GroupFilters } from "~/components/modals/group-filters/group-filters";
+
+import Icon from "~/primitives/icon";
+import { useResponsive } from "~/hooks/use-responsive";
+
 import { CustomPagination } from "../components/custom-pagination.component";
-import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { CustomClearRefinements } from "../components/custom-clear-refinements.component";
 import { HitComponent } from "../components/hit-component.component";
-import SectionTitle from "~/components/section-title";
-import { GroupFilters } from "~/components/modals/group-filters/group-filters";
-import { GroupFiltersModal } from "~/components/modals/group-filters/group-filters-modal";
-import Icon from "~/primitives/icon";
-import { useResponsive } from "~/hooks/use-responsive";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

@@ -1,7 +1,8 @@
 import { Button } from "~/primitives/button/button.primitive";
 import { useLoaderData } from "react-router";
+import { SectionTitle } from "~/components";
+
 import { MessageReturnType } from "../loader";
-import SectionTitle from "~/components/section-title";
 import { MessagesCarousel } from "../components/messages-carousel.component";
 
 export const RelatedMessages = () => {
