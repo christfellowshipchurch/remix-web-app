@@ -50,13 +50,16 @@ const AdditionalResourcesCards = ({ resources }: { resources: Resource[] }) => {
 
 const ResourceCard = ({ resource }: { resource: Resource }) => {
   return (
-    <Link to={resource.url} className="flex flex-col w-[320px]">
+    <Link
+      to={resource.url}
+      className="flex flex-col w-[320px] rounded-lg border border-[#CCCCCC] overflow-hidden"
+    >
       <img
         src={resource.image}
         alt={resource.title}
-        className="w-full h-[240px]"
+        className="w-full h-[240px] object-cover"
       />
-      <h3 className="font-bold text-[24px] py-4">{resource.title}</h3>
+      <h3 className="font-bold text-[24px] p-4">{resource.title}</h3>
     </Link>
   );
 };
