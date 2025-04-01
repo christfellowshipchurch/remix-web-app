@@ -1,4 +1,4 @@
-import Breadcrumbs from "~/components/breadcrumbs";
+import { Breadcrumbs } from "~/components";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export const HeroFooter = () => {

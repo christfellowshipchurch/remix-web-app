@@ -14,7 +14,7 @@ import {
 } from "./mobile-menu.data";
 import Icon from "~/primitives/icon";
 import { Link } from "react-router-dom";
-import AuthModal from "~/components/modals/auth";
+import { AuthModal } from "~/components";
 import { User } from "~/providers/auth-provider";
 
 interface MobileMenuContentProps {
