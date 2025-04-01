@@ -1,6 +1,6 @@
+import { Breadcrumbs } from "~/components";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { Podcast } from "../../types";
-import Breadcrumbs from "~/components/breadcrumbs";
 import { HeroContent } from "../components/hero-content.component";
 
 interface PodcastsHeroProps {

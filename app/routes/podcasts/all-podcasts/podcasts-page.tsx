@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { DynamicHero } from "~/components/dynamic-hero";
+import { DynamicHero } from "~/components";
 import { PodcastHubCard } from "./components/podcast-card";
 import type { PodcastsHubLoaderData } from "./loader";
 
