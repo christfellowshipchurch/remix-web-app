@@ -20,7 +20,7 @@ type ShareLinksProps = {
 
 type SocialMedia = { type: string; url: string };
 
-export default function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
+export function ShareLinks({ size = 8, socialMedia }: ShareLinksProps) {
   // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side. We'll use "any" return type for flexibliity
   const data = useLoaderData<any>();
   const { hostUrl } = data;

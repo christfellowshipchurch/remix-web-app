@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import Breadcrumbs from "../breadcrumbs";
+import { Breadcrumbs } from "../breadcrumbs";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export type DynamicHeroTypes = {

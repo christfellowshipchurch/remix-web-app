@@ -1,9 +1,9 @@
-import ShareLinks from "~/components/share-links/share-links.component";
+import { Breadcrumbs, ShareLinks } from "~/components";
+import { IconButton } from "~/primitives/button/icon-button.primitive";
+
 import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { LoaderReturnType } from "../loader";
-import Breadcrumbs from "~/components/breadcrumbs";
-import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export interface AuthorProps {
   fullName: string;
