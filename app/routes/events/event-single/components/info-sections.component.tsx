@@ -1,21 +1,25 @@
-export const InfoSection = ({ type }: { type: "blue" | "image" | "list" }) => {
+export const AdditionalInfo = ({
+  type,
+}: {
+  type: "contact" | "resource" | "resource-list";
+}) => {
   return (
     <div className="w-full pb-16">
-      {type === "blue" && <InfoSectionBlue />}
-      {type === "image" && <InfoSectionImage />}
-      {type === "list" && <InfoSectionList />}
+      {type === "contact" && <EventContact />}
+      {type === "resource" && <EventResource />}
+      {type === "resource-list" && <EventResourceList />}
     </div>
   );
 };
 
-const InfoSectionBlue = () => {
-  return <div>InfoSectionBlue</div>;
+const EventContact = () => {
+  return <div>EventContact</div>;
 };
 
-const InfoSectionImage = () => {
-  return <div>InfoSectionImage</div>;
+const EventResource = () => {
+  return <div>EventResource</div>;
 };
 
-const InfoSectionList = () => {
+const EventResourceList = () => {
   return <div>InfoSectionList</div>;
 };

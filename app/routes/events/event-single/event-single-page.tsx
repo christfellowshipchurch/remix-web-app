@@ -1,13 +1,12 @@
 import React from "react";
-import { LoaderReturnType } from "./loader";
 import { useLoaderData } from "react-router";
-import { TimesLocations } from "./components/times-and-locations.component";
+import { SectionTitle, AdditionalResources } from "~/components";
+
+import { LoaderReturnType } from "./loader";
 import { EventContent } from "./partials/event-content.partial";
-import SectionTitle from "~/components/section-title";
 import { EventsSingleHero } from "./partials/hero.partial";
-import { AdditionalResources } from "./components/additional-resources.component";
+import { TimesLocations } from "./components/times-and-locations.component";
 import { EventSingleFAQ } from "./components/faq.component";
-import { InfoSection } from "./components/info-sections.component";
 
 const mockResources = [
   {
@@ -48,20 +47,19 @@ export const EventSinglePage: React.FC = () => {
             <div className="flex w-full justify-center gap-16">
               <div className="hidden lg:block">
                 <TimesLocations />
-                <InfoSection type="blue" />
+                {/* Placeholder for Additional Info Sections - Will be completed once design team has provided the content/use cases */}
+                {/* <AdditionalInfoSections type="contact" /> */}
               </div>
               <div className="flex flex-col gap-16">
                 <EventContent htmlContent={data.content} />
                 <EventDivider className="hidden lg:block" />
                 <div className="block lg:hidden">
-                  {/* TODO: Get type from Rock */}
                   <TimesLocations />
                   <EventDivider />
                 </div>
                 <EventSingleFAQ />
                 <EventDivider />
-                {/* TODO: Get type from Rock */}
-                <AdditionalResources type="cards" resources={mockResources} />
+                <AdditionalResources type="button" resources={mockResources} />
               </div>
             </div>
           </div>
