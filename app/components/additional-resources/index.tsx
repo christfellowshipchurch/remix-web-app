@@ -5,17 +5,21 @@ export const AdditionalResources = ({
   type,
   resources,
 }: {
-  type: "tabs" | "cards";
+  type: "button" | "card";
   resources: any[];
 }) => {
   return (
     <div className="max-w-screen-content flex flex-col gap-12 w-full">
       <h2 className="font-extrabold text-[32px]">Additional Resources</h2>
-      {type === "tabs" ? (
-        <AdditionalResourcesTabs resources={resources} />
-      ) : (
-        <AdditionalResourcesCards resources={resources} />
-      )}
+      {(() => {
+        switch (type) {
+          case "card":
+            return <AdditionalResourcesCards resources={resources} />;
+          case "button":
+          default:
+            return <AdditionalResourcesButtons resources={resources} />;
+        }
+      })()}
     </div>
   );
 };
@@ -26,11 +30,15 @@ type Resource = {
   url: string;
 };
 
-const AdditionalResourcesTabs = ({ resources }: { resources: Resource[] }) => {
+const AdditionalResourcesButtons = ({
+  resources,
+}: {
+  resources: Resource[];
+}) => {
   return (
     <div className="flex flex-wrap gap-6 mt-2">
       {resources.map((resource, index) => (
-        <Button key={index} intent="secondary" href={resource.url} size="sm">
+        <Button key={index} intent="secondary" href={resource.url}>
           {resource.title}
         </Button>
       ))}
@@ -63,3 +71,5 @@ const ResourceCard = ({ resource }: { resource: Resource }) => {
     </Link>
   );
 };
+
+export default AdditionalResources;
