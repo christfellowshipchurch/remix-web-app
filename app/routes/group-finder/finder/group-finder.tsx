@@ -1,4 +1,4 @@
-import { DynamicHero } from "~/components/dynamic-hero";
+import { DynamicHero } from "~/components";
 import { GroupSearch } from "./partials/group-search.partial";
 
 export function GroupFinderPage() {
