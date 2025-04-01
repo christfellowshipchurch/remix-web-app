@@ -5,8 +5,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { HeroTitleSection } from "../components/hero-title-section.component";
-import SetAReminderModal from "~/components/modals/set-a-reminder";
-import ConnectCardModal from "~/components/modals/connect-card";
+import { SetAReminderModal, ConnectCardModal } from "~/components";
 
 export const LocationsHero = () => {
   // TODO: Get header videos from Rock

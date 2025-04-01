@@ -1,4 +1,4 @@
-import StyledAccordion from "~/components/styled-accordion";
+import { StyledAccordion } from "~/components";
 import { faqEventData } from "~/lib/faq-data.data";
 
 export const EventSingleFAQ = () => {

@@ -1,13 +1,15 @@
 import { Link, useLoaderData } from "react-router";
-import { Button } from "~/primitives/button/button.primitive";
-import { whatToExpectData } from "../locations-single.data";
-import lodash from "lodash";
-import { LoaderReturnType } from "../loader";
-import Modal from "~/primitives/Modal";
-import WhatToExpectModal from "~/components/modals/what-to-expect";
-import { weekdaySpanishTranslation } from "../util";
-import Icon from "~/primitives/icon";
 import { useState } from "react";
+import lodash from "lodash";
+
+import { WhatToExpectModal } from "~/components";
+import Icon from "~/primitives/icon";
+import { Button } from "~/primitives/button/button.primitive";
+import Modal from "~/primitives/Modal";
+
+import { LoaderReturnType } from "../loader";
+import { weekdaySpanishTranslation } from "../util";
+import { whatToExpectData } from "../locations-single.data";
 
 /**
  * This file will include the following:
