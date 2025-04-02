@@ -27,7 +27,7 @@ import { MenuLink } from "./types";
 import { useEffect, useState } from "react";
 import lowerCase from "lodash/lowerCase";
 import { useAuth } from "~/providers/auth-provider";
-import { SearchExpanded, SearchPopup } from "./desktop/search.component";
+import { SearchBar } from "./desktop/search.component";
 
 const authButtonStyle = (mode: "light" | "dark") => {
   return `font-semibold cursor-pointer hover:text-ocean transition-colors ${
@@ -80,7 +80,7 @@ export function Navbar() {
         <div
           className="max-w-screen-content mx-auto flex justify-between items-center font-bold"
           style={{
-            gap: isSearchOpen ? "24px" : "0px",
+            gap: isSearchOpen ? "32px" : "0px",
           }}
         >
           {/* Logo */}
@@ -175,30 +175,26 @@ export function Navbar() {
               justifyContent: isSearchOpen ? "space-between" : "start",
             }}
           >
-            <div className="relative">
-              {isSearchOpen ? (
-                <SearchExpanded mode={mode} setIsSearchOpen={setIsSearchOpen} />
-              ) : (
-                <button
-                  onClick={() => setIsSearchOpen(true)}
-                  className="flex items-center"
-                >
-                  <Icon
-                    name="search"
-                    size={20}
-                    className={`
+            {isSearchOpen ? (
+              <SearchBar mode={mode} setIsSearchOpen={setIsSearchOpen} />
+            ) : (
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="flex items-center"
+              >
+                <Icon
+                  name="search"
+                  size={20}
+                  className={`
                         ${
                           mode === "light"
                             ? "text-neutral-dark"
                             : "text-white group-hover:text-text"
                         } hover:text-ocean transition-colors cursor-pointer
                       `}
-                  />
-                </button>
-              )}
-
-              {isSearchOpen && <SearchPopup />}
-            </div>
+                />
+              </button>
+            )}
 
             <div className="flex gap-2">
               {/* Auth Info / Button */}
@@ -214,14 +210,14 @@ export function Navbar() {
                 )}
               </div> */}
 
-              <Button className="font-semibold text-base">
+              <Button className="font-semibold text-base w-[190px]">
                 <Icon name="mapFilled" size={20} className="mr-2" />
                 Find a Service
               </Button>
               <Button
                 intent="secondary"
                 linkClassName="hidden xl:block"
-                className={`font-semibold text-base ${
+                className={`font-semibold text-base w-[140px] ${
                   mode === "dark" &&
                   "border-white text-white group-hover:text-ocean group-hover:border-ocean"
                 }`}
