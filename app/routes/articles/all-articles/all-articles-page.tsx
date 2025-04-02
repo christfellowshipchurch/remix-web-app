@@ -1,4 +1,4 @@
-import { DynamicHero } from "~/components/dynamic-hero";
+import { DynamicHero } from "~/components";
 import { LatestArticles } from "./partials/latest.partial";
 import { Articles } from "./partials/articles.partial";
 

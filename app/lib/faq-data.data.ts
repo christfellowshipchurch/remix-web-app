@@ -308,7 +308,7 @@ export const faqCfEverywhereData = [
   },
 ];
 
-// TODO: Update faqEventData here
+// TODO: Update faqEventData here or if from Rock then remove here and update in EventSinglePage.tsx
 export const faqEventData = [
   { title: "Question 1", content: "Response 1" },
   { title: "Question 2", content: "Response 2" },

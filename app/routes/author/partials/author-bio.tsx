@@ -1,5 +1,5 @@
 import * as Avatar from "@radix-ui/react-avatar";
-import ShareLinks from "~/components/share-links/share-links.component";
+import { ShareLinks } from "~/components";
 import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
 import { AuthorArticleProps } from "../components/author-content";
 

@@ -12,10 +12,15 @@ type AccordionDataType = {
   }[];
 };
 
-const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
+export const StyledAccordion = ({
+  data,
+  bg,
+  border,
+  center,
+}: AccordionDataType) => {
   return (
     <Accordion.Root
-      className="AccordionRoot flex w-full max-w-screen-md flex-col gap-4"
+      className="AccordionRoot flex w-full flex-col gap-4"
       type="multiple"
       style={{ alignItems: `${center ? "center" : "flex-start"}` }}
     >
@@ -27,7 +32,7 @@ const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
               backgroundColor: bg ? bg : `#E7F9FE`,
               border: `${border ? `1px solid ${border}` : ""}`,
             }}
-            className={`AccordionItem w-[90vw] rounded-lg px-6 md:w-[560px] lg:w-[768px]`}
+            className={`AccordionItem w-full rounded-lg px-6 md:max-w-none`}
             value={`item-${index + 1}`}
           >
             <Accordion.Header className="AccordionHeader flex py-5 text-lg font-bold">
@@ -50,5 +55,3 @@ const StyledAccordion = ({ data, bg, border, center }: AccordionDataType) => {
     </Accordion.Root>
   );
 };
-
-export default StyledAccordion;
