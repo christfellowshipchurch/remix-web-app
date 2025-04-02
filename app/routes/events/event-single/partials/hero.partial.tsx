@@ -49,7 +49,7 @@ export const EventsSingleHero = ({
                   <IconButton
                     key={i}
                     to={cta.href}
-                    className="text-navy border-navy"
+                    className="text-navy border-navy hover:enabled:text-ocean hover:enabled:border-ocean"
                     withRotatingArrow={i === ctas.length - 1}
                   >
                     {cta.title}

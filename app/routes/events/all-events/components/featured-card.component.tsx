@@ -35,7 +35,7 @@ export const FeaturedCard = ({ card }: { card: Event }) => {
                 prefetch="intent"
                 className="underline font-bold cursor-pointer"
               >
-                Learn More
+                <span className="hover:text-ocean underline">Learn More</span>
               </Link>
             </div>
           </div>
