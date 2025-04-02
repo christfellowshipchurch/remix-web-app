@@ -76,7 +76,12 @@ export function Navbar() {
             : "absolute top-0 hover:bg-white bg-transparent transition-colors duration-200"
         } py-5 w-full content-padding`}
       >
-        <div className="max-w-screen-content mx-auto flex justify-between items-center font-bold">
+        <div
+          className="max-w-screen-content mx-auto flex justify-between items-center font-bold"
+          style={{
+            gap: isSearchOpen ? "24px" : "0px",
+          }}
+        >
           {/* Logo */}
           <div className="flex items-center gap-8">
             <a
@@ -162,19 +167,110 @@ export function Navbar() {
           </div>
 
           {/* Desktop Buttons */}
-          <div className="hidden lg:flex items-center gap-6 ">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
-              <Icon
-                name="search"
-                color={isSearchOpen ? "#0092BC" : undefined}
-                size={20}
-                className={`${
-                  mode === "light"
-                    ? "text-neutral-dark"
-                    : "text-white group-hover:text-text"
-                } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
-              />
-            </button>
+          <div
+            className="hidden lg:flex items-center gap-6"
+            style={{
+              width: isSearchOpen ? "100%" : "auto",
+              justifyContent: isSearchOpen ? "space-between" : "start",
+            }}
+          >
+            <div className="relative">
+              <button
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="flex items-center"
+              >
+                <Icon
+                  name="search"
+                  color={isSearchOpen ? "#0092BC" : undefined}
+                  size={20}
+                  className={`${
+                    mode === "light"
+                      ? "text-neutral-dark"
+                      : "text-white group-hover:text-text"
+                  } hover:text-ocean transition-colors cursor-pointer`}
+                />
+              </button>
+
+              {isSearchOpen && (
+                <div className="absolute left-0 top-[56px] w-[60vw] bg-[#F3F5FA] rounded-b-lg shadow-lg p-4">
+                  <div className="flex items-center gap-2 pb-4">
+                    <div className="flex flex-col gap-2 flex-1">
+                      <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
+                        I'M LOOKING FOR
+                      </h2>
+                      <div className="flex gap-4 mt-4">
+                        <Button
+                          intent="secondary"
+                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                        >
+                          Events
+                        </Button>
+                        <Button
+                          intent="secondary"
+                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                        >
+                          Articles
+                        </Button>
+                        <Button
+                          intent="secondary"
+                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                        >
+                          Messages
+                        </Button>
+                        <Button
+                          intent="secondary"
+                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                        >
+                          Pages
+                        </Button>
+                        <Button
+                          intent="secondary"
+                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                        >
+                          People
+                        </Button>
+                        <Button
+                          intent="secondary"
+                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                        >
+                          Podcasts
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Search Results */}
+                  <div className="mt-6 space-y-4">
+                    {/* <div className="flex flex-col gap-2 mt-4">
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
+                      <Icon name="file" size={14} />
+                      Article
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
+                      <Icon name="calendar" size={14} />
+                      Event
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
+                      <Icon name="windowAlt" size={14} />
+                      Ministry Page
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
+                      <Icon name="moviePlay" size={14} />
+                      Message
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
+                      <Icon name="user" size={14} />
+                      Author
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
+                      <Icon name="microphone" size={14} />
+                      Podcast
+                    </button>
+                  </div> */}
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2">
               {/* Auth Info / Button */}
               {/* <div className="min-w-[50px] flex justify-end">
