@@ -1,4 +1,11 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLocation,
+} from "react-router";
 import type { ReactNode } from "react";
 
 import { Navbar, Footer } from "./components";
@@ -6,6 +13,8 @@ import { AuthProvider } from "./providers/auth-provider";
 import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 
 import "./styles/tailwind.css";
+import { cn } from "./lib/utils";
+import { shouldUseDarkMode } from "./components/navbar/navbar-routes";
 
 export { ErrorBoundary } from "./error";
 
@@ -28,12 +37,20 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <AuthProvider>
       <CookieConsentProvider>
         <div className="min-h-screen flex flex-col">
           <Navbar />
-          <main className="flex-1">
+          <main
+            className={cn(
+              "flex-1",
+              shouldUseDarkMode(currentPath) && "mt-[-100px]" // This is to account for the navbar height when dark mode is enabled
+            )}
+          >
             <Outlet />
           </main>
           <Footer />
