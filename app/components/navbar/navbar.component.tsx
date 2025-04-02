@@ -24,7 +24,7 @@ import {
   watchReadListenData,
 } from "./navbar.data";
 import { MenuLink } from "./types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import lowerCase from "lodash/lowerCase";
 import { useAuth } from "~/providers/auth-provider";
 
@@ -48,6 +48,7 @@ export function Navbar() {
   const isLoading = fetcher.state === "loading";
 
   const userData = fetcher.data?.userData;
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const menuLinks: MenuLink[] = [
     {
@@ -93,7 +94,10 @@ export function Navbar() {
             </a>
 
             {/* Desktop view */}
-            <div className="hidden lg:inline">
+            <div
+              className="hidden lg:inline"
+              style={{ display: isSearchOpen ? "none" : "inline" }}
+            >
               <NavigationMenu>
                 <NavigationMenuList className="flex items-center space-x-6 xl:space-x-10">
                   {/* Links */}
@@ -158,18 +162,21 @@ export function Navbar() {
           </div>
 
           {/* Desktop Buttons */}
-          <div className="hidden lg:flex items-center gap-6">
-            <Icon
-              name="search"
-              size={20}
-              className={`${
-                mode === "light"
-                  ? "text-neutral-dark"
-                  : "text-white group-hover:text-text"
-              } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
-            />
+          <div className="hidden lg:flex items-center gap-6 ">
+            <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
+              <Icon
+                name="search"
+                color={isSearchOpen ? "#0092BC" : undefined}
+                size={20}
+                className={`${
+                  mode === "light"
+                    ? "text-neutral-dark"
+                    : "text-white group-hover:text-text"
+                } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
+              />
+            </button>
             <div className="flex gap-2">
-              {/* Auth Info / Button*/}
+              {/* Auth Info / Button */}
               {/* <div className="min-w-[50px] flex justify-end">
                 {authLoading ? (
                   <div className={authButtonStyle(mode)}>Login</div> // optimistically show login button
