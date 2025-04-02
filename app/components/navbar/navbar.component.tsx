@@ -175,21 +175,71 @@ export function Navbar() {
             }}
           >
             <div className="relative">
-              <button
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="flex items-center"
-              >
-                <Icon
-                  name="search"
-                  color={isSearchOpen ? "#0092BC" : undefined}
-                  size={20}
-                  className={`${
-                    mode === "light"
-                      ? "text-neutral-dark"
-                      : "text-white group-hover:text-text"
-                  } hover:text-ocean transition-colors cursor-pointer`}
-                />
-              </button>
+              {isSearchOpen ? (
+                <div className="flex w-full items-center">
+                  <button
+                    onClick={() => setIsSearchOpen(false)}
+                    className="flex items-center"
+                  >
+                    <Icon
+                      name="search"
+                      size={20}
+                      className={`text-ocean
+                        ${
+                          mode === "light"
+                            ? "text-neutral-dark"
+                            : "text-white group-hover:text-text"
+                        } hover:text-neutral-dark transition-colors cursor-pointer
+                      `}
+                    />
+                  </button>
+                  <input
+                    id="search-bar"
+                    type="text"
+                    placeholder=""
+                    className="w-full px-3 py-1 text-sm outline-none transition-all"
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => {
+                      const searchInput = document.getElementById(
+                        "search-bar"
+                      ) as HTMLInputElement;
+                      if (searchInput) searchInput.value = "";
+                    }}
+                    className="ml-2"
+                  >
+                    <Icon
+                      name="x"
+                      size={16}
+                      className={`
+                          ${
+                            mode === "light"
+                              ? "text-neutral-dark"
+                              : "text-white"
+                          } hover:text-ocean transition-colors
+                        `}
+                    />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsSearchOpen(true)}
+                  className="flex items-center"
+                >
+                  <Icon
+                    name="search"
+                    size={20}
+                    className={`
+                        ${
+                          mode === "light"
+                            ? "text-neutral-dark"
+                            : "text-white group-hover:text-text"
+                        } hover:text-ocean transition-colors cursor-pointer
+                      `}
+                  />
+                </button>
+              )}
 
               {isSearchOpen && (
                 <div className="absolute left-0 top-[56px] w-[60vw] bg-[#F3F5FA] rounded-b-lg shadow-lg p-4">
@@ -198,43 +248,24 @@ export function Navbar() {
                       <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
                         I'M LOOKING FOR
                       </h2>
-                      <div className="flex gap-4 mt-4">
-                        <Button
-                          intent="secondary"
-                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-                        >
-                          Events
-                        </Button>
-                        <Button
-                          intent="secondary"
-                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-                        >
-                          Articles
-                        </Button>
-                        <Button
-                          intent="secondary"
-                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-                        >
-                          Messages
-                        </Button>
-                        <Button
-                          intent="secondary"
-                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-                        >
-                          Pages
-                        </Button>
-                        <Button
-                          intent="secondary"
-                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-                        >
-                          People
-                        </Button>
-                        <Button
-                          intent="secondary"
-                          className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-                        >
-                          Podcasts
-                        </Button>
+                      <div className="flex justify-between mt-4">
+                        {[
+                          "Events",
+                          "Articles",
+                          "Messages",
+                          "Pages",
+                          "People",
+                          "Podcasts",
+                        ].map((label) => (
+                          <Button
+                            key={label}
+                            size="md"
+                            intent="secondary"
+                            className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
+                          >
+                            {label}
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   </div>
