@@ -1,15 +1,43 @@
+import { algoliasearch } from "algoliasearch";
+import { useEffect } from "react";
+import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
+import { useFetcher } from "react-router";
+import { useResponsive } from "~/hooks/use-responsive";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
+import { LoaderReturnType } from "~/routes/search/loader";
+import { SearchCustomClearRefinements } from "./custom-clear-refinements.component";
+import { HitComponent } from "./hit-component.component";
+
+const emptySearchClient = {
+  search: () =>
+    Promise.resolve({
+      results: [
+        {
+          hits: [],
+          nbHits: 0,
+          page: 0,
+          nbPages: 0,
+          hitsPerPage: 0,
+          exhaustiveNbHits: true,
+          query: "",
+          params: "",
+          processingTimeMS: 0,
+          index: "production_ContentItems",
+        },
+      ],
+    }),
+};
 
 export const SearchPopup = () => {
   return (
-    <div className="absolute left-0 top-[56px] w-[60vw] bg-[#F3F5FA] rounded-b-lg shadow-lg p-4">
+    <div className="absolute left-0 top-[60px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg p-4">
       <div className="flex items-center gap-2 pb-4">
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-2">
           <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
             I'M LOOKING FOR
           </h2>
-          <div className="flex justify-between mt-4">
+          <div className="flex flex-wrap gap-2 xl:gap-3 mt-4">
             {[
               "Events",
               "Articles",
@@ -33,88 +61,98 @@ export const SearchPopup = () => {
 
       {/* Search Results */}
       <div className="mt-6 space-y-4">
-        {/* <div className="flex flex-col gap-2 mt-4">
-                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
-                      <Icon name="file" size={14} />
-                      Article
-                    </button>
-                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
-                      <Icon name="calendar" size={14} />
-                      Event
-                    </button>
-                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
-                      <Icon name="windowAlt" size={14} />
-                      Ministry Page
-                    </button>
-                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
-                      <Icon name="moviePlay" size={14} />
-                      Message
-                    </button>
-                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
-                      <Icon name="user" size={14} />
-                      Author
-                    </button>
-                    <button className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-full bg-gray hover:bg-neutral-200 transition-colors">
-                      <Icon name="microphone" size={14} />
-                      Podcast
-                    </button>
-                  </div> */}
+        <Hits
+          classNames={{
+            item: "flex",
+            list: "grid md:grid-cols-1 gap-4",
+          }}
+          hitComponent={HitComponent}
+        />
       </div>
     </div>
   );
 };
 
-export const SearchExpanded = ({
+export const SearchBar = ({
   mode,
   setIsSearchOpen,
 }: {
   mode: "light" | "dark";
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
+  const fetcher = useFetcher<LoaderReturnType>();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
+
+  useEffect(() => {
+    if (!fetcher.data) {
+      fetcher.load("/search");
+    }
+  }, [fetcher]);
+
+  const searchClient =
+    ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
+      ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
+      : emptySearchClient;
+
+  const { isSmall, isMedium, isLarge } = useResponsive();
+  const getHitsPerPage = () => {
+    switch (true) {
+      case isLarge:
+        return 10;
+      case isMedium:
+        return 8;
+      case isSmall:
+        return 6;
+      default:
+        return 6;
+    }
+  };
+
   return (
-    <div className="flex w-full items-center">
-      <button
-        onClick={() => setIsSearchOpen(false)}
-        className="flex items-center"
+    <div className="relative size-full">
+      <InstantSearch
+        indexName="production_ContentItems"
+        searchClient={searchClient}
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
       >
-        <Icon
-          name="search"
-          size={20}
-          className={`text-ocean
+        <Configure hitsPerPage={getHitsPerPage()} />
+        <div className="flex w-full items-center border-b border-neutral-lighter pb-2">
+          <button
+            onClick={() => setIsSearchOpen(false)}
+            className="flex items-center"
+          >
+            <Icon
+              name="search"
+              size={20}
+              className={`text-ocean
           ${
             mode === "light"
               ? "text-neutral-dark"
               : "text-white group-hover:text-text"
           } hover:text-neutral-dark transition-colors cursor-pointer
         `}
-        />
-      </button>
-      <input
-        id="search-bar"
-        type="text"
-        placeholder=""
-        className="w-full px-3 py-1 text-sm outline-none transition-all"
-        autoFocus
-      />
-      <button
-        onClick={() => {
-          const searchInput = document.getElementById(
-            "search-bar"
-          ) as HTMLInputElement;
-          if (searchInput) searchInput.value = "";
-        }}
-        className="ml-2"
-      >
-        <Icon
-          name="x"
-          size={16}
-          className={`
-            ${
-              mode === "light" ? "text-neutral-dark" : "text-white"
-            } hover:text-ocean transition-colors
-          `}
-        />
-      </button>
+            />
+          </button>
+          <SearchBox
+            translations={{
+              submitButtonTitle: "Search",
+              resetButtonTitle: "Reset",
+            }}
+            classNames={{
+              root: "flex-grow",
+              form: "flex pr-10 md:pr-24",
+              input:
+                "w-full justify-center text-black opacity-40 px-3 outline-none",
+              resetIcon: "hidden",
+              submit: "hidden",
+            }}
+          />
+          <SearchCustomClearRefinements />
+        </div>
+        <SearchPopup />
+      </InstantSearch>
     </div>
   );
 };
