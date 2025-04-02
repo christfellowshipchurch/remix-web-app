@@ -1,4 +1,4 @@
-import { DynamicHero } from "~/components/dynamic-hero";
+import { DynamicHero } from "~/components";
 import CurrentSeries from "./components/current-series.component";
 import AllMessages from "./components/all-messages.component";
 

@@ -1,6 +1,6 @@
 import { LoaderFunction, redirect } from "react-router";
 import { useLoaderData } from "react-router";
-import AuthModal from "~/components/modals/auth";
+import { AuthModal } from "~/components";
 import { Button } from "~/primitives/button/button.primitive";
 import { useAuth } from "~/providers/auth-provider";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";

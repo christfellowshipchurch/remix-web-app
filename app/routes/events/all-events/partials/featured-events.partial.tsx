@@ -1,7 +1,7 @@
 import { FeaturedCard } from "../components/featured-card.component";
 import { ContentCard } from "~/primitives/content-card/content.card.primitive";
 import { useLoaderData } from "react-router";
-import SectionTitle from "~/components/section-title";
+import { SectionTitle } from "~/components";
 import { EventReturnType } from "../loader";
 
 export function FeaturedEvents() {

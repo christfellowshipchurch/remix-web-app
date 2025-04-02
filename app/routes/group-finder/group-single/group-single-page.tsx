@@ -1,7 +1,8 @@
 import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "./loader";
 import { GroupsSingleHero } from "./partials/hero.partial";
-import Breadcrumbs from "~/components/breadcrumbs";
+import { Breadcrumbs } from "~/components";
+
 import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { GroupSingleSidebar } from "./components/sidebar.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";

@@ -1,21 +1,39 @@
 import React from "react";
-import { LoaderReturnType } from "./loader";
 import { useLoaderData } from "react-router";
-import { DynamicHero } from "~/components/dynamic-hero";
-import StyledAccordion from "~/components/styled-accordion";
-import { faqEventData } from "~/lib/faq-data.data";
-import { TimesLocations } from "./partials/times-and-locations";
+import { SectionTitle, AdditionalResources } from "~/components";
+
+import { LoaderReturnType } from "./loader";
 import { EventContent } from "./partials/event-content.partial";
-import SectionTitle from "~/components/section-title";
+import { EventsSingleHero } from "./partials/hero.partial";
+import { TimesLocations } from "./components/times-and-locations.component";
+import { EventSingleFAQ } from "./components/faq.component";
+
+const mockResources = [
+  {
+    title: "Resource 1",
+    image: "/assets/images/events/resource-1.jpg",
+    url: "/resource-1",
+  },
+  {
+    title: "Resource 2",
+    image: "/assets/images/events/resource-2.jpg",
+    url: "/resource-2",
+  },
+  {
+    title: "Resource 3",
+    image: "/assets/images/events/resource-3.jpg",
+    url: "/resource-3",
+  },
+];
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
 
   return (
     <>
-      <section className="flex flex-col items-center dark:bg-gray-900">
+      <div className="flex flex-col items-center dark:bg-gray-900">
         {/* TODO: Get CTAS from Rock */}
-        <DynamicHero
+        <EventsSingleHero
           imagePath={data.coverImage}
           ctas={[
             { title: "Invite", href: "#share" },
@@ -23,28 +41,34 @@ export const EventSinglePage: React.FC = () => {
           ]}
           customTitle={data.title}
         />
-        <div className="content-padding">
+        <div className="content-padding w-full flex flex-col items-center ">
           <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-screen-content">
             <SectionTitle sectionTitle="event details." />
             <div className="flex w-full justify-center gap-16">
-              <TimesLocations />
+              <div className="hidden lg:block">
+                <TimesLocations />
+                {/* Placeholder for Additional Info Sections - Will be completed once design team has provided the content/use cases */}
+                {/* <AdditionalInfoSections type="contact" /> */}
+              </div>
               <div className="flex flex-col gap-16">
                 <EventContent htmlContent={data.content} />
-                <div className="flex flex-col gap-12">
-                  <h2 className="font-extrabold text-4xl">
-                    Frequently Asked Questions
-                  </h2>
-                  <StyledAccordion
-                    data={faqEventData}
-                    bg="white"
-                    border="#C6C6C6"
-                  />
+                <EventDivider className="hidden lg:block" />
+                <div className="block lg:hidden">
+                  <TimesLocations />
+                  <EventDivider />
                 </div>
+                <EventSingleFAQ />
+                <EventDivider />
+                <AdditionalResources type="button" resources={mockResources} />
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
+};
+
+const EventDivider = ({ className }: { className?: string }) => {
+  return <div className={`w-full h-[1px] bg-black opacity-30 ${className}`} />;
 };

@@ -1,24 +1,24 @@
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
-import Breadcrumbs from "../breadcrumbs";
+import { Breadcrumbs } from "../breadcrumbs";
 import { Video } from "~/primitives/video/video.primitive";
 
 import { Divider } from "~/routes/articles/all-articles/partials/latest.partial";
 import { Link } from "react-router";
 
-export type DynamicVideoHeaderTypes = {
+export type VideoHeaderTypes = {
   ctas?: { href: string; title: string }[];
   video?: string;
   wistiaId?: string;
   fallback?: React.ReactNode;
 } & ({ video: string } | { wistiaId: string });
 
-export const DynamicVideoHeader = ({
+export const VideoHeader = ({
   ctas,
   video,
   wistiaId,
   fallback,
-}: DynamicVideoHeaderTypes) => {
+}: VideoHeaderTypes) => {
   // TODO: Make sure videos in Wistia have the controls removed and the theme is set to what it's in Figma...
   // TODO: Update margin top once the navbar is updated?
   return (

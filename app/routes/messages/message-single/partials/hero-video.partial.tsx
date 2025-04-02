@@ -1,4 +1,4 @@
-import { DynamicVideoHeader } from "~/components/dynamic-video-hero";
+import { VideoHeader } from "~/components";
 import { MessageReturnType } from "../loader";
 import { useLoaderData } from "react-router";
 
@@ -10,7 +10,7 @@ export const MessageVideo: React.FC = () => {
   const { message } = useLoaderData<MessageReturnType>();
   // TODO: Fix link to Sermon Resources
   return (
-    <DynamicVideoHeader
+    <VideoHeader
       wistiaId={message.wistiaId || ""}
       video={message.video || ""}
       ctas={[

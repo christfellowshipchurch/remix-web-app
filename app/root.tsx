@@ -1,8 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { ReactNode } from "react";
 
-import Navbar from "./components/navbar";
-import Footer from "./components/footer";
+import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
 import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 

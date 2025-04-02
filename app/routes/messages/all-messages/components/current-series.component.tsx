@@ -1,10 +1,10 @@
 import React from "react";
-import { useLoaderData, Link } from "react-router-dom";
-import SectionTitle from "~/components/section-title";
-import { Button } from "~/primitives/button/button.primitive";
+import { useLoaderData } from "react-router-dom";
+import { SectionTitle } from "~/components";
 import HTMLRenderer from "~/primitives/html-renderer";
-import type { LoaderReturnType } from "../loader";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
+
+import type { LoaderReturnType } from "../loader";
 const CurrentSeries: React.FC = () => {
   const { currentSeries } = useLoaderData<LoaderReturnType>();
   const { currentSeriesTitle, latestMessage } = currentSeries;

@@ -51,12 +51,7 @@ export const ContactInfo = () => {
           <p className="text-sm md:text-lg font-medium text-[#D0D0CE]">
             Find Us
           </p>
-          <a
-            href="https://goo.gl/maps/1234"
-            className={linkStyle}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="/locations" className={linkStyle}>
             View Locations
           </a>
         </div>
