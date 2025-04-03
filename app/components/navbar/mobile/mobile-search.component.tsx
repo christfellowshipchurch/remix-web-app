@@ -41,7 +41,7 @@ const emptySearchClient = {
     }),
 };
 
-export const SearchCustomRefinementList = ({
+const MobileSearchCustomRefinementList = ({
   attribute,
 }: {
   attribute: string;
@@ -49,11 +49,12 @@ export const SearchCustomRefinementList = ({
   return (
     <RefinementList
       classNames={{
-        list: "flex flex-wrap gap-2",
+        list: "flex gap-2 overflow-x-auto max-w-screen pr-8 pb-2",
         checkbox: "hidden",
         count: "hidden",
-        item: "flex items-center justify-center text-center text-xs border-[#AAAAAA] text-[#444444] border-[0.7px] px-4 py-2 whitespace-nowrap rounded-md hover:bg-oceanSubdued hover:text-ocean hover:border-ocean transition-all duration-300",
-        selectedItem: "bg-oceanSubdued text-ocean border-ocean overflow-hidden",
+        item: "flex items-center justify-center text-center text-xs text-[#444444] px-4 py-2 whitespace-nowrap hover:bg-oceanSubdued hover:text-ocean hover:border-ocean transition-all duration-300",
+        selectedItem:
+          "flex items-center px-4 py-2 justify-center text-center text-xs bg-oceanSubdued whitespace-nowrap text-white border-ocean overflow-hidden bg-navy rounded-full transition-all duration-300",
         label:
           "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
       }}
@@ -67,10 +68,7 @@ export const SearchPopup = () => {
     <div className="w-full p-4 md:p-6">
       <div className="flex items-center gap-2 pb-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
-            I'M LOOKING FOR
-          </h2>
-          <SearchCustomRefinementList attribute="contentType" />
+          <MobileSearchCustomRefinementList attribute="contentType" />
         </div>
       </div>
 
@@ -121,18 +119,6 @@ export const MobileSearch = ({
       ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
       : emptySearchClient);
 
-  const { isSmall, isMedium } = useResponsive();
-  const getHitsPerPage = () => {
-    switch (true) {
-      case isMedium:
-        return 8;
-      case isSmall:
-        return 6;
-      default:
-        return 6;
-    }
-  };
-
   return (
     <div className="h-full overflow-y-auto bg-white relative">
       <InstantSearch
@@ -149,7 +135,7 @@ export const MobileSearch = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={getHitsPerPage()} />
+        <Configure hitsPerPage={8} />
 
         {/* Search Bar */}
         <div className="flex w-full items-center p-3 gap-2">

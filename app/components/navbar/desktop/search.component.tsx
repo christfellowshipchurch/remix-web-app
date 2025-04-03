@@ -68,7 +68,11 @@ export const SearchCustomRefinementList = ({
   );
 };
 
-export const SearchPopup = () => {
+export const SearchPopup = ({
+  setIsSearchOpen,
+}: {
+  setIsSearchOpen: (isSearchOpen: boolean) => void;
+}) => {
   return (
     <div className="absolute left-0 top-[52px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg px-12 py-4 z-4">
       <div className="flex items-center gap-2 pb-4">
@@ -83,6 +87,7 @@ export const SearchPopup = () => {
       {/* Search Results */}
       <div className="mt-2 space-y-4">
         <Hits
+          onClick={() => setIsSearchOpen(false)}
           classNames={{
             item: "flex",
             list: "grid md:grid-cols-1 gap-4",
@@ -152,17 +157,15 @@ export const SearchBar = ({
       ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
       : emptySearchClient);
 
-  const { isSmall, isMedium, isLarge } = useResponsive();
+  const { isSmall, isMedium } = useResponsive();
   const getHitsPerPage = () => {
     switch (true) {
-      case isLarge:
-        return 10;
       case isMedium:
         return 8;
       case isSmall:
         return 6;
       default:
-        return 6;
+        return 8;
     }
   };
 
@@ -247,7 +250,7 @@ export const SearchBar = ({
             }}
           />
         </div>
-        <SearchPopup />
+        <SearchPopup setIsSearchOpen={setIsSearchOpen} />
       </InstantSearch>
     </div>
   );
