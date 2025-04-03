@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import lowerCase from "lodash/lowerCase";
 import { useAuth } from "~/providers/auth-provider";
 import { SearchBar } from "./desktop/search.component";
+import { useResponsive } from "~/hooks/use-responsive";
 
 const authButtonStyle = (mode: "light" | "dark") => {
   return `font-semibold cursor-pointer hover:text-ocean transition-colors ${
@@ -50,6 +51,7 @@ export function Navbar() {
 
   const userData = fetcher.data?.userData;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { isLarge } = useResponsive();
 
   const menuLinks: MenuLink[] = [
     {
@@ -102,7 +104,9 @@ export function Navbar() {
             {/* Desktop view */}
             <div
               className="hidden lg:inline"
-              style={{ display: isSearchOpen ? "none" : "inline" }}
+              style={{
+                display: isSearchOpen ? "none" : isLarge ? "inline" : "none",
+              }}
             >
               <NavigationMenu>
                 <NavigationMenuList className="flex items-center space-x-6 xl:space-x-10">
@@ -172,6 +176,7 @@ export function Navbar() {
             className="hidden lg:flex items-center gap-6"
             style={{
               width: isSearchOpen ? "100%" : "auto",
+              alignItems: isSearchOpen ? "end" : "center",
               justifyContent: isSearchOpen ? "space-between" : "start",
             }}
           >
