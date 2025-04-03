@@ -284,7 +284,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile view */}
-          <MobileMenu mode={mode} />
+          <MobileMenu mode={mode} setMode={setMode} />
         </div>
       </div>
     </nav>

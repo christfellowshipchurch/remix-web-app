@@ -3,16 +3,25 @@ import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
 import { useHydrated } from "~/hooks/use-hydrated";
 import { useAuth } from "~/providers/auth-provider";
-import { useLoaderData } from "react-router";
 import { Button } from "~/primitives/button/button.primitive";
-
+import { MobileSearch } from "./mobile-search.component";
+import { useResponsive } from "~/hooks/use-responsive";
 const mobileMenuButtonStyle =
   "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";
 
-export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
+export default function MobileMenu({
+  mode,
+  setMode,
+}: {
+  mode: "light" | "dark";
+  setMode: (mode: "light" | "dark") => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+  const [orginalMode, setOrginalMode] = useState(mode);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isHydrated = useHydrated();
   const { user, isLoading: authLoading, logout } = useAuth();
+  const { isMedium } = useResponsive();
 
   // Prevent background scroll when menu is open
   useEffect(() => {
@@ -67,11 +76,35 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
             Find a Service
           </Button>
         </div>
-        <button className={mobileMenuButtonStyle}>
+        <button
+          className={mobileMenuButtonStyle}
+          onClick={() => {
+            setIsSearchOpen(!isSearchOpen);
+            setIsOpen(false);
+            setTimeout(() => {
+              const searchInput = document.querySelector(
+                ".ais-SearchBox-input"
+              );
+              if (searchInput instanceof HTMLInputElement) {
+                searchInput.focus();
+              }
+            }, 0);
+          }}
+        >
           <Icon name="search" size={20} className="mb-[2px]" />
         </button>
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            setIsOpen(!isOpen);
+            setMode(
+              orginalMode === "dark" && isMedium
+                ? mode === "light"
+                  ? "dark"
+                  : "light"
+                : orginalMode
+            );
+            setIsSearchOpen(false);
+          }}
           className={mobileMenuButtonStyle}
         >
           <Icon
@@ -103,6 +136,23 @@ export default function MobileMenu({ mode }: { mode: "light" | "dark" }) {
               user,
             }}
           />
+        </div>
+      </div>
+
+      {/* Search Open */}
+      <div
+        className={`fixed top-0 md:top-[90px] right-0 w-full h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
+          ${
+            !isSearchOpen
+              ? "translate-x-full invisible opacity-0"
+              : "translate-x-0 visible opacity-100"
+          }`}
+      >
+        <div
+          className={`h-full flex flex-col transition-opacity duration-500
+            ${isSearchOpen ? "opacity-100" : "opacity-0"}`}
+        >
+          <MobileSearch mode={mode} setIsSearchOpen={setIsSearchOpen} />
         </div>
       </div>
     </div>
