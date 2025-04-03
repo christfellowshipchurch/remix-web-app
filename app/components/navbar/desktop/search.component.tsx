@@ -1,12 +1,16 @@
 import { algoliasearch } from "algoliasearch";
 import { useEffect } from "react";
-import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
+import {
+  Configure,
+  Hits,
+  InstantSearch,
+  RefinementList,
+  SearchBox,
+} from "react-instantsearch";
 import { useFetcher } from "react-router";
 import { useResponsive } from "~/hooks/use-responsive";
-import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
-import { SearchCustomClearRefinements } from "./custom-clear-refinements.component";
 import { HitComponent } from "./hit-component.component";
 
 const emptySearchClient = {
@@ -29,38 +33,41 @@ const emptySearchClient = {
     }),
 };
 
+export const SearchCustomRefinementList = ({
+  attribute,
+}: {
+  attribute: string;
+}) => {
+  return (
+    <RefinementList
+      classNames={{
+        list: "flex flex-wrap gap-2",
+        checkbox: "hidden",
+        count: "hidden",
+        item: "flex items-center justify-center text-center text-xs border-[#AAAAAA] text-[#444444] border-[0.7px] px-4 py-2 whitespace-nowrap rounded-md hover:bg-oceanSubdued hover:text-ocean hover:border-ocean transition-all duration-300",
+        selectedItem: "bg-oceanSubdued text-ocean border-ocean overflow-hidden",
+        label:
+          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
+      }}
+      attribute={attribute}
+    />
+  );
+};
+
 export const SearchPopup = () => {
   return (
-    <div className="absolute left-0 top-[60px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg p-4">
+    <div className="absolute left-0 top-[52px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg px-12 py-4 z-4">
       <div className="flex items-center gap-2 pb-4">
         <div className="flex flex-col gap-2">
           <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
             I'M LOOKING FOR
           </h2>
-          <div className="flex flex-wrap gap-2 xl:gap-3 mt-4">
-            {[
-              "Events",
-              "Articles",
-              "Messages",
-              "Pages",
-              "People",
-              "Podcasts",
-            ].map((label) => (
-              <Button
-                key={label}
-                size="md"
-                intent="secondary"
-                className="border-[#AAAAAA] text-[#444444] border-[0.7px]"
-              >
-                {label}
-              </Button>
-            ))}
-          </div>
+          <SearchCustomRefinementList attribute="contentType" />
         </div>
       </div>
 
       {/* Search Results */}
-      <div className="mt-6 space-y-4">
+      <div className="mt-2 space-y-4">
         <Hits
           classNames={{
             item: "flex",
@@ -118,7 +125,7 @@ export const SearchBar = ({
         }}
       >
         <Configure hitsPerPage={getHitsPerPage()} />
-        <div className="flex w-full items-center border-b border-neutral-lighter pb-2">
+        <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
             onClick={() => setIsSearchOpen(false)}
             className="flex items-center"
@@ -126,30 +133,25 @@ export const SearchBar = ({
             <Icon
               name="search"
               size={20}
-              className={`text-ocean
-          ${
-            mode === "light"
-              ? "text-neutral-dark"
-              : "text-white group-hover:text-text"
-          } hover:text-neutral-dark transition-colors cursor-pointer
+              className={`text-ocean hover:text-neutral-default transition-colors cursor-pointer
         `}
             />
           </button>
           <SearchBox
-            translations={{
-              submitButtonTitle: "Search",
-              resetButtonTitle: "Reset",
-            }}
             classNames={{
               root: "flex-grow",
-              form: "flex pr-10 md:pr-24",
-              input:
-                "w-full justify-center text-black opacity-40 px-3 outline-none",
+              form: "flex",
+              input: `w-full justify-center ${
+                mode === "light"
+                  ? "text-[#2F2F2F]"
+                  : "text-white group-hover:text-[#2F2F2F]"
+              } px-3 outline-none appearance-none`,
+              reset: "hidden",
               resetIcon: "hidden",
               submit: "hidden",
             }}
           />
-          <SearchCustomClearRefinements />
+          {/* <SearchCustomClearRefinements /> */}
         </div>
         <SearchPopup />
       </InstantSearch>

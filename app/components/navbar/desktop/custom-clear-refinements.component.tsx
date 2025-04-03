@@ -4,13 +4,7 @@ import {
   UseClearRefinementsProps,
 } from "react-instantsearch";
 
-interface CustomClearRefinementsProps extends UseClearRefinementsProps {
-  text?: string;
-}
-
-export const SearchCustomClearRefinements = ({
-  text,
-}: CustomClearRefinementsProps) => {
+export const SearchCustomClearRefinements = ({}: UseClearRefinementsProps) => {
   const { refine, canRefine } = useClearRefinements();
 
   return (
