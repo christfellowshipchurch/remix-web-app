@@ -1,16 +1,13 @@
 import { algoliasearch, SearchClient } from "algoliasearch";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import {
   Configure,
   Hits,
   InstantSearch,
   RefinementList,
   SearchBox,
-  useInstantSearch,
-  useSearchBox,
 } from "react-instantsearch";
 import { useFetcher } from "react-router";
-import { useResponsive } from "~/hooks/use-responsive";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { HitComponent } from "./hit-component.component";
@@ -52,9 +49,9 @@ const MobileSearchCustomRefinementList = ({
         list: "flex gap-2 overflow-x-auto max-w-screen pr-8 pb-2",
         checkbox: "hidden",
         count: "hidden",
-        item: "flex items-center justify-center text-center text-xs text-[#444444] px-4 py-2 whitespace-nowrap hover:bg-oceanSubdued hover:text-ocean hover:border-ocean transition-all duration-300",
+        item: "flex items-center justify-center text-center text-sm font-bold text-[#7B7382] px-4 py-1 whitespace-nowrap transition-all duration-300",
         selectedItem:
-          "flex items-center px-4 py-2 justify-center text-center text-xs bg-oceanSubdued whitespace-nowrap text-white border-ocean overflow-hidden bg-navy rounded-full transition-all duration-300",
+          "flex items-center justify-center text-center text-sm font-bold text-white px-4 py-1 whitespace-nowrap  bg-navy rounded-[50px] transition-all duration-300",
         label:
           "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
       }}
@@ -66,14 +63,14 @@ const MobileSearchCustomRefinementList = ({
 export const SearchPopup = () => {
   return (
     <div className="w-full p-4 md:p-6">
-      <div className="flex items-center gap-2 pb-4">
+      <div className="flex items-center gap-2">
         <div className="flex flex-col gap-2">
           <MobileSearchCustomRefinementList attribute="contentType" />
         </div>
       </div>
 
       {/* Search Results */}
-      <div className="mt-2 space-y-4">
+      <div className="border-t border-[#E0E0E0] pt-6 space-y-4">
         <Hits
           classNames={{
             item: "flex",
@@ -135,10 +132,10 @@ export const MobileSearch = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={8} />
+        <Configure hitsPerPage={12} />
 
         {/* Search Bar */}
-        <div className="flex w-full items-center p-3 gap-2">
+        <div className="flex w-full items-center pt-6 px-4 gap-3">
           <button
             onClick={() => setIsSearchOpen(false)}
             className="flex items-center md:hidden"
@@ -154,7 +151,7 @@ export const MobileSearch = ({
             classNames={{
               root: "flex-grow",
               form: "flex",
-              input: `w-full justify-center ${
+              input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 ${
                 mode === "light"
                   ? "text-[#2F2F2F]"
                   : "text-white group-hover:text-[#2F2F2F]"
