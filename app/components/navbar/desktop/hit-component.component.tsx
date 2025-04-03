@@ -35,6 +35,7 @@ export function HitComponent({ hit }: { hit: Hit }) {
   return (
     <Link
       to={`/${hit?.routing?.pathname || ""}`}
+      prefetch="intent"
       className="flex gap-2 hover:translate-x-1 transition-transform duration-300"
     >
       <Icon name={iconName} size={24} />
