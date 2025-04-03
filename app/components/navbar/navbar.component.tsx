@@ -237,7 +237,17 @@ export function Navbar() {
 
             {!isSearchOpen && (
               <button
-                onClick={() => setIsSearchOpen(true)}
+                onClick={() => {
+                  setIsSearchOpen(true);
+                  setTimeout(() => {
+                    const searchInput = document.querySelector(
+                      ".ais-SearchBox-input"
+                    );
+                    if (searchInput instanceof HTMLInputElement) {
+                      searchInput.focus();
+                    }
+                  }, 0);
+                }}
                 className="flex items-center"
               >
                 <Icon
