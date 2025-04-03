@@ -226,9 +226,16 @@ export function Navbar() {
               justifyContent: isSearchOpen ? "space-between" : "start",
             }}
           >
-            {isSearchOpen ? (
+            <div
+              style={{
+                display: isSearchOpen ? "block" : "none",
+                width: "100%",
+              }}
+            >
               <SearchBar mode={mode} setIsSearchOpen={setIsSearchOpen} />
-            ) : (
+            </div>
+
+            {!isSearchOpen && (
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="flex items-center"
