@@ -1,17 +1,25 @@
-import { algoliasearch } from "algoliasearch";
-import { useEffect, useRef } from "react";
+import { algoliasearch, SearchClient } from "algoliasearch";
+import { useEffect, useRef, useState } from "react";
 import {
   Configure,
   Hits,
   InstantSearch,
   RefinementList,
   SearchBox,
+  useInstantSearch,
+  useSearchBox,
 } from "react-instantsearch";
 import { useFetcher } from "react-router";
 import { useResponsive } from "~/hooks/use-responsive";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { HitComponent } from "./hit-component.component";
+
+// Create a stable search instance ID that persists between unmounts
+const SEARCH_INSTANCE_ID = "navbar-search";
+
+// Global reference to maintain Algolia search client instance
+let globalSearchClient: SearchClient | null = null;
 
 const emptySearchClient = {
   search: () =>
@@ -32,6 +40,12 @@ const emptySearchClient = {
       ],
     }),
 };
+
+// Virtual component to maintain search state
+export function VirtualSearchBox() {
+  useSearchBox();
+  return null;
+}
 
 export const SearchCustomRefinementList = ({
   attribute,
@@ -80,6 +94,31 @@ export const SearchPopup = () => {
   );
 };
 
+// Component to save search state on unmount
+function SearchStateManager() {
+  const { uiState, setUiState } = useInstantSearch();
+  const uiStateRef = useRef(uiState);
+
+  // Keep uiState reference up to date
+  useEffect(() => {
+    uiStateRef.current = uiState;
+  }, [uiState]);
+
+  // Save state on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        // Need setTimeout to ensure it runs after other cleanup
+        setTimeout(() => setUiState(uiStateRef.current), 0);
+      } catch (e) {
+        console.error("Failed to preserve search state:", e);
+      }
+    };
+  }, [setUiState]);
+
+  return null;
+}
+
 export const SearchBar = ({
   mode,
   setIsSearchOpen,
@@ -96,10 +135,22 @@ export const SearchBar = ({
     }
   }, [fetcher]);
 
+  // Create or retrieve the Algolia client
+  useEffect(() => {
+    if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
+      globalSearchClient = algoliasearch(
+        ALGOLIA_APP_ID,
+        ALGOLIA_SEARCH_API_KEY,
+        {}
+      );
+    }
+  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
+
   const searchClient =
-    ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
+    globalSearchClient ||
+    (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
       ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
-      : emptySearchClient;
+      : emptySearchClient);
 
   const { isSmall, isMedium, isLarge } = useResponsive();
   const getHitsPerPage = () => {
@@ -157,8 +208,18 @@ export const SearchBar = ({
         future={{
           preserveSharedStateOnUnmount: true,
         }}
+        initialUiState={{
+          production_ContentItems: {
+            query: "",
+          },
+        }}
+        insights={false}
+        key={SEARCH_INSTANCE_ID}
       >
+        <SearchStateManager />
+        <VirtualSearchBox />
         <Configure hitsPerPage={getHitsPerPage()} />
+
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
             onClick={() => setIsSearchOpen(false)}
@@ -185,7 +246,6 @@ export const SearchBar = ({
               submit: "hidden",
             }}
           />
-          {/* <SearchCustomClearRefinements /> */}
         </div>
         <SearchPopup />
       </InstantSearch>
