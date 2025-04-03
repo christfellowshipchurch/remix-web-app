@@ -38,9 +38,39 @@ const authButtonStyle = (mode: "light" | "dark") => {
 
 export function Navbar() {
   const { pathname } = useLocation();
-  const mode = shouldUseDarkMode(pathname) ? "dark" : "light";
+  const defaultMode = shouldUseDarkMode(pathname) ? "dark" : "light";
   const fetcher = useFetcher();
-  const { logout, isLoading: authLoading } = useAuth();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [mode, setMode] = useState<"light" | "dark">(defaultMode);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollThreshold = 10; // pixels to scroll before hiding
+      const scrollDelta = currentScrollY - lastScrollY;
+
+      // Always show navbar at the very top of the page
+      if (currentScrollY < scrollThreshold) {
+        setIsVisible(true);
+        setMode(defaultMode);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      // Show navbar when scrolling up, hide when scrolling down
+      // Only trigger if we've scrolled more than the threshold
+      if (Math.abs(scrollDelta) > scrollThreshold) {
+        setIsVisible(scrollDelta < 0);
+        setMode(scrollDelta < 0 ? "light" : "dark");
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   useEffect(() => {
     // Load the navbar data when component mounts
@@ -49,7 +79,6 @@ export function Navbar() {
 
   const isLoading = fetcher.state === "loading";
 
-  const userData = fetcher.data?.userData;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { isLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -80,19 +109,25 @@ export function Navbar() {
 
   return (
     <nav
-      className="group w-full"
+      className={cn(
+        "group w-full sticky top-0 z-999 transition-transform duration-300",
+        !isVisible && "-translate-y-full"
+      )}
       ref={navbarRef}
       onMouseLeave={handleMouseLeave}
     >
       <div
-        className={`z-50 ${
-          mode == "light"
+        className={cn(
+          "w-full content-padding transition-colors duration-200",
+          mode === "light"
             ? "bg-white shadow-sm"
-            : "absolute top-0 hover:bg-white bg-transparent transition-colors duration-200"
-        } py-5 w-full content-padding`}
+            : "bg-transparent group-hover:bg-white"
+        )}
       >
         <div
-          className="max-w-screen-content mx-auto flex justify-between items-center font-bold"
+          className={cn(
+            "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5"
+          )}
           style={{
             gap: isSearchOpen ? "32px" : "0px",
           }}
@@ -105,11 +140,12 @@ export function Navbar() {
             >
               <Icon
                 name="logo"
-                className={`${
+                className={cn(
+                  "size-32 my-[-48px] transition-colors duration-200",
                   mode === "light"
                     ? "text-ocean"
                     : "text-white group-hover:text-ocean"
-                } size-32 my-[-48px]`}
+                )}
               />
             </a>
 
@@ -127,11 +163,12 @@ export function Navbar() {
                     <NavigationMenuItem key={link.title}>
                       <NavigationMenuLink
                         href={link.url}
-                        className={`${
+                        className={cn(
+                          "transition-colors xl:text-lg",
                           mode === "light"
                             ? "text-neutral-dark"
                             : "text-white group-hover:text-text"
-                        } transition-colors xl:text-lg`}
+                        )}
                       >
                         <span className="hover:text-ocean">{link.title}</span>
                       </NavigationMenuLink>
@@ -147,13 +184,10 @@ export function Navbar() {
                       <NavigationMenuTrigger
                         className={cn(
                           navigationMenuTriggerStyle(),
-                          "xl:text-lg",
-                          "cursor-pointer",
-                          `${
-                            mode === "light"
-                              ? "text-neutral-dark"
-                              : "text-white group-hover:text-text"
-                          }`
+                          "xl:text-lg cursor-pointer transition-colors duration-200",
+                          mode === "light"
+                            ? "text-neutral-dark"
+                            : "text-white group-hover:text-text"
                         )}
                       >
                         {menuLink.title}
@@ -214,19 +248,6 @@ export function Navbar() {
             )}
 
             <div className="flex gap-2">
-              {/* Auth Info / Button */}
-              {/* <div className="min-w-[50px] flex justify-end">
-                {authLoading ? (
-                  <div className={authButtonStyle(mode)}>Login</div> // optimistically show login button
-                ) : userData ? (
-                  <button className={authButtonStyle(mode)} onClick={logout}>
-                    Logout
-                  </button>
-                ) : (
-                  <AuthModal buttonStyle={authButtonStyle(mode)} />
-                )}
-              </div> */}
-
               <Button className="font-semibold text-base w-[190px]">
                 <Icon name="mapFilled" size={20} className="mr-2" />
                 Find a Service
