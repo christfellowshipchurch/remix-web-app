@@ -24,7 +24,7 @@ import {
   watchReadListenData,
 } from "./navbar.data";
 import { MenuLink } from "./types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import lowerCase from "lodash/lowerCase";
 import { useAuth } from "~/providers/auth-provider";
 import { SearchBar } from "./desktop/search.component";
@@ -52,6 +52,14 @@ export function Navbar() {
   const userData = fetcher.data?.userData;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { isLarge } = useResponsive();
+  const navbarRef = useRef<HTMLDivElement>(null);
+
+  // Add handler to close search when mouse leaves navbar
+  const handleMouseLeave = () => {
+    if (isSearchOpen) {
+      setIsSearchOpen(false);
+    }
+  };
 
   const menuLinks: MenuLink[] = [
     {
@@ -71,7 +79,11 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="group w-full">
+    <nav
+      className="group w-full"
+      ref={navbarRef}
+      onMouseLeave={handleMouseLeave}
+    >
       <div
         className={`z-50 ${
           mode == "light"

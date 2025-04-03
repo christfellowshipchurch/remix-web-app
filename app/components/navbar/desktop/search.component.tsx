@@ -1,5 +1,5 @@
 import { algoliasearch } from "algoliasearch";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Configure,
   Hits,
@@ -115,8 +115,42 @@ export const SearchBar = ({
     }
   };
 
+  const searchBarRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside with a slight delay to allow search interactions
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click is outside the search bar
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
+        // Get the clicked element
+        const target = event.target as HTMLElement;
+
+        // Don't close search if clicking algolia-related elements (hits, refinements, etc.)
+        const isAlgoliaElement =
+          target.closest(".ais-Hits") ||
+          target.closest(".ais-RefinementList") ||
+          target.closest(".ais-SearchBox");
+
+        if (!isAlgoliaElement) {
+          // Use setTimeout to allow interactions to complete
+          setTimeout(() => {
+            setIsSearchOpen(false);
+          }, 100);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setIsSearchOpen]);
+
   return (
-    <div className="relative size-full">
+    <div className="relative size-full" ref={searchBarRef}>
       <InstantSearch
         indexName="production_ContentItems"
         searchClient={searchClient}
