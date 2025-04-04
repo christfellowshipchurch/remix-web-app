@@ -27,7 +27,7 @@ import { MenuLink } from "./types";
 import { useEffect, useState, useRef } from "react";
 import lowerCase from "lodash/lowerCase";
 import { useAuth } from "~/providers/auth-provider";
-import { SearchBar } from "./desktop/search.component";
+import { SearchBar } from "./desktop/search/search.component";
 import { useResponsive } from "~/hooks/use-responsive";
 
 const authButtonStyle = (mode: "light" | "dark") => {
