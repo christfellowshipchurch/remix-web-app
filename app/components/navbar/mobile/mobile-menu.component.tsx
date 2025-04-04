@@ -4,7 +4,7 @@ import MobileMenuContent from "./mobile-menu-content";
 import { useHydrated } from "~/hooks/use-hydrated";
 import { useAuth } from "~/providers/auth-provider";
 import { Button } from "~/primitives/button/button.primitive";
-import { MobileSearch } from "./mobile-search.component";
+import { MobileSearch } from "./search/mobile-search.component";
 import { useResponsive } from "~/hooks/use-responsive";
 const mobileMenuButtonStyle =
   "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";

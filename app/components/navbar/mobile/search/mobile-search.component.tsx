@@ -1,16 +1,10 @@
 import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect } from "react";
-import {
-  Configure,
-  Hits,
-  InstantSearch,
-  RefinementList,
-  SearchBox,
-} from "react-instantsearch";
+import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
 import { useFetcher } from "react-router";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
-import { HitComponent } from "./hit-component.component";
+import { SearchPopup } from "./search-popup.component";
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
@@ -36,51 +30,6 @@ const emptySearchClient = {
         },
       ],
     }),
-};
-
-const MobileSearchCustomRefinementList = ({
-  attribute,
-}: {
-  attribute: string;
-}) => {
-  return (
-    <RefinementList
-      classNames={{
-        list: "flex gap-2 overflow-x-auto max-w-screen pr-8 pb-2",
-        checkbox: "hidden",
-        count: "hidden",
-        item: "flex items-center justify-center text-center text-sm font-bold text-[#7B7382] px-4 py-1 whitespace-nowrap transition-all duration-300",
-        selectedItem:
-          "flex items-center justify-center text-center text-sm font-bold text-white px-4 py-1 whitespace-nowrap  bg-navy rounded-[50px] transition-all duration-300",
-        label:
-          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
-      }}
-      attribute={attribute}
-    />
-  );
-};
-
-export const SearchPopup = () => {
-  return (
-    <div className="w-full p-4 md:p-6">
-      <div className="flex items-center gap-2">
-        <div className="flex flex-col gap-2">
-          <MobileSearchCustomRefinementList attribute="contentType" />
-        </div>
-      </div>
-
-      {/* Search Results */}
-      <div className="border-t border-[#E0E0E0] pt-6 space-y-4">
-        <Hits
-          classNames={{
-            item: "flex",
-            list: "grid md:grid-cols-1 gap-4",
-          }}
-          hitComponent={HitComponent}
-        />
-      </div>
-    </div>
-  );
 };
 
 export const MobileSearch = ({
