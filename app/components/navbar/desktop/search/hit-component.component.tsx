@@ -11,13 +11,7 @@ export type HitProps = {
   contentType: string;
 };
 
-export function HitComponent({
-  hit,
-  sendEvent,
-}: {
-  hit: AlgoliaHit<HitProps>;
-  sendEvent: SendEventForHits;
-}) {
+export function HitComponent({ hit }: { hit: AlgoliaHit<HitProps> }) {
   const getIconName = () => {
     // TODO: Update the type names once the new index is created in Algolia
     switch (hit.contentType) {
@@ -45,7 +39,6 @@ export function HitComponent({
       to={`/${hit?.routing?.pathname || ""}`}
       prefetch="intent"
       className="flex gap-2 hover:translate-x-1 transition-transform duration-300"
-      onClick={() => sendEvent("click", hit, "Result Clicked")}
     >
       <Icon name={iconName} size={24} />
       <div className="flex flex-col">
