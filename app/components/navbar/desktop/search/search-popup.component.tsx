@@ -8,10 +8,6 @@ export const SearchPopup = ({
 }: {
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
-  const { query } = useSearchBox();
-  // Track if user is searching (has entered text)
-  const isSearching = query.trim().length > 0;
-
   return (
     <div className="absolute left-0 top-[52px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg px-12 py-4 z-4">
       <div className="flex items-center gap-2 pb-4">
@@ -26,21 +22,12 @@ export const SearchPopup = ({
       {/* Search Results */}
       <div className="mt-2 space-y-4">
         <Hits
-          onClick={(e) => {
-            // Prevent event propagation to ensure click is handled properly
-            e.stopPropagation();
-            setIsSearchOpen(false);
-          }}
+          onClick={() => setIsSearchOpen(false)}
           classNames={{
             item: "flex",
             list: "grid md:grid-cols-1 gap-4",
           }}
-          hitComponent={({ hit, sendEvent }) => (
-            <HitComponent
-              hit={hit as unknown as AlgoliaHit<HitProps>}
-              sendEvent={sendEvent}
-            />
-          )}
+          hitComponent={HitComponent}
         />
       </div>
     </div>

@@ -41,12 +41,6 @@ const emptySearchClient = {
     }),
 };
 
-// Virtual component to maintain search state
-export function VirtualSearchBox() {
-  useSearchBox();
-  return null;
-}
-
 export const SearchCustomRefinementList = ({
   attribute,
 }: {
@@ -59,9 +53,10 @@ export const SearchCustomRefinementList = ({
         checkbox: "hidden",
         count: "hidden",
         item: "flex items-center justify-center text-center text-xs border-[#AAAAAA] text-[#444444] border-[0.7px] px-4 py-2 whitespace-nowrap rounded-md hover:bg-oceanSubdued hover:text-ocean hover:border-ocean transition-all duration-300",
-        selectedItem: "bg-oceanSubdued text-ocean border-ocean overflow-hidden",
+        selectedItem:
+          "bg-oceanSubdued text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1",
         label:
-          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
+          "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer group-[.ais-RefinementList-item--selected]:pr-5 group-[.ais-RefinementList-item--selected]:bg-[url('/assets/icons/xmark-solid.svg')] group-[.ais-RefinementList-item--selected]:bg-[length:16px_16px] group-[.ais-RefinementList-item--selected]:bg-[center_right_0px] group-[.ais-RefinementList-item--selected]:bg-no-repeat",
       }}
       attribute={attribute}
     />
@@ -205,13 +200,11 @@ export const SearchBar = ({
         key={SEARCH_INSTANCE_ID}
       >
         <SearchStateManager />
-        <VirtualSearchBox />
         <Configure hitsPerPage={getHitsPerPage()} />
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
             onClick={(e) => {
-              e.stopPropagation();
               setIsSearchOpen(false);
             }}
             className="flex items-center"

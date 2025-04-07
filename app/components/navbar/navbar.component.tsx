@@ -43,7 +43,7 @@ export function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
-  const { isLarge } = useResponsive();
+  const { isLarge, isXLarge } = useResponsive();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navbarRef = useRef<HTMLDivElement>(null);
 
@@ -223,6 +223,7 @@ export function Navbar() {
               width: isSearchOpen ? "100%" : "auto",
               alignItems: isSearchOpen ? "end" : "center",
               justifyContent: isSearchOpen ? "space-between" : "start",
+              height: isSearchOpen ? "52px" : "auto",
             }}
           >
             <div
@@ -237,9 +238,6 @@ export function Navbar() {
             {!isSearchOpen && (
               <button
                 onClick={(e) => {
-                  // Prevent event propagation
-                  e.stopPropagation();
-
                   setIsSearchOpen(true);
                   setTimeout(() => {
                     const searchInput = document.querySelector(
@@ -266,23 +264,25 @@ export function Navbar() {
               </button>
             )}
 
-            <div className="flex gap-2">
-              <Button className="font-semibold text-base w-[190px]">
-                <Icon name="mapFilled" size={20} className="mr-2" />
-                Find a Service
-              </Button>
-              <Button
-                intent="secondary"
-                linkClassName="hidden xl:block"
-                className={`font-semibold text-base w-[140px] ${
-                  mode === "dark" &&
-                  "border-white text-white group-hover:text-ocean group-hover:border-ocean"
-                }`}
-                href="/about"
-              >
-                My Church
-              </Button>
-            </div>
+            {(!isSearchOpen || isXLarge) && (
+              <div className="flex gap-2">
+                <Button className="font-semibold text-base w-[190px]">
+                  <Icon name="mapFilled" size={20} className="mr-2" />
+                  Find a Service
+                </Button>
+                <Button
+                  intent="secondary"
+                  linkClassName="hidden xl:block"
+                  className={`font-semibold text-base w-[140px] ${
+                    mode === "dark" &&
+                    "border-white text-white group-hover:text-ocean group-hover:border-ocean"
+                  }`}
+                  href="/about"
+                >
+                  My Church
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile view */}
