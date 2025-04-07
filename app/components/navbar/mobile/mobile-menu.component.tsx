@@ -27,7 +27,7 @@ export default function MobileMenu({
   useEffect(() => {
     if (!isHydrated) return;
 
-    if (isOpen) {
+    if (isOpen || isSearchOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -80,6 +80,15 @@ export default function MobileMenu({
           className={mobileMenuButtonStyle}
           onClick={() => {
             setIsSearchOpen(!isSearchOpen);
+            setTimeout(() => {
+              setMode(
+                orginalMode === "dark" && isMedium
+                  ? !isSearchOpen
+                    ? "light"
+                    : "dark"
+                  : orginalMode
+              );
+            }, 0);
             setIsOpen(false);
             setTimeout(() => {
               const searchInput = document.querySelector(
@@ -98,9 +107,9 @@ export default function MobileMenu({
             setIsOpen(!isOpen);
             setMode(
               orginalMode === "dark" && isMedium
-                ? mode === "light"
-                  ? "dark"
-                  : "light"
+                ? !isOpen
+                  ? "light"
+                  : "dark"
                 : orginalMode
             );
             setIsSearchOpen(false);

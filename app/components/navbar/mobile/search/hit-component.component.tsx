@@ -33,16 +33,11 @@ export function HitComponent({ hit }: { hit: Hit }) {
   const iconName = getIconName();
 
   return (
-    <Link
-      to={`/${hit?.routing?.pathname || ""}`}
-      className="flex gap-2 hover:translate-x-1 transition-transform duration-300"
-    >
-      <Icon name={iconName} size={24} />
+    <Link to={`/${hit?.routing?.pathname || ""}`} className="flex gap-2">
+      <Icon name={iconName} size={24} color="#00354D" />
       <div className="flex flex-col">
-        <h3 className="text-sm font-semibold">{hit.title}</h3>
-        <p className="text-[10px] text-[#666666] font-medium">
-          {hit.contentType}
-        </p>
+        <h3 className="text-sm text-black font-bold">{hit.title}</h3>
+        <p className="text-xs text-[#7B7380]">{hit.contentType}</p>
       </div>
     </Link>
   );

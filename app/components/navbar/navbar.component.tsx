@@ -43,6 +43,9 @@ export function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
+  const { isLarge } = useResponsive();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navbarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,10 +81,6 @@ export function Navbar() {
   }, []);
 
   const isLoading = fetcher.state === "loading";
-
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { isLarge } = useResponsive();
-  const navbarRef = useRef<HTMLDivElement>(null);
 
   // Add handler to close search when mouse leaves navbar
   const handleMouseLeave = () => {
@@ -237,7 +236,10 @@ export function Navbar() {
 
             {!isSearchOpen && (
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  // Prevent event propagation
+                  e.stopPropagation();
+
                   setIsSearchOpen(true);
                   setTimeout(() => {
                     const searchInput = document.querySelector(
