@@ -35,7 +35,7 @@ export default function MobileMenu({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, isHydrated]);
+  }, [isOpen, isSearchOpen, isHydrated]);
 
   return (
     <div
