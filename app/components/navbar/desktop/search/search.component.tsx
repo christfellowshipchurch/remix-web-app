@@ -13,7 +13,7 @@ import { useFetcher } from "react-router";
 import { useResponsive } from "~/hooks/use-responsive";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
-import { HitComponent } from "./hit-component.component";
+import { SearchPopup } from "./search-popup.component";
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
@@ -65,37 +65,6 @@ export const SearchCustomRefinementList = ({
       }}
       attribute={attribute}
     />
-  );
-};
-
-export const SearchPopup = ({
-  setIsSearchOpen,
-}: {
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) => {
-  return (
-    <div className="absolute left-0 top-[52px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg px-12 py-4 z-4">
-      <div className="flex items-center gap-2 pb-4">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
-            I'M LOOKING FOR
-          </h2>
-          <SearchCustomRefinementList attribute="contentType" />
-        </div>
-      </div>
-
-      {/* Search Results */}
-      <div className="mt-2 space-y-4">
-        <Hits
-          onClick={() => setIsSearchOpen(false)}
-          classNames={{
-            item: "flex",
-            list: "grid md:grid-cols-1 gap-4",
-          }}
-          hitComponent={HitComponent}
-        />
-      </div>
-    </div>
   );
 };
 
@@ -173,33 +142,49 @@ export const SearchBar = ({
 
   // Handle click outside with a slight delay to allow search interactions
   useEffect(() => {
+    let clickTimeout: NodeJS.Timeout;
+
     const handleClickOutside = (event: MouseEvent) => {
-      // Check if click is outside the search bar
-      if (
-        searchBarRef.current &&
-        !searchBarRef.current.contains(event.target as Node)
-      ) {
-        // Get the clicked element
-        const target = event.target as HTMLElement;
-
-        // Don't close search if clicking algolia-related elements (hits, refinements, etc.)
-        const isAlgoliaElement =
-          target.closest(".ais-Hits") ||
-          target.closest(".ais-RefinementList") ||
-          target.closest(".ais-SearchBox");
-
-        if (!isAlgoliaElement) {
-          // Use setTimeout to allow interactions to complete
-          setTimeout(() => {
-            setIsSearchOpen(false);
-          }, 100);
-        }
+      // Clear any pending timeout
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
       }
+
+      // Add a small delay to prevent race conditions with the search icon click
+      clickTimeout = setTimeout(() => {
+        // Check if click is outside the search bar
+        if (
+          searchBarRef.current &&
+          !searchBarRef.current.contains(event.target as Node)
+        ) {
+          // Get the clicked element
+          const target = event.target as HTMLElement;
+
+          // Also check if this is the search icon button in the navbar
+          const isSearchButton = target
+            .closest("button")
+            ?.querySelector('svg[name="search"]');
+
+          // Don't close search if clicking algolia-related elements or the search button
+          const isAlgoliaElement =
+            target.closest(".ais-Hits") ||
+            target.closest(".ais-RefinementList") ||
+            target.closest(".ais-SearchBox") ||
+            isSearchButton;
+
+          if (!isAlgoliaElement) {
+            setIsSearchOpen(false);
+          }
+        }
+      }, 150); // Increased delay to ensure proper event handling
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
+      }
     };
   }, [setIsSearchOpen]);
 
@@ -225,7 +210,10 @@ export const SearchBar = ({
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
-            onClick={() => setIsSearchOpen(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsSearchOpen(false);
+            }}
             className="flex items-center"
           >
             <Icon

@@ -1,6 +1,12 @@
 import { algoliasearch, SearchClient } from "algoliasearch";
-import { useEffect } from "react";
-import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
+import { useEffect, useState } from "react";
+import {
+  Configure,
+  Hits,
+  InstantSearch,
+  SearchBox,
+  useSearchBox,
+} from "react-instantsearch";
 import { useFetcher } from "react-router";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
@@ -66,7 +72,7 @@ export const MobileSearch = ({
       : emptySearchClient);
 
   return (
-    <div className="h-full overflow-y-auto bg-white relative">
+    <div className="h-full overflow-y-auto bg-white">
       <InstantSearch
         indexName="production_ContentItems"
         searchClient={searchClient}
@@ -100,11 +106,7 @@ export const MobileSearch = ({
             classNames={{
               root: "flex-grow",
               form: "flex",
-              input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 ${
-                mode === "light"
-                  ? "text-[#2F2F2F]"
-                  : "text-white group-hover:text-[#2F2F2F]"
-              } px-3 outline-none appearance-none`,
+              input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none`,
               reset: "hidden",
               resetIcon: "hidden",
               submit: "hidden",
@@ -113,7 +115,7 @@ export const MobileSearch = ({
         </div>
 
         {/* Search Results + Refinements */}
-        <SearchPopup />
+        <SearchPopup setIsSearchOpen={setIsSearchOpen} />
       </InstantSearch>
     </div>
   );
