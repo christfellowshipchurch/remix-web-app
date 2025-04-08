@@ -56,6 +56,7 @@ export function Navbar() {
       // Always show navbar at the very top of the page
       if (currentScrollY < scrollThreshold) {
         setIsVisible(true);
+        setIsSearchOpen(false);
         setMode(defaultMode);
         setLastScrollY(currentScrollY);
         return;
@@ -232,7 +233,11 @@ export function Navbar() {
                 width: "100%",
               }}
             >
-              <SearchBar mode={mode} setIsSearchOpen={setIsSearchOpen} />
+              <SearchBar
+                mode={mode}
+                isSearchOpen={isSearchOpen}
+                setIsSearchOpen={setIsSearchOpen}
+              />
             </div>
 
             {!isSearchOpen && (
