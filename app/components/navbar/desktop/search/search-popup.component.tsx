@@ -1,12 +1,15 @@
-import { Hits, useSearchBox } from "react-instantsearch";
+import { Hits } from "react-instantsearch";
 import { HitComponent, HitProps } from "./hit-component.component";
-import { SearchCustomRefinementList } from "./search.component";
+import { SearchCustomRefinementList } from "./custom-refinements.component";
 import type { Hit as AlgoliaHit } from "instantsearch.js";
+import type { SendEventForHits } from "instantsearch.js/es/lib/utils";
 
 export const SearchPopup = ({
   setIsSearchOpen,
+  query,
 }: {
   setIsSearchOpen: (isSearchOpen: boolean) => void;
+  query?: string;
 }) => {
   return (
     <div className="absolute left-0 top-[52px] w-full bg-[#F3F5FA] rounded-b-lg shadow-lg px-12 py-4 z-4">
@@ -24,10 +27,20 @@ export const SearchPopup = ({
         <Hits
           onClick={() => setIsSearchOpen(false)}
           classNames={{
-            item: "flex",
-            list: "grid md:grid-cols-1 gap-4",
+            item: "flex w-full",
+            list: "flex flex-col",
           }}
-          hitComponent={HitComponent}
+          hitComponent={({ hit, sendEvent }) => {
+            if (hit?.routing?.pathname) {
+              return (
+                <HitComponent
+                  hit={hit as unknown as AlgoliaHit<HitProps>}
+                  query={query || null}
+                />
+              );
+            }
+            return null;
+          }}
         />
       </div>
     </div>
