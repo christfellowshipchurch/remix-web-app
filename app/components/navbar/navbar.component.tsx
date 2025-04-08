@@ -26,15 +26,8 @@ import {
 import { MenuLink } from "./types";
 import { useEffect, useState, useRef } from "react";
 import lowerCase from "lodash/lowerCase";
-import { useAuth } from "~/providers/auth-provider";
 import { SearchBar } from "./desktop/search/search.component";
 import { useResponsive } from "~/hooks/use-responsive";
-
-const authButtonStyle = (mode: "light" | "dark") => {
-  return `font-semibold cursor-pointer hover:text-ocean transition-colors ${
-    mode === "light" ? "text-neutral-dark" : "text-white group-hover:text-text"
-  }`;
-};
 
 export function Navbar() {
   const { pathname } = useLocation();
@@ -83,13 +76,6 @@ export function Navbar() {
 
   const isLoading = fetcher.state === "loading";
 
-  // Add handler to close search when mouse leaves navbar
-  const handleMouseLeave = () => {
-    if (isSearchOpen) {
-      setIsSearchOpen(false);
-    }
-  };
-
   const menuLinks: MenuLink[] = [
     {
       title: "Get Involved",
@@ -114,7 +100,6 @@ export function Navbar() {
         !isVisible && "-translate-y-full"
       )}
       ref={navbarRef}
-      onMouseLeave={handleMouseLeave}
     >
       <div
         className={cn(

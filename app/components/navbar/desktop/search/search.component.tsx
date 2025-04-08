@@ -1,5 +1,5 @@
 import { algoliasearch, SearchClient } from "algoliasearch";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   Configure,
   InstantSearch,
@@ -7,7 +7,6 @@ import {
   useSearchBox,
 } from "react-instantsearch";
 import { useFetcher } from "react-router";
-import { useResponsive } from "~/hooks/use-responsive";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
@@ -87,18 +86,6 @@ export const SearchBar = ({
       ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
       : emptySearchClient);
 
-  const { isSmall, isMedium } = useResponsive();
-  const getHitsPerPage = () => {
-    switch (true) {
-      case isMedium:
-        return 8;
-      case isSmall:
-        return 6;
-      default:
-        return 8;
-    }
-  };
-
   const searchBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -159,7 +146,7 @@ export const SearchBar = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={getHitsPerPage()} />
+        <Configure hitsPerPage={6} />
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
