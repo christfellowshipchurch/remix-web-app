@@ -63,7 +63,7 @@ export function HitComponent({
       prefetch="intent"
       className="my-2 flex gap-2 hover:translate-x-1 transition-transform duration-300"
     >
-      <Icon name={iconName} size={24} />
+      <Icon name={iconName} color="#666666" size={28} />
       <div className="flex flex-col">
         <h3 className="text-sm font-semibold">
           {highlightQuery(hit.title, query)}
