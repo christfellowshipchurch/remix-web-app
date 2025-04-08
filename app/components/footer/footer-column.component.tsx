@@ -7,7 +7,7 @@ interface FooterColumnProps {
 
 export const FooterColumnComponent = ({ column }: FooterColumnProps) => {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 md:col-span-4 lg:col-span-1">
       <div
         className="text-2xl text-white font-bold"
         role="heading"
