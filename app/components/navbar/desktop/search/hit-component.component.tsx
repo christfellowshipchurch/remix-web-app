@@ -17,7 +17,8 @@ const getIconName = (hit: AlgoliaHit<HitProps>) => {
       return "file";
     case "Digital Platform Events & Live Streams":
       return "calendarAlt";
-    case "Page Builder || Location Pages [New]":
+    case "Page Builder":
+    case "Location Pages [New]":
       return "windowAlt";
     case "Sermon":
       return "moviePlay";
