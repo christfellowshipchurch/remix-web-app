@@ -2,11 +2,8 @@ import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect, useRef, useState } from "react";
 import {
   Configure,
-  Hits,
   InstantSearch,
-  RefinementList,
   SearchBox,
-  useInstantSearch,
   useSearchBox,
 } from "react-instantsearch";
 import { useFetcher } from "react-router";
@@ -57,9 +54,11 @@ function CurrentQueryProvider({ children }: { children: React.ReactNode }) {
 
 export const SearchBar = ({
   mode,
+  isSearchOpen,
   setIsSearchOpen,
 }: {
   mode: "light" | "dark";
+  isSearchOpen: boolean;
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
   const fetcher = useFetcher<LoaderReturnType>();
@@ -127,6 +126,23 @@ export const SearchBar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setIsSearchOpen]);
 
+  useEffect(() => {
+    if (isSearchOpen) {
+      // Fade in the search popup
+      const searchPopup = document.querySelector(
+        ".popup-search-container"
+      ) as HTMLDivElement;
+      if (searchPopup) {
+        searchPopup.style.maxHeight = "0";
+        searchPopup.style.paddingTop = "0";
+        setTimeout(() => {
+          searchPopup.style.maxHeight = "700px";
+          searchPopup.style.paddingTop = "16px";
+        }, 0);
+      }
+    }
+  }, [isSearchOpen]);
+
   return (
     <div className="relative size-full" ref={searchBarRef}>
       <InstantSearch
@@ -147,7 +163,7 @@ export const SearchBar = ({
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
-            onClick={(e) => {
+            onClick={() => {
               setIsSearchOpen(false);
             }}
             className="flex items-center"
