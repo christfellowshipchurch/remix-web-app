@@ -24,12 +24,12 @@ export function HitComponent({ hit }: { hit: Hit }) {
       <img
         src={hit.coverImage.sources[0].uri}
         alt={hit.title}
-        className="size-full max-w-20 max-h-20 rounded-lg object-cover"
+        className="size-16 rounded-lg object-cover"
       />
-      <div className="flex justify-between gap-2 w-full border-b border-[#E0E0E0] pb-2">
-        <div className="flex flex-col text-sm text-black w-full">
-          <h3>{hit.title}</h3>
-          <p className="font-normal">{hit.summary}</p>
+      <div className="flex justify-between items-center gap-2 size-full border-b border-[#E0E0E0] pb-2">
+        <div className="flex flex-col jusitfy-center h-full text-sm text-black w-full">
+          <h3 className="line-clamp-1">{hit.title}</h3>
+          <p className="font-normal line-clamp-1">{hit.summary}</p>
           <p className="text-xs text-[#7B7380]">{hit.contentType}</p>
         </div>
 
