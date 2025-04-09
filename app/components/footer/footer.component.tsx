@@ -8,8 +8,8 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="flex flex-col items-center w-full bg-navy">
-      <div className="flex flex-col items-center w-full max-w-screen-content px-5 md:px-10">
+    <footer className="flex flex-col items-center w-full bg-navy px-4 lg:px-18">
+      <div className="flex flex-col items-center w-full max-w-screen-content">
         <div className="relative w-full">
           <div className="absolute w-full h-4 bg-ocean -top-2" />
         </div>
@@ -17,10 +17,14 @@ export const Footer = () => {
         <ContactInfo />
 
         {/* Info Section */}
-        <div className="w-full border-t border-[#417890] items-start py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-5 gap-y-14 md:gap-y-8">
-          <div className="flex flex-col items-center md:items-start gap-8 col-span-2 md:col-span-1 mr-4">
-            <div>
-              <Icon name="logo" className="size-40" />
+        <div className="w-full border-t border-[#417890] items-start py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-[repeat(21,1fr)] lg:grid-cols-5 gap-y-14 md:gap-y-8">
+          <div className="flex flex-col items-center md:items-start md:gap-8 col-span-2 md:col-span-5 lg:col-span-1 mr-4">
+            <div className="h-[100px] md:h-auto">
+              <Icon
+                name="logo"
+                className="size-40 -mt-8 md:mt-auto"
+                color="white"
+              />
             </div>
             <div className="flex flex-col gap-3">
               <FooterLinks />
