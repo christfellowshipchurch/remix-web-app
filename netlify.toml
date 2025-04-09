@@ -1,6 +1,11 @@
 [build]
-command = "react-router build"
+command = "pnpm install && pnpm build"
 publish = "build/client"
 
+[build.environment]
+NODE_VERSION = "20"
+PNPM_VERSION = "8"
+NPM_FLAGS = "--no-optional"
+
 [dev]
-command = "react-router dev"
+command = "pnpm dev"
