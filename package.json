@@ -8,7 +8,10 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint ."
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "pnpm:dev": "pnpm dev",
+    "pnpm:build": "pnpm build",
+    "pnpm:start": "pnpm start"
   },
   "dependencies": {
     "@babel/runtime": "7.24.0",
