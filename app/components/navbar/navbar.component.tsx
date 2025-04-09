@@ -24,8 +24,10 @@ import {
   watchReadListenData,
 } from "./navbar.data";
 import { MenuLink } from "./types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import lowerCase from "lodash/lowerCase";
+import { SearchBar } from "./desktop/search/search.component";
+import { useResponsive } from "~/hooks/use-responsive";
 
 export function Navbar() {
   const { pathname } = useLocation();
@@ -34,6 +36,9 @@ export function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
+  const { isLarge, isXLarge } = useResponsive();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navbarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +49,7 @@ export function Navbar() {
       // Always show navbar at the very top of the page
       if (currentScrollY < scrollThreshold) {
         setIsVisible(true);
+        setIsSearchOpen(false);
         setMode(defaultMode);
         setLastScrollY(currentScrollY);
         return;
@@ -70,8 +76,6 @@ export function Navbar() {
 
   const isLoading = fetcher.state === "loading";
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   const menuLinks: MenuLink[] = [
     {
       title: "Get Involved",
@@ -95,6 +99,7 @@ export function Navbar() {
         "group w-full sticky top-0 z-999 transition-transform duration-300",
         !isVisible && "-translate-y-full"
       )}
+      ref={navbarRef}
     >
       <div
         className={cn(
@@ -108,6 +113,9 @@ export function Navbar() {
           className={cn(
             "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5"
           )}
+          style={{
+            gap: isSearchOpen ? "32px" : "0px",
+          }}
         >
           {/* Logo */}
           <div className="flex items-center gap-8">
@@ -129,7 +137,9 @@ export function Navbar() {
             {/* Desktop view */}
             <div
               className="hidden lg:inline"
-              style={{ display: isSearchOpen ? "none" : "inline" }}
+              style={{
+                display: isSearchOpen ? "none" : isLarge ? "inline" : "none",
+              }}
             >
               <NavigationMenu>
                 <NavigationMenuList className="flex items-center space-x-6 xl:space-x-10">
@@ -193,40 +203,80 @@ export function Navbar() {
           </div>
 
           {/* Desktop Buttons */}
-          <div className="hidden lg:flex items-center gap-6 ">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
-              <Icon
-                name="search"
-                color={isSearchOpen ? "#0092BC" : undefined}
-                size={20}
-                className={`${
-                  mode === "light"
-                    ? "text-neutral-dark"
-                    : "text-white group-hover:text-text"
-                } hover:text-ocean transition-colors mb-[3px] cursor-pointer`}
+          <div
+            className="hidden lg:flex items-center gap-6"
+            style={{
+              width: isSearchOpen ? "100%" : "auto",
+              alignItems: isSearchOpen ? "end" : "center",
+              justifyContent: isSearchOpen ? "space-between" : "start",
+              height: isSearchOpen ? "52px" : "auto",
+            }}
+          >
+            <div
+              style={{
+                display: isSearchOpen ? "block" : "none",
+                width: "100%",
+              }}
+            >
+              <SearchBar
+                mode={mode}
+                isSearchOpen={isSearchOpen}
+                setIsSearchOpen={setIsSearchOpen}
               />
-            </button>
-            <div className="flex gap-2">
-              <Button className="font-semibold text-base">
-                <Icon name="mapFilled" size={20} className="mr-2" />
-                Find a Service
-              </Button>
-              <Button
-                intent="secondary"
-                linkClassName="hidden xl:block"
-                className={`font-semibold text-base ${
-                  mode === "dark" &&
-                  "border-white text-white group-hover:text-ocean group-hover:border-ocean"
-                }`}
-                href="/about"
-              >
-                My Church
-              </Button>
             </div>
+
+            {!isSearchOpen && (
+              <button
+                onClick={(e) => {
+                  setIsSearchOpen(true);
+                  setTimeout(() => {
+                    const searchInput = document.querySelector(
+                      ".ais-SearchBox-input"
+                    );
+                    if (searchInput instanceof HTMLInputElement) {
+                      searchInput.focus();
+                    }
+                  }, 0);
+                }}
+                className="flex items-center"
+              >
+                <Icon
+                  name="search"
+                  size={20}
+                  className={`
+                        ${
+                          mode === "light"
+                            ? "text-neutral-dark"
+                            : "text-white group-hover:text-text"
+                        } hover:text-ocean transition-colors cursor-pointer
+                      `}
+                />
+              </button>
+            )}
+
+            {(!isSearchOpen || isXLarge) && (
+              <div className="flex gap-2">
+                <Button className="font-semibold text-base w-[190px]">
+                  <Icon name="mapFilled" size={20} className="mr-2" />
+                  Find a Service
+                </Button>
+                <Button
+                  intent="secondary"
+                  linkClassName="hidden xl:block"
+                  className={`font-semibold text-base w-[140px] ${
+                    mode === "dark" &&
+                    "border-white text-white group-hover:text-ocean group-hover:border-ocean"
+                  }`}
+                  href="/about"
+                >
+                  My Church
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile view */}
-          <MobileMenu mode={mode} />
+          <MobileMenu mode={mode} setMode={setMode} />
         </div>
       </div>
     </nav>

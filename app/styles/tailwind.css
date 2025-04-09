@@ -430,18 +430,17 @@
 /* ------------ Search Input Type - Cancel Button ------------ */
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
-  height: 1em;
-  width: 1em;
-  border-radius: 50em;
-  background: url(https://pro.fontawesome.com/releases/v5.10.0/svgs/solid/times-circle.svg)
-    no-repeat 50% 50%;
+  height: 18px;
+  width: 18px;
+  cursor: pointer;
+  background: url(/assets/icons/xmark-regular.svg) no-repeat 50% 50%;
   background-size: contain;
   opacity: 0;
   pointer-events: none;
 }
 
 input[type="search"]:focus::-webkit-search-cancel-button {
-  opacity: 0.3;
+  opacity: 0.4;
   pointer-events: all;
 }
 
