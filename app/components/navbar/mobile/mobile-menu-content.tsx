@@ -46,8 +46,16 @@ export default function MobileMenuContent({
   return (
     <div className="h-full overflow-y-auto bg-white">
       <div className="pb-24">
-        <MenuSection title="Welcome to Church" items={welcomeMenuItems} />
-        <MenuSection title="Get Involved" items={getInvolvedItems} />
+        <MenuSection
+          title="Welcome to Church"
+          items={welcomeMenuItems}
+          closeMenu={closeMenu}
+        />
+        <MenuSection
+          title="Get Involved"
+          items={getInvolvedItems}
+          closeMenu={closeMenu}
+        />
 
         <section>
           <AccordionSection
@@ -57,6 +65,7 @@ export default function MobileMenuContent({
             items={nextStepsItems}
             isOpen={openSection === "next-steps"}
             onToggle={toggleSection}
+            closeMenu={closeMenu}
           />
 
           <AccordionSection
@@ -66,6 +75,7 @@ export default function MobileMenuContent({
             items={mediaItems}
             isOpen={openSection === "media"}
             onToggle={toggleSection}
+            closeMenu={closeMenu}
           />
 
           <AccordionSection
@@ -77,6 +87,7 @@ export default function MobileMenuContent({
             onToggle={toggleSection}
             layout="grid"
             showViewMore
+            closeMenu={closeMenu}
           />
         </section>
 
@@ -109,6 +120,7 @@ export default function MobileMenuContent({
         </section>
 
         {/* website feedback */}
+        {/* TODO: Add feedback form */}
         <div className="flex items-center gap-4 border-y-1 border-gray-200 py-4 px-8">
           <Icon name="messageBubble" className="size-6 text-black" />
           <div className="flex flex-col">
@@ -125,6 +137,7 @@ export default function MobileMenuContent({
             <Link
               key={item.id}
               to={item.to}
+              onClick={closeMenu}
               className="flex items-start font-normal text-sm text-text-primary"
             >
               {item.title}
