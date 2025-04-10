@@ -27,6 +27,7 @@ export const DynamicHero = ({
 
   return (
     <div
+      role="banner"
       className="flex items-center justify-start self-stretch h-[640px] px-5 md:px-12 lg:px-18"
       style={{
         background: `linear-gradient(0deg, rgba(0, 0, 0, 0.00) 85.64%, rgba(0, 0, 0, 0.70) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48.79%, rgba(0, 0, 0, 0.80) 100%), url(${imagePath}) lightgray 50% / cover no-repeat`,
@@ -39,12 +40,20 @@ export const DynamicHero = ({
         <h1 className="font-extrabold heading-h1 lg:text-7xl xl:text-8xl text-white">
           {customTitle || pagePath}
         </h1>
-        <div className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50" />
+        <div
+          role="separator"
+          aria-hidden="true"
+          className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50"
+        />
         <div className="flex items-center justify-between self-stretch">
           {/* Breadcrumbs */}
           <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
             <Breadcrumbs />
-            <div className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]" />
+            <div
+              role="separator"
+              aria-hidden="true"
+              className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]"
+            />
 
             {/* CTAs */}
             <div className="mt-5 md:mt-0 flex flex-wrap justify-between gap-3 pr-1 md:pr-4 md:gap-4">
