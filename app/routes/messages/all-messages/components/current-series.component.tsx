@@ -11,9 +11,9 @@ const CurrentSeries: React.FC = () => {
   const { currentSeriesTitle, latestMessage } = currentSeries;
 
   return (
-    <section className="relative grid grid-cols-1 min-h-screen bg-white">
+    <section className="relative grid grid-cols-1 min-h-screen lg:min-h-[900px] bg-white">
       {/* Content Container */}
-      <div className="sm:h-[60vh] xl:h-[47vh] w-full content-padding pt-14 md:pt-24 bg-gray sm:bg-white">
+      <div className="sm:h-[60vh] xl:h-[47vh] lg:min-h-[400px] w-full content-padding pt-14 md:pt-24 bg-gray sm:bg-white">
         {/* Title Section */}
         <div className="relative max-w-screen-content mx-auto">
           <SectionTitle
@@ -23,11 +23,11 @@ const CurrentSeries: React.FC = () => {
           />
         </div>
       </div>
-      <div className="sm:h-[40vh] xl:h-[53vh] w-full bg-gray content-padding pt-64 pb-16 sm:pt-0">
+      <div className="sm:h-[40vh] xl:h-[53vh] lg:min-h-[450px] w-full bg-gray content-padding pt-64 pb-16 sm:pt-0">
         <div className="relative max-w-screen-content mx-auto">
           {/* Image Section */}
           <div
-            className="absolute w-full aspect-video h-[40vh] sm:h-[40vh] lg:h-[65vh] xl:h-[60vh] -top-[40vh] sm:-top-[40vh] lg:top-auto lg:bottom-0 bg-cover bg-center z-10"
+            className="absolute w-full aspect-video h-[40vh] sm:h-[40vh] lg:h-[65vh] xl:h-[65vh] -top-[40vh] sm:-top-[40vh] lg:top-auto lg:bottom-0 lg:min-h-[650px] bg-cover bg-center z-10"
             style={{
               backgroundImage: `url('${latestMessage.coverImage}')`,
             }}
