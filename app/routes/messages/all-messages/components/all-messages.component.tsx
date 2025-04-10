@@ -54,7 +54,7 @@ export const mockTags = [
 export const FilterButtons = ({ tags = mockTags }: { tags?: Tag[] }) => {
   return (
     <div className="relative w-full overflow-x-auto max-w-[90vw]">
-      <div className="flex gap-6 flex-nowrap px-1 pb-4">
+      <div className="flex gap-6 flex-nowrap px-1">
         {tags.map((tag, index) => (
           <div
             key={`${tag.label}-${index}`}
