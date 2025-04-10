@@ -32,6 +32,7 @@ export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
     return (
       <div key={path} className={`flex items-center gap-4 ${textColor}`}>
         <Icon
+          id="breadcrumbs-caret"
           className="text-ocean min-w-[20px] block"
           size={20}
           name="caretRight"
