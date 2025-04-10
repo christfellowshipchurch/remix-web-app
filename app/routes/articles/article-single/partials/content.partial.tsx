@@ -17,7 +17,7 @@ export const ArticleContent = ({
   resources = mockResources,
 }: ArticleContentProps) => {
   return (
-    <div className="article-content flex w-full mx-auto max-w-screen-lg flex-col px-6 py-10 md:px-10 lg:max-w-screen-md lg:px-6 lg:py-16">
+    <div className="article-content flex w-full mx-auto max-w-screen-lg flex-col px-6 md:px-10 lg:max-w-screen-md lg:px-6 py-10 lg:py-16">
       <h3 className="my-4 text-xl font-semibold">IN THIS ARTICLE</h3>
       <HTMLRenderer html={htmlContent || ""} />
       {/* Call to action */}

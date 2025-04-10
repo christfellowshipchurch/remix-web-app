@@ -1,51 +1,50 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import { SectionTitle } from "~/components";
-import HTMLRenderer from "~/primitives/html-renderer";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 import type { LoaderReturnType } from "../loader";
+import { getFirstParagraph } from "~/lib/utils";
+
 const CurrentSeries: React.FC = () => {
   const { currentSeries } = useLoaderData<LoaderReturnType>();
   const { currentSeriesTitle, latestMessage } = currentSeries;
 
   return (
-    <section className="relative py-32 min-h-screen bg-white content-padding">
-      {/* Light Blue Background - Bottom Half */}
-      <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gray" />
-
+    <section className="relative grid grid-cols-1 min-h-screen lg:min-h-[900px] bg-white">
       {/* Content Container */}
-      <div className="relative max-w-screen-content mx-auto">
+      <div className="sm:h-[60vh] xl:h-[47vh] lg:min-h-[400px] w-full content-padding pt-14 md:pt-24 bg-gray sm:bg-white">
         {/* Title Section */}
-        <SectionTitle
-          className="mb-8"
-          sectionTitle="current series."
-          title={currentSeriesTitle}
-        />
-
-        {/* Content Section */}
-        <div className="relative w-full aspect-video">
-          {/* Background Image */}
+        <div className="relative max-w-screen-content mx-auto">
+          <SectionTitle
+            className="mb-8"
+            sectionTitle="current series."
+            title={currentSeriesTitle}
+          />
+        </div>
+      </div>
+      <div className="sm:h-[40vh] xl:h-[53vh] lg:min-h-[450px] w-full bg-gray content-padding pt-64 pb-16 sm:pt-0">
+        <div className="relative max-w-screen-content mx-auto">
+          {/* Image Section */}
           <div
-            className="lg:absolute lg:inset-0 w-full aspect-video lg:h-full bg-cover bg-center"
+            className="absolute w-full aspect-video h-[40vh] sm:h-[40vh] lg:h-[65vh] xl:h-[65vh] -top-[40vh] sm:-top-[40vh] lg:top-auto lg:bottom-0 lg:min-h-[650px] bg-cover bg-center z-10"
             style={{
               backgroundImage: `url('${latestMessage.coverImage}')`,
             }}
           />
-
           {/* Text Section */}
-          <div className="lg:absolute bottom-0 left-0 w-full bg-white px-10 py-16 space-y-4 lg:w-[45%] md:max-h-[525px]">
+          <div className="relative left-0 w-full bg-white px-10 py-10 xl:py-16 space-y-4 lg:w-[70%] xl:w-[45%] md:max-h-[525px] z-20">
             <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
-            <h2 className="text-[40px] font-bold text-text-primary text-pretty">
+            <h2 className="text-[40px] font-bold text-text-primary text-pretty leading-tight">
               {latestMessage.title}
             </h2>
             <p className="font-bold">{latestMessage.authorName}</p>
             <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-3 xl:mb-12">
-              <HTMLRenderer html={latestMessage.description} />
+              {getFirstParagraph(latestMessage.description)}
             </div>
 
             {/* Buttons */}
-            <div className="mt-5 md:mt-0 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3">
+            <div className="mt-5 xl:mt-8 md:mt-0 flex flex-col sm:flex-row gap-3">
               <IconButton
                 to="/messages/series"
                 className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"

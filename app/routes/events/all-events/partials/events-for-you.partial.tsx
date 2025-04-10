@@ -11,13 +11,15 @@ export const EventsForYou = () => {
   const { upcomingEvents } = useLoaderData<EventReturnType>();
 
   return (
-    <div className="flex flex-col py-20 gap-y-28">
+    <div className="flex flex-col py-20">
       <SectionTitle
         title="Discover Events For You"
-        sectionTitle="event for you."
+        sectionTitle="all events."
       />
       {/* Placeholder for filter buttons */}
-      <FilterButtons tags={mockTags} />
+      <div className="mt-10 mb-16 md:mt-14 lg:mb-24 xl:mb-28">
+        <FilterButtons tags={mockTags} />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-8 xl:gap-6 xxl:gap-16 place-items-center md:place-items-start">
         {upcomingEvents.map((event, i) => (
           <ContentCard

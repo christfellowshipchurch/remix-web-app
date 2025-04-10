@@ -6,7 +6,7 @@ export type LoaderReturnType = {
 };
 
 const mockPodcastEpisode: PodcastEpisode = {
-  title: "Don’t Let Doubt Take You Out With Pastor Todd Mullins",
+  title: "Don’t Let Doubt Take You Out",
   description:
     "What does God’s Word say about your leadership potential? In these two episodes, Pastor and author Donna Pisani shares what God’s Word says about women in leadership and how you can confidently rise to your calling.",
   coverImage: "/assets/images/podcasts/hero.jpg",

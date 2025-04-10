@@ -10,8 +10,7 @@ export function EpisodeNotes({
 }) {
   return (
     <div className="w-full bg-white content-padding">
-      <div className="h-[1px] opacity-10 bg-black/50 md:hidden" />
-      <div className="flex flex-col gap-16 max-w-screen-content mx-auto py-16 md:py-20 md:px-12 lg:px-24">
+      <div className="flex flex-col gap-16 max-w-screen-content mx-auto py-12 md:py-20 md:px-12 lg:px-24">
         <div>
           <h2 className="text-[18px] md:text-[32px] font-extrabold">
             Episode Notes
@@ -27,7 +26,7 @@ export function EpisodeNotes({
           <h2 className="text-[18px] md:text-[32px] font-extrabold">
             Additional Resources
           </h2>
-          <div className="flex flex-wrap gap-6 mt-2">
+          <div className="flex flex-wrap gap-2 lg:gap-4 mt-2">
             {resources.map((resource, index) => (
               <Button
                 key={index}
