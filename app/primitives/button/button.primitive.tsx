@@ -9,7 +9,7 @@ const button = cva(
     "inline-flex",
     "items-center",
     "text-center",
-    "border-2",
+    "border",
     "transition-colors",
     "delay-50",
     "rounded-md",

@@ -45,7 +45,7 @@ export const DynamicHero = ({
           {/* Breadcrumbs */}
           <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
             <div className="hidden lg:block">
-              <Breadcrumbs />
+              <Breadcrumbs mode="light" />
             </div>
             <div className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]" />
 
