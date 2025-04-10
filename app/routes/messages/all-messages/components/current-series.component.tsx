@@ -13,7 +13,7 @@ const CurrentSeries: React.FC = () => {
   return (
     <section className="relative grid grid-cols-1 min-h-screen bg-white">
       {/* Content Container */}
-      <div className="h-[50vh] w-full content-padding pt-24">
+      <div className="sm:h-[60vh] xl:h-[47vh] w-full content-padding pt-14 md:pt-24 bg-gray sm:bg-white">
         {/* Title Section */}
         <div className="relative max-w-screen-content mx-auto">
           <SectionTitle
@@ -23,17 +23,17 @@ const CurrentSeries: React.FC = () => {
           />
         </div>
       </div>
-      <div className="h-[50vh] w-full bg-gray content-padding">
+      <div className="sm:h-[40vh] xl:h-[53vh] w-full bg-gray content-padding pt-64 pb-16 sm:pt-0">
         <div className="relative max-w-screen-content mx-auto">
           {/* Image Section */}
           <div
-            className="absolute w-full aspect-video h-[70vh] bottom-0 bg-cover bg-center z-10"
+            className="absolute w-full aspect-video h-[40vh] sm:h-[40vh] lg:h-[65vh] xl:h-[60vh] -top-[40vh] sm:-top-[40vh] lg:top-auto lg:bottom-0 bg-cover bg-center z-10"
             style={{
               backgroundImage: `url('${latestMessage.coverImage}')`,
             }}
           />
           {/* Text Section */}
-          <div className="relative left-0 w-full bg-white px-10 py-10 space-y-4 md:w-[75%] xl:w-[45%] md:max-h-[525px] z-20">
+          <div className="relative left-0 w-full bg-white px-10 py-10 xl:py-16 space-y-4 lg:w-[70%] xl:w-[45%] md:max-h-[525px] z-20">
             <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
             <h2 className="text-[40px] font-bold text-text-primary text-pretty leading-tight">
               {latestMessage.title}
@@ -44,7 +44,7 @@ const CurrentSeries: React.FC = () => {
             </div>
 
             {/* Buttons */}
-            <div className="mt-5 md:mt-0 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3">
+            <div className="mt-5 xl:mt-8 md:mt-0 flex flex-col sm:flex-row gap-3">
               <IconButton
                 to="/messages/series"
                 className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
