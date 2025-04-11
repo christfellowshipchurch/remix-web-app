@@ -17,9 +17,9 @@ export const RelatedMessages = () => {
       <div className="flex w-full  flex-col items-center py-12 md:py-24 max-w-screen-content">
         {/* Header */}
         <div className="w-full flex justify-between">
-          <div>
+          <div className="gap-6 md:gap-8">
             <SectionTitle sectionTitle="related series." />
-            <h2 className="text-text font-extrabold lg:text-[46px] xl:text-[52px] leading-none">
+            <h2 className="text-text font-extrabold text-[28px] lg:text-[32px] leading-tight">
               Message Series On This Topic
             </h2>
           </div>

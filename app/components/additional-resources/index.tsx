@@ -4,20 +4,24 @@ import { Button } from "~/primitives/button/button.primitive";
 export const AdditionalResources = ({
   type,
   resources,
+  color,
 }: {
   type: "button" | "card";
-  resources: any[];
+  resources: Resource[];
+  color?: string;
 }) => {
   return (
-    <div className="max-w-screen-content flex flex-col gap-12 w-full">
-      <h2 className="font-extrabold text-[32px]">Additional Resources</h2>
+    <div className="max-w-screen-content flex flex-col gap-4 md:gap-6 w-full">
+      <h2 className="font-extrabold text-[28px]">Additional Resources</h2>
       {(() => {
         switch (type) {
           case "card":
             return <AdditionalResourcesCards resources={resources} />;
           case "button":
           default:
-            return <AdditionalResourcesButtons resources={resources} />;
+            return (
+              <AdditionalResourcesButtons resources={resources} color={color} />
+            );
         }
       })()}
     </div>
@@ -25,20 +29,27 @@ export const AdditionalResources = ({
 };
 
 type Resource = {
-  title: string;
-  image: string;
+  title?: string;
+  image?: string;
   url: string;
 };
 
 const AdditionalResourcesButtons = ({
   resources,
+  color,
 }: {
   resources: Resource[];
+  color?: string;
 }) => {
   return (
-    <div className="flex flex-wrap gap-6 mt-2">
+    <div className="flex flex-wrap gap-4 md:gap-6 mt-2">
       {resources.map((resource, index) => (
-        <Button key={index} intent="secondary" href={resource.url}>
+        <Button
+          key={index}
+          intent="secondary"
+          href={resource.url}
+          className={`text-${color || "ocean"} border-${color || "ocean"}`}
+        >
           {resource.title}
         </Button>
       ))}
