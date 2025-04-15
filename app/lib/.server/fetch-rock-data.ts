@@ -47,7 +47,10 @@ interface RockQueryParams {
   loadAttributes?: "simple" | "expanded";
 
   /** Comma-delimited list of attribute keys to limit specific attributes */
-  attributeKeys?: string;
+  attributeKey?: string;
+
+  /** Value to filter by */
+  value?: string;
 }
 
 export const fetchRockData = async ({
