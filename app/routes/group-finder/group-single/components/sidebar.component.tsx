@@ -48,7 +48,7 @@ const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
         />
       ))}
     </div>
-    <h2 className="text-sm font-semibold text-[#666666]">Hosted by</h2>
+    <h2 className="text-sm font-semibold text-text-secondary">Hosted by</h2>
     <div className="lg:text-lg font-bold">
       {leaders
         ?.map((leader) => `${leader.firstName} ${leader.lastName}`)
@@ -70,7 +70,7 @@ const ContactSection = ({
     <div className="flex flex-col gap-4">
       <div>
         <h3 className="text-lg font-bold text-white">More Information</h3>
-        <p className="text-[#CCCCCC]">
+        <p className="text-neutral-lighter">
           If you need any help, please feel free to contact us.
         </p>
       </div>
@@ -159,7 +159,7 @@ export function GroupSingleSidebar({
 
           <Divider />
           <InfoItem icon="map">
-            <span className="text-sm text-[#666666]">{meetingType}</span>
+            <span className="text-sm text-text-secondary">{meetingType}</span>
             <span className="lg:text-lg font-semibold">{campusName}</span>
           </InfoItem>
         </div>

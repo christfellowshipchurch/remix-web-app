@@ -71,7 +71,7 @@ const ResourceCard = ({ resource }: { resource: Resource }) => {
   return (
     <Link
       to={resource.url}
-      className="flex flex-col w-[320px] rounded-lg border border-[#CCCCCC] overflow-hidden"
+      className="flex flex-col w-[320px] rounded-lg border border-neutral-lighter overflow-hidden"
     >
       <img
         src={resource.image}

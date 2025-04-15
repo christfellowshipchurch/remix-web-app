@@ -40,11 +40,13 @@ export const EventsSingleHero = ({
           <div className="flex items-center justify-between self-stretch">
             {/* Breadcrumbs */}
             <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
-              <Breadcrumbs mode="dark" />
+              <div className="hidden lg:block">
+                <Breadcrumbs mode="dark" />
+              </div>
               <div className="md:hidden h-[2px] self-stretch bg-neutral-400 opacity-50 mt-16" />
 
               {/* CTAs */}
-              <div className="mt-5 md:mt-0 flex flex-wrap sm:justify-start gap-6">
+              <div className="mt-5 md:mt-0 flex lg:flex-wrap gap-2 sm:gap-4 md:gap-6">
                 {ctas?.map((cta, i) => (
                   <IconButton
                     key={i}
