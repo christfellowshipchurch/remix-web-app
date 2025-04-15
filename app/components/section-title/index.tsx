@@ -5,10 +5,12 @@ export function SectionTitle({
   className,
   title,
   sectionTitle,
+  leading,
 }: {
   className?: string;
   title?: string;
   sectionTitle: string;
+  leading?: string;
 }) {
   return (
     // TODO : Check with Austin if we need to add a horizontal layout for this as well
@@ -20,7 +22,11 @@ export function SectionTitle({
         </h2>
       </div>
       {title && (
-        <h1 className="text-2xl md:text-[40px] lg:text-[52px] font-bold text-text-primary leading-tight">
+        <h1
+          className={`text-2xl md:text-[40px] lg:text-[52px] font-bold text-text-primary ${
+            leading || "leading-tight"
+          }`}
+        >
           {title}
         </h1>
       )}
