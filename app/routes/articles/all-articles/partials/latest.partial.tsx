@@ -61,7 +61,9 @@ export const LatestArticles = () => {
           {mockCategories.map((category, i) => (
             <div key={i} className="flex justify-between">
               <h3 className="font-bold text-lg">{category.title}</h3>
-              <p className="font-medium text-[#666666]">({category.amount})</p>
+              <p className="font-medium text-text-secondary">
+                ({category.amount})
+              </p>
             </div>
           ))}
         </div>
