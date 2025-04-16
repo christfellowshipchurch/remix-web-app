@@ -46,9 +46,13 @@ describe("DynamicHero", () => {
     );
 
     ctas.forEach((cta) => {
-      const button = screen.getByRole("button", { name: cta.title });
-      expect(button).toBeInTheDocument();
-      expect(button.closest("a")).toHaveAttribute("href", cta.href);
+      const buttons = screen.getAllByRole("button", { name: cta.title });
+      // We expect 2 buttons - one for desktop and one for mobile
+      expect(buttons).toHaveLength(2);
+      buttons.forEach((button) => {
+        expect(button).toBeInTheDocument();
+        expect(button.closest("a")).toHaveAttribute("href", cta.href);
+      });
     });
   });
 
