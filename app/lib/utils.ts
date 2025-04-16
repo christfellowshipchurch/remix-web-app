@@ -199,3 +199,22 @@ export const latLonDistance = (
   dist = dist * 60 * 1.1515;
   return dist;
 };
+
+/**
+ * Get the first paragraph of a given HTML string
+ * @param html - The HTML string to parse
+ * @returns The first paragraph of the HTML string
+ */
+export const getFirstParagraph = (html: string): string => {
+  if (typeof window === "undefined") {
+    // Server-side: Use a simple regex to extract text between <p> tags
+    const match = html.match(/<p[^>]*>(.*?)<\/p>/i);
+    return match ? match[1].replace(/<[^>]+>/g, "") : "";
+  }
+
+  // Client-side: Use DOMParser
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const firstParagraph = doc.querySelector("p");
+  return firstParagraph?.textContent || "";
+};

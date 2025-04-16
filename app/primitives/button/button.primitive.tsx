@@ -9,7 +9,7 @@ const button = cva(
     "inline-flex",
     "items-center",
     "text-center",
-    "border-2",
+    "border",
     "transition-colors",
     "delay-50",
     "rounded-md",
@@ -37,7 +37,7 @@ const button = cva(
       size: {
         sm: ["min-w-20", "h-full", "min-h-10", "text-sm", "px-4"],
         md: ["min-w-24", "h-full", "min-h-11", "px-6", "py-2"],
-        lg: ["min-w-32", "h-full", "min-h-12", "text-lg", "px-6", "py-3"],
+        lg: ["min-w-24", "h-full", "min-h-12", "text-lg", "px-6", "py-3"],
       },
       underline: { true: ["underline"], false: [] },
     },

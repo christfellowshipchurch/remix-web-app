@@ -33,7 +33,9 @@ export const ContentCard = ({ image, title, subheadings, cta }: CardProps) => {
               {subheading.icon && (
                 <Icon name={subheading.icon} color="#666666" />
               )}
-              <p className="font-medium text-[#666666]">{subheading.title}</p>
+              <p className="font-medium text-text-secondary">
+                {subheading.title}
+              </p>
             </li>
           ))}
         </ul>

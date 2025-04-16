@@ -8,7 +8,6 @@ const VideoSkeleton = () => (
 
 export const MessageVideo: React.FC = () => {
   const { message } = useLoaderData<MessageReturnType>();
-  // TODO: Fix link to Sermon Resources
   return (
     <VideoHeader
       wistiaId={message.wistiaId || ""}

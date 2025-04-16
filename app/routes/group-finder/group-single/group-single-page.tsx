@@ -64,21 +64,23 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
               <Breadcrumbs />
             </div>
           </div>
-          <div className="w-full flex flex-col items-center lg:flex-row lg:items-start lg:gap-20">
+          <div className="w-full flex flex-col items-center lg:flex-row lg:items-start gap-12 md:gap-16">
             <GroupSingleBasicContent
               tags={tags}
               groupName={hit.title}
               summary={summary}
             />
-            <GroupSingleSidebar
-              leaders={leaders}
-              meetingType={meetingType}
-              meetingTime={meetingTime}
-              meetingDay={meetingDay}
-              campusName={campusName}
-            />
-            <div className="mt-10 lg:hidden w-full">
-              <div className="flex flex-col gap-6 md:hidden mb-10">
+            <div className="flex flex-col w-full lg:w-auto">
+              <GroupSingleSidebar
+                leaders={leaders}
+                meetingType={meetingType}
+                meetingTime={meetingTime}
+                meetingDay={meetingDay}
+                campusName={campusName}
+              />
+            </div>
+            <div className="lg:hidden w-full flex flex-col gap-12">
+              <div className="flex flex-col gap-6 md:hidden">
                 <h2 className="text-lg font-extrabold">About</h2>
                 <p className="md:hidden">{summary}</p>
               </div>
