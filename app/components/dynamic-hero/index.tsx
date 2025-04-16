@@ -52,8 +52,11 @@ export const DynamicHero = ({
             <div className="hidden lg:block">
               <Breadcrumbs mode="light" />
             </div>
-            <div className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]" />
-
+            <div
+              role="separator"
+              aria-hidden="true"
+              className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]"
+            />
             {/* Desktop CTAs */}
             <div className="hidden lg:flex mt-5 flex-wrap justify-between gap-3 pr-1">
               {ctas?.map((cta, i) => (
