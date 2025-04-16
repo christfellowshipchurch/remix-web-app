@@ -1,33 +1,43 @@
+import { SectionTitle } from "~/components";
+import { BeliefsCarousel } from "../components/beliefs-carousel.component";
+import { cn } from "~/lib/utils";
+
 export function BeliefsSection() {
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-primary mb-2">Our Beliefs</h2>
-        <h3 className="text-4xl font-bold mb-12">
-          Beliefs And Theological Positions Drawn From The Bible.
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 bg-white rounded-lg shadow-lg">
-            <h4 className="text-2xl font-bold mb-4">The Bible</h4>
-            <p className="text-gray-700">
-              2 Timothy 3:16-17 | 2 Peter 1:20-21 | Hebrews 4:12
-            </p>
+    <section className="relative py-0 md:py-16 lg:pt-40">
+      <div className="content-padding">
+        <div className="container max-w-screen-content mx-auto">
+          {/* Beliefs Title */}
+          <div className="relative flex flex-col gap-6 pb-12 w-full">
+            <SectionTitle sectionTitle="our beliefs." />
+            <h3 className="font-extrabold text-text-primary text-[28px] md:text-5xl leading-tight">
+              <span className="hidden md:block">
+                History of Christ <br />
+                Fellowship Church
+              </span>
+              <span className="block md:hidden">
+                Beliefs drawn <br />
+                from the Bible.
+              </span>
+            </h3>
+            {/* Chapel Image */}
+            <img
+              src="/assets/images/about/chapel.webp"
+              alt="Beliefs"
+              className={cn(
+                "absolute bottom-0 right-0 w-[40vw] object-cover",
+                "sm:w-[30vw]",
+                "md:right-1/12 md:w-[20vw]",
+                "lg:right-1/8 lg:max-w-[300px]"
+              )}
+            />
           </div>
-          <div className="p-6 bg-white rounded-lg shadow-lg">
-            <h4 className="text-2xl font-bold mb-4">God</h4>
-            <p className="text-gray-700">
-              Genesis 1:1,26-27 | Psalm 90:2 | Matthew 28:19
-            </p>
-          </div>
-          <div className="p-6 bg-white rounded-lg shadow-lg">
-            <h4 className="text-2xl font-bold mb-4">Jesus</h4>
-            <p className="text-gray-700">
-              Matthew 1:22-23 | Isaiah 9:6 | John 1:1-5
-            </p>
-          </div>
+          {/* Beliefs Carousel */}
+          <BeliefsCarousel />
         </div>
       </div>
+      {/* Navy BG */}
+      <div className="absolute bottom-0 w-full h-[50%] bg-dark-navy z-[-1]" />
     </section>
   );
 }
