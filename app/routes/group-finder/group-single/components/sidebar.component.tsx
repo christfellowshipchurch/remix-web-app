@@ -48,7 +48,7 @@ const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
         />
       ))}
     </div>
-    <h2 className="text-sm font-semibold text-[#666666]">Hosted by</h2>
+    <h2 className="text-sm font-semibold text-text-secondary">Hosted by</h2>
     <div className="lg:text-lg font-bold">
       {leaders
         ?.map((leader) => `${leader.firstName} ${leader.lastName}`)
@@ -70,7 +70,7 @@ const ContactSection = ({
     <div className="flex flex-col gap-4">
       <div>
         <h3 className="text-lg font-bold text-white">More Information</h3>
-        <p className="text-[#CCCCCC]">
+        <p className="text-neutral-lighter">
           If you need any help, please feel free to contact us.
         </p>
       </div>
@@ -82,20 +82,22 @@ const ContactSection = ({
         groups@christfellowship.church
       </a>
     </div>
-    <Button
-      intent="primary"
-      onClick={onJoinGroup}
-      className="w-full h-auto hover:!bg-white hover:text-navy transition-colors"
-    >
-      Join Group
-    </Button>
-    <Button
-      intent="primary"
-      onClick={onMessageLeader}
-      className="w-full h-auto hover:!bg-white hover:text-navy transition-colors"
-    >
-      Message Leader
-    </Button>
+    <div className="flex flex-col gap-4 lg:gap-6">
+      <Button
+        intent="primary"
+        onClick={onJoinGroup}
+        className="w-full h-auto hover:!bg-white hover:text-navy transition-colors"
+      >
+        Join Group
+      </Button>
+      <Button
+        intent="primary"
+        onClick={onMessageLeader}
+        className="w-full h-auto hover:!bg-white hover:text-navy transition-colors"
+      >
+        Message Leader
+      </Button>
+    </div>
   </div>
 );
 
@@ -132,14 +134,20 @@ export function GroupSingleSidebar({
 
   return (
     <aside
-      className="flex flex-col max-w-[440px] md:max-w-none lg:min-w-[324px] md:flex-row lg:flex-col h-fit w-full lg:w-auto gap-2 pt-0 lg:pt-6 bg-gray rounded-t-[1rem] md:rounded-t-none md:!rounded-l-[1rem] lg:!rounded-none"
+      className={`flex flex-col lg:min-w-[324px] md:flex-row lg:flex-col h-fit w-full lg:w-auto md:gap-2 lg:gap-0 pt-0 bg-gray rounded-t-[1rem] md:rounded-t-none md:!rounded-l-[1rem] lg:!rounded-none ${
+        leaders.length > 0 ? "lg:pt-6" : ""
+      }`}
       aria-label="Group information"
     >
-      <div className="flex w-full lg:w-auto flex-col gap-2 lg:gap-6 pt-6 lg:pt-0 ">
-        <LeaderGallery leaders={leaders} />
+      <div
+        className={`flex w-full lg:w-auto flex-col gap-4 lg:gap-8 ${
+          leaders.length > 0 ? "pt-6 lg:pt-0" : ""
+        }`}
+      >
+        {leaders.length > 0 && <LeaderGallery leaders={leaders} />}
 
         <div className="flex flex-col mt-2">
-          <Divider />
+          {leaders.length > 0 && <Divider />}
           <InfoItem
             icon="calendarAlt"
             style={{ display: `${meetingDay ? "flex" : "none"}` }}
@@ -159,7 +167,7 @@ export function GroupSingleSidebar({
 
           <Divider />
           <InfoItem icon="map">
-            <span className="text-sm text-[#666666]">{meetingType}</span>
+            <span className="text-sm text-text-secondary">{meetingType}</span>
             <span className="lg:text-lg font-semibold">{campusName}</span>
           </InfoItem>
         </div>

@@ -21,7 +21,7 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
   const { isLarge, isXLarge } = useResponsive();
 
   return (
-    <div className="content-padding mt-16 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
+    <div className="content-padding mt-20 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
       <div className="w-full flex flex-col gap-6 md:gap-16 max-w-screen-content">
         <div className="w-full flex justify-between items-center">
           <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">

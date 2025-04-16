@@ -32,11 +32,11 @@ export const StyledAccordion = ({
               backgroundColor: bg ? bg : `#E7F9FE`,
               border: `${border ? `1px solid ${border}` : ""}`,
             }}
-            className={`AccordionItem w-full rounded-lg px-6 md:max-w-none`}
+            className={`AccordionItem w-full rounded-lg px-6 md:max-w-none cursor-pointer`}
             value={`item-${index + 1}`}
           >
-            <Accordion.Header className="AccordionHeader flex py-5 text-lg font-bold">
-              <Accordion.Trigger className="AccordionTrigger inline-flex w-full items-center justify-between text-start group">
+            <Accordion.Header className="AccordionHeader flex py-5 text-lg font-bold cursor-pointer">
+              <Accordion.Trigger className="AccordionTrigger inline-flex w-full items-center justify-between text-start group cursor-pointer">
                 {item?.title}
                 <ChevronDownIcon
                   className="transition-transform duration-300 group-data-[state=open]:rotate-180"
