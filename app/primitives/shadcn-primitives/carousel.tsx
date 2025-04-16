@@ -230,7 +230,7 @@ const CarouselPrevious = React.forwardRef<
         {...props}
       >
         <Icon
-          name="arrowBack"
+          name="arrowBack" // TODO: change to arrowLeft
           className="h-4 w-4"
           color={canScrollPrev ? fill : disabledFill || fill}
         />
