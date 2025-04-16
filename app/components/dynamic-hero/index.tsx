@@ -28,6 +28,7 @@ export const DynamicHero = ({
 
   return (
     <div
+      role="banner"
       className="flex items-center justify-start self-stretch h-[720px] md:h-[640px] px-5 md:px-12 lg:px-18"
       style={{
         background: `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${imagePath}) black 50% / cover no-repeat`,
@@ -40,15 +41,22 @@ export const DynamicHero = ({
         <h1 className="font-extrabold heading-h1 lg:text-7xl xl:text-8xl text-white">
           {customTitle || pagePath}
         </h1>
-        <div className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50" />
+        <div
+          role="separator"
+          aria-hidden="true"
+          className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50"
+        />
         <div className="flex items-center justify-between self-stretch">
           {/* Breadcrumbs */}
           <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
             <div className="hidden lg:block">
               <Breadcrumbs mode="light" />
             </div>
-            <div className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]" />
-
+            <div
+              role="separator"
+              aria-hidden="true"
+              className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]"
+            />
             {/* Desktop CTAs */}
             <div className="hidden lg:flex mt-5 flex-wrap justify-between gap-3 pr-1">
               {ctas?.map((cta, i) => (
