@@ -27,26 +27,35 @@ describe("Breadcrumbs", () => {
     expect(screen.getByText("Segment")).toBeInTheDocument();
   });
 
-  // TODO: Add tests for light and dark mode
-  //   it("applies correct text color for light mode", () => {
-  //     render(
-  //       <MemoryRouter>
-  //         <Breadcrumbs mode="light" />
-  //       </MemoryRouter>
-  //     );
-  //     const homeLink = screen.getByText("Home");
-  //     expect(homeLink).toHaveClass("text-[#F4F4F4]");
-  //   });
+  it("applies correct text color for light mode", () => {
+    render(
+      <MemoryRouter>
+        <Breadcrumbs mode="light" />
+      </MemoryRouter>
+    );
 
-  //   it("applies correct text color for dark mode", () => {
-  //     render(
-  //       <MemoryRouter>
-  //         <Breadcrumbs mode="dark" />
-  //       </MemoryRouter>
-  //     );
-  //     const homeLink = screen.getByText("Home");
-  //     expect(homeLink).toHaveClass("text-[#ADA09B]");
-  //   });
+    const homeLink = screen.getByText("Home");
+    expect(homeLink).toHaveClass("text-neutral-400");
+
+    // Verify the container has light mode text color
+    const container = homeLink.closest("div");
+    expect(container).toHaveClass("text-neutral-300");
+  });
+
+  it("applies correct text color for dark mode", () => {
+    render(
+      <MemoryRouter>
+        <Breadcrumbs mode="dark" />
+      </MemoryRouter>
+    );
+
+    const homeLink = screen.getByText("Home");
+    expect(homeLink).toHaveClass("text-neutral-500");
+
+    // Verify the container has dark mode text color
+    const container = homeLink.closest("div");
+    expect(container).toHaveClass("text-neutral-700");
+  });
 
   it("renders caret icons between segments", () => {
     const testPath = "/test/path";
