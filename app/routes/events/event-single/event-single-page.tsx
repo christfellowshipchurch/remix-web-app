@@ -7,6 +7,7 @@ import { EventContent } from "./partials/event-content.partial";
 import { EventsSingleHero } from "./partials/hero.partial";
 import { TimesLocations } from "./components/times-and-locations.component";
 import { EventSingleFAQ } from "./components/faq.component";
+import { AdditionalInfo } from "./components/info-sections.component";
 
 const mockResources = [
   {
@@ -45,18 +46,24 @@ export const EventSinglePage: React.FC = () => {
           <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-screen-content">
             <SectionTitle sectionTitle="event details." />
             <div className="flex w-full justify-center gap-16">
-              <div className="hidden lg:block">
+              {/* Desktop */}
+              <div className="hidden lg:flex flex-col gap-8">
                 <TimesLocations />
                 {/* Placeholder for Additional Info Sections - Will be completed once design team has provided the content/use cases */}
-                {/* <AdditionalInfoSections type="contact" /> */}
+                <AdditionalInfo type="contact" />
               </div>
               <div className="flex flex-col gap-16">
                 <EventContent htmlContent={data.content} />
                 <EventDivider className="hidden lg:block" />
-                <div className="block lg:hidden">
+
+                {/* Mobile */}
+                <div className="flex flex-col gap-8 lg:hidden">
                   <TimesLocations />
                   <EventDivider />
+                  <AdditionalInfo type="contact" />
                 </div>
+
+                <EventDivider className="lg:hidden" />
                 <EventSingleFAQ />
                 <EventDivider />
                 <AdditionalResources type="button" resources={mockResources} />

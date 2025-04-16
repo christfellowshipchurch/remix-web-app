@@ -2,6 +2,7 @@ import { useMediaQuery } from "react-responsive";
 import { useHydrated } from "./use-hydrated";
 
 export const breakpoints = {
+  xs: 480,
   sm: 640,
   md: 768,
   lg: 1024,
@@ -12,6 +13,7 @@ export const breakpoints = {
 export function useResponsive() {
   const isHydrated = useHydrated();
 
+  const isXSmall = useMediaQuery({ maxWidth: breakpoints.sm - 1 });
   const isSmall = useMediaQuery({ maxWidth: breakpoints.md - 1 });
   const isMedium = useMediaQuery({
     minWidth: breakpoints.md,
@@ -24,6 +26,7 @@ export function useResponsive() {
   // Return mobile-first defaults when not hydrated
   if (!isHydrated) {
     return {
+      isXSmall: true,
       isSmall: true,
       isMedium: false,
       isLarge: false,
@@ -34,6 +37,7 @@ export function useResponsive() {
   }
 
   return {
+    isXSmall,
     isSmall,
     isMedium,
     isLarge,

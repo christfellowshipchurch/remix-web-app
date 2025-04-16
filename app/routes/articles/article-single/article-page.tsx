@@ -13,7 +13,6 @@ export const ArticlePage: React.FC = () => {
   return (
     <>
       <section className="bg-white">
-        {/* TODO: Fix Error */}
         <ArticleHero {...data} />
         <ArticleContent htmlContent={data.content} />
         <ArticleNewsletter />

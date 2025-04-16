@@ -56,6 +56,33 @@ const fetchMessageData = async (path: string) => {
   return rockData;
 };
 
+/**
+ * This is a helper function to get the wistiaId from the MediaElements table from the new Rock Update
+ * @param {string} guid - The GUID of the media element to look up
+ * @returns {Promise<string|null>} The source key (wistiaId) if found, null otherwise
+ */
+async function getWistiaId(guid: string) {
+  try {
+    const getMediaElement = await fetchRockData({
+      endpoint: "MediaElements",
+      queryParams: {
+        $filter: `Guid eq guid'${guid}'`,
+        $select: "SourceKey",
+      },
+    });
+
+    if (!getMediaElement) {
+      console.warn(`No media element found for GUID: ${guid}`);
+      return null;
+    }
+
+    return getMediaElement?.sourceKey || null;
+  } catch (error) {
+    console.error(`Error fetching wistiaId for GUID ${guid}:`, error);
+    return null;
+  }
+}
+
 export const loader: LoaderFunction = async ({ params }) => {
   const path = params?.path || "";
   const messageData = await fetchMessageData(path);
@@ -78,13 +105,15 @@ export const loader: LoaderFunction = async ({ params }) => {
     tagId: "todo",
   };
 
+  const wistiaId = await getWistiaId(attributeValues.media.value);
+
   const message: Message = {
     hostUrl: process.env.HOST_URL || "host-url-not-found",
     title,
     content,
     summary: attributeValues.summary.value,
     video: attributeValues.videoLink.value,
-    wistiaId: attributeValues.media.value,
+    wistiaId,
     coverImage: (coverImage && coverImage[0]) || "",
     startDateTime: format(new Date(startDateTime), "MMMM dd, yyyy"),
     attributeValues,
