@@ -20,14 +20,14 @@ export const FeaturedCard = ({ card }: { card: Event }) => {
         >
           <div className="absolute w-[67.5%] xl:w-[70%] right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-12 pt-12 xl:pl-16 xl:pt-16 pb-4 rounded-tl-lg">
             <div className="flex flex-col gap-2">
-              <h2 className="font-medium text-[16px] text-[#666666]">
+              <h2 className="font-medium text-[16px] text-text-secondary">
                 HAPPENING AT ALL CAMPUS LOCATIONS
               </h2>
               <div className="h-[2px] w-full bg-[#4E4E4E]/20" />
             </div>
             <div className="flex flex-col gap-2 pr-12 xl:pr-16">
               <h3 className="font-bold text-[24px]">{card.title}</h3>
-              <p className="font-normal text-[#666666]">
+              <p className="font-normal text-text-secondary">
                 {card.attributeValues.summary.value}
               </p>
               <Link

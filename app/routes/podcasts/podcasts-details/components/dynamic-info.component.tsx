@@ -21,7 +21,7 @@ export const DynamicInfo = () => {
                 <h2 className="text-[24px] md:text-[40px] text-text-primary font-extrabold">
                   {title}
                 </h2>
-                <p className="text-[#666666] font-extrabold text-lg">
+                <p className="text-text-secondary font-extrabold text-lg">
                   {description}
                 </p>
               </div>

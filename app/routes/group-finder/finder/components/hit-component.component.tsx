@@ -14,7 +14,7 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
 
   return (
     <div
-      className="h-full mb-4 bg-white rounded-lg overflow-hidden max-w-[300px] xl:max-w-96"
+      className="h-full mb-4 bg-white rounded-lg overflow-hidden max-w-[306px] xl:max-w-96"
       style={{
         boxShadow:
           "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -81,6 +81,8 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
             </div>
           </div>
           <Button
+            className="w-full"
+            size="sm"
             type="submit"
             intent="primary"
             href={`/group-finder/${encodeURIComponent(hit.title)}`}
