@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router";
 import Icon from "~/primitives/icon";
 
 interface BreadcrumbsProps {
-  mode?: "light" | "dark" | "darker";
+  mode?: "light" | "dark";
 }
 
 export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
@@ -24,6 +24,7 @@ export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
         className={`flex items-center gap-1 md:gap-4 ${textColor}`}
       >
         <Icon
+          id="breadcrumbs-caret"
           className="text-ocean min-w-[20px] block"
           size={20}
           name="caretRight"
