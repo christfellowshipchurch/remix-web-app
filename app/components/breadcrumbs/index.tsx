@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router";
 import Icon from "~/primitives/icon";
 
 interface BreadcrumbsProps {
-  mode?: "light" | "dark" | "darker";
+  mode?: "light" | "dark";
 }
 
 export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
