@@ -9,7 +9,7 @@ export function AllArticlesPage() {
         imagePath="/assets/images/articles-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       />
-      <div className="px-5 md:px-12 lg:px-18 py-28">
+      <div className="content-padding py-16 lg:pt-32 lg:pb-24">
         <div className="flex-col flex md:flex-row justify-between gap-8 max-w-screen-content">
           <Articles />
           <LatestArticles />

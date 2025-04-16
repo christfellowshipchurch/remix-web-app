@@ -2,12 +2,12 @@ import { Button } from "~/primitives/button/button.primitive";
 
 export const ArticleNewsletter = () => {
   return (
-    <div className="bg-[#00354D] content-padding py-12 text-white lg:py-24">
+    <div className="bg-gradient-to-br from-[#1C3647] to-navy lg:bg-[#00354D] content-padding py-12 text-white lg:py-24">
       <div className="max-w-screen-content mx-auto w-full">
-        <div className="flex flex-col w-full justify-between lg:flex-row lg:gap-8 lg:justify-between">
-          {/* Left */}
-          <div>
-            <div className="mb-4 text-3xl font-semibold">
+        <div className="flex flex-col gap-6 lg:gap-20 xl:gap-36 w-full lg:flex-row lg:justify-between">
+          {/* Left / Top*/}
+          <div className="flex flex-col gap-3 lg:gap-4">
+            <div className="text-3xl font-semibold">
               Subscribe to Our Newsletter
             </div>
             <div className="font-light">
@@ -15,24 +15,24 @@ export const ArticleNewsletter = () => {
               straight to your inbox.
             </div>
           </div>
-          {/* Right */}
-          <div className="mt-8 flex flex-col lg:ml-6 lg:mt-0 lg:max-w-1/2">
+          {/* Right / Bottom */}
+          <div className="flex flex-col gap-4 lg:max-w-1/2">
             {/* Form */}
-            <form className="mb-4 flex w-full flex-col justify-end gap-4 sm:flex-row">
+            <form className="flex w-full flex-col xl:justify-end gap-4 xl:flex-row">
               <input
-                className="w-full max-w-96 p-3 bg-white text-base text-[#666666]"
+                className="w-full xl:max-w-96 p-3 bg-white text-base text-text-secondary rounded-[8px] xl:rounded-none"
                 type="email"
                 placeholder="Enter your email"
               />
               <Button
-                className="w-full max-w-96 sm:w-auto rounded-none"
+                className="w-full xl:max-w-96 xl:w-auto rounded-[8px] xl:rounded-none font-normal xl:text-xl"
                 intent="primary"
                 href="#testing"
               >
                 Subscribe
               </Button>
             </form>
-            <div className="mt-4 text-sm font-light lg:mt-0">
+            <div className="text-sm font-light">
               By clicking Sign Up you{`'`}re confirming that you agree with our{" "}
               <a href="#blank" className="underline">
                 Terms and Conditions.

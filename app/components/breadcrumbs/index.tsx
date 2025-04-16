@@ -9,18 +9,7 @@ export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
-  const textColor = (() => {
-    switch (mode) {
-      case "light":
-        return "text-[#F4F4F4]";
-      case "dark":
-        return "text-[#E0D0C8]";
-      case "darker":
-        return "text-[#E0D0C8]";
-      default:
-        return "text-[#E0D0C8]";
-    }
-  })();
+  const textColor = mode === "dark" ? "text-neutral-700" : "text-neutral-300";
 
   const breadcrumbs = pathSegments.map((segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
@@ -30,7 +19,10 @@ export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
       .join(" ");
 
     return (
-      <div key={path} className={`flex items-center gap-4 ${textColor}`}>
+      <div
+        key={path}
+        className={`flex items-center gap-1 md:gap-4 ${textColor}`}
+      >
         <Icon
           className="text-ocean min-w-[20px] block"
           size={20}
@@ -48,7 +40,13 @@ export function Breadcrumbs({ mode = "dark" }: BreadcrumbsProps) {
   return (
     <div className={`flex items-center gap-4 ${textColor}`}>
       <Link to="/">
-        <span className="hover:underline text-sm text-[#ADA09B]">Home</span>
+        <span
+          className={`hover:underline text-sm ${
+            mode == "dark" ? "text-neutral-500" : "text-neutral-400"
+          }`}
+        >
+          Home
+        </span>
       </Link>
       {breadcrumbs}
     </div>

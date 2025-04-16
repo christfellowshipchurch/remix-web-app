@@ -7,7 +7,7 @@ export default function MessagesPage() {
     <div>
       <DynamicHero
         imagePath="/assets/images/messages-hero-bg.jpg"
-        ctas={[{ href: "#testing", title: "Live Broadcast" }]}
+        ctas={[{ href: "#testing", title: "Watch Live" }]}
       />
       <CurrentSeries />
       <AllMessages />

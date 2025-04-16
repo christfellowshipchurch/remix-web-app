@@ -31,7 +31,7 @@ export const PodcastEpisodeCard = ({
         </Link>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-[#666666]">{`Season ${season} | Episode ${episodeNumber}`}</p>
+        <p className="text-sm text-text-secondary">{`Season ${season} | Episode ${episodeNumber}`}</p>
         <h3 className="text-lg font-bold">{title}</h3>
       </div>
     </div>
