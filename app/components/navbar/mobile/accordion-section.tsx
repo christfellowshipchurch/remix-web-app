@@ -12,6 +12,7 @@ interface AccordionSectionProps {
   onToggle: (id: string) => void;
   layout?: "list" | "grid";
   showViewMore?: boolean;
+  closeMenu: () => void;
 }
 
 export function AccordionSection({
@@ -23,6 +24,7 @@ export function AccordionSection({
   onToggle,
   layout = "list",
   showViewMore = false,
+  closeMenu,
 }: AccordionSectionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | undefined>(undefined);
@@ -66,6 +68,7 @@ export function AccordionSection({
                   <Link
                     key={item.id}
                     to={item.to}
+                    onClick={closeMenu}
                     className="flex justify-start items-center gap-6"
                   >
                     <div className="mt-1">
@@ -92,7 +95,12 @@ export function AccordionSection({
             ) : (
               <div className="grid grid-cols-2 gap-6">
                 {items.map((item) => (
-                  <Link key={item.id} to={item.to} className="flex flex-col">
+                  <Link
+                    key={item.id}
+                    to={item.to}
+                    onClick={closeMenu}
+                    className="flex flex-col"
+                  >
                     <h3 className="font-semibold text-text-primary">
                       {item.title}
                     </h3>
@@ -109,6 +117,7 @@ export function AccordionSection({
             {showViewMore && (
               <Link
                 to={`/${id}`}
+                onClick={closeMenu}
                 className="mt-6 flex items-center text-primary font-semibold"
               >
                 View More
