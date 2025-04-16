@@ -31,7 +31,7 @@ export function MissionSection() {
         <img
           src="/assets/images/about/mission.webp"
           alt="Mission"
-          className="w-full max-w-[400px] rounded-lg lg:col-span-2 order-1 lg:order-2"
+          className="w-full max-w-[400px] lg:max-w-none rounded-lg lg:col-span-2 order-1 lg:order-2 md:mt-6 lg:mt-0"
         />
       </div>
     </section>
