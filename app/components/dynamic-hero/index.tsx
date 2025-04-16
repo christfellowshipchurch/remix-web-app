@@ -32,8 +32,6 @@ export const DynamicHero = ({
       className="flex items-center justify-start self-stretch h-[720px] md:h-[640px] px-5 md:px-12 lg:px-18"
       style={{
         background: `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${imagePath}) black 50% / cover no-repeat`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
