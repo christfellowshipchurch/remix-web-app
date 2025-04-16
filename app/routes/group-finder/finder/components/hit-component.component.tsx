@@ -81,6 +81,8 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
             </div>
           </div>
           <Button
+            className="w-full"
+            size="sm"
             type="submit"
             intent="primary"
             href={`/group-finder/${encodeURIComponent(hit.title)}`}

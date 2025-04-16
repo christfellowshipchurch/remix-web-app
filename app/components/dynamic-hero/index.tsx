@@ -64,14 +64,14 @@ export const DynamicHero = ({
             </div>
 
             {/* Mobile CTAs */}
-            <div className="lg:hidden flex flex-col md:flex-row gap-3 w-full pt-8 md:pt-0 md:px-0">
+            <div className="lg:hidden flex flex-col-reverse md:flex-row-reverse gap-3 w-full pt-8 md:pt-0 md:px-0">
               {ctas?.map((cta, i) => (
                 <Button
                   key={i}
-                  intent={i === 0 ? "primary" : "secondary"}
+                  intent={i === 0 ? "secondary" : "primary"}
                   href={cta.href}
                   className={`w-full md:w-auto ${
-                    i !== 0 ? "text-white border-white" : ""
+                    i !== 0 ? "" : "text-white border-white"
                   }`}
                 >
                   {cta.title}

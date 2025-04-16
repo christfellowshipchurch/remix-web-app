@@ -51,8 +51,8 @@ const AdditionalResourcesButtons = ({
           className={`text-${color || "ocean"} border-${
             color || "ocean"
           } hover:enabled:text-${color || "ocean"} hover:enabled:bg-${
-            `${color}/10` || "ocean/10"
-          }`}
+            color || "ocean"
+          }/10`}
         >
           {resource.title}
         </Button>
