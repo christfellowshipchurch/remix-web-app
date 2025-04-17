@@ -22,7 +22,7 @@ export const ScrollComponent = (data: {
       <div className="max-w-screen-content mx-auto">
         <div className="flex flex-col gap-12 lg:gap-20">
           <div className="flex flex-col gap-3 md:gap-4">
-            <h2 className="text-2xl lg:text-[52px] font-extrabold">
+            <h2 className="text-2xl lg:text-[52px] font-extrabold leading-none">
               {data.title}
             </h2>
             {data.summary && <p className="lg:text-lg">{data.summary}</p>}
