@@ -8,5 +8,6 @@ export { SectionTitle } from "./section-title";
 export { ShareLinks } from "./share-links";
 export { StyledAccordion } from "./styled-accordion";
 export { VideoHeader } from "./video-header";
+export { ResourceCard } from "./resource-card";
 
 export * from "./modals";
