@@ -17,7 +17,7 @@ export function SeriesResources() {
         <div className="content-padding flex flex-col">
           {/* Info Section */}
           <div className="flex flex-col items-center py-16 gap-8 md:gap-6 text-center">
-            <h1 className="text-2xl lg:text-[52px] font-extrabold">
+            <h1 className="text-2xl lg:text-[52px] font-extrabold leading-none">
               {series.title}
             </h1>
             <p className="lg:max-w-[720px] lg:text-lg">{series.description}</p>
