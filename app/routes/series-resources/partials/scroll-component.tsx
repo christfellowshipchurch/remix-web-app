@@ -8,6 +8,7 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 import { Carousel } from "~/primitives/shadcn-primitives/carousel";
 import { useState } from "react";
+import { ResourceCard } from "~/components/resource-card";
 
 export const ScrollComponent = (data: {
   items: Message[] | SeriesResource[];
@@ -39,13 +40,17 @@ export const ScrollComponent = (data: {
                   key={index}
                   className="w-full aspect-video basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
                 >
-                  {/* <ResourceCard series={item} /> */}
-                  <div>Testing {index}</div>
+                  <ResourceCard
+                    title={item.title}
+                    description={item.summary}
+                    image={item.coverImage}
+                  />
+                  {/* <div>Testing {index}</div> */}
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="absolute left-0 -bottom-7">
-              {/* Add dots here */}
+            <div className="flex justify-between w-full absolute -bottom-8">
+              {/* Dots */}
               <div className="flex gap-2">
                 {data.items.map((item, index) => (
                   <div
@@ -56,28 +61,30 @@ export const ScrollComponent = (data: {
                   />
                 ))}
               </div>
-            </div>
-            <div className="absolute -bottom-7 right-8">
-              <CarouselPrevious
-                className="left-0 border-navy disabled:border-[#AAAAAA]"
-                fill="#004f71"
-                disabledFill="#AAAAAA"
-                onClick={() =>
-                  setCurrentSlide(currentSlide !== 0 ? currentSlide - 1 : 0)
-                }
-              />
-              <CarouselNext
-                className="left-12 border-navy disabled:border-[#AAAAAA]"
-                fill="#004f71"
-                disabledFill="#AAAAAA"
-                onClick={() =>
-                  setCurrentSlide(
-                    currentSlide !== data.items.length - 1
-                      ? currentSlide + 1
-                      : data.items.length - 1
-                  )
-                }
-              />
+
+              {/* Arrows */}
+              <div className="flex gap-4">
+                <CarouselPrevious
+                  className="right-12 left-auto border-navy disabled:border-[#AAAAAA]"
+                  fill="#004f71"
+                  disabledFill="#AAAAAA"
+                  // onClick={() =>
+                  //   setCurrentSlide(currentSlide !== 0 ? currentSlide - 1 : 0)
+                  // }
+                />
+                <CarouselNext
+                  className="right-0 border-navy disabled:border-[#AAAAAA]"
+                  fill="#004f71"
+                  disabledFill="#AAAAAA"
+                  // onClick={() =>
+                  //   setCurrentSlide(
+                  //     currentSlide !== data.items.length - 1
+                  //       ? currentSlide + 1
+                  //       : data.items.length - 1
+                  //   )
+                  // }
+                />
+              </div>
             </div>
           </Carousel>
         </div>

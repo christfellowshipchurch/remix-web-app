@@ -19,8 +19,8 @@ export type Series = {
 
 export type SeriesResource = {
   title: string;
-  description: string;
-  image: string;
+  summary: string;
+  coverImage: string;
   url: string;
 };
 
@@ -32,12 +32,12 @@ export async function loader() {
 
 // TODO: Update
 const getSeries = async () => {
-  const series = await fetchRockData({
-    endpoint: "ContentChannelItems",
-    queryParams: {
-      $filter: "ContentChannelId eq 63",
-    },
-  });
+  //   const series = await fetchRockData({
+  //     endpoint: "ContentChannelItems",
+  //     queryParams: {
+  //       $filter: "ContentChannelId eq 63",
+  //     },
+  //   });
 
   const mockSeries: Series = {
     title: "Just Jesus",
@@ -134,37 +134,37 @@ const getSeries = async () => {
     resources: [
       {
         title: "Resources title heading",
-        description:
+        summary:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-        image: "/assets/images/series-resources/resource-cover.jpg",
+        coverImage: "/assets/images/series-resources/resource-cover.jpg",
         url: "/resources/resource-1",
       },
       {
         title: "Resources title heading",
-        description:
+        summary:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-        image: "/assets/images/series-resources/resource-cover.jpg",
+        coverImage: "/assets/images/series-resources/resource-cover.jpg",
         url: "/resources/resource-2",
       },
       {
         title: "Resources title heading",
-        description:
+        summary:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-        image: "/assets/images/series-resources/resource-cover.jpg",
+        coverImage: "/assets/images/series-resources/resource-cover.jpg",
         url: "/resources/resource-3",
       },
       {
         title: "Resources title heading",
-        description:
+        summary:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-        image: "/assets/images/series-resources/resource-cover.jpg",
+        coverImage: "/assets/images/series-resources/resource-cover.jpg",
         url: "/resources/resource-4",
       },
       {
         title: "Resources title heading",
-        description:
+        summary:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-        image: "/assets/images/series-resources/resource-cover.jpg",
+        coverImage: "/assets/images/series-resources/resource-cover.jpg",
         url: "/resources/resource-5",
       },
     ],
