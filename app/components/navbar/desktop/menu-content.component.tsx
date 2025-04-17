@@ -53,7 +53,7 @@ export const MenuContent: React.FC<
             </ul>
             {section.link && (
               <a
-                href="#"
+                href="/ministries"
                 className="mt-4 flex hover:text-ocean transition-colors"
               >
                 <span>{section.link}</span>
