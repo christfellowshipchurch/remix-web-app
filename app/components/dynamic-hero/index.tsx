@@ -29,13 +29,17 @@ export const DynamicHero = ({
   return (
     <div
       role="banner"
-      className="flex items-center justify-start self-stretch h-[720px] md:h-[640px] px-5 md:px-12 lg:px-18"
+      className="relative flex items-center justify-start self-stretch h-[720px] md:h-[640px] px-5 md:px-12 lg:px-18"
       style={{
         background: `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${imagePath}) black 50% / cover no-repeat`,
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col gap-8 md:gap-12 w-full pb-8 md:pb-16 mx-auto items-start justify-end self-stretch max-w-screen-content">
+      {/* Bottom Background Gradient Overlay */}
+      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent z-0 opacity-50" />
+
+      {/* Content */}
+      <div className="flex flex-col gap-8 md:gap-12 w-full pb-8 md:pb-16 mx-auto items-start justify-end self-stretch max-w-screen-content z-10">
         <h1 className="font-extrabold heading-h1 lg:text-7xl xl:text-8xl text-white">
           {customTitle || pagePath}
         </h1>
