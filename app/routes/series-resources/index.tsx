@@ -23,7 +23,7 @@ export function SeriesResources() {
             <p className="lg:max-w-[720px] lg:text-lg">{series.description}</p>
 
             {/* CTAs */}
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
               {series.ctas?.map((cta, index) => (
                 <Button
                   key={index}
