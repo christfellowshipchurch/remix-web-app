@@ -9,6 +9,7 @@ import {
 import { Carousel } from "~/primitives/shadcn-primitives/carousel";
 import { useState } from "react";
 import { ResourceCard } from "~/components/resource-card";
+import { useResponsive } from "~/hooks/use-responsive";
 
 export const ScrollComponent = (data: {
   items: Message[] | SeriesResource[];
@@ -17,9 +18,24 @@ export const ScrollComponent = (data: {
   bg?: string;
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const itemsLength = data.items.length;
+  const { isMedium, isLarge } = useResponsive();
+
+  let itemsPerSlide = 1;
+  if (isMedium) {
+    itemsPerSlide = 2;
+  } else if (isLarge) {
+    itemsPerSlide = 3;
+  }
+
+  const slides = itemsLength - itemsPerSlide + 1;
 
   return (
-    <div className={`content-padding py-28 bg-${data.bg || "white"}`}>
+    <div
+      className={`content-padding pb-28 pt-16 lg:pt-28 bg-${
+        data.bg || "white"
+      }`}
+    >
       <div className="max-w-screen-content mx-auto">
         <div className="flex flex-col gap-12 lg:gap-20">
           <div className="flex flex-col gap-3 md:gap-4">
@@ -52,7 +68,7 @@ export const ScrollComponent = (data: {
             <div className="flex justify-between w-full absolute -bottom-8">
               {/* Dots */}
               <div className="flex gap-2">
-                {data.items.map((item, index) => (
+                {Array.from({ length: Math.ceil(slides) }, (_, index) => (
                   <div
                     key={index}
                     className={`w-2 h-2 rounded-full ${
@@ -64,26 +80,32 @@ export const ScrollComponent = (data: {
 
               {/* Arrows */}
               <div className="flex gap-4">
-                <CarouselPrevious
-                  className="right-12 left-auto border-navy disabled:border-[#AAAAAA]"
-                  fill="#004f71"
-                  disabledFill="#AAAAAA"
-                  // onClick={() =>
-                  //   setCurrentSlide(currentSlide !== 0 ? currentSlide - 1 : 0)
-                  // }
-                />
-                <CarouselNext
-                  className="right-0 border-navy disabled:border-[#AAAAAA]"
-                  fill="#004f71"
-                  disabledFill="#AAAAAA"
-                  // onClick={() =>
-                  //   setCurrentSlide(
-                  //     currentSlide !== data.items.length - 1
-                  //       ? currentSlide + 1
-                  //       : data.items.length - 1
-                  //   )
-                  // }
-                />
+                <div
+                  onClick={() =>
+                    setCurrentSlide(currentSlide !== 0 ? currentSlide - 1 : 0)
+                  }
+                >
+                  <CarouselPrevious
+                    className="right-12 left-auto border-navy disabled:border-[#AAAAAA]"
+                    fill="#004f71"
+                    disabledFill="#AAAAAA"
+                  />
+                </div>
+                <div
+                  onClick={() =>
+                    setCurrentSlide(
+                      currentSlide !== data.items.length - 1
+                        ? currentSlide + 1
+                        : data.items.length - 1
+                    )
+                  }
+                >
+                  <CarouselNext
+                    className="right-0 border-navy disabled:border-[#AAAAAA]"
+                    fill="#004f71"
+                    disabledFill="#AAAAAA"
+                  />
+                </div>
               </div>
             </div>
           </Carousel>
