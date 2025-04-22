@@ -2,10 +2,7 @@ import { cn } from "~/lib/utils";
 import {
   Carousel,
   CarouselContent,
-  CarouselDots,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   useCarousel,
 } from "~/primitives/shadcn-primitives/carousel";
 import { beliefsData } from "../about.data";
@@ -41,7 +38,7 @@ const BeliefsMobilePagination = () => {
       <button
         onClick={() => scrollPrev()}
         className={cn(
-          "flex items-center justify-center w-12 h-12 border-2 border-white text-white",
+          "flex items-center justify-center size-9 border-2 border-neutral-lighter text-neutral-lighter",
           !canScrollPrev && "opacity-50"
         )}
       >
@@ -52,7 +49,7 @@ const BeliefsMobilePagination = () => {
           onClick={() => api?.scrollTo(index)}
           key={index}
           className={cn(
-            "flex items-center justify-center w-12 h-12 border-2 border-white text-white",
+            "flex items-center justify-center size-9 border-2 border-neutral-lighter text-neutral-lighter",
             currentSlide === index && "bg-ocean border-ocean"
           )}
         >
@@ -62,7 +59,7 @@ const BeliefsMobilePagination = () => {
       <button
         onClick={() => scrollNext()}
         className={cn(
-          "flex items-center justify-center w-12 h-12 border-2 border-white text-white",
+          "flex items-center justify-center size-9 border-2 border-neutral-lighter text-neutral-lighter",
           !canScrollNext && "opacity-50"
         )}
       >
