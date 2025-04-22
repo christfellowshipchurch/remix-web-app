@@ -13,7 +13,7 @@ export function ResourceCard({
         <img
           src={image}
           alt={title}
-          className="w-full h-[278px] object-cover"
+          className="w-full aspect-video object-cover"
         />
         <div className="flex flex-col p-6 gap-4 bg-white">
           <h3 className="text-[24px] font-bold leading-none">{title}</h3>
