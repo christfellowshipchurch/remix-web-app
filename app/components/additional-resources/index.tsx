@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 
 export const AdditionalResources = ({
@@ -36,7 +37,7 @@ type Resource = {
 
 const AdditionalResourcesButtons = ({
   resources,
-  color,
+  color = "ocean",
 }: {
   resources: Resource[];
   color?: string;
@@ -48,11 +49,12 @@ const AdditionalResourcesButtons = ({
           key={index}
           intent="secondary"
           href={resource.url}
-          className={`text-${color || "ocean"} border-${
-            color || "ocean"
-          } hover:enabled:text-${color || "ocean"} hover:enabled:bg-${
-            color || "ocean"
-          }/10`}
+          className={cn(
+            `text-${color}`,
+            `border-${color}`,
+            `hover:enabled:text-${color}`,
+            `hover:enabled:bg-${color}/10`
+          )}
         >
           {resource.title}
         </Button>
