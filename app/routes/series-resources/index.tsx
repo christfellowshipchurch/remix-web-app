@@ -11,7 +11,7 @@ export function SeriesResources() {
       <img
         src={series.image}
         alt="Series Resources"
-        className="w-full h-[80vh] md:h-[60vh] object-cover"
+        className="w-full h-[45vh] md:h-[60vh] object-cover"
       />
       <div className="max-w-screen-content mx-auto">
         <div className="content-padding flex flex-col">

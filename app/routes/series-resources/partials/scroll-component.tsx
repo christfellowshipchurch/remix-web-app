@@ -32,7 +32,7 @@ export const ScrollComponent = (data: {
 
   return (
     <div
-      className={`content-padding pb-28 pt-16 lg:pt-28 bg-${
+      className={`pl-6 md:content-padding pb-28 pt-16 lg:pt-28 bg-${
         data.bg || "white"
       }`}
     >
@@ -54,14 +54,13 @@ export const ScrollComponent = (data: {
               {data.items.map((item, index) => (
                 <CarouselItem
                   key={index}
-                  className="w-full aspect-video basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
+                  className="w-full aspect-video basis-[85%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
                 >
                   <ResourceCard
                     title={item.title}
                     description={item.summary}
                     image={item.coverImage}
                   />
-                  {/* <div>Testing {index}</div> */}
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -86,7 +85,7 @@ export const ScrollComponent = (data: {
                   }
                 >
                   <CarouselPrevious
-                    className="right-12 left-auto border-navy disabled:border-[#AAAAAA]"
+                    className="right-16 left-auto border-navy disabled:border-[#AAAAAA]"
                     fill="#004f71"
                     disabledFill="#AAAAAA"
                   />
@@ -101,7 +100,7 @@ export const ScrollComponent = (data: {
                   }
                 >
                   <CarouselNext
-                    className="right-0 border-navy disabled:border-[#AAAAAA]"
+                    className="right-4 border-navy disabled:border-[#AAAAAA]"
                     fill="#004f71"
                     disabledFill="#AAAAAA"
                   />
