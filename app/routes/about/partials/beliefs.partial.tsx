@@ -1,6 +1,7 @@
 import { SectionTitle } from "~/components";
 import { BeliefsCarousel } from "../components/beliefs-carousel.component";
 import { cn } from "~/lib/utils";
+import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.component";
 
 export function BeliefsSection() {
   return (
@@ -33,11 +34,17 @@ export function BeliefsSection() {
             />
           </div>
           {/* Beliefs Carousel */}
-          <BeliefsCarousel />
+          <div className="hidden md:block">
+            <BeliefsCarousel />
+          </div>
         </div>
       </div>
       {/* Navy BG */}
       <div className="absolute bottom-0 w-full h-[50%] bg-dark-navy z-[-1]" />
+      {/* Mobile Beliefs Carousel */}
+      <div className="block md:hidden">
+        <BeliefsCarouselMobile />
+      </div>
     </section>
   );
 }
