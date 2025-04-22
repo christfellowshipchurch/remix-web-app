@@ -13,7 +13,7 @@ export function MissionSection() {
             sectionTitle="our mission."
             className="hidden md:block"
           />
-          <h3 className="text-5xl font-bold my-6">
+          <h3 className="text-[28px] md:text-5xl font-extrabold my-6">
             <span className="text-ocean">Everyone,</span>{" "}
             <span className="text-navy">Everyday,</span>{" "}
             <span className="text-dark-navy">Everywhere</span>
