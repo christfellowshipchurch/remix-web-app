@@ -14,6 +14,7 @@ export type LoaderReturnType = {
       coverImage: string;
       path: string;
       authorName: string;
+      summary: string;
     };
   };
 };
@@ -46,6 +47,7 @@ const fetchLatestMessage = async () => {
       path: latestMessage.attributeValues?.url?.value || "",
       authorName:
         `Pastor ${latestMessage.attributeValues?.author?.valueFormatted}` || "",
+      summary: latestMessage.attributeValues?.summary?.valueFormatted || "",
     },
   };
 };
