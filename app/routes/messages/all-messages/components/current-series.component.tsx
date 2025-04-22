@@ -5,10 +5,15 @@ import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 import type { LoaderReturnType } from "../loader";
 import { getFirstParagraph } from "~/lib/utils";
+import kebabCase from "lodash/kebabCase";
 
 const CurrentSeries: React.FC = () => {
   const { currentSeries } = useLoaderData<LoaderReturnType>();
   const { currentSeriesTitle, latestMessage } = currentSeries;
+
+  const latestMessageResources = latestMessage.summary.includes("|")
+    ? latestMessage.summary.split("|")[1]
+    : null;
 
   return (
     <section className="relative grid grid-cols-1 min-h-screen lg:min-h-[900px] bg-white">
@@ -45,12 +50,14 @@ const CurrentSeries: React.FC = () => {
 
             {/* Buttons */}
             <div className="mt-5 xl:mt-8 md:mt-0 flex flex-col sm:flex-row gap-3">
-              <IconButton
-                to="/messages/series"
-                className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
-              >
-                Series & Resources
-              </IconButton>
+              {latestMessageResources && (
+                <IconButton
+                  to={`/series-resources/${kebabCase(latestMessageResources)}`}
+                  className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
+                >
+                  Series & Resources
+                </IconButton>
+              )}
               <IconButton
                 to={`/messages/${latestMessage.path}`}
                 prefetch="viewport"
