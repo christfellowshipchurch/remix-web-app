@@ -9,19 +9,16 @@ const VideoSkeleton = () => (
 
 export const MessageVideo: React.FC = () => {
   const { message } = useLoaderData<MessageReturnType>();
-
-  const sermonResources = message.summary.includes("|")
-    ? message.summary.split("|")[0]
-    : null;
+  const messageSeries = message.attributeValues.messageSeries.valueFormatted;
 
   return (
     <VideoHeader
       wistiaId={message.wistiaId || ""}
       video={message.video || ""}
       ctas={[
-        sermonResources && {
+        messageSeries && {
           title: "Sermon Series Resources",
-          href: `/series-resources/${kebabCase(sermonResources)}`,
+          href: `/series-resources/${kebabCase(messageSeries)}`,
         },
         { title: "Share", href: "#" },
       ].filter((cta): cta is { title: string; href: string } => Boolean(cta))}

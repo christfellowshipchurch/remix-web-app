@@ -4,12 +4,12 @@ import { ScrollComponent } from "./partials/scroll-component";
 import { Button } from "~/primitives/button/button.primitive";
 
 export function SeriesResources() {
-  const { series } = useLoaderData<SeriesReturnType>();
+  const { series, messages, resources } = useLoaderData<SeriesReturnType>();
 
   return (
     <div className="flex flex-col">
       <img
-        src={series.image}
+        src={series.attributeValues.coverImage}
         alt="Series Resources"
         className="w-full h-[45vh] md:h-[60vh] object-cover"
       />
@@ -18,40 +18,39 @@ export function SeriesResources() {
           {/* Info Section */}
           <div className="flex flex-col items-center py-16 gap-8 md:gap-6 text-center">
             <h1 className="text-2xl lg:text-[52px] font-extrabold leading-none">
-              {series.title}
+              {series.value}
             </h1>
             <p className="lg:max-w-[720px] lg:text-lg">{series.description}</p>
 
             {/* CTAs */}
-            <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
-              {series.ctas?.map((cta, index) => (
-                <Button
-                  key={index}
-                  intent={index === 0 ? "primary" : "secondary"}
-                  className="w-full"
-                  size="lg"
-                  href={cta.url}
-                >
-                  {cta.title}
-                </Button>
-              ))}
-            </div>
+            {series.attributeValues.callToActions &&
+              series.attributeValues.callToActions.length > 0 && (
+                <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
+                  {series.attributeValues.callToActions?.map((cta, index) => (
+                    <Button
+                      key={index}
+                      intent={index === 0 ? "primary" : "secondary"}
+                      className="w-full"
+                      size="lg"
+                      href={cta.url}
+                    >
+                      {cta.title}
+                    </Button>
+                  ))}
+                </div>
+              )}
           </div>
         </div>
       </div>
 
       {/* Series Messages */}
-      <ScrollComponent
-        title="Series Messages"
-        items={series.messages}
-        bg="gray"
-      />
+      <ScrollComponent title="Series Messages" items={messages} bg="gray" />
 
       {/* Resources Section */}
       <ScrollComponent
         title="Related Resources"
         summary="Explore other resources that may be of interest to you"
-        items={series.resources}
+        items={resources}
         bg="white"
       />
     </div>

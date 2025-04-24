@@ -2,12 +2,14 @@ import type { LoaderFunction } from "react-router";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { format } from "date-fns";
 import { mockInThisSeries } from "./components/mockData";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type Message = {
   hostUrl: string;
   title: string;
   content: string;
   summary: string;
+  image: string;
   coverImage: string;
   startDateTime: string;
   expireDateTime?: string;
@@ -16,12 +18,13 @@ export type Message = {
   attributeValues: {
     summary: { value: string };
     author: { value: string; valueFormatted: string };
+    image: { value: string };
     url: { value: string };
+    messageSeries: { value: string; valueFormatted: string };
     // TODO: Figure out the following
     actions: { value: string };
     topic: { value: string }; // TODO: Single tag for related messages on a topic?
     resources: { value: string }; // TODO: Will be an array of resources {title: string, href: string}
-    series: { value: string }; // TODO: Id that gives an array of messages?
   };
 };
 
@@ -94,10 +97,11 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const { title, content, startDateTime, attributeValues, attributes } =
+  const { title, image, content, startDateTime, attributeValues, attributes } =
     messageData;
 
   const coverImage = getImages({ attributeValues, attributes });
+  const imageUrl = createImageUrlFromGuid(image);
 
   // TODO: Get Related Messages
   const relatedMessages: RelatedMessages = {
@@ -112,6 +116,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     title,
     content,
     summary: attributeValues.summary.value,
+    image: imageUrl,
     video: attributeValues.videoLink.value,
     wistiaId,
     coverImage: (coverImage && coverImage[0]) || "",
