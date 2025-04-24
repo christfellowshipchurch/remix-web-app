@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import { SeriesReturnType } from "./loader";
 import { ScrollComponent } from "./partials/scroll-component";
 import { Button } from "~/primitives/button/button.primitive";
@@ -23,7 +23,25 @@ export function SeriesResources() {
             <p className="lg:max-w-[720px] lg:text-lg">{series.description}</p>
 
             {/* CTAs */}
-            {series.attributeValues.callToActions &&
+            <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
+              <Link to="/locations">
+                <Button intent="primary" className="w-full" size="lg">
+                  Times and Locations
+                </Button>
+              </Link>
+              <Link to="/app">
+                <Button
+                  intent="secondary"
+                  className="w-full"
+                  size="lg"
+                  href="/app"
+                >
+                  App Devoltional
+                </Button>
+              </Link>
+
+              {/* If we want CTAs to come from Rock */}
+              {/* {series.attributeValues.callToActions &&
               series.attributeValues.callToActions.length > 0 && (
                 <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
                   {series.attributeValues.callToActions?.map((cta, index) => (
@@ -38,21 +56,22 @@ export function SeriesResources() {
                     </Button>
                   ))}
                 </div>
-              )}
+              )} */}
+            </div>
           </div>
         </div>
+
+        {/* Series Messages */}
+        <ScrollComponent title="Series Messages" items={messages} bg="gray" />
+
+        {/* Resources Section */}
+        <ScrollComponent
+          title="Related Resources"
+          summary="Explore other resources that may be of interest to you"
+          items={resources}
+          bg="white"
+        />
       </div>
-
-      {/* Series Messages */}
-      <ScrollComponent title="Series Messages" items={messages} bg="gray" />
-
-      {/* Resources Section */}
-      <ScrollComponent
-        title="Related Resources"
-        summary="Explore other resources that may be of interest to you"
-        items={resources}
-        bg="white"
-      />
     </div>
   );
 }
