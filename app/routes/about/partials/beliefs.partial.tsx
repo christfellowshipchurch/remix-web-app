@@ -5,18 +5,18 @@ import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.com
 
 export function BeliefsSection() {
   return (
-    <section className="relative py-0 md:py-16 lg:pt-40">
+    <section className="relative md:py-16 lg:pt-40 w-full" id="beliefs">
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
           {/* Beliefs Title */}
           <div className="relative flex flex-col gap-6 pb-12 w-full">
             <SectionTitle sectionTitle="our beliefs." />
             <h3 className="font-extrabold text-text-primary text-[28px] md:text-5xl leading-tight">
-              <span className="hidden md:block">
-                History of Christ <br />
-                Fellowship Church
+              <span className="hidden lg:block">
+                Beliefs And Theological <br />
+                Positions Drawn From The Bible.
               </span>
-              <span className="block md:hidden">
+              <span className="block lg:hidden">
                 Beliefs drawn <br />
                 from the Bible.
               </span>

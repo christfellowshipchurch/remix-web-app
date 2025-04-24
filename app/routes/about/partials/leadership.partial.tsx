@@ -3,9 +3,12 @@ import { LeaderGrid } from "../components/leaders-grid.component";
 import { LeaderScroll } from "../components/leaders-scroll.component";
 import { SectionTitle } from "~/components/section-title";
 
-export function LeadershipSection() {
+export function LeadershipSection({ bg }: { bg?: string }) {
   return (
-    <section className="bg-gray pt-16 pb-24 lg:px-18">
+    <section
+      className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray")}
+      id="leadership"
+    >
       <div className="max-w-screen-content mx-auto ">
         <div className="content-padding lg:px-0">
           {/* Desktop title */}
@@ -19,7 +22,7 @@ export function LeadershipSection() {
           {/* Mobile title */}
           <div className="lg:hidden">
             <SectionTitle className="mb-6" sectionTitle="meet our team." />
-            <h3 className="hidden sm:block text-[28px] font-extrabold leading-tight mb-16 max-w-3xl">
+            <h3 className="hidden sm:block text-[28px] sm:text-5xl font-extrabold leading-tight mb-16 max-w-3xl">
               Meet The Passionate Leaders <br />
               Of Christ Fellowship Church.
             </h3>
