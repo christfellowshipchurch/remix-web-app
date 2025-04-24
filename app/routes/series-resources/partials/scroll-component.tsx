@@ -1,4 +1,3 @@
-import { SeriesResource } from "../loader";
 import { Message } from "~/routes/messages/message-single/loader";
 import {
   CarouselContent,
@@ -10,9 +9,22 @@ import { Carousel } from "~/primitives/shadcn-primitives/carousel";
 import { useState } from "react";
 import { ResourceCard } from "~/components/resource-card";
 import { useResponsive } from "~/hooks/use-responsive";
+import { ContentChannelIds } from "~/lib/types/rock-types";
+
+const contentChannelUrlMap: Record<number, string> = {
+  [ContentChannelIds.messages]: "/messages",
+  [ContentChannelIds.articles]: "/articles",
+  [ContentChannelIds.devotionals]: "/devotionals",
+  [ContentChannelIds.events]: "/events",
+  [ContentChannelIds.studies[0]]: "/studies",
+  [ContentChannelIds.studies[1]]: "/studies",
+  [ContentChannelIds["so-good-sisterhood"]]: "/so-good-sisterhood",
+  [ContentChannelIds["keep-talking"]]: "/keep-talking",
+};
 
 export const ScrollComponent = (data: {
-  items: Message[] | SeriesResource[];
+  // Items will be Message[] or any[] depending on the type of items (Resources are anything tagged with the series defined value that is not a message)
+  items: Message[] | any[];
   title: string;
   summary?: string;
   bg?: string;
@@ -22,10 +34,13 @@ export const ScrollComponent = (data: {
   const { isMedium, isLarge } = useResponsive();
 
   let itemsPerSlide = 1;
+  let showDots = itemsLength > 1;
   if (isMedium) {
     itemsPerSlide = 2;
+    showDots = itemsLength > 2;
   } else if (isLarge) {
     itemsPerSlide = 3;
+    showDots = itemsLength > 3;
   }
 
   const slides = itemsLength - itemsPerSlide + 1;
@@ -54,61 +69,94 @@ export const ScrollComponent = (data: {
               {data.items.map((item, index) => (
                 <CarouselItem
                   key={index}
-                  className="w-full aspect-video basis-[85%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
+                  className="w-full basis-[85%] sm:basis-[46%] lg:basis-[31.5%] pl-0 flex flex-col items-stretch"
+                  style={{
+                    paddingRight:
+                      index === itemsLength - 1 && itemsLength > 1
+                        ? "24px"
+                        : "0px",
+                  }}
                 >
                   <ResourceCard
                     title={item.title}
-                    description={item.summary}
+                    description={item.attributeValues.summary.value}
                     image={item.coverImage}
+                    url={`${
+                      contentChannelUrlMap[item.contentChannelId] || ""
+                    }/${item.attributeValues.url.value}`}
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
             <div className="flex justify-between w-full absolute -bottom-8">
               {/* Dots */}
-              <div className="flex gap-2">
-                {Array.from({ length: Math.ceil(slides) }, (_, index) => (
-                  <div
-                    key={index}
-                    className={`w-2 h-2 rounded-full ${
-                      currentSlide === index ? "bg-navy" : "bg-neutral-lighter"
-                    }`}
-                  />
-                ))}
-              </div>
+              {showDots && (
+                <div className="flex gap-2">
+                  {Array.from({ length: Math.ceil(slides) }, (_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full ${
+                        currentSlide === index
+                          ? "bg-navy"
+                          : "bg-neutral-lighter"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Arrows */}
-              <div className="flex gap-4">
-                <div
-                  onClick={() =>
-                    setCurrentSlide(currentSlide !== 0 ? currentSlide - 1 : 0)
-                  }
-                >
-                  <CarouselPrevious
-                    className="right-16 left-auto border-navy disabled:border-[#AAAAAA]"
-                    fill="#004f71"
-                    disabledFill="#AAAAAA"
-                  />
-                </div>
-                <div
-                  onClick={() =>
-                    setCurrentSlide(
-                      currentSlide !== data.items.length - 1
-                        ? currentSlide + 1
-                        : data.items.length - 1
-                    )
-                  }
-                >
-                  <CarouselNext
-                    className="right-4 border-navy disabled:border-[#AAAAAA]"
-                    fill="#004f71"
-                    disabledFill="#AAAAAA"
-                  />
-                </div>
-              </div>
+              {itemsLength > 1 && (
+                <CarouselArrows
+                  currentSlide={currentSlide}
+                  setCurrentSlide={setCurrentSlide}
+                  itemsLength={itemsLength}
+                />
+              )}
             </div>
           </Carousel>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const CarouselArrows = ({
+  currentSlide,
+  setCurrentSlide,
+  itemsLength,
+}: {
+  currentSlide: number;
+  setCurrentSlide: (slide: number) => void;
+  itemsLength: number;
+}) => {
+  return (
+    <div className="flex gap-4">
+      <div
+        onClick={() =>
+          setCurrentSlide(currentSlide !== 0 ? currentSlide - 1 : 0)
+        }
+      >
+        <CarouselPrevious
+          className="right-16 left-auto border-navy disabled:border-[#AAAAAA]"
+          fill="#004f71"
+          disabledFill="#AAAAAA"
+        />
+      </div>
+      <div
+        onClick={() =>
+          setCurrentSlide(
+            currentSlide !== itemsLength - 1
+              ? currentSlide + 1
+              : itemsLength - 1
+          )
+        }
+      >
+        <CarouselNext
+          className="right-4 border-navy disabled:border-[#AAAAAA]"
+          fill="#004f71"
+          disabledFill="#AAAAAA"
+        />
       </div>
     </div>
   );
