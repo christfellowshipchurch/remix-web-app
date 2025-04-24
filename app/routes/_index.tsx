@@ -7,7 +7,10 @@ import { SomethingForEveryoneSection } from "./home/partials/something-for-every
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
 import { ConnectSection } from "./home/partials/connect-section.partial";
 import { AppSection } from "./home/partials/app.partial";
-import { HeroSection } from "./about/partials/hero.partial";
+import {
+  DesktopHeroSection,
+  MobileHeroSection,
+} from "./about/partials/hero.partial";
 
 export const meta: MetaFunction = () => {
   return [
@@ -31,7 +34,12 @@ export default function Index() {
   return (
     <div className="flex items-center justify-center w-full">
       <div className="flex flex-col items-center gap-16 w-full">
-        <HeroSection />
+        <div className="hidden lg:block w-full">
+          <DesktopHeroSection />
+        </div>
+        <div className="block lg:hidden w-full">
+          <MobileHeroSection />
+        </div>
         <HistorySection />
         <BeliefsSection />
         <SomethingForEveryoneSection />

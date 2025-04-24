@@ -1,6 +1,6 @@
 import { icons } from "~/lib/icons";
 
-type IconName = keyof typeof icons;
+export type IconName = keyof typeof icons;
 
 export type BaseIconButtonProps = {
   /**
