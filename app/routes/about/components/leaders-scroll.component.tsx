@@ -40,7 +40,10 @@ export function LeaderScroll() {
         {otherLeaders.map((leader, index) => (
           <div
             key={leader.name}
-            className={cn("group min-w-[200px] sm:min-w-none")}
+            className={cn(
+              `group min-w-[220px] sm:min-w-none`,
+              index === otherLeaders.length - 1 && "pr-4 lg:pr-0"
+            )}
           >
             <div className="relative mb-6">
               <div className="overflow-hidden rounded-[8px]">
