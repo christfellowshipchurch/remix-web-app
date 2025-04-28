@@ -22,7 +22,7 @@ const contentChannelUrlMap: Record<number, string> = {
   [ContentChannelIds["keep-talking"]]: "/keep-talking",
 };
 
-export const ScrollComponent = (data: {
+export const ResourceCarousel = (data: {
   // Items will be Message[] or any[] depending on the type of items (Resources are anything tagged with the series defined value that is not a message)
   items: Message[] | any[];
   title: string;
@@ -47,11 +47,11 @@ export const ScrollComponent = (data: {
 
   return (
     <div
-      className={`pl-6 md:content-padding pb-28 pt-16 lg:pt-28 bg-${
+      className={`pl-6 md:pl-12 lg:pl-18 pb-28 pt-16 lg:pt-28 bg-${
         data.bg || "white"
       }`}
     >
-      <div className="max-w-screen-content mx-auto">
+      <div className="xl:max-w-screen-content xl:mx-auto">
         <div className="flex flex-col gap-11 lg:gap-20">
           <div className="flex flex-col gap-3 md:gap-4">
             <h2 className="text-2xl lg:text-[52px] font-extrabold leading-none">
@@ -69,7 +69,7 @@ export const ScrollComponent = (data: {
               {data.items.map((item, index) => (
                 <CarouselItem
                   key={index}
-                  className="w-full basis-[85%] sm:basis-[46%] lg:basis-[31.5%] pl-0 flex flex-col items-stretch"
+                  className="w-full basis-[85%] sm:basis-[46%] lg:basis-auto max-w-[420px] pl-0 flex flex-col items-stretch"
                   style={{
                     paddingRight:
                       index === itemsLength - 1 && itemsLength > 1
