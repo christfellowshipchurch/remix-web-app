@@ -2,7 +2,7 @@ import { SectionTitle } from "~/components";
 
 export function MissionSection() {
   return (
-    <section className="py-2 lg:py-24 content-padding">
+    <section id="mission" className="py-2 lg:py-24 content-padding">
       <div className="container max-w-screen-content grid items-center justify-center grid-cols-1  lg:grid-cols-5 gap-8 mx-auto">
         <SectionTitle
           sectionTitle="our mission."
