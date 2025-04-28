@@ -2,7 +2,6 @@ import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/shadcn-primitives/button";
@@ -27,6 +26,7 @@ type CarouselContextProps = {
   scrollNext: () => void;
   canScrollPrev: boolean;
   canScrollNext: boolean;
+  currentSlide: number;
 } & CarouselProps;
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
@@ -66,6 +66,7 @@ const Carousel = React.forwardRef<
     );
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);
     const [canScrollNext, setCanScrollNext] = React.useState(false);
+    const [currentSlide, setCurrentSlide] = React.useState(0);
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
@@ -74,6 +75,7 @@ const Carousel = React.forwardRef<
 
       setCanScrollPrev(api.canScrollPrev());
       setCanScrollNext(api.canScrollNext());
+      setCurrentSlide(api.selectedScrollSnap());
     }, []);
 
     const scrollPrev = React.useCallback(() => {
@@ -131,6 +133,7 @@ const Carousel = React.forwardRef<
           scrollNext,
           canScrollPrev,
           canScrollNext,
+          currentSlide,
         }}
       >
         <div
@@ -227,7 +230,7 @@ const CarouselPrevious = React.forwardRef<
         {...props}
       >
         <Icon
-          name="arrowBack"
+          name="arrowBack" // TODO: change to arrowLeft
           className="h-4 w-4"
           color={canScrollPrev ? fill : disabledFill || fill}
         />
@@ -283,6 +286,41 @@ const CarouselNext = React.forwardRef<
 );
 CarouselNext.displayName = "CarouselNext";
 
+const CarouselDots = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    className?: string;
+    activeClassName?: string;
+    inactiveClassName?: string;
+  }
+>(({ className, activeClassName, inactiveClassName, ...props }, ref) => {
+  const { api, currentSlide } = useCarousel();
+  const slides = api?.scrollSnapList() || [];
+
+  return (
+    <div
+      ref={ref}
+      className={cn("flex items-center justify-center gap-2", className)}
+      {...props}
+    >
+      {slides.map((_, index) => (
+        <button
+          key={index}
+          className={cn(
+            "h-2 w-2 rounded-full transition-colors",
+            currentSlide === index
+              ? activeClassName || "bg-primary"
+              : inactiveClassName || "bg-muted"
+          )}
+          onClick={() => api?.scrollTo(index)}
+          aria-label={`Go to slide ${index + 1}`}
+        />
+      ))}
+    </div>
+  );
+});
+CarouselDots.displayName = "CarouselDots";
+
 export {
   type CarouselApi,
   Carousel,
@@ -290,4 +328,6 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
+  useCarousel,
 };
