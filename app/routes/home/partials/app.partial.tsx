@@ -1,5 +1,3 @@
-import { IconButton } from "~/primitives/button/icon-button.primitive";
-
 export function AppSection() {
   return (
     <>
@@ -41,7 +39,7 @@ const DesktopVersion = () => {
         </div>
         <div className="flex justify-center items-center">
           <img
-            src="/assets/images/app-image.png"
+            src="/assets/images/home/app-image.png"
             alt="App Section Image"
             className="w-full aspect-[4/5] lg:aspect-[41/49] max-w-[240px]"
           />

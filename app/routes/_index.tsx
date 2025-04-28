@@ -3,7 +3,7 @@ import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-r
 import { HistorySection } from "./about/partials/history.partial";
 import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";
-import { SomethingForEveryoneSection } from "./home/partials/something-for-everyone.partial";
+import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
 import { ConnectSection } from "./home/partials/connect-section.partial";
 import { AppSection } from "./home/partials/app.partial";
@@ -41,7 +41,7 @@ export default function Index() {
       </div>
       <HistorySection />
       <BeliefsSection />
-      <SomethingForEveryoneSection />
+      <WhatWeOfferSection />
       <WhatToExpectSection />
       <LeadershipSection bg="white" />
       <ConnectSection />
