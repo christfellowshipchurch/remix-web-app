@@ -32,22 +32,20 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
   return (
-    <div className="flex items-center justify-center w-full">
-      <div className="flex flex-col items-center gap-16 w-full">
-        <div className="hidden lg:block w-full">
-          <DesktopHeroSection />
-        </div>
-        <div className="block lg:hidden w-full">
-          <MobileHeroSection />
-        </div>
-        <HistorySection />
-        <BeliefsSection />
-        <SomethingForEveryoneSection />
-        <WhatToExpectSection />
-        <LeadershipSection bg="white" />
-        <ConnectSection />
-        <AppSection />
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="hidden lg:block w-full">
+        <DesktopHeroSection />
       </div>
+      <div className="block lg:hidden w-full">
+        <MobileHeroSection />
+      </div>
+      <HistorySection />
+      <BeliefsSection />
+      <SomethingForEveryoneSection />
+      <WhatToExpectSection />
+      <LeadershipSection bg="white" />
+      <ConnectSection />
+      <AppSection />
     </div>
   );
 }
