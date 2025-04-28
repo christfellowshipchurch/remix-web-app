@@ -12,7 +12,7 @@ const CurrentSeries: React.FC = () => {
   const { currentSeriesTitle, latestMessage } = currentSeries;
 
   const latestMessageResources = latestMessage.summary.includes("|")
-    ? latestMessage.summary.split("|")[1]
+    ? latestMessage.summary.split("|")[0]
     : null;
 
   return (
