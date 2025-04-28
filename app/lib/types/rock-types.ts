@@ -12,15 +12,3 @@ export type attributeProps = {
     fieldTypeId: number;
   };
 };
-
-export const ContentChannelIds = {
-  articles: 43,
-  default: 85,
-  devotionals: 83,
-  events: 78,
-  locations: 88,
-  messages: 63,
-  studies: [79, 80],
-  "so-good-sisterhood": 95,
-  "keep-talking": 96,
-};

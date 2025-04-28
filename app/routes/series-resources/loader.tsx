@@ -3,7 +3,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import lodash from "lodash";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { Message } from "../messages/message-single/loader";
-
+import { ContentChannelIds } from "~/lib/rock-config";
 export type SeriesReturnType = {
   series: Series;
   messages: Message[];
@@ -96,6 +96,8 @@ const getSeriesResources = async (seriesGuid: string) => {
       resource.attributeValues.image.value
     );
   });
+
+  // Add logic to return full url for the resource
 
   return resources;
 };
