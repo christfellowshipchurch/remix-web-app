@@ -3,7 +3,7 @@ import HistoryTabs from "../components/history-tabs/history-tabs.component";
 
 export function HistorySection() {
   return (
-    <section className="py-16 w-full" id="history">
+    <section id="history" className="py-16 w-full">
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
           <div className="flex flex-col lg:flex-row w-full items-start lg:items-center justify-start gap-6 mb-6">

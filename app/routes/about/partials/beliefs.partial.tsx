@@ -5,7 +5,7 @@ import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.com
 
 export function BeliefsSection() {
   return (
-    <section className="relative md:py-16 lg:pt-40 w-full" id="beliefs">
+    <section id="beliefs" className="relative md:py-16 lg:pt-40 w-full">
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
           {/* Beliefs Title */}

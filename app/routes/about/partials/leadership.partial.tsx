@@ -6,8 +6,8 @@ import { SectionTitle } from "~/components/section-title";
 export function LeadershipSection({ bg }: { bg?: string }) {
   return (
     <section
-      className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray")}
       id="leadership"
+      className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray")}
     >
       <div className="max-w-screen-content mx-auto ">
         <div className="content-padding lg:px-0">
