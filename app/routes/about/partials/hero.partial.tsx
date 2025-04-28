@@ -12,7 +12,7 @@ export function DesktopHeroSection() {
           className="flex-1 flex flex-col items-center justify-between gap-10 h-full"
           style={{
             background:
-              "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home-hero-bg.jpg') left/cover no-repeat",
+              "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home/home-hero-bg.jpg') left/cover no-repeat",
           }}
         >
           <div className="flex flex-col gap-8 pl-8 pt-16 h-full justify-center ml-auto xl:mx-auto xl:max-w-[500px]">
@@ -47,7 +47,7 @@ export function DesktopHeroSection() {
         <div className="flex-1 relative">
           <div className="size-full bg-gradient-to-t from-transparent via-transparent via-75% to-white opacity-75 top-0 left-0 absolute z-20" />
           <img
-            src="/assets/images/image-holder.jpg"
+            src="/assets/images/home/image-holder.jpg"
             alt="friends at church 1"
             className="w-full h-full object-cover relative z-1"
           />
