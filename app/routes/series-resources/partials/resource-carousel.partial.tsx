@@ -9,21 +9,8 @@ import { Carousel } from "~/primitives/shadcn-primitives/carousel";
 import { useState } from "react";
 import { ResourceCard } from "~/components/resource-card";
 import { useResponsive } from "~/hooks/use-responsive";
-import { ContentChannelIds } from "~/lib/rock-config";
-
-const contentChannelUrlMap: Record<number, string> = {
-  [ContentChannelIds.messages]: "/messages",
-  [ContentChannelIds.articles]: "/articles",
-  [ContentChannelIds.devotionals]: "/devotionals",
-  [ContentChannelIds.events]: "/events",
-  [ContentChannelIds.studies[0]]: "/studies",
-  [ContentChannelIds.studies[1]]: "/studies",
-  [ContentChannelIds.soGoodSisterhood]: "/so-good-sisterhood",
-  [ContentChannelIds.keepTalking]: "/keep-talking",
-};
 
 export const ResourceCarousel = (data: {
-  // Items will be Message[] or any[] depending on the type of items (Resources are anything tagged with the series defined value that is not a message)
   items: Message[] | any[];
   title: string;
   summary?: string;
@@ -81,9 +68,7 @@ export const ResourceCarousel = (data: {
                     title={item.title}
                     description={item.attributeValues.summary.value}
                     image={item.coverImage}
-                    url={`${
-                      contentChannelUrlMap[item.contentChannelId] || ""
-                    }/${item.attributeValues.url.value}`}
+                    url={item.resourceUrl}
                   />
                 </CarouselItem>
               ))}

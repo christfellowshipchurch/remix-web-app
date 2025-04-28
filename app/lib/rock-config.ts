@@ -10,14 +10,18 @@ export const ContentChannelIds = {
   keepTalking: 96,
 };
 
-const getContentChannelUrl = (key: keyof typeof ContentChannelIds): string => {
-  const value = ContentChannelIds[key];
-  const basePath =
-    key === "studies"
-      ? "studies"
-      : key
-          .toLowerCase()
-          .replace(/([a-z])([A-Z])/g, "$1-$2")
-          .toLowerCase();
-  return `/${basePath}`;
+export const getContentChannelUrl = (key: number): string => {
+  const channelMap = Object.entries(ContentChannelIds).reduce(
+    (acc, [path, id]) => {
+      if (Array.isArray(id)) {
+        id.forEach((num) => (acc[num] = `/${path.toLowerCase()}`));
+      } else {
+        acc[id] = `/${path.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase()}`;
+      }
+      return acc;
+    },
+    {} as Record<number, string>
+  );
+
+  return channelMap[key] || "/";
 };
