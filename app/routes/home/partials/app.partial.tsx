@@ -1,3 +1,85 @@
+import { IconButton } from "~/primitives/button/icon-button.primitive";
+
 export function AppSection() {
-  return <section>App Section</section>;
+  return (
+    <>
+      <DesktopVersion />
+      <MobileVersion />
+    </>
+  );
 }
+
+const DesktopVersion = () => {
+  return (
+    <section className="bg-navy content-padding w-full py-28 hidden md:block">
+      <div className="max-w-screen-content mx-auto flex justify-center gap-8 items-center">
+        <div className="flex flex-col gap-16 text-white">
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-white text-[40px] leading-tight">
+                Grow in your{" "}
+                <span className="font-extrabold">
+                  faith. <br /> Every day
+                </span>{" "}
+                of the week.
+              </h2>
+              <p className="text-lg">
+                Download the Christ Fellowship Church App
+              </p>
+            </div>
+            <p className="max-w-[490px]">
+              The Christ Fellowship App experience was designed to help you grow
+              in your faith every day of the week. Through its features, you can
+              stay consistent in your time with God.
+            </p>
+          </div>
+          {/* Buttons Section */}
+          <div className="flex gap-4">
+            {/* <IconButton iconName="appleLogo" />
+            <IconButton iconName="googlePlayLogo" /> */}
+          </div>
+        </div>
+        <div className="flex justify-center items-center">
+          <img
+            src="/assets/images/app-image.png"
+            alt="App Section Image"
+            className="w-full aspect-[4/5] lg:aspect-[41/49] max-w-[240px]"
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const MobileVersion = () => {
+  return (
+    <section className="bg-navy content-padding w-full py-16 md:hidden">
+      <div className="max-w-screen-content mx-auto flex flex-col gap-8 items-center">
+        <h2 className="text-white text-center text-[32px] leading-tight max-w-[340px]">
+          Grow in your <span className="font-extrabold">faith. Every day </span>
+          of the week.
+        </h2>
+
+        <div className="flex justify-center items-center">
+          <img
+            src="/assets/images/app-image.png"
+            alt="App Section Image"
+            className="w-full aspect-[26/32]"
+          />
+        </div>
+
+        <p className="text-white text-center leading-tight">
+          The Christ Fellowship App experience was designed to help you grow in
+          your faith every day of the week. Through its features, you can stay
+          consistent in your time with God.
+        </p>
+
+        {/* Buttons Section */}
+        <div className="flex gap-4">
+          {/* <IconButton iconName="appleLogo" />
+            <IconButton iconName="googlePlayLogo" /> */}
+        </div>
+      </div>
+    </section>
+  );
+};
