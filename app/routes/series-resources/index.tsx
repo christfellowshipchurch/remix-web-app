@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router-dom";
 import { SeriesReturnType } from "./loader";
-import { ScrollComponent } from "./partials/scroll-component";
+import { ResourceCarousel } from "./partials/resource-carousel.partial";
 import { Button } from "~/primitives/button/button.primitive";
 
 export function SeriesResources() {
@@ -60,12 +60,13 @@ export function SeriesResources() {
             </div>
           </div>
         </div>
-
+      </div>
+      <div className="w-full flex flex-col">
         {/* Series Messages */}
-        <ScrollComponent title="Series Messages" items={messages} bg="gray" />
+        <ResourceCarousel title="Series Messages" items={messages} bg="gray" />
 
         {/* Resources Section */}
-        <ScrollComponent
+        <ResourceCarousel
           title="Related Resources"
           summary="Explore other resources that may be of interest to you"
           items={resources}
