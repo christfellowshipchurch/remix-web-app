@@ -5,7 +5,7 @@ import { SectionTitle } from "~/components/section-title";
 
 export function LeadershipSection() {
   return (
-    <section className="bg-gray pt-16 pb-24 lg:px-18">
+    <section id="leadership" className="bg-gray pt-16 pb-24 lg:px-18">
       <div className="max-w-screen-content mx-auto ">
         <div className="content-padding lg:px-0">
           {/* Desktop title */}

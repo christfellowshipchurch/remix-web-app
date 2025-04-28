@@ -24,7 +24,10 @@ const GridItem = ({
 
 export function ImpactSection() {
   return (
-    <section className="bg-dark-navy text-white content-padding py-24">
+    <section
+      id="impact"
+      className="bg-dark-navy text-white content-padding py-24"
+    >
       <div className="flex w-full max-w-screen-content mx-auto">
         <div className="flex flex-col gap-8 lg:gap-0 lg:flex-row items-center lg:h-[580px] xl:h-[640px] w-full">
           <div className="grid lg:grid-rows-2 flex-1 h-full">
