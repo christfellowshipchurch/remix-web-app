@@ -68,7 +68,7 @@ export const ResourceCarousel = (data: {
                     title={item.title}
                     description={item.attributeValues.summary.value}
                     image={item.coverImage}
-                    url={item.resourceUrl}
+                    url={item.attributeValues.url.value}
                   />
                 </CarouselItem>
               ))}

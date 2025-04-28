@@ -34,16 +34,15 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
 
   const series = await getSeries(seriesPath);
+
+  if (!series) {
+    return Error("Series not found");
+  }
+
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
   series.attributeValues.coverImage = createImageUrlFromGuid(
     series.attributeValues.coverImage.value
   );
-
-  if (!series) {
-    return {
-      series: null,
-    };
-  }
 
   return {
     series: series,
@@ -98,7 +97,7 @@ const getSeriesResources = async (seriesGuid: string) => {
   });
 
   resources.forEach((resource: any) => {
-    resource.resourceUrl = `${getContentChannelUrl(
+    resource.attributeValues.url.value = `${getContentChannelUrl(
       resource.contentChannelId
     )}/${resource.attributeValues.url.value}`;
   });
@@ -122,6 +121,10 @@ const getSeriesMessages = async (seriesGuid: string) => {
     message.coverImage = createImageUrlFromGuid(
       message.attributeValues.image.value
     );
+  });
+
+  seriesMessages.forEach((message: Message) => {
+    message.attributeValues.url.value = `/messages/${message.attributeValues.url.value}`;
   });
 
   if (!seriesMessages) {
