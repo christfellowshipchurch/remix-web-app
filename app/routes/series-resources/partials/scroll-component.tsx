@@ -9,7 +9,7 @@ import { Carousel } from "~/primitives/shadcn-primitives/carousel";
 import { useState } from "react";
 import { ResourceCard } from "~/components/resource-card";
 import { useResponsive } from "~/hooks/use-responsive";
-import { ContentChannelIds } from "~/lib/types/rock-types";
+import { ContentChannelIds } from "~/lib/rock-config";
 
 const contentChannelUrlMap: Record<number, string> = {
   [ContentChannelIds.messages]: "/messages",
@@ -18,8 +18,8 @@ const contentChannelUrlMap: Record<number, string> = {
   [ContentChannelIds.events]: "/events",
   [ContentChannelIds.studies[0]]: "/studies",
   [ContentChannelIds.studies[1]]: "/studies",
-  [ContentChannelIds["so-good-sisterhood"]]: "/so-good-sisterhood",
-  [ContentChannelIds["keep-talking"]]: "/keep-talking",
+  [ContentChannelIds.soGoodSisterhood]: "/so-good-sisterhood",
+  [ContentChannelIds.keepTalking]: "/keep-talking",
 };
 
 export const ScrollComponent = (data: {
