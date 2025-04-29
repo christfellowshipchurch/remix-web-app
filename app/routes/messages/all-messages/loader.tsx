@@ -15,6 +15,7 @@ export type LoaderReturnType = {
       path: string;
       authorName: string;
       summary: string;
+      messageSeries: string;
     };
   };
 };
@@ -48,6 +49,8 @@ const fetchLatestMessage = async () => {
       authorName:
         `Pastor ${latestMessage.attributeValues?.author?.valueFormatted}` || "",
       summary: latestMessage.attributeValues?.summary?.valueFormatted || "",
+      messageSeries:
+        latestMessage.attributeValues?.messageSeries?.valueFormatted || "",
     },
   };
 };
