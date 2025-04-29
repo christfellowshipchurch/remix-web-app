@@ -11,9 +11,7 @@ const CurrentSeries: React.FC = () => {
   const { currentSeries } = useLoaderData<LoaderReturnType>();
   const { currentSeriesTitle, latestMessage } = currentSeries;
 
-  const latestMessageResources = latestMessage.summary.includes("|")
-    ? latestMessage.summary.split("|")[1]
-    : null;
+  const latestMessageResources = latestMessage.messageSeries;
 
   return (
     <section className="relative grid grid-cols-1 min-h-screen lg:min-h-[900px] bg-white">
