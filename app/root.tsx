@@ -44,6 +44,7 @@ export default function App() {
     <AuthProvider>
       <CookieConsentProvider>
         <div className="min-h-screen flex flex-col">
+          {/* TODO: Fix navbar errors being logged in the console */}
           <Navbar />
           <main
             className={cn(
