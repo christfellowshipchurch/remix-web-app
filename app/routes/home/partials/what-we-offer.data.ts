@@ -1,63 +1,60 @@
-type Tab = {
+export type WhatWeOfferTab = {
   value: string;
   label: string;
-  description: string;
+  mobileLabel: string;
   content: {
-    image: string;
-    description: string;
+    image?: string;
+    label?: string;
+    imageAspectRatio?: string;
+    description1: string;
+    description2?: string;
     url: string;
   }[];
 };
 
-export const whatWeOfferData: Tab[] = [
+export const whatWeOfferData: WhatWeOfferTab[] = [
   {
     value: "family",
     label: "For My Family",
-    description:
-      "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
+    mobileLabel: "Families",
     content: [
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
+        image: "/assets/images/home/kids.png",
+        description1: "Sunday programs for x-x",
+        description2: "Parenting guides & resources",
+        url: "/kids",
       },
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
+        image: "/assets/images/home/kids-u.png",
+        imageAspectRatio: "144/190",
+        description1: "Weekday programing for for elementary kids",
+        description2:
+          "Discipleship programming designed with your child in mind.",
+        url: "/kids-university",
       },
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
+        image: "/assets/images/home/students.png",
+        description1:
+          "Middle and high school students, weekly worship services, small groups, and biblical teachings.",
+        url: "/students",
       },
     ],
   },
   {
     value: "young-adults",
     label: "For Young Adults",
-    description:
-      "Find community and grow in your faith through men's, women's, and marriage ministries.",
+    mobileLabel: "Young Adults",
     content: [
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
+        image: "/assets/images/home/ya.png",
+        imageAspectRatio: "85/25",
+        description1: "Young Adult programing",
         url: "/family",
       },
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
-      },
-      {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
+        image: "/assets/images/home/college-nights.png",
+        imageAspectRatio: "22/16",
+        description1: "College Nights",
         url: "/family",
       },
     ],
@@ -65,26 +62,22 @@ export const whatWeOfferData: Tab[] = [
   {
     value: "everyone",
     label: "For Everyone",
-    description:
-      "Support, healing, and freedom for life's challenges through Christ-centered care and counseling.",
+    mobileLabel: "Everyone",
     content: [
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
+        label: "Groups",
+        description1: "Weekday programing for for elementary kids",
+        url: "/groups",
       },
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
+        label: "Classes",
+        description1: "Weekday programing for for elementary kids",
+        url: "/groups",
       },
       {
-        image: "/assets/images/home/sfe-family.jpg",
-        description:
-          "Birth through Young Adult programs designed to help the next generation know and follow Jesus.",
-        url: "/family",
+        label: "Freedom & Care",
+        description1: "Weekday programing for for elementary kids",
+        url: "/freedom-and-care",
       },
     ],
   },
