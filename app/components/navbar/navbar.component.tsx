@@ -31,7 +31,9 @@ import { useResponsive } from "~/hooks/use-responsive";
 
 export function Navbar() {
   const { pathname } = useLocation();
-  const defaultMode = shouldUseDarkMode(pathname) ? "dark" : "light";
+  const [defaultMode, setDefaultMode] = useState<"light" | "dark">(
+    shouldUseDarkMode(pathname) ? "dark" : "light"
+  );
   const fetcher = useFetcher();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -59,7 +61,10 @@ export function Navbar() {
       // Only trigger if we've scrolled more than the threshold
       if (Math.abs(scrollDelta) > scrollThreshold) {
         setIsVisible(scrollDelta < 0);
-        setMode(scrollDelta < 0 ? "light" : "dark");
+        // Only update mode based on scroll if we're not at the top
+        if (currentScrollY > scrollThreshold) {
+          setMode(scrollDelta < 0 ? "light" : "dark");
+        }
       }
 
       setLastScrollY(currentScrollY);
@@ -67,12 +72,27 @@ export function Navbar() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, defaultMode]);
 
   useEffect(() => {
     // Load the navbar data when component mounts
     fetcher.load("/navbar");
   }, []);
+
+  useEffect(() => {
+    const newMode = shouldUseDarkMode(pathname) ? "dark" : "light";
+    setDefaultMode(newMode);
+    setMode(newMode);
+    // Reset scroll position when route changes
+    setLastScrollY(0);
+    // Force a re-render to ensure mode is applied
+    setIsVisible(true);
+  }, [pathname]);
+
+  // Effect to sync mode with defaultMode when it changes
+  useEffect(() => {
+    setMode(defaultMode);
+  }, [defaultMode]);
 
   const isLoading = fetcher.state === "loading";
 
