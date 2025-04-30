@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export function AppSection() {
   return (
     <>
@@ -33,8 +35,18 @@ const DesktopVersion = () => {
           </div>
           {/* Buttons Section */}
           <div className="flex gap-4">
-            {/* <IconButton iconName="appleLogo" />
-            <IconButton iconName="googlePlayLogo" /> */}
+            <Link to="https://apps.apple.com/us/app/christ-fellowship-app/id785979426">
+              <img
+                src="/assets/images/home/apple-store.png"
+                className="w-[170px] h-[54px]"
+              />
+            </Link>
+            <Link to="https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share">
+              <img
+                src="/assets/images/home/google-play.png"
+                className="w-[170px] h-[54px]"
+              />
+            </Link>
           </div>
         </div>
         <div className="flex justify-center items-center">
