@@ -5,11 +5,12 @@ import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";
 import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
-import { ConnectSection } from "./home/partials/connect-section.partial";
+import { ParallaxScroll } from "./home/partials/parallax-scroll.partial";
 import { AppSection } from "./home/partials/app.partial";
 import {
   DesktopHeroSection,
   MobileHeroSection,
+  BottomBar,
 } from "./about/partials/hero.partial";
 
 export const meta: MetaFunction = () => {
@@ -38,8 +39,9 @@ export default function Index() {
       </div>
       <div className="block lg:hidden w-full">
         <MobileHeroSection />
+        <BottomBar />
       </div>
-      <ConnectSection />
+      <ParallaxScroll />
       <WhatWeOfferSection />
       <HistorySection sectionTitle="History" title="Who We Are" />
       <BeliefsSection />

@@ -66,10 +66,10 @@ export function DesktopHeroSection() {
   );
 }
 
-const BottomBar = () => {
+export const BottomBar = () => {
   return (
-    <div className="w-full px-8 py-12 bg-white xl:pl-0 xl:mx-auto ">
-      <div className="flex justify-start gap-12 xl:max-w-[600px] xl:mx-auto">
+    <div className="w-full px-8 py-12 md:pt-8 md:pb-16 lg:py-12 bg-white xl:pl-0 xl:mx-auto ">
+      <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-12 xl:max-w-[600px] xl:mx-auto">
         <BottomBarItem
           iconName="messageSquareDetail"
           heading="Featured Item"
@@ -99,8 +99,11 @@ const BottomBarItem = ({
   url: string;
 }) => {
   return (
-    <Link to={url} className="flex items-center justify-center gap-2 group">
-      <div className="bg-dark-navy group-hover:bg-ocean transition-colors duration-300 rounded-sm p-2">
+    <Link
+      to={url}
+      className="bg-navy-subdued lg:bg-transparent rounded-xl lg:rounded-none flex lg:items-center lg:justify-center gap-4 lg:gap-2 group p-4 lg:p-0 w-full lg:w-auto md:max-w-[304px] lg:max-w-none"
+    >
+      <div className="bg-ocean lg:bg-dark-navy group-hover:bg-ocean transition-colors duration-300 rounded-sm p-2 ">
         <Icon name={iconName} color="white" />
       </div>
       <div>
@@ -113,16 +116,27 @@ const BottomBarItem = ({
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-screen w-full bg-white pb-16">
-      <div className="flex flex-col gap-8 pl-8 pt-16 h-full justify-center ml-auto">
+    <section className="h-screen w-full bg-white pb-16 relative">
+      <div className="absolute inset-0 w-full h-full z-1">
+        <Video
+          src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+          autoPlay
+          muted
+          loop
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent to-dark-navy z-2" />
+      <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pt-16 h-full justify-center ml-auto">
         <h1 className="text-[64px] text-white font-extrabold leading-none">
-          There's{" "}
+          There's <br className="hidden md:block " />
           <span className="text-ocean">
             something <br />
             for
           </span>{" "}
-          you
+          you.
         </h1>
+        {/* Location Search */}
       </div>
     </section>
   );
