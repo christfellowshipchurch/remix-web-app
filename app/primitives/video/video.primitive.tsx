@@ -1,4 +1,5 @@
 import { WistiaPlayer } from "./wistia-player";
+// We could switch to -> import { WistiaPlayer } from "@wistia/wistia-player-react";
 
 type VideoProps = {
   src?: string;

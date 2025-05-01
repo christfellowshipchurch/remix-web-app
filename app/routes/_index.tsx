@@ -39,12 +39,12 @@ export default function Index() {
       <div className="block lg:hidden w-full">
         <MobileHeroSection />
       </div>
-      <HistorySection />
-      <BeliefsSection />
+      <ConnectSection />
       <WhatWeOfferSection />
+      <HistorySection sectionTitle="History" title="Who We Are" />
+      <BeliefsSection />
       <WhatToExpectSection />
       <LeadershipSection bg="white" />
-      <ConnectSection />
       <AppSection />
     </div>
   );

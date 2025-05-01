@@ -38,6 +38,7 @@
     "@types/color": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.7",
     "@vercel/node": "^3.2.25",
+    "@wistia/wistia-player-react": "^0.0.112",
     "algoliasearch": "^5.15.0",
     "awesome-phonenumber": "^7.2.0",
     "class-variance-authority": "^0.7.0",
