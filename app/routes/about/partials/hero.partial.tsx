@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import { IconName } from "~/primitives/button/types";
 import { Icon } from "~/primitives/icon/icon";
+import { Video } from "~/primitives/video/video.primitive";
 
 export function DesktopHeroSection() {
   return (
@@ -9,21 +10,26 @@ export function DesktopHeroSection() {
       <div className="flex size-full relative">
         {/* Left Column */}
         <div
-          className="flex-1 flex flex-col items-center justify-between gap-10 h-full"
+          className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0"
           style={{
             background:
               "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home/home-hero-bg.jpg') left/cover no-repeat",
           }}
         >
-          <div className="flex flex-col gap-8 pl-8 pt-16 h-full justify-center ml-auto xl:mx-auto xl:max-w-[500px]">
-            <h1 className="text-[64px] lg:text-[105px] text-white font-extrabold leading-none lg:max-w-[600px]">
+          <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto">
+            <h1 className="text-[100px] text-white font-extrabold leading-none max-w-[600px]">
               There's{" "}
-              <span className="text-ocean lg:text-dark-navy">
+              <span className="text-dark-navy">
                 something <br />
                 for
               </span>{" "}
               you
             </h1>
+            <p className="text-white max-w-[540px] text-xl">
+              Discover a community where your questions are welcome, your
+              journey is honored, and you'll find genuine connection and
+              relevant answers for your life right here in Florida.
+            </p>
             <div className="flex w-fit">
               <Link to="/locations" prefetch="intent">
                 <IconButton
@@ -44,13 +50,16 @@ export function DesktopHeroSection() {
         </div>
 
         {/* Right Column - Background Video */}
-        <div className="flex-1 relative">
-          <div className="size-full bg-gradient-to-t from-transparent via-transparent via-75% to-white opacity-75 top-0 left-0 absolute z-20" />
-          <img
-            src="/assets/images/home/image-holder.jpg"
-            alt="friends at church 1"
-            className="w-full h-full object-cover relative z-1"
-          />
+        <div className="flex-1 relative h-full">
+          <div className="absolute inset-0 w-full h-full">
+            <Video
+              src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+              autoPlay
+              muted
+              loop
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -59,8 +68,8 @@ export function DesktopHeroSection() {
 
 const BottomBar = () => {
   return (
-    <div className="w-full px-8 py-12 bg-white">
-      <div className="max-w-[450px] mx-auto flex justify-between w-full">
+    <div className="w-full px-8 py-12 bg-white xl:pl-0 xl:mx-auto ">
+      <div className="flex justify-start gap-12 xl:max-w-[600px] xl:mx-auto">
         <BottomBarItem
           iconName="messageSquareDetail"
           heading="Featured Item"
@@ -106,9 +115,9 @@ export const MobileHeroSection = () => {
   return (
     <section className="h-screen w-full bg-white pb-16">
       <div className="flex flex-col gap-8 pl-8 pt-16 h-full justify-center ml-auto">
-        <h1 className="text-[64px] lg:text-[105px] text-white font-extrabold leading-none lg:max-w-[600px]">
+        <h1 className="text-[64px] text-white font-extrabold leading-none">
           There's{" "}
-          <span className="text-ocean lg:text-dark-navy">
+          <span className="text-ocean">
             something <br />
             for
           </span>{" "}
