@@ -68,8 +68,8 @@ export function DesktopHeroSection() {
 
 export const BottomBar = () => {
   return (
-    <div className="w-full px-8 py-12 md:pt-8 md:pb-16 lg:py-12 bg-white xl:pl-0 xl:mx-auto ">
-      <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-12 xl:max-w-[600px] xl:mx-auto">
+    <div className="w-full px-8 py-8 md:py-12 md:pt-8 md:pb-16 lg:py-12 bg-white xl:pl-0 xl:mx-auto ">
+      <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-4 md:gap-8 lg:gap-12 xl:max-w-[600px] xl:mx-auto">
         <BottomBarItem
           iconName="messageSquareDetail"
           heading="Featured Item"
