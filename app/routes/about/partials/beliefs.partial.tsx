@@ -40,7 +40,7 @@ export function BeliefsSection() {
         </div>
       </div>
       {/* Navy BG */}
-      <div className="absolute bottom-0 w-full h-[50%] bg-dark-navy z-[-1]" />
+      <div className="absolute bottom-0 w-full h-[50%] bg-navy z-[-1]" />
       {/* Mobile Beliefs Carousel */}
       <div className="block md:hidden">
         <BeliefsCarouselMobile />

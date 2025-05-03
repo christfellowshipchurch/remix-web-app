@@ -23,7 +23,7 @@ export function ParallaxScroll() {
             {contentData.map((item, index) => (
               <div
                 key={index}
-                className="w-full flex flex-col lg:flex-row items-center gap-8 md:gap-16 md:h-[75dvh]"
+                className="w-full flex flex-col md:flex-row items-center gap-8 lg:gap-16 md:h-[75dvh]"
               >
                 {/* Image */}
                 <img
