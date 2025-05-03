@@ -148,7 +148,7 @@ const WhatWeOfferDesktop = () => {
             >
               <div
                 className={cn(
-                  "flex gap-8 flex-nowrap overflow-x-visible mx-auto min-h-0",
+                  "flex gap-4 lg:gap-8 flex-nowrap overflow-x-visible mx-auto min-h-0",
                   tab.content.length === 2 ? "items-stretch" : "items-center"
                 )}
               >
@@ -156,15 +156,15 @@ const WhatWeOfferDesktop = () => {
                   <div
                     key={index}
                     className={cn(
-                      "min-w-[320px]",
+                      "min-w-[230px] lg:min-w-[320px]",
                       tab.content.length === 2 && {
-                        "-rotate-1": index === 0,
+                        "lg:-rotate-1": index === 0,
                         "rotate-1": index === 1,
                       },
                       tab.content.length === 3 && {
-                        "-rotate-3": index === 0,
-                        "rotate-3": index === 2,
-                        "rotate-0": index === 1,
+                        "lg:-rotate-3": index === 0,
+                        "lg:rotate-3": index === 2,
+                        "lg:rotate-0": index === 1,
                       }
                     )}
                   >
@@ -223,7 +223,7 @@ const WhatWeOfferCard = ({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-9 w-[72vw] md:w-[230px] lg:w-[320px] h-full",
+        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:p-9 w-[72vw] md:w-[230px] lg:w-[320px] h-full",
         middleCard && "min-h-[380px] md:min-h-[420px] lg:min-h-[450px]"
       )}
     >
@@ -248,11 +248,11 @@ const WhatWeOfferCard = ({
         )}
 
         <div className="flex flex-col gap-4 flex-1 justify-end">
-          <p className="text-semibold text-lg text-center">
+          <p className="text-semibold lg:text-lg text-center">
             {content.description1}
           </p>
           {content.description2 && (
-            <p className="text-semibold text-lg text-center">
+            <p className="text-semibold lg:text-lg text-center">
               {content.description2}
             </p>
           )}
