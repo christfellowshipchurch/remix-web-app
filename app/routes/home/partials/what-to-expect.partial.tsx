@@ -8,13 +8,13 @@ export function WhatToExpectSection() {
   return (
     <section
       id="what-to-expect"
-      className="py-16 w-full flex flex-col gap-16 md:px-12 lg:px-0 lg:pl-18 2xl:px-18"
+      className="py-16 lg:pt-24 lg:pb-40 w-full flex flex-col gap-16 md:px-12 lg:px-0 lg:pl-18 2xl:px-18"
     >
-      <div className="content-padding">
+      <div className="px-6">
         <div className="container max-w-screen-content mx-auto">
-          <div className="w-full flex flex-col gap-16">
-            <div className="w-full flex flex-col lg:px-8 gap-4 md:gap-8 lg:gap-12">
-              <div className="flex flex-col gap-16">
+          <div className="w-full flex">
+            <div className="w-full flex flex-col gap-4 md:gap-8">
+              <div className="flex flex-col gap-12">
                 <div className="hidden lg:block">
                   <SectionTitle sectionTitle="get to know us" />
                 </div>
@@ -37,7 +37,7 @@ export function WhatToExpectSection() {
       </div>
 
       {/* Desktop Tabs */}
-      <div className="2xl:bg-navy w-full hidden lg:block">
+      <div className="w-full hidden lg:block">
         <div className="max-w-screen-content mx-auto">
           <WhatToExpectDesktopTabs />
         </div>

@@ -5,20 +5,40 @@ import * as Tabs from "@radix-ui/react-tabs";
 
 export const WhatToExpectDesktopTabs = () => {
   return (
-    <Tabs.Root defaultValue={WhatToExpectData[0].title}>
-      <Tabs.List>
+    <Tabs.Root
+      defaultValue={WhatToExpectData[0].title}
+      className="flex flex-col gap-16 xl:gap-32"
+    >
+      {WhatToExpectData.map((tab, index) => (
+        <Tabs.Content value={tab.title} key={index}>
+          <WhatToExpectDesktopCard data={tab.data} />
+        </Tabs.Content>
+      ))}
+
+      <Tabs.List className="flex gap-8 xl:gap-16 w-full">
         {WhatToExpectData.map((item, index) => (
-          <Tabs.Trigger key={index} value={item.title}>
-            {item.title}
+          <Tabs.Trigger key={index} value={item.title} className="w-full group">
+            <div className="flex flex-col gap-4 rounded-[9px] group-data-[state=active]:bg-gray p-3 max-[420px] w-full">
+              <div className="flex items-center gap-4">
+                <img
+                  src={item.data.image}
+                  alt={item.data.name}
+                  className="w-[80px] aspect-square rounded-lg object-cover bg-center"
+                />
+
+                <div className="flex flex-col text-start">
+                  <p className="text-xl font-extrabold">{item.title}</p>
+                  <p className="text-lg text-text-secondary font-bold">
+                    {item.data.role}
+                  </p>
+                </div>
+              </div>
+
+              <div className="h-[5px] w-full bg-gray group-data-[state=active]:bg-ocean" />
+            </div>
           </Tabs.Trigger>
         ))}
       </Tabs.List>
-
-      {WhatToExpectData.map((item, index) => (
-        <Tabs.Content key={index} value={item.title}>
-          <WhatToExpectDesktopCard data={item.data} />
-        </Tabs.Content>
-      ))}
     </Tabs.Root>
   );
 };
@@ -31,25 +51,32 @@ const WhatToExpectDesktopCard = ({
   const { content, name, role, image } = data;
 
   return (
-    <div className="w-full bg-navy rounded-[8px] text-white py-24 flex justify-between pr-9 2xl:pr-0">
+    <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
       <div className="flex flex-col gap-12">
-        <p className="text-[26px] font-semibold max-w-[600px]">{content}</p>
+        <p className="text-xl xl:text-[26px] font-semibold max-w-[600px]">
+          {content}
+        </p>
 
         <div className="flex flex-col">
-          <h4 className="text-[26px] font-semibold">{name}</h4>
-          <p className="text-[26px] font-semibold">{role}</p>
+          <h4 className="text-[21px] font-extrabold leading-none">{name}</h4>
+          <p className="text-lg font-bold text-border-secondary">{role}</p>
         </div>
       </div>
 
-      <div className="absolute right-0">
+      <div className="absolute right-8 xl:right-10 -top-10 xl:-top-20">
         <img
           src={image}
           alt={name}
-          className="w-[520px] h-[650px] rounded-[12px]"
+          className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px]"
         />
         <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2">
           <div className="relative -right-[2px]">
-            <Icon name="play" color="white" size={42} />
+            <div className="hidden xl:block">
+              <Icon name="play" color="white" size={42} />
+            </div>
+            <div className="xl:hidden">
+              <Icon name="play" color="white" size={32} />
+            </div>
           </div>
         </div>
       </div>
@@ -150,10 +177,10 @@ type WhatToExpectCard = {
 
 const WhatToExpectData: WhatToExpectCard[] = [
   {
-    title: "What is a Sunday Like",
+    title: "What is a Sunday Like 1",
     data: {
       role: "church member",
-      name: "John Doe",
+      name: "John Doe 1",
       image: "/assets/images/home/wte-place-holder.jpg",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
@@ -162,10 +189,10 @@ const WhatToExpectData: WhatToExpectCard[] = [
     },
   },
   {
-    title: "What is a Sunday Like",
+    title: "What is a Sunday Like 2",
     data: {
       role: "church member",
-      name: "John Doe",
+      name: "John Doe 2",
       image: "/assets/images/home/wte-place-holder.jpg",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
@@ -174,10 +201,10 @@ const WhatToExpectData: WhatToExpectCard[] = [
     },
   },
   {
-    title: "What is a Sunday Like",
+    title: "What is a Sunday Like 3",
     data: {
       role: "church member",
-      name: "John Doe",
+      name: "John Doe 3",
       image: "/assets/images/home/wte-place-holder.jpg",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
