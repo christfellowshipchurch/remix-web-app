@@ -218,3 +218,20 @@ export const getFirstParagraph = (html: string): string => {
   const firstParagraph = doc.querySelector("p");
   return firstParagraph?.textContent || "";
 };
+
+interface CallToAction {
+  title: string;
+  url: string;
+}
+
+export const parseRockKeyValueList = (input: string): CallToAction[] => {
+  if (!input) return [];
+
+  return input.split("|").map((item) => {
+    const [title, url] = item.split("^#");
+    return {
+      title: title.trim(),
+      url: url.trim(),
+    };
+  });
+};
