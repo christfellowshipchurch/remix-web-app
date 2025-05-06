@@ -113,8 +113,8 @@ const WhatWeOfferDesktop = () => {
     <div className="flex flex-col gap-8 lg:gap-12">
       <div className="flex flex-col gap-4 content-padding">
         <div className="w-full items-center justify-center gap-5 flex">
-          <SectionTitle sectionTitle="what we offer." />
-          <div className="w-6 bg-ocean h-1" />
+          <SectionTitle sectionTitle="what we offer." color="#56CAEB" />
+          <div className="w-6 bg-[#56CAEB] h-1" />
         </div>
         <h2 className="text-white text-center font-extrabold text-[52px] leading-tight">
           Something For Everyone
