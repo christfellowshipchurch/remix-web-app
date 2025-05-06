@@ -2,7 +2,7 @@ import { SectionTitle } from "~/components/section-title";
 import {
   WhatToExpectDesktopTabs,
   WhatToExpectMobileScroll,
-} from "../components/wte-tabs.component";
+} from "../components/expect-tabs.component";
 
 export function WhatToExpectSection() {
   return (

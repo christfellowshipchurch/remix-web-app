@@ -1,8 +1,81 @@
+import { cn } from "~/lib/utils";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
+
+export default function SplitScrollLayout() {
+  return (
+    <div className="flex min-h-screen">
+      {/* Left: Sticky stack */}
+      <div className="w-1/2 relative">
+        {contentData.map((item, index) => (
+          <div key={index} className="h-screen">
+            <div
+              className={cn(
+                "sticky",
+                index !== 0 ? "top-1/2" : "top-1/3",
+                index !== 0 && "-translate-y-1/2",
+                index === 0 && "mb-32",
+                "p-6",
+                "text-xl",
+                "z-10"
+              )}
+            >
+              <img
+                src={item.image}
+                alt={item.description}
+                className="max-w-[390px] max-h-[340px] mx-auto"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  aspectRatio: item.aspectRatio || "600 / 530",
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Right: Scrolling content */}
+      <div className="w-1/2 space-y-12 p-8 overflow-auto">
+        {contentData.map((item, index) => (
+          <div key={index} className="h-screen bg-white p-4">
+            <div
+              className={cn(
+                "flex",
+                "flex-col",
+                "justify-center",
+                index !== contentData.length - 1 && "pb-[600px]",
+                "gap-4",
+                "lg:gap-8",
+                "h-full"
+              )}
+            >
+              <div className="flex flex-col">
+                <h3
+                  className="text-2xl font-bold text-center md:text-left"
+                  dangerouslySetInnerHTML={{ __html: item.title }}
+                />
+                <p className="text-center md:text-left">{item.description}</p>
+              </div>
+              <div className="hidden md:block">
+                <IconButton
+                  to={item.url}
+                  withRotatingArrow
+                  className="rounded-full hover:!text-ocean"
+                >
+                  Learn More
+                </IconButton>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function ParallaxScroll() {
   return (
-    <section className="md:px-12 lg:px-18 py-12 w-full">
+    <section className="md:px-12 lg:px-18 w-full">
       <div className="max-w-content-padding mx-auto w-full">
         {/* Mobile Title */}
         <h2 className="text-4xl font-bold w-full text-center sticky top-0 md:hidden pb-8 bg-white">
@@ -12,60 +85,13 @@ export function ParallaxScroll() {
         </h2>
 
         <div className="w-full flex flex-col gap-8 md:gap-0 lg:gap-4">
-          <h2 className="text-4xl font-bold w-full text-center hidden md:block">
+          <h2 className="text-4xl font-bold w-full text-center hidden md:block mb-32">
             Think of it less as a chore and more{" "}
             <br className="hidden md:block lg:hidden" />
             as... <span className="text-ocean">a chance.</span>
           </h2>
 
-          {/* Scrollable Section */}
-          <div className="w-full px-5 md:px-0 flex flex-col justify-center gap-20 md:gap-0 lg:gap-8">
-            {contentData.map((item, index) => (
-              <div
-                key={index}
-                className="w-full flex flex-col md:flex-row items-center gap-8 lg:gap-16 md:h-[75dvh]"
-              >
-                {/* Image */}
-                <img
-                  src={item.image}
-                  alt={item.description}
-                  className="max-w-[390px] max-h-[340px] md:sticky md:top-0"
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    aspectRatio: item.aspectRatio || "600 / 530",
-                  }}
-                />
-
-                {/* Text */}
-                <div className="flex flex-col justify-center gap-4 lg:gap-8">
-                  <div className="flex flex-col">
-                    <h3
-                      className="text-2xl font-bold text-center md:text-left"
-                      dangerouslySetInnerHTML={{ __html: item.title }}
-                    />
-                    <p className="text-center md:text-left">
-                      {item.description}
-                    </p>
-                  </div>
-
-                  {/* Button */}
-                  <div className="hidden md:block">
-                    <IconButton
-                      to={item.url}
-                      withRotatingArrow
-                      className="rounded-full hover:!text-ocean"
-                    >
-                      Learn More
-                    </IconButton>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Empty div to release the previous sticky element */}
-          <div className="h-0 sticky top-0 md:hidden" />
+          <SplitScrollLayout />
         </div>
       </div>
     </section>

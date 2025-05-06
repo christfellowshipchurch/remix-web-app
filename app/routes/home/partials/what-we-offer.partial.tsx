@@ -3,7 +3,10 @@ import { SectionTitle } from "~/components";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Button, button } from "~/primitives/button/button.primitive";
-import { whatWeOfferData, WhatWeOfferTab } from "./what-we-offer.data";
+import {
+  whatWeOfferData,
+  WhatWeOfferTab,
+} from "../components/what-we-offer.data";
 import { cn } from "~/lib/utils";
 
 const WhatWeOfferMobile = () => {
