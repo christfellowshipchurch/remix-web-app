@@ -5,7 +5,7 @@ import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";
 import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
-import { ParallaxScroll } from "./home/partials/parallax-scroll.partial";
+import { AChanceSection } from "./home/partials/a-chance.partial";
 import { AppSection } from "./home/partials/app.partial";
 import {
   DesktopHeroSection,
@@ -41,7 +41,7 @@ export default function Index() {
         <MobileHeroSection />
         <BottomBar />
       </div>
-      <ParallaxScroll />
+      <AChanceSection />
       <WhatWeOfferSection />
       <HistorySection sectionTitle="History" title="Who We Are" />
       <BeliefsSection />
