@@ -29,8 +29,8 @@ export function LeaderGrid() {
               <div className="absolute size-[212px]">
                 {/* TOOD: Update logo to be the correct size */}
                 <Icon
-                  name="logo"
-                  className="absolute bototm-0 left-0 object-contain size-full text-ocean group-hover:text-white transform transition-all duration-300 group-hover:-translate-y-36"
+                  name="cfLogo"
+                  className="opacity-75 absolute bototm-0 -left-16 object-contain size-full text-ocean group-hover:text-white transform transition-all duration-300 group-hover:-translate-y-36"
                 />
               </div>
             </div>
