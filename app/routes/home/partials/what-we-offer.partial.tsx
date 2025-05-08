@@ -151,8 +151,8 @@ const WhatWeOfferDesktop = () => {
             >
               <div
                 className={cn(
-                  "flex gap-4 lg:gap-8 flex-nowrap overflow-x-visible mx-auto min-h-0",
-                  tab.content.length === 2 ? "items-stretch" : "items-center"
+                  "flex gap-4 lg:gap-8 flex-nowrap overflow-x-visible mx-auto md:min-h-[520px] lg:min-h-[600px]",
+                  tab.content.length === 2 ? "items-center" : "items-center"
                 )}
               >
                 {tab.content.map((content, index) => (
@@ -162,7 +162,7 @@ const WhatWeOfferDesktop = () => {
                       "min-w-[230px] lg:min-w-[320px]",
                       tab.content.length === 2 && {
                         "lg:-rotate-1": index === 0,
-                        "rotate-1": index === 1,
+                        "lg:rotate-1": index === 1,
                       },
                       tab.content.length === 3 && {
                         "lg:-rotate-3": index === 0,
@@ -227,12 +227,12 @@ const WhatWeOfferCard = ({
     <div
       className={cn(
         "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:p-9 w-[72vw] md:w-[230px] lg:w-[320px] h-full",
-        middleCard && "min-h-[380px] md:min-h-[420px] lg:min-h-[450px]"
+        middleCard && "min-h-[340px] md:min-h-[340px] lg:min-h-[420px]"
       )}
     >
       <div className="flex flex-col items-center gap-9 flex-1">
         {content.image ? (
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center items-center md:min-h-[160px] lg:min-h-[190px]">
             <img
               src={content.image}
               alt={content.description1}
