@@ -10,18 +10,18 @@ export default function SplitScrollLayout() {
         {chanceContent.map((section) => (
           <div
             key={section.title}
-            className="h-screen flex flex-col items-center p-6"
+            className="h-[60dvh] flex flex-col items-center p-6"
           >
             <img
               src={section.image}
               alt={section.title}
               className="w-full h-64 object-cover rounded mb-6"
             />
-            <div>
-              <h2 className="text-3xl font-normal">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-2xl font-normal text-center leading-none">
                 <HTMLRenderer html={section.title} />
               </h2>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 font-medium text-sm text-center">
                 {section.description}
               </p>
             </div>

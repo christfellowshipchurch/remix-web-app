@@ -15,7 +15,11 @@ export const Video = (props: VideoProps) => {
   return (
     <>
       {props?.wistiaId ? (
-        <WistiaPlayer mediaId={props.wistiaId} className={props.className} />
+        <WistiaPlayer
+          mediaId={props.wistiaId}
+          className={props.className}
+          controlsVisibleOnLoad={props.controls}
+        />
       ) : (
         <video
           src={props.src}
