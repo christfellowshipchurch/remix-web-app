@@ -145,6 +145,7 @@ export const WhatToExpectMobileScroll = () => {
               >
                 <Video
                   wistiaId={video}
+                  controls={false}
                   className="w-full h-full object-cover"
                 />
 
