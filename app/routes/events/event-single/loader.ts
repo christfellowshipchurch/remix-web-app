@@ -30,6 +30,13 @@ const fetchEventData = async (eventPath: string) => {
     },
   });
 
+  if (!rockData || rockData.length === 0) {
+    throw new Response("Event not found at: /events/" + eventPath, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
   if (rockData.length > 1) {
     console.error(
       `More than one article was found with the same path: /events/${eventPath}`
