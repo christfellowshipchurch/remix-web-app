@@ -20,7 +20,6 @@ const fetchLinkTreePage = async (pathname: string) => {
 const fetchCardCollections = async (id: string) => {
   const collections = await fetchRockData({
     endpoint: `ContentChannelItems/GetChildren/${id}`,
-    cache: false,
   });
 
   if (!collections || !Array.isArray(collections) || collections.length === 0) {
@@ -83,7 +82,7 @@ export const loader = async ({
 
   const primaryCallToAction = parseRockKeyValueList(calltoActionKeyValues)[0]; // only returning the first call to action
 
-  const cardCollections = await fetchCardCollections(id);
+  // const cardCollections = await fetchCardCollections(id);
 
   return {
     id,
@@ -92,6 +91,6 @@ export const loader = async ({
     summary,
     additionalResources,
     primaryCallToAction,
-    cardCollections,
+    cardCollections: [],
   };
 };

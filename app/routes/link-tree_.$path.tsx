@@ -1,3 +1,5 @@
-import { loader } from "./link-tree/loader";
+import { ResourcePage } from "./link-tree/page";
 
-export { loader };
+export { loader } from "./link-tree/loader";
+
+export default ResourcePage;
