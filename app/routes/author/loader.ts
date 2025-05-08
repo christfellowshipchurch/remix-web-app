@@ -50,50 +50,99 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
 };
 
 const getAuthorDetails = async (personId: string) => {
-  const authorData = await fetchAuthorData({
-    authorId: personId,
-  });
-
-  // Get the author's GUID
-  const personAliasGuid = await fetchPersonAliasGuid(
-    authorData?.primaryAliasId
-  );
-
-  // Get articles by the author
-  const authorArticles = await fetchAuthorArticles(personAliasGuid);
-
-  // Get the author's social links
-  const socialLinks = [
-    { url: authorData?.attributeValues?.twitter.value, type: "twitter" },
-    { url: authorData?.attributeValues?.facebook.value, type: "facebook" },
-    { url: authorData?.attributeValues?.instagram.value, type: "instagram" },
-    { url: authorData?.attributeValues?.linkedIn.value, type: "linkedIn" },
-  ];
-
-  return {
-    fullName: `${authorData.firstName} ${authorData.lastName}`,
-    photo: {
-      uri: createImageUrlFromGuid(authorData.photo?.guid),
-    },
-    authorAttributes: {
-      bio: authorData?.attributeValues?.authorBio?.value,
+  try {
+    const authorData = await fetchAuthorData({
       authorId: personId,
-      jobTitle: authorData?.attributeValues?.jobTitle?.value,
-      socialLinks: socialLinks,
-      publications: authorArticles.map((article: any) => {
-        return {
-          title: article.title,
-          readTime: Math.round(article.content.split(" ").length / 200),
-          publishDate: format(new Date(article?.startDateTime), "d MMM yyyy"),
-          coverImage: createImageUrlFromGuid(
-            article.attributeValues?.image?.value
-          ),
-          summary: article.attributeValues?.summary?.value,
-          url: article.attributeValues?.url?.value,
-        };
-      }),
-    },
-  };
+    });
+
+    if (!authorData) {
+      throw new Response(`Author data not found`, {
+        status: 404,
+        statusText: "Not Found",
+      });
+    }
+
+    // Get the author's GUID
+    const personAliasGuid = await fetchPersonAliasGuid(
+      authorData?.primaryAliasId
+    );
+
+    if (!personAliasGuid) {
+      throw new Response(`Person alias GUID not found`, {
+        status: 404,
+        statusText: "Not Found",
+      });
+    }
+
+    // Get articles by the author
+    const authorArticles = await fetchAuthorArticles(personAliasGuid);
+
+    // Get the author's social links with null checks
+    const socialLinks = [
+      {
+        url: authorData?.attributeValues?.twitter?.value || null,
+        type: "twitter",
+      },
+      {
+        url: authorData?.attributeValues?.facebook?.value || null,
+        type: "facebook",
+      },
+      {
+        url: authorData?.attributeValues?.instagram?.value || null,
+        type: "instagram",
+      },
+      {
+        url: authorData?.attributeValues?.linkedIn?.value || null,
+        type: "linkedIn",
+      },
+    ].filter((link) => link.url !== null);
+
+    return {
+      fullName: `${authorData.firstName} ${authorData.lastName}`,
+      photo: {
+        uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
+      },
+      authorAttributes: {
+        bio: authorData?.attributeValues?.authorBio?.value || "",
+        authorId: personId,
+        jobTitle: authorData?.attributeValues?.jobTitle?.value || "",
+        socialLinks,
+        publications: authorArticles
+          .map((article: any) => {
+            if (!article) return null;
+
+            try {
+              return {
+                title: article.title || "",
+                readTime: Math.round(
+                  (article.content?.split(" ") || []).length / 200
+                ),
+                publishDate: format(
+                  new Date(article?.startDateTime),
+                  "d MMM yyyy"
+                ),
+                coverImage:
+                  createImageUrlFromGuid(
+                    article.attributeValues?.image?.value
+                  ) || null,
+                summary: article.attributeValues?.summary?.value || "",
+                url: article.attributeValues?.url?.value || "",
+              };
+            } catch (error) {
+              console.error("Error processing article:", error);
+              return null;
+            }
+          })
+          .filter(Boolean),
+      },
+    };
+  } catch (error) {
+    console.error("Error in getAuthorDetails:", error);
+    throw new Response(`Failed to fetch author details`, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -112,7 +161,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const authorData: LoaderReturnType = {
     hostUrl: process.env.HOST_URL || "host-url-not-found",
     fullName: data.fullName,
-    profilePhoto: data.photo.uri,
+    profilePhoto: data.photo.uri ?? "",
     authorAttributes: data.authorAttributes,
   };
 

@@ -4,7 +4,7 @@ import { fetchRockData } from "./fetch-rock-data";
 import { format } from "date-fns";
 
 export const fetchCampusData = async (campusUrl: string) => {
-  return fetchRockData({
+  const campusData = await fetchRockData({
     endpoint: "Campuses",
     queryParams: {
       $filter: `Url eq '${campusUrl}'`,
@@ -12,6 +12,15 @@ export const fetchCampusData = async (campusUrl: string) => {
       loadAttributes: "simple",
     },
   });
+
+  if (!campusData || campusData.length === 0) {
+    throw new Response("Campus not found at: /locations/" + campusUrl, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
+  return campusData;
 };
 
 export const fetchComingUpTitle = async (id: string) => {
