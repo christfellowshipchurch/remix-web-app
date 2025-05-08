@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "react-router";
+import { data, type LoaderFunction } from "react-router";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
@@ -22,24 +22,39 @@ export type LoaderReturnType = {
 };
 
 const fetchArticleData = async (articlePath: string) => {
-  const rockData = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
-    queryParams: {
-      attributeKey: "Url",
-      $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
-      value: articlePath,
-      loadAttributes: "simple",
-    },
-  });
+  try {
+    const rockData = await fetchRockData({
+      endpoint: "ContentChannelItems/GetByAttributeValue",
+      queryParams: {
+        attributeKey: "Url",
+        $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
+        value: articlePath,
+        loadAttributes: "simple",
+      },
+    });
 
-  if (rockData.length > 1) {
-    console.error(
-      `More than one article was found with the same path: /articles/${articlePath}`
-    );
+    if (!rockData || rockData.length === 0) {
+      return null;
+    }
+
+    if (rockData.length > 1) {
+      console.error(
+        `More than one article was found with the same path: /articles/${articlePath}`
+      );
+      return rockData[0];
+    }
+
     return rockData[0];
+  } catch (error) {
+    console.error("Error fetching article data:", error);
+    throw new Response(
+      `Failed to fetch article data for path: ${articlePath}`,
+      {
+        status: 404,
+        statusText: "Not Found",
+      }
+    );
   }
-
-  return rockData;
 };
 
 const fetchAuthorId = async (authorId: string) => {
