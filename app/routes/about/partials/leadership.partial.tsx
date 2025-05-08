@@ -19,6 +19,7 @@ export function LeadershipSection({ bg }: { bg?: string }) {
               Of Christ Fellowship Church.
             </h3>
           </div>
+
           {/* Mobile title */}
           <div className="lg:hidden">
             <SectionTitle className="mb-6" sectionTitle="meet our team." />
@@ -27,11 +28,13 @@ export function LeadershipSection({ bg }: { bg?: string }) {
               Of Christ Fellowship Church.
             </h3>
           </div>
+
           <div className="hidden lg:block">
             <LeaderGrid />
           </div>
         </div>
       </div>
+
       <div className="lg:hidden">
         <LeaderScroll />
       </div>

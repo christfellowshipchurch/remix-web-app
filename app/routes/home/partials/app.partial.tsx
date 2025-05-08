@@ -53,7 +53,7 @@ const DesktopVersion = () => {
           <img
             src="/assets/images/home/app-image.png"
             alt="App Section Image"
-            className="w-full aspect-[4/5] lg:aspect-[41/49] max-w-[240px]"
+            className="w-full aspect-[4/5] lg:aspect-[41/49] md:max-w-[240px] lg:max-w-[400px]"
           />
         </div>
       </div>
