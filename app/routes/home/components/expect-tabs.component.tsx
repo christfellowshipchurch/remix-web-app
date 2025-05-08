@@ -2,6 +2,7 @@ import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { useRef, useEffect } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
+import { Video } from "~/primitives/video/video.primitive";
 
 export const WhatToExpectDesktopTabs = () => {
   return (
@@ -17,12 +18,15 @@ export const WhatToExpectDesktopTabs = () => {
 
       <Tabs.List className="flex gap-8 xl:gap-16 w-full">
         {WhatToExpectData.map((item, index) => (
-          <Tabs.Trigger key={index} value={item.title} className="w-full group">
-            <div className="flex flex-col gap-4 rounded-[9px] group-data-[state=active]:bg-gray p-3 max-[420px] w-full">
+          <Tabs.Trigger
+            key={index}
+            value={item.title}
+            className="w-full group cursor-pointer"
+          >
+            <div className="flex flex-col gap-4 rounded-[9px] transition-all duration-300 group-hover:bg-gray group-data-[state=active]:bg-gray p-3 max-[420px] w-full">
               <div className="flex items-center gap-4">
                 <img
-                  src={item.data.image}
-                  alt={item.data.name}
+                  src={item.data.thumbnail}
                   className="w-[80px] aspect-square rounded-lg object-cover bg-center"
                 />
 
@@ -34,7 +38,7 @@ export const WhatToExpectDesktopTabs = () => {
                 </div>
               </div>
 
-              <div className="h-[5px] w-full bg-gray group-data-[state=active]:bg-ocean" />
+              <div className="h-[5px] w-full bg-gray group-hover:bg-ocean group-data-[state=active]:bg-ocean transition-all duration-300" />
             </div>
           </Tabs.Trigger>
         ))}
@@ -48,7 +52,7 @@ const WhatToExpectDesktopCard = ({
 }: {
   data: WhatToExpectCard["data"];
 }) => {
-  const { content, name, role, image } = data;
+  const { content, name, role, video } = data;
 
   return (
     <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
@@ -64,12 +68,14 @@ const WhatToExpectDesktopCard = ({
       </div>
 
       <div className="absolute right-8 xl:right-10 -top-10 xl:-top-20">
-        <img
-          src={image}
-          alt={name}
+        <Video
+          wistiaId={video}
+          controls
           className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px]"
         />
-        <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2">
+
+        {/* Play Button */}
+        <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors">
           <div className="relative -right-[2px]">
             <div className="hidden xl:block">
               <Icon name="play" color="white" size={42} />
@@ -87,6 +93,7 @@ const WhatToExpectDesktopCard = ({
 export const WhatToExpectMobileScroll = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Handles centering the middle card on mobile
   useEffect(() => {
     if (!containerRef.current || window.innerWidth >= 1024) return;
 
@@ -122,42 +129,44 @@ export const WhatToExpectMobileScroll = () => {
             "items-center w-full pb-"
           )}
         >
-          {WhatToExpectData.map((item, index) => (
-            <div
-              key={index}
-              data-card
-              className="w-[220px] h-[290px] rounded-[8px] relative flex-shrink-0"
-              style={{
-                marginLeft: index === 0 ? "8px" : "0",
-                marginRight:
-                  index === WhatToExpectData.length - 1 ? "8px" : "0",
-              }}
-            >
-              <img
-                src={item.data.image}
-                alt={item.data.name}
-                className="w-full h-full object-cover"
-              />
+          {WhatToExpectData.map((item, index) => {
+            const { video, mobileContent, name, role } = item.data;
 
-              <div className="absolute bottom-0 left-0 flex flex-col justify-end w-full h-full bg-gradient-to-t from-black/60 via-black/0 to-transparent from-[-30%] via-[25%]">
-                <div className="flex flex-col gap-4 p-2">
-                  <p className="text-white font-bold">
-                    {item.data.mobileContent}
-                  </p>
+            return (
+              <div
+                key={index}
+                data-card
+                className="w-[220px] h-[290px] rounded-[8px] relative flex-shrink-0"
+                style={{
+                  marginLeft: index === 0 ? "8px" : "0",
+                  marginRight:
+                    index === WhatToExpectData.length - 1 ? "8px" : "0",
+                }}
+              >
+                <Video
+                  wistiaId={video}
+                  className="w-full h-full object-cover"
+                />
 
-                  <p className="text-[#C1C7D1] text-xs">
-                    {item.data.name} / {item.data.role}
-                  </p>
+                <div className="absolute bottom-0 left-0 flex flex-col justify-end w-full h-full bg-gradient-to-t from-black/60 via-black/0 to-transparent from-[-30%] via-[25%]">
+                  <div className="flex flex-col gap-4 p-2">
+                    <p className="text-white font-bold">{mobileContent}</p>
+
+                    <p className="text-[#C1C7D1] text-xs">
+                      {name} / {role}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Play Button */}
+                <div className="absolute bottom-[10px] right-[10px] rounded-full bg-[#3D3D3D]/50 p-1">
+                  <div className="relative -right-[2px]">
+                    <Icon name="play" color="white" />
+                  </div>
                 </div>
               </div>
-
-              <div className="absolute bottom-[10px] right-[10px] rounded-full bg-[#3D3D3D]/50 p-1">
-                <div className="relative -right-[2px]">
-                  <Icon name="play" color="white" />
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -169,7 +178,8 @@ type WhatToExpectCard = {
   data: {
     role: string;
     name: string;
-    image: string;
+    video: string;
+    thumbnail: string;
     mobileContent: string;
     content: string;
   };
@@ -181,7 +191,9 @@ const WhatToExpectData: WhatToExpectCard[] = [
     data: {
       role: "church member",
       name: "John Doe 1",
-      image: "/assets/images/home/wte-place-holder.jpg",
+      video: "iiwmu7kjy5",
+      thumbnail:
+        "https://embed.wistia.com/deliveries/99093962079ab4e7b6167928c583cb71.jpg?video_still_time=16",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -193,7 +205,9 @@ const WhatToExpectData: WhatToExpectCard[] = [
     data: {
       role: "church member",
       name: "John Doe 2",
-      image: "/assets/images/home/wte-place-holder.jpg",
+      video: "iiwmu7kjy5",
+      thumbnail:
+        "https://embed.wistia.com/deliveries/99093962079ab4e7b6167928c583cb71.jpg?video_still_time=16",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -205,7 +219,9 @@ const WhatToExpectData: WhatToExpectCard[] = [
     data: {
       role: "church member",
       name: "John Doe 3",
-      image: "/assets/images/home/wte-place-holder.jpg",
+      video: "iiwmu7kjy5",
+      thumbnail:
+        "https://embed.wistia.com/deliveries/99093962079ab4e7b6167928c583cb71.jpg?video_still_time=16",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
