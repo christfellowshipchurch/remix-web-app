@@ -25,13 +25,7 @@ export type Series = {
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const seriesPath = params.path;
-
-  if (!seriesPath) {
-    return {
-      series: null,
-    };
-  }
+  const seriesPath = params.path || "";
 
   const series = await getSeries(seriesPath);
 
