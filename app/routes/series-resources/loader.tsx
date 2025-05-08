@@ -25,18 +25,15 @@ export type Series = {
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const seriesPath = params.path;
-
-  if (!seriesPath) {
-    return {
-      series: null,
-    };
-  }
+  const seriesPath = params.path || "";
 
   const series = await getSeries(seriesPath);
 
   if (!series) {
-    return Error("Series not found");
+    throw new Response("Series not found", {
+      status: 404,
+      statusText: "Not Found",
+    });
   }
 
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
@@ -67,6 +64,10 @@ const getSeries = async (seriesPath: string) => {
   const series = seriesDefinedValues.find(
     (item: any) => lodash.kebabCase(item.value) === seriesPath
   );
+
+  if (!series) {
+    return null;
+  }
 
   return series;
 };
