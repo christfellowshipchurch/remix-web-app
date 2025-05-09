@@ -82,6 +82,7 @@ export const loader = async ({
 
   const primaryCallToAction = parseRockKeyValueList(calltoActionKeyValues)[0]; // only returning the first call to action
 
+  // todo: Fix card collections for link tree(getChildren not working)
   // const cardCollections = await fetchCardCollections(id);
 
   return {
