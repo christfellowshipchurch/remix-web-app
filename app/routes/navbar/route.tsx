@@ -3,7 +3,7 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import type { FeatureCard } from "~/components/navbar/types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
-
+import { Button } from "~/primitives/button/button.primitive";
 const fetchFeatureCards = async () => {
   try {
     const navCardDefinedValues = await fetchRockData({
@@ -84,7 +84,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 }
 
-// This is a resource route - no UI needed
+// This is a resource route - so we'll throw a 404 if user navigates here
 export default function NavbarRoute() {
-  return null;
+  return (
+    <div className="p-6 mt-20 flex flex-col items-center justify-center gap-6">
+      <h1 className="text-4xl font-bold">⚠ 404 - Page Not Found</h1>
+      <p className="text-lg italic">
+        This page is not available. Please check the URL and try again.
+      </p>
+      <Button href="/">Go to Home</Button>
+    </div>
+  );
 }
