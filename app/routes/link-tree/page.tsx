@@ -4,14 +4,20 @@ import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 
-export function ResourcePage() {
+const linkTreeButtonClass = cn(
+  "w-full",
+  "hover:enabled:bg-white",
+  "hover:enabled:text-navy"
+);
+
+export function LinkTreePage() {
   const {
     title,
     content,
     summary,
     additionalResources,
     primaryCallToAction,
-    cardCollections,
+    // cardCollections,
   } = useLoaderData<LinkTreeLoaderData>();
 
   return (
@@ -36,7 +42,7 @@ export function ResourcePage() {
         <Button
           href={primaryCallToAction?.url}
           linkClassName="mt-10 w-full"
-          className="w-full"
+          className={linkTreeButtonClass}
         >
           {primaryCallToAction?.title}
         </Button>
@@ -46,7 +52,7 @@ export function ResourcePage() {
             <Button
               href={resource.url}
               linkClassName="w-full"
-              className="w-full"
+              className={linkTreeButtonClass}
             >
               {resource.title}
             </Button>
