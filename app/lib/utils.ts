@@ -219,12 +219,12 @@ export const getFirstParagraph = (html: string): string => {
   return firstParagraph?.textContent || "";
 };
 
-interface CallToAction {
+export const parseRockKeyValueList = (
+  input: string
+): {
   title: string;
   url: string;
-}
-
-export const parseRockKeyValueList = (input: string): CallToAction[] => {
+}[] => {
   if (!input) return [];
 
   return input.split("|").map((item) => {
