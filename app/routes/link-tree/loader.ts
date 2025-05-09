@@ -14,6 +14,13 @@ const fetchLinkTreePage = async (pathname: string) => {
     },
   });
 
+  if (!linkTreePage || linkTreePage.length === 0) {
+    throw new Response("Link tree page not found at: /link-tree/" + pathname, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
   return linkTreePage;
 };
 
