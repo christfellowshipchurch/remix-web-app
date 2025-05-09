@@ -55,7 +55,7 @@ export function BeliefsCarousel() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex px-6 items-center justify-between h-18 w-full bg-navy">
+          <div className="flex px-6 items-center justify-between h-18 w-full bg-[#00354D]/30">
             <CarouselDots
               activeClassName="bg-white"
               inactiveClassName="bg-white opacity-50"

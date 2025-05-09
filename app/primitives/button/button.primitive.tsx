@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import { Link } from "react-router";
 
-const button = cva(
+export const button = cva(
   [
     "justify-center",
     "inline-flex",

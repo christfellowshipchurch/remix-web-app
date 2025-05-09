@@ -31,16 +31,17 @@ import { useResponsive } from "~/hooks/use-responsive";
 
 export function Navbar() {
   const { pathname } = useLocation();
-  const [defaultMode, setDefaultMode] = useState<"light" | "dark">(
-    shouldUseDarkMode(pathname) ? "dark" : "light"
-  );
+  const { isLarge, isXLarge } = useResponsive();
   const fetcher = useFetcher();
+
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [defaultMode, setDefaultMode] = useState<"light" | "dark">(
+    shouldUseDarkMode(pathname, isLarge) ? "dark" : "light"
+  );
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
-  const { isLarge, isXLarge } = useResponsive();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navbarRef = useRef<HTMLDivElement>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,6 +77,7 @@ export function Navbar() {
 
   useEffect(() => {
     // Load the navbar data when component mounts
+    setDefaultMode(shouldUseDarkMode(pathname, isLarge) ? "dark" : "light");
     fetcher.load("/navbar");
   }, []);
 

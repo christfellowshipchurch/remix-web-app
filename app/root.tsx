@@ -49,7 +49,9 @@ export default function App() {
           <main
             className={cn(
               "flex-1",
-              shouldUseDarkMode(currentPath) && "mt-[-100px]" // This is to account for the navbar height when dark mode is enabled
+              `lg:${shouldUseDarkMode(currentPath, true) && "mt-[-100px]"} ${
+                shouldUseDarkMode(currentPath) && "mt-[-100px]"
+              }` // This is to account for the navbar height when dark mode is enabled
             )}
           >
             <Outlet />

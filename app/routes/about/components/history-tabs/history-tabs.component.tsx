@@ -65,19 +65,19 @@ function HistoryTabs() {
         handleTabChange={handleTabChange}
         className="block md:hidden"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-12 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-8 items-center">
         {/* Image */}
         <div className="relative mx-auto md:mx-0 h-full min-h-[300px] max-w-[400px] md:max-h-[500px] md:max-w-none lg:min-h-[500px] overflow-hidden z-20 content-padding md:px-0">
           <img
             src={timelineData[activeTab].image}
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
-            className={`w-full h-full object-cover rounded-lg md:rounded-r-lg md:rounded-l-none shadow-xl transition-all duration-300 ${
+            className={`w-full h-full object-cover rounded-lg md:rounded-r-lg md:rounded-l-none xl:rounded-l-lg shadow-xl transition-all duration-300 ${
               transitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
           />
         </div>
         {/* Content */}
-        <div className="flex flex-col justify-start h-full content-padding">
+        <div className="flex flex-col justify-start h-full px-5 md:px-4 lg:px-0">
           {/* Desktop Timeline Navigation */}
           <TimelineNavigation
             timelineData={timelineData}
@@ -96,7 +96,7 @@ function HistoryTabs() {
               {timelineData[activeTab].content}
             </p>
             {activeTab === 0 && (
-              <p className="text-lg text-text-secondary w-2/3 sm:w-3/4 md:w-full">
+              <p className="text-lg text-text-secondary w-2/3 sm:w-3/4 md:w-full mt-4">
                 Christ Fellowship is a non-denominational church in South
                 Florida led by Pastors Todd & Julie Mullins. The church gathers
                 across multiple regional locations in Palm Beach Gardens, Belle
