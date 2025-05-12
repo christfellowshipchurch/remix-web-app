@@ -118,7 +118,7 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "group w-full sticky top-0 z-999 transition-transform duration-300",
+        "group w-full sticky top-0 z-400 transition-transform duration-300",
         !isVisible && "-translate-y-full"
       )}
       ref={navbarRef}

@@ -159,7 +159,7 @@ const WhatWeOfferDesktop = () => {
                   <div
                     key={index}
                     className={cn(
-                      "min-w-[230px] lg:min-w-[320px]",
+                      "min-w-[230px] lg:min-w-[280px] xl:min-w-[320px]",
                       tab.content.length === 2 && {
                         "lg:-rotate-1": index === 0,
                         "lg:rotate-1": index === 1,
@@ -204,7 +204,7 @@ export function WhatWeOfferSection() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="max-w-screen-content mx-auto flex flex-col gap-12">
+      <div className="max-w-screen-content mx-auto flex flex-col items-center gap-12">
         <div className="md:hidden">
           <WhatWeOfferMobile />
         </div>
@@ -226,7 +226,7 @@ const WhatWeOfferCard = ({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:p-9 w-[72vw] md:w-[230px] lg:w-[320px] h-full",
+        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:p-9 w-[72vw] md:w-[230px] lg:w-[280px] xl:w-[320px] h-full",
         middleCard && "min-h-[340px] md:min-h-[340px] lg:min-h-[420px]"
       )}
     >

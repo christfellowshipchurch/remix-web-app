@@ -32,6 +32,7 @@ const AuthorTabs = ({ articles, books, podcasts }: AuthorTabsProps) => {
           </Tabs.Trigger>
         )}
       </Tabs.List>
+
       <Tabs.Content className={tabContentStyles} value="articles">
         {articles &&
           articles.map((article, index) => (
