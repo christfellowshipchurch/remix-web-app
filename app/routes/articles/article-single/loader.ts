@@ -44,7 +44,7 @@ const fetchArticleData = async (articlePath: string) => {
       return rockData[0];
     }
 
-    return rockData[0];
+    return rockData;
   } catch (error) {
     console.error("Error fetching article data:", error);
     throw new Response(
