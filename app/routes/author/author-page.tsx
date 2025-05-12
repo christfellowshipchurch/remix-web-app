@@ -1,12 +1,12 @@
 import React from "react";
-import { LoaderReturnType } from "./loader";
+import { Author } from "./loader";
 import { useLoaderData } from "react-router";
 import BackButton from "./components/back-button";
 import AuthorTabs from "./components/author-tabs";
 import { AuthorBioDesktop, AuthorBioMobile } from "./partials/author-bio";
 
 export const AuthorPage: React.FC = () => {
-  const data = useLoaderData<LoaderReturnType>();
+  const data = useLoaderData<Author>();
 
   return (
     <div className="relative">
@@ -34,6 +34,7 @@ export const AuthorPage: React.FC = () => {
           </div>
           <AuthorTabs articles={data?.authorAttributes?.publications} />
         </div>
+
         {/* Sidebar - takes up 1/3 on desktop */}
         <div className="hidden md:block md:col-span-1 py-12 px-4 md:px-0">
           <AuthorBioDesktop
