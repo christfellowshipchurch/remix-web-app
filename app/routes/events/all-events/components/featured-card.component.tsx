@@ -1,46 +1,45 @@
 import { Link } from "react-router";
-import { FeaturedCardMobile } from "./featured-card-mobile.component";
 import { Event } from "../loader";
+import { Button } from "~/primitives/button/button.primitive";
+import Icon from "~/primitives/icon";
 
 export const FeaturedCard = ({ card }: { card: Event }) => {
   return (
-    <>
-      {/* Mobile version */}
-      <div className="md:hidden">
-        <FeaturedCardMobile card={card} />
-      </div>
+    <div className="flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] border border-neutral-lighter">
+      <img
+        src={card.image}
+        alt={card.title}
+        className="w-full md:w-1/2 aspect-video md:aspect-auto max-w-[720px] h-full object-cover"
+      />
 
-      {/* Desktop version */}
-      <div className="hidden md:block">
-        <div
-          className="relative w-[90vw] aspect-video md:w-full max-w-[1440px] inset-0 bg-cover bg-center object-cover rounded-lg"
-          style={{
-            backgroundImage: `url(${card.image})`,
-          }}
-        >
-          <div className="absolute w-[67.5%] xl:w-[70%] right-0 bottom-0 bg-white flex flex-col justify-start gap-6 pl-12 pt-12 xl:pl-16 xl:pt-16 pb-4 rounded-tl-lg">
-            <div className="flex flex-col gap-2">
-              <h2 className="font-medium text-[16px] text-text-secondary">
-                HAPPENING AT ALL CAMPUS LOCATIONS
-              </h2>
-              <div className="h-[2px] w-full bg-[#4E4E4E]/20" />
-            </div>
-            <div className="flex flex-col gap-2 pr-12 xl:pr-16">
-              <h3 className="font-bold text-[24px]">{card.title}</h3>
-              <p className="font-normal text-text-secondary">
-                {card.attributeValues.summary.value}
-              </p>
-              <Link
-                to={`/events/${card.attributeValues.url.value}`}
-                prefetch="intent"
-                className="underline font-bold cursor-pointer"
-              >
-                <span className="hover:text-ocean underline">Learn More</span>
-              </Link>
-            </div>
-          </div>
+      <div className="flex flex-col justify-center gap-4 bg-white p-5 md:p-12 w-full md:h-[400px] lg:h-[420px] xl:h-[450px]">
+        <div className="flex flex-col gap-4">
+          <ul className="flex gap-4">
+            <li className="flex items-center gap-1">
+              {card.startDate && <Icon name="calendarAlt" color="black" />}
+              <p className="text-sm">{card.startDate}</p>
+            </li>
+
+            <li className="flex items-center gap-1">
+              {card.campus && <Icon name="map" color="black" />}
+              <p className="text-sm">{card.campus}</p>
+            </li>
+          </ul>
+
+          <h4 className="font-extrabold text-[28px] leading-tight text-pretty">
+            {card.title}
+          </h4>
+          <p>{card.attributeValues.summary.value}</p>
         </div>
+        <Link
+          to={`/events/${card.attributeValues.url.value}`}
+          prefetch="intent"
+        >
+          <Button intent="secondary" className="font-normal">
+            Save my spot
+          </Button>
+        </Link>
       </div>
-    </>
+    </div>
   );
 };
