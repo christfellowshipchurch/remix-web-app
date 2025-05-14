@@ -9,7 +9,7 @@ import {
 import { useMemo } from "react";
 
 import { SectionTitle } from "~/components";
-import { ContentCard } from "~/primitives/content-card/content.card.primitive";
+import { ContentCard } from "~/primitives/cards/content.card";
 import { Icon } from "~/primitives/icon/icon";
 import { ContentItemHit } from "~/routes/search/types";
 import { CustomPagination } from "./custom-pagination.component";

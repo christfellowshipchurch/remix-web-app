@@ -1,5 +1,4 @@
 import { Button } from "~/primitives/button/button.primitive";
-import { SectionTitle } from "../section-title";
 import { Event } from "~/routes/events/all-events/loader";
 import {
   Carousel,
@@ -10,8 +9,11 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 import { EventCard } from "~/primitives/cards/event-card";
 
-export const Events = () => {
+export const EventsResources = () => {
+  // TODO: Replace with actual events and viewMoreLink passed in as props
   const viewMoreLink = "/events";
+  const description =
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.";
   const events: Event[] = [
     {
       title: "Sunday Service",
@@ -133,23 +135,22 @@ export const Events = () => {
     <div className="bg-white w-full flex justify-center content-padding">
       <div className="flex w-full  flex-col items-center py-12 md:py-24 max-w-screen-content">
         {/* Header */}
-        <div className="w-full flex justify-between">
-          <div className="gap-6 md:gap-8">
-            <SectionTitle sectionTitle="related series." />
+        <div className="w-full flex items-center justify-between">
+          <div className="flex flex-col gap-2">
             <h2 className="text-text font-extrabold text-[28px] lg:text-[32px] leading-tight">
-              Message Series On This Topic
+              Events
             </h2>
+            <p className="text-lg">{description}</p>
           </div>
-          <div className="flex items-end justify-between text-lg font-semibold">
-            <Button
-              href={viewMoreLink}
-              size="md"
-              className="hidden lg:block"
-              intent="primary"
-            >
-              View All
-            </Button>
-          </div>
+
+          <Button
+            href={viewMoreLink}
+            size="md"
+            className="hidden lg:block"
+            intent="secondary"
+          >
+            View All
+          </Button>
         </div>
         <EventsCarousel events={events} />
       </div>
@@ -165,26 +166,27 @@ export const EventsCarousel = ({ events }: { events: Event[] }) => {
       }}
       className="w-full mt-8 relative mb-12"
     >
-      <CarouselContent className="gap-6">
+      {/* Missing Dots */}
+      <CarouselContent className="gap-8">
         {events.map((event, index) => (
           <CarouselItem
             key={index}
-            className="w-full aspect-video basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
+            className="w-full basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
           >
             <EventCard event={event} />
           </CarouselItem>
         ))}
       </CarouselContent>
 
-      <div className="absolute -bottom-7">
+      <div className="absolute right-24 -bottom-10">
         <CarouselPrevious
-          className="left-0 border-navy disabled:border-[#AAAAAA]"
-          fill="#004f71"
+          className="left-0 border-ocean disabled:border-[#AAAAAA]"
+          fill="#0092BC"
           disabledFill="#AAAAAA"
         />
         <CarouselNext
-          className="left-12 border-navy disabled:border-[#AAAAAA]"
-          fill="#004f71"
+          className="left-12 border-ocean disabled:border-[#AAAAAA]"
+          fill="#0092BC"
           disabledFill="#AAAAAA"
         />
       </div>
