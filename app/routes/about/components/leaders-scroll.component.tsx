@@ -69,6 +69,7 @@ export function LeaderScroll() {
             </div>
           </div>
         </Modal.Button>
+
         <Modal.Content background="bg-gray">
           <LeadersModal author={author} />
         </Modal.Content>
