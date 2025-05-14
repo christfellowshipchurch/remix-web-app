@@ -36,7 +36,7 @@ function ModalContent({
       <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=closed]:animate-dialogOverlayHide data-[state=open]:animate-dialogOverlayShow z-499" />
       <Dialog.Content
         className={cn(
-          "fixed sm:h-auto max-h-[90vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-scroll rounded-2xl p-4 text-text-primary shadow data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500",
+          "fixed sm:h-auto max-h-[90vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-scroll rounded-xl md:rounded-2xl text-text-primary shadow data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500",
           background || "bg-white"
         )}
       >
@@ -53,10 +53,11 @@ function ModalContent({
               <Dialog.Title />
             </VisuallyHidden.Root>
           )}
-          <Dialog.Close>
+          <Dialog.Close className="absolute top-2 right-2 md:top-4 md:right-4">
             <Cross2Icon width={24} height={24} color="black" />
           </Dialog.Close>
         </div>
+
         {description ? (
           <Dialog.Description className="mb-4 text-lg text-text_primary">
             {description}
