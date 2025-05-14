@@ -78,10 +78,10 @@ export const DynamicHero = ({
               {ctas?.map((cta, i) => (
                 <Button
                   key={i}
-                  intent={i === 0 ? "secondary" : "primary"}
+                  intent={i === 0 && ctas.length > 1 ? "secondary" : "primary"}
                   href={cta.href}
                   className={`w-full md:w-auto ${
-                    i !== 0 ? "" : "text-white border-white"
+                    i !== 0 ? "text-white border-white" : ""
                   }`}
                 >
                   {cta.title}
