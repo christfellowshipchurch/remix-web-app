@@ -16,6 +16,9 @@ export type Event = {
   startDateTime: string; // Rock date
   image: string;
   attributeValues: {
+    campus?: {
+      value: string;
+    };
     summary: {
       value: string;
     };
@@ -28,7 +31,7 @@ export type Event = {
   };
 };
 
-const getUpcomingEvents = async () => {
+const getEvents = async () => {
   const upcomingEvents = await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {
@@ -37,6 +40,13 @@ const getUpcomingEvents = async () => {
       $top: "22",
       loadAttributes: "simple",
     },
+  });
+
+  upcomingEvents.forEach((event: Event) => {
+    if (event && event.attributeValues.campus?.value) {
+      // TODO: Get campus name from campus guid?? once added to the attribute values in Rock
+      event.campus = event.attributeValues.campus.value;
+    }
   });
 
   upcomingEvents.forEach((event: Event) => {
@@ -60,7 +70,7 @@ const getUpcomingEvents = async () => {
 };
 
 export const loader = async () => {
-  const allEvents = await getUpcomingEvents();
+  const allEvents = await getEvents();
   const featuredEvents = allEvents.slice(0, 4);
   const upcomingEvents = allEvents.slice(4);
 
