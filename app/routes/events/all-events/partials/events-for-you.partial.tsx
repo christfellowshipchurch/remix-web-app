@@ -1,7 +1,6 @@
 import { useLoaderData } from "react-router";
 import { EventReturnType } from "../loader";
 import { SectionTitle } from "~/components";
-import { ContentCard } from "~/primitives/cards/content.card";
 import {
   FilterButtons,
   mockTags,
