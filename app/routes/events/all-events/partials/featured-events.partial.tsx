@@ -1,4 +1,4 @@
-import { FeaturedCard } from "../components/featured-card.component";
+import { FeaturedEventCard } from "../components/featured-card.component";
 import { useLoaderData } from "react-router";
 import { EventReturnType } from "../loader";
 import { ResourceCard } from "~/primitives/cards/resource-card";
@@ -10,7 +10,7 @@ export function FeaturedEvents() {
   return (
     <div className="w-full py-28 bg-gray content-padding">
       <div className="flex flex-col max-w-screen-content mx-auto">
-        <FeaturedCard card={featuredEvent} />
+        <FeaturedEventCard card={featuredEvent} />
         <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-16 place-items-center md:place-items-start">
           {otherEvents.map((event, i) => (
             <ResourceCard key={i} resource={event} />
