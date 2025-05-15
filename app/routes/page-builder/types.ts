@@ -33,37 +33,32 @@ export type RockAttributeValue = {
 };
 
 /**
- * Represents a collection item in the page builder
+ * Represents a collection card in the page builder
  */
 export type CollectionItem = {
   id: string;
   contentChannelId: string;
   contentType: ContentType;
   name: string;
-  attributeValues: Record<string, RockAttributeValue["value"]>;
+  summary: string;
+  image: string;
+  pathname: string;
+  startDate?: string; // for Events, Sermons, Articles, Devotionals, Podcasts
+  author?: string; // for Sermons, Articles, Devotionals, Podcasts
+  location?: string; // for Events
+  attributeValues?: Record<string, RockAttributeValue["value"]>; // TODO: Remove this when done testin
 };
 
 /**
  * Represents a child item in the page builder
  */
-export type PageBuilderChild = {
+export type PageBuilderSection = {
   id: string;
   name: string;
   type: SectionType;
   content: string;
   attributeValues: Record<string, RockAttributeValue["value"]>;
   collection?: CollectionItem[];
-};
-
-/**
- * Represents the raw content item from Rock CMS
- */
-export type RockContentItem = {
-  id: string;
-  contentChannelId: string;
-  title: string;
-  content: string;
-  attributeValues?: Record<string, RockAttributeValue>;
 };
 
 /**
@@ -74,5 +69,5 @@ export type PageBuilderLoader = {
   heroImage: string;
   callsToAction: CallToAction[];
   content: string;
-  children: PageBuilderChild[];
+  sections: PageBuilderSection[];
 };
