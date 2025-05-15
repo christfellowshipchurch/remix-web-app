@@ -10,7 +10,7 @@ type SocialMedia = {
   url: string;
 };
 
-export type LoaderReturnType = {
+export type Author = {
   hostUrl: string;
   fullName: string;
   profilePhoto: string;
@@ -49,7 +49,7 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
   return articles;
 };
 
-const getAuthorDetails = async (personId: string) => {
+export const getAuthorDetails = async (personId: string) => {
   try {
     const authorData = await fetchAuthorData({
       authorId: personId,
@@ -114,8 +114,9 @@ const getAuthorDetails = async (personId: string) => {
             try {
               return {
                 title: article.title || "",
-                readTime: Math.round(
-                  (article.content?.split(" ") || []).length / 200
+                readTime: Math.max(
+                  1,
+                  Math.round((article.content?.split(" ") || []).length / 200)
                 ),
                 publishDate: format(
                   new Date(article?.startDateTime),
@@ -158,12 +159,12 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const authorData: LoaderReturnType = {
+  const authorData: Author = {
     hostUrl: process.env.HOST_URL || "host-url-not-found",
     fullName: data.fullName,
     profilePhoto: data.photo.uri ?? "",
     authorAttributes: data.authorAttributes,
   };
 
-  return <LoaderReturnType>authorData;
+  return <Author>authorData;
 };

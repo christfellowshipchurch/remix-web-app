@@ -1,8 +1,11 @@
+import { cn } from "~/lib/utils";
+
 /**
  * Section Title Component for our landing/hub pages and their different sections
  * */
 export function SectionTitle({
   className,
+  color,
   title,
   sectionTitle,
   leading,
@@ -11,13 +14,20 @@ export function SectionTitle({
   title?: string;
   sectionTitle: string;
   leading?: string;
+  color?: string;
 }) {
   return (
     // TODO : Check with Austin if we need to add a horizontal layout for this as well
     <div className={`flex flex-col gap-8 ${className || ""}`}>
       <div className="flex items-center gap-5">
-        <div className="w-6 bg-ocean h-1" />
-        <h2 className="text-lg font-extrabold text-ocean leading-none">
+        <div
+          className="w-6 h-1"
+          style={{ backgroundColor: color || "#0092BC" }}
+        />
+        <h2
+          className="text-lg font-extrabold leading-none"
+          style={{ color: color || "#0092BC" }}
+        >
           {sectionTitle}
         </h2>
       </div>

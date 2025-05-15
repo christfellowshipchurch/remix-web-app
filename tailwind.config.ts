@@ -76,6 +76,9 @@ export default {
       minWidth: {
         ...defaultTheme.minWidth,
       },
+      screens: {
+        "2xl": "1480px",
+      },
       spacing: {
         "18": "72px",
       },

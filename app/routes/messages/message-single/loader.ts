@@ -91,7 +91,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const messageData = await fetchMessageData(path);
 
   if (!messageData) {
-    throw new Response("Article not found at: /articles/" + path, {
+    throw new Response("Sermon not found at: /messages/" + path, {
       status: 404,
       statusText: "Not Found",
     });

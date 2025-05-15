@@ -193,7 +193,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   };
 
   return (
-    <div className="mx-8 mb-8 min-w-72 max-w-md sm:min-w-96 md:w-96">
+    <div className="p-8 min-w-72 max-w-md sm:min-w-96 md:w-96">
       {renderStep()}
     </div>
   );

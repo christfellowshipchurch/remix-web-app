@@ -27,7 +27,7 @@ export function AuthorBioDesktop({
   const { bio, jobTitle, socialLinks } = authorAttributes;
 
   return (
-    <div className="flex flex-col gap-5 font-light text-neutral-700">
+    <div className="flex flex-col gap-5 font-light text-neutral-700 pr-0 md:pr-8 lg:pr-0">
       <Avatar.Root>
         <Avatar.Image
           className="size-32 rounded-full"

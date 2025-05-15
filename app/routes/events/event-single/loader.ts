@@ -53,7 +53,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const eventData = await fetchEventData(eventPath);
 
   if (!eventData) {
-    throw new Response("Article not found at: /articles/" + eventPath, {
+    throw new Response("Event not found at: /events/" + eventPath, {
       status: 404,
       statusText: "Not Found",
     });
