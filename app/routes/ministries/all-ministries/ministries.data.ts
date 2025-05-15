@@ -1,79 +1,81 @@
-export const ministries = [
+import { Ministry } from "./partials/all-ministries.partial";
+
+export const ministries: Ministry[] = [
   {
-    id: "1",
     title: "Kids",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/kids",
   },
   {
-    id: "2",
     title: "Missions",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/missions",
   },
   {
-    id: "3",
     title: "Special Needs",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/special-needs",
   },
   {
-    id: "4",
     title: "Freedom and Care",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/freedom-and-care",
   },
   {
-    id: "5",
     title: "Young Adults",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/young-adults",
   },
   {
-    id: "6",
     title: "Men",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/men",
   },
   {
-    id: "7",
     title: "Women",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/women",
   },
   {
-    id: "8",
     title: "Married People",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/married-people",
   },
   {
-    id: "9",
     title: "Stewardship",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/stewardship",
   },
   {
-    id: "10",
     title: "Foster Care",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/foster-care",
   },
   {
-    id: "11",
     title: "Worship",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
     image: "/assets/images/ministries-hero.webp",
+    url: "/ministries/worship",
   },
 ];
