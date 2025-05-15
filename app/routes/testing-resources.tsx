@@ -1,9 +1,9 @@
 import { mockEvents } from "~/components/page-builder/events-mock-data";
-import { ResourceSection } from "~/components/page-builder/resource-section.partial";
+import { ResourceCarrouselSection } from "~/components/page-builder/resource-section.partial";
 
 const TestingResources = () => {
   return (
-    <ResourceSection
+    <ResourceCarrouselSection
       title="Resources"
       description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
       resources={mockEvents}
