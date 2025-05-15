@@ -15,7 +15,7 @@ export const ResourceSection = ({
   viewMoreLink: string;
 }) => {
   return (
-    <div className={cn("w-full py-28 pl-5 md:pl-12 lg:pl-18", className)}>
+    <div className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}>
       <div className="flex flex-col max-w-screen-content mx-auto">
         <PageBuilderResourceComponent
           title={title}
