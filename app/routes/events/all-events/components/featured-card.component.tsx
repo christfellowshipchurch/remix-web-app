@@ -4,7 +4,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import HtmlRenderer from "~/primitives/html-renderer";
 
-export const FeaturedCard = ({ card }: { card: Event }) => {
+export const FeaturedEventCard = ({ card }: { card: Event }) => {
   const { title, image, startDate, campus, attributeValues, content } = card;
 
   return (

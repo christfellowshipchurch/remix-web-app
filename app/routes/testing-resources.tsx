@@ -4,7 +4,7 @@ import { ResourceSection } from "~/components/page-builder/resource-section.part
 const TestingResources = () => {
   return (
     <ResourceSection
-      title="Events"
+      title="Resources"
       description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
       resources={mockEvents}
       viewMoreLink="/events"

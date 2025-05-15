@@ -76,20 +76,22 @@ export const ResourceCarousel = ({
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
-            className="w-full basis-[75%] sm:basis-[45%] lg:basis-[30%] xl:basis-[33.33%] pl-0"
+            className="w-full basis-[75%] sm:basis-[45%] lg:basis-[33.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
           >
             <ResourceCard resource={resource} />
           </CarouselItem>
         ))}
       </CarouselContent>
 
-      {/* Arrows */}
+      {/* Dots */}
       <div className="absolute -bottom-12 left-0">
         <CarouselDots
           activeClassName="bg-ocean"
           inactiveClassName="bg-neutral-lighter"
         />
       </div>
+
+      {/* Arrows */}
       <div className="absolute right-24 -bottom-10">
         <CarouselPrevious
           className="left-0 border-ocean disabled:border-[#AAAAAA]"
