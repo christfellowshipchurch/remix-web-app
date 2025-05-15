@@ -11,7 +11,7 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 
-export const ResourceCarrouselSection = ({
+export const ResourceCarouselSection = ({
   className,
   title,
   description,
@@ -27,7 +27,7 @@ export const ResourceCarrouselSection = ({
   return (
     <div className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}>
       <div className="flex flex-col max-w-screen-content mx-auto">
-        <PageBuilderCarrouselResource
+        <PageBuilderCarouselResource
           title={title}
           description={description}
           resources={resources}
@@ -45,7 +45,7 @@ interface PageBuilderResourcesProps {
   resources: Event[] | any[];
 }
 
-export const PageBuilderCarrouselResource = ({
+export const PageBuilderCarouselResource = ({
   title,
   viewMoreLink,
   description,
@@ -126,11 +126,11 @@ export const ResourceCarousel = ({
       {/* Arrows */}
       <div className="absolute right-24 -bottom-10">
         <CarouselPrevious
-          className="left-0 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
+          className="cursor-pointer left-0 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
           disabledFill="#AAAAAA"
         />
         <CarouselNext
-          className="left-12 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
+          className="cursor-pointer left-12 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
           disabledFill="#AAAAAA"
         />
       </div>
