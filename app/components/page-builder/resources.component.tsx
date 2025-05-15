@@ -24,7 +24,7 @@ export const PageBuilderResourceComponent = ({
 }: PageBuilderResourcesProps) => {
   return (
     <div className="w-full flex justify-center">
-      <div className="flex w-full  flex-col items-center py-12 md:py-24">
+      <div className="w-full flex flex-col items-center py-16 md:py-24 lg:py-28">
         {/* Header */}
         <div className="w-full flex items-center justify-between pr-5 md:pr-12 lg:pr-18">
           <div className="flex flex-col gap-2">
