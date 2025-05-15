@@ -5,7 +5,7 @@ import {
   FilterButtons,
   mockTags,
 } from "~/routes/messages/all-messages/components/all-messages.component";
-import { EventCard } from "~/primitives/cards/event-card";
+import { ResourceCard } from "~/primitives/cards/resource-card";
 
 export const EventsForYou = () => {
   const { upcomingEvents } = useLoaderData<EventReturnType>();
@@ -23,7 +23,7 @@ export const EventsForYou = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center md:place-items-start">
           {upcomingEvents.map((event, i) => (
-            <EventCard key={i} event={event} />
+            <ResourceCard key={i} resource={event} />
           ))}
         </div>
       </div>

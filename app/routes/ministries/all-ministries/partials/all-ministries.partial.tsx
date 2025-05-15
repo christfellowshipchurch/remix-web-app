@@ -1,10 +1,10 @@
-import { ResourceCard } from "~/components";
+import { MinistryCard } from "~/primitives/cards/ministry-card";
 
-type Ministry = {
-  id: string;
+export type Ministry = {
   title: string;
   description: string;
   image: string;
+  url: string;
 };
 
 export const AllMinistriesPartial = ({
@@ -21,7 +21,7 @@ export const AllMinistriesPartial = ({
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-4 md:gap-y-8 lg:gap-y-20 md:gap-x-8 xl:gap-x-12">
             {ministries.map((ministry, i) => (
-              <ResourceCard key={i} {...ministry} />
+              <MinistryCard key={i} {...ministry} />
             ))}
           </div>
         </div>

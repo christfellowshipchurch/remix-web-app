@@ -1,13 +1,16 @@
-import { EventsResources } from "~/components/page-builder/events";
+import { mockEvents } from "~/components/page-builder/events-mock-data";
+import { ResourceSection } from "~/components/page-builder/resource-section.partial";
 
-const TestingEventsResources = () => {
+const TestingResources = () => {
   return (
-    <div className="w-full py-28 bg-gray content-padding">
-      <div className="flex flex-col max-w-screen-content mx-auto">
-        <EventsResources />
-      </div>
-    </div>
+    <ResourceSection
+      title="Events"
+      description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+      resources={mockEvents}
+      viewMoreLink="/events"
+      className="bg-gray"
+    />
   );
 };
 
-export default TestingEventsResources;
+export default TestingResources;
