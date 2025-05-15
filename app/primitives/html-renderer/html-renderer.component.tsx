@@ -1,6 +1,12 @@
 import parse, { attributesToProps } from "html-react-parser";
 
-export const HTMLRenderer = ({ html }: { html: string }) => {
+export const HTMLRenderer = ({
+  html,
+  className,
+}: {
+  html: string;
+  className?: string;
+}) => {
   const options = {
     replace(domNode: any) {
       if (domNode.attribs && domNode.name === "img") {
@@ -32,5 +38,5 @@ export const HTMLRenderer = ({ html }: { html: string }) => {
   //   />
   // );
 
-  return parse(html, options);
+  return <div className={className}>{parse(html, options)}</div>;
 };
