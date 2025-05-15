@@ -3,31 +3,33 @@ import { Event } from "~/routes/events/all-events/loader";
 import {
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "~/primitives/shadcn-primitives/carousel";
-import { EventCard } from "~/primitives/cards/event-card";
-import { mockEvents } from "./events-mock-data";
-interface EventResourcesProps {
+import { ResourceCard } from "~/primitives/cards/resource-card";
+interface PageBuilderResourcesProps {
   viewMoreLink: string;
+  title: string;
   description: string;
-  events: Event[];
+  resources: Event[] | any[];
 }
 
-export const EventsResources = ({
-  viewMoreLink = "/events",
-  description = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-  events = mockEvents,
-}: EventResourcesProps) => {
+export const PageBuilderResourceComponent = ({
+  title,
+  viewMoreLink,
+  description,
+  resources,
+}: PageBuilderResourcesProps) => {
   return (
-    <div className="bg-white w-full flex justify-center content-padding">
-      <div className="flex w-full  flex-col items-center py-12 md:py-24 max-w-screen-content">
+    <div className="w-full flex justify-center">
+      <div className="flex w-full  flex-col items-center py-12 md:py-24">
         {/* Header */}
-        <div className="w-full flex items-center justify-between">
+        <div className="w-full flex items-center justify-between pr-5 md:pr-12 lg:pr-18">
           <div className="flex flex-col gap-2">
             <h2 className="text-text font-extrabold text-[28px] lg:text-[32px] leading-tight">
-              Events
+              {title}
             </h2>
             <p className="text-lg">{description}</p>
           </div>
@@ -35,19 +37,34 @@ export const EventsResources = ({
           <Button
             href={viewMoreLink}
             size="md"
-            className="hidden lg:block"
+            className="hidden md:block"
             intent="secondary"
           >
             View All
           </Button>
         </div>
-        <EventsCarousel events={events} />
+
+        <ResourceCarousel resources={resources} />
+
+        <Button
+          href={viewMoreLink}
+          size="md"
+          className="md:hidden"
+          intent="secondary"
+        >
+          View All
+        </Button>
       </div>
     </div>
   );
 };
 
-export const EventsCarousel = ({ events }: { events: Event[] }) => {
+export const ResourceCarousel = ({
+  resources,
+}: {
+  // TODO: Update type any to Article | Message | Podcast, etc... ??
+  resources: Event[] | any[];
+}) => {
   return (
     <Carousel
       opts={{
@@ -55,18 +72,24 @@ export const EventsCarousel = ({ events }: { events: Event[] }) => {
       }}
       className="w-full mt-8 relative mb-12"
     >
-      {/* Missing Dots */}
-      <CarouselContent className="gap-8">
-        {events.map((event, index) => (
+      <CarouselContent className="gap-6 xl:gap-8 pt-4 2xl:pr-18">
+        {resources.map((resource, index) => (
           <CarouselItem
             key={index}
-            className="w-full basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
+            className="w-full basis-[75%] sm:basis-[45%] lg:basis-[30%] xl:basis-[33.33%] pl-0"
           >
-            <EventCard event={event} />
+            <ResourceCard resource={resource} />
           </CarouselItem>
         ))}
       </CarouselContent>
 
+      {/* Arrows */}
+      <div className="absolute -bottom-12 left-0">
+        <CarouselDots
+          activeClassName="bg-ocean"
+          inactiveClassName="bg-neutral-lighter"
+        />
+      </div>
       <div className="absolute right-24 -bottom-10">
         <CarouselPrevious
           className="left-0 border-ocean disabled:border-[#AAAAAA]"

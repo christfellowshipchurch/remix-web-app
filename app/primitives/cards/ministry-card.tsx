@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export function ResourceCard({
+export function MinistryCard({
   title,
   description,
   image,

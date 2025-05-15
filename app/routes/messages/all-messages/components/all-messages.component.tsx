@@ -9,7 +9,7 @@ import {
 import { useMemo } from "react";
 
 import { SectionTitle } from "~/components";
-import { ContentCard } from "~/primitives/cards/content-card";
+import { ResourceCard } from "~/primitives/cards/resource-card";
 import { Icon } from "~/primitives/icon/icon";
 import { ContentItemHit } from "~/routes/search/types";
 import { CustomPagination } from "./custom-pagination.component";
@@ -25,19 +25,15 @@ export type Tag = {
 };
 
 const MessageHitComponent = ({ hit }: { hit: ContentItemHit }) => (
-  <ContentCard
-    image={hit.coverImage.sources[0].uri}
-    title={hit.title}
-    subheadings={[
-      { title: hit.summary.split("|")[0] },
-      {
-        icon: "user",
-        title: `${hit.author.firstName} ${hit.author.lastName}`,
+  <ResourceCard
+    resource={{
+      author: hit.author.firstName,
+      image: hit.coverImage.sources[0].uri,
+      title: hit.title,
+      attributeValues: {
+        url: { value: `/${hit.routing.pathname}` },
+        summary: { value: hit.summary },
       },
-    ]}
-    cta={{
-      title: "Watch Now",
-      href: `/${hit.routing.pathname}`,
     }}
   />
 );

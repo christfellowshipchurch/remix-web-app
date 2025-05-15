@@ -9,6 +9,7 @@ export type EventReturnType = {
 
 export type Event = {
   campus?: string;
+  content?: string;
   title: string;
   date: string; // Formatted date
   expireDateTime: string; // Rock date
