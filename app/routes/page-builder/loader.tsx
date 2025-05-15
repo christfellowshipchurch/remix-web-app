@@ -3,16 +3,17 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
 import {
   getContentType,
+  getPathname,
   getSectionType,
   isCollectionType,
 } from "./components/builder-utils";
 import {
   CollectionItem,
-  PageBuilderChild,
+  PageBuilderSection,
   PageBuilderLoader,
-  RockContentItem,
   SectionType,
 } from "./types";
+import { format, parseISO } from "date-fns";
 
 const fetchChildItems = async (id: string) => {
   const children = await fetchRockData({
@@ -40,8 +41,8 @@ const fetchChildItems = async (id: string) => {
 };
 
 const mapPageBuilderChildItems = async (
-  children: RockContentItem[]
-): Promise<PageBuilderChild[]> => {
+  children: any[]
+): Promise<PageBuilderSection[]> => {
   return Promise.all(
     // Map over the children and define the PageBuilder Section Type
     children.map(async (child) => {
@@ -55,13 +56,14 @@ const mapPageBuilderChildItems = async (
         );
       }
 
-      const baseChild: PageBuilderChild = {
+      // Create the base child - represents a section in the page builder
+      const baseChild: PageBuilderSection = {
         id: child.id,
         type: sectionType,
         name: child.title,
         content: child.content,
         attributeValues: Object.fromEntries(
-          Object.entries(child.attributeValues || {}).map(([key, obj]) => [
+          Object.entries(child.attributeValues || {}).map(([key, obj]: any) => [
             key,
             obj.value,
           ])
@@ -73,37 +75,60 @@ const mapPageBuilderChildItems = async (
         const collection = await fetchChildItems(child.id);
         return {
           ...baseChild,
-          collection: collection.map(
-            (item: RockContentItem): CollectionItem => {
-              const contentType = getContentType(item.contentChannelId);
+          collection: collection.map((item: any): CollectionItem => {
+            const contentType = getContentType(item.contentChannelId);
+            const attributeValues = Object.fromEntries(
+              Object.entries(item.attributeValues || {}).map(
+                ([key, obj]: any) => [key, obj.value]
+              )
+            );
 
-              if (!contentType) {
-                throw new Error(
-                  `Invalid content type for content channel ID: ${item.contentChannelId}`
-                );
-              }
-
-              const summary = item.attributeValues?.summary?.value || "";
-              if (!summary) {
-                item.attributeValues = {
-                  ...item.attributeValues,
-                  summary: { value: item.content },
-                };
-              }
-
-              return {
-                id: item.id,
-                contentChannelId: item.contentChannelId,
-                contentType: contentType,
-                name: item.title,
-                attributeValues: Object.fromEntries(
-                  Object.entries(item.attributeValues || {}).map(
-                    ([key, obj]) => [key, obj.value]
-                  )
-                ),
-              };
+            if (!contentType) {
+              throw new Error(
+                `Invalid content type for content channel ID: ${item.contentChannelId}`
+              );
             }
-          ),
+
+            // Generate the summary for the item
+            const summary = attributeValues?.summary || "";
+            if (!summary) {
+              attributeValues.summary = item.content;
+            }
+
+            // Generate the pathname for the item
+            let pathname = "";
+            switch (contentType) {
+              case "REDIRECT_CARD":
+                pathname = attributeValues?.redirectUrl || "";
+                break;
+              case "EVENT":
+                pathname = getPathname(contentType, attributeValues?.url);
+                break;
+              default:
+                pathname = getPathname(contentType, attributeValues?.pathname);
+            }
+
+            // Generate the start date for the item
+            let startDate = "";
+            if (contentType !== "REDIRECT_CARD") {
+              const startDateTime = item.startDateTime || "";
+              if (startDateTime) {
+                startDate = format(parseISO(startDateTime), "EEE dd MMM yyyy");
+              }
+            }
+
+            return {
+              id: item.id,
+              contentChannelId: item.contentChannelId,
+              contentType: contentType,
+              name: item.title,
+              summary,
+              image: createImageUrlFromGuid(attributeValues?.image) || "",
+              startDate,
+              pathname,
+              // attributeValues,
+            };
+          }),
         };
       }
 
@@ -152,7 +177,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       callsToAction:
         parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value) ||
         [],
-      children: mappedChildren,
+      sections: mappedChildren,
     };
 
     return pageBuilder;

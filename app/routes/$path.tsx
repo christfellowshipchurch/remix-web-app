@@ -6,7 +6,7 @@ import { DynamicHero } from "~/components";
 export { loader } from "./page-builder/loader";
 
 export default function PageBuilderRoute() {
-  const { title, heroImage, callsToAction, content } =
+  const { title, heroImage, callsToAction, sections } =
     useLoaderData<PageBuilderLoader>();
 
   return (
@@ -19,7 +19,12 @@ export default function PageBuilderRoute() {
           title: cta.title,
         }))}
       />
-      {/* Insert Page Builder Content Here */}
+      {sections.map((section) => (
+        <div key={section.id}>
+          <h2>{section.name}</h2>
+          <p>{section.type}</p>
+        </div>
+      ))}
     </div>
   );
 }

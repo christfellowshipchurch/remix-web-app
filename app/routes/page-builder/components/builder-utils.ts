@@ -59,3 +59,16 @@ export const isCollectionType = (contentChannelId: string): boolean => {
   const sectionType = getSectionType(contentChannelId);
   return COLLECTION_TYPES_MAP.includes(sectionType as CollectionTypes);
 };
+
+/**
+ * Gets the pathname for a given content type and pathname
+ */
+export const getPathname = (
+  contentType: ContentType,
+  pathname: string
+): string => {
+  if (contentType && pathname && pathname !== "") {
+    return `/${contentType.toLowerCase()}/${pathname}`;
+  }
+  return pathname;
+};
