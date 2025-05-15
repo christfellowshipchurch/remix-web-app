@@ -146,7 +146,7 @@ export const SearchBar = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={6} />
+        <Configure hitsPerPage={20} />
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
