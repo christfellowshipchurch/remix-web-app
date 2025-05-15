@@ -1,11 +1,11 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
-import { SectionTitle } from "~/components";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 import type { LoaderReturnType } from "../loader";
 import { getFirstParagraph } from "~/lib/utils";
 import kebabCase from "lodash/kebabCase";
+import { SectionTitle } from "~/components";
 
 const CurrentSeries: React.FC = () => {
   const { currentSeries } = useLoaderData<LoaderReturnType>();
@@ -14,40 +14,28 @@ const CurrentSeries: React.FC = () => {
   const latestMessageResources = latestMessage.messageSeries;
 
   return (
-    <section className="relative grid grid-cols-1 min-h-screen lg:min-h-[900px] bg-white">
-      {/* Content Container */}
-      <div className="sm:h-[60vh] xl:h-[47vh] lg:min-h-[400px] w-full content-padding pt-14 md:pt-24 bg-gray sm:bg-white">
-        {/* Title Section */}
-        <div className="relative max-w-screen-content mx-auto">
-          <SectionTitle
-            className="mb-8"
-            sectionTitle="current series."
-            title={currentSeriesTitle}
-          />
-        </div>
-      </div>
-      <div className="sm:h-[40vh] xl:h-[53vh] lg:min-h-[450px] w-full bg-gray content-padding pt-64 pb-16 sm:pt-0">
-        <div className="relative max-w-screen-content mx-auto">
-          {/* Image Section */}
-          <div
-            className="absolute w-full aspect-video h-[40vh] sm:h-[40vh] lg:h-[65vh] xl:h-[65vh] -top-[40vh] sm:-top-[40vh] lg:top-auto lg:bottom-0 lg:min-h-[650px] bg-cover bg-center z-10"
-            style={{
-              backgroundImage: `url('${latestMessage.coverImage}')`,
-            }}
-          />
-          {/* Text Section */}
-          <div className="relative left-0 w-full bg-white px-10 py-10 xl:py-16 space-y-4 lg:w-[70%] xl:w-[45%] md:max-h-[525px] z-20">
-            <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
-            <h2 className="text-[40px] font-bold text-text-primary text-pretty leading-tight">
-              {latestMessage.title}
-            </h2>
-            <p className="font-bold">{latestMessage.authorName}</p>
-            <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-3 xl:mb-12">
-              {getFirstParagraph(latestMessage.description)}
+    <div className="bg-gray w-full content-padding py-28">
+      <div className="flex flex-col gap-12 max-w-screen-content mx-auto">
+        <SectionTitle
+          title={currentSeriesTitle}
+          sectionTitle="current series"
+        />
+
+        <div className="flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] lg:h-[620px] xl:h-[540px] 2xl:h-[500px]">
+          <div className="flex flex-col h-full lg:w-1/2 justify-between bg-white w-full p-8 md:p-16">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
+              <h2 className="text-2xl md:text-3xl lg:text-[40px] font-bold text-text-primary text-pretty leading-tight">
+                {latestMessage.title}
+              </h2>
+              <p className="font-bold">{latestMessage.authorName}</p>
+              <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-0">
+                {getFirstParagraph(latestMessage.description)}
+              </div>
             </div>
 
             {/* Buttons */}
-            <div className="mt-5 xl:mt-8 md:mt-0 flex flex-col sm:flex-row gap-3">
+            <div className="mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-8">
               {latestMessageResources && (
                 <IconButton
                   to={`/series-resources/${kebabCase(latestMessageResources)}`}
@@ -66,9 +54,15 @@ const CurrentSeries: React.FC = () => {
               </IconButton>
             </div>
           </div>
+
+          <img
+            src={latestMessage.coverImage}
+            alt={currentSeriesTitle}
+            className="w-full lg:w-1/2 lg:h-[620px] xl:h-[500px] object-cover"
+          />
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
