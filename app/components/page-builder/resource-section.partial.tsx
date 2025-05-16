@@ -1,15 +1,14 @@
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
-import { Event } from "~/routes/events/all-events/loader";
 import {
   Carousel,
+  CarouselArrows,
   CarouselContent,
   CarouselDots,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "~/primitives/shadcn-primitives/carousel";
 import { ResourceCard } from "~/primitives/cards/resource-card";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 export const ResourceCarouselSection = ({
   className,
@@ -21,7 +20,7 @@ export const ResourceCarouselSection = ({
   className?: string;
   title: string;
   description: string;
-  resources: any[];
+  resources: CollectionItem[];
   viewMoreLink: string;
 }) => {
   return (
@@ -42,10 +41,10 @@ interface PageBuilderResourcesProps {
   viewMoreLink: string;
   title: string;
   description: string;
-  resources: Event[] | any[];
+  resources: CollectionItem[];
 }
 
-export const PageBuilderCarouselResource = ({
+const PageBuilderCarouselResource = ({
   title,
   viewMoreLink,
   description,
@@ -91,12 +90,7 @@ export const PageBuilderCarouselResource = ({
   );
 };
 
-export const ResourceCarousel = ({
-  resources,
-}: {
-  // TODO: Update type any to Article | Message | Podcast, etc... ??
-  resources: Event[] | any[];
-}) => {
+const ResourceCarousel = ({ resources }: { resources: CollectionItem[] }) => {
   return (
     <Carousel
       opts={{
@@ -108,7 +102,7 @@ export const ResourceCarousel = ({
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
-            className="w-full basis-[75%] sm:basis-[45%] lg:basis-[33.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
+            className="w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
           >
             <ResourceCard resource={resource} />
           </CarouselItem>
@@ -124,15 +118,8 @@ export const ResourceCarousel = ({
       </div>
 
       {/* Arrows */}
-      <div className="absolute right-24 -bottom-10">
-        <CarouselPrevious
-          className="cursor-pointer left-0 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
-          disabledFill="#AAAAAA"
-        />
-        <CarouselNext
-          className="cursor-pointer left-12 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
-          disabledFill="#AAAAAA"
-        />
+      <div className="absolute right-34 -bottom-10">
+        <CarouselArrows />
       </div>
     </Carousel>
   );
