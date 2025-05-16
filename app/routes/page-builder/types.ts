@@ -57,7 +57,7 @@ export type PageBuilderSection = {
   name: string;
   type: SectionType;
   content: string;
-  attributeValues: Record<string, RockAttributeValue["value"]>;
+  attributeValues?: Record<string, RockAttributeValue["value"]>;
   collection?: CollectionItem[];
 };
 

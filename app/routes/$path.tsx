@@ -5,7 +5,7 @@ import { DynamicHero } from "~/components";
 // Page Builder Route
 export { loader } from "./page-builder/loader";
 
-export default function PageBuilderRoute() {
+function PageBuilderRoute() {
   const { title, heroImage, callsToAction, sections } =
     useLoaderData<PageBuilderLoader>();
 
@@ -28,3 +28,5 @@ export default function PageBuilderRoute() {
     </div>
   );
 }
+
+export default PageBuilderRoute;
