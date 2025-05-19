@@ -7,7 +7,7 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 import { Carousel } from "~/primitives/shadcn-primitives/carousel";
 import { useState } from "react";
-import { ResourceCard } from "~/components/resource-card";
+import { MinistryCard } from "~/primitives/cards/ministry-card";
 import { useResponsive } from "~/hooks/use-responsive";
 
 export const ResourceCarousel = (data: {
@@ -64,7 +64,7 @@ export const ResourceCarousel = (data: {
                         : "0px",
                   }}
                 >
-                  <ResourceCard
+                  <MinistryCard
                     title={item.title}
                     description={item.attributeValues.summary.value}
                     image={item.coverImage}
