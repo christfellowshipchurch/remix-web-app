@@ -84,7 +84,7 @@ export type ContentBlockLayoutType =
 /**
  * Aspect ratios for images
  */
-export type ContentBlockAspectRatio = "16by9" | "4by3" | "1by1";
+export type ContentBlockAspectRatio = "16by9" | "4by5" | "1by1";
 
 /**
  * Image layout options
@@ -94,7 +94,7 @@ export type ContentBlockImageLayout = "LEFT" | "RIGHT";
 /**
  * Background color options
  */
-export type ContentBlockBackgroundColor = "OCEAN" | "WHITE" | "GRAY" | string;
+export type ContentBlockBackgroundColor = "WHITE" | "OCEAN" | "NAVY" | string;
 
 /**
  * Represents a Content Block section in the page builder
