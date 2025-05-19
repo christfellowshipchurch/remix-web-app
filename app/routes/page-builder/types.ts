@@ -71,3 +71,44 @@ export type PageBuilderLoader = {
   content: string;
   sections: PageBuilderSection[];
 };
+
+/**
+ * Layout types for ContentBlock
+ */
+export type ContentBlockLayoutType =
+  | "FEATURE"
+  | "BANNER"
+  | "CTA_CARDS"
+  | "CTA_FULLSCREEN";
+
+/**
+ * Aspect ratios for images
+ */
+export type ContentBlockAspectRatio = "16by9" | "4by3" | "1by1";
+
+/**
+ * Image layout options
+ */
+export type ContentBlockImageLayout = "LEFT" | "RIGHT";
+
+/**
+ * Background color options
+ */
+export type ContentBlockBackgroundColor = "OCEAN" | "WHITE" | "GRAY" | string;
+
+/**
+ * Represents a Content Block section in the page builder
+ */
+export interface ContentBlockData {
+  id: number;
+  type: "CONTENT_BLOCK";
+  name: string;
+  content: string;
+  layoutType: ContentBlockLayoutType;
+  subtitle?: string;
+  callsToAction?: string; // Format: "Label^#url|Label2^#url2"
+  coverImage?: string;
+  aspectRatio?: ContentBlockAspectRatio;
+  imageLayout?: ContentBlockImageLayout;
+  backgroundColor?: ContentBlockBackgroundColor;
+}
