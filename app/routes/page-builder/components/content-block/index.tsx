@@ -92,33 +92,62 @@ const BannerSection: FC<{ data: ContentBlockData }> = ({ data }) => (
   </section>
 );
 
-// CTA Cards Layout
-const CtaCardsSection: FC<{ data: ContentBlockData }> = ({ data }) => {
+// CTA Card Layout
+const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  const isDark = data.backgroundColor !== "WHITE";
+  const isOcean = data.backgroundColor === "OCEAN";
+
+  const getButtonIntent = (index: number) => {
+    if (index === 0) return "secondary";
+    return isOcean ? "white" : "primary";
+  };
+
+  const getButtonClassName = (index: number) => {
+    return cn("w-full sm:w-auto hover:enabled:bg-white/10", {
+      "text-soft-white border-soft-white": isDark && index === 0,
+      "hover:enabled:bg-white/80": isOcean && index === 1,
+      "hover:enabled:bg-ocean/25 hover:enabled:text-ocean": !isDark,
+    });
+  };
+
   return (
-    <section
-      className={`grid gap-4 p-8 rounded-lg ${
-        data.backgroundColor === "OCEAN"
-          ? "bg-blue-900 text-white"
-          : "bg-white text-gray-900"
-      }`}
-      aria-label={data.name}
-    >
-      <h2 className="text-2xl font-bold mb-4">{data.name}</h2>
-      {ctas.map((cta, idx) => (
-        <div
-          key={idx}
-          className="flex flex-col md:flex-row items-center justify-between bg-blue-600/80 rounded p-4"
-        >
-          <span className="font-semibold mb-2 md:mb-0">{cta.title}</span>
-          <a
-            href={cta.url}
-            className="bg-white text-blue-700 px-4 py-2 rounded hover:bg-blue-100 transition"
+    <section className="content-padding py-16" aria-label={data.name}>
+      <div
+        className={cn(
+          "flex flex-col md:flex-row gap-10",
+          "md:items-center justify-between",
+          "border border-neutral-lighter rounded-lg p-8 md:p-12",
+          `bg-${lowerCase(data.backgroundColor)}`
+        )}
+      >
+        <div className="flex-1 lg:max-w-[50%]">
+          <h2
+            className={cn("heading-h3 mb-4", {
+              "text-white": isDark,
+            })}
           >
-            Go
-          </a>
+            {data.name}
+          </h2>
+          <HTMLRenderer
+            className={isDark ? "text-text-alternate" : "text-text-secondary"}
+            html={data.content}
+          />
         </div>
-      ))}
+
+        <div className="flex flex-col lg:flex-row gap-2">
+          {ctas.slice(0, 2).map((cta, idx) => (
+            <Button
+              key={cta.url}
+              className={getButtonClassName(idx)}
+              intent={getButtonIntent(idx)}
+              href={cta.url}
+            >
+              {cta.title}
+            </Button>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };
@@ -165,9 +194,9 @@ export const ContentBlock: FC<{ data: ContentBlockData }> = ({ data }) => {
       return <FeatureSection data={data} />;
     case "BANNER":
       return <BannerSection data={data} />;
-    case "CTA_CARDS":
-      return <CtaCardsSection data={data} />;
-    case "CTA_FULLSCREEN":
+    case "CARD":
+      return <CtaCardSection data={data} />;
+    case "FULLSCREEN":
       return <CtaFullscreenSection data={data} />;
     default:
       return null;

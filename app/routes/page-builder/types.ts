@@ -78,8 +78,8 @@ export type PageBuilderLoader = {
 export type ContentBlockLayoutType =
   | "FEATURE"
   | "BANNER"
-  | "CTA_CARDS"
-  | "CTA_FULLSCREEN";
+  | "CARD"
+  | "FULLSCREEN";
 
 /**
  * Aspect ratios for images
