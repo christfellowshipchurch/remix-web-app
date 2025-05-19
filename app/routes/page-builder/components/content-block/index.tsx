@@ -1,59 +1,80 @@
 import { FC } from "react";
 import { ContentBlockData } from "../../types";
-import { parseRockKeyValueList } from "~/lib/utils";
+import { cn, parseRockKeyValueList } from "~/lib/utils";
+import { Button } from "~/primitives/button/button.primitive";
+import lowerCase from "lodash/lowerCase";
+import HTMLRenderer from "~/primitives/html-renderer";
+
+const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
+  return (
+    <div
+      className={cn("w-full mb-4 md:mb-0 md:ml-8", {
+        "lg:w-1/4 md:w-1/3": data.aspectRatio === "4by5",
+        "md:w-1/3": data.aspectRatio === "1by1",
+        "lg:w-1/2 md:w-1/3": data.aspectRatio === "16by9",
+      })}
+    >
+      <img
+        src={data.coverImage}
+        alt={data.name}
+        className={cn(
+          "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
+          {
+            "aspect-[16/9]": data.aspectRatio === "16by9",
+            "aspect-[4/5]": data.aspectRatio === "4by5",
+            "aspect-[1/1]": data.aspectRatio === "1by1",
+          }
+        )}
+      />
+    </div>
+  );
+};
 
 // Feature Layout
 const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  ``;
   return (
-    <section
-      className={`flex flex-col md:flex-row items-center p-8 rounded-lg ${
-        data.backgroundColor === "OCEAN"
-          ? "bg-blue-900 text-white"
-          : "bg-white text-gray-900"
-      }`}
-      aria-label={data.name}
-    >
-      {data.coverImage && data.imageLayout === "LEFT" && (
-        <img
-          src={data.coverImage}
-          alt={data.name}
-          className={`w-full md:w-1/2 ${
-            data.aspectRatio === "16by9"
-              ? "aspect-video"
-              : data.aspectRatio === "4by3"
-              ? "aspect-[4/3]"
-              : "aspect-square"
-          } object-cover rounded-lg mb-4 md:mb-0 md:mr-8`}
-        />
-      )}
-      <div className="flex-1">
-        {data.subtitle && (
-          <h4 className="text-sm font-semibold uppercase mb-2 tracking-widest">
-            {data.subtitle}
-          </h4>
+    <section className={cn("content-padding py-16")} aria-label={data.name}>
+      <div
+        className={cn(
+          "flex flex-col md:flex-row gap-10 xl:gap-20 items-center max-w-screen-content mx-auto",
+          {
+            "flex-col-reverse": data.imageLayout === "RIGHT",
+          }
         )}
-        <h2 className="text-2xl font-bold mb-4">{data.name}</h2>
-        <p className="mb-6">{data.content}</p>
-        <div className="flex flex-wrap gap-2">
-          {ctas.map((cta, idx) => (
-            <a
-              key={idx}
-              href={cta.url}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
+      >
+        {data.coverImage && data.imageLayout === "LEFT" && (
+          <FeatureImage data={data} />
+        )}
+        <div className={`flex-1`}>
+          <h2 className="text-text-primary heading-h2 mb-4">{data.name}</h2>
+          {data.subtitle && (
+            <h4
+              className={`text-text-secondary font-medium uppercase mb-2 tracking-widest`}
             >
-              {cta.title}
-            </a>
-          ))}
+              {data.subtitle}
+            </h4>
+          )}
+          <p className="mb-6 text-text-secondary">
+            <HTMLRenderer html={data.content} />
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {ctas.map((cta, idx) => (
+              <Button
+                intent={idx === 0 ? "white" : "primary"}
+                key={idx}
+                href={cta.url}
+              >
+                {cta.title}
+              </Button>
+            ))}
+          </div>
         </div>
+        {data.coverImage && data.imageLayout === "RIGHT" && (
+          <FeatureImage data={data} />
+        )}
       </div>
-      {data.coverImage && data.imageLayout === "RIGHT" && (
-        <img
-          src={data.coverImage}
-          alt={data.name}
-          className="w-full md:w-1/2 aspect-video object-cover rounded-lg mb-4 md:mb-0 md:ml-8"
-        />
-      )}
     </section>
   );
 };
@@ -118,6 +139,11 @@ const CtaCardsSection: FC<{ data: ContentBlockData }> = ({ data }) => {
 const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
   return (
+    // className={cn(
+    //   "content-padding py-16",
+    //   !isLight && "text-white",
+    //   `bg-${lowerCase(data.backgroundColor)}`
+    // )}
     <section
       className={`flex flex-col items-center justify-center min-h-[300px] p-8 rounded-lg text-center ${
         data.backgroundColor === "OCEAN"
