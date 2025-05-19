@@ -1,0 +1,48 @@
+import { Hit } from "algoliasearch";
+import { Link } from "react-router-dom";
+import { formattedServiceTimes } from "~/lib/utils";
+import Icon from "~/primitives/icon";
+
+export type CampusHit = {
+  campusUrl: string;
+  campusName: string;
+  // TODO: Remove Array once George updates Algolia
+  campusLocation: {
+    latitude: number;
+    longitude: number;
+    street1: string;
+    street2: string;
+    city: string;
+    state: string;
+    zip: string;
+  }[];
+  serviceTimes: string;
+};
+export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
+  const { street1, street2, city } = hit.campusLocation[0];
+  //   Remove " " from street2 at the end - TODO: Do this in Algolia?
+  const street2Formatted = street2.replace(/\s+$/, "");
+
+  return (
+    <Link
+      to={`/locations/${hit.campusUrl}`}
+      prefetch="intent"
+      className="flex gap-2 hover:translate-x-1 transition-transform duration-300 border border-[#E8E8E8] w-full rounded-xl p-2"
+    >
+      <Icon name="map" color="#666666" size={20} />
+      <div className="flex flex-col">
+        <h3 className="text-xs text-black font-bold">{hit.campusName}</h3>
+        <p className="text-xs font-medium text-text-secondary">
+          {street1} {street2Formatted}, {city}
+        </p>
+        <p className="text-xs text-black font-semibold">
+          {formattedServiceTimes(hit.serviceTimes).map((service, index) => (
+            <span key={index}>
+              {service.day} at {service.hour.join(", ")}
+            </span>
+          ))}
+        </p>
+      </div>
+    </Link>
+  );
+}

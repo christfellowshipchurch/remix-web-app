@@ -11,13 +11,11 @@ import {
   fetchThisWeek,
   fetchWeekdaySchedules,
 } from "~/lib/.server/fetch-location-single-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
-
-export type dayTimes = {
-  day: string;
-  hour: string[];
-};
-
+import {
+  createImageUrlFromGuid,
+  dayTimes,
+  formattedServiceTimes,
+} from "~/lib/utils";
 export type ContentItem = {
   title: string;
   attributeValues: {
@@ -128,21 +126,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const pastorData = await fetchPastorData(personId);
 
-  const formattedServices = serviceTimes
-    .split("|")
-    .reduce((acc: dayTimes[], time: string) => {
-      const [day, hour] = time.split("^");
-      const existingDay = acc.find((item) => item.day === day);
-
-      if (existingDay) {
-        existingDay.hour.push(hour);
-      } else {
-        acc.push({ day, hour: [hour] });
-      }
-
-      return acc;
-    }, []);
-
   const additionalInfoFormatted =
     additionalInfo?.value.split("|").slice(0, -1) || [];
 
@@ -195,7 +178,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     name,
     phoneNumber,
     postalCode: location?.postalCode?.substring(0, 5),
-    serviceTimes: formattedServices,
+    serviceTimes: formattedServiceTimes(serviceTimes),
     state: location?.state,
     street1: location?.street1,
     street2: location?.street2,

@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { IconButton } from "~/primitives/button/icon-button.primitive";
+import { HomeSearch } from "../components/search.component";
 import { IconName } from "~/primitives/button/types";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
@@ -31,17 +31,8 @@ export function DesktopHeroSection() {
               relevant answers for your life right here in Florida.
             </p>
             <div className="flex w-fit">
-              <Link to="/locations" prefetch="intent">
-                <IconButton
-                  iconName="arrowBack"
-                  className="text-white border-white rounded-full py-4 px-8"
-                  withRotatingArrow
-                  iconClasses="!bg-dark-navy size-[52px]"
-                  iconSize={34}
-                >
-                  Times and Locations
-                </IconButton>
-              </Link>
+              {/* Location Search */}
+              <HomeSearch />
             </div>
           </div>
 
@@ -116,7 +107,7 @@ const BottomBarItem = ({
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-screen w-full bg-white pb-16 relative">
+    <section className="h-[70dvh] md:h-[75dvh] w-full bg-white pb-16 relative">
       <div className="absolute inset-0 w-full h-full z-1">
         <Video
           src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
@@ -127,7 +118,7 @@ export const MobileHeroSection = () => {
         />
       </div>
       <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent to-dark-navy z-2" />
-      <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pt-16 h-full justify-center ml-auto">
+      <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pr-8 md:pr-0 pt-16 h-full justify-center ml-auto">
         <h1 className="text-[64px] text-white font-extrabold leading-none">
           There's <br className="hidden md:block " />
           <span className="text-ocean">
@@ -136,7 +127,9 @@ export const MobileHeroSection = () => {
           </span>{" "}
           you.
         </h1>
+
         {/* Location Search */}
+        <HomeSearch />
       </div>
     </section>
   );

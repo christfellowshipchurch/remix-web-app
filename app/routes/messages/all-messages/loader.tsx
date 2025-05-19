@@ -47,7 +47,7 @@ const fetchLatestMessage = async () => {
         : "",
       path: latestMessage.attributeValues?.url?.value || "",
       authorName:
-        `Pastor ${latestMessage.attributeValues?.author?.valueFormatted}` || "",
+        `${latestMessage.attributeValues?.author?.valueFormatted}` || "",
       summary: latestMessage.attributeValues?.summary?.valueFormatted || "",
       messageSeries:
         latestMessage.attributeValues?.messageSeries?.valueFormatted || "",

@@ -13,7 +13,26 @@ export function FeaturedEvents() {
         <FeaturedEventCard card={featuredEvent} />
         <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-16 place-items-center md:place-items-start">
           {otherEvents.map((event, i) => (
-            <ResourceCard key={i} resource={event} />
+            <ResourceCard
+              key={i}
+              resource={{
+                id: event.id,
+                contentChannelId: "78", // EVENT type from builder-utils.ts
+                contentType: "EVENT",
+                name: event.title,
+                summary: event.attributeValues.summary.value,
+                image: event.image,
+                pathname: event.attributeValues.url.value,
+                startDate: event.startDate,
+                location: event.campus,
+                attributeValues: {
+                  summary: event.attributeValues.summary.value,
+                  image: event.attributeValues.image.value,
+                  url: event.attributeValues.url.value,
+                  campus: event.attributeValues.campus?.value || null,
+                },
+              }}
+            />
           ))}
         </div>
       </div>
