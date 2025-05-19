@@ -22,7 +22,6 @@ const fetchChildItems = async (id: string) => {
     queryParams: {
       loadAttributes: "simple",
     },
-    cache: false,
   });
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
@@ -106,6 +105,12 @@ const mapPageBuilderChildItems = async (
           ...baseChild,
           collection: collection.map((item: any): CollectionItem => {
             const contentType = getContentType(item.contentChannelId);
+            // Map the attribute values to a key-value object for easier access
+            const itemAttributeValues = Object.fromEntries(
+              Object.entries(item.attributeValues || {}).map(
+                ([key, obj]: any) => [key, obj.value]
+              )
+            );
 
             if (!contentType) {
               throw new Error(
@@ -114,22 +119,25 @@ const mapPageBuilderChildItems = async (
             }
 
             // Generate the summary for the item
-            const summary = attributeValues?.summary || "";
+            const summary = itemAttributeValues?.summary || "";
             if (!summary) {
-              attributeValues.summary = item.content;
+              itemAttributeValues.summary = item.content;
             }
 
             // Generate the pathname for the item
             let pathname = "";
             switch (contentType) {
               case "REDIRECT_CARD":
-                pathname = attributeValues?.redirectUrl || "";
+                pathname = itemAttributeValues?.redirectUrl || "";
                 break;
               case "EVENT":
-                pathname = getPathname(contentType, attributeValues?.url);
+                pathname = getPathname(contentType, itemAttributeValues?.url);
                 break;
               default:
-                pathname = getPathname(contentType, attributeValues?.pathname);
+                pathname = getPathname(
+                  contentType,
+                  itemAttributeValues?.pathname
+                );
             }
 
             // Generate the start date for the item
@@ -147,7 +155,7 @@ const mapPageBuilderChildItems = async (
               contentType: contentType,
               name: item.title,
               summary,
-              image: createImageUrlFromGuid(attributeValues?.image) || "",
+              image: createImageUrlFromGuid(itemAttributeValues?.image) || "",
               startDate,
               pathname,
               // attributeValues,
