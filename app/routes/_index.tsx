@@ -11,7 +11,7 @@ import {
   DesktopHeroSection,
   MobileHeroSection,
   BottomBar,
-} from "./about/partials/hero.partial";
+} from "./home/partials/hero.partial";
 
 export const meta: MetaFunction = () => {
   return [

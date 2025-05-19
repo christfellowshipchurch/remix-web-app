@@ -27,12 +27,17 @@ export type Tag = {
 const MessageHitComponent = ({ hit }: { hit: ContentItemHit }) => (
   <ResourceCard
     resource={{
-      author: hit.author.firstName,
+      id: hit.objectID,
+      contentChannelId: "63", // MESSAGE type from builder-utils.ts
+      contentType: "MESSAGE",
+      author: hit.author.firstName + " " + hit.author.lastName,
       image: hit.coverImage.sources[0].uri,
-      title: hit.title,
+      name: hit.title,
+      summary: hit.summary,
+      pathname: `/${hit.routing.pathname}`,
       attributeValues: {
-        url: { value: `/${hit.routing.pathname}` },
-        summary: { value: hit.summary },
+        url: `/${hit.routing.pathname}`,
+        summary: hit.summary,
       },
     }}
   />

@@ -235,3 +235,22 @@ export const parseRockKeyValueList = (
     };
   });
 };
+
+export type dayTimes = {
+  day: string;
+  hour: string[];
+};
+
+export const formattedServiceTimes = (serviceTimes: string) =>
+  serviceTimes.split("|").reduce((acc: dayTimes[], time: string) => {
+    const [day, hour] = time.split("^");
+    const existingDay = acc.find((item) => item.day === day);
+
+    if (existingDay) {
+      existingDay.hour.push(hour);
+    } else {
+      acc.push({ day, hour: [hour] });
+    }
+
+    return acc;
+  }, []);

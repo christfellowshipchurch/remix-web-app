@@ -68,6 +68,7 @@ const mapPageBuilderChildItems = async (
             obj.value,
           ])
         ),
+        collection: [],
       };
 
       // If the child is a collection, fetch the child items and return them
