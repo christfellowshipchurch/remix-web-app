@@ -81,26 +81,14 @@ const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
 
 // Banner Layout
 const BannerSection: FC<{ data: ContentBlockData }> = ({ data }) => (
-  <section
-    className={`flex items-center justify-center p-8 rounded-lg ${
-      data.backgroundColor === "OCEAN"
-        ? "bg-blue-900 text-white"
-        : "bg-white text-gray-900"
-    }`}
-    aria-label={data.name}
-  >
+  <section aria-label={data.name}>
     {data.coverImage && (
       <img
         src={data.coverImage}
         alt={data.name}
-        className="w-full max-w-3xl aspect-video object-cover rounded-lg"
+        className="w-full aspect-square sm:aspect-video lg:aspect-[16/7] xl:aspect-[16/6] object-cover"
       />
     )}
-    <div className="absolute text-center">
-      <h2 className="text-2xl font-bold mb-2">{data.name}</h2>
-      {data.subtitle && <h4 className="text-sm mb-2">{data.subtitle}</h4>}
-      <p>{data.content}</p>
-    </div>
   </section>
 );
 
