@@ -14,15 +14,15 @@ const mockContentBlock: ContentBlockData = {
   name: "Testing Feature Section",
   content:
     "We know life is busy, and your children are growing fast. At Christ Fellowship Kids, we want to partner with you to make the most of your child’s formative years and help them build a strong foundation of faith. We have weekly programming offered on Sundays as well as a mid-week discipleship program during the week.",
-  layoutType: "CARD",
+  layoutType: "FULLSCREEN",
   subtitle: "FROM BABIES THROUGH ELEMENTARY",
   callsToAction:
-    "Find a campus near you^#testing|Plan your first visit^#testing",
+    "Find a campus near you^#testing|Plan your first visit^#testing|Plan your first visit^#testing|Plan your first visit^#testing",
   coverImage:
     "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=004a5603-8a3c-4391-9fae-499ca3684061",
   aspectRatio: "1by1",
   imageLayout: "LEFT",
-  backgroundColor: "OCEAN",
+  backgroundColor: "WHITE",
 };
 
 function PageBuilderRoute() {

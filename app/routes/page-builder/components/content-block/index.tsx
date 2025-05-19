@@ -30,6 +30,33 @@ const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
   );
 };
 
+const getButtonStyles = (data: ContentBlockData) => {
+  const isDark = data.backgroundColor !== "WHITE";
+  const isOcean = data.backgroundColor === "OCEAN";
+  const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+
+  const getButtonIntent = (index: number) => {
+    if (index === 0 || index === 1) return "secondary";
+    return isOcean && index === ctas.length - 1 ? "white" : "primary";
+  };
+
+  const getButtonClassName = (index: number) => {
+    return cn("w-full sm:w-auto hover:enabled:bg-white/10", {
+      "text-soft-white border-soft-white":
+        isDark && (index === 0 || index === 1),
+      "hover:enabled:bg-white/80": isOcean && index === ctas.length - 1,
+      "hover:enabled:bg-ocean/25 hover:enabled:text-ocean": !isDark,
+    });
+  };
+
+  return {
+    isDark,
+    isOcean,
+    getButtonIntent,
+    getButtonClassName,
+  };
+};
+
 // Feature Layout
 const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
@@ -95,21 +122,7 @@ const BannerSection: FC<{ data: ContentBlockData }> = ({ data }) => (
 // CTA Card Layout
 const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
-  const isDark = data.backgroundColor !== "WHITE";
-  const isOcean = data.backgroundColor === "OCEAN";
-
-  const getButtonIntent = (index: number) => {
-    if (index === 0) return "secondary";
-    return isOcean ? "white" : "primary";
-  };
-
-  const getButtonClassName = (index: number) => {
-    return cn("w-full sm:w-auto hover:enabled:bg-white/10", {
-      "text-soft-white border-soft-white": isDark && index === 0,
-      "hover:enabled:bg-white/80": isOcean && index === 1,
-      "hover:enabled:bg-ocean/25 hover:enabled:text-ocean": !isDark,
-    });
-  };
+  const { isDark, getButtonIntent, getButtonClassName } = getButtonStyles(data);
 
   return (
     <section className="content-padding py-16" aria-label={data.name}>
@@ -155,33 +168,42 @@ const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
 // CTA Fullscreen Layout
 const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  const { isDark, getButtonIntent, getButtonClassName } = getButtonStyles(data);
+
   return (
-    // className={cn(
-    //   "content-padding py-16",
-    //   !isLight && "text-white",
-    //   `bg-${lowerCase(data.backgroundColor)}`
-    // )}
     <section
-      className={`flex flex-col items-center justify-center min-h-[300px] p-8 rounded-lg text-center ${
-        data.backgroundColor === "OCEAN"
-          ? "bg-blue-900 text-white"
-          : "bg-white text-gray-900"
-      }`}
+      className={cn(
+        "flex flex-col items-center justify-center text-center gap-8 py-28",
+        `bg-${lowerCase(data.backgroundColor)}`,
+        {
+          "text-white": isDark,
+          "text-gray-900": !isDark,
+        }
+      )}
       aria-label={data.name}
     >
-      <h2 className="text-3xl font-bold mb-4">{data.name}</h2>
-      {data.subtitle && <h4 className="text-lg mb-2">{data.subtitle}</h4>}
-      <p className="mb-6">{data.content}</p>
-      <div className="flex flex-wrap gap-2 justify-center">
-        {ctas.map((cta, idx) => (
-          <a
-            key={idx}
-            href={cta.url}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded text-lg transition"
-          >
-            {cta.title}
-          </a>
-        ))}
+      <h2 className="heading-h2">{data.name}</h2>
+      <HTMLRenderer
+        className={cn("max-w-3xl text-pretty", {
+          "text-text-alternate": isDark,
+          "text-text-secondary": !isDark,
+        })}
+        html={data.content}
+      />
+      <div className="flex flex-wrap gap-4 justify-center">
+        {ctas.map(
+          (cta, idx) =>
+            idx < 3 && (
+              <Button
+                key={cta.url}
+                className={getButtonClassName(idx)}
+                intent={getButtonIntent(idx)}
+                href={cta.url}
+              >
+                {cta.title}
+              </Button>
+            )
+        )}
       </div>
     </section>
   );
