@@ -303,27 +303,52 @@ const CarouselDots = React.forwardRef<
       className={cn("flex items-center justify-center gap-2", className)}
       {...props}
     >
-      {slides.map((_, index) => (
-        <button
-          key={index}
-          className={cn(
-            "h-2 w-2 rounded-full transition-colors",
-            currentSlide === index
-              ? activeClassName || "bg-primary"
-              : inactiveClassName || "bg-muted"
-          )}
-          onClick={() => api?.scrollTo(index)}
-          aria-label={`Go to slide ${index + 1}`}
-        />
-      ))}
+      {slides.length > 1 &&
+        slides.map((_, index) => (
+          <button
+            key={index}
+            className={cn(
+              "h-2 w-2 rounded-full transition-colors",
+              currentSlide === index
+                ? activeClassName || "bg-primary"
+                : inactiveClassName || "bg-muted"
+            )}
+            onClick={() => api?.scrollTo(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
     </div>
   );
 });
 CarouselDots.displayName = "CarouselDots";
 
+const CarouselArrows = () => {
+  const { api } = useCarousel();
+  const slides = api?.scrollSnapList() || [];
+
+  return (
+    <>
+      {slides.length > 1 && (
+        <>
+          <CarouselPrevious
+            className="cursor-pointer left-2 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
+            disabledFill="#AAAAAA"
+          />
+          <CarouselNext
+            className="cursor-pointer left-12 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
+            disabledFill="#AAAAAA"
+          />
+        </>
+      )}
+    </>
+  );
+};
+CarouselArrows.displayName = "CarouselArrows";
+
 export {
   type CarouselApi,
   Carousel,
+  CarouselArrows,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,

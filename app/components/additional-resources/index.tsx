@@ -67,13 +67,13 @@ const AdditionalResourcesCards = ({ resources }: { resources: Resource[] }) => {
   return (
     <div className="flex flex-wrap gap-8">
       {resources.map((resource, index) => (
-        <ResourceCard resource={resource} key={index} />
+        <AdditionalResourceCard resource={resource} key={index} />
       ))}
     </div>
   );
 };
 
-const ResourceCard = ({ resource }: { resource: Resource }) => {
+const AdditionalResourceCard = ({ resource }: { resource: Resource }) => {
   return (
     <Link
       to={resource.url}
