@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "react-router";
+import { ActionFunction } from "react-router";
 import { LocationSearchCoordinatesType } from "../locations/location-search/location-search";
 import {
   AuthenticationError,
@@ -23,18 +23,24 @@ export const action: ActionFunction = async ({ request }) => {
     const data: LocationSearchCoordinatesType = (await response.json()) as any;
 
     if (data.status === "ZERO_RESULTS") {
-      return { data, error: "Zipcode does not exist, please try again" };
+      return Response.json(
+        { data, error: "Zipcode does not exist, please try again" },
+        { status: 400 }
+      );
     }
 
-    return data;
+    return Response.json(data);
   } catch (error) {
     if (
       error instanceof AuthenticationError ||
       error instanceof EncryptionError ||
       error instanceof RockAPIError
     ) {
-      return data({ error: error.message }, { status: 400 });
+      return Response.json({ error: error.message }, { status: 400 });
     }
-    return data({ error: "An unexpected error occurred" }, { status: 500 });
+    return Response.json(
+      { error: "An unexpected error occurred" },
+      { status: 500 }
+    );
   }
 };
