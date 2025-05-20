@@ -126,7 +126,11 @@ export const HomeSearch = () => {
   }, []);
 
   return (
-    <div className="relative size-full" ref={searchBarRef}>
+    <div
+      className="relative size-full md:size-auto lg:size-full flex flex-col justify-end md:justify-start"
+      ref={searchBarRef}
+    >
+      <div className="h-[1px] w-full bg-[#D9D9D9] opacity-50 md:hidden" />
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
@@ -146,9 +150,9 @@ export const HomeSearch = () => {
         {/* Search Bar */}
         <div
           className={cn(
-            "relative w-full md:w-98 p-4 rounded-[8px] transition-all duration-300",
+            "relative w-full md:w-90 lg:w-98 pt-4 rounded-[8px] transition-all duration-300",
             {
-              "bg-white": isSearching,
+              "bg-white p-4": isSearching,
               "bg-transparent": !isSearching,
             }
           )}
