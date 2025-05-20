@@ -5,25 +5,7 @@ import { ResourceCarouselSection } from "~/components/page-builder/resource-sect
 import { CTACollectionSection } from "~/components/page-builder/cta-collection";
 import { ContentBlock } from "./page-builder/components/content-block";
 import { ContentBlockData } from "./page-builder/types";
-// Page Builder Route
 export { loader } from "./page-builder/loader";
-
-const mockContentBlock: ContentBlockData = {
-  id: 19001,
-  type: "CONTENT_BLOCK",
-  name: "Testing Feature Section",
-  content:
-    "We know life is busy, and your children are growing fast. At Christ Fellowship Kids, we want to partner with you to make the most of your child’s formative years and help them build a strong foundation of faith. We have weekly programming offered on Sundays as well as a mid-week discipleship program during the week.",
-  layoutType: "FULLSCREEN",
-  subtitle: "FROM BABIES THROUGH ELEMENTARY",
-  callsToAction:
-    "Find a campus near you^#testing|Plan your first visit^#testing|Plan your first visit^#testing",
-  coverImage:
-    "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=004a5603-8a3c-4391-9fae-499ca3684061",
-  aspectRatio: "1by1",
-  imageLayout: "LEFT",
-  backgroundColor: "NAVY",
-};
 
 function PageBuilderRoute() {
   const { title, heroImage, callsToAction, sections } =
@@ -64,7 +46,12 @@ function PageBuilderRoute() {
               />
             );
           case "CONTENT_BLOCK":
-            return <ContentBlock key={section.id} data={mockContentBlock} />;
+            return (
+              <ContentBlock
+                key={section.id}
+                data={section as unknown as ContentBlockData}
+              />
+            );
           default:
             return (
               <div key={section.id}>
