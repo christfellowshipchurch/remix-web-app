@@ -1,11 +1,24 @@
 import { ActionFunction } from "react-router";
-import { LocationSearchCoordinatesType } from "../locations/location-search/location-search";
 import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
 } from "~/lib/.server/error-types";
 
+export type LocationSearchCoordinatesType = {
+  results: [
+    {
+      geometry: {
+        location: {
+          latitutde: number;
+          longitude: number;
+        };
+      };
+    }
+  ];
+  status: string;
+  error: string | undefined | null;
+};
 export const action: ActionFunction = async ({ request }) => {
   try {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;

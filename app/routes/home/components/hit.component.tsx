@@ -26,7 +26,7 @@ export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
     <Link
       to={`/locations/${hit.campusUrl}`}
       prefetch="intent"
-      className="flex gap-2 hover:translate-x-1 transition-transform duration-300 border border-[#E8E8E8] w-full rounded-xl p-2"
+      className="flex gap-2 w-full p-2"
     >
       <Icon name="map" color="#666666" size={20} />
       <div className="flex flex-col">

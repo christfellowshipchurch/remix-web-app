@@ -11,33 +11,9 @@ import { useFetcher } from "react-router";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
-import { cn } from "~/lib/utils";
-
-// Create a stable search instance ID that persists between unmounts
-const SEARCH_INSTANCE_ID = "navbar-search";
-
-// Global reference to maintain Algolia search client instance
-let globalSearchClient: SearchClient | null = null;
-
-const emptySearchClient = {
-  search: () =>
-    Promise.resolve({
-      results: [
-        {
-          hits: [],
-          nbHits: 0,
-          page: 0,
-          nbPages: 0,
-          hitsPerPage: 0,
-          exhaustiveNbHits: true,
-          query: "",
-          params: "",
-          processingTimeMS: 0,
-          index: "production_ContentItems",
-        },
-      ],
-    }),
-};
+import { cn, isValidZip } from "~/lib/utils";
+import { emptySearchClient } from "~/routes/search/route";
+import { globalSearchClient } from "~/routes/search/route";
 
 const SearchBar = ({
   onSearchStateChange,
@@ -46,17 +22,27 @@ const SearchBar = ({
   onSearchStateChange: (isSearching: boolean) => void;
   onSearchSubmit: (query: string | null) => void;
 }) => {
-  const { query } = useSearchBox();
+  const { query, refine } = useSearchBox();
+  const [zipCode, setZipCode] = useState<string | null>(null);
 
   useEffect(() => {
-    onSearchStateChange(!!query);
-
-    if (query.length === 5 && /^\d+$/.test(query)) {
-      onSearchSubmit(query);
+    if (query.length === 5 && isValidZip(query)) {
+      onSearchStateChange(true);
+      setZipCode(query);
+    } else if (zipCode) {
+      onSearchStateChange(true);
     } else {
-      onSearchSubmit(null);
+      onSearchStateChange(!!query);
     }
   }, [query, onSearchStateChange]);
+
+  // When the zip code is set, search for it and clear the query so the query doesn't interfere with the geo search
+  useEffect(() => {
+    if (zipCode) {
+      onSearchSubmit(zipCode);
+      refine("");
+    }
+  }, [zipCode]);
 
   return (
     <div
@@ -83,6 +69,7 @@ const SearchBar = ({
           form: "flex",
           input: `w-full justify-center text-black px-3 outline-none appearance-none`,
           reset: "hidden",
+          loadingIndicator: "hidden",
           resetIcon: "hidden",
           submit: "hidden",
         }}
@@ -108,10 +95,11 @@ export const HomeSearch = () => {
     }
   }, [fetcher]);
 
+  let newSearchClient: SearchClient | null = globalSearchClient;
   // Create or retrieve the Algolia client
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
-      globalSearchClient = algoliasearch(
+      newSearchClient = algoliasearch(
         ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY,
         {}
@@ -141,7 +129,7 @@ export const HomeSearch = () => {
     };
   }, []);
 
-  const handleZipCode = (query: string | null) => {
+  const handleSearch = (query: string | null) => {
     if (!query) {
       setCoordinates(null);
       return;
@@ -161,7 +149,6 @@ export const HomeSearch = () => {
     }
   }, [geocodeFetcher.data]);
 
-  console.log(coordinates);
   return (
     <div
       className="relative size-full md:size-auto lg:size-full flex flex-col justify-end md:justify-start"
@@ -180,13 +167,14 @@ export const HomeSearch = () => {
           },
         }}
         insights={false}
-        key={SEARCH_INSTANCE_ID}
       >
         {coordinates?.lat && coordinates?.lng ? (
           <Configure
             hitsPerPage={20}
             aroundLatLng={`${coordinates.lat}, ${coordinates.lng}`}
-            aroundLatLngViaIP={!coordinates}
+            aroundRadius="all"
+            aroundLatLngViaIP={false}
+            getRankingInfo={true}
           />
         ) : (
           <Configure hitsPerPage={20} />
@@ -197,14 +185,14 @@ export const HomeSearch = () => {
           className={cn(
             "relative w-full md:w-90 lg:w-98 pt-4 rounded-[8px] transition-all duration-300",
             {
-              "bg-white p-4": isSearching,
+              "bg-white p-4 shadow-md": isSearching,
               "bg-transparent": !isSearching,
             }
           )}
         >
           <SearchBar
             onSearchStateChange={setIsSearching}
-            onSearchSubmit={handleZipCode}
+            onSearchSubmit={handleSearch}
           />
           {isSearching && <SearchPopup />}
         </div>
