@@ -17,12 +17,12 @@ const mockContentBlock: ContentBlockData = {
   layoutType: "FULLSCREEN",
   subtitle: "FROM BABIES THROUGH ELEMENTARY",
   callsToAction:
-    "Find a campus near you^#testing|Plan your first visit^#testing|Plan your first visit^#testing|Plan your first visit^#testing",
+    "Find a campus near you^#testing|Plan your first visit^#testing|Plan your first visit^#testing",
   coverImage:
     "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=004a5603-8a3c-4391-9fae-499ca3684061",
   aspectRatio: "1by1",
   imageLayout: "LEFT",
-  backgroundColor: "WHITE",
+  backgroundColor: "NAVY",
 };
 
 function PageBuilderRoute() {
