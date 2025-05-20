@@ -4,6 +4,7 @@ import { cn, parseRockKeyValueList } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import lowerCase from "lodash/lowerCase";
 import HTMLRenderer from "~/primitives/html-renderer";
+import { getCtaStyles } from "../builder-utils";
 
 const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
   return (
@@ -30,37 +31,10 @@ const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
   );
 };
 
-const getButtonStyles = (data: ContentBlockData) => {
-  const isDark = data.backgroundColor !== "WHITE";
-  const isOcean = data.backgroundColor === "OCEAN";
-  const ctas = parseRockKeyValueList(data.callsToAction ?? "");
-
-  const getButtonIntent = (index: number) => {
-    if (index === 0 || index === 1) return "secondary";
-    return isOcean && index === ctas.length - 1 ? "white" : "primary";
-  };
-
-  const getButtonClassName = (index: number) => {
-    return cn("w-full sm:w-auto hover:enabled:bg-white/10", {
-      "text-soft-white border-soft-white":
-        isDark && (index === 0 || index === 1),
-      "hover:enabled:bg-white/80": isOcean && index === ctas.length - 1,
-      "hover:enabled:bg-ocean/25 hover:enabled:text-ocean": !isDark,
-    });
-  };
-
-  return {
-    isDark,
-    isOcean,
-    getButtonIntent,
-    getButtonClassName,
-  };
-};
-
 // Feature Layout
 const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
-  ``;
+
   return (
     <section className={cn("content-padding py-16")} aria-label={data.name}>
       <div
@@ -74,21 +48,23 @@ const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
         {data.coverImage && data.imageLayout === "LEFT" && (
           <FeatureImage data={data} />
         )}
-        <div className={`flex-1`}>
+        <div className={`flex-1 flex flex-col gap-4`}>
           <h2 className="text-text-primary heading-h2 mb-4">{data.name}</h2>
           {data.subtitle && (
             <h4
-              className={`text-text-secondary font-medium uppercase mb-2 tracking-widest`}
+              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest`}
             >
               {data.subtitle}
             </h4>
           )}
-          <p className="mb-6 text-text-secondary">
-            <HTMLRenderer html={data.content} />
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {ctas.map((cta, idx) => (
+          <HTMLRenderer
+            className="text-text-secondary text-lg"
+            html={data.content}
+          />
+          <div className="flex flex-wrap gap-2 mt-10">
+            {ctas.slice(0, 2).map((cta, idx) => (
               <Button
+                className="font-normal"
                 intent={idx === 0 ? "white" : "primary"}
                 key={idx}
                 href={cta.url}
@@ -122,7 +98,7 @@ const BannerSection: FC<{ data: ContentBlockData }> = ({ data }) => (
 // CTA Card Layout
 const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
-  const { isDark, getButtonIntent, getButtonClassName } = getButtonStyles(data);
+  const { isDark, getButtonIntent, getButtonClassName } = getCtaStyles(data, 2);
 
   return (
     <section className="content-padding py-16" aria-label={data.name}>
@@ -149,6 +125,7 @@ const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-2">
+          {/* Limit to 2 CTA buttons */}
           {ctas.slice(0, 2).map((cta, idx) => (
             <Button
               key={cta.url}
@@ -168,7 +145,7 @@ const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
 // CTA Fullscreen Layout
 const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
-  const { isDark, getButtonIntent, getButtonClassName } = getButtonStyles(data);
+  const { isDark, getButtonIntent, getButtonClassName } = getCtaStyles(data, 3);
 
   return (
     <section
@@ -191,19 +168,16 @@ const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({ data }) => {
         html={data.content}
       />
       <div className="flex flex-wrap gap-4 justify-center">
-        {ctas.map(
-          (cta, idx) =>
-            idx < 3 && (
-              <Button
-                key={cta.url}
-                className={getButtonClassName(idx)}
-                intent={getButtonIntent(idx)}
-                href={cta.url}
-              >
-                {cta.title}
-              </Button>
-            )
-        )}
+        {ctas.slice(0, 3).map((cta, idx) => (
+          <Button
+            key={cta.url}
+            className={getButtonClassName(idx)}
+            intent={getButtonIntent(idx)}
+            href={cta.url}
+          >
+            {cta.title}
+          </Button>
+        ))}
       </div>
     </section>
   );
