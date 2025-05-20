@@ -41,13 +41,21 @@ const emptySearchClient = {
 
 const SearchBar = ({
   onSearchStateChange,
+  onSearchSubmit,
 }: {
   onSearchStateChange: (isSearching: boolean) => void;
+  onSearchSubmit: (query: string | null) => void;
 }) => {
   const { query } = useSearchBox();
 
   useEffect(() => {
     onSearchStateChange(!!query);
+
+    if (query.length === 5 && /^\d+$/.test(query)) {
+      onSearchSubmit(query);
+    } else {
+      onSearchSubmit(null);
+    }
   }, [query, onSearchStateChange]);
 
   return (
@@ -57,13 +65,16 @@ const SearchBar = ({
         query ? "bg-gray" : "bg-white"
       )}
     >
-      <div className="flex items-center justify-center p-2 bg-dark-navy rounded-full relative">
+      <button
+        type="submit"
+        className="flex items-center justify-center p-2 bg-dark-navy rounded-full relative"
+      >
         <Icon
           name="search"
           size={20}
           className={`text-white cursor-pointer relative right-[1px] bottom-[1px]`}
         />
-      </div>
+      </button>
 
       <SearchBox
         placeholder="Search by city, zip code, or location"
@@ -82,9 +93,14 @@ const SearchBar = ({
 
 export const HomeSearch = () => {
   const fetcher = useFetcher<LoaderReturnType>();
+  const geocodeFetcher = useFetcher();
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
   const searchBarRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [coordinates, setCoordinates] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!fetcher.data) {
@@ -125,6 +141,27 @@ export const HomeSearch = () => {
     };
   }, []);
 
+  const handleZipCode = (query: string | null) => {
+    if (!query) {
+      setCoordinates(null);
+      return;
+    }
+    const formData = new FormData();
+    formData.append("address", query);
+    geocodeFetcher.submit(formData, {
+      method: "post",
+      action: "/google-geocode",
+    });
+  };
+
+  useEffect(() => {
+    if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
+      const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
+      setCoordinates({ lat, lng });
+    }
+  }, [geocodeFetcher.data]);
+
+  console.log(coordinates);
   return (
     <div
       className="relative size-full md:size-auto lg:size-full flex flex-col justify-end md:justify-start"
@@ -145,7 +182,15 @@ export const HomeSearch = () => {
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={20} />
+        {coordinates?.lat && coordinates?.lng ? (
+          <Configure
+            hitsPerPage={20}
+            aroundLatLng={`${coordinates.lat}, ${coordinates.lng}`}
+            aroundLatLngViaIP={!coordinates}
+          />
+        ) : (
+          <Configure hitsPerPage={20} />
+        )}
 
         {/* Search Bar */}
         <div
@@ -157,7 +202,10 @@ export const HomeSearch = () => {
             }
           )}
         >
-          <SearchBar onSearchStateChange={setIsSearching} />
+          <SearchBar
+            onSearchStateChange={setIsSearching}
+            onSearchSubmit={handleZipCode}
+          />
           {isSearching && <SearchPopup />}
         </div>
       </InstantSearch>

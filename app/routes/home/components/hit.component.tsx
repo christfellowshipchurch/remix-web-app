@@ -6,22 +6,21 @@ import Icon from "~/primitives/icon";
 export type CampusHit = {
   campusUrl: string;
   campusName: string;
-  // TODO: Remove Array once George updates Algolia
-  campusLocation: {
+  geoloc: {
     latitude: number;
     longitude: number;
+  };
+  campusLocation: {
     street1: string;
     street2: string;
     city: string;
     state: string;
     zip: string;
-  }[];
+  };
   serviceTimes: string;
 };
 export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
-  const { street1, street2, city } = hit.campusLocation[0];
-  //   Remove " " from street2 at the end - TODO: Do this in Algolia?
-  const street2Formatted = street2.replace(/\s+$/, "");
+  const { street1, street2, city } = hit.campusLocation;
 
   return (
     <Link
@@ -33,7 +32,7 @@ export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
       <div className="flex flex-col">
         <h3 className="text-xs text-black font-bold">{hit.campusName}</h3>
         <p className="text-xs font-medium text-text-secondary">
-          {street1} {street2Formatted}, {city}
+          {street1} {street2}, {city}
         </p>
         <p className="text-xs text-black font-semibold">
           {formattedServiceTimes(hit.serviceTimes).map((service, index) => (
