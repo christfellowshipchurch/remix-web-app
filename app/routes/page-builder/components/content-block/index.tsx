@@ -101,12 +101,12 @@ const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   const { isDark, getButtonIntent, getButtonClassName } = getCtaStyles(data, 2);
 
   return (
-    <section className="content-padding py-16" aria-label={data.name}>
+    <section className="content-padding py-28" aria-label={data.name}>
       <div
         className={cn(
           "flex flex-col md:flex-row gap-10",
           "md:items-center justify-between",
-          "border border-neutral-lighter rounded-lg p-8 md:p-12",
+          "border border-neutral-lighter rounded-2xl p-8 md:p-12",
           `bg-${lowerCase(data.backgroundColor)}`
         )}
       >
@@ -129,7 +129,7 @@ const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
           {ctas.slice(0, 2).map((cta, idx) => (
             <Button
               key={cta.url}
-              className={getButtonClassName(idx)}
+              className={cn(getButtonClassName(idx), "font-normal")}
               intent={getButtonIntent(idx)}
               href={cta.url}
             >
@@ -150,7 +150,7 @@ const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({ data }) => {
   return (
     <section
       className={cn(
-        "flex flex-col items-center justify-center text-center gap-8 py-28",
+        "flex flex-col items-center justify-center text-center gap-8 py-16 m-h-[452px]",
         `bg-${lowerCase(data.backgroundColor)}`,
         {
           "text-white": isDark,
@@ -171,7 +171,7 @@ const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({ data }) => {
         {ctas.slice(0, 3).map((cta, idx) => (
           <Button
             key={cta.url}
-            className={getButtonClassName(idx)}
+            className={cn(getButtonClassName(idx), "font-normal")}
             intent={getButtonIntent(idx)}
             href={cta.url}
           >

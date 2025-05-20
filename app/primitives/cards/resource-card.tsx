@@ -18,7 +18,7 @@ export const ResourceCard = ({
     <Link
       to={pathname}
       className={cn(
-        "flex flex-col rounded-[1rem] w-full max-w-[456px] h-full border border-neutral-lighter overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
+        "flex flex-col rounded-[8px] w-full h-full border border-neutral-lighter overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
         className
       )}
       prefetch="intent"
@@ -26,7 +26,7 @@ export const ResourceCard = ({
       <img
         src={image}
         alt={name}
-        className="w-full max-h-[200px] md:max-w-[456px] md:max-h-[277px] lg:min-h-[200px] aspect-video object-cover"
+        className="w-full max-h-[200px] aspect-video object-cover md:max-w-[456px] md:max-h-[277px] lg:min-h-[200px] lg:aspect-[44/26]"
         loading="lazy"
       />
 
