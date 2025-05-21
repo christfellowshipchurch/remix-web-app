@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Video } from "~/primitives/video/video.primitive";
 
@@ -53,6 +53,15 @@ const WhatToExpectDesktopCard = ({
   data: WhatToExpectCard["data"];
 }) => {
   const { content, name, role, video } = data;
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayClick = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePauseClick = () => {
+    setIsPlaying(false);
+  };
 
   return (
     <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
@@ -68,23 +77,47 @@ const WhatToExpectDesktopCard = ({
       </div>
 
       <div className="absolute right-8 xl:right-10 -top-10 xl:-top-20">
-        <Video
-          wistiaId={video}
-          controls
-          className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px]"
-        />
-
-        {/* Play Button */}
-        <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors">
-          <div className="relative -right-[2px]">
-            <div className="hidden xl:block">
-              <Icon name="play" color="white" size={42} />
-            </div>
-            <div className="xl:hidden">
-              <Icon name="play" color="white" size={32} />
+        {isPlaying ? (
+          <div className="relative overflow-hidden rounded-[12px] transition-opacity duration-200">
+            <Video
+              wistiaId={video}
+              controls
+              className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px]"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-[12px]" />
+            <div
+              className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors"
+              onClick={handlePauseClick}
+            >
+              <div className="relative">
+                <Icon name="arrowBack" color="white" />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px] bg-black relative cursor-pointer group overflow-hidden transition-opacity duration-300"
+            onClick={handlePlayClick}
+          >
+            <img
+              src={data.thumbnail}
+              alt={name}
+              className="w-full h-full object-cover rounded-[12px]"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-[12px]" />
+            <div
+              className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePlayClick();
+              }}
+            >
+              <div className="relative -right-[2px]">
+                <Icon name="play" color="white" />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -192,9 +225,9 @@ const WhatToExpectData: WhatToExpectCard[] = [
     data: {
       role: "church member",
       name: "John Doe 1",
-      video: "iiwmu7kjy5",
+      video: "7yhe4p60vn",
       thumbnail:
-        "https://embed.wistia.com/deliveries/99093962079ab4e7b6167928c583cb71.jpg?video_still_time=16",
+        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -206,9 +239,9 @@ const WhatToExpectData: WhatToExpectCard[] = [
     data: {
       role: "church member",
       name: "John Doe 2",
-      video: "iiwmu7kjy5",
+      video: "7yhe4p60vn",
       thumbnail:
-        "https://embed.wistia.com/deliveries/99093962079ab4e7b6167928c583cb71.jpg?video_still_time=16",
+        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -220,9 +253,9 @@ const WhatToExpectData: WhatToExpectCard[] = [
     data: {
       role: "church member",
       name: "John Doe 3",
-      video: "iiwmu7kjy5",
+      video: "7yhe4p60vn",
       thumbnail:
-        "https://embed.wistia.com/deliveries/99093962079ab4e7b6167928c583cb71.jpg?video_still_time=16",
+        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
