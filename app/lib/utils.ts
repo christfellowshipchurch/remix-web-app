@@ -244,7 +244,7 @@ export type dayTimes = {
 export const formattedServiceTimes = (serviceTimes: string) =>
   serviceTimes.split("|").reduce((acc: dayTimes[], time: string) => {
     const [day, hour] = time.split("^");
-    const existingDay = acc.find((item) => item.day === day);
+    const existingDay = acc.find((item) => item.day === day.trim());
 
     if (existingDay) {
       existingDay.hour.push(hour);
