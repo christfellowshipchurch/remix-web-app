@@ -107,7 +107,7 @@ const BottomBarItem = ({
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-[70dvh] md:h-[75dvh] w-full bg-white pb-16 relative">
+    <section className="h-[75dvh] w-full bg-white pb-16 relative">
       <div className="absolute inset-0 w-full h-full z-1">
         <Video
           src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
