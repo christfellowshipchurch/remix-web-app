@@ -37,7 +37,7 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
     <section className={cn("content-padding py-16")} aria-label={data.name}>
       <div
         className={cn(
-          "flex flex-col md:flex-row gap-10 xl:gap-20 items-center max-w-screen-content mx-auto",
+          "flex flex-col md:flex-row gap-12 xl:gap-20 items-center max-w-screen-content mx-auto",
           {
             "flex-col-reverse": data.imageLayout === "RIGHT",
           }
@@ -46,11 +46,13 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
         {data.coverImage && data.imageLayout === "LEFT" && (
           <FeatureImage data={data} />
         )}
-        <div className={`flex-1 flex flex-col gap-4`}>
-          <h2 className="text-text-primary heading-h2 mb-4">{data.name}</h2>
+        <div className={`flex-1 flex flex-col gap-5`}>
+          <h2 className="text-text-primary heading-h4 md:heading-h2 leading-snug">
+            {data.name}
+          </h2>
           {data.subtitle && (
             <h4
-              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest`}
+              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest hidden md:block`}
             >
               {data.subtitle}
             </h4>
@@ -59,10 +61,11 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
             className="text-text-secondary text-lg"
             html={data.content}
           />
-          <div className="flex flex-wrap gap-2 mt-10">
+          <div className="flex items-center sm:items-start flex-col-reverse md:flex-row flex-wrap gap-4 mt-10">
             {ctas.slice(0, 2).map((cta, idx) => (
               <Button
-                className="font-normal"
+                linkClassName="w-full px-6 sm:w-auto sm:px-0"
+                className="font-normal w-full"
                 intent={idx === 0 ? "white" : "primary"}
                 key={idx}
                 href={cta.url}
