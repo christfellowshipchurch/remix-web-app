@@ -53,7 +53,7 @@ function ModalContent({
               <Dialog.Title />
             </VisuallyHidden.Root>
           )}
-          <Dialog.Close className="absolute top-2 right-2 md:top-4 md:right-4">
+          <Dialog.Close className="absolute top-2 right-2 md:top-4 md:right-4 cursor-pointer">
             <Cross2Icon width={24} height={24} color="black" />
           </Dialog.Close>
         </div>

@@ -70,7 +70,7 @@ const WhatWeOfferMobile = () => {
             <Tabs.Content
               key={tab.value}
               value={tab.value}
-              className="flex flex-col gap-4 w-full overflow-x-auto pb-2"
+              className="flex flex-col gap-4 w-full overflow-x-auto pb-2 max-w-[100vw] mx-auto"
             >
               <div
                 ref={containerRef}
