@@ -153,7 +153,7 @@ export const HomeSearch = () => {
     <div
       className={cn(
         "absolute flex flex-col w-full",
-        "px-5 left-0 bottom-4 max-w-[100vw] justify-end",
+        "px-5 left-0 -bottom-2 max-w-[100vw] justify-end",
         "md:px-0 md:left-auto md:bottom-1/4 md:max-w-auto md:size-auto md:justify-start",
         "lg:bottom-4 lg:size-full",
         isSearching && "-bottom-80"
