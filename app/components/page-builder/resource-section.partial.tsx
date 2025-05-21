@@ -54,12 +54,10 @@ const PageBuilderCarouselResource = ({
     <div className="w-full flex justify-center">
       <div className="w-full flex flex-col items-center py-16 md:py-24 lg:py-28">
         {/* Header */}
-        <div className="w-full flex items-center justify-between pr-5 md:pr-12 lg:pr-18">
+        <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18">
           <div className="flex flex-col gap-2">
-            <h2 className="text-text font-extrabold text-[40px] md:text-[32px] leading-tight">
-              {title}
-            </h2>
-            <p className="md:text-lg">{description}</p>
+            <h2 className="heading-h2 text-[40px] md:text-[32px]">{title}</h2>
+            <p className="md:text-lg mt-3">{description}</p>
           </div>
 
           <Button
@@ -72,16 +70,13 @@ const PageBuilderCarouselResource = ({
           </Button>
         </div>
 
-        <ResourceCarousel resources={resources} />
+        <div className="w-full max-w-full overflow-hidden">
+          <ResourceCarousel resources={resources} />
+        </div>
 
         {/* Mobile View All */}
-        <div className="w-full flex justify-start mt-8">
-          <Button
-            href={viewMoreLink}
-            size="md"
-            className="md:hidden"
-            intent="secondary"
-          >
+        <div className="w-full flex justify-start mt-8 md:hidden">
+          <Button href={viewMoreLink} size="md" intent="secondary">
             View All
           </Button>
         </div>
@@ -90,15 +85,18 @@ const PageBuilderCarouselResource = ({
   );
 };
 
-const ResourceCarousel = ({ resources }: { resources: CollectionItem[] }) => {
+export const ResourceCarousel = ({
+  resources,
+}: {
+  resources: CollectionItem[];
+}) => {
   return (
     <Carousel
       opts={{
         align: "start",
       }}
-      className="w-full mt-8 relative mb-12"
     >
-      <CarouselContent className="gap-6 xl:gap-8 pt-4 2xl:pr-18">
+      <CarouselContent className="gap-6 pt-4 md:mt-20 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
@@ -109,17 +107,21 @@ const ResourceCarousel = ({ resources }: { resources: CollectionItem[] }) => {
         ))}
       </CarouselContent>
 
-      {/* Dots */}
-      <div className="absolute -bottom-12 left-0">
-        <CarouselDots
-          activeClassName="bg-ocean"
-          inactiveClassName="bg-neutral-lighter"
-        />
-      </div>
+      <div
+        className={cn("w-full relative mt-16 pb-8", {
+          "lg:mt-0 lg:pb-0": resources.length < 4,
+        })}
+      >
+        <div className="absolute h-8 top-4 left-0">
+          <CarouselDots
+            activeClassName="bg-ocean"
+            inactiveClassName="bg-neutral-lighter"
+          />
+        </div>
 
-      {/* Arrows */}
-      <div className="absolute right-34 -bottom-10">
-        <CarouselArrows />
+        <div className="absolute h-8 right-34">
+          <CarouselArrows />
+        </div>
       </div>
     </Carousel>
   );
