@@ -151,10 +151,21 @@ export const HomeSearch = () => {
 
   return (
     <div
-      className="absolute bottom-4 size-full md:size-auto lg:size-full flex flex-col justify-end md:justify-start"
+      className={cn(
+        "absolute flex flex-col w-full",
+        "px-5 left-0 bottom-4 max-w-[100vw] justify-end",
+        "md:px-0 md:left-auto md:bottom-1/4 md:max-w-auto md:size-auto md:justify-start",
+        "lg:bottom-4 lg:size-full",
+        isSearching && "-bottom-80"
+      )}
       ref={homeSearchBarRef}
     >
-      <div className="h-[1px] w-full bg-[#D9D9D9] opacity-50 md:hidden" />
+      <div
+        className={cn(
+          "h-[1px] w-full bg-[#D9D9D9] opacity-50 md:hidden",
+          isSearching && "mb-4"
+        )}
+      />
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
