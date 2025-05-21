@@ -30,7 +30,7 @@ export function DesktopHeroSection() {
               journey is honored, and you'll find genuine connection and
               relevant answers for your life right here in Florida.
             </p>
-            <div className="flex w-fit">
+            <div className="flex w-fit relative pb-10">
               {/* Location Search */}
               <HomeSearch />
             </div>
