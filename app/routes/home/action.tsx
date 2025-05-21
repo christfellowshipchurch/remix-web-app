@@ -16,7 +16,8 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   const authorData: Author = {
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
+    hostUrl:
+      `${process.env.HOST_URL}/author/${authorId}` || "host-url-not-found",
     fullName: data.fullName,
     profilePhoto: data.photo.uri ?? "",
     authorAttributes: data.authorAttributes,
