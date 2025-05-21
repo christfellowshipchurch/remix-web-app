@@ -70,7 +70,7 @@ const PageBuilderCarouselResource = ({
           </Button>
         </div>
 
-        <div className="w-full max-w-full overflow-x-hidden">
+        <div className="w-full max-w-full overflow-hidden">
           <ResourceCarousel resources={resources} />
         </div>
 
