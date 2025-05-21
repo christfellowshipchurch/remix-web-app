@@ -1,7 +1,13 @@
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ResourceCard } from "~/primitives/cards/resource-card";
+import {
+  Carousel,
+  CarouselItem,
+} from "~/primitives/shadcn-primitives/carousel";
+import { CarouselContent } from "~/primitives/shadcn-primitives/carousel";
 import { CollectionItem } from "~/routes/page-builder/types";
+import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
 
 export const CTACollectionSection = ({
   className,
@@ -47,7 +53,7 @@ const PageBuilderCTACollection = ({
     <div className="w-full flex justify-center">
       <div className="w-full flex flex-col items-center py-16 md:py-24 lg:py-28">
         {/* Header */}
-        <div className="w-full flex items-center justify-between pr-5 md:pr-12 lg:pr-18">
+        <div className="w-full flex items-end justify-between">
           <div className="flex flex-col gap-2">
             <h2 className="text-text font-extrabold text-[40px] md:text-[32px] leading-tight">
               {title}
@@ -65,13 +71,25 @@ const PageBuilderCTACollection = ({
           </Button>
         </div>
 
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8 pb-12 grid-rows-2 overflow-hidden">
-          {resources.map((resource) => (
+        <div
+          className={cn(
+            "hidden md:grid",
+            "w-full",
+            "mt-20",
+            "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+            "gap-x-6 gap-y-12 md:gap-x-8 md:gap-y-16 lg:gap-x-8 lg:gap-y-16 xl:gap-x-12 xl:gap-y-20"
+          )}
+        >
+          {resources.slice(0, 6).map((resource) => (
             <ResourceCard key={resource.id} resource={resource} />
           ))}
         </div>
 
-        {/* Mobile View All */}
+        {/* Mobile Carousel */}
+        <div className="md:hidden">
+          <ResourceCarousel resources={resources} />
+        </div>
+
         <div className="w-full flex justify-start mt-8">
           <Button
             href={viewMoreLink}

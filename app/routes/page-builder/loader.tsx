@@ -6,6 +6,7 @@ import {
   getPathname,
   getSectionType,
   isCollectionType,
+  isGuid,
 } from "./components/builder-utils";
 import {
   CollectionItem,
@@ -21,7 +22,6 @@ const fetchChildItems = async (id: string) => {
     queryParams: {
       loadAttributes: "simple",
     },
-    cache: false,
   });
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
@@ -40,6 +40,33 @@ const fetchChildItems = async (id: string) => {
   return childrenArray;
 };
 
+const fetchDefinedValue = async (guid: string) => {
+  const definedValue = await fetchRockData({
+    endpoint: `DefinedValues/`,
+    queryParams: {
+      $filter: `Guid eq guid'${guid}'`,
+    },
+  });
+
+  if (!definedValue) {
+    throw new Error(`Defined value not found for GUID: ${guid}`);
+  }
+
+  // ensure definedValue is an array
+  let definedValueArray = [];
+  if (!Array.isArray(definedValue)) {
+    definedValueArray = [definedValue];
+  } else {
+    definedValueArray = definedValue;
+  }
+
+  if (definedValueArray.length > 0) {
+    return definedValueArray[0].value;
+  } else {
+    return "";
+  }
+};
+
 const mapPageBuilderChildItems = async (
   children: any[]
 ): Promise<PageBuilderSection[]> => {
@@ -49,6 +76,13 @@ const mapPageBuilderChildItems = async (
       const typeId = child.contentChannelId;
       const isCollection = isCollectionType(typeId);
       const sectionType = getSectionType(typeId) as SectionType;
+      // Map the attribute values to a key-value object for easier access
+      const attributeValues = Object.fromEntries(
+        Object.entries(child.attributeValues || {}).map(([key, obj]: any) => [
+          key,
+          obj.value,
+        ])
+      );
 
       if (!sectionType) {
         throw new Error(
@@ -62,12 +96,6 @@ const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         content: child.content,
-        attributeValues: Object.fromEntries(
-          Object.entries(child.attributeValues || {}).map(([key, obj]: any) => [
-            key,
-            obj.value,
-          ])
-        ),
       };
 
       // If the child is a collection, fetch the child items and return them
@@ -77,7 +105,8 @@ const mapPageBuilderChildItems = async (
           ...baseChild,
           collection: collection.map((item: any): CollectionItem => {
             const contentType = getContentType(item.contentChannelId);
-            const attributeValues = Object.fromEntries(
+            // Map the attribute values to a key-value object for easier access
+            const itemAttributeValues = Object.fromEntries(
               Object.entries(item.attributeValues || {}).map(
                 ([key, obj]: any) => [key, obj.value]
               )
@@ -90,22 +119,25 @@ const mapPageBuilderChildItems = async (
             }
 
             // Generate the summary for the item
-            const summary = attributeValues?.summary || "";
+            const summary = itemAttributeValues?.summary || "";
             if (!summary) {
-              attributeValues.summary = item.content;
+              itemAttributeValues.summary = item.content;
             }
 
             // Generate the pathname for the item
             let pathname = "";
             switch (contentType) {
               case "REDIRECT_CARD":
-                pathname = attributeValues?.redirectUrl || "";
+                pathname = itemAttributeValues?.redirectUrl || "";
                 break;
               case "EVENT":
-                pathname = getPathname(contentType, attributeValues?.url);
+                pathname = getPathname(contentType, itemAttributeValues?.url);
                 break;
               default:
-                pathname = getPathname(contentType, attributeValues?.pathname);
+                pathname = getPathname(
+                  contentType,
+                  itemAttributeValues?.pathname
+                );
             }
 
             // Generate the start date for the item
@@ -123,12 +155,33 @@ const mapPageBuilderChildItems = async (
               contentType: contentType,
               name: item.title,
               summary,
-              image: createImageUrlFromGuid(attributeValues?.image) || "",
+              image: createImageUrlFromGuid(itemAttributeValues?.image) || "",
               startDate,
               pathname,
               // attributeValues,
             };
           }),
+        };
+      }
+
+      // If the section is a content block, fetch the defined values for any GUIDs that are not the cover image
+      if (sectionType === "CONTENT_BLOCK") {
+        const updatedValues = await Promise.all(
+          Object.entries(attributeValues || {}).map(async ([key, value]) => {
+            const processedValue =
+              typeof value === "string" && isGuid(value) && key !== "coverImage"
+                ? await fetchDefinedValue(value)
+                : value;
+            return [key, processedValue];
+          })
+        );
+
+        const processedValues = Object.fromEntries(updatedValues);
+
+        return {
+          ...baseChild,
+          ...processedValues,
+          coverImage: createImageUrlFromGuid(attributeValues?.coverImage),
         };
       }
 
