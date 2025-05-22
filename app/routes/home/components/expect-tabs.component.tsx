@@ -50,7 +50,7 @@ export const WhatToExpectDesktopTabs = () => {
 const WhatToExpectDesktopCard = ({
   data,
 }: {
-  data: WhatToExpectCard["data"];
+  data: WhatToExpectCardType["data"];
 }) => {
   const { content, name, role, video } = data;
   const [isPlaying, setIsPlaying] = useState(false);
@@ -105,15 +105,13 @@ const WhatToExpectDesktopCard = ({
               className="w-full h-full object-cover rounded-[12px]"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-[12px]" />
-            <div
-              className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePlayClick();
-              }}
-            >
-              <div className="relative -right-[2px]">
-                <Icon name="play" color="white" />
+            <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-3 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors">
+              <div className="relative -right-[2px] size-10 xl:size-16">
+                <Icon
+                  name="play"
+                  color="white"
+                  className="size-10 xl:size-16"
+                />
               </div>
             </div>
           </div>
@@ -125,6 +123,8 @@ const WhatToExpectDesktopCard = ({
 
 export const WhatToExpectMobileScroll = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
 
   // Handles centering the middle card on mobile
   useEffect(() => {
@@ -152,6 +152,16 @@ export const WhatToExpectMobileScroll = () => {
     });
   }, []);
 
+  const handleVideoClick = (index: number) => {
+    // If clicking the same video that's playing, stop it
+    if (playingIndex === index) {
+      setPlayingIndex(null);
+    } else {
+      // Otherwise, play the new video
+      setPlayingIndex(index);
+    }
+  };
+
   return (
     <div className="lg:hidden w-full">
       <div className="flex flex-col gap-4 w-full overflow-x-auto pb-2">
@@ -159,11 +169,12 @@ export const WhatToExpectMobileScroll = () => {
           ref={containerRef}
           className={cn(
             "flex gap-4 flex-nowrap overflow-x-auto pt-2",
-            "items-center w-full pb-"
+            "items-center md:justify-center w-full"
           )}
         >
           {WhatToExpectData.map((item, index) => {
-            const { video, mobileContent, name, role } = item.data;
+            const { video, mobileContent, name, role, thumbnail } = item.data;
+            const isPlaying = playingIndex === index;
 
             return (
               <div
@@ -176,26 +187,46 @@ export const WhatToExpectMobileScroll = () => {
                     index === WhatToExpectData.length - 1 ? "8px" : "0",
                 }}
               >
-                <Video
-                  wistiaId={video}
-                  controls={false}
-                  className="w-full h-full object-cover"
-                />
+                {isPlaying ? (
+                  <div className="relative overflow-hidden rounded-[8px] transition-opacity duration-200">
+                    <Video
+                      wistiaId={video}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                    <div
+                      className="absolute top-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"
+                      onClick={() => handleVideoClick(index)}
+                    >
+                      <Icon name="x" color="white" className="size-6" />
+                    </div>
+                  </div>
+                ) : (
+                  <div ref={cardRef} className="relative h-[290px]">
+                    <img
+                      src={thumbnail}
+                      alt={name}
+                      className="w-full h-full object-cover rounded-[8px]"
+                    />
+                    <div
+                      className="absolute bottom-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"
+                      onClick={() => handleVideoClick(index)}
+                    >
+                      <Icon
+                        name="play"
+                        color="white"
+                        className="ml-[2px] size-6"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="absolute bottom-0 left-0 flex flex-col justify-end w-full h-full bg-gradient-to-t from-black/60 via-black/0 to-transparent from-[-30%] via-[25%]">
                   <div className="flex flex-col gap-4 p-2">
                     <p className="text-white font-bold">{mobileContent}</p>
-
                     <p className="text-[#C1C7D1] text-xs">
                       {name} / {role}
                     </p>
-                  </div>
-                </div>
-
-                {/* Play Button */}
-                <div className="absolute bottom-[10px] right-[10px] rounded-full bg-[#3D3D3D]/50 p-1">
-                  <div className="relative -right-[2px]">
-                    <Icon name="play" color="white" />
                   </div>
                 </div>
               </div>
@@ -207,7 +238,7 @@ export const WhatToExpectMobileScroll = () => {
   );
 };
 
-type WhatToExpectCard = {
+type WhatToExpectCardType = {
   title: string;
   data: {
     role: string;
@@ -219,7 +250,7 @@ type WhatToExpectCard = {
   };
 };
 
-const WhatToExpectData: WhatToExpectCard[] = [
+const WhatToExpectData: WhatToExpectCardType[] = [
   {
     title: "What is a Sunday Like 1",
     data: {

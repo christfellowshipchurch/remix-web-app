@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { cn } from "~/lib/utils";
 import { button } from "~/primitives/button/button.primitive";
@@ -10,9 +10,10 @@ import { WhatWeOfferCard } from "./desktop.component";
 
 export const WhatWeOfferMobile = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState("family");
 
   useEffect(() => {
-    if (!containerRef.current || window.innerWidth >= 1024) return;
+    if (!containerRef.current || activeTab === "young-adults") return;
 
     const container = containerRef.current;
     const cards = container.querySelectorAll("[data-card]");
@@ -34,7 +35,7 @@ export const WhatWeOfferMobile = () => {
       left: scrollPosition,
       behavior: "auto",
     });
-  }, []);
+  }, [activeTab]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -48,7 +49,11 @@ export const WhatWeOfferMobile = () => {
       </div>
 
       <div className="w-full">
-        <Tabs.Root defaultValue="family" className="w-full flex flex-col gap-4">
+        <Tabs.Root
+          defaultValue="family"
+          className="w-full flex flex-col gap-4"
+          onValueChange={setActiveTab}
+        >
           <Tabs.List className="flex justify-between rounded-[13px] bg-[rgba(244,245,247,0.37)] p-1 max-w-[360px] mx-auto">
             {whatWeOfferData.map((tab) => (
               <Tabs.Trigger
