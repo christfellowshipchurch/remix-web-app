@@ -13,9 +13,9 @@ export function WhatToExpectSection() {
       <div className="px-6">
         <div className="container max-w-screen-content mx-auto">
           <div className="w-full flex">
-            <div className="w-full flex flex-col gap-4 items-center md:gap-8">
+            <div className="w-full flex flex-col gap-4 items-center lg:items-start md:gap-8">
               {/* Desktop Title */}
-              <div className="flex flex-col gap-12 items-center">
+              <div className="flex flex-col gap-12">
                 <div className="hidden lg:block">
                   <SectionTitle sectionTitle="get to know us" />
                 </div>
