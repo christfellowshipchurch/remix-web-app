@@ -174,7 +174,7 @@ export function icsLinkEvents(
     };
   });
 }
-
+export const isValidZip = (zip: string) => /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
 export const latLonDistance = (
   lat1: number,
   lon1: number,
@@ -235,3 +235,22 @@ export const parseRockKeyValueList = (
     };
   });
 };
+
+export type dayTimes = {
+  day: string;
+  hour: string[];
+};
+
+export const formattedServiceTimes = (serviceTimes: string) =>
+  serviceTimes.split("|").reduce((acc: dayTimes[], time: string) => {
+    const [day, hour] = time.split("^");
+    const existingDay = acc.find((item) => item.day === day.trim());
+
+    if (existingDay) {
+      existingDay.hour.push(hour);
+    } else {
+      acc.push({ day, hour: [hour] });
+    }
+
+    return acc;
+  }, []);

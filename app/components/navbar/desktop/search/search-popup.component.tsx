@@ -26,6 +26,7 @@ export const SearchPopup = ({
         <Hits
           onClick={() => setIsSearchOpen(false)}
           classNames={{
+            root: "flex flex-col overflow-y-auto max-h-[300px]",
             item: "flex w-full",
             list: "flex flex-col",
           }}
