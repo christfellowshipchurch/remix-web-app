@@ -13,8 +13,9 @@ export function WhatToExpectSection() {
       <div className="px-6">
         <div className="container max-w-screen-content mx-auto">
           <div className="w-full flex">
-            <div className="w-full flex flex-col gap-4 md:gap-8">
-              <div className="flex flex-col gap-12">
+            <div className="w-full flex flex-col gap-4 items-center md:gap-8">
+              {/* Desktop Title */}
+              <div className="flex flex-col gap-12 items-center">
                 <div className="hidden lg:block">
                   <SectionTitle sectionTitle="get to know us" />
                 </div>
@@ -22,6 +23,7 @@ export function WhatToExpectSection() {
                   What to Expect
                 </h2>
               </div>
+              {/* Mobile Title */}
               <h2 className="lg:hidden text-2xl text-center font-extrabold">
                 Get to Know Us
               </h2>
