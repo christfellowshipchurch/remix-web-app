@@ -8,6 +8,7 @@ export type EventReturnType = {
 };
 
 export type Event = {
+  id: string;
   campus?: string;
   content?: string;
   title: string;

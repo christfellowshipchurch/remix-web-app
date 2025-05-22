@@ -9,9 +9,12 @@ export type IconButtonProps = BaseIconButtonProps &
   (
     | ({ to: string } & Omit<LinkProps, keyof BaseIconButtonProps>)
     | { to?: never }
-  );
+  ) & {
+    iconClasses?: string;
+  };
 
 export const IconButton: React.FC<IconButtonProps> = ({
+  iconClasses,
   children,
   to,
   withRotatingArrow = false,
@@ -37,7 +40,11 @@ export const IconButton: React.FC<IconButtonProps> = ({
         {children}
       </Button>
       {withRotatingArrow && (
-        <Icon name={iconName} className={iconStyles} size={iconSize} />
+        <Icon
+          name={iconName}
+          className={`${iconStyles} ${iconClasses}`}
+          size={iconSize}
+        />
       )}
     </>
   );

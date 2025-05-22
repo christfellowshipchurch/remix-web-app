@@ -1,0 +1,136 @@
+import { Link } from "react-router";
+import { HomeSearch } from "../components/search.component";
+import { IconName } from "~/primitives/button/types";
+import { Icon } from "~/primitives/icon/icon";
+import { Video } from "~/primitives/video/video.primitive";
+
+export function DesktopHeroSection() {
+  return (
+    <section className="h-screen w-full bg-white pb-16">
+      <div className="flex size-full relative">
+        {/* Left Column */}
+        <div
+          className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0"
+          style={{
+            background:
+              "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home/home-hero-bg.jpg') left/cover no-repeat",
+          }}
+        >
+          <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto">
+            <h1 className="text-[100px] text-white font-extrabold leading-none max-w-[600px]">
+              There's{" "}
+              <span className="text-dark-navy">
+                something <br />
+                for
+              </span>{" "}
+              you
+            </h1>
+            <p className="text-white max-w-[540px] text-xl">
+              Discover a community where your questions are welcome, your
+              journey is honored, and you'll find genuine connection and
+              relevant answers for your life right here in Florida.
+            </p>
+            <div className="flex w-fit relative pb-10">
+              {/* Location Search */}
+              <HomeSearch />
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <BottomBar />
+        </div>
+
+        {/* Right Column - Background Video */}
+        <div className="flex-1 relative h-full">
+          <div className="absolute inset-0 w-full h-full">
+            <Video
+              src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+              autoPlay
+              muted
+              loop
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export const BottomBar = () => {
+  return (
+    <div className="w-full px-8 py-8 md:py-12 md:pt-8 md:pb-16 lg:py-12 bg-white xl:pl-0 xl:mx-auto ">
+      <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-4 md:gap-8 lg:gap-12 xl:max-w-[600px] xl:mx-auto">
+        <BottomBarItem
+          iconName="messageSquareDetail"
+          heading="Featured Item"
+          title="Featured Item Text"
+          url="sms:441-441"
+        />
+        <BottomBarItem
+          iconName="church"
+          heading="Comunidad Hispana"
+          title="Iglesia en Español"
+          url="#cfe"
+        />
+      </div>
+    </div>
+  );
+};
+
+const BottomBarItem = ({
+  iconName,
+  heading,
+  title,
+  url,
+}: {
+  iconName: IconName;
+  heading: string;
+  title: string;
+  url: string;
+}) => {
+  return (
+    <Link
+      to={url}
+      className="bg-navy-subdued lg:bg-transparent rounded-xl lg:rounded-none flex lg:items-center lg:justify-center gap-4 lg:gap-2 group p-4 lg:p-0 w-full lg:w-auto md:max-w-[304px] lg:max-w-none"
+    >
+      <div className="bg-ocean lg:bg-dark-navy group-hover:bg-ocean transition-colors duration-300 rounded-sm p-2 ">
+        <Icon name={iconName} color="white" />
+      </div>
+      <div>
+        <p className="text-sm text-text-secondary">{heading}</p>
+        <h4 className="font-bold">{title}</h4>
+      </div>
+    </Link>
+  );
+};
+
+export const MobileHeroSection = () => {
+  return (
+    <section className="h-[75dvh] w-full bg-white pb-16 relative">
+      <div className="absolute inset-0 w-full h-full z-1">
+        <Video
+          src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+          autoPlay
+          muted
+          loop
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent to-dark-navy z-2" />
+      <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pr-8 md:pr-0 pt-16 h-full justify-center ml-auto">
+        <h1 className="text-[64px] text-white font-extrabold leading-none">
+          There's <br className="hidden md:block " />
+          <span className="text-ocean">
+            something <br />
+            for
+          </span>{" "}
+          you.
+        </h1>
+
+        {/* Location Search */}
+        <HomeSearch />
+      </div>
+    </section>
+  );
+};

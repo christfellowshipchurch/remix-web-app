@@ -1,4 +1,4 @@
-import { WistiaPlayer } from "./wistia-player";
+import { WistiaPlayer } from "@wistia/wistia-player-react";
 
 type VideoProps = {
   src?: string;
@@ -16,10 +16,9 @@ export const Video = (props: VideoProps) => {
     <>
       {props?.wistiaId ? (
         <WistiaPlayer
-          videoId={props?.wistiaId}
-          wrapper={`wistia-player-container-${props?.wistiaId}`}
-          className={props?.className}
-          fallback={props?.fallback}
+          mediaId={props.wistiaId}
+          className={props.className}
+          controlsVisibleOnLoad={props.controls}
         />
       ) : (
         <video

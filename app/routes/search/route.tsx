@@ -9,8 +9,32 @@ import {
 import { ContentItemHit } from "./types";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "./loader";
+import { SearchClient } from "algoliasearch";
 
 export { loader } from "./loader";
+
+// Global reference to maintain Algolia search client instance
+export let globalSearchClient: SearchClient | null = null;
+
+export const emptySearchClient = {
+  search: () =>
+    Promise.resolve({
+      results: [
+        {
+          hits: [],
+          nbHits: 0,
+          page: 0,
+          nbPages: 0,
+          hitsPerPage: 0,
+          exhaustiveNbHits: true,
+          query: "",
+          params: "",
+          processingTimeMS: 0,
+          index: "production_ContentItems",
+        },
+      ],
+    }),
+};
 
 export default function TestingSearch() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

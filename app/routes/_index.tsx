@@ -1,9 +1,17 @@
 import type { LoaderFunction, MetaFunction } from "react-router";
-import { Link, useLoaderData } from "react-router";
-import { AuthModal } from "~/components";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
-import { Button } from "~/primitives/button/button.primitive";
-import { useAuth, User } from "~/providers/auth-provider";
+import { HistorySection } from "./about/partials/history.partial";
+import { BeliefsSection } from "./about/partials/beliefs.partial";
+import { LeadershipSection } from "./about/partials/leadership.partial";
+import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
+import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
+import { AChanceSection } from "./home/partials/a-chance.partial";
+import { AppSection } from "./home/partials/app.partial";
+import {
+  DesktopHeroSection,
+  MobileHeroSection,
+  BottomBar,
+} from "./home/partials/hero.partial";
 
 export const meta: MetaFunction = () => {
   return [
@@ -24,44 +32,22 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-  const userData: User | null = useLoaderData();
-  const { logout, isLoading } = useAuth();
-
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
-        <header className="flex flex-col items-center gap-9">
-          <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            <span>Welcome </span>
-            {userData && <i>{userData.fullName}</i>}
-            <span> to </span>
-            <span className="sr-only">Christ Fellowship Church</span>
-          </div>
-          <img width={200} src="/logo.png" alt="CF Logo" />
-        </header>
-        <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <p className="leading-6 text-gray-700 dark:text-gray-200">
-            What&apos;s next?
-          </p>
-          <Link prefetch="intent" to="/articles/10-ways-to-be-generous">
-            Check out a new Article
-          </Link>
-          {isLoading ? (
-            <>Loading...</>
-          ) : userData ? (
-            <>
-              <Button intent={"secondary"} onClick={logout}>
-                Logout
-              </Button>
-              <a className="text-ocean underline" href="/profile">
-                Go to Profile
-              </a>
-            </>
-          ) : (
-            <AuthModal />
-          )}
-        </nav>
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="hidden lg:block w-full">
+        <DesktopHeroSection />
       </div>
+      <div className="block lg:hidden w-full">
+        <MobileHeroSection />
+        <BottomBar />
+      </div>
+      <AChanceSection />
+      <WhatWeOfferSection />
+      <HistorySection sectionTitle="History" title="Who We Are" />
+      <BeliefsSection />
+      <WhatToExpectSection />
+      <LeadershipSection bg="white" />
+      <AppSection />
     </div>
   );
 }
