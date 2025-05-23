@@ -2,13 +2,19 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
 
-export const VirtualTour = ({ wistiaId }: { wistiaId: string }) => {
+export const VirtualTour = ({
+  wistiaId,
+  address,
+}: {
+  wistiaId: string;
+  address: string;
+}) => {
   return (
     <div className="flex flex-col py-8 rounded-[18px] border border-neutral-lighter">
       <Tabs.Root defaultValue="tour">
         <TabContent
           value="map"
-          image="/images/map.png"
+          address={address}
           title="Visit Us"
           description="Come experience our campus in person! Our friendly staff is ready
               to give you a tour and answer any questions you may have about our
@@ -53,13 +59,13 @@ const TourButton = ({
 };
 
 const TabContent = ({
-  image,
+  address,
   title,
   description,
   wistiaId,
   value,
 }: {
-  image?: string;
+  address?: string;
   title: string;
   description: string;
   wistiaId?: string;
@@ -72,9 +78,11 @@ const TabContent = ({
         <p>{description}</p>
       </div>
 
-      {image && <img src={image} alt={title} />}
+      {/* TODO: ImplementGoogle Maps */}
+      {address && <div>{address}</div>}
       {wistiaId && (
-        <Video wistiaId={wistiaId} className="aspect-video max-w-[670px]" />
+        // Use desktop wistiaId on mobile as well since the design is the same (not vertical)
+        <Video wistiaId={wistiaId} className="aspect-67/35" controls={false} />
       )}
     </Tabs.Content>
   );
