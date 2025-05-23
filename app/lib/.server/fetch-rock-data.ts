@@ -242,3 +242,31 @@ export const getImages = ({
     createImageUrlFromGuid(attributeValues[key].value)
   );
 };
+
+/**
+ * Deletes a specific cache key from Redis
+ * @param endpoint - The Rock endpoint that was cached
+ * @param queryParams - The query parameters that were used in the original request
+ * @returns boolean indicating whether the deletion was successful
+ */
+export const deleteCacheKey = async ({
+  endpoint,
+  queryParams = {},
+}: {
+  endpoint: string;
+  queryParams?: RockQueryParams;
+}): Promise<boolean> => {
+  if (!redis) {
+    console.log("⚠️ Redis not available for cache deletion");
+    return false;
+  }
+
+  try {
+    const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+    await redis.del(cacheKey);
+    return true;
+  } catch (error) {
+    console.error("Error deleting cache key:", error);
+    return false;
+  }
+};
