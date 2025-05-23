@@ -13,18 +13,34 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
         "lg:w-1/2 md:w-1/3": data.aspectRatio === "16by9",
       })}
     >
-      <img
-        src={data.coverImage}
-        alt={data.name}
-        className={cn(
-          "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
-          {
+      {data.featureVideo ? (
+        <div
+          className={cn("rounded-lg overflow-hidden", {
             "aspect-[16/9]": data.aspectRatio === "16by9",
             "aspect-[4/5]": data.aspectRatio === "4by5",
             "aspect-[1/1]": data.aspectRatio === "1by1",
-          }
-        )}
-      />
+          })}
+        >
+          <iframe
+            src={`https://fast.wistia.net/embed/iframe/${data.featureVideo}?fitStrategy=cover`}
+            title={data.name}
+            className="w-full h-full"
+          />
+        </div>
+      ) : (
+        <img
+          src={data.coverImage}
+          alt={data.name}
+          className={cn(
+            "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
+            {
+              "aspect-[16/9]": data.aspectRatio === "16by9",
+              "aspect-[4/5]": data.aspectRatio === "4by5",
+              "aspect-[1/1]": data.aspectRatio === "1by1",
+            }
+          )}
+        />
+      )}
     </div>
   );
 };
