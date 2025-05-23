@@ -47,7 +47,7 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
           <FeatureImage data={data} />
         )}
         <div className={`flex-1 flex flex-col gap-5`}>
-          <h2 className="text-text-primary heading-h4 md:heading-h2 leading-snug">
+          <h2 className="text-text-primary heading-h4 md:heading-h2">
             {data.name}
           </h2>
           {data.subtitle && (

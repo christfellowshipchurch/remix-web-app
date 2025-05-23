@@ -1,5 +1,5 @@
 import { LoaderFunction } from "react-router";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { deleteCacheKey, fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
 import {
   getContentType,
