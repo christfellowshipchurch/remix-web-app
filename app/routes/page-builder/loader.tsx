@@ -15,6 +15,7 @@ import {
   SectionType,
 } from "./types";
 import { format, parseISO } from "date-fns";
+import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
 const fetchChildItems = async (id: string) => {
   const children = await fetchRockData({
@@ -164,12 +165,15 @@ const mapPageBuilderChildItems = async (
         };
       }
 
-      // If the section is a content block, fetch the defined values for any GUIDs that are not the cover image
+      // If the section is a content block, fetch the defined values for any GUIDs that are not the cover image or video
       if (sectionType === "CONTENT_BLOCK") {
         const updatedValues = await Promise.all(
           Object.entries(attributeValues || {}).map(async ([key, value]) => {
             const processedValue =
-              typeof value === "string" && isGuid(value) && key !== "coverImage"
+              typeof value === "string" &&
+              isGuid(value) &&
+              key !== "coverImage" &&
+              key !== "video"
                 ? await fetchDefinedValue(value)
                 : value;
             return [key, processedValue];
@@ -178,10 +182,16 @@ const mapPageBuilderChildItems = async (
 
         const processedValues = Object.fromEntries(updatedValues);
 
+        const fetchVideo = attributeValues?.featureVideo
+          ? (await fetchWistiaDataFromRock(attributeValues.featureVideo))
+              .sourceKey
+          : null;
+
         return {
           ...baseChild,
           ...processedValues,
           coverImage: createImageUrlFromGuid(attributeValues?.coverImage),
+          featureVideo: fetchVideo,
         };
       }
 
