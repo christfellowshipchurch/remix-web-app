@@ -3,18 +3,22 @@ import { LoaderReturnType } from "./loader";
 
 import { CampusInfo } from "./partials/campus-info.partial";
 import { LocationFAQ } from "./partials/faq.partial";
-import { LocationsHero } from "./partials/hero.partial";
+import { DynamicHero } from "~/components/dynamic-hero";
 
 export function LocationSinglePage() {
   const { name } = useLoaderData<LoaderReturnType>();
   const isEspanol = name?.includes("Español");
-  const bgVideoId = "800000000";
+  const wistiaId = "x52lhugce3";
+
   return (
     <div className="w-full overflow-hidden">
-      <LocationsHero
-        bgVideo={bgVideoId}
+      {/* TODO: Update to DynamicHero and allow it to have videos */}
+      <DynamicHero
+        wistiaId={wistiaId}
+        desktopHeight="750px"
+        customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
-          { title: "Set a Reminder", href: "#" },
+          { title: "Set a Reminder", href: "#", isSetAReminder: true },
           { title: "Map & Directions", href: "#" },
         ]}
       />

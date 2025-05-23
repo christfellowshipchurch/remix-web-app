@@ -9,18 +9,31 @@ export const LocationFAQ = () => {
   const isEspanol = name.includes("Español");
 
   return (
-    <div className="content-padding bg-[#F5F5F7]">
-      <div className="max-w-screen-content mx-auto">
-        <div className="flex flex-col px-4 items-center gap-14 pb-24 pt-14">
-          <h2 className=" max-w-[90vw] text-center heading-h3 text-navy">
-            {isEspanol ? `Preguntas Frequentes` : `Frequently Asked Questions`}
-          </h2>
-          <StyledAccordion data={faqData(name)} bg="white" center />
+    <div className="content-padding bg-white">
+      <div className="max-w-screen-content mx-auto flex justify-center">
+        <div className="flex flex-col items-center gap-12 md:gap-20 py-16 md:pb-24 md:pt-14 max-w-[770px]">
+          <div className="flex flex-col items-center gap-5 md:gap-6">
+            <h2 className=" max-w-[90vw] text-center heading-h3 font-extrabold text-2xl md:text-[52px]">
+              {isEspanol ? `Preguntas Frequentes` : `First Time FAQs`}
+            </h2>
+            <p className="text-center md:text-lg">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse varius enim in eros elementum tristique.
+            </p>
+          </div>
+
+          <StyledAccordion
+            data={faqData(name)}
+            bg="white"
+            center
+            border="#C6C6C6"
+          />
+
           <div className="flex flex-col items-center gap-5 text-center">
             <div className="text-[26px] font-bold">
               {isEspanol
                 ? `¿Tienes preguntas adicionales?`
-                : `Have additional questions?`}
+                : `Still have a question?`}
             </div>
             <p className="text-[15px]">
               {isEspanol
@@ -30,11 +43,10 @@ export const LocationFAQ = () => {
             <Button
               href="https://rock.gocf.org/contactus"
               target="_blank"
-              className="w-32 rounded-[6px] lg:w-44"
-              size="md"
+              className="w-full rounded-sm"
               intent="secondary"
             >
-              {isEspanol ? `Contáctanos` : `Contact Us`}
+              {isEspanol ? `Contáctanos` : `Contact`}
             </Button>
           </div>
         </div>
