@@ -23,7 +23,6 @@ const ReminderForm: React.FC<ReminderProps> = ({
     user,
   } = useLoaderData<LoaderReturnType>(); // grabs campus information from the current page were on
   const isEspanol = campus?.includes("Español");
-
   const firstName = user?.fullName?.split(" ")[0] || null;
   const lastName = user?.fullName?.split(" ")[1] || null;
   const phoneNumber = user?.phoneNumber || null;

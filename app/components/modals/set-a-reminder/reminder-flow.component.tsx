@@ -37,7 +37,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
   };
 
   return (
-    <div className="text-center text-text_primary px-8 overflow-auto w-[80vw] sm:w-screen sm:max-w-md md:max-w-lg max-h-[85vh] md:max-h-[90vh] ">
+    <div className="text-center text-text_primary p-8 overflow-auto max-w-screen-content max-h-[85vh] md:max-h-[90vh]">
       {renderStep()}
     </div>
   );
