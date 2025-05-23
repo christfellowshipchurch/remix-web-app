@@ -15,6 +15,8 @@ export const MessageVideo: React.FC = () => {
     <VideoHeader
       wistiaId={message.wistiaId || ""}
       video={message.video || ""}
+      videoClassName="aspect-7/4"
+      controls={false}
       ctas={[
         messageSeries && {
           title: "Sermon Series Resources",

@@ -4,9 +4,8 @@ import { faqData } from "~/lib/faq-data.data";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 
-export const LocationFAQ = () => {
-  const { name } = useLoaderData<LoaderReturnType>();
-  const isEspanol = name.includes("Español");
+export const LocationFAQ = ({ campusName }: { campusName: string }) => {
+  const isEspanol = campusName.includes("Español");
 
   return (
     <div className="content-padding bg-white">
@@ -23,7 +22,7 @@ export const LocationFAQ = () => {
           </div>
 
           <StyledAccordion
-            data={faqData(name)}
+            data={faqData(campusName)}
             bg="white"
             center
             border="#C6C6C6"
