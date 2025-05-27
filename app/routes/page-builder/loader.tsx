@@ -1,5 +1,5 @@
 import { LoaderFunction } from "react-router";
-import { deleteCacheKey, fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
 import {
   getContentType,
@@ -217,7 +217,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         attributeKey: "Pathname",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 171",
+        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be dynamic
       },
     });
 
