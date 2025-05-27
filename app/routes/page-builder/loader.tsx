@@ -18,12 +18,25 @@ import { format, parseISO } from "date-fns";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
 const fetchChildItems = async (id: string) => {
-  const children = await fetchRockData({
-    endpoint: `ContentChannelItems/GetChildren/${id}`,
+  const childReferences = await fetchRockData({
+    endpoint: `ContentChannelItemAssociations`,
     queryParams: {
       loadAttributes: "simple",
+      $filter: `ContentChannelItemId eq ${id}`,
+      $orderby: "Order",
     },
   });
+
+  const children = await Promise.all(
+    childReferences.map(async (childReference: any) => {
+      return await fetchRockData({
+        endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
+        queryParams: {
+          loadAttributes: "simple",
+        },
+      });
+    })
+  );
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
     console.log("No valid children data found");
