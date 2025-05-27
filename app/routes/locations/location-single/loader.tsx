@@ -3,13 +3,15 @@ import { LoaderFunctionArgs } from "react-router";
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  GOOGLE_MAPS_API_KEY: string;
   campusName: string;
+  url: string;
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const campusName = params.location;
+  const campusUrl = params.location;
 
-  if (!campusName) {
+  if (!campusUrl) {
     throw new Response("Campus not found", {
       status: 404,
     });
@@ -17,9 +19,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-  if (!appId || !searchApiKey) {
-    throw new Response("Algolia credentials not found", {
+  if (!appId || !searchApiKey || !googleMapsApiKey) {
+    throw new Response("Keys not found", {
       status: 404,
     });
   }
@@ -27,6 +30,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
-    campusName: decodeURIComponent(campusName),
+    GOOGLE_MAPS_API_KEY: googleMapsApiKey,
+    campusName: decodeURIComponent(campusUrl),
   };
 }

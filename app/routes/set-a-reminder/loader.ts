@@ -7,6 +7,8 @@ export type LoaderReturnType = {
   serviceTimes: dayTimes[];
   campusName: string;
   user: any;
+  address: string;
+  url: string;
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -31,11 +33,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
   }
 
-  const { serviceTimes, name } = data;
+  const { serviceTimes, name, location } = data;
+  const address = [
+    location.street1,
+    location.city,
+    location.state,
+    location.postalCode,
+  ].join(", ");
 
   return {
     serviceTimes: formattedServiceTimes(serviceTimes),
     campusName: name,
     user,
+    address,
+    url: campusUrl,
   };
 };
