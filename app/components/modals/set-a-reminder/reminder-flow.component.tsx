@@ -33,6 +33,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
           <ReminderConfirmation
             serviceTime={serviceTime}
             onSuccess={() => setOpenModal(false)}
+            location={campusName}
           />
         );
       default:

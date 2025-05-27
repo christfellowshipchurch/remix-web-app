@@ -1,4 +1,4 @@
-import { VirtualTour } from "../components/virtual-tour.component";
+import { VirtualTourTabs } from "../components/virtual-tour.component";
 
 interface CampusInfoProps {
   campusName: string;
@@ -36,7 +36,7 @@ export const CampusInfo = ({
         {/* Tour */}
         <div className="flex-1 pt-16">
           {/* TODO: Get address and wistiaId from Algolia */}
-          <VirtualTour
+          <VirtualTourTabs
             wistiaId={digitalTourVideo}
             address={`${campusLocation.street1} ${campusLocation.street2}, ${campusLocation.city}, ${campusLocation.state} ${campusLocation.postalCode}`}
           />

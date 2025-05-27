@@ -1,20 +1,47 @@
 import * as Tabs from "@radix-ui/react-tabs";
+import { useLoaderData } from "react-router";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
+import { LoaderReturnType } from "../loader";
 
-export const VirtualTour = ({
+const GoogleMap = ({
+  address,
+  apiKey,
+}: {
+  address: string;
+  apiKey: string;
+}) => {
+  const encodedAddress = encodeURIComponent(address);
+  return (
+    <iframe
+      src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodedAddress}`}
+      width="100%"
+      height="400"
+      style={{ border: 0 }}
+      allowFullScreen
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      className="rounded-lg"
+    />
+  );
+};
+
+export const VirtualTourTabs = ({
   wistiaId,
   address,
 }: {
   wistiaId: string;
   address: string;
 }) => {
+  const { GOOGLE_MAPS_API_KEY } = useLoaderData<LoaderReturnType>();
+
   return (
-    <div className="flex flex-col py-8 rounded-[18px] border border-neutral-lighter">
+    <div className="flex flex-col pt-8 rounded-[18px] border border-neutral-lighter">
       <Tabs.Root defaultValue="tour">
         <TabContent
           value="map"
           address={address}
+          apiKey={GOOGLE_MAPS_API_KEY}
           title="Visit Us"
           description="Come experience our campus in person! Our friendly staff is ready
               to give you a tour and answer any questions you may have about our
@@ -45,7 +72,7 @@ const TourButton = ({
 }) => {
   return (
     <Tabs.Trigger
-      className="flex-1 w-full max-w-[300px] py-2 flex gap-2 items-center justify-center text-sm font-semibold rounded-[200px] md:rounded-[400px] border border-[#D6D6D6] text-black"
+      className="flex-1 w-full max-w-[300px] py-2 flex gap-2 items-center justify-center text-sm font-semibold rounded-[200px] md:rounded-[400px] border border-[#D6D6D6] text-black data-[state=active]:bg-gray"
       value={value}
     >
       <Icon
@@ -64,12 +91,14 @@ const TabContent = ({
   description,
   wistiaId,
   value,
+  apiKey,
 }: {
   address?: string;
   title: string;
   description: string;
   wistiaId?: string;
   value: string;
+  apiKey?: string;
 }) => {
   return (
     <Tabs.Content value={value}>
@@ -78,11 +107,16 @@ const TabContent = ({
         <p>{description}</p>
       </div>
 
-      {/* TODO: ImplementGoogle Maps */}
-      {address && <div>{address}</div>}
-      {wistiaId && (
-        // Use desktop wistiaId on mobile as well since the design is the same (not vertical)
-        <Video wistiaId={wistiaId} className="aspect-67/35" controls={false} />
+      {/* TODO: Maybe add some sort of loader for when map or video is loading */}
+      {address && value === "map" && apiKey && (
+        <GoogleMap address={address} apiKey={apiKey} />
+      )}
+      {wistiaId && value === "tour" && (
+        <Video
+          wistiaId={wistiaId}
+          className="aspect-67/35 relative z-3"
+          controls={false}
+        />
       )}
     </Tabs.Content>
   );
