@@ -31,7 +31,7 @@ export const loader: LoaderFunction = async (): Promise<{
     const ministriesData = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: "ContentChannelId eq 171", // Ministries Content Channel ID
+        $filter: "ContentChannelId eq 171 and Status eq '2'", // Approved Ministries Content Channel Items
         $orderby: "Order",
         loadAttributes: "simple",
       },
