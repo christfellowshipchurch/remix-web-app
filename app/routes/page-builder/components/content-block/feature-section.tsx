@@ -59,9 +59,8 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
           }
         )}
       >
-        {data.coverImage && data.imageLayout === "LEFT" && (
-          <FeatureImage data={data} />
-        )}
+        {(data.coverImage || data.featureVideo) &&
+          data.imageLayout === "LEFT" && <FeatureImage data={data} />}
         <div className={`flex-1 flex flex-col gap-5`}>
           <h2 className="text-text-primary heading-h4 md:heading-h2">
             {data.name}
@@ -91,9 +90,8 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
             ))}
           </div>
         </div>
-        {data.coverImage && data.imageLayout === "RIGHT" && (
-          <FeatureImage data={data} />
-        )}
+        {(data.coverImage || data.featureVideo) &&
+          data.imageLayout === "RIGHT" && <FeatureImage data={data} />}
       </div>
     </section>
   );
