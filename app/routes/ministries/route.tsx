@@ -1,8 +1,12 @@
 import { DynamicHero } from "~/components";
 import { AllMinistriesPartial } from "./all-ministries/partials/all-ministries.partial";
-import { ministries } from "./all-ministries/ministries.data";
+import { useLoaderData } from "react-router";
+import type { Ministry } from "./loader";
+export { loader } from "./loader";
 
 export default function AllMinistriesPage() {
+  const { ministries } = useLoaderData<{ ministries: Ministry[] }>();
+
   return (
     <div>
       <DynamicHero

@@ -13,18 +13,34 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
         "lg:w-1/2 md:w-1/3": data.aspectRatio === "16by9",
       })}
     >
-      <img
-        src={data.coverImage}
-        alt={data.name}
-        className={cn(
-          "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
-          {
+      {data.featureVideo ? (
+        <div
+          className={cn("rounded-lg overflow-hidden", {
             "aspect-[16/9]": data.aspectRatio === "16by9",
             "aspect-[4/5]": data.aspectRatio === "4by5",
             "aspect-[1/1]": data.aspectRatio === "1by1",
-          }
-        )}
-      />
+          })}
+        >
+          <iframe
+            src={`https://fast.wistia.net/embed/iframe/${data.featureVideo}?fitStrategy=cover`}
+            title={data.name}
+            className="w-full h-full"
+          />
+        </div>
+      ) : (
+        <img
+          src={data.coverImage}
+          alt={data.name}
+          className={cn(
+            "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
+            {
+              "aspect-[16/9]": data.aspectRatio === "16by9",
+              "aspect-[4/5]": data.aspectRatio === "4by5",
+              "aspect-[1/1]": data.aspectRatio === "1by1",
+            }
+          )}
+        />
+      )}
     </div>
   );
 };
@@ -43,11 +59,10 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
           }
         )}
       >
-        {data.coverImage && data.imageLayout === "LEFT" && (
-          <FeatureImage data={data} />
-        )}
+        {(data.coverImage || data.featureVideo) &&
+          data.imageLayout === "LEFT" && <FeatureImage data={data} />}
         <div className={`flex-1 flex flex-col gap-5`}>
-          <h2 className="text-text-primary heading-h4 md:heading-h2 leading-snug">
+          <h2 className="text-text-primary heading-h4 md:heading-h2">
             {data.name}
           </h2>
           {data.subtitle && (
@@ -75,9 +90,8 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
             ))}
           </div>
         </div>
-        {data.coverImage && data.imageLayout === "RIGHT" && (
-          <FeatureImage data={data} />
-        )}
+        {(data.coverImage || data.featureVideo) &&
+          data.imageLayout === "RIGHT" && <FeatureImage data={data} />}
       </div>
     </section>
   );

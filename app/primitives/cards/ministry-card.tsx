@@ -19,7 +19,7 @@ export function MinistryCard({
         className="rounded-[8px] border border-neutral-lighter overflow-hidden shadow-md cursor-pointer hover:translate-y-[-4px] transition-all duration-300 flex flex-col h-full"
       >
         <img
-          src={image}
+          src={`${image}&quality=20`}
           alt={title}
           className="w-full aspect-video object-cover"
         />
