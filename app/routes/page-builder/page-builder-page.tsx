@@ -1,13 +1,12 @@
 import { useLoaderData } from "react-router";
-import { PageBuilderLoader } from "./page-builder/types";
+import { PageBuilderLoader } from "./types";
 import { DynamicHero } from "~/components";
 import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
 import { CTACollectionSection } from "~/components/page-builder/cta-collection";
-import { ContentBlock } from "./page-builder/components/content-block";
-import { ContentBlockData } from "./page-builder/types";
-export { loader } from "./page-builder/loader";
+import { ContentBlock } from "./components/content-block";
+import { ContentBlockData } from "./types";
 
-function PageBuilderRoute() {
+export function PageBuilderRoute() {
   const { title, heroImage, callsToAction, sections } =
     useLoaderData<PageBuilderLoader>();
 

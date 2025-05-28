@@ -108,6 +108,7 @@ export interface ContentBlockData {
   subtitle?: string;
   callsToAction?: string; // Format: "Label^#url|Label2^#url2"
   coverImage?: string;
+  featureVideo?: string; // Wistia Video ID
   aspectRatio?: ContentBlockAspectRatio;
   imageLayout?: ContentBlockImageLayout;
   backgroundColor?: ContentBlockBackgroundColor;
