@@ -5,6 +5,9 @@ import { HistorySection } from "./partials/history.partial";
 import { BeliefsSection } from "./partials/beliefs.partial";
 import { LeadershipSection } from "./partials/leadership.partial";
 import { ImpactSection } from "./partials/impact.partial";
+import { loader } from "./loader";
+
+export { loader };
 
 export const meta: MetaFunction = () => {
   return [
