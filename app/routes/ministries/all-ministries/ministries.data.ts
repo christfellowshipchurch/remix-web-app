@@ -1,4 +1,4 @@
-import { Ministry } from "./partials/all-ministries.partial";
+import { Ministry } from "../loader";
 
 export const ministries: Ministry[] = [
   {

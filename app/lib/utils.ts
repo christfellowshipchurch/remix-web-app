@@ -225,10 +225,10 @@ export const parseRockKeyValueList = (
   title: string;
   url: string;
 }[] => {
-  if (!input) return [];
+  if (!input || input === "") return [];
 
   return input.split("|").map((item) => {
-    const [title, url] = item.split("^#");
+    const [title, url] = item.split("^");
     return {
       title: title.trim(),
       url: url.trim(),

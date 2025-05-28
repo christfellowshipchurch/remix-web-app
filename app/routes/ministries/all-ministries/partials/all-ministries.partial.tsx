@@ -1,11 +1,5 @@
 import { MinistryCard } from "~/primitives/cards/ministry-card";
-
-export type Ministry = {
-  title: string;
-  description: string;
-  image: string;
-  url: string;
-};
+import { Ministry } from "../../loader";
 
 export const AllMinistriesPartial = ({
   ministries,
