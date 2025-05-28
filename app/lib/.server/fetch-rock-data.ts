@@ -64,10 +64,20 @@ export const fetchRockData = async ({
   customHeaders?: Record<string, string>;
   cache?: boolean;
 }) => {
+  const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+
+  // Clear cache if cache is disabled
+  if (redis && !cache) {
+    try {
+      await redis.del(cacheKey);
+    } catch (error) {
+      console.log("⚠️ Redis cache deletion failed");
+    }
+  }
+
   // Try to use Redis cache if available and caching is enabled
   if (redis && cache) {
     try {
-      const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
       const cachedData = await redis.get(cacheKey);
       if (cachedData) {
         return JSON.parse(cachedData);
@@ -107,7 +117,6 @@ export const fetchRockData = async ({
     // Try to cache the response if Redis is available and caching is enabled
     if (redis && cache) {
       try {
-        const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
         await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
       } catch (error) {
         console.log("⚠️ Redis cache storage failed");
@@ -241,4 +250,32 @@ export const getImages = ({
   return imageKeys.map((key) =>
     createImageUrlFromGuid(attributeValues[key].value)
   );
+};
+
+/**
+ * Deletes a specific cache key from Redis
+ * @param endpoint - The Rock endpoint that was cached
+ * @param queryParams - The query parameters that were used in the original request
+ * @returns boolean indicating whether the deletion was successful
+ */
+export const deleteCacheKey = async ({
+  endpoint,
+  queryParams = {},
+}: {
+  endpoint: string;
+  queryParams?: RockQueryParams;
+}): Promise<boolean> => {
+  if (!redis) {
+    console.log("⚠️ Redis not available for cache deletion");
+    return false;
+  }
+
+  try {
+    const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+    await redis.del(cacheKey);
+    return true;
+  } catch (error) {
+    console.error("Error deleting cache key:", error);
+    return false;
+  }
 };

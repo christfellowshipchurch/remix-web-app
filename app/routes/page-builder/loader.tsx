@@ -15,14 +15,28 @@ import {
   SectionType,
 } from "./types";
 import { format, parseISO } from "date-fns";
+import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
 const fetchChildItems = async (id: string) => {
-  const children = await fetchRockData({
-    endpoint: `ContentChannelItems/GetChildren/${id}`,
+  const childReferences = await fetchRockData({
+    endpoint: `ContentChannelItemAssociations`,
     queryParams: {
       loadAttributes: "simple",
+      $filter: `ContentChannelItemId eq ${id}`,
+      $orderby: "Order",
     },
   });
+
+  const children = await Promise.all(
+    childReferences.map(async (childReference: any) => {
+      return await fetchRockData({
+        endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
+        queryParams: {
+          loadAttributes: "simple",
+        },
+      });
+    })
+  );
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
     console.log("No valid children data found");
@@ -164,12 +178,15 @@ const mapPageBuilderChildItems = async (
         };
       }
 
-      // If the section is a content block, fetch the defined values for any GUIDs that are not the cover image
+      // If the section is a content block, fetch the defined values for any GUIDs that are not the cover image or video
       if (sectionType === "CONTENT_BLOCK") {
         const updatedValues = await Promise.all(
           Object.entries(attributeValues || {}).map(async ([key, value]) => {
             const processedValue =
-              typeof value === "string" && isGuid(value) && key !== "coverImage"
+              typeof value === "string" &&
+              isGuid(value) &&
+              key !== "coverImage" &&
+              key !== "video"
                 ? await fetchDefinedValue(value)
                 : value;
             return [key, processedValue];
@@ -178,10 +195,16 @@ const mapPageBuilderChildItems = async (
 
         const processedValues = Object.fromEntries(updatedValues);
 
+        const fetchVideo = attributeValues?.featureVideo
+          ? (await fetchWistiaDataFromRock(attributeValues.featureVideo))
+              .sourceKey
+          : null;
+
         return {
           ...baseChild,
           ...processedValues,
           coverImage: createImageUrlFromGuid(attributeValues?.coverImage),
+          featureVideo: fetchVideo,
         };
       }
 
@@ -207,7 +230,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         attributeKey: "Pathname",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 171",
+        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be dynamic
       },
     });
 
