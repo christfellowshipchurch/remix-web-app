@@ -1,5 +1,4 @@
-import type { LoaderFunction, MetaFunction } from "react-router";
-import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
+import type { MetaFunction } from "react-router";
 import { HistorySection } from "./about/partials/history.partial";
 import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";
@@ -12,23 +11,13 @@ import {
   MobileHeroSection,
   BottomBar,
 } from "./home/partials/hero.partial";
+export { loader } from "./about/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
 
 export const meta: MetaFunction = () => {
   return [
     { title: "Christ Fellowship Web App v3" },
     { name: "description", content: "Welcome to the CFDP!" },
   ];
-};
-
-/** Example of how to return current user via sever-side */
-export const loader: LoaderFunction = async ({ request }) => {
-  const userData = await getUserFromRequest(request);
-
-  if (!userData) {
-    return null; // here you can redirect to a login page etc.
-  }
-
-  return userData;
 };
 
 export default function Index() {
