@@ -19,6 +19,7 @@ export type Author = {
     jobTitle: string;
     socialLinks: SocialMedia[];
     publications: AuthorArticleProps[];
+    pathname: string;
   };
 };
 
@@ -135,6 +136,7 @@ export const getAuthorDetails = async (personId: string) => {
             }
           })
           .filter(Boolean),
+        pathname: authorData?.attributeValues?.pathname?.value || "",
       },
     };
   } catch (error) {
