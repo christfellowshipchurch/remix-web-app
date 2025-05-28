@@ -30,7 +30,7 @@ export type LocationHitType = {
   phoneNumber: string;
   serviceTimes: string;
   setReminderVideo: string;
-  weekdaySchedules: {
+  weekdaySchedule: {
     day: string;
     events: {
       event: string;

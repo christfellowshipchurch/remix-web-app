@@ -10,18 +10,14 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
   const {
     campusName,
-    campusId,
-    campusImage,
-    campusInstagram,
     campusLocation,
-    campusPastor,
     digitalTourVideo,
     mapLink,
     mapUrl,
     phoneNumber,
     serviceTimes,
     setReminderVideo,
-    weekdaySchedules,
+    weekdaySchedule,
     additionalInfo,
     // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
     backgroundVideoMobile,
@@ -33,7 +29,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     <div className="w-full overflow-hidden">
       <DynamicHero
         wistiaId={backgroundVideoDesktop || backgroundVideoMobile}
-        desktopHeight="750px"
+        desktopHeight="800px"
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
           { title: "Set a Reminder", href: "#", isSetAReminder: true },
@@ -41,12 +37,13 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         ]}
       />
       <CampusInfo
+        serviceTimes={serviceTimes}
+        phoneNumber={phoneNumber}
+        additionalInfo={additionalInfo}
         campusName={campusName}
-        campusImage={campusImage}
-        campusInstagram={campusInstagram}
         campusLocation={campusLocation}
-        campusPastor={campusPastor}
         digitalTourVideo={digitalTourVideo}
+        weekdaySchedule={weekdaySchedule}
       />
       <LocationFAQ campusName={campusName} />
     </div>

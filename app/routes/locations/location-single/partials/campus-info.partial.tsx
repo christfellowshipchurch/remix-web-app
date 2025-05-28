@@ -1,8 +1,12 @@
+import Icon from "~/primitives/icon";
 import { VirtualTourTabs } from "../components/virtual-tour.component";
+import { DuringTheWeek } from "../components/during-the-week.component";
+import { CTAs } from "../components/ctas.component";
+import { icons } from "~/lib/icons";
+import { dayTimes, formattedServiceTimes } from "~/lib/utils";
 
 interface CampusInfoProps {
   campusName: string;
-  campusImage: string;
   digitalTourVideo: string;
   campusLocation: {
     street1: string;
@@ -11,35 +15,105 @@ interface CampusInfoProps {
     state: string;
     postalCode: string;
   };
-  campusInstagram: string;
-  campusPastor: {
-    email: string;
-    firstName: string;
-    lastName: string;
-    photo: string;
-  };
+  serviceTimes: string;
+  weekdaySchedule: any;
+  phoneNumber: string;
+  additionalInfo: string[];
 }
+
+const IconText = ({
+  icon,
+  text,
+  serviceTimes,
+}: {
+  icon: keyof typeof icons;
+  text?: string;
+  serviceTimes?: dayTimes[];
+}) => (
+  <div className="flex gap-2">
+    <Icon name={icon} className="text-ocean" />
+    {text ? (
+      <p className="text-lg font-semibold">{text}</p>
+    ) : (
+      serviceTimes?.map((time, index) => (
+        <p key={index} className="text-lg font-semibold">
+          {time.day} | {time.hour.join(", ")}
+        </p>
+      ))
+    )}
+  </div>
+);
+
 export const CampusInfo = ({
   campusName,
-  campusImage,
   digitalTourVideo,
-  campusPastor,
   campusLocation,
-  campusInstagram,
+  weekdaySchedule,
+  phoneNumber,
+  additionalInfo,
+  serviceTimes,
 }: CampusInfoProps) => {
+  const address = `${campusLocation.street1}${
+    campusLocation.street2 ? ` ${campusLocation.street2}` : ""
+  }, ${campusLocation.city}, ${campusLocation.state} ${
+    campusLocation.postalCode
+  }`;
+
   return (
     <div className="w-full content-padding">
-      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:gap-0 lg:justify-between pt-16 pb-32">
+      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-32">
         {/* Location Info */}
-        <div className="flex-1"></div>
+        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]">
+          {/* Campus Name Section*/}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-end gap-2 text-ocean">
+              <Icon name="church" className="lg:size-[40px] size-[24px]" />
+              <p className="font-medium">Campus Location</p>
+            </div>
+            <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
+              Christ Fellowship Church in {campusName}, FL
+            </h1>
+          </div>
+
+          {/* Important Info Section */}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+              <IconText
+                icon="timeFive"
+                serviceTimes={formattedServiceTimes(serviceTimes)}
+              />
+              <IconText icon="map" text={address} />
+              <IconText icon="mobileAlt" text={phoneNumber} />
+            </div>
+
+            <div className="flex flex-col">
+              {additionalInfo.map((info, index) => (
+                <p key={index} className="text-xs text-[#666666]">
+                  *{info}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex flex-col gap-16">
+            {/* Desktop CTAs && During the Week */}
+            <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
+              <CTAs />
+              <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+            </div>
+          </div>
+        </div>
 
         {/* Tour */}
-        <div className="flex-1 pt-16">
-          {/* TODO: Get address and wistiaId from Algolia */}
-          <VirtualTourTabs
-            wistiaId={digitalTourVideo}
-            address={`${campusLocation.street1} ${campusLocation.street2}, ${campusLocation.city}, ${campusLocation.state} ${campusLocation.postalCode}`}
-          />
+        <div className="flex-1 lg:pt-16 max-w-[670px]">
+          <VirtualTourTabs wistiaId={digitalTourVideo} address={address} />
+        </div>
+
+        {/* Mobile CTAs && During the Week */}
+        <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
+          <CTAs />
+          <DuringTheWeek weekdaySchedule={weekdaySchedule} />
         </div>
       </div>
     </div>
