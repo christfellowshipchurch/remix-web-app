@@ -25,7 +25,7 @@ export const CampusPastorsQuote = ({
         </div>
 
         {/* Pastor */}
-        <div className="flex flex-col md:flex-row gap-5 items-center md:items-start justify-center">
+        <div className="flex flex-col md:flex-row gap-5 items-center justify-center">
           <img
             src={campusPastor.photo}
             alt={campusPastor.firstName}
