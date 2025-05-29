@@ -46,7 +46,7 @@ export const CampusTabs = ({ tabs, setReminderVideo }: CampusTabsProps) => {
           <Tabs.Trigger
             key={index}
             value={tab.value}
-            className="px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-ocean hover:text-white"
+            className="px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-ocean hover:text-white cursor-pointer"
           >
             {tab.label}
           </Tabs.Trigger>
