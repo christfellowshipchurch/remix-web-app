@@ -1,18 +1,29 @@
 import { useLocation } from "react-router";
 import { Breadcrumbs } from "../breadcrumbs";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { Button } from "~/primitives/button/button.primitive";
+import { Button, ButtonProps } from "~/primitives/button/button.primitive";
+import HTMLRenderer from "~/primitives/html-renderer";
+import { cn } from "~/lib/utils";
+import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";
 
 export type DynamicHeroTypes = {
-  imagePath: string;
-  ctas?: { href: string; title: string }[];
+  wistiaId?: string;
+  imagePath?: string;
+  ctas?: { href: string; title: string; isSetAReminder?: boolean }[];
   customTitle?: string;
+  mobileHeight?: string;
+  ipadHeight?: string;
+  desktopHeight?: string;
 };
 
 export const DynamicHero = ({
+  wistiaId,
   imagePath,
   ctas,
   customTitle,
+  mobileHeight,
+  ipadHeight,
+  desktopHeight,
 }: DynamicHeroTypes) => {
   const location = useLocation();
   const pagePath =
@@ -28,65 +39,149 @@ export const DynamicHero = ({
 
   return (
     <div
-      role="banner"
-      className="relative flex items-center justify-start self-stretch h-[720px] md:h-[640px] px-5 md:px-12 lg:px-18"
       style={{
-        background: `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${imagePath}) black 50% / cover no-repeat`,
-        backgroundRepeat: "no-repeat",
+        ["--mobile-height" as string]: mobileHeight || "720px",
+        ["--ipad-height" as string]: ipadHeight || mobileHeight || "640px",
+        ["--desktop-height" as string]:
+          desktopHeight || ipadHeight || mobileHeight || "640px",
+        ...(imagePath && { backgroundImage: `url(${imagePath})` }),
       }}
+      className={cn(
+        "relative flex items-center justify-start self-stretch",
+        "[height:var(--mobile-height)]",
+        "md:[height:var(--ipad-height)]",
+        "lg:[height:var(--desktop-height)]",
+        imagePath && "bg-cover bg-center bg-no-repeat",
+        imagePath && "before:absolute before:inset-0 before:bg-black/50"
+      )}
     >
+      {/* Video if passed in */}
+      {wistiaId && (
+        <div className={"absolute size-full rounded-lg overflow-hidden"}>
+          <iframe
+            src={`https://fast.wistia.net/embed/iframe/${wistiaId}?fitStrategy=cover&autoplay=true&muted=true&loop=true`}
+            allowFullScreen
+            className="w-full h-full"
+          />
+        </div>
+      )}
+
       {/* Bottom Background Gradient Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent z-0 opacity-50" />
+      <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-black to-transparent z-0 opacity-70" />
 
       {/* Content */}
-      <div className="flex flex-col gap-8 md:gap-12 w-full pb-8 md:pb-16 mx-auto items-start justify-end self-stretch max-w-screen-content z-10">
-        <h1 className="font-extrabold heading-h1 lg:text-7xl xl:text-8xl text-white">
-          {customTitle || pagePath}
-        </h1>
+      <div
+        className={cn(
+          "flex flex-col w-full items-start justify-end self-stretch z-10",
+          "px-5 md:px-12 lg:px-18"
+        )}
+      >
         <div
-          role="separator"
-          aria-hidden="true"
-          className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50"
-        />
-        <div className="flex items-center justify-between self-stretch">
-          {/* Breadcrumbs */}
-          <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
-            <div className="hidden lg:block">
-              <Breadcrumbs mode="light" />
-            </div>
-            <div
-              role="separator"
-              aria-hidden="true"
-              className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]"
-            />
-            {/* Desktop CTAs */}
-            <div className="hidden lg:flex mt-5 flex-wrap justify-between gap-3 pr-1">
-              {ctas?.map((cta, i) => (
-                <IconButton
-                  key={i}
-                  to={cta.href}
-                  className="text-white border-[#FAFAFC] border"
-                  withRotatingArrow={i === ctas.length - 1}
-                >
-                  {cta.title}
-                </IconButton>
-              ))}
-            </div>
+          className={cn(
+            "w-full max-w-screen-content mx-auto flex flex-col",
+            "gap-8 pb-8 md:gap-12 md:pb-16"
+          )}
+        >
+          <h1 className="font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[100px] text-white">
+            {customTitle ? <HTMLRenderer html={customTitle} /> : pagePath}
+          </h1>
+          <div
+            role="separator"
+            aria-hidden="true"
+            className="hidden md:block h-[2px] self-stretch bg-[#D9D9D9] opacity-50"
+          />
+          <div className="flex items-center justify-between self-stretch">
+            {/* Breadcrumbs */}
+            <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
+              <div className="hidden lg:block">
+                <Breadcrumbs mode="light" />
+              </div>
+              <div
+                role="separator"
+                aria-hidden="true"
+                className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]"
+              />
+              {/* Desktop CTAs */}
+              <div className="hidden lg:flex mt-5 flex-wrap justify-between gap-3 pr-1">
+                {ctas?.map((cta, i) => {
+                  if (cta.isSetAReminder) {
+                    const ReminderButton = ({
+                      className,
+                      ...props
+                    }: ButtonProps) => (
+                      <Button
+                        intent="secondary"
+                        className={cn(
+                          "text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10",
+                          className
+                        )}
+                        {...props}
+                      >
+                        {cta.title}
+                      </Button>
+                    );
+                    return (
+                      <SetAReminderModal key={i} ModalButton={ReminderButton} />
+                    );
+                  } else {
+                    return (
+                      <IconButton
+                        key={i}
+                        to={cta.href}
+                        className="text-white border-[#FAFAFC] border"
+                        withRotatingArrow={i === ctas.length - 1}
+                      >
+                        {cta.title}
+                      </IconButton>
+                    );
+                  }
+                })}
+              </div>
 
-            {/* Mobile CTAs */}
-            <div className="lg:hidden flex flex-col-reverse md:flex-row-reverse gap-3 w-full pt-8 md:pt-0 md:px-0">
-              {ctas?.map((cta, i) => (
-                <Button
-                  key={i}
-                  intent={i === 0 && ctas.length > 1 ? "secondary" : "primary"}
-                  href={cta.href}
-                  className={`w-full md:w-auto ${
-                    i !== 0 ? "text-white border-white" : ""
-                  }`}
-                >
-                  {cta.title}
-                </Button>
-              ))}
+              {/* Mobile CTAs */}
+              <div className="lg:hidden flex flex-col-reverse md:flex-row-reverse md:justify-end gap-3 w-full pt-8 md:pt-0 md:px-0">
+                {ctas?.map((cta, i) => {
+                  if (cta.isSetAReminder) {
+                    const ReminderButton = ({
+                      className,
+                      ...props
+                    }: ButtonProps) => (
+                      <Button
+                        intent={
+                          i === 0 && ctas.length > 1 ? "secondary" : "primary"
+                        }
+                        className={cn(
+                          `w-full md:w-auto ${
+                            i !== 0 ? "" : "text-white border-white"
+                          }`,
+                          className
+                        )}
+                        {...props}
+                      >
+                        {cta.title}
+                      </Button>
+                    );
+                    return (
+                      <SetAReminderModal key={i} ModalButton={ReminderButton} />
+                    );
+                  } else {
+                    return (
+                      <Button
+                        key={i}
+                        intent={
+                          i === 0 && ctas.length > 1 ? "secondary" : "primary"
+                        }
+                        href={cta.href}
+                        className={`w-full md:w-auto ${
+                          i !== 0 ? "" : "text-white border-white"
+                        }`}
+                      >
+                        {cta.title}
+                      </Button>
+                    );
+                  }
+                })}
+              </div>
             </div>
           </div>
         </div>

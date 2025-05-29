@@ -41,8 +41,8 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
   }
 
   return (
-    <div className="max-h-[85vh] md:max-h-[90vh] w-[88vw] xl:w-[80vw] 2xl:max-w-[60vw] ">
-      <div className="size-full flex flex-col lg:flex-row w-full">
+    <div className="overflow-auto max-w-screen-content max-h-[85vh] md:max-h-[90vh]">
+      <div className="size-full flex flex-col lg:flex-row w-full rounded-xl overflow-hidden">
         {/* Left/Top Side */}
         <div className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8">
           <div className="hidden md:block">
