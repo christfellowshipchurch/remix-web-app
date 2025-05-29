@@ -2,11 +2,6 @@ import { CampusInfo } from "./campus-info.partial";
 import { LocationFAQ } from "./faq.partial";
 import { DynamicHero } from "~/components/dynamic-hero";
 import { LocationHitType } from "../types";
-import { CampusTabs } from "../components/tabs-component/campus-tabs.component";
-import { AboutUs } from "./tabs/about-us";
-import { SundayDetails } from "./tabs/sunday-details";
-import { UpcomingEvents } from "./tabs/upcoming-events";
-import { ForFamilies } from "./tabs/families";
 
 export function LocationSingle({ hit }: { hit: LocationHitType }) {
   if (!hit) {
@@ -17,6 +12,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     campusName,
     campusLocation,
     digitalTourVideo,
+    mapLink,
+    mapUrl,
     phoneNumber,
     serviceTimes,
     setReminderVideo,
@@ -26,7 +23,6 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
-  // TODO: Figure out Spanish campus translation?
   const isEspanol = campusName?.includes("Español");
 
   return (
@@ -48,10 +44,6 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         campusLocation={campusLocation}
         digitalTourVideo={digitalTourVideo}
         weekdaySchedule={weekdaySchedule}
-      />
-      <CampusTabs
-        tabs={[SundayDetails, AboutUs, ForFamilies, UpcomingEvents]}
-        setReminderVideo={setReminderVideo}
       />
       <LocationFAQ campusName={campusName} />
     </div>

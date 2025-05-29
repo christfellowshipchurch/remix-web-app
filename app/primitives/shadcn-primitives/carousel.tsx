@@ -322,11 +322,7 @@ const CarouselDots = React.forwardRef<
 });
 CarouselDots.displayName = "CarouselDots";
 
-const CarouselArrows = ({
-  arrowStyles = "border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy",
-}: {
-  arrowStyles?: string;
-}) => {
+const CarouselArrows = () => {
   const { api } = useCarousel();
   const slides = api?.scrollSnapList() || [];
 
@@ -335,11 +331,11 @@ const CarouselArrows = ({
       {slides.length > 1 && (
         <>
           <CarouselPrevious
-            className={cn("cursor-pointer left-2", arrowStyles)}
+            className="cursor-pointer left-2 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
             disabledFill="#AAAAAA"
           />
           <CarouselNext
-            className={cn("cursor-pointer left-12", arrowStyles)}
+            className="cursor-pointer left-12 border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy"
             disabledFill="#AAAAAA"
           />
         </>
