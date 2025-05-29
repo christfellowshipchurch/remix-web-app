@@ -1,5 +1,5 @@
 import { Hits } from "react-instantsearch";
-import { HitComponent, CampusHit } from "./hit.component";
+import { HitComponent, CampusHit } from "./location-hit";
 import { Hit } from "algoliasearch";
 
 export const SearchPopup = () => {

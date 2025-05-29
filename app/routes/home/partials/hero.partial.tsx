@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { HomeSearch } from "../components/search.component";
+import { LocationSearch } from "../components/location-search/location-search.component";
 import { IconName } from "~/primitives/button/types";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
@@ -32,7 +32,7 @@ export function DesktopHeroSection() {
             </p>
             <div className="flex w-fit relative pb-10">
               {/* Location Search */}
-              <HomeSearch />
+              <LocationSearch />
             </div>
           </div>
 
@@ -129,7 +129,7 @@ export const MobileHeroSection = () => {
         </h1>
 
         {/* Location Search */}
-        <HomeSearch />
+        <LocationSearch />
       </div>
     </section>
   );
