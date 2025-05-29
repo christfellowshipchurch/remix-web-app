@@ -20,8 +20,9 @@ const resources: CollectionItem[] = [
     name: "Kids",
     summary:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image: "/assets/images/locations/kids.jpg",
-    pathname: "/kids",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=30f01384-367f-4eb0-9015-b8ab4c281563&quality=20",
+    pathname: "/ministries/kids",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "1",
@@ -30,8 +31,9 @@ const resources: CollectionItem[] = [
     name: "Young Adults",
     summary:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image: "/assets/images/locations/ya.jpg",
-    pathname: "/young-adults",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=fef0535a-8f41-4b5e-9fe1-ac4c6be7b411&quality=20",
+    pathname: "/ministries/young-adults",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "2",
@@ -40,8 +42,9 @@ const resources: CollectionItem[] = [
     name: "Students",
     summary:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image: "/assets/images/locations/students.jpg",
-    pathname: "/students",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=09476292-7708-4884-8f10-9e3042c4e35f&quality=20",
+    pathname: "/ministries/students",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "3",
@@ -50,8 +53,8 @@ const resources: CollectionItem[] = [
     name: "Groups",
     summary:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image: "/assets/images/locations/groups.jpg",
-    pathname: "/groups",
+    image: "/assets/images/groups-hero-bg.webp",
+    pathname: "/ministries/groups",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "4",
