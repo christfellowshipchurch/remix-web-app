@@ -16,6 +16,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   const {
     campusName,
     campusLocation,
+    campusInstagram,
+    campusPastor,
     digitalTourVideo,
     phoneNumber,
     serviceTimes,
@@ -50,7 +52,18 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         weekdaySchedule={weekdaySchedule}
       />
       <CampusTabs
-        tabs={[SundayDetails, AboutUs, ForFamilies, UpcomingEvents]}
+        tabs={[
+          SundayDetails,
+          () => (
+            <AboutUs
+              campusPastor={campusPastor}
+              campusName={campusName}
+              campusInstagram={campusInstagram}
+            />
+          ),
+          ForFamilies,
+          UpcomingEvents,
+        ]}
         setReminderVideo={setReminderVideo}
       />
       <LocationFAQ campusName={campusName} />
