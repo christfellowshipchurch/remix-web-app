@@ -16,7 +16,7 @@ export const CampusPastorsQuote = ({
     <div className="w-full bg-gray pt-41 pb-28 content-padding flex justify-center">
       <div className="w-full flex flex-col gap-20 max-w-screen-content mx-auto">
         <div className="flex flex-col items-center text-center gap-4">
-          <h2 className="font-extrabold text-[40px] lg:text-[52px] max-w-[780px]">
+          <h2 className="font-extrabold text-[40px] lg:text-[52px] max-w-[780px] leading-tight">
             {title}
           </h2>
           <p className="lg:text-xl lg:max-w-[520px] text-pretty max-w-[620px]">
