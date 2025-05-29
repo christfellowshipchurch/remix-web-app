@@ -4,17 +4,18 @@ import { useEffect, useRef } from "react";
 import { Configure, InstantSearch } from "react-instantsearch";
 import { useFetcher } from "react-router";
 import { LoaderReturnType } from "~/routes/search/loader";
-import { SearchPopup } from "./search-popup.component";
+import { SearchPopup } from "./search-popup";
 import { cn } from "~/lib/utils";
 import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
-import { SearchBar } from "./search-bar.component";
+import { SearchBar } from "./search-bar";
 
-export const HomeSearch = () => {
+// This component is used to search for locations on the home page
+export const LocationSearch = () => {
   const fetcher = useFetcher<LoaderReturnType>();
   const geocodeFetcher = useFetcher();
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
-  const homeSearchBarRef = useRef<HTMLDivElement>(null);
+  const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     lat: number;
@@ -48,8 +49,8 @@ export const HomeSearch = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        homeSearchBarRef.current &&
-        !homeSearchBarRef.current.contains(event.target as Node)
+        locationSearchBarRef.current &&
+        !locationSearchBarRef.current.contains(event.target as Node)
       ) {
         setIsSearching(false);
       }
@@ -90,7 +91,7 @@ export const HomeSearch = () => {
         "lg:bottom-4 lg:size-full",
         isSearching && "-bottom-80"
       )}
-      ref={homeSearchBarRef}
+      ref={locationSearchBarRef}
     >
       <div
         className={cn(
