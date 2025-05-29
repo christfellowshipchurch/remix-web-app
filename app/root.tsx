@@ -18,6 +18,8 @@ import { shouldUseDarkMode } from "./components/navbar/navbar-routes";
 
 export { ErrorBoundary } from "./error";
 
+export { loader } from "./routes/navbar/loader"; // root loader currently being used for the navbar data
+
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
