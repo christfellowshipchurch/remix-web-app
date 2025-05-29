@@ -41,7 +41,7 @@ export const CampusAmenities = () => {
     <div className="w-full bg-gray pt-8 pb-28 content-padding flex justify-center">
       <div className="w-ful flex flex-col gap-6 md:items-center md:justify-center max-w-screen-content md:mx-auto">
         <h2 className="font-extrabold text-2xl">Campus Amenities</h2>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-12 md:flex-wrap gap-y-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-12 md:max-w-[1100px] md:flex-wrap gap-y-6">
           {amenities.map((amenity, index) => (
             <div
               key={index}
