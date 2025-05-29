@@ -3,7 +3,7 @@ import { useState } from "react";
 import { cn } from "~/lib/utils";
 
 import { Leader, leaders } from "./leaders-data";
-import { loader } from "~/routes/about/loader";
+import { loader } from "~/routes/home/loader";
 import { LeaderModalItem } from "./leaders-grid.component";
 import { LeadersModal } from "~/components/modals/leaders";
 import Modal from "~/primitives/Modal";

@@ -4,7 +4,7 @@ import { cn } from "~/lib/utils";
 
 import { Leader, leaders } from "./leaders-data";
 import { Author } from "~/routes/author/loader";
-import { loader } from "~/routes/about/loader";
+import { loader } from "~/routes/home/loader";
 import { LeadersModal } from "~/components/modals/leaders";
 
 import { Icon } from "~/primitives/icon/icon";
