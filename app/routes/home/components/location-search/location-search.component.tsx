@@ -1,99 +1,27 @@
 import { useState } from "react";
 import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect, useRef } from "react";
-import {
-  Configure,
-  InstantSearch,
-  SearchBox,
-  useSearchBox,
-} from "react-instantsearch";
-import { useFetcher } from "react-router";
-import Icon from "~/primitives/icon";
-import { LoaderReturnType } from "~/routes/search/loader";
-import { SearchPopup } from "./search-popup.component";
-import { cn, isValidZip } from "~/lib/utils";
+import { Configure, InstantSearch } from "react-instantsearch";
+import { useFetcher, useLoaderData } from "react-router";
+import { SearchPopup } from "./search-popup";
+import { cn } from "~/lib/utils";
 import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
+import { SearchBar } from "./search-bar";
+import { loader } from "~/routes/home/loader";
 
-const SearchBar = ({
-  onSearchStateChange,
-  onSearchSubmit,
-}: {
-  onSearchStateChange: (isSearching: boolean) => void;
-  onSearchSubmit: (query: string | null) => void;
-}) => {
-  const { query, refine } = useSearchBox();
-  const [zipCode, setZipCode] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (query.length === 5 && isValidZip(query)) {
-      onSearchStateChange(true);
-      setZipCode(query);
-    } else if (zipCode) {
-      onSearchStateChange(true);
-    } else {
-      onSearchStateChange(!!query);
-    }
-  }, [query, onSearchStateChange]);
-
-  // When the zip code is set, search for it and clear the query so the query doesn't interfere with the geo search
-  useEffect(() => {
-    if (zipCode) {
-      onSearchSubmit(zipCode);
-      refine("");
-    }
-  }, [zipCode]);
-
-  return (
-    <div
-      className={cn(
-        "flex w-full items-center gap-4 rounded-full p-1",
-        query ? "bg-gray" : "bg-white"
-      )}
-    >
-      <button
-        type="submit"
-        className="flex items-center justify-center p-2 bg-dark-navy rounded-full relative"
-      >
-        <Icon
-          name="search"
-          size={20}
-          className={`text-white cursor-pointer relative right-[1px] bottom-[1px]`}
-        />
-      </button>
-
-      <SearchBox
-        placeholder="Search by city, zip code, or location"
-        classNames={{
-          root: "flex-grow w-full max-w-98",
-          form: "flex",
-          input: `w-full justify-center text-black px-3 outline-none appearance-none`,
-          reset: "hidden",
-          loadingIndicator: "hidden",
-          resetIcon: "hidden",
-          submit: "hidden",
-        }}
-      />
-    </div>
-  );
-};
-
-export const HomeSearch = () => {
-  const fetcher = useFetcher<LoaderReturnType>();
+// This component is used to search for locations on the home page
+export const LocationSearch = () => {
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+    useLoaderData<typeof loader>();
   const geocodeFetcher = useFetcher();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
-  const homeSearchBarRef = useRef<HTMLDivElement>(null);
+
+  const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-
-  useEffect(() => {
-    if (!fetcher.data) {
-      fetcher.load("/search");
-    }
-  }, [fetcher]);
 
   let newSearchClient: SearchClient | null = globalSearchClient;
   // Create or retrieve the Algolia client
@@ -116,8 +44,8 @@ export const HomeSearch = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        homeSearchBarRef.current &&
-        !homeSearchBarRef.current.contains(event.target as Node)
+        locationSearchBarRef.current &&
+        !locationSearchBarRef.current.contains(event.target as Node)
       ) {
         setIsSearching(false);
       }
@@ -158,7 +86,7 @@ export const HomeSearch = () => {
         "lg:bottom-4 lg:size-full",
         isSearching && "-bottom-80"
       )}
-      ref={homeSearchBarRef}
+      ref={locationSearchBarRef}
     >
       <div
         className={cn(
@@ -194,7 +122,7 @@ export const HomeSearch = () => {
         {/* Search Bar */}
         <div
           className={cn(
-            "relative w-full md:w-90 lg:w-98 pt-4 rounded-[1rem] transition-all duration-300",
+            "relative w-full md:w-90 lg: z-50 pt-4 rounded-[1rem] transition-all duration-300",
             {
               "bg-white p-4 shadow-md": isSearching,
               "bg-transparent": !isSearching,

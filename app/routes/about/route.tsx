@@ -5,9 +5,6 @@ import { HistorySection } from "./partials/history.partial";
 import { BeliefsSection } from "./partials/beliefs.partial";
 import { LeadershipSection } from "./partials/leadership.partial";
 import { ImpactSection } from "./partials/impact.partial";
-import { loader } from "./loader";
-
-export { loader };
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,6 +16,8 @@ export const meta: MetaFunction = () => {
     },
   ];
 };
+
+export { loader } from "../home/loader"; // Using the home loader for the about page to grab author data for the leaders grid and scroll components
 
 export default function AboutPage() {
   return (

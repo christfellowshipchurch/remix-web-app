@@ -11,7 +11,7 @@ import {
   MobileHeroSection,
   BottomBar,
 } from "./home/partials/hero.partial";
-export { loader } from "./about/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
+export { loader } from "./home/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
 
 export const meta: MetaFunction = () => {
   return [
