@@ -1,28 +1,44 @@
-import { useLoaderData } from "react-router";
+import { useEffect, useState } from "react";
+import { useFetcher } from "react-router";
 import { icsLink, icsLinkEvents } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
-import { LoaderReturnType } from "~/routes/locations/location-single/loader";
+import { LoaderReturnType } from "~/routes/set-a-reminder/loader";
 
 const ReminderConfirmation = ({
   serviceTime,
   onSuccess,
+  location,
 }: {
   serviceTime: string;
   onSuccess: () => void;
+  location: string;
 }) => {
-  const { name, street1, city, state, postalCode, url } =
-    useLoaderData<LoaderReturnType>();
-  const campusAddress = [street1, city, state, postalCode.substring(0, 5)].join(
-    ", "
-  );
+  const [formData, setFormData] = useState<LoaderReturnType | null>(null);
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    fetcher.load(`/set-a-reminder?location=${location}`);
+  }, [location]);
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data) {
+      setFormData(fetcher.data as LoaderReturnType);
+    }
+  }, [fetcher.state, fetcher.data]);
+
+  if (!formData) {
+    return <div>Loading...</div>;
+  }
+
+  const { address, url } = formData;
   const events = icsLinkEvents(
     [{ day: "Sunday", time: serviceTime }],
-    campusAddress,
-    name,
+    address,
+    location,
     `https://christfellowship.church/locations/${url}`
   );
-  const isEspanol = name?.includes("Español");
+  const isEspanol = location?.includes("Español");
 
   return (
     <div className="flex flex-col items-center gap-4 p-8">

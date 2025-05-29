@@ -1,192 +1,36 @@
 import { LoaderFunctionArgs } from "react-router";
-import invariant from "tiny-invariant";
-import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
-import {
-  fetchCampusData,
-  fetchChildrenByAssociation,
-  fetchComingUpTitle,
-  fetchContentItemById,
-  fetchPastorData,
-  fetchPastorIdByAlias,
-  fetchThisWeek,
-  fetchWeekdaySchedules,
-} from "~/lib/.server/fetch-location-single-data";
-import {
-  createImageUrlFromGuid,
-  dayTimes,
-  formattedServiceTimes,
-} from "~/lib/utils";
-export type ContentItem = {
-  title: string;
-  attributeValues: {
-    summary: { value: string };
-    image: { value: string };
-    url: { value: string };
-  };
-};
-
-export type ThisWeekCard = {
-  title: string;
-  description: string;
-  image: string;
-  url: string;
-};
 
 export type LoaderReturnType = {
-  additionalInfo: string[];
-  campusImage: string;
-  campusInstagram: string;
-  campusMapImage: string;
-  campusPastors: {
-    name: string;
-    image: string;
-  };
-  city: string;
-  thisWeek: {
-    cards: ThisWeekCard[];
-  };
-  comingUpSoon: {
-    title: string;
-    cards: {
-      title: string;
-      description: string;
-      image: string;
-      url: string;
-    }[];
-    buttonTitle: string;
-    buttonUrl: string;
-  };
-  facebook: string;
-  mapLink: string;
-  name: string;
-  phoneNumber: string;
-  postalCode: string;
-  serviceTimes: dayTimes[];
-  state: string;
-  street1: string;
-  street2: string;
-  user: any;
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
+  GOOGLE_MAPS_API_KEY: string;
+  campusName: string;
   url: string;
-  youtube: string;
-  weekdaySchedules: any[];
 };
 
-const youtube = "https://www.youtube.com/user/christfellowship";
-const facebook = "https://www.facebook.com/CFimpact";
-const defaultInstagram = "https://www.instagram.com/christfellowship.church/";
+export async function loader({ params }: LoaderFunctionArgs) {
+  const campusUrl = params.location;
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.location, "No Campus");
-  const campusUrl = params.location as string;
-  const data = await fetchCampusData(campusUrl);
-
-  const userData = await getUserFromRequest(request);
-  const user = userData ? await userData : null;
-
-  if (!data) {
-    throw new Error("No data found");
+  if (!campusUrl) {
+    throw new Response("Campus not found", {
+      status: 404,
+    });
   }
 
-  const {
-    name,
-    phoneNumber,
-    serviceTimes,
-    url,
-    attributeValues,
-    location,
-    leaderPersonAliasId,
-  } = data;
+  const appId = process.env.ALGOLIA_APP_ID;
+  const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-  // TODO: Order is not accurate
-  const comingUpSoonId = url?.includes("iglesia") ? "15472" : "11436";
-  const childrenByAssociation = await fetchChildrenByAssociation(
-    comingUpSoonId
-  );
+  if (!appId || !searchApiKey || !googleMapsApiKey) {
+    throw new Response("Keys not found", {
+      status: 404,
+    });
+  }
 
-  // TODO: Get children by ID by mapping childrenByAssociation and fetching the children by ID
-  const comingUpChildren = await Promise.all(
-    childrenByAssociation.map((child: any) =>
-      fetchContentItemById(child.childContentChannelItemId)
-    )
-  );
-
-  const thisWeek = await fetchThisWeek("8168");
-  const comingUpTitle = await fetchComingUpTitle(comingUpSoonId);
-
-  const {
-    campusImage,
-    campusInstagram,
-    campusMapImage,
-    mapLink,
-    additionalInfo,
-    weekdaySchedule,
-  } = attributeValues;
-
-  const { personId } = await fetchPastorIdByAlias(leaderPersonAliasId);
-
-  const pastorData = await fetchPastorData(personId);
-
-  const additionalInfoFormatted =
-    additionalInfo?.value.split("|").slice(0, -1) || [];
-
-  const weekdaySchedulesFormatted = await fetchWeekdaySchedules(
-    weekdaySchedule?.value
-  );
-
-  // const thisWeekCards = []
-  /** Return Page Data */
-  const pageData: LoaderReturnType = {
-    additionalInfo: additionalInfoFormatted,
-    campusImage: createImageUrlFromGuid(campusImage?.value),
-    campusInstagram: campusInstagram?.value || defaultInstagram,
-    campusMapImage: createImageUrlFromGuid(campusMapImage?.value),
-    campusPastors: {
-      name: pastorData?.fullName,
-      image: createImageUrlFromGuid(pastorData?.photo?.guid),
-    },
-    city: location?.city,
-    thisWeek: name.includes("Online") && {
-      thisWeek: thisWeek.reverse(),
-      cards: thisWeek.map((child: ContentItem) => {
-        return {
-          title: child?.title,
-          description: child?.attributeValues?.summary?.value,
-          image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
-          url: child.attributeValues?.url?.value,
-        };
-      }),
-    },
-    comingUpSoon: {
-      title: comingUpTitle,
-      cards: comingUpChildren.map((child: ContentItem) => {
-        return {
-          title: child?.title,
-          description: child?.attributeValues?.summary?.value,
-          image: createImageUrlFromGuid(child?.attributeValues?.image?.value),
-          url: child.attributeValues?.url?.value,
-        };
-      }),
-
-      // TODO: Create the endpoints for this button (See All Events pages)
-      buttonTitle: name.includes("Español") ? "Ver Más" : "See More",
-      buttonUrl: name.includes("Español")
-        ? "/events/proximamente"
-        : "/events/coming-up",
-    },
-    facebook,
-    mapLink: mapLink?.value,
-    name,
-    phoneNumber,
-    postalCode: location?.postalCode?.substring(0, 5),
-    serviceTimes: formattedServiceTimes(serviceTimes),
-    state: location?.state,
-    street1: location?.street1,
-    street2: location?.street2,
-    url,
-    user: user,
-    youtube,
-    weekdaySchedules: weekdaySchedulesFormatted,
+  return {
+    ALGOLIA_APP_ID: appId,
+    ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    GOOGLE_MAPS_API_KEY: googleMapsApiKey,
+    campusName: decodeURIComponent(campusUrl),
   };
-
-  return pageData;
-};
+}

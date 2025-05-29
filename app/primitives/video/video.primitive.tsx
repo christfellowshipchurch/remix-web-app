@@ -1,4 +1,4 @@
-import { WistiaPlayer } from "@wistia/wistia-player-react";
+import { cn } from "~/lib/utils";
 
 type VideoProps = {
   src?: string;
@@ -15,10 +15,14 @@ export const Video = (props: VideoProps) => {
   return (
     <>
       {props?.wistiaId ? (
-        <WistiaPlayer
-          mediaId={props.wistiaId}
-          className={props.className}
-          controlsVisibleOnLoad={props.controls}
+        <iframe
+          src={`https://fast.wistia.net/embed/iframe/${
+            props.wistiaId
+          }?fitStrategy=cover&autoplay=${props.autoPlay || false}&muted=${
+            props.muted || false
+          }&loop=${props.loop || false}&controls=${props.controls || true}`}
+          allowFullScreen
+          className={cn("size-full", props.className)}
         />
       ) : (
         <video
