@@ -72,7 +72,7 @@ const TourButton = ({
 }) => {
   return (
     <Tabs.Trigger
-      className="flex-1 w-full max-w-[300px] py-2 flex gap-2 items-center justify-center text-sm font-semibold rounded-[200px] md:rounded-[400px] border border-[#D6D6D6] text-black data-[state=active]:bg-gray"
+      className="flex-1 w-full max-w-[300px] py-2 flex gap-2 items-center justify-center text-sm font-semibold rounded-[200px] md:rounded-[400px] border border-[#D6D6D6] text-black data-[state=active]:bg-gray cursor-pointer"
       value={value}
     >
       <Icon
