@@ -1,3 +1,5 @@
+import { SetAReminderModal } from "~/components";
+
 export const WhatToExpect = ({
   setReminderVideo,
 }: {
@@ -36,6 +38,10 @@ export const WhatToExpect = ({
               title="Kids Have Fun Too! "
               description="Safe and engaging programs available for newborns through 5th grade during the service."
             />
+
+            <div className="flex">
+              <SetAReminderModal />
+            </div>
           </div>
         </div>
       </div>
