@@ -40,7 +40,7 @@ export const CampusTabs = ({ tabs, setReminderVideo }: CampusTabsProps) => {
     >
       {/* iPad/Desktop Tabs */}
       <Tabs.List
-        className={`hidden md:flex gap-4 w-full max-w-[700px] border border-neutral-lighter p-4 ${tasListStyle}`}
+        className={`hidden md:flex gap-4 w-full max-w-[668px] border border-neutral-lighter p-4 ${tasListStyle}`}
       >
         {tabData.map((tab, index) => (
           <Tabs.Trigger
