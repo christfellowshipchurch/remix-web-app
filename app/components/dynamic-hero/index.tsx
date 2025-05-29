@@ -112,7 +112,7 @@ export const DynamicHero = ({
                       <Button
                         intent="secondary"
                         className={cn(
-                          "text-white border-[#FAFAFC] border hover:!bg-white/10",
+                          "text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10",
                           className
                         )}
                         {...props}
