@@ -2,31 +2,26 @@ import { useState } from "react";
 import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect, useRef } from "react";
 import { Configure, InstantSearch } from "react-instantsearch";
-import { useFetcher } from "react-router";
-import { LoaderReturnType } from "~/routes/search/loader";
+import { useFetcher, useLoaderData } from "react-router";
 import { SearchPopup } from "./search-popup";
 import { cn } from "~/lib/utils";
 import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
 import { SearchBar } from "./search-bar";
+import { loader } from "~/routes/home/loader";
 
 // This component is used to search for locations on the home page
 export const LocationSearch = () => {
-  const fetcher = useFetcher<LoaderReturnType>();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+    useLoaderData<typeof loader>();
   const geocodeFetcher = useFetcher();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
+
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-
-  useEffect(() => {
-    if (!fetcher.data) {
-      fetcher.load("/search");
-    }
-  }, [fetcher]);
 
   let newSearchClient: SearchClient | null = globalSearchClient;
   // Create or retrieve the Algolia client
