@@ -1,4 +1,5 @@
-import { Leader, leaders } from "./components/leaders-data";
+// This Loader is currenlty being use for both Home and About pages
+import { Leader, leaders } from "../about/components/leaders-data";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { Author, getAuthorDetails } from "../author/loader";
 
@@ -21,7 +22,11 @@ const getAuthorIdsByPathname = async (person: Leader): Promise<string> => {
 };
 
 // Grabs author data for the LeadersGrid and LeaderScroll components
-export const loader = async (): Promise<{ authors: Author[] }> => {
+export const loader = async (): Promise<{
+  authors: Author[];
+  ALGOLIA_APP_ID: string | undefined;
+  ALGOLIA_SEARCH_API_KEY: string | undefined;
+}> => {
   const authorIds = await Promise.all(leaders.map(getAuthorIdsByPathname));
   const authorDetails = await Promise.all(authorIds.map(getAuthorDetails));
 
@@ -32,5 +37,11 @@ export const loader = async (): Promise<{ authors: Author[] }> => {
     authorAttributes: data.authorAttributes,
   }));
 
-  return { authors };
+  // Grabs Algolia environment variables for the location search component
+  const algoliaEnvs = {
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+  };
+
+  return { authors, ...algoliaEnvs };
 };
