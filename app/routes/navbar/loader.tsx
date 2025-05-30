@@ -16,6 +16,10 @@ interface NavbarLoaderData {
   watchReadListen: {
     featureCards: FeatureCard[];
   };
+  algolia: {
+    ALGOLIA_APP_ID: string | undefined;
+    ALGOLIA_SEARCH_API_KEY: string | undefined;
+  };
 }
 
 const fetchFeatureCards = async () => {
@@ -83,6 +87,10 @@ export async function loader({
         userData: null,
         ministries: { featureCards: [] },
         watchReadListen: { featureCards: [] },
+        algolia: {
+          ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+          ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+        },
       };
     }
 
@@ -123,6 +131,10 @@ export async function loader({
       watchReadListen: {
         featureCards: mediaCards,
       },
+      algolia: {
+        ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+        ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+      },
     };
   } catch (error) {
     console.error("Error in navbar loader:", error);
@@ -131,6 +143,10 @@ export async function loader({
       userData: null,
       ministries: { featureCards: [] },
       watchReadListen: { featureCards: [] },
+      algolia: {
+        ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+        ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+      },
     };
   }
 }
