@@ -7,9 +7,11 @@ import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export type VideoHeaderTypes = {
   ctas?: { href: string; title: string }[];
+  videoClassName?: string;
   video?: string;
   wistiaId?: string;
   fallback?: React.ReactNode;
+  controls?: boolean;
 } & ({ video: string } | { wistiaId: string });
 
 export const VideoHeader = ({
@@ -17,17 +19,25 @@ export const VideoHeader = ({
   video,
   wistiaId,
   fallback,
+  videoClassName,
+  controls,
 }: VideoHeaderTypes) => {
-  // TODO: Make sure videos in Wistia have the controls removed and the theme is set to what it's in Figma...
   return (
     <div className="flex items-center justify-start self-stretch content-padding">
       <div className="flex flex-col gap-0 md:gap-12 w-full pb-10 lg:pb-0 mx-auto max-w-screen-content items-start justify-end self-stretch">
         {wistiaId ? (
           <div className="w-full">
-            <Video wistiaId={wistiaId} fallback={fallback} />
+            <Video
+              controls={controls}
+              wistiaId={wistiaId}
+              fallback={fallback}
+              className={videoClassName}
+            />
           </div>
         ) : (
-          video && <Video src={video} fallback={fallback} />
+          video && (
+            <Video src={video} fallback={fallback} className={videoClassName} />
+          )
         )}
         <div className="flex items-center justify-between self-stretch flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
           {/* Breadcrumbs */}

@@ -1,7 +1,6 @@
 import type { MetaFunction } from "react-router";
-import { loader } from "./loader";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction = () => {
   return [
     {
       title:

@@ -2,56 +2,60 @@ import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher, useLoaderData } from "react-router";
-import { LoaderReturnType } from "~/routes/locations/location-single/loader";
+import { useFetcher } from "react-router";
 import { renderInputField } from "../connect-card/connect-form.component";
+import { LoaderReturnType } from "~/routes/set-a-reminder/loader";
 
 interface ReminderProps {
   setServiceTime: (time: string) => void;
   onSuccess: () => void;
+  location: string;
 }
 
 const ReminderForm: React.FC<ReminderProps> = ({
   setServiceTime,
   onSuccess,
+  location,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const {
-    name: campus,
-    serviceTimes,
-    user,
-  } = useLoaderData<LoaderReturnType>(); // grabs campus information from the current page were on
-  const isEspanol = campus?.includes("Español");
+  const [formData, setFormData] = useState<LoaderReturnType | null>(null);
 
-  const firstName = user?.fullName?.split(" ")[0] || null;
-  const lastName = user?.fullName?.split(" ")[1] || null;
-  const phoneNumber = user?.phoneNumber || null;
-  const email = user?.email || null;
-
-  const fetcher = useFetcher();
+  const loadFetcher = useFetcher();
+  const submitFetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
+    loadFetcher.load(`/set-a-reminder?location=${location}`);
+  }, [location]);
+
+  useEffect(() => {
+    if (loadFetcher.state === "idle" && loadFetcher.data) {
+      const data = loadFetcher.data as LoaderReturnType;
+      setFormData(data);
+    }
+  }, [loadFetcher.state, loadFetcher.data]);
+
+  useEffect(() => {
+    if (submitFetcher.state === "idle" && submitFetcher.data) {
       setLoading(false);
-      const data = fetcher.data as { error?: string };
+      const data = submitFetcher.data as { error?: string };
       if (data.error) {
         setError(data.error);
       } else {
         onSuccess();
       }
     }
-  }, [fetcher.state, fetcher.data, onSuccess]);
+  }, [submitFetcher.state, submitFetcher.data, onSuccess]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setLoading(true);
     const formData = new FormData(event.currentTarget);
-    formData.append("campus", campus); //ensure campus is included in the form data
+    formData.append("campus", campusName || ""); //ensure campus is included in the form data
 
     try {
-      fetcher.submit(formData, {
+      submitFetcher.submit(formData, {
         method: "post",
         action: "/set-a-reminder",
       });
@@ -60,6 +64,17 @@ const ReminderForm: React.FC<ReminderProps> = ({
       setLoading(false);
     }
   };
+
+  if (!formData) {
+    return <div>Loading...</div>;
+  }
+
+  const { serviceTimes, campusName, user } = formData || {};
+  const isEspanol = campusName?.includes("Español");
+  const firstName = user?.fullName?.split(" ")[0] || null;
+  const lastName = user?.fullName?.split(" ")[1] || null;
+  const phoneNumber = user?.phoneNumber || null;
+  const email = user?.email || null;
 
   return (
     <>
@@ -121,7 +136,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
                 backgroundRepeat: "no-repeat",
               }}
             >
-              <option>{campus}</option>
+              <option>{campusName}</option>
             </select>
           </Form.Control>
         </Form.Field>
@@ -148,7 +163,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
                     ? "Seleccione un horario de servicio"
                     : "Select a Service Time"}
                 </option>
-                {serviceTimes.map(({ hour }) =>
+                {serviceTimes?.map(({ hour }) =>
                   hour.map((time: string, index: number) => (
                     <option key={index} value={time}>
                       {time}
