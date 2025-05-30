@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ReminderConfirmation from "./confirmation.component";
 import ReminderForm from "./reminder-form.component";
+import { useLoaderData } from "react-router";
+import { LoaderReturnType } from "~/routes/locations/location-single/loader";
 
 interface ReminderFlowProps {
   setOpenModal: (open: boolean) => void;
@@ -14,6 +16,7 @@ enum ReminderStep {
 const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
   const [step, setStep] = useState<ReminderStep>(ReminderStep.REMINDER);
   const [serviceTime, setServiceTime] = useState<string>("");
+  const { campusName } = useLoaderData<LoaderReturnType>();
 
   let renderStep = () => {
     switch (step) {
@@ -22,6 +25,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
           <ReminderForm
             setServiceTime={setServiceTime}
             onSuccess={() => setStep(ReminderStep.CONFIRMATION)}
+            location={campusName}
           />
         );
       case ReminderStep.CONFIRMATION:
@@ -29,6 +33,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
           <ReminderConfirmation
             serviceTime={serviceTime}
             onSuccess={() => setOpenModal(false)}
+            location={campusName}
           />
         );
       default:
@@ -37,7 +42,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
   };
 
   return (
-    <div className="text-center text-text_primary px-8 overflow-auto w-[80vw] sm:w-screen sm:max-w-md md:max-w-lg max-h-[85vh] md:max-h-[90vh] ">
+    <div className="text-center text-text_primary p-8 overflow-auto max-w-screen-content max-h-[85vh] md:max-h-[90vh]">
       {renderStep()}
     </div>
   );

@@ -36,38 +36,46 @@ function ModalContent({
       <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=closed]:animate-dialogOverlayHide data-[state=open]:animate-dialogOverlayShow z-499" />
       <Dialog.Content
         className={cn(
-          "fixed sm:h-auto max-h-[90vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-scroll rounded-xl md:rounded-2xl text-text-primary shadow data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500",
-          background || "bg-white"
+          "fixed sm:h-auto max-h-[90vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 w-screen content-padding"
         )}
       >
         <div
-          className={`flex items-center ${
-            title ? "justify-between" : "justify-end"
-          }`}
+          className={cn(
+            "rounded-xl md:rounded-2xl text-text-primary shadow relative",
+            background || "bg-white"
+          )}
         >
-          {/* Note: Radix Requires we have a title and description, so we need to use the VisuallyHidden component  */}
-          {title ? (
-            <Dialog.Title className="text-3xl font-bold">{title}</Dialog.Title>
+          <div
+            className={`flex items-center ${
+              title ? "justify-between" : "justify-end"
+            }`}
+          >
+            {/* Note: Radix Requires we have a title and description, so we need to use the VisuallyHidden component  */}
+            {title ? (
+              <Dialog.Title className="text-3xl font-bold">
+                {title}
+              </Dialog.Title>
+            ) : (
+              <VisuallyHidden.Root>
+                <Dialog.Title />
+              </VisuallyHidden.Root>
+            )}
+            <Dialog.Close className="absolute top-2 right-2 md:top-4 md:right-4 cursor-pointer">
+              <Cross2Icon width={24} height={24} color="black" />
+            </Dialog.Close>
+          </div>
+
+          {description ? (
+            <Dialog.Description className="mb-4 text-lg text-text_primary">
+              {description}
+            </Dialog.Description>
           ) : (
             <VisuallyHidden.Root>
-              <Dialog.Title />
+              <Dialog.Description />
             </VisuallyHidden.Root>
           )}
-          <Dialog.Close className="absolute top-2 right-2 md:top-4 md:right-4 cursor-pointer">
-            <Cross2Icon width={24} height={24} color="black" />
-          </Dialog.Close>
+          {children}
         </div>
-
-        {description ? (
-          <Dialog.Description className="mb-4 text-lg text-text_primary">
-            {description}
-          </Dialog.Description>
-        ) : (
-          <VisuallyHidden.Root>
-            <Dialog.Description />
-          </VisuallyHidden.Root>
-        )}
-        {children}
       </Dialog.Content>
     </Dialog.Portal>
   );
