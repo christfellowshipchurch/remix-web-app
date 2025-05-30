@@ -1,3 +1,4 @@
+import React from "react";
 import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect, useRef } from "react";
 import {
@@ -6,11 +7,9 @@ import {
   SearchBox,
   useSearchBox,
 } from "react-instantsearch";
-import { useFetcher } from "react-router";
+import { useRouteLoaderData } from "react-router";
 import Icon from "~/primitives/icon";
-import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
-import React from "react";
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
@@ -60,14 +59,8 @@ export const SearchBar = ({
   isSearchOpen: boolean;
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
-  const fetcher = useFetcher<LoaderReturnType>();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
-
-  useEffect(() => {
-    if (!fetcher.data) {
-      fetcher.load("/search");
-    }
-  }, [fetcher]);
+  const { algolia } = useRouteLoaderData("root");
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
 
   // Create or retrieve the Algolia client
   useEffect(() => {
