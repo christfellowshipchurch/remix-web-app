@@ -1,7 +1,7 @@
-import { algoliasearch, SearchClient } from "algoliasearch";
-import { useEffect, useState } from "react";
-import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
 import { useRouteLoaderData } from "react-router";
+import { useEffect } from "react";
+import { algoliasearch, SearchClient } from "algoliasearch";
+import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
@@ -32,13 +32,13 @@ const emptySearchClient = {
     }),
 };
 
-export const MobileSearch = ({
-  mode,
-  setIsSearchOpen,
-}: {
+// Interfaces and types
+interface MobileSearchProps {
   mode: "light" | "dark";
   setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) => {
+}
+
+export const MobileSearch = ({ mode, setIsSearchOpen }: MobileSearchProps) => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = useRouteLoaderData(
     "root"
   ) as LoaderReturnType;
@@ -65,9 +65,7 @@ export const MobileSearch = ({
       <InstantSearch
         indexName="production_ContentItems"
         searchClient={searchClient}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
+        future={{ preserveSharedStateOnUnmount: true }}
         initialUiState={{
           production_ContentItems: {
             query: "",
@@ -87,15 +85,15 @@ export const MobileSearch = ({
             <Icon
               name="arrowBack"
               size={20}
-              className={`text-black hover:text-neutral-default transition-colors cursor-pointer
-        `}
+              className="text-black hover:text-neutral-default transition-colors cursor-pointer"
             />
           </button>
           <SearchBox
             classNames={{
               root: "flex-grow",
               form: "flex",
-              input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none`,
+              input:
+                "w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none",
               reset: "hidden",
               resetIcon: "hidden",
               submit: "hidden",

@@ -1,68 +1,60 @@
-import React from "react";
-import { algoliasearch, SearchClient } from "algoliasearch";
-import { useEffect, useRef } from "react";
-import {
-  Configure,
-  InstantSearch,
-  SearchBox,
-  useSearchBox,
-} from "react-instantsearch";
 import { useRouteLoaderData } from "react-router";
+
+import { useEffect, useRef, useCallback, useMemo } from "react";
+
+import { algoliasearch, SearchClient } from "algoliasearch";
+import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
+
+import { loader } from "~/routes/navbar/loader";
 import Icon from "~/primitives/icon";
+
 import { SearchPopup } from "./search-popup.component";
 
-// Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
 
-// Global reference to maintain Algolia search client instance
 let globalSearchClient: SearchClient | null = null;
 
-const emptySearchClient = {
-  search: () =>
-    Promise.resolve({
-      results: [
-        {
-          hits: [],
-          nbHits: 0,
-          page: 0,
-          nbPages: 0,
-          hitsPerPage: 0,
-          exhaustiveNbHits: true,
-          query: "",
-          params: "",
-          processingTimeMS: 0,
-          index: "production_ContentItems",
-        },
-      ],
-    }),
-};
-
-// Create a component to provide the current query
-function CurrentQueryProvider({ children }: { children: React.ReactNode }) {
-  const { query } = useSearchBox();
-
-  // Clone the children with the current query prop
-  return React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement<any>, { query });
-    }
-    return child;
+const emptySearchClient = algoliasearch("empty", "empty");
+emptySearchClient.search = () =>
+  Promise.resolve({
+    results: [
+      {
+        hits: [],
+        nbHits: 0,
+        page: 0,
+        nbPages: 0,
+        hitsPerPage: 0,
+        exhaustiveNbHits: true,
+        query: "",
+        params: "",
+        processingTimeMS: 0,
+        index: "production_ContentItems",
+      },
+    ],
   });
+
+// --- Interfaces and types ---
+interface SearchBarProps {
+  mode: "light" | "dark";
+  isSearchOpen: boolean;
+  setIsSearchOpen: (isSearchOpen: boolean) => void;
 }
 
+// --- Component ---
 export const SearchBar = ({
   mode,
   isSearchOpen,
   setIsSearchOpen,
-}: {
-  mode: "light" | "dark";
-  isSearchOpen: boolean;
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) => {
-  const { algolia } = useRouteLoaderData("root");
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
+}: SearchBarProps) => {
+  // Loader data
+  const loaderData = useRouteLoaderData<typeof loader>("root");
+  if (!loaderData) {
+    console.error("Could not load Algolia config");
+    return null;
+  }
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = loaderData?.algolia;
 
-  // Create or retrieve the Algolia client
+  // Search client setup
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
       globalSearchClient = algoliasearch(
@@ -73,21 +65,23 @@ export const SearchBar = ({
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
-  const searchClient =
-    globalSearchClient ||
-    (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
-      ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
-      : emptySearchClient);
+  const searchClient = useMemo(
+    () =>
+      globalSearchClient ||
+      (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
+        ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
+        : emptySearchClient),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+  );
 
+  // Refs
   const searchBarRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+  // Event handlers
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-
-      // Don't close if clicking inside search bar or search-related elements
-      if (searchBarRef.current?.contains(target as Node)) return;
-
+      if (searchBarRef.current?.contains(target)) return;
       const isSearchButton = target
         .closest("button")
         ?.querySelector('svg[name="search"]');
@@ -96,19 +90,21 @@ export const SearchBar = ({
         "ais-RefinementList",
         "ais-SearchBox",
       ].some((className) => target.closest(`.${className}`));
-
       if (!isSearchButton && !isAlgoliaElement) {
         setIsSearchOpen(false);
       }
-    };
+    },
+    [setIsSearchOpen]
+  );
 
+  // Effects
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [setIsSearchOpen]);
+  }, [handleClickOutside]);
 
   useEffect(() => {
     if (isSearchOpen) {
-      // Fade in the search popup
       const searchPopup = document.querySelector(
         ".popup-search-container"
       ) as HTMLDivElement;
@@ -123,14 +119,13 @@ export const SearchBar = ({
     }
   }, [isSearchOpen]);
 
+  // Render
   return (
     <div className="relative size-full" ref={searchBarRef}>
       <InstantSearch
         indexName="production_ContentItems"
         searchClient={searchClient}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
+        future={{ preserveSharedStateOnUnmount: true }}
         initialUiState={{
           production_ContentItems: {
             query: "",
@@ -140,13 +135,12 @@ export const SearchBar = ({
         key={SEARCH_INSTANCE_ID}
       >
         <Configure hitsPerPage={20} />
-
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
-            onClick={() => {
-              setIsSearchOpen(false);
-            }}
+            onClick={() => setIsSearchOpen(false)}
             className="flex items-center"
+            aria-label="Close search"
+            type="button"
           >
             <Icon
               name="search"
@@ -169,9 +163,7 @@ export const SearchBar = ({
             }}
           />
         </div>
-        <CurrentQueryProvider>
-          <SearchPopup setIsSearchOpen={setIsSearchOpen} />
-        </CurrentQueryProvider>
+        <SearchPopup setIsSearchOpen={setIsSearchOpen} />
       </InstantSearch>
     </div>
   );
