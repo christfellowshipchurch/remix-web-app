@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { SetAReminderModal } from "~/components";
-import { Button } from "~/primitives/button/button.primitive";
+import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 
 export const ConnectWithUs = ({
   campusName,
@@ -51,9 +51,12 @@ export const ConnectWithUs = ({
   );
 };
 
-const ModalButton = () => {
+const ModalButton = ({ ...props }: ButtonProps) => {
   return (
-    <Button className="w-fit rounded-[8px] px-16 lg:w-[155px] lg:px-0 lg:h-[48px] lg:text-base lg:font-normal">
+    <Button
+      className="w-fit rounded-[8px] px-16 lg:w-[155px] lg:px-0 lg:h-[48px] lg:text-base lg:font-normal"
+      {...props}
+    >
       Set a Reminder
     </Button>
   );

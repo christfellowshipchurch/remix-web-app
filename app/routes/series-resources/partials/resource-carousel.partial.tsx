@@ -17,9 +17,9 @@ export const ResourceCarousel = (data: {
   bg?: string;
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const itemsLength = data.items.length;
   const { isMedium, isLarge } = useResponsive();
 
+  const itemsLength = data.items.length;
   let itemsPerSlide = 1;
   let showDots = itemsLength > 1;
   if (isMedium) {
