@@ -1,3 +1,7 @@
+import { useLocation, useLoaderData } from "react-router-dom";
+import { loader } from "~/routes/navbar/loader";
+import { useEffect, useState, useRef } from "react";
+import { useResponsive } from "~/hooks/use-responsive";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -6,50 +10,55 @@ import {
   NavigationMenuContent,
   NavigationMenuTrigger,
 } from "@radix-ui/react-navigation-menu";
+import lowerCase from "lodash/lowerCase";
+
 import { Button } from "~/primitives/button/button.primitive";
-import { cn } from "~/lib/utils";
+import Icon from "~/primitives/icon";
 import { MenuContent } from "./desktop/menu-content.component";
+import MobileMenu from "./mobile/mobile-menu.component";
+import { SearchBar } from "./desktop/search/search.component";
+
+import { cn } from "~/lib/utils";
+import { shouldUseDarkMode } from "./navbar-routes";
 import {
   angleDownIconStyle,
   navigationMenuContentStyle,
   navigationMenuTriggerStyle,
 } from "./navbar.styles";
-import MobileMenu from "./mobile/mobile-menu.component";
-import Icon from "~/primitives/icon";
-import { useLocation, useFetcher } from "react-router-dom";
-import { shouldUseDarkMode } from "./navbar-routes";
+
+// Data
 import {
   mainNavLinks,
   ministriesData,
   watchReadListenData,
 } from "./navbar.data";
 import { MenuLink } from "./types";
-import { useEffect, useState, useRef } from "react";
-import lowerCase from "lodash/lowerCase";
-import { SearchBar } from "./desktop/search/search.component";
-import { useResponsive } from "~/hooks/use-responsive";
 
 export function Navbar() {
+  // Hooks and state
   const { pathname } = useLocation();
+  const { ministries, watchReadListen } = useLoaderData<typeof loader>();
   const { isLarge, isXLarge } = useResponsive();
-  const fetcher = useFetcher();
+  const navbarRef = useRef<HTMLDivElement>(null);
 
+  // State management
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [defaultMode, setDefaultMode] = useState<"light" | "dark">(
-    shouldUseDarkMode(pathname, isLarge) ? "dark" : "light"
-  );
-  const [mode, setMode] = useState<"light" | "dark">(defaultMode);
-  const navbarRef = useRef<HTMLDivElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  // Theme mode state
+  const initialMode = shouldUseDarkMode(pathname, isLarge) ? "dark" : "light";
+  const [defaultMode, setDefaultMode] = useState<"light" | "dark">(initialMode);
+  const [mode, setMode] = useState<"light" | "dark">(defaultMode);
+
+  // Scroll handling effect
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const scrollThreshold = 10; // pixels to scroll before hiding
+      const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollY;
 
-      // Always show navbar at the very top of the page
+      // Reset at top of page
       if (currentScrollY < scrollThreshold) {
         setIsVisible(true);
         setIsSearchOpen(false);
@@ -58,11 +67,9 @@ export function Navbar() {
         return;
       }
 
-      // Show navbar when scrolling up, hide when scrolling down
-      // Only trigger if we've scrolled more than the threshold
+      // Handle scroll direction
       if (Math.abs(scrollDelta) > scrollThreshold) {
         setIsVisible(scrollDelta < 0);
-        // Only update mode based on scroll if we're not at the top
         if (currentScrollY > scrollThreshold) {
           setMode(scrollDelta < 0 ? "light" : "dark");
         }
@@ -75,45 +82,53 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY, defaultMode]);
 
+  // Initial mode setup
   useEffect(() => {
-    // Load the navbar data when component mounts
     setDefaultMode(shouldUseDarkMode(pathname, isLarge) ? "dark" : "light");
-    fetcher.load("/navbar");
   }, []);
 
+  // Route change handling
   useEffect(() => {
     const newMode = shouldUseDarkMode(pathname) ? "dark" : "light";
     setDefaultMode(newMode);
     setMode(newMode);
-    // Reset scroll position when route changes
     setLastScrollY(0);
-    // Force a re-render to ensure mode is applied
     setIsVisible(true);
   }, [pathname]);
 
-  // Effect to sync mode with defaultMode when it changes
+  // Mode sync effect
   useEffect(() => {
     setMode(defaultMode);
   }, [defaultMode]);
 
-  const isLoading = fetcher.state === "loading";
-
+  // Menu data
   const menuLinks: MenuLink[] = [
     {
       title: "Get Involved",
       content: {
         mainContent: ministriesData.content.mainContent,
-        featureCards: fetcher.data?.ministries?.featureCards || [],
+        featureCards: ministries.featureCards,
       },
     },
     {
       title: "Media",
       content: {
         mainContent: watchReadListenData.content.mainContent,
-        featureCards: fetcher.data?.watchReadListen?.featureCards || [],
+        featureCards: watchReadListen.featureCards,
       },
     },
   ];
+
+  // Search handling
+  const handleSearchClick = () => {
+    setIsSearchOpen(true);
+    setTimeout(() => {
+      const searchInput = document.querySelector(".ais-SearchBox-input");
+      if (searchInput instanceof HTMLInputElement) {
+        searchInput.focus();
+      }
+    }, 0);
+  };
 
   return (
     <nav
@@ -135,11 +150,9 @@ export function Navbar() {
           className={cn(
             "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5"
           )}
-          style={{
-            gap: isSearchOpen ? "32px" : "0px",
-          }}
+          style={{ gap: isSearchOpen ? "32px" : "0px" }}
         >
-          {/* Logo */}
+          {/* Logo and Desktop Navigation */}
           <div className="flex items-center gap-8">
             <a
               href="/"
@@ -156,7 +169,7 @@ export function Navbar() {
               />
             </a>
 
-            {/* Desktop view */}
+            {/* Desktop Navigation Menu */}
             <div
               className="hidden lg:inline"
               style={{
@@ -165,7 +178,6 @@ export function Navbar() {
             >
               <NavigationMenu>
                 <NavigationMenuList className="flex items-center space-x-6 xl:space-x-10">
-                  {/* Links */}
                   {mainNavLinks.map((link) => (
                     <NavigationMenuItem key={link.title}>
                       <NavigationMenuLink
@@ -182,7 +194,6 @@ export function Navbar() {
                     </NavigationMenuItem>
                   ))}
 
-                  {/* Menu Dropdowns */}
                   {menuLinks.map((menuLink) => (
                     <NavigationMenuItem
                       value={menuLink.title}
@@ -212,7 +223,7 @@ export function Navbar() {
                       >
                         <MenuContent
                           menuType={lowerCase(menuLink.title)}
-                          isLoading={isLoading}
+                          isLoading={false}
                           mainContent={menuLink.content.mainContent}
                           featureCards={menuLink.content.featureCards}
                         />
@@ -224,7 +235,7 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Desktop Buttons */}
+          {/* Desktop Actions */}
           <div
             className="hidden lg:flex items-center gap-6"
             style={{
@@ -248,30 +259,16 @@ export function Navbar() {
             </div>
 
             {!isSearchOpen && (
-              <button
-                onClick={(e) => {
-                  setIsSearchOpen(true);
-                  setTimeout(() => {
-                    const searchInput = document.querySelector(
-                      ".ais-SearchBox-input"
-                    );
-                    if (searchInput instanceof HTMLInputElement) {
-                      searchInput.focus();
-                    }
-                  }, 0);
-                }}
-                className="flex items-center"
-              >
+              <button onClick={handleSearchClick} className="flex items-center">
                 <Icon
                   name="search"
                   size={20}
-                  className={`
-                        ${
-                          mode === "light"
-                            ? "text-neutral-dark"
-                            : "text-white group-hover:text-text"
-                        } hover:text-ocean transition-colors cursor-pointer
-                      `}
+                  className={cn(
+                    "hover:text-ocean transition-colors cursor-pointer",
+                    mode === "light"
+                      ? "text-neutral-dark"
+                      : "text-white group-hover:text-text"
+                  )}
                 />
               </button>
             )}
@@ -285,10 +282,11 @@ export function Navbar() {
                 <Button
                   intent="secondary"
                   linkClassName="hidden xl:block"
-                  className={`font-semibold text-base w-[140px] ${
+                  className={cn(
+                    "font-semibold text-base w-[140px]",
                     mode === "dark" &&
-                    "border-white text-white group-hover:text-ocean group-hover:border-ocean"
-                  }`}
+                      "border-white text-white group-hover:text-ocean group-hover:border-ocean"
+                  )}
                   href="/about"
                 >
                   My Church
@@ -297,7 +295,7 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile view */}
+          {/* Mobile Menu */}
           <MobileMenu mode={mode} setMode={setMode} />
         </div>
       </div>
