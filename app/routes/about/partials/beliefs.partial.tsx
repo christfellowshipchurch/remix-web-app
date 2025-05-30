@@ -3,7 +3,7 @@ import { BeliefsCarousel } from "../components/beliefs-carousel.component";
 import { cn } from "~/lib/utils";
 import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.component";
 
-export function BeliefsSection() {
+export function BeliefsSection({ customTitle }: { customTitle?: string }) {
   return (
     <section id="beliefs" className="relative md:py-16 lg:pt-40 w-full">
       <div className="content-padding">
@@ -12,14 +12,20 @@ export function BeliefsSection() {
           <div className="relative flex flex-col gap-6 pb-12 w-full">
             <SectionTitle sectionTitle="our beliefs." />
             <h3 className="font-extrabold text-text-primary text-[28px] md:text-5xl leading-tight">
-              <span className="hidden lg:block">
-                Beliefs And Theological <br />
-                Positions Drawn From The Bible.
-              </span>
-              <span className="block lg:hidden">
-                Beliefs drawn <br />
-                from the Bible.
-              </span>
+              {customTitle ? (
+                <span>{customTitle}</span>
+              ) : (
+                <>
+                  <span className="hidden lg:block">
+                    Beliefs And Theological <br />
+                    Positions Drawn From The Bible.
+                  </span>
+                  <span className="block lg:hidden">
+                    Beliefs drawn <br />
+                    from the Bible.
+                  </span>
+                </>
+              )}
             </h3>
             {/* Chapel Image */}
             <img
