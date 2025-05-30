@@ -1,13 +1,7 @@
 import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect, useState } from "react";
-import {
-  Configure,
-  Hits,
-  InstantSearch,
-  SearchBox,
-  useSearchBox,
-} from "react-instantsearch";
-import { useFetcher } from "react-router";
+import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
+import { useRouteLoaderData } from "react-router";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
@@ -45,14 +39,9 @@ export const MobileSearch = ({
   mode: "light" | "dark";
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
-  const fetcher = useFetcher<LoaderReturnType>();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = fetcher.data || {};
-
-  useEffect(() => {
-    if (!fetcher.data) {
-      fetcher.load("/search");
-    }
-  }, [fetcher]);
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = useRouteLoaderData(
+    "root"
+  ) as LoaderReturnType;
 
   // Create or retrieve the Algolia client
   useEffect(() => {
