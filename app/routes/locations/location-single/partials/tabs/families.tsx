@@ -6,11 +6,10 @@ import { ContentBlockData } from "~/routes/page-builder/types";
 import { LoaderReturnType } from "../../loader";
 
 export const ForFamilies = () => {
-  const data = useLoaderData<LoaderReturnType>();
-
+  const { familiesMappedChildren } = useLoaderData<LoaderReturnType>();
   return (
-    <div className="flex flex-col w-full bg-gray">
-      {/* {familiesMappedChildren.map((section) => {
+    <div className="flex flex-col w-full bg-gray pt-8 md:pt-24">
+      {familiesMappedChildren.map((section) => {
         switch (section.type) {
           case "RESOURCE_COLLECTION":
           case "EVENT_COLLECTION":
@@ -48,9 +47,7 @@ export const ForFamilies = () => {
               </div>
             );
         }
-      })} */}
+      })}
     </div>
   );
 };
-
-// 19067
