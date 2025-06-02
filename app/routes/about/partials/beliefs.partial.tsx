@@ -3,7 +3,13 @@ import { BeliefsCarousel } from "../components/beliefs-carousel.component";
 import { cn } from "~/lib/utils";
 import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.component";
 
-export function BeliefsSection({ customTitle }: { customTitle?: string }) {
+export function BeliefsSection({
+  customTitle,
+  removeChapel = false,
+}: {
+  customTitle?: string;
+  removeChapel?: boolean;
+}) {
   return (
     <section id="beliefs" className="relative md:py-16 lg:pt-40 w-full">
       <div className="content-padding">
@@ -28,16 +34,18 @@ export function BeliefsSection({ customTitle }: { customTitle?: string }) {
               )}
             </h3>
             {/* Chapel Image */}
-            <img
-              src="/assets/images/about/chapel.webp"
-              alt="Beliefs"
-              className={cn(
-                "absolute bottom-0 right-0 w-[40vw] object-cover",
-                "sm:w-[30vw]",
-                "md:right-1/12 md:w-[20vw]",
-                "lg:right-1/8 lg:max-w-[300px]"
-              )}
-            />
+            {!removeChapel && (
+              <img
+                src="/assets/images/about/chapel.webp"
+                alt="Beliefs"
+                className={cn(
+                  "absolute bottom-0 right-0 w-[40vw] object-cover",
+                  "sm:w-[30vw]",
+                  "md:right-1/12 md:w-[20vw]",
+                  "lg:right-1/8 lg:max-w-[300px]"
+                )}
+              />
+            )}
           </div>
           {/* Beliefs Carousel */}
           <div className="hidden md:block">

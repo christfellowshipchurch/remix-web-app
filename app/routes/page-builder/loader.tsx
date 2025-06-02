@@ -54,7 +54,7 @@ const fetchChildItems = async (id: string) => {
   return childrenArray;
 };
 
-const fetchDefinedValue = async (guid: string) => {
+export const fetchDefinedValue = async (guid: string) => {
   const definedValue = await fetchRockData({
     endpoint: `DefinedValues/`,
     queryParams: {
