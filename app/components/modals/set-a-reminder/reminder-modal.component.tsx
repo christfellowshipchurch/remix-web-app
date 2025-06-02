@@ -4,12 +4,17 @@ import ReminderFlow from "./reminder-flow.component";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import { LoaderReturnType } from "~/routes/locations/location-single/loader";
 import { useLoaderData } from "react-router";
+import { cn } from "~/lib/utils";
 
 interface SetAReminderModalProps {
+  className?: string;
+  intent?: ButtonProps["intent"];
   ModalButton?: React.ComponentType<ButtonProps>;
 }
 
 export function SetAReminderModal({
+  className,
+  intent = "secondary",
   ModalButton = Button,
 }: SetAReminderModalProps) {
   const [openModal, setOpenModal] = useState(false);
@@ -18,7 +23,14 @@ export function SetAReminderModal({
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
       <Modal.Button asChild className="mr-2">
-        <ModalButton onClick={() => setOpenModal(true)}>
+        <ModalButton
+          intent={intent}
+          onClick={() => setOpenModal(true)}
+          className={cn(
+            "text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10",
+            className
+          )}
+        >
           {campusName?.includes("Español") ? "Recuérdame" : "Set a Reminder"}
         </ModalButton>
       </Modal.Button>

@@ -1,4 +1,3 @@
-import { useRouteError } from "react-router-dom";
 import { ArticlePage } from "./articles/article-single/article-page";
 
 export { loader } from "./articles/article-single/loader";

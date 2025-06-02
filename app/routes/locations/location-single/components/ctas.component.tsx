@@ -3,6 +3,7 @@ import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
 import { ButtonProps } from "~/primitives/button/button.primitive";
 import { Link } from "react-router";
+import React from "react";
 
 const CTAButtonContent = ({
   icon,
@@ -47,10 +48,15 @@ const CTAButton = ({
   isSetAReminder?: boolean;
 }) => {
   if (isSetAReminder) {
-    const ReminderButton = ({ className, ...props }: ButtonProps) => (
-      <CTAButtonContent icon={icon} title={title} {...props} />
+    const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+      (props, ref) => (
+        <button ref={ref} {...props}>
+          <CTAButtonContent icon={icon} title={title} />
+        </button>
+      )
     );
-    return <SetAReminderModal ModalButton={ReminderButton} />;
+
+    return <SetAReminderModal ModalButton={CustomButton} />;
   }
 
   const content = <CTAButtonContent icon={icon} title={title} />;
