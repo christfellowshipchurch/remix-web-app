@@ -7,7 +7,7 @@ import {
   useLoaderData,
   useLocation,
 } from "react-router";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
@@ -46,6 +46,12 @@ export default function App() {
   const currentPath = location.pathname;
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
   const { siteBanner } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (siteBanner) {
+      setShowSiteBanner(true);
+    }
+  }, [siteBanner]);
 
   return (
     <AuthProvider>

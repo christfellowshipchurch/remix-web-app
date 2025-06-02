@@ -53,12 +53,16 @@ const fetchSiteBanner = async () => {
     const siteBanner = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${now}'`,
+        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'2024-06-02T20:31:20.619Z'`,
         loadAttributes: "simple",
       },
     });
 
-    return siteBanner;
+    if (Array.isArray(siteBanner)) {
+      return siteBanner[0];
+    } else {
+      return siteBanner;
+    }
   } catch (error) {
     console.error("Error fetching site banner:", error);
     return [];
