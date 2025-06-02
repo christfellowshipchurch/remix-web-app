@@ -9,7 +9,10 @@ interface SectionEntry extends IntersectionObserverEntry {
 
 export default function SplitScrollLayout() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [displayedIndex, setDisplayedIndex] = useState(0);
+  const [fade, setFade] = useState(false);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const FADE_DURATION = 500; // ms
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -48,6 +51,17 @@ export default function SplitScrollLayout() {
     };
   }, []);
 
+  // Fade-out, then update image, then fade-in
+  useEffect(() => {
+    if (activeIndex === displayedIndex) return;
+    setFade(true);
+    const timeout = setTimeout(() => {
+      setDisplayedIndex(activeIndex);
+      setFade(false);
+    }, FADE_DURATION);
+    return () => clearTimeout(timeout);
+  }, [activeIndex, displayedIndex]);
+
   return (
     <>
       {/* Mobile Layout */}
@@ -79,9 +93,12 @@ export default function SplitScrollLayout() {
         {/* Fixed Left Image */}
         <div className="w-1/2 fixed left-0 top-0 h-screen flex items-center justify-center z-[-1] bg-white">
           <img
-            src={chanceContent[activeIndex].image}
-            alt={chanceContent[activeIndex].title}
-            className="object-cover px-6 max-w-sm lg:max-w-md xl:max-w-lg transition-all duration-500"
+            src={chanceContent[displayedIndex].image}
+            alt={chanceContent[displayedIndex].title}
+            className={cn(
+              "object-cover px-6 max-w-sm lg:max-w-md xl:max-w-lg transition-all duration-500",
+              fade ? "opacity-0 scale-95" : "opacity-100 scale-100"
+            )}
           />
         </div>
 
@@ -91,7 +108,7 @@ export default function SplitScrollLayout() {
             <div
               key={section.title}
               ref={(el) => (sectionRefs.current[index] = el)}
-              className={cn("flex items-center p-12 snap-center", "h-[80vh]")}
+              className={cn("flex items-center p-12 snap-center", "h-[70vh]")}
             >
               <div>
                 <h2 className="text-3xl font-normal">
