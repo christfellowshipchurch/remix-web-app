@@ -15,7 +15,7 @@ export function AChanceSection() {
         <br className="hidden md:block lg:hidden" />
         as... <span className="text-ocean">a chance.</span>
       </h2>
-      <div className="relative" style={{ minHeight: `80vh` }}>
+      <div className="relative" style={{ minHeight: `100vh` }}>
         <SplitScrollLayout />
       </div>
     </section>
