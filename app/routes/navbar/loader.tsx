@@ -8,7 +8,7 @@ import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-r
 import type { User } from "~/providers/auth-provider";
 
 // Define the return type for the loader
-interface NavbarLoaderData {
+interface RootLoaderData {
   userData: User | null;
   ministries: {
     featureCards: FeatureCard[];
@@ -19,6 +19,13 @@ interface NavbarLoaderData {
   algolia: {
     ALGOLIA_APP_ID: string | undefined;
     ALGOLIA_SEARCH_API_KEY: string | undefined;
+  };
+  siteBanner: {
+    content: string;
+    ctas?: {
+      title: string;
+      url: string;
+    }[];
   };
 }
 
@@ -39,9 +46,28 @@ const fetchFeatureCards = async () => {
   }
 };
 
+const fetchSiteBanner = async () => {
+  const now = new Date();
+
+  try {
+    const siteBanner = await fetchRockData({
+      endpoint: "ContentChannelItems",
+      queryParams: {
+        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${now}'`,
+        loadAttributes: "simple",
+      },
+    });
+
+    return siteBanner;
+  } catch (error) {
+    console.error("Error fetching site banner:", error);
+    return [];
+  }
+};
+
 export async function loader({
   request,
-}: LoaderFunctionArgs): Promise<NavbarLoaderData> {
+}: LoaderFunctionArgs): Promise<RootLoaderData> {
   try {
     // Todo: fix user data for mobile/desktop nav menus. right now it's not returning the full user object, but is at least notifying is user is logged in or not. We will wait until the UI for the logged in experience is complete to fix this.
     const userData = await getUserFromRequest(request);
@@ -91,6 +117,11 @@ export async function loader({
           ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
           ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
         },
+
+        // Site Banner Data
+        siteBanner: {
+          content: "",
+        },
       };
     }
 
@@ -123,7 +154,11 @@ export async function loader({
       (card) => card.navMenu.toLowerCase() === "media"
     );
 
+    // Site Banner Data
+    const siteBanner = await fetchSiteBanner();
+
     return {
+      // Navbar Data
       userData: parsedUserData,
       ministries: {
         featureCards: ministryCards,
@@ -135,17 +170,26 @@ export async function loader({
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
       },
+
+      // Site Banner Data
+      siteBanner: siteBanner,
     };
   } catch (error) {
     console.error("Error in navbar loader:", error);
     // Return empty arrays instead of throwing to prevent UI from breaking
     return {
+      // Navbar Data
       userData: null,
       ministries: { featureCards: [] },
       watchReadListen: { featureCards: [] },
       algolia: {
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+      },
+
+      // Site Banner Data
+      siteBanner: {
+        content: "",
       },
     };
   }
