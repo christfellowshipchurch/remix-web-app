@@ -3,6 +3,7 @@ import Modal from "~/primitives/Modal";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import { GroupFilters } from "./group-filters";
 import Icon from "~/primitives/icon";
+import { cn } from "~/lib/utils";
 
 interface GroupFiltersModalProps {
   ModalButton?: React.ComponentType<ButtonProps>;
@@ -31,7 +32,17 @@ export function GroupFiltersModal({
         <ModalButton onClick={() => setOpenModal(true)}>Filters</ModalButton>
       </Modal.Button>
       <Modal.Content>
-        <div className="flex flex-col gap-2 p-8 w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-[85vw]">
+        <div
+          className={cn(
+            "flex flex-col gap-2",
+            "sm:p-6 mx-6",
+            "max-h-[85vh] md:max-h-[90vh]",
+            "md:w-[85vw]",
+            "overflow-y-scroll",
+            "max-w-md",
+            "pt-10"
+          )}
+        >
           <h2 className="heading-h5 text-navy">Filter Your Results</h2>
           <p className="text-sm text-gray-500 mb-4">
             Adjust the filters to find the groups that best fit your needs.
