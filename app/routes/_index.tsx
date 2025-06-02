@@ -23,14 +23,20 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      <div className="hidden lg:block w-full">
-        <DesktopHeroSection />
+      {/* Scroll snap container for hero and chance sections */}
+      <div className="w-full h-screen overflow-y-auto snap-y snap-mandatory no-scrollbar">
+        <div className="hidden lg:block w-full snap-start">
+          <DesktopHeroSection />
+        </div>
+        <div className="block lg:hidden w-full snap-start">
+          <MobileHeroSection />
+          <BottomBar />
+        </div>
+        <div className="w-full snap-start">
+          <AChanceSection />
+        </div>
       </div>
-      <div className="block lg:hidden w-full">
-        <MobileHeroSection />
-        <BottomBar />
-      </div>
-      <AChanceSection />
+      {/* The rest of your sections (not snapped) */}
       <WhatWeOfferSection />
       <HistorySection sectionTitle="History" title="Who We Are" />
       <BeliefsSection />
