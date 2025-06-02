@@ -1,11 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { chanceContent } from "./a-chance.data";
 import { cn } from "~/lib/utils";
-
-interface SectionEntry extends IntersectionObserverEntry {
-  target: HTMLDivElement;
-}
 
 export default function SplitScrollLayout() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -89,28 +85,35 @@ export default function SplitScrollLayout() {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:flex min-h-screen">
-        {/* Fixed Left Image */}
-        <div className="w-1/2 sticky top-0 h-screen flex items-center justify-center z-[-1] bg-white">
-          <img
-            src={chanceContent[displayedIndex].image}
-            alt={chanceContent[displayedIndex].title}
-            className={cn(
-              "object-cover px-6 max-w-sm lg:max-w-md xl:max-w-lg transition-all duration-500",
-              fade ? "opacity-0 scale-95" : "opacity-100 scale-100"
-            )}
-          />
-        </div>
 
-        {/* Right Scrolling Content */}
-        <div className="w-1/2 ml-auto flex flex-col snap-y snap-mandatory overflow-y-auto">
+      {/* Sticky Left Image */}
+      <div
+        className={cn(
+          "w-1/2 absolute top-0 h-screen",
+          "hidden md:flex items-center justify-center",
+          "z-[-1] bg-white"
+        )}
+      >
+        <img
+          src={chanceContent[displayedIndex].image}
+          alt={chanceContent[displayedIndex].title}
+          className={cn(
+            "object-cover px-6 max-w-sm lg:max-w-md xl:max-w-lg transition-all duration-500",
+            fade ? "opacity-0 scale-95" : "opacity-100 scale-100"
+          )}
+        />
+      </div>
+
+      <div className="hidden md:flex min-h-screen">
+        {/* Left/Sticky image here if needed */}
+        <div className="w-full overflow-y-auto snap-y snap-mandatory scroll-smooth h-screen no-scrollbar">
           {chanceContent.map((section, index) => (
             <div
               key={section.title}
               ref={(el) => (sectionRefs.current[index] = el)}
-              className={cn("flex items-center p-12 snap-center", "h-[100vh]")}
+              className="flex items-center p-12 snap-center h-screen"
             >
-              <div>
+              <div className="w-1/2 ml-auto">
                 <h2 className="text-3xl font-normal text-pretty">
                   <HTMLRenderer html={section.title} />
                 </h2>
