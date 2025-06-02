@@ -61,7 +61,7 @@ export default function SplitScrollLayout() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="md:hidden">
+      <div className="md:hidden no-scrollbar">
         {chanceContent.map((section) => (
           <div
             key={section.title}
