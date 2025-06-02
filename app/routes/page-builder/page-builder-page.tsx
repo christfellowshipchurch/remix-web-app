@@ -6,7 +6,7 @@ import { CTACollectionSection } from "~/components/page-builder/cta-collection";
 import { ContentBlock } from "./components/content-block";
 import { ContentBlockData } from "./types";
 
-function renderSection(section: any) {
+export function renderSection(section: any) {
   switch (section.type) {
     case "RESOURCE_COLLECTION":
     case "EVENT_COLLECTION":
