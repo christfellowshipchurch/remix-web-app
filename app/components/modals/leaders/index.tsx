@@ -1,5 +1,6 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import { ShareLinks } from "~/components/share-links";
+import { cn } from "~/lib/utils";
 import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
 import { AuthorArticleProps } from "~/routes/author/components/author-content";
 import AuthorTabs from "~/routes/author/components/author-tabs";
@@ -41,7 +42,18 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
   }
 
   return (
-    <div className="overflow-auto max-w-screen-content max-h-[85vh] md:max-h-[90vh]">
+    <div
+      className={cn(
+        "overflow-auto",
+        "max-w-screen-content",
+        "max-h-[85vh]",
+        "xl:w-6xl",
+        "lg:w-4xl",
+        "md:w-2xl",
+        "sm:w-lg",
+        "w-[350px]"
+      )}
+    >
       <div className="size-full flex flex-col lg:flex-row w-full rounded-xl overflow-hidden">
         {/* Left/Top Side */}
         <div className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8">
