@@ -1,4 +1,6 @@
 import { SetAReminderModal } from "~/components";
+import { Button } from "~/primitives/button/button.primitive";
+import { ButtonProps } from "~/primitives/button/button.primitive";
 
 export const WhatToExpect = ({
   setReminderVideo,
@@ -40,12 +42,22 @@ export const WhatToExpect = ({
             />
 
             <div className="flex">
-              <SetAReminderModal />
+              <SetAReminderModal ModalButton={ModalButton} />
             </div>
           </div>
         </div>
       </div>
     </div>
+  );
+};
+
+const ModalButton = ({ ...props }: ButtonProps) => {
+  return (
+    <button {...props}>
+      <Button intent="primary" className="font-normal text-base rounded-[8px]">
+        Set a Reminder
+      </Button>
+    </button>
   );
 };
 
