@@ -5,6 +5,7 @@ import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";
+import React from "react";
 
 export type DynamicHeroTypes = {
   wistiaId?: string;
@@ -105,23 +106,12 @@ export const DynamicHero = ({
               <div className="hidden lg:flex mt-5 flex-wrap justify-between gap-3 pr-1">
                 {ctas?.map((cta, i) => {
                   if (cta.isSetAReminder) {
-                    const ReminderButton = ({
-                      className,
-                      ...props
-                    }: ButtonProps) => (
-                      <Button
-                        intent="secondary"
-                        className={cn(
-                          "text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10",
-                          className
-                        )}
-                        {...props}
-                      >
-                        {cta.title}
-                      </Button>
-                    );
                     return (
-                      <SetAReminderModal key={i} ModalButton={ReminderButton} />
+                      <SetAReminderModal
+                        key={i}
+                        intent="secondary"
+                        className="text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10"
+                      />
                     );
                   } else {
                     return (
@@ -142,27 +132,17 @@ export const DynamicHero = ({
               <div className="lg:hidden flex flex-col-reverse md:flex-row-reverse md:justify-end gap-3 w-full pt-8 md:pt-0 md:px-0">
                 {ctas?.map((cta, i) => {
                   if (cta.isSetAReminder) {
-                    const ReminderButton = ({
-                      className,
-                      ...props
-                    }: ButtonProps) => (
-                      <Button
+                    return (
+                      <SetAReminderModal
+                        key={i}
                         intent={
                           i === 0 && ctas.length > 1 ? "secondary" : "primary"
                         }
                         className={cn(
-                          `w-full md:w-auto ${
-                            i !== 0 ? "" : "text-white border-white"
-                          }`,
-                          className
+                          "w-full md:w-auto",
+                          i !== 0 ? "" : "text-white border-white"
                         )}
-                        {...props}
-                      >
-                        {cta.title}
-                      </Button>
-                    );
-                    return (
-                      <SetAReminderModal key={i} ModalButton={ReminderButton} />
+                      />
                     );
                   } else {
                     return (

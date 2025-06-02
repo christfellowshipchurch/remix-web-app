@@ -1,14 +1,13 @@
-import { LoaderFunctionArgs } from "react-router";
+import { LoaderFunction } from "react-router";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
   GOOGLE_MAPS_API_KEY: string;
   campusName: string;
-  url: string;
 };
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export const loader: LoaderFunction = async ({ params }) => {
   const campusUrl = params.location;
 
   if (!campusUrl) {
@@ -27,10 +26,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
     });
   }
 
-  return {
+  const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     GOOGLE_MAPS_API_KEY: googleMapsApiKey,
     campusName: decodeURIComponent(campusUrl),
   };
-}
+
+  return pageData;
+};

@@ -26,7 +26,7 @@ export const AboutUs = ({
         campusPastor={campusPastor}
       />
       <MissionSection />
-      <BeliefsSection customTitle="What We Believe" />
+      <BeliefsSection customTitle="What We Believe" removeChapel={true} />
       <ImpactSection />
       <ConnectWithUs
         campusName={campusName || ""}
