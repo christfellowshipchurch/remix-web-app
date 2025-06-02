@@ -3,7 +3,7 @@ import SplitScrollLayout from "../components/split-scroll-layout.component";
 
 export function AChanceSection() {
   return (
-    <section className="w-full">
+    <section className="relative w-full">
       <h2 className="w-screen text-4xl font-bold text-center md:block mb-20 md:mb-32 sticky top-0 z-49 pt-28">
         <div
           className={cn(
@@ -15,7 +15,7 @@ export function AChanceSection() {
         <br className="hidden md:block lg:hidden" />
         as... <span className="text-ocean">a chance.</span>
       </h2>
-      <div className="max-w-content-padding mx-auto w-full md:px-12 lg:px-18 ">
+      <div className="relative" style={{ minHeight: `80vh` }}>
         <SplitScrollLayout />
       </div>
     </section>

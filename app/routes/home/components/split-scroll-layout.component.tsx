@@ -91,7 +91,7 @@ export default function SplitScrollLayout() {
       {/* Desktop Layout */}
       <div className="hidden md:flex min-h-screen">
         {/* Fixed Left Image */}
-        <div className="w-1/2 fixed left-0 top-0 h-screen flex items-center justify-center z-[-1] bg-white">
+        <div className="w-1/2 sticky top-0 h-screen flex items-center justify-center z-[-1] bg-white">
           <img
             src={chanceContent[displayedIndex].image}
             alt={chanceContent[displayedIndex].title}
@@ -108,13 +108,13 @@ export default function SplitScrollLayout() {
             <div
               key={section.title}
               ref={(el) => (sectionRefs.current[index] = el)}
-              className={cn("flex items-center p-12 snap-center", "h-[70vh]")}
+              className={cn("flex items-center p-12 snap-center", "h-[100vh]")}
             >
               <div>
-                <h2 className="text-3xl font-normal">
+                <h2 className="text-3xl font-normal text-pretty">
                   <HTMLRenderer html={section.title} />
                 </h2>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed text-pretty">
                   {section.description}
                 </p>
               </div>
