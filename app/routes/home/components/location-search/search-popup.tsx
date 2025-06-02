@@ -1,8 +1,14 @@
 import { Hits } from "react-instantsearch";
 import { HitComponent, CampusHit } from "./location-hit";
 import { Hit } from "algoliasearch";
+import { Link } from "react-router";
+import { Icon } from "~/primitives/icon/icon";
 
-export const SearchPopup = () => {
+export const SearchPopup = ({
+  setUseCurrentLocation,
+}: {
+  setUseCurrentLocation: (useCurrentLocation: boolean) => void;
+}) => {
   return (
     <div className="w-full py-4 z-4 overflow-hidden min-h-[332px]">
       {/* Search Results */}
@@ -20,6 +26,25 @@ export const SearchPopup = () => {
             return null;
           }}
         />
+      </div>
+
+      {/* Buttons */}
+      <div className="flex justify-between gap-2 pt-4">
+        <div
+          className="flex gap-1 cursor-pointer text-ocean hover:text-navy transition-colors duration-300"
+          onClick={() => {
+            setUseCurrentLocation(true);
+          }}
+        >
+          <Icon name="currentLocation" size={21} />
+          <p className="text-sm font-semibold">Use my precise location</p>
+        </div>
+
+        <Link to="/locations" prefetch="intent">
+          <p className="text-sm font-medium hover:underline transition-all duration-300">
+            View All Locations
+          </p>
+        </Link>
       </div>
     </div>
   );
