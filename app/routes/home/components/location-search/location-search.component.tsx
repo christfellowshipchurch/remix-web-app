@@ -18,6 +18,7 @@ export const LocationSearch = () => {
 
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -69,6 +70,21 @@ export const LocationSearch = () => {
       action: "/google-geocode",
     });
   };
+
+  // Set the coordinates to the current location
+  useEffect(() => {
+    if (useCurrentLocation) {
+      // Get the current location
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+
+      setUseCurrentLocation(false);
+    }
+  }, [useCurrentLocation]);
 
   useEffect(() => {
     if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
@@ -133,7 +149,9 @@ export const LocationSearch = () => {
             onSearchStateChange={setIsSearching}
             onSearchSubmit={handleSearch}
           />
-          {isSearching && <SearchPopup />}
+          {isSearching && (
+            <SearchPopup setUseCurrentLocation={setUseCurrentLocation} />
+          )}
         </div>
       </InstantSearch>
     </div>
