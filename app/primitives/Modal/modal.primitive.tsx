@@ -41,7 +41,7 @@ function ModalContent({
       >
         <div
           className={cn(
-            "rounded-xl md:rounded-2xl text-text-primary shadow relative flex justify-center items-center pt-8",
+            "rounded-xl md:rounded-2xl text-text-primary shadow relative flex justify-center items-center",
             background || "bg-white"
           )}
         >
