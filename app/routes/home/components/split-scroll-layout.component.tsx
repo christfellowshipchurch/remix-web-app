@@ -61,11 +61,11 @@ export default function SplitScrollLayout() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="md:hidden no-scrollbar">
+      <div className="md:hidden no-scrollbar pt-20 flex flex-col gap-20">
         {chanceContent.map((section) => (
           <div
             key={section.title}
-            className="h-[60dvh] flex flex-col items-center p-6"
+            className="flex flex-col items-center p-6 max-w-sm mx-auto"
           >
             <img
               src={section.image}
@@ -89,8 +89,8 @@ export default function SplitScrollLayout() {
       {/* Sticky Left Image */}
       <div
         className={cn(
-          "w-1/2 absolute top-0 h-screen",
           "hidden md:flex items-center justify-center",
+          "w-1/2 absolute top-0 h-screen",
           "z-[-1] bg-white"
         )}
       >

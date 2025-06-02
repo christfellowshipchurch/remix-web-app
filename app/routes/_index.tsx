@@ -24,7 +24,7 @@ export default function Index() {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {/* Scroll snap container for hero and chance sections */}
-      <div className="w-full h-screen overflow-y-auto snap-y snap-mandatory no-scrollbar">
+      <div className="w-full h-screen overflow-y-auto lg:snap-y lg:snap-mandatory no-scrollbar">
         <div className="hidden lg:block w-full snap-start">
           <DesktopHeroSection />
         </div>
