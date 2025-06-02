@@ -53,7 +53,7 @@ const fetchSiteBanner = async () => {
     const siteBanner = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'2024-06-02T20:31:20.619Z'`,
+        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${now}'`,
         loadAttributes: "simple",
       },
     });
