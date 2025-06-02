@@ -6,6 +6,46 @@ import { CTACollectionSection } from "~/components/page-builder/cta-collection";
 import { ContentBlock } from "./components/content-block";
 import { ContentBlockData } from "./types";
 
+function renderSection(section: any) {
+  switch (section.type) {
+    case "RESOURCE_COLLECTION":
+    case "EVENT_COLLECTION":
+      return (
+        <ResourceCarouselSection
+          key={section.id}
+          title={section.name}
+          description={section.content}
+          resources={section.collection || []}
+          viewMoreLink="#tbd"
+        />
+      );
+    case "CTA_COLLECTION":
+      return (
+        <CTACollectionSection
+          key={section.id}
+          title={section.name}
+          description={section.content}
+          resources={section.collection || []}
+          viewMoreLink="#tbd"
+        />
+      );
+    case "CONTENT_BLOCK":
+      return (
+        <ContentBlock
+          key={section.id}
+          data={section as unknown as ContentBlockData}
+        />
+      );
+    default:
+      return (
+        <div key={section.id}>
+          <h2>{section.name}</h2>
+          <p>{section.type}</p>
+        </div>
+      );
+  }
+}
+
 export function PageBuilderRoute() {
   const { title, heroImage, callsToAction, sections } =
     useLoaderData<PageBuilderLoader>();
@@ -21,45 +61,7 @@ export function PageBuilderRoute() {
         }))}
       />
 
-      {sections.map((section) => {
-        switch (section.type) {
-          case "RESOURCE_COLLECTION":
-          case "EVENT_COLLECTION":
-            return (
-              <ResourceCarouselSection
-                key={section.id}
-                title={section.name}
-                description={section.content}
-                resources={section.collection || []}
-                viewMoreLink="#tbd"
-              />
-            );
-          case "CTA_COLLECTION":
-            return (
-              <CTACollectionSection
-                key={section.id}
-                title={section.name}
-                description={section.content}
-                resources={section.collection || []}
-                viewMoreLink="#tbd"
-              />
-            );
-          case "CONTENT_BLOCK":
-            return (
-              <ContentBlock
-                key={section.id}
-                data={section as unknown as ContentBlockData}
-              />
-            );
-          default:
-            return (
-              <div key={section.id}>
-                <h2>{section.name}</h2>
-                <p>{section.type}</p>
-              </div>
-            );
-        }
-      })}
+      {sections.map(renderSection)}
     </div>
   );
 }
