@@ -13,7 +13,7 @@ export const CampusPastorsQuote = ({
   };
 }) => {
   return (
-    <div className="w-full bg-gray pt-41 pb-28 content-padding flex justify-center">
+    <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-41 pb-28 content-padding flex justify-center">
       <div className="w-full flex flex-col gap-20 max-w-screen-content mx-auto">
         <div className="flex flex-col items-center text-center gap-4">
           <h2 className="font-extrabold text-[40px] lg:text-[52px] max-w-[780px] leading-tight">
