@@ -94,6 +94,13 @@ export const fetchDefinedValue = async (guid: string) => {
   }
 };
 
+const getLinkTreeLayout = async (attributeValues: any) => {
+  if (attributeValues?.linkTreeLayout) {
+    return await fetchDefinedValue(attributeValues.linkTreeLayout.value);
+  }
+  return undefined;
+};
+
 export const mapPageBuilderChildItems = async (
   children: any[]
 ): Promise<PageBuilderSection[]> => {
@@ -123,6 +130,7 @@ export const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         content: child.content,
+        linkTreeLayout: await getLinkTreeLayout(child.attributeValues),
       };
 
       // If the child is a collection, fetch the child items and return them
