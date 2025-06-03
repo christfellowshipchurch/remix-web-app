@@ -3,8 +3,8 @@ import { LinkTreeLoaderData } from "./types";
 import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
-import { ResourceList } from "./components/resource-list.component";
 import { CollectionItem } from "../page-builder/types";
+import { ResourceGrid } from "./components/resource-grid.component";
 
 const linkTreeButtonClass = cn(
   "w-full",
@@ -62,7 +62,7 @@ export function LinkTreePage() {
         </div>
 
         {resourceCollections.map((item) => (
-          <ResourceList
+          <ResourceGrid
             key={item.id}
             title={item.name}
             resources={item.collection as CollectionItem[]}
