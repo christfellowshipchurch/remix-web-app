@@ -5,6 +5,7 @@ import { useRouteLoaderData } from "react-router";
 import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
+import { RootLoaderData } from "~/routes/navbar/loader";
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
@@ -39,9 +40,11 @@ export const MobileSearch = ({
   mode: "light" | "dark";
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = useRouteLoaderData(
-    "root"
-  ) as LoaderReturnType;
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = rootData?.algolia ?? {
+    ALGOLIA_APP_ID: "",
+    ALGOLIA_SEARCH_API_KEY: "",
+  };
 
   // Create or retrieve the Algolia client
   useEffect(() => {
