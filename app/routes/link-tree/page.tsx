@@ -5,6 +5,7 @@ import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { CollectionItem } from "../page-builder/types";
 import { ResourceGrid } from "./components/resource-grid.component";
+import { ResourceList } from "./components/resource-list.component";
 
 const linkTreeButtonClass = cn(
   "w-full",
@@ -61,13 +62,17 @@ export function LinkTreePage() {
           ))}
         </div>
 
-        {resourceCollections.map((item) => (
-          <ResourceGrid
-            key={item.id}
-            title={item.name}
-            resources={item.collection as CollectionItem[]}
-          />
-        ))}
+        {resourceCollections.map((item) => {
+          const layout = item.linkTreeLayout || "GRID";
+          const Component = layout === "GRID" ? ResourceGrid : ResourceList;
+          return (
+            <Component
+              key={item.id}
+              title={item.name}
+              resources={item.collection as CollectionItem[]}
+            />
+          );
+        })}
       </div>
     </div>
   );
