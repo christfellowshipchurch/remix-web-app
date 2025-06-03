@@ -1,5 +1,5 @@
-import { useLocation, useLoaderData } from "react-router-dom";
-import { loader } from "~/routes/navbar/loader";
+import { useLocation } from "react-router-dom";
+import { useRouteLoaderData } from "react-router";
 import { useEffect, useState, useRef } from "react";
 import { useResponsive } from "~/hooks/use-responsive";
 import {
@@ -34,12 +34,13 @@ import {
 } from "./navbar.data";
 import { MenuLink } from "./types";
 import { SiteBanner } from "../site-banner";
+import { RootLoaderData } from "~/routes/navbar/loader";
 
 export function Navbar() {
   // Hooks and state
   const { pathname } = useLocation();
-  const { siteBanner, ministries, watchReadListen } =
-    useLoaderData<typeof loader>();
+  const rootData = useRouteLoaderData("root") as RootLoaderData;
+  const { siteBanner, ministries, watchReadListen } = rootData || {};
   const { isLarge, isXLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
 
@@ -116,15 +117,15 @@ export function Navbar() {
     {
       title: "Get Involved",
       content: {
-        mainContent: ministriesData.content.mainContent,
-        featureCards: ministries.featureCards,
+        mainContent: ministriesData.content?.mainContent ?? [],
+        featureCards: ministries?.featureCards ?? [],
       },
     },
     {
       title: "Media",
       content: {
-        mainContent: watchReadListenData.content.mainContent,
-        featureCards: watchReadListen.featureCards,
+        mainContent: watchReadListenData.content?.mainContent ?? [],
+        featureCards: watchReadListen?.featureCards ?? [],
       },
     },
   ];
@@ -150,7 +151,7 @@ export function Navbar() {
     >
       <div className={cn(showSiteBanner ? "block" : "hidden")}>
         <SiteBanner
-          content={siteBanner.content}
+          content={siteBanner?.content ?? ""}
           onClose={() => setShowSiteBanner(false)}
         />
       </div>
@@ -210,42 +211,44 @@ export function Navbar() {
                     </NavigationMenuItem>
                   ))}
 
-                  {menuLinks.map((menuLink) => (
-                    <NavigationMenuItem
-                      value={menuLink.title}
-                      key={menuLink.title}
-                    >
-                      <NavigationMenuTrigger
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "xl:text-lg cursor-pointer transition-colors duration-200",
-                          mode === "light"
-                            ? "text-neutral-dark"
-                            : "text-white group-hover:text-text"
-                        )}
+                  {menuLinks.map((menuLink) =>
+                    menuLink.content ? (
+                      <NavigationMenuItem
+                        value={menuLink.title}
+                        key={menuLink.title}
                       >
-                        {menuLink.title}
-                        <Icon
-                          name="chevronDown"
-                          className={angleDownIconStyle()}
-                          aria-hidden="true"
-                        />
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent
-                        className={cn(
-                          "relative z-10 bg-white shadow-lg",
-                          navigationMenuContentStyle()
-                        )}
-                      >
-                        <MenuContent
-                          menuType={lowerCase(menuLink.title)}
-                          isLoading={false}
-                          mainContent={menuLink.content.mainContent}
-                          featureCards={menuLink.content.featureCards}
-                        />
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  ))}
+                        <NavigationMenuTrigger
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "xl:text-lg cursor-pointer transition-colors duration-200",
+                            mode === "light"
+                              ? "text-neutral-dark"
+                              : "text-white group-hover:text-text"
+                          )}
+                        >
+                          {menuLink.title}
+                          <Icon
+                            name="chevronDown"
+                            className={angleDownIconStyle()}
+                            aria-hidden="true"
+                          />
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent
+                          className={cn(
+                            "relative z-10 bg-white shadow-lg",
+                            navigationMenuContentStyle()
+                          )}
+                        >
+                          <MenuContent
+                            menuType={lowerCase(menuLink.title)}
+                            isLoading={false}
+                            mainContent={menuLink.content.mainContent}
+                            featureCards={menuLink.content.featureCards}
+                          />
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    ) : null
+                  )}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>

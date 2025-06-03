@@ -10,6 +10,7 @@ import {
 import { useRouteLoaderData } from "react-router";
 import Icon from "~/primitives/icon";
 import { SearchPopup } from "./search-popup.component";
+import { RootLoaderData } from "~/routes/navbar/loader";
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
@@ -59,7 +60,11 @@ export const SearchBar = ({
   isSearchOpen: boolean;
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
-  const { algolia } = useRouteLoaderData("root");
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const algolia = rootData?.algolia ?? {
+    ALGOLIA_APP_ID: "",
+    ALGOLIA_SEARCH_API_KEY: "",
+  };
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
 
   // Create or retrieve the Algolia client
