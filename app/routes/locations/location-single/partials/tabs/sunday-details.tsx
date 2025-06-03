@@ -4,14 +4,16 @@ import { WhatToExpect } from "../../components/tabs-component/sunday-details/wha
 
 export const SundayDetails = ({
   setReminderVideo,
+  isOnline,
 }: {
   setReminderVideo: string;
+  isOnline?: boolean;
 }) => {
   return (
     <div className="flex flex-col w-full">
-      <WhatToExpect setReminderVideo={setReminderVideo} />
-      <CampusAmenities />
-      <GetInvolved />
+      <WhatToExpect setReminderVideo={setReminderVideo} isOnline={isOnline} />
+      {!isOnline && <CampusAmenities />}
+      <GetInvolved isOnline={isOnline} />
     </div>
   );
 };
