@@ -29,24 +29,28 @@ const GoogleMap = ({
 export const VirtualTourTabs = ({
   wistiaId,
   address,
+  isOnline,
 }: {
   wistiaId: string;
-  address: string;
+  address?: string;
+  isOnline?: boolean;
 }) => {
   const { GOOGLE_MAPS_API_KEY } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="flex flex-col pt-8 rounded-[18px] border border-neutral-lighter">
       <Tabs.Root defaultValue="tour">
-        <TabContent
-          value="map"
-          address={address}
-          apiKey={GOOGLE_MAPS_API_KEY}
-          title="Visit Us"
-          description="Come experience our campus in person! Our friendly staff is ready
+        {!isOnline && (
+          <TabContent
+            value="map"
+            address={address}
+            apiKey={GOOGLE_MAPS_API_KEY}
+            title="Visit Us"
+            description="Come experience our campus in person! Our friendly staff is ready
               to give you a tour and answer any questions you may have about our
               programs and facilities."
-        />
+          />
+        )}
         <TabContent
           value="tour"
           title="Take a Virtual Tour"
@@ -55,8 +59,12 @@ export const VirtualTourTabs = ({
         />
 
         <Tabs.List className="flex gap-4 p-8">
-          <TourButton value="map">Map</TourButton>
-          <TourButton value="tour">Virtual Tour</TourButton>
+          {!isOnline && (
+            <>
+              <TourButton value="map">Map</TourButton>
+              <TourButton value="tour">Virtual Tour</TourButton>
+            </>
+          )}
         </Tabs.List>
       </Tabs.Root>
     </div>

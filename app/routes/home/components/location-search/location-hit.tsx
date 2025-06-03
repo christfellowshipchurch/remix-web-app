@@ -20,8 +20,8 @@ export type CampusHit = {
   serviceTimes: string;
 };
 export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
-  const { street1, street2, city } = hit.campusLocation;
-  const serviceTimes = formattedServiceTimes(hit.serviceTimes);
+  const { street1, street2, city } = hit?.campusLocation || {};
+  const serviceTimes = formattedServiceTimes(hit?.serviceTimes || "");
 
   return (
     <Link
@@ -32,10 +32,12 @@ export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
       <Icon name="map" color="#666666" size={20} />
       <div className="flex flex-col">
         <h3 className="text-xs text-black font-bold">{hit.campusName}</h3>
-        <p className="text-xs font-medium text-text-secondary">
-          {street1}
-          {street2 && ` ${street2}`}, {city}
-        </p>
+        {hit?.campusLocation && (
+          <p className="text-xs font-medium text-text-secondary">
+            {street1}
+            {street2 && ` ${street2}`}, {city}
+          </p>
+        )}
         <p className="text-xs text-black font-semibold">
           {serviceTimes.map((service, index) => (
             <span key={index}>

@@ -1,5 +1,5 @@
 export type LocationHitType = {
-  _geoloc: {
+  _geoloc?: {
     latitude: number;
     longitude: number;
   };
@@ -9,7 +9,7 @@ export type LocationHitType = {
   campusId: number;
   campusImage: string;
   campusInstagram: string;
-  campusLocation: {
+  campusLocation?: {
     city: string;
     postalCode: string;
     state: string;
@@ -24,13 +24,13 @@ export type LocationHitType = {
     photo: string;
   };
   digitalTourVideo: string;
-  mapLink: string;
-  mapUrl: string;
+  mapLink?: string;
+  mapUrl?: string;
   objectID: string;
   phoneNumber: string;
   serviceTimes: string;
-  setReminderVideo: string;
-  weekdaySchedule: {
+  setReminderVideo?: string;
+  weekdaySchedule?: {
     day: string;
     events: {
       event: string;
