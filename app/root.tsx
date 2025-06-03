@@ -4,9 +4,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
   useLocation,
 } from "react-router";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
@@ -15,10 +16,12 @@ import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 import "./styles/tailwind.css";
 import { cn } from "./lib/utils";
 import { shouldUseDarkMode } from "./components/navbar/navbar-routes";
+import { SiteBanner } from "./components/site-banner";
+import { loader } from "./routes/navbar/loader";
 
 export { ErrorBoundary } from "./error";
 
-export { loader } from "./routes/navbar/loader"; // root loader currently being used for the navbar data
+export { loader }; // root loader currently being used for the navbar data
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -41,12 +44,25 @@ export function Layout({ children }: { children: ReactNode }) {
 export default function App() {
   const location = useLocation();
   const currentPath = location.pathname;
+  const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
+  const { siteBanner } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (siteBanner && siteBanner?.content?.length > 0) {
+      setShowSiteBanner(true);
+    }
+  }, [siteBanner]);
 
   return (
     <AuthProvider>
       <CookieConsentProvider>
         <div className="min-h-screen flex flex-col">
-          {/* TODO: Fix navbar errors being logged in the console */}
+          <div className={cn(showSiteBanner ? "block" : "hidden")}>
+            <SiteBanner
+              content={siteBanner.content}
+              onClose={() => setShowSiteBanner(false)}
+            />
+          </div>
           <Navbar />
           <main
             className={cn(
