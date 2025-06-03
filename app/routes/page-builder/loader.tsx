@@ -17,7 +17,7 @@ import {
 import { format, parseISO } from "date-fns";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
-const fetchChildItems = async (id: string) => {
+export const fetchChildItems = async (id: string) => {
   const childReferences = await fetchRockData({
     endpoint: `ContentChannelItemAssociations`,
     queryParams: {
@@ -27,8 +27,21 @@ const fetchChildItems = async (id: string) => {
     },
   });
 
+  if (!childReferences) {
+    console.log("No valid child references found");
+    return [];
+  }
+
+  //ensure childReferences is an array
+  let childReferencesArray = [];
+  if (!Array.isArray(childReferences)) {
+    childReferencesArray = [childReferences];
+  } else {
+    childReferencesArray = childReferences;
+  }
+
   const children = await Promise.all(
-    childReferences.map(async (childReference: any) => {
+    childReferencesArray.map(async (childReference: any) => {
       return await fetchRockData({
         endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
         queryParams: {
@@ -81,7 +94,7 @@ export const fetchDefinedValue = async (guid: string) => {
   }
 };
 
-const mapPageBuilderChildItems = async (
+export const mapPageBuilderChildItems = async (
   children: any[]
 ): Promise<PageBuilderSection[]> => {
   return Promise.all(
