@@ -8,7 +8,7 @@ import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-r
 import type { User } from "~/providers/auth-provider";
 
 // Define the return type for the loader
-interface RootLoaderData {
+export interface RootLoaderData {
   userData: User | null;
   ministries: {
     featureCards: FeatureCard[];
@@ -48,17 +48,19 @@ const fetchFeatureCards = async () => {
 
 const fetchSiteBanner = async () => {
   const now = new Date();
+  // Format date to ISO 8601 to remove milliseconds and timezone
+  const formattedDate = now.toISOString().split(".")[0] + "Z";
 
   try {
     const siteBanner = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${now}'`,
+        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${formattedDate}'`,
         loadAttributes: "simple",
       },
     });
 
-    if (Array.isArray(siteBanner)) {
+    if (Array.isArray(siteBanner) && siteBanner.length > 0) {
       return siteBanner[0];
     } else {
       return siteBanner;
