@@ -33,11 +33,13 @@ import {
   watchReadListenData,
 } from "./navbar.data";
 import { MenuLink } from "./types";
+import { SiteBanner } from "../site-banner";
 
 export function Navbar() {
   // Hooks and state
   const { pathname } = useLocation();
-  const { ministries, watchReadListen } = useLoaderData<typeof loader>();
+  const { siteBanner, ministries, watchReadListen } =
+    useLoaderData<typeof loader>();
   const { isLarge, isXLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +52,14 @@ export function Navbar() {
   const initialMode = shouldUseDarkMode(pathname, isLarge) ? "dark" : "light";
   const [defaultMode, setDefaultMode] = useState<"light" | "dark">(initialMode);
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
+
+  const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (siteBanner && siteBanner?.content?.length > 0) {
+      setShowSiteBanner(true);
+    }
+  }, [siteBanner]);
 
   // Scroll handling effect
   useEffect(() => {
@@ -138,6 +148,12 @@ export function Navbar() {
       )}
       ref={navbarRef}
     >
+      <div className={cn(showSiteBanner ? "block" : "hidden")}>
+        <SiteBanner
+          content={siteBanner.content}
+          onClose={() => setShowSiteBanner(false)}
+        />
+      </div>
       <div
         className={cn(
           "w-full content-padding transition-colors duration-200",
