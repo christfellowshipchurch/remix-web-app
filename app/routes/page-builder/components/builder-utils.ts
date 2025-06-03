@@ -3,11 +3,11 @@ import { parseRockKeyValueList } from "~/lib/utils";
 import { ContentBlockData, ContentType, SectionType } from "../types";
 
 /**
- * Maps content channel IDs to their corresponding section types
+ * Maps content channel IDs to their corresponding content types
  */
 const CONTENT_TYPE_MAP: Record<string, ContentType> = {
   "78": "EVENT",
-  "63": "MESSAGE",
+  "63": "MESSAGES",
   "90": "REDIRECT_CARD",
   "43": "ARTICLES",
   "83": "DEVOTIONALS",
