@@ -464,4 +464,13 @@ input[type="search"]:focus::-webkit-search-cancel-button {
       padding-right: 4.5rem;
     }
   }
+
+  /* ------------ No Scroll Bar ------------ */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
