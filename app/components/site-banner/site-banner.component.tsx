@@ -9,7 +9,7 @@ export const SiteBanner = ({
   onClose: () => void;
 }) => {
   return (
-    <div className="bg-ocean content-padding flex items-center justify-center w-full sticky top-0 z-999">
+    <div className="bg-ocean content-padding flex items-center justify-center w-full relative top-0 z-999">
       <div className="text-white text-center py-2 flex justify-between items-center w-full">
         <HTMLRenderer html={content || ""} className="w-full" />
 
