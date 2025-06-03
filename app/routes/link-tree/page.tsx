@@ -3,6 +3,8 @@ import { LinkTreeLoaderData } from "./types";
 import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
+import { ResourceList } from "./components/resource-list.component";
+import { CollectionItem } from "../page-builder/types";
 
 const linkTreeButtonClass = cn(
   "w-full",
@@ -17,7 +19,7 @@ export function LinkTreePage() {
     summary,
     additionalResources,
     primaryCallToAction,
-    // cardCollections,
+    resourceCollections,
   } = useLoaderData<LinkTreeLoaderData>();
 
   return (
@@ -59,7 +61,13 @@ export function LinkTreePage() {
           ))}
         </div>
 
-        {/* todo: build out card collections */}
+        {resourceCollections.map((item) => (
+          <ResourceList
+            key={item.id}
+            title={item.name}
+            resources={item.collection as CollectionItem[]}
+          />
+        ))}
       </div>
     </div>
   );
