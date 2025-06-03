@@ -8,7 +8,7 @@ import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-r
 import type { User } from "~/providers/auth-provider";
 
 // Define the return type for the loader
-interface RootLoaderData {
+export interface RootLoaderData {
   userData: User | null;
   ministries: {
     featureCards: FeatureCard[];
