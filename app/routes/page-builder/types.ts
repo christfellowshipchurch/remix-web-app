@@ -9,8 +9,7 @@ export type SectionType =
 
 export type ContentType =
   | "EVENT"
-  | "MESSAGE"
-  | "SERMONS"
+  | "MESSAGES"
   | "ARTICLES"
   | "DEVOTIONALS"
   | "PODCASTS"
@@ -58,6 +57,7 @@ export type PageBuilderSection = {
   type: SectionType;
   content: string;
   attributeValues?: Record<string, RockAttributeValue["value"]>;
+  linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
   collection?: CollectionItem[];
 };
 
