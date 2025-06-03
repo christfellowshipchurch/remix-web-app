@@ -15,21 +15,26 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
   const {
     campusName,
-    campusLocation,
+    campusLocation = undefined,
     campusInstagram,
     campusPastor,
-    digitalTourVideo,
+    digitalTourVideo = "",
     phoneNumber,
     serviceTimes,
-    setReminderVideo,
-    weekdaySchedule,
+    setReminderVideo = "",
+    weekdaySchedule = [],
     additionalInfo,
     // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
-  // TODO: Figure out Spanish campus translation?
+  // TODO: Figure out Spanish campuses and their translations
   const isEspanol = campusName?.includes("Español");
+
+  const isOnline = campusName?.includes("Online");
+  if (isOnline) {
+    return <OnlineCampus hit={hit} />;
+  }
 
   return (
     <div className="w-full overflow-hidden">
@@ -70,3 +75,58 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     </div>
   );
 }
+
+const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
+  const {
+    campusName,
+    campusInstagram,
+    campusPastor,
+    digitalTourVideo = "",
+    phoneNumber,
+    serviceTimes,
+    additionalInfo,
+    // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
+    backgroundVideoMobile,
+    backgroundVideoDesktop,
+  } = hit;
+
+  return (
+    <div className="w-full overflow-hidden">
+      <DynamicHero
+        wistiaId={backgroundVideoDesktop || backgroundVideoMobile}
+        desktopHeight="800px"
+        customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
+        ctas={[
+          { title: "Set a Reminder", href: "#", isSetAReminder: true },
+          {
+            title: "Watch Live",
+            href: "https://www.youtube.com/user/christfellowship",
+          },
+        ]}
+      />
+      <CampusInfo
+        serviceTimes={serviceTimes}
+        phoneNumber={phoneNumber}
+        additionalInfo={additionalInfo}
+        campusName={campusName}
+        digitalTourVideo={digitalTourVideo}
+        isOnline={true}
+      />
+      <CampusTabs
+        tabs={[
+          SundayDetails,
+          () => (
+            <AboutUs
+              campusPastor={campusPastor}
+              campusName={campusName}
+              campusInstagram={campusInstagram}
+            />
+          ),
+          UpcomingEvents,
+        ]}
+        isOnline={true}
+      />
+      <LocationFAQ campusName={campusName} />
+    </div>
+  );
+};

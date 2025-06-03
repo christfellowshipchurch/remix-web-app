@@ -2,6 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import * as Select from "@radix-ui/react-select";
 import { ComponentType, useState } from "react";
 import { Icon } from "~/primitives/icon/icon";
+import { cn } from "~/lib/utils";
 
 const tabData = [
   {
@@ -22,27 +23,72 @@ const tabData = [
   },
 ];
 
+const OnlineTabsData = [
+  {
+    label: "Sunday Details",
+    value: "sunday-details",
+  },
+  {
+    label: "About Us",
+    value: "about-us",
+  },
+  {
+    label: "Upcoming Events",
+    value: "upcoming-events",
+  },
+];
+
 interface CampusTabsProps {
   tabs: ComponentType<any>[];
-  setReminderVideo: string;
+  setReminderVideo?: string;
+  isOnline?: boolean;
 }
 const tasListStyle =
   "absolute z-1 top-[-2rem] left-1/2 -translate-x-1/2 items-center justify-center rounded-[1rem] bg-white";
 
-export const CampusTabs = ({ tabs, setReminderVideo }: CampusTabsProps) => {
+export const CampusTabs = ({
+  tabs,
+  setReminderVideo,
+  isOnline,
+}: CampusTabsProps) => {
+  return (
+    <CustomTabs
+      data={isOnline ? OnlineTabsData : tabData}
+      tabs={tabs}
+      setReminderVideo={setReminderVideo}
+      isOnline={isOnline}
+    />
+  );
+};
+
+const CustomTabs = ({
+  data,
+  tabs,
+  setReminderVideo,
+  isOnline,
+}: {
+  data: any[];
+  tabs: ComponentType<any>[];
+  setReminderVideo?: string;
+  isOnline?: boolean;
+}) => {
   const [activeTab, setActiveTab] = useState("sunday-details");
 
   return (
     <Tabs.Root
       value={activeTab}
       onValueChange={setActiveTab}
-      className="w-full flex flex-coljustify-center relative"
+      className="w-full flex flex-col justify-center items-center relative"
     >
       {/* iPad/Desktop Tabs */}
       <Tabs.List
-        className={`hidden md:flex gap-4 w-full max-w-[668px] border border-neutral-lighter p-4 ${tasListStyle}`}
+        className={cn(
+          "hidden md:flex gap-4 w-full border border-neutral-lighter p-4",
+          isOnline ? "max-w-[520px]" : "max-w-[668px]",
+          tasListStyle
+        )}
       >
-        {tabData.map((tab, index) => (
+        {data.map((tab, index) => (
           <Tabs.Trigger
             key={index}
             value={tab.value}
@@ -54,10 +100,14 @@ export const CampusTabs = ({ tabs, setReminderVideo }: CampusTabsProps) => {
       </Tabs.List>
 
       {/* Mobile Tabs - Radix UI Select */}
-      <MobileTabsDropdown activeTab={activeTab} setActiveTab={setActiveTab} />
+      <MobileTabsDropdown
+        data={data}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
       <div className="w-full flex flex-col justify-center items-center">
-        {tabData.map((tab, index) => {
+        {data.map((tab, index) => {
           const TabComponent = tabs[index];
           return (
             <Tabs.Content
@@ -66,7 +116,10 @@ export const CampusTabs = ({ tabs, setReminderVideo }: CampusTabsProps) => {
               className="w-full data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300"
             >
               {TabComponent && (
-                <TabComponent setReminderVideo={setReminderVideo} />
+                <TabComponent
+                  setReminderVideo={setReminderVideo}
+                  isOnline={isOnline}
+                />
               )}
             </Tabs.Content>
           );
@@ -79,9 +132,11 @@ export const CampusTabs = ({ tabs, setReminderVideo }: CampusTabsProps) => {
 const MobileTabsDropdown = ({
   activeTab,
   setActiveTab,
+  data,
 }: {
   activeTab: string;
   setActiveTab: (value: string) => void;
+  data: any[];
 }) => {
   return (
     <div className={`w-3/4 md:hidden ${tasListStyle}`}>
@@ -102,7 +157,7 @@ const MobileTabsDropdown = ({
             sideOffset={4}
           >
             <Select.Viewport className="p-2">
-              {tabData.map((tab) => (
+              {data.map((tab) => (
                 <Select.Item
                   key={tab.value}
                   value={tab.value}
