@@ -9,8 +9,7 @@ export type SectionType =
 
 export type ContentType =
   | "EVENT"
-  | "MESSAGE"
-  | "SERMONS"
+  | "MESSAGES"
   | "ARTICLES"
   | "DEVOTIONALS"
   | "PODCASTS"
