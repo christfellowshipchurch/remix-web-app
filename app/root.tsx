@@ -48,7 +48,7 @@ export default function App() {
   const { siteBanner } = useLoaderData<typeof loader>();
 
   useEffect(() => {
-    if (siteBanner) {
+    if (siteBanner && siteBanner?.content?.length > 0) {
       setShowSiteBanner(true);
     }
   }, [siteBanner]);
