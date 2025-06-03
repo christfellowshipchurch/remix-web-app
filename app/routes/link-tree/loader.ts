@@ -3,6 +3,12 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { parseRockKeyValueList } from "~/lib/utils";
 import { LinkTreeLoaderData, RockLinkTreeData } from "./types";
 
+import {
+  fetchChildItems,
+  mapPageBuilderChildItems,
+} from "../page-builder/loader";
+import { PageBuilderSection } from "../page-builder/types";
+
 const fetchLinkTreePage = async (pathname: string) => {
   const linkTreePage = await fetchRockData({
     endpoint: "ContentChannelItems/GetByAttributeValue",
@@ -22,40 +28,6 @@ const fetchLinkTreePage = async (pathname: string) => {
   }
 
   return linkTreePage;
-};
-
-const fetchCardCollections = async (id: string) => {
-  const collections = await fetchRockData({
-    endpoint: `ContentChannelItems/GetChildren/${id}`,
-  });
-
-  if (!collections || !Array.isArray(collections) || collections.length === 0) {
-    console.log("No valid collections data found");
-    return [];
-  }
-
-  const cardCollections = await Promise.all(
-    collections.map(async (collection: any) => {
-      const items = await fetchRockData({
-        endpoint: `ContentChannelItems/GetChildren/${collection.Id}`,
-        cache: false,
-      });
-
-      return {
-        title: collection.Title || collection.title || "Untitled",
-        collectionType: collection.ContentChannelType?.Name || "Unknown",
-        items:
-          items?.map((item: any) => ({
-            title: item.Title || item.title || "Untitled",
-            url: item.attributeValues?.url?.value || "",
-            description: item.attributeValues?.description?.value,
-            imageUrl: item.attributeValues?.image?.value,
-          })) || [],
-      };
-    })
-  );
-
-  return cardCollections;
 };
 
 export const loader = async ({
@@ -89,8 +61,12 @@ export const loader = async ({
 
   const primaryCallToAction = parseRockKeyValueList(calltoActionKeyValues)[0]; // only returning the first call to action
 
-  // todo: Fix card collections for link tree(getChildren not working)
-  // const cardCollections = await fetchCardCollections(id);
+  const children = await fetchChildItems(id);
+  const collections = await mapPageBuilderChildItems(children);
+  // Ensure we only return resource collections
+  const resourceCollections = collections.filter(
+    (collection) => collection.type === "RESOURCE_COLLECTION"
+  ) as Array<PageBuilderSection & { type: "RESOURCE_COLLECTION" }>;
 
   return {
     id,
@@ -99,6 +75,6 @@ export const loader = async ({
     summary,
     additionalResources,
     primaryCallToAction,
-    cardCollections: [],
+    resourceCollections,
   };
 };
