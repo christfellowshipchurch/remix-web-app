@@ -1,3 +1,5 @@
+import { PageBuilderSection } from "../page-builder/types";
+
 export type RockLinkTreeData = {
   id: string;
   title: string;
@@ -16,14 +18,7 @@ export type LinkTreeLoaderData = {
   summary: string;
   additionalResources: Array<{ title: string; url: string }>;
   primaryCallToAction: { title: string; url: string } | undefined;
-  cardCollections: Array<{
-    title: string;
-    collectionType: string;
-    items: Array<{
-      title: string;
-      url: string;
-      description?: string;
-      imageUrl?: string;
-    }>;
-  }>;
+  resourceCollections: Array<
+    PageBuilderSection & { type: "RESOURCE_COLLECTION" }
+  >;
 };
