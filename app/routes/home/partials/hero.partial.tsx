@@ -10,10 +10,10 @@ export function DesktopHeroSection() {
       <div className="flex size-full relative">
         {/* Left Column */}
         <div
-          className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0"
+          className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0 bg-ocean"
           style={{
             background:
-              "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home/home-hero-bg.jpg') left/cover no-repeat",
+              "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home/home-hero-bg.webp') left/cover no-repeat",
           }}
         >
           <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto">
@@ -42,13 +42,20 @@ export function DesktopHeroSection() {
 
         {/* Right Column - Background Video */}
         <div className="flex-1 relative h-full">
-          <div className="absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <img
+              src="/assets/images/home/bg-vid.webp"
+              alt="Hero Background"
+              className="w-full h-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+            />
             <Video
-              src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+              wistiaId="ieybr1sv38"
               autoPlay
               muted
               loop
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover absolute inset-0"
             />
           </div>
         </div>
@@ -109,8 +116,15 @@ export const MobileHeroSection = () => {
   return (
     <section className="h-[75dvh] w-full bg-white pb-16 relative">
       <div className="absolute inset-0 w-full h-full z-1">
+        <img
+          src="/assets/images/home/bg-vid.webp"
+          alt="Hero Background"
+          className="w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+        />
         <Video
-          src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+          wistiaId="ieybr1sv38"
           autoPlay
           muted
           loop
