@@ -45,7 +45,7 @@ export default function App() {
   const currentPath = location.pathname;
 
   return (
-    <GTMProvider gtmId="G-BNECZVHLCV">
+    <GTMProvider gtmId="GTM-PFW26V4V">
       <AuthProvider>
         <CookieConsentProvider>
           <div className="min-h-screen flex flex-col">
