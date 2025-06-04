@@ -77,12 +77,14 @@ export const BottomBar = () => {
           heading="Featured Item"
           title="Featured Item Text"
           url="sms:441-441"
+          position={1}
         />
         <BottomBarItem
           iconName="church"
           heading="Comunidad Hispana"
           title="Iglesia en Español"
           url="#cfe"
+          position={2}
         />
       </div>
     </div>
@@ -94,16 +96,21 @@ const BottomBarItem = ({
   heading,
   title,
   url,
+  position,
 }: {
   iconName: IconName;
   heading: string;
   title: string;
   url: string;
+  position: number;
 }) => {
   return (
     <Link
       to={url}
       className="bg-navy-subdued lg:bg-transparent rounded-xl lg:rounded-none flex lg:items-center lg:justify-center gap-4 lg:gap-2 group p-4 lg:p-0 w-full lg:w-auto md:max-w-[304px] lg:max-w-none"
+      data-gtm="featured-item"
+      data-position={position}
+      data-item-title={title}
     >
       <div className="bg-ocean lg:bg-dark-navy group-hover:bg-ocean transition-colors duration-300 rounded-sm p-2 ">
         <Icon name={iconName} color="white" />

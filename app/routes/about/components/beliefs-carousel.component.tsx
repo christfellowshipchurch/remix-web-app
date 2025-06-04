@@ -34,6 +34,7 @@ export function BeliefsCarousel() {
                   "md:basis-[50%]",
                   "lg:basis-[33.333%]"
                 )}
+                data-belief-title={belief.title}
               >
                 <div
                   className={cn(

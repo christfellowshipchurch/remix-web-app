@@ -35,13 +35,19 @@ const DesktopVersion = () => {
           </div>
           {/* Buttons Section */}
           <div className="flex gap-4">
-            <Link to="https://apps.apple.com/us/app/christ-fellowship-app/id785979426">
+            <Link
+              to="https://apps.apple.com/us/app/christ-fellowship-app/id785979426"
+              data-platform="ios"
+            >
               <img
                 src="/assets/images/home/apple-store.png"
                 className="w-[170px] h-[54px]"
               />
             </Link>
-            <Link to="https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share">
+            <Link
+              to="https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share"
+              data-platform="android"
+            >
               <img
                 src="/assets/images/home/google-play.png"
                 className="w-[170px] h-[54px]"
@@ -86,13 +92,19 @@ const MobileVersion = () => {
 
         {/* Buttons Section */}
         <div className="flex gap-4">
-          <Link to="https://apps.apple.com/us/app/christ-fellowship-app/id785979426">
+          <Link
+            to="https://apps.apple.com/us/app/christ-fellowship-app/id785979426"
+            data-platform="ios"
+          >
             <img
               src="/assets/images/home/apple-store.png"
               className="w-[170px] h-[54px]"
             />
           </Link>
-          <Link to="https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share">
+          <Link
+            to="https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share"
+            data-platform="android"
+          >
             <img
               src="/assets/images/home/google-play.png"
               className="w-[170px] h-[54px]"
