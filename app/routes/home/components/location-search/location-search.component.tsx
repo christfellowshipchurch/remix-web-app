@@ -148,6 +148,7 @@ export const LocationSearch = () => {
           <SearchBar
             onSearchStateChange={setIsSearching}
             onSearchSubmit={handleSearch}
+            data-gtm="hero-cta"
           />
           {isSearching && (
             <SearchPopup setUseCurrentLocation={setUseCurrentLocation} />

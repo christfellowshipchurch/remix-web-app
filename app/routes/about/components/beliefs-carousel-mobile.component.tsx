@@ -94,6 +94,7 @@ export function BeliefsCarouselMobile() {
                   "md:basis-[50%]",
                   "lg:basis-[33.333%]"
                 )}
+                data-belief-title={belief.title}
               >
                 <div className={cn("px-6 py-12 bg-dark-navy h-full")}>
                   <h4 className="text-3xl text-background-secondary font-extrabold mb-4">
