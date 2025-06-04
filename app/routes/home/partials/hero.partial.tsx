@@ -6,7 +6,7 @@ import { Video } from "~/primitives/video/video.primitive";
 
 export function DesktopHeroSection() {
   return (
-    <section className="h-screen w-full bg-white pb-16">
+    <section className="h-[90dvh] w-full bg-white pb-16">
       <div className="flex size-full relative">
         {/* Left Column */}
         <img
@@ -32,7 +32,7 @@ export function DesktopHeroSection() {
               journey is honored, and you'll find genuine connection and
               relevant answers for your life right here in Florida.
             </p>
-            <div className="flex w-fit relative pb-10 z-2">
+            <div className="flex w-fit relative pb-10 z-3">
               {/* Location Search */}
               <LocationSearch />
             </div>
@@ -71,7 +71,7 @@ export function DesktopHeroSection() {
 export const BottomBar = () => {
   return (
     <div className="w-full px-8 py-8 md:py-12 md:pt-8 md:pb-16 lg:py-12 bg-white xl:pl-0 xl:mx-auto ">
-      <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-4 md:gap-8 lg:gap-12 xl:max-w-[600px] xl:mx-auto">
+      <div className="flex flex-col md:flex-row justify-center lg:justify-center gap-4 md:gap-8 lg:gap-12 xl:max-w-[600px] xl:mx-auto">
         <BottomBarItem
           iconName="messageSquareDetail"
           heading="Featured Item"
@@ -125,7 +125,7 @@ const BottomBarItem = ({
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-[75dvh] w-full bg-white pb-16 relative max-h-[750px]">
+    <section className="h-[75dvh] w-full bg-white pb-16 relative max-h-[600px] md:max-h-[750px]">
       <div className="absolute inset-0 w-full h-full z-1">
         <img
           src="/assets/images/home/bg-vid.webp"
@@ -144,7 +144,7 @@ export const MobileHeroSection = () => {
       </div>
       <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent to-dark-navy z-2" />
       <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pr-8 md:pr-0 pt-16 h-full justify-center ml-auto">
-        <h1 className="text-[80px] text-white font-extrabold leading-none">
+        <h1 className="text-[64px] md:text-[80px] text-white font-extrabold leading-none">
           There's <br className="hidden md:block " />
           <span className="text-ocean">
             something <br />

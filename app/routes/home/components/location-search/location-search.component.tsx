@@ -138,9 +138,9 @@ export const LocationSearch = () => {
         {/* Search Bar */}
         <div
           className={cn(
-            "relative w-full md:w-90 lg: z-50 pt-4 rounded-[1rem] transition-all duration-300",
+            "relative w-full md:w-90 lg: z-50 pt-10 rounded-[1rem] transition-all duration-300",
             {
-              "bg-white p-4 shadow-md": isSearching,
+              "bg-white p-4 shadow-md -translate-y-35": isSearching,
               "bg-transparent": !isSearching,
             }
           )}
