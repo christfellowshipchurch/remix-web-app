@@ -9,15 +9,17 @@ export function DesktopHeroSection() {
     <section className="h-screen w-full bg-white pb-16">
       <div className="flex size-full relative">
         {/* Left Column */}
-        <div
-          className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0"
-          style={{
-            background:
-              "linear-gradient(rgba(0, 146, 188, 0.9), rgba(0, 146, 188, 0.9)), url('/assets/images/home/home-hero-bg.jpg') left/cover no-repeat",
-          }}
-        >
+        <img
+          className="absolute inset-0 w-1/2 h-full object-cover object-left z-0"
+          src="/assets/images/home/home-hero-bg.webp"
+          alt="Hero Background"
+          loading="eager"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
+        <div className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
           <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto">
-            <h1 className="text-[100px] text-white font-extrabold leading-none max-w-[600px]">
+            <h1 className="text-[100px] text-white font-extrabold leading-none max-w-[600px] z-2">
               There's{" "}
               <span className="text-dark-navy">
                 something <br />
@@ -25,30 +27,39 @@ export function DesktopHeroSection() {
               </span>{" "}
               you
             </h1>
-            <p className="text-white max-w-[540px] text-xl">
+            <p className="text-white max-w-[540px] text-xl z-2">
               Discover a community where your questions are welcome, your
               journey is honored, and you'll find genuine connection and
               relevant answers for your life right here in Florida.
             </p>
-            <div className="flex w-fit relative pb-10">
+            <div className="flex w-fit relative pb-10 z-2">
               {/* Location Search */}
               <LocationSearch />
             </div>
           </div>
 
           {/* Bottom Bar */}
-          <BottomBar />
+          <div className="z-2 w-full">
+            <BottomBar />
+          </div>
         </div>
 
         {/* Right Column - Background Video */}
         <div className="flex-1 relative h-full">
-          <div className="absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <img
+              src="/assets/images/home/bg-vid.webp"
+              alt="Hero Background"
+              className="w-full h-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+            />
             <Video
-              src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+              wistiaId="ieybr1sv38"
               autoPlay
               muted
               loop
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover absolute inset-0"
             />
           </div>
         </div>
@@ -109,8 +120,15 @@ export const MobileHeroSection = () => {
   return (
     <section className="h-[75dvh] w-full bg-white pb-16 relative">
       <div className="absolute inset-0 w-full h-full z-1">
+        <img
+          src="/assets/images/home/bg-vid.webp"
+          alt="Hero Background"
+          className="w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+        />
         <Video
-          src="https://embed.wistia.com/deliveries/bffc3ff7cd3cca1aa026cc31400fa973.mp4"
+          wistiaId="ieybr1sv38"
           autoPlay
           muted
           loop
