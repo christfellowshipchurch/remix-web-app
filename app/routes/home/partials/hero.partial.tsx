@@ -125,12 +125,12 @@ const BottomBarItem = ({
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-[75dvh] w-full bg-white pb-16 relative">
+    <section className="h-[75dvh] w-full bg-white pb-16 relative max-h-[750px]">
       <div className="absolute inset-0 w-full h-full z-1">
         <img
           src="/assets/images/home/bg-vid.webp"
           alt="Hero Background"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover absolute inset-0 z-1"
           loading="eager"
           fetchPriority="high"
         />
@@ -139,12 +139,12 @@ export const MobileHeroSection = () => {
           autoPlay
           muted
           loop
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover absolute inset-0 z-2"
         />
       </div>
       <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent to-dark-navy z-2" />
       <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pr-8 md:pr-0 pt-16 h-full justify-center ml-auto">
-        <h1 className="text-[64px] text-white font-extrabold leading-none">
+        <h1 className="text-[80px] text-white font-extrabold leading-none">
           There's <br className="hidden md:block " />
           <span className="text-ocean">
             something <br />
@@ -154,7 +154,9 @@ export const MobileHeroSection = () => {
         </h1>
 
         {/* Location Search */}
-        <LocationSearch />
+        <div className="mt-12">
+          <LocationSearch />
+        </div>
       </div>
     </section>
   );
