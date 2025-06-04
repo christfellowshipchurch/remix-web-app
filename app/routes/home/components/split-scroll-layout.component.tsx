@@ -62,10 +62,12 @@ export default function SplitScrollLayout() {
     <>
       {/* Mobile Layout */}
       <div className="md:hidden no-scrollbar pt-20 flex flex-col gap-20">
-        {chanceContent.map((section) => (
+        {chanceContent.map((section, index) => (
           <div
             key={section.title}
             className="flex flex-col items-center p-6 max-w-sm mx-auto"
+            data-card-title={section.title}
+            data-card-index={index}
           >
             <img
               src={section.image}
@@ -112,6 +114,8 @@ export default function SplitScrollLayout() {
               key={section.title}
               ref={(el) => (sectionRefs.current[index] = el)}
               className="flex items-center p-12 snap-center h-screen"
+              data-card-title={section.title}
+              data-card-index={index}
             >
               <div className="w-1/2 ml-auto">
                 <h2 className="text-3xl font-normal text-pretty">
