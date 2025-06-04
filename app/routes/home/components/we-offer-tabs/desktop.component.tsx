@@ -84,6 +84,7 @@ export const WhatWeOfferDesktop = () => {
                   "rounded-full border-transparent text-white hover:border-ocean py-3 px-6",
                   "data-[state=active]:text-white data-[state=active]:bg-ocean border-white data-[state=active]:border-ocean"
                 )}
+                data-tab={tab.value}
               >
                 <p>{tab.label}</p>
               </Tabs.Trigger>
@@ -125,6 +126,8 @@ export const WhatWeOfferDesktop = () => {
                     <WhatWeOfferCard
                       content={content}
                       middleCard={index === 1 && tab.content.length === 3}
+                      data-card-title={content.label}
+                      data-tab-context={tab.value}
                     />
                   </div>
                 ))}

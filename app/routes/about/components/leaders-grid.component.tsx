@@ -58,6 +58,7 @@ const LeaderCard = ({
           "cursor-pointer"
         )}
         onClick={() => setOpenModal(true)}
+        data-leader-name={leader.leaderData.name}
       >
         <div className="relative mb-6">
           <div className="relative overflow-hidden rounded-[8px]">
