@@ -53,12 +53,13 @@ export default function App() {
             <main
               className={cn(
                 "flex-1",
-                `lg:${shouldUseDarkMode(currentPath, true) && "mt-[-100px]"} ${
+                `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
                   shouldUseDarkMode(currentPath) && "mt-[-100px]"
                 }` // This is to account for the navbar height when dark mode is enabled
               )}
             >
-              <Outlet />
+              {/* We are moving the outlet only for the home page to specific refs */}
+              {currentPath !== "/" && <Outlet />}
             </main>
             <Footer />
           </div>
