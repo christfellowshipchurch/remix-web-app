@@ -10,7 +10,6 @@ import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
 
-// Create a component to track search state
 export function GroupsSearchPopup({
   setIsOpen,
   setSelectedLocation,
@@ -55,7 +54,7 @@ export function GroupsSearchPopup({
   return (
     <div
       className={cn(
-        "w-[300px] absolute top-16 -left-4 pt-2 bg-white z-3 rounded-b-[8px] shadow-xl",
+        "w-full lg:w-[300px] absolute left-0 top-4 md:top-16 md:-left-4 pt-2 bg-white z-3 rounded-b-[8px] shadow-xl",
         isOpen ? "block" : "hidden"
       )}
     >
@@ -63,6 +62,7 @@ export function GroupsSearchPopup({
       <div className="flex gap-3 w-full pb-4 shadow-md px-4">
         <div
           onClick={() => {
+            setSelectedLocation(null);
             setIsOpen(false);
             refine("");
           }}
@@ -88,10 +88,10 @@ export function GroupsSearchPopup({
       </div>
 
       {/* Hits */}
-      <div className="w-full pt-4 z-4 overflow-hidden min-h-[332px] px-4">
+      <div className="w-full pt-4 z-4 overflow-hidden min-h-fit px-4">
         <Hits
           classNames={{
-            root: "flex flex-col overflow-y-auto max-h-[300px]",
+            root: "flex flex-col overflow-y-auto max-h-screen",
             item: "flex w-full rounded-xl transition-transform duration-300 border-[1px] border-[#E8E8E8] [&:first-child]:!border-navy hover:border-navy",
             list: "flex flex-col gap-3",
           }}
