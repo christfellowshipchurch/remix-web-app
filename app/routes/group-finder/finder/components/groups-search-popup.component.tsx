@@ -54,12 +54,12 @@ export function GroupsSearchPopup({
   return (
     <div
       className={cn(
-        "w-full lg:w-[300px] absolute left-0 top-4 md:top-16 md:-left-4 pt-2 bg-white z-3 rounded-b-[8px] shadow-xl",
+        "w-full lg:w-[400px] absolute left-1/2 -translate-x-1/2 top-4 md:top-0 pt-2 bg-white z-3 rounded-b-[8px] shadow-md",
         isOpen ? "block" : "hidden"
       )}
     >
       {/* Search Box */}
-      <div className="flex gap-3 w-full pb-4 shadow-md px-4">
+      <div className="flex gap-3 w-full pb-4 shadow-sm px-4">
         <div
           onClick={() => {
             setSelectedLocation(null);
@@ -88,7 +88,7 @@ export function GroupsSearchPopup({
       </div>
 
       {/* Hits */}
-      <div className="w-full pt-4 z-4 overflow-hidden min-h-fit px-4">
+      <div className="w-full pt-4 z-4 overflow-hidden max-h-[500px] px-4 pb-4">
         <Hits
           classNames={{
             root: "flex flex-col overflow-y-auto max-h-screen",

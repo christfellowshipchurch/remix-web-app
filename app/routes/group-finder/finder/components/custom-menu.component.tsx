@@ -1,7 +1,6 @@
 import { useMenu, UseMenuProps } from "react-instantsearch";
 import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { Button } from "~/primitives/button/button.primitive";
 
 interface MenuSelectProps extends UseMenuProps {
   placeholder?: string;

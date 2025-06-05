@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "~/primitives/Modal";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
-import { DesktopGroupFilters } from "./group-filters";
+import { DesktopGroupFilters } from "../../../routes/group-finder/finder/components/group-filters";
 import Icon from "~/primitives/icon";
 import { cn } from "~/lib/utils";
 
