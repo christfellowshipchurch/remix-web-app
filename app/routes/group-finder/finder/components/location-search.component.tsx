@@ -13,11 +13,14 @@ import { cn } from "~/lib/utils";
 export const GroupsLocationSearch = ({
   selectedLocation,
   setSelectedLocation,
+  isSearchOpen,
+  setIsSearchOpen,
 }: {
   selectedLocation: string | null;
   setSelectedLocation: (location: string | null) => void;
+  isSearchOpen: boolean;
+  setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -99,7 +102,7 @@ export const GroupsLocationSearch = ({
               "border border-ocean": selectedLocation,
             }
           )}
-          onClick={() => setIsOpen(true)}
+          onClick={() => setIsSearchOpen(!isSearchOpen)}
         >
           <Icon
             name="mapFilled"
@@ -118,9 +121,9 @@ export const GroupsLocationSearch = ({
 
         {/* Search Popup */}
         <GroupsSearchPopup
-          setIsOpen={setIsOpen}
+          setIsOpen={setIsSearchOpen}
           setSelectedLocation={setSelectedLocation}
-          isOpen={isOpen}
+          isOpen={isSearchOpen}
           onSearchSubmit={handleSearch}
         />
       </InstantSearch>

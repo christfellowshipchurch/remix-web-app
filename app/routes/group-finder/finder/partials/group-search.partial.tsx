@@ -9,7 +9,7 @@ import {
 } from "react-instantsearch";
 
 import { GroupFiltersModal } from "~/components";
-import { DesktopGroupFilters } from "~/components/modals/group-filters/group-filters";
+import { DesktopGroupFilters } from "~/routes/group-finder/finder/components/group-filters";
 
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
@@ -24,6 +24,7 @@ export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -43,7 +44,7 @@ export const GroupSearch = () => {
         <ResponsiveConfigure selectedLocation={selectedLocation} />
         <div className="flex flex-col">
           {/* Filters Section */}
-          <div className="relative md:static content-padding border-b-2 border-black/10 border-solid">
+          <div className="relative md:static content-padding border-b-2 border-black/10 border-solid select-none">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto">
               {/* Search Boxes */}
               <div className="flex gap-4">
@@ -67,6 +68,8 @@ export const GroupSearch = () => {
                 </div>
                 {/* Location Select Box */}
                 <GroupsLocationSearch
+                  isSearchOpen={isSearchOpen}
+                  setIsSearchOpen={setIsSearchOpen}
                   selectedLocation={selectedLocation}
                   setSelectedLocation={setSelectedLocation}
                 />
@@ -74,7 +77,7 @@ export const GroupSearch = () => {
 
               {/* Desktop Filters */}
               <div className="hidden md:block">
-                <DesktopGroupFilters />
+                <DesktopGroupFilters setIsSearchOpen={setIsSearchOpen} />
               </div>
 
               {/* Mobile Filters */}
