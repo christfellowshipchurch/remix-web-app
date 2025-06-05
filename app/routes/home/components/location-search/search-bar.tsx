@@ -55,7 +55,7 @@ export const SearchBar = ({
       <SearchBox
         placeholder="Search by location, or zip code"
         classNames={{
-          root: "flex-grow w-full max-w-98",
+          root: "flex-grow w-full",
           form: "flex",
           input: `w-full justify-center text-black px-3 outline-none appearance-none`,
           reset: "hidden",
