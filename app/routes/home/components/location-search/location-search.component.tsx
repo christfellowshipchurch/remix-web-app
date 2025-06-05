@@ -100,7 +100,8 @@ export const LocationSearch = () => {
         "px-5 left-0 -bottom-2 max-w-[100vw] justify-end",
         "md:px-0 md:left-auto md:bottom-1/4 md:max-w-auto md:size-auto md:justify-start",
         "lg:bottom-4 lg:size-full",
-        isSearching && "-bottom-80"
+        isSearching &&
+          "md:left-1/2 md:-translate-x-1/2 lg:left-auto lg:translate-x-0"
       )}
       ref={locationSearchBarRef}
     >
@@ -138,9 +139,10 @@ export const LocationSearch = () => {
         {/* Search Bar */}
         <div
           className={cn(
-            "relative w-full md:w-90 lg: z-50 pt-10 rounded-[1rem] transition-all duration-300",
+            "relative w-full md:w-90 z-50 pt-10 rounded-[1rem] transition-all duration-300",
             {
-              "bg-white p-4 shadow-md -translate-y-35": isSearching,
+              "bg-white p-4 shadow-md lg:-translate-y-25 sm:w-[450px] md:w-[620px] lg:w-[520px]":
+                isSearching,
               "bg-transparent": !isSearching,
             }
           )}

@@ -154,7 +154,7 @@ export const MobileHeroSection = () => {
         </h1>
 
         {/* Location Search */}
-        <div className="mt-12">
+        <div className="mt-12 lg:w-full lg:relative">
           <LocationSearch />
         </div>
       </div>
