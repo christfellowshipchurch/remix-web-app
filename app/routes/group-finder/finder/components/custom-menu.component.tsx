@@ -1,4 +1,7 @@
 import { useMenu, UseMenuProps } from "react-instantsearch";
+import * as Select from "@radix-ui/react-select";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { Button } from "~/primitives/button/button.primitive";
 
 interface MenuSelectProps extends UseMenuProps {
   placeholder?: string;
@@ -14,24 +17,48 @@ export function MenuSelect({
   };
 
   return (
-    <select
-      className="w-full px-2 py-1 border-2 border-[#D0D0CE] rounded-md focus:outline-none"
-      style={{
-        appearance: "none",
-        background:
-          "url('/assets/icons/chevron-down.svg') no-repeat right 0.5rem center/1.5rem",
-      }}
-      value={selectedValue}
-      onChange={(event) => {
-        refine((event.target as HTMLSelectElement).value);
-      }}
+    <Select.Root
+      value={selectedValue || undefined}
+      onValueChange={(value) => refine(value)}
     >
-      <option value="">{placeholder}</option>
-      {items.map((item) => (
-        <option key={item.value} value={item.value}>
-          {item.label}
-        </option>
-      ))}
-    </select>
+      <Select.Trigger className="flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold">
+        <Select.Value placeholder={placeholder} />
+        <Select.Icon>
+          <ChevronDownIcon className="h-4 w-4" />
+        </Select.Icon>
+      </Select.Trigger>
+
+      <Select.Portal>
+        <Select.Content
+          className="overflow-hidden bg-white rounded-md shadow-lg border border-[#666666]"
+          position="popper"
+          sideOffset={4}
+        >
+          <Select.Viewport>
+            <Select.Group>
+              {items.map((item) => (
+                <Select.Item
+                  key={item.value}
+                  value={item.value}
+                  className="relative flex items-center px-3 py-2 rounded-sm cursor-pointer select-none hover:bg-ocean/10 focus:bg-ocean/10 focus:outline-none"
+                >
+                  <div className="w-4 h-4 border-2 border-ocean rounded-sm mr-2 flex items-center justify-center">
+                    {item.isRefined && (
+                      <div className="w-2 h-2 bg-ocean rounded-sm" />
+                    )}
+                  </div>
+                  <Select.ItemText className="text-text-primary">
+                    {item.label}
+                  </Select.ItemText>
+                </Select.Item>
+              ))}
+              <div className="flex items-center justify-center mt-4 py-2 border-t border-neutral_lighter">
+                <div className="font-semibold cursor-pointer">Cancel</div>
+              </div>
+            </Select.Group>
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
   );
 }

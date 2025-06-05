@@ -1,5 +1,6 @@
 import { RefinementList } from "react-instantsearch";
-import { CustomClearRefinements } from "~/routes/group-finder/finder/components/custom-clear-refinements.component";
+import { Button } from "~/primitives/button/button.primitive";
+import Icon from "~/primitives/icon";
 import { MenuSelect } from "~/routes/group-finder/finder/components/custom-menu.component";
 
 export const CustomRefinementList = ({ attribute }: { attribute: string }) => {
@@ -21,38 +22,22 @@ export const CustomRefinementList = ({ attribute }: { attribute: string }) => {
   );
 };
 
-export function GroupFilters() {
+export function DesktopGroupFilters() {
   return (
-    <div className="flex flex-col w-full gap-12 bg-white col-span-1 h-fit min-w-[300px]">
-      <div className="flex flex-col gap-3 text-black">
-        <div className="flex justify-between">
-          <h3 className="font-bold text-xl">Campus</h3>
-          <CustomClearRefinements />
+    <div className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center">
+      <div className="hidden lg:flex gap-4 w-full">
+        <MenuSelect placeholder="Meeting Type" attribute="meetingType" />
+        <div className="hidden xl:flex gap-4">
+          <MenuSelect placeholder="Group Type" attribute="subPreferences" />
+          <MenuSelect placeholder="Frequency" attribute="meetingDay" />
+          <MenuSelect placeholder="People" attribute="preferences" />
         </div>
-        <MenuSelect
-          placeholder="Select a campus..."
-          attribute="campusName"
-          limit={20}
-        />
       </div>
-      <div className="flex flex-col gap-3">
-        <h3 className="font-bold text-xl">Meeting Type</h3>
-        <MenuSelect
-          placeholder="Select a meeting type..."
-          attribute="meetingType"
-        />
-      </div>
-      <div className="flex flex-col gap-3">
-        <h3 className="font-bold text-xl">Hubs</h3>
-        <CustomRefinementList attribute="preferences" />
-      </div>
-      <div className="flex flex-col gap-3">
-        <h3 className="font-bold text-xl">Types of Groups</h3>
-        <CustomRefinementList attribute="subPreferences" />
-      </div>
-      <div className="flex flex-col gap-3">
-        <h3 className="font-bold text-xl">Meeting Day</h3>
-        <CustomRefinementList attribute="meetingDay" />
+      <div className="w-full items-center gap-4 h-full hidden md:flex xl:hidden">
+        <div className="w-px h-full bg-text-secondary" />
+        <Button intent="secondary" className="w-full max-w-[150px]">
+          All filters
+        </Button>
       </div>
     </div>
   );

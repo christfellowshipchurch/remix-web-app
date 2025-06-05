@@ -8,10 +8,16 @@ import { globalSearchClient } from "~/routes/search/route";
 import { LoaderReturnType } from "~/routes/group-finder/loader";
 import { useEffect, useState } from "react";
 import { GroupsSearchPopup } from "./groups-search-popup.component";
+import { cn } from "~/lib/utils";
 
-export const GroupsLocationSearch = () => {
+export const GroupsLocationSearch = ({
+  selectedLocation,
+  setSelectedLocation,
+}: {
+  selectedLocation: string | null;
+  setSelectedLocation: (location: string | null) => void;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -63,7 +69,7 @@ export const GroupsLocationSearch = () => {
   }, [geocodeFetcher.data]);
 
   return (
-    <div className="flex relative w-[266px]">
+    <div className="flex md:relative w-[266px]">
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
@@ -84,11 +90,28 @@ export const GroupsLocationSearch = () => {
         )}
         {/* Group Search Box */}
         <div
-          className="w-full md:w-[266px] flex items-center rounded-[8px] bg-[#EDF3F8] focus-within:border-ocean py-2 cursor-pointer"
+          className={cn(
+            "w-full flex items-center rounded-[8px] bg-[#EDF3F8] py-2 cursor-pointer",
+            "md:w-[240px] lg:w-[266px]",
+            "focus-within:border-ocean",
+            "transition-all duration-300",
+            {
+              "border border-ocean": selectedLocation,
+            }
+          )}
           onClick={() => setIsOpen(true)}
         >
-          <Icon name="mapFilled" className="text-[#666666] ml-3" />
-          <div className="w-full text-xl px-2 focus:outline-none text-text-secondary">
+          <Icon
+            name="mapFilled"
+            className={cn("text-[#666666]", "ml-3", {
+              "text-ocean": selectedLocation,
+            })}
+          />
+          <div
+            className={cn(
+              "w-full text-xl px-2 focus:outline-none text-text-secondary transition-all duration-300"
+            )}
+          >
             {selectedLocation || "Location"}
           </div>
         </div>

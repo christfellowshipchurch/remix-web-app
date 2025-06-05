@@ -19,17 +19,44 @@ export type CampusHit = {
   };
   serviceTimes: string;
 };
-export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
+export function HitComponent({
+  setSelectedLocation,
+  redirect = true,
+  hit,
+}: {
+  hit: Hit<CampusHit>;
+  redirect?: boolean;
+  setSelectedLocation?: (location: string) => void;
+}) {
+  if (redirect) {
+    return (
+      <Link
+        to={`/locations/${hit.campusUrl}`}
+        prefetch="intent"
+        className="flex gap-2 w-full p-2"
+      >
+        <HitContent hit={hit} />
+      </Link>
+    );
+  }
+  return (
+    <div
+      className="flex gap-2 w-full p-2"
+      onClick={() => setSelectedLocation?.(hit.campusName)}
+    >
+      <HitContent hit={hit} />
+    </div>
+  );
+}
+
+const HitContent = ({ hit }: { hit: Hit<CampusHit> }) => {
   const { street1, street2, city } = hit?.campusLocation || {};
   const serviceTimes = formattedServiceTimes(hit?.serviceTimes || "");
+  const isOnline = hit?.campusUrl === "cf-everywhere";
 
   return (
-    <Link
-      to={`/locations/${hit.campusUrl}`}
-      prefetch="intent"
-      className="flex gap-2 w-full p-2"
-    >
-      <Icon name="map" color="#666666" size={20} />
+    <>
+      <Icon name={isOnline ? "globe" : "map"} color="#666666" size={20} />
       <div className="flex flex-col">
         <h3 className="text-xs text-black font-bold">{hit.campusName}</h3>
         {hit?.campusLocation && (
@@ -46,6 +73,6 @@ export function HitComponent({ hit }: { hit: Hit<CampusHit> }) {
           ))}
         </p>
       </div>
-    </Link>
+    </>
   );
-}
+};
