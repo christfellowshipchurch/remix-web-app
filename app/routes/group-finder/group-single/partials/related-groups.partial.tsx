@@ -1,9 +1,8 @@
-import { Configure, InstantSearch, RefinementList } from "react-instantsearch";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
+import { Configure, InstantSearch } from "react-instantsearch";
 import { Hits } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
 import { useMemo } from "react";
-import { HitComponent } from "../../finder/components/hit-component.component";
+import { HitComponent } from "../../finder/components/location-search/hit-component.component";
 import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { useResponsive } from "~/hooks/use-responsive";
