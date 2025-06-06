@@ -8,23 +8,26 @@ import {
   Stats,
 } from "react-instantsearch";
 
-import { GroupFiltersModal } from "~/components";
-import { DesktopGroupFilters } from "~/routes/group-finder/finder/components/group-filters";
+import { DesktopGroupFilters } from "~/routes/group-finder/finder/components/popups/group-filters";
 
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
 
-import { CustomPagination } from "../components/custom-pagination.component";
+import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
-import { HitComponent } from "../components/hit-component.component";
-import { GroupsLocationSearch } from "../components/location-search.component";
+import { HitComponent } from "../components/location-search/hit-component.component";
+import { GroupsLocationSearch } from "../components/location-search/location-search.component";
 import { useState } from "react";
+import { MobileContent } from "../components/popups/mobile-filters.component";
+import { Button } from "~/primitives/button/button.primitive";
+import { cn } from "~/lib/utils";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -44,7 +47,7 @@ export const GroupSearch = () => {
         <ResponsiveConfigure selectedLocation={selectedLocation} />
         <div className="flex flex-col">
           {/* Filters Section */}
-          <div className="relative md:static content-padding border-b-2 border-black/10 border-solid select-none">
+          <div className="relative md:static content-padding select-none">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto">
               {/* Search Boxes */}
               <div className="flex gap-4">
@@ -79,11 +82,28 @@ export const GroupSearch = () => {
               <div className="hidden md:block">
                 <DesktopGroupFilters setIsSearchOpen={setIsSearchOpen} />
               </div>
+            </div>
+          </div>
 
-              {/* Mobile Filters */}
-              <div className="md:hidden">
-                <GroupFiltersModal />
-              </div>
+          {/* Mobile Filters */}
+          <div className="md:hidden bg-white pb-4 border-b-2 border-black/10 border-solid select-none">
+            <div className="content-padding">
+              <Button
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                intent="secondary"
+                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-[8px]"
+              >
+                <Icon name="sliderAlt" className="text-navy" />
+                All Filters
+              </Button>
+            </div>
+            <div
+              className={cn(
+                "relative transition-all duration-300",
+                isMobileOpen ? "z-1 opacity-100" : "-z-1 opacity-0"
+              )}
+            >
+              <MobileContent onHide={() => setIsMobileOpen(false)} />
             </div>
           </div>
 

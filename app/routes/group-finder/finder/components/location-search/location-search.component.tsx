@@ -7,7 +7,7 @@ import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
 import { LoaderReturnType } from "~/routes/group-finder/loader";
 import { useEffect, useState } from "react";
-import { GroupsSearchPopup } from "./groups-search-popup.component";
+import { GroupsSearchPopup } from "../popups/groups-search-popup.component";
 import { cn } from "~/lib/utils";
 
 export const GroupsLocationSearch = ({
