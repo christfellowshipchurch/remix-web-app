@@ -1,10 +1,7 @@
-import { useResponsive } from "~/hooks/use-responsive";
-
 // config/navbar-routes.ts
 type RoutePattern = {
   path: string;
   isDynamic?: boolean;
-  mobileOnly?: boolean;
 };
 
 // Define routes that should use dark mode
@@ -24,16 +21,8 @@ export const darkModeRoutes: RoutePattern[] = [
   // Add more routes as needed
 ];
 
-export function shouldUseDarkMode(
-  pathname: string,
-  isLarge?: boolean
-): boolean {
+export function shouldUseDarkMode(pathname: string): boolean {
   return darkModeRoutes.some((route) => {
-    // Skip mobile-only routes if we're on desktop
-    if (route.mobileOnly && isLarge) {
-      return false;
-    }
-
     // For exact static matches
     if (!route.isDynamic && route.path === pathname) {
       return true;

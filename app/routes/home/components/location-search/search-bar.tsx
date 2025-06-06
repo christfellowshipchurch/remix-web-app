@@ -43,7 +43,7 @@ export const SearchBar = ({
     >
       <button
         type="submit"
-        className="flex items-center justify-center p-2 bg-dark-navy rounded-full relative"
+        className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative"
       >
         <Icon
           name="search"
@@ -53,9 +53,9 @@ export const SearchBar = ({
       </button>
 
       <SearchBox
-        placeholder="Search by location, or zip code"
+        placeholder="Search by zip code"
         classNames={{
-          root: "flex-grow w-full max-w-98",
+          root: "flex-grow w-full",
           form: "flex",
           input: `w-full justify-center text-black px-3 outline-none appearance-none`,
           reset: "hidden",
