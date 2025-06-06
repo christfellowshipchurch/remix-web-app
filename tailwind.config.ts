@@ -83,6 +83,9 @@ export default {
         "18": "72px",
       },
     },
+    screens: {
+      shorter: { raw: "(max-height: 900px)" },
+    },
   },
   plugins: [require("tailwindcss-animate"), desktopHeadings],
 } satisfies Config;

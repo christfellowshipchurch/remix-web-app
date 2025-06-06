@@ -141,7 +141,7 @@ export const LocationSearch = () => {
           className={cn(
             "relative w-full md:w-90 z-50 pt-10 rounded-[1rem] transition-all duration-300",
             {
-              "bg-white p-4 shadow-md lg:-translate-y-25 sm:w-[450px] md:w-[620px] lg:w-[520px]":
+              "bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[520px] lg:-translate-y-25 shorter:-translate-y-70":
                 isSearching,
               "bg-transparent": !isSearching,
             }
