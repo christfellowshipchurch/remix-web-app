@@ -20,7 +20,12 @@ export const FooterLinks = () => {
   return (
     <div className="flex gap-2">
       {links.map((link, index) => (
-        <a href={link?.url} key={index}>
+        <a
+          href={link?.url}
+          key={index}
+          data-gtm="footer-link"
+          data-link-name={link.name}
+        >
           <Icon name={link?.name} size={36} color="white" />
         </a>
       ))}

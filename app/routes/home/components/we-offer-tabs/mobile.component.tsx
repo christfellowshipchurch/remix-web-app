@@ -66,6 +66,7 @@ export const WhatWeOfferMobile = () => {
                   "data-[state=active]:shadow-[0px_2.416px_2.416px_0px_rgba(0,0,0,0.25)]",
                   "data-[state=active]:py-2 data-[state=active]:mb-[2px]"
                 )}
+                data-tab={tab.value}
               >
                 <p>{tab.mobileLabel}</p>
               </Tabs.Trigger>
@@ -91,7 +92,13 @@ export const WhatWeOfferMobile = () => {
                 )}
               >
                 {tab.content.map((content, index) => (
-                  <div key={index} data-card className="min-w-[72vw]">
+                  <div
+                    key={index}
+                    data-card
+                    className="min-w-[72vw]"
+                    data-card-title={content.label}
+                    data-tab-context={tab.value}
+                  >
                     <WhatWeOfferCard
                       content={content}
                       middleCard={index === 1 && tab.content.length === 3}
