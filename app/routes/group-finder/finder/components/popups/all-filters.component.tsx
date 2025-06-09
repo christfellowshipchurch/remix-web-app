@@ -9,7 +9,7 @@ import {
 import { Button } from "~/primitives/button/button.primitive";
 import { icons } from "~/lib/icons";
 
-export const MobileContent = ({ onHide }: { onHide: () => void }) => {
+export const AllFilters = ({ onHide }: { onHide: () => void }) => {
   const [showMeetingType, setShowMeetingType] = useState(true);
   const [showGroupType, setShowGroupType] = useState(true);
   const [showPeople, setShowPeople] = useState(true);
@@ -83,20 +83,42 @@ export const MobileContent = ({ onHide }: { onHide: () => void }) => {
           setSelectedValue={setSelectedValue}
         />
 
-        <div className="flex justify-between items-center gap-4 p-2 py-4 border-t border-black">
+        <div className="flex justify-between md:justify-end items-center gap-4 p-2 py-4 border-t border-black">
           <div
             className="cursor-pointer text-text-secondary hover:text-ocean transition-colors duration-300"
             onClick={clearAllRefinements}
           >
-            Clear All
+            <span className="hidden md:block font-semibold text-base text-black">
+              Cancel
+            </span>
+            <span className="md:hidden">Clear All</span>
           </div>
-          <Button
-            intent="primary"
-            className="w-fit font-normal text-base"
-            onClick={onHide}
-          >
-            Apply
-          </Button>
+          <div className="hidden md:block">
+            <Button
+              intent="primary"
+              className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
+              onClick={() => onHide()}
+            >
+              <Stats
+                classNames={{
+                  root: "",
+                }}
+                translations={{
+                  rootElementText: ({ nbHits }) =>
+                    `Show ${nbHits.toLocaleString()} Results`,
+                }}
+              />
+            </Button>
+          </div>
+          <div className="md:hidden">
+            <Button
+              intent="primary"
+              className="w-fit font-normal text-base"
+              onClick={onHide}
+            >
+              Apply
+            </Button>
+          </div>
         </div>
       </div>
     </div>

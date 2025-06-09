@@ -18,7 +18,7 @@ import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/location-search/hit-component.component";
 import { GroupsLocationSearch } from "../components/location-search/location-search.component";
 import { useState } from "react";
-import { MobileContent } from "../components/popups/mobile-filters.component";
+import { AllFilters } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 
@@ -47,7 +47,7 @@ export const GroupSearch = () => {
         <ResponsiveConfigure selectedLocation={selectedLocation} />
         <div className="flex flex-col">
           {/* Filters Section */}
-          <div className="relative md:static content-padding select-none">
+          <div className="relative content-padding select-none">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto">
               {/* Search Boxes */}
               <div className="flex gap-4">
@@ -103,7 +103,7 @@ export const GroupSearch = () => {
                 isMobileOpen ? "z-1 opacity-100" : "-z-1 opacity-0"
               )}
             >
-              <MobileContent onHide={() => setIsMobileOpen(false)} />
+              <AllFilters onHide={() => setIsMobileOpen(false)} />
             </div>
           </div>
 
