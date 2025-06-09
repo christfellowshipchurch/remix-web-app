@@ -88,10 +88,10 @@ export function GroupsSearchPopup({
       </div>
 
       {/* Hits */}
-      <div className="w-full pt-4 z-4 overflow-hidden max-h-[500px] px-4 pb-4">
+      <div className="w-full pt-4 z-4 overflow-y-auto max-h-[500px] px-4 pb-4">
         <Hits
           classNames={{
-            root: "flex flex-col overflow-y-auto max-h-screen",
+            root: "flex flex-col overflow-y-auto max-h-none",
             item: "flex w-full rounded-xl transition-transform duration-300 border-[1px] border-[#E8E8E8] [&:first-child]:!border-navy hover:border-navy",
             list: "flex flex-col gap-3",
           }}
