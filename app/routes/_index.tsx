@@ -11,6 +11,8 @@ import {
   MobileHeroSection,
   BottomBar,
 } from "./home/partials/hero.partial";
+import { useOutletContext } from "react-router-dom";
+
 export { loader } from "./home/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
 
 export const meta: MetaFunction = () => {
@@ -21,10 +23,18 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const outletContext = useOutletContext<{
+    heroScrollRef?: React.RefObject<HTMLDivElement>;
+  }>();
+  const heroScrollRef = outletContext?.heroScrollRef ?? undefined;
+
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {/* Scroll snap container for hero and chance sections */}
-      <div className="w-full h-screen overflow-y-auto lg:snap-y lg:snap-mandatory no-scrollbar">
+      <div
+        ref={heroScrollRef}
+        className="w-full h-screen overflow-y-auto lg:snap-y lg:snap-mandatory no-scrollbar mt-[-82px] lg:mt-0"
+      >
         <div className="hidden lg:block w-full snap-start">
           <DesktopHeroSection />
         </div>

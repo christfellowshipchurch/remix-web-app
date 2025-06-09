@@ -11,6 +11,7 @@ import { type ReactNode } from "react";
 import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
 import { CookieConsentProvider } from "./providers/cookie-consent-provider";
+import { GTMProvider } from "./providers/gtm-provider";
 
 import "./styles/tailwind.css";
 import { cn } from "./lib/utils";
@@ -44,23 +45,26 @@ export default function App() {
   const currentPath = location.pathname;
 
   return (
-    <AuthProvider>
-      <CookieConsentProvider>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main
-            className={cn(
-              "flex-1",
-              `lg:${shouldUseDarkMode(currentPath, true) && "mt-[-100px]"} ${
-                shouldUseDarkMode(currentPath) && "mt-[-100px]"
-              }` // This is to account for the navbar height when dark mode is enabled
-            )}
-          >
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
-      </CookieConsentProvider>
-    </AuthProvider>
+    <GTMProvider gtmId="GTM-PFW26V4V">
+      <AuthProvider>
+        <CookieConsentProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main
+              className={cn(
+                "flex-1",
+                `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
+                  shouldUseDarkMode(currentPath) && "mt-[-100px]"
+                }` // This is to account for the navbar height when dark mode is enabled
+              )}
+            >
+              {/* We are moving the outlet only for the home page to specific refs */}
+              {currentPath !== "/" && <Outlet />}
+            </main>
+            <Footer />
+          </div>
+        </CookieConsentProvider>
+      </AuthProvider>
+    </GTMProvider>
   );
 }

@@ -46,7 +46,13 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
 };
 
 // Feature Layout
-export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
+export const FeatureSection: FC<{
+  data: ContentBlockData;
+  customCtas?: {
+    title: string;
+    url: string;
+  }[];
+}> = ({ data, customCtas }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
 
   return (
@@ -82,6 +88,17 @@ export const FeatureSection: FC<{ data: ContentBlockData }> = ({ data }) => {
                 linkClassName="w-full px-6 sm:w-auto sm:px-0"
                 className="font-normal w-full"
                 intent={idx === 0 ? "white" : "primary"}
+                key={idx}
+                href={cta.url}
+              >
+                {cta.title}
+              </Button>
+            ))}
+            {customCtas?.map((cta, idx) => (
+              <Button
+                linkClassName="w-full px-6 sm:w-auto sm:px-0"
+                className="font-normal w-full"
+                intent={"secondary"}
                 key={idx}
                 href={cta.url}
               >

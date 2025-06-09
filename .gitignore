@@ -132,3 +132,7 @@ dist
 
 # React Router
 .react-router/
+
+
+# Misc
+.DS_Store
