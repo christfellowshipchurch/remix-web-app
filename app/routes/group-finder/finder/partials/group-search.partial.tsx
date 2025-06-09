@@ -17,7 +17,7 @@ import { CustomPagination } from "../components/custom-algolia/custom-pagination
 import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/location-search/hit-component.component";
 import { GroupsLocationSearch } from "../components/location-search/location-search.component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AllFilters } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
@@ -28,6 +28,40 @@ export const GroupSearch = () => {
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Scroll handling effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollThreshold = 10;
+      const scrollDelta = currentScrollY - lastScrollY;
+
+      // Reset at top of page
+      if (currentScrollY < scrollThreshold) {
+        setIsSearchOpen(false);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      // Handle scroll direction
+      if (Math.abs(scrollDelta) > scrollThreshold) {
+        // When scrolling up (negative delta), navbar is showing
+        if (scrollDelta < 0) {
+          setIsNavbarOpen(true);
+        } else {
+          // When scrolling down, navbar is hidden
+          setIsNavbarOpen(false);
+        }
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -47,8 +81,13 @@ export const GroupSearch = () => {
         <ResponsiveConfigure selectedLocation={selectedLocation} />
         <div className="flex flex-col">
           {/* Filters Section */}
-          <div className="relative content-padding shadow-sm select-none">
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto">
+          <div
+            className={cn(
+              "sticky bg-white z-2 content-padding shadow-sm select-none transition-all duration-300",
+              isNavbarOpen ? "top-22" : "top-0"
+            )}
+          >
+            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
               {/* Search Boxes */}
               <div className="flex gap-4">
                 {/* Group Search Box */}
@@ -124,7 +163,7 @@ export const GroupSearch = () => {
                 classNames={{
                   root: "flex items-center justify-center md:items-start md:justify-start w-full",
                   item: "flex items-center justify-center md:items-start md:justify-start w-full",
-                  list: "grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1000px] xl:max-w-[1200px]",
+                  list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1000px] xl:max-w-[1200px]",
                 }}
                 hitComponent={HitComponent}
               />
@@ -148,9 +187,9 @@ const ResponsiveConfigure = ({
 
   const hitsPerPage = (() => {
     switch (true) {
-      case isXLarge:
+      case isXLarge || isLarge:
         return 16;
-      case isMedium || isLarge:
+      case isMedium:
         return 9;
       case isSmall:
         return 5;

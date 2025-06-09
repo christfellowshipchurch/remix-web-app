@@ -54,7 +54,7 @@ export function GroupsSearchPopup({
   return (
     <div
       className={cn(
-        "w-full lg:w-[400px] absolute left-1/2 -translate-x-1/2 top-4 md:top-0 pt-[5px] bg-white z-3 rounded-b-[8px] shadow-md",
+        "w-full lg:w-[400px] absolute left-1/2 -translate-x-1/2 top-4 md:-top-[5px] pt-[5px] bg-white z-3 rounded-b-[8px] shadow-md",
         isOpen ? "block" : "hidden"
       )}
     >
