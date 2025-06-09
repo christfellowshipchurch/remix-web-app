@@ -116,7 +116,7 @@ export function DesktopGroupFilters({
 
         {/* All Filters */}
         {showAllFilters && (
-          <div className="absolute z-4 top-36 right-0 w-full max-w-[40vw] h-full bg-white">
+          <div className="hidden md:block absolute z-4 top-36 right-0 w-full max-w-[484px] h-full bg-white">
             <AllFilters onHide={onHide} />
           </div>
         )}

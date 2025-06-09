@@ -27,7 +27,7 @@ export const AllFilters = ({ onHide }: { onHide: () => void }) => {
   };
 
   return (
-    <div className="absolute -top-16 left-0 bg-white flex flex-col gap-4 pb-4 shadow-md w-full">
+    <div className="absolute -top-14 left-0 bg-white flex flex-col gap-4 pb-4 shadow-md w-full">
       {/* Title Section */}
       <div className="flex justify-between p-4 border-b border-neutral-lighter">
         <p className="font-bold text-xl">Filters</p>

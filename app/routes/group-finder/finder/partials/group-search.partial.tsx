@@ -47,7 +47,7 @@ export const GroupSearch = () => {
         <ResponsiveConfigure selectedLocation={selectedLocation} />
         <div className="flex flex-col">
           {/* Filters Section */}
-          <div className="relative content-padding select-none">
+          <div className="relative content-padding shadow-sm select-none">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto">
               {/* Search Boxes */}
               <div className="flex gap-4">
