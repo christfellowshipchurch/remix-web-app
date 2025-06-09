@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsCustomRefinement } from "./groups-custom-refinement.component";
+import { AllFilters } from "./all-filters.component";
 
 export function DesktopGroupFilters({
   setIsSearchOpen,
@@ -113,17 +114,12 @@ export function DesktopGroupFilters({
           All filters
         </Button>
 
-        <GroupsCustomRefinement
-          title="Group Type"
-          data={{
-            content: [
-              { attribute: "meetingType", isMeetingType: true },
-              { attribute: "subPreferences", checkbox: true },
-            ],
-          }}
-          onHide={onHide}
-          showSection={showAllFilters}
-        />
+        {/* All Filters */}
+        {showAllFilters && (
+          <div className="absolute z-4 top-36 right-0 w-full max-w-[40vw] h-full bg-white">
+            <AllFilters onHide={onHide} />
+          </div>
+        )}
       </div>
     </div>
   );
