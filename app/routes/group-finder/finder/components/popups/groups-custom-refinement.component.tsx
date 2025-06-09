@@ -46,10 +46,10 @@ export const GroupsCustomRefinement = ({
     <div
       ref={ref}
       className={cn(
-        "cursor-default absolute top-17 right-1/2 translate-x-1/2 z-4",
+        "cursor-default absolute top-[65px] right-1/2 translate-x-1/2 z-4",
         "w-[330px] flex flex-col gap-4 bg-white",
         "rounded-[1rem] border border-neutral-lighter overflow-hidden",
-        showSection ? "z-4 opacity-100" : "-z-1 opacity-0"
+        showSection ? "z-4 opacity-100" : "-left-9999 -z-1 opacity-0"
       )}
     >
       <div className="flex items-center justify-between p-4 pb-1">

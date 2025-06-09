@@ -27,7 +27,7 @@ export const AllFilters = ({ onHide }: { onHide: () => void }) => {
   };
 
   return (
-    <div className="absolute -top-14 left-0 bg-white flex flex-col gap-4 pb-4 shadow-md w-full">
+    <div className="absolute -top-[63px] left-0 bg-white flex flex-col gap-4 pb-4 shadow-md w-full">
       {/* Title Section */}
       <div className="flex justify-between p-4 border-b border-neutral-lighter">
         <p className="font-bold text-xl">Filters</p>
@@ -148,23 +148,25 @@ const FilterSection = ({
   setShowSection: (show: boolean) => void;
   setSelectedValue?: (value: string) => void;
 }) => {
-  const titleStyles = "font-semibold text-base";
+  const titleStyles =
+    "font-semibold text-base group-hover:text-neutral-500 transition-all duration-300";
   return (
     <div
       className={cn(
-        "border-b border-black w-full flex flex-col gap-4 pb-5",
+        "border-b border-black w-full flex flex-col gap-4",
+        showSection && "pb-5",
         hideBorder && "border-b-0"
       )}
     >
       <div
-        className="flex items-center justify-between"
+        className="flex items-center justify-between cursor-pointer group"
         onClick={() => setShowSection(!showSection)}
       >
         <p className={titleStyles}>{title}</p>
         <Icon
           name="chevronDown"
           className={cn(
-            "transition-all duration-300 rotate-0",
+            "transition-all duration-300 rotate-0 group-hover:text-neutral-500",
             showSection && "rotate-180"
           )}
         />
