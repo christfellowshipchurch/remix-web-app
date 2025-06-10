@@ -1,5 +1,5 @@
-import React from "react";
 import { SectionTitle } from "~/components/section-title";
+import { GlobalMap } from "../components/global-map.component";
 
 export function VolunteerGlobe() {
   return (
@@ -22,9 +22,7 @@ export function VolunteerGlobe() {
           </div>
           <div className="flex-1 flex items-center justify-center">
             {/* TODO: Replace with interactive world map */}
-            <div className="w-full h-64 bg-ocean/10 rounded-lg flex items-center justify-center">
-              World Map Placeholder
-            </div>
+            <GlobalMap />
           </div>
         </div>
       </div>
