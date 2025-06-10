@@ -55,7 +55,7 @@ export interface ButtonProps
   linkClassName?: string;
   href?: string;
   target?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

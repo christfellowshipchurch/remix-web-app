@@ -30,7 +30,8 @@ export const CTAs = () => {
       <CTAButton
         icon="mobileAlt"
         title="Contact Us"
-        href="mailto:hello@christfellowship.church"
+        target="_blank"
+        href="https://rock.gocf.org/contactus"
       />
     </div>
   );
@@ -39,6 +40,7 @@ export const CTAs = () => {
 const CTAButton = ({
   isSetAReminder,
   icon,
+  target,
   title,
   href,
 }: {
@@ -46,6 +48,7 @@ const CTAButton = ({
   title: string;
   href?: string;
   isSetAReminder?: boolean;
+  target?: string;
 }) => {
   if (isSetAReminder) {
     const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -60,5 +63,11 @@ const CTAButton = ({
   }
 
   const content = <CTAButtonContent icon={icon} title={title} />;
-  return href ? <Link to={href}>{content}</Link> : content;
+  return href ? (
+    <Link to={href} target={target}>
+      {content}
+    </Link>
+  ) : (
+    content
+  );
 };
