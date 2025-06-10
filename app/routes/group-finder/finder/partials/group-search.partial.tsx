@@ -84,7 +84,7 @@ export const GroupSearch = () => {
           <div
             className={cn(
               "sticky bg-white z-2 content-padding shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-22" : "top-0"
+              isNavbarOpen ? "top-18 md:top-22" : "top-0"
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
