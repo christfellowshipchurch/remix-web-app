@@ -1,64 +1,37 @@
 import { LoaderFunctionArgs } from "react-router";
+import { Trip } from "./types";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { createImageUrlFromGuid } from "~/lib/utils";
+
+const fetchMissionTrips = async () => {
+  const missionTrips = await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: "ContentChannelId eq 174",
+      loadAttributes: "simple",
+    },
+  });
+
+  // ensure contentItems is an array
+  const trips = Array.isArray(missionTrips) ? missionTrips : [missionTrips];
+
+  return trips;
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  // TODO: Fetch volunteer opportunities data from API
-  const volunteerData = {
-    churchOpportunities: [
-      {
-        id: "1",
-        name: "Worship Team",
-        description: "Join our worship team and help lead others in worship",
-        location: "Main Campus",
-        timeCommitment: "2-3 hours per week",
-      },
-      {
-        id: "2",
-        name: "Children's Ministry",
-        description: "Help teach and care for children during services",
-        location: "Main Campus",
-        timeCommitment: "2 hours per week",
-      },
-      {
-        id: "3",
-        name: "Greeting Team",
-        description: "Welcome and assist visitors and members",
-        location: "All Campuses",
-        timeCommitment: "1 hour per week",
-      },
-    ],
-    communityOpportunities: [
-      {
-        id: "1",
-        name: "Food Bank Volunteer",
-        description: "Help distribute food to those in need",
-        location: "Downtown",
-        timeCommitment: "4 hours per week",
-      },
-      {
-        id: "2",
-        name: "Homeless Shelter Support",
-        description: "Provide meals and support at local shelter",
-        location: "Westside",
-        timeCommitment: "3 hours per week",
-      },
-    ],
-    globalOpportunities: [
-      {
-        id: "1",
-        name: "International Mission Trip",
-        description: "Serve communities in developing countries",
-        location: "Various Countries",
-        timeCommitment: "2 weeks",
-      },
-      {
-        id: "2",
-        name: "Global Relief Support",
-        description: "Support disaster relief efforts worldwide",
-        location: "Remote",
-        timeCommitment: "Flexible",
-      },
-    ],
-  };
+  const fetchMissions = await fetchMissionTrips();
 
-  return Response.json(volunteerData);
+  const missionTrips: Trip[] = fetchMissions.map((item: any) => ({
+    id: item.id,
+    title: item.title,
+    description: item.content,
+    coverImage: createImageUrlFromGuid(item.attributeValues?.coverImage.value),
+    missionTripUrl: item.attributeValues?.url.value,
+    coordinates: {
+      lat: Number(item.attributeValues?.latitude.value) || 0,
+      lng: Number(item.attributeValues?.longitude.value) || 0,
+    },
+  }));
+
+  return Response.json({ missionTrips });
 }
