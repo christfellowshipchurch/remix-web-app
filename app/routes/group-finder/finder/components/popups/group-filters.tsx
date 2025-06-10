@@ -14,6 +14,7 @@ export function DesktopGroupFilters({
   const [showFrequency, setShowFrequency] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
   const [showAllFilters, setShowAllFilters] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   const onHide = () => {
     setShowGroupType(false);
@@ -110,6 +111,7 @@ export function DesktopGroupFilters({
           onClick={() => {
             onHide();
             setShowAllFilters(!showAllFilters);
+            setHasInteracted(true);
           }}
         >
           All filters
@@ -121,9 +123,13 @@ export function DesktopGroupFilters({
             "absolute right-0 top-[81px]",
             "size-full max-w-[484px]",
             "hidden md:block",
-            showAllFilters
-              ? "animate-slide-in z-1"
-              : "animate-slide-out opacity-0 pointer-events-none z-[-1]",
+            hasInteracted
+              ? showAllFilters
+                ? "animate-slide-in z-1"
+                : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
+              : showAllFilters
+              ? "z-1"
+              : "opacity-0 pointer-events-none z-[-1]",
             "transition-all duration-300"
           )}
         >
