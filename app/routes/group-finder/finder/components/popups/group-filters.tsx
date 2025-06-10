@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsCustomRefinement } from "./groups-custom-refinement.component";
 import { AllFilters } from "./all-filters.component";
+import { cn } from "~/lib/utils";
 
 export function DesktopGroupFilters({
   setIsSearchOpen,
@@ -115,11 +116,19 @@ export function DesktopGroupFilters({
         </Button>
 
         {/* All Filters */}
-        {showAllFilters && (
-          <div className="hidden md:block absolute z-4 top-36 right-0 w-full max-w-[484px] h-full bg-white">
-            <AllFilters onHide={onHide} />
-          </div>
-        )}
+        <div
+          className={cn(
+            "absolute right-0 top-[81px]",
+            "size-full max-w-[484px]",
+            "hidden md:block",
+            showAllFilters
+              ? "animate-slide-in z-1"
+              : "animate-slide-out opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300"
+          )}
+        >
+          <AllFilters onHide={onHide} />
+        </div>
       </div>
     </div>
   );
