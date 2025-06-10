@@ -31,6 +31,8 @@ export default {
         ...navbarAnimations,
         ...modalAnimations,
         gradient: "gradient 3s ease-in-out infinite",
+        "slide-in": "slide-in 0.3s ease-in-out",
+        "slide-out": "slide-out 0.3s ease-in-out",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,6 +67,14 @@ export default {
         gradient: {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
+        },
+        "slide-in": {
+          "0%": { transform: "translateX(100%)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        "slide-out": {
+          "0%": { transform: "translateX(0)", opacity: "1" },
+          "100%": { transform: "translateX(100%)", opacity: "0" },
         },
       },
       maxWidth: {

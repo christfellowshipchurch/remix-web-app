@@ -53,7 +53,7 @@ const resources: CollectionItem[] = [
     name: "Groups",
     summary:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image: "/assets/images/groups-hero-bg.webp",
+    image: "/assets/images/groups-bg.webp",
     pathname: "/ministries/groups",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
