@@ -110,13 +110,15 @@ export const GroupsLocationSearch = ({
               "text-ocean": selectedLocation,
             })}
           />
-          <div
+          <p
             className={cn(
-              "w-full text-xl px-2 focus:outline-none text-text-secondary transition-all duration-300"
+              "w-full text-xl px-2 focus:outline-none text-text-secondary transition-all duration-300 line-clamp-2 md:line-clamp-1"
             )}
           >
-            {selectedLocation || "Location"}
-          </div>
+            {selectedLocation?.includes("Christ Fellowship")
+              ? selectedLocation.replace("Christ Fellowship", "").trim()
+              : selectedLocation || "Location"}
+          </p>
         </div>
 
         {/* Search Popup */}

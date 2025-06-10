@@ -120,7 +120,7 @@ export function DesktopGroupFilters({
         {/* All Filters */}
         <div
           className={cn(
-            "absolute right-0 top-[81px]",
+            "absolute right-0 top-[80px] border-t border-neutral-300",
             "size-full max-w-[484px]",
             "hidden md:block",
             hasInteracted
