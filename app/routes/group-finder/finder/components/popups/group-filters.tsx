@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsCustomRefinement } from "./groups-custom-refinement.component";
-import { AllFilters } from "./all-filters.component";
+import { AllFiltersPopup } from "./all-filters.component";
 import { cn } from "~/lib/utils";
 
 export function DesktopGroupFilters({
@@ -103,7 +103,7 @@ export function DesktopGroupFilters({
           </div>
         </div>
       </div>
-      <div className="w-full items-center gap-4 h-full hidden md:flex xl:hidden">
+      <div className="w-full items-center gap-4 h-full hidden md:flex xl:!hidden">
         <div className="w-px h-full bg-text-secondary" />
         <Button
           intent="secondary"
@@ -133,7 +133,7 @@ export function DesktopGroupFilters({
             "transition-all duration-300"
           )}
         >
-          <AllFilters onHide={onHide} />
+          <AllFiltersPopup onHide={onHide} />
         </div>
       </div>
     </div>
