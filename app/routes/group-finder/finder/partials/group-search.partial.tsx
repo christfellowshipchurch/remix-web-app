@@ -105,6 +105,7 @@ export const GroupSearch = () => {
                       input: "w-full text-xl px-2 focus:outline-none",
                       resetIcon: "hidden",
                       submit: "hidden",
+                      loadingIcon: "hidden",
                     }}
                   />
                 </div>
