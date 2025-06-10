@@ -27,9 +27,9 @@ export const AllFilters = ({ onHide }: { onHide: () => void }) => {
   };
 
   return (
-    <div className="absolute -top-[63px] left-0 bg-white flex flex-col gap-4 pb-4 shadow-md w-full">
+    <div className="absolute -top-[63px] left-0 bg-white flex flex-col pb-4 shadow-md w-full">
       {/* Title Section */}
-      <div className="flex justify-between p-4 border-b border-neutral-lighter">
+      <div className="flex justify-between p-4 border-b border-neutral-lighter mb-4">
         <p className="font-bold text-xl">Filters</p>
         <div className="flex gap-2 w-fit cursor-pointer" onClick={onHide}>
           <Button
@@ -51,6 +51,7 @@ export const AllFilters = ({ onHide }: { onHide: () => void }) => {
         </div>
       </div>
 
+      {/* Filters Section */}
       <div className="flex flex-col gap-4 px-4">
         <FilterSection
           title="Meeting Type"
@@ -82,43 +83,47 @@ export const AllFilters = ({ onHide }: { onHide: () => void }) => {
           selectedValue={selectedValue}
           setSelectedValue={setSelectedValue}
         />
+      </div>
 
-        <div className="flex justify-between md:justify-end items-center gap-4 p-2 py-4 border-t border-black">
-          <div
-            className="cursor-pointer text-text-secondary hover:text-ocean transition-colors duration-300"
-            onClick={clearAllRefinements}
+      {/* Bottom/Footer Section */}
+      <div className="flex justify-between md:justify-end items-center gap-4 mx-4 p-2 py-4 border-t border-black">
+        <div
+          className="cursor-pointer text-text-secondary hover:text-ocean transition-colors duration-300"
+          onClick={() => {
+            clearAllRefinements();
+            onHide();
+          }}
+        >
+          <span className="hidden md:block font-semibold text-base text-black">
+            Cancel
+          </span>
+          <span className="md:hidden">Clear All</span>
+        </div>
+        <div className="hidden md:block">
+          <Button
+            intent="primary"
+            className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
+            onClick={() => onHide()}
           >
-            <span className="hidden md:block font-semibold text-base text-black">
-              Cancel
-            </span>
-            <span className="md:hidden">Clear All</span>
-          </div>
-          <div className="hidden md:block">
-            <Button
-              intent="primary"
-              className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
-              onClick={() => onHide()}
-            >
-              <Stats
-                classNames={{
-                  root: "",
-                }}
-                translations={{
-                  rootElementText: ({ nbHits }) =>
-                    `Show ${nbHits.toLocaleString()} Results`,
-                }}
-              />
-            </Button>
-          </div>
-          <div className="md:hidden">
-            <Button
-              intent="primary"
-              className="w-fit font-normal text-base"
-              onClick={onHide}
-            >
-              Apply
-            </Button>
-          </div>
+            <Stats
+              classNames={{
+                root: "",
+              }}
+              translations={{
+                rootElementText: ({ nbHits }) =>
+                  `Show ${nbHits.toLocaleString()} Results`,
+              }}
+            />
+          </Button>
+        </div>
+        <div className="md:hidden">
+          <Button
+            intent="primary"
+            className="w-fit font-normal text-base"
+            onClick={onHide}
+          >
+            Apply
+          </Button>
         </div>
       </div>
     </div>
@@ -149,7 +154,7 @@ const FilterSection = ({
   setSelectedValue?: (value: string) => void;
 }) => {
   const titleStyles =
-    "font-semibold text-base group-hover:text-neutral-500 transition-all duration-300";
+    "font-semibold text-base group-hover:text-ocean transition-all duration-300";
   return (
     <div
       className={cn(
@@ -166,7 +171,7 @@ const FilterSection = ({
         <Icon
           name="chevronDown"
           className={cn(
-            "transition-all duration-300 rotate-0 group-hover:text-neutral-500",
+            "transition-all duration-300 rotate-0 group-hover:text-ocean",
             showSection && "rotate-180"
           )}
         />

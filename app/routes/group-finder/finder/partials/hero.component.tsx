@@ -3,7 +3,7 @@ import { Button } from "~/primitives/button/button.primitive";
 
 export const GroupFinderHero = () => {
   return (
-    <section className="py-2 lg:pt-24 content-padding">
+    <section className="py-2 lg:pt-12 xl:pt-20 h-[65vh] max-h-[650px] content-padding">
       <div className="container max-w-screen-content grid items-center justify-center grid-cols-1 lg:grid-cols-5 gap-16 md:gap-8 mx-auto">
         <img
           src="/assets/images/groups-hero.webp"
