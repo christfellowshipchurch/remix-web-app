@@ -112,7 +112,7 @@ export const GroupsLocationSearch = ({
           />
           <p
             className={cn(
-              "w-full text-xl px-2 focus:outline-none text-text-secondary transition-all duration-300 line-clamp-2 md:line-clamp-1"
+              "w-full text-xl px-2 focus:outline-none text-text-secondary transition-all duration-300 line-clamp-1"
             )}
           >
             {selectedLocation?.includes("Christ Fellowship")
