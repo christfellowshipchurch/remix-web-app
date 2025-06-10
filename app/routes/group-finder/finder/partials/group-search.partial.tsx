@@ -18,7 +18,7 @@ import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/location-search/hit-component.component";
 import { GroupsLocationSearch } from "../components/location-search/location-search.component";
 import { useEffect, useState } from "react";
-import { AllFilters } from "../components/popups/all-filters.component";
+import { AllFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 
@@ -138,11 +138,13 @@ export const GroupSearch = () => {
             </div>
             <div
               className={cn(
-                "relative transition-all duration-300",
-                isMobileOpen ? "z-1 opacity-100" : "-z-1 opacity-0"
+                "absolute transition-all duration-300",
+                isMobileOpen
+                  ? "z-4 opacity-100 top-[calc(100%_+_24px)]"
+                  : "-z-1 opacity-0"
               )}
             >
-              <AllFilters onHide={() => setIsMobileOpen(false)} />
+              <AllFiltersPopup onHide={() => setIsMobileOpen(false)} />
             </div>
           </div>
 

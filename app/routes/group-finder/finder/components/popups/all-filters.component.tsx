@@ -9,7 +9,7 @@ import {
 import { Button } from "~/primitives/button/button.primitive";
 import { icons } from "~/lib/icons";
 
-export const AllFilters = ({ onHide }: { onHide: () => void }) => {
+export const AllFiltersPopup = ({ onHide }: { onHide: () => void }) => {
   const [showMeetingType, setShowMeetingType] = useState(true);
   const [showGroupType, setShowGroupType] = useState(true);
   const [showPeople, setShowPeople] = useState(true);
@@ -27,7 +27,7 @@ export const AllFilters = ({ onHide }: { onHide: () => void }) => {
   };
 
   return (
-    <div className="bg-white flex flex-col pb-4 shadow-md w-full overflow-y-scroll max-h-[85vh]">
+    <div className="bg-white flex flex-col pb-4 shadow-md w-full md:overflow-y-scroll md:max-h-[85vh]">
       {/* Title Section */}
       <div className="flex justify-between p-4 border-b border-neutral-lighter mb-4">
         <p className="font-bold text-xl">Filters</p>
