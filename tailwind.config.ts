@@ -78,6 +78,7 @@ export default {
       },
       screens: {
         "2xl": "1480px",
+        "3xl": "1600px",
       },
       spacing: {
         "18": "72px",
