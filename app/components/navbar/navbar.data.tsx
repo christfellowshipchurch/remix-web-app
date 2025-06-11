@@ -68,7 +68,7 @@ export const ministriesData: MenuLink = {
           {
             title: "Volunteer",
             description: "Lorem ipsum dolor sit amet",
-            url: "#",
+            url: "/volunteer",
           },
         ],
       },
