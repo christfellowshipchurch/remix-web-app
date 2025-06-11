@@ -117,9 +117,13 @@ const PageBuilderCarouselResource = ({
 };
 
 export const ResourceCarousel = ({
+  CardComponent,
   resources,
   mode,
 }: {
+  CardComponent?: React.ComponentType<{
+    resource: CollectionItem;
+  }>;
   resources: CollectionItem[];
   mode?: "dark" | "light";
 }) => {
@@ -129,16 +133,20 @@ export const ResourceCarousel = ({
         align: "start",
       }}
     >
-      <CarouselContent className="gap-6 pt-4 md:mt-20 xl:gap-8 2xl:pr-18">
+      <CarouselContent className="gap-6 pt-4 md:mt-12 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
             className="w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
           >
-            <ResourceCard
-              resource={resource}
-              className={mode === "dark" ? "border-none" : undefined}
-            />
+            {CardComponent ? (
+              <CardComponent resource={resource} />
+            ) : (
+              <ResourceCard
+                resource={resource}
+                className={mode === "dark" ? "border-none" : undefined}
+              />
+            )}
           </CarouselItem>
         ))}
       </CarouselContent>

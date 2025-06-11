@@ -40,6 +40,7 @@ export type CollectionItem = {
   contentType: ContentType;
   name: string;
   summary: string;
+  description?: string;
   image: string;
   pathname: string;
   startDate?: string; // for Events, Sermons, Articles, Devotionals, Podcasts
