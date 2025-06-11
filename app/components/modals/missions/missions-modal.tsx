@@ -52,13 +52,9 @@ export function MissionsModal({
         )}
       </Modal.Button>
       <Modal.Content>
-        {/* TODO: Replace with actual trip details UI */}
         <div
           className={cn(
-            "flex flex-col",
-            "md:flex-row w-[90vw] lg:max-w-5xl md:h-[60vh]",
-            "min-h-[500px] md:min-h-[600px]",
-            "shorter:h-[500px] shorter:md:h-[600px]"
+            "flex flex-col md:grid md:grid-cols-2 w-[90vw] lg:max-w-5xl max-h-[90vh] rounded-tl-lg rounded-tr-lg overflow-hidden"
           )}
         >
           {trip?.coverImage && (
@@ -66,12 +62,12 @@ export function MissionsModal({
               src={trip.coverImage}
               alt={trip.title}
               className={cn(
-                "object-cover w-full md:w-1/2 md:h-full",
+                "object-cover w-full max-h-[30vh] md:max-h-none md:h-full",
                 "rounded-tl-lg rounded-tr-lg md:rounded-bl-lg md:rounded-tr-none"
               )}
             />
           )}
-          <div className="flex flex-col justify-center gap-8 p-6 py-12 overflow-y-scroll">
+          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-8 px-4 py-12 md:py-16">
             <h2 className="heading-h3">{trip?.title}</h2>
             {/* TODO: Add a dropdown for the group type */}
             <div className="w-64">
