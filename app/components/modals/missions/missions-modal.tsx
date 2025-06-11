@@ -1,4 +1,5 @@
 import { useState, ReactNode } from "react";
+import { cn } from "~/lib/utils";
 import Modal from "~/primitives/Modal";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import HTMLRenderer from "~/primitives/html-renderer";
@@ -57,7 +58,10 @@ export function MissionsModal({
             <img
               src={trip.coverImage}
               alt={trip.title}
-              className="object-cover w-full md:w-1/2 md:h-full rounded-tl-lg rounded-bl-lg"
+              className={cn(
+                "object-cover w-full md:w-1/2 md:h-full",
+                "rounded-tl-lg rounded-tr-lg md:rounded-bl-lg md:rounded-tr-none"
+              )}
             />
           )}
           <div className="flex flex-col justify-center gap-8 p-6">
