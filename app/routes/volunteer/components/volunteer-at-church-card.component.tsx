@@ -10,7 +10,7 @@ export const VolunteerAtChurchCard = ({
 }) => {
   const tempRoles = ["Role 1", "Role 2", "Role 3"];
   return (
-    <div className="flex flex-col rounded-[1rem] overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-4px] shrink-0 w-[347px] h-full">
+    <div className="flex flex-col rounded-[1rem] overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-4px] md:shrink-0 md:w-[347px] h-full">
       <img
         className="w-full max-h-[170px] object-cover"
         src={resource.image}

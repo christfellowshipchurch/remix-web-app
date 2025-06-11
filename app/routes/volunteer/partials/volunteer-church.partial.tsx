@@ -20,7 +20,7 @@ export function VolunteerAtChurch() {
         </div>
 
         {/* Mobile Carousel */}
-        <div className="w-full lg:hidden">
+        <div className="w-full lg:hidden content-padding">
           <ResourceCarousel
             mode="dark"
             CardComponent={VolunteerAtChurchCard}
