@@ -38,7 +38,7 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
         return (
           <div
             key={trip.id}
-            className="absolute w-3 h-3 bg-sky-400 rounded-full"
+            className="absolute w-3 h-3 bg-sky-400 rounded-full animate-pulse"
             style={{
               left: `${x}px`,
               top: `${y}px`,
