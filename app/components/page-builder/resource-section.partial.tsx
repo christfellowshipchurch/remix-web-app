@@ -120,12 +120,14 @@ export const ResourceCarousel = ({
   CardComponent,
   resources,
   mode,
+  layout = "arrowsRight",
 }: {
   CardComponent?: React.ComponentType<{
-    resource: CollectionItem;
+    resource: CollectionItem | any;
   }>;
-  resources: CollectionItem[];
+  resources: CollectionItem[] | any[];
   mode?: "dark" | "light";
+  layout?: "arrowsRight" | "arrowsLeft";
 }) => {
   return (
     <Carousel
@@ -156,22 +158,45 @@ export const ResourceCarousel = ({
           "lg:mt-0 lg:pb-0": resources.length < 4,
         })}
       >
-        <div className="absolute h-8 top-4 left-0">
-          <CarouselDots
-            activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
-            inactiveClassName="bg-neutral-lighter"
-          />
-        </div>
+        {layout === "arrowsLeft" ? (
+          <>
+            <div className={cn("absolute h-8 left-0")}>
+              <CarouselArrows
+                arrowStyles={
+                  mode === "dark"
+                    ? "text-white border-white hover:text-neutral-light hover:border-neutral-light"
+                    : undefined
+                }
+              />
+            </div>
 
-        <div className={cn("absolute h-8 right-34")}>
-          <CarouselArrows
-            arrowStyles={
-              mode === "dark"
-                ? "text-white border-white hover:text-neutral-light hover:border-neutral-light"
-                : undefined
-            }
-          />
-        </div>
+            <div className="absolute h-8 top-4 right-8">
+              <CarouselDots
+                activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
+                inactiveClassName="bg-neutral-lighter"
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="absolute h-8 top-4 left-0">
+              <CarouselDots
+                activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
+                inactiveClassName="bg-neutral-lighter"
+              />
+            </div>
+
+            <div className={cn("absolute h-8 right-34")}>
+              <CarouselArrows
+                arrowStyles={
+                  mode === "dark"
+                    ? "text-white border-white hover:text-neutral-light hover:border-neutral-light"
+                    : undefined
+                }
+              />
+            </div>
+          </>
+        )}
       </div>
     </Carousel>
   );

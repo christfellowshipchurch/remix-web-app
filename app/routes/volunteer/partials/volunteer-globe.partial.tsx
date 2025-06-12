@@ -2,7 +2,7 @@ import { SectionTitle } from "~/components/section-title";
 import { GlobalMap } from "../components/global-map.component";
 import { useLoaderData } from "react-router";
 import { Trip } from "../types";
-import { MissionTripCard } from "../components/mission-trip-card.component";
+import { MissionTripCard } from "../components/cards/mission-trip-card.component";
 
 export function VolunteerGlobe() {
   const { missionTrips } = useLoaderData();

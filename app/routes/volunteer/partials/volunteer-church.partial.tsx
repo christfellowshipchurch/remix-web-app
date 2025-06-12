@@ -1,7 +1,7 @@
 import { SectionTitle } from "~/components";
 import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { VolunteerAtChurchCard } from "../components/volunteer-at-church-card.component";
+import { VolunteerAtChurchCard } from "../components/cards/volunteer-at-church-card.component";
 import { cn } from "~/lib/utils";
 import { useRef, useEffect } from "react";
 
