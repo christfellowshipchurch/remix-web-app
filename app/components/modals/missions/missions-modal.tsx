@@ -63,7 +63,8 @@ export function MissionsModal({
               alt={trip.title}
               className={cn(
                 "object-cover w-full max-h-[30vh] md:max-h-none md:h-full",
-                "rounded-tl-lg rounded-tr-lg md:rounded-bl-lg md:rounded-tr-none"
+                "rounded-tl-lg rounded-tr-lg md:rounded-bl-lg md:rounded-tr-none",
+                "animate-in fade-in-20 duration-1000"
               )}
             />
           )}
