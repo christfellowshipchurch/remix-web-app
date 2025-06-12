@@ -4,20 +4,14 @@ import { useRef, useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Video } from "~/primitives/video/video.primitive";
 
-export const WhatToExpectDesktopTabs = () => {
+export const VolunteerTestimonialTabs = () => {
   return (
     <Tabs.Root
-      defaultValue={WhatToExpectData[0].title}
-      className="flex flex-col gap-16 xl:gap-32"
+      defaultValue={volunteerTestimonialsData[0].title}
+      className="flex flex-col gap-12"
     >
-      {WhatToExpectData.map((tab, index) => (
-        <Tabs.Content value={tab.title} key={index}>
-          <WhatToExpectDesktopCard data={tab.data} />
-        </Tabs.Content>
-      ))}
-
-      <Tabs.List className="flex gap-8 xl:gap-16 w-full">
-        {WhatToExpectData.map((item, index) => (
+      <Tabs.List className="flex gap-8 xl:gap-10 w-full">
+        {volunteerTestimonialsData.map((item, index) => (
           <Tabs.Trigger
             key={index}
             value={item.title}
@@ -43,14 +37,20 @@ export const WhatToExpectDesktopTabs = () => {
           </Tabs.Trigger>
         ))}
       </Tabs.List>
+
+      {volunteerTestimonialsData.map((tab, index) => (
+        <Tabs.Content value={tab.title} key={index}>
+          <TestimonialDesktopCard data={tab.data} />
+        </Tabs.Content>
+      ))}
     </Tabs.Root>
   );
 };
 
-const WhatToExpectDesktopCard = ({
+const TestimonialDesktopCard = ({
   data,
 }: {
-  data: WhatToExpectCardType["data"];
+  data: VolunteerTestimonialCardType["data"];
 }) => {
   const { content, name, role, video } = data;
   const [isPlaying, setIsPlaying] = useState(false);
@@ -65,26 +65,22 @@ const WhatToExpectDesktopCard = ({
 
   // TODO: Once the videos are ready in Wistia they should be set to autoplay and hide controls on load, so that when the user clicks our play button, the video renders and it starts playing.
   return (
-    <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
-      <div className="flex flex-col gap-12">
-        <p className="text-xl xl:text-[26px] font-semibold max-w-[600px]">
-          {content}
-        </p>
-
-        <div className="flex flex-col">
-          <h4 className="text-[21px] font-extrabold leading-none">{name}</h4>
-          <p className="text-lg font-bold text-border-secondary">{role}</p>
+    <div className="w-full rounded-[1rem] overflow-hidden pt-12 pb-16 xl:py-24 max-w-[1200px] h-[520px] flex items-center relative">
+      {!isPlaying && (
+        <div className="w-[400px] flex flex-col gap-8 ml-8 px-8 py-12 bg-white rounded-[1rem] relative z-2">
+          <div className="flex flex-col">
+            <h4 className="text-lg font-extrabold leading-tight">{name}</h4>
+            <p className="font-bold text-text-secondary">{role}</p>
+          </div>
+          <p className="text-text-secondary">{content}</p>
         </div>
-      </div>
+      )}
 
-      <div className="absolute right-8 xl:right-10 -top-10 xl:-top-20">
+      {/* Video */}
+      <div className="absolute size-full overflow-hidden">
         {isPlaying ? (
-          <div className="relative overflow-hidden rounded-[12px] transition-opacity duration-200">
-            <Video
-              wistiaId={video}
-              controls
-              className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px]"
-            />
+          <>
+            <Video wistiaId={video} controls className="size-full" />
             <div
               className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors"
               onClick={handlePauseClick}
@@ -93,10 +89,10 @@ const WhatToExpectDesktopCard = ({
                 <Icon name="arrowBack" color="white" />
               </div>
             </div>
-          </div>
+          </>
         ) : (
           <div
-            className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px] bg-black relative cursor-pointer group overflow-hidden transition-opacity duration-300"
+            className="size-full cursor-pointer group overflow-hidden transition-opacity duration-300"
             onClick={handlePlayClick}
           >
             <img
@@ -105,7 +101,7 @@ const WhatToExpectDesktopCard = ({
               className="w-full h-full object-cover rounded-[12px]"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-[12px]" />
-            <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-3 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors">
+            <div className="absolute bottom-5 right-5 rounded-full bg-[#3D3D3D]/50 p-3 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors">
               <div className="relative -right-[2px] size-10 xl:size-16">
                 <Icon
                   name="play"
@@ -121,7 +117,7 @@ const WhatToExpectDesktopCard = ({
   );
 };
 
-export const WhatToExpectMobileScroll = () => {
+export const VolunteerTestimonialsMobile = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
@@ -172,7 +168,7 @@ export const WhatToExpectMobileScroll = () => {
             "items-center md:justify-center w-full"
           )}
         >
-          {WhatToExpectData.map((item, index) => {
+          {volunteerTestimonialsData.map((item, index) => {
             const { video, mobileContent, name, role, thumbnail } = item.data;
             const isPlaying = playingIndex === index;
 
@@ -184,7 +180,9 @@ export const WhatToExpectMobileScroll = () => {
                 style={{
                   marginLeft: index === 0 ? "8px" : "0",
                   marginRight:
-                    index === WhatToExpectData.length - 1 ? "8px" : "0",
+                    index === volunteerTestimonialsData.length - 1
+                      ? "8px"
+                      : "0",
                 }}
               >
                 {isPlaying ? (
@@ -238,7 +236,7 @@ export const WhatToExpectMobileScroll = () => {
   );
 };
 
-type WhatToExpectCardType = {
+type VolunteerTestimonialCardType = {
   title: string;
   data: {
     role: string;
@@ -250,15 +248,15 @@ type WhatToExpectCardType = {
   };
 };
 
-const WhatToExpectData: WhatToExpectCardType[] = [
+const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
   {
     title: "What is a Sunday Like 1",
     data: {
       role: "church member",
       name: "John Doe 1",
-      video: "7yhe4p60vn",
+      video: "vqe38qpt78",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -270,9 +268,9 @@ const WhatToExpectData: WhatToExpectCardType[] = [
     data: {
       role: "church member",
       name: "John Doe 2",
-      video: "7yhe4p60vn",
+      video: "vqe38qpt78",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -284,9 +282,9 @@ const WhatToExpectData: WhatToExpectCardType[] = [
     data: {
       role: "church member",
       name: "John Doe 3",
-      video: "7yhe4p60vn",
+      video: "vqe38qpt78",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
