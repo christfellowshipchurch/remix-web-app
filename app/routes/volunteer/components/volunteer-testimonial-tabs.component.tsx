@@ -63,7 +63,7 @@ const TestimonialDesktopCard = ({
     setIsPlaying(false);
   };
 
-  // TODO: Once the videos are ready in Wisita they should be set to autoplay and hide controls on load, so that when the user clicks our play button, the video renders and it starts playing.
+  // TODO: Once the videos are ready in Wistia they should be set to autoplay and hide controls on load, so that when the user clicks our play button, the video renders and it starts playing.
   return (
     <div className="w-full rounded-[1rem] overflow-hidden pt-12 pb-16 xl:py-24 max-w-[1200px] h-[520px] flex items-center relative">
       {!isPlaying && (
