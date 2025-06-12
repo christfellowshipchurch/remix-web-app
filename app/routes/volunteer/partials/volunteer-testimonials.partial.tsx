@@ -1,31 +1,54 @@
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { WhatToExpectDesktopTabs } from "~/routes/home/components/expect-tabs.component";
+import {
+  VolunteerTestimonialTabs,
+  VolunteerTestimonialsMobile,
+} from "../components/volunteer-testimonial-tabs.component";
+import { Button } from "~/primitives/button/button.primitive";
 
 export function VolunteerTestimonials() {
   return (
-    <section className="w-full bg-gray py-28">
-      <div className="max-w-screen-content mx-auto">
-        <div className="flex flex-col justify-center items-center gap-6 padding-content text-center">
-          <h2 className="heading-h4">Here from other volunteers</h2>
-          <p className="text-text-secondary lg:text-text lg:text-lg text-center max-w-3xl mb-28">
-            Find out what to expect at a service, how we support families, and
-            what guides our faith. These videos feature everyday members sharing
-            their experiences and answering your questions.
-          </p>
-          {/* TODO: Reuse/replace with the same component from home */}
-          <WhatToExpectDesktopTabs />
-          <div className="w-full flex justify-center items-center gap-4 mt-20">
-            <p className="text-lg font-semibold">
-              Let’s find the right fit for you. Just fill out your information,
-              and we’ll help with the rest.
+    <section className="w-full bg-gray py-28 content-padding">
+      <div className="max-w-screen-content mx-auto w-full">
+        <div className="w-full flex flex-col justify-center items-center gap-6">
+          {/* Heading Section*/}
+          <div className="w-full text-center flex flex-col justify-center items-center">
+            <h2 className="text-black text-2xl lg:text-[2rem] font-extrabold">
+              Here from other Volunteers
+            </h2>
+            <p className="text-text-secondary lg:text-lg text-center max-w-3xl font-medium">
+              Find out what to expect at a service, how we support families, and
+              what guides our faith. These videos feature everyday members
+              sharing their experiences and answering your questions.
             </p>
-            <IconButton
-              to="#todo"
-              withRotatingArrow
-              className="bg-white border-neutral-300 text-neutral-dark rounded-full hover:enabled:bg-soft-white hover:enabled:text-neutral-dark"
-            >
-              Get Started
-            </IconButton>
+          </div>
+
+          <div className="w-full hidden lg:block">
+            <VolunteerTestimonialTabs />
+          </div>
+
+          <div className="w-full lg:hidden">
+            <VolunteerTestimonialsMobile />
+          </div>
+
+          <div className="w-full">
+            <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-11 lg:gap-7 max-w-screen-content mx-auto">
+              <p className="w-fit text-text-secondary text-center lg:text-left lg:text-xl font-semibold text-pretty">
+                Let's find the right fit for you. Just fill out your
+                information, and we'll help with the rest.
+              </p>
+              <div className="hidden lg:block">
+                <IconButton
+                  to="#todo"
+                  withRotatingArrow
+                  className="bg-white border-neutral-300 text-neutral-dark rounded-full hover:enabled:bg-soft-white hover:enabled:text-neutral-dark"
+                >
+                  Get Started
+                </IconButton>
+              </div>
+              <Button className="lg:hidden w-full max-w-[262px] py-3 rounded-[8px]">
+                Help me find a Spot
+              </Button>
+            </div>
           </div>
         </div>
       </div>
