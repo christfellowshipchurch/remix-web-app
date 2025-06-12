@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { SectionTitle } from "~/components";
+import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 
 interface Step {
@@ -49,7 +50,7 @@ function OnboardingMobile() {
     <div className="md:hidden bg-dark-navy w-full min-h-screen flex flex-col px-6 py-24">
       <SectionTitle sectionTitle="how it works." className="mb-2 text-ocean" />
       <h2 className="text-white text-4xl font-extrabold mb-16 leading-tight">
-        Onboarding <br /> Process
+        Onboarding <br className="sm:hidden" /> Process
       </h2>
       <div className="flex flex-col gap-3">
         {steps.map((step, i) => (
@@ -121,20 +122,25 @@ export function OnboardingProcess() {
   return (
     <>
       <OnboardingMobile />
-      <section className="w-full bg-navy content-padding hidden md:block">
+      <section className="w-full bg-dark-navy bg-[url('/assets/images/volunteer/onboarding-bg.webp')] bg-cover bg-center content-padding hidden md:block">
         <div className="max-w-screen-content mx-auto">
           {/* Mobile Layout */}
           {/* Desktop Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-3 xl:grid-cols-2 gap-8">
             {/* Left Side */}
-            <div className="flex flex-col py-28 gap-6">
+            <div className="flex flex-col py-28 gap-6 col-span-1">
               <SectionTitle sectionTitle="how it works." />
               <h2 className="heading-h2 text-white">Onboarding Process</h2>
             </div>
             {/* Right Side: Scrollable Steps */}
             <div
               ref={containerRef}
-              className="h-[560px] overflow-y-auto snap-y snap-mandatory gap-8 pr-2 no-scrollbar rounded-lg pt-10 pb-10 hidden md:block"
+              className={cn(
+                "hidden md:block col-span-2 xl:col-span-1",
+                "h-[560px] pt-10 pb-10 pl-10 pr-2 gap-8",
+                "overflow-y-auto snap-y snap-mandatory no-scrollbar",
+                "rounded-lg"
+              )}
               style={{
                 scrollBehavior: "smooth",
                 scrollPaddingTop: "120px", // (560 - stepHeight) / 2
