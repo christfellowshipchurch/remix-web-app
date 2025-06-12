@@ -10,7 +10,7 @@ export const VolunteerAtChurchCard = ({
 }) => {
   const tempRoles = ["Role 1", "Role 2", "Role 3"];
   return (
-    <div className="flex flex-col rounded-[1rem] overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-4px] md:shrink-0 md:w-[347px] h-full">
+    <div className="flex flex-col rounded-[1rem] overflow-hidden md:shrink-0 md:w-[347px] h-full">
       <img
         className="w-full max-h-[170px] object-cover"
         src={resource.image}
@@ -35,7 +35,7 @@ export const VolunteerAtChurchCard = ({
 
         <Link
           to={resource.pathname}
-          className="flex gap-2 w-full h-fit pt-4 border-t border-[#DFE1E7]"
+          className="flex gap-2 w-full h-fit pt-4 border-t border-[#DFE1E7] hover:text-ocean transition-colors duration-300"
         >
           <Icon name="arrowTopRight" className="text-ocean" size={14} />
           <p className="text-lg font-bold">Sign Up</p>
