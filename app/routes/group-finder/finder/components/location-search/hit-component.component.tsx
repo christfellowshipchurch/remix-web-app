@@ -26,22 +26,23 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
               alt={hit.title}
               className="w-full h-[140px] object-cover overflow-hidden"
             />
-            <div className="flex gap-1 absolute -bottom-4 lg:-bottom-2 xl:-bottom-4 right-4">
-              {hit?.leaders[0] && (
+            <div className="flex gap-1 absolute -bottom-4 lg:-bottom-5 right-4">
+              {hit?.leaders?.map((leader) => (
                 <img
+                  key={leader.firstName}
                   className="rounded-lg border-[1.534px] border-[#EBEBEF] size-[77px] object-cover"
                   style={{
                     boxShadow:
                       "0px 5.114px 10.228px -2.557px rgba(0, 0, 0, 0.10), 0px 2.557px 5.114px -2.557px rgba(0, 0, 0, 0.06)",
                   }}
-                  src={hit.leaders[0].photo.uri || defaultLeaderPhoto}
-                  alt={hit.leaders[0].firstName}
+                  src={leader.photo.uri || defaultLeaderPhoto}
+                  alt={leader.firstName}
                 />
-              )}
+              ))}
             </div>
           </div>
 
-          <div className="flex flex-col px-6 py-3 h-full justify-between">
+          <div className="flex flex-col px-6 pt-5 pb-4 h-full justify-between">
             <div className="flex flex-col justify-between h-full gap-2">
               <div className="flex flex-col gap-[10px]">
                 <div className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
