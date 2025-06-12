@@ -19,8 +19,6 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
     };
   };
 
-  console.log(trips);
-
   return (
     <div className="relative w-full max-w-[1030px] mx-auto">
       <img
