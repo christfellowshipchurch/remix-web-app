@@ -2,17 +2,7 @@ import { Link } from "react-router";
 import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
 import { useState } from "react";
-
-type RegionCardProps = {
-  title: string;
-  image: string;
-  spotsLeft: number;
-  description: string;
-  location: string;
-  date: string;
-  time: string;
-  href: string;
-};
+import { RegionCard as RegionCardType } from "../../types";
 
 export const RegionCard = ({
   title,
@@ -23,7 +13,7 @@ export const RegionCard = ({
   date,
   time,
   href,
-}: RegionCardProps) => {
+}: RegionCardType) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const shortDescription = description.split(" ").slice(0, 15).join(" ");
   const needsEllipsis = description.split(" ").length > 15;

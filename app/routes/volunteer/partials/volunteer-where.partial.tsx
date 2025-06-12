@@ -8,8 +8,8 @@ export function VolunteerWhere() {
         data={{
           id: 1,
           type: "CONTENT_BLOCK",
-          name: "Where are you interested in serving?",
-          content: `We want every volunteer's experience at Church to be a fulfilling journey where they feel welcomed and can share the love of Jesus. Our team engages in meaningful activities and worship, while building connections with fellow volunteers and the community. Our hope is that every volunteer understands the impact they have, knowing they are making a difference in the lives of others.?`,
+          name: "Where are you interested in?",
+          content: `We want every volunteer's experience at Church to be a fulfilling journey where they feel welcomed and can share the love of Jesus. Our team engages in meaningful activities and worship, while building connections with fellow volunteers and the community. Our hope is that every volunteer understands the impact they have, knowing they are making a difference in the lives of others.`,
           layoutType: "FEATURE",
           imageLayout: "RIGHT",
           backgroundColor: "WHITE",

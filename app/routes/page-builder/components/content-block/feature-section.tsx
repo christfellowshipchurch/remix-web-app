@@ -101,6 +101,7 @@ export const FeatureSection: FC<{
                 intent={"secondary"}
                 key={idx}
                 href={cta.url}
+                size="md"
               >
                 {cta.title}
               </Button>
