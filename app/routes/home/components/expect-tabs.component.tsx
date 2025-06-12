@@ -63,7 +63,7 @@ const WhatToExpectDesktopCard = ({
     setIsPlaying(false);
   };
 
-  // TODO: Once the videos are ready in Wisita they should be set to autoplay and hide controls on load, so that when the user clicks our play button, the video renders and it starts playing.
+  // TODO: Once the videos are ready in Wistia they should be set to autoplay and hide controls on load, so that when the user clicks our play button, the video renders and it starts playing.
   return (
     <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
       <div className="flex flex-col gap-12">
