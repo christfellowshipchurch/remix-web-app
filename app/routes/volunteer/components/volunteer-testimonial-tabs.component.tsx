@@ -254,9 +254,9 @@ const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
     data: {
       role: "church member",
       name: "John Doe 1",
-      video: "7yhe4p60vn",
+      video: "vqe38qpt78",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -268,9 +268,9 @@ const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
     data: {
       role: "church member",
       name: "John Doe 2",
-      video: "7yhe4p60vn",
+      video: "vqe38qpt78",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
@@ -282,9 +282,9 @@ const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
     data: {
       role: "church member",
       name: "John Doe 3",
-      video: "7yhe4p60vn",
+      video: "vqe38qpt78",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
