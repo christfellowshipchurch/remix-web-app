@@ -7,29 +7,34 @@ import { Button } from "~/primitives/button/button.primitive";
 
 export function VolunteerTestimonials() {
   return (
-    <section className="w-full bg-gray py-28 content-padding">
+    <section className="w-full bg-gray pt-16 pb-52 content-padding">
       <div className="max-w-screen-content mx-auto w-full">
-        <div className="w-full flex flex-col justify-center items-center gap-6">
-          {/* Heading Section*/}
-          <div className="w-full text-center flex flex-col justify-center items-center">
-            <h2 className="text-black text-2xl lg:text-[2rem] font-extrabold">
-              Here from other Volunteers
-            </h2>
-            <p className="text-text-secondary lg:text-lg text-center max-w-3xl font-medium">
-              Find out what to expect at a service, how we support families, and
-              what guides our faith. These videos feature everyday members
-              sharing their experiences and answering your questions.
-            </p>
+        <div className="w-full flex flex-col justify-center items-center gap-24">
+          <div className="flex flex-col items-center justify-center gap-16">
+            {/* Heading Section*/}
+            <div className="w-full text-center flex flex-col justify-center items-center">
+              <h2 className="text-black text-2xl lg:text-[2rem] font-extrabold">
+                Here from other Volunteers
+              </h2>
+              <p className="text-text-secondary lg:text-lg text-center max-w-3xl font-medium">
+                Find out what to expect at a service, how we support families,
+                and what guides our faith. These videos feature everyday members
+                sharing their experiences and answering your questions.
+              </p>
+            </div>
+
+            {/* Tabs Components */}
+            <div className="w-full">
+              <div className="w-full hidden lg:block">
+                <VolunteerTestimonialTabs />
+              </div>
+              <div className="w-full lg:hidden">
+                <VolunteerTestimonialsMobile />
+              </div>
+            </div>
           </div>
 
-          <div className="w-full hidden lg:block">
-            <VolunteerTestimonialTabs />
-          </div>
-
-          <div className="w-full lg:hidden">
-            <VolunteerTestimonialsMobile />
-          </div>
-
+          {/* Bottom Section */}
           <div className="w-full">
             <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-11 lg:gap-7 max-w-screen-content mx-auto">
               <p className="w-fit text-text-secondary text-center lg:text-left lg:text-xl font-semibold text-pretty">
