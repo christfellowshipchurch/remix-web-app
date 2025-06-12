@@ -1,5 +1,5 @@
 import { MissionsModal } from "~/components/modals";
-import { Trip } from "../types";
+import { Trip } from "../../types";
 import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 
