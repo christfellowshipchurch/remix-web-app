@@ -1,15 +1,8 @@
 import { Link } from "react-router";
 import { Button } from "~/primitives/button/button.primitive";
+import { CommunityCard as CommunityCardType } from "../../types";
 
-export const CommunityCard = ({
-  title,
-  image,
-  ctas,
-}: {
-  title: string;
-  image: string;
-  ctas: { label: string; href: string }[];
-}) => {
+export const CommunityCard = ({ title, image, ctas }: CommunityCardType) => {
   return (
     <div className="rounded-[28px] p-6 shrink-0 w-[85vw] md:w-[446px] h-[190px] md:h-[268px] flex items-center justify-center relative overflow-hidden">
       <img

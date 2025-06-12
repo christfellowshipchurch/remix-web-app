@@ -9,3 +9,20 @@ export type Trip = {
     lng: number;
   };
 };
+
+export type CommunityCard = {
+  title: string;
+  image: string;
+  ctas: { label: string; href: string }[];
+};
+
+export type RegionCard = {
+  title: string;
+  image: string;
+  spotsLeft: number;
+  description: string;
+  location: string;
+  date: string;
+  time: string;
+  href: string;
+};
