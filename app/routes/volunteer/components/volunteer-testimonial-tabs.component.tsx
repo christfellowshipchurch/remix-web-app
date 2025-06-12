@@ -8,9 +8,9 @@ export const VolunteerTestimonialTabs = () => {
   return (
     <Tabs.Root
       defaultValue={volunteerTestimonialsData[0].title}
-      className="flex flex-col gap-16 xl:gap-32"
+      className="flex flex-col gap-12"
     >
-      <Tabs.List className="flex gap-8 xl:gap-16 w-full">
+      <Tabs.List className="flex gap-8 xl:gap-10 w-full">
         {volunteerTestimonialsData.map((item, index) => (
           <Tabs.Trigger
             key={index}
