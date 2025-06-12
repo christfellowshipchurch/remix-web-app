@@ -1,13 +1,12 @@
 import { SectionTitle } from "~/components";
 import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { VolunteerAtChurchCard } from "../components/volunteer-at-church-card.component";
+import { VolunteerAtChurchCard } from "../components/cards/volunteer-at-church-card.component";
 import { cn } from "~/lib/utils";
-import { useRef, useEffect } from "react";
 
 export function VolunteerAtChurch() {
   return (
-    <section className="w-full bg-navy py-24 ">
+    <section id="church" className="w-full bg-navy py-24 ">
       <div className="flex flex-col gap-12 w-full">
         {/* Placeholder component for the carousel */}
         <div className="content-padding w-full flex items-center">
