@@ -1,20 +1,11 @@
 import { IconButton } from "~/primitives/button/icon-button.primitive";
+import { useLoaderData } from "react-router";
+import type { LoaderReturnType } from "../loader";
 
-interface VolunteerFeaturedEventProps {
-  title?: string;
-  subtitle?: string;
-  description?: string;
-  url?: string;
-  imageUrl?: string;
-}
-
-export function VolunteerFeaturedEvent({
-  title = "Dream Team Kickoff?",
-  subtitle = "Featured Event",
-  description = "We have many opportunities for you to volunteer from wherever you are—whether it's at your local campus, online with Christ Fellowship Everywhere, or with one of our central ministries out of the Palm Beach Gardens location. Find your spot on the Dream Team today.",
-  url = "#todo",
-  imageUrl = "/assets/images/volunteer/dream-team-kickoff.webp",
-}: VolunteerFeaturedEventProps) {
+export function VolunteerFeaturedEvent() {
+  const { mockVolunteerFeaturedEvent } = useLoaderData<LoaderReturnType>();
+  const { title, subtitle, description, url, imageUrl } =
+    mockVolunteerFeaturedEvent;
   return (
     <section id="featured-event">
       <div className="w-full bg-white content-padding relative hidden md:block">
