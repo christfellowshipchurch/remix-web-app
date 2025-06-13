@@ -36,14 +36,19 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
         return (
           <div
             key={trip.id}
-            className="absolute w-3 h-3 bg-sky-400 rounded-full animate-pulse"
+            className="absolute"
             style={{
               left: `${x}px`,
               top: `${y}px`,
               transform: "translate(-50%, -50%)",
             }}
             title={trip.title}
-          />
+          >
+            <span className="relative flex size-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ocean opacity-75"></span>
+              <span className="relative inline-flex size-3 rounded-full bg-ocean"></span>
+            </span>
+          </div>
         );
       })}
     </div>

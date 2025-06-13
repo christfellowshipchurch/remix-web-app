@@ -1,4 +1,5 @@
 import { CommunityCard, RegionCard } from "./types";
+import type { VolunteerFeaturedEvent } from "./types";
 
 export const mockCommunityData: CommunityCard[] = [
   {
@@ -91,3 +92,11 @@ export const mockRegionData: RegionCard[] = [
     href: "#",
   },
 ];
+
+export const mockVolunteerFeaturedEvent: VolunteerFeaturedEvent = {
+  title: "Dream Team Kickoff?",
+  subtitle: "Featured Event",
+  description: `We have many opportunities for you to volunteer from wherever you are—whether it's at your local campus, online with Christ Fellowship Everywhere, or with one of our central ministries out of the Palm Beach Gardens location. Find your spot on the Dream Team today.`,
+  url: "#todo",
+  imageUrl: "/assets/images/volunteer/dream-team-kickoff.webp",
+};
