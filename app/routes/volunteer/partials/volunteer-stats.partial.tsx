@@ -23,7 +23,7 @@ export function VolunteerStats({
   avatarCount,
 }: VolunteerStatsProps) {
   return (
-    <section id="stats" className="w-full bg-white py-8 content-padding">
+    <section id="stats" className="w-full bg-white py-20 content-padding">
       <div className="max-w-screen-content mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:flex w-full gap-6 justify-between items-end">
           {stats.map((stat, idx) => (
