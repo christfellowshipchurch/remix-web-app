@@ -2,7 +2,7 @@ import { LoaderFunctionArgs } from "react-router";
 import { CommunityCard, RegionCard, Trip } from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { mockCommunityData, mockRegionData } from "./mockData";
+import { mockCommunityData, mockRegionData } from "./mock-data";
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
