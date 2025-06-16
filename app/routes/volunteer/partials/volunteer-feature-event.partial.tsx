@@ -11,9 +11,9 @@ export function VolunteerFeaturedEvent() {
     <section id="featured-event">
       <div className="ml-auto w-[95vw] min-[1600px]:w-[90vw] bg-white relative hidden md:block">
         <div
+          style={{ backgroundImage: `url(${imageUrl})` }}
           className={cn(
             "bg-cover bg-no-repeat",
-            `bg-[url('${imageUrl}')]`,
             "md:bg-[right_0px_top_-80px]",
             "lg:bg-[right_0px_top_-200px]"
           )}
