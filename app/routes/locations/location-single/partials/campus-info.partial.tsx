@@ -74,7 +74,7 @@ export const CampusInfo = ({
   }
   return (
     <div className="w-full content-padding">
-      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-32">
+      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
         {/* Location Info */}
         <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]">
           {/* Campus Name Section*/}
@@ -145,7 +145,7 @@ const OnlineCampusInfo = ({
 }: CampusInfoProps) => {
   return (
     <div className="w-full content-padding">
-      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-32">
+      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
         {/* Location Info */}
         <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]">
           {/* Campus Name Section*/}
