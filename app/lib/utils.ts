@@ -101,16 +101,21 @@ export const icsLink = (event: EventDetails): string => {
     endTime = parseISO(endTime as string);
   }
 
+  // Ensure dates are in the correct timezone
+  const formatDateInTimezone = (date: Date) => {
+    return format(date, "yyyyMMdd'T'HHmmss");
+  };
+
   const icsString = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//www.cf.church//Christ Fellowship Church",
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
-    `DTSTAMP:${format(new Date(), "yyyyMMddhhmmss")}Z`,
+    `DTSTAMP:${format(new Date(), "yyyyMMdd'T'HHmmss'Z'")}`,
     `UID:${uniqueId()}-@christfellowship.church`,
-    `DTSTART;TZID=America/New_York:${format(startTime, "yyyyMMdd'T'HHmmss")}`,
-    `DTEND;TZID=America/New_York:${format(endTime, "yyyyMMdd'T'HHmmss")}`,
+    `DTSTART;TZID=America/New_York:${formatDateInTimezone(startTime)}`,
+    `DTEND;TZID=America/New_York:${formatDateInTimezone(endTime)}`,
     `SUMMARY:${title}`,
     `URL:${url ?? document?.URL ?? "https://www.christfellowship.church"}`,
     `DESCRIPTION:${description}`,
@@ -144,12 +149,17 @@ interface ServiceTime {
   time: string;
 }
 
-export function icsLinkEvents(
-  serviceTimes: ServiceTime[],
-  address: string,
-  campusName: string,
-  url?: string
-) {
+export function icsLinkEvents({
+  serviceTimes,
+  address,
+  campusName,
+  url,
+}: {
+  serviceTimes: ServiceTime[];
+  address: string;
+  campusName: string;
+  url?: string;
+}) {
   return serviceTimes.map(({ day, time }) => {
     let now = new Date();
     let [hour, minute] = parseTimeAsInt(time);

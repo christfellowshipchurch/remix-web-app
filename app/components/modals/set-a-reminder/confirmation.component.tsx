@@ -8,18 +8,20 @@ import { LoaderReturnType } from "~/routes/set-a-reminder/loader";
 const ReminderConfirmation = ({
   serviceTime,
   onSuccess,
+  campusUrl,
   location,
 }: {
   serviceTime: string;
   onSuccess: () => void;
+  campusUrl: string;
   location: string;
 }) => {
   const [formData, setFormData] = useState<LoaderReturnType | null>(null);
   const fetcher = useFetcher();
 
   useEffect(() => {
-    fetcher.load(`/set-a-reminder?location=${location}`);
-  }, [location]);
+    fetcher.load(`/set-a-reminder?location=${campusUrl}`);
+  }, [campusUrl]);
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data) {
@@ -32,12 +34,13 @@ const ReminderConfirmation = ({
   }
 
   const { address, url } = formData;
-  const events = icsLinkEvents(
-    [{ day: "Sunday", time: serviceTime }],
+  const events = icsLinkEvents({
+    serviceTimes: [{ day: "Sunday", time: serviceTime }],
     address,
-    location,
-    `https://christfellowship.church/locations/${url}`
-  );
+    campusName: location,
+    url: `https://christfellowship.church/locations/${url}`,
+  });
+  const addToCalendarLink = icsLink(events[0].event);
   const isEspanol = location?.includes("Español");
 
   return (
@@ -50,7 +53,7 @@ const ReminderConfirmation = ({
       </h2>
       <div className="flex gap-2 mt-4">
         <Button
-          href={icsLink(events[0].event)}
+          href={addToCalendarLink}
           intent="secondary"
           className="rounded-xl w-full"
         >
