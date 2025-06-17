@@ -26,3 +26,11 @@ export type RegionCard = {
   time: string;
   href: string;
 };
+
+export interface VolunteerFeaturedEvent {
+  title: string;
+  subtitle: string;
+  description: string;
+  url: string;
+  imageUrl: string;
+}
