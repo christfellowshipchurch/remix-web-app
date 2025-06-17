@@ -21,7 +21,12 @@ export const VolunteerFormRoute: React.FC = () => {
       )}
     >
       {/* TODO: Add header/navigation for steps */}
-      <main className="flex-1 flex flex-col items-center justify-center">
+      <main
+        className={cn(
+          "flex-1 flex flex-col items-center",
+          isWelcomeStep && "justify-center"
+        )}
+      >
         {/* Render the current step */}
         <Outlet />
       </main>
