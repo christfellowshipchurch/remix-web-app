@@ -1,28 +1,23 @@
-/**
- * @name TextFieldInput
- * @description This component is a text input field that can be used in forms. It was mainly created inorder to be able to place icons inside the input field when there is an error. If icon is not needed, a normal text input field can be used with the defaultTextInputStyles.
- */
-
 import React, { forwardRef, useEffect, useRef } from "react";
 import Icon from "~/primitives/icon";
 import colors from "~/styles/colors";
 
-export const defaultTextInputStyles =
+export const defaultDateInputStyles =
   "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
-interface TextFieldInputProps {
+interface DateInputProps {
   className?: string;
   value: string;
   error: string | null;
   setValue: (value: string) => void;
   setError: (value: string | null) => void;
-  type?: "text" | "email" | "tel";
-  placeholder?: string;
   label?: string;
   isRequired?: boolean;
+  min?: string;
+  max?: string;
 }
 
-const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
+const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
   (
     {
       className = "",
@@ -30,10 +25,10 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       error,
       setValue,
       setError,
-      type = "text",
-      placeholder = "",
       label,
       isRequired = false,
+      min,
+      max,
     },
     ref
   ) => {
@@ -63,12 +58,13 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
             <input
               ref={ref}
               className="w-full rounded-md border-2 border-alert p-2"
-              type={type}
+              type="date"
               value={value}
-              placeholder={placeholder}
               onFocus={() => setError(null)}
               readOnly
               required={isRequired}
+              min={min}
+              max={max}
             />
             <span className="absolute right-3 top-2.5 text-gray-500">
               <Icon name="errorCircle" color={colors.alert} />
@@ -86,12 +82,13 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
                 ref.current = el;
               }
             }}
-            className={`${defaultTextInputStyles} ${className}`}
-            type={type}
+            className={`${defaultDateInputStyles} ${className}`}
+            type="date"
             value={value}
-            placeholder={placeholder}
             onChange={(e) => setValue(e.target.value)}
             required={isRequired}
+            min={min}
+            max={max}
           />
         )}
       </div>
@@ -99,6 +96,6 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
   }
 );
 
-TextFieldInput.displayName = "TextFieldInput";
+DateInput.displayName = "DateInput";
 
-export default TextFieldInput;
+export default DateInput;

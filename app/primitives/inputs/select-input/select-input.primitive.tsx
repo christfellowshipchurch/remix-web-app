@@ -1,28 +1,28 @@
-/**
- * @name TextFieldInput
- * @description This component is a text input field that can be used in forms. It was mainly created inorder to be able to place icons inside the input field when there is an error. If icon is not needed, a normal text input field can be used with the defaultTextInputStyles.
- */
-
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, { forwardRef } from "react";
 import Icon from "~/primitives/icon";
 import colors from "~/styles/colors";
 
-export const defaultTextInputStyles =
+export const defaultSelectInputStyles =
   "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
-interface TextFieldInputProps {
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectInputProps {
   className?: string;
   value: string;
   error: string | null;
   setValue: (value: string) => void;
   setError: (value: string | null) => void;
-  type?: "text" | "email" | "tel";
+  options: SelectOption[];
   placeholder?: string;
   label?: string;
   isRequired?: boolean;
 }
 
-const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
+const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
   (
     {
       className = "",
@@ -30,23 +30,15 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       error,
       setValue,
       setError,
-      type = "text",
+      options,
       placeholder = "",
       label,
       isRequired = false,
     },
     ref
   ) => {
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-      if (error === null && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, [error]);
-
     return (
-      <div className="flex flex-col gap-1 w-full">
+      <div className="relative flex flex-col gap-1 w-full">
         {label && (
           <label className="font-bold text-text-primary text-sm mb-1">
             {isRequired && <span className="text-ocean mr-1">{"*"}</span>}
@@ -60,45 +52,53 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
         )}
         {error ? (
           <div className="relative">
-            <input
+            <select
               ref={ref}
-              className="w-full rounded-md border-2 border-alert p-2"
-              type={type}
+              className="w-full rounded-md border-2 border-alert p-2 bg-white"
               value={value}
-              placeholder={placeholder}
               onFocus={() => setError(null)}
-              readOnly
               required={isRequired}
-            />
+              data-invalid={!!error}
+            >
+              {placeholder && <option value="">{placeholder}</option>}
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
             <span className="absolute right-3 top-2.5 text-gray-500">
               <Icon name="errorCircle" color={colors.alert} />
             </span>
           </div>
         ) : (
-          <input
-            ref={(el) => {
-              (
-                inputRef as React.MutableRefObject<HTMLInputElement | null>
-              ).current = el;
-              if (typeof ref === "function") {
-                ref(el);
-              } else if (ref) {
-                ref.current = el;
-              }
-            }}
-            className={`${defaultTextInputStyles} ${className}`}
-            type={type}
+          <select
+            ref={ref}
+            className={`${defaultSelectInputStyles} ${className} bg-white appearance-none pr-10`}
             value={value}
-            placeholder={placeholder}
             onChange={(e) => setValue(e.target.value)}
             required={isRequired}
-          />
+            data-invalid={!!error}
+            style={{
+              background: "none",
+            }}
+          >
+            {placeholder && <option value="">{placeholder}</option>}
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         )}
+        <span className="pointer-events-none absolute right-3 top-10 text-gray-500">
+          <Icon name="chevronDown" size={20} />
+        </span>
       </div>
     );
   }
 );
 
-TextFieldInput.displayName = "TextFieldInput";
+SelectInput.displayName = "SelectInput";
 
-export default TextFieldInput;
+export default SelectInput;
