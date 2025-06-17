@@ -4,11 +4,22 @@ export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
   GOOGLE_MAPS_API_KEY: string;
+  campusUrl: string;
   campusName: string;
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
   const campusUrl = params.location;
+
+  if (!campusUrl) {
+    throw new Response("Campus not found", {
+      status: 404,
+    });
+  }
+
+  const campusName = decodeURIComponent(campusUrl || "")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (l) => l.toUpperCase());
 
   if (!campusUrl) {
     throw new Response("Campus not found", {
@@ -30,7 +41,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     GOOGLE_MAPS_API_KEY: googleMapsApiKey,
-    campusName: decodeURIComponent(campusUrl),
+    campusUrl: decodeURIComponent(campusUrl),
+    campusName: campusName,
   };
 
   return pageData;

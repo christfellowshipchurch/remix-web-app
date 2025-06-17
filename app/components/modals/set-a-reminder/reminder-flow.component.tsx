@@ -16,7 +16,7 @@ enum ReminderStep {
 const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
   const [step, setStep] = useState<ReminderStep>(ReminderStep.REMINDER);
   const [serviceTime, setServiceTime] = useState<string>("");
-  const { campusName } = useLoaderData<LoaderReturnType>();
+  const { campusName, campusUrl } = useLoaderData<LoaderReturnType>();
 
   let renderStep = () => {
     switch (step) {
@@ -25,7 +25,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
           <ReminderForm
             setServiceTime={setServiceTime}
             onSuccess={() => setStep(ReminderStep.CONFIRMATION)}
-            location={campusName}
+            url={campusUrl}
           />
         );
       case ReminderStep.CONFIRMATION:
@@ -33,6 +33,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
           <ReminderConfirmation
             serviceTime={serviceTime}
             onSuccess={() => setOpenModal(false)}
+            campusUrl={campusUrl}
             location={campusName}
           />
         );
