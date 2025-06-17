@@ -11,7 +11,7 @@ export const WhatToExpect = ({
   isOnline?: boolean;
 }) => {
   return (
-    <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-40 pb-20 lg:pb-28 content-padding flex justify-center">
+    <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-36 md:pt-40 pb-20 lg:pb-28 content-padding flex justify-center">
       <div className="w-ful flex flex-col lg:flex-row gap-12 xl:gap-20 items-center justify-center max-w-screen-content mx-auto">
         {/* Left Side */}
         {!isOnline && (
