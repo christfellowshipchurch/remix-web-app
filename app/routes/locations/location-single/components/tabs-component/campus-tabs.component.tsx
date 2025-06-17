@@ -85,18 +85,25 @@ const CustomTabs = ({
       {/* iPad/Desktop Tabs */}
       <Tabs.List
         className={cn(
+          "flex gap-1 md:w-full md:gap-4 md:border border-neutral-lighter p-4 relative mt-15 md:mt-0",
           isOnline ? "max-w-[520px]" : "max-w-[668px]",
           tasListStyle
         )}
       >
         {data.map((tab, index) => (
-          <Tabs.Trigger
-            key={index}
-            value={tab.value}
-            className="px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
-          >
-            {tab.label}
-          </Tabs.Trigger>
+          <>
+            {/* Desktop Tabs */}
+            <Tabs.Trigger
+              key={index}
+              value={tab.value}
+              className="hidden md:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
+            >
+              {tab.label}
+            </Tabs.Trigger>
+
+            {/* Mobile Tabs */}
+            <Tabs.Trigger
+              key={index}
               value={tab.value}
               className="md:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
             >
