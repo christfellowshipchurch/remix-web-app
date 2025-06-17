@@ -13,7 +13,7 @@ import { useResponsive } from "~/hooks/use-responsive";
 
 import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
-import { HitComponent } from "../components/location-search/hit-component.component";
+import { HitComponent } from "../components/hit-component.component";
 import { FinderLocationSearch } from "../components/location-search/location-search.component";
 import { useEffect, useState } from "react";
 import { AllClassFiltersPopup } from "../components/popups/all-filters.component";
@@ -192,7 +192,7 @@ const ResponsiveConfigure = ({
   const hitsPerPage = (() => {
     switch (true) {
       case isXLarge || isLarge:
-        return 16;
+        return 12;
       case isMedium:
         return 9;
       case isSmall:

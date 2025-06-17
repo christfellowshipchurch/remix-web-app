@@ -1,5 +1,5 @@
 import Icon from "~/primitives/icon";
-import { GroupHit } from "../../../types";
+import { GroupHit } from "../../types";
 import { Link } from "react-router";
 
 export const defaultLeaderPhoto =
