@@ -15,7 +15,7 @@ import { useResponsive } from "~/hooks/use-responsive";
 
 import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
-import { HitComponent } from "../components/location-search/hit-component.component";
+import { HitComponent } from "../components/hit-component.component";
 import { GroupsLocationSearch } from "../components/location-search/location-search.component";
 import { useEffect, useState } from "react";
 import { AllFiltersPopup } from "../components/popups/all-filters.component";
