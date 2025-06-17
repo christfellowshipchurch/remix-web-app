@@ -88,7 +88,7 @@ const CustomTabs = ({
       {/* iPad/Desktop Tabs */}
       <Tabs.List
         className={cn(
-          "flex gap-1 md:w-full md:gap-4 md:border border-neutral-lighter px-4 py-2 md:py-4 relative mt-15 md:mt-0",
+          "flex gap-2 md:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
           isOnline ? "max-w-[520px]" : "max-w-[668px]",
           tasListStyle
         )}
