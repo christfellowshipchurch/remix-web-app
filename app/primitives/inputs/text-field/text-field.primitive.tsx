@@ -62,7 +62,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
           <div className="relative">
             <input
               ref={ref}
-              className="w-full rounded-md border-2 border-alert p-2"
+              className="w-full rounded-md border-2 border-alert p-2 pl-10"
               type={type}
               value={value}
               placeholder={placeholder}
@@ -75,24 +75,38 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
             </span>
           </div>
         ) : (
-          <input
-            ref={(el) => {
-              (
-                inputRef as React.MutableRefObject<HTMLInputElement | null>
-              ).current = el;
-              if (typeof ref === "function") {
-                ref(el);
-              } else if (ref) {
-                ref.current = el;
-              }
-            }}
-            className={`${defaultTextInputStyles} ${className}`}
-            type={type}
-            value={value}
-            placeholder={placeholder}
-            onChange={(e) => setValue(e.target.value)}
-            required={isRequired}
-          />
+          <div className="relative">
+            <input
+              ref={(el) => {
+                (
+                  inputRef as React.MutableRefObject<HTMLInputElement | null>
+                ).current = el;
+                if (typeof ref === "function") {
+                  ref(el);
+                } else if (ref) {
+                  ref.current = el;
+                }
+              }}
+              className={`${defaultTextInputStyles} ${className} ${
+                type === "email" || type === "tel" ? "pl-10" : ""
+              }`}
+              type={type}
+              value={value}
+              placeholder={placeholder}
+              onChange={(e) => setValue(e.target.value)}
+              required={isRequired}
+            />
+            {type === "email" && (
+              <span className="absolute left-3 top-2.5">
+                <Icon name="envelope" className="text-navy size-5 mt-[1px]" />
+              </span>
+            )}
+            {type === "tel" && (
+              <span className="absolute left-3 top-2.5">
+                <Icon name="smartphone" className="text-navy size-5" />
+              </span>
+            )}
+          </div>
         )}
       </div>
     );
