@@ -9,6 +9,8 @@ export interface VolunteerFormPersonalInfo {
   lastName: string;
   email: string;
   phone?: string;
+  campus?: string;
+  dateOfBirth?: string;
 }
 
 export interface VolunteerFormAvailability {
