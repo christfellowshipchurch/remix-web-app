@@ -18,7 +18,7 @@ export function SetAReminderModal({
   ModalButton = Button,
 }: SetAReminderModalProps) {
   const [openModal, setOpenModal] = useState(false);
-  const { campusName } = useLoaderData<LoaderReturnType>();
+  const { campusUrl } = useLoaderData<LoaderReturnType>();
 
   return (
     <Modal open={openModal} onOpenChange={setOpenModal}>
@@ -31,7 +31,7 @@ export function SetAReminderModal({
             className
           )}
         >
-          {campusName?.includes("Español") ? "Recuérdame" : "Set a Reminder"}
+          {campusUrl?.includes("Español") ? "Recuérdame" : "Set a Reminder"}
         </ModalButton>
       </Modal.Button>
       <Modal.Content>

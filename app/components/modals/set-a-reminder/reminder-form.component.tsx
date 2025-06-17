@@ -9,13 +9,13 @@ import { LoaderReturnType } from "~/routes/set-a-reminder/loader";
 interface ReminderProps {
   setServiceTime: (time: string) => void;
   onSuccess: () => void;
-  location: string;
+  url: string;
 }
 
 const ReminderForm: React.FC<ReminderProps> = ({
   setServiceTime,
   onSuccess,
-  location,
+  url,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,8 +25,8 @@ const ReminderForm: React.FC<ReminderProps> = ({
   const submitFetcher = useFetcher();
 
   useEffect(() => {
-    loadFetcher.load(`/set-a-reminder?location=${location}`);
-  }, [location]);
+    loadFetcher.load(`/set-a-reminder?location=${url}`);
+  }, [url]);
 
   useEffect(() => {
     if (loadFetcher.state === "idle" && loadFetcher.data) {

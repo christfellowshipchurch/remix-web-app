@@ -7,7 +7,7 @@ import { LocationHit } from "./components/custom-hits";
 import { LoaderReturnType } from "./loader";
 
 export function LocationSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, campusName } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, campusUrl } =
     useLoaderData<LoaderReturnType>();
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
@@ -21,13 +21,13 @@ export function LocationSinglePage() {
         searchClient={searchClient}
         initialUiState={{
           dev_Locations: {
-            query: `${campusName}`,
+            query: `${campusUrl}`,
           },
         }}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
-        key={campusName}
+        key={campusUrl}
       >
         <Configure
           hitsPerPage={1}
@@ -40,7 +40,7 @@ export function LocationSinglePage() {
           classNames={{
             root: "opacity-0 size-0 absolute",
           }}
-          defaultValue={campusName}
+          defaultValue={campusUrl}
         />
         <LocationHit />
       </InstantSearch>
