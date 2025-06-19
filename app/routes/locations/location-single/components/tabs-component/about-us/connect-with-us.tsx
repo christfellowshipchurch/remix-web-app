@@ -26,11 +26,13 @@ export const ConnectWithUs = ({
               Follow us on social media to stay in the know with what goes on
               here at this campus.
             </p>
-            <Link to={campusInstagram} target="_blank">
-              <Button className="w-fit rounded-[8px]">
-                {campusName} on Instagram
-              </Button>{" "}
-            </Link>
+            <Button
+              className="w-fit rounded-[8px]"
+              href={campusInstagram}
+              target="_blank"
+            >
+              {campusName} on Instagram
+            </Button>
           </div>
         </div>
 

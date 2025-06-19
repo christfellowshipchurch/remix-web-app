@@ -24,23 +24,25 @@ export function SeriesResources() {
 
             {/* CTAs */}
             <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
-              <Link to="/locations">
-                <Button intent="primary" className="w-full" size="lg">
-                  Times and Locations
-                </Button>
-              </Link>
-              <Link to="/app">
-                <Button
-                  intent="secondary"
-                  className="w-full"
-                  size="lg"
-                  href="/app"
-                >
-                  App Devoltional
-                </Button>
-              </Link>
+              <Button
+                intent="primary"
+                className="w-full"
+                size="lg"
+                href="/locations"
+              >
+                Times and Locations
+              </Button>
 
-              {/* If we want CTAs to come from Rock */}
+              <Button
+                intent="secondary"
+                className="w-full"
+                size="lg"
+                href="/app"
+              >
+                App Devoltional
+              </Button>
+
+              {/* TODO: If we want CTAs to come from Rock */}
               {/* {series.attributeValues.callToActions &&
               series.attributeValues.callToActions.length > 0 && (
                 <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
