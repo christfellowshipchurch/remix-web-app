@@ -1,3 +1,5 @@
+// Location Search Component for Finder Pages (Groups, Classes, etc.)
+// Todo: move to global components folder
 import Icon from "~/primitives/icon";
 
 import { InstantSearch, Configure } from "react-instantsearch";
