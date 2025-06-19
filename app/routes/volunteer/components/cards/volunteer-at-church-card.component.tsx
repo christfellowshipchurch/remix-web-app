@@ -37,7 +37,7 @@ export const VolunteerAtChurchCard = ({
           to={resource.pathname}
           className="flex gap-2 w-full h-fit pt-4 border-t border-[#DFE1E7] hover:text-ocean transition-colors duration-300"
         >
-          <Icon name="arrowTopRight" className="text-ocean" size={14} />
+          <Icon name="arrowBack" className="text-ocean rotate-135" size={14} />
           <p className="text-lg font-bold">Sign Up</p>
         </Link>
       </div>

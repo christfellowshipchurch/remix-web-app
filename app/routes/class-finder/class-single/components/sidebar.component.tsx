@@ -1,5 +1,6 @@
 import Icon from "~/primitives/icon";
 import { Button } from "~/primitives/button/button.primitive";
+import type { LoaderReturnType } from "../loader";
 import { icons } from "~/lib/icons";
 import { defaultLeaderPhoto } from "../../finder/components/hit-component.component";
 
