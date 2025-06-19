@@ -50,7 +50,7 @@ export const ClassSingleContent = ({ hit }: { hit: GroupHit }) => {
           <div className="flex gap-6 items-center">
             <Link
               className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to="/group-finder"
+              to="/class-finder"
             >
               <Icon name="arrowBack" className="size-6" />
               <span className="hover:underline text-sm line-clamp-2 md:hidden">
