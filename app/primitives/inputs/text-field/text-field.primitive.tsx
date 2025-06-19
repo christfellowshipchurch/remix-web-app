@@ -3,7 +3,12 @@
  * @description This component is a text input field that can be used in forms. It was mainly created inorder to be able to place icons inside the input field when there is an error. If icon is not needed, a normal text input field can be used with the defaultTextInputStyles.
  */
 
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, {
+  forwardRef,
+  HTMLInputTypeAttribute,
+  useEffect,
+  useRef,
+} from "react";
 import Icon from "~/primitives/icon";
 import colors from "~/styles/colors";
 
@@ -16,7 +21,7 @@ interface TextFieldInputProps {
   error: string | null;
   setValue: (value: string) => void;
   setError: (value: string | null) => void;
-  type?: "text" | "email" | "tel";
+  type?: HTMLInputTypeAttribute;
   placeholder?: string;
   label?: string;
   isRequired?: boolean;
@@ -68,9 +73,9 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
               type={type}
               value={value}
               placeholder={placeholder}
+              required={isRequired}
               onFocus={() => setError(null)}
               readOnly
-              required={isRequired}
             />
             <span className="absolute right-3 top-2.5 text-gray-500">
               <Icon name="errorCircle" color={colors.alert} />

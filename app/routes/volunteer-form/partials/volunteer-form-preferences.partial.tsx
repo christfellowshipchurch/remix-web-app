@@ -4,8 +4,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import Slider from "~/primitives/inputs/slider/slider.primitive";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import TextField from "~/primitives/inputs/text-field";
-import { Icon } from "~/primitives/icon/icon";
+import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.primitive";
 
 interface Props {
   data: VolunteerFormPreferences;
@@ -141,7 +140,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
         </div>
       </div>
       <div className="flex flex-col gap-3 text-text-secondary w-64">
-        <TextField
+        <SecureTextField
           value={data.ssn ?? ""}
           error={ssnError}
           setValue={(val) => onChange("ssn", val)}
@@ -149,7 +148,6 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
           label="Social Security Number"
           isRequired
           placeholder="###-##-0000"
-          customIcon={<Icon name="lockAlt" className="text-navy size-5" />}
         />
       </div>
       <div className="flex justify-center gap-4 py-18">
