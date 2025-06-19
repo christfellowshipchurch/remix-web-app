@@ -5,7 +5,6 @@ import { Breadcrumbs } from "~/components";
 
 import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { GroupSingleSidebar } from "./components/sidebar.component";
-import { RelatedGroupsPartial } from "./partials/related-groups.partial";
 import { GroupFAQ } from "./components/faq.component";
 import { InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
@@ -89,7 +88,6 @@ export const ClassSingleContent = ({ hit }: { hit: GroupHit }) => {
           </div>
         </div>
       </div>
-      <RelatedGroupsPartial tags={tags} />
     </section>
   );
 };
