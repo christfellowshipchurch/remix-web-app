@@ -48,7 +48,7 @@ export default function App() {
     <GTMProvider gtmId="GTM-PFW26V4V">
       <AuthProvider>
         <CookieConsentProvider>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col text-pretty">
             <Navbar />
             <main
               className={cn(
