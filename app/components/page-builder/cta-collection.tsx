@@ -1,11 +1,6 @@
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ResourceCard } from "~/primitives/cards/resource-card";
-import {
-  Carousel,
-  CarouselItem,
-} from "~/primitives/shadcn-primitives/carousel";
-import { CarouselContent } from "~/primitives/shadcn-primitives/carousel";
 import { CollectionItem } from "~/routes/page-builder/types";
 import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
 

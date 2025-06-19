@@ -1,5 +1,5 @@
 import { Configure, InstantSearch } from "react-instantsearch";
-import { Hits } from "react-instantsearch";
+import { useHits } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
 import { useMemo } from "react";
 import { HitComponent } from "../../finder/components/hit-component.component";
@@ -7,6 +7,28 @@ import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
 import { useResponsive } from "~/hooks/use-responsive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
+import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+
+// Custom component to use hits data with ResourceCarousel
+function RelatedGroupsHits() {
+  const { items } = useHits();
+
+  // Wrapper component to adapt resource prop to hit prop
+  const HitComponentWrapper = ({ resource }: { resource: any }) => {
+    return <HitComponent hit={resource} />;
+  };
+
+  return (
+    <ResourceCarousel
+      CardComponent={HitComponentWrapper}
+      resources={items}
+      mode="light"
+      layout="arrowsRight"
+      carouselClassName="overflow-hidden w-screen"
+      carouselItemClassName="w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
+    />
+  );
+}
 
 export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -17,8 +39,6 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
-  const { isLarge, isXLarge } = useResponsive();
-
   return (
     <div className="content-padding mt-20 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
       <div className="w-full flex flex-col gap-6 md:gap-16 max-w-screen-content">
@@ -28,12 +48,12 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
           </h2>
           <div className="hidden md:block">
             <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
-              View More
+              View All
             </Button>
           </div>
         </div>
 
-        <div className="w-full flex justify-center gap-4">
+        <div className="w-full flex gap-4">
           <InstantSearch
             indexName="production_Groups"
             searchClient={searchClient}
@@ -41,17 +61,10 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
               preserveSharedStateOnUnmount: true,
             }}
           >
-            <Configure
-              filters={`preferences:"${tags[0]}"`}
-              hitsPerPage={isXLarge ? 4 : isLarge ? 3 : 4}
-            />
-            {/* Results Grid */}
-            <Hits
-              hitComponent={HitComponent}
-              classNames={{
-                list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 justify-center max-w-[400px] md:max-w-none",
-              }}
-            />
+            {/* TODO: Update filters to more accurately reflect related groups */}
+            <Configure filters={`preferences:"${tags[0]}"`} hitsPerPage={6} />
+            {/* Results using ResourceCarousel */}
+            <RelatedGroupsHits />
           </InstantSearch>
         </div>
         <div className="md:hidden w-full flex justify-center mt-6">
