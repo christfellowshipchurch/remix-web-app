@@ -22,12 +22,31 @@ export interface VolunteerFormWelcome {
   // No fields needed, just a welcome step
 }
 
+export const CAMPUS = [
+  "Palm Beach Gardens",
+  "Port St. Lucie",
+  "Royal Palm Beach",
+  "Boynton Beach",
+  "Downtown West Palm Beach",
+  "Jupiter",
+  "Stuart",
+  "Okeechobee",
+  "Belle Glade",
+  "Vero Beach",
+  "Boca Raton",
+  "Riviera Beach",
+  "Trinity Church",
+  "Westlake",
+  "En Español Palm Beach Gardens",
+  "En Español Royal Palm Beach",
+];
+
 export interface VolunteerFormPersonalInfo {
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
-  campus?: string;
+  campus?: (typeof CAMPUS)[number];
   dateOfBirth?: string;
 }
 
