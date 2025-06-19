@@ -5,6 +5,7 @@ import Slider from "~/primitives/inputs/slider/slider.primitive";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.primitive";
+import { Form } from "react-router";
 
 interface Props {
   data: VolunteerFormPreferences;
@@ -37,7 +38,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
   };
 
   return (
-    <form
+    <Form
       className="flex flex-col gap-10 p-12 pt-10 mb-20 w-full max-w-[750px] mx-auto"
       onSubmit={(e) => {
         e.preventDefault();
@@ -153,7 +154,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
       </div>
       <div className="flex justify-center gap-4 py-18">
         <Button
-          type="button"
+          type="submit"
           intent="secondary"
           className="font-normal"
           onClick={onBack}
@@ -164,7 +165,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
           Submit
         </Button>
       </div>
-    </form>
+    </Form>
   );
 };
 
