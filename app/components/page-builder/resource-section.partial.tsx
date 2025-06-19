@@ -121,6 +121,8 @@ export const ResourceCarousel = ({
   resources,
   mode,
   layout = "arrowsRight",
+  carouselItemClassName,
+  carouselClassName,
 }: {
   CardComponent?: React.ComponentType<{
     resource: CollectionItem | any;
@@ -128,18 +130,25 @@ export const ResourceCarousel = ({
   resources: CollectionItem[] | any[];
   mode?: "dark" | "light";
   layout?: "arrowsRight" | "arrowsLeft";
+  carouselItemClassName?: string;
+  carouselClassName?: string;
 }) => {
   return (
     <Carousel
       opts={{
         align: "start",
       }}
+      className={carouselClassName}
     >
       <CarouselContent className="gap-6 pt-4 md:mt-12 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
-            className="w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
+            className={cn(
+              carouselItemClassName
+                ? carouselItemClassName
+                : "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
+            )}
           >
             {CardComponent ? (
               <CardComponent resource={resource} />
