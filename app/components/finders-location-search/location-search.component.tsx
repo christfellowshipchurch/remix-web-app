@@ -1,3 +1,7 @@
+/**
+ * This component is used to search for locations in the finders, (Groups, Classes, etc...)
+ */
+
 import Icon from "~/primitives/icon";
 
 import { InstantSearch, Configure } from "react-instantsearch";
@@ -7,10 +11,10 @@ import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
 import { LoaderReturnType } from "~/routes/group-finder/loader";
 import { useEffect, useState } from "react";
-import { GroupsSearchPopup } from "../popups/groups-search-popup.component";
+import { ClassesSearchPopup } from "../../routes/class-finder/finder/components/popups/classes-search-popup.component";
 import { cn } from "~/lib/utils";
 
-export const GroupsLocationSearch = ({
+export const FinderLocationSearch = ({
   selectedLocation,
   setSelectedLocation,
   isSearchOpen,
@@ -122,7 +126,7 @@ export const GroupsLocationSearch = ({
         </div>
 
         {/* Search Popup */}
-        <GroupsSearchPopup
+        <ClassesSearchPopup
           setIsOpen={setIsSearchOpen}
           setSelectedLocation={setSelectedLocation}
           isOpen={isSearchOpen}

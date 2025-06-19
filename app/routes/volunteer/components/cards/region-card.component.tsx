@@ -63,7 +63,7 @@ export const RegionCard = ({
           to={href}
           className="flex gap-2 w-full h-fit pt-4 border-t border-[#DFE1E7] group"
         >
-          <Icon name="arrowTopRight" className="text-ocean" size={14} />
+          <Icon name="arrowBack" className="text-ocean rotate-135" size={14} />
           <p className="text-lg font-bold group-hover:text-ocean duration-300 transition-colors">
             Sign Up
           </p>
