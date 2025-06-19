@@ -8,21 +8,20 @@ import {
   Stats,
 } from "react-instantsearch";
 
-import { DesktopGroupFilters } from "~/routes/group-finder/finder/components/popups/group-filters";
-
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
 
-import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/hit-component.component";
+import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 import { useEffect, useState } from "react";
-import { AllFiltersPopup } from "../components/popups/all-filters.component";
+import { AllClassFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
-import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
+import { DesktopClassFilters } from "../components/popups/group-filters";
+import { CustomPagination } from "~/routes/group-finder/finder/components/custom-algolia/custom-pagination.component";
 
-export const GroupSearch = () => {
+export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -72,6 +71,7 @@ export const GroupSearch = () => {
   return (
     <div className="flex flex-col gap-4 w-full pt-12" id="search">
       <InstantSearch
+        // TODO: Update to Classes Index
         indexName="production_Groups"
         searchClient={searchClient}
         future={{
@@ -109,6 +109,7 @@ export const GroupSearch = () => {
                     }}
                   />
                 </div>
+
                 {/* Location Select Box */}
                 <FinderLocationSearch
                   isSearchOpen={isSearchOpen}
@@ -118,14 +119,14 @@ export const GroupSearch = () => {
                 />
               </div>
 
-              {/* Desktop Filters */}
+              {/* TODO: Update to Classes Desktop Filters */}
               <div className="hidden md:block">
-                <DesktopGroupFilters setIsSearchOpen={setIsSearchOpen} />
+                <DesktopClassFilters setIsSearchOpen={setIsSearchOpen} />
               </div>
             </div>
           </div>
 
-          {/* Mobile Filters */}
+          {/* TODO: Update to Classes Mobile Filters */}
           <div className="md:hidden bg-white pb-4 border-b-2 border-black/10 border-solid select-none">
             <div className="content-padding">
               <Button
@@ -145,7 +146,7 @@ export const GroupSearch = () => {
                   : "-z-1 opacity-0"
               )}
             >
-              <AllFiltersPopup onHide={() => setIsMobileOpen(false)} />
+              <AllClassFiltersPopup onHide={() => setIsMobileOpen(false)} />
             </div>
           </div>
 
@@ -191,7 +192,7 @@ const ResponsiveConfigure = ({
   const hitsPerPage = (() => {
     switch (true) {
       case isXLarge || isLarge:
-        return 16;
+        return 12;
       case isMedium:
         return 9;
       case isSmall:
