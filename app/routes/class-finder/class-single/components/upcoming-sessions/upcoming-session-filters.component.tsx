@@ -1,4 +1,5 @@
 import { ReactNode, useState } from "react";
+import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsCustomRefinement } from "~/routes/group-finder/finder/components/popups/groups-custom-refinement.component";
 
@@ -35,7 +36,7 @@ export function UpcomingSessionFilters({
         data={{
           content: [{ attribute: "meetingType", isMeetingType: true }],
         }}
-        maxWidth="180px"
+        maxWidth={210}
         refinementClassName="pb-4"
       />
 
@@ -54,7 +55,6 @@ export function UpcomingSessionFilters({
             },
           ],
         }}
-        maxWidth="148px"
       />
     </FilterContainer>
   );
@@ -85,7 +85,7 @@ interface FilterDropdownProps {
       showFooter?: boolean;
     }>;
   };
-  maxWidth?: string;
+  maxWidth?: number;
   refinementClassName?: string;
 }
 
@@ -95,12 +95,23 @@ export function FilterDropdown({
   onToggle,
   onHide,
   data,
-  maxWidth = "180px",
+  maxWidth = 210,
   refinementClassName,
 }: FilterDropdownProps) {
   return (
     <div
-      className={`md:relative flex items-center justify-between w-full md:max-w-[${maxWidth}] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer`}
+      className={cn(
+        "md:relative",
+        "flex items-center justify-between",
+        "w-fit",
+        "rounded-[8px]",
+        "p-3",
+        "border border-[#666666]",
+        "text-text-secondary",
+        "font-semibold",
+        "cursor-pointer"
+      )}
+      style={{ maxWidth: maxWidth }}
       onClick={onToggle}
     >
       <p>{title}</p>
