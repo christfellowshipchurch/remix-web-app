@@ -20,6 +20,7 @@ interface TextFieldInputProps {
   placeholder?: string;
   label?: string;
   isRequired?: boolean;
+  customIcon?: React.ReactNode;
 }
 
 const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
@@ -34,6 +35,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       placeholder = "",
       label,
       isRequired = false,
+      customIcon,
     },
     ref
   ) => {
@@ -48,7 +50,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
     return (
       <div className="flex flex-col gap-1 w-full">
         {label && (
-          <label className="font-bold text-text-primary text-sm mb-1">
+          <label className="font-bold text-text-primary mb-1">
             {isRequired && <span className="text-ocean mr-1">{"*"}</span>}
             {label}
             {isRequired && (
@@ -88,7 +90,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
                 }
               }}
               className={`${defaultTextInputStyles} ${className} ${
-                type === "email" || type === "tel" ? "pl-10" : ""
+                type === "email" || type === "tel" || customIcon ? "pl-10" : ""
               }`}
               type={type}
               value={value}
@@ -105,6 +107,9 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
               <span className="absolute left-3 top-2.5">
                 <Icon name="smartphone" className="text-navy size-5" />
               </span>
+            )}
+            {customIcon && (
+              <span className="absolute left-3 top-2.5">{customIcon}</span>
             )}
           </div>
         )}
