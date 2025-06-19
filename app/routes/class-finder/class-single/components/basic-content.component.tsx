@@ -38,10 +38,11 @@ export function ClassSingleBasicContent({
 
           {/* CTAs */}
           <div className="flex flex-col md:flex-row gap-6">
-            <Button intent="secondary" size="md">
+            <Button intent="secondary" size="md" href="#todo">
               View Discussion Guide
             </Button>
-            <Button intent="secondary" size="md">
+
+            <Button intent="secondary" size="md" href="#todo">
               Watch Class Trailer
             </Button>
           </div>
