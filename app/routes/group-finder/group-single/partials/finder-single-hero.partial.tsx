@@ -2,7 +2,8 @@ import { cn } from "~/lib/utils";
 
 export function FinderSingleHero({
   imagePath,
-  height,
+  // Default is set to Group Finder Hero Height
+  height = 374,
 }: {
   imagePath: string;
   height?: number;
