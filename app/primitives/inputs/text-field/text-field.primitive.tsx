@@ -16,6 +16,7 @@ export const defaultTextInputStyles =
   "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
 interface TextFieldInputProps {
+  name?: string;
   className?: string;
   value: string;
   error: string | null;
@@ -31,6 +32,7 @@ interface TextFieldInputProps {
 const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
   (
     {
+      name,
       className = "",
       value,
       error,
@@ -71,6 +73,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
               ref={ref}
               className="w-full rounded-md border-2 border-alert p-2 pl-10"
               type={type}
+              name={name}
               value={value}
               placeholder={placeholder}
               required={isRequired}
@@ -94,6 +97,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
                   ref.current = el;
                 }
               }}
+              name={name}
               className={`${defaultTextInputStyles} ${className} ${
                 type === "email" || type === "tel" || customIcon ? "pl-10" : ""
               }`}
