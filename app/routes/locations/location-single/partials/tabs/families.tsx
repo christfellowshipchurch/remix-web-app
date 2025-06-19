@@ -3,7 +3,7 @@ import { familiesMappedChildren } from "./tabs.data";
 
 export const ForFamilies = () => {
   return (
-    <div className="flex flex-col w-full rounded-t-[24px] md:rounded-none bg-gray pt-8 md:pt-24">
+    <div className="flex flex-col w-full rounded-t-[24px] md:rounded-none bg-gray pt-20 md:pt-24">
       {familiesMappedChildren.map((section) => renderSection(section))}
     </div>
   );

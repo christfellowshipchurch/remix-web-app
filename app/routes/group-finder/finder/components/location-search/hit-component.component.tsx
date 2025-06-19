@@ -44,7 +44,13 @@ export function HitComponent({ hit }: { hit: GroupHit }) {
           <div className="flex flex-col px-6 py-3 h-full justify-between">
             <div className="flex flex-col justify-between h-full gap-2">
               <div className="flex flex-col gap-[10px]">
-                <div className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
+                <div
+                  className={`${
+                    meetingType === "Virtual"
+                      ? "bg-ocean text-white"
+                      : "bg-[#EBEBEB]"
+                  } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
+                >
                   {meetingType}
                 </div>
                 <div className="flex flex-col gap-[10px]">

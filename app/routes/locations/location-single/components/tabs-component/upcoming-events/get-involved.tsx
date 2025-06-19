@@ -200,10 +200,14 @@ const GetInvolvedCard = ({
         <div className="absolute top-0 left-0 size-full bg-gradient-to-t from-black to-transparent opacity-80" />
         <div className="absolute bottom-0 left-0 w-full h-fit flex flex-col gap-4 p-4 text-white ">
           <div className="flex items-center gap-2">
-            <h3 className="text-[37px] font-extrabold leading-tight">
+            <h3 className="text-[32px] font-extrabold leading-tight">
               {title}
             </h3>
-            <Icon name="arrowTopRight" color="white" size={39} />
+            <Icon
+              name="arrowBack"
+              className="text-white rotate-135"
+              size={39}
+            />
           </div>
           <Link to={cta.url}>
             <Button
