@@ -11,6 +11,7 @@ interface SelectOption {
 }
 
 interface SelectInputProps {
+  name?: string;
   className?: string;
   value: string;
   error: string | null;
@@ -25,6 +26,7 @@ interface SelectInputProps {
 const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
   (
     {
+      name,
       className = "",
       value,
       error,
@@ -54,6 +56,7 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
           <div className="relative">
             <select
               ref={ref}
+              name={name}
               className="w-full rounded-md border-2 border-alert p-2 bg-white"
               value={value}
               onFocus={() => setError(null)}
@@ -74,6 +77,7 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
         ) : (
           <select
             ref={ref}
+            name={name}
             className={`${defaultSelectInputStyles} ${className} bg-white appearance-none pr-10`}
             value={value}
             onChange={(e) => setValue(e.target.value)}

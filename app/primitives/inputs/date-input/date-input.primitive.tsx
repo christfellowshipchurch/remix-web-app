@@ -6,6 +6,7 @@ export const defaultDateInputStyles =
   "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
 interface DateInputProps {
+  name?: string;
   className?: string;
   value: string;
   error: string | null;
@@ -20,6 +21,7 @@ interface DateInputProps {
 const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
   (
     {
+      name,
       className = "",
       value,
       error,
@@ -57,6 +59,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
           <div className="relative">
             <input
               ref={ref}
+              name={name}
               className="w-full rounded-md border-2 border-alert p-2"
               type="date"
               value={value}
@@ -82,6 +85,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
                 ref.current = el;
               }
             }}
+            name={name}
             className={`${defaultDateInputStyles} ${className}`}
             type="date"
             value={value}
