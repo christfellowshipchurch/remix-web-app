@@ -1,4 +1,5 @@
 import React from "react";
+import { Form } from "react-router-dom";
 import type { VolunteerFormAvailability } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
@@ -52,8 +53,10 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
   };
 
   return (
-    <form
+    <Form
+      method="post"
       className="flex flex-col gap-8 p-12 py-10 w-full max-w-[725px] mx-auto"
+      // action="/volunteer-form/availability"
       onSubmit={(e) => {
         e.preventDefault();
         onNext();
@@ -149,7 +152,7 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
           Next: Interests
         </Button>
       </div>
-    </form>
+    </Form>
   );
 };
 

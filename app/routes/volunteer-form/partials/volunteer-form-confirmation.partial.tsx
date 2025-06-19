@@ -1,4 +1,5 @@
 import React from "react";
+import { Form } from "react-router-dom";
 import type { VolunteerFormData } from "../types";
 
 interface Props {
@@ -56,13 +57,15 @@ export const VolunteerFormConfirmationPartial: React.FC<Props> = ({
         )}
       </ul>
     </div>
-    <button
-      className="px-6 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 transition-colors"
-      onClick={onFinish}
-      aria-label="Finish Volunteer Form"
-    >
-      Finish
-    </button>
+    <Form method="post">
+      <button
+        type="submit"
+        className="px-6 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 transition-colors"
+        aria-label="Finish Volunteer Form"
+      >
+        Finish
+      </button>
+    </Form>
   </section>
 );
 

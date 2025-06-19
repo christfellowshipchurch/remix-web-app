@@ -1,21 +1,25 @@
 import React from "react";
-import type { VolunteerFormPersonalInfo } from "../types";
+import { Form } from "react-router-dom";
+import { CAMPUS, type VolunteerFormPersonalInfo } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import TextFieldInput from "~/primitives/inputs/text-field";
 import SelectInput from "~/primitives/inputs/select-input/select-input.primitive";
 import DateInput from "~/primitives/inputs/date-input/date-input.primitive";
 
+const campusOptions = CAMPUS.map((campus) => ({
+  value: campus,
+  label: campus,
+}));
+
 interface Props {
   data: VolunteerFormPersonalInfo;
   onChange: (field: keyof VolunteerFormPersonalInfo, value: string) => void;
-  onNext: () => void;
   onBack: () => void;
 }
 
 export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
   data,
   onChange,
-  onNext,
   onBack,
 }) => {
   const [firstNameError, setFirstNameError] = React.useState<string | null>(
@@ -28,12 +32,10 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
   const [dobError, setDobError] = React.useState<string | null>(null);
 
   return (
-    <form
+    <Form
+      method="post"
       className="flex flex-col gap-4 p-8 w-full max-w-lg mt-12"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onNext();
-      }}
+      action="/volunteer-form/personal-info"
     >
       <h2 className="heading-h4 mb-8 text-center text-pretty">
         First things first, tell us about yourself
@@ -41,15 +43,12 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
       <div className="flex flex-col gap-4">
         {/* Campus Select */}
         <SelectInput
+          name="campus"
           value={data.campus ?? ""}
           error={campusError}
           setValue={(val) => onChange("campus", val)}
           setError={setCampusError}
-          options={[
-            { value: "", label: "Select one..." },
-            { value: "Campus 1", label: "Campus 1" },
-            { value: "Campus 2", label: "Campus 2" },
-          ]}
+          options={campusOptions}
           isRequired
           label="Where do you attend Christ Fellowship?"
         />
@@ -62,6 +61,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         </label>
         <div className="flex gap-4">
           <TextFieldInput
+            name="firstName"
             className=""
             value={data.firstName}
             error={firstNameError}
@@ -71,6 +71,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
             isRequired
           />
           <TextFieldInput
+            name="lastName"
             className=""
             value={data.lastName}
             error={lastNameError}
@@ -82,6 +83,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         </div>
       </div>
       <TextFieldInput
+        name="email"
         className=""
         value={data.email}
         error={emailError}
@@ -93,6 +95,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         isRequired
       />
       <TextFieldInput
+        name="phone"
         className=""
         value={data.phone ?? ""}
         error={phoneError}
@@ -104,6 +107,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         isRequired
       />
       <DateInput
+        name="dateOfBirth"
         className=""
         value={data.dateOfBirth ?? ""}
         error={dobError}
@@ -121,7 +125,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
           Next
         </Button>
       </div>
-    </form>
+    </Form>
   );
 };
 
