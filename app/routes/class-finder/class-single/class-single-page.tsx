@@ -1,11 +1,9 @@
 import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "./loader";
-import { GroupsSingleHero } from "./partials/hero.partial";
 import { Breadcrumbs } from "~/components";
 
-import { GroupSingleBasicContent } from "./components/basic-content.component";
-import { GroupSingleSidebar } from "./components/sidebar.component";
-import { GroupFAQ } from "./components/faq.component";
+import { ClassSingleBasicContent } from "./components/basic-content.component";
+import { ClassFAQ } from "./components/faq.component";
 import { InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
 import { GroupHit } from "../types";
@@ -13,6 +11,8 @@ import { Button } from "~/primitives/button/button.primitive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
+import { FinderSingleHero } from "~/routes/group-finder/group-single/partials/finder-single-hero.partial";
+import { UpcomingSessionsSection } from "./partials/upcoming-sections.partial";
 
 export const ClassNotFound = () => {
   return (
@@ -32,27 +32,25 @@ export const ClassNotFound = () => {
 export const ClassSingleContent = ({ hit }: { hit: GroupHit }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const tags = hit.preferences;
-  const {
-    leaders,
-    meetingType,
-    dateTime: meetingTime,
-    meetingDay,
-    campusName,
-    summary,
-  } = hit;
+  const { summary } = hit;
 
   if (!hit) {
     return <ClassNotFound />;
   }
+
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      <GroupsSingleHero imagePath={coverImage} />
+      {/* Hero */}
+      <FinderSingleHero imagePath={coverImage} height={496} />
+
+      {/* Content */}
       <div className="content-padding w-full flex flex-col items-center">
-        <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
+        <div className="flex flex-col gap-12 pt-10 w-full max-w-screen-content">
+          {/* Breadcrumbs */}
           <div className="flex gap-6 items-center">
             <Link
               className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to="/group-finder"
+              to="/class-finder"
             >
               <Icon name="arrowBack" className="size-6" />
               <span className="hover:underline text-sm line-clamp-2 md:hidden">
@@ -63,28 +61,27 @@ export const ClassSingleContent = ({ hit }: { hit: GroupHit }) => {
               <Breadcrumbs />
             </div>
           </div>
-          <div className="w-full flex flex-col items-center lg:flex-row lg:items-start gap-12 md:gap-16">
-            <GroupSingleBasicContent
+
+          {/* Basic Content */}
+          <div className="w-full flex flex-col items-center">
+            <ClassSingleBasicContent
               tags={tags}
-              groupName={hit.title}
+              // Name of the Class
+              className={hit.title}
               summary={summary}
             />
-            <div className="flex flex-col w-full lg:w-auto">
-              <GroupSingleSidebar
-                leaders={leaders}
-                meetingType={meetingType}
-                meetingTime={meetingTime}
-                meetingDay={meetingDay}
-                campusName={campusName}
-              />
-            </div>
-            <div className="lg:hidden w-full flex flex-col gap-12">
-              <div className="flex flex-col gap-6 md:hidden">
-                <h2 className="text-lg font-extrabold">About</h2>
-                <p className="md:hidden">{summary}</p>
-              </div>
-              <GroupFAQ />
-            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full flex flex-col">
+        {/* Upcoming Sessions Section */}
+        <UpcomingSessionsSection />
+
+        {/* FAQs */}
+        <div className="content-padding w-full flex flex-col items-center">
+          <div className="w-full max-w-screen-content mx-auto flex flex-col items-center">
+            <ClassFAQ />
           </div>
         </div>
       </div>
@@ -93,7 +90,7 @@ export const ClassSingleContent = ({ hit }: { hit: GroupHit }) => {
 };
 
 export function ClassSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, groupName } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, className } =
     useLoaderData<LoaderReturnType>();
 
   const searchClient = useMemo(
@@ -107,15 +104,16 @@ export function ClassSinglePage() {
       searchClient={searchClient}
       initialUiState={{
         production_Groups: {
-          query: `${groupName}`,
+          query: `${className}`,
         },
       }}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
-      key={groupName}
+      key={className}
     >
-      <SearchWrapper groupName={groupName} />
+      {/* Name of Class */}
+      <SearchWrapper className={className} />
     </InstantSearch>
   );
 }

@@ -209,14 +209,14 @@ const GetInvolvedCard = ({
               size={39}
             />
           </div>
-          <Link to={cta.url}>
-            <Button
-              intent="secondary"
-              className="border-white text-white transition-all duration-300 hover:!bg-white/10 w-fit rounded-none"
-            >
-              {cta.label}
-            </Button>
-          </Link>
+
+          <Button
+            intent="secondary"
+            className="border-white text-white transition-all duration-300 hover:!bg-white/10 w-fit rounded-none"
+            href={cta.url}
+          >
+            {cta.label}
+          </Button>
         </div>
       </div>
 

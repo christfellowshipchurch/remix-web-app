@@ -1,22 +1,21 @@
-import { useLoaderData } from "react-router";
-import type { LoaderReturnType } from "../loader";
-import { GroupFAQ } from "./faq.component";
+import { Button } from "~/primitives/button/button.primitive";
 
-export function GroupSingleBasicContent({
+export function ClassSingleBasicContent({
   tags,
-  groupName,
+  // Name of Class
+  className,
   summary,
 }: {
   tags: string[];
-  groupName: string;
+  className: string;
   summary: string;
 }) {
   return (
-    <div className="flex flex-col gap-16">
-      <div className="flex flex-col md:gap-16">
+    <div className="w-full pb-20 md:pb-28">
+      <div className="flex flex-col gap-12 md:gap-16">
         <div className="flex flex-col gap-4">
           <h1 className="text-[40px] lg:text-[52px] font-extrabold leading-tight">
-            {groupName}
+            {className}
           </h1>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag, i) => (
@@ -29,10 +28,25 @@ export function GroupSingleBasicContent({
             ))}
           </div>
         </div>
-        <p className="hidden md:block">{summary}</p>
-      </div>
-      <div className="hidden lg:block">
-        <GroupFAQ />
+
+        {/* What To Expect */}
+        <div className="flex flex-col gap-4 md:gap-9">
+          <h2 className="font-extrabold text-lg md:text-[28px]">
+            What to Expect
+          </h2>
+          <p className="md:text-xl">{summary}</p>
+
+          {/* CTAs */}
+          <div className="flex flex-col md:flex-row gap-6">
+            <Button intent="secondary" size="md" href="#todo">
+              View Discussion Guide
+            </Button>
+
+            <Button intent="secondary" size="md" href="#todo">
+              Watch Class Trailer
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

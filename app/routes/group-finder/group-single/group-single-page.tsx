@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "./loader";
-import { GroupsSingleHero } from "./partials/hero.partial";
+import { FinderSingleHero } from "./partials/finder-single-hero.partial";
 import { Breadcrumbs } from "~/components";
 
 import { GroupSingleBasicContent } from "./components/basic-content.component";
@@ -47,7 +47,7 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
   }
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      <GroupsSingleHero imagePath={coverImage} />
+      <FinderSingleHero imagePath={coverImage} />
       <div className="content-padding w-full flex flex-col items-center">
         <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
           <div className="flex gap-6 items-center">

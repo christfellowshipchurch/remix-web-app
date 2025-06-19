@@ -1,28 +1,27 @@
-import { Link } from "react-router";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupHit } from "../../types";
+import { GroupHit } from "../../../types";
 
-export const UpcomingSectionCard = ({ hit }: { hit: GroupHit }) => {
+export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const meetingType = hit.meetingType;
 
   return (
     <div
-      className="mb-4 bg-white rounded-lg overflow-hidden w-full h-fit max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300"
+      className="mb-4 bg-white rounded-lg overflow-hidden flex w-full h-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
       style={{
         boxShadow:
           "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
       }}
     >
-      <div className="flex flex-col h-full pb-4">
+      <div className="flex flex-col w-full h-full pb-4">
         <img
           src={coverImage}
           alt={hit.title}
           className="w-full h-[250px] lg:h-[180px] object-cover overflow-hidden"
         />
 
-        <div className="flex flex-col gap-6 px-6 pb-4 pt-5 w-full h-fit">
+        <div className="flex flex-col gap-6 px-6 pb-4 pt-5 w-full h-fit flex-1">
           <div className="flex flex-col w-full h-full gap-5">
             {/* Attributes */}
             <div className="flex flex-wrap gap-[6px]">
@@ -79,7 +78,7 @@ export const UpcomingSectionCard = ({ hit }: { hit: GroupHit }) => {
             </div>
           </div>
 
-          <Button className="w-full h-11">RSVP</Button>
+          <Button className="w-full h-11 mt-auto">RSVP</Button>
         </div>
       </div>
     </div>

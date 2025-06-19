@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
 const faqData = [
   {
     question: "What is this group about?",
-    answer: "This group is about...",
+    answer:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
   },
   {
     question: "What is this group about?",
-    answer: "This group is about...",
+    answer:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
   },
   {
     question: "What is this group about?",
-    answer: "This group is about...",
+    answer:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
   },
 ];
 
-export function FAQ({
+export function FinderSingleFAQ({
   question,
   answer,
 }: {
@@ -27,7 +29,7 @@ export function FAQ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="flex flex-col p-6 border border-[#C6C6C6] rounded-lg">
+    <div className="text-left flex flex-col p-6 border border-[#C6C6C6] rounded-lg max-w-[768px]">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex justify-between gap-2 w-full"
@@ -66,7 +68,11 @@ export const GroupFAQ = () => {
       </h2>
       <div className="flex flex-col gap-4">
         {faqData.map((faq, index) => (
-          <FAQ key={index} question={faq.question} answer={faq.answer} />
+          <FinderSingleFAQ
+            key={index}
+            question={faq.question}
+            answer={faq.answer}
+          />
         ))}
       </div>
     </div>
