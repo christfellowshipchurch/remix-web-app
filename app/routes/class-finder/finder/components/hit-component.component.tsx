@@ -1,7 +1,9 @@
-import Icon from "~/primitives/icon";
+/**
+ * This component is used to display a hit (cards) in the class finder.
+ */
+
 import { GroupHit } from "../../types";
 import { Link } from "react-router";
-import { Button } from "~/primitives/button/button.primitive";
 
 export const defaultLeaderPhoto =
   "https://cloudfront.christfellowship.church/GetAvatar.ashx?PhotoId=&AgeClassification=Adult&Gender=Unknown&RecordTypeId=1&Text=JC&Size=180&Style=icon&BackgroundColor=E4E4E7&ForegroundColor=A1A1AA";

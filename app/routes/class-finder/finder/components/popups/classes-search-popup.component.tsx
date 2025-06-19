@@ -1,5 +1,4 @@
 import { SearchBox, useInstantSearch, useSearchBox } from "react-instantsearch";
-
 import { Hits } from "react-instantsearch";
 import {
   HitComponent,
