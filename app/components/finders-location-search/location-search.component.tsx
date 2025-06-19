@@ -11,19 +11,22 @@ import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
 import { LoaderReturnType } from "~/routes/group-finder/loader";
 import { useEffect, useState } from "react";
-import { ClassesSearchPopup } from "../../routes/class-finder/finder/components/popups/classes-search-popup.component";
+
 import { cn } from "~/lib/utils";
+import { LocationSearchPopup } from "./search-popup.component";
 
 export const FinderLocationSearch = ({
   selectedLocation,
   setSelectedLocation,
   isSearchOpen,
   setIsSearchOpen,
+  className,
 }: {
   selectedLocation: string | null;
   setSelectedLocation: (location: string | null) => void;
   isSearchOpen: boolean;
   setIsSearchOpen: (isSearchOpen: boolean) => void;
+  className?: string;
 }) => {
   const [coordinates, setCoordinates] = useState<{
     lat: number;
@@ -76,7 +79,7 @@ export const FinderLocationSearch = ({
   }, [geocodeFetcher.data]);
 
   return (
-    <div className="flex md:relative w-[266px]">
+    <div className={cn("flex md:relative w-[266px]", className)}>
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
@@ -126,7 +129,7 @@ export const FinderLocationSearch = ({
         </div>
 
         {/* Search Popup */}
-        <ClassesSearchPopup
+        <LocationSearchPopup
           setIsOpen={setIsSearchOpen}
           setSelectedLocation={setSelectedLocation}
           isOpen={isSearchOpen}

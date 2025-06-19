@@ -1,0 +1,118 @@
+import { ReactNode, useState } from "react";
+import { Icon } from "~/primitives/icon/icon";
+import { GroupsCustomRefinement } from "~/routes/group-finder/finder/components/popups/groups-custom-refinement.component";
+
+export function UpcomingSessionFilters({
+  setIsSearchOpen,
+}: {
+  setIsSearchOpen: (isSearchOpen: boolean) => void;
+}) {
+  const [showGroupType, setShowGroupType] = useState(false);
+  const [showFrequency, setShowFrequency] = useState(false);
+
+  const onHide = () => {
+    setShowGroupType(false);
+    setShowFrequency(false);
+    setIsSearchOpen(false);
+  };
+
+  const handleToggle = (
+    setter: (value: boolean) => void,
+    currentValue: boolean
+  ) => {
+    onHide();
+    setter(!currentValue);
+  };
+
+  return (
+    <FilterContainer>
+      {/* Learning Format */}
+      <FilterDropdown
+        title="Learning Format"
+        isOpen={showGroupType}
+        onToggle={() => handleToggle(setShowGroupType, showGroupType)}
+        onHide={onHide}
+        data={{
+          content: [{ attribute: "meetingType", isMeetingType: true }],
+        }}
+        maxWidth="180px"
+        refinementClassName="pb-4"
+      />
+
+      {/* Languages */}
+      <FilterDropdown
+        title="Languages"
+        isOpen={showFrequency}
+        onToggle={() => handleToggle(setShowFrequency, showFrequency)}
+        onHide={onHide}
+        data={{
+          content: [
+            {
+              attribute: "meetingDay",
+              checkbox: true,
+              showFooter: true,
+            },
+          ],
+        }}
+        maxWidth="148px"
+      />
+    </FilterContainer>
+  );
+}
+
+interface FilterContainerProps {
+  children: ReactNode;
+}
+
+export function FilterContainer({ children }: FilterContainerProps) {
+  return (
+    <div className="relative md:static flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center">
+      <div className="w-full md:w-fit flex gap-4">{children}</div>
+    </div>
+  );
+}
+
+interface FilterDropdownProps {
+  title: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  onHide: () => void;
+  data: {
+    content: Array<{
+      attribute: string;
+      isMeetingType?: boolean;
+      checkbox?: boolean;
+      showFooter?: boolean;
+    }>;
+  };
+  maxWidth?: string;
+  refinementClassName?: string;
+}
+
+export function FilterDropdown({
+  title,
+  isOpen,
+  onToggle,
+  onHide,
+  data,
+  maxWidth = "180px",
+  refinementClassName,
+}: FilterDropdownProps) {
+  return (
+    <div
+      className={`md:relative flex items-center justify-between w-full md:max-w-[${maxWidth}] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer`}
+      onClick={onToggle}
+    >
+      <p>{title}</p>
+      <Icon name="chevronDown" />
+
+      <GroupsCustomRefinement
+        title={title}
+        data={data}
+        onHide={onHide}
+        showSection={isOpen}
+        className={`${refinementClassName} !w-[90vw] md:!w-[330px] left-0 translate-x-0 md:left-auto md:right-1/2 md:translate-x-1/2`}
+      />
+    </div>
+  );
+}

@@ -11,7 +11,7 @@ export function ClassSingleBasicContent({
   summary: string;
 }) {
   return (
-    <div className="w-full pb-28">
+    <div className="w-full pb-20 md:pb-28">
       <div className="flex flex-col gap-12 md:gap-16">
         <div className="flex flex-col gap-4">
           <h1 className="text-[40px] lg:text-[52px] font-extrabold leading-tight">
@@ -34,7 +34,7 @@ export function ClassSingleBasicContent({
           <h2 className="font-extrabold text-lg md:text-[28px]">
             What to Expect
           </h2>
-          <p className="hidden md:block">{summary}</p>
+          <p className="md:text-xl">{summary}</p>
 
           {/* CTAs */}
           <div className="flex flex-col md:flex-row gap-6">

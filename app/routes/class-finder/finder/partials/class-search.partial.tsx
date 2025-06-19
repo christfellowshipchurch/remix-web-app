@@ -87,10 +87,10 @@ export const ClassSearch = () => {
               isNavbarOpen ? "top-18 md:top-22" : "top-0"
             )}
           >
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 py-4 max-w-screen-content mx-auto h-20">
               {/* Search Boxes */}
               <div className="flex gap-4">
-                {/* Group Search Box */}
+                {/* Class Search Box */}
                 <div className="w-[240px] lg:w-[266px] flex items-center rounded-[8px] bg-[#EDF3F8] focus-within:border-ocean py-2">
                   <Icon name="searchAlt" className="text-[#666666] ml-3" />
                   <SearchBox
@@ -150,7 +150,7 @@ export const ClassSearch = () => {
             </div>
           </div>
 
-          {/* Group Search Results & Pagination */}
+          {/* Class Search Results & Pagination */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
               <Stats
