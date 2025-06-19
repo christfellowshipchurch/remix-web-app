@@ -58,8 +58,7 @@ export default function App() {
                 }` // This is to account for the navbar height when dark mode is enabled
               )}
             >
-              {/* We are moving the outlet only for the home page to specific refs */}
-              {currentPath !== "/" && <Outlet />}
+              <Outlet />
             </main>
             <Footer />
           </div>
