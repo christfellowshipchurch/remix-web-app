@@ -70,11 +70,17 @@ export const ClassSingleContent = ({ hit }: { hit: GroupHit }) => {
               className={hit.title}
               summary={summary}
             />
+          </div>
+        </div>
+      </div>
 
-            {/* Upcoming Sessions Section */}
-            <UpcomingSessionsSection />
+      <div className="w-full flex flex-col">
+        {/* Upcoming Sessions Section */}
+        <UpcomingSessionsSection />
 
-            {/* FAQs */}
+        {/* FAQs */}
+        <div className="content-padding w-full flex flex-col items-center">
+          <div className="w-full max-w-screen-content mx-auto flex flex-col items-center">
             <ClassFAQ />
           </div>
         </div>

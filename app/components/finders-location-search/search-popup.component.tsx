@@ -9,7 +9,7 @@ import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
 
-export function ClassesSearchPopup({
+export function LocationSearchPopup({
   setIsOpen,
   setSelectedLocation,
   isOpen,
@@ -53,7 +53,7 @@ export function ClassesSearchPopup({
   return (
     <div
       className={cn(
-        "w-full lg:w-[400px] absolute left-1/2 -translate-x-1/2 top-4 md:-top-[5px] pt-[5px] bg-white z-3 rounded-b-[8px] shadow-md",
+        "w-full md:w-[280px] lg:w-[400px] absolute left-1/2 -translate-x-1/2 top-4 md:-top-[5px] pt-[5px] bg-white z-3 rounded-b-[8px] shadow-md",
         isOpen ? "block" : "hidden"
       )}
     >
