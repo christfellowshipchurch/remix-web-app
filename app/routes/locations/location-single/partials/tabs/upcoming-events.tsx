@@ -5,7 +5,7 @@ import { upcomingEventsData } from "./tabs.data";
 export const UpcomingEvents = () => {
   return (
     <div className="flex flex-col w-full">
-      <div className="w-full rounded-t-[24px] md:rounded-none bg-gray">
+      <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-20 md:pt-8">
         <ResourceCarouselSection
           key={upcomingEventsData.id}
           title={upcomingEventsData.name}
