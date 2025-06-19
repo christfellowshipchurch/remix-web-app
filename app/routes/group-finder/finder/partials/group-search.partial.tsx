@@ -16,11 +16,11 @@ import { useResponsive } from "~/hooks/use-responsive";
 import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/hit-component.component";
-import { GroupsLocationSearch } from "../components/location-search/location-search.component";
 import { useEffect, useState } from "react";
 import { AllFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
+import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -110,7 +110,7 @@ export const GroupSearch = () => {
                   />
                 </div>
                 {/* Location Select Box */}
-                <GroupsLocationSearch
+                <FinderLocationSearch
                   isSearchOpen={isSearchOpen}
                   setIsSearchOpen={setIsSearchOpen}
                   selectedLocation={selectedLocation}

@@ -11,15 +11,15 @@ import {
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
 
-import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/hit-component.component";
-import { FinderLocationSearch } from "../components/location-search/location-search.component";
+import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 import { useEffect, useState } from "react";
 import { AllClassFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { DesktopClassFilters } from "../components/popups/group-filters";
+import { CustomPagination } from "~/routes/group-finder/finder/components/custom-algolia/custom-pagination.component";
 
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
