@@ -187,18 +187,16 @@ const ResponsiveConfigure = ({
 }: {
   selectedLocation: string | null;
 }) => {
-  const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
+  const { isSmall, isMedium } = useResponsive();
 
   const hitsPerPage = (() => {
     switch (true) {
-      case isXLarge || isLarge:
-        return 12;
       case isMedium:
-        return 9;
+        return 6;
       case isSmall:
         return 5;
       default:
-        return 5;
+        return 8;
     }
   })();
 
