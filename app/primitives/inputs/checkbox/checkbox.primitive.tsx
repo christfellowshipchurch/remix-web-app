@@ -6,6 +6,7 @@ interface CheckboxProps {
   label: string;
   className?: string;
   labelClassName?: string;
+  required?: boolean;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
@@ -14,6 +15,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   label,
   className = "",
   labelClassName = "",
+  required = false,
 }) => {
   return (
     <label
@@ -26,6 +28,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           onChange={(e) => onChange(e.target.checked)}
           className="peer appearance-none w-5 h-5 border-1 border-ocean rounded-md transition-colors duration-150 bg-ocean/10 checked:bg-ocean checked:border-ocean focus:outline-none focus:ring-1 focus:ring-ocean"
           aria-checked={checked}
+          required={required}
         />
         <span
           className={`pointer-events-none absolute left-0 top-0 flex h-5 w-5 items-center justify-center transition-opacity duration-150 ${

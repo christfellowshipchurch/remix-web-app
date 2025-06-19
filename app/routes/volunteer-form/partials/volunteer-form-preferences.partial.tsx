@@ -136,6 +136,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
             }
             checked={data.backgroundCheck ?? false}
             onChange={() => onChange("backgroundCheck", !data.backgroundCheck)}
+            required
           />
         </div>
       </div>
