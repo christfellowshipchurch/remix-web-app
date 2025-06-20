@@ -1,82 +1,83 @@
-import React from "react";
-import { Form } from "react-router-dom";
+import React, { useState } from "react";
+import { Form, useActionData } from "react-router-dom";
 import type { VolunteerFormAvailability } from "../types";
+import {
+  DAYS_OF_WEEK,
+  HOURS_OPTIONS,
+  TIMES_OF_DAY,
+  FREQUENCY_OPTIONS,
+} from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
 
-const DAYS = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
-const TIMES = ["Morning", "Afternoon", "Evening"];
-const FREQUENCY_OPTIONS = [
-  { value: "Weekly", label: "Weekly" },
-  { value: "Bi-Weekly", label: "Bi-Weekly" },
-  { value: "Monthly", label: "Monthly" },
-];
-const HOURS_OPTIONS = [
-  { value: "1-2", label: "1-2 hours" },
-  { value: "2-4", label: "2-4 hours" },
-  { value: "4+", label: "4+ hours" },
-];
-
 interface Props {
-  data: VolunteerFormAvailability & {
-    frequency?: string;
-    hoursPerWeek?: string;
-  };
-  onChange: (
-    field: keyof VolunteerFormAvailability | "frequency" | "hoursPerWeek",
-    value: string[] | string
-  ) => void;
-  onNext: () => void;
+  data: VolunteerFormAvailability;
   onBack: () => void;
 }
 
 export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
   data,
-  onChange,
-  onNext,
   onBack,
 }) => {
+  const actionData = useActionData<{
+    errors?: Partial<Record<keyof VolunteerFormAvailability, string>>;
+    defaultValues?: VolunteerFormAvailability;
+  }>();
+
+  const [formData, setFormData] = useState<VolunteerFormAvailability>(
+    actionData?.defaultValues ?? data
+  );
+
+  const errors = actionData?.errors ?? {};
+
   const handleToggle = (
     field: keyof VolunteerFormAvailability,
     value: string
   ) => {
-    const arr = data[field] ?? [];
+    const arr = (formData[field] as string[]) ?? [];
+    let newArr;
     if (arr.includes(value)) {
-      onChange(
-        field,
-        arr.filter((v) => v !== value)
-      );
+      newArr = arr.filter((v) => v !== value);
     } else {
-      onChange(field, [...arr, value]);
+      newArr = [...arr, value];
     }
+    setFormData((prev) => ({ ...prev, [field]: newArr }));
   };
 
   return (
     <Form
       method="post"
       className="flex flex-col gap-8 p-12 py-10 w-full max-w-[725px] mx-auto"
-      // action="/volunteer-form/availability"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onNext();
-      }}
     >
+      {/* Hidden inputs for form submission */}
+      {formData.daysAvailable.map((day) => (
+        <input type="hidden" name="daysAvailable" key={day} value={day} />
+      ))}
+      {formData.timesAvailable.map((time) => (
+        <input type="hidden" name="timesAvailable" key={time} value={time} />
+      ))}
+      <input type="hidden" name="frequency" value={formData.frequency} />
+      <input type="hidden" name="hoursPerWeek" value={formData.hoursPerWeek} />
+
       <h2 className="text-2xl font-bold mb-6">
         Please tell us when you&apos;re typically available to volunteer
       </h2>
       <div className="flex flex-col gap-8">
         <div>
-          <label className="font-bold mb-7 block">
+          <label className="font-bold mb-2 block">
             Which days of the week are you available to volunteer?
           </label>
+          {errors.daysAvailable && (
+            <p className="text-sm text-red-500">{errors.daysAvailable}</p>
+          )}
           <div className="grid grid-cols-7 gap-6 mt-2">
-            {DAYS.map((day) => (
-              <div className="flex flex-col gap-2">
+            {DAYS_OF_WEEK.map((day) => (
+              <div key={day} className="flex flex-col gap-2">
                 <span className="text-text-primary">{day}</span>
                 <Checkbox
                   key={day}
-                  checked={data.daysAvailable.includes(day)}
+                  checked={formData.daysAvailable.includes(day)}
                   onChange={() => handleToggle("daysAvailable", day)}
                   label={""}
                   className="ml-[2px]"
@@ -86,20 +87,23 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
           </div>
         </div>
         <div>
-          <label className="font-bold mb-6 block">
+          <label className="font-bold mb-2 block">
             What times are you typically available?
           </label>
+          {errors.timesAvailable && (
+            <p className="text-sm text-red-500">{errors.timesAvailable}</p>
+          )}
           <div className="flex flex-row gap-4 mt-2">
-            {TIMES.map((time) => (
+            {TIMES_OF_DAY.map((time) => (
               <Button
                 key={time}
                 type="button"
                 intent={
-                  data.timesAvailable.includes(time) ? "primary" : "white"
+                  formData.timesAvailable.includes(time) ? "primary" : "white"
                 }
                 size="sm"
                 className={`border-1 border-ocean font-normal text-text-primary ${
-                  data.timesAvailable.includes(time)
+                  formData.timesAvailable.includes(time)
                     ? "border-ocean text-white bg-ocean"
                     : "border-ocean/40 text-text-primary"
                 } px-6 py-2 min-w-0`}
@@ -116,8 +120,10 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
           </label>
           <RadioButtons
             options={FREQUENCY_OPTIONS}
-            selectedOption={data.frequency ?? "Weekly"}
-            onChange={(val) => onChange("frequency", val)}
+            selectedOption={formData.frequency ?? "Weekly"}
+            onChange={(val: string) =>
+              setFormData((prev) => ({ ...prev, frequency: val }))
+            }
             orientation="horizontal"
           />
         </div>
@@ -127,8 +133,10 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
           </label>
           <RadioButtons
             options={HOURS_OPTIONS}
-            selectedOption={data.hoursPerWeek ?? "1-2"}
-            onChange={(val) => onChange("hoursPerWeek", val)}
+            selectedOption={formData.hoursPerWeek ?? "1-2"}
+            onChange={(val: string) =>
+              setFormData((prev) => ({ ...prev, hoursPerWeek: val }))
+            }
             orientation="horizontal"
           />
         </div>

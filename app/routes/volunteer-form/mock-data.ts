@@ -14,15 +14,19 @@ export const mockPersonalInfo: VolunteerFormPersonalInfo = {
 };
 
 export const mockAvailability: VolunteerFormAvailability = {
-  daysAvailable: ["Monday", "Wednesday", "Friday"],
+  daysAvailable: ["Mon", "Wed", "Fri"],
   timesAvailable: ["Morning", "Afternoon"],
 };
 
 export const mockPreferences: VolunteerFormPreferences = {
   personality: 50,
   taskOriented: 50,
-  strengths: ["Leadership", "Communication", "Teamwork"],
-  interests: ["Children", "Music", "Hospitality"],
+  strengths: ["Leading others", "Public speaking", "One-on-one conversations"],
+  interests: [
+    "Children & Youth",
+    "Music & Worship",
+    "Hospitality & Connections",
+  ],
   comments: "I love helping out wherever needed!",
   backgroundCheck: true,
   ssn: "123-45-6789",

@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { ActionFunctionArgs, redirect, useNavigate } from "react-router-dom";
+import {
+  ActionFunctionArgs,
+  redirect,
+  useNavigate,
+  useLoaderData,
+} from "react-router-dom";
 import type { VolunteerFormPersonalInfo } from "./volunteer-form/types";
 import { mockPersonalInfo } from "./volunteer-form/mock-data";
 import VolunteerFormPersonalInfoPartial from "./volunteer-form/partials/volunteer-form-personal-info.partial";
@@ -14,22 +19,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     phone: formData.get("phone"),
     dateOfBirth: formData.get("dateOfBirth"),
   };
-  console.log("Form data received:", data);
+  console.log("Personal Info received:", data);
 
-  // Here you would typically validate the data and save it
-  // For now, we'll just redirect to the next page
+  // TODO: Validate data and save it
+
   return redirect("/volunteer-form/availability");
 };
 
+export const loader = async () => {
+  return new Response(JSON.stringify({ defaultValues: mockPersonalInfo }), {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
 export const VolunteerFormPersonalInfoRoute: React.FC = () => {
-  const [data, setData] = useState<VolunteerFormPersonalInfo>(mockPersonalInfo);
+  const { defaultValues } = useLoaderData() as {
+    defaultValues: VolunteerFormPersonalInfo;
+  };
   const navigate = useNavigate();
   return (
     <VolunteerFormPersonalInfoPartial
-      data={data}
-      onChange={(field, value) =>
-        setData((prev) => ({ ...prev, [field]: value }))
-      }
+      data={defaultValues}
       onBack={() => navigate("/volunteer-form/welcome")}
     />
   );
