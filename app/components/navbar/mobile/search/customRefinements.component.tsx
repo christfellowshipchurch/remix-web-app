@@ -8,10 +8,10 @@ export const MobileSearchCustomRefinementList = ({
   return (
     <RefinementList
       classNames={{
-        list: "flex gap-2 overflow-x-auto max-w-screen pr-8 pb-2",
+        list: "flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
         checkbox: "hidden",
         count: "hidden",
-        item: "flex items-center justify-center text-center text-sm font-bold text-[#7B7382] px-4 py-1 whitespace-nowrap transition-all duration-300",
+        item: "first:ml-4 flex items-center justify-center text-center text-sm font-bold text-[#7B7382] px-4 py-1 whitespace-nowrap transition-all duration-300",
         selectedItem:
           "flex items-center justify-center text-center text-sm font-bold text-white px-4 py-1 whitespace-nowrap  bg-navy rounded-[55px] transition-all duration-300",
         label:
