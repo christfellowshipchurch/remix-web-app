@@ -5,6 +5,7 @@ import { defaultTextInputStyles } from "./text-field.primitive";
 
 interface SecureTextFieldInputProps {
   className?: string;
+  name?: string;
   value: string;
   error: string | null;
   setValue: (value: string) => void;
@@ -21,10 +22,10 @@ const SecureTextFieldInput = forwardRef<
   (
     {
       className = "",
+      name,
       value,
       error,
       setValue,
-      setError,
       placeholder = "***-**-0000",
       label,
       isRequired = false,
@@ -88,11 +89,7 @@ const SecureTextFieldInput = forwardRef<
       e.preventDefault();
     };
 
-    useEffect(() => {
-      if (error === null && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, [error]);
+    const errorStyles = "border-alert focus:border-alert focus:ring-alert/50";
 
     return (
       <div className="flex flex-col gap-1 w-full">
@@ -107,49 +104,40 @@ const SecureTextFieldInput = forwardRef<
             )}
           </label>
         )}
-        {error ? (
-          <div className="relative">
-            <input
-              ref={ref}
-              className="w-full rounded-md border-2 border-alert p-2 pl-10"
-              type="text"
-              value={maskedValue}
-              placeholder={placeholder}
-              required={isRequired}
-              onFocus={() => setError(null)}
-              readOnly
-            />
+        <input type="hidden" name={name} value={value} />
+        <div className="relative">
+          <input
+            ref={(el) => {
+              (
+                inputRef as React.MutableRefObject<HTMLInputElement | null>
+              ).current = el;
+              if (typeof ref === "function") {
+                ref(el);
+              } else if (ref) {
+                ref.current = el;
+              }
+            }}
+            className={`${defaultTextInputStyles} ${className} pl-10 ${
+              error ? errorStyles : ""
+            }`}
+            type="text"
+            value={maskedValue}
+            placeholder={placeholder}
+            onKeyDown={handleKeyDown}
+            required={isRequired}
+            inputMode="numeric"
+            autoComplete="off"
+          />
+          <span className="absolute left-3 top-2.5">
+            <Icon name="lockAlt" className="text-navy size-5" />
+          </span>
+          {error && (
             <span className="absolute right-3 top-2.5 text-gray-500">
               <Icon name="errorCircle" color={colors.alert} />
             </span>
-          </div>
-        ) : (
-          <div className="relative">
-            <input
-              ref={(el) => {
-                (
-                  inputRef as React.MutableRefObject<HTMLInputElement | null>
-                ).current = el;
-                if (typeof ref === "function") {
-                  ref(el);
-                } else if (ref) {
-                  ref.current = el;
-                }
-              }}
-              className={`${defaultTextInputStyles} ${className} pl-10`}
-              type="text"
-              value={maskedValue}
-              placeholder={placeholder}
-              onKeyDown={handleKeyDown}
-              required={isRequired}
-              inputMode="numeric"
-              autoComplete="off"
-            />
-            <span className="absolute left-3 top-2.5">
-              <Icon name="lockAlt" className="text-navy size-5" />
-            </span>
-          </div>
-        )}
+          )}
+        </div>
+        {error && <p className="text-sm text-alert">{error}</p>}
       </div>
     );
   }

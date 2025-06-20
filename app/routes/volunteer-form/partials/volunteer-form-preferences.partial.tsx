@@ -1,50 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
 import { INTERESTS, STRENGTHS, VolunteerFormPreferences } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import Slider from "~/primitives/inputs/slider/slider.primitive";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.primitive";
-import { Form } from "react-router";
+import { Form, useActionData } from "react-router-dom";
 
 interface Props {
   data: VolunteerFormPreferences;
-  onChange: (
-    field: keyof VolunteerFormPreferences,
-    value: string[] | string | boolean
-  ) => void;
-  onNext: () => void;
   onBack: () => void;
 }
 
 export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
   data,
-  onChange,
-  onNext,
   onBack,
 }) => {
-  const [ssnError, setSsnError] = React.useState<string | null>(null);
+  const actionData = useActionData<{
+    errors?: Partial<Record<keyof VolunteerFormPreferences, string>>;
+    defaultValues?: VolunteerFormPreferences;
+  }>();
 
-  const handleToggle = (field: "strengths" | "interests", value: string) => {
-    const arr = data[field] ?? [];
-    if (arr.includes(value)) {
-      onChange(
-        field,
-        arr.filter((v) => v !== value)
-      );
+  const [formData, setFormData] = useState<VolunteerFormPreferences>(() => {
+    const d = actionData?.defaultValues ?? data;
+    // form data from server comes in as strings, so we need to parse them
+    return {
+      ...d,
+      personality: Number(d.personality),
+      taskOriented: Number(d.taskOriented),
+      backgroundCheck: String(d.backgroundCheck) === "true",
+    };
+  });
+
+  const errors = actionData?.errors ?? {};
+
+  const handleChange = (
+    field: keyof VolunteerFormPreferences,
+    value: string | boolean | number
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleToggle = <K extends "strengths" | "interests">(
+    field: K,
+    value: VolunteerFormPreferences[K][number]
+  ) => {
+    const arr = (formData[field] ?? []) as VolunteerFormPreferences[K];
+    let newArr;
+    if (arr.includes(value as never)) {
+      newArr = arr.filter((v) => v !== value);
     } else {
-      onChange(field, [...arr, value]);
+      newArr = [...arr, value];
     }
+    setFormData((prev) => ({ ...prev, [field]: newArr }));
   };
 
   return (
     <Form
+      method="post"
       className="flex flex-col gap-10 p-12 pt-10 mb-20 w-full max-w-[750px] mx-auto"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onNext();
-      }}
     >
+      {/* Hidden Fields */}
+      <input type="hidden" name="personality" value={formData.personality} />
+      <input type="hidden" name="taskOriented" value={formData.taskOriented} />
+      {formData.strengths.map((s) => (
+        <input type="hidden" name="strengths" value={s} key={s} />
+      ))}
+      {formData.interests.map((i) => (
+        <input type="hidden" name="interests" value={i} key={i} />
+      ))}
+      <input
+        type="hidden"
+        name="backgroundCheck"
+        value={String(formData.backgroundCheck)}
+      />
+
       <h2 className="heading-h4 mb-6">
         Let&apos;s explore your talents and passions to find the right fit.
       </h2>
@@ -55,10 +85,10 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
         <Slider
           leftLabel="Outgoing"
           rightLabel="Reserved"
-          value={data.personality ?? 50}
+          value={formData.personality ?? 50}
           min={0}
           max={100}
-          onValueChange={(value) => onChange("personality", value.toString())}
+          onValueChange={(value: number) => handleChange("personality", value)}
         />
       </div>
       <div className="flex flex-col gap-8">
@@ -68,10 +98,10 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
         <Slider
           leftLabel="People-Oriented"
           rightLabel="Task-Oriented"
-          value={data.taskOriented ?? 50}
+          value={formData.taskOriented ?? 50}
           min={0}
           max={100}
-          onValueChange={(value) => onChange("taskOriented", value.toString())}
+          onValueChange={(value: number) => handleChange("taskOriented", value)}
         />
       </div>
       <div className="flex flex-col gap-3">
@@ -82,7 +112,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
           <Checkbox
             key={strength}
             label={strength}
-            checked={data.strengths?.includes(strength) ?? false}
+            checked={formData.strengths?.includes(strength) ?? false}
             onChange={() => handleToggle("strengths", strength)}
           />
         ))}
@@ -90,10 +120,11 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
       <div className="flex flex-col gap-3">
         <label className="font-bold">What are you passionate about?</label>
         <textarea
+          name="comments"
           className={defaultTextInputStyles}
-          value={""}
+          value={formData.comments}
           rows={5}
-          onChange={(e) => onChange("comments", e.target.value)}
+          onChange={(e) => handleChange("comments", e.target.value)}
         />
       </div>
       <div className="flex flex-col gap-3">
@@ -104,12 +135,15 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
             (required)
           </span>{" "}
         </label>
+        {errors.interests && (
+          <p className="text-sm text-red-500">{errors.interests}</p>
+        )}
         <div className="grid grid-cols-2 gap-3">
           {INTERESTS.map((interest) => (
             <Checkbox
               key={interest}
               label={interest}
-              checked={data.interests?.includes(interest) ?? false}
+              checked={formData.interests?.includes(interest) ?? false}
               onChange={() => handleToggle("interests", interest)}
             />
           ))}
@@ -131,30 +165,30 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
             We take your privacy seriously.
           </p>
           <Checkbox
-            key={"backgroundCheck"}
             label={
               "I consent to a confidential background check, and I understand that the results will be used solely for volunteer screening purposes."
             }
-            checked={data.backgroundCheck ?? false}
-            onChange={() => onChange("backgroundCheck", !data.backgroundCheck)}
+            checked={formData.backgroundCheck ?? false}
+            onChange={(checked) => handleChange("backgroundCheck", !!checked)}
             required
           />
         </div>
       </div>
       <div className="flex flex-col gap-3 text-text-secondary w-64">
         <SecureTextField
-          value={data.ssn ?? ""}
-          error={ssnError}
-          setValue={(val) => onChange("ssn", val)}
-          setError={setSsnError}
+          name="ssn"
+          value={formData.ssn ?? ""}
+          error={errors.ssn ?? null}
+          setValue={(val: string) => handleChange("ssn", val)}
+          setError={() => {}}
           label="Social Security Number"
-          isRequired
+          isRequired={formData.backgroundCheck}
           placeholder="###-##-0000"
         />
       </div>
       <div className="flex justify-center gap-4 py-18">
         <Button
-          type="submit"
+          type="button"
           intent="secondary"
           className="font-normal"
           onClick={onBack}

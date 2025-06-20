@@ -9,14 +9,14 @@ export const INTERESTS = [
   "Creative Arts",
   "Outreach & Missions",
   "Facilities & Operations",
-];
+] as const;
 
 export const STRENGTHS = [
   "Leading others",
   "Working behind the scenes",
   "Public speaking",
   "One-on-one conversations",
-];
+] as const;
 
 export interface VolunteerFormWelcome {
   // No fields needed, just a welcome step
@@ -53,7 +53,22 @@ export interface VolunteerFormPersonalInfo {
 export interface VolunteerFormAvailability {
   daysAvailable: string[];
   timesAvailable: string[];
+  frequency?: string;
+  hoursPerWeek?: string;
 }
+
+export const DAYS_OF_WEEK = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
+export const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"];
+export const FREQUENCY_OPTIONS = [
+  { value: "Weekly", label: "Weekly" },
+  { value: "Bi-Weekly", label: "Bi-Weekly" },
+  { value: "Monthly", label: "Monthly" },
+];
+export const HOURS_OPTIONS = [
+  { value: "1-2", label: "1-2 hours" },
+  { value: "2-4", label: "2-4 hours" },
+  { value: "4+", label: "4+ hours" },
+];
 
 export interface VolunteerFormPreferences {
   personality: number;

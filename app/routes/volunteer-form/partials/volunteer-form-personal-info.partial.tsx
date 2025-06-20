@@ -1,5 +1,5 @@
-import React from "react";
-import { Form } from "react-router-dom";
+import React, { useState } from "react";
+import { Form, useActionData } from "react-router-dom";
 import { CAMPUS, type VolunteerFormPersonalInfo } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import TextFieldInput from "~/primitives/inputs/text-field";
@@ -13,23 +13,30 @@ const campusOptions = CAMPUS.map((campus) => ({
 
 interface Props {
   data: VolunteerFormPersonalInfo;
-  onChange: (field: keyof VolunteerFormPersonalInfo, value: string) => void;
   onBack: () => void;
 }
 
 export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
   data,
-  onChange,
   onBack,
 }) => {
-  const [firstNameError, setFirstNameError] = React.useState<string | null>(
-    null
+  const actionData = useActionData<{
+    errors?: Partial<Record<keyof VolunteerFormPersonalInfo, string>>;
+    defaultValues?: VolunteerFormPersonalInfo;
+  }>();
+
+  const [formData, setFormData] = useState<VolunteerFormPersonalInfo>(
+    actionData?.defaultValues ?? data
   );
-  const [lastNameError, setLastNameError] = React.useState<string | null>(null);
-  const [emailError, setEmailError] = React.useState<string | null>(null);
-  const [phoneError, setPhoneError] = React.useState<string | null>(null);
-  const [campusError, setCampusError] = React.useState<string | null>(null);
-  const [dobError, setDobError] = React.useState<string | null>(null);
+
+  const errors = actionData?.errors ?? {};
+
+  const handleChange = (
+    field: keyof VolunteerFormPersonalInfo,
+    value: string
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <Form
@@ -44,10 +51,10 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         {/* Campus Select */}
         <SelectInput
           name="campus"
-          value={data.campus ?? ""}
-          error={campusError}
-          setValue={(val) => onChange("campus", val)}
-          setError={setCampusError}
+          value={formData.campus ?? ""}
+          error={errors.campus ?? null}
+          setValue={(val) => handleChange("campus", val)}
+          setError={() => {}}
           options={campusOptions}
           isRequired
           label="Where do you attend Christ Fellowship?"
@@ -63,20 +70,20 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
           <TextFieldInput
             name="firstName"
             className=""
-            value={data.firstName}
-            error={firstNameError}
-            setValue={(val) => onChange("firstName", val)}
-            setError={setFirstNameError}
+            value={formData.firstName}
+            error={errors.firstName ?? null}
+            setValue={(val) => handleChange("firstName", val)}
+            setError={() => {}}
             placeholder="First Name"
             isRequired
           />
           <TextFieldInput
             name="lastName"
             className=""
-            value={data.lastName}
-            error={lastNameError}
-            setValue={(val) => onChange("lastName", val)}
-            setError={setLastNameError}
+            value={formData.lastName}
+            error={errors.lastName ?? null}
+            setValue={(val) => handleChange("lastName", val)}
+            setError={() => {}}
             placeholder="Last Name"
             isRequired
           />
@@ -85,10 +92,10 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
       <TextFieldInput
         name="email"
         className=""
-        value={data.email}
-        error={emailError}
-        setValue={(val) => onChange("email", val)}
-        setError={setEmailError}
+        value={formData.email}
+        error={errors.email ?? null}
+        setValue={(val) => handleChange("email", val)}
+        setError={() => {}}
         type="email"
         label="Email"
         placeholder="Example@gmail.com"
@@ -97,10 +104,10 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
       <TextFieldInput
         name="phone"
         className=""
-        value={data.phone ?? ""}
-        error={phoneError}
-        setValue={(val) => onChange("phone", val)}
-        setError={setPhoneError}
+        value={formData.phone ?? ""}
+        error={errors.phone ?? null}
+        setValue={(val) => handleChange("phone", val)}
+        setError={() => {}}
         type="tel"
         label="Phone Number"
         placeholder="xxx-xxx-xxxx"
@@ -109,10 +116,10 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
       <DateInput
         name="dateOfBirth"
         className=""
-        value={data.dateOfBirth ?? ""}
-        error={dobError}
-        setValue={(val) => onChange("dateOfBirth", val)}
-        setError={setDobError}
+        value={formData.dateOfBirth ?? ""}
+        error={errors.dateOfBirth ?? null}
+        setValue={(val) => handleChange("dateOfBirth", val)}
+        setError={() => {}}
         label="Date of Birth"
         isRequired
         max={new Date().toISOString().split("T")[0]}
