@@ -48,11 +48,11 @@ export const VolunteerFormConfirmationPartial: React.FC<Props> = ({
       <h3 className="font-semibold mb-2">Preferences</h3>
       <ul className="mb-2">
         <li>
-          <strong>Interests:</strong> {data.preferences.interests.join(", ")}
+          <strong>Interests:</strong> {data.interests.interests.join(", ")}
         </li>
-        {data.preferences.comments && (
+        {data.interests.comments && (
           <li>
-            <strong>Comments:</strong> {data.preferences.comments}
+            <strong>Comments:</strong> {data.interests.comments}
           </li>
         )}
       </ul>

@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import type { VolunteerFormPersonalInfo } from "./volunteer-form/types";
 import { mockPersonalInfo } from "./volunteer-form/mock-data";
-import VolunteerFormPersonalInfoPartial from "./volunteer-form/partials/volunteer-form-personal-info.partial";
+import VolunteerFormPersonalInfoPartial from "./volunteer-form/partials/form-about-you.partial";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();

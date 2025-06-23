@@ -5,9 +5,9 @@ import {
   useNavigate,
   useLoaderData,
 } from "react-router-dom";
-import type { VolunteerFormPreferences } from "./volunteer-form/types";
-import { mockPreferences } from "./volunteer-form/mock-data";
-import VolunteerFormPreferencesPartial from "./volunteer-form/partials/volunteer-form-preferences.partial";
+import type { VolunteerFormInterests } from "./volunteer-form/types";
+import { mockInterests } from "./volunteer-form/mock-data";
+import VolunteerFormInterestsPartial from "./volunteer-form/partials/form-interests.partial";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -15,7 +15,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const backgroundCheck = formData.get("backgroundCheck") === "true";
   const ssn = formData.get("ssn");
 
-  const errors: Partial<Record<keyof VolunteerFormPreferences, string>> = {};
+  const errors: Partial<Record<keyof VolunteerFormInterests, string>> = {};
 
   if (interests.length === 0) {
     errors.interests = "Please select at least one interest.";
@@ -27,7 +27,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const defaultValues = Object.fromEntries(
     formData
-  ) as unknown as VolunteerFormPreferences;
+  ) as unknown as VolunteerFormInterests;
 
   if (Object.keys(errors).length > 0) {
     return new Response(JSON.stringify({ errors, defaultValues }), {
@@ -42,18 +42,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const loader = async () => {
-  return new Response(JSON.stringify({ defaultValues: mockPreferences }), {
+  return new Response(JSON.stringify({ defaultValues: mockInterests }), {
     headers: { "Content-Type": "application/json" },
   });
 };
 
 export const VolunteerFormPreferencesRoute: React.FC = () => {
   const { defaultValues } = useLoaderData() as {
-    defaultValues: VolunteerFormPreferences;
+    defaultValues: VolunteerFormInterests;
   };
   const navigate = useNavigate();
   return (
-    <VolunteerFormPreferencesPartial
+    <VolunteerFormInterestsPartial
       data={defaultValues}
       onBack={() => navigate("/volunteer-form/availability")}
     />
