@@ -29,5 +29,5 @@ export const mockPreferences: VolunteerFormPreferences = {
   ],
   comments: "I love helping out wherever needed!",
   backgroundCheck: true,
-  ssn: "123-45-6789",
+  ssn: "123456789",
 };
