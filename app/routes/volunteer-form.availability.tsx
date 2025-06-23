@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import type { VolunteerFormAvailability } from "./volunteer-form/types";
 import { mockAvailability } from "./volunteer-form/mock-data";
-import VolunteerFormAvailabilityPartial from "./volunteer-form/partials/volunteer-form-availability.partial";
+import VolunteerFormAvailabilityPartial from "./volunteer-form/partials/form-availability.partial";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -46,7 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // TODO: Save data
   console.log("Availability Info received:", defaultValues);
 
-  return redirect("/volunteer-form/preferences");
+  return redirect("/volunteer-form/interests");
 };
 
 export const loader = async () => {
@@ -63,7 +63,7 @@ export const VolunteerFormAvailabilityRoute: React.FC = () => {
   return (
     <VolunteerFormAvailabilityPartial
       data={defaultValues}
-      onBack={() => navigate("/volunteer-form/personal-info")}
+      onBack={() => navigate("/volunteer-form/about-you")}
     />
   );
 };

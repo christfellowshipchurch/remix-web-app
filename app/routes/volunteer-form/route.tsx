@@ -1,12 +1,12 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import React from "react";
 import { cn } from "~/lib/utils";
-import { VolunteerFormNav } from "~/routes/volunteer-form/components/volunteer-form-nav.component";
+import { VolunteerFormNav } from "~/routes/volunteer-form/components/form-nav.component";
 
 // Step 1: Welcome
 // Step 2: Personal Info
 // Step 3: Availability
-// Step 4: Preferences
+// Step 4: Interests
 // Step 5: Confirmation/Results
 
 export const VolunteerFormRoute: React.FC = () => {
@@ -14,7 +14,7 @@ export const VolunteerFormRoute: React.FC = () => {
   const pathSegments = location.pathname.split("/");
   const currentStep = pathSegments[pathSegments.length - 1];
   const isWelcomeStep = currentStep === "welcome";
-  const isFormPage = ["personal-info", "availability", "preferences"].includes(
+  const isFormPage = ["about-you", "availability", "interests"].includes(
     currentStep
   );
 

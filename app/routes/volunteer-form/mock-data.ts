@@ -1,7 +1,7 @@
 import type {
   VolunteerFormPersonalInfo,
   VolunteerFormAvailability,
-  VolunteerFormPreferences,
+  VolunteerFormInterests,
 } from "./types";
 
 export const mockPersonalInfo: VolunteerFormPersonalInfo = {
@@ -18,7 +18,7 @@ export const mockAvailability: VolunteerFormAvailability = {
   timesAvailable: ["Morning", "Afternoon"],
 };
 
-export const mockPreferences: VolunteerFormPreferences = {
+export const mockInterests: VolunteerFormInterests = {
   personality: 50,
   taskOriented: 50,
   strengths: ["Leading others", "Public speaking", "One-on-one conversations"],

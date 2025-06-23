@@ -42,7 +42,7 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
     <Form
       method="post"
       className="flex flex-col gap-4 p-8 w-full max-w-lg mt-12"
-      action="/volunteer-form/personal-info"
+      action="/volunteer-form/about-you"
     >
       <h2 className="heading-h4 mb-8 text-center text-pretty">
         First things first, tell us about yourself

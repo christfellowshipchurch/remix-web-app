@@ -70,7 +70,7 @@ export const HOURS_OPTIONS = [
   { value: "4+", label: "4+ hours" },
 ];
 
-export interface VolunteerFormPreferences {
+export interface VolunteerFormInterests {
   personality: number;
   taskOriented: number;
   strengths: (typeof STRENGTHS)[number][];
@@ -87,5 +87,5 @@ export interface VolunteerFormConfirmation {
 export interface VolunteerFormData {
   personalInfo: VolunteerFormPersonalInfo;
   availability: VolunteerFormAvailability;
-  preferences: VolunteerFormPreferences;
+  interests: VolunteerFormInterests;
 }

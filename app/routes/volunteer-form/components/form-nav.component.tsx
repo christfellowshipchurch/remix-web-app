@@ -3,14 +3,12 @@ import React from "react";
 import Icon from "~/primitives/icon";
 
 const stepsData = [
-  { id: "personal-info", name: "About You" },
+  { id: "about-you", name: "About You" },
   { id: "availability", name: "Availability" },
-  { id: "preferences", name: "Interests" },
+  { id: "interests", name: "Interests" },
 ];
 
-interface VolunteerFormNavProps {
-}
-
+// Step Dot Components
 const StepDotDone: React.FC = () => (
   <div className="flex p-1 items-center justify-center rounded-full bg-ocean">
     <Icon name="check" className="text-white" />
@@ -37,7 +35,7 @@ const StepDotTodo: React.FC = () => (
   </div>
 );
 
-export const VolunteerFormNav: React.FC<VolunteerFormNavProps> = ({
+export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
   currentStepId,
 }) => {
   const currentStepIndex = stepsData.findIndex(
@@ -52,6 +50,7 @@ export const VolunteerFormNav: React.FC<VolunteerFormNavProps> = ({
           className="flex items-start justify-between w-full max-w-3xl mx-auto"
         >
           {stepsData.map((step, stepIdx) => {
+            // Determine which dot component to render based on the step index
             let DotComponent: React.FC;
             if (stepIdx < currentStepIndex) {
               DotComponent = StepDotDone;

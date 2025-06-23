@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { INTERESTS, STRENGTHS, VolunteerFormPreferences } from "../types";
+import { INTERESTS, STRENGTHS, VolunteerFormInterests } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import Slider from "~/primitives/inputs/slider/slider.primitive";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
@@ -8,20 +8,20 @@ import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.pr
 import { Form, useActionData } from "react-router-dom";
 
 interface Props {
-  data: VolunteerFormPreferences;
+  data: VolunteerFormInterests;
   onBack: () => void;
 }
 
-export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
+export const VolunteerFormInterestsPartial: React.FC<Props> = ({
   data,
   onBack,
 }) => {
   const actionData = useActionData<{
-    errors?: Partial<Record<keyof VolunteerFormPreferences, string>>;
-    defaultValues?: VolunteerFormPreferences;
+    errors?: Partial<Record<keyof VolunteerFormInterests, string>>;
+    defaultValues?: VolunteerFormInterests;
   }>();
 
-  const [formData, setFormData] = useState<VolunteerFormPreferences>(() => {
+  const [formData, setFormData] = useState<VolunteerFormInterests>(() => {
     const d = actionData?.defaultValues ?? data;
     // form data from server comes in as strings, so we need to parse them
     return {
@@ -35,7 +35,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
   const errors = actionData?.errors ?? {};
 
   const handleChange = (
-    field: keyof VolunteerFormPreferences,
+    field: keyof VolunteerFormInterests,
     value: string | boolean | number
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -43,9 +43,9 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
 
   const handleToggle = <K extends "strengths" | "interests">(
     field: K,
-    value: VolunteerFormPreferences[K][number]
+    value: VolunteerFormInterests[K][number]
   ) => {
-    const arr = (formData[field] ?? []) as VolunteerFormPreferences[K];
+    const arr = (formData[field] ?? []) as VolunteerFormInterests[K];
     let newArr;
     if (arr.includes(value as never)) {
       newArr = arr.filter((v) => v !== value);
@@ -203,4 +203,4 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
   );
 };
 
-export default VolunteerFormPreferencesPartial;
+export default VolunteerFormInterestsPartial;
