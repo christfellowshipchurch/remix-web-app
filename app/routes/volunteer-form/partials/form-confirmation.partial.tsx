@@ -1,9 +1,7 @@
 import React from "react";
-import { Form } from "react-router-dom";
 import { ResultsProgressBar } from "../components/results-progress-bar.component";
 import { ResultCard } from "../components/result-card.component";
 import { mockResultCards } from "../mock-data";
-import { HeroNavCard } from "~/components/navbar/desktop/nav-cards.component";
 import Icon from "~/primitives/icon";
 
 export const VolunteerFormConfirmationPartial: React.FC = () => (
