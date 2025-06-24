@@ -16,6 +16,7 @@ export default function DailyDevoPage() {
       <AppSection
         layout="imageLeft"
         className="bg-gradient-to-b from-[#00354D] via-[#00354D]/50 to-navy"
+        dynamicButton={true}
       />
     </div>
   );
