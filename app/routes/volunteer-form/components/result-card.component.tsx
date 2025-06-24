@@ -1,10 +1,41 @@
 import Icon from "~/primitives/icon";
 import { icons } from "~/lib/icons";
-import type { VolunteerResultCardProps } from "../types";
+import type { Sticker, VolunteerResultCardProps } from "../types";
 import { cn } from "~/lib/utils";
 
+const CardSticker = ({ sticker }: { sticker: Sticker }) => {
+  switch (sticker) {
+    case "super-hero":
+      return (
+        <img
+          src="/assets/images/volunteer-form/super-hero.png"
+          alt="Super Hero"
+          className="size-20 absolute top-12 -left-12 -rotate-8"
+        />
+      );
+    case "puzzle":
+      return (
+        <img
+          src="/assets/images/volunteer-form/puzzle.png"
+          alt="Puzzle"
+          className="size-20 absolute top-2 -right-10 -rotate-6"
+        />
+      );
+    case "stair-stepper":
+      return (
+        <img
+          src="/assets/images/volunteer-form/stair-stepper.png"
+          alt="Stair Stepper"
+          className="size-20 absolute top-26 -right-12 rotate-12"
+        />
+      );
+    default:
+      return null;
+  }
+};
+
 export const ResultCard = ({
-  icon,
+  sticker,
   image,
   title,
   description,
@@ -40,15 +71,17 @@ export const ResultCard = ({
   return (
     <div
       className={cn(
-        "relative flex flex-col bg-white rounded-xl shadow-lg overflow-hidden",
-        "w-full max-w-xs min-w-xs md:max-w-sm md:min-w-sm mx-auto",
+        "relative flex flex-col bg-white rounded-xl shadow-lg",
+        "w-full max-w-xs min-w-xs md:max-w-sm md:min-w-sm",
         className
       )}
     >
-      <img src={image} alt="" className="h-36 w-full object-cover" />
-      <div className="absolute top-4 left-4 bg-ocean rounded-full p-2 shadow-lg">
-        <Icon name={icon} className="text-white w-6 h-6" />
-      </div>
+      <img
+        src={image}
+        alt=""
+        className="h-36 w-full object-cover rounded-t-xl"
+      />
+      {sticker && <CardSticker sticker={sticker} />}
       <div className="flex flex-col items-center flex-1 p-6">
         <h4 className="heading-h4 text-navy mb-2">{title}</h4>
         <p className="text-text-secondary mb-8 text-center">{description}</p>
