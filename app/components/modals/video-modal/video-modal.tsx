@@ -36,7 +36,7 @@ export function VideoModal({
         </ModalButton>
       </Modal.Button>
       <Modal.Content>
-        <div className="w-[700px] h-[500px] p-10">
+        <div className="text-center text-text_primary p-7 md:p-9 w-[90vw] max-w-sm md:max-w-screen lg:max-w-3xl overflow-y-scroll aspect-[9/16] md:aspect-video max-h-[85vh] md:max-h-[90vh]">
           <Video wistiaId={wistiaId} className={videoClassName} />
         </div>
       </Modal.Content>

@@ -104,7 +104,7 @@ const DesktopVersion = ({
                 : "/assets/images/home/app-image.png"
             }
             alt="App Section Image"
-            className={cn("w-full aspect-portrait max-w-[232px]")}
+            className={cn("w-full aspect-[9/16] max-w-[232px]")}
           />
         </div>
       </div>
@@ -150,7 +150,7 @@ const MobileVersion = ({
             alt="App Section Image"
             className={cn(
               layout === "imageLeft" ? "w-[50vw]" : "w-full",
-              layout === "imageLeft" ? "aspect-portrait" : "aspect-[26/32]"
+              layout === "imageLeft" ? "aspect-[9/16]" : "aspect-[26/32]"
             )}
           />
         </div>
