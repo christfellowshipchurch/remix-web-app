@@ -1,71 +1,71 @@
 import React from "react";
 import { Form } from "react-router-dom";
-import type { VolunteerFormData } from "../types";
+import { ResultsProgressBar } from "../components/results-progress-bar.component";
+import { ResultCard } from "../components/result-card.component";
+import { mockResultCards } from "../mock-data";
 
-interface Props {
-  data: VolunteerFormData;
-  onFinish: () => void;
-}
-
-export const VolunteerFormConfirmationPartial: React.FC<Props> = ({
-  data,
-  onFinish,
-}) => (
-  <section className="flex flex-col items-center justify-center p-8 bg-white rounded shadow-md w-full max-w-md">
-    <h2 className="text-2xl font-bold mb-4">What Happens Next?</h2>
-    <p className="mb-6 text-center">
-      We are thrilled to have you join our team. [Persons Name and title] from
-      your home [Campus] will contact you within [timeframe, e.g., 3-5 business
-      days] to discuss potential volunteer opportunities and next steps. In the
-      meantime, you can sign up for the Journey if you haven't taken it yet it
-      as it is the first step for volunteering.
-    </p>
-    <div className="w-full mb-6">
-      <h3 className="font-semibold mb-2">Personal Info</h3>
-      <ul className="mb-2">
-        <li>
-          <strong>Name:</strong> {data.personalInfo.firstName}{" "}
-          {data.personalInfo.lastName}
-        </li>
-        <li>
-          <strong>Email:</strong> {data.personalInfo.email}
-        </li>
-        {data.personalInfo.phone && (
-          <li>
-            <strong>Phone:</strong> {data.personalInfo.phone}
-          </li>
-        )}
-      </ul>
-      <h3 className="font-semibold mb-2">Availability</h3>
-      <ul className="mb-2">
-        <li>
-          <strong>Days:</strong> {data.availability.daysAvailable.join(", ")}
-        </li>
-        <li>
-          <strong>Times:</strong> {data.availability.timesAvailable.join(", ")}
-        </li>
-      </ul>
-      <h3 className="font-semibold mb-2">Preferences</h3>
-      <ul className="mb-2">
-        <li>
-          <strong>Interests:</strong> {data.interests.interests.join(", ")}
-        </li>
-        {data.interests.comments && (
-          <li>
-            <strong>Comments:</strong> {data.interests.comments}
-          </li>
-        )}
-      </ul>
+export const VolunteerFormConfirmationPartial: React.FC = () => (
+  <section className="w-full min-h-screen bg-gray-100">
+    {/* What Happens Next */}
+    <div className="bg-white pt-16 pb-8 px-4 flex flex-col items-center">
+      <h2 className="heading-h2 mb-6 text-center">What Happens Next?</h2>
+      <ResultsProgressBar />
+      <p className="my-6 text-center max-w-2xl text-text-secondary">
+        We are thrilled to have you join our team. [Persons Name and title] from
+        your home [Campus] will contact you within [timeframe, e.g., 3-5
+        business days] to discuss potential volunteer opportunities and next
+        steps. In the meantime, you can sign up for the Journey if you haven't
+        taken it yet as it is the first step for volunteering.
+      </p>
+      <div className="flex items-center gap-4 my-12">
+        <img
+          src="https://randomuser.me/api/portraits/men/32.jpg"
+          alt="Bob Ross"
+          className="w-18 h-18 rounded-full mb-2 shadow-md"
+        />
+        <div className="flex flex-col">
+          <div className="font-semibold text-3xl">Bob Ross</div>
+          <div className="text-lg text-text-secondary">
+            Volunteer Coordinator
+          </div>
+        </div>
+      </div>
     </div>
-    <Form method="post">
-      <button
-        type="submit"
-        className="px-6 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 transition-colors"
-        aria-label="Finish Volunteer Form"
-      >
-        Finish
-      </button>
-    </Form>
+
+    {/* Your Results */}
+    <div className="bg-navy py-24 lg:px-4">
+      <div className="max-w-[1280px] mx-auto">
+        <h3 className="heading-h2 text-white text-center">Your Results</h3>
+        <p className="text-neutral-lightest text-center mt-4 mb-12 max-w-2xl mx-auto px-4">
+          Based on your answers these are 3 potential volunteer areas you could
+          make an impact. [staff name] will discuss your interest and help you
+          find the right fit in these or other areas.
+        </p>
+
+        <div className="flex flex-nowrap gap-12 overflow-x-auto">
+          {mockResultCards.map((card, idx) => (
+            <ResultCard
+              className={idx === 0 ? "ml-4" : idx === 2 ? "mr-4" : ""}
+              key={card.title + idx}
+              {...card}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Finish Button */}
+    <div className="flex justify-center py-8 bg-white">
+      <Form method="post">
+        <button
+          type="submit"
+          className="px-8 py-3 bg-ocean text-white rounded font-semibold text-lg hover:bg-ocean/90 transition-colors shadow-md"
+          aria-label="Finish Volunteer Form"
+        >
+          Finish
+        </button>
+      </Form>
+    </div>
   </section>
 );
 

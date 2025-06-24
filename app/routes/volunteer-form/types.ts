@@ -1,3 +1,5 @@
+import { icons } from "~/lib/icons";
+
 // Types for Volunteer Form multi-step process
 export const INTERESTS = [
   "Children & Youth",
@@ -88,4 +90,17 @@ export interface VolunteerFormData {
   personalInfo: VolunteerFormPersonalInfo;
   availability: VolunteerFormAvailability;
   interests: VolunteerFormInterests;
+}
+
+export interface VolunteerResultCardProps {
+  icon: keyof typeof icons;
+  image: string;
+  title: string;
+  description: string;
+  experience: string;
+  availability: string;
+  passion: string;
+  cta: string;
+  ctaType?: "primary" | "secondary";
+  className?: string;
 }
