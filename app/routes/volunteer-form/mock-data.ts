@@ -35,7 +35,7 @@ export const mockInterests: VolunteerFormInterests = {
 
 export const mockResultCards: VolunteerResultCardProps[] = [
   {
-    icon: "face",
+    sticker: "super-hero",
     image: "https://picsum.photos/400/300?random=4",
     title: "Family Ministries",
     description:
@@ -48,7 +48,7 @@ export const mockResultCards: VolunteerResultCardProps[] = [
     ctaType: "primary",
   },
   {
-    icon: "broadcast",
+    sticker: "puzzle",
     image: "https://picsum.photos/400/300?random=7",
     title: "Creative & Worship",
     description:
@@ -61,7 +61,7 @@ export const mockResultCards: VolunteerResultCardProps[] = [
     ctaType: "primary",
   },
   {
-    icon: "church",
+    sticker: "stair-stepper",
     image: "https://picsum.photos/400/300?random=3",
     title: "Missions",
     description:

@@ -92,8 +92,10 @@ export interface VolunteerFormData {
   interests: VolunteerFormInterests;
 }
 
+export type Sticker = "super-hero" | "puzzle" | "stair-stepper";
+
 export interface VolunteerResultCardProps {
-  icon: keyof typeof icons;
+  sticker?: Sticker;
   image: string;
   title: string;
   description: string;

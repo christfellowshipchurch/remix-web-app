@@ -33,7 +33,7 @@ export const VolunteerFormConfirmationPartial: React.FC = () => (
     </div>
 
     {/* Your Results */}
-    <div className="bg-navy py-24 lg:px-4">
+    <div className="bg-navy py-24 xl:px-4">
       <div className="max-w-[1280px] mx-auto">
         <h3 className="heading-h2 text-white text-center">Your Results</h3>
         <p className="text-neutral-lightest text-center mt-4 mb-12 max-w-2xl mx-auto px-4">
@@ -42,10 +42,12 @@ export const VolunteerFormConfirmationPartial: React.FC = () => (
           find the right fit in these or other areas.
         </p>
 
-        <div className="flex flex-nowrap gap-12 overflow-x-auto">
+        <div className="flex flex-nowrap gap-10 xl:gap-12 overflow-x-auto xl:overflow-x-visible">
           {mockResultCards.map((card, idx) => (
             <ResultCard
-              className={idx === 0 ? "ml-4" : idx === 2 ? "mr-4" : ""}
+              className={
+                idx === 0 ? "ml-10 xl:ml-0" : idx === 2 ? "mr-8 xl:mr-0" : ""
+              }
               key={card.title + idx}
               {...card}
             />
