@@ -4,7 +4,7 @@ import Icon from "~/primitives/icon";
 import { useLoaderData } from "react-router";
 import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
 import { VideoModal } from "~/components/modals";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 export const DailyHero = () => {
   const { appPromoVideo, avatars, dailyDevo } =
@@ -17,9 +17,38 @@ export const DailyHero = () => {
     year: "numeric",
   });
 
+  // Video fullscreen functions
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsVideoPlaying(false);
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullscreenChange
+      );
+    };
+  }, []);
+
   const handleFullscreen = () => {
     setIsVideoPlaying(true);
     if (!iframeRef.current) return;
