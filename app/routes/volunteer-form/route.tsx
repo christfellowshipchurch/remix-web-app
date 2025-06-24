@@ -22,7 +22,9 @@ export const VolunteerFormRoute: React.FC = () => {
     <div
       className={cn(
         "min-h-screen flex flex-col",
-        isWelcomeStep ? "bg-navy" : "bg-white"
+        isWelcomeStep
+          ? "bg-[url('/assets/images/volunteer-form/welcome-bg.webp')] bg-cover bg-center"
+          : "bg-white"
       )}
     >
       {isFormPage && <VolunteerFormNav currentStepId={currentStep} />}
