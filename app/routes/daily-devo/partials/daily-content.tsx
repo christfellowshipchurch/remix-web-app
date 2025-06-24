@@ -5,7 +5,6 @@ import HTMLRenderer from "~/primitives/html-renderer";
 export const DailyContent = () => {
   const { dailyDevo } = useLoaderData<LoaderReturnType>();
   const { content, scriptures } = dailyDevo;
-  console.log(scriptures);
 
   return (
     <div className="w-full content-padding pt-16 pb-10">
