@@ -9,13 +9,13 @@ const stepsData = [
 ];
 
 // Step Dot Components
-const StepDotDone: React.FC = () => (
+export const StepDotDone: React.FC = () => (
   <div className="flex p-1 items-center justify-center rounded-full bg-ocean">
     <Icon name="check" className="text-white" />
   </div>
 );
 
-const StepDotCurrent: React.FC = () => (
+export const StepDotCurrent: React.FC = () => (
   <>
     <div
       className={cn(
@@ -29,7 +29,7 @@ const StepDotCurrent: React.FC = () => (
   </>
 );
 
-const StepDotTodo: React.FC = () => (
+export const StepDotTodo: React.FC = () => (
   <div className="flex p-3 items-center justify-center rounded-full -mb-[8px]">
     <div className="size-4 rounded-full bg-ocean/50" />
   </div>

@@ -2,6 +2,7 @@ import type {
   VolunteerFormPersonalInfo,
   VolunteerFormAvailability,
   VolunteerFormInterests,
+  VolunteerResultCardProps,
 } from "./types";
 
 export const mockPersonalInfo: VolunteerFormPersonalInfo = {
@@ -31,3 +32,45 @@ export const mockInterests: VolunteerFormInterests = {
   backgroundCheck: true,
   ssn: "123456789",
 };
+
+export const mockResultCards: VolunteerResultCardProps[] = [
+  {
+    icon: "face",
+    image: "https://picsum.photos/400/300?random=4",
+    title: "Family Ministries",
+    description:
+      "The first smiling face someone sees at Christ Fellowship. The Connections team helps people take their first step in getting connected!",
+    experience:
+      "Working with elementary-aged children is a great match for this role",
+    availability: "Sunday mornings aligns perfectly with our needs.",
+    passion: "Share your passion for teaching and make a positive impact.",
+    cta: "I'm interested",
+    ctaType: "primary",
+  },
+  {
+    icon: "broadcast",
+    image: "https://picsum.photos/400/300?random=7",
+    title: "Creative & Worship",
+    description:
+      "The first smiling face someone sees at Christ Fellowship. The Connections team helps people take their first step in getting connected!",
+    experience:
+      "Working with elementary-aged children is a great match for this role",
+    availability: "Sunday mornings aligns perfectly with our needs.",
+    passion: "Share your passion for teaching and make a positive impact.",
+    cta: "I'm interested",
+    ctaType: "primary",
+  },
+  {
+    icon: "church",
+    image: "https://picsum.photos/400/300?random=3",
+    title: "Missions",
+    description:
+      "The first smiling face someone sees at Christ Fellowship. The Connections team helps people take their first step in getting connected!",
+    experience:
+      "Working with elementary-aged children is a great match for this role",
+    availability: "Sunday mornings aligns perfectly with our needs.",
+    passion: "Share your passion for teaching and make a positive impact.",
+    cta: "We got it!",
+    ctaType: "secondary",
+  },
+];
