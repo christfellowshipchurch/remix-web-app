@@ -1,10 +1,9 @@
-import { Button, ButtonProps } from "~/primitives/button/button.primitive";
+import { Button } from "~/primitives/button/button.primitive";
 import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 import { useLoaderData } from "react-router";
 import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
-import { VideoModal } from "~/components/modals";
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export const DailyHero = () => {
   const { appPromoVideo, avatars, dailyDevo } =
@@ -17,13 +16,23 @@ export const DailyHero = () => {
     year: "numeric",
   });
 
-  // Video fullscreen functions
+  //TODO: Mobile Video is not working -> the handleFullscreen function is not working for mobile devices
+
+  // Desktop Video fullscreen functions
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [videoUrl, setVideoUrl] = useState(
+    `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`
+  );
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
   useEffect(() => {
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement) {
         setIsVideoPlaying(false);
+        // Reset video URL to stop autoplay and reset the video
+        setVideoUrl(
+          `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`
+        );
       }
     };
 
@@ -47,19 +56,25 @@ export const DailyHero = () => {
         handleFullscreenChange
       );
     };
-  }, []);
+  }, [appPromoVideo]);
 
   const handleFullscreen = () => {
     setIsVideoPlaying(true);
+    // Update video URL to include autoplay
+    setVideoUrl(
+      `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove&autoplay=1&muted=0&playbar=true&controlsVisibleOnLoad=true&volume=1`
+    );
+
     if (!iframeRef.current) return;
 
+    // Play the video
     if (iframeRef.current.requestFullscreen) {
       iframeRef.current.requestFullscreen();
     }
   };
 
   return (
-    <div className="bg-gradient-to-b from-[#F3F5FA] to-white lg:pt-16 pb-10 content-padding">
+    <div className="bg-gradient-to-t from-[#F3F5FA] to-white lg:pt-16 pb-10 lg:pb-0 content-padding">
       <div className="max-w-[1080px] mx-auto flex flex-col-reverse lg:flex-row items-center lg:gap-8 xl:!gap-24">
         <div className="flex flex-col gap-4 flex-1">
           {/* Date */}
@@ -85,7 +100,7 @@ export const DailyHero = () => {
           <div className="relative flex flex-col-reverse md:flex-row lg:flex-wrap gap-4 mt-8 md:mt-0">
             <iframe
               ref={iframeRef}
-              src={`https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`}
+              src={videoUrl}
               allow="autoplay; fullscreen"
               allowFullScreen
               className={cn(
