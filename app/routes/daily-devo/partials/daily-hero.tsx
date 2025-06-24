@@ -2,9 +2,9 @@ import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 import { useLoaderData } from "react-router";
-import { appleLink, googleLink, isAppleDevice } from "~/lib/utils";
+import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
 import { VideoModal } from "~/components/modals";
-import React from "react";
+import React, { useRef, useState } from "react";
 
 export const DailyHero = () => {
   const { appPromoVideo, avatars, dailyDevo } =
@@ -16,6 +16,18 @@ export const DailyHero = () => {
     day: "numeric",
     year: "numeric",
   });
+
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const handleFullscreen = () => {
+    setIsVideoPlaying(true);
+    if (!iframeRef.current) return;
+
+    if (iframeRef.current.requestFullscreen) {
+      iframeRef.current.requestFullscreen();
+    }
+  };
 
   return (
     <div className="bg-gradient-to-b from-[#F3F5FA] to-white lg:pt-16 pb-10 content-padding">
@@ -41,12 +53,29 @@ export const DailyHero = () => {
             </p>
           </div>
 
-          <div className="flex flex-col-reverse md:flex-row lg:flex-wrap gap-4 mt-8 md:mt-0">
-            <VideoModal
-              wistiaId={appPromoVideo}
-              ModalButton={ModalButton}
-              videoClassName="rounded-[12px]"
+          <div className="relative flex flex-col-reverse md:flex-row lg:flex-wrap gap-4 mt-8 md:mt-0">
+            <iframe
+              ref={iframeRef}
+              src={`https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`}
+              allow="autoplay; fullscreen"
+              allowFullScreen
+              className={cn(
+                "size-full",
+                "rounded-[12px] -bottom-40 z-10 absolute",
+                {
+                  "opacity-100": isVideoPlaying,
+                  "opacity-0": !isVideoPlaying,
+                }
+              )}
             />
+            <Button
+              onClick={handleFullscreen}
+              intent="primary"
+              className="w-full md:w-fit flex items-center gap-2 min-w-[122px] rounded-[4px]"
+            >
+              <Icon name="playCircle" />
+              Intro
+            </Button>
 
             <Button
               onClick={() =>
@@ -95,17 +124,3 @@ export const DailyHero = () => {
     </div>
   );
 };
-
-const ModalButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (props, ref) => (
-    <Button
-      ref={ref}
-      {...props}
-      intent="primary"
-      className="w-full md:w-fit flex items-center gap-2 min-w-[122px] rounded-[4px]"
-    >
-      <Icon name="playCircle" />
-      Intro
-    </Button>
-  )
-);
