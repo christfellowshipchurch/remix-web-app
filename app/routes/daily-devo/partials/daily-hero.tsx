@@ -16,7 +16,6 @@ export const DailyHero = () => {
     year: "numeric",
   });
 
-  //TODO: Mobile Video is not working -> the handleFullscreen function is not working for mobile devices
   const [isMobileFullscreen, setIsMobileFullscreen] = useState(false);
 
   // Desktop Video fullscreen functions
