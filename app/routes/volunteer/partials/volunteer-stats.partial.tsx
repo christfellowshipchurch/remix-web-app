@@ -60,7 +60,7 @@ export function VolunteerStats({
               <div className="flex -space-x-4">
                 {avatars.map((avatar, i) => (
                   <img
-                    key={avatar.src}
+                    key={i}
                     src={avatar.src}
                     alt={avatar.alt}
                     className="w-[64px] h-[64px] rounded-full shadow-md"
