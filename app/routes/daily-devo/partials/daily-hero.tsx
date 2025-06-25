@@ -161,17 +161,23 @@ export const DailyHero = () => {
             </div>
           </div>
 
-          <img
-            src="/assets/images/daily-hero-mobile.webp"
-            alt="Daily Devo Hero"
-            className="lg:hidden w-full aspect-square object-contain max-w-[70vw]"
-          />
-
-          <img
-            src="/assets/images/daily-hero-desktop.webp"
-            alt="Daily Devo Hero"
-            className="hidden lg:block w-full aspect-square object-contain max-w-[480px]"
-          />
+          <div className="my-20 relative">
+            <div className="rounded-xl border-12 border-solid border-ocean/20">
+              <img
+                src={dailyDevo.coverImage}
+                alt="Daily Devo Hero"
+                className={cn(
+                  "w-full object-cover max-w-xl lg:max-w-[60vw] rounded aspect-[4/3]",
+                  "lg:max-w-[480px] md:aspect-auto lg:object-cover"
+                )}
+              />
+            </div>
+            <img
+              src="/assets/images/daily/daily-streak.webp"
+              alt="Daily Devo Hero"
+              className="absolute -bottom-10 -right-10 w-40 hidden lg:block"
+            />
+          </div>
         </div>
       </div>
       {isMobileFullscreen && (
