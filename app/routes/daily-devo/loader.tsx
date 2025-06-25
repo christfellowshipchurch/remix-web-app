@@ -1,11 +1,13 @@
 import { LoaderFunction } from "react-router";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type DailyDevo = {
   title: string;
   content: string;
   startDateTime: string;
   wistiaId: string;
+  coverImage: string;
   scriptures: {
     reference: string;
     text: string;
@@ -19,7 +21,7 @@ export type LoaderReturnType = {
   dailyDevo: DailyDevo;
 };
 
-const FetchScripture = async (scripture: string) => {
+const fetchScripture = async (scripture: string) => {
   const response = await fetch(`https://bible-api.com/${scripture}`);
 
   if (!response.ok) {
@@ -33,7 +35,7 @@ const FetchScripture = async (scripture: string) => {
   };
 };
 
-const FetchDailyDevo = async () => {
+const fetchDailyDevo = async () => {
   const contentChannelId = 136;
 
   const dailyDevo = await fetchRockData({
@@ -59,16 +61,28 @@ const avatars = [
 ];
 
 export const loader: LoaderFunction = async (): Promise<LoaderReturnType> => {
-  const dailyDevo = await FetchDailyDevo();
-  dailyDevo.wistiaId = dailyDevo.attributeValues.media.value;
-  const scriptures = dailyDevo.attributeValues.scriptures.value
+  const dailyDevoRockData = await fetchDailyDevo();
+
+  const scripturesRockData = dailyDevoRockData.attributeValues.scriptures.value
     .split(",")
     .map((s: string) => s.trim());
-  dailyDevo.scriptures = await Promise.all(
-    scriptures.map((scripture: string) => FetchScripture(scripture))
+
+  const scriptures = await Promise.all(
+    scripturesRockData.map((scripture: string) => fetchScripture(scripture))
   );
 
   const appPromoVideo = "b8qb27ar32";
+
+  const dailyDevo = {
+    title: dailyDevoRockData.title,
+    content: dailyDevoRockData.content,
+    startDateTime: dailyDevoRockData.startDateTime,
+    wistiaId: dailyDevoRockData.attributeValues.media.value,
+    coverImage: await createImageUrlFromGuid(
+      dailyDevoRockData.attributeValues.image.value
+    ),
+    scriptures,
+  };
 
   return { appPromoVideo, avatars, dailyDevo };
 };
