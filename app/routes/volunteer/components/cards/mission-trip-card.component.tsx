@@ -23,7 +23,7 @@ export function MissionTripCard({ trip }: { trip: Trip }) {
         >
           <img
             src={trip.coverImage}
-            alt={trip.title}
+            alt={trip.country}
             className="aspect-video max-w-[165px] rounded object-cover flex-shrink-0"
           />
           <div className="flex flex-col gap-6 w-full">
@@ -32,7 +32,7 @@ export function MissionTripCard({ trip }: { trip: Trip }) {
                 New
               </span>
               <h3 className="font-bold text-lg text-primary group-hover:text-ocean transition-colors">
-                {trip.title}
+                {trip.country}
               </h3>
             </div>
             <div className="flex items-center justify-between">
