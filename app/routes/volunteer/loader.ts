@@ -1,8 +1,17 @@
 import { LoaderFunctionArgs } from "react-router";
-import { CommunityCard, Trip, VolunteerFeaturedEvent } from "./types";
+import {
+  CommunityCard,
+  RegionCard,
+  Trip,
+  VolunteerFeaturedEvent,
+} from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { mockCommunityData, mockVolunteerFeaturedEvent } from "./mock-data";
+import {
+  mockCommunityData,
+  mockRegionData,
+  mockVolunteerFeaturedEvent,
+} from "./mock-data";
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
@@ -23,6 +32,7 @@ const fetchMissionTrips = async () => {
 export type LoaderReturnType = {
   missionTrips: Record<string, Trip[]>;
   mockCommunityData: CommunityCard[];
+  mockRegionData: RegionCard[];
   mockVolunteerFeaturedEvent: VolunteerFeaturedEvent;
 };
 
@@ -63,6 +73,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return Response.json({
     missionTrips: groupedTrips,
     mockCommunityData,
+    mockRegionData,
     mockVolunteerFeaturedEvent,
   } as LoaderReturnType);
 }
