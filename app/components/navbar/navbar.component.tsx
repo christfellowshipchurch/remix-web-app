@@ -36,6 +36,7 @@ import { MenuLink } from "./types";
 import { SiteBanner } from "../site-banner";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { AuthModal } from "../modals";
+import { useNavbarVisibility } from "~/providers/navbar-visibility-context";
 
 export function Navbar() {
   // Hooks and state
@@ -62,6 +63,8 @@ export function Navbar() {
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
 
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
+
+  const { setIsNavbarVisible } = useNavbarVisibility();
 
   useEffect(() => {
     if (siteBanner && siteBanner?.content?.length > 0) {
@@ -153,6 +156,10 @@ export function Navbar() {
   useEffect(() => {
     setMode(defaultMode);
   }, [defaultMode]);
+
+  useEffect(() => {
+    setIsNavbarVisible(isVisible);
+  }, [isVisible, setIsNavbarVisible]);
 
   // Menu data
   const menuLinks: MenuLink[] = [

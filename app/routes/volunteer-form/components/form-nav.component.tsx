@@ -1,6 +1,7 @@
 import { cn } from "~/lib/utils";
 import React from "react";
 import Icon from "~/primitives/icon";
+import { useNavbarVisibility } from "~/providers/navbar-visibility-context";
 
 const stepsData = [
   { id: "about-you", name: "About You" },
@@ -38,12 +39,18 @@ export const StepDotTodo: React.FC = () => (
 export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
   currentStepId,
 }) => {
+  const { isNavbarVisible } = useNavbarVisibility();
   const currentStepIndex = stepsData.findIndex(
     (step) => step.id === currentStepId
   );
 
   return (
-    <div className="w-full bg-gray px-4 pt-12 pb-8 sm:px-6 lg:px-8 sticky top-0 z-50">
+    <div
+      className={cn(
+        "w-full bg-gray px-4 pt-6 pb-4 sm:px-6 lg:px-8 sticky z-50 transition-[top] duration-300",
+        isNavbarVisible ? "top-[90px]" : "top-0"
+      )}
+    >
       <nav aria-label="Progress">
         <ol
           role="list"
@@ -85,7 +92,7 @@ export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
                 )}
                 <a
                   href={`/volunteer-form/${step.id}`}
-                  className="mt-3 whitespace-nowrap text-center text-lg font-bold hover:text-ocean transition-colors"
+                  className="mt-1 whitespace-nowrap text-center text-lg font-bold hover:text-ocean transition-colors"
                 >
                   {step.name}
                 </a>

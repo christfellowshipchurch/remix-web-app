@@ -17,6 +17,7 @@ import "./styles/tailwind.css";
 import { cn } from "./lib/utils";
 import { shouldUseDarkMode } from "./components/navbar/navbar-routes";
 import { loader } from "./routes/navbar/loader";
+import { NavbarVisibilityProvider } from "./providers/navbar-visibility-context";
 
 export { ErrorBoundary } from "./error";
 
@@ -48,20 +49,22 @@ export default function App() {
     <GTMProvider gtmId="GTM-PFW26V4V">
       <AuthProvider>
         <CookieConsentProvider>
-          <div className="min-h-screen flex flex-col text-pretty">
-            <Navbar />
-            <main
-              className={cn(
-                "flex-1",
-                `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
-                  shouldUseDarkMode(currentPath) && "mt-[-100px]"
-                }` // This is to account for the navbar height when dark mode is enabled
-              )}
-            >
-              <Outlet />
-            </main>
-            <Footer />
-          </div>
+          <NavbarVisibilityProvider>
+            <div className="min-h-screen flex flex-col text-pretty">
+              <Navbar />
+              <main
+                className={cn(
+                  "flex-1",
+                  `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
+                    shouldUseDarkMode(currentPath) && "mt-[-100px]"
+                  }` // This is to account for the navbar height when dark mode is enabled
+                )}
+              >
+                <Outlet />
+              </main>
+              <Footer />
+            </div>
+          </NavbarVisibilityProvider>
         </CookieConsentProvider>
       </AuthProvider>
     </GTMProvider>
