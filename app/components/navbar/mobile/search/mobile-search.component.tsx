@@ -6,6 +6,7 @@ import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
 import { RootLoaderData } from "~/routes/navbar/loader";
+import { MobileSearchCustomRefinementList } from "./customRefinements.component";
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = "navbar-search";
@@ -81,29 +82,35 @@ export const MobileSearch = ({
       >
         <Configure hitsPerPage={7} />
 
-        {/* Search Bar */}
-        <div className="flex w-full items-center pt-6 px-4 gap-3">
-          <button
-            onClick={() => setIsSearchOpen(false)}
-            className="flex items-center md:hidden"
-          >
-            <Icon
-              name="arrowBack"
-              size={20}
-              className={`text-black hover:text-neutral-default transition-colors cursor-pointer
+        <div className="flex flex-col gap-6 pb-2 sticky top-0 bg-white shadow-sm border-b border-[#E0E0E0]">
+          {/* Search Bar */}
+          <div className="flex w-full items-center pt-6 px-4 gap-3">
+            <button
+              onClick={() => setIsSearchOpen(false)}
+              className="flex items-center md:hidden"
+            >
+              <Icon
+                name="arrowBack"
+                size={20}
+                className={`text-black hover:text-neutral-default transition-colors cursor-pointer
         `}
+              />
+            </button>
+            <SearchBox
+              classNames={{
+                root: "flex-grow",
+                form: "flex",
+                input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none`,
+                reset: "hidden",
+                resetIcon: "hidden",
+                submit: "hidden",
+              }}
             />
-          </button>
-          <SearchBox
-            classNames={{
-              root: "flex-grow",
-              form: "flex",
-              input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none`,
-              reset: "hidden",
-              resetIcon: "hidden",
-              submit: "hidden",
-            }}
-          />
+          </div>
+
+          <div className="flex flex-col gap-2 w-full">
+            <MobileSearchCustomRefinementList attribute="contentType" />
+          </div>
         </div>
 
         {/* Search Results + Refinements */}
