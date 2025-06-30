@@ -43,7 +43,7 @@ export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
   );
 
   return (
-    <div className="w-full bg-gray px-4 pt-12 pb-8 sm:px-6 lg:px-8">
+    <div className="w-full bg-gray px-4 pt-12 pb-8 sm:px-6 lg:px-8 sticky top-0 z-50">
       <nav aria-label="Progress">
         <ol
           role="list"
