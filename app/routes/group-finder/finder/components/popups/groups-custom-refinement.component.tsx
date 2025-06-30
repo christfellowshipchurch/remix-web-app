@@ -7,11 +7,13 @@ import { Icon } from "~/primitives/icon/icon";
 
 export const GroupsCustomRefinement = ({
   title,
+  className,
   data,
   showSection,
   onHide,
 }: {
   title: string;
+  className?: string;
   data: {
     content: {
       attribute: string;
@@ -47,6 +49,7 @@ export const GroupsCustomRefinement = ({
       ref={ref}
       className={cn(
         "cursor-default absolute top-[65px] right-1/2 translate-x-1/2 z-4",
+        className,
         "w-[330px] flex flex-col gap-4 bg-white",
         "rounded-[1rem] border border-neutral-lighter overflow-hidden",
         showSection ? "z-4 opacity-100" : "-left-9999 -z-1 opacity-0"

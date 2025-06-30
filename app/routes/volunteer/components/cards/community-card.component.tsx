@@ -17,20 +17,18 @@ export const CommunityCard = ({ title, image, ctas }: CommunityCardType) => {
         </h3>
         <div className="flex gap-4">
           {ctas.map((cta, index) => (
-            <Link
-              to={cta.href}
-              className={`text-primary-dark ${
-                index === 0 ? "block" : "hidden md:block"
-              }`}
+            <div
+              className={`${index === 0 ? "block" : "hidden md:block"}`}
               key={index}
             >
               <Button
+                href={cta.href}
                 intent="secondary"
                 className="w-full border-transparent bg-white/32 hover:!bg-white/20 text-white transition-all duration-300"
               >
                 {cta.label}
               </Button>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
