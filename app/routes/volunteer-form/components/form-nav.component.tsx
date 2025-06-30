@@ -90,12 +90,24 @@ export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
                     />
                   </div>
                 )}
-                <a
-                  href={`/volunteer-form/${step.id}`}
-                  className="mt-1 whitespace-nowrap text-center text-lg font-bold hover:text-ocean transition-colors"
-                >
-                  {step.name}
-                </a>
+                {stepIdx < currentStepIndex ? (
+                  <a
+                    href={`/volunteer-form/${step.id}`}
+                    className="mt-1 whitespace-nowrap text-center text-lg font-bold hover:text-ocean transition-colors"
+                  >
+                    {step.name}
+                  </a>
+                ) : (
+                  <span
+                    className={
+                      stepIdx > currentStepIndex
+                        ? "mt-1 whitespace-nowrap text-center text-lg font-bold text-gray-400 cursor-not-allowed"
+                        : "mt-1 whitespace-nowrap text-center text-lg font-bold"
+                    }
+                  >
+                    {step.name}
+                  </span>
+                )}
               </li>
             );
           })}
