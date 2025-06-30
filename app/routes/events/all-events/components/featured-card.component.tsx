@@ -38,11 +38,14 @@ export const FeaturedEventCard = ({ card }: { card: Event }) => {
             <HtmlRenderer html={content || ""} className="line-clamp-5" />
           )}
         </div>
-        <Link to={`/events/${attributeValues.url.value}`} prefetch="intent">
-          <Button intent="secondary" className="font-normal">
-            Save my spot
-          </Button>
-        </Link>
+
+        <Button
+          intent="secondary"
+          className="font-normal"
+          href={`/events/${attributeValues.url.value}`}
+        >
+          Save my spot
+        </Button>
       </div>
     </div>
   );

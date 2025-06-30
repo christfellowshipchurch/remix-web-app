@@ -1,7 +1,8 @@
 import { Configure, SearchBox } from "react-instantsearch";
 import { CustomHits } from "./custom-hits.component";
 
-export const SearchWrapper = ({ groupName }: { groupName: string }) => {
+// Name of Class
+export const SearchWrapper = ({ className }: { className: string }) => {
   return (
     <>
       <Configure
@@ -15,7 +16,7 @@ export const SearchWrapper = ({ groupName }: { groupName: string }) => {
         classNames={{
           root: "opacity-0 size-0 absolute",
         }}
-        defaultValue={groupName}
+        defaultValue={className}
       />
       <CustomHits />
     </>
