@@ -12,6 +12,18 @@ export function VolunteerGlobe() {
     .map((trips) => trips[0])
     .filter(Boolean);
 
+  // We only want to show the "NEW" badge if there is at least one trip with an apply url
+  const isNew = (trip: Trip) => {
+    const tripCountry = trip.country;
+    const tripsFromThatCountry = missionTrips[tripCountry] || [];
+
+    const tripsWithApplyUrl = tripsFromThatCountry.filter(
+      (t: Trip) => t.applyUrl !== ""
+    );
+
+    return tripsWithApplyUrl.length !== 0;
+  };
+
   return (
     <section id="globe" className="w-full bg-white py-28 content-padding">
       <div className="max-w-screen-content mx-auto">
@@ -26,7 +38,7 @@ export function VolunteerGlobe() {
         <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-12">
           <div className="flex flex-col gap-4">
             {topTrips.map((trip) => (
-              <MissionTripCard key={trip.id} trip={trip} />
+              <MissionTripCard key={trip.id} trip={trip} isNew={isNew(trip)} />
             ))}
           </div>
           <div className="flex items-center justify-center px-2 lg:px-0">
