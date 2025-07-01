@@ -3,7 +3,13 @@ import { Trip } from "../../types";
 import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 
-export function MissionTripCard({ trip }: { trip: Trip }) {
+export function MissionTripCard({
+  trip,
+  isNew,
+}: {
+  trip: Trip;
+  isNew: boolean;
+}) {
   return (
     <MissionsModal
       trigger={
@@ -28,11 +34,13 @@ export function MissionTripCard({ trip }: { trip: Trip }) {
           />
           <div className="flex flex-col gap-6 w-full">
             <div className="flex flex-col">
-              <span className="text-xs uppercase text-secondary font-semibold tracking-wider">
-                New
-              </span>
+              {isNew && (
+                <span className="text-sm font-medium text-text-secondary group-hover:text-ocean transition-colors">
+                  NEW
+                </span>
+              )}
               <h3 className="font-bold text-lg text-primary group-hover:text-ocean transition-colors">
-                {trip.title}
+                {trip.country}
               </h3>
             </div>
             <div className="flex items-center justify-between">
