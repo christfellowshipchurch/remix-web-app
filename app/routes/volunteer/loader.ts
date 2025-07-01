@@ -20,6 +20,7 @@ const fetchMissionTrips = async () => {
       $filter: "ContentChannelId eq 174",
       loadAttributes: "simple",
     },
+    cache: false,
   });
 
   // ensure contentItems is an array
@@ -29,7 +30,7 @@ const fetchMissionTrips = async () => {
 };
 
 export type LoaderReturnType = {
-  missionTrips: Trip[];
+  missionTrips: Record<string, Trip[]>;
   mockCommunityData: CommunityCard[];
   mockRegionData: RegionCard[];
   mockVolunteerFeaturedEvent: VolunteerFeaturedEvent;
@@ -43,15 +44,34 @@ export async function loader({ request }: LoaderFunctionArgs) {
     title: item.title,
     description: item.content,
     coverImage: createImageUrlFromGuid(item.attributeValues?.coverImage.value),
-    missionTripUrl: item.attributeValues?.url.value,
+    applyUrl: item.attributeValues?.applyUrl.value,
+    donateUrl: item.attributeValues?.donateUrl.value,
+    groupType: item.attributeValues?.groupType.value,
+    city: item.attributeValues?.city.value,
+    country: item.attributeValues?.country.value,
+    dateOfTrip: item.attributeValues?.dateOfTrip.value,
+    cost: item.attributeValues?.cost.value,
     coordinates: {
       lat: Number(item.attributeValues?.latitude.value) || 0,
       lng: Number(item.attributeValues?.longitude.value) || 0,
     },
   }));
 
+  // Group trips by country
+  const groupedTrips = missionTrips.reduce(
+    (acc: Record<string, Trip[]>, trip: Trip) => {
+      const country = trip.country;
+      if (!acc[country]) {
+        acc[country] = [];
+      }
+      acc[country].push(trip);
+      return acc;
+    },
+    {} as Record<string, Trip[]>
+  );
+
   return Response.json({
-    missionTrips,
+    missionTrips: groupedTrips,
     mockCommunityData,
     mockRegionData,
     mockVolunteerFeaturedEvent,

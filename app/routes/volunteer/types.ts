@@ -3,7 +3,13 @@ export type Trip = {
   title: string;
   description: string;
   coverImage: string;
-  missionTripUrl: string;
+  applyUrl?: string;
+  donateUrl: string;
+  groupType: string;
+  city: string;
+  country: string;
+  dateOfTrip: string;
+  cost: number;
   coordinates: {
     lat: number;
     lng: number;
