@@ -3,7 +3,7 @@ import { useHits } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
 import { useMemo } from "react";
 import { HitComponent } from "../../finder/components/hit-component.component";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { useResponsive } from "~/hooks/use-responsive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";

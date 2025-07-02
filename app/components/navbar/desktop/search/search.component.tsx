@@ -7,7 +7,7 @@ import {
   SearchBox,
   useSearchBox,
 } from "react-instantsearch";
-import { useRouteLoaderData } from "react-router";
+import { useRouteLoaderData } from "react-router-dom";
 import Icon from "~/primitives/icon";
 import { SearchPopup } from "./search-popup.component";
 import { RootLoaderData } from "~/routes/navbar/loader";

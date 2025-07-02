@@ -1,7 +1,7 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
 import { AuthorProps } from "../partials/hero.partial";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 export default function ArticleAuthor({
   author,

@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "react-router";
+import { ActionFunction, data } from "react-router-dom";
 import { ConnectFormType } from "./types";
 import { postRockData } from "~/lib/.server/fetch-rock-data";
 
