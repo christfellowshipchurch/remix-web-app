@@ -11,6 +11,8 @@ import {
 } from "./app/primitives/Modal/modal.styles";
 import { desktopHeadings } from "./app/styles/desktop-headings";
 
+import tailwindcssAnimate from "tailwindcss-animate";
+
 export default {
   darkMode: "class",
   content: [
@@ -98,5 +100,5 @@ export default {
       shorter: { raw: "(max-height: 900px)" },
     },
   },
-  plugins: [require("tailwindcss-animate"), desktopHeadings],
+  plugins: [tailwindcssAnimate, desktopHeadings],
 } satisfies Config;
