@@ -16,7 +16,7 @@ export const VolunteerFormConfirmationPartial: React.FC<Props> = ({
       We are thrilled to have you join our team. [Persons Name and title] from
       your home [Campus] will contact you within [timeframe, e.g., 3-5 business
       days] to discuss potential volunteer opportunities and next steps. In the
-      meantime, you can sign up for the Journey if you haven't taken it yet it
+      meantime, you can sign up for the Journey if you haven&apos;t taken it yet it
       as it is the first step for volunteering.
     </p>
     <div className="w-full mb-6">

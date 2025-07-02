@@ -55,9 +55,9 @@ export function LocationSearchPage() {
           action: "/locations",
         });
         searchScroll();
-      } catch (error) {
+      } catch (_fetchError) {
         setError("An error occurred while fetching campus data");
-        console.log(error);
+        console.log(_fetchError);
       }
     }
   }, [coordinates]);
@@ -111,7 +111,7 @@ export function LocationSearchPage() {
   };
 
   function searchScroll() {
-    let scrollTo = document.getElementById("campuses");
+    const scrollTo = document.getElementById("campuses");
     if (scrollTo) {
       scrollTo.scrollIntoView({ behavior: "smooth" });
     }
@@ -134,7 +134,9 @@ export function LocationSearchPage() {
           },
         ]);
       },
-      (error) => {
+       
+       
+      (_error) => {
         if (hasLoaded) {
           setLocationActive(false);
         }

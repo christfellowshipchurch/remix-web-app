@@ -3,12 +3,12 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import lodash from "lodash";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { Message } from "../messages/message-single/loader";
-import { ContentChannelIds, getContentChannelUrl } from "~/lib/rock-config";
+import { getContentChannelUrl } from "~/lib/rock-config";
 export type SeriesReturnType = {
   series: Series;
   messages: Message[];
   // A series resource will be anything tagged with the series defined value that is not a message
-  resources: any[];
+  resources: SeriesResource[];
 };
 
 export type Series = {
@@ -48,6 +48,17 @@ export async function loader({ params }: LoaderFunctionArgs) {
   };
 }
 
+export type SeriesResource = {
+  id: string;
+  contentChannelId: string;
+  contentType: string;
+  name: string;
+  summary: string;
+  image: string;
+  startDate: string;
+  pathname: string;
+};
+
 const getSeries = async (seriesPath: string) => {
   const seriesDefinedValues = await fetchRockData({
     endpoint: "DefinedValues",
@@ -62,7 +73,7 @@ const getSeries = async (seriesPath: string) => {
   }
 
   const series = seriesDefinedValues.find(
-    (item: any) => lodash.kebabCase(item.value) === seriesPath
+    (item: { value: string }) => lodash.kebabCase(item.value) === seriesPath
   );
 
   if (!series) {
@@ -91,13 +102,13 @@ const getSeriesResources = async (seriesGuid: string) => {
     ? seriesResources
     : [seriesResources];
 
-  resources.forEach((resource: any) => {
+  resources.forEach((resource: SeriesResource) => {
     resource.coverImage = createImageUrlFromGuid(
       resource.attributeValues.image.value
     );
   });
 
-  resources.forEach((resource: any) => {
+  resources.forEach((resource: SeriesResource) => {
     resource.attributeValues.url.value = `${getContentChannelUrl(
       resource.contentChannelId
     )}/${resource.attributeValues.url.value}`;

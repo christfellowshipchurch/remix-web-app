@@ -60,13 +60,12 @@ const mockPodcastEpisode: PodcastEpisode = {
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { episode } = params;
-
-  if (!episode) {
+   
+  if (!params.episode) {
     throw new Response("Episode not found", { status: 404 });
   }
 
-  const podcastEpisode = await getPodcastEpisode(episode);
+  const podcastEpisode = await getPodcastEpisode(params.episode);
 
   return {
     episode: podcastEpisode,

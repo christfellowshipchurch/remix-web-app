@@ -8,7 +8,7 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, "wrapper"> {
 
 export function render(
   ui: React.ReactElement,
-  { route = "/" }: ExtendedRenderOptions = {}
+  { _route = "/" }: ExtendedRenderOptions = {}
 ) {
   return rtlRender(<BrowserRouter>{ui}</BrowserRouter>);
 }

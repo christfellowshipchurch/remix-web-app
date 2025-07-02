@@ -9,10 +9,23 @@ export type Ministry = {
   url: string;
 };
 
+interface RawMinistry {
+  title: string;
+  content: string;
+  attributeValues?: {
+    heroImage?: {
+      value: string;
+    };
+    pathname?: {
+      value: string;
+    };
+  };
+}
+
 const mapMinistryChannelItems = async (
-  ministriesData: any
+  ministriesData: RawMinistry[]
 ): Promise<Ministry[]> => {
-  return ministriesData.map((ministry: any): Ministry => {
+  return ministriesData.map((ministry: RawMinistry): Ministry => {
     return {
       title: ministry.title,
       description: ministry.content,
@@ -45,7 +58,7 @@ export const loader: LoaderFunction = async (): Promise<{
     }
 
     //ensure the ministries data is an array
-    let ministriesArray = [];
+    let ministriesArray: RawMinistry[] = [];
     if (!Array.isArray(ministriesData)) {
       ministriesArray = [ministriesData];
     } else {

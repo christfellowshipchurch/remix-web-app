@@ -1,11 +1,10 @@
-import type { LoaderFunctionArgs } from "react-router-dom";
 import type { Podcast } from "../types";
 
 export type PodcastsHubLoaderData = {
   podcasts: Podcast[];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
   // Mock data for now, until we configure Rock for new podcasts structure
   const podcasts: Podcast[] = [
     {

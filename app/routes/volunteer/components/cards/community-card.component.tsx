@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+
 import { Button } from "~/primitives/button/button.primitive";
 import { CommunityCard as CommunityCardType } from "../../types";
 

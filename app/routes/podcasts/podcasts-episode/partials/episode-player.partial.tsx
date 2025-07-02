@@ -1,6 +1,7 @@
 import { PodcastEpisode } from "../../types";
 
-export function EpisodePlayer({ audio }: { audio: PodcastEpisode["audio"] }) {
+export function EpisodePlayer({ audio }: {  
+  audio: PodcastEpisode["audio"] }) {
   // Update with embed audio playing system
   return (
     <div

@@ -47,8 +47,8 @@ export function VolunteerAtChurch() {
         <div className="w-full content-padding">
           <div className="w-full flex flex-col md:flex-row justify-center items-center gap-7 max-w-screen-content mx-auto">
             <p className="w-fit text-white text-center md:max-w-[60%] lg:max-w-none md:text-left text-xl font-semibold text-pretty">
-              Let's find the right fit for you. Just fill out your information,
-              and we'll help with the rest.
+              Let&apos;s find the right fit for you. Just fill out your information,
+              and we&apos;ll help with the rest.
             </p>
             <IconButton
               to="#todo"

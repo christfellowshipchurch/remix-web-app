@@ -11,7 +11,7 @@ import { MinistryCard } from "~/primitives/cards/ministry-card";
 import { useResponsive } from "~/hooks/use-responsive";
 
 export const ResourceCarousel = (data: {
-  items: Message[] | any[];
+  items: Message[] | SeriesResource[];
   title: string;
   summary?: string;
   bg?: string;
