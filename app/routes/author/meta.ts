@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {

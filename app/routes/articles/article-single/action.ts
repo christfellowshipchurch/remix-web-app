@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import type { ActionFunctionArgs } from "react-router-dom";
+import { data, redirect } from "react-router-dom";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();

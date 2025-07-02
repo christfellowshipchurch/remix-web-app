@@ -1,5 +1,5 @@
 import { FeaturedEventCard } from "../components/featured-card.component";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { EventReturnType } from "../loader";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 

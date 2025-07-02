@@ -1,6 +1,6 @@
 import { SectionTitle } from "~/components/section-title";
 import { GlobalMap } from "../components/global-map.component";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { Trip } from "../types";
 import { MissionTripCard } from "../components/cards/mission-trip-card.component";
 
