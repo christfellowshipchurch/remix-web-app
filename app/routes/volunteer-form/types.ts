@@ -21,10 +21,6 @@ export interface VolunteerFormPreferences {
   comments?: string;
 }
 
-export interface VolunteerFormConfirmation {
-  // No fields needed, just a confirmation/results step
-}
-
 export interface VolunteerFormData {
   personalInfo: VolunteerFormPersonalInfo;
   availability: VolunteerFormAvailability;

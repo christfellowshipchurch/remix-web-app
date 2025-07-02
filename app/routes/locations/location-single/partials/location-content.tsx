@@ -29,7 +29,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     backgroundVideoDesktop,
   } = hit;
   // TODO: Figure out Spanish campuses and their translations
-  const isEspanol = campusName?.includes("Español");
+  // const isEspanol = campusName?.includes("Español");
 
   const isOnline = campusName?.includes("Online");
   if (isOnline) {

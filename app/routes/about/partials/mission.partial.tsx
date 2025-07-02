@@ -21,7 +21,7 @@ export function MissionSection() {
           <p className="text-lg text-text-secondary">
             Christ Fellowship is a church in South Florida with a mission to
             take you from Soul to Soul. We believe that your relationship with
-            God and your life should work together for God's glory. We believe
+            God and your life should work together for             God&apos;s glory. We believe
             that you make Northern Palm or your local home, church is wherever
             you feel Led by better person. Today is your life-time, feel free
             give me a chance to have a deeper understanding for Jesus Christ in

@@ -2,6 +2,12 @@ import lodash from "lodash";
 import { fetchRockData, getImages } from "./fetch-rock-data";
 import { format } from "date-fns";
 import { getAuthorDetails } from "~/routes/articles/article-single/loader";
+import {
+  ContentItem,
+  FormattedArticle,
+  Tag,
+  TaggedItem,
+} from "~/lib/types/rock-types";
 
 const DEFAULT_TAG_ID = 1533; // "For You" - default tag id
 const TOP_TAGGED_ITEMS_LIMIT = 20;
@@ -12,7 +18,7 @@ const TOP_TAGGED_ITEMS_LIMIT = 20;
 export async function getRelatedArticlesByContentItem(guid: string): Promise<{
   tag: string;
   tagId: string;
-  articles: any[];
+  articles: FormattedArticle[];
 }> {
   try {
     // Find tags for the current article
@@ -85,14 +91,12 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
       tagId: tag?.guid, // todo: add encryption
       articles: await Promise.all(formattedArticles),
     };
-  } catch (error: any) {
+  } catch (error) {
     throw new Error("Error fetching related articles: " + error.message);
   }
 }
 
-const fetchTag = async (
-  tagId: number
-): Promise<{ name: string; guid: string }> => {
+const fetchTag = async (tagId: number): Promise<Tag> => {
   const tags = await fetchRockData({
     endpoint: "Tags",
     queryParams: {
@@ -104,7 +108,7 @@ const fetchTag = async (
 };
 
 const getValidTagIds = async (
-  taggedItems: any[] | any,
+  taggedItems: TaggedItem[],
   excludeTags: number[]
 ): Promise<number[]> => {
   // Ensure taggedItems is an array
@@ -113,8 +117,8 @@ const getValidTagIds = async (
   }
 
   return taggedItems
-    .map((taggedItem: any) => taggedItem.tagId)
-    .filter((tagId: number) => !excludeTags.includes(tagId));
+    .map((taggedItem) => taggedItem.tagId)
+    .filter((tagId) => !excludeTags.includes(tagId));
 };
 
 const fetchRelatedTaggedItems = async ({
@@ -123,7 +127,7 @@ const fetchRelatedTaggedItems = async ({
 }: {
   tagId: number;
   entityId: string;
-}): Promise<any[]> => {
+}): Promise<TaggedItem[]> => {
   return await fetchRockData({
     endpoint: "TaggedItems",
     queryParams: {
@@ -133,7 +137,9 @@ const fetchRelatedTaggedItems = async ({
   });
 };
 
-const fetchRelatedContent = async (taggedItems: any[]): Promise<any[]> => {
+const fetchRelatedContent = async (
+  taggedItems: TaggedItem[]
+): Promise<ContentItem[]> => {
   // Ensure taggedItems is an array
   if (!Array.isArray(taggedItems)) {
     taggedItems = [taggedItems];
@@ -150,7 +156,7 @@ const fetchRelatedContent = async (taggedItems: any[]): Promise<any[]> => {
 
 const getTaggedItemsByEntityGuid = async (
   entityGuid: string
-): Promise<any[]> => {
+): Promise<TaggedItem[]> => {
   const taggedItems = await fetchRockData({
     endpoint: "TaggedItems",
     queryParams: {
@@ -161,7 +167,7 @@ const getTaggedItemsByEntityGuid = async (
   return taggedItems;
 };
 
-const getContentItemByGuid = async (guid: string): Promise<any> => {
+const getContentItemByGuid = async (guid: string): Promise<ContentItem> => {
   return await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {

@@ -9,6 +9,21 @@ export type Campus = {
   distanceFromLocation?: number;
 };
 
+export type RawCampus = {
+  name: string;
+  image: string;
+  attributeValues: Record<string, { value: string }>;
+  location: {
+    latitude: number;
+    longitude: number;
+    street1?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+  };
+  [key: string]: unknown;
+};
+
 export type LocationCardListProps = {
   campuses: Campus[];
   loading: boolean;

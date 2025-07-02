@@ -1,9 +1,14 @@
 import { User_Auth_Status } from "~/providers/auth-provider";
 
+export interface UserProfile {
+  field: string;
+  value: string;
+}
+
 export interface SmsAuthParams {
   pin: string;
   phoneNumber: string;
-  userProfile: any[];
+  userProfile: UserProfile[];
   email?: string | null;
 }
 

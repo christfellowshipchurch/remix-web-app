@@ -6,30 +6,33 @@ function FeatureCardSkeleton({ type }: { type: "default" | "hero" }) {
   return type === "default"
     ? [
         <NavCard
+          key="nav-card-1"
           title="_____"
           subtitle="_____"
-          callToAction={{ title: "_____", url: "_____" }}
+          callToAction={{ title: "_____", url: "_____", }}
           image="_____"
         />,
         <NavCard
+          key="nav-card-2"
           title="_____"
           subtitle="_____"
-          callToAction={{ title: "_____", url: "_____" }}
+          callToAction={{ title: "_____", url: "_____", }}
           image="_____"
         />,
       ]
     : [
         <HeroNavCard
+          key="hero-nav-card-1"
           title="_____"
           subtitle="_____"
-          callToAction={{ title: "_____", url: "_____" }}
+          callToAction={{ title: "_____", url: "_____", }}
           image="_____"
         />,
       ];
 }
 
 export const MenuContent: React.FC<
-  MenuLink["content"] & { isLoading: boolean; menuType: string }
+  MenuLink["content"] & { isLoading?: boolean; menuType?: string }
 > = ({ mainContent, featureCards, isLoading = true, menuType = "media" }) => {
   return (
     <div className="lg:pl-8 bg-white w-screen shadow-lg flex flex-col lg:grid grid-cols-3">

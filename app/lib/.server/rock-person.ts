@@ -18,7 +18,9 @@ const RockGenderMap: { [key in Gender]: number } = {
   [Gender.Female]: 2,
 };
 
-export const createPerson = async (profile: any | any) => {
+import { UserProfile } from "../types/rock-types";
+
+export const createPerson = async (profile: UserProfile) => {
   const inputProfileFields = await mapInputFieldsToRock(profile);
   return await postRockData({
     endpoint: "People",
@@ -77,11 +79,13 @@ export const updatePerson = async (
   }
 };
 
+import { RockPerson, UserProfile } from "../types/rock-types";
+
 // Uses the Person Alias GUID to get the Person
 export const getPersonByAliasGuid = async (
   guid: string,
   loadAttributes?: boolean
-): Promise<any | null> => {
+): Promise<RockPerson | null> => {
   const getPersonId = async () => {
     const person = await fetchRockData({
       endpoint: "PersonAlias",
@@ -105,7 +109,7 @@ export const getPersonByAliasGuid = async (
 };
 
 // Uses the Person Alias ID to get the Person
-export const getPersonByAliasId = async (id: string): Promise<any | null> => {
+export const getPersonByAliasId = async (id: string): Promise<RockPerson | null> => {
   const personAlias = await fetchRockData({
     endpoint: `PersonAlias/${id}`,
     queryParams: {},
@@ -128,7 +132,7 @@ export const getPersonAliasGuid = async (
 export const getFromId = async (
   id: string,
   loadAttributes?: boolean
-): Promise<any> => {
+): Promise<unknown> => {
   const person = await fetchRockData({
     endpoint: "People",
     queryParams: {
@@ -157,7 +161,7 @@ export const mapGender = (gender: number): Gender | undefined => {
 };
 
 // Add this to create profile when ready...
-export const mapInputFieldsToRock = (fields: any) => {
+export const mapInputFieldsToRock = (fields: Record<string, unknown>) => {
   const profileFields = fields;
 
   // Create a shallow copy of profileFields

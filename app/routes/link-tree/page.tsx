@@ -53,6 +53,7 @@ export function LinkTreePage() {
         <div className="flex flex-col gap-4 w-full">
           {additionalResources.map((resource) => (
             <Button
+              key={resource.url}
               href={resource.url}
               linkClassName="w-full"
               className={linkTreeButtonClass}

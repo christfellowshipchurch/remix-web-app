@@ -22,7 +22,7 @@ const ConnectCardConfirmation: React.FC<ConnectCardConfirmationProps> = ({
   return (
     <div className="flex flex-col items-center gap-4 p-8">
       <Icon name="check" size={64} color="#1ec27f" />
-      <h1 className="font-bold text-2xl text-navy">You're all set!</h1>
+      <h1 className="font-bold text-2xl text-navy">You&apos;re all set!</h1>
       <Button
         intent="primary"
         className="rounded-xl w-52"

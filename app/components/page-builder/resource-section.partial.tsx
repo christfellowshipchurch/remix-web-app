@@ -125,9 +125,9 @@ export const ResourceCarousel = ({
   carouselClassName,
 }: {
   CardComponent?: React.ComponentType<{
-    resource: CollectionItem | any;
+    resource: CollectionItem;
   }>;
-  resources: CollectionItem[] | any[];
+  resources: CollectionItem[];
   mode?: "dark" | "light";
   layout?: "arrowsRight" | "arrowsLeft";
   carouselItemClassName?: string;

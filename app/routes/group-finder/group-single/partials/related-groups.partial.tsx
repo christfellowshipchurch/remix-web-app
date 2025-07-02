@@ -5,23 +5,43 @@ import { useMemo } from "react";
 import { HitComponent } from "../../finder/components/hit-component.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import { useResponsive } from "~/hooks/use-responsive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+import { GroupHit } from "../../types";
+import { CollectionItem } from "~/routes/page-builder/types";
+
+function mapGroupHitToCollectionItem(hit: GroupHit): CollectionItem {
+  return {
+    id: hit.objectID,
+    contentChannelId: "", // Not available on GroupHit
+    contentType: "PAGE_BUILDER", // Or another appropriate value
+    name: hit.title,
+    summary: hit.summary,
+    description: "",
+    image: hit.coverImage?.sources?.[0]?.uri || "",
+    pathname: `/group-finder/${hit.title}`,
+    startDate: hit.dateTime,
+    author: hit.leaders[0]?.firstName || "",
+    location: hit.campusName,
+    attributeValues: {},
+  };
+}
 
 // Custom component to use hits data with ResourceCarousel
 function RelatedGroupsHits() {
-  const { items } = useHits();
+  const { items } = useHits<GroupHit>();
+  const mappedItems = items.map(mapGroupHitToCollectionItem);
 
   // Wrapper component to adapt resource prop to hit prop
-  const HitComponentWrapper = ({ resource }: { resource: any }) => {
-    return <HitComponent hit={resource} />;
+  const HitComponentWrapper = ({ resource }: { resource: CollectionItem }) => {
+    // Cast resource back to GroupHit for HitComponent
+    return <HitComponent hit={resource as unknown as GroupHit} />;
   };
 
   return (
     <ResourceCarousel
       CardComponent={HitComponentWrapper}
-      resources={items}
+      resources={mappedItems}
       mode="light"
       layout="arrowsRight"
       carouselClassName="overflow-hidden w-screen"

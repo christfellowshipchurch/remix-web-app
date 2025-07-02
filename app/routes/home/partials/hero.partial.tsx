@@ -20,7 +20,7 @@ export function DesktopHeroSection() {
         <div className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
           <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto">
             <h1 className="text-[100px] text-white font-extrabold leading-none max-w-[600px] z-2">
-              There's{" "}
+              There&apos;s{" "}
               <span className="text-dark-navy">
                 something <br />
                 for
@@ -29,7 +29,7 @@ export function DesktopHeroSection() {
             </h1>
             <p className="text-white max-w-[540px] text-xl z-2">
               Discover a community where your questions are welcome, your
-              journey is honored, and you'll find genuine connection and
+              journey is honored, and you&apos;ll find genuine connection and
               relevant answers for your life right here in Florida.
             </p>
             <div className="flex w-fit relative pb-10 z-3">
@@ -145,7 +145,7 @@ export const MobileHeroSection = () => {
       <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent to-dark-navy z-2" />
       <div className="relative z-3 flex flex-col gap-8 pl-8 md:pl-[12%] pr-8 md:pr-0 pt-16 h-full justify-center ml-auto">
         <h1 className="text-[64px] md:text-[80px] text-white font-extrabold leading-none">
-          There's <br className="hidden md:block " />
+          There&apos;s <br className="hidden md:block " />
           <span className="text-ocean">
             something <br />
             for

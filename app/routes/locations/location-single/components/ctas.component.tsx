@@ -58,6 +58,7 @@ const CTAButton = ({
         </button>
       )
     );
+    CustomButton.displayName = "CustomButton";
 
     return <SetAReminderModal ModalButton={CustomButton} />;
   }

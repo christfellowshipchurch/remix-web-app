@@ -1,5 +1,3 @@
-import { useLoaderData } from "react-router-dom";
-import type { LoaderReturnType } from "../loader";
 import { GroupFAQ } from "./faq.component";
 
 export function GroupSingleBasicContent({

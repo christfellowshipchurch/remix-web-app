@@ -46,6 +46,8 @@ const card = cva(["flex"], {
   },
 });
 
+void card;
+
 export interface CardProps
   extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof card> {

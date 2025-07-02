@@ -5,7 +5,7 @@ interface ClassData {
   className: string;
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }: { data: any }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }: { data: ClassData | null }) => {
   const classData = data as ClassData | null;
   if (!classData) {
     return [

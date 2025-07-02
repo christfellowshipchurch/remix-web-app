@@ -15,7 +15,7 @@ export const SearchPopup = ({
       <div className="flex items-center gap-2 pb-4">
         <div className="flex flex-col gap-2">
           <h2 className="text-xs text-[#2F2F2F] opacity-50 font-semibold">
-            I'M LOOKING FOR
+            I&apos;M LOOKING FOR
           </h2>
           <SearchCustomRefinementList attribute="contentType" />
         </div>

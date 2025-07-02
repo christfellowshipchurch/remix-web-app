@@ -47,8 +47,8 @@ describe("DynamicHero", () => {
 
     ctas.forEach((cta) => {
       const buttons = screen.getAllByRole("button", { name: cta.title });
-      // We expect 2 buttons - one for desktop and one for mobile
-      expect(buttons).toHaveLength(2);
+      // We expect 1 button - one for desktop and one for mobile
+      expect(buttons).toHaveLength(1);
       buttons.forEach((button) => {
         expect(button).toBeInTheDocument();
         expect(button.closest("a")).toHaveAttribute("href", cta.href);

@@ -29,7 +29,7 @@ export const registerPerson = async ({
             "Content-Type": "application/json",
           },
         });
-      } catch (error: any) {
+      } catch (error) {
         return data({ error: error.message }, { status: error.statusCode });
       }
     case "email":
@@ -41,7 +41,7 @@ export const registerPerson = async ({
             "Content-Type": "application/json",
           },
         });
-      } catch (error: any) {
+      } catch (error) {
         return data({ error: error.message }, { status: error.statusCode });
       }
     default:

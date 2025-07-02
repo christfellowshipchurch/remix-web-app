@@ -32,7 +32,7 @@ export const renderInputField = (
   </Form.Field>
 );
 
-export const renderCheckboxField = (checkbox: any, index: number) => (
+export const renderCheckboxField = (checkbox: { guid: string; value: string }, index: number) => (
   <Form.Field
     key={index}
     name={`allThatApplies-${index}`}
@@ -89,17 +89,10 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    try {
-      fetcher.submit(formData, {
-        method: "post",
-        action: "/connect-card",
-      });
-    } catch (err) {
-      setError(
-        "An error occurred while submitting the form. Please try again."
-      );
-      setLoading(false);
-    }
+    fetcher.submit(formData, {
+      method: "post",
+      action: "/connect-card",
+    });
   };
 
   const { campuses, allThatApplies } = formFieldData;
@@ -200,7 +193,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 id={otherCheckbox.guid}
                 name={otherCheckbox.guid}
                 value={otherCheckbox.guid}
-                onChange={(e) => setIsOther(!isOther)}
+                onChange={() => setIsOther(!isOther)}
               />
             </Form.Control>
             <Form.Label className="font-bold leading-4">
