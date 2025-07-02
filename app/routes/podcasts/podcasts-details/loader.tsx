@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from "react-router";
+import { LoaderFunctionArgs } from "react-router-dom";
 import { PodcastEpisode, Podcast } from "../types";
 
 export type LoaderReturnType = {

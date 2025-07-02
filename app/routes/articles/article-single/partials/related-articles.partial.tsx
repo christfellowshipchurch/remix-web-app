@@ -1,6 +1,6 @@
 import { Button } from "~/primitives/button/button.primitive";
 import { RelatedArticleCard } from "../components/related-article-card.components";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 
 export const RelatedArticles = () => {

@@ -2,7 +2,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { CampusesReturnType } from "../loader";
 import * as Form from "@radix-ui/react-form";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useEffect, useState } from "react";
 import { Video } from "~/primitives/video/video.primitive";

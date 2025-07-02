@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "react-router";
+import type { LoaderFunction } from "react-router-dom";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { format } from "date-fns";
 

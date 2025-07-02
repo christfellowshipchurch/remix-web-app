@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Event } from "../loader";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
