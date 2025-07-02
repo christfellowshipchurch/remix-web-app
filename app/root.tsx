@@ -5,7 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLocation,
-} from "react-router";
+} from "react-router-dom";
 import { type ReactNode } from "react";
 
 import { Navbar, Footer } from "./components";

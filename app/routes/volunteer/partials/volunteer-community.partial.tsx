@@ -4,7 +4,7 @@ import {
   RegionCardWrapper,
 } from "../components/cards/region-card.component";
 import { CommunityCard } from "../components/cards/community-card.component";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
 import { Icon } from "~/primitives/icon/icon";

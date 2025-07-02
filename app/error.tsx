@@ -1,5 +1,9 @@
 /** Root Error Boundary */
-import { isRouteErrorResponse, useRouteError, useLocation } from "react-router";
+import {
+  isRouteErrorResponse,
+  useRouteError,
+  useLocation,
+} from "react-router-dom";
 import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
 import { CookieConsentProvider } from "./providers/cookie-consent-provider";

@@ -1,4 +1,4 @@
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import { Breadcrumbs } from "../breadcrumbs";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";

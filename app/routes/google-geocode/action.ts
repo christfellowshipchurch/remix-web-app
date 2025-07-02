@@ -1,4 +1,4 @@
-import { ActionFunction } from "react-router";
+import { ActionFunction } from "react-router-dom";
 import {
   AuthenticationError,
   EncryptionError,

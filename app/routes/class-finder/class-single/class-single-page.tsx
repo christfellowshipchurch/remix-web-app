@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
 import { Breadcrumbs } from "~/components";
 

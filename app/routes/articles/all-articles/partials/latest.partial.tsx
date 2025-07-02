@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router-dom";
 import { Article, ArticlesReturnType } from "../loader";
 
 export const Divider = ({

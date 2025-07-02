@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "~/lib/utils";
 

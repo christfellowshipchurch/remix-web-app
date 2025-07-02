@@ -2,7 +2,7 @@ import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher } from "react-router";
+import { useFetcher } from "react-router-dom";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 interface ConnectCardProps {

@@ -4,7 +4,7 @@ import {
   Campus,
   LocationCardList,
 } from "./partials/location-card-list.partial";
-import { useFetcher, useLoaderData } from "react-router";
+import { useFetcher, useLoaderData } from "react-router-dom";
 import { CampusesReturnType } from "./loader";
 
 export type LocationSearchCoordinatesType = {
