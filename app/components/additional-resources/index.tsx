@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 
@@ -75,8 +74,10 @@ const AdditionalResourcesCards = ({ resources }: { resources: Resource[] }) => {
 
 const AdditionalResourceCard = ({ resource }: { resource: Resource }) => {
   return (
-    <Link
-      to={resource.url}
+    <a
+      href={resource.url}
+      target="_blank"
+      rel="noopener noreferrer"
       className="flex flex-col w-[320px] rounded-lg border border-neutral-lighter overflow-hidden"
     >
       <img
@@ -85,7 +86,7 @@ const AdditionalResourceCard = ({ resource }: { resource: Resource }) => {
         className="w-full h-[240px] object-cover"
       />
       <h3 className="font-bold text-[24px] p-4">{resource.title}</h3>
-    </Link>
+    </a>
   );
 };
 

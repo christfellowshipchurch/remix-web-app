@@ -32,9 +32,11 @@ export const mockInThisSeries: Message[] = [
       resources: {
         value: "Resources for message 3",
       },
-      series: {
-        value: "Series for message 3",
+      messageSeries: {
+        value: "Series for message",
+        valueFormatted: "Series for message",
       },
+      
     },
   },
   {
@@ -68,9 +70,11 @@ export const mockInThisSeries: Message[] = [
       resources: {
         value: "Resources for message 3",
       },
-      series: {
-        value: "Series for message 3",
+      messageSeries: {
+        value: "Series for message",
+        valueFormatted: "Series for message",
       },
+      
     },
   },
   {
@@ -104,9 +108,11 @@ export const mockInThisSeries: Message[] = [
       resources: {
         value: "Resources for message 3",
       },
-      series: {
-        value: "Series for message 3",
+      messageSeries: {
+        value: "Series for message",
+        valueFormatted: "Series for message",
       },
+      
     },
   },
   {
@@ -119,29 +125,30 @@ export const mockInThisSeries: Message[] = [
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
-        value: "Summary for message 4",
+        value: "Summary for message",
       },
       author: {
-        value: "Author for message 4",
-        valueFormatted: "Author 4",
+        value: "Author for message",
+        valueFormatted: "Author",
       },
       image: {
-        value: "https://example.com/message4",
+        value: "https://example.com/message",
       },
       url: {
-        value: "https://example.com/message4",
+        value: "https://example.com/message",
+      },
+      messageSeries: {
+        value: "Series for message",
+        valueFormatted: "Series for message",
       },
       actions: {
-        value: "Actions for message 4",
+        value: "Actions for message",
       },
       topic: {
-        value: "Topic for message 4",
+        value: "Topic for message",
       },
       resources: {
-        value: "Resources for message 4",
-      },
-      series: {
-        value: "Series for message 4",
+        value: "Resources for message",
       },
     },
   },
@@ -155,29 +162,30 @@ export const mockInThisSeries: Message[] = [
     startDateTime: "2023-01-01",
     attributeValues: {
       summary: {
-        value: "Summary for message 5",
+        value: "Summary for message",
       },
       author: {
-        value: "Author for message 5",
-        valueFormatted: "Author 5",
+        value: "Author for message",
+        valueFormatted: "Author",
       },
       image: {
-        value: "https://example.com/message5",
+        value: "https://example.com/message",
       },
       url: {
-        value: "https://example.com/message5",
+        value: "https://example.com/message",
+      },
+      messageSeries: {
+        value: "Series for message",
+        valueFormatted: "Series for message",
       },
       actions: {
-        value: "Actions for message 5",
+        value: "Actions for message",
       },
       topic: {
-        value: "Topic for message 5",
+        value: "Topic for message",
       },
       resources: {
-        value: "Resources for message 5",
-      },
-      series: {
-        value: "Series for message 5",
+        value: "Resources for message",
       },
     },
   },

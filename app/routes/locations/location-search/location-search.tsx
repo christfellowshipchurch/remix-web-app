@@ -24,7 +24,9 @@ export type LocationSearchCoordinatesType = {
 
 export function LocationSearchPage() {
   const [address, setAddress] = useState<string>("");
-  const [coordinates, setCoordinates] = useState<any[]>([]);
+  const [coordinates, setCoordinates] = useState<
+    LocationSearchCoordinatesType["results"]
+  >([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [locationActive, setLocationActive] = useState(true);
   const [results, setResults] = useState<Campus[]>([]);

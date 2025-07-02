@@ -80,10 +80,8 @@ export function LeaderScroll() {
 
 const MobileLeaderCard = ({
   leader,
-  index,
 }: {
   leader: LeaderModalItem;
-  index: number;
 }) => {
   const [openModal, setOpenModal] = useState(false);
 

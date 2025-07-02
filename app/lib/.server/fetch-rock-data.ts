@@ -70,7 +70,7 @@ export const fetchRockData = async ({
   if (redis && !cache) {
     try {
       await redis.del(cacheKey);
-    } catch (error) {
+    } catch {
       console.log("⚠️ Redis cache deletion failed");
     }
   }
@@ -82,7 +82,7 @@ export const fetchRockData = async ({
       if (cachedData) {
         return JSON.parse(cachedData);
       }
-    } catch (error) {
+    } catch {
       console.log("⚠️ Redis cache retrieval failed, falling back to API call");
     }
   }
@@ -110,7 +110,7 @@ export const fetchRockData = async ({
     const data = await res
       .json()
       .then((data) => normalize(data))
-      .then((data: any) =>
+      .then((data: unknown) =>
         Array.isArray(data) && data?.length === 1 ? data[0] : data
       );
 
@@ -118,13 +118,13 @@ export const fetchRockData = async ({
     if (redis && cache) {
       try {
         await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
-      } catch (error) {
+      } catch {
         console.log("⚠️ Redis cache storage failed");
       }
     }
 
     return data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error fetching rock data:", error);
     throw error;
   }
@@ -167,32 +167,28 @@ export const deleteRockData = async (endpoint: string) => {
  * @returns response body as JSON
  */
 export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
-  try {
-    const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization-Token": `${process.env.ROCK_TOKEN}`,
-      },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      const errorDetails = await response.text();
-      throw new Error(
-        `Failed to post data: ${response.status}, details: ${errorDetails}`
-      );
-    }
-
-    const responseBody = await response.text();
-    if (!responseBody) {
-      return {};
-    }
-
-    return JSON.parse(responseBody);
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    const errorDetails = await response.text();
+    throw new Error(
+      `Failed to post data: ${response.status}, details: ${errorDetails}`
+    );
   }
+
+  const responseBody = await response.text();
+  if (!responseBody) {
+    return {};
+  }
+
+  return JSON.parse(responseBody);
 };
 
 /**
@@ -248,7 +244,7 @@ export const getImages = ({
     })
   );
   return imageKeys.map((key) =>
-    createImageUrlFromGuid(attributeValues[key].value)
+    createImageUrlFromGuid(attributeValues[key].value as string)
   );
 };
 

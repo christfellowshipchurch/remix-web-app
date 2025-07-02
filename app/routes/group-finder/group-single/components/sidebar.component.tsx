@@ -37,7 +37,7 @@ interface LeaderGalleryProps {
 const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
   <div className="flex flex-col gap-2 px-6">
     <div className="flex gap-2">
-      {leaders?.map((leader, i) => (
+      {leaders?.map((leader) => (
         <img
           key={leader.firstName}
           src={leader.photo.uri || defaultLeaderPhoto}

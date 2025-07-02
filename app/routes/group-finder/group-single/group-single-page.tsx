@@ -20,7 +20,7 @@ export const GroupNotFound = () => {
     <div className="flex flex-col items-center gap-6 py-20">
       <h2 className="text-2xl font-bold text-center">Group Not Found</h2>
       <p className="text-neutral-500 text-center max-w-md">
-        We couldn't find the group you're looking for. It may have been removed
+        We couldn&apos;t find the group you&apos;re looking for. It may have been removed
         or renamed.
       </p>
       <Button intent="primary" href="/group-finder">

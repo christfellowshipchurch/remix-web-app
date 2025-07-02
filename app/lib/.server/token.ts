@@ -20,12 +20,12 @@ export function registerToken(token: string) {
       return {};
     }
     const error = new Error("Invalid token");
-    (error as any).code = "UNAUTHENTICATED";
-    (error as any).http = { status: 401 };
+    (error as Error & { code?: string; http?: { status: number } }).code = "UNAUTHENTICATED";
+    (error as Error & { code?: string; http?: { status: number } }).http = { status: 401 };
     throw error;
   }
 }
 
-export function generateToken(params: Record<string, any>) {
+export function generateToken(params: Record<string, unknown>) {
   return jwt.sign({ ...params }, secret, { expiresIn: "400d" });
 }

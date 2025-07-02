@@ -1,8 +1,10 @@
 import type { MetaFunction } from "react-router-dom";
-import { loader } from "./loader";
+import { Author, loader } from "./loader";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  if (!data) {
+  const author = data as Author | undefined;
+
+  if (!author) {
     return [
       { title: "404 - Author Not Found" },
       {
@@ -13,7 +15,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   return [
-    { title: `${data?.fullName} | Christ Fellowship Church` },
-    { name: "description", content: data?.summary },
+    { title: `${author.fullName} | Christ Fellowship Church` },
+    { name: "description", content: "" },
   ];
 };

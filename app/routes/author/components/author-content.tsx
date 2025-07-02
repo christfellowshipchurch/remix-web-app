@@ -18,7 +18,6 @@ export type AuthorArticleProps = {
 export function AuthorArticle({
   title,
   publishDate,
-  readTime,
   summary,
   url,
   coverImage,

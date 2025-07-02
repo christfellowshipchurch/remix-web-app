@@ -1,12 +1,15 @@
 import { useLoaderData } from "react-router-dom";
-import { PageBuilderLoader } from "./types";
+import {
+  PageBuilderLoader,
+  PageBuilderSection,
+  ContentBlockData,
+} from "./types";
 import { DynamicHero } from "~/components";
 import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
 import { CTACollectionSection } from "~/components/page-builder/cta-collection";
 import { ContentBlock } from "./components/content-block";
-import { ContentBlockData } from "./types";
 
-export function renderSection(section: any) {
+export function renderSection(section: PageBuilderSection) {
   switch (section.type) {
     case "RESOURCE_COLLECTION":
     case "EVENT_COLLECTION":

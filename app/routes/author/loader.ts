@@ -24,7 +24,7 @@ export type Author = {
 };
 
 export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
-  const personAlias: any = await fetchRockData({
+  const personAlias: RockPerson[] = await fetchRockData({
     endpoint: "PersonAlias",
     queryParams: {
       $filter: `Id eq ${primaryAliasId}`,
@@ -83,19 +83,19 @@ export const getAuthorDetails = async (personId: string) => {
       {
         url: authorData?.attributeValues?.twitter?.value || null,
         type: "twitter",
-      },
+      } as SocialMedia,
       {
         url: authorData?.attributeValues?.facebook?.value || null,
         type: "facebook",
-      },
+      } as SocialMedia,
       {
         url: authorData?.attributeValues?.instagram?.value || null,
         type: "instagram",
-      },
+      } as SocialMedia,
       {
         url: authorData?.attributeValues?.linkedIn?.value || null,
         type: "linkedIn",
-      },
+      } as SocialMedia,
     ].filter((link) => link.url !== null);
 
     return {
@@ -109,7 +109,7 @@ export const getAuthorDetails = async (personId: string) => {
         jobTitle: authorData?.attributeValues?.jobTitle?.value || "",
         socialLinks,
         publications: authorArticles
-          .map((article: any) => {
+          .map((article: ContentItem) => {
             if (!article) return null;
 
             try {
@@ -168,5 +168,5 @@ export const loader: LoaderFunction = async ({ params }) => {
     authorAttributes: data.authorAttributes,
   };
 
-  return <Author>authorData;
+  return authorData;
 };

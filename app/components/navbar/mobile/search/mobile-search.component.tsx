@@ -1,9 +1,8 @@
 import { algoliasearch, SearchClient } from "algoliasearch";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
 import { useRouteLoaderData } from "react-router-dom";
 import Icon from "~/primitives/icon";
-import { LoaderReturnType } from "~/routes/search/loader";
 import { SearchPopup } from "./search-popup.component";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { MobileSearchCustomRefinementList } from "./customRefinements.component";
@@ -35,10 +34,8 @@ const emptySearchClient = {
 };
 
 export const MobileSearch = ({
-  mode,
   setIsSearchOpen,
 }: {
-  mode: "light" | "dark";
   setIsSearchOpen: (isSearchOpen: boolean) => void;
 }) => {
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;

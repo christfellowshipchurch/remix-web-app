@@ -23,13 +23,12 @@ type ShareLinksProps = {
 type SocialMedia = { type: string; url: string };
 
 export function ShareLinks({
-  size = 8,
   socialMedia,
   url,
   backgroundColor,
 }: ShareLinksProps) {
   // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side. We'll use "any" return type for flexibliity
-  const data = useLoaderData<any>();
+  const data = useLoaderData<{ hostUrl?: string }>();
   const hostUrl = url || data?.hostUrl;
   const { pathname } = useLocation();
   const fullPath = `${hostUrl}${pathname}`;

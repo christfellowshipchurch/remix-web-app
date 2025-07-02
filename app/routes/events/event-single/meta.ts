@@ -1,12 +1,11 @@
 import type { MetaFunction } from "react-router-dom";
-import { loader } from "./loader";
 
 interface EventData {
   title: string;
   summary: string;
 }
 
-export const meta: MetaFunction = ({ data }: { data: any }) => {
+export const meta: MetaFunction = ({ data }: { data: EventData | null }) => {
   const eventData = data as EventData | null;
   if (!eventData) {
     return [

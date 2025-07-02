@@ -1,16 +1,17 @@
 import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
+import { LoaderReturnType } from "./loader";
 
 /**
  * todo : set up meta data for group single pages
  */
-interface GroupData {
-  groupName: string;
-}
 
-export const meta: MetaFunction<typeof loader> = ({ data }: { data: any }) => {
-  const groupData = data as GroupData | null;
-  if (!groupData) {
+export const meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: LoaderReturnType | undefined;
+}) => {
+  if (!data) {
     return [
       { title: "404 - Group Not Found" },
       {
@@ -21,7 +22,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }: { data: any }) => {
   }
 
   // TODO: Get group title from data
-  const groupName = groupData.groupName;
+  const groupName = data.groupName;
 
   return [
     { title: `${groupName} | Christ Fellowship Church` },

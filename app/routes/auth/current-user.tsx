@@ -19,7 +19,7 @@ export const currentUser = async (token: string) => {
     let decryptedToken;
     try {
       decryptedToken = decrypt(token);
-    } catch (error) {
+    } catch {
       throw new EncryptionError("Failed to decrypt token");
     }
 

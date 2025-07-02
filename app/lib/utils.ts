@@ -19,14 +19,16 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /** Server Utils */
-export function normalize(data: object): object {
+export function normalize(data: unknown): unknown {
   if (Array.isArray(data)) return data.map((n) => normalize(n));
   if (typeof data !== "object" || data === null) return data;
-  const normalizedValues = mapValues(data, (n) => normalize(n));
+  const normalizedValues = mapValues(data as Record<string, unknown>, (n) => normalize(n));
   return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
 }
 
-export const fieldsAsObject = (fields: any[]) =>
+import { UserProfile } from "~/lib/types/rock-types";
+
+export const fieldsAsObject = (fields: UserProfile[]) =>
   fields.reduce(
     (accum, { field, value }) => ({
       ...accum,
@@ -43,7 +45,7 @@ export const createImageUrlFromGuid = (uri: string) =>
     ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
     : enforceProtocol(uri);
 
-export const getIdentifierType = (identifier: any) => {
+export const getIdentifierType = (identifier: unknown) => {
   const guidRegex =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const intRegex = /\D/g;
@@ -94,7 +96,10 @@ interface EventDetails {
 }
 
 export const icsLink = (event: EventDetails): string => {
-  let { title, description, address, startTime, endTime, url } = event;
+  const { title, description, address, startTime: initialStartTime, endTime: initialEndTime, url } = event;
+
+  let startTime = initialStartTime;
+  let endTime = initialEndTime;
 
   if (isString(startTime) || isString(endTime)) {
     startTime = parseISO(startTime as string);
@@ -125,8 +130,8 @@ export const icsLink = (event: EventDetails): string => {
   ].join("\n");
 
   // We use blob method and removed `charset=utf8` in order to be compatible with Safari IOS
-  let blob = new Blob([icsString], { type: "text/calendar" });
-  let calendarLink = window.URL.createObjectURL(blob);
+  const blob = new Blob([icsString], { type: "text/calendar" });
+  const calendarLink = window.URL.createObjectURL(blob);
 
   return calendarLink;
 };
@@ -139,7 +144,7 @@ function parseTimeAsInt(_time: string) {
     .trim()
     .split(":")
     .map((n) => parseInt(n));
-  let hour24 = a === "PM" ? hour + 12 : hour;
+  const hour24 = a === "PM" ? hour + 12 : hour;
 
   return [hour24, minute];
 }
@@ -160,9 +165,9 @@ export function icsLinkEvents({
   campusName: string;
   url?: string;
 }) {
-  return serviceTimes.map(({ day, time }) => {
-    let now = new Date();
-    let [hour, minute] = parseTimeAsInt(time);
+  return serviceTimes.map(({ time }) => {
+    const now = new Date();
+    const [hour, minute] = parseTimeAsInt(time);
     let sunday = nextSunday(now);
     sunday = setMinutes(sunday, minute ?? 0);
     sunday = setHours(sunday, hour ?? 0);
@@ -264,3 +269,7 @@ export const formattedServiceTimes = (serviceTimes: string) =>
 
     return acc;
   }, []);
+
+export const isUrlExternal = (url: string) => {
+  return url.startsWith("http://") || url.startsWith("https://");
+};

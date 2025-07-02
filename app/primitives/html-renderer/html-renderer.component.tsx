@@ -8,7 +8,7 @@ export const HTMLRenderer = ({
   className?: string;
 }) => {
   const options = {
-    replace(domNode: any) {
+    replace(domNode: { attribs: Record<string, string>; name: string }) {
       if (domNode.attribs && domNode.name === "img") {
         const hmtlProps = attributesToProps(domNode.attribs);
         const { src } = hmtlProps;

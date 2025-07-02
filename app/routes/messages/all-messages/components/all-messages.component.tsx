@@ -29,7 +29,7 @@ const MessageHitComponent = ({ hit }: { hit: ContentItemHit }) => (
     resource={{
       id: hit.objectID,
       contentChannelId: "63", // MESSAGE type from builder-utils.ts
-      contentType: "MESSAGE",
+      contentType: "MESSAGES",
       author: hit.author.firstName + " " + hit.author.lastName,
       image: hit.coverImage.sources[0].uri,
       name: hit.title,

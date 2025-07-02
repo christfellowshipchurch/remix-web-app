@@ -24,6 +24,7 @@ export const LocationSearch = () => {
     lng: number;
   } | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let newSearchClient: SearchClient | null = globalSearchClient;
   // Create or retrieve the Algolia client
   useEffect(() => {

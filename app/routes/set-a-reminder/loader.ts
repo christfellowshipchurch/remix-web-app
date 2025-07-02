@@ -6,7 +6,7 @@ import { dayTimes, formattedServiceTimes } from "~/lib/utils";
 export type LoaderReturnType = {
   serviceTimes: dayTimes[];
   campusName: string;
-  user: any;
+  user: unknown;
   address: string;
   url: string;
 };

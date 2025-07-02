@@ -77,13 +77,15 @@ export const createPhoneNumberInRock = async ({
   }
 };
 
+import { UserProfile } from "~/lib/types/rock-types";
+
 export const createOrFindSmsLoginUserId = async ({
   phoneNumber,
   userProfile,
   email = null,
 }: {
   phoneNumber: string;
-  userProfile: any[];
+  userProfile: UserProfile[];
   email?: string | null;
 }): Promise<string> => {
   const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
@@ -170,7 +172,7 @@ export const requestSmsLogin = async (
       to: e164,
       body: `Your login code is ${pin}`,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to send SMS:", error.message);
     throw new AuthenticationError(`Failed to send SMS: ${error.message}`);
   }

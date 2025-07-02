@@ -28,7 +28,7 @@ export const RelatedArticles = () => {
             </div>
           </div>
           <div className="my-4 flex w-full flex-col justify-center gap-6 md:my-8 lg:my-20 lg:flex-row">
-            {articles?.map((article: any, i: number) => (
+            {articles?.map((article: FormattedArticle, i: number) => (
               <RelatedArticleCard
                 key={i}
                 title={article.title}

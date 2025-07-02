@@ -18,9 +18,9 @@ interface VolunteerStatsProps {
 }
 
 export function VolunteerStats({
-  stats,
-  avatars,
-  avatarCount,
+  stats = defaultProps.stats,
+  avatars = defaultProps.avatars,
+  avatarCount = defaultProps.avatarCount,
 }: VolunteerStatsProps) {
   return (
     <section id="stats" className="w-full bg-white py-20 content-padding">
@@ -78,8 +78,7 @@ export function VolunteerStats({
   );
 }
 
-// Default demo props
-VolunteerStats.defaultProps = {
+const defaultProps = {
   stats: [
     { year: "2024", label: "Volunteers served", value: "14,378" },
     {

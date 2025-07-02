@@ -1,10 +1,7 @@
-import { useLoaderData } from "react-router-dom";
-import { MessageReturnType } from "../loader";
 import { SeriesCard } from "../components/this-series-card.component";
 import { mockInThisSeries } from "../components/mockData";
 
 export const InThisSeries = () => {
-  const { message } = useLoaderData<MessageReturnType>();
   // Get Series ID and get episodes in this series
   return (
     <div className="flex w-full flex-col gap-6 py-12 md:py-24 content-padding">

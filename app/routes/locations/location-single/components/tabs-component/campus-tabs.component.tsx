@@ -44,7 +44,7 @@ const OnlineTabsData = [
 ];
 
 interface CampusTabsProps {
-  tabs: ComponentType<any>[];
+  tabs: ComponentType<Record<string, unknown>>[];
   setReminderVideo?: string;
   isOnline?: boolean;
 }
@@ -72,8 +72,8 @@ const CustomTabs = ({
   setReminderVideo,
   isOnline,
 }: {
-  data: any[];
-  tabs: ComponentType<any>[];
+  data: Array<{ label: string; mobileLabel: string; value: string }>;
+  tabs: ComponentType<Record<string, unknown>>[];
   setReminderVideo?: string;
   isOnline?: boolean;
 }) => {

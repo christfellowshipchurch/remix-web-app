@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import { MessageReturnType } from "../loader";
 import HTMLRenderer from "~/primitives/html-renderer";
 
-export const MessageContent = ({}) => {
+export const MessageContent = () => {
   const { message } = useLoaderData<MessageReturnType>();
 
   return (

@@ -1,10 +1,9 @@
 import Icon from "~/primitives/icon";
 import {
   useClearRefinements,
-  UseClearRefinementsProps,
 } from "react-instantsearch";
 
-export const SearchCustomClearRefinements = ({}: UseClearRefinementsProps) => {
+export const SearchCustomClearRefinements = () => {
   const { refine, canRefine } = useClearRefinements();
 
   return (

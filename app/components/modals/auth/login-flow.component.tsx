@@ -132,12 +132,8 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   };
 
   const handlePasswordLogin = async (password: string) => {
-    try {
-      await loginWithEmail(identity, password);
-      setOpenModal(false);
-    } catch (error) {
-      throw error;
-    }
+    await loginWithEmail(identity, password);
+    setOpenModal(false);
   };
 
   const handlePinLoginOrRegistration = async (pin: string) => {
