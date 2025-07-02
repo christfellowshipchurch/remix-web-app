@@ -11,7 +11,7 @@ type PodcastCardProps = {
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, trailer, shareLinks } = podcast;
+  const { title, description, shareLinks } = podcast;
   const { kebabCase } = lodash;
 
   const platformToIcon: Record<string, keyof typeof icons> = {

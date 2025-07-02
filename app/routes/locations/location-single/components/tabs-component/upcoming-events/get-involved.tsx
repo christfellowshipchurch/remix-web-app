@@ -10,7 +10,7 @@ import {
   CarouselNext,
 } from "~/primitives/shadcn-primitives/carousel";
 import { Carousel } from "~/primitives/shadcn-primitives/carousel";
-import { Link } from "react-router-dom";
+
 import Icon from "~/primitives/icon";
 
 const items = [

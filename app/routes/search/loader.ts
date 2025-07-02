@@ -1,4 +1,3 @@
-import { LoaderFunctionArgs } from "react-router-dom";
 import { AuthenticationError } from "~/lib/.server/error-types";
 
 export type LoaderReturnType = {
@@ -6,7 +5,7 @@ export type LoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async () => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 

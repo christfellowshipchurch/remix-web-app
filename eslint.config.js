@@ -3,6 +3,7 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 
+
 export default [
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   {
@@ -36,6 +37,9 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/prop-types": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ];

@@ -15,7 +15,7 @@ export const VolunteerFormWelcome: React.FC<{ onNext: () => void }> = ({
     <section className="flex flex-col items-center justify-center py-10 bg-white rounded-xl shadow-md max-w-md gap-6 mb-24">
       <h1 className="heading-h3">Help Me Find a Place</h1>
       <p className="text-center text-text-secondary mb-10">
-        Thank you for your interest in volunteering with us. We're excited to
+        Thank you for your interest in volunteering with us. We&apos;re excited to
         have you join our team.
       </p>
       <div className="grid grid-cols-3 items-center gap-2">

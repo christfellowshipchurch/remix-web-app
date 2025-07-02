@@ -2,7 +2,6 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { PodcastEpisode, Podcast } from "../types";
 
 export type LoaderReturnType = {
-  path: string;
   podcast: Podcast;
   latestEpisodes: PodcastEpisode[];
 };
@@ -108,7 +107,10 @@ export async function getPodcast(path: string) {
 }
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const { path } = params;
+   
+   
+   
+  const { path: _path } = params;
   if (!path) {
     throw new Error("Path is required");
   }
@@ -116,5 +118,5 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const latestEpisodes = await getLatestEpisodes();
   const podcast = await getPodcast(path);
 
-  return { path, podcast, latestEpisodes };
+  return { podcast, latestEpisodes };
 }

@@ -50,7 +50,7 @@ export const VolunteerFormPreferencesPartial: React.FC<Props> = ({
     >
       <h2 className="text-xl font-semibold mb-2">What are your interests?</h2>
       <div>
-        <label className="font-medium">Areas you'd like to serve:</label>
+        <label className="font-medium">Areas you&apos;d like to serve:</label>
         <div className="flex flex-wrap gap-2 mt-1">
           {INTERESTS.map((interest) => (
             <label key={interest} className="flex items-center gap-1">

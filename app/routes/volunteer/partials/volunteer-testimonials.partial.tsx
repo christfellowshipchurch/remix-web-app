@@ -15,7 +15,7 @@ export function VolunteerTestimonials() {
               {/* Heading Section*/}
               <div className="w-full text-center flex flex-col justify-center items-center content-padding lg:px-0">
                 <h2 className="text-black text-2xl lg:text-[2rem] font-extrabold">
-                  Here from other Volunteers
+                  Hear from other Volunteers
                 </h2>
                 <p className="text-text-secondary lg:text-lg text-center max-w-3xl font-medium">
                   Find out what to expect at a service, how we support families,
@@ -43,9 +43,9 @@ export function VolunteerTestimonials() {
       <div className="w-full pt-12 pb-32 md:pb-52 content-padding bg-gray">
         <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-11 lg:gap-7 max-w-screen-content mx-auto">
           <p className="w-fit text-text-secondary text-center lg:text-left lg:text-xl font-semibold text-pretty">
-            Let's find the right fit for you. Just fill out your information,
-            and we'll help with the rest.
-          </p>
+              Let&apos;s find the right fit for you. Just fill out your information,
+              and we&apos;ll help with the rest.
+            </p>
           <div className="hidden lg:block">
             <IconButton
               to="#todo"

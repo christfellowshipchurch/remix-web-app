@@ -14,7 +14,7 @@ import { SearchClient } from "algoliasearch";
 export { loader } from "./loader";
 
 // Global reference to maintain Algolia search client instance
-export let globalSearchClient: SearchClient | null = null;
+export const globalSearchClient: SearchClient | null = null;
 
 export const emptySearchClient = {
   search: () =>

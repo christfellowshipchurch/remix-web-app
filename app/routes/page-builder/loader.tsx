@@ -17,6 +17,19 @@ import {
 import { format, parseISO } from "date-fns";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
+interface ChildReference {
+  childContentChannelItemId: string;
+}
+
+interface ContentChannelItem {
+  id: string;
+  contentChannelId: string;
+  title: string;
+  content: string;
+  attributeValues?: Record<string, { value: string }>;
+  startDateTime?: string;
+}
+
 export const fetchChildItems = async (id: string) => {
   const childReferences = await fetchRockData({
     endpoint: `ContentChannelItemAssociations`,
@@ -33,7 +46,7 @@ export const fetchChildItems = async (id: string) => {
   }
 
   //ensure childReferences is an array
-  let childReferencesArray = [];
+  let childReferencesArray: ChildReference[] = [];
   if (!Array.isArray(childReferences)) {
     childReferencesArray = [childReferences];
   } else {
@@ -41,7 +54,7 @@ export const fetchChildItems = async (id: string) => {
   }
 
   const children = await Promise.all(
-    childReferencesArray.map(async (childReference: any) => {
+    childReferencesArray.map(async (childReference: ChildReference) => {
       return await fetchRockData({
         endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
         queryParams: {
@@ -57,7 +70,7 @@ export const fetchChildItems = async (id: string) => {
   }
 
   // Ensure children is an array
-  let childrenArray = [];
+  let childrenArray: ContentChannelItem[] = [];
   if (!Array.isArray(children)) {
     childrenArray = [children];
   } else {
@@ -94,7 +107,7 @@ export const fetchDefinedValue = async (guid: string) => {
   }
 };
 
-const getLinkTreeLayout = async (attributeValues: any) => {
+const getLinkTreeLayout = async (attributeValues: Record<string, { value: string }> | undefined) => {
   if (attributeValues?.linkTreeLayout) {
     return await fetchDefinedValue(attributeValues.linkTreeLayout.value);
   }
@@ -102,7 +115,7 @@ const getLinkTreeLayout = async (attributeValues: any) => {
 };
 
 export const mapPageBuilderChildItems = async (
-  children: any[]
+  children: ContentChannelItem[]
 ): Promise<PageBuilderSection[]> => {
   return Promise.all(
     // Map over the children and define the PageBuilder Section Type
@@ -112,7 +125,7 @@ export const mapPageBuilderChildItems = async (
       const sectionType = getSectionType(typeId) as SectionType;
       // Map the attribute values to a key-value object for easier access
       const attributeValues = Object.fromEntries(
-        Object.entries(child.attributeValues || {}).map(([key, obj]: any) => [
+        Object.entries(child.attributeValues || {}).map(([key, obj]: [string, { value: string }]) => [
           key,
           obj.value,
         ])
@@ -138,12 +151,12 @@ export const mapPageBuilderChildItems = async (
         const collection = await fetchChildItems(child.id);
         return {
           ...baseChild,
-          collection: collection.map((item: any): CollectionItem => {
+          collection: collection.map((item: ContentChannelItem): CollectionItem => {
             const contentType = getContentType(item.contentChannelId);
             // Map the attribute values to a key-value object for easier access
             const itemAttributeValues = Object.fromEntries(
               Object.entries(item.attributeValues || {}).map(
-                ([key, obj]: any) => [key, obj.value]
+                ([key, obj]: [string, { value: string }]) => [key, obj.value]
               )
             );
 

@@ -1,4 +1,3 @@
-import { LoaderFunctionArgs } from "react-router-dom";
 import {
   CommunityCard,
   RegionCard,
@@ -36,10 +35,28 @@ export type LoaderReturnType = {
   mockVolunteerFeaturedEvent: VolunteerFeaturedEvent;
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
   const fetchMissions = await fetchMissionTrips();
 
-  const missionTrips: Trip[] = fetchMissions.map((item: any) => ({
+  interface RawMissionTrip {
+  id: string;
+  title: string;
+  content: string;
+  attributeValues?: {
+    coverImage?: { value: string };
+    applyUrl?: { value: string };
+    donateUrl?: { value: string };
+    groupType?: { value: string };
+    city?: { value: string };
+    country?: { value: string };
+    dateOfTrip?: { value: string };
+    cost?: { value: string };
+    latitude?: { value: string };
+    longitude?: { value: string };
+  };
+}
+
+  const missionTrips: Trip[] = fetchMissions.map((item: RawMissionTrip) => ({
     id: item.id,
     title: item.title,
     description: item.content,

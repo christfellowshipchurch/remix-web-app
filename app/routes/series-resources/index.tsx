@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { SeriesReturnType } from "./loader";
 import { ResourceCarousel } from "./partials/resource-carousel.partial";
 import { Button } from "~/primitives/button/button.primitive";
