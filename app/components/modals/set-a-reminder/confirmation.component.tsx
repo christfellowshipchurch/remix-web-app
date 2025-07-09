@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useFetcher } from "react-router";
+import { useFetcher } from "react-router-dom";
 import { icsLink, icsLinkEvents } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";

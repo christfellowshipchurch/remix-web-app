@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router-dom";
 import { HistorySection } from "./about/partials/history.partial";
 import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";

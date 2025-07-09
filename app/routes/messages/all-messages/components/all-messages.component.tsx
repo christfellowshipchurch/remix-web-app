@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import {
   InstantSearch,

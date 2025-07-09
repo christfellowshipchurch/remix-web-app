@@ -1,7 +1,7 @@
 import * as Form from "@radix-ui/react-form";
 import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
-import { useFetcher } from "react-router";
+import { useFetcher } from "react-router-dom";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
 

@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { EventReturnType } from "../loader";
 import { SectionTitle } from "~/components";
 import {

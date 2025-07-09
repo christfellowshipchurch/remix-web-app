@@ -1,6 +1,6 @@
 import { Icon } from "~/primitives/icon/icon";
 import { PodcastEpisode } from "../../types";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import lodash from "lodash";
 
 export const PodcastEpisodeCard = ({

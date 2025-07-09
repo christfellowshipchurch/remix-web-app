@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from "react-router";
+import { LoaderFunctionArgs } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { parseRockKeyValueList } from "~/lib/utils";
 import { LinkTreeLoaderData, RockLinkTreeData } from "./types";

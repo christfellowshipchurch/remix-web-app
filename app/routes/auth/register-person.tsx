@@ -1,4 +1,4 @@
-import { data } from "react-router";
+import { data } from "react-router-dom";
 import { registerPersonWithEmail } from "~/lib/.server/authentication/rock-authentication";
 import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
 import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";

@@ -1,6 +1,6 @@
 import React from "react";
 import { LoaderReturnType } from "./loader";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 
 import { ArticleHero } from "./partials/hero.partial";
 import { ArticleContent } from "./partials/content.partial";

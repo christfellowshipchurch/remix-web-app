@@ -1,4 +1,4 @@
-import { useLoaderData, useLocation } from "react-router";
+import { useLoaderData, useLocation } from "react-router-dom";
 import CopyLink from "./copy-link.component";
 import Icon from "~/primitives/icon";
 
