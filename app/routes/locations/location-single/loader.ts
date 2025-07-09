@@ -1,4 +1,4 @@
-import { LoaderFunction } from "react-router";
+import { LoaderFunction } from "react-router-dom";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;

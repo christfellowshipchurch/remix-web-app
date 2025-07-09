@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 
 export const DuringTheWeek = ({

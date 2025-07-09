@@ -1,5 +1,5 @@
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import type { LoaderReturnType } from "../loader";
 import { cn } from "~/lib/utils";
 

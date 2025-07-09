@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { PageBuilderLoader } from "./types";
 import { DynamicHero } from "~/components";
 import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";

@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
 import { PodcastsHero } from "./partials/podcasts-hero.partial";
 import { LatestEpisodes } from "./partials/latests-episodes.partials";
