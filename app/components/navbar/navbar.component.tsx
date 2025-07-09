@@ -35,6 +35,8 @@ import {
 import { MenuLink } from "./types";
 import { SiteBanner } from "../site-banner";
 import { RootLoaderData } from "~/routes/navbar/loader";
+import { AuthModal } from "../modals";
+import { useNavbarVisibility } from "~/providers/navbar-visibility-context";
 
 export function Navbar() {
   // Hooks and state
@@ -61,6 +63,8 @@ export function Navbar() {
   const [mode, setMode] = useState<"light" | "dark">(defaultMode);
 
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
+
+  const { setIsNavbarVisible } = useNavbarVisibility();
 
   useEffect(() => {
     if (siteBanner && siteBanner?.content?.length > 0) {
@@ -152,6 +156,10 @@ export function Navbar() {
   useEffect(() => {
     setMode(defaultMode);
   }, [defaultMode]);
+
+  useEffect(() => {
+    setIsNavbarVisible(isVisible);
+  }, [isVisible, setIsNavbarVisible]);
 
   // Menu data
   const menuLinks: MenuLink[] = [
@@ -370,22 +378,21 @@ export function Navbar() {
 
               {(!isSearchOpen || isXLarge) && (
                 <div className="flex gap-2">
-                  <Button className="font-semibold text-base w-[190px]">
+                  <Button
+                    href="/locations"
+                    className="font-semibold text-base w-[190px]"
+                  >
                     <Icon name="mapFilled" size={20} className="mr-2" />
                     Find a Service
                   </Button>
-                  <Button
-                    intent="secondary"
-                    linkClassName="hidden xl:block"
-                    className={cn(
-                      "font-semibold text-base w-[140px]",
+                  <AuthModal
+                    buttonStyle={cn(
+                      "font-semibold text-base w-[140px] border-1 border-ocean text-ocean rounded-md",
                       mode === "dark" &&
                         "border-white text-white group-hover:text-ocean group-hover:border-ocean"
                     )}
-                    href="/about"
-                  >
-                    My Church
-                  </Button>
+                    buttonText="My Church"
+                  />
                 </div>
               )}
             </div>
