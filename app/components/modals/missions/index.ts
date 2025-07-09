@@ -1,3 +1,1 @@
-import { MissionsModal } from "./missions-modal";
-
-export { MissionsModal };
+export { MissionsModal } from "./missions-modal";
