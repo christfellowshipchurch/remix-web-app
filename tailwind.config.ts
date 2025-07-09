@@ -33,6 +33,7 @@ export default {
         gradient: "gradient 3s ease-in-out infinite",
         "slide-in": "slide-in 0.3s ease-in-out",
         "slide-out": "slide-out 0.3s ease-in-out",
+        "grow-line-from-left": "grow-line-from-left 600ms ease-in forwards",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -75,6 +76,10 @@ export default {
         "slide-out": {
           "0%": { transform: "translateX(0)", opacity: "1" },
           "100%": { transform: "translateX(100%)", opacity: "0" },
+        },
+        "grow-line-from-left": {
+          "0%": { width: "0%" },
+          "100%": { width: "100%" },
         },
       },
       maxWidth: {
