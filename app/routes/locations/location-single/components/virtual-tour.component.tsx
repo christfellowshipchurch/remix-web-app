@@ -1,5 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
 import { LoaderReturnType } from "../loader";

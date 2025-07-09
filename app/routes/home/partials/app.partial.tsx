@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 

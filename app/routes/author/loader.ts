@@ -1,4 +1,4 @@
-import { LoaderFunction } from "react-router";
+import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/article-single/loader";

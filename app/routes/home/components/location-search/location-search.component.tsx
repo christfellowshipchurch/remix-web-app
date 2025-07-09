@@ -2,7 +2,7 @@ import { useState } from "react";
 import { algoliasearch, SearchClient } from "algoliasearch";
 import { useEffect, useRef } from "react";
 import { Configure, InstantSearch } from "react-instantsearch";
-import { useFetcher, useLoaderData } from "react-router";
+import { useFetcher, useLoaderData } from "react-router-dom";
 import { SearchPopup } from "./search-popup";
 import { cn } from "~/lib/utils";
 import { emptySearchClient } from "~/routes/search/route";

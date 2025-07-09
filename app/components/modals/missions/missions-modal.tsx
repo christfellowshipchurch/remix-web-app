@@ -1,5 +1,5 @@
 import { useState, ReactNode } from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { cn } from "~/lib/utils";
 import Modal from "~/primitives/Modal";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";

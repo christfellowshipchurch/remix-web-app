@@ -1,4 +1,4 @@
-import { LoaderFunction } from "react-router";
+import { LoaderFunction } from "react-router-dom";
 import { AuthenticationError } from "~/lib/.server/error-types";
 
 export type LoaderReturnType = {

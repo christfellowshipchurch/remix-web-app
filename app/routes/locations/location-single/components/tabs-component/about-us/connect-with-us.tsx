@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { SetAReminderModal } from "~/components";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
 

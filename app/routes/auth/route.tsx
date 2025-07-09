@@ -1,4 +1,4 @@
-import { ActionFunction, data } from "react-router";
+import { ActionFunction, data } from "react-router-dom";
 import { authenticate } from "./authenticate";
 import { requestSmsPinLogin } from "./request-sms-pin-login";
 import { authenticateSms } from "./authenticate-sms";

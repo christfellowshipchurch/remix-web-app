@@ -1,6 +1,6 @@
 import { VideoHeader } from "~/components";
 import { MessageReturnType } from "../loader";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import kebabCase from "lodash/kebabCase";
 
 const VideoSkeleton = () => (

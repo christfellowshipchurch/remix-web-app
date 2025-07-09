@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router-dom";
 import { Article, ArticlesReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 import { Divider } from "./latest.partial";

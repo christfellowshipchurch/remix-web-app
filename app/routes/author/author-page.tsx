@@ -1,6 +1,6 @@
 import React from "react";
 import { Author } from "./loader";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import BackButton from "./components/back-button";
 import AuthorTabs from "./components/author-tabs";
 import { AuthorBioDesktop, AuthorBioMobile } from "./partials/author-bio";
