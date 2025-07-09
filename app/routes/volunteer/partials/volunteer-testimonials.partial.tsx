@@ -48,7 +48,7 @@ export function VolunteerTestimonials() {
           </p>
           <div className="hidden lg:block">
             <IconButton
-              to="#todo"
+              to="/volunteer-form/welcome"
               withRotatingArrow
               className="bg-white border-neutral-300 text-neutral-dark rounded-full hover:enabled:bg-soft-white hover:enabled:text-neutral-dark"
             >

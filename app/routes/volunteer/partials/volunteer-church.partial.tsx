@@ -51,7 +51,7 @@ export function VolunteerAtChurch() {
               and we'll help with the rest.
             </p>
             <IconButton
-              to="#todo"
+              to="/volunteer-form/welcome"
               withRotatingArrow
               className="text-white border-white rounded-full w-[200px]"
             >

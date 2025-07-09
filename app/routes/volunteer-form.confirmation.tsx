@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import {
   mockPersonalInfo,
   mockAvailability,
-  mockPreferences,
+  mockInterests,
 } from "./volunteer-form/mock-data";
-import VolunteerFormConfirmationPartial from "./volunteer-form/partials/volunteer-form-confirmation.partial";
+import VolunteerFormConfirmationPartial from "./volunteer-form/partials/form-confirmation.partial";
 
 export const VolunteerFormConfirmationRoute: React.FC = () => {
   const navigate = useNavigate();
   const data = {
     personalInfo: mockPersonalInfo,
     availability: mockAvailability,
-    preferences: mockPreferences,
+    interests: mockInterests,
   };
   return (
     <VolunteerFormConfirmationPartial
