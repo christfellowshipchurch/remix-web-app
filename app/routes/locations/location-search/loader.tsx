@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from "react-router";
+import { LoaderFunctionArgs } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchWistiaData } from "~/lib/.server/fetch-wistia-data";

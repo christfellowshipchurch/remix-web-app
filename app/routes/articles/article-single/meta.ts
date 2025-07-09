@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router-dom";
 
 interface ArticleData {
   title: string;

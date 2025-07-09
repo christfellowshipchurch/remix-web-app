@@ -1,5 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { SectionTitle } from "~/components";
 
 import { MessageReturnType } from "../loader";

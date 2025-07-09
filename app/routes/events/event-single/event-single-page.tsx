@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { SectionTitle, AdditionalResources } from "~/components";
 
 import { LoaderReturnType } from "./loader";

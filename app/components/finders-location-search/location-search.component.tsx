@@ -6,7 +6,7 @@ import Icon from "~/primitives/icon";
 
 import { InstantSearch, Configure } from "react-instantsearch";
 import { algoliasearch, SearchClient } from "algoliasearch";
-import { useFetcher, useLoaderData } from "react-router";
+import { useFetcher, useLoaderData } from "react-router-dom";
 import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
 import { LoaderReturnType } from "~/routes/group-finder/loader";

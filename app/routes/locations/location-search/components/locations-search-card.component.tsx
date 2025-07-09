@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 
 export type LocationCardProps = {
