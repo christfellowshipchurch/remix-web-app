@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Button } from "~/primitives/button/button.primitive";
-import Icon from "~/primitives/icon";
 
 export const JourneyFormWelcome: React.FC<{ onSubmit: () => void }> = ({
   onSubmit,
