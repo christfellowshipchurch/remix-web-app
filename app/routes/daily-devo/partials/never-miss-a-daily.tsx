@@ -23,7 +23,7 @@ export const NeverMissADaily = () => {
 
         <div className="flex flex-col items-center w-full gap-8 max-w-[700px] mt-16 md:mt-0">
           <img
-            src="/assets/images/daily-sample-week.png"
+            src="/assets/images/daily/daily-sample-week.png"
             alt="Sample Week"
             className="w-full md:w-[90%] aspect-[61/8]"
           />

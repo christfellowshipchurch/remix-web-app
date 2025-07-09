@@ -38,19 +38,25 @@ const fetchScripture = async (scripture: string) => {
 const fetchDailyDevo = async () => {
   const contentChannelId = 136;
 
-  const dailyDevo = await fetchRockData({
+  const dailyDevoItems = await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {
-      // TODO: Add filter for StartDateTime < current date
       $filter: `ContentChannelId eq ${contentChannelId}`,
       $orderby: "StartDateTime desc",
-      $top: "1",
+      $top: "14", // Fetch 2 weeks of items to ensure we get the most recent one, sometimnes items are made ahead of time
       loadAttributes: "simple",
     },
     cache: false,
   });
 
-  return dailyDevo;
+  // Filter to get the most recent item that has started (StartDateTime <= current date)
+  const currentDate = new Date();
+  const validItems = dailyDevoItems.filter((item: any) => {
+    const startDate = new Date(item.startDateTime);
+    return startDate <= currentDate;
+  });
+
+  return validItems[0]; // Return the most recent valid item
 };
 
 const avatars = [
