@@ -1,6 +1,6 @@
 import { AppSection } from "~/routes/home/partials/app.partial";
-import { YesDevotionalPartial as DevotionalPartial } from "./yes-devotional-partial";
-import { YesHero as HeroPartial } from "./yes-hero-partial";
+import { YesDevotionalPartial as DevotionalPartial } from "../components/yes-devotional.component";
+import { YesHero as HeroPartial } from "../components/yes-devotional-hero.component";
 
 export const YesDevotional = () => {
   return (

@@ -1,6 +1,6 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { useState } from "react";
-import { twentyOneDaysDevotionalData } from "./devotional-data";
+import { twentyOneDaysDevotionalData } from "../yes-devotional-data";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 
