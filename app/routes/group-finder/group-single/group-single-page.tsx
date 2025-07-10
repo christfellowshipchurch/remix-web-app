@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
 import { FinderSingleHero } from "./partials/finder-single-hero.partial";
 import { Breadcrumbs } from "~/components";

@@ -1,4 +1,4 @@
-import { ActionFunction } from "react-router";
+import { ActionFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { Campus } from "./partials/location-card-list.partial";
 import { createImageUrlFromGuid, latLonDistance } from "~/lib/utils";

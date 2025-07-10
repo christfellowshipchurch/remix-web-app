@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { MessageReturnType } from "../loader";
 import { SeriesCard } from "../components/this-series-card.component";
 import { mockInThisSeries } from "../components/mockData";

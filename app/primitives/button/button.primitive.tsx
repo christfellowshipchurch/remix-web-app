@@ -1,7 +1,7 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 export const button = cva(
   [

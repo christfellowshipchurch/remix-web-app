@@ -1,5 +1,5 @@
-import { data } from "react-router";
-import { isRouteErrorResponse } from "react-router";
+import { data } from "react-router-dom";
+import { isRouteErrorResponse } from "react-router-dom";
 import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";
 
 type AuthenticateSmsData = {

@@ -1,7 +1,7 @@
 import { Hits } from "react-instantsearch";
 import { HitComponent, CampusHit } from "./location-hit";
 import { Hit } from "algoliasearch";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 
 export const SearchPopup = ({

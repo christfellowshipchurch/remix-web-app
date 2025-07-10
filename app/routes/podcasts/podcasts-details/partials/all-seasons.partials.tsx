@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { PodcastEpisodeCard } from "../components/podcast-episode-card";
 

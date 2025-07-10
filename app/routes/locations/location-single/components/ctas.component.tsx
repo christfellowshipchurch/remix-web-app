@@ -2,7 +2,7 @@ import { SetAReminderModal } from "~/components/modals/set-a-reminder/reminder-m
 import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
 import { ButtonProps } from "~/primitives/button/button.primitive";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import React from "react";
 
 const CTAButtonContent = ({

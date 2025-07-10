@@ -184,7 +184,22 @@ export function icsLinkEvents({
     };
   });
 }
+
+export const googleLink =
+  "https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share";
+export const appleLink =
+  "https://apps.apple.com/us/app/christ-fellowship-app/id785979426";
+
+// Utility function to detect Apple devices
+export const isAppleDevice = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod|macintosh/.test(userAgent);
+};
+
 export const isValidZip = (zip: string) => /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
+
 export const latLonDistance = (
   lat1: number,
   lon1: number,
