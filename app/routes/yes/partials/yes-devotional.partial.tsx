@@ -1,6 +1,6 @@
 import { AppSection } from "~/routes/home/partials/app.partial";
-import { YesDevotionalPartial as DevotionalPartial } from "../components/yes-devotional.component";
-import { YesHero as HeroPartial } from "../components/yes-devotional-hero.component";
+import { DevotionalSection } from "../components/yes-devotional.component";
+import { YesHero as HeroSection } from "../components/yes-devotional-hero.component";
 
 export const YesDevotional = () => {
   return (
@@ -19,10 +19,10 @@ export const YesDevotional = () => {
         className="hidden lg:block w-full h-[118svh] 2xl:h-[110svh] object-cover absolute top-0 left-0"
       />
       {/* Hero */}
-      <HeroPartial />
+      <HeroSection />
 
       {/* Devotional */}
-      <DevotionalPartial />
+      <DevotionalSection />
 
       {/* App Download */}
       <AppSection />
