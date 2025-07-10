@@ -32,7 +32,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
       action="/yes/about-you"
       className="w-full content-padding"
     >
-      <div className="flex flex-col gap-4 p-8 w-full max-w-lg bg-white rounded-[1rem] shadow-md mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
+      <div className="mx-auto flex flex-col gap-4 p-8 w-full max-w-lg bg-white rounded-[1rem] shadow-md mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
         <h2 className="heading-h4 mb-2 text-pretty">Tell us about yourself!</h2>
         <div className="flex flex-col gap-4">
           <div className="flex items-end gap-4 w-full">
