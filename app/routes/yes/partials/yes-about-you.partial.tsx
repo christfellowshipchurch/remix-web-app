@@ -10,7 +10,7 @@ interface Props {
   data: YesFormPersonalInfo;
 }
 
-export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
+const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
   const actionData = useActionData<{
     errors?: Partial<Record<keyof YesFormPersonalInfo, string>>;
     defaultValues?: YesFormPersonalInfo;
@@ -111,4 +111,4 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default VolunteerFormPersonalInfoPartial;
+export default YesFormPersonalInfoPartial;

@@ -1,13 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "~/primitives/button/button.primitive";
+import { Video } from "~/primitives/video/video.primitive";
 
 export const YesWelcomePartial = () => {
   const navigate = useNavigate();
 
-  // TODO:  Add Confetti animation
   return (
-    <section className="flex justify-center w-full max-w-screen-content mx-auto">
-      <div className="content-padding flex flex-col items-center text-center gap-6 w-full max-w-[900px] text-white mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
+    <section className="w-full content-padding relative">
+      {/* Confetti animation */}
+      <Video
+        src="/assets/confetti-animation.webm"
+        className="w-full h-screen object-cover absolute top-0 left-0 z-2"
+        autoPlay
+        loop
+        muted
+        controls={false}
+      />
+
+      {/* Page Content */}
+      <div className="mx-auto flex flex-col items-center text-center gap-6 w-full max-w-[900px] text-white mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
         <h1 className="text-[40px] lg:text-[52px] font-extrabold text-dark-navy leading-tight">
           <span className="text-white">Congratulations!</span> You just made{" "}
           <br />
@@ -21,7 +32,7 @@ export const YesWelcomePartial = () => {
 
         <Button
           intent="white"
-          className="w-fit text-navy mt-4 border-none"
+          className="w-fit text-navy mt-4 border-none relative z-4"
           onClick={() => {
             navigate("/yes/about-you");
           }}
