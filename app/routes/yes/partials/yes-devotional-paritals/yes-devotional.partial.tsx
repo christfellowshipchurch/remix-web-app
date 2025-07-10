@@ -5,10 +5,18 @@ import { YesHero as HeroPartial } from "./yes-hero-partial";
 export const YesDevotional = () => {
   return (
     <div className="flex flex-col w-full relative">
+      {/* Mobile Image */}
+      <img
+        src="/assets/images/yes-hero-mobile.png"
+        alt="Yes Hero"
+        className="md:hidden w-full h-screen object-cover absolute top-0"
+      />
+
+      {/* Desktop Image */}
       <img
         src="/assets/images/yes-hero.webp"
         alt="Yes Hero"
-        className="w-full h-[118svh] 2xl:h-[110svh] object-cover absolute top-0 left-0"
+        className="hidden lg:block w-full h-[118svh] 2xl:h-[110svh] object-cover absolute top-0 left-0"
       />
       {/* Hero */}
       <HeroPartial />
