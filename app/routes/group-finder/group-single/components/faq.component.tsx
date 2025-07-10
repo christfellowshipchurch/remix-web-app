@@ -37,7 +37,7 @@ export function FinderSingleFAQ({
     <div className="text-left flex flex-col p-6 border border-[#C6C6C6] rounded-lg max-w-[768px]">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex justify-between gap-2 w-full"
+        className="flex justify-between gap-2 w-full cursor-pointer"
       >
         <h3 className="md:text-xl lg:text-2xl font-semibold text-left">
           {question}
