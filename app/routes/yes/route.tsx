@@ -23,7 +23,6 @@ export const YesRoute: React.FC = () => {
         {/* Render the current step */}
         <Outlet />
       </main>
-      {/* TODO: Add footer if needed */}
     </div>
   );
 };
