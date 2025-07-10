@@ -1,17 +1,10 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import {
-  CommunityCard,
-  RegionCard,
-  Trip,
-  VolunteerFeaturedEvent,
-} from "./types";
+import { CommunityCard, RegionCard, Trip } from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import {
-  mockCommunityData,
-  mockRegionData,
-  mockVolunteerFeaturedEvent,
-} from "./mock-data";
+import { mockCommunityData, mockRegionData } from "./mock-data";
+import { Event } from "../events/all-events/loader";
+import { formatDate } from "date-fns";
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
@@ -20,7 +13,6 @@ const fetchMissionTrips = async () => {
       $filter: "ContentChannelId eq 174",
       loadAttributes: "simple",
     },
-    cache: false,
   });
 
   // ensure contentItems is an array
@@ -28,12 +20,79 @@ const fetchMissionTrips = async () => {
 
   return trips;
 };
+const fetchFeaturedEvent = async (): Promise<Event> => {
+  const featuredEvents = await fetchRockData({
+    endpoint: "ContentChannelItems",
+    queryParams: {
+      $filter: `ContentChannelId eq 78 and Status eq 'Approved'`,
+      $orderby: "ExpireDateTime desc",
+      $top: "1",
+      loadAttributes: "simple",
+    },
+  });
+
+  // Ensure we have an array and get the first event
+  const events = Array.isArray(featuredEvents)
+    ? featuredEvents
+    : [featuredEvents];
+  const featuredEvent = events[0];
+
+  if (!featuredEvent) {
+    throw new Error("No featured event found");
+  }
+
+  // Transform to match Event type from events loader
+  const event: Event = {
+    id: featuredEvent.id,
+    title: featuredEvent.title,
+    content: featuredEvent.content,
+    date: "", // Will be calculated below
+    expireDateTime: featuredEvent.expireDateTime,
+    startDate: "", // Will be calculated below
+    startDateTime: featuredEvent.startDateTime,
+    image: createImageUrlFromGuid(
+      featuredEvent.attributeValues?.image?.value || ""
+    ),
+    attributeValues: {
+      campus: featuredEvent.attributeValues?.campus
+        ? {
+            value: featuredEvent.attributeValues.campus.value,
+          }
+        : undefined,
+      summary: {
+        value: featuredEvent.attributeValues?.summary?.value || "",
+      },
+      image: {
+        value: createImageUrlFromGuid(
+          featuredEvent.attributeValues?.image?.value || ""
+        ),
+      },
+      url: {
+        value: featuredEvent.attributeValues?.url?.value || "",
+      },
+    },
+  };
+
+  // Calculate formatted dates like in the events loader
+  if (event.startDateTime) {
+    event.startDate = formatDate(new Date(event.startDateTime), "MMMM d, yyyy");
+  }
+
+  if (event.expireDateTime) {
+    // To find the date of the event, we need to subtract 1 day from the expired dateTime
+    const expireDate = new Date(event.expireDateTime);
+    expireDate.setDate(expireDate.getDate() - 1);
+    event.date = formatDate(expireDate, "MMMM d, yyyy");
+  }
+
+  return event;
+};
 
 export type LoaderReturnType = {
   missionTrips: Record<string, Trip[]>;
   mockCommunityData: CommunityCard[];
   mockRegionData: RegionCard[];
-  mockVolunteerFeaturedEvent: VolunteerFeaturedEvent;
+  featuredEvent: Event;
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -74,6 +133,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     missionTrips: groupedTrips,
     mockCommunityData,
     mockRegionData,
-    mockVolunteerFeaturedEvent,
+    featuredEvent: await fetchFeaturedEvent(),
   } as LoaderReturnType);
 }
