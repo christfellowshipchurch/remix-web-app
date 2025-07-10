@@ -3,19 +3,24 @@ import Icon from "~/primitives/icon";
 
 const faqData = [
   {
-    question: "What is this group about?",
+    question: "What Are Small Groups?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "Small groups are gatherings of three or more people who meet regularly to talk about life, reflect on the weekend message, and grow in faith together. There’s no set formula—just a circle of friends committed to walking through life’s ups and downs. We believe God designed us to find freedom and healing through relationships, and small groups are one of the best ways to experience that.",
   },
   {
-    question: "What is this group about?",
+    question: "Where Do Small Groups Meet?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "Most groups meet in homes, parks, or restaurants—usually based on the leader’s location and often near a church campus.",
   },
   {
-    question: "What is this group about?",
+    question: "What Types of Small Groups Are Available?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "We offer Bible study, activity, and Freedom groups for men, women, and married couples. Groups are available for all life stages, with both morning and evening options",
+  },
+  {
+    question: "Is Childcare Provided During Group Meetings?",
+    answer:
+      "Childcare is not provided, so group members will need to make their own arrangements.",
   },
 ];
 
