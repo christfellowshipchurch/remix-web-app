@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { LocationSearch } from "../components/location-search/location-search.component";
 import { IconName } from "~/primitives/button/types";
 import { Icon } from "~/primitives/icon/icon";
