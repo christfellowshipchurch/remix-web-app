@@ -34,11 +34,11 @@ export function FinderSingleFAQ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="text-left flex flex-col p-6 border border-[#C6C6C6] rounded-lg max-w-[768px]">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex justify-between gap-2 w-full cursor-pointer"
-      >
+    <div
+      className="text-left flex flex-col p-6 border border-[#C6C6C6] rounded-lg max-w-[768px] hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
+      <div className="flex justify-between gap-2 w-full cursor-pointer">
         <h3 className="md:text-xl lg:text-2xl font-semibold text-left">
           {question}
         </h3>
@@ -51,7 +51,7 @@ export function FinderSingleFAQ({
             <Icon name="chevronDown" />
           </div>
         </div>
-      </button>
+      </div>
       <div
         className={`grid transition-all duration-200 ${
           isExpanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr]"
