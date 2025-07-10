@@ -4,7 +4,7 @@ import { twentyOneDaysDevotionalData } from "../yes-devotional-data";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 
-export const YesDevotionalPartial = () => {
+export const DevotionalSection = () => {
   return (
     <div className="flex flex-col w-full h-full bg-gray pt-12 lg:pt-16">
       {/* Title Section */}
