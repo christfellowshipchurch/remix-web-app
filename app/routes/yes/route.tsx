@@ -16,7 +16,7 @@ export const YesRoute: React.FC = () => {
     <div className={cn("min-h-screen flex flex-col", "bg-ocean")}>
       <main
         className={cn(
-          "flex-1 flex flex-col items-center",
+          "flex flex-col items-center",
           isWelcomeStep && "justify-center"
         )}
       >
