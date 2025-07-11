@@ -3,19 +3,24 @@ import { FinderSingleFAQ } from "~/routes/group-finder/group-single/components/f
 
 const faqData = [
   {
-    question: "What is this class about?",
+    question: "What Are Classes?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "Classes at Christ Fellowship are gatherings designed to help you grow in your faith, build community, and take next steps in your spiritual journey. Whether you're diving into Scripture, exploring felt need life topics, or walking through the Freedom experience, these classes offer a consistent place to connect and grow alongside others.",
   },
   {
-    question: "What is this class about?",
+    question: "Where Do Classes Meet?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "Classes typically meet onsite or online at Christ Fellowship campuses in small group tables that foster learning, discussion, and connection.",
   },
   {
-    question: "What is this class about?",
+    question: "What Types of Classes Are Available?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "We offer Bible study classes, topical felt needs studies, and Freedom classes for men, women, and married couples. Classes are designed for various life stages.",
+  },
+  {
+    question: "Is Childcare Provided?",
+    answer:
+      "During Sunday services, kids experience engaging worship, small groups led by caring leaders, and Bible-based teaching designed to help them love Jesus, love others, and love life. In addition, we offer midweek discipleship programming created with your child in mind. While not all classes include childcare, some may align with these midweek programs. Please check your specific class details for childcare availability.",
   },
 ];
 
