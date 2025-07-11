@@ -16,7 +16,7 @@ export const NotFound = () => {
     { title: "See upcoming events.", link: "/events" },
   ];
   return (
-    <div className="pt-16 pb-24 text-center w-full">
+    <div className="pb-24 text-center w-full">
       <img
         alt="Error Image"
         className="w-full mx-auto max-w-[750px] my-10"
