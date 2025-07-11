@@ -9,6 +9,8 @@ import { VolunteerFormNav } from "~/routes/volunteer-form/components/form-nav.co
 // Step 4: Interests
 // Step 5: Confirmation/Results
 
+export { loader } from "./loader";
+
 export const VolunteerFormRoute: React.FC = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");

@@ -1,59 +1,25 @@
-import { Link } from "react-router-dom";
 import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 
-export function AppSection({
-  layout = "imageRight",
-  className,
-  dynamicButton = false,
-}: {
-  layout?: "imageLeft" | "imageRight";
-  className?: string;
-  dynamicButton?: boolean;
-}) {
-  const isApple = isAppleDevice();
-  const appLink = isApple ? appleLink : googleLink;
-
+export function AppSection() {
   return (
     <>
-      <DesktopVersion
-        layout={layout}
-        appLink={appLink}
-        className={className}
-        dynamicButton={dynamicButton}
-      />
-      <MobileVersion
-        appLink={appLink}
-        className={className}
-        layout={layout}
-        dynamicButton={dynamicButton}
-      />
+      <DesktopVersion />
+      <MobileVersion />
     </>
   );
 }
 
-const DesktopVersion = ({
-  layout,
-  appLink,
-  className,
-  dynamicButton,
-}: {
-  layout: "imageLeft" | "imageRight";
-  appLink: string;
-  className?: string;
-  dynamicButton: boolean;
-}) => {
+const DesktopVersion = () => {
   return (
     <section
       className={cn(
-        "bg-navy content-padding w-full py-28 hidden md:block",
-        className
+        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-28 hidden md:block"
       )}
     >
       <div
         className={cn(
-          "max-w-screen-content mx-auto flex justify-center gap-8 items-center",
-          layout === "imageLeft" ? "flex-row-reverse" : "flex-row"
+          "max-w-screen-content mx-auto flex justify-center gap-8 lg:gap-16 items-center flex-row-reverse"
         )}
       >
         <div className="flex flex-col gap-16 text-white">
@@ -77,34 +43,14 @@ const DesktopVersion = ({
             </p>
           </div>
 
-          {/* Buttons Section */}
-          {dynamicButton ? (
-            <div className="flex flex-col gap-1 text-white">
-              <Button
-                href={appLink}
-                intent="primary"
-                className="w-fit font-semibold text-lg min-w-[200px]"
-              >
-                Download The App Now!
-              </Button>
-              <p className="text-sm opacity-60">
-                Available for IOS and Android
-              </p>
-            </div>
-          ) : (
-            <AppButtons />
-          )}
+          <AppButtons />
         </div>
 
         <div className="flex justify-center items-center">
           <img
-            src={
-              layout === "imageLeft"
-                ? "/assets/images/home/app-left.webp"
-                : "/assets/images/home/app-image.png"
-            }
+            src="/assets/images/home/app-left.webp"
             alt="App Section Image"
-            className={cn("w-full aspect-[9/16] max-w-[232px]")}
+            className={cn("w-full aspect-[9/21] max-w-[220px]")}
           />
         </div>
       </div>
@@ -112,22 +58,11 @@ const DesktopVersion = ({
   );
 };
 
-const MobileVersion = ({
-  appLink,
-  className,
-  layout,
-  dynamicButton,
-}: {
-  appLink: string;
-  dynamicButton: boolean;
-  className?: string;
-  layout: "imageLeft" | "imageRight";
-}) => {
+const MobileVersion = () => {
   return (
     <section
       className={cn(
-        "bg-navy content-padding w-full py-16 md:hidden",
-        className
+        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-16 md:hidden"
       )}
     >
       <div className="max-w-screen-content mx-auto flex flex-col gap-8 items-center">
@@ -142,16 +77,9 @@ const MobileVersion = ({
 
         <div className="flex justify-center items-center">
           <img
-            src={
-              layout === "imageLeft"
-                ? "/assets/images/home/app-left.webp"
-                : "/assets/images/home/app-image.png"
-            }
+            src="/assets/images/home/app-left.webp"
             alt="App Section Image"
-            className={cn(
-              layout === "imageLeft" ? "w-[50vw]" : "w-full",
-              layout === "imageLeft" ? "aspect-[9/16]" : "aspect-[26/32]"
-            )}
+            className={cn("w-[50vw]", "aspect-[9/21]")}
           />
         </div>
 
@@ -161,49 +89,26 @@ const MobileVersion = ({
           consistent in your time with God.
         </p>
 
-        {/* Buttons Section */}
-        {dynamicButton ? (
-          <div className="flex flex-col gap-1 text-white">
-            <Button
-              href={appLink}
-              intent="primary"
-              className="w-fit font-semibold text-lg min-w-[200px]"
-            >
-              Download The App Now!
-            </Button>
-            <p className="text-sm opacity-60 text-center w-full">
-              Available for IOS and Android
-            </p>
-          </div>
-        ) : (
-          <AppButtons />
-        )}
+        <AppButtons />
       </div>
     </section>
   );
 };
 
 const AppButtons = () => {
+  const isApple = isAppleDevice();
+  const appLink = isApple ? appleLink : googleLink;
+
   return (
-    <div className="flex gap-4">
-      <Link
-        to="https://apps.apple.com/us/app/christ-fellowship-app/id785979426"
-        data-platform="ios"
+    <div className="flex flex-col gap-1 text-white">
+      <Button
+        href={appLink}
+        intent="primary"
+        className="w-fit font-semibold text-lg min-w-[200px]"
       >
-        <img
-          src="/assets/images/home/apple-store.png"
-          className="w-[170px] h-[54px]"
-        />
-      </Link>
-      <Link
-        to="https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share"
-        data-platform="android"
-      >
-        <img
-          src="/assets/images/home/google-play.png"
-          className="w-[170px] h-[54px]"
-        />
-      </Link>
+        Download The App Now!
+      </Button>
+      <p className="text-sm opacity-60">Available for IOS and Android</p>
     </div>
   );
 };
