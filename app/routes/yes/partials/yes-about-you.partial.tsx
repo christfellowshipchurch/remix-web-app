@@ -99,11 +99,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
           max={new Date().toISOString().split("T")[0]}
         />
         <div className="flex justify-between mt-4 w-full">
-          <Link
-            to="/yes/devotional"
-            prefetch="render"
-            className="size-0 invisible"
-          />
+          <Link to="/yes/devotional" prefetch="viewport" className="size-0" />
           <Button
             type="submit"
             size="md"

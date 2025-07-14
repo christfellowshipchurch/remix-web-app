@@ -189,8 +189,8 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
       <div className="flex justify-center gap-4 py-18">
         <Link
           to="/volunteer-form/confirmation"
-          prefetch="render"
-          className="size-0 invisible"
+          prefetch="viewport"
+          className="size-0"
         />
         <Button
           type="button"
