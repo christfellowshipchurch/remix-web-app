@@ -34,7 +34,7 @@ export const YesWelcomePartial = () => {
           className="w-fit text-navy mt-4 border-none relative z-4"
           intent="white"
           href="/yes/about-you"
-          prefetch="viewport"
+          prefetch="intent"
         >
           Let's get started!
         </Button>

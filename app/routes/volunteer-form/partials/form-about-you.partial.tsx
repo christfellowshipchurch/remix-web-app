@@ -125,15 +125,15 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         max={new Date().toISOString().split("T")[0]}
       />
       <div className="flex justify-between mt-4">
-        <Link
-          to="/volunteer-form/availability"
-          prefetch="viewport"
-          className="size-0"
-        />
         <Button type="button" intent="secondary" onClick={onBack}>
           Back
         </Button>
-        <Button type="submit" intent="primary">
+        <Button
+          type="submit"
+          intent="primary"
+          href="/volunteer-form/availability"
+          prefetch="viewport"
+        >
           Next
         </Button>
       </div>

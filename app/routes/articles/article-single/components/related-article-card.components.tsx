@@ -15,7 +15,7 @@ export function RelatedArticleCard({
     return (
       <Link
         to={`/articles/${href}`}
-        prefetch="viewport"
+        prefetch="intent"
         className="flex flex-1 cursor-pointer flex-col overflow-hidden bg-transparent transition-transform duration-300 hover:-translate-y-3 rounded-[8px] lg:rounded-none"
       >
         <img
