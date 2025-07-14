@@ -142,11 +142,6 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
         </div>
       </div>
       <div className="flex justify-center gap-6 mt-10">
-        <Link
-          to="/volunteer-form/interests"
-          prefetch="viewport"
-          className="size-0"
-        />
         <Button
           type="button"
           intent="secondary"
@@ -160,6 +155,8 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
           type="submit"
           intent="primary"
           size="md"
+          href="/volunteer-form/interests"
+          prefetch="viewport"
           className="font-normal"
         >
           Next: Interests
