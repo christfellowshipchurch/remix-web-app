@@ -5,7 +5,7 @@ import Slider from "~/primitives/inputs/slider/slider.primitive";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.primitive";
-import { Form, useActionData } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 
 interface Props {
   data: VolunteerFormInterests;
@@ -187,6 +187,11 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
         />
       </div>
       <div className="flex justify-center gap-4 py-18">
+        <Link
+          to="/volunteer-form/confirmation"
+          prefetch="render"
+          className="hidden"
+        />
         <Button
           type="button"
           intent="secondary"
