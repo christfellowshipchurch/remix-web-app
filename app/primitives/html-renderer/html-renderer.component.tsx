@@ -1,4 +1,5 @@
 import parse, { attributesToProps } from "html-react-parser";
+import "./html-renderer.styles.css";
 
 export const HTMLRenderer = ({
   html,
@@ -30,13 +31,5 @@ export const HTMLRenderer = ({
     },
   };
 
-  // Todo : figure out how to add css to the html
-  // const css = (
-  //   <link
-  //     rel="stylesheet"
-  //     href="../app/primitives/html-renderer/html-renderer.styles.css"
-  //   />
-  // );
-
-  return <div className={className}>{parse(html, options)}</div>;
+  return <div className={`${className || ""}`}>{parse(html, options)}</div>;
 };

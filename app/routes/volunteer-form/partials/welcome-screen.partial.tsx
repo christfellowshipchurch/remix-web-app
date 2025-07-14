@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
-export const VolunteerFormWelcome: React.FC<{ onNext: () => void }> = ({
-  onNext,
-}) => {
+export const VolunteerFormWelcome: React.FC = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -23,9 +22,10 @@ export const VolunteerFormWelcome: React.FC<{ onNext: () => void }> = ({
         <Button
           ref={buttonRef}
           intent="primary"
+          href="/volunteer-form/about-you"
           className="font-normal"
-          onClick={onNext}
           aria-label="Start Volunteer Form"
+          prefetch="viewport"
         >
           Get Started
         </Button>

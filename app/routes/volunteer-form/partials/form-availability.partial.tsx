@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, useActionData } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 import type { VolunteerFormAvailability } from "../types";
 import {
   DAYS_OF_WEEK,
@@ -155,6 +155,8 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
           type="submit"
           intent="primary"
           size="md"
+          href="/volunteer-form/interests"
+          prefetch="viewport"
           className="font-normal"
         >
           Next: Interests
