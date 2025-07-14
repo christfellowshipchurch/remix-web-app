@@ -24,7 +24,7 @@ export const VolunteerFormWelcome: React.FC<{ onNext: () => void }> = ({
         <Link
           to="/volunteer-form/about-you"
           prefetch="render"
-          className="hidden"
+          className="size-0 invisible"
         />
         <Button
           ref={buttonRef}
