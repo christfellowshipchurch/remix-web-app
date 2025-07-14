@@ -104,7 +104,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
             size="md"
             intent="primary"
             className="w-full font-normal"
-            prefetch="intent"
+            prefetch="viewport"
           >
             Submit
           </Button>

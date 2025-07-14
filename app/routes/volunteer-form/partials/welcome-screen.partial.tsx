@@ -19,11 +19,6 @@ export const VolunteerFormWelcome: React.FC = () => {
       </p>
       <div className="grid grid-cols-3 items-center gap-2">
         <div />
-        <Link
-          to="/volunteer-form/about-you"
-          prefetch="viewport"
-          className="size-0"
-        />
         <Button
           ref={buttonRef}
           intent="primary"
