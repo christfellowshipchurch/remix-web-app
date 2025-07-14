@@ -145,7 +145,7 @@ export const VolunteerFormAvailabilityPartial: React.FC<Props> = ({
         <Link
           to="/volunteer-form/interests"
           prefetch="render"
-          className="hidden"
+          className="size-0 invisible"
         />
         <Button
           type="button"

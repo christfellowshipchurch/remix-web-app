@@ -190,7 +190,7 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
         <Link
           to="/volunteer-form/confirmation"
           prefetch="render"
-          className="hidden"
+          className="size-0 invisible"
         />
         <Button
           type="button"
