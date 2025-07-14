@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, useActionData } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 
 import { Button } from "~/primitives/button/button.primitive";
 import TextFieldInput from "~/primitives/inputs/text-field";
@@ -99,6 +99,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
           max={new Date().toISOString().split("T")[0]}
         />
         <div className="flex justify-between mt-4 w-full">
+          <Link to="/yes/devotional" prefetch="render" className="hidden" />
           <Button
             type="submit"
             size="md"

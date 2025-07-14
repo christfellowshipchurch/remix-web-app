@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "~/primitives/button/button.primitive";
 import { Video } from "~/primitives/video/video.primitive";
 
@@ -31,11 +31,10 @@ export const YesWelcomePartial = () => {
         </p>
 
         <Button
-          intent="white"
           className="w-fit text-navy mt-4 border-none relative z-4"
-          onClick={() => {
-            navigate("/yes/about-you");
-          }}
+          intent="white"
+          href="/yes/about-you"
+          prefetch="render"
         >
           Let's get started!
         </Button>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
@@ -20,6 +21,11 @@ export const VolunteerFormWelcome: React.FC<{ onNext: () => void }> = ({
       </p>
       <div className="grid grid-cols-3 items-center gap-2">
         <div />
+        <Link
+          to="/volunteer-form/about-you"
+          prefetch="render"
+          className="hidden"
+        />
         <Button
           ref={buttonRef}
           intent="primary"
