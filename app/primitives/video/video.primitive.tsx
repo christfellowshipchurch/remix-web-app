@@ -18,9 +18,12 @@ export const Video = (props: VideoProps) => {
         <iframe
           src={`https://fast.wistia.net/embed/iframe/${
             props.wistiaId
-          }?fitStrategy=cover&autoplay=${props.autoPlay || false}&muted=${
-            props.muted || false
-          }&loop=${props.loop || false}&controls=${props.controls || true}`}
+          }?fitStrategy=cover&autoplay=${props.autoPlay ? 1 : 0}&muted=${
+            props.muted ? 1 : 0
+          }&loop=${props.loop ? 1 : 0}&controls=${
+            props.controls ? 1 : 0
+          }&playbar=${props.controls ? 1 : 0}&endVideoBehavior=loop`}
+          allow="autoplay; fullscreen"
           allowFullScreen
           className={cn("size-full", props.className)}
         />

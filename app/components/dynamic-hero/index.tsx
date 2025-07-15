@@ -6,6 +6,7 @@ import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";
 import React from "react";
+import { Video } from "~/primitives/video/video.primitive";
 
 export type DynamicHeroTypes = {
   wistiaId?: string;
@@ -58,12 +59,8 @@ export const DynamicHero = ({
     >
       {/* Video if passed in */}
       {wistiaId && (
-        <div className={"absolute size-full rounded-lg overflow-hidden"}>
-          <iframe
-            src={`https://fast.wistia.net/embed/iframe/${wistiaId}?fitStrategy=cover&autoplay=true&muted=true&loop=true`}
-            allowFullScreen
-            className="w-full h-full"
-          />
+        <div className={"absolute size-full overflow-hidden"}>
+          <Video wistiaId={wistiaId} autoPlay muted loop />
         </div>
       )}
 
