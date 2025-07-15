@@ -23,8 +23,8 @@ export function VolunteerFeaturedEvent() {
               {attributeValues.campus?.value}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
-            <div className="text-neutral-dark mb-8 max-w-[490px] line-clamp-5">
-              <HTMLRenderer html={content || ""} stripFormatting />
+            <div className="text-neutral-dark mb-8 max-w-[490px] line-clamp-4">
+              <HTMLRenderer html={content || ""} stripFormattingTags />
             </div>
             <IconButton
               to={attributeValues.url.value}
@@ -54,7 +54,9 @@ export function VolunteerFeaturedEvent() {
             )}
             <div className="flex flex-col py-10 gap-4 bg-white p-6 z-10">
               <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
-              <p className="text-text-secondary text-pretty">{content}</p>
+              <div className="text-text-secondary text-pretty line-clamp-4">
+                <HTMLRenderer html={content || ""} stripFormattingTags />
+              </div>
             </div>
           </a>
         </div>
