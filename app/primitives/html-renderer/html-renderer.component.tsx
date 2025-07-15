@@ -1,14 +1,30 @@
-import parse, { attributesToProps } from "html-react-parser";
+import parse, {
+  attributesToProps,
+  domToReact,
+  Element,
+} from "html-react-parser";
 
 export const HTMLRenderer = ({
   html,
   className,
+  stripFormattingTags = false,
 }: {
   html: string;
   className?: string;
+  stripFormattingTags?: boolean;
 }) => {
   const options = {
     replace(domNode: any) {
+      // Remove <b>, <strong>, <i>, <em> tags by unwrapping their children if enabled
+      if (
+        stripFormattingTags &&
+        domNode.type === "tag" &&
+        ["b", "strong", "i", "em"].includes(domNode.name)
+      ) {
+        return <>{domToReact(domNode.children, options)}</>;
+      }
+
+      // Custom handling for <img>
       if (domNode.attribs && domNode.name === "img") {
         const hmtlProps = attributesToProps(domNode.attribs);
         const { src } = hmtlProps;
@@ -29,14 +45,6 @@ export const HTMLRenderer = ({
       }
     },
   };
-
-  // Todo : figure out how to add css to the html
-  // const css = (
-  //   <link
-  //     rel="stylesheet"
-  //     href="../app/primitives/html-renderer/html-renderer.styles.css"
-  //   />
-  // );
 
   return <div className={className}>{parse(html, options)}</div>;
 };
