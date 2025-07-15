@@ -1,5 +1,5 @@
 import Icon from "~/primitives/icon";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Video } from "~/primitives/video/video.primitive";
 import { cn, isValidZip } from "~/lib/utils";
 
@@ -18,6 +18,7 @@ export const Search = ({
   scrollCampusesIntoView,
 }: SearchProps) => {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +32,9 @@ export const Search = ({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
-          scrollCampusesIntoView();
+          if (!isInitialLoad) {
+            scrollCampusesIntoView();
+          }
           setLocationActive(true);
         },
         (error) => {
@@ -41,6 +44,10 @@ export const Search = ({
       );
 
       setUseCurrentLocation(false);
+
+      if (isInitialLoad) {
+        setIsInitialLoad(false);
+      }
     }
   }, [useCurrentLocation]);
 
@@ -109,6 +116,7 @@ const SearchBar = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [zipCode, setZipCode] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -124,6 +132,9 @@ const SearchBar = ({
       setError("Please enter a valid zip code");
       onSearchSubmit(searchValue);
     }
+
+    // Close mobile keyboard by blurring the input
+    inputRef.current?.blur();
   };
 
   // When the zip code is set, search for it
@@ -158,6 +169,8 @@ const SearchBar = ({
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Search by zip code"
         className="flex-grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
+        onBlur={() => inputRef.current?.blur()}
+        ref={inputRef}
       />
     </form>
   );
