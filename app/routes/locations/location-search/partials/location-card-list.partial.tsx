@@ -51,11 +51,16 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
             url = "cf-everywhere";
           }
 
+          // Converting the distance from meters to miles
+          const distanceFromLocation = hit?._rankingInfo?.geoDistance
+            ? hit?._rankingInfo?.geoDistance / 1609.34
+            : undefined;
+
           return (
             <LocationCard
               name={hit?.campusName}
               image={hit?.campusImage || ""}
-              distanceFromLocation={hit?._rankingInfo?.distance}
+              distanceFromLocation={distanceFromLocation}
               key={hit.objectID || index}
               link={
                 hit?.campusName?.includes("Online")
