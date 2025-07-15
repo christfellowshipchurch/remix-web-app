@@ -2,22 +2,37 @@ import lodash from "lodash";
 import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "react-router-dom";
+import { useHits } from "react-instantsearch";
+import { Hit } from "algoliasearch";
 
-export type Campus = {
-  name: string;
-  image: string;
-  distanceFromLocation?: number;
+export type CampusHit = {
+  campusUrl: string;
+  campusName: string;
+  geoloc: {
+    latitude: number;
+    longitude: number;
+  };
+  campusLocation: {
+    street1: string;
+    street2: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  serviceTimes: string;
+  campusImage?: string;
+  _rankingInfo?: {
+    distance?: number;
+  };
 };
 
 export type LocationCardListProps = {
-  campuses: Campus[];
   loading: boolean;
 };
 
-export const LocationCardList = ({
-  campuses,
-  loading,
-}: LocationCardListProps) => {
+export const LocationCardList = ({ loading }: LocationCardListProps) => {
+  const { items } = useHits<CampusHit>();
+
   if (loading) {
     return <LocationsLoader />;
   }
@@ -27,26 +42,27 @@ export const LocationCardList = ({
       className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
       id="campuses"
     >
+      {/* Hits */}
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
-        {campuses?.map((campus, index) => {
+        {items?.map((hit, index) => {
           let url = "";
-          if (campus?.name?.includes("Español")) {
-            url = campus?.name.substring(25, campus?.name.length);
-          } else if (campus?.name?.includes("Online")) {
+          if (hit?.campusName?.includes("Español")) {
+            url = hit?.campusName.substring(25, hit?.campusName.length);
+          } else if (hit?.campusName?.includes("Online")) {
             url = "cf-everywhere";
           }
 
           return (
             <LocationCard
-              name={campus?.name}
-              image={`${campus?.image}&width=350`}
-              distanceFromLocation={campus?.distanceFromLocation}
-              key={index}
+              name={hit?.campusName}
+              image={hit?.campusImage || ""}
+              distanceFromLocation={hit?._rankingInfo?.distance}
+              key={hit.objectID || index}
               link={
-                campus?.name?.includes("Online")
+                hit?.campusName?.includes("Online")
                   ? `/${url}`
-                  : !campus?.name.includes("Español")
-                  ? `/${lodash.kebabCase(campus?.name)}`
+                  : !hit?.campusName.includes("Español")
+                  ? `/${lodash.kebabCase(hit?.campusName)}`
                   : `/iglesia-${lodash.kebabCase(url)}`
               }
             />
@@ -55,7 +71,7 @@ export const LocationCardList = ({
       </div>
 
       {/* Prison Location */}
-      <div className="mt-12">
+      <div className="mt-24">
         <Link to="/locations/prison-locations" prefetch="intent">
           <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
