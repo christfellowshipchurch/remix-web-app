@@ -3,7 +3,6 @@ import LocationCard from "../components/locations-search-card.component";
 import { LocationsLoader } from "../components/locations-search-skeleton.component";
 import { Link } from "react-router-dom";
 import { useHits } from "react-instantsearch";
-import { Hit } from "algoliasearch";
 
 export type CampusHit = {
   campusUrl: string;
