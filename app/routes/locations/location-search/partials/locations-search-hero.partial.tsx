@@ -42,7 +42,7 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
       <div className="relative flex size-full overflow-hidden">
         <Video
-          src={bgVideo}
+          wistiaId="padj4c4xoh"
           autoPlay
           loop
           muted
