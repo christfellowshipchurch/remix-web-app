@@ -15,6 +15,7 @@ const LocationCard = ({
   distanceFromLocation,
 }: LocationCardProps) => {
   const coverLabel = distanceFromLocation || name?.includes("Online");
+
   return (
     <Link
       to={`/locations${link}`}
