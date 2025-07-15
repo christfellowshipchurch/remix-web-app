@@ -2,9 +2,9 @@ import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
 import { Video } from "~/primitives/video/video.primitive";
 import { cn, isValidZip } from "~/lib/utils";
-import { SearchBox, useSearchBox } from "react-instantsearch";
 
 type SearchProps = {
+  scrollCampusesIntoView: () => void;
   handleSearch: (query: string | null) => void;
   setCoordinates: (coordinates: {
     lat: number | null;
@@ -12,9 +12,14 @@ type SearchProps = {
   }) => void;
 };
 
-export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
-  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
+export const Search = ({
+  handleSearch,
+  setCoordinates,
+  scrollCampusesIntoView,
+}: SearchProps) => {
+  const [useCurrentLocation, setUseCurrentLocation] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Set the coordinates to the user's current location
   useEffect(() => {
@@ -26,6 +31,7 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
+          scrollCampusesIntoView();
           setLocationActive(true);
         },
         (error) => {
@@ -61,8 +67,11 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
           <SearchBar
             onSearchSubmit={handleSearch}
             setCoordinates={setCoordinates}
+            setError={setError}
             data-gtm="hero-cta"
           />
+
+          {error && <div className="text-lg italic text-alert">{error}</div>}
 
           <div className="flex flex-col items-center gap-2">
             <div className="flex gap-2">
@@ -89,43 +98,52 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
 const SearchBar = ({
   onSearchSubmit,
   setCoordinates,
+  setError,
 }: {
   onSearchSubmit: (query: string | null) => void;
   setCoordinates: (coordinates: {
     lat: number | null;
     lng: number | null;
   }) => void;
+  setError: (error: string | null) => void;
 }) => {
-  const { query, refine } = useSearchBox();
+  const [inputValue, setInputValue] = useState("");
   const [zipCode, setZipCode] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (query.length === 5 && isValidZip(query)) {
-      setZipCode(query);
-    } else if (query.length !== 0) {
-      // Clear the coordinates if the query is not a zip code but a location name
-      setCoordinates({ lat: null, lng: null });
-    }
-  }, [query]);
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const searchValue = inputValue.trim();
 
-  // When the zip code is set, search for it and clear the query so the query doesn't interfere with the geo search
+    if (searchValue.length === 5 && isValidZip(searchValue)) {
+      setZipCode(searchValue);
+      setError(null);
+    } else if (searchValue.length > 0) {
+      // For non-zip searches, clear coordinates and search
+      setCoordinates({ lat: null, lng: null });
+      setError("Please enter a valid zip code");
+      onSearchSubmit(searchValue);
+    }
+  };
+
+  // When the zip code is set, search for it
   useEffect(() => {
     if (zipCode) {
       onSearchSubmit(zipCode);
-      refine("");
     }
   }, [zipCode]);
 
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
       className={cn(
-        "flex w-full md:max-w-[500px] items-center gap-4 rounded-full p-1 mt-2 md:mt-0",
-        query ? "bg-gray" : "bg-white"
+        "flex w-full md:max-w-[360px] items-center gap-2 rounded-full p-1 mt-2 md:mt-0",
+        inputValue ? "bg-gray" : "bg-white"
       )}
     >
       <button
         type="submit"
-        className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative"
+        className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy lg:hover:bg-ocean transition-colors duration-300 rounded-full relative cursor-pointer"
       >
         <Icon
           name="search"
@@ -134,18 +152,13 @@ const SearchBar = ({
         />
       </button>
 
-      <SearchBox
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         placeholder="Search by zip code"
-        classNames={{
-          root: "flex-grow w-full",
-          form: "flex",
-          input: `w-full justify-center text-black px-3 outline-none appearance-none`,
-          reset: "hidden",
-          loadingIndicator: "hidden",
-          resetIcon: "hidden",
-          submit: "hidden",
-        }}
+        className="flex-grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
       />
-    </div>
+    </form>
   );
 };
