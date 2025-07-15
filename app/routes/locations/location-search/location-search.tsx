@@ -63,11 +63,19 @@ export function LocationSearchPage() {
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
+  const scrollCampusesIntoView = () => {
+    const campusesSection = document.getElementById("campuses");
+    campusesSection?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
     if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
       const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
       setCoordinates({ lat, lng });
     }
+
+    // Trigger scroll function to show campuses, id = "campuses"
+    scrollCampusesIntoView();
   }, [geocodeFetcher.data]);
 
   const searchClient =
@@ -92,18 +100,23 @@ export function LocationSearchPage() {
         }}
         insights={false}
       >
-        {coordinates?.lat && coordinates?.lng ? (
-          <Configure
-            hitsPerPage={20}
-            aroundLatLng={`${coordinates.lat}, ${coordinates.lng}`}
-            aroundRadius="all"
-            aroundLatLngViaIP={false}
-            getRankingInfo={true}
-          />
-        ) : (
-          <Configure hitsPerPage={20} />
-        )}
-        <Search handleSearch={handleSearch} setCoordinates={setCoordinates} />
+        <Configure
+          hitsPerPage={20}
+          aroundLatLng={
+            coordinates?.lat && coordinates?.lng
+              ? `${coordinates.lat}, ${coordinates.lng}`
+              : undefined
+          }
+          aroundRadius="all"
+          aroundLatLngViaIP={false}
+          getRankingInfo={true}
+        />
+
+        <Search
+          handleSearch={handleSearch}
+          setCoordinates={setCoordinates}
+          scrollCampusesIntoView={scrollCampusesIntoView}
+        />
         <LocationCardList loading={googleFetcher.state === "loading"} />
       </InstantSearch>
     </div>
