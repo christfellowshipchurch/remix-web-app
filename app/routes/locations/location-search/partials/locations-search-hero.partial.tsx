@@ -1,5 +1,4 @@
 import Icon from "~/primitives/icon";
-import { useLoaderData } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Video } from "~/primitives/video/video.primitive";
 import { cn, isValidZip } from "~/lib/utils";
@@ -7,12 +6,13 @@ import { SearchBox, useSearchBox } from "react-instantsearch";
 
 type SearchProps = {
   handleSearch: (query: string | null) => void;
-  setCoordinates: (coordinates: { lat: number; lng: number }) => void;
+  setCoordinates: (coordinates: {
+    lat: number | null;
+    lng: number | null;
+  }) => void;
 };
 
 export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
-  const { bgVideo } = useLoaderData();
-
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [locationActive, setLocationActive] = useState(true);
 
@@ -58,7 +58,11 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
             Florida, and online—wherever you are!
           </p>
 
-          <SearchBar onSearchSubmit={handleSearch} data-gtm="hero-cta" />
+          <SearchBar
+            onSearchSubmit={handleSearch}
+            setCoordinates={setCoordinates}
+            data-gtm="hero-cta"
+          />
 
           <div className="flex flex-col items-center gap-2">
             <div className="flex gap-2">
@@ -84,8 +88,13 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
 
 const SearchBar = ({
   onSearchSubmit,
+  setCoordinates,
 }: {
   onSearchSubmit: (query: string | null) => void;
+  setCoordinates: (coordinates: {
+    lat: number | null;
+    lng: number | null;
+  }) => void;
 }) => {
   const { query, refine } = useSearchBox();
   const [zipCode, setZipCode] = useState<string | null>(null);
@@ -93,6 +102,9 @@ const SearchBar = ({
   useEffect(() => {
     if (query.length === 5 && isValidZip(query)) {
       setZipCode(query);
+    } else if (query.length !== 0) {
+      // Clear the coordinates if the query is not a zip code but a location name
+      setCoordinates({ lat: null, lng: null });
     }
   }, [query]);
 

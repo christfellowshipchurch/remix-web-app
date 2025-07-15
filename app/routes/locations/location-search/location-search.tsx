@@ -33,8 +33,8 @@ export function LocationSearchPage() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
 
   const [coordinates, setCoordinates] = useState<{
-    lat: number;
-    lng: number;
+    lat: number | null;
+    lng: number | null;
   } | null>(null);
 
   const geocodeFetcher = useFetcher();
