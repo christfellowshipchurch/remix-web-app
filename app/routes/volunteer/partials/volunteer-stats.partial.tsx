@@ -17,11 +17,32 @@ interface VolunteerStatsProps {
   avatarCount: number;
 }
 
-export function VolunteerStats({
-  stats,
-  avatars,
-  avatarCount,
-}: VolunteerStatsProps) {
+const defaultStats: VolunteerStatsProps = {
+  stats: [
+    { year: "2024", label: "Volunteers served", value: "14,378" },
+    {
+      year: "2024",
+      label: "People impacted through missions outreach",
+      value: "108k",
+    },
+    { year: "2024", label: "International Missions Trips", value: "15" },
+  ],
+  avatars: [
+    { src: "https://picsum.photos/id/1011/70/70", alt: "Avatar 1" },
+    { src: "https://picsum.photos/id/1012/70/70", alt: "Avatar 2" },
+    { src: "https://picsum.photos/id/1015/70/70", alt: "Avatar 3" },
+    { src: "https://picsum.photos/id/1016/70/70", alt: "Avatar 4" },
+  ],
+  avatarCount: 3456,
+};
+
+export function VolunteerStats(props?: VolunteerStatsProps) {
+  const {
+    stats = defaultStats.stats,
+    avatars = defaultStats.avatars,
+    avatarCount = defaultStats.avatarCount,
+  } = props ?? {};
+
   return (
     <section id="stats" className="w-full bg-white py-20 content-padding">
       <div className="max-w-screen-content mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
@@ -77,23 +98,3 @@ export function VolunteerStats({
     </section>
   );
 }
-
-// Default demo props
-VolunteerStats.defaultProps = {
-  stats: [
-    { year: "2024", label: "Volunteers served", value: "14,378" },
-    {
-      year: "2024",
-      label: "People impacted through missions outreach",
-      value: "108k",
-    },
-    { year: "2024", label: "International Missions Trips", value: "15" },
-  ],
-  avatars: [
-    { src: "https://picsum.photos/id/1011/70/70", alt: "Avatar 1" },
-    { src: "https://picsum.photos/id/1012/70/70", alt: "Avatar 2" },
-    { src: "https://picsum.photos/id/1015/70/70", alt: "Avatar 3" },
-    { src: "https://picsum.photos/id/1016/70/70", alt: "Avatar 4" },
-  ],
-  avatarCount: 3456,
-};

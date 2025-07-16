@@ -14,7 +14,8 @@ export function DesktopHeroSection() {
           src="/assets/images/home/home-hero-bg.webp"
           alt="Hero Background"
           loading="eager"
-          fetchPriority="high"
+          // @ts-ignore
+          fetchpriority="high"
         />
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
         <div className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
@@ -52,7 +53,8 @@ export function DesktopHeroSection() {
               alt="Hero Background"
               className="w-full h-full object-cover"
               loading="eager"
-              fetchPriority="high"
+              // @ts-ignore
+              fetchpriority="high"
             />
             <Video
               wistiaId="ieybr1sv38"
@@ -132,7 +134,8 @@ export const MobileHeroSection = () => {
           alt="Hero Background"
           className="w-full h-full object-cover absolute inset-0 z-1"
           loading="eager"
-          fetchPriority="high"
+          // @ts-ignore
+          fetchpriority="high"
         />
         <Video
           wistiaId="ieybr1sv38"
