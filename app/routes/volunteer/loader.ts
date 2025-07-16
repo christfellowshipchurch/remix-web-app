@@ -21,6 +21,7 @@ const fetchMissionTrips = async () => {
   return trips;
 };
 const fetchFeaturedEvent = async (): Promise<Event> => {
+  // TODO: We'll need to create some sort of tag/filter to specify the event we want to show. For now, we'll just show the latest event.
   const featuredEvents = await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {
