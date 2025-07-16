@@ -24,7 +24,7 @@ export const SubscribeSection = ({
   }));
 
   return (
-    <div className="w-full bg-linear-to-br from-[#1C3647] to-[#004F71] content-padding">
+    <div className="w-full bg-linear-to-br from-[#1C3647] to-navy content-padding">
       <div className="max-w-screen-content mx-auto py-16">
         <div className="flex flex-col items-center gap-8 text-white">
           <h2 className="text-[24px] md:text-[28px] font-extrabold leading-none">

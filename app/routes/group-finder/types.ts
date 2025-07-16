@@ -17,6 +17,7 @@ export interface GroupHit {
   meetingDay: string;
   meetingType: string;
   preferences: string[];
+  subPreferences: string[];
   coverImage: {
     sources: {
       uri: string;
