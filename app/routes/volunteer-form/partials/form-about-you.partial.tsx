@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, useActionData } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 import { CAMPUS, type VolunteerFormPersonalInfo } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import TextFieldInput from "~/primitives/inputs/text-field";
@@ -128,7 +128,12 @@ export const VolunteerFormPersonalInfoPartial: React.FC<Props> = ({
         <Button type="button" intent="secondary" onClick={onBack}>
           Back
         </Button>
-        <Button type="submit" intent="primary">
+        <Button
+          type="submit"
+          intent="primary"
+          href="/volunteer-form/availability"
+          prefetch="viewport"
+        >
           Next
         </Button>
       </div>
