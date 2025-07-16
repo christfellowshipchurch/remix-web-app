@@ -19,11 +19,11 @@ export function VolunteerFeaturedEvent() {
           )}
         >
           <div className="relative inline-flex flex-col gap-4 bg-white p-12 z-10 lg:-ml-12 top-50">
-            <span className="text-ocean font-semibold mb-2 block">
-              {attributeValues.campus?.value}
+            <span className="text-ocean font-extrabold text-lg block">
+              Featured Event
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
-            <div className="text-neutral-dark mb-8 max-w-[490px] line-clamp-4">
+            <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
+            <div className="text-text-secondary mb-8 max-w-[490px] line-clamp-4">
               <HTMLRenderer html={content || ""} stripFormattingTags />
             </div>
             <IconButton
@@ -41,20 +41,18 @@ export function VolunteerFeaturedEvent() {
       {/* Mobile */}
       <div className="w-full bg-gray content-padding relative block md:hidden py-20">
         <Link to={`/events/${attributeValues.url.value}`}>
-          <div className="max-w-screen-content mx-auto rounded-4xl overflow-hidden transition-transform active:scale-95">
+          <div className="max-w-screen-content mx-auto rounded-3xl overflow-hidden transition-transform active:scale-95">
             <img
               src={attributeValues.image.value}
               alt={`Volunteers at ${attributeValues.campus?.value} event`}
               className="w-full object-cover max-h-44 sm:max-h-64"
             />
-            {attributeValues.campus?.value && (
-              <span className="text-ocean font-bold block">
-                {attributeValues.campus.value}
+            <div className="flex flex-col py-10 gap-2 bg-white p-6 z-10">
+              <span className="text-ocean font-extrabold text-sm block">
+                Featured Event
               </span>
-            )}
-            <div className="flex flex-col py-10 gap-4 bg-white p-6 z-10">
               <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
-              <div className="text-text-secondary text-pretty line-clamp-4">
+              <div className="text-text-secondary text-pretty line-clamp-7 min-[500px]:line-clamp-4">
                 <HTMLRenderer html={content || ""} stripFormattingTags />
               </div>
             </div>
