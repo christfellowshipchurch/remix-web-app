@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  ActionFunctionArgs,
-  redirect,
-  useNavigate,
-  useLoaderData,
-} from "react-router-dom";
-import type { VolunteerFormPersonalInfo } from "./volunteer-form/types";
+import { ActionFunctionArgs, redirect, useLoaderData } from "react-router-dom";
 import { mockPersonalInfo } from "./volunteer-form/mock-data";
-import VolunteerFormPersonalInfoPartial from "./volunteer-form/partials/form-about-you.partial";
+import YesAboutYou from "./yes/partials/yes-about-you.partial";
+import { YesFormPersonalInfo } from "./yes/types";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const data = {
-    campus: formData.get("campus"),
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
     email: formData.get("email"),
@@ -23,7 +17,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // TODO: Validate data and save it
 
-  return redirect("/volunteer-form/availability");
+  return redirect("/yes/devotional");
 };
 
 export const loader = async () => {
@@ -32,17 +26,11 @@ export const loader = async () => {
   });
 };
 
-export const VolunteerFormPersonalInfoRoute: React.FC = () => {
+export const YesAboutYouRoute: React.FC = () => {
   const { defaultValues } = useLoaderData() as {
-    defaultValues: VolunteerFormPersonalInfo;
+    defaultValues: YesFormPersonalInfo;
   };
-  const navigate = useNavigate();
-  return (
-    <VolunteerFormPersonalInfoPartial
-      data={defaultValues}
-      onBack={() => navigate("/volunteer-form/welcome")}
-    />
-  );
+  return <YesAboutYou data={defaultValues} />;
 };
 
-export default VolunteerFormPersonalInfoRoute;
+export default YesAboutYouRoute;
