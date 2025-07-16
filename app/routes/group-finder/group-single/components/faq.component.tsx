@@ -3,19 +3,24 @@ import Icon from "~/primitives/icon";
 
 const faqData = [
   {
-    question: "What is this group about?",
+    question: "What Are Small Groups?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "Small groups are gatherings of three or more people who meet regularly to talk about life, reflect on the weekend message, and grow in faith together. There’s no set formula—just a circle of friends committed to walking through life’s ups and downs. We believe God designed us to find freedom and healing through relationships, and small groups are one of the best ways to experience that.",
   },
   {
-    question: "What is this group about?",
+    question: "Where Do Small Groups Meet?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "Most groups meet in homes, parks, or restaurants—usually based on the leader’s location and often near a church campus.",
   },
   {
-    question: "What is this group about?",
+    question: "What Types of Small Groups Are Available?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.",
+      "We offer Bible study, activity, and Freedom groups for men, women, and married couples. Groups are available for all life stages, with both morning and evening options",
+  },
+  {
+    question: "Is Childcare Provided During Group Meetings?",
+    answer:
+      "Childcare is not provided, so group members will need to make their own arrangements.",
   },
 ];
 
@@ -29,11 +34,11 @@ export function FinderSingleFAQ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="text-left flex flex-col p-6 border border-[#C6C6C6] rounded-lg max-w-[768px]">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex justify-between gap-2 w-full"
-      >
+    <div
+      className="text-left flex flex-col p-6 border border-[#C6C6C6] rounded-lg max-w-[768px] hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
+      <div className="flex justify-between gap-2 w-full cursor-pointer">
         <h3 className="md:text-xl lg:text-2xl font-semibold text-left">
           {question}
         </h3>
@@ -46,7 +51,7 @@ export function FinderSingleFAQ({
             <Icon name="chevronDown" />
           </div>
         </div>
-      </button>
+      </div>
       <div
         className={`grid transition-all duration-200 ${
           isExpanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr]"

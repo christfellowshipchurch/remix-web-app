@@ -3,6 +3,7 @@ import parse, {
   domToReact,
   Element,
 } from "html-react-parser";
+import "./html-renderer.styles.css";
 
 export const HTMLRenderer = ({
   html,
@@ -46,5 +47,5 @@ export const HTMLRenderer = ({
     },
   };
 
-  return <div className={className}>{parse(html, options)}</div>;
+  return <div className={`${className || ""}`}>{parse(html, options)}</div>;
 };
