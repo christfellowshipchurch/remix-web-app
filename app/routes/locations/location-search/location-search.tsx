@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
-import {
-  Campus,
-  LocationCardList,
-} from "./partials/location-card-list.partial";
-import { useFetcher, useLoaderData } from "react-router-dom";
-import { CampusesReturnType } from "./loader";
+import { LocationCardList } from "./partials/location-card-list.partial";
+import { useFetcher, useRouteLoaderData } from "react-router-dom";
+import { RootLoaderData } from "~/routes/navbar/loader";
+import { algoliasearch, SearchClient } from "algoliasearch";
+import { emptySearchClient } from "~/routes/search/route";
+import { Configure, InstantSearch } from "react-instantsearch";
 
 export type LocationSearchCoordinatesType = {
   results: [
@@ -22,145 +22,103 @@ export type LocationSearchCoordinatesType = {
   error: string | undefined | null;
 };
 
-export function LocationSearchPage() {
-  const [address, setAddress] = useState<string>("");
-  const [coordinates, setCoordinates] = useState<any[]>([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
-  const [locationActive, setLocationActive] = useState(true);
-  const [results, setResults] = useState<Campus[]>([]);
-  const [error, setError] = useState<string | null>(null);
+let globalSearchClient: SearchClient | null = null;
 
-  const campusFetcher = useFetcher();
+export function LocationSearchPage() {
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const algolia = rootData?.algolia ?? {
+    ALGOLIA_APP_ID: "",
+    ALGOLIA_SEARCH_API_KEY: "",
+  };
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
+
+  const [coordinates, setCoordinates] = useState<{
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
+
+  const geocodeFetcher = useFetcher();
   const googleFetcher = useFetcher();
 
-  const { campuses } = useLoaderData<CampusesReturnType>();
-
-  useEffect(() => {
-    if (coordinates?.length > 0) {
-      const formData = new FormData();
-      formData.append(
-        "latitude",
-        coordinates[0].geometry.location.lat.toString()
-      );
-      formData.append(
-        "longitude",
-        coordinates[0].geometry.location.lng.toString()
-      );
-
-      try {
-        campusFetcher.submit(formData, {
-          method: "post",
-          action: "/locations",
-        });
-        searchScroll();
-      } catch (error) {
-        setError("An error occurred while fetching campus data");
-        console.log(error);
-      }
+  const handleSearch = (query: string | null) => {
+    if (!query) {
+      setCoordinates(null);
+      return;
     }
-  }, [coordinates]);
-
-  useEffect(() => {
-    if (campusFetcher.data) {
-      if (Array.isArray(campusFetcher.data)) {
-        setResults(campusFetcher.data as Campus[]);
-      }
-    }
-  }, [campusFetcher.data]);
-
-  useEffect(() => {
-    if (googleFetcher.data) {
-      setCoordinates(
-        (googleFetcher.data as LocationSearchCoordinatesType).results
-      );
-      if ((googleFetcher.data as LocationSearchCoordinatesType).error) {
-        setError(
-          (googleFetcher.data as LocationSearchCoordinatesType).error ?? null
-        );
-      }
-    }
-  }, [googleFetcher.data]);
-
-  useEffect(() => {
-    searchCurrentLocation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const isValidZip = (zip: string) => /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
-
-  const getCoordinates = async () => {
-    if (isValidZip(address)) {
-      setError(null);
-      const formData = new FormData();
-      formData.append("address", address);
-
-      try {
-        googleFetcher.submit(formData, {
-          method: "post",
-          action: "/google-geocode",
-        });
-      } catch (error) {
-        setError("Please enter a valid zip code");
-      }
-    } else {
-      setError("Please enter a valid zip code");
-      setCoordinates([]);
-    }
+    const formData = new FormData();
+    formData.append("address", query);
+    geocodeFetcher.submit(formData, {
+      method: "post",
+      action: "/google-geocode",
+    });
   };
 
-  function searchScroll() {
-    let scrollTo = document.getElementById("campuses");
-    if (scrollTo) {
-      scrollTo.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+    if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
+      globalSearchClient = algoliasearch(
+        ALGOLIA_APP_ID,
+        ALGOLIA_SEARCH_API_KEY,
+        {}
+      );
     }
-  }
+  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
-  function searchCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocationActive(true);
-        searchScroll();
-        setError(null);
-        setCoordinates([
-          {
-            geometry: {
-              location: {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-              },
-            },
-          },
-        ]);
-      },
-      (error) => {
-        if (hasLoaded) {
-          setLocationActive(false);
-        }
-        setHasLoaded(true);
-        console.log(error);
-        setResults(campuses);
-      }
-    );
-  }
+  const scrollCampusesIntoView = () => {
+    const campusesSection = document.getElementById("campuses");
+    campusesSection?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
+      const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
+      setCoordinates({ lat, lng });
+    }
+
+    // Trigger scroll function to show campuses, id = "campuses"
+    scrollCampusesIntoView();
+  }, [geocodeFetcher.data]);
+
+  const searchClient =
+    globalSearchClient ||
+    (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
+      ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
+      : emptySearchClient);
 
   return (
     <div className="flex w-full flex-col">
-      <Search
-        searchCurrentLocation={searchCurrentLocation}
-        setAddress={setAddress}
-        getCoordinates={getCoordinates}
-        locationActive={locationActive}
-        error={error}
-      />
-      <LocationCardList
-        campuses={results}
-        loading={
-          !results ||
-          results.length === 0 ||
-          campusFetcher.state === "loading" ||
-          googleFetcher.state === "loading"
-        }
-      />
+      {/* Add Algolia Wrapper */}
+      <InstantSearch
+        indexName="dev_Locations"
+        searchClient={searchClient}
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
+        initialUiState={{
+          dev_Locations: {
+            query: "",
+          },
+        }}
+        insights={false}
+      >
+        <Configure
+          hitsPerPage={20}
+          aroundLatLng={
+            coordinates?.lat && coordinates?.lng
+              ? `${coordinates.lat}, ${coordinates.lng}`
+              : undefined
+          }
+          aroundRadius="all"
+          aroundLatLngViaIP={false}
+          getRankingInfo={true}
+        />
+
+        <Search
+          handleSearch={handleSearch}
+          setCoordinates={setCoordinates}
+          scrollCampusesIntoView={scrollCampusesIntoView}
+        />
+        <LocationCardList loading={googleFetcher.state === "loading"} />
+      </InstantSearch>
     </div>
   );
 }
