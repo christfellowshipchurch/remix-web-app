@@ -71,7 +71,7 @@ export const LocationSearch = () => {
     });
   };
 
-  // Set the coordinates to the current location
+  // Set the coordinates to the user's current location
   useEffect(() => {
     if (useCurrentLocation) {
       // Get the current location
