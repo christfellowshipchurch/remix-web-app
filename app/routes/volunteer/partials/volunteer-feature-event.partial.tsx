@@ -1,5 +1,5 @@
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import type { LoaderReturnType } from "../loader";
 import { cn } from "~/lib/utils";
 import HTMLRenderer from "~/primitives/html-renderer";
@@ -27,7 +27,7 @@ export function VolunteerFeaturedEvent() {
               <HTMLRenderer html={content || ""} stripFormattingTags />
             </div>
             <IconButton
-              to={attributeValues.url.value}
+              to={`/events/${attributeValues.url.value}`}
               withRotatingArrow
               className="bg-white border-neutral-default text-neutral-dark hover:enabled:bg-soft-white hover:enabled:text-neutral-dark"
               aria-label={`Learn more about ${attributeValues.campus?.value}`}
@@ -40,8 +40,8 @@ export function VolunteerFeaturedEvent() {
       <div className="w-full h-80 bg-gray hidden md:block" />
       {/* Mobile */}
       <div className="w-full bg-gray content-padding relative block md:hidden py-20">
-        <div className="max-w-screen-content mx-auto rounded-4xl overflow-hidden">
-          <a href={attributeValues.url.value} className="block">
+        <Link to={`/events/${attributeValues.url.value}`}>
+          <div className="max-w-screen-content mx-auto rounded-4xl overflow-hidden transition-transform active:scale-95">
             <img
               src={attributeValues.image.value}
               alt={`Volunteers at ${attributeValues.campus?.value} event`}
@@ -58,8 +58,8 @@ export function VolunteerFeaturedEvent() {
                 <HTMLRenderer html={content || ""} stripFormattingTags />
               </div>
             </div>
-          </a>
-        </div>
+          </div>
+        </Link>
       </div>
     </section>
   );
