@@ -58,3 +58,13 @@
     color: #222222;
   }
 }
+
+.devotional-content {
+  blockquote {
+    font-style: italic;
+    border-left: solid 2px #0092bc;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    font-size: 1.5rem;
+  }
+}

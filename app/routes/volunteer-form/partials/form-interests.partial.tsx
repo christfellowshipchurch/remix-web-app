@@ -5,7 +5,7 @@ import Slider from "~/primitives/inputs/slider/slider.primitive";
 import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.primitive";
-import { Form, useActionData } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 
 interface Props {
   data: VolunteerFormInterests;
@@ -195,7 +195,13 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
         >
           Previous: Availability
         </Button>
-        <Button type="submit" intent="primary" className="font-normal">
+        <Button
+          type="submit"
+          intent="primary"
+          href="/volunteer-form/confirmation"
+          prefetch="viewport"
+          className="font-normal"
+        >
           Submit
         </Button>
       </div>

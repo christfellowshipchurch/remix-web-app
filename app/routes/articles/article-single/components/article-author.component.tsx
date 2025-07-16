@@ -15,7 +15,7 @@ export default function ArticleAuthor({
   return (
     <div className="flex">
       <Link
-        prefetch="viewport"
+        prefetch="intent"
         to={`/author/${author?.authorAttributes?.authorId}`}
       >
         <Avatar.Root className="flex cursor-pointer duration-300 hover:scale-105">

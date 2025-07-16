@@ -56,12 +56,14 @@ export interface ButtonProps
   href?: string;
   target?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  prefetch?: "intent" | "render" | "none" | "viewport";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       linkClassName,
+      prefetch = "intent",
       className,
       target,
       intent,
@@ -77,7 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
         <Link
           to={href}
-          prefetch="intent"
+          prefetch={prefetch}
           target={target ? target : href?.includes("http") ? "_blank" : ""}
           className={`${linkClassName}`}
         >
