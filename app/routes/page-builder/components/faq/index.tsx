@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
+import { FAQ } from "../../types";
 
-export const FAQsComponent = ({ faqData }: { faqData: any[] }) => {
+export const FAQsComponent = ({ faqData }: { faqData: FAQ }) => {
   return (
     <div className="flex flex-col gap-12 lg:gap-20">
       <div className="flex flex-col gap-6">
         <h2 className="text-[48px] md:text-[52px] font-extrabold">FAQs</h2>
-        <p className="md:text-lg">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-          varius enim in eros elementum tristique.
-        </p>
+        <p className="md:text-lg">{faqData.description}</p>
       </div>
 
       <div className="flex flex-col gap-4">
-        {faqData.map((faq, index) => (
+        {faqData.faqs.map((faq, index) => (
           <FAQs key={index} question={faq.question} answer={faq.answer} />
         ))}
       </div>
