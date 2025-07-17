@@ -2,7 +2,7 @@ import { Icon } from "../icon/icon";
 import { Link } from "react-router-dom";
 import { cn } from "~/lib/utils";
 import HtmlRenderer from "../html-renderer";
-import { CollectionItem } from "~/routes/page-builder/types";
+import { CollectionItem } from "~/routes/ministry-builder/types";
 
 export const ResourceCard = ({
   resource,

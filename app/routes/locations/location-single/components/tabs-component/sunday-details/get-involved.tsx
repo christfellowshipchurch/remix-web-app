@@ -1,5 +1,5 @@
 import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
-import { CollectionItem } from "~/routes/page-builder/types";
+import { CollectionItem } from "~/routes/ministry-builder/types";
 
 export const GetInvolved = ({ isOnline }: { isOnline?: boolean }) => {
   // TODO: Update BG image

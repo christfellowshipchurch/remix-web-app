@@ -1,5 +1,4 @@
-import { FeatureSection } from "../../page-builder/components/content-block/feature-section";
-import React from "react";
+import { FeatureSection } from "~/routes/page-builder/components/content-block/feature-section";
 
 export function VolunteerWhere() {
   return (

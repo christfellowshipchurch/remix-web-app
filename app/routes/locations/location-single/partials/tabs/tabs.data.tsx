@@ -1,4 +1,4 @@
-import { ContentType } from "~/routes/page-builder/types";
+import { ContentType } from "~/routes/ministry-builder/types";
 
 export const upcomingEventsData = {
   id: "19003",

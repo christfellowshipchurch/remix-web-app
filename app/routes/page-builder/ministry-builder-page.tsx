@@ -46,7 +46,7 @@ export function renderSection(section: any) {
   }
 }
 
-export function PageBuilderRoute() {
+export function MinistryBuilderRoute() {
   const { title, heroImage, callsToAction, sections } =
     useLoaderData<PageBuilderLoader>();
 
@@ -66,4 +66,4 @@ export function PageBuilderRoute() {
   );
 }
 
-export default PageBuilderRoute;
+export default MinistryBuilderRoute;
