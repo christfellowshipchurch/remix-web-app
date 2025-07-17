@@ -2,8 +2,6 @@ import { FAQ } from "../../types";
 
 export const faqData: FAQ = {
   id: "1",
-  description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
   faqs: [
     {
       question: "What Are Small Groups?",

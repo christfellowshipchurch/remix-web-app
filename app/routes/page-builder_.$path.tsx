@@ -1,5 +1,5 @@
-import { MinistryBuilderRoute } from "./ministry-builder/ministry-builder-page";
+import { PageBuilderRoute } from "./page-builder/page-builder-page";
 
-export { loader } from "./ministry-builder/loader";
+export { loader } from "./page-builder/loader";
 
-export default MinistryBuilderRoute;
+export default PageBuilderRoute;

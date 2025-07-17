@@ -38,7 +38,6 @@ export type RockAttributeValue = {
  */
 export type ImageGallery = {
   id: string;
-  title: string;
   images: string[];
   description: string;
 };
@@ -48,7 +47,6 @@ export type ImageGallery = {
  */
 export type FAQ = {
   id: string;
-  description: string;
   faqs: FAQItem[];
 };
 
