@@ -53,7 +53,7 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
           </div>
         </div>
 
-        <div className="w-full flex gap-4">
+        <div className="w-full flex gap-4 md:-mt-12">
           <InstantSearch
             indexName="production_Groups"
             searchClient={searchClient}
@@ -67,9 +67,11 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
             <RelatedGroupsHits />
           </InstantSearch>
         </div>
-        <div className="md:hidden w-full flex justify-center mt-6">
+
+        {/* Mobile Button */}
+        <div className="md:hidden w-full flex mt-6">
           <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
-            View More
+            View All
           </Button>
         </div>
       </div>

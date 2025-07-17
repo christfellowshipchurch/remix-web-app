@@ -12,28 +12,13 @@ export function GroupSingleBasicContent({
   summary: string;
 }) {
   return (
-    <div className="flex flex-col gap-16">
-      <div className="flex flex-col md:gap-16">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-[40px] lg:text-[52px] font-extrabold leading-tight">
-            {groupName}
-          </h1>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag, i) => (
-              <span
-                key={i}
-                className="text-sm bg-gray-100 px-2 py-1 rounded-sm"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-        <p className="hidden md:block">{summary}</p>
+    <div className="flex flex-col gap-12 md:gap-16">
+      <div className="flex flex-col gap-4">
+        <h3 className="text-lg md:text-2xl font-extrabold">About</h3>
+        <p className="md:text-lg">{summary}</p>
       </div>
-      <div className="hidden lg:block">
-        <GroupFAQ />
-      </div>
+
+      <GroupFAQ />
     </div>
   );
 }
