@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CollectionItem } from "~/routes/ministry-builder/types";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 export const GridCard = ({ resource }: { resource: CollectionItem }) => (
   <li className="bg-white rounded-lg shadow-sm flex overflow-hidden border border-neutral-lighter hover:scale-[1.02] transition-all duration-300">

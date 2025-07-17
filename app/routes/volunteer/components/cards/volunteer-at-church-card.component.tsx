@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
-import { CollectionItem } from "~/routes/ministry-builder/types";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 export const VolunteerAtChurchCard = ({
   resource,
