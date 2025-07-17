@@ -5,7 +5,9 @@ export type SectionType =
   | "EVENT_COLLECTION"
   | "RESOURCE_COLLECTION"
   | "CTA_COLLECTION"
-  | "CONTENT_BLOCK";
+  | "CONTENT_BLOCK"
+  | "FAQ"
+  | "IMAGE_GALLERY";
 
 export type ContentType =
   | "EVENT"
@@ -29,6 +31,31 @@ export type CallToAction = {
  */
 export type RockAttributeValue = {
   value: string | number | boolean | null;
+};
+
+/**
+ * Represents the structure of an image gallery item
+ */
+export type ImageGallery = {
+  id: string;
+  images: string[];
+  description: string;
+};
+
+/**
+ * Represents the structure of an FAQ component
+ */
+export type FAQ = {
+  id: string;
+  faqs: FAQItem[];
+};
+
+/**
+ * Represents the structure of each FAQ item used in the FAQ component
+ */
+export type FAQItem = {
+  question: string;
+  answer: string;
 };
 
 /**
@@ -60,6 +87,8 @@ export type PageBuilderSection = {
   attributeValues?: Record<string, RockAttributeValue["value"]>;
   linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
   collection?: CollectionItem[];
+  faq?: FAQ;
+  imageGallery?: ImageGallery;
 };
 
 /**
@@ -101,7 +130,7 @@ export type ContentBlockBackgroundColor = "WHITE" | "OCEAN" | "NAVY" | string;
  * Represents a Content Block section in the page builder
  */
 export interface ContentBlockData {
-  id: number;
+  id: string;
   type: "CONTENT_BLOCK";
   name: string;
   content: string;

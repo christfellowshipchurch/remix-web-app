@@ -1,4 +1,4 @@
-import { ContentType } from "~/routes/page-builder/types";
+import { ContentBlockData, ContentType } from "~/routes/page-builder/types";
 
 export const upcomingEventsData = {
   id: "19003",
@@ -53,7 +53,7 @@ export const upcomingEventsData = {
   ],
 };
 
-export const familiesMappedChildren = [
+export const familiesMappedChildren: ContentBlockData[] = [
   {
     id: "19038",
     type: "CONTENT_BLOCK",
@@ -65,7 +65,7 @@ export const familiesMappedChildren = [
     callsToAction: "",
     coverImage:
       "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=950d64f7-96b7-47c4-9f98-5e4df3657a5e",
-    featureVideo: null,
+    featureVideo: undefined,
     aspectRatio: "4by5",
     imageLayout: "RIGHT",
     backgroundColor: "OCEAN",
@@ -79,14 +79,14 @@ export const familiesMappedChildren = [
     layoutType: "CARD",
     subtitle: "",
     callsToAction: "Plan your first Visit^/#set-a-reminder",
-    coverImage: null,
-    featureVideo: null,
+    coverImage: undefined,
+    featureVideo: undefined,
     aspectRatio: "16by9",
     imageLayout: "LEFT",
     backgroundColor: "OCEAN",
   },
   {
-    id: 19047,
+    id: "19047",
     type: "CONTENT_BLOCK",
     name: "The Mix Banner",
     content: "",
@@ -95,13 +95,13 @@ export const familiesMappedChildren = [
     callsToAction: "",
     coverImage:
       "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=80a465c2-1a17-467e-ab83-11007cb2deb5",
-    featureVideo: null,
+    featureVideo: undefined,
     aspectRatio: "16by9",
     imageLayout: "LEFT",
     backgroundColor: "OCEAN",
   },
   {
-    id: 19048,
+    id: "19048",
     type: "CONTENT_BLOCK",
     name: "The MIX (5th & 6th Grade)",
     content:
@@ -109,14 +109,14 @@ export const familiesMappedChildren = [
     layoutType: "FULLSCREEN",
     subtitle: "",
     callsToAction: "Times and Information ^#info",
-    coverImage: null,
-    featureVideo: null,
+    coverImage: undefined,
+    featureVideo: undefined,
     aspectRatio: "16by9",
     imageLayout: "LEFT",
     backgroundColor: "NAVY",
   },
   {
-    id: 19046,
+    id: "19046",
     type: "CONTENT_BLOCK",
     name: "For Students",
     content:
@@ -126,13 +126,13 @@ export const familiesMappedChildren = [
     callsToAction: "",
     coverImage:
       "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=21ec2053-0e07-4530-a35e-80069decee34",
-    featureVideo: null,
+    featureVideo: undefined,
     aspectRatio: "16by9",
     imageLayout: "RIGHT",
     backgroundColor: "OCEAN",
   },
   {
-    id: 19045,
+    id: "19045",
     type: "CONTENT_BLOCK",
     name: "Middle or High School Student",
     content:
@@ -140,8 +140,8 @@ export const familiesMappedChildren = [
     layoutType: "CARD",
     subtitle: "",
     callsToAction: "Times and Info^/locations|Join Online^#youtube",
-    coverImage: null,
-    featureVideo: null,
+    coverImage: undefined,
+    featureVideo: undefined,
     aspectRatio: "16by9",
     imageLayout: "LEFT",
     backgroundColor: "OCEAN",

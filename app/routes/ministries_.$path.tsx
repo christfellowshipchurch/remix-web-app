@@ -1,6 +1,5 @@
-import { PageBuilderRoute } from "./page-builder/page-builder-page";
+import { MinistryBuilderRoute } from "./ministry-builder/ministry-builder-page";
 
-export { loader } from "./page-builder/loader";
+export { loader } from "./ministry-builder/loader";
 
-// Ministries will use the default page builder route for now
-export default PageBuilderRoute;
+export default MinistryBuilderRoute;
