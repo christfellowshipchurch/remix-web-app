@@ -1,41 +1,45 @@
 import { useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
-import { FAQ } from "../../types";
+import { PageBuilderSection } from "../../types";
 
-export const FAQsComponent = ({ faqData }: { faqData: FAQ }) => {
+export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
   return (
-    <div className="flex flex-col gap-12 lg:gap-20">
-      <div className="flex flex-col gap-6">
-        <h2 className="text-[48px] md:text-[52px] font-extrabold">FAQs</h2>
-        <p className="md:text-lg">{faqData.description}</p>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {faqData.faqs.map((faq, index) => (
-          <FAQs key={index} question={faq.question} answer={faq.answer} />
-        ))}
-      </div>
-
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl md:text-[28px] font-extrabold">
-            Still have questions?
+    <div className="w-full content-padding py-12 md:py-28 bg-white">
+      <div className="max-w-screen-content mx-auto flex flex-col gap-12 lg:gap-20">
+        <div className="flex flex-col gap-6">
+          <h2 className="text-[48px] md:text-[52px] font-extrabold text-text-primary">
+            {data.name}
           </h2>
-          <p className="md:text-lg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.{" "}
-          </p>
+          <p className="md:text-lg">{data.content}</p>
         </div>
 
-        <Button href="/contact" intent="secondary" className="font-normal">
-          Contact
-        </Button>
+        <div className="flex flex-col gap-4">
+          {data.faq?.faqs.map((faq, index) => (
+            <FAQItem key={index} question={faq.question} answer={faq.answer} />
+          ))}
+        </div>
+
+        <div className="w-full flex flex-col items-center text-center gap-6">
+          <div className="flex flex-col gap-4">
+            <h2 className="text-2xl md:text-[28px] font-extrabold">
+              Still have questions?
+            </h2>
+            <p className="md:text-lg">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.{" "}
+            </p>
+          </div>
+
+          <Button href="/contact" intent="secondary" className="font-normal">
+            Contact
+          </Button>
+        </div>
       </div>
     </div>
   );
 };
 
-function FAQs({ question, answer }: { question: string; answer: string }) {
+function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

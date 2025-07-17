@@ -16,6 +16,8 @@ import {
 } from "./types";
 import { format, parseISO } from "date-fns";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
+import { faqData } from "./components/faq/mock-data";
+import { imageGalleryData } from "./components/image-gallery/mock-data";
 
 export const fetchChildItems = async (id: string) => {
   const childReferences = await fetchRockData({
@@ -235,7 +237,6 @@ export const mapPageBuilderChildItems = async (
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  console.log("params", params);
   try {
     const pathname = params?.path;
 
@@ -249,22 +250,45 @@ export const loader: LoaderFunction = async ({ params }) => {
     const pageData = await fetchRockData({
       endpoint: "ContentChannelItems/GetByAttributeValue",
       queryParams: {
-        attributeKey: "Pathname",
+        // TODO: change this to Pathname
+        attributeKey: "Url",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be the page builder collection??
+        $filter: "ContentChannelId eq 85", //TODO: this is the old page builder collection, update this to be the NEW page builder collection??
       },
     });
 
     if (!pageData) {
+      console.log("Page not found with pathname:", pathname);
+      console.log("pageData", pageData);
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
         statusText: "Not Found",
       });
     }
 
-    const children = await fetchChildItems(pageData.id);
-    const mappedChildren = await mapPageBuilderChildItems(children);
+    // const children = await fetchChildItems(pageData.id);
+    // const mappedChildren = await mapPageBuilderChildItems(children);
+
+    // TODO: remove this mock sections and ensure they are processed correctly inside the mapPageBuilderChildItems function
+    const mockSections: PageBuilderSection[] = [
+      {
+        id: "1",
+        type: "FAQ",
+        name: "FAQs",
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
+        faq: faqData,
+      },
+      {
+        id: "2",
+        type: "IMAGE_GALLERY",
+        name: "Image Gallery",
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
+        imageGallery: imageGalleryData,
+      },
+    ];
 
     const pageBuilder: PageBuilderLoader = {
       title: pageData.title,
@@ -275,7 +299,9 @@ export const loader: LoaderFunction = async ({ params }) => {
       callsToAction:
         parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value) ||
         [],
-      sections: mappedChildren,
+
+      // TODO: change this to mappedChildren
+      sections: mockSections,
     };
 
     return pageBuilder;

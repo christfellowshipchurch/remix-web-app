@@ -4,7 +4,7 @@ import { ResourceCarouselSection } from "~/components/page-builder/resource-sect
 import { CTACollectionSection } from "~/components/page-builder/cta-collection";
 import { ContentBlock } from "./components/content-block";
 import { ContentBlockData } from "./types";
-import { ImageGalleryComponent } from "./components/image-gallery";
+import { ImageGallerySection } from "./components/image-gallery";
 import { FAQsComponent } from "./components/faq";
 
 export function renderSection(section: PageBuilderSection) {
@@ -32,7 +32,7 @@ export function renderSection(section: PageBuilderSection) {
       );
     case "FAQ":
       if (section.faq) {
-        return <FAQsComponent faqData={section.faq} />;
+        return <FAQsComponent data={section} />;
       }
 
       console.error(
@@ -42,7 +42,7 @@ export function renderSection(section: PageBuilderSection) {
       return null;
     case "IMAGE_GALLERY":
       if (section.imageGallery) {
-        return <ImageGalleryComponent data={section.imageGallery} />;
+        return <ImageGallerySection data={section} />;
       }
 
       console.error(
@@ -67,12 +67,14 @@ export function renderSection(section: PageBuilderSection) {
   }
 }
 
-export function MinistryBuilderRoute() {
+export function PageBuilderRoute() {
   const { sections } = useLoaderData<PageBuilderLoader>();
+
+  console.log("sections", sections);
 
   return (
     <div className="w-full flex flex-col">{sections.map(renderSection)}</div>
   );
 }
 
-export default MinistryBuilderRoute;
+export default PageBuilderRoute;
