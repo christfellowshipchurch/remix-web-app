@@ -235,6 +235,7 @@ export const mapPageBuilderChildItems = async (
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
+  console.log("params", params);
   try {
     const pathname = params?.path;
 
