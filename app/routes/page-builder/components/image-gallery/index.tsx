@@ -7,17 +7,19 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 import { ImageGallery, PageBuilderSection } from "../../types";
 import { cn } from "~/lib/utils";
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 
-// TODO: Fix the type of data
 export const ImageGallerySection = ({ data }: { data: PageBuilderSection }) => {
   return (
     <div className="w-full py-12 md:py-28 bg-white pl-5 md:pl-12 lg:px-18">
       <div className="max-w-screen-content mx-auto flex flex-col gap-12 lg:gap-20">
         <div className="flex flex-col gap-5 md:gap-6">
-          <h2 className="text-[48px] md:text-[52px] font-extrabold text-text-primary">
+          <h2 className="text-2xl md:text-[52px] font-extrabold text-text-primary">
             {data.name}
           </h2>
-          <p className="md:text-lg">{data.content}</p>
+          {data?.content?.length > 0 && (
+            <HTMLRenderer className="md:text-lg" html={data.content} />
+          )}
         </div>
 
         {/* Gallery Component */}
