@@ -48,7 +48,7 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
       <FinderSingleHero imagePath={coverImage} />
-      <div className="content-padding w-full flex flex-col items-center">
+      <div className="content-padding w-full flex justify-center">
         <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
           <div className="flex gap-6 items-center">
             <Link
@@ -64,28 +64,13 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
               <Breadcrumbs />
             </div>
           </div>
-          <div className="w-full flex flex-col items-center lg:flex-row lg:items-start gap-12 md:gap-16">
+
+          <div className="w-full flex justify-center">
             <GroupSingleBasicContent
               tags={tags}
               groupName={hit.title}
               summary={summary}
             />
-            <div className="flex flex-col w-full lg:w-auto">
-              <GroupSingleSidebar
-                leaders={leaders}
-                meetingType={meetingType}
-                meetingTime={meetingTime}
-                meetingDay={meetingDay}
-                campusName={campusName}
-              />
-            </div>
-            <div className="lg:hidden w-full flex flex-col gap-12">
-              <div className="flex flex-col gap-6 md:hidden">
-                <h2 className="text-lg font-extrabold">About</h2>
-                <p className="md:hidden">{summary}</p>
-              </div>
-              <GroupFAQ />
-            </div>
           </div>
         </div>
       </div>

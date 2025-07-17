@@ -195,7 +195,7 @@ export const ResourceCarousel = ({
               />
             </div>
 
-            <div className={cn("absolute h-8 right-34")}>
+            <div className={cn("absolute h-8 right-24")}>
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"
