@@ -1,4 +1,4 @@
-import { renderSection } from "~/routes/ministry-builder/ministry-builder-page";
+import { renderSection } from "~/routes/page-builder/page-builder-page";
 import { familiesMappedChildren } from "./tabs.data";
 
 export const ForFamilies = () => {

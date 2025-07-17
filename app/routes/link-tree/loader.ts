@@ -6,8 +6,8 @@ import { LinkTreeLoaderData, RockLinkTreeData } from "./types";
 import {
   fetchChildItems,
   mapPageBuilderChildItems,
-} from "../ministry-builder/loader";
-import { PageBuilderSection } from "../ministry-builder/types";
+} from "../page-builder/loader";
+import { PageBuilderSection } from "../page-builder/types";
 
 const fetchLinkTreePage = async (pathname: string) => {
   const linkTreePage = await fetchRockData({
