@@ -252,7 +252,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         attributeKey: "Pathname",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be dynamic
+        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be the page builder collection??
       },
     });
 

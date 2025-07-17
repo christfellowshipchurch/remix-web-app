@@ -9,7 +9,6 @@ import {
 import { PageBuilderLoader } from "../page-builder/types";
 
 export const loader: LoaderFunction = async ({ params }) => {
-  console.log("params", params);
   try {
     const pathname = params?.path;
 
