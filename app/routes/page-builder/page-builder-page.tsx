@@ -34,11 +34,21 @@ export function renderSection(section: PageBuilderSection) {
       if (section.faq) {
         return <FAQsComponent faqData={section.faq} />;
       }
+
+      console.error(
+        "FAQ section is missing the required faq data:",
+        section.id
+      );
       return null;
     case "IMAGE_GALLERY":
       if (section.imageGallery) {
         return <ImageGalleryComponent data={section.imageGallery} />;
       }
+
+      console.error(
+        "Image Gallery section is missing the required imageGallery data:",
+        section.id
+      );
       return null;
     case "CONTENT_BLOCK":
       return (
