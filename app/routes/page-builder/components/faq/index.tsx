@@ -2,16 +2,19 @@ import { useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { PageBuilderSection } from "../../types";
+import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 
 export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
   return (
     <div className="w-full content-padding py-12 md:py-28 bg-white">
-      <div className="max-w-screen-content mx-auto flex flex-col gap-12 lg:gap-20">
-        <div className="flex flex-col gap-6">
+      <div className="max-w-[768px] mx-auto flex flex-col items-center gap-12 lg:gap-20">
+        <div className="flex flex-col gap-6 text-center">
           <h2 className="text-[48px] md:text-[52px] font-extrabold text-text-primary">
             {data.name}
           </h2>
-          <p className="md:text-lg">{data.content}</p>
+          {data?.content?.length > 0 && (
+            <HTMLRenderer className="md:text-lg" html={data.content} />
+          )}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -20,7 +23,7 @@ export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
           ))}
         </div>
 
-        <div className="w-full flex flex-col items-center text-center gap-6">
+        <div className="w-full flex flex-col items-center text-center gap-6 md:-mt-8">
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl md:text-[28px] font-extrabold">
               Still have questions?
@@ -44,7 +47,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
   return (
     <div
-      className="text-left flex flex-col py-4 px-5 md:py-5 md:px-6 border border-black max-w-[768px] lg:max-w-none hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+      className="rounded-[1rem] text-left flex flex-col py-4 px-5 md:py-5 md:px-6 border border-[#666666] max-w-[768px] lg:max-w-none hover:bg-gray-50 transition-all duration-200 cursor-pointer"
       onClick={() => setIsExpanded(!isExpanded)}
     >
       <div className="flex justify-between gap-2 w-full cursor-pointer">
@@ -66,7 +69,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         }`}
       >
         <div className="overflow-hidden">
-          <p>{answer}</p>
+          <HTMLRenderer html={answer} />
         </div>
       </div>
     </div>
