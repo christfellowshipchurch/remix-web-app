@@ -32,7 +32,7 @@ export function renderSection(section: PageBuilderSection) {
       );
     case "FAQ":
       if (section.faq) {
-        return <FAQsComponent data={section} />;
+        return <FAQsComponent key={section.id} data={section} />;
       }
 
       console.error(
@@ -42,7 +42,7 @@ export function renderSection(section: PageBuilderSection) {
       return null;
     case "IMAGE_GALLERY":
       if (section.imageGallery) {
-        return <ImageGallerySection data={section} />;
+        return <ImageGallerySection key={section.id} data={section} />;
       }
 
       console.error(
@@ -69,8 +69,6 @@ export function renderSection(section: PageBuilderSection) {
 
 export function PageBuilderRoute() {
   const { sections } = useLoaderData<PageBuilderLoader>();
-
-  console.log("sections", sections);
 
   return (
     <div className="w-full flex flex-col">{sections.map(renderSection)}</div>

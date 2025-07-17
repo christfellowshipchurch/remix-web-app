@@ -23,6 +23,9 @@ const SECTION_TYPE_MAP: Record<string, SectionType> = {
   "168": "RESOURCE_COLLECTION",
   "169": "CTA_COLLECTION",
   "170": "CONTENT_BLOCK",
+  // TODO: Add correct FAQ & Image Gallery section ids? OR Page Builder Channel Id?
+  "171": "FAQ",
+  "172": "IMAGE_GALLERY",
 } as const;
 
 /**

@@ -258,9 +258,8 @@ export const loader: LoaderFunction = async ({ params }) => {
       },
     });
 
+    // TODO: Add error checking, 404 page is not currently being displayed
     if (!pageData) {
-      console.log("Page not found with pathname:", pathname);
-      console.log("pageData", pageData);
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
         statusText: "Not Found",
