@@ -1,6 +1,10 @@
 import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
+import {
+  createImageUrlFromGuid,
+  getIdentifierType,
+  parseRockKeyValueList,
+} from "~/lib/utils";
 import {
   getContentType,
   getPathname,
@@ -16,8 +20,6 @@ import {
 } from "./types";
 import { format, parseISO } from "date-fns";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
-import { faqData } from "./components/faq/mock-data";
-import { imageGalleryData } from "./components/image-gallery/mock-data";
 
 export const fetchChildItems = async (id: string) => {
   const childReferences = await fetchRockData({
@@ -132,6 +134,7 @@ export const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         content: child.content,
+        attributeValues: attributeValues,
         linkTreeLayout: await getLinkTreeLayout(child.attributeValues),
       };
 
@@ -231,6 +234,58 @@ export const mapPageBuilderChildItems = async (
         };
       }
 
+      if (sectionType === "FAQs") {
+        const { id: matrixId } = await fetchRockData({
+          endpoint: `AttributeMatrices`,
+          queryParams: {
+            $filter: `Guid eq guid'${attributeValues?.faqs}'`,
+            $select: "Id",
+          },
+        });
+
+        const faqs = await fetchRockData({
+          endpoint: `AttributeMatrixItems`,
+          queryParams: {
+            $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
+            loadAttributes: "simple",
+          },
+        });
+
+        return {
+          ...baseChild,
+          faqs: faqs.map((faq: any) => ({
+            id: faq.id,
+            question: faq.attributeValues.header.value,
+            answer: faq.attributeValues.content.value,
+          })),
+        };
+      }
+
+      if (sectionType === "IMAGE_GALLERY") {
+        const { id: matrixId } = await fetchRockData({
+          endpoint: `AttributeMatrices`,
+          queryParams: {
+            $filter: `Guid eq guid'${attributeValues?.images}'`,
+            $select: "Id",
+          },
+        });
+
+        const imageGallery = await fetchRockData({
+          endpoint: `AttributeMatrixItems`,
+          queryParams: {
+            $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
+            loadAttributes: "simple",
+          },
+        });
+
+        return {
+          ...baseChild,
+          imageGallery: imageGallery.map((image: any) =>
+            createImageUrlFromGuid(image.attributeValues.image.value)
+          ),
+        };
+      }
+
       return baseChild;
     })
   );
@@ -250,15 +305,14 @@ export const loader: LoaderFunction = async ({ params }) => {
     const pageData = await fetchRockData({
       endpoint: "ContentChannelItems/GetByAttributeValue",
       queryParams: {
-        // TODO: change this to Pathname
-        attributeKey: "Url",
+        attributeKey: "Pathname",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 85", //TODO: this is the old page builder collection, update this to be the NEW page builder collection??
+        $filter: "ContentChannelId eq 176",
       },
     });
 
-    // TODO: Add error checking, 404 page is not currently being displayed
+    // Handle case where pageData might be an array or null/undefined
     if (!pageData) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
@@ -266,46 +320,38 @@ export const loader: LoaderFunction = async ({ params }) => {
       });
     }
 
-    // const children = await fetchChildItems(pageData.id);
-    // const mappedChildren = await mapPageBuilderChildItems(children);
+    // Ensure pageData is a single object, not an array
+    const page = Array.isArray(pageData) ? pageData[0] : pageData;
 
-    // TODO: remove this mock sections and ensure they are processed correctly inside the mapPageBuilderChildItems function
-    const mockSections: PageBuilderSection[] = [
-      {
-        id: "1",
-        type: "FAQ",
-        name: "FAQs",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
-        faq: faqData,
-      },
-      {
-        id: "2",
-        type: "IMAGE_GALLERY",
-        name: "Image Gallery",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
-        imageGallery: imageGalleryData,
-      },
-    ];
+    if (!page || !page.id) {
+      throw new Response(`Page not found with pathname: ${pathname}`, {
+        status: 404,
+        statusText: "Not Found",
+      });
+    }
+
+    const children = await fetchChildItems(page.id);
+    const mappedChildren = await mapPageBuilderChildItems(children);
 
     const pageBuilder: PageBuilderLoader = {
-      title: pageData.title,
+      title: page.title,
       heroImage:
-        createImageUrlFromGuid(pageData.attributeValues?.heroImage?.value) ||
-        "",
-      content: pageData.content,
+        createImageUrlFromGuid(page.attributeValues?.heroImage?.value) || "",
+      content: page.content,
       callsToAction:
-        parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value) ||
-        [],
-
-      // TODO: change this to mappedChildren
-      sections: mockSections,
+        parseRockKeyValueList(page.attributeValues?.callsToAction?.value) || [],
+      sections: mappedChildren,
     };
 
     return pageBuilder;
   } catch (error) {
     console.error("Error in page builder loader:", error);
+
+    // If it's already a Response, re-throw it
+    if (error instanceof Response) {
+      throw error;
+    }
+
     throw new Response("Failed to load page content", {
       status: 500,
       statusText: "Internal Server Error",

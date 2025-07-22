@@ -6,7 +6,7 @@ export type SectionType =
   | "RESOURCE_COLLECTION"
   | "CTA_COLLECTION"
   | "CONTENT_BLOCK"
-  | "FAQ"
+  | "FAQs"
   | "IMAGE_GALLERY";
 
 export type ContentType =
@@ -34,26 +34,10 @@ export type RockAttributeValue = {
 };
 
 /**
- * Represents the structure of an image gallery item
- */
-export type ImageGallery = {
-  id: string;
-  images: string[];
-  description: string;
-};
-
-/**
- * Represents the structure of an FAQ component
- */
-export type FAQ = {
-  id: string;
-  faqs: FAQItem[];
-};
-
-/**
  * Represents the structure of each FAQ item used in the FAQ component
  */
 export type FAQItem = {
+  id: string;
   question: string;
   answer: string;
 };
@@ -82,13 +66,13 @@ export type CollectionItem = {
 export type PageBuilderSection = {
   id: string;
   name: string;
-  type: SectionType;
   content: string;
+  type: SectionType;
   attributeValues?: Record<string, RockAttributeValue["value"]>;
   linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
   collection?: CollectionItem[];
-  faq?: FAQ;
-  imageGallery?: ImageGallery;
+  faqs?: FAQItem[];
+  imageGallery?: string[];
 };
 
 /**
