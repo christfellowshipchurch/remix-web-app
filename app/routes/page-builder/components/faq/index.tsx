@@ -18,20 +18,15 @@ export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
         </div>
 
         <div className="flex flex-col gap-4">
-          {data.faq?.faqs.map((faq, index) => (
+          {data.faqs?.map((faq, index) => (
             <FAQItem key={index} question={faq.question} answer={faq.answer} />
           ))}
         </div>
 
         <div className="w-full flex flex-col items-center text-center gap-6 md:-mt-8">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-2xl md:text-[28px] font-extrabold">
-              Still have questions?
-            </h2>
-            <p className="md:text-lg">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.{" "}
-            </p>
-          </div>
+          <h2 className="text-2xl md:text-[28px] font-extrabold">
+            Still have questions?
+          </h2>
 
           <Button href="/contact" intent="secondary" className="font-normal">
             Contact

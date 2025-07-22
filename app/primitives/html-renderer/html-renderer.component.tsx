@@ -1,8 +1,4 @@
-import parse, {
-  attributesToProps,
-  domToReact,
-  Element,
-} from "html-react-parser";
+import parse, { attributesToProps, domToReact } from "html-react-parser";
 import "./html-renderer.styles.css";
 
 export const HTMLRenderer = ({

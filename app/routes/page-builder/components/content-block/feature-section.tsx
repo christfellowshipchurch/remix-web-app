@@ -79,7 +79,7 @@ export const FeatureSection: FC<{
             </h4>
           )}
           <HTMLRenderer
-            className="text-text-secondary text-lg"
+            className="content-block lg:text-lg"
             html={data.content}
           />
           <div className="flex items-center sm:items-start flex-col-reverse md:flex-row flex-wrap gap-4 mt-10">

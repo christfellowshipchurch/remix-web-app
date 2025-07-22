@@ -1,16 +1,25 @@
 /* .article-content is being added so that only the child tags of the article-content elements have this edited styling */
 
 /* H1 - H3 -> Titles */
-.article-content {
-  h1,
+.article-content,
+.content-block {
+  a {
+    /* Ocean */
+    color: #0092bc;
+    text-decoration: underline;
+  }
+
   h2,
   h3 {
     color: #222222;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
   }
 
   h1 {
+    color: #222222;
     font-size: 1.75rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -21,11 +30,13 @@
   h5,
   h6 {
     color: #222222;
-    font-weight: 700;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
   }
+}
 
+.article-content {
   p,
   div {
     color: #222222;
@@ -43,11 +54,6 @@
     margin-bottom: 1.3rem;
   }
 
-  a {
-    color: #0092bc;
-    text-decoration: underline;
-  }
-
   blockquote {
     font-style: italic;
     border-left: solid 2px #0092bc;
@@ -59,7 +65,19 @@
   }
 }
 
+.content-block {
+  p {
+    color: #666666;
+  }
+}
+
 .devotional-content {
+  a {
+    /* Ocean */
+    color: #0092bc;
+    text-decoration: underline;
+  }
+
   blockquote {
     font-style: italic;
     border-left: solid 2px #0092bc;

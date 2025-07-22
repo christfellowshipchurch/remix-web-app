@@ -30,13 +30,13 @@ export function renderSection(section: PageBuilderSection) {
           viewMoreLink="#tbd"
         />
       );
-    case "FAQ":
-      if (section.faq) {
+    case "FAQs":
+      if (section.faqs) {
         return <FAQsComponent key={section.id} data={section} />;
       }
 
       console.error(
-        "FAQ section is missing the required faq data:",
+        "FAQs section is missing the required faq data:",
         section.id
       );
       return null;
