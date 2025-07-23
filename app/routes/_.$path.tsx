@@ -3,7 +3,8 @@ import { NotFound } from "~/components/not-found";
 
 export { loader } from "./page-builder/loader";
 
-export function CatchBoundary() {
+//  Added as extra error boundary to catch 404s, might not be needed
+export function ErrorBoundary() {
   return <NotFound />;
 }
 
