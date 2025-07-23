@@ -1,8 +1,8 @@
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ResourceCard } from "~/primitives/cards/resource-card";
-import { CollectionItem } from "~/routes/page-builder/types";
 import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 export const CTACollectionSection = ({
   className,

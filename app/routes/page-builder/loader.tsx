@@ -1,6 +1,10 @@
 import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
+import {
+  createImageUrlFromGuid,
+  getIdentifierType,
+  parseRockKeyValueList,
+} from "~/lib/utils";
 import {
   getContentType,
   getPathname,
@@ -130,6 +134,7 @@ export const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         content: child.content,
+        attributeValues: attributeValues,
         linkTreeLayout: await getLinkTreeLayout(child.attributeValues),
       };
 
@@ -229,6 +234,58 @@ export const mapPageBuilderChildItems = async (
         };
       }
 
+      if (sectionType === "FAQs") {
+        const { id: matrixId } = await fetchRockData({
+          endpoint: `AttributeMatrices`,
+          queryParams: {
+            $filter: `Guid eq guid'${attributeValues?.faqs}'`,
+            $select: "Id",
+          },
+        });
+
+        const faqs = await fetchRockData({
+          endpoint: `AttributeMatrixItems`,
+          queryParams: {
+            $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
+            loadAttributes: "simple",
+          },
+        });
+
+        return {
+          ...baseChild,
+          faqs: faqs.map((faq: any) => ({
+            id: faq.id,
+            question: faq.attributeValues.header.value,
+            answer: faq.attributeValues.content.value,
+          })),
+        };
+      }
+
+      if (sectionType === "IMAGE_GALLERY") {
+        const { id: matrixId } = await fetchRockData({
+          endpoint: `AttributeMatrices`,
+          queryParams: {
+            $filter: `Guid eq guid'${attributeValues?.images}'`,
+            $select: "Id",
+          },
+        });
+
+        const imageGallery = await fetchRockData({
+          endpoint: `AttributeMatrixItems`,
+          queryParams: {
+            $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
+            loadAttributes: "simple",
+          },
+        });
+
+        return {
+          ...baseChild,
+          imageGallery: imageGallery.map((image: any) =>
+            createImageUrlFromGuid(image.attributeValues.image.value)
+          ),
+        };
+      }
+
       return baseChild;
     })
   );
@@ -251,10 +308,11 @@ export const loader: LoaderFunction = async ({ params }) => {
         attributeKey: "Pathname",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be dynamic
+        $filter: "ContentChannelId eq 176",
       },
     });
 
+    // Handle case where pageData might be an array or null/undefined
     if (!pageData) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
@@ -262,24 +320,38 @@ export const loader: LoaderFunction = async ({ params }) => {
       });
     }
 
-    const children = await fetchChildItems(pageData.id);
+    // Ensure pageData is a single object, not an array
+    const page = Array.isArray(pageData) ? pageData[0] : pageData;
+
+    if (!page || !page.id) {
+      throw new Response(`Page not found with pathname: ${pathname}`, {
+        status: 404,
+        statusText: "Not Found",
+      });
+    }
+
+    const children = await fetchChildItems(page.id);
     const mappedChildren = await mapPageBuilderChildItems(children);
 
     const pageBuilder: PageBuilderLoader = {
-      title: pageData.title,
+      title: page.title,
       heroImage:
-        createImageUrlFromGuid(pageData.attributeValues?.heroImage?.value) ||
-        "",
-      content: pageData.content,
+        createImageUrlFromGuid(page.attributeValues?.heroImage?.value) || "",
+      content: page.content,
       callsToAction:
-        parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value) ||
-        [],
+        parseRockKeyValueList(page.attributeValues?.callsToAction?.value) || [],
       sections: mappedChildren,
     };
 
     return pageBuilder;
   } catch (error) {
     console.error("Error in page builder loader:", error);
+
+    // If it's already a Response, re-throw it
+    if (error instanceof Response) {
+      throw error;
+    }
+
     throw new Response("Failed to load page content", {
       status: 500,
       statusText: "Internal Server Error",
