@@ -1,12 +1,13 @@
 import { useLoaderData } from "react-router-dom";
-import { PageBuilderLoader } from "./types";
-import { DynamicHero } from "~/components";
+import { PageBuilderLoader, PageBuilderSection } from "./types";
 import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
 import { CTACollectionSection } from "~/components/page-builder/cta-collection";
 import { ContentBlock } from "./components/content-block";
 import { ContentBlockData } from "./types";
+import { ImageGallerySection } from "./components/image-gallery";
+import { FAQsComponent } from "./components/faq";
 
-export function renderSection(section: any) {
+export function renderSection(section: PageBuilderSection) {
   switch (section.type) {
     case "RESOURCE_COLLECTION":
     case "EVENT_COLLECTION":
@@ -29,6 +30,26 @@ export function renderSection(section: any) {
           viewMoreLink="#tbd"
         />
       );
+    case "FAQs":
+      if (section.faqs) {
+        return <FAQsComponent key={section.id} data={section} />;
+      }
+
+      console.error(
+        "FAQs section is missing the required faq data:",
+        section.id
+      );
+      return null;
+    case "IMAGE_GALLERY":
+      if (section.imageGallery) {
+        return <ImageGallerySection key={section.id} data={section} />;
+      }
+
+      console.error(
+        "Image Gallery section is missing the required imageGallery data:",
+        section.id
+      );
+      return null;
     case "CONTENT_BLOCK":
       return (
         <ContentBlock
@@ -47,22 +68,10 @@ export function renderSection(section: any) {
 }
 
 export function PageBuilderRoute() {
-  const { title, heroImage, callsToAction, sections } =
-    useLoaderData<PageBuilderLoader>();
+  const { sections } = useLoaderData<PageBuilderLoader>();
 
   return (
-    <div>
-      <DynamicHero
-        customTitle={title}
-        imagePath={heroImage}
-        ctas={callsToAction.map((cta) => ({
-          href: cta.url,
-          title: cta.title,
-        }))}
-      />
-
-      {sections.map(renderSection)}
-    </div>
+    <div className="w-full flex flex-col">{sections.map(renderSection)}</div>
   );
 }
 
