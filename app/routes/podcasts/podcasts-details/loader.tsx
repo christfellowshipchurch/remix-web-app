@@ -12,7 +12,7 @@ export type LoaderReturnType = {
   path: string;
   podcast: Podcast;
   latestEpisodes: PodcastEpisode[];
-  featureBlocks: ContentBlockData[];
+  featureBlocks: ContentBlockData[] | null;
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
 };
@@ -149,7 +149,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     path,
     podcast,
     latestEpisodes,
-    featureBlocks,
+    featureBlocks: featureBlocks || null,
     ALGOLIA_APP_ID: appId || "",
     ALGOLIA_SEARCH_API_KEY: searchApiKey || "",
   };
