@@ -2,7 +2,6 @@ import type { Podcast } from "../../types";
 import lodash from "lodash";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
-import { icons } from "~/lib/icons";
 import { Link } from "react-router-dom";
 
 type PodcastCardProps = {
@@ -11,20 +10,26 @@ type PodcastCardProps = {
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, trailer, shareLinks } = podcast;
+  const { title, description, apple, spotify, amazon } = podcast;
   const { kebabCase } = lodash;
 
-  const platformToIcon: Record<string, keyof typeof icons> = {
-    "Apple Music": "appleLogo",
-    Spotify: "spotify",
-    "Amazon Music": "amazonMusic",
-  };
-
-  const links = shareLinks.map((link) => ({
-    label: link.title,
-    icon: platformToIcon[link.title] || "link",
-    href: link.url,
-  }));
+  const links = [
+    {
+      label: "Apple Music",
+      icon: "appleLogo",
+      href: apple,
+    },
+    {
+      label: "Spotify",
+      icon: "spotify",
+      href: spotify,
+    },
+    {
+      label: "Amazon Music",
+      icon: "amazonMusic",
+      href: amazon,
+    },
+  ];
 
   return (
     <div
@@ -59,10 +64,11 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                 <Link
                   key={index}
                   to={link.href}
+                  target="_blank"
                   className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
                 >
                   <Icon
-                    name={link.icon}
+                    name={link.icon as any}
                     color="white"
                     size={link.icon === "amazonMusic" ? 36 : 24}
                     className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
@@ -111,10 +117,11 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                 <Link
                   key={index}
                   to={link.href}
+                  target="_blank"
                   className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[72px]"
                 >
                   <Icon
-                    name={link.icon}
+                    name={link.icon as any}
                     color="white"
                     size={link.icon === "amazonMusic" ? 50 : 36}
                     className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
