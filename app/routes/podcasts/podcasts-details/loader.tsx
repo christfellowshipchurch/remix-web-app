@@ -2,16 +2,22 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { PodcastEpisode, Podcast } from "../types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
+import {
+  fetchChildItems,
+  mapPageBuilderChildItems,
+} from "../../page-builder/loader";
+import { ContentBlockData } from "~/routes/page-builder/types";
 
 export type LoaderReturnType = {
   path: string;
   podcast: Podcast;
   latestEpisodes: PodcastEpisode[];
+  featureBlocks: ContentBlockData[];
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
 };
 
-export async function getLatestEpisodes(channelGuid: string) {
+export async function getChannelIdByGuid(channelGuid: string) {
   let channel;
   try {
     channel = await fetchRockData({
@@ -31,12 +37,18 @@ export async function getLatestEpisodes(channelGuid: string) {
     channel = channel[0];
   }
 
+  return channel.id;
+}
+
+export async function getLatestEpisodes(channelGuid: string) {
+  const channelId = await getChannelIdByGuid(channelGuid);
+
   let episodes;
   try {
     episodes = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: `ContentChannelId eq ${channel.id} and Status eq 'Approved'`,
+        $filter: `ContentChannelId eq ${channelId} and Status eq 'Approved'`,
         $orderby: "StartDateTime desc",
         $top: "6",
         loadAttributes: "simple",
@@ -86,6 +98,7 @@ export async function getPodcast(path: string) {
   }
 
   const podcastShow: Podcast = {
+    id: podcastData.id,
     title: podcastData.title,
     description: podcastData.content,
     coverImage: createImageUrlFromGuid(
@@ -100,6 +113,21 @@ export async function getPodcast(path: string) {
   return podcastShow;
 }
 
+export async function getPodcastFeatureBlocks(podcast: Podcast) {
+  try {
+    // Fetch child items (feature blocks) for this podcast
+    const children = await fetchChildItems(podcast.id);
+
+    // Map the children to page builder sections
+    const featureBlocks = await mapPageBuilderChildItems(children);
+
+    return featureBlocks;
+  } catch (error) {
+    console.error("Error fetching podcast feature blocks:", error);
+    return [];
+  }
+}
+
 export async function loader({ params }: LoaderFunctionArgs) {
   const { path } = params;
   if (!path) {
@@ -108,6 +136,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const podcast = await getPodcast(path);
   const latestEpisodes = await getLatestEpisodes(podcast.episodesChannelGuid);
+  const featureBlocks = await getPodcastFeatureBlocks(podcast);
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
@@ -120,6 +149,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     path,
     podcast,
     latestEpisodes,
+    featureBlocks,
     ALGOLIA_APP_ID: appId || "",
     ALGOLIA_SEARCH_API_KEY: searchApiKey || "",
   };
