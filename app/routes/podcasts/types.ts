@@ -8,15 +8,15 @@ export type Podcas = {
 
 export type Podcast = {
   title: string;
-  tags: string[];
-  trailer: string;
-  seasons: Season[];
   coverImage: string;
   description: string;
-  shareLinks: {
-    title: string;
-    url: string;
-  }[];
+  apple: string;
+  spotify: string;
+  amazon: string;
+  episodesChannelGuid: string;
+  //seasons: Season[];
+  //tags: string[];
+  //trailer: string;
 };
 
 export type PodcastEpisode = {
@@ -28,6 +28,7 @@ export type PodcastEpisode = {
   coverImage: string;
   description: string;
   authors: string;
+  url: string;
 
   content: string;
   resources: {
