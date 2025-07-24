@@ -18,11 +18,10 @@ export function PodcastsDetailsPage() {
         spotify={podcast.spotify}
         amazon={podcast.amazon}
       />
-      {featureBlocks
-        .filter((block) => block.type === "CONTENT_BLOCK")
-        .map((block) => (
-          <ContentBlock key={block.id} data={block} />
-        ))}
+      {featureBlocks &&
+        featureBlocks
+          .filter((block) => block.type === "CONTENT_BLOCK")
+          .map((block) => <ContentBlock key={block.id} data={block} />)}
       <AllSeasons />
     </div>
   );
