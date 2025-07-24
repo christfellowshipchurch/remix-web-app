@@ -5,6 +5,8 @@ export type LoaderReturnType = {
   path: string;
   podcast: Podcast;
   latestEpisodes: PodcastEpisode[];
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
 };
 
 export async function getLatestEpisodes() {
@@ -116,5 +118,24 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const latestEpisodes = await getLatestEpisodes();
   const podcast = await getPodcast(path);
 
-  return { path, podcast, latestEpisodes };
+  const appId = process.env.ALGOLIA_APP_ID;
+  const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+
+  console.log("Loader environment variables:", {
+    appId: appId ? "***" : "MISSING",
+    searchApiKey: searchApiKey ? "***" : "MISSING",
+    podcastTitle: podcast.title,
+  });
+
+  if (!appId || !searchApiKey) {
+    console.warn("Algolia credentials not found - search will not work");
+  }
+
+  return {
+    path,
+    podcast,
+    latestEpisodes,
+    ALGOLIA_APP_ID: appId || "",
+    ALGOLIA_SEARCH_API_KEY: searchApiKey || "",
+  };
 }
