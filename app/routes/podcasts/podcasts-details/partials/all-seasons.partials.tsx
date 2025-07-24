@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import { PodcastEpisodeCard } from "../components/podcast-episode-card";
+import { PodcastEpisodeSearch } from "../components/podcast-episode-search";
 
 export const AllSeasons = () => {
-  const { podcast } = useLoaderData<LoaderReturnType>();
-  const [selectedSeasonIndex, setSelectedSeasonIndex] = useState(0);
+  const { podcast, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+    useLoaderData<LoaderReturnType>();
 
   return (
     <div className="w-full bg-[#F5F5FA] content-padding">
@@ -13,32 +12,11 @@ export const AllSeasons = () => {
         <div className="flex flex-col gap-8">
           <h2 className="text-[28px] font-extrabold">All Seasons</h2>
 
-          {/* Seasons Navigation */}
-          <div className="flex flex-wrap gap-3">
-            {podcast.seasons.map((season, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedSeasonIndex(index)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                  ${
-                    index === selectedSeasonIndex
-                      ? "bg-ocean text-white"
-                      : "bg-white hover:bg-ocean hover:text-white"
-                  }`}
-              >
-                {season.title}
-              </button>
-            ))}
-          </div>
-
-          {/* Episodes Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {podcast.seasons[selectedSeasonIndex].episodes.map(
-              (episode, index) => (
-                <PodcastEpisodeCard key={index} podcastEpisode={episode} />
-              )
-            )}
-          </div>
+          <PodcastEpisodeSearch
+            ALGOLIA_APP_ID={ALGOLIA_APP_ID}
+            ALGOLIA_SEARCH_API_KEY={ALGOLIA_SEARCH_API_KEY}
+            podcastTitle={podcast.title}
+          />
         </div>
       </div>
     </div>
