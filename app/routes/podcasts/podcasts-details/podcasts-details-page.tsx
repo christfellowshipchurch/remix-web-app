@@ -4,10 +4,10 @@ import { PodcastsHero } from "./partials/podcasts-hero.partial";
 import { LatestEpisodes } from "./partials/latests-episodes.partials";
 import { AllSeasons } from "./partials/all-seasons.partials";
 import { SubscribeSection } from "./partials/subscribe-section.partial";
-import { DynamicInfo } from "./components/dynamic-info.component";
+import { ContentBlock } from "../../page-builder/components/content-block";
 
 export function PodcastsDetailsPage() {
-  const { podcast } = useLoaderData<LoaderReturnType>();
+  const { podcast, featureBlocks } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="flex flex-col items-center">
@@ -18,7 +18,11 @@ export function PodcastsDetailsPage() {
         spotify={podcast.spotify}
         amazon={podcast.amazon}
       />
-      <DynamicInfo />
+      {featureBlocks
+        .filter((block) => block.type === "CONTENT_BLOCK")
+        .map((block) => (
+          <ContentBlock key={block.id} data={block} />
+        ))}
       <AllSeasons />
     </div>
   );

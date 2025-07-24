@@ -7,6 +7,7 @@ export type Podcas = {
 };
 
 export type Podcast = {
+  id: string;
   title: string;
   coverImage: string;
   description: string;
