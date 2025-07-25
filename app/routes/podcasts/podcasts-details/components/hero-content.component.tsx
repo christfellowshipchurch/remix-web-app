@@ -1,13 +1,17 @@
 import { Icon } from "~/primitives/icon/icon";
+import { PodcastEpisode } from "../../types";
+import { Link } from "react-router-dom";
 
 export const HeroContent = ({
   title,
   description,
   coverImage,
+  latestEpisode,
 }: {
   title: string;
   description: string;
   coverImage: string;
+  latestEpisode: PodcastEpisode;
 }) => {
   return (
     <div className="flex px-6 md:px-16 pt-16 pb-6 md:pb-16 md:pt-24">
@@ -25,12 +29,20 @@ export const HeroContent = ({
               dangerouslySetInnerHTML={{ __html: description }}
             />
           )}
-          <div className="flex items-center gap-4">
-            <div className="bg-ocean rounded-full p-2 flex items-center justify-center size-15">
-              <Icon name="play" color="white" size={36} className="pl-1" />
-            </div>
-            <p className="text-white text-lg font-semibold">START LISTENING</p>
-          </div>
+          {latestEpisode && latestEpisode.url && (
+            <Link
+              to={latestEpisode.url || ""}
+              className="group flex items-center gap-2"
+              target="_blank"
+            >
+              <div className="bg-ocean rounded-full p-2 flex items-center justify-center size-15 group-hover:bg-ocean/70 transition-colors">
+                <Icon name="play" color="white" size={36} className="pl-1" />
+              </div>
+              <p className="text-lg font-semibold text-white group-hover:text-white/70 ml-2 transition-colors">
+                START LISTENING
+              </p>
+            </Link>
+          )}
         </div>
 
         <img

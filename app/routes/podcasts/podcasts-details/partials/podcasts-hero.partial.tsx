@@ -2,23 +2,22 @@ import { Breadcrumbs } from "~/components";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { Podcast } from "../../types";
 import { HeroContent } from "../components/hero-content.component";
+import { useLoaderData } from "react-router-dom";
+import { LoaderReturnType } from "../loader";
 
-interface PodcastsHeroProps {
-  podcast: Podcast;
-}
-
-export const PodcastsHero: React.FC<PodcastsHeroProps> = ({
-  podcast,
-}: PodcastsHeroProps) => {
+export const PodcastsHero = () => {
+  const { podcast, latestEpisodes } = useLoaderData<LoaderReturnType>();
   const { title, description, coverImage } = podcast;
+  const latestEpisode = latestEpisodes[0];
 
   return (
     <div className="w-full" style={heroBgImgStyles(coverImage)}>
-      <div className="bg-white/10 backdrop-blur-lg">
+      <div className="bg-black/50 backdrop-blur-lg">
         <HeroContent
           title={title}
           description={description}
           coverImage={coverImage}
+          latestEpisode={latestEpisode}
         />
         <div className="content-padding">
           <div className="max-w-screen-content mx-auto">
