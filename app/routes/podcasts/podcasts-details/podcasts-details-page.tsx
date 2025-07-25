@@ -11,7 +11,7 @@ export function PodcastsDetailsPage() {
 
   return (
     <div className="flex flex-col items-center">
-      <PodcastsHero podcast={podcast} />
+      <PodcastsHero />
       <LatestEpisodes />
       <SubscribeSection
         apple={podcast.apple}
