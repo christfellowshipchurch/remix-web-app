@@ -69,7 +69,7 @@ export const PodcastEpisodeSearch = ({
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
-  const testFilter = `contentType:"Podcast"`;
+  const testFilter = `contentType:"Podcast" AND show:"${podcastTitle}"`;
 
   return (
     <InstantSearch
