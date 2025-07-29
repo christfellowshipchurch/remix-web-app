@@ -44,9 +44,9 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
   return (
     <div
       className={cn(
-        "overflow-auto",
+        "overflow-hidden",
         "max-w-screen-content",
-        "max-h-[85vh]",
+        "h-[85vh]",
         "xl:!w-6xl",
         "lg:w-4xl",
         "md:w-2xl",
@@ -54,9 +54,9 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
         "w-[350px]"
       )}
     >
-      <div className="size-full flex flex-col lg:flex-row w-full rounded-xl overflow-hidden">
-        {/* Left/Top Side */}
-        <div className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8">
+      <div className="h-full flex flex-col lg:flex-row w-full rounded-xl">
+        {/* Left Side */}
+        <div className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8 flex-shrink-0">
           <div className="hidden md:block">
             <AuthorBioDesktop
               id={author?.id}
@@ -78,8 +78,8 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
           </div>
         </div>
 
-        {/* Right/Bottom Side */}
-        <div className="w-full lg:w-3/5 px-4 bg-white md:py-4">
+        {/* Right Side */}
+        <div className="w-full lg:w-3/5 px-4 bg-white md:py-4 flex-1 overflow-hidden rounded-r-xl">
           <AuthorTabs articles={author?.authorAttributes?.publications} />
         </div>
       </div>
