@@ -1,12 +1,4 @@
-export type Podcas = {
-  id: string;
-  title: string;
-  image: string;
-  tags: string[];
-  href: string;
-};
-
-export type Podcast = {
+export type PodcastShow = {
   id: string;
   title: string;
   coverImage: string;
@@ -15,6 +7,7 @@ export type Podcast = {
   spotify: string;
   amazon: string;
   episodesChannelGuid: string;
+  url: string;
   //seasons: Season[];
   //tags: string[];
   //trailer: string;
@@ -36,14 +29,9 @@ export type PodcastEpisode = {
     title: string;
     url: string;
   }[];
-
-  shareLinks: {
-    title: string;
-    url: string;
-  }[];
 };
 
-export type Season = {
+export type PodcastSeason = {
   title: string;
   description: string;
   coverImage: string;

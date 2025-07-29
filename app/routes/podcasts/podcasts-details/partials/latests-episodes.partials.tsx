@@ -10,7 +10,7 @@ import {
 import { PodcastEpisodeCard } from "../components/podcast-episode-card";
 
 export const LatestEpisodes = () => {
-  const { latestEpisodes } = useLoaderData<LoaderReturnType>();
+  const { latestEpisodes, podcast } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="w-full bg-white content-padding">
@@ -29,7 +29,10 @@ export const LatestEpisodes = () => {
                   key={index}
                   className="w-full aspect-video basis-[75%] md:basis-[50%] lg:basis-[38%] xl:basis-[29%] pl-0"
                 >
-                  <PodcastEpisodeCard podcastEpisode={episode} />
+                  <PodcastEpisodeCard
+                    podcastEpisode={episode}
+                    show={podcast.url}
+                  />
                 </CarouselItem>
               ))}
             </CarouselContent>

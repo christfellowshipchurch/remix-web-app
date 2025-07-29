@@ -1,6 +1,5 @@
 import { Breadcrumbs } from "~/components";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
-import { Podcast } from "../../types";
 import { HeroContent } from "../components/hero-content.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";

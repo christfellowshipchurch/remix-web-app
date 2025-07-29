@@ -1,17 +1,16 @@
-import type { Podcast } from "../../types";
-import lodash from "lodash";
+import type { PodcastShow } from "../../types";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { Link } from "react-router-dom";
 
 type PodcastCardProps = {
-  podcast: Podcast;
+  podcast: PodcastShow;
   className?: string;
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, apple, spotify, amazon } = podcast;
-  const { kebabCase } = lodash;
+  const { title, description, apple, spotify, amazon, url, coverImage } =
+    podcast;
 
   const links = [
     {
@@ -39,9 +38,9 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
       <div className="hidden relative md:flex flex-col lg:flex-row lg:justify-between gap-8 max-w-screen-content">
         {/* Image */}
         <img
-          src={"/assets/images/podcasts/temp-embed.jpg"}
+          src={coverImage}
           alt={title}
-          className="object-cover bg-cover w-full h-[360px] lg:h-[282px] lg:w-[480px] xl:w-[590px] xl:h-[350px]"
+          className="object-cover bg-cover w-full h-[360px] lg:h-[282px] lg:w-[480px] xl:w-[590px] xl:h-[350px] rounded-lg"
         />
 
         {/* Content */}
@@ -53,8 +52,9 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
           <div className="flex items-center gap-8 w-full">
             <Button
               intent="secondary"
-              href={`/podcasts/${kebabCase(title)}`}
+              href={url || ""}
               className="h-full"
+              target="_blank"
             >
               Episodes and More
             </Button>
@@ -96,16 +96,17 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
               <p className="text-sm text-[#767676]">{description}</p>
             </div>
             <img
-              src={"/assets/images/podcasts/temp-embed.jpg"}
+              src={coverImage}
               alt={title}
-              className="object-cover bg-cover w-full h-[360px]"
+              className="object-cover bg-cover w-full h-[360px] rounded-lg"
             />
           </div>
 
           <div className="flex flex-col items-center gap-8 w-full">
             <Button
               intent="secondary"
-              href={`/podcasts/${kebabCase(title)}`}
+              href={url || ""}
+              target="_blank"
               linkClassName="w-full"
               className="w-full"
             >
