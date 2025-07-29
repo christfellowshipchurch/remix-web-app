@@ -31,6 +31,7 @@ export const loader = async (): Promise<{
   const authorDetails = await Promise.all(authorIds.map(getAuthorDetails));
 
   const authors: Author[] = authorDetails.map((data) => ({
+    id: data.id,
     hostUrl: process.env.HOST_URL || "host-url-not-found",
     fullName: data.fullName,
     profilePhoto: data.photo.uri ?? "",

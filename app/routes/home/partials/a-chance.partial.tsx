@@ -6,7 +6,7 @@ export function AChanceSection() {
     <section className="relative w-full">
       <h2
         className={cn(
-          "w-screen text-2xl md:text-4xl font-bold text-center text-pretty",
+          "w-screen text-2xl md:text-[40px] font-extrabold text-center text-pretty",
           "sticky lg:absolute top-0 z-49",
           "pt-28",
           "mb-20 lg:mb-32",
