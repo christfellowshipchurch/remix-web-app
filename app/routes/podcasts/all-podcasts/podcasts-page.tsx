@@ -1,10 +1,11 @@
 import { useLoaderData } from "react-router-dom";
 import { DynamicHero } from "~/components";
 import { PodcastHubCard } from "./components/podcast-card";
-import type { PodcastsHubLoaderData } from "./loader";
+import { loader } from "./loader";
+import { PodcastShow } from "../types";
 
 export function PodcastsPage() {
-  const { podcasts } = useLoaderData() as PodcastsHubLoaderData;
+  const { podcastShows } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col items-center">
@@ -15,7 +16,7 @@ export function PodcastsPage() {
       />
       <div className="py-10 md:py-20 w-full mx-auto">
         <div className="flex flex-col items-center">
-          {podcasts.map((podcast, index) => (
+          {podcastShows.map((podcast: PodcastShow, index: number) => (
             <PodcastHubCard
               key={index}
               podcast={podcast}

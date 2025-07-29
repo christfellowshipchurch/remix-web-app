@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import { PodcastEpisode, Podcast } from "../types";
+import { PodcastEpisode, PodcastShow } from "../types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import {
@@ -10,7 +10,7 @@ import { ContentBlockData } from "~/routes/page-builder/types";
 
 export type LoaderReturnType = {
   path: string;
-  podcast: Podcast;
+  podcast: PodcastShow;
   latestEpisodes: PodcastEpisode[];
   featureBlocks: ContentBlockData[] | null;
   ALGOLIA_APP_ID: string;
@@ -62,7 +62,7 @@ export async function getLatestEpisodes(channelGuid: string) {
     throw new Error("Error fetching episodes from Rock");
   }
 
-  const formattedEpisodes = episodes.map((episode) => {
+  const formattedEpisodes = episodes.map((episode: any) => {
     return {
       title: episode.title,
       description: episode.content.attributeValues?.summary?.value,
@@ -97,7 +97,7 @@ export async function getPodcast(path: string) {
     throw new Error("Error fetching podcast from Rock");
   }
 
-  const podcastShow: Podcast = {
+  const podcastShow: PodcastShow = {
     id: podcastData.id,
     title: podcastData.title,
     description: podcastData.content,
@@ -108,12 +108,13 @@ export async function getPodcast(path: string) {
     spotify: podcastData.attributeValues?.spotify?.value,
     amazon: podcastData.attributeValues?.amazonMusic?.value,
     episodesChannelGuid: podcastData.attributeValues?.showChannel?.value,
+    url: podcastData.attributeValues?.url?.value,
   };
 
   return podcastShow;
 }
 
-export async function getPodcastFeatureBlocks(podcast: Podcast) {
+export async function getPodcastFeatureBlocks(podcast: PodcastShow) {
   try {
     // Fetch child items (feature blocks) for this podcast
     const children = await fetchChildItems(podcast.id);
