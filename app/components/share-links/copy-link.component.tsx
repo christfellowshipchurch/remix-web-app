@@ -17,6 +17,7 @@ const CopyToClipboard = ({
         onClick={() => {
           navigator.clipboard.writeText(textToCopy || "");
         }}
+        className="cursor-pointer"
       >
         {children}
       </button>

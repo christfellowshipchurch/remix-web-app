@@ -11,6 +11,7 @@ type SocialMedia = {
 };
 
 export type Author = {
+  id: string;
   hostUrl: string;
   fullName: string;
   profilePhoto: string;
@@ -99,6 +100,7 @@ export const getAuthorDetails = async (personId: string) => {
     ].filter((link) => link.url !== null);
 
     return {
+      id: authorData.id,
       fullName: `${authorData.firstName} ${authorData.lastName}`,
       photo: {
         uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
@@ -160,8 +162,10 @@ export const loader: LoaderFunction = async ({ params }) => {
       statusText: "Not Found",
     });
   }
+  console.log("data", data);
 
   const authorData: Author = {
+    id: data.id,
     hostUrl: process.env.HOST_URL || "host-url-not-found",
     fullName: data.fullName,
     profilePhoto: data.photo.uri ?? "",

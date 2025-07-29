@@ -74,7 +74,7 @@ const LeaderCard = ({
               {/* TODO: Update logo to be the correct size */}
               <Icon
                 name="cfLogo"
-                className="opacity-75 absolute bototm-0 -left-16 object-contain size-full text-ocean group-hover:text-white transform transition-all duration-300 group-hover:-translate-y-36"
+                className="opacity-75 absolute bottom-0 -left-16 object-contain size-full text-ocean group-hover:text-white transform transition-all duration-300 group-hover:-translate-y-36"
               />
             </div>
           </div>
