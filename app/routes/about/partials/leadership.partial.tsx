@@ -3,11 +3,17 @@ import { LeaderGrid } from "../components/leaders-grid.component";
 import { LeaderScroll } from "../components/leaders-scroll.component";
 import { SectionTitle } from "~/components/section-title";
 
-export function LeadershipSection({ bg }: { bg?: string }) {
+export function LeadershipSection({
+  bg,
+  className,
+}: {
+  bg?: string;
+  className?: string;
+}) {
   return (
     <section
       id="leadership"
-      className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray")}
+      className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray", className)}
     >
       <div className="max-w-screen-content mx-auto ">
         <div className="content-padding lg:px-0 lg:flex flex-col lg:gap-28">

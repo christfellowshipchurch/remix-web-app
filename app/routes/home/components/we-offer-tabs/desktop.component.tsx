@@ -14,7 +14,7 @@ export const WhatWeOfferCard = ({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:p-9 w-[72vw] md:w-[230px] lg:w-[280px] xl:w-[320px] h-full",
+        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:px-5 lg:py-8 w-[72vw] md:w-[230px] lg:w-[300px] xl:w-[340px] h-full",
         middleCard && "min-h-[340px] md:min-h-[340px] lg:min-h-[420px]"
       )}
     >
@@ -39,11 +39,11 @@ export const WhatWeOfferCard = ({
         )}
 
         <div className="flex flex-col gap-4 flex-1 justify-end">
-          <p className="text-semibold lg:text-lg text-center">
+          <p className="text-semibold lg:text-[17px] text-center">
             {content.description1}
           </p>
           {content.description2 && (
-            <p className="text-semibold lg:text-lg text-center">
+            <p className="text-semibold lg:text-[17px] text-center">
               {content.description2}
             </p>
           )}
@@ -111,7 +111,7 @@ export const WhatWeOfferDesktop = () => {
                   <div
                     key={index}
                     className={cn(
-                      "min-w-[230px] lg:min-w-[280px] xl:min-w-[320px]",
+                      "min-w-[230px] lg:min-w-[300px] xl:min-w-[340px]",
                       tab.content.length === 2 && {
                         "lg:-rotate-1": index === 0,
                         "lg:rotate-1": index === 1,

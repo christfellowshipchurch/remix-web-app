@@ -16,6 +16,7 @@ const socialIcons: {
 type ShareLinksProps = {
   size: number;
   url?: string;
+  overrideCopyUrl?: string;
   backgroundColor?: string;
   socialMedia: SocialMedia[];
 };
@@ -26,6 +27,7 @@ export function ShareLinks({
   size = 8,
   socialMedia,
   url,
+  overrideCopyUrl,
   backgroundColor,
 }: ShareLinksProps) {
   // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side. We'll use "any" return type for flexibliity
@@ -59,7 +61,7 @@ export function ShareLinks({
     } else if (icon?.name === "linkAlt") {
       return (
         <div key={index}>
-          <CopyLink textToCopy={fullPath}>
+          <CopyLink textToCopy={overrideCopyUrl || fullPath}>
             <Icon
               name="linkAlt"
               size={38}

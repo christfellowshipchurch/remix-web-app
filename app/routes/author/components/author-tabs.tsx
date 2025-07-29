@@ -14,42 +14,48 @@ export type AuthorTabsProps = {
 
 const AuthorTabs = ({ articles, books, podcasts }: AuthorTabsProps) => {
   return (
-    <Tabs.Root defaultValue="articles">
-      <Tabs.List className="border-b-2 border-neutral-300">
-        {articles && articles?.length > 0 && (
-          <Tabs.Trigger className={tabStyles} value="articles">
-            Articles
-          </Tabs.Trigger>
-        )}
-        {books && books.length > 0 && (
-          <Tabs.Trigger className={tabStyles} value="books">
-            Books
-          </Tabs.Trigger>
-        )}
-        {podcasts && podcasts.length > 0 && (
-          <Tabs.Trigger className={tabStyles} value="podcasts">
-            Podcasts
-          </Tabs.Trigger>
-        )}
-      </Tabs.List>
+    <div className="h-full flex flex-col">
+      <Tabs.Root defaultValue="articles" className="h-full flex flex-col">
+        <Tabs.List className="border-b-2 border-neutral-300 flex-shrink-0 bg-white">
+          {articles && articles?.length > 0 && (
+            <Tabs.Trigger className={tabStyles} value="articles">
+              Articles
+            </Tabs.Trigger>
+          )}
+          {books && books.length > 0 && (
+            <Tabs.Trigger className={tabStyles} value="books">
+              Books
+            </Tabs.Trigger>
+          )}
+          {podcasts && podcasts.length > 0 && (
+            <Tabs.Trigger className={tabStyles} value="podcasts">
+              Podcasts
+            </Tabs.Trigger>
+          )}
+        </Tabs.List>
 
-      <Tabs.Content className={tabContentStyles} value="articles">
-        {articles &&
-          articles.map((article, index) => (
-            <AuthorArticle key={index} {...article} />
-          ))}
-      </Tabs.Content>
-      <Tabs.Content className={tabContentStyles} value="books">
-        {books &&
-          books.map((book, index) => <AuthorArticle key={index} {...book} />)}
-      </Tabs.Content>
-      <Tabs.Content className={tabContentStyles} value="podcasts">
-        {podcasts &&
-          podcasts.map((podcast, index) => (
-            <AuthorArticle key={index} {...podcast} />
-          ))}
-      </Tabs.Content>
-    </Tabs.Root>
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <Tabs.Content className={tabContentStyles} value="articles">
+            {articles &&
+              articles.map((article, index) => (
+                <AuthorArticle key={index} {...article} />
+              ))}
+          </Tabs.Content>
+          <Tabs.Content className={tabContentStyles} value="books">
+            {books &&
+              books.map((book, index) => (
+                <AuthorArticle key={index} {...book} />
+              ))}
+          </Tabs.Content>
+          <Tabs.Content className={tabContentStyles} value="podcasts">
+            {podcasts &&
+              podcasts.map((podcast, index) => (
+                <AuthorArticle key={index} {...podcast} />
+              ))}
+          </Tabs.Content>
+        </div>
+      </Tabs.Root>
+    </div>
   );
 };
 

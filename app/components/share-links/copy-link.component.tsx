@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Tooltip } from "~/primitives/tooltip";
+
 const CopyToClipboard = ({
   textToCopy,
   children,
@@ -5,22 +8,28 @@ const CopyToClipboard = ({
   children: React.ReactNode;
   textToCopy: string | null;
 }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(textToCopy || "");
+      setShowTooltip(true);
+    } catch (error) {
+      console.error("Failed to copy text: ", error);
+    }
+  };
+
   return (
-    <>
-      {/**
-       * TODO : Add a confirmation message that link has been copied
-       */}
-      {/* <span className="absolute text-ocean bg-white px-2 rounded">
-        Copied to Clipboard
-      </span> */}
-      <button
-        onClick={() => {
-          navigator.clipboard.writeText(textToCopy || "");
-        }}
-      >
+    <Tooltip
+      content="Link copied!"
+      position="top"
+      show={showTooltip}
+      onShowChange={setShowTooltip}
+    >
+      <button onClick={handleCopy} className="cursor-pointer">
         {children}
       </button>
-    </>
+    </Tooltip>
   );
 };
 

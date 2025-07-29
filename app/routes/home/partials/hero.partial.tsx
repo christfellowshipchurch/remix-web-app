@@ -28,7 +28,7 @@ export function DesktopHeroSection() {
               </span>{" "}
               you
             </h1>
-            <p className="text-white max-w-[540px] text-xl z-2">
+            <p className="text-white max-w-[529px] text-xl z-2">
               Discover a community where your questions are welcome, your
               journey is honored, and you'll find genuine connection and
               relevant answers for your life right here in Florida.
@@ -157,7 +157,7 @@ export const MobileHeroSection = () => {
         </h1>
 
         {/* Location Search */}
-        <div className="mt-12 lg:w-full lg:relative">
+        <div className="mt-12 md:mt-16 lg:w-full lg:relative">
           <LocationSearch />
         </div>
       </div>
