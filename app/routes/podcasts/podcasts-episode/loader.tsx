@@ -1,78 +1,134 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import { PodcastEpisode } from "../types";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type LoaderReturnType = {
   episode: PodcastEpisode;
 };
 
-const mockPodcastEpisode: PodcastEpisode = {
-  title: "Don’t Let Doubt Take You Out",
-  description:
-    "What does God’s Word say about your leadership potential? In these two episodes, Pastor and author Donna Pisani shares what God’s Word says about women in leadership and how you can confidently rise to your calling.",
-  coverImage: "/assets/images/podcasts/hero.jpg",
-  audio: "/assets/audio/podcasts/episode-1.mp3",
-  show: "So Good Sisterhood",
-  season: "11",
-  episodeNumber: "4",
-  authors: "Pastor Julie & Todd Mullins",
-  shareLinks: [
-    {
-      title: "Apple Music",
-      url: "https://www.google.com",
-    },
-    {
-      title: "Spotify",
-      url: "https://www.google.com",
-    },
-    {
-      title: "Amazon Music",
-      url: "https://www.google.com",
-    },
-  ],
-  content:
-    "<ul style='list-style-type: disc; padding-left: 1rem;'><li>How Jesus treated women as examples, not exceptions.</li> <li>Why working on your insecurities will help you avoid toxic leadership.</li><li>What the Bible really says about topics like submission and using your voice.</li><li>The three categories of context for Scriptures about women in the Bible.</li><li>Pastor Donna and Pastor Julie's moments of failing forward in leadership</li><li>The difference between being entrusted as a leader rather than entitled.</li></ul>",
-  resources: [
-    {
-      title: "Download Discussion Guide",
-      url: "https://www.google.com",
-    },
-    {
-      title: "Resource",
-      url: "https://www.google.com",
-    },
-    {
-      title: "Keep Talking with a Group",
-      url: "https://www.google.com",
-    },
-    {
-      title: "10 Ways to be good with God",
-      url: "https://www.google.com",
-    },
-    {
-      title: "10 Ways to be good with God",
-      url: "https://www.google.com",
-    },
-    {
-      title: "Resource",
-      url: "https://www.google.com",
-    },
-  ],
-};
-
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { episode } = params;
+  const { episode: episodePath } = params;
 
-  if (!episode) {
+  if (!episodePath) {
     throw new Response("Episode not found", { status: 404 });
   }
 
-  const podcastEpisode = await getPodcastEpisode(episode);
+  const rockEpisode = await getPodcastEpisode(episodePath);
+  const episode = mapRockEpisodeToPodcastEpisode(rockEpisode);
 
   return {
-    episode: podcastEpisode,
+    episode,
   };
 };
 
-async function getPodcastEpisode(episode: string) {
-  return mockPodcastEpisode;
+async function getPodcastEpisode(path: string) {
+  let episode;
+  try {
+    episode = await fetchRockData({
+      endpoint: "ContentChannelItems/GetByAttributeValue",
+      queryParams: {
+        attributeKey: "Url",
+        value: path,
+        loadAttributes: "simple",
+      },
+    });
+  } catch (error) {
+    throw new Error("Error fetching channel from Rock");
+  }
+
+  if (!Array.isArray(episode)) {
+    episode = episode;
+  } else {
+    episode = episode[0];
+  }
+
+  return episode;
+}
+
+function mapRockEpisodeToPodcastEpisode(rockEpisode: any): PodcastEpisode {
+  const attributeValues = rockEpisode.attributeValues || {};
+
+  // Extract episode number from rock label (e.g., "Season 13 | Episode 4" -> "4")
+  const rockLabel = attributeValues.rockLabel?.value || "";
+  const episodeNumberMatch = rockLabel.match(/Episode\s+(\d+)/);
+  const episodeNumber = episodeNumberMatch ? episodeNumberMatch[1] : "";
+
+  // Extract season from rock label (e.g., "Season 13 | Episode 4" -> "13")
+  const seasonMatch = rockLabel.match(/Season\s+(\d+)/);
+  const season = seasonMatch ? seasonMatch[1] : "";
+
+  // Parse calls to action for resources and platform links
+  const callsToAction = attributeValues.callsToAction?.value || "";
+  const { resources, platformLinks } = parseCallsToAction(callsToAction);
+
+  // Convert image GUID to full URL
+  const imageGuid = attributeValues.image?.value || "";
+  const coverImage = createImageUrlFromGuid(imageGuid);
+
+  // Extract Wistia ID from media attribute
+  const mediaValue = attributeValues.media?.value || "";
+  const wistiaIdMatch = mediaValue.match(
+    /wistia\.com\/deliveries\/([a-f0-9]+)/
+  );
+  const audio = wistiaIdMatch ? wistiaIdMatch[1] : "";
+
+  return {
+    show: "Sisterhood", // This could be extracted from theme or other attributes
+    title: rockEpisode.title || "",
+    season,
+    episodeNumber,
+    audio,
+    coverImage,
+    description: attributeValues.summary?.value || "",
+    authors: attributeValues.author?.persistedTextValue || "",
+    url: attributeValues.pathname?.value || "",
+    apple: platformLinks.apple || "",
+    spotify: platformLinks.spotify || "",
+    amazon: platformLinks.amazon || "",
+    content: rockEpisode.content || "",
+    resources,
+  };
+}
+
+function parseCallsToAction(callsToAction: string): {
+  resources: { title: string; url: string }[];
+  platformLinks: { apple: string; spotify: string; amazon: string };
+} {
+  if (!callsToAction) {
+    return {
+      resources: [],
+      platformLinks: { apple: "", spotify: "", amazon: "" },
+    };
+  }
+
+  const platformLinks = { apple: "", spotify: "", amazon: "" };
+  const resources: { title: string; url: string }[] = [];
+
+  // Split by | and parse each call to action
+  const actions = callsToAction
+    .split("|")
+    .map((action) => {
+      const parts = action.split("^");
+      if (parts.length >= 2) {
+        const title = parts[0].trim();
+        const url = parts[1].trim();
+
+        // Check if this is a platform link
+        if (title.includes("APPLE")) {
+          platformLinks.apple = url;
+        } else if (title.includes("SPOTIFY")) {
+          platformLinks.spotify = url;
+        } else if (title.includes("AMAZON")) {
+          platformLinks.amazon = url;
+        } else {
+          // This is a general resource
+          resources.push({ title, url });
+        }
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  return { resources, platformLinks };
 }

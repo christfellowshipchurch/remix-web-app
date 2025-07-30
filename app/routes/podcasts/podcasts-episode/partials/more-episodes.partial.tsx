@@ -19,9 +19,12 @@ export function MoreEpisodes({
       episodeNumber: "1",
       resources: [],
       season,
-      shareLinks: [],
       show,
       title: "Episode 1",
+      url: "episode-1",
+      apple: "",
+      spotify: "",
+      amazon: "",
     },
     {
       audio: "/assets/audio/podcasts/episode-2.mp3",
@@ -32,9 +35,12 @@ export function MoreEpisodes({
       episodeNumber: "2",
       resources: [],
       season,
-      shareLinks: [],
       show,
       title: "Episode 2",
+      url: "episode-2",
+      apple: "",
+      spotify: "",
+      amazon: "",
     },
     {
       audio: "/assets/audio/podcasts/episode-3.mp3",
@@ -45,22 +51,28 @@ export function MoreEpisodes({
       episodeNumber: "3",
       resources: [],
       season,
-      shareLinks: [],
       show,
       title: "Episode 3",
+      url: "episode-3",
+      apple: "",
+      spotify: "",
+      amazon: "",
     },
     {
-      audio: "/assets/audio/podcasts/episode-3.mp3",
+      audio: "/assets/audio/podcasts/episode-4.mp3",
       authors: "Pastor Julie Mullins",
-      content: "Content 3",
+      content: "Content 4",
       coverImage: "/assets/images/podcasts/hero.jpg",
-      description: "Description 3",
-      episodeNumber: "3",
+      description: "Description 4",
+      episodeNumber: "4",
       resources: [],
       season,
-      shareLinks: [],
       show,
-      title: "Episode 3",
+      title: "Episode 4",
+      url: "episode-4",
+      apple: "",
+      spotify: "",
+      amazon: "",
     },
   ];
 
@@ -70,7 +82,11 @@ export function MoreEpisodes({
         <h2 className="text-[28px] font-extrabold">More in this season</h2>
         <div className="flex overflow-x-auto md:overflow-x-hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {mockMoreEpisodes.map((episode, index) => (
-            <PodcastEpisodeCard key={index} podcastEpisode={episode} />
+            <PodcastEpisodeCard
+              key={index}
+              podcastEpisode={episode}
+              show={show}
+            />
           ))}
         </div>
       </div>
