@@ -22,7 +22,11 @@ export function PodcastEpisode() {
         authors={episode.authors}
       />
       <EpisodeNotes content={episode.content} resources={episode.resources} />
-      <SubscribeSection shareLinks={episode.shareLinks} />
+      <SubscribeSection
+        apple={episode.apple}
+        spotify={episode.spotify}
+        amazon={episode.amazon}
+      />
       <MoreEpisodes show={episode.show} season={episode.season} />
     </div>
   );

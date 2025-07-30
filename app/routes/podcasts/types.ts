@@ -23,6 +23,9 @@ export type PodcastEpisode = {
   description: string;
   authors: string;
   url: string;
+  apple: string;
+  spotify: string;
+  amazon: string;
 
   content: string;
   resources: {
