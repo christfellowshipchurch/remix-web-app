@@ -26,11 +26,7 @@ export const loader: LoaderFunction = async () => {
   // Extract body content and remove the specific Webflow script
   let bodyContent = $("body").html() || "";
 
-  // Remove the specific Webflow script that might cause conflicts
-  bodyContent = bodyContent.replace(
-    /<script[^>]*src="https:\/\/cdn\.prod\.website-files\.com\/66749aec3acbf8aa6ef9d378\/js\/webflow\.schunk\.9e346b74f6ea3cc6\.js"[^>]*><\/script>/gi,
-    ""
-  );
+  // TODO: Remove the specific Webflow script that shows the webflow badge ??
 
   return { headContent, bodyContent };
 };
