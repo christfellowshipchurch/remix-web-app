@@ -23,9 +23,49 @@ export { ErrorBoundary } from "./error";
 
 export { loader }; // root loader currently being used for the navbar data
 
+function getWebflowPageAttribute(pathname: string): string {
+  let webflowDataAttribute = "";
+
+  switch (pathname) {
+    case "/one-life":
+      webflowDataAttribute = "668fe801f1a28d6ad35222da";
+      break;
+    case "/next-steps":
+      webflowDataAttribute = "66d89a03d565e226f00e0083";
+      break;
+    case "/cbo-2024":
+      webflowDataAttribute = "672a56e11ae5618cff593ec3";
+      break;
+    case "/easter":
+      webflowDataAttribute = "67b3875c4e2c8ae8345d0cdd";
+      break;
+    case "/easter-jam":
+      webflowDataAttribute = "67c5bd33d52823431fdaa130";
+      break;
+    case "/christmas-at-cf":
+      webflowDataAttribute = "6723dfd7d7fcb2c49854df47";
+      break;
+    default:
+      // Default case if no matching path is found
+      webflowDataAttribute = "";
+      break;
+  }
+
+  return webflowDataAttribute;
+}
+
 export function Layout({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const webflowPageAttribute = getWebflowPageAttribute(location.pathname);
+
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      data-wf-site="66749aec3acbf8aa6ef9d378"
+      {...(webflowPageAttribute && {
+        "data-wf-page": webflowPageAttribute,
+      })}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
