@@ -5,7 +5,6 @@ import crypto from "crypto";
 import { parsePhoneNumber } from "awesome-phonenumber";
 
 import { AuthenticationError } from "~/lib/.server/error-types";
-import { secret } from "~/lib/.server/token";
 import { User_Auth_Status } from "~/providers/auth-provider";
 import {
   deleteRockData,
@@ -37,7 +36,10 @@ export const parsePhoneNumberUtil = (
 };
 
 export const hashPassword = (pin: string): string =>
-  crypto.createHash("sha256").update(`${pin}${secret}`).digest("hex");
+  crypto
+    .createHash("sha256")
+    .update(`${pin}${process.env.SECRET || ""}`)
+    .digest("hex");
 
 export const generateSmsPinAndPassword = (): {
   pin: string;
