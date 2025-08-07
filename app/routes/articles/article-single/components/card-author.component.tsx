@@ -16,17 +16,24 @@ export const CardAuthor = ({
   return (
     <div className="flex">
       <Avatar.Root className="mr-4 flex cursor-pointer duration-300 hover:scale-105">
-        <Avatar.Image className="size-16 rounded-full" src={image} alt={name} />
+        <Avatar.Image
+          className="size-12 md:size-16 rounded-full"
+          src={image}
+          alt={name}
+        />
         <Avatar.Fallback className="flex size-full">
           <CircleLoader />
         </Avatar.Fallback>
       </Avatar.Root>
       <div className="flex flex-col justify-center text-sm">
-        <div className="mb-1">{name && name}</div>
-        <div className="mr-4 flex gap-2 font-extralight">
-          <div>{date && date}</div> <div>•</div>{" "}
-          <div>{timeRead && `${timeRead} min`}</div>
-        </div>
+        <h5 className="mb-1 font-semibold text-[17px] leading-tight">
+          {name && name}
+        </h5>
+        <p className="mr-4 flex gap-2 items-center">
+          <span>{date && date}</span>{" "}
+          <span className="text-xl leading-none">•</span>{" "}
+          <span>{timeRead && `${timeRead} min`}</span>
+        </p>
       </div>
     </div>
   );
@@ -46,7 +53,7 @@ const card = cva(["flex"], {
   },
 });
 
-export interface CardProps
+export interface ArticleCardProps
   extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof card> {
   href?: string;

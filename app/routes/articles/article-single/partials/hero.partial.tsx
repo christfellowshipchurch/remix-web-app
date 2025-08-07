@@ -86,15 +86,6 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
               <div className="hidden lg:block">
                 <Breadcrumbs mode="dark" />
               </div>
-              <div className="hidden md:block">
-                <IconButton
-                  className="hover:!text-ocean"
-                  to="/messages/series"
-                  withRotatingArrow
-                >
-                  Call to Action
-                </IconButton>
-              </div>
             </div>
           </div>
         </div>

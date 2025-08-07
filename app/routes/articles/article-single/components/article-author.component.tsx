@@ -31,7 +31,16 @@ export default function ArticleAuthor({
       </Link>
 
       <div className="ml-4 flex flex-col justify-center">
-        <h2 className="semibold mb-2">{author?.fullName || "Full Name"}</h2>
+        <h2 className="semibold mb-2">
+          By{" "}
+          <Link
+            to={`/author/${author?.authorAttributes?.authorId}`}
+            prefetch="intent"
+            className="underline hover:text-text-secondary"
+          >
+            {author?.fullName || "Full Name"}
+          </Link>
+        </h2>
         <div className="flex text-neutral-500 font-normal">
           {publishDate && (
             <p>
