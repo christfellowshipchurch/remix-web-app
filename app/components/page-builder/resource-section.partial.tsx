@@ -11,25 +11,31 @@ import { ResourceCard } from "~/primitives/cards/resource-card";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 export const ResourceCarouselSection = ({
+  CardComponent,
   className,
   backgroundImage,
   title,
   description,
   resources,
   viewMoreLink,
+  viewMoreText,
   mode = "light",
 }: {
+  CardComponent?: React.ComponentType<{
+    resource: CollectionItem | any;
+  }>;
   className?: string;
   backgroundImage?: string;
   title: string;
   description: string;
   resources: CollectionItem[];
   viewMoreLink: string;
+  viewMoreText?: string;
   mode?: "dark" | "light";
 }) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}
+      className={cn("w-full pl-5 md:pl-12 lg:pl-18 2xl:!pl-0", className)}
       style={
         backgroundImage
           ? {
@@ -46,7 +52,9 @@ export const ResourceCarouselSection = ({
           description={description}
           resources={resources}
           viewMoreLink={viewMoreLink}
+          viewMoreText={viewMoreText || "View All"}
           mode={mode}
+          CardComponent={CardComponent}
         />
       </div>
     </div>
@@ -55,10 +63,14 @@ export const ResourceCarouselSection = ({
 
 interface PageBuilderResourcesProps {
   viewMoreLink: string;
+  viewMoreText: string;
   title: string;
   description: string;
   resources: CollectionItem[];
   mode?: "dark" | "light";
+  CardComponent?: React.ComponentType<{
+    resource: CollectionItem | any;
+  }>;
 }
 
 const PageBuilderCarouselResource = ({
@@ -66,21 +78,25 @@ const PageBuilderCarouselResource = ({
   viewMoreLink,
   description,
   resources,
+  viewMoreText,
   mode,
+  CardComponent,
 }: PageBuilderResourcesProps) => {
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full flex flex-col items-center py-16 md:py-24 lg:py-28">
+      <div className="w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28">
         {/* Header */}
-        <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18">
+        <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
           <div
             className={cn(
               "flex flex-col gap-2",
               mode === "dark" && "text-white"
             )}
           >
-            <h2 className="heading-h2 text-[40px] md:text-[32px]">{title}</h2>
-            <p className="md:text-lg mt-3">{description}</p>
+            <h2 className="heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight">
+              {title}
+            </h2>
+            <p className="md:text-lg leading-none">{description}</p>
           </div>
 
           <Button
@@ -92,12 +108,16 @@ const PageBuilderCarouselResource = ({
             )}
             intent="secondary"
           >
-            View All
+            {viewMoreText}
           </Button>
         </div>
 
         <div className="w-full max-w-full overflow-hidden text-text-primary">
-          <ResourceCarousel resources={resources} mode={mode} />
+          <ResourceCarousel
+            resources={resources}
+            mode={mode}
+            CardComponent={CardComponent}
+          />
         </div>
 
         {/* Mobile View All */}
@@ -108,7 +128,7 @@ const PageBuilderCarouselResource = ({
             className={cn(mode === "dark" && "text-white border-white")}
             intent="secondary"
           >
-            View All
+            {viewMoreText}
           </Button>
         </div>
       </div>
@@ -140,7 +160,7 @@ export const ResourceCarousel = ({
       }}
       className={carouselClassName}
     >
-      <CarouselContent className="gap-6 pt-4 md:mt-12 xl:gap-8 2xl:pr-18">
+      <CarouselContent className="gap-6 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
@@ -195,7 +215,11 @@ export const ResourceCarousel = ({
               />
             </div>
 
-            <div className={cn("absolute h-8 right-24")}>
+            <div
+              className={cn(
+                "absolute h-8 right-24 lg:right-40 2xl:right-32 3xl:right-24"
+              )}
+            >
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"
