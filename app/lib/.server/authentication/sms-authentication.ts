@@ -38,7 +38,7 @@ export const parsePhoneNumberUtil = (
 export const hashPassword = (pin: string): string =>
   crypto
     .createHash("sha256")
-    .update(`${pin}${process.env.SECRET}`)
+    .update(`${pin}${process.env.SECRET || ""}`)
     .digest("hex");
 
 export const generateSmsPinAndPassword = (): {
