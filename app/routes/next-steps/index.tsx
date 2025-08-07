@@ -35,6 +35,7 @@ export default function NextStepsPage() {
   const location = useLocation();
   const { headContent, bodyContent } = useLoaderData<LoaderReturnType>();
   const [iframeContent, setIframeContent] = useState<string>("");
+  const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
 
   // Refresh the page if the URL contains #refresh
   useEffect(() => {
@@ -76,14 +77,19 @@ export default function NextStepsPage() {
   }
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full min-h-screen">
       <iframe
+        ref={setIframeRef}
         src={iframeContent}
-        className="w-full h-full border-0"
+        className="w-full min-h-screen border-0"
         title="Next Steps"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
         loading="lazy"
         referrerPolicy="no-referrer"
+        onLoad={() => {
+          // Reset scroll position when iframe loads
+          window.scrollTo(0, 0);
+        }}
       />
     </div>
   );
