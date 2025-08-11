@@ -41,7 +41,7 @@ export const SubscribeSection = ({
                 className="flex flex-col items-center justify-center gap-2 bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
                 key={index}
               >
-                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                <a href={link.href} target="_blank">
                   <Icon
                     name={link.icon as keyof typeof icons}
                     size={link.icon === "amazonMusic" ? 62 : 52}
