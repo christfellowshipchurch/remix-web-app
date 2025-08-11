@@ -50,12 +50,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
             {description}
           </p>
           <div className="flex items-center gap-8 w-full">
-            <Button
-              intent="secondary"
-              href={url || ""}
-              className="h-full"
-              target="_blank"
-            >
+            <Button intent="secondary" href={url || ""} className="h-full">
               Episodes and More
             </Button>
 
