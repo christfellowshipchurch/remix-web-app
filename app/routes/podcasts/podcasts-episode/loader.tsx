@@ -17,7 +17,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   const rockEpisode = await getPodcastEpisode(episodePath);
-  const episode = mapRockEpisodeToPodcastEpisode(rockEpisode);
+  const episode = await mapRockEpisodeToPodcastEpisode(rockEpisode);
 
   const appId = process.env.ALGOLIA_APP_ID;
   const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
@@ -53,7 +53,32 @@ async function getPodcastEpisode(path: string) {
   return episode;
 }
 
-function mapRockEpisodeToPodcastEpisode(rockEpisode: any): PodcastEpisode {
+async function getWistiaElement(guid: string) {
+  try {
+    const wistiaElement = await fetchRockData({
+      endpoint: "MediaElements",
+      queryParams: {
+        $filter: `Guid eq guid'${guid}'`,
+      },
+    });
+
+    if (!Array.isArray(wistiaElement)) {
+      return wistiaElement;
+    }
+
+    return wistiaElement[0];
+  } catch (error) {
+    throw new Error(
+      `Error fetching Wistia ID for guid ${guid}: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
+}
+
+async function mapRockEpisodeToPodcastEpisode(
+  rockEpisode: any
+): Promise<PodcastEpisode> {
   const attributeValues = rockEpisode.attributeValues || {};
 
   // Extract episode number from rock label (e.g., "Season 13 | Episode 4" -> "4")
@@ -74,18 +99,15 @@ function mapRockEpisodeToPodcastEpisode(rockEpisode: any): PodcastEpisode {
   const coverImage = createImageUrlFromGuid(imageGuid);
 
   // Extract Wistia ID from media attribute
-  const mediaValue = attributeValues.media?.value || "";
-  const wistiaIdMatch = mediaValue.match(
-    /wistia\.com\/deliveries\/([a-f0-9]+)/
-  );
-  const audio = wistiaIdMatch ? wistiaIdMatch[1] : "";
+  const mediaGuid = attributeValues.media.value || "";
+  const wistiaElement = await getWistiaElement(mediaGuid);
 
   return {
     show: "So Good Sisterhood", // This could be extracted from theme or other attributes
     title: rockEpisode.title || "",
     season,
     episodeNumber,
-    audio,
+    audio: wistiaElement?.sourceKey,
     coverImage,
     description: attributeValues.summary?.value || "",
     authors: attributeValues.author?.persistedTextValue || "",
