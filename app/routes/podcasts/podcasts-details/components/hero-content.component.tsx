@@ -33,7 +33,6 @@ export const HeroContent = ({
             <Link
               to={latestEpisode.url || ""}
               className="group flex items-center gap-2"
-              target="_blank"
             >
               <div className="bg-ocean rounded-full p-2 flex items-center justify-center size-15 group-hover:bg-ocean/70 transition-colors">
                 <Icon name="play" color="white" size={36} className="pl-1" />
