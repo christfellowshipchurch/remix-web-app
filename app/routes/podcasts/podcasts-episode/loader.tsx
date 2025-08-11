@@ -5,6 +5,8 @@ import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type LoaderReturnType = {
   episode: PodcastEpisode;
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -17,8 +19,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const rockEpisode = await getPodcastEpisode(episodePath);
   const episode = mapRockEpisodeToPodcastEpisode(rockEpisode);
 
+  const appId = process.env.ALGOLIA_APP_ID;
+  const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+
   return {
     episode,
+    ALGOLIA_APP_ID: appId || "",
+    ALGOLIA_SEARCH_API_KEY: apiKey || "",
   };
 };
 
@@ -74,7 +81,7 @@ function mapRockEpisodeToPodcastEpisode(rockEpisode: any): PodcastEpisode {
   const audio = wistiaIdMatch ? wistiaIdMatch[1] : "";
 
   return {
-    show: "Sisterhood", // This could be extracted from theme or other attributes
+    show: "So Good Sisterhood", // This could be extracted from theme or other attributes
     title: rockEpisode.title || "",
     season,
     episodeNumber,
