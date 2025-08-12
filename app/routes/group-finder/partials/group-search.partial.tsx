@@ -8,19 +8,20 @@ import {
   Stats,
 } from "react-instantsearch";
 
-import { DesktopGroupFilters } from "~/routes/group-finder/finder/components/popups/group-filters";
+import { DesktopGroupFilters } from "../components/popups/group-filters";
 
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
 
 import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
-import { HitComponent } from "../components/hit-component.component";
+import { GroupHit } from "../components/hit-component.component";
 import { useEffect, useState } from "react";
 import { AllFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
+import { GroupHitType } from "../types";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -168,7 +169,9 @@ export const GroupSearch = () => {
                   item: "flex items-center justify-center md:items-start md:justify-start w-full",
                   list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
                 }}
-                hitComponent={HitComponent}
+                hitComponent={({ hit }: { hit: GroupHitType }) => {
+                  return <GroupHit hit={hit} />;
+                }}
               />
               <div className="mt-6 flex justify-center md:justify-start">
                 <CustomPagination />

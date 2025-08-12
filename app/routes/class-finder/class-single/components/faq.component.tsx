@@ -1,5 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
-import { FinderSingleFAQ } from "~/routes/group-finder/group-single/components/faq.component";
+import { FinderSingleFAQ } from "~/routes/group-single/components/faq.component";
 
 const faqData = [
   {

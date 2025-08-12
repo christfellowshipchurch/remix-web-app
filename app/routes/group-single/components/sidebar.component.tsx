@@ -1,7 +1,7 @@
 import Icon from "~/primitives/icon";
 import { Button } from "~/primitives/button/button.primitive";
 import { icons } from "~/lib/icons";
-import { defaultLeaderPhoto } from "../../finder/components/hit-component.component";
+import { defaultLeaderPhoto } from "../../group-finder/finder/components/hit-component.component";
 
 const Divider = () => (
   <div className="w-full h-[1px] bg-[#6E6E6E] opacity-10" role="separator" />

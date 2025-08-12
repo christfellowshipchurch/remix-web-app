@@ -6,7 +6,7 @@ import {
 import { CommunityCard } from "../components/cards/community-card.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+import { CardCarousel } from "~/components/resource-carousel";
 import { Icon } from "~/primitives/icon/icon";
 
 export function VolunteerCommunity() {
@@ -62,7 +62,7 @@ export function VolunteerCommunity() {
 
           {/* Mobile */}
           <div className="w-full lg:hidden content-padding 2xl:px-0">
-            <ResourceCarousel
+            <CardCarousel
               layout="arrowsLeft"
               CardComponent={RegionCardWrapper}
               resources={mockRegionData}

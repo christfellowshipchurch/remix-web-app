@@ -1,10 +1,9 @@
 import { SearchBox, useInstantSearch, useSearchBox } from "react-instantsearch";
 import { Hits } from "react-instantsearch";
 import {
-  HitComponent,
   CampusHit,
+  CampusHitType,
 } from "~/routes/home/components/location-search/location-hit";
-import { Hit } from "algoliasearch";
 import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
@@ -96,9 +95,17 @@ export function LocationSearchPopup({
           }}
           hitComponent={({ hit }) => {
             if (hit?.campusUrl) {
+              const campusData: CampusHitType = {
+                campusUrl: hit.campusUrl,
+                campusName: hit.campusName,
+                geoloc: hit.geoloc,
+                campusLocation: hit.campusLocation,
+                serviceTimes: hit.serviceTimes,
+              };
+
               return (
-                <HitComponent
-                  hit={hit as unknown as Hit<CampusHit>}
+                <CampusHit
+                  hit={campusData}
                   redirect={false}
                   setSelectedLocation={handleLocationSelect}
                 />
