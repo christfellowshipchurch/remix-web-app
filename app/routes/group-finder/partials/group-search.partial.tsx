@@ -15,7 +15,7 @@ import { useResponsive } from "~/hooks/use-responsive";
 
 import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
 import { LoaderReturnType } from "../loader";
-import { GroupHit } from "../components/hit-component.component";
+import { GroupHit } from "../components/group-hit.component";
 import { useEffect, useState } from "react";
 import { AllFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";

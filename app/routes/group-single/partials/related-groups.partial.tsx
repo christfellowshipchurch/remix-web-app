@@ -2,7 +2,7 @@ import { Configure, InstantSearch } from "react-instantsearch";
 import { useHits } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
 import { useMemo } from "react";
-import { GroupHit } from "../../group-finder/components/hit-component.component";
+import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
