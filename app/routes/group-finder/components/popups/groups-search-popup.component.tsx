@@ -5,7 +5,7 @@ import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
 import { GroupHitType } from "../../types";
-import { GroupHit } from "../hit-component.component";
+import { GroupHit } from "../group-hit.component";
 
 export function GroupsSearchPopup({
   setIsOpen,
