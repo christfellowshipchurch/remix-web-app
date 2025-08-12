@@ -49,9 +49,9 @@ export default function Index() {
       {/* The rest of your sections (not snapped) */}
       <WhatWeOfferSection />
       <HistorySection sectionTitle="History" title="Who We Are" />
-      <BeliefsSection />
+      <BeliefsSection customTitle="What we Believe and Teach" />
       <WhatToExpectSection />
-      <LeadershipSection bg="white" />
+      <LeadershipSection className="py-52" />
       <AppSection />
     </div>
   );

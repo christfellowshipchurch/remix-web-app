@@ -9,7 +9,7 @@ import { Author } from "~/routes/author/loader";
 export const LeadersModal = ({ author }: { author: Author | null }) => {
   if (!author) {
     return (
-      <div className="w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full md:max-w-[85vw] 2xl:max-w-[60vw]">
+      <div className="w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full md:max-w-[85vw] 2xl:max-w-[70vw]">
         <div className="size-full flex">
           {/* Left Side Loading Skeleton */}
           <div className="w-1/2 p-4">
@@ -44,21 +44,22 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
   return (
     <div
       className={cn(
-        "overflow-auto",
+        "overflow-hidden",
         "max-w-screen-content",
-        "max-h-[85vh]",
-        "xl:w-6xl",
+        "h-[85vh]",
+        "xl:!w-6xl",
         "lg:w-4xl",
         "md:w-2xl",
         "sm:w-lg",
         "w-[350px]"
       )}
     >
-      <div className="size-full flex flex-col lg:flex-row w-full rounded-xl overflow-hidden">
-        {/* Left/Top Side */}
-        <div className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8">
+      <div className="h-full flex flex-col lg:flex-row w-full rounded-xl">
+        {/* Left Side */}
+        <div className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8 flex-shrink-0">
           <div className="hidden md:block">
             <AuthorBioDesktop
+              id={author?.id}
               homeUrl={author?.hostUrl}
               fullName={author?.fullName}
               profilePhoto={author?.profilePhoto}
@@ -68,6 +69,7 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
 
           <div className="md:hidden">
             <AuthorBioMobile
+              id={author?.id}
               homeUrl={author?.hostUrl}
               fullName={author?.fullName}
               profilePhoto={author?.profilePhoto}
@@ -76,8 +78,8 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
           </div>
         </div>
 
-        {/* Right/Bottom Side */}
-        <div className="w-full lg:w-3/5 px-4 bg-white md:py-4">
+        {/* Right Side */}
+        <div className="w-full lg:w-3/5 px-4 bg-white md:py-4 flex-1 overflow-hidden rounded-r-xl">
           <AuthorTabs articles={author?.authorAttributes?.publications} />
         </div>
       </div>
@@ -86,6 +88,7 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
 };
 
 export function AuthorBioDesktop({
+  id,
   homeUrl,
   fullName,
   profilePhoto,
@@ -112,7 +115,11 @@ export function AuthorBioDesktop({
       {bio && <p>{bio}</p>}
       <div className="flex gap-2">
         {socialLinks && (
-          <ShareLinks url={homeUrl} size={10} socialMedia={socialLinks} />
+          <ShareLinks
+            overrideCopyUrl={`${homeUrl}/author/${id}`}
+            size={10}
+            socialMedia={socialLinks}
+          />
         )}
       </div>
     </div>
@@ -125,6 +132,7 @@ type SocialMedia = {
 };
 
 type AuthorProps = {
+  id: string;
   homeUrl: string;
   fullName: string;
   profilePhoto: string;
@@ -137,6 +145,7 @@ type AuthorProps = {
 };
 
 export function AuthorBioMobile({
+  id,
   fullName,
   profilePhoto,
   authorAttributes,
@@ -166,7 +175,11 @@ export function AuthorBioMobile({
 
       <div className="flex gap-2">
         {socialLinks && (
-          <ShareLinks url={homeUrl} size={8} socialMedia={socialLinks} />
+          <ShareLinks
+            url={`${homeUrl}/author/${id}`}
+            size={8}
+            socialMedia={socialLinks}
+          />
         )}
       </div>
 

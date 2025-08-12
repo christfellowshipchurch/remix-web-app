@@ -27,7 +27,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
       {
         image: "/assets/images/home/kids-u.png",
         imageAspectRatio: "144/190",
-        description1: "Weekday programing for for elementary kids",
+        description1: "Weekday programing for elementary kids",
         description2:
           "Discipleship programming designed with your child in mind.",
         url: "/kids-university",
@@ -66,17 +66,17 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
     content: [
       {
         label: "Groups",
-        description1: "Weekday programing for for elementary kids",
+        description1: "Weekday programing for elementary kids",
         url: "/groups",
       },
       {
         label: "Classes",
-        description1: "Weekday programing for for elementary kids",
+        description1: "Weekday programing for elementary kids",
         url: "/groups",
       },
       {
         label: "Freedom & Care",
-        description1: "Weekday programing for for elementary kids",
+        description1: "Weekday programing for elementary kids",
         url: "/freedom-and-care",
       },
     ],

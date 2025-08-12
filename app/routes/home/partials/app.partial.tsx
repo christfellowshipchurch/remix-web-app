@@ -100,7 +100,7 @@ const AppButtons = () => {
   const appLink = isApple ? appleLink : googleLink;
 
   return (
-    <div className="flex flex-col gap-1 text-white">
+    <div className="flex flex-col gap-2 text-white">
       <Button
         href={appLink}
         intent="primary"
