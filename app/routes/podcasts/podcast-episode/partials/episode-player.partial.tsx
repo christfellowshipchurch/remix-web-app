@@ -45,12 +45,14 @@ export function EpisodePlayer({ audio }: { audio: PodcastEpisode["audio"] }) {
   }, []);
 
   return (
-    <div className="w-full h-full">
-      <wistia-player
-        media-id={audio}
-        swatch="false"
-        style={{ width: "100%", height: "100px" }}
-      />
+    <div className="w-full h-full bg-navy content-padding">
+      <div className="max-w-screen-content mx-auto">
+        <wistia-player
+          media-id={audio}
+          swatch="false"
+          style={{ width: "100%", height: "100px" }}
+        />
+      </div>
     </div>
   );
 }
