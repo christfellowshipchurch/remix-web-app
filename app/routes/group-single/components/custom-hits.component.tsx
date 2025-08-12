@@ -1,6 +1,6 @@
 import { useHits } from "react-instantsearch";
 import { GroupSingleContent, GroupNotFound } from "../group-single-page";
-import { GroupHit } from "../../types";
+import { GroupHit } from "../../group-finder/types";
 
 export const CustomHits = () => {
   const { items } = useHits<GroupHit>();

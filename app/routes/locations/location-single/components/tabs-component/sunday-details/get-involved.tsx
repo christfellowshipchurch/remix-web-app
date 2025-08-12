@@ -1,10 +1,10 @@
-import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
+import { CardCarouselSection } from "~/components/resource-carousel";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 export const GetInvolved = ({ isOnline }: { isOnline?: boolean }) => {
   // TODO: Update BG image
   return (
-    <ResourceCarouselSection
+    <CardCarouselSection
       backgroundImage="/assets/images/locations/bg.jpg"
       title="Get Involved"
       description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. "

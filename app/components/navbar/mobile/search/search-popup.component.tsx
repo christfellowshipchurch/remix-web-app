@@ -1,6 +1,9 @@
 import { Hits, useCurrentRefinements, useSearchBox } from "react-instantsearch";
 import { PopularSearches } from "./popular-searches.component";
-import { HitComponent } from "./hit-component.component";
+import {
+  MobileContentHit,
+  MobileContentHitType,
+} from "./mobile-content-hit.component";
 
 export const SearchPopup = ({
   setIsSearchOpen,
@@ -22,7 +25,16 @@ export const SearchPopup = ({
               item: "flex",
               list: "grid md:grid-cols-1 gap-4",
             }}
-            hitComponent={HitComponent}
+            hitComponent={({ hit }) => {
+              const contentData: MobileContentHitType = {
+                routing: hit.routing,
+                coverImage: hit.coverImage,
+                title: hit.title,
+                contentType: hit.contentType,
+                summary: hit.summary,
+              };
+              return <MobileContentHit hit={contentData} />;
+            }}
           />
         ) : (
           <PopularSearches />

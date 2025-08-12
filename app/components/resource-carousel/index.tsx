@@ -10,26 +10,34 @@ import {
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { CollectionItem } from "~/routes/page-builder/types";
 
-export const ResourceCarouselSection = ({
+interface CardCarouselSectionProps {
+  viewMoreLink: string;
+  viewMoreText?: string;
+  title: string;
+  description: string;
+  resources: CollectionItem[];
+  mode?: "dark" | "light";
+  CardComponent?: React.ComponentType<{
+    resource: CollectionItem | any;
+  }>;
+  className?: string;
+  backgroundImage?: string;
+}
+
+export const CardCarouselSection = ({
+  CardComponent,
   className,
   backgroundImage,
   title,
   description,
   resources,
   viewMoreLink,
+  viewMoreText = "View All",
   mode = "light",
-}: {
-  className?: string;
-  backgroundImage?: string;
-  title: string;
-  description: string;
-  resources: CollectionItem[];
-  viewMoreLink: string;
-  mode?: "dark" | "light";
-}) => {
+}: CardCarouselSectionProps) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}
+      className={cn("w-full pl-5 md:pl-12 lg:pl-18 2xl:!pl-0", className)}
       style={
         backgroundImage
           ? {
@@ -41,82 +49,63 @@ export const ResourceCarouselSection = ({
       }
     >
       <div className="flex flex-col max-w-screen-content mx-auto">
-        <PageBuilderCarouselResource
-          title={title}
-          description={description}
-          resources={resources}
-          viewMoreLink={viewMoreLink}
-          mode={mode}
-        />
-      </div>
-    </div>
-  );
-};
+        <div className="w-full flex justify-center">
+          <div className="w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28">
+            {/* Header */}
+            <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
+              <div
+                className={cn(
+                  "flex flex-col gap-2",
+                  mode === "dark" && "text-white"
+                )}
+              >
+                <h2 className="heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight">
+                  {title}
+                </h2>
+                <p className="md:text-lg leading-none">{description}</p>
+              </div>
 
-interface PageBuilderResourcesProps {
-  viewMoreLink: string;
-  title: string;
-  description: string;
-  resources: CollectionItem[];
-  mode?: "dark" | "light";
-}
+              <Button
+                href={viewMoreLink}
+                size="md"
+                className={cn(
+                  "hidden md:block",
+                  mode === "dark" &&
+                    "text-white border-white hover:!bg-white/10"
+                )}
+                intent="secondary"
+              >
+                {viewMoreText}
+              </Button>
+            </div>
 
-const PageBuilderCarouselResource = ({
-  title,
-  viewMoreLink,
-  description,
-  resources,
-  mode,
-}: PageBuilderResourcesProps) => {
-  return (
-    <div className="w-full flex justify-center">
-      <div className="w-full flex flex-col items-center py-16 md:py-24 lg:py-28">
-        {/* Header */}
-        <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18">
-          <div
-            className={cn(
-              "flex flex-col gap-2",
-              mode === "dark" && "text-white"
-            )}
-          >
-            <h2 className="heading-h2 text-[40px] md:text-[32px]">{title}</h2>
-            <p className="md:text-lg mt-3">{description}</p>
+            <div className="w-full max-w-full overflow-hidden text-text-primary">
+              <CardCarousel
+                resources={resources}
+                mode={mode}
+                CardComponent={CardComponent}
+              />
+            </div>
+
+            {/* Mobile View All */}
+            <div className="w-full flex justify-start mt-8 md:hidden">
+              <Button
+                href={viewMoreLink}
+                size="md"
+                className={cn(mode === "dark" && "text-white border-white")}
+                intent="secondary"
+              >
+                {viewMoreText}
+              </Button>
+            </div>
           </div>
-
-          <Button
-            href={viewMoreLink}
-            size="md"
-            className={cn(
-              "hidden md:block",
-              mode === "dark" && "text-white border-white hover:!bg-white/10"
-            )}
-            intent="secondary"
-          >
-            View All
-          </Button>
-        </div>
-
-        <div className="w-full max-w-full overflow-hidden text-text-primary">
-          <ResourceCarousel resources={resources} mode={mode} />
-        </div>
-
-        {/* Mobile View All */}
-        <div className="w-full flex justify-start mt-8 md:hidden">
-          <Button
-            href={viewMoreLink}
-            size="md"
-            className={cn(mode === "dark" && "text-white border-white")}
-            intent="secondary"
-          >
-            View All
-          </Button>
         </div>
       </div>
     </div>
   );
 };
 
-export const ResourceCarousel = ({
+export const CardCarousel = ({
   CardComponent,
   resources,
   mode,
@@ -140,7 +129,7 @@ export const ResourceCarousel = ({
       }}
       className={carouselClassName}
     >
-      <CarouselContent className="gap-6 pt-4 md:mt-12 xl:gap-8 2xl:pr-18">
+      <CarouselContent className="gap-6 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
@@ -195,7 +184,11 @@ export const ResourceCarousel = ({
               />
             </div>
 
-            <div className={cn("absolute h-8 right-24")}>
+            <div
+              className={cn(
+                "absolute h-8 right-24 lg:right-40 2xl:right-32 3xl:right-24"
+              )}
+            >
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"

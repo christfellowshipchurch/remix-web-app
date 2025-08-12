@@ -2,24 +2,24 @@ import { Configure, InstantSearch } from "react-instantsearch";
 import { useHits } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
 import { useMemo } from "react";
-import { HitComponent } from "../../finder/components/hit-component.component";
+import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import { useResponsive } from "~/hooks/use-responsive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
-import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+import { CardCarousel } from "~/components/resource-carousel";
+import { GroupHitType } from "~/routes/group-finder/types";
 
 // Custom component to use hits data with ResourceCarousel
 function RelatedGroupsHits() {
   const { items } = useHits();
 
   // Wrapper component to adapt resource prop to hit prop
-  const HitComponentWrapper = ({ resource }: { resource: any }) => {
-    return <HitComponent hit={resource} />;
+  const HitComponentWrapper = ({ resource }: { resource: GroupHitType }) => {
+    return <GroupHit hit={resource} />;
   };
 
   return (
-    <ResourceCarousel
+    <CardCarousel
       CardComponent={HitComponentWrapper}
       resources={items}
       mode="light"

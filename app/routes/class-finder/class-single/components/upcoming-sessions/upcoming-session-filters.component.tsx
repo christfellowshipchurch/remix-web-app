@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsCustomRefinement } from "~/routes/group-finder/finder/components/popups/groups-custom-refinement.component";
+import { GroupsCustomRefinement } from "~/routes/group-finder/components/popups/groups-custom-refinement.component";
 
 export function UpcomingSessionFilters({
   setIsSearchOpen,

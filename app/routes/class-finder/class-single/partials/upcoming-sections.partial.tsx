@@ -8,7 +8,7 @@ import { LoaderReturnType } from "../loader";
 import { useState } from "react";
 import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
-import { CustomPagination } from "~/routes/group-finder/finder/components/custom-algolia/custom-pagination.component";
+import { CustomPagination } from "~/routes/group-finder/components/custom-algolia/custom-pagination.component";
 import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
 
 export const UpcomingSessionsSection = () => {
