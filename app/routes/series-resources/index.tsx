@@ -1,8 +1,7 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { SeriesReturnType } from "./loader";
 import { ResourceCarousel } from "./partials/resource-carousel.partial";
 import { Button } from "~/primitives/button/button.primitive";
-import { CardCarousel } from "~/components/resource-carousel";
 
 export function SeriesResources() {
   const { series, messages, resources } = useLoaderData<SeriesReturnType>();
@@ -66,10 +65,15 @@ export function SeriesResources() {
       </div>
       <div className="w-full flex flex-col">
         {/* Series Messages */}
-        <CardCarousel resources={messages} mode="dark" />
+        <ResourceCarousel title="Series Messages" items={messages} bg="gray" />
 
         {/* Resources Section */}
-        <CardCarousel resources={resources} mode="light" />
+        <ResourceCarousel
+          title="Related Resources"
+          summary="Explore other resources that may be of interest to you"
+          items={resources}
+          bg="white"
+        />
       </div>
     </div>
   );
