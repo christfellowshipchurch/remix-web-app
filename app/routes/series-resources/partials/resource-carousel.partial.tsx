@@ -10,7 +10,7 @@ import { useState } from "react";
 import { MinistryCard } from "~/primitives/cards/ministry-card";
 import { useResponsive } from "~/hooks/use-responsive";
 
-export const ResourceCarousel = (data: {
+export const SeriesResourceCarousel = (data: {
   items: Message[] | any[];
   title: string;
   summary?: string;
