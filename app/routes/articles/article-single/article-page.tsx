@@ -5,7 +5,7 @@ import { useLoaderData } from "react-router-dom";
 import { ArticleHero } from "./partials/hero.partial";
 import { ArticleContent } from "./partials/content.partial";
 import { ArticleNewsletter } from "./partials/newsletter.partial";
-import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
+import { CardCarouselSection } from "~/components/resource-carousel";
 import { RelatedArticleCard } from "./components/related-article-card.components";
 
 // Wrapper component to adapt RelatedArticleCard to ResourceCarousel's interface
@@ -36,7 +36,7 @@ export const ArticlePage: React.FC = () => {
         <ArticleContent htmlContent={data.content} />
         <ArticleNewsletter />
 
-        <ResourceCarouselSection
+        <CardCarouselSection
           title="Related Reading"
           description="Explore more articles that you might find interesting."
           resources={data.relatedArticles?.articles || []}

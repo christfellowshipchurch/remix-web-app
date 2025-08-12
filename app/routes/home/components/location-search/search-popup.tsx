@@ -1,6 +1,5 @@
 import { Hits } from "react-instantsearch";
-import { HitComponent, CampusHit } from "./location-hit";
-import { Hit } from "algoliasearch";
+import { CampusHit, CampusHitType } from "./location-hit";
 import { Link } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 
@@ -21,7 +20,14 @@ export const SearchPopup = ({
           }}
           hitComponent={({ hit }) => {
             if (hit?.campusUrl) {
-              return <HitComponent hit={hit as unknown as Hit<CampusHit>} />;
+              const campusData: CampusHitType = {
+                campusUrl: hit.campusUrl,
+                campusName: hit.campusName,
+                geoloc: hit.geoloc,
+                campusLocation: hit.campusLocation,
+                serviceTimes: hit.serviceTimes,
+              };
+              return <CampusHit hit={campusData} />;
             }
             return null;
           }}

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Icon from "~/primitives/icon";
 
-type Hit = {
+export type MobileContentHitType = {
   routing: {
     pathname: string;
   };
@@ -15,7 +15,7 @@ type Hit = {
   summary: string;
 };
 
-export function HitComponent({ hit }: { hit: Hit }) {
+export function MobileContentHit({ hit }: { hit: MobileContentHitType }) {
   return (
     <Link
       to={`/${hit?.routing?.pathname || ""}`}

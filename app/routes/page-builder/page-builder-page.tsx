@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { PageBuilderLoader, PageBuilderSection } from "./types";
-import { ResourceCarouselSection } from "~/components/page-builder/resource-section.partial";
-import { CTACollectionSection } from "~/components/page-builder/cta-collection";
+import { CardCarouselSection } from "~/components/resource-carousel";
+import { CTACollectionSection } from "./components/cta-collection";
 import { ContentBlock } from "./components/content-block";
 import { ContentBlockData } from "./types";
 import { ImageGallerySection } from "./components/image-gallery";
@@ -12,7 +12,7 @@ export function renderSection(section: PageBuilderSection) {
     case "RESOURCE_COLLECTION":
     case "EVENT_COLLECTION":
       return (
-        <ResourceCarouselSection
+        <CardCarouselSection
           key={section.id}
           title={section.name}
           description={section.content}
