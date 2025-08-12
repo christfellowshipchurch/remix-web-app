@@ -1,5 +1,5 @@
-import { PodcastEpisode } from "./podcasts/podcasts-episode/podcast-episode";
+import { PodcastEpisode } from "./podcasts/podcast-episode/podcast-episode";
 
-export { loader } from "./podcasts/podcasts-episode/loader";
+export { loader } from "./podcasts/podcast-episode/loader";
 
 export default PodcastEpisode;

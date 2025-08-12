@@ -1,5 +1,5 @@
-import { PodcastsDetailsPage } from "./podcasts/podcasts-details/podcasts-details-page";
+import { PodcastsDetailsPage } from "./podcasts/podcast-show/podcasts-details-page";
 
-export { loader } from "./podcasts/podcasts-details/loader";
+export { loader } from "./podcasts/podcast-show/loader";
 
 export default PodcastsDetailsPage;
