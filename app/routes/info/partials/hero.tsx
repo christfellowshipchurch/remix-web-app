@@ -1,127 +1,103 @@
 import { HeroCard } from "../components/hero-card.component";
-import { useState, useEffect } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-  useCarousel,
-} from "~/primitives/shadcn-primitives/carousel";
+import { useRef, useEffect } from "react";
 
 export const Hero = () => {
-  const [showDots, setShowDots] = useState(true);
-  const [api, setApi] = useState<any>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const itemsPerSlide = 3; // Show 3 cards per slide
-  const totalSlides = Math.ceil(mockCards.length / itemsPerSlide);
+  // Create a looped array by duplicating cards
+  const loopedCards = [...mockCards, ...mockCards, ...mockCards];
 
-  // Calculate if all cards fit on screen
+  // Handle infinite scroll effect
   useEffect(() => {
-    const checkIfAllCardsFit = () => {
-      const containerWidth = window.innerWidth;
-      const cardWidth = 282; // Normal card width
-      const largeCardWidth = 350; // Large card width
-      const gap = 16; // Gap between cards
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
 
-      // Calculate total width needed for all cards
-      const totalWidthNeeded =
-        mockCards.reduce((total, _, index) => {
-          // Use the same logic as the render to determine center card
-          const centerCardIndex = 1; // Center card of first slide
-          const cardSize =
-            index === centerCardIndex ? largeCardWidth : cardWidth;
-          return total + cardSize + gap;
-        }, 0) - gap; // Subtract the last gap
+    // Calculate dimensions
+    const centerCardIndex = Math.floor(mockCards.length / 2);
+    const largeCardWidth = 350;
+    const smallCardWidth = 282;
+    const cardGap = 16;
 
-      setShowDots(totalWidthNeeded > containerWidth);
+    // Calculate actual width of one complete set
+    let setWidth = 0;
+    for (let i = 0; i < mockCards.length; i++) {
+      const cardWidth = i === centerCardIndex ? largeCardWidth : smallCardWidth;
+      setWidth += cardWidth + cardGap;
+    }
+    setWidth -= cardGap; // Remove the last gap
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+
+      // Jump to middle set when reaching edges, maintaining relative position
+      if (scrollLeft >= scrollWidth - clientWidth - 10) {
+        // When scrolling right, calculate position relative to viewport
+        const viewportPosition = scrollLeft - (scrollWidth - clientWidth);
+        const newPosition = setWidth + viewportPosition + 28;
+        scrollContainer.scrollLeft = newPosition;
+      } else if (scrollLeft <= 10) {
+        // When scrolling left, jump to middle set + the scroll position
+        const newPosition = setWidth + scrollLeft;
+        scrollContainer.scrollLeft = newPosition;
+      }
     };
 
-    checkIfAllCardsFit();
-    window.addEventListener("resize", checkIfAllCardsFit);
+    scrollContainer.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener("resize", checkIfAllCardsFit);
+    // Calculate center card position within middle set
+    let centerCardPosition = setWidth; // Start of middle set
+    for (let i = 0; i < centerCardIndex; i++) {
+      centerCardPosition +=
+        (i === centerCardIndex ? largeCardWidth : smallCardWidth) + cardGap;
+    }
+
+    // Center the large card in viewport
+    const centerPosition =
+      centerCardPosition - scrollContainer.clientWidth / 2 + largeCardWidth / 2;
+
+    // Initialize scroll position
+    scrollContainer.scrollLeft = centerPosition;
+
+    return () => scrollContainer.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll to center card on load
-  useEffect(() => {
-    if (api) {
-      // Scroll to the center card (index 1) after a short delay to ensure carousel is ready
-      const timer = setTimeout(() => {
-        api.scrollTo(1);
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [api]);
-
   return (
-    <div className="flex flex-col pt-16 pb-8 items-center justify-center gap-8">
-      <h1 className="text-2xl text-[#001D26] font-extrabold">
+    <div
+      className="flex flex-col pt-16 pb-8 items-center justify-center gap-12"
+      style={{
+        backgroundImage: "url(/assets/images/info-bg.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <h1 className="text-[32px] text-[#001D26] font-extrabold">
         Take your next <span className="text-ocean">step...</span>
       </h1>
 
-      {/* Hero Carousel */}
-      <div className="relative w-full">
-        <Carousel
-          opts={{
-            align: "center",
-            loop: true,
-          }}
-          setApi={setApi}
-          className="w-full"
+      {/* Horizontally Scrollable Cards */}
+      <div className="w-full">
+        <div
+          ref={scrollContainerRef}
+          className="flex items-center 3xl:justify-center gap-4 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
-          <CarouselContent className="flex items-center gap-4 px-4">
-            {mockCards.map((card, index) => {
-              // Calculate which card should be the center card based on current slide
-              const centerCardIndex = 1; // Center card of current slide
-              const isCenterCard = index === centerCardIndex;
+          {loopedCards.map((card, index) => {
+            // Calculate which card should be the center card (relative to original set)
+            const originalIndex = index % mockCards.length;
+            const centerCardIndex = Math.floor(mockCards.length / 2);
+            const isCenterCard = originalIndex === centerCardIndex;
 
-              return (
-                <CarouselItem
-                  key={index}
-                  className={`pl-0 ${
-                    isCenterCard ? "basis-[350px]" : "basis-[282px]"
-                  }`}
-                >
-                  <HeroCard
-                    {...card}
-                    size={isCenterCard ? "large" : "normal"}
-                  />
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-
-          {/* Navigation Controls */}
-          <div className="relative mt-8">
-            {/* Dots */}
-            {showDots && <CarouselDots />}
-          </div>
-        </Carousel>
-      </div>
-    </div>
-  );
-};
-
-const CarouselDots = () => {
-  const { api, currentSlide } = useCarousel();
-  const slides = api?.scrollSnapList() || [];
-
-  return (
-    <div className="flex justify-center">
-      <div className="flex gap-2">
-        {slides.length > 1 &&
-          slides.map((_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                currentSlide === index ? "bg-ocean" : "bg-neutral-lighter"
-              }`}
-              onClick={() => api?.scrollTo(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+            return (
+              <div
+                key={index}
+                className={`flex-shrink-0 ${
+                  isCenterCard ? "w-[350px]" : "w-[282px]"
+                }`}
+              >
+                <HeroCard {...card} size={isCenterCard ? "large" : "normal"} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -129,42 +105,35 @@ const CarouselDots = () => {
 
 const mockCards = [
   {
-    image: "https://picsum.photos/150/150",
+    image: "/assets/images/info-bg.jpg",
     cta: {
       label: "Testing",
       href: "/donate",
     },
   },
   {
-    image: "https://picsum.photos/150/150",
+    image: "/assets/images/info-bg.jpg",
     cta: {
       label: "Shop Now",
       href: "/donate",
     },
   },
   {
-    image: "https://picsum.photos/150/150",
+    image: "/assets/images/info-bg.jpg",
     cta: {
       label: "Register",
       href: "/donate",
     },
   },
   {
-    image: "https://picsum.photos/150/150",
+    image: "/assets/images/info-bg.jpg",
     cta: {
       label: "Times & Locations",
       href: "/donate",
     },
   },
   {
-    image: "https://picsum.photos/150/150",
-    cta: {
-      label: "Donate",
-      href: "/donate",
-    },
-  },
-  {
-    image: "https://picsum.photos/150/150",
+    image: "/assets/images/info-bg.jpg",
     cta: {
       label: "Donate",
       href: "/donate",
