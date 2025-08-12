@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { chanceContent } from "./a-chance.data";
 import { cn } from "~/lib/utils";
+import { Button } from "~/primitives/button/button.primitive";
+import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export default function SplitScrollLayout() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -106,7 +108,7 @@ export default function SplitScrollLayout() {
         />
       </div>
 
-      <div className="hidden md:flex min-h-screen">
+      <div className="hidden md:flex min-h-screen max-w-screen-content mx-auto">
         {/* Left/Sticky image here if needed */}
         <div className="w-full overflow-y-auto snap-y snap-mandatory scroll-smooth h-screen no-scrollbar">
           {chanceContent.map((section, index) => (
@@ -117,13 +119,23 @@ export default function SplitScrollLayout() {
               data-card-title={section.title}
               data-card-index={index}
             >
-              <div className="w-1/2 ml-auto">
-                <h2 className="text-3xl font-normal text-pretty">
-                  <HTMLRenderer html={section.title} />
-                </h2>
-                <p className="text-gray-600 leading-relaxed text-pretty">
-                  {section.description}
-                </p>
+              <div className="w-1/2 max-w-xl ml-auto flex flex-col gap-9">
+                <div className="flex flex-col">
+                  <h2 className="text-3xl font-normal text-pretty">
+                    <HTMLRenderer html={section.title} />
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed text-pretty">
+                    {section.description}
+                  </p>
+                </div>
+                <IconButton
+                  className="rounded-[400px] hover:!text-ocean"
+                  withRotatingArrow
+                  iconClasses="!bg-navy"
+                  to={section.url}
+                >
+                  Learn More
+                </IconButton>
               </div>
             </div>
           ))}
