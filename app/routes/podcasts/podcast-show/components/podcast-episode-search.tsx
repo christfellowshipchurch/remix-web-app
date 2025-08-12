@@ -5,6 +5,7 @@ import {
   Hits,
   Configure,
   RefinementList,
+  useRefinementList,
 } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
@@ -89,24 +90,22 @@ export const PodcastEpisodeSearch = ({
       <Configure filters={filter} hitsPerPage={12} />
 
       {/* Season Filter */}
-      <div className="mt-6 mb-8">
-        <RefinementList
-          attribute="seasonNumber"
-          transformItems={(items) =>
-            items
-              .map((it) => ({ ...it, label: `Season ${it.label}` }))
-              .sort((a, b) => Number(a.value) - Number(b.value))
-          }
-          classNames={{
-            list: "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
-            item: "px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap text-neutral-500 hover:bg-neutral-200 transition-colors duration-300 bg-white",
-            label: "cursor-pointer",
-            checkbox: "hidden",
-            selectedItem: "!bg-ocean text-white rounded-full",
-            count: "hidden",
-          }}
-        />
-      </div>
+      <RefinementList
+        attribute="seasonNumber"
+        transformItems={(items) =>
+          items
+            .map((it) => ({ ...it, label: `Season ${it.label}` }))
+            .sort((a, b) => Number(a.value) - Number(b.value))
+        }
+        classNames={{
+          list: "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
+          item: "px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap text-neutral-500 hover:bg-neutral-200 transition-colors duration-300 bg-white",
+          label: "cursor-pointer",
+          checkbox: "hidden",
+          selectedItem: "!bg-ocean text-white rounded-full",
+          count: "hidden",
+        }}
+      />
 
       {/* Episodes Grid */}
       <Hits

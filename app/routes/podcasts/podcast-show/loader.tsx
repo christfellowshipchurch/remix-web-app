@@ -68,6 +68,9 @@ export async function getLatestEpisodes(channelGuid: string) {
       description: episode.content.attributeValues?.summary?.value,
       coverImage: createImageUrlFromGuid(episode.attributeValues?.image?.value),
       url: episode.attributeValues?.pathname?.value,
+      season:
+        episode.attributeValues?.podcastSeason?.valueFormatted.split(" ")[1],
+      episodeNumber: "TODO", // We need find/create an attribute for this
     };
   });
 

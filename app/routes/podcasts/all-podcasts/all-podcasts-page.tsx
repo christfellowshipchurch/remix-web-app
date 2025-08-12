@@ -4,7 +4,7 @@ import { PodcastHubCard } from "./components/podcast-card";
 import { loader } from "./loader";
 import { PodcastShow } from "../types";
 
-export function PodcastsPage() {
+export function AllPodcastsPage() {
   const { podcastShows } = useLoaderData<typeof loader>();
 
   return (
