@@ -1,14 +1,11 @@
 import { SearchBox, useInstantSearch, useSearchBox } from "react-instantsearch";
 
 import { Hits } from "react-instantsearch";
-import {
-  HitComponent,
-  CampusHit,
-} from "~/routes/home/components/location-search/location-hit";
-import { Hit } from "algoliasearch";
 import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
+import { GroupHitType } from "../../types";
+import { GroupHit } from "../group-hit.component";
 
 export function GroupsSearchPopup({
   setIsOpen,
@@ -95,17 +92,8 @@ export function GroupsSearchPopup({
             item: "flex w-full rounded-xl transition-transform duration-300 border-[1px] border-[#E8E8E8] [&:first-child]:!border-navy hover:border-navy",
             list: "flex flex-col gap-3",
           }}
-          hitComponent={({ hit }) => {
-            if (hit?.campusUrl) {
-              return (
-                <HitComponent
-                  hit={hit as unknown as Hit<CampusHit>}
-                  redirect={false}
-                  setSelectedLocation={handleLocationSelect}
-                />
-              );
-            }
-            return null;
+          hitComponent={({ hit }: { hit: GroupHitType }) => {
+            return <GroupHit hit={hit} />;
           }}
         />
       </div>

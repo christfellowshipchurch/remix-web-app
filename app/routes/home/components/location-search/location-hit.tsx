@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { formattedServiceTimes } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 
-export type CampusHit = {
+export type CampusHitType = {
   campusUrl: string;
   campusName: string;
   geoloc: {
@@ -19,12 +19,12 @@ export type CampusHit = {
   };
   serviceTimes: string;
 };
-export function HitComponent({
+export function CampusHit({
   setSelectedLocation,
   redirect = true,
   hit,
 }: {
-  hit: Hit<CampusHit>;
+  hit: Hit<CampusHitType> | CampusHitType;
   redirect?: boolean;
   setSelectedLocation?: (location: string) => void;
 }) {
@@ -49,7 +49,7 @@ export function HitComponent({
   );
 }
 
-const HitContent = ({ hit }: { hit: Hit<CampusHit> }) => {
+const HitContent = ({ hit }: { hit: Hit<CampusHitType> | CampusHitType }) => {
   const { street1, street2, city } = hit?.campusLocation || {};
   const serviceTimes = formattedServiceTimes(hit?.serviceTimes || "");
   const isOnline = hit?.campusUrl === "cf-everywhere";

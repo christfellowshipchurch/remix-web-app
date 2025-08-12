@@ -1,7 +1,7 @@
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ResourceCard } from "~/primitives/cards/resource-card";
-import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+import { CardCarousel } from "~/components/resource-carousel";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 export const CTACollectionSection = ({
@@ -82,7 +82,7 @@ const PageBuilderCTACollection = ({
 
         {/* Mobile Carousel */}
         <div className="md:hidden">
-          <ResourceCarousel resources={resources} />
+          <CardCarousel resources={resources} />
         </div>
 
         <div className="w-full flex justify-start mt-8">

@@ -9,11 +9,11 @@ import { RelatedGroupsPartial } from "./partials/related-groups.partial";
 import { GroupFAQ } from "./components/faq.component";
 import { InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
-import { GroupHit } from "../types";
 import { Button } from "~/primitives/button/button.primitive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
+import { GroupHit } from "../group-finder/types";
 
 export const GroupNotFound = () => {
   return (

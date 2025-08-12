@@ -1,8 +1,7 @@
-import { Hit } from "algoliasearch";
 import { Link } from "react-router-dom";
 import Icon from "~/primitives/icon";
 
-export type HitProps = {
+export type ContentHitType = {
   routing?: {
     pathname: string;
   };
@@ -10,7 +9,7 @@ export type HitProps = {
   contentType: string;
 };
 
-const getIconName = (hit: Hit<HitProps>) => {
+const getIconName = (hit: ContentHitType) => {
   // TODO: Update the type names once the new index is created in Algolia
   switch (hit.contentType) {
     case "Articles & Blogs":
@@ -31,11 +30,11 @@ const getIconName = (hit: Hit<HitProps>) => {
   }
 };
 
-export function HitComponent({
+export function ContentHit({
   hit,
   query,
 }: {
-  hit: Hit<HitProps>;
+  hit: ContentHitType;
   query: string | null;
 }) {
   const iconName = getIconName(hit);
