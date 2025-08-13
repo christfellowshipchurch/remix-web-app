@@ -1,13 +1,14 @@
 import { HeroCard } from "../components/hero-card.component";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export const Hero = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [centeredCardIndex, setCenteredCardIndex] = useState(2); // Start with middle card centered
 
   // Create a looped array by duplicating cards
   const loopedCards = [...mockCards, ...mockCards, ...mockCards];
 
-  // Handle infinite scroll effect
+  // Handle infinite scroll effect with snapping
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
@@ -28,6 +29,26 @@ export const Hero = () => {
 
     const handleScroll = () => {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const containerCenter = containerRect.left + containerRect.width / 2;
+
+      let minDiff = Infinity;
+      let centerIdx = 0;
+
+      // Find the card closest to center
+      const cards = scrollContainer.querySelectorAll(".hero-card");
+      cards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const diff = Math.abs(cardCenter - containerCenter);
+        if (diff < minDiff) {
+          minDiff = diff;
+          centerIdx = i;
+        }
+      });
+
+      // Update the centered card index
+      setCenteredCardIndex(centerIdx);
 
       // Jump to middle set when reaching edges, maintaining relative position
       if (scrollLeft >= scrollWidth - clientWidth - 10) {
@@ -78,18 +99,19 @@ export const Hero = () => {
       <div className="w-full">
         <div
           ref={scrollContainerRef}
-          className="flex items-center 3xl:justify-center gap-4 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className="flex items-center 3xl:justify-center gap-4 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory"
+          style={{
+            scrollBehavior: "smooth",
+          }}
         >
           {loopedCards.map((card, index) => {
-            // Calculate which card should be the center card (relative to original set)
-            const originalIndex = index % mockCards.length;
-            const centerCardIndex = Math.floor(mockCards.length / 2);
-            const isCenterCard = originalIndex === centerCardIndex;
+            // Determine if this card should be large based on whether it's the centered card
+            const isCenterCard = index === centeredCardIndex;
 
             return (
               <div
                 key={index}
-                className={`flex-shrink-0 ${
+                className={`hero-card flex-shrink-0 snap-center ${
                   isCenterCard ? "w-[350px]" : "w-[282px]"
                 }`}
               >
