@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { createSearchClient } from "../../messages/all-messages/components/all-messages.component";
 
 import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
-import { LocationHit } from "./components/custom-hits";
+import { LocationPageHit } from "./components/custom-location-hit";
 import { LoaderReturnType } from "./loader";
 
 export function LocationSinglePage() {
@@ -42,7 +42,7 @@ export function LocationSinglePage() {
           }}
           defaultValue={campusUrl}
         />
-        <LocationHit />
+        <LocationPageHit />
       </InstantSearch>
     </div>
   );
