@@ -1,22 +1,16 @@
-export type Podcas = {
+export type PodcastShow = {
   id: string;
   title: string;
-  image: string;
-  tags: string[];
-  href: string;
-};
-
-export type Podcast = {
-  title: string;
-  tags: string[];
-  trailer: string;
-  seasons: Season[];
   coverImage: string;
   description: string;
-  shareLinks: {
-    title: string;
-    url: string;
-  }[];
+  apple: string;
+  spotify: string;
+  amazon: string;
+  episodesChannelGuid: string;
+  url: string;
+  //seasons: Season[];
+  //tags: string[];
+  //trailer: string;
 };
 
 export type PodcastEpisode = {
@@ -28,20 +22,19 @@ export type PodcastEpisode = {
   coverImage: string;
   description: string;
   authors: string;
+  url: string;
+  apple: string;
+  spotify: string;
+  amazon: string;
 
   content: string;
   resources: {
     title: string;
     url: string;
   }[];
-
-  shareLinks: {
-    title: string;
-    url: string;
-  }[];
 };
 
-export type Season = {
+export type PodcastSeason = {
   title: string;
   description: string;
   coverImage: string;

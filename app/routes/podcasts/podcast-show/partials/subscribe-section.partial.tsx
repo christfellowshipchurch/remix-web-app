@@ -1,27 +1,32 @@
 import { icons } from "~/lib/icons";
 import Icon from "~/primitives/icon";
 
-type ShareLink = {
-  title: string;
-  url: string;
-};
-
 export const SubscribeSection = ({
-  shareLinks,
+  apple,
+  spotify,
+  amazon,
 }: {
-  shareLinks: ShareLink[];
+  apple: string;
+  spotify: string;
+  amazon: string;
 }) => {
-  const platformToIcon: Record<string, keyof typeof icons> = {
-    "Apple Music": "appleLogo",
-    Spotify: "spotify",
-    "Amazon Music": "amazonMusic",
-  };
-
-  const links = shareLinks.map((link) => ({
-    label: link.title,
-    icon: platformToIcon[link.title] || "link",
-    href: link.url,
-  }));
+  const links = [
+    {
+      label: "Apple Music",
+      icon: "appleLogo",
+      href: apple,
+    },
+    {
+      label: "Spotify",
+      icon: "spotify",
+      href: spotify,
+    },
+    {
+      label: "Amazon Music",
+      icon: "amazonMusic",
+      href: amazon,
+    },
+  ];
 
   return (
     <div className="w-full bg-linear-to-br from-[#1C3647] to-navy content-padding">
@@ -36,9 +41,9 @@ export const SubscribeSection = ({
                 className="flex flex-col items-center justify-center gap-2 bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
                 key={index}
               >
-                <a href={link.href}>
+                <a href={link.href} target="_blank">
                   <Icon
-                    name={link.icon}
+                    name={link.icon as keyof typeof icons}
                     size={link.icon === "amazonMusic" ? 62 : 52}
                   />
                 </a>
