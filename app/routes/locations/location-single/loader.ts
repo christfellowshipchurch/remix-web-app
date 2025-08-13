@@ -5,10 +5,10 @@ export type LoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
   GOOGLE_MAPS_API_KEY: string;
   campusUrl: string;
-  allCampuses: string[]; // TODO: Remove this once we have a better way to get all campuses URLs
   campusName: string;
 };
 
+// TODO: Remove this once we have a better way to get error check
 const allCampuses = [
   "palm-beach-gardens",
   "iglesia-palm-beach-gardens",
@@ -32,6 +32,14 @@ export const loader: LoaderFunction = async ({ params }) => {
   const campusUrl = params.location;
 
   if (!campusUrl) {
+    throw new Response("Campus not found", {
+      status: 404,
+    });
+  }
+
+  // TODO: Remove this once we have a better way to get error check
+  // Check if the current campus URL is in the list of valid campuses
+  if (!allCampuses.includes(campusUrl)) {
     throw new Response("Campus not found", {
       status: 404,
     });
@@ -63,7 +71,6 @@ export const loader: LoaderFunction = async ({ params }) => {
     GOOGLE_MAPS_API_KEY: googleMapsApiKey,
     campusUrl: decodeURIComponent(campusUrl),
     campusName: campusName,
-    allCampuses: allCampuses, // TODO: Remove this once we have a better way to get all campuses URLs
   };
 
   return pageData;
