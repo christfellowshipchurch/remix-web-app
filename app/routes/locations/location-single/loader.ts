@@ -8,10 +8,38 @@ export type LoaderReturnType = {
   campusName: string;
 };
 
+// TODO: Remove this once we have a better way to get error check
+const allCampuses = [
+  "palm-beach-gardens",
+  "iglesia-palm-beach-gardens",
+  "iglesia-royal-palm-beach",
+  "royal-palm-beach",
+  "cf-everywhere",
+  // "online",
+  "vero-beach",
+  "boynton-beach",
+  "jupiter",
+  "port-st-lucie",
+  "stuart",
+  "okeechobee",
+  "belle-glade",
+  "boca-raton",
+  "westlake",
+  "trinity",
+];
+
 export const loader: LoaderFunction = async ({ params }) => {
   const campusUrl = params.location;
 
   if (!campusUrl) {
+    throw new Response("Campus not found", {
+      status: 404,
+    });
+  }
+
+  // TODO: Remove this once we have a better way to get error check
+  // Check if the current campus URL is in the list of valid campuses
+  if (!allCampuses.includes(campusUrl)) {
     throw new Response("Campus not found", {
       status: 404,
     });
