@@ -24,12 +24,12 @@ export type Tag = {
   isActive: boolean;
 };
 
-const MessageHitComponent = ({ hit }: { hit: ContentItemHit }) => (
+const MessageHit = ({ hit }: { hit: ContentItemHit }) => (
   <ResourceCard
     resource={{
       id: hit.objectID,
       contentChannelId: "63", // MESSAGE type from builder-utils.ts
-      contentType: "MESSAGE",
+      contentType: "MESSAGES",
       author: hit.author.firstName + " " + hit.author.lastName,
       image: hit.coverImage.sources[0].uri,
       name: hit.title,
@@ -130,7 +130,9 @@ export default function Messages() {
 
           {/* Results Grid */}
           <Hits
-            hitComponent={MessageHitComponent}
+            hitComponent={({ hit }: { hit: ContentItemHit }) => {
+              return <MessageHit hit={hit} />;
+            }}
             classNames={{
               list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
             }}

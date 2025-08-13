@@ -68,7 +68,6 @@ export type PageBuilderSection = {
   name: string;
   content: string;
   type: SectionType;
-  attributeValues?: Record<string, RockAttributeValue["value"]>;
   linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
   collection?: CollectionItem[];
   faqs?: FAQItem[];

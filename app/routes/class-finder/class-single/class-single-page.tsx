@@ -6,12 +6,12 @@ import { ClassSingleBasicContent } from "./components/basic-content.component";
 import { ClassFAQ } from "./components/faq.component";
 import { InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
-import { GroupHit } from "../types";
+import { GroupHit } from "../../group-finder/types";
 import { Button } from "~/primitives/button/button.primitive";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
-import { FinderSingleHero } from "~/routes/group-finder/group-single/partials/finder-single-hero.partial";
+import { FinderSingleHero } from "~/routes/group-single/partials/finder-single-hero.partial";
 import { UpcomingSessionsSection } from "./partials/upcoming-sections.partial";
 
 export const ClassNotFound = () => {

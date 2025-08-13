@@ -1,4 +1,4 @@
-export interface GroupHit {
+export interface GroupHitType {
   rockItemId: number;
   title: string;
   summary: string;
