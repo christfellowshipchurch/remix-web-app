@@ -72,12 +72,14 @@ export function SeriesResources() {
         />
 
         {/* Resources Section */}
-        <SeriesResourceCarousel
-          title="Related Resources"
-          summary="Explore other resources that may be of interest to you"
-          items={resources}
-          bg="white"
-        />
+        {resources && resources.length > 0 && (
+          <SeriesResourceCarousel
+            title="Related Resources"
+            summary="Explore other resources that may be of interest to you"
+            items={resources}
+            bg="white"
+          />
+        )}
       </div>
     </div>
   );

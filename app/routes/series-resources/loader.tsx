@@ -107,7 +107,7 @@ const getSeriesResources = async (seriesGuid: string) => {
 };
 
 const getSeriesMessages = async (seriesGuid: string) => {
-  const seriesMessages = await fetchRockData({
+  let seriesMessages = await fetchRockData({
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "MessageSeries",
@@ -116,6 +116,10 @@ const getSeriesMessages = async (seriesGuid: string) => {
       loadAttributes: "simple",
     },
   });
+
+  if (!Array.isArray(seriesMessages)) {
+    seriesMessages = [seriesMessages];
+  }
 
   // Map through messages and fix the coverImage to be a full url -> using createImageUrlFromGuid
   seriesMessages.forEach((message: Message) => {
