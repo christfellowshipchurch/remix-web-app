@@ -2,9 +2,9 @@ import { useLoaderData } from "react-router-dom";
 import { useMemo } from "react";
 import { createSearchClient } from "../../messages/all-messages/components/all-messages.component";
 
-import { Configure, InstantSearch, SearchBox } from "react-instantsearch";
-import { LocationPageHit } from "./components/custom-location-hit";
+import { Configure, Hits, InstantSearch } from "react-instantsearch";
 import { LoaderReturnType } from "./loader";
+import { LocationSingle } from "./partials/location-content";
 
 export function LocationSinglePage() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, campusUrl } =
@@ -19,30 +19,10 @@ export function LocationSinglePage() {
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
-        initialUiState={{
-          dev_Locations: {
-            query: `${campusUrl}`,
-          },
-        }}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
         key={campusUrl}
       >
-        <Configure
-          hitsPerPage={1}
-          queryType="prefixNone"
-          removeWordsIfNoResults="none"
-          typoTolerance={false}
-          exactOnSingleWordQuery="word"
-        />
-        <SearchBox
-          classNames={{
-            root: "opacity-0 size-0 absolute",
-          }}
-          defaultValue={campusUrl}
-        />
-        <LocationPageHit />
+        <Configure filters={`campusUrl:"${campusUrl}"`} />
+        <Hits hitComponent={LocationSingle} />
       </InstantSearch>
     </div>
   );
