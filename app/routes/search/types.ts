@@ -20,6 +20,10 @@ export interface ContentItemHit {
       uri: string;
     }[];
   };
+  show?: string;
+  season?: string;
+  seasonNumber?: number;
+  episodeNumber?: number;
   _typename: string;
   objectID: string;
   _highlightResult: {
