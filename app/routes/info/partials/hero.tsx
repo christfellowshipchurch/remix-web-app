@@ -5,9 +5,11 @@ export const Hero = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [centeredCardIndex, setCenteredCardIndex] = useState(2); // Start with middle card centered
   const [isVisible, setIsVisible] = useState(false);
-
-  // Create a looped array by duplicating cards
-  const loopedCards = [...mockCards, ...mockCards, ...mockCards];
+  const [cards, setCards] = useState([
+    ...mockCards,
+    ...mockCards,
+    ...mockCards,
+  ]);
 
   // Handle infinite scroll effect with snapping
   useEffect(() => {
@@ -37,8 +39,8 @@ export const Hero = () => {
       let centerIdx = 0;
 
       // Find the card closest to center
-      const cards = scrollContainer.querySelectorAll(".hero-card");
-      cards.forEach((card, i) => {
+      const cardElements = scrollContainer.querySelectorAll(".hero-card");
+      cardElements.forEach((card, i) => {
         const rect = card.getBoundingClientRect();
         const cardCenter = rect.left + rect.width / 2;
         const diff = Math.abs(cardCenter - containerCenter);
@@ -51,15 +53,20 @@ export const Hero = () => {
       // Update the centered card index
       setCenteredCardIndex(centerIdx);
 
-      // Jump to rightmost/leftmost card when reaching edges
-      if (scrollLeft >= scrollWidth - clientWidth - 10) {
-        // When scrolling right, jump to the rightmost card of the left set
-        const rightmostCardPosition = setWidth - clientWidth;
-        scrollContainer.scrollLeft = rightmostCardPosition;
+      // Infinite scroll with proper scroll position maintenance
+      if (scrollLeft >= scrollWidth - clientWidth - 200) {
+        // Near right edge - add cards to the end
+        setCards((prevCards) => [...prevCards, ...mockCards]);
       } else if (scrollLeft <= 10) {
-        // When scrolling left, jump to the leftmost card of the right set
-        const leftmostCardPosition = setWidth;
-        scrollContainer.scrollLeft = leftmostCardPosition;
+        // Near left edge - add cards to the beginning
+
+        // Calculate the width of one set of cards
+        const addedWidth = setWidth;
+
+        setCards((prevCards) => [...mockCards, ...prevCards]);
+
+        // Adjust scroll position to maintain visual position
+        scrollContainer.scrollLeft = scrollLeft + addedWidth;
       }
     };
 
@@ -110,13 +117,13 @@ export const Hero = () => {
           ref={scrollContainerRef}
           className="flex items-center 3xl:justify-center gap-4 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory"
         >
-          {loopedCards.map((card, index) => {
+          {cards.map((card, index) => {
             // Determine if this card should be large based on whether it's the centered card
             const isCenterCard = index === centeredCardIndex;
 
             return (
               <div
-                key={index}
+                key={`${card.cta.label}-${index}`}
                 className={`hero-card flex-shrink-0 snap-center ${
                   isCenterCard ? "w-[350px]" : "w-[282px]"
                 }`}
