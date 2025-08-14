@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 export const Hero = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [centeredCardIndex, setCenteredCardIndex] = useState(2); // Start with middle card centered
+  const [isVisible, setIsVisible] = useState(false);
 
   // Create a looped array by duplicating cards
   const loopedCards = [...mockCards, ...mockCards, ...mockCards];
@@ -50,16 +51,15 @@ export const Hero = () => {
       // Update the centered card index
       setCenteredCardIndex(centerIdx);
 
-      // Jump to middle set when reaching edges, maintaining relative position
+      // Jump to rightmost/leftmost card when reaching edges
       if (scrollLeft >= scrollWidth - clientWidth - 10) {
-        // When scrolling right, calculate position relative to viewport
-        const viewportPosition = scrollLeft - (scrollWidth - clientWidth);
-        const newPosition = setWidth + viewportPosition + 28;
-        scrollContainer.scrollLeft = newPosition;
+        // When scrolling right, jump to the rightmost card of the left set
+        const rightmostCardPosition = setWidth - clientWidth;
+        scrollContainer.scrollLeft = rightmostCardPosition;
       } else if (scrollLeft <= 10) {
-        // When scrolling left, jump to middle set + the scroll position
-        const newPosition = setWidth + scrollLeft;
-        scrollContainer.scrollLeft = newPosition;
+        // When scrolling left, jump to the leftmost card of the right set
+        const leftmostCardPosition = setWidth;
+        scrollContainer.scrollLeft = leftmostCardPosition;
       }
     };
 
@@ -79,12 +79,21 @@ export const Hero = () => {
     // Initialize scroll position
     scrollContainer.scrollLeft = centerPosition;
 
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      scrollContainer.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
     <div
-      className="flex flex-col pt-16 pb-8 items-center justify-center gap-12"
+      className={`flex flex-col pt-16 pb-8 items-center justify-center gap-12 ${
+        isVisible ? "animate-fadeIn duration-400" : "opacity-0"
+      }`}
       style={{
         backgroundImage: "url(/assets/images/info-bg.jpg)",
         backgroundSize: "cover",
@@ -100,9 +109,6 @@ export const Hero = () => {
         <div
           ref={scrollContainerRef}
           className="flex items-center 3xl:justify-center gap-4 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory"
-          style={{
-            scrollBehavior: "smooth",
-          }}
         >
           {loopedCards.map((card, index) => {
             // Determine if this card should be large based on whether it's the centered card
@@ -129,35 +135,35 @@ const mockCards = [
   {
     image: "/assets/images/info-bg.jpg",
     cta: {
-      label: "Testing",
+      label: "1",
       href: "/donate",
     },
   },
   {
     image: "/assets/images/info-bg.jpg",
     cta: {
-      label: "Shop Now",
+      label: "2",
       href: "/donate",
     },
   },
   {
     image: "/assets/images/info-bg.jpg",
     cta: {
-      label: "Register",
+      label: "3",
       href: "/donate",
     },
   },
   {
     image: "/assets/images/info-bg.jpg",
     cta: {
-      label: "Times & Locations",
+      label: "4",
       href: "/donate",
     },
   },
   {
     image: "/assets/images/info-bg.jpg",
     cta: {
-      label: "Donate",
+      label: "5",
       href: "/donate",
     },
   },
