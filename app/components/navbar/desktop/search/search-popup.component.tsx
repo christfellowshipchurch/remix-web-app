@@ -1,7 +1,6 @@
 import { Hits } from "react-instantsearch";
-import { HitComponent, HitProps } from "./hit-component.component";
+import { ContentHit, ContentHitType } from "./content-hit.component";
 import { SearchCustomRefinementList } from "./custom-refinements.component";
-import { Hit } from "algoliasearch";
 
 export const SearchPopup = ({
   setIsSearchOpen,
@@ -33,12 +32,12 @@ export const SearchPopup = ({
           }}
           hitComponent={({ hit }) => {
             if (hit?.routing?.pathname) {
-              return (
-                <HitComponent
-                  hit={hit as unknown as Hit<HitProps>}
-                  query={query || null}
-                />
-              );
+              const contentData: ContentHitType = {
+                routing: hit.routing,
+                title: hit.title,
+                contentType: hit.contentType,
+              };
+              return <ContentHit hit={contentData} query={query || null} />;
             }
             return null;
           }}

@@ -59,11 +59,11 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
 
     // Get the tag name for the related articles
     const tag = await fetchTag(relatedArticleTag);
-    const firstThreeArticles = relatedArticles.slice(0, 3);
+    const firstSixArticles = relatedArticles.slice(0, 6);
 
     // Format data for the related articles
     const formattedArticles = await Promise.all(
-      firstThreeArticles.map(async (article) => {
+      firstSixArticles.map(async (article) => {
         const { title, attributeValues, attributes, content, startDateTime } =
           article;
         const { author, summary, url } = attributeValues;

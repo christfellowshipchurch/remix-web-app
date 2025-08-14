@@ -1,5 +1,5 @@
 import { SectionTitle } from "~/components";
-import { ResourceCarousel } from "~/components/page-builder/resource-section.partial";
+import { CardCarousel } from "~/components/resource-carousel";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import { VolunteerAtChurchCard } from "../components/cards/volunteer-at-church-card.component";
 import { cn } from "~/lib/utils";
@@ -20,7 +20,7 @@ export function VolunteerAtChurch() {
 
         {/* Mobile Carousel */}
         <div className="w-full lg:hidden content-padding">
-          <ResourceCarousel
+          <CardCarousel
             mode="dark"
             CardComponent={VolunteerAtChurchCard}
             resources={tempResources}

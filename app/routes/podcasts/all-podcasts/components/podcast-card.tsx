@@ -1,30 +1,34 @@
-import type { Podcast } from "../../types";
-import lodash from "lodash";
+import type { PodcastShow } from "../../types";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
-import { icons } from "~/lib/icons";
 import { Link } from "react-router-dom";
 
 type PodcastCardProps = {
-  podcast: Podcast;
+  podcast: PodcastShow;
   className?: string;
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, trailer, shareLinks } = podcast;
-  const { kebabCase } = lodash;
+  const { title, description, apple, spotify, amazon, url, coverImage } =
+    podcast;
 
-  const platformToIcon: Record<string, keyof typeof icons> = {
-    "Apple Music": "appleLogo",
-    Spotify: "spotify",
-    "Amazon Music": "amazonMusic",
-  };
-
-  const links = shareLinks.map((link) => ({
-    label: link.title,
-    icon: platformToIcon[link.title] || "link",
-    href: link.url,
-  }));
+  const links = [
+    {
+      label: "Apple Music",
+      icon: "appleLogo",
+      href: apple,
+    },
+    {
+      label: "Spotify",
+      icon: "spotify",
+      href: spotify,
+    },
+    {
+      label: "Amazon Music",
+      icon: "amazonMusic",
+      href: amazon,
+    },
+  ];
 
   return (
     <div
@@ -34,9 +38,9 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
       <div className="hidden relative md:flex flex-col lg:flex-row lg:justify-between gap-8 max-w-screen-content">
         {/* Image */}
         <img
-          src={"/assets/images/podcasts/temp-embed.jpg"}
+          src={coverImage}
           alt={title}
-          className="object-cover bg-cover w-full h-[360px] lg:h-[282px] lg:w-[480px] xl:w-[590px] xl:h-[350px]"
+          className="object-cover bg-cover w-full h-[360px] lg:h-[282px] lg:w-[480px] xl:w-[590px] xl:h-[350px] rounded-lg"
         />
 
         {/* Content */}
@@ -46,11 +50,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
             {description}
           </p>
           <div className="flex items-center gap-8 w-full">
-            <Button
-              intent="secondary"
-              href={`/podcasts/${kebabCase(title)}`}
-              className="h-full"
-            >
+            <Button intent="secondary" href={url || ""} className="h-full">
               Episodes and More
             </Button>
 
@@ -59,10 +59,11 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                 <Link
                   key={index}
                   to={link.href}
+                  target="_blank"
                   className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
                 >
                   <Icon
-                    name={link.icon}
+                    name={link.icon as any}
                     color="white"
                     size={link.icon === "amazonMusic" ? 36 : 24}
                     className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
@@ -90,16 +91,17 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
               <p className="text-sm text-[#767676]">{description}</p>
             </div>
             <img
-              src={"/assets/images/podcasts/temp-embed.jpg"}
+              src={coverImage}
               alt={title}
-              className="object-cover bg-cover w-full h-[360px]"
+              className="object-cover bg-cover w-full h-[360px] rounded-lg"
             />
           </div>
 
           <div className="flex flex-col items-center gap-8 w-full">
             <Button
               intent="secondary"
-              href={`/podcasts/${kebabCase(title)}`}
+              href={url || ""}
+              target="_blank"
               linkClassName="w-full"
               className="w-full"
             >
@@ -111,10 +113,11 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                 <Link
                   key={index}
                   to={link.href}
+                  target="_blank"
                   className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[72px]"
                 >
                   <Icon
-                    name={link.icon}
+                    name={link.icon as any}
                     color="white"
                     size={link.icon === "amazonMusic" ? 50 : 36}
                     className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}

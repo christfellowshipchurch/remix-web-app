@@ -36,7 +36,7 @@ const defaultStats: VolunteerStatsProps = {
   avatarCount: 3456,
 };
 
-export function VolunteerStats(props?: VolunteerStatsProps) {
+export function VolunteerStats(props: Partial<VolunteerStatsProps> = {}) {
   const {
     stats = defaultStats.stats,
     avatars = defaultStats.avatars,

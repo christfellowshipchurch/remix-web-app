@@ -134,7 +134,6 @@ export const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         content: child.content,
-        attributeValues: attributeValues,
         linkTreeLayout: await getLinkTreeLayout(child.attributeValues),
       };
 
