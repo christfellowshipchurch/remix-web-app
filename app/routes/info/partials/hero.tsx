@@ -100,11 +100,11 @@ export const Hero = () => {
             return (
               <div
                 key={`${card.cta.label}-${index}`}
-                className={`hero-card flex-shrink-0 snap-center ${
-                  isCenterCard ? "w-[350px]" : "w-[282px]"
+                className={`hero-card flex-shrink-0 snap-center transition-all duration-100 p-7 w-[306px] ${
+                  isCenterCard ? "scale-115 " : "scale-100"
                 }`}
               >
-                <HeroCard {...card} size={isCenterCard ? "large" : "normal"} />
+                <HeroCard {...card} />
               </div>
             );
           })}
