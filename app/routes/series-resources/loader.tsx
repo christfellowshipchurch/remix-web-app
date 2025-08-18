@@ -1,12 +1,14 @@
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { LoaderFunctionArgs } from "react-router-dom";
-import lodash from "lodash";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { Message } from "../messages/message-single/loader";
-import { ContentChannelIds, getContentChannelUrl } from "~/lib/rock-config";
+import { MessageType } from "../messages/types";
+import { getContentChannelUrl } from "~/lib/rock-config";
+import { ensureArray } from "~/lib/utils";
+import { mapRockDataToMessage } from "../messages/message-single/loader";
+
 export type SeriesReturnType = {
   series: Series;
-  messages: Message[];
+  messages: MessageType[];
   // A series resource will be anything tagged with the series defined value that is not a message
   resources: any[];
 };
@@ -41,35 +43,31 @@ export async function loader({ params }: LoaderFunctionArgs) {
     series.attributeValues.coverImage.value
   );
 
+  const seriesMessageData = await getSeriesMessages(series.guid);
+
   return {
     series: series,
-    messages: await getSeriesMessages(series.guid),
+    messages: await Promise.all(seriesMessageData.map(mapRockDataToMessage)),
     resources: await getSeriesResources(series.guid),
   };
 }
 
-const getSeries = async (seriesPath: string) => {
-  const seriesDefinedValues = await fetchRockData({
+const getSeries = async (guid: string) => {
+  const fetchSeries = await fetchRockData({
     endpoint: "DefinedValues",
     queryParams: {
-      $filter: "DefinedTypeId eq 590",
+      $filter: `Guid eq guid'${guid}'`,
       loadAttributes: "simple",
     },
   });
 
-  if (!seriesDefinedValues) {
+  if (!fetchSeries) {
     return null;
   }
 
-  const series = seriesDefinedValues.find(
-    (item: any) => lodash.kebabCase(item.value) === seriesPath
-  );
+  const series = ensureArray(fetchSeries);
 
-  if (!series) {
-    return null;
-  }
-
-  return series;
+  return series[0];
 };
 
 const getSeriesResources = async (seriesGuid: string) => {
@@ -120,17 +118,6 @@ const getSeriesMessages = async (seriesGuid: string) => {
   if (!Array.isArray(seriesMessages)) {
     seriesMessages = [seriesMessages];
   }
-
-  // Map through messages and fix the coverImage to be a full url -> using createImageUrlFromGuid
-  seriesMessages.forEach((message: Message) => {
-    message.coverImage = createImageUrlFromGuid(
-      message.attributeValues.image.value
-    );
-  });
-
-  seriesMessages.forEach((message: Message) => {
-    message.attributeValues.url.value = `/messages/${message.attributeValues.url.value}`;
-  });
 
   if (!seriesMessages) {
     return [];

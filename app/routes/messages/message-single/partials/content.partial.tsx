@@ -1,9 +1,9 @@
 import { useLoaderData } from "react-router-dom";
-import { MessageReturnType } from "../loader";
+import { LoaderReturnType } from "../loader";
 import HTMLRenderer from "~/primitives/html-renderer";
 
 export const MessageContent = ({}) => {
-  const { message } = useLoaderData<MessageReturnType>();
+  const { message } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="flex w-full flex-col lg:pt-10 lg:pb-2 content-padding">
@@ -15,7 +15,7 @@ export const MessageContent = ({}) => {
             {message.summary}
           </h2>
           <div className="flex gap-1 text-[#AAAAAA]">
-            <p>{message.attributeValues.author.valueFormatted}</p>
+            <p>{message.speaker.fullName}</p>
             <span>-</span>
             <p>{message.startDateTime}</p>
           </div>
