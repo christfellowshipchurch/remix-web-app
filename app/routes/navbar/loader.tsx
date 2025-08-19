@@ -31,15 +31,39 @@ export interface RootLoaderData {
 
 const fetchFeatureCards = async () => {
   try {
-    const navCardDefinedValues = await fetchRockData({
-      endpoint: "DefinedValues",
+    const latestArticleData = await fetchRockData({
+      endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: "DefinedTypeId eq 580",
+        $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
+        $orderby: "StartDateTime desc",
+        $top: "1",
         loadAttributes: "simple",
       },
     });
 
-    return navCardDefinedValues;
+    const latestSermonData = await fetchRockData({
+      endpoint: "ContentChannelItems",
+      queryParams: {
+        $filter: `ContentChannelId eq 63 and Status eq 'Approved'`,
+        $orderby: "StartDateTime desc",
+        $top: "1",
+        loadAttributes: "simple",
+      },
+    });
+
+    // TODO: remove this once we have the real data for the get involved card(s)
+    const mockGetInvolvedData = {
+      title: "Take the Journey",
+      subtitle: "New Classes",
+      callToAction: {
+        title: "Sign Up Now",
+        url: "/journey",
+      },
+      image: "https://rock.christfellowship.church/GetImage.ashx?id=2966369",
+      navMenu: "get involved",
+    };
+
+    return [latestSermonData, latestArticleData, mockGetInvolvedData];
   } catch (error) {
     console.error("Error fetching feature cards:", error);
     return [];
@@ -114,7 +138,11 @@ export async function loader({
     const rawFeatureCards = await fetchFeatureCards();
 
     // If the API call failed, return empty arrays
-    if (!rawFeatureCards || !Array.isArray(rawFeatureCards)) {
+    if (
+      !rawFeatureCards ||
+      !Array.isArray(rawFeatureCards) ||
+      rawFeatureCards.length === 0
+    ) {
       return {
         userData: null,
         ministries: { featureCards: [] },
@@ -133,22 +161,25 @@ export async function loader({
 
     // Transform the raw data into FeatureCard type
     const mappedFeatureCards: FeatureCard[] = rawFeatureCards.map((card) => {
-      const attributes = card.attributeValues;
+      // Hardcoding the get involved card for now
+      if (card.navMenu && card.navMenu.toLowerCase() === "get involved") {
+        return card;
+      }
 
-      // Parse the callToAction which comes in format "title^url"
-      const [actionTitle, actionUrl] = (
-        attributes.calltoAction?.value || ""
-      ).split("^");
+      const attributes = card.attributeValues;
+      const isArticle = card.contentChannelId === 43;
 
       return {
-        title: attributes.title?.value || "",
-        subtitle: attributes.subtitle?.value || "",
+        title: card.title || "",
+        subtitle: isArticle ? "New Article" : "Latest Message",
         callToAction: {
-          title: actionTitle || "",
-          url: actionUrl || "",
+          title: isArticle ? "Read Now" : "Watch Now",
+          url: `/${isArticle ? "articles" : "messages"}/${
+            attributes.url?.value
+          }`,
         },
-        image: createImageUrlFromGuid(attributes.coverImage?.value || ""),
-        navMenu: attributes.navMenu?.value || "",
+        image: createImageUrlFromGuid(attributes.image?.value || ""),
+        navMenu: "media",
       };
     });
 

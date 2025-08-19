@@ -1,4 +1,4 @@
-import { Message } from "~/routes/messages/message-single/loader";
+import { MessageType } from "~/routes/messages/types";
 import {
   CarouselContent,
   CarouselItem,
@@ -11,10 +11,11 @@ import { MinistryCard } from "~/primitives/cards/ministry-card";
 import { useResponsive } from "~/hooks/use-responsive";
 
 export const SeriesResourceCarousel = (data: {
-  items: Message[] | any[];
+  items: MessageType[];
   title: string;
   summary?: string;
   bg?: string;
+  type?: "messages" | "resources";
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { isMedium, isLarge } = useResponsive();
@@ -66,9 +67,13 @@ export const SeriesResourceCarousel = (data: {
                 >
                   <MinistryCard
                     title={item.title}
-                    description={item.attributeValues.summary.value}
+                    description={item.summary}
                     image={item.coverImage}
-                    url={item.attributeValues.url.value}
+                    url={
+                      data.type === "messages"
+                        ? `/messages/${item.url}`
+                        : item.url
+                    }
                   />
                 </CarouselItem>
               ))}

@@ -279,3 +279,7 @@ export const formattedServiceTimes = (serviceTimes: string) =>
 
     return acc;
   }, []);
+
+export const ensureArray = <T>(data: T | T[]): T[] => {
+  return Array.isArray(data) ? data : [data];
+};
