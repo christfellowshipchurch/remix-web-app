@@ -5,10 +5,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "~/primitives/shadcn-primitives/carousel";
-import { OtherSeriesCard } from "./other-series-card.component";
-import { Message } from "../loader";
+// import { OtherSeriesCard } from "./other-series-card.component";
+import { MessageType } from "~/routes/messages/types";
 
-export function MessagesCarousel({ messages }: { messages: Message[] }) {
+export function MessagesCarousel({ messages }: { messages: MessageType[] }) {
   return (
     <Carousel
       opts={{
@@ -22,7 +22,7 @@ export function MessagesCarousel({ messages }: { messages: Message[] }) {
             key={index}
             className="w-full aspect-video basis-[75%] sm:basis-[50%] lg:basis-[31.5%] pl-0"
           >
-            <OtherSeriesCard series={message} />
+            {/* <OtherSeriesCard series={message} /> */}
           </CarouselItem>
         ))}
       </CarouselContent>
