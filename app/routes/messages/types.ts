@@ -1,11 +1,20 @@
-export type MessageCard = {
+import { Author } from "../author/loader";
+
+export type MessageType = {
   title: string;
-  description: string;
+  content: string;
+  summary: string;
+  image: string;
   coverImage: string;
-  series: string;
-  speakerName: string;
-  //   callToAction: {
-  //     call: string;
-  //     action: string;
-  //   };
+  video: string;
+  startDateTime: string;
+  expireDateTime: string;
+  seriesId: string;
+  seriesTitle: string;
+  url: string;
+  speaker: {
+    fullName: string;
+    profilePhoto: string;
+    guid: string;
+  };
 };
