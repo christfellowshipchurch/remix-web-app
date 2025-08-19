@@ -1,7 +1,7 @@
 import { icons } from "~/lib/icons";
 import Icon from "~/primitives/icon";
 
-export const VerseComponent = () => {
+export const FeaturedVerse = () => {
   return (
     <div className="flex flex-col items-center py-8 md:py-16 gap-18 md:gap-16 w-full">
       {/* Cards */}

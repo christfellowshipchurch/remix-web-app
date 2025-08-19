@@ -1,4 +1,4 @@
-export const ThisWeekComponent = () => {
+export const CardColumns = () => {
   // Group cards into sets of three
   const cardGroups = [];
   for (let i = 0; i < mockCards.length; i += 3) {

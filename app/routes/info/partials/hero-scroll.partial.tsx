@@ -1,7 +1,11 @@
-import { HeroCard } from "../components/hero-card.component";
+import { HeroScrollCard } from "../components/hero-scroll-card.component";
 import { useRef, useEffect, useState } from "react";
 
-export const Hero = () => {
+/**
+ * Creates an infinite scroll of cards used for the CF Info Page
+ * Uses a scroll container and a set of cards
+ */
+export const HeroCardScroll = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [centeredCardIndex, setCenteredCardIndex] = useState(2);
   const [isVisible, setIsVisible] = useState(false);
@@ -104,7 +108,7 @@ export const Hero = () => {
                   isCenterCard ? "scale-115 " : "scale-100"
                 }`}
               >
-                <HeroCard {...card} />
+                <HeroScrollCard {...card} />
               </div>
             );
           })}

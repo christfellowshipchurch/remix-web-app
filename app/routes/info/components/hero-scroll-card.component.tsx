@@ -1,6 +1,6 @@
 import { Button } from "~/primitives/button/button.primitive";
 
-export const HeroCard = ({
+export const HeroScrollCard = ({
   image,
   cta,
 }: {

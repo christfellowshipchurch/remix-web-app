@@ -1,4 +1,4 @@
-export const EventsComponent = ({
+export const CardRow = ({
   title,
   cards,
   className,

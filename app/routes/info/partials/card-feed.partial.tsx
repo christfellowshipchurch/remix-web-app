@@ -1,19 +1,22 @@
-import { EventsComponent } from "../components/events.component";
-import { ThisWeekComponent } from "../components/this-week.component";
-import { VerseComponent } from "../components/verse.component";
+import { CardRow } from "../components/card-row.component";
+import { CardColumns } from "../components/card-columns.component";
+import { FeaturedVerse } from "../components/featured-verse.component";
 
 export const Content = () => {
   return (
     <div className="w-full bg-white content-padding pb-10 md:pb-12">
       <div className="flex flex-col max-w-[544px] mx-auto">
-        <VerseComponent />
-        <EventsComponent title="Featured" cards={mockCards} />
-        <EventsComponent
+        <FeaturedVerse />
+        {/* Featured */}
+        <CardRow title="Featured" cards={mockCards} />
+        {/* Events */}
+        <CardRow
           title="Events"
           className="!pb-12 md:!pb-20"
           cards={mockCards}
         />
-        <ThisWeekComponent />
+        {/* This Week */}
+        <CardColumns />
       </div>
     </div>
   );
