@@ -3,11 +3,11 @@ import { Button } from "~/primitives/button/button.primitive";
 export const WhatBibleSaysAboutGiving = () => {
   return (
     <div
-      className="w-full py-12 md:pb-16 md:pt-22 bg-white content-padding"
+      className="w-full py-12 lg:pb-16 lg:pt-22 bg-white content-padding"
       id="give-what-bible-says"
     >
       <div className="flex flex-col gap-8 md:gap-12 items-center mx-auto max-w-screen-content">
-        <div className="flex flex-col gap-4 md:gap-8 items-center text-center max-w-[1000px] mx-auto">
+        <div className="flex flex-col gap-4 lg:gap-8 items-center text-center max-w-[1000px] mx-auto">
           <h2 className="text-[32px] md:text-[36px] text-navy font-bold leading-tight">
             What the Bible Says About Giving
           </h2>
@@ -25,7 +25,7 @@ export const WhatBibleSaysAboutGiving = () => {
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 lg:gap-16 w-full py-8">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-4 lg:gap-8 xl:!gap-16 w-full py-8">
           <Card
             title="Tithing"
             description="TRUSTING GOD WITH YOUR FINANCES."
@@ -56,7 +56,7 @@ const Card = ({
   content: string;
 }) => {
   return (
-    <div className="w-full lg:min-w-[550px] flex flex-col justify-center items-center gap-4 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1)] rounded-[1rem] px-8 py-12">
+    <div className="w-full xl:min-w-[550px] flex flex-col justify-center items-center gap-4 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1)] rounded-[1rem] px-8 py-12">
       <div className="flex flex-col gap-2 text-center">
         <h3 className="text-[28px] md:text-[32px] font-bold leading-tight">
           {title}

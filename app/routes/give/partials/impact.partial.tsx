@@ -14,10 +14,10 @@ export const GivingImpact = () => {
           Jesus Christ.
         </h2>
 
-        <div className="flex flex-col-reverse md:flex-col gap-8 md:gap-16 w-full">
+        <div className="flex flex-col-reverse md:flex-col gap-8 lg:gap-16 w-full">
           {/* Icon Cards */}
-          <div className="flex flex-col items-center justify-center md:flex-row gap-8 lg:gap-16 w-full">
-            <div className="flex flex-col sm:flex-row gap-8 md:gap-16">
+          <div className="flex flex-col items-center justify-center lg:flex-row gap-8 lg:gap-4 2xl:gap-16 w-full">
+            <div className="flex flex-col sm:flex-row gap-8 lg:gap-4 2xl:gap-16">
               <IconCard
                 icon="church"
                 title="Church <br/> Operations"
@@ -29,14 +29,14 @@ export const GivingImpact = () => {
                 description="We have ministry offerings for the entire family all throughout the week to help people grow in community and in their relationship with God."
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-8 md:gap-16">
+            <div className="flex flex-col sm:flex-row gap-8 lg:gap-4 2xl:gap-16">
               <IconCard
-                icon="church"
+                icon="paperPlane"
                 title="Local and Global <br/>Missions"
                 description="Through service projects, trips, and supporting our partners, we’re able to serve others at their point of need and share the love of Jesus in tangible ways."
               />
               <IconCard
-                icon="church"
+                icon="laptop"
                 title="Digital <br/>Resources"
                 description="With weekly live online services and other digital resources like online groups and classes, and free articles and devotionals, people can grow in their faith from anywhere. "
               />
