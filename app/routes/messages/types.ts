@@ -9,7 +9,8 @@ export type MessageType = {
   video: string;
   startDateTime: string;
   expireDateTime: string;
-  series: string;
+  seriesId: string;
+  seriesTitle: string;
   url: string;
   speaker: {
     fullName: string;

@@ -16,9 +16,9 @@ export const MessageVideo: React.FC = () => {
       videoClassName="aspect-7/4"
       controls={false}
       ctas={[
-        message.series && {
+        message.seriesId && {
           title: "Sermon Series Resources",
-          href: `/series-resources/${message.series}`,
+          href: `/series-resources/${message.seriesId}`,
         },
         { title: "Share", href: "#" },
       ].filter((cta): cta is { title: string; href: string } => Boolean(cta))}

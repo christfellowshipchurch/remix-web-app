@@ -30,7 +30,8 @@ export const mapRockDataToMessage = async (
     coverImage: (coverImage && coverImage[0]) || "",
     startDateTime: startDateTime || "",
     expireDateTime: expireDateTime || "",
-    series: rockItem.attributeValues?.messageSeries?.value || "",
+    seriesId: rockItem.attributeValues?.messageSeries?.value || "",
+    seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || "",
     speaker,
     url: rockItem.attributeValues?.url?.value || "",
   };

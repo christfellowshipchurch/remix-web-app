@@ -6,7 +6,7 @@ import { getContentChannelUrl } from "~/lib/rock-config";
 import { ensureArray } from "~/lib/utils";
 import { mapRockDataToMessage } from "../messages/message-single/loader";
 
-export type SeriesReturnType = {
+export type LoaderReturnType = {
   series: Series;
   messages: MessageType[];
   // A series resource will be anything tagged with the series defined value that is not a message
@@ -25,32 +25,6 @@ export type Series = {
   };
   guid: string;
 };
-
-export async function loader({ params }: LoaderFunctionArgs) {
-  const seriesPath = params.path || "";
-
-  const series = await getSeries(seriesPath);
-
-  if (!series) {
-    throw new Response("Series not found", {
-      status: 404,
-      statusText: "Not Found",
-    });
-  }
-
-  // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
-  series.attributeValues.coverImage = createImageUrlFromGuid(
-    series.attributeValues.coverImage.value
-  );
-
-  const seriesMessageData = await getSeriesMessages(series.guid);
-
-  return {
-    series: series,
-    messages: await Promise.all(seriesMessageData.map(mapRockDataToMessage)),
-    resources: await getSeriesResources(series.guid),
-  };
-}
 
 const getSeries = async (guid: string) => {
   const fetchSeries = await fetchRockData({
@@ -125,3 +99,29 @@ const getSeriesMessages = async (seriesGuid: string) => {
 
   return seriesMessages;
 };
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  const seriesPath = params.path || "";
+
+  const series = await getSeries(seriesPath);
+
+  if (!series) {
+    throw new Response("Series not found", {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
+  // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
+  series.attributeValues.coverImage = createImageUrlFromGuid(
+    series.attributeValues.coverImage.value
+  );
+
+  const seriesMessageData = await getSeriesMessages(series.guid);
+
+  return {
+    series: series,
+    messages: await Promise.all(seriesMessageData.map(mapRockDataToMessage)),
+    resources: await getSeriesResources(series.guid),
+  };
+}

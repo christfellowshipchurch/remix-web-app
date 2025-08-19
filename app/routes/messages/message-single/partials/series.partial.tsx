@@ -15,7 +15,7 @@ export const InThisSeries = () => {
         <h2 className="font-extrabold text-[28px] lg:text-[32px]">
           In This Series
         </h2>
-        <p className="text-[#AAAAAA]">How to Master Your Money</p>
+        <p className="text-[#AAAAAA]">{seriesMessages[0].seriesTitle}</p>
       </div>
       <div className="flex overflow-x-auto gap-6 xl:gap-8 py-2 max-w-screen-content w-full mx-auto max-h-[300px]">
         {seriesMessages.map((message, i) => (

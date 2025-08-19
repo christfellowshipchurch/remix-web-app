@@ -15,6 +15,7 @@ export const SeriesResourceCarousel = (data: {
   title: string;
   summary?: string;
   bg?: string;
+  type?: "messages" | "resources";
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { isMedium, isLarge } = useResponsive();
@@ -68,7 +69,11 @@ export const SeriesResourceCarousel = (data: {
                     title={item.title}
                     description={item.summary}
                     image={item.coverImage}
-                    url={item.url}
+                    url={
+                      data.type === "messages"
+                        ? `/messages/${item.url}`
+                        : item.url
+                    }
                   />
                 </CarouselItem>
               ))}
