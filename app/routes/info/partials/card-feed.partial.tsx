@@ -2,7 +2,7 @@ import { CardRow } from "../components/card-row.component";
 import { CardColumns } from "../components/card-columns.component";
 import { FeaturedVerse } from "../components/featured-verse.component";
 
-export const Content = () => {
+export const CardFeed = () => {
   return (
     <div className="w-full bg-white content-padding pb-10 md:pb-12">
       <div className="flex flex-col max-w-[544px] mx-auto">
