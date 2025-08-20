@@ -1,10 +1,12 @@
-import { GiveFAQ } from "./partials/give-faq.partial";
 import { GiveHero } from "./partials/give-hero.partial";
 import { GivingImpact } from "./partials/impact.partial";
 import { OtherWaysToGive } from "./partials/other-ways-to-give.partial";
 import { WhatBibleSaysAboutGiving } from "./partials/what-bible-says.partial";
 import { WhyWeGive } from "./partials/why-we-give.partial";
 import { loader } from "./loader";
+import { FAQsComponent } from "../page-builder/components/faq";
+import { CardCarouselSection } from "~/components/resource-carousel";
+import { giveFaqData, giveImproveFinancesData } from "./give-data";
 
 export { loader };
 
@@ -18,8 +20,19 @@ export default function Give() {
       <WhatBibleSaysAboutGiving />
 
       {/* Improve Finances Content Block? */}
+      <div className="w-full bg-navy text-white">
+        <CardCarouselSection
+          title="Looking to Improve Your Finances?"
+          description="Classes and other resources"
+          resources={giveImproveFinancesData}
+          viewMoreStyles="text-white border-white hover:border-ocean"
+          viewMoreLink="/class-finder"
+        />
+      </div>
 
-      <GiveFAQ />
+      <div className="w-full -my-16">
+        <FAQsComponent data={giveFaqData} />
+      </div>
     </div>
   );
 }

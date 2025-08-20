@@ -71,6 +71,7 @@ export type PageBuilderSection = {
   linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
   collection?: CollectionItem[];
   faqs?: FAQItem[];
+  cta?: CallToAction; // Used in FAQs component
   imageGallery?: string[];
 };
 

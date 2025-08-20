@@ -11,6 +11,7 @@ import { ResourceCard } from "~/primitives/cards/resource-card";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 interface CardCarouselSectionProps {
+  viewMoreStyles?: string;
   viewMoreLink: string;
   viewMoreText?: string;
   title: string;
@@ -31,6 +32,7 @@ export const CardCarouselSection = ({
   title,
   description,
   resources,
+  viewMoreStyles,
   viewMoreLink,
   viewMoreText = "View All",
   mode = "light",
@@ -71,7 +73,8 @@ export const CardCarouselSection = ({
                 className={cn(
                   "hidden md:block",
                   mode === "dark" &&
-                    "text-white border-white hover:!bg-white/10"
+                    "text-white border-white hover:!bg-white/10",
+                  viewMoreStyles
                 )}
                 intent="secondary"
               >
@@ -79,7 +82,7 @@ export const CardCarouselSection = ({
               </Button>
             </div>
 
-            <div className="w-full max-w-full overflow-hidden text-text-primary">
+            <div className="w-full max-w-full text-text-primary">
               <CardCarousel
                 resources={resources}
                 mode={mode}
@@ -92,7 +95,10 @@ export const CardCarouselSection = ({
               <Button
                 href={viewMoreLink}
                 size="md"
-                className={cn(mode === "dark" && "text-white border-white")}
+                className={cn(
+                  mode === "dark" && "text-white border-white",
+                  viewMoreStyles
+                )}
                 intent="secondary"
               >
                 {viewMoreText}
@@ -129,7 +135,7 @@ export const CardCarousel = ({
       }}
       className={carouselClassName}
     >
-      <CarouselContent className="gap-6 xl:gap-8 2xl:pr-18">
+      <CarouselContent className="py-2 gap-6 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
