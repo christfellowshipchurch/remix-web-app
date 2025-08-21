@@ -50,6 +50,7 @@ export const Icon = ({
               d={d?.d}
               key={i}
               fill={color || ("fill" in d ? d.fill : "currentColor")}
+              fillOpacity={"fillOpacity" in d ? d.fillOpacity : 1}
             />
           );
         })}
