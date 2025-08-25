@@ -1,6 +1,8 @@
 import { formatDate } from "date-fns";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
+import { getAuthorDetails } from "../article-single/loader";
+import { AuthorProps } from "../article-single/partials/hero.partial";
 
 export type ArticlesReturnType = {
   recentArticles: Article[];
@@ -12,7 +14,11 @@ export type Article = {
   startDate: string;
   startDateTime: string;
   image: string;
+  content: string;
+  author: AuthorProps;
+  readTime: number;
   attributeValues: {
+    author: { value: string };
     summary: { value: string };
     image: { value: string };
     url: { value: string };
@@ -30,20 +36,29 @@ const getRecentArticles = async () => {
     },
   });
 
-  recentArticles.forEach((article: Article) => {
+  // Process each article to add author details and format data
+  for (const article of recentArticles) {
     if (article && article.attributeValues.image.value) {
       article.image = createImageUrlFromGuid(
         article.attributeValues.image.value
       );
     }
-  });
 
-  recentArticles.forEach((article: Article) => {
     article.startDate = formatDate(
       new Date(article.startDateTime),
       "MMMM d, yyyy"
     );
-  });
+
+    // Add author details
+    if (article.attributeValues.author?.value) {
+      article.author = await getAuthorDetails(
+        article.attributeValues.author.value
+      );
+    }
+
+    // Calculate read time
+    article.readTime = Math.round(article.content.split(" ").length / 200);
+  }
 
   return recentArticles;
 };
@@ -59,20 +74,29 @@ const getUpcomingArticles = async () => {
     },
   });
 
-  upcomingArticles.forEach((article: Article) => {
+  // Process each article to add author details and format data
+  for (const article of upcomingArticles) {
     if (article && article.attributeValues.image.value) {
       article.image = createImageUrlFromGuid(
         article.attributeValues.image.value
       );
     }
-  });
 
-  upcomingArticles.forEach((article: Article) => {
     article.startDate = formatDate(
       new Date(article.startDateTime),
       "MMMM d, yyyy"
     );
-  });
+
+    // Add author details
+    if (article.attributeValues.author?.value) {
+      article.author = await getAuthorDetails(
+        article.attributeValues.author.value
+      );
+    }
+
+    // Calculate read time
+    article.readTime = Math.round(article.content.split(" ").length / 200);
+  }
 
   return upcomingArticles;
 };

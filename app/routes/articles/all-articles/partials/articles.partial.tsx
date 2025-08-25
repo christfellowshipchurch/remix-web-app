@@ -1,51 +1,85 @@
 import { Link, useLoaderData } from "react-router-dom";
 import { Article, ArticlesReturnType } from "../loader";
-import Icon from "~/primitives/icon";
-import { Divider } from "./latest.partial";
 
 export const Articles = () => {
   const { upcomingArticles: articles } = useLoaderData<ArticlesReturnType>();
 
+  // TODO: This Articles might turn into hits from Algolai
   return (
-    <div className="flex flex-col gap-14">
+    <div className="content-padding md:px-0 grid grid-cols-1 gap-y-4">
       {articles.map((article, i) => (
-        <ArticlePanel article={article} key={i} />
+        <ArticleCard article={article} key={i} />
       ))}
     </div>
   );
 };
 
-const ArticlePanel = ({ article }: { article: Article }) => {
+const ArticleCard = ({ article }: { article: Article }) => {
+  const author = article.author || {
+    fullName: "Christ Fellowship Church",
+    photo: {
+      uri: "/logo.png",
+    },
+  };
+
   return (
     <Link
       to={`/articles/${article.attributeValues.url.value}`}
       prefetch="intent"
-      className="flex flex-col gap-5 w-full"
+      className="flex flex-col rounded-lg overflow-hidden max-w-[462px] w-full border border-neutral-lighter"
     >
-      <div className="flex flex-col gap-2">
-        <div className="w-full">
-          <img
-            src={article.image}
-            className="w-full h-auto object-cover"
-            alt={article.title}
-          />
+      {/* Article Image */}
+      <div className="relative">
+        <img
+          src={article.image}
+          className="w-full h-auto object-cover"
+          alt={article.title}
+        />
+
+        <div className="absolute top-3 left-3 bg-neutral-lightest p-2 rounded-[4px]">
+          <p className="font-semibold text-sm">
+            {/* TODO: Update to the Category */}
+            {article.startDate.toUpperCase()}
+          </p>
         </div>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <Icon name="calendarAlt" size={16} />
-            <p className="font-medium text-text-secondary break-words">
-              {article.startDate.toUpperCase()}
-            </p>
+      </div>
+
+      {/* Article Content */}
+      <div className="p-6 flex flex-col gap-4">
+        {/* Article Title + Summary */}
+        <div className="flex flex-col gap-2">
+          <h3 className="font-extrabold text-lg break-words">
+            {article.title}
+          </h3>
+          <p className="break-words">{article.attributeValues.summary.value}</p>
+        </div>
+
+        {/* Article Author */}
+        <div className="flex gap-4 items-center">
+          {/* Author Image */}
+          <img
+            src={author?.photo?.uri}
+            alt="Article icon"
+            className="size-12 rounded-full object-cover"
+          />
+
+          {/* Author Name + Publish Date */}
+          <div className="flex flex-col gap-1">
+            <h4 className="font-semibold text-[17px] break-words">
+              {author?.fullName}
+            </h4>
+
+            <div className="flex">
+              {article.startDate && (
+                <p>
+                  {article.startDate}
+                  <span className="mx-2">•</span>
+                </p>
+              )}
+              {article.readTime && <p>{article.readTime} min read</p>}
+            </div>
           </div>
         </div>
-        <Divider />
-      </div>
-      <div className="w-full">
-        <h3 className="font-extrabold text-[36px] break-words">
-          {article.title}
-        </h3>
-        <p className="break-words">{article.attributeValues.summary.value}</p>
-        {/* TODO: Add CTA part */}
       </div>
     </Link>
   );

@@ -20,7 +20,7 @@ export type Category = {
   articles: Article[];
 };
 
-const mockCategories: Category[] = [
+export const mockCategories: Category[] = [
   { amount: 12, title: "Study The Bible", articles: [] },
   { amount: 7, title: "Spiritual Growth", articles: [] },
   { amount: 4, title: "Personal Growth", articles: [] },
@@ -28,7 +28,7 @@ const mockCategories: Category[] = [
   { amount: 10, title: "Prayers", articles: [] },
 ];
 
-export const LatestArticles = () => {
+export const DesktopLatestArticles = () => {
   const { recentArticles: articles } = useLoaderData<ArticlesReturnType>();
 
   return (
@@ -44,7 +44,10 @@ export const LatestArticles = () => {
               prefetch="intent"
               className="flex items-center gap-5 cursor-pointer"
             >
-              <img src={article.image} className="size-18 object-cover" />
+              <img
+                src={article.image}
+                className="size-18 object-cover rounded-[4px] overflow-hidden"
+              />
               <div className="flex flex-col max-w-[220px]">
                 <p className="text-sm text-[#444]">{article.startDate}</p>
                 <h3 className="font-semibold text-lg leading-snug">
@@ -55,18 +58,79 @@ export const LatestArticles = () => {
             <Divider />
           </div>
         ))}
+
       <div className="flex flex-col gap-8">
         <h2 className="font-extrabold text-2xl">Article Category</h2>
         <div className="flex flex-col gap-4">
           {mockCategories.map((category, i) => (
-            <div key={i} className="flex justify-between">
-              <h3 className="font-bold text-lg">{category.title}</h3>
+            <Link
+              to={`/articles/category/${category.title}`}
+              prefetch="intent"
+              key={i}
+              className="flex justify-between group"
+            >
+              <h3 className="font-bold text-lg group-hover:text-text-secondary">
+                {category.title}
+              </h3>
               <p className="font-medium text-text-secondary">
                 ({category.amount})
               </p>
-            </div>
+            </Link>
           ))}
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const MobileLatestArticles = () => {
+  const { recentArticles: articles } = useLoaderData<ArticlesReturnType>();
+
+  return (
+    <div className="flex flex-col gap-3 w-full max-w-screen content-padding">
+      <h2 className="font-extrabold text-2xl">Latest Posts</h2>
+
+      <div className="flex pb-1 gap-3 w-full overflow-x-auto">
+        {articles &&
+          articles.length > 0 &&
+          // Group articles into vertical pairs
+          Array.from(
+            { length: Math.ceil(articles.length / 2) },
+            (_, groupIndex) => {
+              const startIndex = groupIndex * 2;
+              const groupArticles = articles.slice(startIndex, startIndex + 2);
+
+              return (
+                <div
+                  key={groupIndex}
+                  className="flex flex-col gap-6 max-w-[90vw] min-w-[300px]"
+                >
+                  {groupArticles.map((article, i) => (
+                    <div key={startIndex + i}>
+                      <Link
+                        to={`/articles/${article.attributeValues.url.value}`}
+                        prefetch="intent"
+                        className="flex items-center gap-5 cursor-pointer"
+                      >
+                        <img
+                          src={article.image}
+                          className="size-16 object-cover rounded-[4px] overflow-hidden"
+                        />
+                        <div className="flex flex-col max-w-[220px]">
+                          <p className="text-sm text-[#444]">
+                            {article.startDate}
+                          </p>
+                          <h3 className="font-semibold text-lg leading-snug">
+                            {article.title}
+                          </h3>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              );
+            }
+          )}
       </div>
     </div>
   );
