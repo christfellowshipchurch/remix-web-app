@@ -29,14 +29,13 @@ export function AllArticlesPage() {
           <div className="flex flex-col gap-8">
             <div className="flex overflow-x-auto pb-1 w-full max-w-screen content-padding">
               {mockCategories.map((category, i) => (
-                <Link
-                  to={`/articles/category/${category.title}`}
-                  prefetch="intent"
+                // TODO: This might change to Algolia soon? - changes the results to that category (facet)
+                <div
                   key={i}
                   className="min-w-[170px] flex justify-between group px-2 border-b border-neutral-lighter "
                 >
                   <h3 className="font-semibold">{category.title}</h3>
-                </Link>
+                </div>
               ))}
             </div>
             <Articles />
