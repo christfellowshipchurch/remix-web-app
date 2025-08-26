@@ -6,7 +6,7 @@ export const Articles = () => {
 
   // TODO: This Articles might turn into hits from Algolai
   return (
-    <div className="content-padding md:px-0 grid grid-cols-1 gap-y-4">
+    <div className="content-padding md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
       {articles.map((article, i) => (
         <ArticleCard article={article} key={i} />
       ))}
