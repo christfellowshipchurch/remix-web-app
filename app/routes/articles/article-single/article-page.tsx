@@ -34,8 +34,6 @@ export const ArticlePage: React.FC = () => {
       <section className="bg-white">
         <ArticleHero {...data} />
         <ArticleContent htmlContent={data.content} />
-        <ArticleNewsletter />
-
         <CardCarouselSection
           title="Related Reading"
           description="Explore more articles that you might find interesting."
@@ -44,6 +42,8 @@ export const ArticlePage: React.FC = () => {
           viewMoreLink={`/related-articles/${tagId}`}
           CardComponent={RelatedArticleCardWrapper}
         />
+
+        <ArticleNewsletter />
       </section>
     </>
   );

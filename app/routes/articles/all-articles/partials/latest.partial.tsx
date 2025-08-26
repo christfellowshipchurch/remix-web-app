@@ -21,11 +21,11 @@ export type Category = {
 };
 
 export const mockCategories: Category[] = [
-  { amount: 12, title: "Study The Bible", articles: [] },
+  { amount: 12, title: "Well-Being", articles: [] },
+  { amount: 10, title: "Living It Out", articles: [] },
+  { amount: 8, title: "Relationships", articles: [] },
   { amount: 7, title: "Spiritual Growth", articles: [] },
   { amount: 4, title: "Personal Growth", articles: [] },
-  { amount: 8, title: "Relationships", articles: [] },
-  { amount: 10, title: "Prayers", articles: [] },
 ];
 
 export const DesktopLatestArticles = () => {
