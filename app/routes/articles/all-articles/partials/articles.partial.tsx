@@ -36,12 +36,13 @@ const ArticleCard = ({ article }: { article: Article }) => {
           alt={article.title}
         />
 
-        <div className="absolute top-3 left-3 bg-neutral-lightest p-2 rounded-[4px]">
-          <p className="font-semibold text-sm">
-            {/* TODO: Update to the Category */}
-            {article.startDate.toUpperCase()}
-          </p>
-        </div>
+        {article?.primaryCategories?.[0]?.value && (
+          <div className="absolute top-3 left-3 bg-neutral-lightest p-2 rounded-[4px]">
+            <p className="font-semibold text-sm">
+              {article.primaryCategories[0].value}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Article Content */}
