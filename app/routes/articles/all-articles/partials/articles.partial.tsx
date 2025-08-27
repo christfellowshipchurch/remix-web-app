@@ -26,7 +26,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
     <Link
       to={`/articles/${article.attributeValues.url.value}`}
       prefetch="intent"
-      className="flex flex-col rounded-lg overflow-hidden max-w-[462px] w-full border border-neutral-lighter"
+      className="flex flex-col rounded-lg overflow-hidden max-w-[462px] w-full border border-neutral-lighter transition-all duration-300 hover:-translate-y-1"
     >
       {/* Article Image */}
       <div className="relative">
