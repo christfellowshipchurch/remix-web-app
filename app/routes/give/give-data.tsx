@@ -3,7 +3,8 @@ import { CollectionItem, PageBuilderSection } from "../page-builder/types";
 export const giveFaqData: PageBuilderSection = {
   id: "give-faq-section",
   name: "FAQ",
-  content: "",
+  content:
+    "<span class='italic text-cotton-candy'>Have additional questions?</span><br/>Call <span style='font-weight: bold;'>561-776-3380</span> to speak to someone<br/> on our team that would love to help you.",
   type: "FAQs",
   cta: {
     title: "Contact",
@@ -50,7 +51,8 @@ export const giveImproveFinancesData: CollectionItem[] = [
     pathname: "/class-finder",
     contentChannelId: "give-improve-finances-1",
     summary: "An on-demand class to help you experience financial freedom!",
-    image: "/assets/images/give/fpu.jpg",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx?guid=093ef63e-7254-43ee-9b1b-33c416b0e4e2",
   },
   {
     id: "give-improve-finances-2",

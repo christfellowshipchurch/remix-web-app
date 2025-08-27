@@ -88,4 +88,4 @@ const VideoCard = ({ video }: { video: string }) => {
   );
 };
 
-const videoData = ["ieybr1sv38", "ieybr1sv38"];
+const videoData = ["kpga7mn5cj", "dbukx4kdmk"];

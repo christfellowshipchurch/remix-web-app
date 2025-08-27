@@ -22,8 +22,8 @@ export const WhyWeGive = () => {
             region and beyond.
           </p>
         </div>
-        <Button href="#todo" size="md">
-          LEARN MORE
+        <Button href="#" size="md">
+          GIVE NOW
         </Button>
       </div>
     </div>

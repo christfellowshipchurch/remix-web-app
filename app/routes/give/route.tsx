@@ -7,6 +7,7 @@ import { loader } from "./loader";
 import { FAQsComponent } from "../page-builder/components/faq";
 import { CardCarouselSection } from "~/components/resource-carousel";
 import { giveFaqData, giveImproveFinancesData } from "./give-data";
+import { FinanceCard } from "./components/finance-card";
 
 export { loader };
 
@@ -25,8 +26,9 @@ export default function Give() {
           title="Looking to Improve Your Finances?"
           description="Classes and other resources"
           resources={giveImproveFinancesData}
-          viewMoreStyles="text-white border-white hover:border-ocean"
-          viewMoreLink="/class-finder"
+          viewMoreStyles="!hidden"
+          viewMoreLink="#hidden"
+          CardComponent={FinanceCard}
         />
       </div>
 
