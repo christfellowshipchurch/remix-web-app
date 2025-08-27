@@ -5,12 +5,21 @@ import {
   mockCategories,
 } from "./partials/latest.partial";
 import { Articles } from "./partials/articles.partial";
-import { Link } from "react-router";
 
-export function AllArticlesPage() {
+export function AllArticlesPage({
+  selectedCategory,
+}: {
+  selectedCategory?: string;
+}) {
+  const category = selectedCategory || "Articles";
+
   return (
     <div className="flex flex-col items-center">
       <DynamicHero
+        customTitle={`${category
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")}`}
         imagePath="/assets/images/articles-hero-bg.jpg"
         ctas={[{ href: "#testing", title: "Call to Action" }]}
       />

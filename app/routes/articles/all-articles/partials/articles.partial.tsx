@@ -2,12 +2,12 @@ import { Link, useLoaderData } from "react-router-dom";
 import { Article, ArticlesReturnType } from "../loader";
 
 export const Articles = () => {
-  const { upcomingArticles: articles } = useLoaderData<ArticlesReturnType>();
+  const { allArticles: articles } = useLoaderData<ArticlesReturnType>();
 
-  // TODO: This Articles might turn into hits from Algolai
+  // TODO: This Articles might turn into hits from Algolia
   return (
     <div className="content-padding md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
-      {articles.map((article, i) => (
+      {articles?.map((article, i) => (
         <ArticleCard article={article} key={i} />
       ))}
     </div>
@@ -45,7 +45,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
       </div>
 
       {/* Article Content */}
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-6 flex flex-col justify-between gap-4 h-full">
         {/* Article Title + Summary */}
         <div className="flex flex-col gap-2">
           <h3 className="font-extrabold text-lg break-words">
@@ -73,10 +73,14 @@ const ArticleCard = ({ article }: { article: Article }) => {
               {article.startDate && (
                 <p>
                   {article.startDate}
-                  <span className="mx-2">•</span>
+                  {article.readTime > 0 && (
+                    <>
+                      <span className="mx-2">•</span>
+                      {article.readTime} min read
+                    </>
+                  )}
                 </p>
               )}
-              {article.readTime && <p>{article.readTime} min read</p>}
             </div>
           </div>
         </div>

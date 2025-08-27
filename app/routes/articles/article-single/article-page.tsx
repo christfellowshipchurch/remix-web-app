@@ -7,6 +7,7 @@ import { ArticleContent } from "./partials/content.partial";
 import { ArticleNewsletter } from "./partials/newsletter.partial";
 import { CardCarouselSection } from "~/components/resource-carousel";
 import { RelatedArticleCard } from "./components/related-article-card.components";
+import { AllArticlesPage } from "../all-articles/all-articles-page";
 
 // Wrapper component to adapt RelatedArticleCard to ResourceCarousel's interface
 const RelatedArticleCardWrapper: React.FC<{ resource: any }> = ({
@@ -27,24 +28,28 @@ const RelatedArticleCardWrapper: React.FC<{ resource: any }> = ({
 
 export const ArticlePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
-
   const tagId = data.relatedArticles?.tagId;
+
   return (
     <>
-      <section className="bg-white">
-        <ArticleHero {...data} />
-        <ArticleContent htmlContent={data.content} />
-        <CardCarouselSection
-          title="Related Reading"
-          description="Explore more articles that you might find interesting."
-          resources={data.relatedArticles?.articles || []}
-          viewMoreText="More Articles"
-          viewMoreLink={`/related-articles/${tagId}`}
-          CardComponent={RelatedArticleCardWrapper}
-        />
+      {!data.isCategory ? (
+        <section className="bg-white">
+          <ArticleHero {...data} />
+          <ArticleContent htmlContent={data.content} />
+          <CardCarouselSection
+            title="Related Reading"
+            description="Explore more articles that you might find interesting."
+            resources={data.relatedArticles?.articles || []}
+            viewMoreText="More Articles"
+            viewMoreLink={`/related-articles/${tagId}`}
+            CardComponent={RelatedArticleCardWrapper}
+          />
 
-        <ArticleNewsletter />
-      </section>
+          <ArticleNewsletter />
+        </section>
+      ) : (
+        <AllArticlesPage selectedCategory={data.title} />
+      )}
     </>
   );
 };

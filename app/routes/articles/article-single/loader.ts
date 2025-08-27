@@ -19,6 +19,7 @@ export type LoaderReturnType = {
     tagId: string;
     articles: any[];
   };
+  isCategory: boolean;
 };
 
 const fetchArticleData = async (articlePath: string) => {
@@ -55,6 +56,10 @@ const fetchArticleData = async (articlePath: string) => {
       }
     );
   }
+};
+
+const isCategory = (path: string) => {
+  return categoryRoutes.includes(path);
 };
 
 const fetchAuthorId = async (authorId: string) => {
@@ -96,8 +101,14 @@ export const getAuthorDetails = async (authorId: string) => {
 export const loader: LoaderFunction = async ({ params }) => {
   const articlePath = params?.path || "";
 
-  const articleData = await fetchArticleData(articlePath);
+  if (isCategory(articlePath)) {
+    return {
+      isCategory: true,
+      title: articlePath,
+    };
+  }
 
+  const articleData = await fetchArticleData(articlePath);
   if (!articleData) {
     throw new Response("Article not found at: /articles/" + articlePath, {
       status: 404,
@@ -128,7 +139,18 @@ export const loader: LoaderFunction = async ({ params }) => {
     publishDate: format(new Date(startDateTime), "d MMM yyyy"),
     readTime: Math.round(content.split(" ").length / 200),
     relatedArticles,
+
+    // TODO: Update this to check path to see if it's an article or a category page
+    isCategory: isCategory(articlePath),
   };
 
   return pageData;
 };
+
+const categoryRoutes = [
+  "spiritual-growth",
+  "personal-growth",
+  "living-it-out",
+  "well-being",
+  "relationships",
+];
