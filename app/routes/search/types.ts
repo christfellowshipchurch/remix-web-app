@@ -15,6 +15,10 @@ export interface ContentItemHit {
   contentType: string;
   imageLabel: string;
   htmlContent: string[];
+  sermonPrimaryTags: string[];
+  sermonSecondaryTags: string[];
+  articlePrimaryTags: string[];
+  articleSecondaryTags: string[];
   contentTags: string[];
   coverImage: {
     sources: {

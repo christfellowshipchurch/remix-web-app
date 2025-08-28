@@ -10,7 +10,7 @@ import { LoaderReturnType } from "../loader";
 import { MessagesCarousel } from "../components/messages-carousel.component";
 
 export const RelatedMessages = () => {
-  const { seriesMessages } = useLoaderData<LoaderReturnType>();
+  const { message } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="bg-white w-full flex justify-center content-padding">
@@ -25,7 +25,7 @@ export const RelatedMessages = () => {
           </div>
           <div className="flex items-end justify-between text-lg font-semibold">
             <Button
-              href={"#todo"}
+              href={`/messages/#${message.primaryCategories[0]?.value}`}
               size="md"
               className="hidden lg:block"
               intent="primary"
@@ -34,7 +34,8 @@ export const RelatedMessages = () => {
             </Button>
           </div>
         </div>
-        <MessagesCarousel messages={seriesMessages} />
+
+        <MessagesCarousel />
       </div>
     </div>
   );

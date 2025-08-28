@@ -5,8 +5,10 @@ import {
   Hits,
   Configure,
   RefinementList,
+  useRefinementList,
+  useInstantSearch,
 } from "react-instantsearch";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
@@ -48,6 +50,69 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
 export const createSearchClient = (appId: string, apiKey: string) =>
   algoliasearch(appId, apiKey, {});
 
+const CustomRefinementList = () => {
+  const { items } = useRefinementList({ attribute: "sermonPrimaryTags" });
+  const { setIndexUiState } = useInstantSearch();
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  const handleTagClick = (tag: string | null) => {
+    setSelectedTag(tag);
+
+    if (tag === null) {
+      // "Recent" - clear all refinements
+      setIndexUiState((prevState) => ({
+        ...prevState,
+        refinementList: {
+          ...prevState.refinementList,
+          sermonPrimaryTags: [],
+        },
+        page: 0, // Reset to first page
+      }));
+    } else {
+      // Specific tag
+      setIndexUiState((prevState) => ({
+        ...prevState,
+        refinementList: {
+          ...prevState.refinementList,
+          sermonPrimaryTags: [tag],
+        },
+        page: 0, // Reset to first page
+      }));
+    }
+  };
+
+  return (
+    <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto">
+      {/* Recent Tag */}
+      <button
+        onClick={() => handleTagClick(null)}
+        className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
+          selectedTag === null
+            ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
+            : "bg-gray text-neutral-500 hover:bg-neutral-200"
+        }`}
+      >
+        Recent
+      </button>
+
+      {/* Dynamic Tags */}
+      {items.map((item) => (
+        <button
+          key={item.value}
+          onClick={() => handleTagClick(item.value)}
+          className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
+            selectedTag === item.value
+              ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
+              : "bg-gray text-neutral-500 hover:bg-neutral-200"
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 export default function Messages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderData>();
@@ -76,19 +141,7 @@ export default function Messages() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <RefinementList
-              attribute="sermonPrimaryTags"
-              classNames={{
-                list: "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
-                item: "text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300",
-                label: "cursor-pointer",
-                checkbox: "hidden",
-                labelText: "",
-                selectedItem:
-                  "border border-neutral-600 text-neutral-600 bg-white font-semibold",
-                count: "hidden",
-              }}
-            />
+            <CustomRefinementList />
           </div>
 
           {/* Results Grid */}
