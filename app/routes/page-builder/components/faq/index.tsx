@@ -6,7 +6,7 @@ import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component
 
 export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
   return (
-    <div className="w-full content-padding py-12 md:py-28 bg-white">
+    <div className="w-full content-padding py-12 md:py-28 bg-white" id="faq">
       <div className="max-w-[768px] mx-auto flex flex-col items-center gap-12 lg:gap-20">
         <div className="flex flex-col gap-6 text-center">
           <h2 className="text-[48px] md:text-[52px] font-extrabold text-text-primary">
