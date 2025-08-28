@@ -11,7 +11,7 @@ export function MessageSinglePage() {
       <MessageContent />
       <div className="content-padding">
         <div className="w-full max-w-screen-content">
-          <div className="mt-24">
+          <div className="mt-24 pb-24">
             {/* TODO: Add additional resources from Rock */}
             <AdditionalResources
               type="button"
