@@ -4,7 +4,7 @@ export const giveFaqData: PageBuilderSection = {
   id: "give-faq-section",
   name: "FAQ",
   content:
-    "<span class='italic text-cotton-candy'>Have additional questions?</span><br/>Call <span style='font-weight: bold;'>561-776-3380</span> to speak to someone<br/> on our team that would love to help you.",
+    "<div class='text-center text-base'><i><b>Have additional questions?</b></i> Call <a class='hover:text-ocean font-bold italic' href='tel:5617763380'>561-776-3380</a> to speak to <br/> someone on our team that would love to help you.</div>",
   type: "FAQs",
   cta: {
     title: "Contact",

@@ -38,12 +38,22 @@ export const PushpayGiving = ({ campusList }: { campusList: string[] }) => {
     // Remove any non-numeric characters
     value = value.replace(/[^0-9]/g, "");
 
+    // Check character limit (allowing for amounts up to $999,999.99)
+    if (value.length > 9) {
+      return; // Don't update if exceeding limit
+    }
+
     // Convert to cents and format as dollars
     if (value) {
       // Convert to cents (multiply by 1 to ensure it's a number)
       const cents = parseInt(value, 10);
       const dollars = (cents / 100).toFixed(2);
-      const formattedValue = `$${dollars}`;
+
+      // Add commas for thousands separators
+      const parts = dollars.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      const formattedValue = `$${parts.join(".")}`;
+
       setInputValue(formattedValue);
     } else {
       setInputValue("$");
@@ -111,6 +121,7 @@ export const PushpayGiving = ({ campusList }: { campusList: string[] }) => {
           value={inputValue}
           onChange={handleInputChange}
           placeholder="$0.00"
+          maxLength={11}
           className="outline-none focus:outline-none focus:ring-0 text-[88px] font-bold bg-transparent text-center placeholder-white"
           style={{ width: `${inputWidth}px` }}
         />
