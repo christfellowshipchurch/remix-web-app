@@ -6,6 +6,7 @@ export interface ContentItemHit {
     firstName: string;
     lastName: string;
   };
+  url?: string;
   routing: {
     pathname: string;
   };

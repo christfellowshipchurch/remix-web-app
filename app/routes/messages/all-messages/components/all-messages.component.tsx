@@ -24,57 +24,24 @@ export type Tag = {
   isActive: boolean;
 };
 
-const MessageHit = ({ hit }: { hit: ContentItemHit }) => (
-  <ResourceCard
-    resource={{
-      id: hit.objectID,
-      contentChannelId: "63", // MESSAGE type from builder-utils.ts
-      contentType: "MESSAGES",
-      author: hit.author.firstName + " " + hit.author.lastName,
-      image: hit.coverImage.sources[0].uri,
-      name: hit.title,
-      summary: hit.summary,
-      pathname: `/${hit.routing.pathname}`,
-      attributeValues: {
-        url: `/${hit.routing.pathname}`,
-        summary: hit.summary,
-      },
-    }}
-  />
-);
-
-export const mockTags = [
-  { label: "Tag", isActive: true },
-  { label: "Mens", isActive: false },
-  { label: "Women", isActive: false },
-  { label: "Kids & Students", isActive: false },
-  { label: "Young Adults", isActive: false },
-  { label: "Volunteer", isActive: false },
-];
-
-export const FilterButtons = ({ tags = mockTags }: { tags?: Tag[] }) => {
+const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
   return (
-    <div className="relative w-full overflow-x-auto max-w-[90vw]">
-      <div className="flex gap-6 px-1 pb-2">
-        {tags.map((tag, index) => (
-          <div
-            key={`${tag.label}-${index}`}
-            className={`text-semibold shrink-0 px-6 py-3 rounded-full justify-center items-center flex cursor-pointer whitespace-nowrap ${
-              tag.isActive
-                ? "border border-neutral-600 text-neutral-600"
-                : "bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300"
-            }`}
-          >
-            <div className="text-xl font-semibold font-['Proxima Nova'] leading-7">
-              {tag.label}
-            </div>
-            {tag.isActive && (
-              <Icon className="text-ocean ml-2 mr-[-6px]" name="x" size={24} />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
+    <ResourceCard
+      resource={{
+        id: hit.objectID,
+        contentChannelId: "63", // MESSAGE type from builder-utils.ts
+        contentType: "MESSAGES",
+        author: hit.author.firstName + " " + hit.author.lastName,
+        image: hit.coverImage.sources[0].uri,
+        name: hit.title,
+        summary: hit.summary,
+        pathname: `${hit.url}`,
+        attributeValues: {
+          url: `${hit.url}`,
+          summary: hit.summary,
+        },
+      }}
+    />
   );
 };
 
@@ -98,12 +65,8 @@ export default function Messages() {
           sectionTitle="all messages."
           title="Christ Fellowship Church Messages"
         />
-        {/* Filter Buttons - just placeholder ones for now. Eventually, we'll use the algolia filters */}
-        <div className="mt-10 mb-12 w-full">
-          <FilterButtons tags={mockTags} />
-        </div>
         <InstantSearch
-          indexName="production_ContentItems"
+          indexName="dev_daniel_contentItems"
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -114,16 +77,16 @@ export default function Messages() {
           {/* Filter Section */}
           <div className="mt-10 mb-12">
             <RefinementList
-              attribute="tags"
+              attribute="sermonPrimaryTags"
               classNames={{
                 list: "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
-                item: "shrink-0",
+                item: "text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300",
                 label: "cursor-pointer",
                 checkbox: "hidden",
-                labelText:
-                  "px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300",
+                labelText: "",
                 selectedItem:
-                  "border border-neutral-600 text-neutral-600 bg-white",
+                  "border border-neutral-600 text-neutral-600 bg-white font-semibold",
+                count: "hidden",
               }}
             />
           </div>
