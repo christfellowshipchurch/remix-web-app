@@ -10,7 +10,7 @@ export const InThisSeries = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6 py-12 md:py-24 content-padding">
+    <div className="flex w-full flex-col gap-6 py-12 md:pt-0 md:pb-24 content-padding">
       <div className="flex flex-col gap-1 md:gap-2 w-full max-w-screen-content mx-auto">
         <h2 className="font-extrabold text-[28px] lg:text-[32px]">
           In This Series
