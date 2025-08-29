@@ -4,6 +4,7 @@ import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { getRelatedArticlesByContentItem } from "~/lib/.server/fetch-related-articles";
+import { articleCategories } from "../all-articles/all-articles-page";
 
 export type LoaderReturnType = {
   hostUrl: string;
@@ -59,7 +60,7 @@ const fetchArticleData = async (articlePath: string) => {
 };
 
 const isCategory = (path: string) => {
-  return categoryRoutes.includes(path);
+  return articleCategories.some((category) => category.path === path);
 };
 
 const fetchAuthorId = async (authorId: string) => {
@@ -146,11 +147,3 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   return pageData;
 };
-
-const categoryRoutes = [
-  "spiritual-growth",
-  "personal-growth",
-  "living-it-out",
-  "well-being",
-  "relationships",
-];

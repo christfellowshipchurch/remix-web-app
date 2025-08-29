@@ -2,9 +2,34 @@ import { DynamicHero } from "~/components";
 import {
   DesktopLatestArticles,
   MobileLatestArticles,
-  mockCategories,
 } from "./partials/latest.partial";
 import { Articles } from "./partials/articles.partial";
+import { Article } from "./loader";
+
+export type Category = {
+  amount: number;
+  title: string;
+  path: string;
+  articles: Article[];
+};
+
+export const articleCategories: Category[] = [
+  { amount: 12, title: "Well-Being", path: "well-being", articles: [] },
+  { amount: 10, title: "Living It Out", path: "living-it-out", articles: [] },
+  { amount: 8, title: "Relationships", path: "relationships", articles: [] },
+  {
+    amount: 7,
+    title: "Spiritual Growth",
+    path: "spiritual-growth",
+    articles: [],
+  },
+  {
+    amount: 4,
+    title: "Personal Growth",
+    path: "personal-growth",
+    articles: [],
+  },
+];
 
 export function AllArticlesPage({
   selectedCategory,
@@ -34,21 +59,7 @@ export function AllArticlesPage({
         <div className="flex flex-col gap-8 md:hidden">
           <MobileLatestArticles />
 
-          {/* TODO: This might change to Algolia soon?*/}
-          <div className="flex flex-col gap-8">
-            <div className="flex overflow-x-auto pb-1 w-full max-w-screen content-padding">
-              {mockCategories.map((category, i) => (
-                // TODO: This might change to Algolia soon? - changes the results to that category (facet)
-                <div
-                  key={i}
-                  className="min-w-[170px] flex justify-between group px-2 border-b border-neutral-lighter "
-                >
-                  <h3 className="font-semibold">{category.title}</h3>
-                </div>
-              ))}
-            </div>
-            <Articles />
-          </div>
+          <Articles />
         </div>
       </div>
     </div>
