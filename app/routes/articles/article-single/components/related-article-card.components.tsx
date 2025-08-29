@@ -12,7 +12,6 @@ export function RelatedArticleCard({
   ...props
 }: ArticleCardProps) {
   if (href) {
-    console.log("href", href);
     return (
       <Link
         to={`/articles/${href}`}

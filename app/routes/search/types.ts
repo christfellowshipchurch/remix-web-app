@@ -15,6 +15,8 @@ export interface ContentItemHit {
   imageLabel: string;
   htmlContent: string[];
   contentTags: string[];
+  url: string;
+  startDateTime: string;
   coverImage: {
     sources: {
       uri: string;

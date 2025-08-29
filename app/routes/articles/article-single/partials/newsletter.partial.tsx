@@ -2,7 +2,7 @@ import { Button } from "~/primitives/button/button.primitive";
 
 export const ArticleNewsletter = () => {
   return (
-    <div className="bg-gradient-to-br from-[#1C3647] to-navy lg:bg-[#00354D] content-padding py-12 text-white lg:py-24">
+    <div className="bg-navy content-padding py-12 text-white lg:py-24">
       <div className="max-w-screen-content mx-auto w-full">
         <div className="flex flex-col gap-6 lg:gap-20 xl:gap-36 w-full lg:flex-row lg:justify-between">
           {/* Left / Top*/}

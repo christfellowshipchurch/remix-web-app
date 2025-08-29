@@ -38,7 +38,7 @@ export default function ArticleAuthor({
             prefetch="intent"
             className="underline hover:text-text-secondary"
           >
-            {author?.fullName || "Full Name"}
+            {author?.fullName || "Christ Fellowship Church"}
           </Link>
         </h2>
         <div className="flex text-neutral-500 font-normal">
