@@ -134,7 +134,13 @@ const DesktopArticleCard = ({ hit }: { hit: ContentItemHit }) => {
           className="size-18 object-cover rounded-[4px] overflow-hidden"
         />
         <div className="flex flex-col max-w-[220px]">
-          <p className="text-sm text-[#444]">{""}</p>
+          <p className="text-sm text-[#444]">
+            {new Date(hit.startDateTime).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
           <h3 className="font-semibold text-lg leading-snug">{hit.title}</h3>
         </div>
       </Link>

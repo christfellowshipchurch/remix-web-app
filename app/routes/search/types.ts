@@ -14,6 +14,11 @@ export interface ContentItemHit {
   contentType: string;
   imageLabel: string;
   htmlContent: string[];
+  readTime: number;
+  articlePrimaryTags: string[];
+  articleSecondaryTags: string[];
+  sermonPrimaryTags: string[];
+  sermonSecondaryTags: string[];
   contentTags: string[];
   url: string;
   startDateTime: string;

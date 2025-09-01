@@ -23,7 +23,14 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
           alt={article.title}
         />
 
-        {/* Note: ContentItemHit doesn't have primaryCategories, so we'll skip this for now */}
+        {/* First Secondary Tag */}
+        <div className="absolute top-3 left-4 bg-[#EEEEEE] rounded-[4px] p-1">
+          {article.articleSecondaryTags[0] && (
+            <p className="text-xs font-semibold">
+              {article.articleSecondaryTags[0]}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Article Content */}
@@ -59,7 +66,13 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
                     month: "long",
                     day: "numeric",
                   })}
-                  {/* Note: ContentItemHit doesn't have readTime, so we'll skip that for now */}
+                  {article.readTime && (
+                    <span>
+                      <span className="mx-2">•</span>
+                      {/* TODO: This might not end up coming from Algolia, might need to get this from htmlContent length */}
+                      {article.readTime} min read
+                    </span>
+                  )}
                 </p>
               )}
             </div>
