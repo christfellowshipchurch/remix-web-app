@@ -1,5 +1,5 @@
 import { Link, useRouteLoaderData, useLocation } from "react-router-dom";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import {
   InstantSearch,
@@ -10,6 +10,10 @@ import {
 import { ContentItemHit } from "~/routes/search/types";
 import { articleCategories } from "../all-articles-page";
 import { RootLoaderData } from "~/routes/navbar/loader";
+import {
+  DesktopLatestArticleCard,
+  MobileLatestArticleCard,
+} from "../components/latest-article-card.component";
 
 export const Divider = ({
   bg = "black",
@@ -27,7 +31,11 @@ export const Divider = ({
 const createSearchClient = (appId: string, apiKey: string) =>
   algoliasearch(appId, apiKey, {});
 
-export const DesktopLatestArticles = () => {
+export const DesktopLatestArticles = ({
+  setIsLoading,
+}: {
+  setIsLoading: (loading: boolean) => void;
+}) => {
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = rootData?.algolia ?? {
     ALGOLIA_APP_ID: "",
@@ -65,7 +73,7 @@ export const DesktopLatestArticles = () => {
         }}
       >
         <Configure filters={filter} hitsPerPage={5} distinct={true} />
-        <ArticlesList />
+        <DesktopArticlesList setIsLoading={setIsLoading} />
       </InstantSearch>
 
       <div className="flex flex-col gap-8">
@@ -109,71 +117,26 @@ export const DesktopLatestArticles = () => {
   );
 };
 
-const ArticlesList = () => {
+const DesktopArticlesList = ({
+  setIsLoading,
+}: {
+  setIsLoading: (loading: boolean) => void;
+}) => {
   const { items } = useHits<ContentItemHit>();
+
+  useEffect(() => {
+    if (items.length > 0) {
+      setIsLoading(false);
+    }
+  }, [items, setIsLoading]);
 
   return (
     <>
       {items.map((hit, i) => (
-        <DesktopArticleCard hit={hit} key={i} />
+        <DesktopLatestArticleCard hit={hit} key={i} />
       ))}
     </>
   );
-};
-
-const DesktopArticleCard = ({ hit }: { hit: ContentItemHit }) => {
-  return (
-    <div className="flex flex-col gap-6 w-full">
-      <Link
-        to={`/articles/${hit.url || hit.routing.pathname}`}
-        prefetch="intent"
-        className="flex items-center gap-5 cursor-pointer"
-      >
-        <img
-          src={hit.coverImage.sources[0].uri}
-          className="size-18 object-cover rounded-[4px] overflow-hidden"
-        />
-        <div className="flex flex-col max-w-[220px]">
-          <p className="text-sm text-[#444]">
-            {new Date(hit.startDateTime).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-          <h3 className="font-semibold text-lg leading-snug">{hit.title}</h3>
-        </div>
-      </Link>
-      <Divider />
-    </div>
-  );
-};
-
-// Reusable component for displaying counts
-const CountDisplay = ({
-  searchClient,
-  filter,
-}: {
-  searchClient: any;
-  filter: string;
-}) => {
-  return (
-    <InstantSearch
-      indexName="dev_daniel_contentItems"
-      searchClient={searchClient}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-    >
-      <Configure filters={filter} hitsPerPage={0} distinct={true} />
-      <CountRenderer />
-    </InstantSearch>
-  );
-};
-
-const CountRenderer = () => {
-  const { nbHits } = useStats();
-  return <p className="font-medium text-text-secondary">({nbHits})</p>;
 };
 
 export const MobileLatestArticles = () => {
@@ -203,7 +166,7 @@ export const MobileLatestArticles = () => {
     : 'contentType:"Article"';
 
   return (
-    <div className="flex flex-col gap-3 w-full max-w-screen content-padding">
+    <div className="flex flex-col gap-3 w-screen max-w-screen content-padding">
       <h2 className="font-extrabold text-2xl">Latest Posts</h2>
 
       <InstantSearch
@@ -220,6 +183,8 @@ export const MobileLatestArticles = () => {
   );
 };
 
+// Needs to be a separate compoennt because the "items" come from useHits which is an Algolia hook,
+// which can only be used in components that are wrapped by <InstantSearch></InstantSearch>
 const MobileArticlesList = () => {
   const { items } = useHits<ContentItemHit>();
 
@@ -238,7 +203,7 @@ const MobileArticlesList = () => {
               className="flex flex-col gap-6 max-w-[90vw] min-w-[300px]"
             >
               {groupArticles.map((article, i) => (
-                <MobileArticleCard hit={article} key={startIndex + i} />
+                <MobileLatestArticleCard hit={article} key={startIndex + i} />
               ))}
             </div>
           );
@@ -247,21 +212,32 @@ const MobileArticlesList = () => {
   );
 };
 
-const MobileArticleCard = ({ hit }: { hit: ContentItemHit }) => {
+// Component for displaying Algolia counts
+const CountDisplay = ({
+  searchClient,
+  filter,
+}: {
+  searchClient: any;
+  filter: string;
+}) => {
   return (
-    <Link
-      to={`/articles/${hit.url || hit.routing.pathname}`}
-      prefetch="intent"
-      className="flex items-center gap-5 cursor-pointer"
+    <InstantSearch
+      indexName="dev_daniel_contentItems"
+      searchClient={searchClient}
+      future={{
+        preserveSharedStateOnUnmount: true,
+      }}
     >
-      <img
-        src={hit.coverImage.sources[0].uri}
-        className="size-16 object-cover rounded-[4px] overflow-hidden"
-      />
-      <div className="flex flex-col max-w-[220px]">
-        <p className="text-sm text-[#444]">{hit.startDateTime}</p>
-        <h3 className="font-semibold text-lg leading-snug">{hit.title}</h3>
-      </div>
-    </Link>
+      <Configure filters={filter} hitsPerPage={0} distinct={true} />
+      <CountRenderer />
+    </InstantSearch>
   );
+};
+
+// Needs to be a separate compoennt because the "nbHits" come from useHits which is an Algolia hook,
+// which can only be used in components that are wrapped by <InstantSearch></InstantSearch>
+const CountRenderer = () => {
+  const { nbHits } = useStats();
+
+  return <p className="font-medium text-text-secondary">({nbHits})</p>;
 };

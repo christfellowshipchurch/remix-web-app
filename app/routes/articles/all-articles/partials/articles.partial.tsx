@@ -1,11 +1,12 @@
-import { useRouteLoaderData, useLocation, useNavigate } from "react-router";
-import { useMemo, useState } from "react";
+import { useRouteLoaderData, useLocation } from "react-router";
+import { useMemo, useState, useEffect } from "react";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { ContentItemHit } from "~/routes/search/types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { articleCategories } from "../all-articles-page";
 import { ArticleCard } from "../components/article-card.component";
+import { DesktopLoadingSkeleton } from "../components/loading-skeleton.component";
 
 const createSearchClient = (appId: string, apiKey: string) =>
   algoliasearch(appId, apiKey, {});
@@ -17,7 +18,6 @@ export const Articles = () => {
     ALGOLIA_SEARCH_API_KEY: "",
   };
   const location = useLocation();
-  const navigate = useNavigate();
 
   const searchClient = useMemo(
     () =>
@@ -67,11 +67,36 @@ export const Articles = () => {
 const ArticlesGrid = () => {
   const { items } = useHits<ContentItemHit>();
 
+  const [articlesLoading, setArticlesLoading] = useState(true);
+  // Used to delay slightly to ensure the snapping does not happen
+  const [shouldSetArticlesLoadingOff, setShouldSetArticlesLoadingOff] =
+    useState(false);
+
+  // Set loading to false when items are available
+  useEffect(() => {
+    if (items && items.length > 0) {
+      setShouldSetArticlesLoadingOff(true);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    if (shouldSetArticlesLoadingOff) {
+      setArticlesLoading(false);
+      setShouldSetArticlesLoadingOff(false);
+    }
+  }, [shouldSetArticlesLoadingOff]);
+
   return (
     <div className="content-padding md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
-      {items?.map((article, i) => (
-        <ArticleCard article={article} key={i} />
-      ))}
+      {articlesLoading || !items || items.length === 0 ? (
+        <DesktopLoadingSkeleton />
+      ) : (
+        <>
+          {items.map((article, i) => (
+            <ArticleCard article={article} key={i} />
+          ))}
+        </>
+      )}
     </div>
   );
 };
