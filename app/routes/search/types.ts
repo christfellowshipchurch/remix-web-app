@@ -30,6 +30,9 @@ export interface ContentItemHit {
   seasonNumber?: number;
   episodeNumber?: number;
   startDateTime: string;
+  locations?: {
+    name: string;
+  }[];
   _typename: string;
   objectID: string;
   _highlightResult: {

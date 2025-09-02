@@ -5,6 +5,8 @@ import { createImageUrlFromGuid } from "~/lib/utils";
 export type EventReturnType = {
   featuredEvents: Event[];
   upcomingEvents: Event[];
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
 };
 
 export type Event = {
@@ -76,5 +78,10 @@ export const loader = async () => {
   const featuredEvents = allEvents.slice(0, 4);
   const upcomingEvents = allEvents.slice(4);
 
-  return { featuredEvents, upcomingEvents };
+  return {
+    featuredEvents,
+    upcomingEvents,
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+  };
 };

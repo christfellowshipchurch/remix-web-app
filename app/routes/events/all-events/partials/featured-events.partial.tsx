@@ -25,12 +25,6 @@ export function FeaturedEvents() {
                 pathname: event.attributeValues.url.value,
                 startDate: event.startDate,
                 location: event.campus,
-                attributeValues: {
-                  summary: event.attributeValues.summary.value,
-                  image: event.attributeValues.image.value,
-                  url: event.attributeValues.url.value,
-                  campus: event.attributeValues.campus?.value || null,
-                },
               }}
             />
           ))}
