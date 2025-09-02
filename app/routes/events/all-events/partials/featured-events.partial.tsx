@@ -27,7 +27,7 @@ export function FeaturedEvents() {
           }}
         >
           <Configure
-            filters='contentType:"Event" AND isFeatured:false'
+            filters='contentType:"Event" AND isFeatured:true'
             hitsPerPage={4}
           />
 
