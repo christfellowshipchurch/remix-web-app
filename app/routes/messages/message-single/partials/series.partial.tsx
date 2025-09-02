@@ -14,7 +14,7 @@ const SeriesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
     <SeriesCard
       message={{
         title: hit.title,
-        content: hit.htmlContent?.join(" ") || "",
+        content: hit?.htmlContent || "",
         summary: hit.summary,
         image: hit.coverImage.sources[0].uri,
         coverImage: hit.coverImage.sources[0].uri,

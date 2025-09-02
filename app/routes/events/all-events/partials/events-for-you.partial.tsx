@@ -10,7 +10,7 @@ import { ContentItemHit } from "~/routes/search/types";
 import { EventsTagsRefinementList } from "../components/events-tags-refinement.component";
 
 export const EventsForYou = () => {
-  const { upcomingEvents, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<EventReturnType>();
 
   const searchClient = useMemo(
@@ -32,7 +32,10 @@ export const EventsForYou = () => {
             preserveSharedStateOnUnmount: true,
           }}
         >
-          <Configure filters='contentType:"Event"' hitsPerPage={9} />
+          <Configure
+            filters='contentType:"Event" AND isFeatured:false'
+            hitsPerPage={9}
+          />
 
           {/* Filters */}
           <div className="mt-10 mb-16 md:mt-14 lg:mb-24 xl:mb-28">

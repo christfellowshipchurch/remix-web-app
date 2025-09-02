@@ -50,6 +50,7 @@ export type CollectionItem = {
   contentChannelId: string;
   contentType: ContentType;
   name: string;
+  htmlContent?: string;
   summary: string;
   description?: string;
   image: string;

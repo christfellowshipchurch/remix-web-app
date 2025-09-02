@@ -3,7 +3,6 @@ import { CommunityCard, RegionCard, Trip } from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { mockCommunityData, mockRegionData } from "./mock-data";
-import { Event } from "../events/all-events/loader";
 import { formatDate } from "date-fns";
 
 const fetchMissionTrips = async () => {
@@ -20,6 +19,33 @@ const fetchMissionTrips = async () => {
 
   return trips;
 };
+
+type Event = {
+  id: string;
+  campus?: string;
+  content?: string;
+  title: string;
+  date: string; // Formatted date
+  expireDateTime: string; // Rock date
+  startDate: string; // Formatted date
+  startDateTime: string; // Rock date
+  image: string;
+  attributeValues: {
+    campus?: {
+      value: string;
+    };
+    summary: {
+      value: string;
+    };
+    image: {
+      value: string;
+    };
+    url: {
+      value: string;
+    };
+  };
+};
+
 const fetchFeaturedEvent = async (): Promise<Event> => {
   // TODO: We'll need to create some sort of tag/filter to specify the event we want to show. For now, we'll just show the latest event.
   const featuredEvents = await fetchRockData({

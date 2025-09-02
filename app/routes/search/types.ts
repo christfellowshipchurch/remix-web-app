@@ -14,7 +14,7 @@ export interface ContentItemHit {
   action: string;
   contentType: string;
   imageLabel: string;
-  htmlContent: string[];
+  htmlContent?: string;
   sermonPrimaryTags: string[];
   sermonSecondaryTags: string[];
   articlePrimaryTags: string[];

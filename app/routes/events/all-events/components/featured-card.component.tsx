@@ -1,11 +1,31 @@
-import { Link } from "react-router-dom";
-import { Event } from "../loader";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import HtmlRenderer from "~/primitives/html-renderer";
+import { ContentItemHit } from "~/routes/search/types";
 
-export const FeaturedEventCard = ({ card }: { card: Event }) => {
-  const { title, image, startDate, campus, attributeValues, content } = card;
+export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
+  const {
+    title,
+    coverImage,
+    startDateTime,
+    locations,
+    summary,
+    url,
+    htmlContent,
+  } = card;
+
+  const image = coverImage?.sources[0]?.uri || "";
+  const formattedDate = startDateTime
+    ? new Date(startDateTime).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
+  const campus =
+    locations && locations.length > 1
+      ? "Multiple Locations"
+      : locations?.[0]?.name || "Christ Fellowship Church";
 
   return (
     <div className="flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] border border-neutral-lighter">
@@ -19,8 +39,8 @@ export const FeaturedEventCard = ({ card }: { card: Event }) => {
         <div className="flex flex-col gap-4">
           <ul className="flex gap-4">
             <li className="flex items-center gap-1">
-              {startDate && <Icon name="calendarAlt" color="black" />}
-              <p className="text-sm">{startDate}</p>
+              {startDateTime && <Icon name="calendarAlt" color="black" />}
+              <p className="text-sm">{formattedDate}</p>
             </li>
 
             <li className="flex items-center gap-1">
@@ -32,17 +52,20 @@ export const FeaturedEventCard = ({ card }: { card: Event }) => {
           <h4 className="font-extrabold text-[28px] leading-tight text-pretty">
             {title}
           </h4>
-          {attributeValues?.summary?.value ? (
-            <p>{attributeValues.summary.value}</p>
+          {summary ? (
+            <p>{summary}</p>
           ) : (
-            <HtmlRenderer html={content || ""} className="line-clamp-5" />
+            <HtmlRenderer
+              html={htmlContent || ""}
+              className={`line-clamp-5  ${htmlContent ? "block" : "hidden"}`}
+            />
           )}
         </div>
 
         <Button
           intent="secondary"
           className="font-normal"
-          href={`/events/${attributeValues.url.value}`}
+          href={`/events/${url}`}
         >
           Save my spot
         </Button>
