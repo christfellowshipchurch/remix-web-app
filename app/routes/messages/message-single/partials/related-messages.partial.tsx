@@ -18,7 +18,7 @@ export const RelatedMessages = () => {
         {/* Header */}
         <div className="w-full flex justify-between">
           <div className="gap-6 md:gap-8">
-            <SectionTitle sectionTitle="related series." />
+            <SectionTitle sectionTitle="related messages." />
             <h2 className="text-text font-extrabold text-[28px] lg:text-[32px] leading-tight">
               Message Series On This Topic
             </h2>

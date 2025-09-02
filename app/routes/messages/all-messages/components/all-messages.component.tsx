@@ -1,13 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Hits,
-  Configure,
-  useRefinementList,
-  useInstantSearch,
-} from "react-instantsearch";
-import { useMemo, useState } from "react";
+import { InstantSearch, Configure, useHits } from "react-instantsearch";
+import { useMemo } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
@@ -57,14 +51,7 @@ export default function Messages() {
           </div>
 
           {/* Results Grid */}
-          <Hits
-            hitComponent={({ hit }: { hit: ContentItemHit }) => {
-              return <MessageHit hit={hit} />;
-            }}
-            classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
-            }}
-          />
+          <AllMessagesHit />
 
           <CustomPagination />
         </InstantSearch>
@@ -72,6 +59,21 @@ export default function Messages() {
     </section>
   );
 }
+
+const AllMessagesHit = () => {
+  const { items } = useHits<ContentItemHit>();
+
+  if (items.length === 0) return null;
+
+  const remainingItems = items.slice(1);
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+      {remainingItems.map((hit) => (
+        <MessageHit hit={hit} key={hit.objectID} />
+      ))}
+    </div>
+  );
+};
 
 const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
   const formattedDate = new Date(hit.startDateTime).toLocaleDateString(

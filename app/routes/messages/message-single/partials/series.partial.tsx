@@ -52,7 +52,7 @@ export const InThisSeries = () => {
     return null;
   }
 
-  const filter = `contentType:"Sermon" AND series:"${message.seriesTitle}"`;
+  const filter = `contentType:"Sermon" AND seriesName:"${message.seriesTitle}" AND NOT title:"${message.title}"`;
 
   return (
     <div className="flex w-full flex-col gap-6 py-12 md:pt-0 md:pb-24 content-padding">

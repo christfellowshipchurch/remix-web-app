@@ -28,8 +28,8 @@ export function MessagesCarousel() {
   // Create filter for the primary category and sermon type
   // If primary category exists, filter by it; otherwise show all sermons (Recent)
   const categoryFilter = message.primaryCategories[0]?.value
-    ? `contentType:"Sermon" AND sermonPrimaryTags:"${message.primaryCategories[0]?.value}"`
-    : `contentType:"Sermon"`;
+    ? `contentType:"Sermon" AND sermonPrimaryTags:"${message.primaryCategories[0]?.value}" AND NOT title:"${message.title}"`
+    : `contentType:"Sermon" AND NOT title:"${message.title}"`;
 
   return (
     <Carousel

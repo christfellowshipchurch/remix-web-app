@@ -15,6 +15,8 @@ export interface ContentItemHit {
   contentType: string;
   imageLabel: string;
   htmlContent?: string;
+  seriesName?: string;
+  seriesGuid?: string;
   sermonPrimaryTags: string[];
   sermonSecondaryTags: string[];
   articlePrimaryTags: string[];
