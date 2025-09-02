@@ -146,7 +146,7 @@ const MobileArticlesGrid = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex overflow-x-auto pb-1 w-full max-w-screen content-padding [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex overflow-x-auto pb-1 w-full max-w-screen content-padding scrollbar-hide">
         <MobileArticleCategoryTab
           category="View All"
           isActive={!selectedCategory}

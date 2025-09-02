@@ -189,7 +189,7 @@ const MobileArticlesList = () => {
   const { items } = useHits<ContentItemHit>();
 
   return (
-    <div className="flex pb-1 gap-3 w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex pb-1 gap-3 w-full overflow-x-auto scrollbar-hide">
       {items &&
         items.length > 0 &&
         // Group articles into vertical pairs

@@ -42,7 +42,7 @@ export const MobileSearchCustomRefinementList = ({
     <div ref={containerRef}>
       <RefinementList
         classNames={{
-          list: "flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
+          list: "flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 scrollbar-hide",
           checkbox: "hidden",
           count: "hidden",
           item: "first:ml-4 flex items-center justify-center text-center text-sm font-bold text-[#7B7382] px-4 py-1 whitespace-nowrap transition-all duration-300",

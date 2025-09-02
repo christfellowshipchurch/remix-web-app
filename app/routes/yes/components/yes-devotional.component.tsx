@@ -27,7 +27,7 @@ const TabsSection = () => {
       className="w-full flex flex-col justify-center items-center relative mt-16"
     >
       {/* Tabs List */}
-      <Tabs.List className="flex w-full gap-4 max-w-[978px] items-center md:justify-center md:flex-wrap overflow-x-auto md:overflow-x-hidden pb-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <Tabs.List className="flex w-full gap-4 max-w-[978px] items-center md:justify-center md:flex-wrap overflow-x-auto md:overflow-x-hidden pb-10 scrollbar-hide">
         {twentyOneDaysDevotionalData.map((tab, index) => (
           <Tabs.Trigger
             key={index}
