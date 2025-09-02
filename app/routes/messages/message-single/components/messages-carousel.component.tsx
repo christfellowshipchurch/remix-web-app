@@ -36,7 +36,7 @@ export function MessagesCarousel() {
       opts={{
         align: "start",
       }}
-      className="w-full mt-8 relative mb-12"
+      className="w-full mt-6 relative mb-12"
     >
       <InstantSearch
         indexName="dev_daniel_contentItems"
@@ -68,22 +68,24 @@ export function MessagesCarousel() {
 
 const CarouselHits = () => {
   const { items } = useHits<ContentItemHit>();
+  const hoverClasses =
+    "group-hover:translate-y-[-6px] transition-all duration-300";
 
   return (
     <>
       {items.map((hit, index) => (
         <CarouselItem
-          key={hit.objectID}
-          className="min-w-[318px] md:min-w-[460px] max-w-[460px] w-full"
+          key={index}
+          className="min-w-[318px] md:min-w-[460px] max-w-[460px] w-full pt-2"
         >
           <Link
             to={`/messages/${hit.url}`}
             prefetch="intent"
-            className="min-w-[318px] md:min-w-[460px] max-w-[460px] h-full max-h-[260px] hover:translate-y-[-6px] transition-all duration-300"
+            className="min-w-[318px] md:min-w-[460px] max-w-[460px] h-full max-h-[260px] group"
           >
             <img
               src={hit.coverImage.sources[0].uri}
-              className="w-full aspect-video rounded-[8px]"
+              className={`w-full aspect-video rounded-[8px] ${hoverClasses}`}
             />
           </Link>
         </CarouselItem>

@@ -27,6 +27,15 @@ export type Tag = {
 };
 
 const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
+  const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
+
   return (
     <ResourceCard
       resource={{
@@ -37,9 +46,10 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
         image: hit.coverImage.sources[0].uri,
         name: hit.title,
         summary: hit.summary,
-        pathname: `${hit.url}`,
+        pathname: `/messages/${hit.url}`,
+        startDate: formattedDate,
         attributeValues: {
-          url: `${hit.url}`,
+          url: `/messages/${hit.url}`,
           summary: hit.summary,
         },
       }}
