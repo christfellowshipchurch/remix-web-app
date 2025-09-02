@@ -30,12 +30,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const currentPath = location.pathname;
 
   if (webflowPaths.includes(currentPath)) {
-    return (
-      <>
-        <Outlet />
-        {/* <Scripts /> */}
-      </>
-    );
+    return <Outlet />;
   } else {
     return (
       <html lang="en">
@@ -59,33 +54,29 @@ export default function App() {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  if (webflowPaths.includes(currentPath)) {
-    return <Outlet />;
-  } else {
-    return (
-      <GTMProvider gtmId="GTM-PFW26V4V">
-        <AuthProvider>
-          <CookieConsentProvider>
-            <NavbarVisibilityProvider>
-              <div className="min-h-screen flex flex-col text-pretty">
-                <Navbar />
-                <main
-                  className={cn(
-                    "flex-1",
-                    `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
-                      shouldUseDarkMode(currentPath) && "mt-[-100px]"
-                    }` // This is to account for the navbar height when dark mode is enabled
-                  )}
-                >
-                  {/* Remove only on the home page, since the navbar has an Outlet for the home page there*/}
-                  {currentPath !== "/" && <Outlet />}
-                </main>
-                <Footer />
-              </div>
-            </NavbarVisibilityProvider>
-          </CookieConsentProvider>
-        </AuthProvider>
-      </GTMProvider>
-    );
-  }
+  return (
+    <GTMProvider gtmId="GTM-PFW26V4V">
+      <AuthProvider>
+        <CookieConsentProvider>
+          <NavbarVisibilityProvider>
+            <div className="min-h-screen flex flex-col text-pretty">
+              <Navbar />
+              <main
+                className={cn(
+                  "flex-1",
+                  `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
+                    shouldUseDarkMode(currentPath) && "mt-[-100px]"
+                  }` // This is to account for the navbar height when dark mode is enabled
+                )}
+              >
+                {/* Remove only on the home page, since the navbar has an Outlet for the home page there*/}
+                {currentPath !== "/" && <Outlet />}
+              </main>
+              <Footer />
+            </div>
+          </NavbarVisibilityProvider>
+        </CookieConsentProvider>
+      </AuthProvider>
+    </GTMProvider>
+  );
 }

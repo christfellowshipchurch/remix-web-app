@@ -1,20 +1,12 @@
 import {
   Links,
   LoaderFunction,
-  Meta,
   redirect,
-  ScrollRestoration,
   useLoaderData,
-  Scripts,
+  Meta,
 } from "react-router-dom";
-
-import { AuthProvider } from "../../providers/auth-provider";
-import { NavbarVisibilityProvider } from "../../providers/navbar-visibility-context";
-import { CookieConsentProvider } from "../../providers/cookie-consent-provider";
-import { GTMProvider } from "../../providers/gtm-provider";
-
 import { load } from "cheerio";
-import { Footer, Navbar } from "~/components";
+import { Footer } from "~/components";
 
 export type LoaderReturnType = {
   head: string;
@@ -56,30 +48,14 @@ export default function DynamicPages() {
       lang="en"
     >
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
         <div dangerouslySetInnerHTML={{ __html: data.head }} />
+        <Links />
+        <Meta />
       </head>
-
       <body>
-        <GTMProvider gtmId="GTM-PFW26V4V">
-          <AuthProvider>
-            <CookieConsentProvider>
-              <NavbarVisibilityProvider>
-                <div className="min-h-screen flex flex-col text-pretty">
-                  {/* <Navbar /> */}
-                  <div dangerouslySetInnerHTML={{ __html: data.body }} />
-                  <Footer />
-                </div>
-              </NavbarVisibilityProvider>
-            </CookieConsentProvider>
-          </AuthProvider>
-        </GTMProvider>
-
-        <ScrollRestoration />
-        {/* <Scripts /> */}
+        {/* Insert alternate navbar here */}
+        <div dangerouslySetInnerHTML={{ __html: data.body }} />
+        <Footer />
       </body>
     </html>
   );
