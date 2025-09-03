@@ -7,6 +7,8 @@ import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 export type LoaderReturnType = {
   message: MessageType;
   seriesMessages: MessageType[];
+  ALGOLIA_APP_ID: string | undefined;
+  ALGOLIA_SEARCH_API_KEY: string | undefined;
 };
 export const mapRockDataToMessage = async (
   rockItem: any
@@ -19,6 +21,59 @@ export const mapRockDataToMessage = async (
     rockItem.attributeValues?.author?.value
   );
 
+  let primaryCategories: { value: string }[] = [{ value: "" }];
+  let secondaryCategories: { value: string }[] = [{ value: "" }];
+
+  if (rockItem.attributeValues.primaryCategory.value) {
+    // Separate the primary category into an array of values
+    const categoryValues =
+      rockItem.attributeValues.primaryCategory.value.split(",");
+
+    // Loop through all category values and fetch their details
+    const sermonPrimaryCategories: { value: string }[] = [];
+    for (const categoryGuid of categoryValues) {
+      const sermonPrimaryCategory = await fetchRockData({
+        endpoint: `DefinedValues/`,
+        queryParams: {
+          $filter: `Guid eq guid'${categoryGuid.trim()}'`,
+          $select: "Value",
+        },
+      });
+
+      if (sermonPrimaryCategory && sermonPrimaryCategory.length > 0) {
+        sermonPrimaryCategories.push(sermonPrimaryCategory[0]);
+      } else {
+        sermonPrimaryCategories.push(sermonPrimaryCategory);
+      }
+    }
+
+    primaryCategories = sermonPrimaryCategories;
+  }
+
+  if (rockItem.attributeValues.secondaryCategory.value) {
+    const categoryValues =
+      rockItem.attributeValues.secondaryCategory.value.split(",");
+
+    const sermonSecondaryCategories: { value: string }[] = [];
+    for (const categoryGuid of categoryValues) {
+      const sermonSecondaryCategory = await fetchRockData({
+        endpoint: `DefinedValues/`,
+        queryParams: {
+          $filter: `Guid eq guid'${categoryGuid.trim()}'`,
+          $select: "Value",
+        },
+      });
+
+      if (sermonSecondaryCategory && sermonSecondaryCategory.length > 0) {
+        sermonSecondaryCategories.push(sermonSecondaryCategory[0]);
+      } else {
+        sermonSecondaryCategories.push(sermonSecondaryCategory);
+      }
+    }
+
+    secondaryCategories = sermonSecondaryCategories;
+  }
+
   return {
     title: rockItem.title,
     content: rockItem.content || "",
@@ -28,6 +83,8 @@ export const mapRockDataToMessage = async (
       (await fetchWistiaDataFromRock(attributeValues?.media?.value))
         .sourceKey || "",
     coverImage: (coverImage && coverImage[0]) || "",
+    primaryCategories,
+    secondaryCategories,
     startDateTime: startDateTime || "",
     expireDateTime: expireDateTime || "",
     seriesId: rockItem.attributeValues?.messageSeries?.value || "",
@@ -151,5 +208,10 @@ export const loader: LoaderFunction = async ({
     seriesGuid ? fetchSeriesMessages(seriesGuid) : Promise.resolve([]),
   ]);
 
-  return { message, seriesMessages };
+  return {
+    message,
+    seriesMessages,
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+  };
 };

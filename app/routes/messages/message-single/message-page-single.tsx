@@ -1,7 +1,7 @@
 import { MessageVideo } from "./partials/hero-video.partial";
 import { MessageContent } from "./partials/content.partial";
 import { InThisSeries } from "./partials/series.partial";
-// import { RelatedMessages } from "./partials/related-messages.partial";
+import { RelatedMessages } from "./partials/related-messages.partial";
 import { AdditionalResources } from "~/components";
 
 export function MessageSinglePage() {
@@ -29,8 +29,8 @@ export function MessageSinglePage() {
         </div>
       </div>
       <InThisSeries />
-      {/* We will comment this out for now until we have fully defined a way to fetch the related messages */}
-      {/* <RelatedMessages /> */}
+
+      <RelatedMessages />
     </div>
   );
 }

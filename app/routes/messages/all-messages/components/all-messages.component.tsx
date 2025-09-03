@@ -1,18 +1,13 @@
 import { useLoaderData } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Hits,
-  Configure,
-  RefinementList,
-} from "react-instantsearch";
+import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { useMemo } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
-import { Icon } from "~/primitives/icon/icon";
 import { ContentItemHit } from "~/routes/search/types";
 import { CustomPagination } from "./custom-pagination.component";
+import { MessagesTagsRefinementList } from "./messages-tags-refinement.component";
 
 interface LoaderData {
   ALGOLIA_APP_ID: string;
@@ -23,63 +18,6 @@ export type Tag = {
   label: string;
   isActive: boolean;
 };
-
-const MessageHit = ({ hit }: { hit: ContentItemHit }) => (
-  <ResourceCard
-    resource={{
-      id: hit.objectID,
-      contentChannelId: "63", // MESSAGE type from builder-utils.ts
-      contentType: "MESSAGES",
-      author: hit.author.firstName + " " + hit.author.lastName,
-      image: hit.coverImage.sources[0].uri,
-      name: hit.title,
-      summary: hit.summary,
-      pathname: `/${hit.routing.pathname}`,
-      attributeValues: {
-        url: `/${hit.routing.pathname}`,
-        summary: hit.summary,
-      },
-    }}
-  />
-);
-
-export const mockTags = [
-  { label: "Tag", isActive: true },
-  { label: "Mens", isActive: false },
-  { label: "Women", isActive: false },
-  { label: "Kids & Students", isActive: false },
-  { label: "Young Adults", isActive: false },
-  { label: "Volunteer", isActive: false },
-];
-
-export const FilterButtons = ({ tags = mockTags }: { tags?: Tag[] }) => {
-  return (
-    <div className="relative w-full overflow-x-auto max-w-[90vw]">
-      <div className="flex gap-6 px-1 pb-2">
-        {tags.map((tag, index) => (
-          <div
-            key={`${tag.label}-${index}`}
-            className={`text-semibold shrink-0 px-6 py-3 rounded-full justify-center items-center flex cursor-pointer whitespace-nowrap ${
-              tag.isActive
-                ? "border border-neutral-600 text-neutral-600"
-                : "bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300"
-            }`}
-          >
-            <div className="text-xl font-semibold font-['Proxima Nova'] leading-7">
-              {tag.label}
-            </div>
-            {tag.isActive && (
-              <Icon className="text-ocean ml-2 mr-[-6px]" name="x" size={24} />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
 
 export default function Messages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -98,12 +36,8 @@ export default function Messages() {
           sectionTitle="all messages."
           title="Christ Fellowship Church Messages"
         />
-        {/* Filter Buttons - just placeholder ones for now. Eventually, we'll use the algolia filters */}
-        <div className="mt-10 mb-12 w-full">
-          <FilterButtons tags={mockTags} />
-        </div>
         <InstantSearch
-          indexName="production_ContentItems"
+          indexName="dev_daniel_contentItems"
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -113,30 +47,11 @@ export default function Messages() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <RefinementList
-              attribute="tags"
-              classNames={{
-                list: "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
-                item: "shrink-0",
-                label: "cursor-pointer",
-                checkbox: "hidden",
-                labelText:
-                  "px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap bg-gray text-neutral-500 hover:bg-neutral-200 transition-colors duration-300",
-                selectedItem:
-                  "border border-neutral-600 text-neutral-600 bg-white",
-              }}
-            />
+            <MessagesTagsRefinementList />
           </div>
 
           {/* Results Grid */}
-          <Hits
-            hitComponent={({ hit }: { hit: ContentItemHit }) => {
-              return <MessageHit hit={hit} />;
-            }}
-            classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
-            }}
-          />
+          <AllMessagesHit />
 
           <CustomPagination />
         </InstantSearch>
@@ -144,3 +59,47 @@ export default function Messages() {
     </section>
   );
 }
+
+const AllMessagesHit = () => {
+  const { items } = useHits<ContentItemHit>();
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+      {items.map((hit) => (
+        <MessageHit hit={hit} key={hit.objectID} />
+      ))}
+    </div>
+  );
+};
+
+const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
+  const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
+
+  return (
+    <ResourceCard
+      resource={{
+        id: hit.objectID,
+        contentChannelId: "63", // MESSAGE type from builder-utils.ts
+        contentType: "MESSAGES",
+        author: hit.author.firstName + " " + hit.author.lastName,
+        image: hit.coverImage.sources[0].uri,
+        name: hit.title,
+        summary: hit.summary,
+        pathname: `/messages/${hit.url}`,
+        startDate: formattedDate,
+      }}
+    />
+  );
+};
+
+export const createSearchClient = (appId: string, apiKey: string) =>
+  algoliasearch(appId, apiKey, {});
