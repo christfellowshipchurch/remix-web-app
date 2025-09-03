@@ -6,8 +6,8 @@ import { useMemo } from "react";
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { ContentItemHit } from "~/routes/search/types";
-import { CustomPagination } from "./custom-pagination.component";
 import { MessagesTagsRefinementList } from "./messages-tags-refinement.component";
+import { CustomPagination } from "~/components/custom-pagination";
 
 interface LoaderData {
   ALGOLIA_APP_ID: string;

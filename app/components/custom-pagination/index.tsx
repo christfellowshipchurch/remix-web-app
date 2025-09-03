@@ -10,7 +10,6 @@ export const CustomPagination = (props: UsePaginationProps) => {
       {/* Previous Button */}
       <PaginationButton
         isDisabled={isFirstPage}
-        onClick={() => refine(currentRefinement - 1)}
         href={createURL(currentRefinement - 1)}
         className="w-12 h-12"
       >

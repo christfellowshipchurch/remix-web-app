@@ -4,7 +4,6 @@ import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { getRelatedArticlesByContentItem } from "~/lib/.server/fetch-related-articles";
-import { articleCategories } from "../all-articles/all-articles-page";
 
 export type LoaderReturnType = {
   hostUrl: string;
@@ -20,7 +19,6 @@ export type LoaderReturnType = {
     tagId: string;
     articles: any[];
   };
-  isCategory: boolean;
 };
 
 const fetchArticleData = async (articlePath: string) => {
@@ -57,10 +55,6 @@ const fetchArticleData = async (articlePath: string) => {
       }
     );
   }
-};
-
-const isCategory = (path: string) => {
-  return articleCategories.some((category) => category.path === path);
 };
 
 const fetchAuthorId = async (authorId: string) => {
@@ -102,13 +96,6 @@ export const getAuthorDetails = async (authorId: string) => {
 export const loader: LoaderFunction = async ({ params }) => {
   const articlePath = params?.path || "";
 
-  if (isCategory(articlePath)) {
-    return {
-      isCategory: true,
-      title: articlePath,
-    };
-  }
-
   const articleData = await fetchArticleData(articlePath);
   if (!articleData) {
     throw new Response("Article not found at: /articles/" + articlePath, {
@@ -140,9 +127,6 @@ export const loader: LoaderFunction = async ({ params }) => {
     publishDate: format(new Date(startDateTime), "d MMM yyyy"),
     readTime: Math.round(content.split(" ").length / 200),
     relatedArticles,
-
-    // TODO: Update this to check path to see if it's an article or a category page
-    isCategory: isCategory(articlePath),
   };
 
   return pageData;

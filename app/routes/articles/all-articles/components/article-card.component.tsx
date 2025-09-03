@@ -60,20 +60,24 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
 
             <div className="flex">
               {article.startDateTime && (
-                <p>
-                  {new Date(article.startDateTime).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                <div className="flex md:flex-col lg:flex-row">
+                  <p>
+                    {new Date(article.startDateTime).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </p>
                   {article.readTime && (
-                    <span>
-                      <span className="mx-2">•</span>
-                      {/* TODO: This might not end up coming from Algolia, might need to get this from htmlContent length */}
+                    <span className="flex">
+                      <span className="mx-2 md:hidden lg:block">•</span>
                       {article.readTime} min read
                     </span>
                   )}
-                </p>
+                </div>
               )}
             </div>
           </div>

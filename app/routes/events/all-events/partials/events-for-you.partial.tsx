@@ -4,10 +4,10 @@ import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { Configure, Hits, InstantSearch } from "react-instantsearch";
-import { CustomPagination } from "~/routes/messages/all-messages/components/custom-pagination.component";
 import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import { EventsTagsRefinementList } from "../components/events-tags-refinement.component";
+import { CustomPagination } from "~/components/custom-pagination";
 
 export const EventsForYou = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

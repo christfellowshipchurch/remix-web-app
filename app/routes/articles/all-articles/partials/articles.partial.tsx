@@ -1,12 +1,16 @@
-import { useRouteLoaderData, useLocation } from "react-router";
+import { useRouteLoaderData } from "react-router";
 import { useMemo, useState, useEffect } from "react";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, Configure, useHits } from "react-instantsearch";
+import { InstantSearch, Configure, useHits, Hits } from "react-instantsearch";
 import { ContentItemHit } from "~/routes/search/types";
 import { RootLoaderData } from "~/routes/navbar/loader";
-import { articleCategories } from "../all-articles-page";
 import { ArticleCard } from "../components/article-card.component";
 import { DesktopLoadingSkeleton } from "../components/loading-skeleton.component";
+import {
+  MobileArticlesTagsRefinementList,
+  DesktopArticlesTagsRefinementList,
+} from "../components/articles-tags-refinement.component";
+import { CustomPagination } from "~/components/custom-pagination";
 
 const createSearchClient = (appId: string, apiKey: string) =>
   algoliasearch(appId, apiKey, {});
@@ -17,7 +21,6 @@ export const Articles = () => {
     ALGOLIA_APP_ID: "",
     ALGOLIA_SEARCH_API_KEY: "",
   };
-  const location = useLocation();
 
   const searchClient = useMemo(
     () =>
@@ -25,26 +28,11 @@ export const Articles = () => {
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
-  // Extract category from URL path
-  const pathSegments = location.pathname.split("/");
-  const categoryFromPath =
-    pathSegments.length > 2 && pathSegments[1] === "articles"
-      ? pathSegments[2]
-      : null;
-
-  // Build filter based on category
-  const filter = categoryFromPath
-    ? `contentType:"Article" AND articlePrimaryTags:"${categoryFromPath}"`
-    : 'contentType:"Article"';
-
   return (
     <>
       {/* Mobile Layout with Local Filtering */}
       <div className="md:hidden">
-        <MobileArticlesWithFiltering
-          searchClient={searchClient}
-          categoryFromPath={categoryFromPath}
-        />
+        <MobileArticles searchClient={searchClient} />
       </div>
 
       {/* Desktop Layout with URL-based Filtering */}
@@ -56,15 +44,23 @@ export const Articles = () => {
             preserveSharedStateOnUnmount: true,
           }}
         >
-          <Configure filters={filter} hitsPerPage={20} distinct={true} />
-          <ArticlesGrid />
+          <Configure
+            filters={`contentType:"Article"`}
+            hitsPerPage={12}
+            distinct={true}
+          />
+          <div className="flex flex-col w-full gap-12 py-8 lg:pt-20 lg:pb-24 ">
+            <DesktopArticlesTagsRefinementList />
+            <DesktopArticlesGrid />
+          </div>
+          <CustomPagination />
         </InstantSearch>
       </div>
     </>
   );
 };
 
-const ArticlesGrid = () => {
+const DesktopArticlesGrid = () => {
   const { items } = useHits<ContentItemHit>();
 
   const [articlesLoading, setArticlesLoading] = useState(true);
@@ -87,7 +83,7 @@ const ArticlesGrid = () => {
   }, [shouldSetArticlesLoadingOff]);
 
   return (
-    <div className="content-padding md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
+    <div className="content-padding md:px-0 grid grid-cols-1 md:grid-cols-2 xl:!grid-cols-3 md:gap-x-4 gap-y-4 lg:gap-8 xl:gap-y-16">
       {articlesLoading || !items || items.length === 0 ? (
         <DesktopLoadingSkeleton />
       ) : (
@@ -102,22 +98,7 @@ const ArticlesGrid = () => {
 };
 
 // Mobile component with local state filtering
-const MobileArticlesWithFiltering = ({
-  searchClient,
-  categoryFromPath,
-}: {
-  searchClient: any;
-  categoryFromPath: string | null;
-}) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    categoryFromPath
-  );
-
-  // Build filter based on selected category
-  const filter = selectedCategory
-    ? `contentType:"Article" AND articlePrimaryTags:"${selectedCategory}"`
-    : 'contentType:"Article"';
-
+const MobileArticles = ({ searchClient }: { searchClient: any }) => {
   return (
     <InstantSearch
       indexName="dev_daniel_contentItems"
@@ -126,70 +107,23 @@ const MobileArticlesWithFiltering = ({
         preserveSharedStateOnUnmount: true,
       }}
     >
-      <Configure filters={filter} hitsPerPage={20} distinct={true} />
-      <MobileArticlesGrid
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
+      <Configure
+        filters={`contentType:"Article"`}
+        hitsPerPage={10}
+        distinct={true}
       />
-    </InstantSearch>
-  );
-};
+      <div className="flex flex-col gap-8 pl-5 py-8 lg:pt-28 lg:pb-24">
+        <MobileArticlesTagsRefinementList />
 
-const MobileArticlesGrid = ({
-  selectedCategory,
-  setSelectedCategory,
-}: {
-  selectedCategory: string | null;
-  setSelectedCategory: (category: string | null) => void;
-}) => {
-  const { items } = useHits<ContentItemHit>();
-
-  return (
-    <div className="flex flex-col gap-8">
-      <div className="flex overflow-x-auto pb-1 w-full max-w-screen content-padding scrollbar-hide">
-        <MobileArticleCategoryTab
-          category="View All"
-          isActive={!selectedCategory}
-          onClick={() => setSelectedCategory(null)}
+        <Hits
+          hitComponent={({ hit }: { hit: ContentItemHit }) => (
+            <ArticleCard article={hit} />
+          )}
+          classNames={{
+            list: "pr-5 md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16",
+          }}
         />
-        {articleCategories.map((category, i) => (
-          <MobileArticleCategoryTab
-            category={category.title}
-            key={i}
-            isActive={selectedCategory === category.path}
-            onClick={() => setSelectedCategory(category.path)}
-          />
-        ))}
       </div>
-
-      <div className="content-padding md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
-        {items?.map((article, i) => (
-          <ArticleCard article={article} key={i} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const MobileArticleCategoryTab = ({
-  category,
-  isActive,
-  onClick,
-}: {
-  category: string;
-  isActive: boolean;
-  onClick: () => void;
-}) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-fit min-w-[150px] flex justify-between group px-2 border-b-3 transition-colors ${
-        isActive
-          ? "border-ocean text-ocean"
-          : "border-neutral-lighter text-text-secondary"
-      }`}
-    >
-      <h3 className="font-semibold">{category}</h3>
-    </button>
+    </InstantSearch>
   );
 };
