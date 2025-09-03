@@ -115,7 +115,7 @@ export default function TestingSearch() {
 
 // Custom Component for Displaying Individual Hits
 function HitComponent({ hit }: { hit: ContentItemHit }) {
-  const pathname = hit.routing?.pathname || "#not-found";
+  const pathname = hit.routing?.pathname || hit.url || "#not-found";
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
 
   return (

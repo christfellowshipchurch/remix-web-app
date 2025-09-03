@@ -27,7 +27,7 @@ export const SearchPopup = ({
             }}
             hitComponent={({ hit }) => {
               const contentData: MobileContentHitType = {
-                routing: hit.routing,
+                routing: hit.routing || { pathname: hit.url || "" },
                 coverImage: hit.coverImage,
                 title: hit.title,
                 contentType: hit.contentType,

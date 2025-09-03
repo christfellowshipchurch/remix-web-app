@@ -7,6 +7,7 @@ import HTMLRenderer from "~/primitives/html-renderer";
 export function VolunteerFeaturedEvent() {
   const { featuredEvent } = useLoaderData<LoaderReturnType>();
   const { title, content, attributeValues } = featuredEvent;
+
   return (
     <section id="featured-event">
       <div className="ml-auto w-[95vw] min-[1600px]:w-[90vw] bg-white relative hidden md:block">

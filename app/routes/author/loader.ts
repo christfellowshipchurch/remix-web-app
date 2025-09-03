@@ -162,7 +162,6 @@ export const loader: LoaderFunction = async ({ params }) => {
       statusText: "Not Found",
     });
   }
-  console.log("data", data);
 
   const authorData: Author = {
     id: data.id,

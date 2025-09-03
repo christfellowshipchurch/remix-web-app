@@ -12,6 +12,8 @@ export type MessageType = {
   seriesId: string;
   seriesTitle: string;
   url: string;
+  primaryCategories: { value: string }[];
+  secondaryCategories: { value: string }[];
   speaker: {
     fullName: string;
     profilePhoto: string;
