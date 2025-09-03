@@ -46,7 +46,7 @@ export default function Messages() {
           <Configure filters='contentType:"Sermon"' hitsPerPage={9} />
 
           {/* Filter Section */}
-          <div className="mt-10 mb-12">
+          <div className="mt-10 mb-12 pagination-scroll-to">
             <MessagesTagsRefinementList />
           </div>
 
