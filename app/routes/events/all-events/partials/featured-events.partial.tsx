@@ -48,7 +48,7 @@ const FeaturedEventsHits = () => {
   return (
     <>
       <FeaturedEventCard card={firstHit} />
-      <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-16 place-items-center md:place-items-start">
+      <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start">
         {remainingHits?.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}

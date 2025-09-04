@@ -77,7 +77,7 @@ const AllMessagesHit = () => {
   if (items.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center">
       {items.map((hit) => (
         <MessageHit hit={hit} key={hit.objectID} />
       ))}

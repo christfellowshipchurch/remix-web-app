@@ -44,32 +44,40 @@ const CurrentSeriesHit = () => {
   const currentSeriesTitle = items[0]?.seriesName || "Current Series";
   const hit = items[0];
 
+  const iconButtonClass =
+    "text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean lg:text-base xl:!text-lg";
   return (
     <>
       <SectionTitle title={currentSeriesTitle} sectionTitle="current series" />
 
       {/* Latest Message Card */}
       <div className="flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] lg:h-[620px] xl:h-[540px] 2xl:h-[500px]">
-        <div className="flex flex-col h-full lg:w-1/2 justify-between bg-white w-full p-8 md:p-16">
+        <div className="flex flex-col h-full lg:w-1/2 justify-between lg:justify-center lg:gap-16 bg-white w-full p-8 md:p-16 lg:px-10 lg:py-12 xl:p-16">
           <div className="flex flex-col gap-4">
-            <h3 className="text-lg font-bold text-ocean">Latest Message</h3>
-            <h2 className="text-2xl md:text-3xl lg:text-[40px] font-bold text-text-primary text-pretty leading-tight">
-              {hit.title}
-            </h2>
-            <p className="font-bold">
-              {hit.author.firstName} {hit.author.lastName}
-            </p>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-xl font-extrabold text-ocean leading-none">
+                Latest Message
+              </h3>
+
+              <h2 className="text-2xl md:text-3xl lg:text-[40px] font-bold text-pretty">
+                {hit.title}
+              </h2>
+              <p className="-mt-1 font-semibold">
+                {hit.author.firstName} {hit.author.lastName}
+              </p>
+            </div>
+
             <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-0">
-              {getFirstParagraph(hit.summary)}
+              {getFirstParagraph(hit.summary || hit.htmlContent || "")}
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-8">
+          <div className="mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8">
             {hit.seriesGuid && (
               <IconButton
                 to={`/series-resources/${kebabCase(hit.seriesGuid)}`}
-                className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
+                className={iconButtonClass}
               >
                 Series & Resources
               </IconButton>
@@ -78,7 +86,7 @@ const CurrentSeriesHit = () => {
               to={`/messages/${hit.url}`}
               prefetch="viewport"
               withRotatingArrow
-              className="text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean"
+              className={iconButtonClass}
             >
               Watch Message
             </IconButton>
