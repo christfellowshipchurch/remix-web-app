@@ -6,6 +6,7 @@ export interface ContentItemHit {
     firstName: string;
     lastName: string;
   };
+  url?: string;
   routing: {
     pathname: string;
   };
@@ -13,7 +14,13 @@ export interface ContentItemHit {
   action: string;
   contentType: string;
   imageLabel: string;
-  htmlContent: string[];
+  htmlContent?: string;
+  seriesName?: string;
+  seriesGuid?: string;
+  sermonPrimaryTags: string[];
+  sermonSecondaryTags: string[];
+  articlePrimaryTags: string[];
+  articleSecondaryTags: string[];
   contentTags: string[];
   coverImage: {
     sources: {
@@ -24,6 +31,10 @@ export interface ContentItemHit {
   season?: string;
   seasonNumber?: number;
   episodeNumber?: number;
+  startDateTime: string;
+  locations?: {
+    name: string;
+  }[];
   _typename: string;
   objectID: string;
   _highlightResult: {

@@ -1,16 +1,16 @@
+/**
+ * We will plan to rework this component once we have a way to fetch the related messages.
+ */
+
 import { Button } from "~/primitives/button/button.primitive";
 import { useLoaderData } from "react-router-dom";
 import { SectionTitle } from "~/components";
 
-import { MessageReturnType } from "../loader";
+import { LoaderReturnType } from "../loader";
 import { MessagesCarousel } from "../components/messages-carousel.component";
 
 export const RelatedMessages = () => {
-  const { relatedMessages } = useLoaderData<MessageReturnType>();
-  const tagId = relatedMessages?.tagId;
-  const messages = relatedMessages?.messages;
-
-  const viewMoreLink = `/related-messages/${tagId}`;
+  const { message } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="bg-white w-full flex justify-center content-padding">
@@ -18,14 +18,14 @@ export const RelatedMessages = () => {
         {/* Header */}
         <div className="w-full flex justify-between">
           <div className="gap-6 md:gap-8">
-            <SectionTitle sectionTitle="related series." />
+            <SectionTitle sectionTitle="related messages." />
             <h2 className="text-text font-extrabold text-[28px] lg:text-[32px] leading-tight">
               Message Series On This Topic
             </h2>
           </div>
           <div className="flex items-end justify-between text-lg font-semibold">
             <Button
-              href={viewMoreLink}
+              href={`/messages/#${message.primaryCategories[0]?.value}`}
               size="md"
               className="hidden lg:block"
               intent="primary"
@@ -34,7 +34,8 @@ export const RelatedMessages = () => {
             </Button>
           </div>
         </div>
-        <MessagesCarousel messages={messages} />
+
+        <MessagesCarousel />
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ export const SearchPopup = ({
           hitComponent={({ hit }) => {
             if (hit?.routing?.pathname) {
               const contentData: ContentHitType = {
-                routing: hit.routing,
+                routing: hit.routing || { pathname: hit.url || "" },
                 title: hit.title,
                 contentType: hit.contentType,
               };

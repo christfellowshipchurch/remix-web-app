@@ -1,44 +1,100 @@
 import type { LoaderFunction } from "react-router-dom";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
-import { format } from "date-fns";
-import { mockInThisSeries } from "./components/mockData";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
+import { MessageType } from "../types";
+import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
-export type Message = {
-  hostUrl: string;
-  title: string;
-  content: string;
-  summary: string;
-  image: string;
-  coverImage: string;
-  startDateTime: string;
-  expireDateTime?: string;
-  video?: string;
-  wistiaId?: string;
-  attributeValues: {
-    summary: { value: string };
-    author: { value: string; valueFormatted: string };
-    image: { value: string };
-    url: { value: string };
-    messageSeries: { value: string; valueFormatted: string };
-    // TODO: Figure out the following
-    actions: { value: string };
-    topic: { value: string }; // TODO: Single tag for related messages on a topic?
-    resources: { value: string }; // TODO: Will be an array of resources {title: string, href: string}
+export type LoaderReturnType = {
+  message: MessageType;
+  seriesMessages: MessageType[];
+  ALGOLIA_APP_ID: string | undefined;
+  ALGOLIA_SEARCH_API_KEY: string | undefined;
+};
+export const mapRockDataToMessage = async (
+  rockItem: any
+): Promise<MessageType> => {
+  const { attributeValues, attributes, image, startDateTime, expireDateTime } =
+    rockItem;
+  const coverImage = getImages({ attributeValues, attributes });
+
+  const speaker = await fetchSpeakerData(
+    rockItem.attributeValues?.author?.value
+  );
+
+  let primaryCategories: { value: string }[] = [{ value: "" }];
+  let secondaryCategories: { value: string }[] = [{ value: "" }];
+
+  if (rockItem.attributeValues.primaryCategory.value) {
+    // Separate the primary category into an array of values
+    const categoryValues =
+      rockItem.attributeValues.primaryCategory.value.split(",");
+
+    // Loop through all category values and fetch their details
+    const sermonPrimaryCategories: { value: string }[] = [];
+    for (const categoryGuid of categoryValues) {
+      const sermonPrimaryCategory = await fetchRockData({
+        endpoint: `DefinedValues/`,
+        queryParams: {
+          $filter: `Guid eq guid'${categoryGuid.trim()}'`,
+          $select: "Value",
+        },
+      });
+
+      if (sermonPrimaryCategory && sermonPrimaryCategory.length > 0) {
+        sermonPrimaryCategories.push(sermonPrimaryCategory[0]);
+      } else {
+        sermonPrimaryCategories.push(sermonPrimaryCategory);
+      }
+    }
+
+    primaryCategories = sermonPrimaryCategories;
+  }
+
+  if (rockItem.attributeValues.secondaryCategory.value) {
+    const categoryValues =
+      rockItem.attributeValues.secondaryCategory.value.split(",");
+
+    const sermonSecondaryCategories: { value: string }[] = [];
+    for (const categoryGuid of categoryValues) {
+      const sermonSecondaryCategory = await fetchRockData({
+        endpoint: `DefinedValues/`,
+        queryParams: {
+          $filter: `Guid eq guid'${categoryGuid.trim()}'`,
+          $select: "Value",
+        },
+      });
+
+      if (sermonSecondaryCategory && sermonSecondaryCategory.length > 0) {
+        sermonSecondaryCategories.push(sermonSecondaryCategory[0]);
+      } else {
+        sermonSecondaryCategories.push(sermonSecondaryCategory);
+      }
+    }
+
+    secondaryCategories = sermonSecondaryCategories;
+  }
+
+  return {
+    title: rockItem.title,
+    content: rockItem.content || "",
+    summary: attributeValues?.summary?.value || "",
+    image: createImageUrlFromGuid(image) || "",
+    video:
+      (await fetchWistiaDataFromRock(attributeValues?.media?.value))
+        .sourceKey || "",
+    coverImage: (coverImage && coverImage[0]) || "",
+    primaryCategories,
+    secondaryCategories,
+    startDateTime: startDateTime || "",
+    expireDateTime: expireDateTime || "",
+    seriesId: rockItem.attributeValues?.messageSeries?.value || "",
+    seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || "",
+    speaker,
+    url: rockItem.attributeValues?.url?.value || "",
   };
 };
 
-export type RelatedMessages = {
-  messages: Message[];
-  tagId: string;
-};
-
-export type MessageReturnType = {
-  message: Message;
-  relatedMessages: RelatedMessages;
-};
-
-const fetchMessageData = async (path: string) => {
+const fetchMessageByPath = async (path: string) => {
   const rockData = await fetchRockData({
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
@@ -49,80 +105,113 @@ const fetchMessageData = async (path: string) => {
     },
   });
 
-  if (rockData.length > 1) {
-    console.error(
-      `More than one article was found with the same path: /messages/${path}`
-    );
-    return rockData[0];
-  }
+  const messages = ensureArray(rockData);
 
-  return rockData;
-};
-
-/**
- * This is a helper function to get the wistiaId from the MediaElements table from the new Rock Update
- * @param {string} guid - The GUID of the media element to look up
- * @returns {Promise<string|null>} The source key (wistiaId) if found, null otherwise
- */
-async function getWistiaId(guid: string) {
-  try {
-    const getMediaElement = await fetchRockData({
-      endpoint: "MediaElements",
-      queryParams: {
-        $filter: `Guid eq guid'${guid}'`,
-        $select: "SourceKey",
-      },
-    });
-
-    if (!getMediaElement) {
-      console.warn(`No media element found for GUID: ${guid}`);
-      return null;
-    }
-
-    return getMediaElement?.sourceKey || null;
-  } catch (error) {
-    console.error(`Error fetching wistiaId for GUID ${guid}:`, error);
+  if (messages.length === 0) {
     return null;
   }
-}
 
-export const loader: LoaderFunction = async ({ params }) => {
+  if (messages.length > 1) {
+    console.error(
+      `More than one message was found with the same path: /messages/${path}`
+    );
+  }
+
+  return messages[0];
+};
+
+const fetchSeriesMessages = async (
+  seriesGuid: string
+): Promise<MessageType[]> => {
+  const rockData = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
+    queryParams: {
+      attributeKey: "MessageSeries",
+      $filter: "ContentChannelId eq 63 and Status eq 'Approved'",
+      value: seriesGuid,
+      loadAttributes: "simple",
+    },
+  });
+
+  const messages = ensureArray(rockData);
+
+  const seriesMessages = await Promise.all(messages.map(mapRockDataToMessage));
+
+  return seriesMessages;
+};
+
+// TODO: Centralize this function to work with articles, messages, series, authors, etc.
+const fetchSpeakerData = async (guid: string) => {
+  let authorAlias = null;
+
+  try {
+    authorAlias = await fetchRockData({
+      endpoint: "PersonAlias",
+      queryParams: {
+        $filter: `Guid eq guid'${guid}'`,
+        $select: "PersonId",
+      },
+    });
+    authorAlias = ensureArray(authorAlias);
+  } catch (error) {
+    console.error("Error fetching author id", error);
+  }
+
+  if (authorAlias && authorAlias.length > 0) {
+    let author = null;
+    try {
+      author = await fetchRockData({
+        endpoint: "People",
+        queryParams: {
+          $filter: `Id eq ${authorAlias[0].personId}`,
+          $expand: "Photo",
+        },
+      });
+
+      author = ensureArray(author);
+
+      if (author && author.length > 0) {
+        return {
+          fullName: author[0].firstName + " " + author[0].lastName,
+          profilePhoto: author[0].photo.path,
+          guid: author[0].guid,
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching author data", error);
+    }
+
+    return author;
+  }
+
+  return null;
+};
+
+export const loader: LoaderFunction = async ({
+  params,
+}): Promise<LoaderReturnType> => {
   const path = params?.path || "";
-  const messageData = await fetchMessageData(path);
+
+  const messageData = await fetchMessageByPath(path);
 
   if (!messageData) {
-    throw new Response("Sermon not found at: /messages/" + path, {
+    throw new Response(`Message not found at: /messages/${path}`, {
       status: 404,
       statusText: "Not Found",
     });
   }
 
-  const { title, image, content, startDateTime, attributeValues, attributes } =
-    messageData;
+  const seriesGuid = messageData.attributeValues?.messageSeries?.value;
 
-  const coverImage = getImages({ attributeValues, attributes });
-  const imageUrl = createImageUrlFromGuid(image);
+  const [message, seriesMessages] = await Promise.all([
+    mapRockDataToMessage(messageData),
+    seriesGuid ? fetchSeriesMessages(seriesGuid) : Promise.resolve([]),
+  ]);
 
-  // TODO: Get Related Messages
-  const relatedMessages: RelatedMessages = {
-    messages: mockInThisSeries,
-    tagId: "todo",
+  return {
+    message,
+    seriesMessages,
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
   };
-
-  const wistiaId = await getWistiaId(attributeValues.media.value);
-
-  const message: Message = {
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
-    title,
-    content,
-    summary: attributeValues.summary.value,
-    image: imageUrl,
-    video: attributeValues.videoLink.value,
-    wistiaId,
-    coverImage: (coverImage && coverImage[0]) || "",
-    startDateTime: format(new Date(startDateTime), "MMMM dd, yyyy"),
-    attributeValues,
-  };
-
-  return { message, relatedMessages };
 };

@@ -50,6 +50,7 @@ export type CollectionItem = {
   contentChannelId: string;
   contentType: ContentType;
   name: string;
+  htmlContent?: string;
   summary: string;
   description?: string;
   image: string;
@@ -57,7 +58,6 @@ export type CollectionItem = {
   startDate?: string; // for Events, Sermons, Articles, Devotionals, Podcasts
   author?: string; // for Sermons, Articles, Devotionals, Podcasts
   location?: string; // for Events
-  attributeValues?: Record<string, RockAttributeValue["value"]>; // TODO: Remove this when done testin
 };
 
 /**
@@ -71,6 +71,7 @@ export type PageBuilderSection = {
   linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
   collection?: CollectionItem[];
   faqs?: FAQItem[];
+  cta?: CallToAction; // Used in FAQs component
   imageGallery?: string[];
 };
 
