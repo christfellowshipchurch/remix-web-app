@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
@@ -19,9 +19,12 @@ const CurrentSeries: React.FC = () => {
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
+  const [currentSeriesLoading, setCurrentSeriesLoading] = useState(true);
+
   return (
     <div className="bg-gray w-full content-padding py-28">
       <div className="flex flex-col gap-12 max-w-screen-content mx-auto">
+        {currentSeriesLoading && <CurrentSeriesLoadingSkeleton />}
         <InstantSearch
           indexName="dev_daniel_contentItems"
           searchClient={searchClient}
@@ -30,22 +33,34 @@ const CurrentSeries: React.FC = () => {
           }}
         >
           <Configure filters={`contentType:"Sermon"`} hitsPerPage={1} />
-          <CurrentSeriesHit />
+          <CurrentSeriesHit setCurrentSeriesLoading={setCurrentSeriesLoading} />
         </InstantSearch>
       </div>
     </div>
   );
 };
 
-const CurrentSeriesHit = () => {
+const CurrentSeriesHit = ({
+  setCurrentSeriesLoading,
+}: {
+  setCurrentSeriesLoading: (currentSeriesLoading: boolean) => void;
+}) => {
   const { items } = useHits<ContentItemHit>();
+
+  useEffect(() => {
+    if (items.length > 0) {
+      setCurrentSeriesLoading(false);
+    }
+  }, [items]);
+
   if (items.length === 0) return null;
 
-  const currentSeriesTitle = items[0]?.seriesName || "Current Series";
   const hit = items[0];
+  const currentSeriesTitle = hit?.seriesName || "Current Series";
 
   const iconButtonClass =
     "text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean lg:text-base xl:!text-lg";
+
   return (
     <>
       <SectionTitle title={currentSeriesTitle} sectionTitle="current series" />
@@ -99,6 +114,15 @@ const CurrentSeriesHit = () => {
           className="w-full lg:w-1/2 lg:h-[620px] xl:h-[500px] object-cover"
         />
       </div>
+    </>
+  );
+};
+
+const CurrentSeriesLoadingSkeleton = () => {
+  return (
+    <>
+      <SectionTitle title="Current Series" sectionTitle="current series" />
+      <div className="size-full rounded-[1rem] lg:h-[620px] xl:h-[540px] 2xl:h-[500px] bg-white animate-pulse" />
     </>
   );
 };

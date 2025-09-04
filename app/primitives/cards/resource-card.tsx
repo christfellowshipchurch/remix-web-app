@@ -26,11 +26,11 @@ export const ResourceCard = ({
       <img
         src={image}
         alt={name}
-        className="w-full max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:min-h-[200px] lg:aspect-[44/26]"
+        className="size-full max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:min-h-[200px] lg:aspect-[41/27]"
         loading="lazy"
       />
 
-      <div className="flex flex-col gap-4 p-6 bg-white h-full">
+      <div className="flex flex-col gap-4 p-6 bg-white h-fit">
         {(startDate || location || author) && (
           <ul className="flex gap-2 md:gap-4 lg:flex-col lg:gap-2 xl:!gap-4 xl:!flex-row">
             {startDate && (

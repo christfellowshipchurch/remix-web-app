@@ -1,12 +1,15 @@
 import { useLoaderData } from "react-router-dom";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { ContentItemHit } from "~/routes/search/types";
 import { CustomPagination } from "~/components/custom-pagination";
-import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
+import {
+  HubsTagsRefinementList,
+  HubsTagsRefinementLoadingSkeleton,
+} from "~/components/hubs-tags-refinement";
 import { createSearchClient } from "~/lib/create-search-client";
 
 interface LoaderData {
@@ -28,6 +31,8 @@ export default function Messages() {
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
+  const [allMessagesLoading, setAllMessagesLoading] = useState(true);
+
   return (
     <section className="relative py-32 min-h-screen bg-white content-padding pagination-scroll-to">
       <div className="relative max-w-screen-content mx-auto">
@@ -36,6 +41,7 @@ export default function Messages() {
           sectionTitle="all messages."
           title="Christ Fellowship Church Messages"
         />
+        {allMessagesLoading && <AllMessagesLoadingSkeleton />}
         <InstantSearch
           indexName="dev_daniel_contentItems"
           searchClient={searchClient}
@@ -62,7 +68,7 @@ export default function Messages() {
           </div>
 
           {/* Results Grid */}
-          <AllMessagesHit />
+          <AllMessagesHit setAllMessagesLoading={setAllMessagesLoading} />
 
           <CustomPagination />
         </InstantSearch>
@@ -71,8 +77,18 @@ export default function Messages() {
   );
 }
 
-const AllMessagesHit = () => {
+const AllMessagesHit = ({
+  setAllMessagesLoading,
+}: {
+  setAllMessagesLoading: (allMessagesLoading: boolean) => void;
+}) => {
   const { items } = useHits<ContentItemHit>();
+
+  useEffect(() => {
+    if (items.length > 0) {
+      setAllMessagesLoading(false);
+    }
+  }, [items]);
 
   if (items.length === 0) return null;
 
@@ -109,5 +125,21 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
         startDate: formattedDate,
       }}
     />
+  );
+};
+
+const AllMessagesLoadingSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-8 pt-8">
+      <HubsTagsRefinementLoadingSkeleton />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center">
+        {[...Array(9)].map((_, i) => (
+          <div
+            key={i}
+            className="w-[460px] h-[360px] bg-gray-100 animate-pulse rounded-lg"
+          />
+        ))}
+      </div>
+    </div>
   );
 };
