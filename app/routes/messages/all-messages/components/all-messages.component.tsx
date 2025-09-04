@@ -11,20 +11,11 @@ import {
   HubsTagsRefinementLoadingSkeleton,
 } from "~/components/hubs-tags-refinement";
 import { createSearchClient } from "~/lib/create-search-client";
-
-interface LoaderData {
-  ALGOLIA_APP_ID: string;
-  ALGOLIA_SEARCH_API_KEY: string;
-}
-
-export type Tag = {
-  label: string;
-  isActive: boolean;
-};
+import { AllMessagesLoaderReturnType } from "../loader";
 
 export default function Messages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderData>();
+    useLoaderData<AllMessagesLoaderReturnType>();
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),

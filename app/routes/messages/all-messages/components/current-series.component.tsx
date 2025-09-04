@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
-import type { LoaderReturnType } from "../loader";
+import type { AllMessagesLoaderReturnType } from "../loader";
 import { getFirstParagraph } from "~/lib/utils";
 import kebabCase from "lodash/kebabCase";
 import { SectionTitle } from "~/components";
@@ -12,7 +12,7 @@ import { createSearchClient } from "~/lib/create-search-client";
 
 const CurrentSeries: React.FC = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderReturnType>();
+    useLoaderData<AllMessagesLoaderReturnType>();
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
