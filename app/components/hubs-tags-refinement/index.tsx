@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { useInstantSearch, useRefinementList } from "react-instantsearch";
 
-export const MessagesTagsRefinementList = ({
+export const HubsTagsRefinementList = ({
   tagName = "sermonPrimaryTags",
+  wrapperClass = "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
+  buttonClassDefault = "text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300",
+  buttonClassSelected = "border border-neutral-600 text-neutral-600 bg-white font-semibold",
+  buttonClassUnselected = "bg-gray text-neutral-500 hover:bg-neutral-200",
 }: {
   tagName: string;
+  wrapperClass?: string;
+  buttonClassDefault?: string;
+  buttonClassSelected?: string;
+  buttonClassUnselected?: string;
 }) => {
   const { items } = useRefinementList({ attribute: tagName });
   const { setIndexUiState } = useInstantSearch();
@@ -37,14 +45,12 @@ export const MessagesTagsRefinementList = ({
   };
 
   return (
-    <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto">
+    <div className={wrapperClass}>
       {/* Recent Tag */}
       <button
         onClick={() => handleTagClick(null)}
-        className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
-          selectedTag === null
-            ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
-            : "bg-gray text-neutral-500 hover:bg-neutral-200"
+        className={`${buttonClassDefault} ${
+          selectedTag === null ? buttonClassSelected : buttonClassUnselected
         }`}
       >
         Recent
@@ -55,10 +61,10 @@ export const MessagesTagsRefinementList = ({
         <button
           key={item.value}
           onClick={() => handleTagClick(item.value)}
-          className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
+          className={`${buttonClassDefault} ${
             selectedTag === item.value
-              ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
-              : "bg-gray text-neutral-500 hover:bg-neutral-200"
+              ? buttonClassSelected
+              : buttonClassUnselected
           }`}
         >
           {item.label}

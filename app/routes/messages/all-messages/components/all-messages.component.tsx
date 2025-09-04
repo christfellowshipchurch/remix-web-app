@@ -1,13 +1,13 @@
 import { useLoaderData } from "react-router-dom";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { useMemo } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { ContentItemHit } from "~/routes/search/types";
-import { MessagesTagsRefinementList } from "./messages-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
+import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
+import { createSearchClient } from "~/lib/create-search-client";
 
 interface LoaderData {
   ALGOLIA_APP_ID: string;
@@ -47,7 +47,7 @@ export default function Messages() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <MessagesTagsRefinementList tagName="sermonPrimaryTags" />
+            <HubsTagsRefinementList tagName="sermonPrimaryTags" />
           </div>
 
           {/* Results Grid */}
@@ -100,6 +100,3 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
     />
   );
 };
-
-export const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});

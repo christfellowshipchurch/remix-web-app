@@ -1,19 +1,13 @@
 import { useRouteLoaderData } from "react-router";
 import { useMemo, useState, useEffect } from "react";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Configure, useHits, Hits } from "react-instantsearch";
 import { ContentItemHit } from "~/routes/search/types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { ArticleCard } from "../components/article-card.component";
 import { DesktopLoadingSkeleton } from "../components/loading-skeleton.component";
-import {
-  MobileArticlesTagsRefinementList,
-  DesktopArticlesTagsRefinementList,
-} from "../components/articles-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
-
-const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
+import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
+import { createSearchClient } from "~/lib/create-search-client";
 
 export const Articles = () => {
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
@@ -50,7 +44,8 @@ export const Articles = () => {
             distinct={true}
           />
           <div className="flex flex-col w-full gap-12 content-padding pr-0 py-8 lg:pt-20 lg:pb-24 pagination-scroll-to">
-            <DesktopArticlesTagsRefinementList />
+            <HubsTagsRefinementList tagName="articlePrimaryTags" />
+
             <DesktopArticlesGrid />
             <div className="-mt-6">
               <CustomPagination />
@@ -115,7 +110,13 @@ const MobileArticles = ({ searchClient }: { searchClient: any }) => {
         distinct={true}
       />
       <div className="flex flex-col gap-8 pl-5 py-8 lg:pt-28 lg:pb-24">
-        <MobileArticlesTagsRefinementList />
+        <HubsTagsRefinementList
+          tagName="articlePrimaryTags"
+          wrapperClass="flex flex-nowrap px-1 pb-1 overflow-x-auto scrollbar-hide"
+          buttonClassDefault="w-fit min-w-[180px] flex justify-between group px-2 border-b-3 transition-colors"
+          buttonClassSelected="border-ocean text-ocean"
+          buttonClassUnselected="border-neutral-lighter text-text-secondary"
+        />
 
         <Hits
           hitComponent={({ hit }: { hit: ContentItemHit }) => (
