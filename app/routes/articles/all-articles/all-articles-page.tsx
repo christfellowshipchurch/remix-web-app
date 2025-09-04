@@ -1,6 +1,5 @@
 import { DynamicHero } from "~/components";
 import { Articles } from "./partials/articles.partial";
-import { Article } from "./loader";
 
 export function AllArticlesPage({
   selectedCategory,
