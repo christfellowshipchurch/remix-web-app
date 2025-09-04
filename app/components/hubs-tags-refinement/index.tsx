@@ -73,3 +73,20 @@ export const HubsTagsRefinementList = ({
     </div>
   );
 };
+
+export const HubsTagsRefinementLoadingSkeleton = ({
+  wrapperClass = "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide",
+}: {
+  wrapperClass?: string;
+}) => {
+  return (
+    <div className={wrapperClass}>
+      {[...Array(6)].map((_, i) => (
+        <div
+          key={i}
+          className="h-10 w-full bg-gray-100 animate-pulse rounded-lg"
+        />
+      ))}
+    </div>
+  );
+};
