@@ -8,7 +8,7 @@ import { LoaderReturnType } from "../loader";
 import { useState } from "react";
 import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
-import { CustomPagination } from "~/routes/group-finder/components/custom-algolia/custom-pagination.component";
+import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
 
 export const UpcomingSessionsSection = () => {
@@ -40,7 +40,7 @@ export const UpcomingSessionsSection = () => {
               "bg-white content-padding shadow-sm select-none transition-all duration-300"
             )}
           >
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 py-4 max-w-screen-content mx-auto lg:h-20">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 py-4 max-w-screen-content mx-auto lg:h-20 pagination-scroll-to">
               {/* Title */}
               <div className="flex items-center gap-4 w-fit">
                 <h2 className="text-[28px] font-extrabold w-fit">
@@ -80,14 +80,14 @@ export const UpcomingSessionsSection = () => {
 
               <Hits
                 classNames={{
-                  root: "flex items-center justify-center md:items-start md:justify-start w-full pagination-scroll-to",
+                  root: "flex items-center justify-center md:items-start md:justify-start w-full",
                   item: "flex items-center justify-center md:items-start md:justify-start w-full",
                   list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
                 }}
                 hitComponent={UpcomingSessionCard}
               />
               <div className="mt-6 flex justify-center md:justify-start">
-                <CustomPagination />
+                <FindersCustomPagination />
               </div>
             </div>
           </div>

@@ -29,7 +29,7 @@ export default function Messages() {
   );
 
   return (
-    <section className="relative py-32 min-h-screen bg-white content-padding">
+    <section className="relative py-32 min-h-screen bg-white content-padding pagination-scroll-to">
       <div className="relative max-w-screen-content mx-auto">
         <SectionTitle
           className="mb8"
@@ -46,8 +46,8 @@ export default function Messages() {
           <Configure filters='contentType:"Sermon"' hitsPerPage={9} />
 
           {/* Filter Section */}
-          <div className="mt-10 mb-12 pagination-scroll-to">
-            <MessagesTagsRefinementList />
+          <div className="mt-10 mb-12">
+            <MessagesTagsRefinementList tagName="sermonPrimaryTags" />
           </div>
 
           {/* Results Grid */}

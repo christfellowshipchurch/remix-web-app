@@ -19,7 +19,7 @@ import { AllClassFiltersPopup } from "../components/popups/all-filters.component
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { DesktopClassFilters } from "../components/popups/group-filters";
-import { CustomPagination } from "~/routes/group-finder/components/custom-algolia/custom-pagination.component";
+import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -69,7 +69,10 @@ export const ClassSearch = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 w-full pt-12" id="search">
+    <div
+      className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
+      id="search"
+    >
       <InstantSearch
         // TODO: Update to Classes Index
         indexName="production_Groups"
@@ -165,14 +168,14 @@ export const ClassSearch = () => {
 
               <Hits
                 classNames={{
-                  root: "flex items-center justify-center md:items-start md:justify-start w-full pagination-scroll-to",
+                  root: "flex items-center justify-center md:items-start md:justify-start w-full",
                   item: "flex items-center justify-center md:items-start md:justify-start w-full",
                   list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
                 }}
                 hitComponent={HitComponent}
               />
               <div className="mt-6 flex justify-center md:justify-start">
-                <CustomPagination />
+                <FindersCustomPagination />
               </div>
             </div>
           </div>

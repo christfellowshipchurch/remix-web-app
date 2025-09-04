@@ -19,7 +19,7 @@ export const EventsForYou = () => {
   );
 
   return (
-    <div className="w-full pt-16 pb-28 content-padding">
+    <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <SectionTitle
           title="Discover Events For You"
@@ -47,7 +47,7 @@ export const EventsForYou = () => {
               return <EventHit hit={hit} />;
             }}
             classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center pagination-scroll-to",
+              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
             }}
           />
 

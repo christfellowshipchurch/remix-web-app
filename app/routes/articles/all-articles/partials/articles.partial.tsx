@@ -49,7 +49,7 @@ export const Articles = () => {
             hitsPerPage={12}
             distinct={true}
           />
-          <div className="flex flex-col w-full gap-12 content-padding pr-0 py-8 lg:pt-20 lg:pb-24 ">
+          <div className="flex flex-col w-full gap-12 content-padding pr-0 py-8 lg:pt-20 lg:pb-24 pagination-scroll-to">
             <DesktopArticlesTagsRefinementList />
             <DesktopArticlesGrid />
             <div className="-mt-6">
@@ -85,7 +85,7 @@ const DesktopArticlesGrid = () => {
   }, [shouldSetArticlesLoadingOff]);
 
   return (
-    <div className="pr-12 lg:pr-18 grid grid-cols-1 md:grid-cols-2 xl:!grid-cols-3 md:gap-x-4 gap-y-4 lg:gap-8 xl:gap-y-16 pagination-scroll-to">
+    <div className="pr-12 lg:pr-18 grid grid-cols-1 md:grid-cols-2 xl:!grid-cols-3 md:gap-x-4 gap-y-4 lg:gap-8 xl:gap-y-16">
       {articlesLoading || !items || items.length === 0 ? (
         <DesktopLoadingSkeleton />
       ) : (

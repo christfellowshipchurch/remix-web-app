@@ -1,7 +1,7 @@
 import { usePagination, UsePaginationProps } from "react-instantsearch";
 import Icon from "~/primitives/icon";
 
-export const CustomPagination = (props: UsePaginationProps) => {
+export const FindersCustomPagination = (props: UsePaginationProps) => {
   const {
     currentRefinement,
     nbPages,
@@ -13,12 +13,22 @@ export const CustomPagination = (props: UsePaginationProps) => {
   const previousPageIndex = currentRefinement - 1;
   const nextPageIndex = currentRefinement + 1;
 
+  // Ensure to add "pagination-scroll-to" class to the element you want to scroll to
+  const handlePageChange = (newPage: number) => {
+    refine(newPage);
+    // Scroll to the pagination-scroll-to element
+    const scrollTarget = document.querySelector(".pagination-scroll-to");
+    if (scrollTarget) {
+      scrollTarget.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="flex items-center justify-center gap-2">
       <PaginationItem
         isDisabled={isFirstPage}
         href={createURL(previousPageIndex)}
-        onClick={() => refine(previousPageIndex)}
+        onClick={() => handlePageChange(previousPageIndex)}
       >
         <Icon
           name="chevronLeft"
@@ -32,7 +42,7 @@ export const CustomPagination = (props: UsePaginationProps) => {
       <PaginationItem
         isDisabled={isLastPage}
         href={createURL(nextPageIndex)}
-        onClick={() => refine(nextPageIndex)}
+        onClick={() => handlePageChange(nextPageIndex)}
       >
         <Icon
           name="chevronRight"
