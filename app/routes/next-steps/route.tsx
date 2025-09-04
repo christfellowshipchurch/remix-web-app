@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import { load } from "cheerio";
 import { Footer } from "~/components";
+import { NavbarSimple } from "~/components/navbar-simple/navbar-simple.component";
+import "~/components/navbar-simple/navbar-simple.styles.css";
 
 export type LoaderReturnType = {
   head: string;
@@ -54,6 +56,7 @@ export default function DynamicPages() {
       </head>
       <body>
         {/* Insert alternate navbar here */}
+        <NavbarSimple />
         <div dangerouslySetInnerHTML={{ __html: data.body }} />
         <Footer />
       </body>
