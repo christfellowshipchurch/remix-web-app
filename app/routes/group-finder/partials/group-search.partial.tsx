@@ -73,7 +73,7 @@ export const GroupSearch = () => {
   return (
     <div className="flex flex-col gap-4 w-full pt-12" id="search">
       <InstantSearch
-        indexName="production_Groups"
+        indexName="dev_daniel_Groups"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
