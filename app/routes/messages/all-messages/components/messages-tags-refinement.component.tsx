@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useInstantSearch, useRefinementList } from "react-instantsearch";
 
-export const MessagesTagsRefinementList = () => {
-  const { items } = useRefinementList({ attribute: "sermonPrimaryTags" });
+export const MessagesTagsRefinementList = ({
+  tagName = "sermonPrimaryTags",
+}: {
+  tagName: string;
+}) => {
+  const { items } = useRefinementList({ attribute: tagName });
   const { setIndexUiState } = useInstantSearch();
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
@@ -15,7 +19,7 @@ export const MessagesTagsRefinementList = () => {
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
-          sermonPrimaryTags: [],
+          [tagName]: [],
         },
         page: 0, // Reset to first page
       }));
@@ -25,7 +29,7 @@ export const MessagesTagsRefinementList = () => {
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
-          sermonPrimaryTags: [tag],
+          [tagName]: [tag],
         },
         page: 0, // Reset to first page
       }));
