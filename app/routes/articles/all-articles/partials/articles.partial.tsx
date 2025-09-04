@@ -1,24 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useHits } from "react-instantsearch";
 import { ContentItemHit } from "~/routes/search/types";
 import { ArticleCard } from "../components/article-card.component";
 import { CustomPagination } from "~/components/custom-pagination";
 import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
-import { ArticlesCardsLoadingSkeleton } from "../components/loading-skeleton.component";
 
 export const Articles = ({
-  setAllArticlesLoading,
+  setArticlesLoading,
 }: {
-  setAllArticlesLoading: (articlesLoading: boolean) => void;
+  setArticlesLoading: (articlesLoading: boolean) => void;
 }) => {
   const { items } = useHits<ContentItemHit>();
-  const [articlesLoading, setArticlesLoading] = useState(true);
 
   // Set loading to false when items are available
   useEffect(() => {
     if (items && items.length > 0) {
       setArticlesLoading(false);
-      setAllArticlesLoading(false);
     }
   }, [items]);
   return (
@@ -34,15 +31,11 @@ export const Articles = ({
             buttonClassUnselected="border-neutral-lighter text-text-secondary"
           />
 
-          {articlesLoading || !items || items.length === 0 ? (
-            <ArticlesCardsLoadingSkeleton />
-          ) : (
-            <div className="pr-5 md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
-              {items.map((article, i) => (
-                <ArticleCard article={article} key={i} />
-              ))}
-            </div>
-          )}
+          <div className="pr-5 md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
+            {items.map((article, i) => (
+              <ArticleCard article={article} key={i} />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -52,15 +45,12 @@ export const Articles = ({
           <div className="max-w-screen-content mx-auto flex flex-col w-full gap-12">
             <HubsTagsRefinementList tagName="articlePrimaryTags" />
 
-            {/* {articlesLoading || !items || items.length === 0 ? (
-              <ArticlesCardsLoadingSkeleton />
-            ) : ( */}
             <div className="pr-12 lg:pr-18 grid grid-cols-1 md:grid-cols-2 xl:!grid-cols-3 md:gap-x-4 gap-y-4 lg:gap-8 xl:gap-y-16">
               {items.map((article, i) => (
                 <ArticleCard article={article} key={i} />
               ))}
             </div>
-            {/* )} */}
+
             <div className="-mt-6">
               <CustomPagination />
             </div>

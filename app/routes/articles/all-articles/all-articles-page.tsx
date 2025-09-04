@@ -58,7 +58,7 @@ export function AllArticlesPage() {
           distinct={true}
         />
 
-        <Articles setAllArticlesLoading={setArticlesLoading} />
+        <Articles setArticlesLoading={setArticlesLoading} />
       </InstantSearch>
     </div>
   );
