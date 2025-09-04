@@ -8,7 +8,7 @@ import kebabCase from "lodash/kebabCase";
 import { SectionTitle } from "~/components";
 import { ContentItemHit } from "~/routes/search/types";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";
-import { createSearchClient } from "./all-messages.component";
+import { createSearchClient } from "~/lib/create-search-client";
 
 const CurrentSeries: React.FC = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

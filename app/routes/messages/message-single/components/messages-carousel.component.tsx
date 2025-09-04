@@ -6,15 +6,12 @@ import {
   CarouselPrevious,
 } from "~/primitives/shadcn-primitives/carousel";
 import { useMemo } from "react";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { ContentItemHit } from "~/routes/search/types";
 
 import { Link, useLoaderData } from "react-router";
 import { LoaderReturnType } from "../loader";
-
-const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
+import { createSearchClient } from "~/lib/create-search-client";
 
 export function MessagesCarousel() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, message } =

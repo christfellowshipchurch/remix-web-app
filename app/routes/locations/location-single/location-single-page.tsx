@@ -1,10 +1,10 @@
 import { useLoaderData } from "react-router-dom";
 import { useMemo, useEffect, useState } from "react";
-import { createSearchClient } from "../../messages/all-messages/components/all-messages.component";
 
 import { Configure, Hits, InstantSearch } from "react-instantsearch";
 import { LoaderReturnType } from "./loader";
 import { LocationSingle } from "./partials/location-content";
+import { createSearchClient } from "~/lib/create-search-client";
 
 export function LocationSinglePage() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, campusUrl } =

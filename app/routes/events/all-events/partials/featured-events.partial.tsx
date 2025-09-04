@@ -3,9 +3,9 @@ import { Configure, InstantSearch, useHits } from "react-instantsearch";
 import { EventReturnType } from "../loader";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { useMemo } from "react";
-import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { ContentItemHit } from "~/routes/search/types";
 import { FeaturedEventCard } from "../components/featured-card.component";
+import { createSearchClient } from "~/lib/create-search-client";
 
 export function FeaturedEvents() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
