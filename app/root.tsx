@@ -8,37 +8,46 @@ import {
 } from "react-router-dom";
 import { type ReactNode } from "react";
 
-import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
+import { NavbarVisibilityProvider } from "./providers/navbar-visibility-context";
 import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 import { GTMProvider } from "./providers/gtm-provider";
 
-import "./styles/tailwind.css";
 import { cn } from "./lib/utils";
+import { Navbar, Footer } from "./components";
 import { shouldUseDarkMode } from "./components/navbar/navbar-routes";
 import { loader } from "./routes/navbar/loader";
-import { NavbarVisibilityProvider } from "./providers/navbar-visibility-context";
+import "./styles/tailwind.css";
 
 export { ErrorBoundary } from "./error";
 
 export { loader }; // root loader currently being used for the navbar data
 
+export const webflowPaths = ["/next-steps"];
+
 export function Layout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  );
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  if (webflowPaths.includes(currentPath)) {
+    return <Outlet />;
+  } else {
+    return (
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </body>
+      </html>
+    );
+  }
 }
 
 export default function App() {

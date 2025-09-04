@@ -1,0 +1,108 @@
+.navbar-simple-link {
+  color: #000000 !important;
+  transition: color 0.2s;
+}
+
+.navbar-simple-link:hover {
+  color: #0092bc !important;
+}
+
+.navbar-simple-button {
+  background-color: #0092bc !important;
+  transition: background-color 0.2s;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 12px 16px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+
+.navbar-simple-button:hover {
+  background-color: color-mix(in oklab, #0092bc 80%, transparent) !important;
+  transition: background-color 0.2s;
+}
+
+/* CSS-only mobile menu toggle */
+.mobile-menu-toggle {
+  display: none;
+}
+
+.mobile-menu-toggle:checked ~ .mobile-menu {
+  display: block !important;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 80px;
+  right: 0;
+  z-index: 999;
+  width: 80%;
+  max-width: 400px;
+  height: 100vh;
+  background-color: white;
+  padding: 20px;
+  border-left: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 0 10px;
+}
+
+/* Mobile menu icon visibility */
+.mobile-menu-icon {
+  display: block;
+}
+
+.mobile-close-icon {
+  display: none;
+}
+
+/* When mobile menu is open, hide menu icon and show close icon */
+.mobile-menu-toggle:checked ~ * .mobile-menu-button .mobile-menu-icon {
+  display: none !important;
+}
+
+.mobile-menu-toggle:checked ~ * .mobile-menu-button .mobile-close-icon {
+  display: block !important;
+}
+
+@media (max-width: 950px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .desktop-actions {
+    display: none !important;
+  }
+
+  .mobile-menu-button {
+    display: block !important;
+  }
+}
+
+@media (min-width: 951px) {
+  .desktop-nav {
+    display: block !important;
+  }
+
+  .desktop-actions {
+    display: block !important;
+  }
+
+  .mobile-menu-button {
+    display: none !important;
+  }
+
+  .mobile-menu {
+    display: none !important;
+  }
+}
