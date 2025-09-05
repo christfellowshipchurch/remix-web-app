@@ -97,7 +97,7 @@ export const HeroCardScroll = () => {
       <div className="w-full">
         <div
           ref={scrollContainerRef}
-          className="flex items-center 3xl:justify-center gap-4 overflow-y-hidden overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory"
+          className="flex items-center 3xl:justify-center gap-4 overflow-y-hidden overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
         >
           {cards.map((card, index) => {
             const isCenterCard = index === centeredCardIndex;

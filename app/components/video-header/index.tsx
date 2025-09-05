@@ -2,7 +2,6 @@ import { Button } from "~/primitives/button/button.primitive";
 import { Breadcrumbs } from "../breadcrumbs";
 import { Video } from "~/primitives/video/video.primitive";
 
-import { Divider } from "~/routes/articles/all-articles/partials/latest.partial";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export type VideoHeaderTypes = {
@@ -75,7 +74,7 @@ export const VideoHeader = ({
             ))}
           </div>
         </div>
-        <Divider bg="#D9D9D9" opacity="50%" />
+        <div className="bg-[#D9D9D9]/50 w-full h-[1px]" />
       </div>
     </div>
   );

@@ -4,16 +4,15 @@ import { FinderSingleHero } from "./partials/finder-single-hero.partial";
 import { Breadcrumbs } from "~/components";
 
 import { GroupSingleBasicContent } from "./components/basic-content.component";
-import { GroupSingleSidebar } from "./components/sidebar.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";
-import { GroupFAQ } from "./components/faq.component";
 import { InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
 import { Button } from "~/primitives/button/button.primitive";
-import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
+
 import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupHit } from "../group-finder/types";
+import { GroupHitType } from "../group-finder/types";
+import { createSearchClient } from "~/lib/create-search-client";
 
 export const GroupNotFound = () => {
   return (
@@ -30,17 +29,10 @@ export const GroupNotFound = () => {
   );
 };
 
-export const GroupSingleContent = ({ hit }: { hit: GroupHit }) => {
+export const GroupSingleContent = ({ hit }: { hit: GroupHitType }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const tags = hit.preferences;
-  const {
-    leaders,
-    meetingType,
-    dateTime: meetingTime,
-    meetingDay,
-    campusName,
-    summary,
-  } = hit;
+  const { summary } = hit;
 
   if (!hit) {
     return <GroupNotFound />;

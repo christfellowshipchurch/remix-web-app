@@ -5,9 +5,9 @@ import { useMemo } from "react";
 import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { CardCarousel } from "~/components/resource-carousel";
 import { GroupHitType } from "~/routes/group-finder/types";
+import { createSearchClient } from "~/lib/create-search-client";
 
 // Custom component to use hits data with ResourceCarousel
 function RelatedGroupsHits() {

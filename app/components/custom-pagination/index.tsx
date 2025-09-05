@@ -5,12 +5,22 @@ export const CustomPagination = (props: UsePaginationProps) => {
   const { currentRefinement, isFirstPage, isLastPage, refine, createURL } =
     usePagination(props);
 
+  // Ensure to add "pagination-scroll-to" class to the element you want to scroll to
+  const handlePageChange = (newPage: number) => {
+    refine(newPage);
+    // Scroll to the pagination-scroll-to element
+    const scrollTarget = document.querySelector(".pagination-scroll-to");
+    if (scrollTarget) {
+      scrollTarget.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="flex items-center justify-start gap-4 mt-16">
       {/* Previous Button */}
       <PaginationButton
         isDisabled={isFirstPage}
-        onClick={() => refine(currentRefinement - 1)}
+        onClick={() => handlePageChange(currentRefinement - 1)}
         href={createURL(currentRefinement - 1)}
         className="w-12 h-12"
       >
@@ -30,7 +40,7 @@ export const CustomPagination = (props: UsePaginationProps) => {
       {/* Next Button */}
       <PaginationButton
         isDisabled={isLastPage}
-        onClick={() => refine(currentRefinement + 1)}
+        onClick={() => handlePageChange(currentRefinement + 1)}
         href={createURL(currentRefinement + 1)}
         className="w-12 h-12"
       >

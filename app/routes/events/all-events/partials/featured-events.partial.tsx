@@ -3,9 +3,9 @@ import { Configure, InstantSearch, useHits } from "react-instantsearch";
 import { EventReturnType } from "../loader";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { useMemo } from "react";
-import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { ContentItemHit } from "~/routes/search/types";
 import { FeaturedEventCard } from "../components/featured-card.component";
+import { createSearchClient } from "~/lib/create-search-client";
 
 export function FeaturedEvents() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -48,7 +48,7 @@ const FeaturedEventsHits = () => {
   return (
     <>
       <FeaturedEventCard card={firstHit} />
-      <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-16 place-items-center md:place-items-start">
+      <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start">
         {remainingHits?.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
