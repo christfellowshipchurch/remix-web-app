@@ -194,7 +194,7 @@ const ResponsiveConfigure = ({
   const hitsPerPage = (() => {
     switch (true) {
       case isXLarge || isLarge:
-        return 16;
+        return 12;
       case isMedium:
         return 9;
       case isSmall:
