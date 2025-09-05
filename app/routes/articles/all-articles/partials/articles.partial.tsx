@@ -26,7 +26,7 @@ export const Articles = ({
           <HubsTagsRefinementList
             tagName="articlePrimaryTags"
             wrapperClass="flex flex-nowrap w-screen px-1 pb-1 overflow-x-auto scrollbar-hide"
-            buttonClassDefault="w-fit group px-4 border-b-3 transition-colors flex-shrink-0"
+            buttonClassDefault="w-fit group px-5 py-3 border-b-3 transition-colors flex-shrink-0"
             buttonClassSelected="border-ocean text-ocean"
             buttonClassUnselected="border-neutral-lighter text-text-secondary"
           />
