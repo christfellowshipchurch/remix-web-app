@@ -1,70 +1,62 @@
-export interface GroupHitType {
-  rockItemId: number;
-  title: string;
-  summary: string;
-  dateTime: string;
-  leaders: {
-    firstName: string;
-    lastName: string;
-    photo: {
-      uri: string;
-    };
+// Image source structure
+export interface ImageSource {
+  sources: {
+    uri: string;
   }[];
-  priority: number;
-  action: string;
-  campusName: string;
-  meetingTime: string;
-  meetingDay: string;
-  meetingType: string;
-  preferences: string[];
-  subPreferences: string[];
-  coverImage: {
-    sources: {
-      uri: string;
-    }[];
-  };
-  _typename: string;
-  objectID: string;
-  _highlightResult: {
-    title: {
-      value: string;
-      matchLevel: string;
-      matchedWords: string[];
-    };
-    summary: {
-      value: string;
-      matchLevel: string;
-      matchedWords: string[];
-    };
-    author: {
-      firstName: {
-        value: string;
-        matchLevel: string;
-        matchedWords: string[];
-      };
-      lastName: {
-        value: string;
-        matchLevel: string;
-        matchedWords: string[];
-      };
-    };
-    routing: {
-      pathname: {
-        value: string;
-        matchLevel: string;
-        matchedWords: string[];
-      };
-    };
-    htmlContent: {
-      value: string;
-      matchLevel: string;
-      matchedWords: string[];
-    }[];
-  };
-  __position: number;
 }
 
-export type ContactFormType = {
-  PersonId: string;
-  GroupId: string;
-};
+// New Group Finder Type we want to use
+export interface GroupHitType {
+  id: string;
+  title: string;
+  summary: string;
+  coverImage: ImageSource;
+  campus: string; //pick a campus
+  meetingLocationType: "Home" | "Church" | "Public Place";
+  meetingLocation: string;
+  meetingDays:
+    | "Monday"
+    | "Tuesday"
+    | "Wednesday"
+    | "Thursday"
+    | "Friday"
+    | "Saturday"
+    | "Sunday";
+  meetingTime: string;
+  meetingType: "In Person" | "Online";
+  meetingFrequency: "Weekly" | "Bi-Weekly" | "Monthly";
+  adultOnly: boolean;
+  childCareDescription?: string; // 100 characters max
+  leaders: Array<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    photo: ImageSource;
+  }>;
+  groupFor: "Men" | "Women" | "Anyone" | "Couples"; // required to select one
+  peopleWhoAre?:
+    | "Single"
+    | "Married"
+    | "Divorced"
+    | "Engaged"
+    | "New Believer"
+    | "Parent"
+    | "Professional"; // can select up to 2
+  minAge: number;
+  maxAge: number;
+  language: "English" | "Spanish";
+  topics: Array<
+    | "Bible Study"
+    | "Prayer"
+    | "Message Discussion"
+    | "Marriage"
+    | "Parenting"
+    | "Finances"
+    | "Friendship"
+    | "Sports"
+    | "Activty/Hobby"
+    | "Book Club"
+    | "Watch Party"
+    | "Podcast"
+  >; // must select one or more, can select up to 3
+}
