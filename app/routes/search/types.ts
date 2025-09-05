@@ -6,7 +6,6 @@ export interface ContentItemHit {
     firstName: string;
     lastName: string;
   };
-  url?: string;
   routing: {
     pathname: string;
   };
@@ -21,7 +20,10 @@ export interface ContentItemHit {
   sermonSecondaryTags: string[];
   articlePrimaryTags: string[];
   articleSecondaryTags: string[];
+  readTime: number;
   contentTags: string[];
+  url: string;
+  startDateTime: string;
   coverImage: {
     sources: {
       uri: string;
@@ -31,7 +33,6 @@ export interface ContentItemHit {
   season?: string;
   seasonNumber?: number;
   episodeNumber?: number;
-  startDateTime: string;
   locations?: {
     name: string;
   }[];

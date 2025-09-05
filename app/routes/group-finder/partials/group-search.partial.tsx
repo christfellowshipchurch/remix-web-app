@@ -13,7 +13,7 @@ import { DesktopGroupFilters } from "../components/popups/group-filters";
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
 
-import { CustomPagination } from "../components/custom-algolia/custom-pagination.component";
+import { FindersCustomPagination } from "../components/finders-custom-pagination.component";
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
 import { useEffect, useState } from "react";
@@ -71,7 +71,10 @@ export const GroupSearch = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 w-full pt-12" id="search">
+    <div
+      className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
+      id="search"
+    >
       <InstantSearch
         indexName="dev_daniel_Groups"
         searchClient={searchClient}
@@ -174,7 +177,7 @@ export const GroupSearch = () => {
                 }}
               />
               <div className="mt-6 flex justify-center md:justify-start">
-                <CustomPagination />
+                <FindersCustomPagination />
               </div>
             </div>
           </div>

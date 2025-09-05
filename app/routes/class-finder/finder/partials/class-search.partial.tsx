@@ -19,7 +19,7 @@ import { AllClassFiltersPopup } from "../components/popups/all-filters.component
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { DesktopClassFilters } from "../components/popups/group-filters";
-import { CustomPagination } from "~/routes/group-finder/components/custom-algolia/custom-pagination.component";
+import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -69,7 +69,10 @@ export const ClassSearch = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 w-full pt-12" id="search">
+    <div
+      className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
+      id="search"
+    >
       <InstantSearch
         // TODO: Update to Classes Index
         indexName="production_Groups"
@@ -172,7 +175,7 @@ export const ClassSearch = () => {
                 hitComponent={HitComponent}
               />
               <div className="mt-6 flex justify-center md:justify-start">
-                <CustomPagination />
+                <FindersCustomPagination />
               </div>
             </div>
           </div>

@@ -27,24 +27,22 @@ const RelatedArticleCardWrapper: React.FC<{ resource: any }> = ({
 
 export const ArticlePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
-
   const tagId = data.relatedArticles?.tagId;
-  return (
-    <>
-      <section className="bg-white">
-        <ArticleHero {...data} />
-        <ArticleContent htmlContent={data.content} />
-        <ArticleNewsletter />
 
-        <CardCarouselSection
-          title="Related Reading"
-          description="Explore more articles that you might find interesting."
-          resources={data.relatedArticles?.articles || []}
-          viewMoreText="More Articles"
-          viewMoreLink={`/related-articles/${tagId}`}
-          CardComponent={RelatedArticleCardWrapper}
-        />
-      </section>
-    </>
+  return (
+    <section className="bg-white">
+      <ArticleHero {...data} />
+      <ArticleContent htmlContent={data.content} />
+      <CardCarouselSection
+        title="Related Reading"
+        description="Explore more articles that you might find interesting."
+        resources={data.relatedArticles?.articles || []}
+        viewMoreText="More Articles"
+        viewMoreLink={`/related-articles/${tagId}`}
+        CardComponent={RelatedArticleCardWrapper}
+      />
+
+      <ArticleNewsletter />
+    </section>
   );
 };

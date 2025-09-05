@@ -2,12 +2,12 @@ import { useLoaderData } from "react-router-dom";
 import { EventReturnType } from "../loader";
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
-import { createSearchClient } from "~/routes/messages/all-messages/components/all-messages.component";
 import { Configure, Hits, InstantSearch } from "react-instantsearch";
-import { CustomPagination } from "~/routes/messages/all-messages/components/custom-pagination.component";
 import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import { EventsTagsRefinementList } from "../components/events-tags-refinement.component";
+import { CustomPagination } from "~/components/custom-pagination";
+import { createSearchClient } from "~/lib/create-search-client";
 
 export const EventsForYou = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -19,7 +19,7 @@ export const EventsForYou = () => {
   );
 
   return (
-    <div className="w-full pt-16 pb-28 content-padding">
+    <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <SectionTitle
           title="Discover Events For You"

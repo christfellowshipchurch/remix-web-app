@@ -1,16 +1,15 @@
 import { useMemo } from "react";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import {
   InstantSearch,
   Hits,
   Configure,
   RefinementList,
-  useRefinementList,
 } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
 import lodash from "lodash";
 import { ContentItemHit } from "~/routes/search/types";
+import { createSearchClient } from "~/lib/create-search-client";
 
 interface PodcastEpisodeSearchProps {
   ALGOLIA_APP_ID: string;
@@ -56,9 +55,6 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
     </div>
   );
 };
-
-const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
 
 export const PodcastEpisodeSearch = ({
   ALGOLIA_APP_ID,

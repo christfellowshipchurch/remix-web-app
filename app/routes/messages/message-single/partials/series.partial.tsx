@@ -1,13 +1,10 @@
 import { useLoaderData } from "react-router-dom";
 import { useMemo } from "react";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Hits, Configure } from "react-instantsearch";
 import { LoaderReturnType } from "../loader";
 import { SeriesCard } from "../components/this-series-card.component";
 import { ContentItemHit } from "~/routes/search/types";
-
-const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
+import { createSearchClient } from "~/lib/create-search-client";
 
 const SeriesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   return (
