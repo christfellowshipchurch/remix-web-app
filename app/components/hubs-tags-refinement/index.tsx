@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useInstantSearch, useRefinementList } from "react-instantsearch";
 
 export const HubsTagsRefinementList = ({
@@ -17,9 +17,20 @@ export const HubsTagsRefinementList = ({
   const { items } = useRefinementList({ attribute: tagName });
   const { setIndexUiState } = useInstantSearch();
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleTagClick = (tag: string | null) => {
     setSelectedTag(tag);
+
+    // Scroll to the beginning of the wrapper element
+    setTimeout(() => {
+      if (wrapperRef.current) {
+        wrapperRef.current.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
 
     if (tag === null) {
       // "Recent" - clear all refinements
@@ -45,7 +56,7 @@ export const HubsTagsRefinementList = ({
   };
 
   return (
-    <div className={wrapperClass}>
+    <div ref={wrapperRef} className={wrapperClass}>
       {/* Recent Tag */}
       <button
         onClick={() => handleTagClick(null)}

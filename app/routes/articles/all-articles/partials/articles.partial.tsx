@@ -25,8 +25,8 @@ export const Articles = ({
         <div className="flex flex-col gap-8 pl-5 py-8 lg:pt-28 lg:pb-24">
           <HubsTagsRefinementList
             tagName="articlePrimaryTags"
-            wrapperClass="flex flex-nowrap px-1 pb-1 overflow-x-auto scrollbar-hide"
-            buttonClassDefault="w-fit min-w-[180px] flex justify-between group px-2 border-b-3 transition-colors"
+            wrapperClass="flex flex-nowrap w-screen px-1 pb-1 overflow-x-auto scrollbar-hide"
+            buttonClassDefault="w-fit group px-4 border-b-3 transition-colors flex-shrink-0"
             buttonClassSelected="border-ocean text-ocean"
             buttonClassUnselected="border-neutral-lighter text-text-secondary"
           />
