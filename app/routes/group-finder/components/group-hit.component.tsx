@@ -82,14 +82,14 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
   return (
     <Link to={`/group-finder/${hit.title}`} className="size-full">
       <div
-        className="mb-4 bg-white rounded-lg overflow-hidden w-full h-[376px] max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300"
+        className="mb-4 bg-white rounded-lg overflow-hidden h-full w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300"
         style={{
           boxShadow:
             "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
         }}
       >
         <div className="flex flex-col h-full">
-          <div className="relative flex flex-col gap-2 xl:pb-0">
+          <div className="relative flex flex-col gap-2">
             <img
               src={coverImage}
               alt={hit.title}
@@ -113,8 +113,8 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 pt-[10px] h-full justify-between">
-            <div className="flex flex-col px-6 justify-between h-full gap-3">
+          <div className="flex flex-col gap-3 pt-[10px] flex-1">
+            <div className="flex flex-col px-6 gap-3">
               <div className="flex flex-col gap-[10px]">
                 <div
                   className={`${
@@ -141,14 +141,13 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
             </div>
 
             {/* Display topics as tags */}
-            <div className="flex px-6 gap-2 pb-4">
+            <div className="flex flex-wrap px-6 gap-x-2">
               {hit.topics.map((topic, index) => (
                 <TagButton key={index} label={topic} />
               ))}
             </div>
           </div>
-
-          <div className="w-full px-6 flex justify-center gap-2 py-3 bg-navy text-white">
+          <div className="w-full px-6 flex justify-center gap-2 py-3 bg-navy text-white mt-auto">
             <Icon name="map" size={20} color="white" />
             <p className="text-center text-sm font-semibold">{hit.campus}</p>
           </div>
@@ -160,7 +159,7 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
 
 const TagButton = ({ label }: { label: string }) => {
   return (
-    <div className="bg-navy-subdued text-dark-navy w-fit flex rounded-sm text-xs font-semibold p-1">
+    <div className="bg-navy-subdued text-dark-navy flex-shrink-0 h-6 rounded-sm text-xs font-semibold p-1 mb-2">
       {label}
     </div>
   );
