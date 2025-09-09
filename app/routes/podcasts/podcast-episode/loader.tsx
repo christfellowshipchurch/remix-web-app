@@ -10,14 +10,37 @@ export type LoaderReturnType = {
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { episode: episodePath } = params;
-
+  const { episode: episodePath, show: showPath } = params;
+  let episode;
   if (!episodePath) {
     throw new Response("Episode not found", { status: 404 });
   }
 
-  const rockEpisode = await getPodcastEpisode(episodePath);
-  const episode = await mapRockEpisodeToPodcastEpisode(rockEpisode);
+  if (!showPath) {
+    throw new Response("Show not found", { status: 404 });
+  }
+
+  /**
+   * if /so-good-sisterhood podcast episode then we want to pull from the old content channel(Id 95)
+   * All other podcast episodes should pull the channel id from the new channel type(CFDP Podcasts)
+   * Once we have migrated all sisterhood episodes to the new channel type, we can remove the old content channel check
+   **/
+  const channelId =
+    showPath === "so-good-sisterhood"
+      ? 95 // old sisterhood content channel
+      : await getPodcastChannelId(showPath);
+
+  if (!channelId) {
+    throw new Response("Show Channel not found", { status: 404 });
+  }
+
+  const rockEpisode = await getPodcastEpisode({ path: episodePath, channelId });
+
+  if (showPath.includes("so-good-sisterhood")) {
+    episode = await mapSisterhoodRockEpisodeToPodcastEpisode(rockEpisode);
+  } else {
+    episode = await mapRockEpisodeToPodcastEpisode(rockEpisode);
+  }
 
   const appId = process.env.ALGOLIA_APP_ID;
   const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
@@ -29,12 +52,43 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-async function getPodcastEpisode(path: string) {
+async function getPodcastChannelId(path: string) {
+  let channel;
+  try {
+    channel = await fetchRockData({
+      endpoint: "ContentChannels/GetByAttributeValue",
+      queryParams: {
+        attributeKey: "showUrl",
+        $select: "Id",
+        value: path,
+      },
+    });
+
+    if (!Array.isArray(channel)) {
+      channel = channel;
+    } else {
+      channel = channel[0];
+    }
+  } catch (error) {
+    throw new Error("Error fetching channel from Rock");
+  }
+
+  return channel.id;
+}
+
+async function getPodcastEpisode({
+  path,
+  channelId,
+}: {
+  path: string;
+  channelId: string;
+}) {
   let episode;
   try {
     episode = await fetchRockData({
       endpoint: "ContentChannelItems/GetByAttributeValue",
       queryParams: {
+        $filter: `ContentChannelId eq ${channelId}`,
         attributeKey: "Url",
         value: path,
         loadAttributes: "simple",
@@ -79,7 +133,32 @@ async function getWistiaElement(guid: string) {
 async function mapRockEpisodeToPodcastEpisode(
   rockEpisode: any
 ): Promise<PodcastEpisode> {
-  const attributeValues = rockEpisode.attributeValues || {};
+  return {
+    show: "So Good Sisterhood", // This could be extracted from theme or other attributes
+    title: rockEpisode?.title || "",
+    season: `Season ${rockEpisode?.attributeValues?.seasonNumber?.value}`,
+    episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value,
+    audio: (await getWistiaElement(rockEpisode?.attributeValues?.media?.value))
+      ?.sourceKey,
+    coverImage: createImageUrlFromGuid(
+      rockEpisode?.attributeValues?.image?.value
+    ),
+    description: rockEpisode?.content || "",
+    authors: rockEpisode?.attributeValues?.author?.persistedTextValue || "",
+    url: rockEpisode?.attributeValues?.pathname?.value || "",
+    apple: rockEpisode?.attributeValues?.applePodcast?.value,
+    spotify: rockEpisode?.attributeValues?.spotify?.value,
+    amazon: rockEpisode?.attributeValues?.amazonMusic?.value,
+    content: rockEpisode?.content || "",
+    resources: [],
+  };
+}
+
+// Methods for Old Sisterhood Podcast Content Channel
+async function mapSisterhoodRockEpisodeToPodcastEpisode(
+  rockEpisode: any
+): Promise<PodcastEpisode> {
+  const attributeValues = rockEpisode?.attributeValues || {};
 
   // Extract episode number from rock label (e.g., "Season 13 | Episode 4" -> "4")
   const rockLabel = attributeValues.rockLabel?.value || "";
@@ -99,12 +178,12 @@ async function mapRockEpisodeToPodcastEpisode(
   const coverImage = createImageUrlFromGuid(imageGuid);
 
   // Extract Wistia ID from media attribute
-  const mediaGuid = attributeValues.media.value || "";
+  const mediaGuid = attributeValues.media?.value || "";
   const wistiaElement = await getWistiaElement(mediaGuid);
 
   return {
     show: "So Good Sisterhood", // This could be extracted from theme or other attributes
-    title: rockEpisode.title || "",
+    title: rockEpisode?.title || "",
     season,
     episodeNumber,
     audio: wistiaElement?.sourceKey,
