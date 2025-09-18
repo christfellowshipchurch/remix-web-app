@@ -2,13 +2,13 @@ import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export const HeroMobileContent = ({
   title,
-  description,
+  summary,
   season,
   episodeNumber,
   authors,
 }: {
   title: string;
-  description: string;
+  summary: string;
   season: string;
   episodeNumber: string;
   authors: string;
@@ -27,10 +27,10 @@ export const HeroMobileContent = ({
             </p>
             <p className="text-base font-normal">{authors}</p>
           </div>
-          {description && (
+          {summary && (
             <p
               className="text-sm max-w-2xl"
-              dangerouslySetInnerHTML={{ __html: description }}
+              dangerouslySetInnerHTML={{ __html: summary }}
             />
           )}
           {/* TODO: Add share functionality */}

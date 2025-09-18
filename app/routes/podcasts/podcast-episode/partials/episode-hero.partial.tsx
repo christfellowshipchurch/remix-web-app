@@ -4,7 +4,7 @@ import { Breadcrumbs } from "~/components";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export function EpisodeHero({ episode }: { episode: PodcastEpisode }) {
-  const { authors, coverImage, description, episodeNumber, season, title } =
+  const { authors, coverImage, summary, episodeNumber, season, title } =
     episode;
 
   return (
@@ -20,7 +20,7 @@ export function EpisodeHero({ episode }: { episode: PodcastEpisode }) {
             <div>
               <HeroContent
                 authors={authors}
-                description={description}
+                description={summary}
                 episodeNumber={episodeNumber}
                 season={season}
                 title={title}

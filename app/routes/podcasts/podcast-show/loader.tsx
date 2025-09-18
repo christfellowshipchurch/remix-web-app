@@ -65,9 +65,12 @@ export async function getLatestEpisodes(channelGuid: string) {
   const formattedEpisodes = episodes.map((episode: any) => {
     return {
       title: episode.title,
-      description: episode.content.attributeValues?.summary?.value,
+      description: episode.attributeValues?.summary?.value,
       coverImage: createImageUrlFromGuid(episode.attributeValues?.image?.value),
-      url: episode.attributeValues?.pathname?.value,
+      url:
+        episode.attributeValues?.pathname?.value ||
+        episode.attributeValues?.url?.value ||
+        "",
       season:
         episode.attributeValues?.podcastSeason?.valueFormatted.split(" ")[1],
       episodeNumber: "TODO", // We need find/create an attribute for this

@@ -1,7 +1,29 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import { PodcastEpisode } from "../types";
+import {
+  PodcastEpisode,
+  RockChannel,
+  RockPodcastEpisode,
+  WistiaElement,
+  Resource,
+  PlatformLinks,
+} from "../types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
+
+// Constants
+const SISTERHOOD_SHOW_PATH = "so-good-sisterhood";
+const OLD_SISTERHOOD_CHANNEL_ID = 95;
+const SHOW_NAME = "So Good Sisterhood";
+
+// Error messages
+const ERROR_MESSAGES = {
+  EPISODE_NOT_FOUND: "Episode not found",
+  SHOW_NOT_FOUND: "Show not found",
+  CHANNEL_NOT_FOUND: "Show Channel not found",
+  CHANNEL_FETCH_ERROR: "Error fetching channel from Rock",
+  EPISODE_FETCH_ERROR: "Error fetching episode from Rock",
+  WISTIA_FETCH_ERROR: "Error fetching Wistia element",
+} as const;
 
 export type LoaderReturnType = {
   episode: PodcastEpisode;
@@ -9,39 +31,46 @@ export type LoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
 };
 
+/**
+ * Loader function for podcast episode pages
+ * Handles both new podcast episodes and legacy sisterhood episodes
+ */
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { episode: episodePath, show: showPath } = params;
-  let episode;
+
+  // Validate required parameters
   if (!episodePath) {
-    throw new Response("Episode not found", { status: 404 });
+    throw new Response(ERROR_MESSAGES.EPISODE_NOT_FOUND, { status: 404 });
   }
 
   if (!showPath) {
-    throw new Response("Show not found", { status: 404 });
+    throw new Response(ERROR_MESSAGES.SHOW_NOT_FOUND, { status: 404 });
   }
 
-  /**
-   * if /so-good-sisterhood podcast episode then we want to pull from the old content channel(Id 95)
-   * All other podcast episodes should pull the channel id from the new channel type(CFDP Podcasts)
-   * Once we have migrated all sisterhood episodes to the new channel type, we can remove the old content channel check
-   **/
-  const channelId =
-    showPath === "so-good-sisterhood"
-      ? 95 // old sisterhood content channel
-      : await getPodcastChannelId(showPath);
+  // Determine channel ID based on show type
+  // Legacy sisterhood episodes use old content channel (ID 95)
+  // All other episodes use the new channel type (CFDP Podcasts)
+  const showChannel =
+    showPath === SISTERHOOD_SHOW_PATH
+      ? { id: OLD_SISTERHOOD_CHANNEL_ID.toString(), name: SHOW_NAME }
+      : await getPodcastChannel(showPath);
 
-  if (!channelId) {
-    throw new Response("Show Channel not found", { status: 404 });
+  if (!showChannel) {
+    throw new Response(ERROR_MESSAGES.CHANNEL_NOT_FOUND, { status: 404 });
   }
 
-  const rockEpisode = await getPodcastEpisode({ path: episodePath, channelId });
+  // Fetch episode data
+  const rockEpisode = await getPodcastEpisode({
+    path: episodePath,
+    channelId: showChannel.id,
+  });
 
-  if (showPath.includes("so-good-sisterhood")) {
-    episode = await mapSisterhoodRockEpisodeToPodcastEpisode(rockEpisode);
-  } else {
-    episode = await mapRockEpisodeToPodcastEpisode(rockEpisode);
-  }
+  // Map episode data based on show type
+  const episode = showPath.includes(SISTERHOOD_SHOW_PATH)
+    ? await mapSisterhoodRockEpisodeToPodcastEpisode(rockEpisode)
+    : await mapRockEpisodeToPodcastEpisode(rockEpisode, showChannel.name);
 
+  // Get Algolia configuration
   const appId = process.env.ALGOLIA_APP_ID;
   const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
@@ -52,40 +81,40 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-async function getPodcastChannelId(path: string) {
-  let channel;
+/**
+ * Fetches the channel ID and name for a given show path
+ */
+async function getPodcastChannel(path: string): Promise<RockChannel> {
   try {
-    channel = await fetchRockData({
+    const channel = await fetchRockData({
       endpoint: "ContentChannels/GetByAttributeValue",
       queryParams: {
         attributeKey: "showUrl",
-        $select: "Id",
+        $select: "Id, Name",
         value: path,
       },
     });
 
-    if (!Array.isArray(channel)) {
-      channel = channel;
-    } else {
-      channel = channel[0];
-    }
-  } catch (error) {
-    throw new Error("Error fetching channel from Rock");
-  }
+    const channelData = getFirstItem(channel) as RockChannel;
 
-  return channel.id;
+    return channelData;
+  } catch (error) {
+    throw new Error(ERROR_MESSAGES.CHANNEL_FETCH_ERROR);
+  }
 }
 
+/**
+ * Fetches a podcast episode by path and channel ID
+ */
 async function getPodcastEpisode({
   path,
   channelId,
 }: {
   path: string;
   channelId: string;
-}) {
-  let episode;
+}): Promise<RockPodcastEpisode> {
   try {
-    episode = await fetchRockData({
+    const episode = await fetchRockData({
       endpoint: "ContentChannelItems/GetByAttributeValue",
       queryParams: {
         $filter: `ContentChannelId eq ${channelId}`,
@@ -94,20 +123,17 @@ async function getPodcastEpisode({
         loadAttributes: "simple",
       },
     });
+
+    return getFirstItem(episode) as RockPodcastEpisode;
   } catch (error) {
-    throw new Error("Error fetching channel from Rock");
+    throw new Error(ERROR_MESSAGES.EPISODE_FETCH_ERROR);
   }
-
-  if (!Array.isArray(episode)) {
-    episode = episode;
-  } else {
-    episode = episode[0];
-  }
-
-  return episode;
 }
 
-async function getWistiaElement(guid: string) {
+/**
+ * Fetches Wistia element data by GUID
+ */
+async function getWistiaElement(guid: string): Promise<WistiaElement | null> {
   try {
     const wistiaElement = await fetchRockData({
       endpoint: "MediaElements",
@@ -116,47 +142,55 @@ async function getWistiaElement(guid: string) {
       },
     });
 
-    if (!Array.isArray(wistiaElement)) {
-      return wistiaElement;
-    }
-
-    return wistiaElement[0];
+    return getFirstItem(wistiaElement) as WistiaElement;
   } catch (error) {
     throw new Error(
-      `Error fetching Wistia ID for guid ${guid}: ${
+      `${ERROR_MESSAGES.WISTIA_FETCH_ERROR} for guid ${guid}: ${
         error instanceof Error ? error.message : String(error)
       }`
     );
   }
 }
 
+/**
+ * Maps a Rock episode to a PodcastEpisode for new podcast episodes
+ */
 async function mapRockEpisodeToPodcastEpisode(
-  rockEpisode: any
+  rockEpisode: RockPodcastEpisode,
+  showName: string
 ): Promise<PodcastEpisode> {
+  const wistiaElement = await getWistiaElement(
+    rockEpisode?.attributeValues?.media?.value || ""
+  );
+
   return {
-    show: "So Good Sisterhood", // This could be extracted from theme or other attributes
+    show: showName,
     title: rockEpisode?.title || "",
-    season: `Season ${rockEpisode?.attributeValues?.seasonNumber?.value}`,
-    episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value,
-    audio: (await getWistiaElement(rockEpisode?.attributeValues?.media?.value))
-      ?.sourceKey,
+    season: rockEpisode?.attributeValues?.seasonNumber?.value || "",
+    episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value || "",
+    audio: wistiaElement?.sourceKey || "",
     coverImage: createImageUrlFromGuid(
-      rockEpisode?.attributeValues?.image?.value
+      rockEpisode?.attributeValues?.image?.value || ""
     ),
-    description: rockEpisode?.content || "",
+    summary: rockEpisode?.attributeValues?.summary?.value || "",
+    content: rockEpisode?.content || "",
     authors: rockEpisode?.attributeValues?.author?.persistedTextValue || "",
     url: rockEpisode?.attributeValues?.pathname?.value || "",
-    apple: rockEpisode?.attributeValues?.applePodcast?.value,
-    spotify: rockEpisode?.attributeValues?.spotify?.value,
-    amazon: rockEpisode?.attributeValues?.amazonMusic?.value,
-    content: rockEpisode?.content || "",
-    resources: [],
+    apple: rockEpisode?.attributeValues?.applePodcast?.value || "",
+    spotify: rockEpisode?.attributeValues?.spotify?.value || "",
+    amazon: rockEpisode?.attributeValues?.amazonMusic?.value || "",
+    resources: parseRockKeyValueList(
+      rockEpisode?.attributeValues?.additionalResources?.value || ""
+    ),
   };
 }
 
-// Methods for Old Sisterhood Podcast Content Channel
+/**
+ * Maps a Rock episode to a PodcastEpisode for legacy sisterhood episodes
+ * Handles the old content channel format with different attribute structure
+ */
 async function mapSisterhoodRockEpisodeToPodcastEpisode(
-  rockEpisode: any
+  rockEpisode: RockPodcastEpisode
 ): Promise<PodcastEpisode> {
   const attributeValues = rockEpisode?.attributeValues || {};
 
@@ -182,13 +216,13 @@ async function mapSisterhoodRockEpisodeToPodcastEpisode(
   const wistiaElement = await getWistiaElement(mediaGuid);
 
   return {
-    show: "So Good Sisterhood", // This could be extracted from theme or other attributes
+    show: SHOW_NAME,
     title: rockEpisode?.title || "",
     season,
     episodeNumber,
-    audio: wistiaElement?.sourceKey,
+    audio: wistiaElement?.sourceKey || "",
     coverImage,
-    description: attributeValues.summary?.value || "",
+    summary: attributeValues.summary?.value || "",
     authors: attributeValues.author?.persistedTextValue || "",
     url: attributeValues.pathname?.value || "",
     apple: platformLinks.apple || "",
@@ -199,9 +233,13 @@ async function mapSisterhoodRockEpisodeToPodcastEpisode(
   };
 }
 
+/**
+ * Parses calls to action string to extract resources and platform links
+ * Format: "Title^URL|Title^URL" where platform links contain APPLE/SPOTIFY/AMAZON
+ */
 function parseCallsToAction(callsToAction: string): {
-  resources: { title: string; url: string }[];
-  platformLinks: { apple: string; spotify: string; amazon: string };
+  resources: Resource[];
+  platformLinks: PlatformLinks;
 } {
   if (!callsToAction) {
     return {
@@ -210,33 +248,36 @@ function parseCallsToAction(callsToAction: string): {
     };
   }
 
-  const platformLinks = { apple: "", spotify: "", amazon: "" };
-  const resources: { title: string; url: string }[] = [];
+  const platformLinks: PlatformLinks = { apple: "", spotify: "", amazon: "" };
+  const resources: Resource[] = [];
 
   // Split by | and parse each call to action
-  const actions = callsToAction
-    .split("|")
-    .map((action) => {
-      const parts = action.split("^");
-      if (parts.length >= 2) {
-        const title = parts[0].trim();
-        const url = parts[1].trim();
+  callsToAction.split("|").forEach((action) => {
+    const parts = action.split("^");
+    if (parts.length >= 2) {
+      const title = parts[0].trim();
+      const url = parts[1].trim();
 
-        // Check if this is a platform link
-        if (title.includes("APPLE")) {
-          platformLinks.apple = url;
-        } else if (title.includes("SPOTIFY")) {
-          platformLinks.spotify = url;
-        } else if (title.includes("AMAZON")) {
-          platformLinks.amazon = url;
-        } else {
-          // This is a general resource
-          resources.push({ title, url });
-        }
+      // Check if this is a platform link
+      if (title.includes("APPLE")) {
+        platformLinks.apple = url;
+      } else if (title.includes("SPOTIFY")) {
+        platformLinks.spotify = url;
+      } else if (title.includes("AMAZON")) {
+        platformLinks.amazon = url;
+      } else {
+        // This is a general resource
+        resources.push({ title, url });
       }
-      return null;
-    })
-    .filter(Boolean);
+    }
+  });
 
   return { resources, platformLinks };
+}
+
+/**
+ * Utility function to safely get the first item from an array or return the item if it's not an array
+ */
+function getFirstItem<T>(item: T | T[]): T {
+  return Array.isArray(item) ? item[0] : item;
 }

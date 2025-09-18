@@ -16,7 +16,7 @@ export function PodcastEpisode() {
       <EpisodePlayer audio={episode.audio} />
       <HeroMobileContent
         title={episode.title}
-        description={episode.description}
+        summary={episode.summary}
         season={episode.season}
         episodeNumber={episode.episodeNumber}
         authors={episode.authors}

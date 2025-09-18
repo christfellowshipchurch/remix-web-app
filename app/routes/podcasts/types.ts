@@ -20,18 +20,18 @@ export type PodcastEpisode = {
   episodeNumber: string;
   audio: string; // TODO: Replace with wistiaId??? or Spotify embed??
   coverImage: string;
-  description: string;
+  summary: string;
+  content: string;
   authors: string;
   url: string;
   apple: string;
   spotify: string;
   amazon: string;
-
-  content: string;
   resources: {
     title: string;
     url: string;
   }[];
+  resourceTest?: string;
 };
 
 export type PodcastSeason = {
@@ -40,3 +40,48 @@ export type PodcastSeason = {
   coverImage: string;
   episodes: PodcastEpisode[];
 };
+
+export interface RockChannel {
+  id: string;
+  name: string;
+}
+
+export interface RockAttributeValue {
+  value: string;
+  persistedTextValue?: string;
+}
+
+export interface RockPodcastEpisode {
+  title: string;
+  content: string;
+  attributeValues: {
+    seasonNumber?: RockAttributeValue;
+    episodeNumber?: RockAttributeValue;
+    media?: RockAttributeValue;
+    image?: RockAttributeValue;
+    author?: RockAttributeValue;
+    pathname?: RockAttributeValue;
+    applePodcast?: RockAttributeValue;
+    spotify?: RockAttributeValue;
+    amazonMusic?: RockAttributeValue;
+    rockLabel?: RockAttributeValue;
+    callsToAction?: RockAttributeValue;
+    summary?: RockAttributeValue;
+    additionalResources?: RockAttributeValue;
+  };
+}
+
+export interface WistiaElement {
+  sourceKey: string;
+}
+
+export interface PlatformLinks {
+  apple: string;
+  spotify: string;
+  amazon: string;
+}
+
+export interface Resource {
+  title: string;
+  url: string;
+}
