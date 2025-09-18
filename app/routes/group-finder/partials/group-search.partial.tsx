@@ -76,7 +76,7 @@ export const GroupSearch = () => {
       id="search"
     >
       <InstantSearch
-        indexName="production_Groups"
+        indexName="dev_daniel_Groups"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
@@ -197,7 +197,7 @@ const ResponsiveConfigure = ({
   const hitsPerPage = (() => {
     switch (true) {
       case isXLarge || isLarge:
-        return 16;
+        return 12;
       case isMedium:
         return 9;
       case isSmall:
