@@ -109,8 +109,11 @@ export const watchReadListenData: MenuLink = {
       {
         title: "LISTEN",
         items: [
-          { title: "So Good Sisterhood Podcast", url: "/podcasts" },
-          { title: "Crew Cast Podcast", url: "/podcasts" },
+          {
+            title: "So Good Sisterhood Podcast",
+            url: "/podcasts/so-good-sisterhood",
+          },
+          { title: "Crew Cast Podcast", url: "/podcasts/crew-cast" },
           { title: "Young & Adulting Podcast", url: "/podcasts" },
           { title: "MVMT Music", url: "/podcasts" },
         ],
