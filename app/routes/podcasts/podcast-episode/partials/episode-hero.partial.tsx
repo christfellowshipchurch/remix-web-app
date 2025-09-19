@@ -1,11 +1,12 @@
-import { PodcastEpisode } from "../../types";
+import { useLoaderData } from "react-router-dom";
 import { HeroContent } from "../components/hero-content.component";
 import { Breadcrumbs } from "~/components";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
+import { LoaderReturnType } from "../loader";
 
-export function EpisodeHero({ episode }: { episode: PodcastEpisode }) {
-  const { authors, coverImage, summary, episodeNumber, season, title } =
-    episode;
+export function EpisodeHero() {
+  const { episode } = useLoaderData<LoaderReturnType>();
+  const { coverImage, title } = episode;
 
   return (
     <div className="w-full bg-gradient-to-b bg-[#313038] from-navy/30 to-ocean/30 backdrop-blur-lg content-padding">
@@ -18,13 +19,8 @@ export function EpisodeHero({ episode }: { episode: PodcastEpisode }) {
               alt={title || "Cover"}
             />
             <div>
-              <HeroContent
-                authors={authors}
-                description={summary}
-                episodeNumber={episodeNumber}
-                season={season}
-                title={title}
-              />
+              +
+              <HeroContent />
               <div className="hidden md:block lg:hidden mt-6">
                 <IconButton
                   className="text-white border-white"

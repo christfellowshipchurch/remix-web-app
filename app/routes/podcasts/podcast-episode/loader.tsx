@@ -166,6 +166,13 @@ async function mapRockEpisodeToPodcastEpisode(
   return {
     show: showName,
     title: rockEpisode?.title || "",
+    publishDate: rockEpisode?.startDateTime
+      ? new Date(rockEpisode.startDateTime).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "",
     season: rockEpisode?.attributeValues?.seasonNumber?.value || "",
     episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value || "",
     audio: wistiaElement?.sourceKey || "",
@@ -174,7 +181,7 @@ async function mapRockEpisodeToPodcastEpisode(
     ),
     summary: rockEpisode?.attributeValues?.summary?.value || "",
     content: rockEpisode?.content || "",
-    authors: rockEpisode?.attributeValues?.author?.persistedTextValue || "",
+    showGuests: rockEpisode?.attributeValues?.showGuests?.value || "",
     url: rockEpisode?.attributeValues?.pathname?.value || "",
     apple: rockEpisode?.attributeValues?.applePodcast?.value || "",
     spotify: rockEpisode?.attributeValues?.spotify?.value || "",
@@ -196,11 +203,15 @@ async function mapSisterhoodRockEpisodeToPodcastEpisode(
 
   // Extract episode number from rock label (e.g., "Season 13 | Episode 4" -> "4")
   const rockLabel = attributeValues.rockLabel?.value || "";
+  const summary = attributeValues.summary?.value || "";
   const episodeNumberMatch = rockLabel.match(/Episode\s+(\d+)/);
   const episodeNumber = episodeNumberMatch ? episodeNumberMatch[1] : "";
 
-  // Extract season from rock label (e.g., "Season 13 | Episode 4" -> "13")
-  const seasonMatch = rockLabel.match(/Season\s+(\d+)/);
+  // Extract season from rock label or summary (e.g., "Season 13 | Episode 4" -> "13")
+  const seasonMatch =
+    rockLabel !== ""
+      ? rockLabel.match(/Season\s+(\d+)/)
+      : summary.match(/Season\s+(\d+)/);
   const season = seasonMatch ? seasonMatch[1] : "";
 
   // Parse calls to action for resources and platform links
@@ -212,18 +223,26 @@ async function mapSisterhoodRockEpisodeToPodcastEpisode(
   const coverImage = createImageUrlFromGuid(imageGuid);
 
   // Extract Wistia ID from media attribute
-  const mediaGuid = attributeValues.media?.value || "";
-  const wistiaElement = await getWistiaElement(mediaGuid);
+  const mediaGuid = attributeValues.media?.value || null;
+  const wistiaElement =
+    (mediaGuid && (await getWistiaElement(mediaGuid))) || null;
 
   return {
     show: SHOW_NAME,
     title: rockEpisode?.title || "",
+    publishDate: rockEpisode?.startDateTime
+      ? new Date(rockEpisode.startDateTime).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "",
     season,
     episodeNumber,
     audio: wistiaElement?.sourceKey || "",
     coverImage,
     summary: attributeValues.summary?.value || "",
-    authors: attributeValues.author?.persistedTextValue || "",
+    showGuests: attributeValues.author?.persistedTextValue || "",
     url: attributeValues.pathname?.value || "",
     apple: platformLinks.apple || "",
     spotify: platformLinks.spotify || "",

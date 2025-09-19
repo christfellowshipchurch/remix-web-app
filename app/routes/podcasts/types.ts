@@ -16,13 +16,14 @@ export type PodcastShow = {
 export type PodcastEpisode = {
   show: string;
   title: string;
+  publishDate: string;
   season: string;
   episodeNumber: string;
   audio: string; // TODO: Replace with wistiaId??? or Spotify embed??
   coverImage: string;
   summary: string;
   content: string;
-  authors: string;
+  showGuests: string;
   url: string;
   apple: string;
   spotify: string;
@@ -54,12 +55,14 @@ export interface RockAttributeValue {
 export interface RockPodcastEpisode {
   title: string;
   content: string;
+  startDateTime: string;
   attributeValues: {
     seasonNumber?: RockAttributeValue;
     episodeNumber?: RockAttributeValue;
     media?: RockAttributeValue;
     image?: RockAttributeValue;
     author?: RockAttributeValue;
+    showGuests?: RockAttributeValue;
     pathname?: RockAttributeValue;
     applePodcast?: RockAttributeValue;
     spotify?: RockAttributeValue;

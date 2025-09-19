@@ -2,15 +2,11 @@ import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { MoreEpisodesSearch } from "../components/more-episodes-search";
 
-export function MoreEpisodes({
-  show,
-  season,
-}: {
-  show: string;
-  season: string;
-}) {
+export function MoreEpisodes() {
   const { episode, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
+
+  const { show, season } = episode;
 
   return (
     <div className="w-full bg-white content-padding">
