@@ -14,8 +14,8 @@ export function AllPodcastsPage() {
         customTitle="Podcasts"
         ctas={[{ href: "#latest", title: "Call to Action" }]}
       />
-      <div className="py-10 md:py-20 w-full mx-auto">
-        <div className="flex flex-col items-center">
+      <div className="py-10 md:py-20 w-full">
+        <div className="flex flex-col">
           {podcastShows.map((podcast: PodcastShow, index: number) => (
             <PodcastHubCard
               key={index}

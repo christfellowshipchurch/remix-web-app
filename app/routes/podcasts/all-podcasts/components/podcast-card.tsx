@@ -32,10 +32,10 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
 
   return (
     <div
-      className={`flex relative overflow-hidden ${className} px-8 py-12 group w-full lg:justify-center`}
+      className={`flex relative overflow-hidden ${className} px-8 py-12 group w-full px-18`}
     >
       {/* Desktop */}
-      <div className="hidden relative md:flex flex-col lg:flex-row lg:justify-between gap-8 max-w-screen-content">
+      <div className="hidden relative md:flex flex-col lg:flex-row gap-8 w-full max-w-screen-content mx-auto">
         {/* Image */}
         <img
           src={coverImage}
@@ -83,7 +83,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
       </div>
 
       {/* Mobile */}
-      <div className="relative max-w-screen-content md:hidden">
+      <div className="relative w-full max-w-screen-content mx-auto md:hidden">
         <div className="flex flex-col justify-center gap-2">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">

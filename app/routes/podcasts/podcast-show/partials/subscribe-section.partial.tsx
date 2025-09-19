@@ -2,10 +2,12 @@ import { icons } from "~/lib/icons";
 import Icon from "~/primitives/icon";
 
 export const SubscribeSection = ({
+  title = "Subscribe and follow",
   apple,
   spotify,
   amazon,
 }: {
+  title?: string;
   apple: string;
   spotify: string;
   amazon: string;
@@ -33,7 +35,7 @@ export const SubscribeSection = ({
       <div className="max-w-screen-content mx-auto py-16">
         <div className="flex flex-col items-center gap-8 text-white">
           <h2 className="text-[24px] md:text-[28px] font-extrabold leading-none">
-            Subscribe and follow
+            {title}
           </h2>
           <div className="flex gap-4 w-full justify-center sm:w-auto md:gap-12">
             {links.map((link, index) => (
