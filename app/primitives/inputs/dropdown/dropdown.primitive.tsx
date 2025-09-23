@@ -138,7 +138,7 @@ const Dropdown = ({
       {error && <p className="mt-1 text-sm text-alert">{error}</p>}
 
       {isOpen && !disabled && (
-        <div className="absolute top-full left-0 right-0 z-[9999] bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto flex flex-col">
+        <div className="absolute top-full left-0 right-0 mt-3 md:mt-0 z-[9999] bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto flex flex-col">
           {options.length === 0 ? (
             <div className="px-4 py-3 text-neutral-500 text-sm">
               No options available
