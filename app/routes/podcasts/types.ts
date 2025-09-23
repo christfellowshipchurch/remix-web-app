@@ -6,6 +6,7 @@ export type PodcastShow = {
   apple: string;
   spotify: string;
   amazon: string;
+  youtube: string;
   episodesChannelGuid: string;
   url: string;
   //seasons: Season[];

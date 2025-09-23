@@ -2,6 +2,7 @@ import type { PodcastShow } from "../../types";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { Link } from "react-router-dom";
+import HtmlRenderer from "~/primitives/html-renderer";
 
 type PodcastCardProps = {
   podcast: PodcastShow;
@@ -47,7 +48,10 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
         <div className="flex flex-col justify-center gap-4">
           <h3 className="text-[32px] font-extrabold">{title}</h3>
           <p className="text-xl text-[#767676] lg:max-w-[540px]">
-            {description}
+            <HtmlRenderer
+              html={description}
+              className="text-xl text-[#767676] lg:max-w-[540px]"
+            />
           </p>
           <div className="flex items-center gap-8 w-full">
             <Button intent="secondary" href={url || ""} className="h-full">

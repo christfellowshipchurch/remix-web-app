@@ -121,6 +121,7 @@ export async function getPodcast(path: string) {
     apple: podcastData.attributeValues?.applePodcast?.value,
     spotify: podcastData.attributeValues?.spotify?.value,
     amazon: podcastData.attributeValues?.amazonMusic?.value,
+    youtube: podcastData.attributeValues?.youtube?.value,
     episodesChannelGuid: podcastData.attributeValues?.showChannel?.value,
     url: podcastData.attributeValues?.url?.value,
   };
