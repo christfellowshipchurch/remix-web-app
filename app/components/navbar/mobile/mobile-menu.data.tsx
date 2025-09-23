@@ -58,7 +58,7 @@ export const getInvolvedItems: MenuItem[] = [
     title: "Giving",
     description: "Impact your world",
     icon: "heartHand",
-    to: "/giving",
+    to: "/give",
   },
 ];
 
@@ -67,19 +67,19 @@ export const nextStepsItems: SubMenuItem[] = [
     id: "new-believer",
     title: "New Believer",
     icon: "heart",
-    to: "/next-steps/new-believer",
+    to: "/next-steps",
   },
   {
     id: "baptism",
     title: "Baptism",
     icon: "waves",
-    to: "/next-steps/baptism",
+    to: "/events/baptism",
   },
   {
     id: "take-a-class",
     title: "Take a Class",
     icon: "bookOpen",
-    to: "/group-finder",
+    to: "/class-finder",
   },
   {
     id: "join-a-group",
