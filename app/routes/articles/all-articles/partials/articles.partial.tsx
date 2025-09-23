@@ -1,52 +1,62 @@
-import { Link, useLoaderData } from "react-router-dom";
-import { Article, ArticlesReturnType } from "../loader";
-import Icon from "~/primitives/icon";
-import { Divider } from "./latest.partial";
+import { useEffect } from "react";
+import { useHits } from "react-instantsearch";
+import { ContentItemHit } from "~/routes/search/types";
+import { ArticleCard } from "../components/article-card.component";
+import { CustomPagination } from "~/components/custom-pagination";
+import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
 
-export const Articles = () => {
-  const { upcomingArticles: articles } = useLoaderData<ArticlesReturnType>();
+export const Articles = ({
+  setArticlesLoading,
+}: {
+  setArticlesLoading: (articlesLoading: boolean) => void;
+}) => {
+  const { items } = useHits<ContentItemHit>();
 
+  // Set loading to false when items are available
+  useEffect(() => {
+    if (items && items.length > 0) {
+      setArticlesLoading(false);
+    }
+  }, [items]);
   return (
-    <div className="flex flex-col gap-14">
-      {articles.map((article, i) => (
-        <ArticlePanel article={article} key={i} />
-      ))}
-    </div>
-  );
-};
-
-const ArticlePanel = ({ article }: { article: Article }) => {
-  return (
-    <Link
-      to={`/articles/${article.attributeValues.url.value}`}
-      prefetch="intent"
-      className="flex flex-col gap-5 w-full"
-    >
-      <div className="flex flex-col gap-2">
-        <div className="w-full">
-          <img
-            src={article.image}
-            className="w-full h-auto object-cover"
-            alt={article.title}
+    <>
+      {/* Mobile Layout with Local Filtering */}
+      <div className="md:hidden">
+        <div className="flex flex-col gap-8 pl-5 py-8 lg:pt-28 lg:pb-24">
+          <HubsTagsRefinementList
+            tagName="articlePrimaryTags"
+            wrapperClass="flex flex-nowrap w-screen px-1 pb-1 overflow-x-auto scrollbar-hide"
+            buttonClassDefault="w-fit group px-5 py-3 border-b-3 transition-colors flex-shrink-0"
+            buttonClassSelected="border-ocean text-ocean"
+            buttonClassUnselected="border-neutral-lighter text-text-secondary"
           />
-        </div>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <Icon name="calendarAlt" size={16} />
-            <p className="font-medium text-text-secondary break-words">
-              {article.startDate.toUpperCase()}
-            </p>
+
+          <div className="pr-5 md:px-0 grid grid-cols-1 xl:grid-cols-2 gap-y-4 xl:gap-x-8 xl:gap-y-16">
+            {items.map((article, i) => (
+              <ArticleCard article={article} key={i} />
+            ))}
           </div>
         </div>
-        <Divider />
       </div>
-      <div className="w-full">
-        <h3 className="font-extrabold text-[36px] break-words">
-          {article.title}
-        </h3>
-        <p className="break-words">{article.attributeValues.summary.value}</p>
-        {/* TODO: Add CTA part */}
+
+      {/* Desktop Layout with URL-based Filtering */}
+      <div className="hidden md:block">
+        <div className="content-padding pr-0 xl:pr-18 py-8 lg:pt-20 lg:pb-24 pagination-scroll-to">
+          <div className="max-w-screen-content mx-auto flex flex-col w-full gap-12">
+            <HubsTagsRefinementList tagName="articlePrimaryTags" />
+
+            <div className="pr-12 lg:pr-18 grid grid-cols-1 md:grid-cols-2 xl:!grid-cols-3 md:gap-x-4 gap-y-4 lg:gap-8 xl:gap-y-16">
+              {items.map((article, i) => (
+                <ArticleCard article={article} key={i} />
+              ))}
+            </div>
+
+            <div className="-mt-6">
+              <CustomPagination />
+            </div>
+          </div>
+        </div>
       </div>
-    </Link>
+    </>
   );
 };

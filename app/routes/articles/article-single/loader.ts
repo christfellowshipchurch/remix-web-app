@@ -1,4 +1,4 @@
-import { data, type LoaderFunction } from "react-router-dom";
+import { type LoaderFunction } from "react-router-dom";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
@@ -97,7 +97,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   const articlePath = params?.path || "";
 
   const articleData = await fetchArticleData(articlePath);
-
   if (!articleData) {
     throw new Response("Article not found at: /articles/" + articlePath, {
       status: 404,

@@ -13,7 +13,6 @@ import {
   CarouselDots,
   CarouselItem,
 } from "~/primitives/shadcn-primitives/carousel";
-import { cn } from "~/lib/utils";
 
 export function FeaturedEvents() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

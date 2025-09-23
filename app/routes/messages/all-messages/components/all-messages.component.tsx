@@ -1,41 +1,38 @@
 import { useLoaderData } from "react-router-dom";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
 import { ContentItemHit } from "~/routes/search/types";
-import { CustomPagination } from "./custom-pagination.component";
-import { MessagesTagsRefinementList } from "./messages-tags-refinement.component";
-
-interface LoaderData {
-  ALGOLIA_APP_ID: string;
-  ALGOLIA_SEARCH_API_KEY: string;
-}
-
-export type Tag = {
-  label: string;
-  isActive: boolean;
-};
+import { CustomPagination } from "~/components/custom-pagination";
+import {
+  HubsTagsRefinementList,
+  HubsTagsRefinementLoadingSkeleton,
+} from "~/components/hubs-tags-refinement";
+import { createSearchClient } from "~/lib/create-search-client";
+import { AllMessagesLoaderReturnType } from "../loader";
 
 export default function Messages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderData>();
+    useLoaderData<AllMessagesLoaderReturnType>();
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
+  const [allMessagesLoading, setAllMessagesLoading] = useState(true);
+
   return (
-    <section className="relative py-32 min-h-screen bg-white content-padding">
+    <section className="relative py-32 min-h-screen bg-white content-padding pagination-scroll-to">
       <div className="relative max-w-screen-content mx-auto">
         <SectionTitle
           className="mb8"
           sectionTitle="all messages."
           title="Christ Fellowship Church Messages"
         />
+        {allMessagesLoading && <AllMessagesLoadingSkeleton />}
         <InstantSearch
           indexName="dev_daniel_contentItems"
           searchClient={searchClient}
@@ -47,11 +44,22 @@ export default function Messages() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <MessagesTagsRefinementList />
+            <div className="md:hidden">
+              <HubsTagsRefinementList
+                tagName="sermonPrimaryTags"
+                wrapperClass="flex flex-nowrap px-1 pb-1 overflow-x-auto scrollbar-hide"
+                buttonClassDefault="w-fit group px-4 border-b-3 transition-colors flex-shrink-0"
+                buttonClassSelected="border-ocean text-ocean"
+                buttonClassUnselected="border-neutral-lighter text-text-secondary"
+              />
+            </div>
+            <div className="hidden md:block">
+              <HubsTagsRefinementList tagName="sermonPrimaryTags" />
+            </div>
           </div>
 
           {/* Results Grid */}
-          <AllMessagesHit />
+          <AllMessagesHit setAllMessagesLoading={setAllMessagesLoading} />
 
           <CustomPagination />
         </InstantSearch>
@@ -60,13 +68,23 @@ export default function Messages() {
   );
 }
 
-const AllMessagesHit = () => {
+const AllMessagesHit = ({
+  setAllMessagesLoading,
+}: {
+  setAllMessagesLoading: (allMessagesLoading: boolean) => void;
+}) => {
   const { items } = useHits<ContentItemHit>();
+
+  useEffect(() => {
+    if (items.length > 0) {
+      setAllMessagesLoading(false);
+    }
+  }, [items]);
 
   if (items.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center">
       {items.map((hit) => (
         <MessageHit hit={hit} key={hit.objectID} />
       ))}
@@ -101,5 +119,18 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
   );
 };
 
-export const createSearchClient = (appId: string, apiKey: string) =>
-  algoliasearch(appId, apiKey, {});
+const AllMessagesLoadingSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-8 pt-8">
+      <HubsTagsRefinementLoadingSkeleton />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center">
+        {[...Array(9)].map((_, i) => (
+          <div
+            key={i}
+            className="w-[460px] h-[360px] bg-gray-100 animate-pulse rounded-lg"
+          />
+        ))}
+      </div>
+    </div>
+  );
+};

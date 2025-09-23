@@ -22,7 +22,7 @@ export const AllEvents = () => {
   );
 
   return (
-    <div className="w-full pt-16 pb-28 content-padding">
+    <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <InstantSearch
           indexName="dev_daniel_contentItems"

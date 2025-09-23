@@ -1,85 +1,11 @@
-import { formatDate } from "date-fns";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
-
-export type ArticlesReturnType = {
-  recentArticles: Article[];
-  upcomingArticles: Article[];
+export type AllArticlesReturnType = {
+  ALGOLIA_APP_ID: string | undefined;
+  ALGOLIA_SEARCH_API_KEY: string | undefined;
 };
 
-export type Article = {
-  title: string;
-  startDate: string;
-  startDateTime: string;
-  image: string;
-  attributeValues: {
-    summary: { value: string };
-    image: { value: string };
-    url: { value: string };
+export const loader = async (): Promise<AllArticlesReturnType> => {
+  return {
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
   };
-};
-
-const getRecentArticles = async () => {
-  const recentArticles = await fetchRockData({
-    endpoint: "ContentChannelItems",
-    queryParams: {
-      $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
-      $orderby: "StartDateTime desc",
-      $top: "5",
-      loadAttributes: "simple",
-    },
-  });
-
-  recentArticles.forEach((article: Article) => {
-    if (article && article.attributeValues.image.value) {
-      article.image = createImageUrlFromGuid(
-        article.attributeValues.image.value
-      );
-    }
-  });
-
-  recentArticles.forEach((article: Article) => {
-    article.startDate = formatDate(
-      new Date(article.startDateTime),
-      "MMMM d, yyyy"
-    );
-  });
-
-  return recentArticles;
-};
-
-const getUpcomingArticles = async () => {
-  const upcomingArticles = await fetchRockData({
-    endpoint: "ContentChannelItems",
-    queryParams: {
-      $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
-      $orderby: "Order asc",
-      $top: "5",
-      loadAttributes: "simple",
-    },
-  });
-
-  upcomingArticles.forEach((article: Article) => {
-    if (article && article.attributeValues.image.value) {
-      article.image = createImageUrlFromGuid(
-        article.attributeValues.image.value
-      );
-    }
-  });
-
-  upcomingArticles.forEach((article: Article) => {
-    article.startDate = formatDate(
-      new Date(article.startDateTime),
-      "MMMM d, yyyy"
-    );
-  });
-
-  return upcomingArticles;
-};
-
-export const loader = async () => {
-  const recentArticles = await getRecentArticles();
-  const upcomingArticles = await getUpcomingArticles();
-
-  return { recentArticles, upcomingArticles };
 };
