@@ -1,6 +1,7 @@
 import { DynamicHero } from "~/components";
-import { EventsForYou } from "./partials/events-for-you.partial";
+
 import { FeaturedEvents } from "./partials/featured-events.partial";
+import { AllEvents } from "./partials/all-events";
 
 export function AllEventsPage() {
   return (
@@ -18,7 +19,7 @@ export function AllEventsPage() {
       />
 
       <FeaturedEvents />
-      <EventsForYou />
+      <AllEvents />
     </div>
   );
 }
