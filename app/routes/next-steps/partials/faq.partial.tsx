@@ -1,4 +1,5 @@
 import { StyledAccordion } from "~/components";
+import { Button } from "~/primitives/button/button.primitive";
 
 const faqs = [
   {
@@ -30,13 +31,28 @@ const faqs = [
 
 export function FAQSection() {
   return (
-    <section className="w-full py-16 lg:py-24 bg-gray-50">
+    <section className="w-full py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
           Your questions, answered!
         </h2>
         <div className="max-w-3xl mx-auto">
           <StyledAccordion data={faqs} bg="white" center border="#E5E7EB" />
+        </div>
+        <div className="flex flex-col items-center gap-6 mt-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+            Still have questions?
+          </h2>
+          <p className="text-center">
+            Reach out to someone on our team for more information.
+          </p>
+          <Button
+            href="https://rock.gocf.org/contactus"
+            target="_blank"
+            intent="secondary"
+          >
+            Contact
+          </Button>
         </div>
       </div>
     </section>

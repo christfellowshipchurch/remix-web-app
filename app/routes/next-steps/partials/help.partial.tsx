@@ -90,7 +90,7 @@ export function HelpSection() {
               opacity: opacity,
             }}
           >
-            <h2 className="text-2xl md:text-3xl font-serif mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold font-serif mb-6">
               We're here
               <br />
               to help

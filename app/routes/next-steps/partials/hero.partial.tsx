@@ -1,4 +1,4 @@
-import { getImageUrl } from "~/lib/utils";
+import { cn, getImageUrl } from "~/lib/utils";
 
 export function HeroSection() {
   return (
@@ -17,7 +17,18 @@ export function HeroSection() {
         alt="Hero"
         className="block sm:hidden w-full object-cover"
       />
-      <div className="container mx-auto px-4 text-center absolute top-[35%] left-0 w-full h-full">
+      <div
+        className={cn(
+          "mx-auto",
+          "px-4",
+          "text-center",
+          "absolute",
+          "top-[35%]",
+          "left-0",
+          "w-full",
+          "h-full"
+        )}
+      >
         <h1 className="text-4xl md:text-6xl font-bold mb-3 md:mb-6 text-navy font-serif">
           See What's Here
           <br />

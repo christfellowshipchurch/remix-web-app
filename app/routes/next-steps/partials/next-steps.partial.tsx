@@ -34,11 +34,11 @@ const nextSteps = [
 
 export function NextStepsSection() {
   return (
-    <section className="md:py-16">
+    <section className="pb-16 md:py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-2 md:gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-3 lg:gap-12">
           {nextSteps.map((step, index) => (
-            <div key={index} className="p-8 text-center">
+            <div key={index} className="p-4 lg:p-8 text-center">
               <div className="max-w-48 mx-auto">
                 <LottieAnimation animationData={step.animationData} />
               </div>

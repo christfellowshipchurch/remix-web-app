@@ -18,12 +18,12 @@ export const meta: MetaFunction = () => {
 
 export default function NextSteps() {
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-center w-full pb-16 bg-gray-50">
       <HeroSection />
       <NextStepsSection />
       <JourneySection />
-      <FAQSection />
       <HelpSection />
+      <FAQSection />
     </div>
   );
 }
