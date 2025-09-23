@@ -65,12 +65,23 @@ export async function getLatestEpisodes(channelGuid: string) {
   const formattedEpisodes = episodes.map((episode: any) => {
     return {
       title: episode.title,
-      description: episode.content.attributeValues?.summary?.value,
+      description: episode.attributeValues?.summary?.value,
       coverImage: createImageUrlFromGuid(episode.attributeValues?.image?.value),
-      url: episode.attributeValues?.pathname?.value,
+      url:
+        episode.attributeValues?.pathname?.value ||
+        episode.attributeValues?.url?.value ||
+        "",
+      // For season and episode number, we need first check if it contains
+      // the attributes from CFDP Podcast type(episodeNumber and seasonNumber),
+      // if not we use the legacy sisterhood attributes
       season:
-        episode.attributeValues?.podcastSeason?.valueFormatted.split(" ")[1],
-      episodeNumber: "TODO", // We need find/create an attribute for this
+        episode.attributeValues?.seasonNumber?.value ||
+        episode.attributeValues?.podcastSeason?.valueFormatted?.split(" ")[1] ||
+        "",
+      episodeNumber:
+        episode.attributeValues?.episodeNumber?.value ||
+        episode.attributeValues?.summary?.value?.split("|")[1]?.split(" ")[2] ||
+        "",
     };
   });
 
@@ -110,6 +121,7 @@ export async function getPodcast(path: string) {
     apple: podcastData.attributeValues?.applePodcast?.value,
     spotify: podcastData.attributeValues?.spotify?.value,
     amazon: podcastData.attributeValues?.amazonMusic?.value,
+    youtube: podcastData.attributeValues?.youtube?.value,
     episodesChannelGuid: podcastData.attributeValues?.showChannel?.value,
     url: podcastData.attributeValues?.url?.value,
   };

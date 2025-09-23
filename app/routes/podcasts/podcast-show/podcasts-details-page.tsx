@@ -17,6 +17,7 @@ export function PodcastsDetailsPage() {
         apple={podcast.apple}
         spotify={podcast.spotify}
         amazon={podcast.amazon}
+        youtube={podcast.youtube}
       />
       {featureBlocks &&
         featureBlocks

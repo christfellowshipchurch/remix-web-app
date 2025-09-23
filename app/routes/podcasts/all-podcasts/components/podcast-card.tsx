@@ -2,6 +2,7 @@ import type { PodcastShow } from "../../types";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import { Link } from "react-router-dom";
+import HtmlRenderer from "~/primitives/html-renderer";
 
 type PodcastCardProps = {
   podcast: PodcastShow;
@@ -32,10 +33,10 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
 
   return (
     <div
-      className={`flex relative overflow-hidden ${className} px-8 py-12 group w-full lg:justify-center`}
+      className={`flex relative overflow-hidden ${className} py-12 group w-full px-18`}
     >
       {/* Desktop */}
-      <div className="hidden relative md:flex flex-col lg:flex-row lg:justify-between gap-8 max-w-screen-content">
+      <div className="hidden relative md:flex flex-col lg:flex-row gap-8 w-full max-w-screen-content mx-auto">
         {/* Image */}
         <img
           src={coverImage}
@@ -47,7 +48,10 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
         <div className="flex flex-col justify-center gap-4">
           <h3 className="text-[32px] font-extrabold">{title}</h3>
           <p className="text-xl text-[#767676] lg:max-w-[540px]">
-            {description}
+            <HtmlRenderer
+              html={description}
+              className="text-xl text-[#767676] lg:max-w-[540px]"
+            />
           </p>
           <div className="flex items-center gap-8 w-full">
             <Button intent="secondary" href={url || ""} className="h-full">
@@ -83,7 +87,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
       </div>
 
       {/* Mobile */}
-      <div className="relative max-w-screen-content md:hidden">
+      <div className="relative w-full max-w-screen-content mx-auto md:hidden">
         <div className="flex flex-col justify-center gap-2">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
