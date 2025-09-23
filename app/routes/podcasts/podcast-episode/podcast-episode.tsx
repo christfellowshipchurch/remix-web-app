@@ -22,6 +22,7 @@ export function PodcastEpisode() {
           apple={episode.apple}
           spotify={episode.spotify}
           amazon={episode.amazon}
+          youtube={episode.youtube}
         />
       )}
       <HeroMobileContent />
@@ -30,6 +31,7 @@ export function PodcastEpisode() {
         apple={episode.apple}
         spotify={episode.spotify}
         amazon={episode.amazon}
+        youtube={episode.youtube}
       />
       <MoreEpisodes />
     </div>

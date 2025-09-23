@@ -6,17 +6,24 @@ export const SubscribeSection = ({
   apple,
   spotify,
   amazon,
+  youtube,
 }: {
   title?: string;
   apple: string;
   spotify: string;
   amazon: string;
+  youtube: string;
 }) => {
   const links = [
     {
       label: "Apple Music",
       icon: "appleLogo",
       href: apple,
+    },
+    {
+      label: "YouTube",
+      icon: "youtube",
+      href: youtube,
     },
     {
       label: "Spotify",

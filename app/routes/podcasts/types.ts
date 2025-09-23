@@ -28,6 +28,7 @@ export type PodcastEpisode = {
   apple: string;
   spotify: string;
   amazon: string;
+  youtube: string;
   resources: {
     title: string;
     url: string;
@@ -67,6 +68,7 @@ export interface RockPodcastEpisode {
     applePodcast?: RockAttributeValue;
     spotify?: RockAttributeValue;
     amazonMusic?: RockAttributeValue;
+    youtube?: RockAttributeValue;
     rockLabel?: RockAttributeValue;
     callsToAction?: RockAttributeValue;
     summary?: RockAttributeValue;
@@ -82,6 +84,7 @@ export interface PlatformLinks {
   apple: string;
   spotify: string;
   amazon: string;
+  youtube: string;
 }
 
 export interface Resource {

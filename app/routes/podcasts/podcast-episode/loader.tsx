@@ -186,6 +186,7 @@ async function mapRockEpisodeToPodcastEpisode(
     apple: rockEpisode?.attributeValues?.applePodcast?.value || "",
     spotify: rockEpisode?.attributeValues?.spotify?.value || "",
     amazon: rockEpisode?.attributeValues?.amazonMusic?.value || "",
+    youtube: rockEpisode?.attributeValues?.youtube?.value || "",
     resources: parseRockKeyValueList(
       rockEpisode?.attributeValues?.additionalResources?.value || ""
     ),
@@ -247,6 +248,7 @@ async function mapSisterhoodRockEpisodeToPodcastEpisode(
     apple: platformLinks.apple || "",
     spotify: platformLinks.spotify || "",
     amazon: platformLinks.amazon || "",
+    youtube: platformLinks.youtube || "",
     content: rockEpisode.content || "",
     resources,
   };
@@ -263,11 +265,16 @@ function parseCallsToAction(callsToAction: string): {
   if (!callsToAction) {
     return {
       resources: [],
-      platformLinks: { apple: "", spotify: "", amazon: "" },
+      platformLinks: { apple: "", spotify: "", amazon: "", youtube: "" },
     };
   }
 
-  const platformLinks: PlatformLinks = { apple: "", spotify: "", amazon: "" };
+  const platformLinks: PlatformLinks = {
+    apple: "",
+    spotify: "",
+    amazon: "",
+    youtube: "",
+  };
   const resources: Resource[] = [];
 
   // Split by | and parse each call to action
@@ -284,6 +291,8 @@ function parseCallsToAction(callsToAction: string): {
         platformLinks.spotify = url;
       } else if (title.includes("AMAZON")) {
         platformLinks.amazon = url;
+      } else if (title.includes("YOUTUBE")) {
+        platformLinks.youtube = url;
       } else {
         // This is a general resource
         resources.push({ title, url });
