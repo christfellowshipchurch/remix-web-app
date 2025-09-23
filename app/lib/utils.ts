@@ -283,3 +283,7 @@ export const formattedServiceTimes = (serviceTimes: string) =>
 export const ensureArray = <T>(data: T | T[]): T[] => {
   return Array.isArray(data) ? data : [data];
 };
+
+export const getImageUrl = (id: string) => {
+  return `https://cloudfront.christfellowship.church/GetImage.ashx?id=${id}`;
+};

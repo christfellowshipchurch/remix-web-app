@@ -3,7 +3,7 @@ import lottie from "lottie-web";
 
 export function LottieAnimation({
   animationData,
-  size = "200px",
+  size = "150px",
 }: {
   animationData: any;
   size?: string;

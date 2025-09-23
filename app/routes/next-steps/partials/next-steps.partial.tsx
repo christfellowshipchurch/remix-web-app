@@ -34,15 +34,15 @@ const nextSteps = [
 
 export function NextStepsSection() {
   return (
-    <section className="py-16">
+    <section className="md:py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-3 gap-2 md:gap-8 lg:gap-12">
           {nextSteps.map((step, index) => (
             <div key={index} className="p-8 text-center">
               <div className="max-w-48 mx-auto">
                 <LottieAnimation animationData={step.animationData} />
               </div>
-              <h3 className="heading-h3 font-bold text-text-primary mb-2">
+              <h3 className="heading-h4 font-bold text-text-primary mb-4">
                 {step.title}
               </h3>
               <p className="text-text-secondary mb-6 leading-tight">

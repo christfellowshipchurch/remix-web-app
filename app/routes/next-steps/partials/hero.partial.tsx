@@ -1,23 +1,23 @@
-import { Link } from "react-router-dom";
+import { getImageUrl } from "~/lib/utils";
 
 export function HeroSection() {
   return (
-    <div className="relative bg-background-gray">
+    <section className="relative bg-background-gray mb-[-7rem] md:mb-0">
       {/* blue background */}
-      <div className="absolute top-[-28%] left-0 w-full h-full bg-ocean/10 sm:hidden" />
+      <div className="absolute top-[-25%] left-0 w-full h-full bg-ocean/10 sm:hidden" />
       {/* desktop image */}
       <img
-        src="https://cloudfront.christfellowship.church/GetImage.ashx?id=3063176"
+        src={getImageUrl("3063176")}
         alt="Hero"
         className="hidden sm:block w-full min-h-[100vh] object-cover mt-[-5rem]"
       />
       {/* mobile image */}
       <img
-        src="https://cloudfront.christfellowship.church/GetImage.ashx?id=3063951"
+        src={getImageUrl("3063951")}
         alt="Hero"
         className="block sm:hidden w-full object-cover"
       />
-      <div className="container mx-auto px-4 text-center absolute top-[30%] md:top-[35%] left-0 w-full h-full">
+      <div className="container mx-auto px-4 text-center absolute top-[35%] left-0 w-full h-full">
         <h1 className="text-4xl md:text-6xl font-bold mb-3 md:mb-6 text-navy font-serif">
           See What's Here
           <br />
@@ -27,6 +27,6 @@ export function HeroSection() {
           <strong>Find your next step</strong> at Christ Fellowship Church.
         </p>
       </div>
-    </div>
+    </section>
   );
 }
