@@ -1,9 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   InstantSearch,
   Hits,
   Configure,
-  RefinementList,
+  useInstantSearch,
+  useRefinementList,
 } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
@@ -18,6 +19,63 @@ interface PodcastEpisodeSearchProps {
 }
 
 const { kebabCase } = lodash;
+
+const SeasonRefinementList = () => {
+  const { items } = useRefinementList({ attribute: "seasonNumber" });
+  const { setIndexUiState } = useInstantSearch();
+  const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
+
+  const handleSeasonClick = (season: string) => {
+    setSelectedSeason(season);
+
+    // Specific season
+    setIndexUiState((prevState) => ({
+      ...prevState,
+      refinementList: {
+        ...prevState.refinementList,
+        seasonNumber: [season],
+      },
+      page: 0, // Reset to first page
+    }));
+  };
+
+  const sortedItems = items
+    .map((item) => ({ ...item, label: `Season ${item.label}` }))
+    .sort((a, b) => Number(a.value) - Number(b.value));
+
+  // Set default selection to first season when items are available
+  if (sortedItems.length > 0 && selectedSeason === null) {
+    const firstSeason = sortedItems[0].value;
+    setSelectedSeason(firstSeason);
+    setIndexUiState((prevState) => ({
+      ...prevState,
+      refinementList: {
+        ...prevState.refinementList,
+        seasonNumber: [firstSeason],
+      },
+      page: 0,
+    }));
+  }
+
+  return (
+    <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto">
+      {/* Dynamic Season Tags */}
+      {sortedItems.map((item) => (
+        <button
+          key={item.value}
+          onClick={() => handleSeasonClick(item.value)}
+          className={`px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap text-neutral-500 hover:bg-neutral-200 transition-colors duration-300 bg-white ${
+            selectedSeason === item.value
+              ? "!bg-ocean text-white rounded-full"
+              : ""
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   return (
@@ -75,33 +133,11 @@ export const PodcastEpisodeSearch = ({
       future={{
         preserveSharedStateOnUnmount: true,
       }}
-      initialUiState={
-        {
-          refinementList: {
-            season: ["Season 1"],
-          },
-        } as any
-      }
     >
       <Configure filters={filter} hitsPerPage={12} />
 
       {/* Season Filter */}
-      <RefinementList
-        attribute="seasonNumber"
-        transformItems={(items) =>
-          items
-            .map((it) => ({ ...it, label: `Season ${it.label}` }))
-            .sort((a, b) => Number(a.value) - Number(b.value))
-        }
-        classNames={{
-          list: "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto",
-          item: "px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap text-neutral-500 hover:bg-neutral-200 transition-colors duration-300 bg-white",
-          label: "cursor-pointer",
-          checkbox: "hidden",
-          selectedItem: "!bg-ocean text-white rounded-full",
-          count: "hidden",
-        }}
-      />
+      <SeasonRefinementList />
 
       {/* Episodes Grid */}
       <Hits

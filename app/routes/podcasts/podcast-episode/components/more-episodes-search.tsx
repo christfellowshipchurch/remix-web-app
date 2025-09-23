@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { InstantSearch, Hits, Configure } from "react-instantsearch";
+import { InstantSearch, Hits, Configure, useHits } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
 import lodash from "lodash";
@@ -15,6 +15,18 @@ interface MoreEpisodesSearchProps {
 }
 
 const { kebabCase } = lodash;
+
+// Component that checks if there are hits and conditionally renders content
+const HitsWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { hits } = useHits();
+
+  // Don't render anything if there are no hits
+  if (hits.length === 0) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
 
 const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   return (
@@ -76,13 +88,21 @@ export const MoreEpisodesSearch = ({
     >
       <Configure filters={filter} hitsPerPage={8} />
 
-      {/* Episodes Grid */}
-      <Hits
-        hitComponent={MoreEpisodesHitComponent}
-        classNames={{
-          list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
-        }}
-      />
+      {/* Episodes Section - Only render if there are hits */}
+      <HitsWrapper>
+        <div className="w-full bg-white content-padding">
+          <div className="flex flex-col gap-8 md:gap-7 max-w-screen-content mx-auto py-16 md:py-20">
+            <h2 className="text-[28px] font-extrabold">More in this season</h2>
+
+            <Hits
+              hitComponent={MoreEpisodesHitComponent}
+              classNames={{
+                list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
+              }}
+            />
+          </div>
+        </div>
+      </HitsWrapper>
     </InstantSearch>
   );
 };
