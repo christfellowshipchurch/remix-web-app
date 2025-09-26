@@ -22,23 +22,25 @@ export function EpisodeNotes({
             />
           </div>
         </div>
-        <div>
-          <h2 className="text-[18px] md:text-[32px] font-extrabold">
-            Additional Resources
-          </h2>
-          <div className="flex flex-wrap gap-2 lg:gap-4 mt-2">
-            {resources.map((resource, index) => (
-              <Button
-                key={index}
-                intent="secondary"
-                href={resource.url}
-                size="sm"
-              >
-                {resource.title}
-              </Button>
-            ))}
+        {resources.length > 0 && (
+          <div>
+            <h2 className="text-[18px] md:text-[32px] font-extrabold">
+              Additional Resources
+            </h2>
+            <div className="flex flex-wrap gap-2 lg:gap-4 mt-2">
+              {resources.map((resource, index) => (
+                <Button
+                  key={index}
+                  intent="secondary"
+                  href={resource.url}
+                  size="sm"
+                >
+                  {resource.title}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

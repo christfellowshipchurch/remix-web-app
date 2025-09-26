@@ -1,16 +1,12 @@
-export const HeroContent = ({
-  title,
-  description,
-  season,
-  episodeNumber,
-  authors,
-}: {
-  title: string;
-  description: string;
-  season: string;
-  episodeNumber: string;
-  authors: string;
-}) => {
+import { useLoaderData } from "react-router-dom";
+import { LoaderReturnType } from "../loader";
+
+export const HeroContent = () => {
+  const { episode } = useLoaderData<LoaderReturnType>();
+
+  const { title, season, episodeNumber, showGuests, publishDate, summary } =
+    episode;
+
   return (
     <div className="hidden md:flex flex-col justify-center text-white font-medium text-xl">
       <div className="flex flex-col gap-2 mb-4 xl:mb-6">
@@ -21,12 +17,12 @@ export const HeroContent = ({
         <p className="text-xs font-medium uppercase">
           Season {season} | Episode {episodeNumber}
         </p>
-        <p className="text-base font-normal">{authors}</p>
+        <p className="text-base font-normal">{`${showGuests} - ${publishDate}`}</p>
       </div>
-      {description && (
+      {summary && (
         <p
           className="font-medium text-lg"
-          dangerouslySetInnerHTML={{ __html: description }}
+          dangerouslySetInnerHTML={{ __html: summary }}
         />
       )}
     </div>
