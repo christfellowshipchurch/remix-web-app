@@ -96,21 +96,14 @@ export const LocationSearch = () => {
   return (
     <div
       className={cn(
-        "absolute flex flex-col w-full",
-        "px-5 left-0 -bottom-2 max-w-[100vw] justify-end",
+        "flex flex-col w-full",
+        "left-0 -bottom-2 max-w-[100vw] justify-end",
         "md:px-0 md:left-auto md:bottom-1/4 md:max-w-auto md:size-auto md:justify-start",
         "lg:bottom-4 lg:size-full",
-        isSearching &&
-          "md:left-1/2 md:-translate-x-1/2 lg:left-auto lg:translate-x-0"
+        isSearching && "mt-32"
       )}
       ref={locationSearchBarRef}
     >
-      <div
-        className={cn(
-          "h-[1px] w-full bg-[#D9D9D9] opacity-50 md:hidden",
-          isSearching && "mb-4"
-        )}
-      />
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
@@ -139,9 +132,9 @@ export const LocationSearch = () => {
         {/* Search Bar */}
         <div
           className={cn(
-            "relative w-full md:w-90 z-50 pt-10 rounded-[1rem] transition-all duration-300",
+            "relative w-full md:w-90 z-50 rounded-[1rem] transition-all duration-300",
             {
-              "bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[520px] lg:-translate-y-25 shorter:-translate-y-70":
+              "bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[520px] lg:-translate-y-30 shorter:-translate-y-70":
                 isSearching,
               "bg-transparent": !isSearching,
             }
