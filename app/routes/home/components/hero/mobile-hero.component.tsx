@@ -1,5 +1,5 @@
 import { LocationSearch } from "../location-search/location-search.component";
-import { MobileBottomBar } from "./mobile-bottom-bar.component";
+import { MobileFeaturedItems } from "./mobile-features.component";
 
 export const MobileHeroSection = () => {
   return (
@@ -64,7 +64,7 @@ export const MobileHeroSection = () => {
         <div className="flex items-center justify-center">
           <div className="h-[1px] w-full bg-[#D9D9D9] opacity-50" />
         </div>
-        <MobileBottomBar />
+        <MobileFeaturedItems />
       </div>
     </section>
   );

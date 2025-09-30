@@ -3,18 +3,18 @@ import { Icon } from "~/primitives/icon/icon";
 import { cn } from "~/lib/utils";
 import { Link } from "react-router-dom";
 
-export const HeroFeaturedItems = () => {
+export const DesktopFeaturedItems = () => {
   return (
     <div className="w-full bg-white py-8 px-4">
       <div className="flex flex-col md:flex-row justify-center lg:justify-center gap-4 md:gap-8 lg:gap-12 xl:max-w-[600px] xl:mx-auto">
-        <HeroFeaturedItem
+        <DesktopFeaturedItem
           iconName="messageSquareDetail"
           heading="Featured Item"
           title="Featured Item Text"
           url="sms:441-441"
           position={1}
         />
-        <HeroFeaturedItem
+        <DesktopFeaturedItem
           iconName="church"
           heading="Comunidad Hispana"
           title="Iglesia en Español"
@@ -26,7 +26,7 @@ export const HeroFeaturedItems = () => {
   );
 };
 
-const HeroFeaturedItem = ({
+const DesktopFeaturedItem = ({
   iconName,
   heading,
   title,

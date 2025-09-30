@@ -3,18 +3,18 @@ import { Icon } from "~/primitives/icon/icon";
 import { cn } from "~/lib/utils";
 import { Link } from "react-router-dom";
 
-export const MobileBottomBar = () => {
+export const MobileFeaturedItems = () => {
   return (
     <div className="w-full md:px-4">
       <div className="flex justify-center md:justify-start gap-3">
-        <MobileBottomBarItem
+        <MobileFeaturedItem
           iconName="church"
           heading="Iglesia en Español"
           title="Iglesia en Español"
           url="/cfe"
           position={1}
         />
-        <MobileBottomBarItem
+        <MobileFeaturedItem
           iconName="calendarAlt"
           heading="On Sale Now"
           title="Diesel Tickets"
@@ -26,7 +26,7 @@ export const MobileBottomBar = () => {
   );
 };
 
-const MobileBottomBarItem = ({
+export const MobileFeaturedItem = ({
   iconName,
   heading,
   title,
