@@ -33,20 +33,23 @@ export const WhatWeOfferCard = ({
             />
           </div>
         ) : (
-          <h3 className="text-center text-[32px] lg:text-[52px] font-extrabold text-navy leading-none">
+          <h3
+            className={cn(
+              "text-center",
+              "lg:text-[52px]",
+              "font-extrabold",
+              "text-navy",
+              "leading-none",
+              content.label === "Freedom & Care" ? "text-[32px]" : "text-[52px]"
+            )}
+          >
             {content.label}
           </h3>
         )}
 
-        <div className="flex flex-col gap-4 flex-1 justify-end">
-          <p className="text-semibold lg:text-[17px] text-center">
-            {content.description1}
-          </p>
-          {content.description2 && (
-            <p className="text-semibold lg:text-[17px] text-center">
-              {content.description2}
-            </p>
-          )}
+        <div className="flex flex-col gap-4 flex-1 text-center font-semibold justify-center">
+          <p>{content.description1}</p>
+          {content.description2 && <p>{content.description2}</p>}
         </div>
       </div>
       <Button intent="primary" className="w-full h-[fit-content]">
@@ -56,7 +59,15 @@ export const WhatWeOfferCard = ({
   );
 };
 
-export const WhatWeOfferDesktop = () => {
+export const WhatWeOfferDesktop = ({
+  onTabChange,
+}: {
+  onTabChange?: (tabValue: string) => void;
+}) => {
+  const handleTabChange = (tabValue: string) => {
+    onTabChange?.(tabValue);
+  };
+
   return (
     <div className="flex flex-col gap-8 lg:gap-12">
       <div className="flex flex-col gap-4 content-padding">
@@ -73,6 +84,7 @@ export const WhatWeOfferDesktop = () => {
         <Tabs.Root
           defaultValue="family"
           className="w-full flex flex-col gap-12"
+          onValueChange={handleTabChange}
         >
           <Tabs.List className="flex justify-center gap-4 max-w-none mx-auto">
             {whatWeOfferData.map((tab) => (
