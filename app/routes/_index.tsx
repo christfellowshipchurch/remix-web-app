@@ -22,7 +22,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Index() {
+export default function HomePage() {
   const outletContext = useOutletContext<{
     heroScrollRef?: React.RefObject<HTMLDivElement>;
   }>();

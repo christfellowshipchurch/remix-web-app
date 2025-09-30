@@ -3,10 +3,11 @@ import { LocationSearch } from "../components/location-search/location-search.co
 import { IconName } from "~/primitives/button/types";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
+import { cn } from "~/lib/utils";
 
 export function DesktopHeroSection() {
   return (
-    <section className="h-[90dvh] w-full bg-white pb-16">
+    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px]">
       <div className="flex size-full relative">
         {/* Left Column */}
         <img
@@ -40,7 +41,7 @@ export function DesktopHeroSection() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="z-2 w-full">
+          <div className="z-1 w-full">
             <BottomBar />
           </div>
         </div>
@@ -51,17 +52,14 @@ export function DesktopHeroSection() {
             <img
               src="/assets/images/home/bg-vid.webp"
               alt="Hero Background"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover absolute inset-0 z-0"
               loading="eager"
               // @ts-ignore
               fetchpriority="high"
             />
-            <Video
-              wistiaId="ieybr1sv38"
-              autoPlay
-              muted
-              loop
-              className="w-full h-full object-cover absolute inset-0"
+            <iframe
+              src={`https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover`}
+              className="w-full h-full absolute inset-0 z-2"
             />
           </div>
         </div>
@@ -72,7 +70,7 @@ export function DesktopHeroSection() {
 
 export const BottomBar = () => {
   return (
-    <div className="w-full px-8 py-8 md:py-12 md:pt-8 md:pb-16 lg:py-12 bg-white xl:pl-0 xl:mx-auto ">
+    <div className="w-full bg-white py-8 px-4">
       <div className="flex flex-col md:flex-row justify-center lg:justify-center gap-4 md:gap-8 lg:gap-12 xl:max-w-[600px] xl:mx-auto">
         <BottomBarItem
           iconName="messageSquareDetail"
@@ -109,7 +107,24 @@ const BottomBarItem = ({
   return (
     <Link
       to={url}
-      className="bg-navy-subdued lg:bg-transparent rounded-xl lg:rounded-none flex lg:items-center lg:justify-center gap-4 lg:gap-2 group p-4 lg:p-0 w-full lg:w-auto md:max-w-[304px] lg:max-w-none"
+      className={cn(
+        "bg-navy-subdued",
+        "rounded-xl",
+        "flex",
+        "gap-4",
+        "group",
+        "p-4",
+        "w-full",
+        "md:max-w-[304px]",
+        "lg:bg-transparent",
+        "lg:rounded-none",
+        "lg:items-center",
+        "lg:justify-center",
+        "lg:gap-2",
+        "lg:p-0",
+        "lg:w-auto",
+        "lg:max-w-none"
+      )}
       data-gtm="featured-item"
       data-position={position}
       data-item-title={title}
