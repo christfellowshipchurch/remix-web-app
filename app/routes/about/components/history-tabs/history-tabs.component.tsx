@@ -96,7 +96,7 @@ function HistoryTabs() {
               {timelineData[activeTab].content}
             </p>
             {activeTab === 0 && (
-              <p className="text-lg text-text-secondary w-2/3 sm:w-3/4 md:w-full mt-4">
+              <p className="text-lg text-text-secondary w-full sm:w-3/4 md:w-full mt-4">
                 Christ Fellowship is a non-denominational church in South
                 Florida led by Pastors Todd & Julie Mullins. The church gathers
                 across multiple regional locations in Palm Beach Gardens, Belle

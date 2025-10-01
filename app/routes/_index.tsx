@@ -39,7 +39,7 @@ export default function HomePage() {
       {/* The rest of your sections (not snapped) */}
       <WhatWeOfferSection />
       <HistorySection sectionTitle="History" title="Who We Are" />
-      <BeliefsSection customTitle="What we Believe and Teach" />
+      <BeliefsSection />
       <WhatToExpectSection />
       <LeadershipSection className="py-52" />
       <AppSection />
