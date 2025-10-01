@@ -4,39 +4,45 @@ import TimelineNavigation from "./timeline-navigation.component";
 interface TimelineItem {
   year: string;
   image: string;
-  content: string;
+  title: string;
+  body: string;
 }
 
 const timelineData: TimelineItem[] = [
   {
     year: "2025",
-    image: "/assets/images/about/todd-julie.webp",
-    content:
-      "Christ Fellowship started in 1984 as a small Bible study with 40 people in Dr. Tom and Donna Mullins' living room and has grown to thousands of people attending every weekend and even more joining online from around the world.",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx?id=3068095",
+    title: "What we believe",
+    body: "At Christ Fellowship, we believe that church isn’t just a building you walk into, but a family you can belong to. Every Sunday, we have inspiring services where you can learn more about Jesus and discover your purpose in life. Come as you are and expect to feel right at home. Our mission is to impact our world with the love and message of Jesus Christ—everyone, everyday, everywhere.",
   },
   {
-    year: "2010",
-    image: "/assets/images/about/todd-julie.webp",
-    content:
-      "Christ Fellowship expanded its reach across South Florida, establishing multiple campuses to serve different communities throughout the region.",
+    year: "2023",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx?id=3068097",
+    title: "Get There First",
+    body: "In 2023, Christ Fellowship launched “Get There First,” a multi-year vision focused on reaching the next generation. With Kids University discipleship programs,  and expanded youth ministry, the church is making its biggest investment yet in raising up young leaders for the future.",
   },
   {
-    year: "2000",
-    image: "/assets/images/about/todd-julie.webp",
-    content:
-      "The church experienced significant growth and began implementing innovative ministry approaches to reach more people with the message of Jesus.",
+    year: "2011",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx?id=3068098",
+    title: "Multi-Site Expansion",
+    body: "Christ Fellowship launched a bold multi-site strategy in 2011 to make it easy for people across South Florida to encounter Jesus. Today, thousands gather each week across multiple campuses—from Boynton Beach to Port St. Lucie—bringing church closer to where people live and work.",
   },
   {
-    year: "1995",
-    image: "/assets/images/about/todd-julie.webp",
-    content:
-      "A period of foundational growth as the church established its core ministries and began to impact the local community in greater ways.",
+    year: "1992",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx?id=3068099",
+    title: "Building the First Campus",
+    body: "After years of gathering in schools and temporary spaces, the church’s founding families sacrificed greatly—selling cars, mortgaging homes, and giving generously—to purchase an old horse barn on Northlake Blvd. In 1992, members worked six days a week to transform it into Christ Fellowship’s first permanent campus, a place that quickly filled with life and faith",
   },
   {
-    year: "1980",
-    image: "/assets/images/about/todd-julie.webp",
-    content:
-      "The early years of Christ Fellowship, marked by intimate gatherings and the establishment of our church's vision and values.",
+    year: "1984",
+    image:
+      "https://cloudfront.christfellowship.church/GetImage.ashx?id=3068100",
+    title: "Humble Beginnings",
+    body: "Christ Fellowship began in the Mullins’ living room with just 40 people gathered for prayer and worship. That simple step of faith sparked a movement that has grown into a church family impacting communities across South Florida and around the world.",
   },
 ];
 
@@ -48,8 +54,8 @@ function HistoryTabs() {
     if (index === activeTab || transitioning) return;
 
     setTransitioning(true);
+    setActiveTab(index);
     setTimeout(() => {
-      setActiveTab(index);
       setTransitioning(false);
     }, 300);
   };
@@ -93,20 +99,11 @@ function HistoryTabs() {
             }`}
           >
             <p className="text-lg font-medium text-text-primary">
-              {timelineData[activeTab].content}
+              {timelineData[activeTab].title}
             </p>
-            {activeTab === 0 && (
-              <p className="text-lg text-text-secondary w-full sm:w-3/4 md:w-full mt-4">
-                Christ Fellowship is a non-denominational church in South
-                Florida led by Pastors Todd & Julie Mullins. The church gathers
-                across multiple regional locations in Palm Beach Gardens, Belle
-                Glade, Boca Raton, Boynton Beach, Jupiter, Okeechobee, Port St.
-                Lucie, Royal Palm Beach, Stuart, Trinity in Palm Beach Gardens,
-                Vero Beach, Westlake, as well as Español in Palm Beach Gardens
-                and Royal Palm Beach and online through Christ Fellowship
-                Everywhere.
-              </p>
-            )}
+            <p className="text-lg text-text-secondary w-full sm:w-3/4 md:w-full mt-4">
+              {timelineData[activeTab].body}
+            </p>
           </div>
         </div>
       </div>
