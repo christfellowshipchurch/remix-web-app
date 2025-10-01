@@ -44,7 +44,7 @@ export const EventsTagsRefinementList = () => {
   };
 
   return (
-    <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide">
+    <div className="-ml-5 md:ml-0 w-screen md:w-full flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide">
       {/* Recent Tag */}
       <button
         onClick={() => handleTagClick(null)}

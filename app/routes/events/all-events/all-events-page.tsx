@@ -10,12 +10,6 @@ export function AllEventsPage() {
       <DynamicHero
         customTitle="Events"
         imagePath="/assets/images/events-hero-bg.jpg"
-        ctas={[
-          {
-            href: "#cta",
-            title: "Call to Action",
-          },
-        ]}
       />
 
       <FeaturedEvents />
