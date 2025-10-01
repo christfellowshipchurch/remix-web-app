@@ -63,14 +63,14 @@ export const WhatWeOfferMobile = ({
           className="w-full flex flex-col gap-4"
           onValueChange={handleTabChange}
         >
-          <Tabs.List className="flex justify-between rounded-[13px] bg-[rgba(244,245,247,0.37)] p-1 max-w-[360px] mx-auto">
+          <Tabs.List className="flex justify-between gap-1 rounded-[13px] bg-[rgba(244,245,247,0.37)] p-2 max-w-[360px] mx-auto">
             {whatWeOfferData.map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
                 className={cn(
                   button({ intent: "secondary" }),
-                  "rounded-full border-transparent text-white hover:border-ocean py-[11px] px-[14px]",
+                  "rounded-xl border-transparent text-white hover:border-ocean py-1 px-3",
                   "data-[state=active]:text-black data-[state=active]:bg-white",
                   "data-[state=active]:shadow-[0px_2.416px_2.416px_0px_rgba(0,0,0,0.25)]",
                   "data-[state=active]:py-2 data-[state=active]:mb-[2px]"
@@ -82,7 +82,8 @@ export const WhatWeOfferMobile = ({
             ))}
           </Tabs.List>
 
-          <div className="w-full h-[1px] bg-[#D8D8DB]/25" />
+          {/* divider */}
+          <div className="w-full h-[1px] bg-[#D8D8DB]/25 max-w-[350px] mx-auto" />
 
           {whatWeOfferData.map((tab) => (
             <Tabs.Content
@@ -109,7 +110,7 @@ export const WhatWeOfferMobile = ({
                   <div
                     key={index}
                     data-card
-                    className="min-w-[72vw] snap-center snap-always"
+                    className="snap-center snap-always"
                     data-card-title={content.label}
                     data-tab-context={tab.value}
                   >

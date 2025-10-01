@@ -14,8 +14,10 @@ export const WhatWeOfferCard = ({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6 lg:px-5 lg:py-8 w-[72vw] md:w-[230px] lg:w-[300px] xl:w-[340px] h-full",
-        middleCard && "min-h-[340px] md:min-h-[340px] lg:min-h-[420px]"
+        "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6",
+        "lg:px-5 lg:py-8",
+        "w-[300px] md:w-[230px] lg:w-[300px] xl:w-[340px] h-full",
+        middleCard && ["min-h-[340px]", "md:min-h-[340px]", "lg:min-h-[420px]"]
       )}
     >
       <div className="flex flex-col items-center gap-9 flex-1">
@@ -36,11 +38,12 @@ export const WhatWeOfferCard = ({
           <h3
             className={cn(
               "text-center",
-              "lg:text-[52px]",
               "font-extrabold",
               "text-navy",
               "leading-none",
-              content.label === "Freedom & Care" ? "text-[32px]" : "text-[52px]"
+              content.label === "Freedom & Care"
+                ? "text-[32px] lg:text-[40px] leading-10"
+                : "text-[52px]"
             )}
           >
             {content.label}
