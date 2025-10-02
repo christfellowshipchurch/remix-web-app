@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
-import { Breadcrumbs } from "~/components";
-import { IconButton } from "~/primitives/button/icon-button.primitive";
-import heroBgImgStyles from "~/styles/hero-bg-image-styles";
+import BulletPoints from "~/primitives/bullet-points";
+import { Button } from "~/primitives/button/button.primitive";
 
 export const EventsSingleHero = ({
   imagePath,
@@ -25,42 +24,53 @@ export const EventsSingleHero = ({
       )[0] || "Home";
 
   return (
-    <div style={heroBgImgStyles(imagePath)} className="w-full">
-      <div className="flex items-center px-5 md:px-12 lg:px-18 w-full bg-white/80 backdrop-blur-lg justify-start self-stretch py-8 md:pb-12 md:pt-20">
-        <div className="flex flex-col w-full mx-auto items-start justify-end self-stretch max-w-screen-content">
-          <img
-            src={imagePath}
-            alt={customTitle || pagePath}
-            className="w-full aspect-[2/1] object-cover"
-          />
-          <h1 className="font-extrabold heading-h4 md:heading-h2 lg:text-[52px] text-text-primary leading-tight !text-pretty my-3 md:my-8">
-            {customTitle || pagePath}
-          </h1>
-          <div className="hidden md:block h-[2px] self-stretch bg-neutral-400 opacity-50 mb-8" />
-          <div className="flex items-center justify-between self-stretch">
-            {/* Breadcrumbs */}
-            <div className="flex flex-col gap-3 w-full md:px-0 md:flex-row md:items-center md:justify-between md:gap-0">
-              <div className="hidden lg:block">
-                <Breadcrumbs mode="dark" />
-              </div>
-              <div className="md:hidden h-[2px] self-stretch bg-neutral-400 opacity-50 mt-16" />
+    <div className="w-full flex items-center content-padding py-8 md:py-12 lg:py-16">
+      <div className="flex flex-col-reverse md:flex-row w-full mx-auto gap-2 md:gap-4 lg:gap-10 xl:!justify-between items-center justify-center self-stretch max-w-screen-content md:mb-12">
+        {/* Left / Bottom Side (Desktop) */}
+        <div className="flex flex-col gap-10 mb-4 md:mb-0">
+          <div className="flex flex-col gap-3">
+            <h1 className="font-extrabold heading-h4 md:heading-h2 lg:text-[52px] text-text-primary leading-tight !text-pretty -mb-1">
+              {customTitle || pagePath}
+            </h1>
 
-              {/* CTAs */}
-              <div className="mt-5 md:mt-0 flex lg:flex-wrap gap-2 sm:gap-4 md:gap-6">
-                {ctas?.map((cta, i) => (
-                  <IconButton
-                    key={i}
-                    to={cta.href}
-                    className="text-navy border-navy hover:enabled:text-ocean hover:enabled:border-ocean"
-                    withRotatingArrow={i === ctas.length - 1}
-                  >
-                    {cta.title}
-                  </IconButton>
-                ))}
-              </div>
+            <p className="font-medium text-lg text-[#717182]">
+              A really engaging paragraph. Introduction to the event, just one
+              or two sentences.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-5 md:mt-0 flex flex-wrap gap-2 sm:gap-4 md:gap-6">
+              {ctas?.map((cta, i) => (
+                <Button
+                  key={i}
+                  href={cta.href}
+                  intent={i === 0 ? "primary" : "secondary"}
+                >
+                  {cta.title}
+                </Button>
+              ))}
             </div>
           </div>
+
+          {/* Bullet Points */}
+          <BulletPoints
+            dotStyles="bg-navy size-[6px]"
+            textStyles="text-[#717182]"
+            className="gap-1"
+            points={[
+              "Connect with others and build meaningful relationships",
+              "Learn and grow through engaging content and discussions",
+              "Make a positive impact in your community",
+            ]}
+          />
         </div>
+
+        {/* Right / Top Side (Mobile) */}
+        <img
+          src={imagePath}
+          alt={customTitle || pagePath}
+          className="w-full max-w-[638px] aspect-[638/478] object-cover rounded-[14px] shadow-lg"
+        />
       </div>
     </div>
   );

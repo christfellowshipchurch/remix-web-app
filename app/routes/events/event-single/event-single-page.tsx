@@ -1,31 +1,14 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
-import { SectionTitle, AdditionalResources } from "~/components";
 
 import { LoaderReturnType } from "./loader";
 import { EventContent } from "./partials/event-content.partial";
 import { EventsSingleHero } from "./partials/hero.partial";
 import { TimesLocations } from "./components/times-and-locations.component";
-import { EventSingleFAQ } from "./components/faq.component";
+import { EventSingleFAQ } from "./components/event-single-faq.component";
 import { AdditionalInfo } from "./components/info-sections.component";
-
-const mockResources = [
-  {
-    title: "Resource 1",
-    image: "/assets/images/events/resource-1.jpg",
-    url: "/resource-1",
-  },
-  {
-    title: "Resource 2",
-    image: "/assets/images/events/resource-2.jpg",
-    url: "/resource-2",
-  },
-  {
-    title: "Resource 3",
-    image: "/assets/images/events/resource-3.jpg",
-    url: "/resource-3",
-  },
-];
+import BackBanner from "~/components/back-banner";
+import { EventBanner } from "./components/event-banner";
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
@@ -33,6 +16,12 @@ export const EventSinglePage: React.FC = () => {
   return (
     <>
       <div className="flex flex-col items-center dark:bg-gray-900">
+        <BackBanner
+          backText="Back to Events"
+          pageTitle={data.title}
+          link="/events"
+        />
+
         {/* TODO: Get CTAS from Rock */}
         <EventsSingleHero
           imagePath={data.coverImage}
@@ -42,9 +31,16 @@ export const EventSinglePage: React.FC = () => {
           ]}
           customTitle={data.title}
         />
+
+        <EventBanner title={data.title} />
+
+        {/* About Section */}
+        <EventSingleFAQ title={data.title} />
+        {/* Register Section */}
+
+        {/* TODO: Remove OLD - Content Sections */}
         <div className="content-padding w-full flex flex-col items-center ">
           <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-screen-content">
-            <SectionTitle sectionTitle="event details." />
             <div className="flex w-full justify-center gap-16">
               {/* Desktop */}
               <div className="hidden lg:flex flex-col gap-8">
@@ -62,11 +58,6 @@ export const EventSinglePage: React.FC = () => {
                   <EventDivider />
                   <AdditionalInfo type="contact" />
                 </div>
-
-                <EventDivider className="lg:hidden" />
-                <EventSingleFAQ />
-                <EventDivider />
-                <AdditionalResources type="button" resources={mockResources} />
               </div>
             </div>
           </div>
