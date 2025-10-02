@@ -13,7 +13,8 @@ const timelineData: TimelineItem[] = [
     year: "2025",
     image:
       "https://cloudfront.christfellowship.church/GetImage.ashx?id=3068095",
-    title: "What we believe",
+    title:
+      "Christ Fellowship is a non-denominational church led by Pastors Todd and Julie Mullins. We gather across multiple locations throughout Florida and online through Christ Fellowship Everywhere.",
     body: "At Christ Fellowship, we believe that church isn’t just a building you walk into, but a family you can belong to. Every Sunday, we have inspiring services where you can learn more about Jesus and discover your purpose in life. Come as you are and expect to feel right at home. Our mission is to impact our world with the love and message of Jesus Christ—everyone, everyday, everywhere.",
   },
   {
@@ -64,13 +65,7 @@ function HistoryTabs() {
     <div className="py-12 lg:py-24 w-full relative">
       {/* Gray BG */}
       <div className="hidden md:px-0 overflow-scroll md:block relative md:absolute top-0 right-0 h-full w-[80%] bg-gray z-0" />
-      {/* Mobile Timeline Navigation */}
-      <TimelineNavigation
-        timelineData={timelineData}
-        activeTab={activeTab}
-        handleTabChange={handleTabChange}
-        className="block md:hidden"
-      />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-8 items-center">
         {/* Image */}
         <div className="relative mx-auto md:mx-0 h-full min-h-[300px] max-w-[400px] md:max-h-[500px] md:max-w-none lg:min-h-[500px] overflow-hidden z-20 content-padding md:px-0">
@@ -89,7 +84,6 @@ function HistoryTabs() {
             timelineData={timelineData}
             activeTab={activeTab}
             handleTabChange={handleTabChange}
-            className="hidden md:block"
           />
           <div
             className={`transition-all duration-300 mt-6 lg:mt-0space-y-4 ${
