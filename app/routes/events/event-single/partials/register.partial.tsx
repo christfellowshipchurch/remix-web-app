@@ -3,6 +3,8 @@ import { icons } from "~/lib/icons";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
+// TODO: This component is pending some more thought and work around registering for events since it can very a lot per event
+
 export const ResgisterPartial = ({ title }: { title: string }) => {
   const [step, setStep] = useState(1);
   const [selectedCampus, setSelectedCampus] = useState("Select Campus");

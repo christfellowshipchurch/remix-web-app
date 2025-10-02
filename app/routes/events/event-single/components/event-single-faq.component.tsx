@@ -4,7 +4,7 @@ import { faqEventData } from "~/lib/faq-data.data";
 export const EventSingleFAQ = ({ title }: { title: string }) => {
   return (
     <section
-      className="flex flex-col gap-12 py-8 md:py-16 content-padding"
+      className="flex flex-col gap-12 py-12 md:py-24 content-padding"
       id="faq"
     >
       <h2 className="font-extrabold text-center text-[32px]">

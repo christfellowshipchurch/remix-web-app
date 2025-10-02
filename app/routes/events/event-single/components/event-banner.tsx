@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 
-export const EventBanner = ({ title }: { title: string }) => {
+export const EventBanner = ({
+  title,
+  sections,
+}: {
+  title: string;
+  sections: { id: string; label: string }[];
+}) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -13,11 +19,35 @@ export const EventBanner = ({ title }: { title: string }) => {
   const unselectedStyles =
     "bg-white hover:!bg-navy text-[#585858] hover:text-white text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0";
 
-  const sections = [
-    { id: "about", label: "About" },
-    { id: "faq", label: "FAQ" },
-    { id: "register", label: "Register" },
-  ];
+  // Derive active section from scroll position to improve accuracy when scrolling up - this function worked
+  //  better than IntersectionObserver alone or other alternatives I tried
+  const updateActiveSectionFromOffsets = () => {
+    const offset = 100; // match scroll offset logic
+    const currentY = window.scrollY + offset;
+    const candidates = sections
+      .map(({ id }) => {
+        const el = document.getElementById(id);
+        return {
+          id,
+          top: el ? el.offsetTop : Number.POSITIVE_INFINITY,
+        };
+      })
+      .filter((s) => Number.isFinite(s.top))
+      .sort((a, b) => a.top - b.top);
+
+    // Find the last section whose top is above or equal to the currentY
+    let chosen = candidates[0]?.id || "";
+    for (const c of candidates) {
+      if (c.top <= currentY) {
+        chosen = c.id;
+      } else {
+        break;
+      }
+    }
+    if (chosen && chosen !== activeSection) {
+      setActiveSection(chosen);
+    }
+  };
 
   const handleSectionClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
@@ -64,6 +94,9 @@ export const EventBanner = ({ title }: { title: string }) => {
       }
 
       setLastScrollY(currentScrollY);
+
+      // Also update active section based on offsets for reliable upward scrolling
+      updateActiveSectionFromOffsets();
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -74,15 +107,17 @@ export const EventBanner = ({ title }: { title: string }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
+        const mostVisible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (mostVisible && mostVisible.target && mostVisible.target.id) {
+          setActiveSection(mostVisible.target.id);
+        }
       },
       {
-        threshold: 0.5,
-        rootMargin: "-100px 0px -50% 0px",
+        threshold: [0.1, 0.25, 0.5, 0.75, 1],
+        // Slightly smaller top offset and less aggressive bottom for tablets
+        rootMargin: "-80px 0px -35% 0px",
       }
     );
 
@@ -103,7 +138,8 @@ export const EventBanner = ({ title }: { title: string }) => {
     <div
       className={cn(
         "w-full bg-white content-padding py-[15px] shadow-md sticky transition-all duration-300 z-10",
-        isNavbarOpen ? "top-18 md:top-22" : "top-0"
+        // Use consistent, existing spacing tokens for better tablet behavior
+        isNavbarOpen ? "top-16 md:top-20" : "top-0"
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex items-center justify-between">

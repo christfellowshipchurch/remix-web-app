@@ -12,6 +12,9 @@ import { ResgisterPartial } from "./partials/register.partial";
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
 
+  // TODO: Update this to come from Rock? - looking into this more in the future
+  const shouldRegister = false;
+
   return (
     <>
       <div className="flex flex-col items-center dark:bg-gray-900">
@@ -31,7 +34,14 @@ export const EventSinglePage: React.FC = () => {
           customTitle={data.title}
         />
 
-        <EventBanner title={data.title} />
+        <EventBanner
+          title={data.title}
+          sections={[
+            { id: "about", label: "About" },
+            { id: "faq", label: "FAQ" },
+            // { id: "register", label: "Register" },
+          ]}
+        />
 
         {/* About Section */}
         <AboutPartial
@@ -62,12 +72,8 @@ export const EventSinglePage: React.FC = () => {
         <EventSingleFAQ title={data.title} />
 
         {/* Register Section - TODO: NOT COMPLETED, PAUSING FOR NOW*/}
-        {/* <ResgisterPartial title={data.title} /> */}
+        {shouldRegister && <ResgisterPartial title={data.title} />}
       </div>
     </>
   );
-};
-
-const EventDivider = ({ className }: { className?: string }) => {
-  return <div className={`w-full h-[1px] bg-black opacity-30 ${className}`} />;
 };
