@@ -17,6 +17,25 @@ export const EventSingleFAQ = ({ title }: { title: string }) => {
       </p>
 
       <StyledAccordion data={faqEventData} bg="white" border="#C6C6C6" />
+
+      <div className="flex flex-col gap-1 items-center text-[#717182] font-medium text-center">
+        <p>If you have questions, we'd love to help.</p>
+        <p>
+          Contact us at{" "}
+          <a
+            className="text-[#4D4D4D] hover:text-ocean cursor-pointer"
+            href="mailto:hello@christfellowship.church"
+          >
+            hello@christfellowship.church
+          </a>{" "}
+          or call{" "}
+          <a
+            className="text-[#4D4D4D] hover:text-ocean cursor-pointer"
+            href="tel:5617997600"
+          >
+          </a>
+        </p>
+      </div>
     </section>
   );
 };
