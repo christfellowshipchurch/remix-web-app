@@ -18,15 +18,20 @@ function TimelineNavigation({
       const activeButton = innerDiv.children[activeTab] as HTMLElement;
 
       if (activeButton && innerDiv) {
-        const containerWidth = container.offsetWidth;
-        const buttonLeft = activeButton.offsetLeft;
-        const buttonWidth = activeButton.offsetWidth;
-        const scrollLeft = buttonLeft - containerWidth / 2 + buttonWidth / 2;
+        // Only apply centering on mobile screens (below xl breakpoint)
+        const isMobile = window.innerWidth < 1280; // xl breakpoint is 1280px
 
-        container.scrollTo({
-          left: scrollLeft,
-          behavior: "smooth",
-        });
+        if (isMobile) {
+          const containerWidth = container.offsetWidth;
+          const buttonLeft = activeButton.offsetLeft;
+          const buttonWidth = activeButton.offsetWidth;
+          const scrollLeft = buttonLeft - containerWidth / 2 + buttonWidth / 2;
+
+          container.scrollTo({
+            left: scrollLeft,
+            behavior: "smooth",
+          });
+        }
       }
     }
   }, [activeTab]);
@@ -34,14 +39,14 @@ function TimelineNavigation({
     <div className="relative mb-12">
       <div
         ref={scrollContainerRef}
-        className="flex items-center xl:px-12 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+        className="flex items-center xl:px-12 overflow-x-auto xl:overflow-x-visible scrollbar-hide snap-x snap-mandatory xl:snap-none"
       >
-        <div className="flex justify-between items-center w-full min-w-[700px] px-16">
+        <div className="flex justify-between items-center w-full min-w-[700px] xl:min-w-0 px-16 xl:px-0">
           {timelineData.map((item, index) => (
             <button
               key={item.year}
               onClick={() => handleTabChange(index)}
-              className="flex flex-col items-center space-y-2 relative cursor-pointer px-4 select-none flex-shrink-0 snap-center"
+              className="flex flex-col items-center space-y-2 relative cursor-pointer px-4 select-none flex-shrink-0 snap-center xl:snap-none"
             >
               <span
                 className={`text-lg font-bold transition-colors duration-300 ${
