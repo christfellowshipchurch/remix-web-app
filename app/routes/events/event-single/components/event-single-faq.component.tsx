@@ -33,6 +33,7 @@ export const EventSingleFAQ = ({ title }: { title: string }) => {
             className="text-[#4D4D4D] hover:text-ocean cursor-pointer"
             href="tel:5617997600"
           >
+            (561) 799-7600
           </a>
         </p>
       </div>
