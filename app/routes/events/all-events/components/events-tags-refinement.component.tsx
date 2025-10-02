@@ -48,7 +48,7 @@ export const EventsTagsRefinementList = () => {
       {/* Recent Tag */}
       <button
         onClick={() => handleTagClick(null)}
-        className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
+        className={`ml-4 md:ml-0 text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
           selectedTag === null
             ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
             : "bg-gray text-neutral-500 hover:bg-neutral-200"
@@ -79,17 +79,17 @@ export const EventsClearFiltersText = () => {
   const { setIndexUiState } = useInstantSearch();
 
   return (
-    <div className="hidden md:flex items-center gap-1 group">
-      <p
-        className="w-fit text-ocean underline group-hover:text-navy transition-colors duration-300 cursor-pointer"
-        onClick={() => {
-          setIndexUiState((state) => ({
-            ...state,
-            refinementList: {},
-          }));
-        }}
-      >
-        Clear All Filters
+    <div
+      className="flex items-center gap-1 group cursor-pointer"
+      onClick={() => {
+        setIndexUiState((state) => ({
+          ...state,
+          refinementList: {},
+        }));
+      }}
+    >
+      <p className="w-fit text-ocean underline group-hover:text-navy transition-colors duration-300">
+        Clear <span className="hidden md:inline">All Filters</span>
       </p>
       <Icon
         name="x"
