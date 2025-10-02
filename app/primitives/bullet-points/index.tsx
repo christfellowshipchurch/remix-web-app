@@ -14,13 +14,16 @@ const BulletPoints = ({
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {points.map((point, index) => (
-        <div key={index} className="flex items-center gap-2">
+        <div key={index} className="flex items-start gap-2">
           <div
-            className={`size-2 rounded-full flex-shrink-0 ${dotStyles}`}
+            className={`mt-[6px] size-2 rounded-full flex-shrink-0 ${dotStyles}`}
             aria-hidden="true"
           />
           <p
-            className={cn("text-text-primary font-medium text-sm", textStyles)}
+            className={cn(
+              "text-text-primary font-medium text-sm leading-tight",
+              textStyles
+            )}
           >
             {point}
           </p>

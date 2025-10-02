@@ -3,7 +3,7 @@ import { faqEventData } from "~/lib/faq-data.data";
 
 export const EventSingleFAQ = ({ title }: { title: string }) => {
   return (
-    <div
+    <section
       className="flex flex-col gap-12 py-8 md:py-16 content-padding"
       id="faq"
     >
@@ -15,6 +15,6 @@ export const EventSingleFAQ = ({ title }: { title: string }) => {
         common questions we receive.
       </p>
       <StyledAccordion data={faqEventData} bg="white" border="#C6C6C6" />
-    </div>
+    </section>
   );
 };

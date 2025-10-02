@@ -2,13 +2,12 @@ import React from "react";
 import { useLoaderData } from "react-router-dom";
 
 import { LoaderReturnType } from "./loader";
-import { EventContent } from "./partials/event-content.partial";
 import { EventsSingleHero } from "./partials/hero.partial";
-import { TimesLocations } from "./components/times-and-locations.component";
 import { EventSingleFAQ } from "./components/event-single-faq.component";
-import { AdditionalInfo } from "./components/info-sections.component";
 import BackBanner from "~/components/back-banner";
 import { EventBanner } from "./components/event-banner";
+import { AboutPartial } from "./partials/about.partial";
+import { ResgisterPartial } from "./partials/register.partial";
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
@@ -35,33 +34,35 @@ export const EventSinglePage: React.FC = () => {
         <EventBanner title={data.title} />
 
         {/* About Section */}
+        <AboutPartial
+          moreInfo="One to two warm sentences offering an invite to the event with an inline link to a form. Or just an example sentence that you could use to invite a friend that the user can copy and paste. Additional details such as anything they need to bring or is provided that may not have been listed above."
+          additionalBlurb="Optional Extra Blurb? You can use this blurb for special audiences, such as: Those new to faith who might have an additional call to action. Certain events, unique features like childcare, guest speakers, or accessibility details"
+          infoCards={[
+            {
+              title: "Key Info Card",
+              description:
+                "Each card should have: An icon, A title and A description",
+              icon: "star",
+            },
+            {
+              title: "Key Info Card",
+              description:
+                "Each card should have: An icon, A title and A description",
+              icon: "star",
+            },
+            {
+              title: "Key Info Card",
+              description:
+                "Each card should have: An icon, A title and A description",
+              icon: "star",
+            },
+          ]}
+        />
+
         <EventSingleFAQ title={data.title} />
-        {/* Register Section */}
 
-        {/* TODO: Remove OLD - Content Sections */}
-        <div className="content-padding w-full flex flex-col items-center ">
-          <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-screen-content">
-            <div className="flex w-full justify-center gap-16">
-              {/* Desktop */}
-              <div className="hidden lg:flex flex-col gap-8">
-                <TimesLocations />
-                {/* Placeholder for Additional Info Sections - Will be completed once design team has provided the content/use cases */}
-                <AdditionalInfo type="contact" />
-              </div>
-              <div className="flex flex-col gap-16">
-                <EventContent htmlContent={data.content} />
-                <EventDivider className="hidden lg:block" />
-
-                {/* Mobile */}
-                <div className="flex flex-col gap-8 lg:hidden">
-                  <TimesLocations />
-                  <EventDivider />
-                  <AdditionalInfo type="contact" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Register Section - TODO: NOT COMPLETED, PAUSING FOR NOW*/}
+        {/* <ResgisterPartial title={data.title} /> */}
       </div>
     </>
   );
