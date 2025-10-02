@@ -8,26 +8,35 @@ import { SectionTitle } from "~/components";
 import { whatWeOfferData } from "./what-we-offer.data";
 import { WhatWeOfferCard } from "./desktop.component";
 
-export const WhatWeOfferMobile = () => {
+export const WhatWeOfferMobile = ({
+  onTabChange,
+}: {
+  onTabChange?: (tabValue: string) => void;
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("family");
 
+  const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
+    onTabChange?.(tabValue);
+  };
+
   useEffect(() => {
-    if (!containerRef.current || activeTab === "young-adults") return;
+    if (!containerRef.current) return;
 
     const container = containerRef.current;
     const cards = container.querySelectorAll("[data-card]");
     if (cards.length === 0) return;
 
-    // Find the middle card
-    const middleIndex = Math.floor(cards.length / 2);
-    const middleCard = cards[middleIndex] as HTMLElement;
-    if (!middleCard) return;
+    // For 2 cards, center the first card; for 3 cards, center the middle card
+    const targetIndex = cards.length === 2 ? 0 : Math.floor(cards.length / 2);
+    const targetCard = cards[targetIndex] as HTMLElement;
+    if (!targetCard) return;
 
-    // Calculate scroll position to center the middle card
+    // Calculate scroll position to center the target card
     const containerWidth = container.clientWidth;
-    const cardWidth = middleCard.offsetWidth;
-    const cardOffset = middleCard.offsetLeft;
+    const cardWidth = targetCard.offsetWidth;
+    const cardOffset = targetCard.offsetLeft;
     const scrollPosition = cardOffset - (containerWidth - cardWidth) / 2;
 
     // Scroll to center
@@ -52,16 +61,16 @@ export const WhatWeOfferMobile = () => {
         <Tabs.Root
           defaultValue="family"
           className="w-full flex flex-col gap-4"
-          onValueChange={setActiveTab}
+          onValueChange={handleTabChange}
         >
-          <Tabs.List className="flex justify-between rounded-[13px] bg-[rgba(244,245,247,0.37)] p-1 max-w-[360px] mx-auto">
+          <Tabs.List className="flex justify-between gap-1 rounded-[13px] bg-[rgba(244,245,247,0.37)] p-2 max-w-[360px] mx-auto">
             {whatWeOfferData.map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
                 className={cn(
                   button({ intent: "secondary" }),
-                  "rounded-full border-transparent text-white hover:border-ocean py-[11px] px-[14px]",
+                  "rounded-xl border-transparent text-white hover:border-ocean py-1 px-3",
                   "data-[state=active]:text-black data-[state=active]:bg-white",
                   "data-[state=active]:shadow-[0px_2.416px_2.416px_0px_rgba(0,0,0,0.25)]",
                   "data-[state=active]:py-2 data-[state=active]:mb-[2px]"
@@ -73,7 +82,8 @@ export const WhatWeOfferMobile = () => {
             ))}
           </Tabs.List>
 
-          <div className="w-full h-[1px] bg-[#D8D8DB]/25" />
+          {/* divider */}
+          <div className="w-full h-[1px] bg-[#D8D8DB]/25 max-w-[350px] mx-auto" />
 
           {whatWeOfferData.map((tab) => (
             <Tabs.Content
@@ -87,15 +97,20 @@ export const WhatWeOfferMobile = () => {
               <div
                 ref={containerRef}
                 className={cn(
-                  "flex gap-8 flex-nowrap overflow-x-auto px-2 min-h-[400px] pt-2",
+                  "flex gap-8 flex-nowrap overflow-x-auto min-h-[400px] pt-2",
+                  "snap-x snap-mandatory scroll-smooth",
                   tab.content.length === 2 ? "items-stretch" : "items-center"
                 )}
+                style={{
+                  paddingLeft: "calc(50vw - 36vw)",
+                  paddingRight: "calc(50vw - 36vw)",
+                }}
               >
                 {tab.content.map((content, index) => (
                   <div
                     key={index}
                     data-card
-                    className="min-w-[72vw]"
+                    className="snap-center snap-always"
                     data-card-title={content.label}
                     data-tab-context={tab.value}
                   >

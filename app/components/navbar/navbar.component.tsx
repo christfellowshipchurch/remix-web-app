@@ -43,7 +43,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const rootData = useRouteLoaderData("root") as RootLoaderData;
   const { siteBanner, ministries, watchReadListen } = rootData || {};
-  const { isLarge, isXLarge } = useResponsive();
+  const { isSmall, isLarge, isXLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
   const heroScrollRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +55,7 @@ export function Navbar() {
   // Theme mode state
   let initialMode: "light" | "dark";
   if (pathname === "/") {
-    initialMode = isLarge ? "light" : "dark";
+    initialMode = isSmall ? "dark" : "light";
   } else {
     initialMode = shouldUseDarkMode(pathname) ? "dark" : "light";
   }
@@ -82,7 +82,7 @@ export function Navbar() {
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
         let shouldShow = true;
-        if (pathname === "/" && !isLarge && heroScrollRef.current) {
+        if (pathname === "/" && isSmall && heroScrollRef.current) {
           const node = heroScrollRef.current;
           const atBottom =
             node.scrollHeight - node.scrollTop - node.clientHeight < 10;
@@ -92,7 +92,7 @@ export function Navbar() {
         }
         setIsVisible(shouldShow);
         setIsSearchOpen(false);
-        if (pathname === "/" && !isLarge) {
+        if (pathname === "/" && isSmall) {
           setMode("dark");
         } else {
           setMode(defaultMode);
@@ -105,7 +105,7 @@ export function Navbar() {
       if (Math.abs(scrollDelta) > scrollThreshold) {
         setIsVisible(scrollDelta < 0);
         if (currentScrollY > scrollThreshold) {
-          if (pathname === "/" && !isLarge) {
+          if (pathname === "/" && isSmall) {
             if (scrollDelta < 0) {
               // Scrolling up, show navbar in light mode
               setMode("light");
@@ -126,23 +126,23 @@ export function Navbar() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, defaultMode, pathname, isLarge]);
+  }, [lastScrollY, defaultMode, pathname, isSmall]);
 
   // Initial mode setup
   useEffect(() => {
     if (pathname === "/") {
-      setDefaultMode(isLarge ? "light" : "dark");
+      setDefaultMode(isSmall ? "dark" : "light");
     } else {
       setDefaultMode(shouldUseDarkMode(pathname) ? "dark" : "light");
     }
-  }, [pathname, isLarge]);
+  }, [pathname, isSmall]);
 
   // Route change handling
   useEffect(() => {
     let newMode: "light" | "dark";
     // If on home page, set mode based on screen size
     if (pathname === "/") {
-      newMode = isLarge ? "light" : "dark";
+      newMode = isSmall ? "dark" : "light";
     } else {
       newMode = shouldUseDarkMode(pathname) ? "dark" : "light";
     }
@@ -150,7 +150,7 @@ export function Navbar() {
     setMode(newMode);
     setLastScrollY(0);
     setIsVisible(true);
-  }, [pathname, isLarge]);
+  }, [pathname, isSmall]);
 
   // Mode sync effect
   useEffect(() => {
@@ -192,7 +192,7 @@ export function Navbar() {
 
   useEffect(() => {
     if (pathname !== "/") return; // Only on home page
-    if (isLarge) return; // Only for small screens
+    if (!isSmall) return; // Only for small screens
 
     const node = heroScrollRef.current;
     if (!node) return;
@@ -218,7 +218,7 @@ export function Navbar() {
     handleHeroScroll();
 
     return () => node.removeEventListener("scroll", handleHeroScroll);
-  }, [pathname, isLarge, heroScrollRef]);
+  }, [pathname, isSmall, heroScrollRef]);
 
   // Pass the ref to the Outlet context
   return (

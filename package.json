@@ -116,5 +116,5 @@
   "overrides": {
     "@babel/runtime": "^7.24.0"
   },
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.17.1"
 }

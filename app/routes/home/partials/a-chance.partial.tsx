@@ -24,7 +24,7 @@ export function AChanceSection() {
         Think of it less as a chore and more as...{" "}
         <span className="text-ocean">a chance.</span>
       </h2>
-      <div className="relative" style={{ minHeight: `100vh` }}>
+      <div className="relative min-h-[100vh] max-w-[1200px] mx-auto">
         <SplitScrollLayout />
       </div>
     </section>

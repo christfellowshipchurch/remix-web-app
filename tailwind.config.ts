@@ -94,13 +94,11 @@ export default {
       screens: {
         "2xl": "1480px",
         "3xl": "1600px",
+        shorter: { raw: "(min-width: 1024px) and (max-height: 900px)" },
       },
       spacing: {
         "18": "72px",
       },
-    },
-    screens: {
-      shorter: { raw: "(max-height: 900px)" },
     },
   },
   plugins: [

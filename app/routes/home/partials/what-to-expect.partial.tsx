@@ -17,7 +17,7 @@ export function WhatToExpectSection() {
               {/* Desktop Title */}
               <div className="flex flex-col gap-12">
                 <div className="hidden lg:block">
-                  <SectionTitle sectionTitle="get to know us" />
+                  <SectionTitle sectionTitle="get to know us." />
                 </div>
                 <h2 className="hidden lg:block lg:text-[52px] font-extrabold">
                   What to Expect
@@ -25,13 +25,15 @@ export function WhatToExpectSection() {
               </div>
               {/* Mobile Title */}
               <h2 className="lg:hidden text-2xl text-center font-extrabold">
-                Get to Know Us
+                What to Expect
               </h2>
 
               <p className="text-text-secondary lg:text-text lg:text-lg text-center lg:text-left max-w-[650px]">
-                Find out what to expect at a service, how we support families,
-                and what guides our faith. These videos feature everyday members
-                sharing their experiences and answering your questions.
+                Here at Christ Fellowship Church, you can expect to experience
+                church services with uplifting worship music, encouraging
+                messages from our pastors, special programming for your family,
+                and opportunities for you to find people to do life with all
+                throughout the week.
               </p>
             </div>
           </div>
