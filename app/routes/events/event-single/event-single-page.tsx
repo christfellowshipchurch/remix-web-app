@@ -12,8 +12,14 @@ import { ResgisterPartial } from "./partials/register.partial";
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
 
-  // TODO: Update this to come from Rock? - looking into this more in the future
+  // TODO: Update this to come from loader? - looking into this more in the future
   const shouldRegister = false;
+
+  // TODO: Get CTAS from loader
+  const mockCtas = [
+    { title: "Invite", href: "#share" },
+    { title: "Save My Spot", href: "#sign-up -> set-a-reminder" },
+  ];
 
   return (
     <>
@@ -24,18 +30,15 @@ export const EventSinglePage: React.FC = () => {
           link="/events"
         />
 
-        {/* TODO: Get CTAS from Rock */}
         <EventsSingleHero
           imagePath={data.coverImage}
-          ctas={[
-            { title: "Invite", href: "#share" },
-            { title: "Save My Spot", href: "#sign-up -> set-a-reminder" },
-          ]}
+          ctas={mockCtas}
           customTitle={data.title}
         />
 
         <EventBanner
           title={data.title}
+          cta={mockCtas[0]} // For now just pass the first CTA, not sure if we want this to be the way to figure this button out
           sections={[
             { id: "about", label: "About" },
             { id: "faq", label: "FAQ" },
@@ -43,7 +46,7 @@ export const EventSinglePage: React.FC = () => {
           ]}
         />
 
-        {/* About Section */}
+        {/* About Section - TODO: Pending how to get the data being hardcoded now */}
         <AboutPartial
           moreInfo="One to two warm sentences offering an invite to the event with an inline link to a form. Or just an example sentence that you could use to invite a friend that the user can copy and paste. Additional details such as anything they need to bring or is provided that may not have been listed above."
           additionalBlurb="Optional Extra Blurb? You can use this blurb for special audiences, such as: Those new to faith who might have an additional call to action. Certain events, unique features like childcare, guest speakers, or accessibility details"
@@ -69,6 +72,7 @@ export const EventSinglePage: React.FC = () => {
           ]}
         />
 
+        {/* FAQ Section */}
         <EventSingleFAQ title={data.title} />
 
         {/* Register Section - TODO: NOT COMPLETED, PAUSING FOR NOW*/}

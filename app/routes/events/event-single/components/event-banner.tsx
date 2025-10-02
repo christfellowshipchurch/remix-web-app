@@ -3,9 +3,11 @@ import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 
 export const EventBanner = ({
+  cta,
   title,
   sections,
 }: {
+  cta: { title: string; href: string };
   title: string;
   sections: { id: string; label: string }[];
 }) => {
@@ -162,8 +164,8 @@ export const EventBanner = ({
           ))}
         </div>
 
-        <Button intent="primary" className={`${buttonStyles}`}>
-          Save My Spot
+        <Button href={cta.href} intent="primary" className={`${buttonStyles}`}>
+          {cta.title}
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { StyledAccordion } from "~/components";
 import { faqEventData } from "~/lib/faq-data.data";
 
+// TODO: Not sure if we want to hardcode this FAQ data or pull it from the loader / Rock?
 export const EventSingleFAQ = ({ title }: { title: string }) => {
   return (
     <section
@@ -14,6 +15,7 @@ export const EventSingleFAQ = ({ title }: { title: string }) => {
         Questions about {title}, we've got answers. Here are some of the most
         common questions we receive.
       </p>
+
       <StyledAccordion data={faqEventData} bg="white" border="#C6C6C6" />
     </section>
   );
