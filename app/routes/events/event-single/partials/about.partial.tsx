@@ -1,13 +1,41 @@
 import { icons } from "~/lib/icons";
 import Icon from "~/primitives/icon";
 
+// TODO: Hardcoding for now, needs to be updated / come from Rock?
+const scheduleItems = [
+  {
+    number: "1",
+    title: "Welcome & Introduction",
+    description:
+      "Kick off the event with a warm welcome and an overview of what to expect.",
+  },
+  {
+    number: "2",
+    title: "Keynote Speaker",
+    description:
+      "Hear from our keynote speaker on the latest trends and insights in the industry.",
+  },
+  {
+    number: "3",
+    title: "Networking Break",
+    description:
+      "Take a break to connect with fellow attendees and share ideas.",
+  },
+  {
+    number: "4",
+    title: "Workshops & Activities",
+    description:
+      "Participate in interactive workshops and activities designed to enhance your skills.",
+  },
+];
+
 export const AboutPartial = ({
   infoCards,
   moreInfo,
   additionalBlurb,
 }: {
   moreInfo: string;
-  infoCards: InfoCardType[];
+  infoCards: EventInfoCardType[];
   additionalBlurb?: string;
 }) => {
   const cardsToDisplay = infoCards.slice(0, 4); // Display only up to 4 cards
@@ -82,33 +110,6 @@ export const AboutPartial = ({
   );
 };
 
-const scheduleItems = [
-  {
-    number: "1",
-    title: "Welcome & Introduction",
-    description:
-      "Kick off the event with a warm welcome and an overview of what to expect.",
-  },
-  {
-    number: "2",
-    title: "Keynote Speaker",
-    description:
-      "Hear from our keynote speaker on the latest trends and insights in the industry.",
-  },
-  {
-    number: "3",
-    title: "Networking Break",
-    description:
-      "Take a break to connect with fellow attendees and share ideas.",
-  },
-  {
-    number: "4",
-    title: "Workshops & Activities",
-    description:
-      "Participate in interactive workshops and activities designed to enhance your skills.",
-  },
-];
-
 const ScheduleItem = ({
   number,
   title,
@@ -132,13 +133,13 @@ const ScheduleItem = ({
   );
 };
 
-type InfoCardType = {
+export type EventInfoCardType = {
   title: string;
   description: string;
   icon: keyof typeof icons;
 };
 
-const InfoCardComponent = ({ title, description, icon }: InfoCardType) => {
+const InfoCardComponent = ({ title, description, icon }: EventInfoCardType) => {
   return (
     <div className="bg-white pb-10 px-4 pt-6 rounded-lg flex flex-col items-center text-center gap-8 border border-[#E5E5E5] w-full max-w-[312px]">
       <div className="bg-ocean flex items-center justify-center text-center p-2 rounded-full">

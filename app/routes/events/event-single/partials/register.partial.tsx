@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { icons } from "~/lib/icons";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
