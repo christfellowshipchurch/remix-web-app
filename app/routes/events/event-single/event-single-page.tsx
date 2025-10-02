@@ -1,81 +1,83 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
-import { SectionTitle, AdditionalResources } from "~/components";
 
 import { LoaderReturnType } from "./loader";
-import { EventContent } from "./partials/event-content.partial";
 import { EventsSingleHero } from "./partials/hero.partial";
-import { TimesLocations } from "./components/times-and-locations.component";
-import { EventSingleFAQ } from "./components/faq.component";
-import { AdditionalInfo } from "./components/info-sections.component";
-
-const mockResources = [
-  {
-    title: "Resource 1",
-    image: "/assets/images/events/resource-1.jpg",
-    url: "/resource-1",
-  },
-  {
-    title: "Resource 2",
-    image: "/assets/images/events/resource-2.jpg",
-    url: "/resource-2",
-  },
-  {
-    title: "Resource 3",
-    image: "/assets/images/events/resource-3.jpg",
-    url: "/resource-3",
-  },
-];
+import { EventSingleFAQ } from "./components/event-single-faq.component";
+import BackBanner from "~/components/back-banner";
+import { EventBanner } from "./components/event-banner";
+import { AboutPartial } from "./partials/about.partial";
+import { ResgisterPartial } from "./partials/register.partial";
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
 
+  // TODO: Update this to come from loader? - looking into this more in the future
+  const shouldRegister = false;
+
+  // TODO: Get CTAS from loader
+  const mockCtas = [
+    { title: "Invite", href: "#share" },
+    { title: "Save My Spot", href: "#sign-up -> set-a-reminder" },
+  ];
+
   return (
     <>
       <div className="flex flex-col items-center dark:bg-gray-900">
-        {/* TODO: Get CTAS from Rock */}
+        <BackBanner
+          backText="Back to Events"
+          pageTitle={data.title}
+          link="/events"
+        />
+
         <EventsSingleHero
           imagePath={data.coverImage}
-          ctas={[
-            { title: "Invite", href: "#share" },
-            { title: "Save My Spot", href: "#sign-up -> set-a-reminder" },
-          ]}
+          ctas={mockCtas}
           customTitle={data.title}
         />
-        <div className="content-padding w-full flex flex-col items-center ">
-          <div className="flex flex-col gap-12 w-full pt-16 pb-24 max-w-screen-content">
-            <SectionTitle sectionTitle="event details." />
-            <div className="flex w-full justify-center gap-16">
-              {/* Desktop */}
-              <div className="hidden lg:flex flex-col gap-8">
-                <TimesLocations />
-                {/* Placeholder for Additional Info Sections - Will be completed once design team has provided the content/use cases */}
-                <AdditionalInfo type="contact" />
-              </div>
-              <div className="flex flex-col gap-16">
-                <EventContent htmlContent={data.content} />
-                <EventDivider className="hidden lg:block" />
 
-                {/* Mobile */}
-                <div className="flex flex-col gap-8 lg:hidden">
-                  <TimesLocations />
-                  <EventDivider />
-                  <AdditionalInfo type="contact" />
-                </div>
+        <EventBanner
+          title={data.title}
+          cta={mockCtas[0]} // For now just pass the first CTA, not sure if we want this to be the way to figure this button out
+          sections={[
+            { id: "about", label: "About" },
+            { id: "faq", label: "FAQ" },
+            // { id: "register", label: "Register" },
+          ]}
+        />
 
-                <EventDivider className="lg:hidden" />
-                <EventSingleFAQ />
-                <EventDivider />
-                <AdditionalResources type="button" resources={mockResources} />
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* About Section - TODO: Pending how to get the data being hardcoded now */}
+        <AboutPartial
+          moreInfo="One to two warm sentences offering an invite to the event with an inline link to a form. Or just an example sentence that you could use to invite a friend that the user can copy and paste. Additional details such as anything they need to bring or is provided that may not have been listed above."
+          additionalBlurb="Optional Extra Blurb? You can use this blurb for special audiences, such as: Those new to faith who might have an additional call to action. Certain events, unique features like childcare, guest speakers, or accessibility details"
+          infoCards={[
+            {
+              title: "Key Info Card",
+              description:
+                "Each card should have: An icon, A title and A description",
+              icon: "star",
+            },
+            {
+              title: "Key Info Card",
+              description:
+                "Each card should have: An icon, A title and A description",
+              icon: "star",
+            },
+            {
+              title: "Key Info Card",
+              description:
+                "Each card should have: An icon, A title and A description",
+              icon: "star",
+            },
+          ]}
+        />
+
+        {/* FAQ Section */}
+        <EventSingleFAQ title={data.title} />
+
+        {/* Register Section - TODO: NOT COMPLETED, PAUSING FOR NOW*/}
+        {shouldRegister && <ResgisterPartial title={data.title} />}
       </div>
     </>
   );
-};
-
-const EventDivider = ({ className }: { className?: string }) => {
-  return <div className={`w-full h-[1px] bg-black opacity-30 ${className}`} />;
 };
