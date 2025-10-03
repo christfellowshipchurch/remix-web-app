@@ -1,6 +1,7 @@
 import { DynamicHero } from "~/components";
-import { EventsForYou } from "./partials/events-for-you.partial";
+
 import { FeaturedEvents } from "./partials/featured-events.partial";
+import { AllEvents } from "./partials/all-events";
 
 export function AllEventsPage() {
   return (
@@ -9,16 +10,10 @@ export function AllEventsPage() {
       <DynamicHero
         customTitle="Events"
         imagePath="/assets/images/events-hero-bg.jpg"
-        ctas={[
-          {
-            href: "#cta",
-            title: "Call to Action",
-          },
-        ]}
       />
 
       <FeaturedEvents />
-      <EventsForYou />
+      <AllEvents />
     </div>
   );
 }

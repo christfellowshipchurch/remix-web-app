@@ -6,6 +6,13 @@ import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import { FeaturedEventCard } from "../components/featured-card.component";
 import { createSearchClient } from "~/lib/create-search-client";
+import {
+  Carousel,
+  CarouselArrows,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+} from "~/primitives/shadcn-primitives/carousel";
 
 export function FeaturedEvents() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -17,7 +24,7 @@ export function FeaturedEvents() {
   );
 
   return (
-    <div className="w-full py-28 bg-gray content-padding">
+    <div className="w-full py-28 bg-gray">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <InstantSearch
           indexName="dev_daniel_contentItems"
@@ -47,12 +54,57 @@ const FeaturedEventsHits = () => {
 
   return (
     <>
-      <FeaturedEventCard card={firstHit} />
-      <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start">
+      <div className="content-padding">
+        <FeaturedEventCard card={firstHit} />
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start content-padding">
         {remainingHits?.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
       </div>
+
+      {/* Mobile Layout - Carousel */}
+      {remainingHits.length > 0 && (
+        <div className="mt-12 md:hidden">
+          <Carousel
+            opts={{
+              align: "start",
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="py-2 gap-4">
+              {remainingHits.map((hit, index) => (
+                <CarouselItem
+                  key={hit.objectID}
+                  className="w-full basis-[360px] pl-0"
+                  style={{
+                    marginLeft: index === 0 ? "20px" : "0px",
+                    marginRight:
+                      index === remainingHits.length - 1 ? "20px" : "0px",
+                  }}
+                >
+                  <OtherFeatureEventCardHit hit={hit} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+
+            <div className="w-full relative mt-4 pb-4">
+              <div className="absolute h-8 top-4 left-5">
+                <CarouselDots
+                  activeClassName="bg-ocean"
+                  inactiveClassName="bg-neutral-lighter"
+                />
+              </div>
+
+              <div className="absolute h-8 right-24">
+                <CarouselArrows />
+              </div>
+            </div>
+          </Carousel>
+        </div>
+      )}
     </>
   );
 };
@@ -69,6 +121,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
 
   return (
     <ResourceCard
+      className="min-w-[360px] w-[360px] md:w-full md:min-w-0"
       resource={{
         id: hit.objectID,
         contentChannelId: "78", // EVENT type from builder-utils.ts

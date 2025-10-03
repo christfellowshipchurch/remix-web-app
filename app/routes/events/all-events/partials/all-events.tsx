@@ -5,14 +5,17 @@ import { ResourceCard } from "~/primitives/cards/resource-card";
 import { Configure, Hits, InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
-import { EventsTagsRefinementList } from "../components/events-tags-refinement.component";
+import {
+  EventsClearFiltersText,
+  EventsTagsRefinementList,
+} from "../components/events-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
 import { createSearchClient } from "~/lib/create-search-client";
+import { EventsHubLocationSearch } from "../components/events-hub-location-search.component";
 
-export const EventsForYou = () => {
+export const AllEvents = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<EventReturnType>();
-
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
@@ -21,10 +24,6 @@ export const EventsForYou = () => {
   return (
     <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
-        <SectionTitle
-          title="Discover Events For You"
-          sectionTitle="all events."
-        />
         <InstantSearch
           indexName="dev_daniel_contentItems"
           searchClient={searchClient}
@@ -32,13 +31,25 @@ export const EventsForYou = () => {
             preserveSharedStateOnUnmount: true,
           }}
         >
+          <div className="flex items-end justify-between gap-4">
+            <SectionTitle
+              title="Discover Events For You"
+              sectionTitle="all events."
+            />
+
+            <EventsClearFiltersText />
+          </div>
+
           <Configure
             filters='contentType:"Event" AND isFeatured:false'
             hitsPerPage={9}
           />
 
           {/* Filters */}
-          <div className="mt-10 mb-16 md:mt-14 lg:mb-24 xl:mb-28">
+          <div className="flex gap-6 flex-col md:flex-row md:flex-nowrap px-1 pb-4 overflow-y-visible mt-10 mb-12 md:mt-14 lg:mb-24 xl:mb-28">
+            {/* Location Search */}
+            <EventsHubLocationSearch />
+
             <EventsTagsRefinementList />
           </div>
 
@@ -48,6 +59,7 @@ export const EventsForYou = () => {
             }}
             classNames={{
               list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
+              item: "w-full",
             }}
           />
 
