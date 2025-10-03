@@ -54,9 +54,17 @@ export const FeatureSection: FC<{
   }[];
 }> = ({ data, customCtas }) => {
   const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  const slicedCtas = ctas.slice(0, 2);
+  const grayBg = data.backgroundColor === "GRAY" || null;
 
   return (
-    <section className={cn("content-padding py-16")} aria-label={data.name}>
+    <section
+      className={cn(
+        "content-padding py-16",
+        grayBg ? "bg-gray" : "bg-transparent"
+      )}
+      aria-label={data.name}
+    >
       <div
         className={cn(
           "flex flex-col md:flex-row gap-12 xl:gap-20 items-center max-w-screen-content mx-auto",
@@ -83,11 +91,13 @@ export const FeatureSection: FC<{
             html={data.content}
           />
           <div className="flex items-center sm:items-start flex-col-reverse md:flex-row flex-wrap gap-4 mt-10">
-            {ctas.slice(0, 2).map((cta, idx) => (
+            {slicedCtas.map((cta, idx) => (
               <Button
                 linkClassName="w-full px-6 sm:w-auto sm:px-0"
                 className="font-normal w-full"
-                intent={idx === 0 ? "white" : "primary"}
+                intent={
+                  slicedCtas.length > 1 && idx === 0 ? "white" : "primary"
+                }
                 key={idx}
                 href={cta.url}
               >

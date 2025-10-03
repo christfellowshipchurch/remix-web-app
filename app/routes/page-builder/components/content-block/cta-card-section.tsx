@@ -15,13 +15,13 @@ export const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
     <section className="content-padding py-28" aria-label={data.name}>
       <div
         className={cn(
-          "flex flex-col md:flex-row gap-10",
+          "max-w-screen-content mx-auto flex flex-col md:flex-row gap-10",
           "md:items-center justify-between",
           "border border-neutral-lighter rounded-2xl p-8 md:p-12",
           `bg-${lowerCase(data.backgroundColor)}`
         )}
       >
-        <div className="flex-1 lg:max-w-[50%]">
+        <div className="flex-1 lg:max-w-[70%]">
           <h2
             className={cn("heading-h3 mb-4", {
               "text-white": isDark,
