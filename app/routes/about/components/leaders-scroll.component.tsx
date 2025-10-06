@@ -1,77 +1,63 @@
-import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "~/lib/utils";
 
-import { Leader, leaders } from "./leaders-data";
-import { loader } from "~/routes/home/loader";
-import { LeaderModalItem } from "./leaders-grid.component";
+import { leaders } from "./leaders-data";
+import { Author } from "~/routes/author/loader";
 import { LeadersModal } from "~/components/modals/leaders";
 import Modal from "~/primitives/Modal";
 
 export function LeaderScroll() {
   const [openModal, setOpenModal] = useState(false);
-  const { authors } = useLoaderData<typeof loader>();
 
-  const leaderItems: LeaderModalItem[] = authors.map((author) => ({
-    authorData: author,
-    leaderData: leaders.find(
-      (leader) => leader.pathname === author.authorAttributes.pathname
-    ) as Leader,
-  }));
-
-  const seniorLeaderItem = leaderItems[0];
-  const otherLeaderItems = leaderItems.slice(1, leaderItems.length);
+  const seniorLeaderItem = leaders[0];
+  const otherLeaderItems = leaders.slice(1, leaders.length);
 
   return (
-    <div className="ml-4 md:ml-12">
+    <div className="md:ml-8">
       {/* Senior Leaders Card*/}
       <Modal
         open={openModal}
         onOpenChange={setOpenModal}
-        key={seniorLeaderItem.leaderData.name}
+        key={seniorLeaderItem.authorAttributes.pathname}
       >
         <Modal.Button onClick={() => setOpenModal(true)}>
           <div
-            key={seniorLeaderItem.leaderData.name}
+            key={seniorLeaderItem.fullName}
             className="relative min-w-[200px] mb-6 mr-4 md:mr-12"
           >
-            <div className="relative mb-6">
+            <div className="relative mb-6 ml-4">
               <img
-                src="/assets/images/about/todd-julie.webp"
-                alt={seniorLeaderItem.leaderData.name}
+                src={seniorLeaderItem.profilePhoto}
+                alt={seniorLeaderItem.fullName}
                 className="w-full aspect-[3/2] sm:aspect-[16/9] md:aspect-[16/7] object-cover object-top rounded-[8px]"
               />
               <div
                 className="absolute right-2 -bottom-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg"
-                aria-label={`Learn more about ${seniorLeaderItem.leaderData.name}`}
+                aria-label={`Learn more about ${seniorLeaderItem.fullName}`}
               >
                 <span className="text-2xl font-light">+</span>
               </div>
             </div>
-            <div>
+            <div className="ml-4">
               <p className="text-gray-600 uppercase tracking-wider text-sm mb-1 text-start">
-                {seniorLeaderItem.leaderData.role}
+                {seniorLeaderItem.authorAttributes.jobTitle}
               </p>
               <h4 className="text-2xl font-bold text-gray-900 text-start">
-                {seniorLeaderItem.leaderData.name}
+                {seniorLeaderItem.fullName}
               </h4>
             </div>
           </div>
         </Modal.Button>
 
         <Modal.Content background="bg-gray">
-          <LeadersModal author={seniorLeaderItem.authorData} />
+          <LeadersModal author={seniorLeaderItem} />
         </Modal.Content>
       </Modal>
 
       {/* Other Leaders */}
       <div className="flex items-start lg:items-end gap-3 overflow-scroll sm:mr-4 md:mr-12 pr-4">
-        {otherLeaderItems.map((leaderModalItem, index) => (
-          <MobileLeaderCard
-            key={index}
-            leader={leaderModalItem}
-            index={index}
-          />
+        {otherLeaderItems.map((leader, index) => (
+          <MobileLeaderCard key={leader.id} leader={leader} index={index} />
         ))}
       </div>
     </div>
@@ -82,7 +68,7 @@ const MobileLeaderCard = ({
   leader,
   index,
 }: {
-  leader: LeaderModalItem;
+  leader: Author;
   index: number;
 }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -91,18 +77,22 @@ const MobileLeaderCard = ({
     <Modal
       open={openModal}
       onOpenChange={setOpenModal}
-      key={leader.leaderData.name}
+      key={leader.authorAttributes.pathname}
     >
       <Modal.Button onClick={() => setOpenModal(true)}>
         <div
-          key={leader.leaderData.name}
-          className={cn(`group min-w-[220px] sm:min-w-none`)}
+          key={leader.fullName}
+          className={cn(
+            "group min-w-[220px]",
+            index === 0 && "ml-4",
+            "sm:min-w-none"
+          )}
         >
           <div className="relative mb-6">
             <div className="overflow-hidden rounded-[8px]">
               <img
-                src={leader.leaderData.imagePath}
-                alt={leader.leaderData.name}
+                src={leader.profilePhoto}
+                alt={leader.fullName}
                 className={cn(
                   "w-full aspect-[32/46] object-cover",
                   "transform transition-transform duration-300 group-hover:scale-105"
@@ -111,23 +101,23 @@ const MobileLeaderCard = ({
             </div>
             <div
               className="absolute right-2 -bottom-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg"
-              aria-label={`Learn more about ${leader.leaderData.name}`}
+              aria-label={`Learn more about ${leader.fullName}`}
             >
               <span className="text-2xl font-light">+</span>
             </div>
           </div>
           <div>
             <p className="text-gray-600 uppercase tracking-wider text-sm mb-1 text-start">
-              {leader.leaderData.role}
+              {leader.authorAttributes.jobTitle}
             </p>
             <h4 className="text-2xl font-bold text-gray-900 text-start">
-              {leader.leaderData.name}
+              {leader.fullName}
             </h4>
           </div>
         </div>
       </Modal.Button>
       <Modal.Content background="bg-gray">
-        <LeadersModal author={leader.authorData} />
+        <LeadersModal author={leader} />
       </Modal.Content>
     </Modal>
   );

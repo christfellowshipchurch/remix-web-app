@@ -12,7 +12,6 @@ type SocialMedia = {
 
 export type Author = {
   id: string;
-  hostUrl: string;
   fullName: string;
   profilePhoto: string;
   authorAttributes: {
@@ -165,7 +164,6 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const authorData: Author = {
     id: data.id,
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
     fullName: data.fullName,
     profilePhoto: data.photo.uri ?? "",
     authorAttributes: data.authorAttributes,

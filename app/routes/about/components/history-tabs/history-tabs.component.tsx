@@ -72,7 +72,7 @@ function HistoryTabs() {
           <img
             src={timelineData[activeTab].image}
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
-            className={`w-full h-full object-cover rounded-lg md:rounded-r-lg md:rounded-l-none xl:rounded-l-lg shadow-xl transition-all duration-300 ${
+            className={`w-full h-full object-cover shadow-xl transition-all duration-300 ${
               transitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
           />

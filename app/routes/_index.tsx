@@ -41,7 +41,7 @@ export default function HomePage() {
       <HistorySection sectionTitle="History" title="Who We Are" />
       <BeliefsSection />
       <WhatToExpectSection />
-      <LeadershipSection className="py-52" />
+      <LeadershipSection className="lg:py-52" />
       <AppSection />
     </div>
   );
