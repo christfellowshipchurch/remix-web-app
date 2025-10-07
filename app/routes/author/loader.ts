@@ -2,26 +2,8 @@ import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchAuthorData } from "../articles/article-single/loader";
-import { AuthorArticleProps } from "./components/author-content";
 import { format } from "date-fns";
-
-type SocialMedia = {
-  type: string;
-  url: string;
-};
-
-export type Author = {
-  id: string;
-  fullName: string;
-  profilePhoto: string;
-  authorAttributes: {
-    bio: string;
-    jobTitle: string;
-    socialLinks: SocialMedia[];
-    publications: AuthorArticleProps[];
-    pathname: string;
-  };
-};
+import { Author } from "./types";
 
 export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
   const personAlias: any = await fetchRockData({
@@ -109,34 +91,38 @@ export const getAuthorDetails = async (personId: string) => {
         authorId: personId,
         jobTitle: authorData?.attributeValues?.jobTitle?.value || "",
         socialLinks,
-        publications: authorArticles
-          .map((article: any) => {
-            if (!article) return null;
+        publications: {
+          articles: authorArticles
+            .map((article: any) => {
+              if (!article) return null;
 
-            try {
-              return {
-                title: article.title || "",
-                readTime: Math.max(
-                  1,
-                  Math.round((article.content?.split(" ") || []).length / 200)
-                ),
-                publishDate: format(
-                  new Date(article?.startDateTime),
-                  "d MMM yyyy"
-                ),
-                coverImage:
-                  createImageUrlFromGuid(
-                    article.attributeValues?.image?.value
-                  ) || null,
-                summary: article.attributeValues?.summary?.value || "",
-                url: article.attributeValues?.url?.value || "",
-              };
-            } catch (error) {
-              console.error("Error processing article:", error);
-              return null;
-            }
-          })
-          .filter(Boolean),
+              try {
+                return {
+                  title: article.title || "",
+                  readTime: Math.max(
+                    1,
+                    Math.round((article.content?.split(" ") || []).length / 200)
+                  ),
+                  publishDate: format(
+                    new Date(article?.startDateTime),
+                    "d MMM yyyy"
+                  ),
+                  coverImage:
+                    createImageUrlFromGuid(
+                      article.attributeValues?.image?.value
+                    ) || null,
+                  summary: article.attributeValues?.summary?.value || "",
+                  url: article.attributeValues?.url?.value || "",
+                };
+              } catch (error) {
+                console.error("Error processing article:", error);
+                return null;
+              }
+            })
+            .filter(Boolean),
+          books: [],
+          podcasts: [],
+        },
         pathname: authorData?.attributeValues?.pathname?.value || "",
       },
     };

@@ -2,16 +2,20 @@ import { useState } from "react";
 import { cn } from "~/lib/utils";
 
 import { leaders } from "./leaders-data";
-import { Author } from "~/routes/author/loader";
 import { LeadersModal } from "~/components/modals/leaders";
 
 import { Icon } from "~/primitives/icon/icon";
 import Modal from "~/primitives/Modal";
+import { Author } from "~/routes/author/types";
+import { useLoaderData } from "react-router-dom";
+import { loader } from "~/routes/home/loader";
 
 export function LeaderGrid() {
+  const { leadersWithArticles } = useLoaderData<typeof loader>();
+
   return (
     <div className="flex items-start lg:items-end gap-3">
-      {leaders.map((leader, index) => (
+      {leadersWithArticles.map((leader, index) => (
         <LeaderCard key={leader.id} index={index} leader={leader} />
       ))}
     </div>

@@ -1,13 +1,5 @@
 import { Link } from "react-router-dom";
-
-export type AuthorArticleProps = {
-  title: string;
-  readTime: number;
-  publishDate: string;
-  coverImage: string;
-  summary: string;
-  url: string;
-};
+import { AuthorArticleProps } from "../types";
 
 /**
  * Renders an author article component.

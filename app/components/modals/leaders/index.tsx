@@ -1,13 +1,12 @@
 import { cn } from "~/lib/utils";
 import AuthorTabs from "~/routes/author/components/author-tabs";
-import { Author } from "~/routes/author/loader";
 import { AuthorBio } from "~/routes/author/partials/author-bio";
+import { Author } from "~/routes/author/types";
 
 export const LeadersModal = ({ author }: { author: Author | null }) => {
   if (!author) {
     return <LoadingSkeleton />;
   }
-
   return (
     <div
       className={cn(
@@ -24,18 +23,8 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
     >
       <div className="h-full flex flex-col lg:flex-row w-full rounded-xl">
         {/* Left Side */}
-        <div
-          className="w-full p-4 md:p-10 md:pt-8 flex-shrink-0"
-          // className="w-full lg:w-2/5 p-4 md:p-16 md:pt-8 flex-shrink-0"
-        >
-          <AuthorBio
-            id={author?.id}
-            fullName={author?.fullName}
-            profilePhoto={author?.profilePhoto}
-            authorAttributes={author?.authorAttributes}
-            variant="leaders"
-            hideSocialLinks={true}
-          />
+        <div className="w-full p-4 md:p-10 md:pt-8 flex-shrink-0 pb-12">
+          <AuthorBio author={author} variant="leaders" hideSocialLinks={true} />
         </div>
 
         {/* Right Side */}
@@ -50,10 +39,13 @@ export const LeadersModal = ({ author }: { author: Author | null }) => {
             "flex-1",
             "overflow-hidden",
             "lg:rounded-r-xl",
-            "rounded-b-xl"
+            "rounded-b-xl",
+            "pt-6"
           )}
         >
-          <AuthorTabs articles={author?.authorAttributes?.publications} />
+          <AuthorTabs
+            articles={author?.authorAttributes?.publications?.articles}
+          />
         </div>
       </div>
     </div>

@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { cn } from "~/lib/utils";
 
-import { leaders } from "./leaders-data";
-import { Author } from "~/routes/author/loader";
+import { Author } from "~/routes/author/types";
 import { LeadersModal } from "~/components/modals/leaders";
 import Modal from "~/primitives/Modal";
+import { useLoaderData } from "react-router-dom";
+import { loader } from "~/routes/home/loader";
 
 export function LeaderScroll() {
+  const { leadersWithArticles } = useLoaderData<typeof loader>();
   const [openModal, setOpenModal] = useState(false);
 
-  const seniorLeaderItem = leaders[0];
-  const otherLeaderItems = leaders.slice(1, leaders.length);
+  const seniorLeaderItem = leadersWithArticles[0];
+  const otherLeaderItems = leadersWithArticles.slice(
+    1,
+    leadersWithArticles.length
+  );
 
   return (
     <div className="md:ml-8">

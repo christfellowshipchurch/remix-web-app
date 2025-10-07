@@ -1,40 +1,16 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import { ShareLinks } from "~/components";
 import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
-import { AuthorArticleProps } from "../components/author-content";
 import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
-
-type SocialMedia = {
-  type: string;
-  url: string;
-};
-
-type AuthorProps = {
-  fullName: string;
-  profilePhoto: string;
-  authorAttributes: {
-    bio: string;
-    jobTitle: string;
-    socialLinks: SocialMedia[];
-    publications: AuthorArticleProps[];
-  };
-  // Optional props for leaders modal
-  id?: string;
-  homeUrl?: string;
-  // Optional props for customization
-  variant?: "default" | "leaders";
-  hideSocialLinks?: boolean;
-};
+import { AuthorBioProps } from "../types";
 
 export function AuthorBio({
-  fullName,
-  profilePhoto,
-  authorAttributes,
-  id,
+  author,
   homeUrl,
   variant = "default",
   hideSocialLinks = false,
-}: AuthorProps) {
+}: AuthorBioProps) {
+  const { id, fullName, profilePhoto, authorAttributes } = author;
   const { bio, jobTitle, socialLinks } = authorAttributes;
 
   // Determine styling based on variant
