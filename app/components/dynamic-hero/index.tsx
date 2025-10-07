@@ -77,7 +77,7 @@ export const DynamicHero = ({
         <div
           className={cn(
             "w-full max-w-screen-content mx-auto flex flex-col",
-            "gap-4 pb-8 md:gap-12 md:pb-16"
+            "gap-8 pb-8 md:gap-12 md:pb-16"
           )}
         >
           <h1 className="font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[100px] text-white">

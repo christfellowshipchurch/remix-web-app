@@ -21,7 +21,16 @@ export function BeliefsSection({
               {customTitle ? (
                 <span>{customTitle}</span>
               ) : (
-                <span>What We Believe</span>
+                <>
+                  <span className="hidden lg:block">
+                    Beliefs And Theological <br />
+                    Positions Drawn From The Bible.
+                  </span>
+                  <span className="block lg:hidden">
+                    Beliefs drawn <br />
+                    from the Bible.
+                  </span>
+                </>
               )}
             </h3>
             {/* Chapel Image */}
