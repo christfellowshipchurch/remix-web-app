@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 
 export const MobileFeaturedItems = () => {
   return (
-    <div className="w-full md:px-4">
-      <div className="flex justify-center md:justify-start gap-3">
+    <div className="w-full">
+      <div className="flex justify-center md:justify-start gap-2">
         <MobileFeaturedItem
           iconName="church"
           heading="Iglesia en Español"
@@ -44,22 +44,24 @@ export const MobileFeaturedItem = ({
       to={url}
       className={cn(
         "bg-navy",
-        "rounded-[24px]",
+        "rounded-full",
         "flex",
         "items-center",
         "justify-center",
         "gap-2",
         "py-3",
-        "px-4"
+        "px-3 sm:px-4",
+        "min-w-[100px]",
+        "max-w-[50%]"
       )}
       data-gtm="featured-item"
       data-position={position}
       data-item-title={title}
     >
-      <Icon name={iconName} color="white" />
+      <Icon name={iconName} color="white" className="min-w-[24px]" />
       <div className="text-white">
-        <p className="text-xs">{heading}</p>
-        <h4 className="font-bold text-sm">{title}</h4>
+        <p className="text-[10px] sm:text-xs line-clamp-1">{heading}</p>
+        <h4 className="font-bold text-xs sm:text-sm line-clamp-1">{title}</h4>
       </div>
     </Link>
   );
