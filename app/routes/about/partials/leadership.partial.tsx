@@ -16,7 +16,6 @@ export function LeadershipSection({
       className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray", className)}
     >
       <div className="max-w-screen-content mx-auto ">
-          <div className="hidden lg:flex gap-24 items-center">
         <div className="content-padding lg:px-0 lg:flex flex-col items-start w-full lg:gap-28">
           <div className="flex flex-col gap-5 md:gap-12">
             <SectionTitle sectionTitle="our team." />
