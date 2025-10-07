@@ -16,22 +16,13 @@ export function LeadershipSection({
       className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray", className)}
     >
       <div className="max-w-screen-content mx-auto ">
-        <div className="content-padding lg:px-0 lg:flex flex-col lg:gap-28">
-          {/* Desktop title */}
           <div className="hidden lg:flex gap-24 items-center">
+        <div className="content-padding lg:px-0 lg:flex flex-col items-start w-full lg:gap-28">
+          <div className="flex flex-col gap-5 md:gap-12">
             <SectionTitle sectionTitle="our team." />
-            <h3 className="text-5xl font-extrabold leading-none max-w-3xl">
-              Meet The Passionate Leaders <br />
-              Of Christ Fellowship Church.
-            </h3>
-          </div>
-
-          {/* Mobile title */}
-          <div className="lg:hidden">
-            <SectionTitle className="mb-6" sectionTitle="meet our team." />
-            <h3 className="hidden sm:block text-[28px] sm:text-5xl font-extrabold leading-tight mb-16 max-w-3xl">
-              Meet The Passionate Leaders <br />
-              Of Christ Fellowship Church.
+            <h3 className="text-2xl md:text-[52px] font-extrabold leading-tight max-w-3x mb-10 md:mb-0">
+              Meet The Leadership Of <br />
+              Christ Fellowship Church.
             </h3>
           </div>
 
