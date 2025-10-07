@@ -192,10 +192,10 @@ export const WhatToExpectMobileScroll = () => {
               >
                 {isPlaying ? (
                   <div className="relative overflow-hidden rounded-[8px] transition-opacity duration-200">
-                    <Video
-                      wistiaId={video}
-                      controls
-                      className="w-full h-full object-cover"
+                    <iframe
+                      src={`https://fast.wistia.net/embed/iframe/${video}?fitStrategy=cover`}
+                      className="w-full h-full object-cover aspect-[300/400]"
+                      title={`What to Expect Video - ${name}`}
                     />
                     <div
                       className="absolute top-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"

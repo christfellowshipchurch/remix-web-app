@@ -16,18 +16,11 @@ export const MobileHeroSection = () => {
         />
         <iframe
           src={`https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover`}
-          className="w-full h-full absolute inset-0 z-2"
+          className="w-full h-full absolute inset-0 z-1"
         />
       </div>
       {/*  Background Gradient Overlay */}
-      <div
-        className="absolute inset-0 w-full h-full z-2"
-        // needed to use custom style from Figma for smoother gradient
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(0, 146, 188, 0.00) 0%, rgba(0, 146, 188, 0.85) 55.27%, rgba(0, 146, 188, 0.31) 80.31%), linear-gradient(0deg, rgba(0, 146, 188, 0.45) 0%, rgba(0, 146, 188, 0.45) 100%);",
-        }}
-      />
+      <div className="absolute inset-0 w-full h-full z-2 bg-gradient-to-b from-ocean/40 to-ocean" />
       {/*  Content */}
       <div className="relative z-3 flex flex-col justify-end gap-8 h-full px-4">
         {/*  Top Divider */}
