@@ -15,7 +15,7 @@ export function LeadershipSection({
       id="leadership"
       className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray", className)}
     >
-      <div className="max-w-screen-content mx-auto ">
+      <div className="max-w-screen-content mx-auto">
         <div className="content-padding lg:px-0 lg:flex flex-col lg:gap-28">
           {/* Desktop title */}
           <div className="hidden lg:flex gap-24 items-center">

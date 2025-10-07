@@ -293,7 +293,7 @@
     src: url("/fonts/merriweather/light.woff2");
 
     font-style: normal;
-    font-weight: 200;
+    font-weight: 300;
     font-stretch: normal;
   }
 
@@ -331,7 +331,7 @@
     src: url("/fonts/merriweather/bold.woff2");
 
     font-style: normal;
-    font-weight: 500;
+    font-weight: 700;
     font-stretch: normal;
   }
 
@@ -340,7 +340,26 @@
     src: url("/fonts/merriweather/bold-it.woff2");
 
     font-style: italic;
-    font-weight: 500;
+    font-weight: 700;
+    font-stretch: normal;
+  }
+
+  /* Semibold - mapped to bold since no separate semibold file */
+  @font-face {
+    font-family: "Merriweather";
+    src: url("/fonts/merriweather/bold.woff2");
+
+    font-style: normal;
+    font-weight: 600;
+    font-stretch: normal;
+  }
+
+  @font-face {
+    font-family: "Merriweather";
+    src: url("/fonts/merriweather/bold-it.woff2");
+
+    font-style: italic;
+    font-weight: 600;
     font-stretch: normal;
   }
 
@@ -350,7 +369,7 @@
     src: url("/fonts/merriweather/ultrabold.woff2");
 
     font-style: normal;
-    font-weight: 600;
+    font-weight: 800;
     font-stretch: normal;
   }
 
@@ -359,7 +378,26 @@
     src: url("/fonts/merriweather/ultrabold-it.woff2");
 
     font-style: italic;
-    font-weight: 600;
+    font-weight: 800;
+    font-stretch: normal;
+  }
+
+  /* Extrabold - mapped to ultrabold since no separate extrabold file */
+  @font-face {
+    font-family: "Merriweather";
+    src: url("/fonts/merriweather/ultrabold.woff2");
+
+    font-style: normal;
+    font-weight: 900;
+    font-stretch: normal;
+  }
+
+  @font-face {
+    font-family: "Merriweather";
+    src: url("/fonts/merriweather/ultrabold-it.woff2");
+
+    font-style: italic;
+    font-weight: 900;
     font-stretch: normal;
   }
   :root {

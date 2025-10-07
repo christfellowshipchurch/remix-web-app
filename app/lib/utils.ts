@@ -283,3 +283,13 @@ export const formattedServiceTimes = (serviceTimes: string) =>
 export const ensureArray = <T>(data: T | T[]): T[] => {
   return Array.isArray(data) ? data : [data];
 };
+
+export const getImageUrl = (id: string) => {
+  return `https://cloudfront.christfellowship.church/GetImage.ashx?id=${id}`;
+};
+
+export const calculateReadTime = (content: string): number => {
+  const words = content?.split(" ")?.length ?? 0;
+  const readTime = Math.round(words / 200);
+  return readTime === 0 ? 1 : readTime;
+};
