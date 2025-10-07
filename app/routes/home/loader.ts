@@ -1,41 +1,69 @@
 // This Loader is currenlty being use for both Home and About pages
-import { Leader, leaders } from "../about/components/leaders-data";
+import { leaders } from "../about/components/leaders-data";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { Author, getAuthorDetails } from "../author/loader";
+import { fetchAuthorArticles, fetchPersonAliasGuid } from "../author/loader";
+import { calculateReadTime, createImageUrlFromGuid } from "~/lib/utils";
+import { Author, AuthorArticleProps } from "../author/types";
+import { formatDate } from "date-fns";
 
-const getAuthorIdsByPathname = async (person: Leader): Promise<string> => {
+const getAuthorIdsByPathname = async (person: Author): Promise<string> => {
   try {
     const authorData = await fetchRockData({
       endpoint: "People/GetByAttributeValue",
       queryParams: {
         attributeKey: "Pathname",
-        value: person.pathname,
-        $select: "Id",
+        value: person.authorAttributes.pathname,
+        $select: "PrimaryAliasId",
       },
     });
 
-    return authorData.id;
+    return authorData.primaryAliasId;
   } catch (error) {
     console.error("Error fetching author:", error);
-    throw new Error(`Failed to fetch author ID for ${person.pathname}`);
+    throw new Error(
+      `Failed to fetch author ID for ${person.authorAttributes.pathname}`
+    );
   }
 };
 
 // Grabs author data for the LeadersGrid and LeaderScroll components
 export const loader = async (): Promise<{
-  authors: Author[];
+  leadersWithArticles: Author[];
   ALGOLIA_APP_ID: string | undefined;
   ALGOLIA_SEARCH_API_KEY: string | undefined;
 }> => {
   const authorIds = await Promise.all(leaders.map(getAuthorIdsByPathname));
-  const authorDetails = await Promise.all(authorIds.map(getAuthorDetails));
+  const authorGuids = await Promise.all(authorIds.map(fetchPersonAliasGuid));
+  const authorArticles = await Promise.all(
+    authorGuids.map(fetchAuthorArticles)
+  );
 
-  const authors: Author[] = authorDetails.map((data) => ({
-    id: data.id,
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
-    fullName: data.fullName,
-    profilePhoto: data.photo.uri ?? "",
-    authorAttributes: data.authorAttributes,
+  // Map each leader to their articles
+  const leadersWithArticles = leaders.map((leader, index) => ({
+    ...leader,
+    authorAttributes: {
+      ...leader.authorAttributes,
+      publications: {
+        articles:
+          authorArticles[index].map(
+            (article: any): AuthorArticleProps => ({
+              title: article.title,
+              readTime: calculateReadTime(article.content),
+              publishDate: formatDate(
+                new Date(article.startDateTime),
+                "MMMM d, yyyy"
+              ),
+              coverImage: createImageUrlFromGuid(
+                article.attributeValues.image.value
+              ),
+              summary: article.attributeValues.summary.value,
+              url: article.attributeValues.url.value,
+            })
+          ) || [],
+        books: [],
+        podcasts: [],
+      },
+    },
   }));
 
   // Grabs Algolia environment variables for the location search component
@@ -44,5 +72,8 @@ export const loader = async (): Promise<{
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
   };
 
-  return { authors, ...algoliaEnvs };
+  return {
+    leadersWithArticles,
+    ...algoliaEnvs,
+  };
 };

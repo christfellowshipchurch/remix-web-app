@@ -6,11 +6,7 @@ import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
 import { AChanceSection } from "./home/partials/a-chance.partial";
 import { AppSection } from "./home/partials/app.partial";
-import {
-  DesktopHeroSection,
-  MobileHeroSection,
-  BottomBar,
-} from "./home/partials/hero.partial";
+import { HeroSection } from "./home/partials/hero.partial";
 import { useOutletContext } from "react-router-dom";
 
 export { loader } from "./home/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
@@ -22,7 +18,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Index() {
+export default function HomePage() {
   const outletContext = useOutletContext<{
     heroScrollRef?: React.RefObject<HTMLDivElement>;
   }>();
@@ -35,13 +31,7 @@ export default function Index() {
         ref={heroScrollRef}
         className="w-full h-screen overflow-y-auto lg:snap-y lg:snap-mandatory no-scrollbar mt-[-82px] lg:mt-0"
       >
-        <div className="hidden lg:block w-full snap-start">
-          <DesktopHeroSection />
-        </div>
-        <div className="block lg:hidden w-full snap-start">
-          <MobileHeroSection />
-          <BottomBar />
-        </div>
+        <HeroSection />
         <div className="w-full snap-start">
           <AChanceSection />
         </div>
@@ -49,9 +39,9 @@ export default function Index() {
       {/* The rest of your sections (not snapped) */}
       <WhatWeOfferSection />
       <HistorySection sectionTitle="History" title="Who We Are" />
-      <BeliefsSection customTitle="What we Believe and Teach" />
+      <BeliefsSection />
       <WhatToExpectSection />
-      <LeadershipSection className="py-52" />
+      <LeadershipSection className="lg:py-52" />
       <AppSection />
     </div>
   );
