@@ -108,7 +108,12 @@ export type ContentBlockImageLayout = "LEFT" | "RIGHT";
 /**
  * Background color options
  */
-export type ContentBlockBackgroundColor = "WHITE" | "OCEAN" | "NAVY" | string;
+export type ContentBlockBackgroundColor =
+  | "WHITE"
+  | "OCEAN"
+  | "NAVY"
+  | "GRAY"
+  | string;
 
 /**
  * Represents a Content Block section in the page builder

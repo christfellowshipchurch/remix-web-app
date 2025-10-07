@@ -3,7 +3,7 @@ import { Author } from "./loader";
 import { useLoaderData } from "react-router-dom";
 import BackButton from "./components/back-button";
 import AuthorTabs from "./components/author-tabs";
-import { AuthorBioDesktop, AuthorBioMobile } from "./partials/author-bio";
+import { AuthorBio } from "./partials/author-bio";
 
 export const AuthorPage: React.FC = () => {
   const data = useLoaderData<Author>();
@@ -22,7 +22,7 @@ export const AuthorPage: React.FC = () => {
           <div className="flex flex-col items-start bg-gray md:bg-transparent pt-12 md:pb-12 content-padding">
             <BackButton />
             <div className="mb-8 pt-4 md:hidden">
-              <AuthorBioMobile
+              <AuthorBio
                 fullName={data?.fullName}
                 profilePhoto={data?.profilePhoto}
                 authorAttributes={data?.authorAttributes}
@@ -40,7 +40,7 @@ export const AuthorPage: React.FC = () => {
 
         {/* Sidebar - takes up 1/3 on desktop */}
         <div className="hidden md:block md:col-span-1 py-12 px-4 md:px-0">
-          <AuthorBioDesktop
+          <AuthorBio
             fullName={data?.fullName}
             profilePhoto={data?.profilePhoto}
             authorAttributes={data?.authorAttributes}

@@ -1,16 +1,11 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import { AuthorArticle, AuthorArticleProps } from "./author-content";
+import { AuthorArticle } from "./author-content";
+import { AuthorTabsProps } from "../types";
 
 const tabStyles =
   "border-ocean text-lg data-[state=active]:font-semibold px-5 py-3 data-[state=active]:border-b-2 data-[state=inactive]:text-neutral-500 mb-[-2px] hover:bg-neutral-100";
 
 const tabContentStyles = "flex flex-col";
-
-export type AuthorTabsProps = {
-  articles: AuthorArticleProps[];
-  books?: AuthorArticleProps[];
-  podcasts?: AuthorArticleProps[];
-};
 
 const AuthorTabs = ({ articles, books, podcasts }: AuthorTabsProps) => {
   return (

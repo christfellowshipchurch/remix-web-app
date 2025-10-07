@@ -16,7 +16,9 @@ export const WhatToExpectDesktopTabs = () => {
         </Tabs.Content>
       ))}
 
-      <Tabs.List className="flex gap-8 xl:gap-16 w-full">
+      {/* Only displaying first tab for now */}
+
+      {/* <Tabs.List className="flex gap-8 xl:gap-16 w-full">
         {WhatToExpectData.map((item, index) => (
           <Tabs.Trigger
             key={index}
@@ -42,7 +44,7 @@ export const WhatToExpectDesktopTabs = () => {
             </div>
           </Tabs.Trigger>
         ))}
-      </Tabs.List>
+      </Tabs.List> */}
     </Tabs.Root>
   );
 };
@@ -77,7 +79,7 @@ const WhatToExpectDesktopCard = ({
         </div>
       </div>
 
-      <div className="absolute right-8 xl:right-10 -top-10 xl:-top-20">
+      <div className="absolute right-8 xl:right-10 -top-10 xl:-top-30">
         {isPlaying ? (
           <div className="relative overflow-hidden rounded-[12px] transition-opacity duration-200">
             <Video
@@ -169,7 +171,7 @@ export const WhatToExpectMobileScroll = () => {
           ref={containerRef}
           className={cn(
             "flex gap-4 flex-nowrap overflow-x-auto pt-2",
-            "items-center md:justify-center w-full"
+            "items-center justify-center w-full"
           )}
         >
           {WhatToExpectData.map((item, index) => {
@@ -180,7 +182,8 @@ export const WhatToExpectMobileScroll = () => {
               <div
                 key={index}
                 data-card
-                className="w-[220px] h-[290px] rounded-[8px] relative flex-shrink-0"
+                className="w-[300px] h-[400px] rounded-[8px] mx-auto"
+                // className="w-[220px] h-[290px] rounded-[8px] relative flex-shrink-0"
                 style={{
                   marginLeft: index === 0 ? "8px" : "0",
                   marginRight:
@@ -189,10 +192,10 @@ export const WhatToExpectMobileScroll = () => {
               >
                 {isPlaying ? (
                   <div className="relative overflow-hidden rounded-[8px] transition-opacity duration-200">
-                    <Video
-                      wistiaId={video}
-                      controls
-                      className="w-full h-full object-cover"
+                    <iframe
+                      src={`https://fast.wistia.net/embed/iframe/${video}?fitStrategy=cover`}
+                      className="w-full h-full object-cover aspect-[300/400]"
+                      title={`What to Expect Video - ${name}`}
                     />
                     <div
                       className="absolute top-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"
@@ -202,7 +205,7 @@ export const WhatToExpectMobileScroll = () => {
                     </div>
                   </div>
                 ) : (
-                  <div ref={cardRef} className="relative h-[290px]">
+                  <div ref={cardRef} className="relative h-full">
                     <img
                       src={thumbnail}
                       alt={name}
@@ -221,14 +224,14 @@ export const WhatToExpectMobileScroll = () => {
                   </div>
                 )}
 
-                <div className="absolute bottom-0 left-0 flex flex-col justify-end w-full h-full bg-gradient-to-t from-black/60 via-black/0 to-transparent from-[-30%] via-[25%]">
+                {/* <div className="absolute bottom-0 left-0 flex flex-col justify-end w-full h-full bg-gradient-to-t from-black/60 via-black/0 to-transparent from-[-30%] via-[25%]">
                   <div className="flex flex-col gap-4 p-2">
                     <p className="text-white font-bold">{mobileContent}</p>
                     <p className="text-[#C1C7D1] text-xs">
                       {name} / {role}
                     </p>
                   </div>
-                </div>
+                </div> */}
               </div>
             );
           })}
@@ -255,42 +258,42 @@ const WhatToExpectData: WhatToExpectCardType[] = [
     title: "What is a Sunday Like 1",
     data: {
       role: "church member",
-      name: "John Doe 1",
-      video: "7yhe4p60vn",
+      name: "Member Name",
+      video: "zesthhomv2",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+        "https://embed-ssl.wistia.com/deliveries/4e64e97530eec63588b73a28afbeaae1.webp?image_crop_resized=640x1138",
       mobileContent:
         "“It's given me a lot of peace and clarity around my church.”",
       content:
         "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
     },
   },
-  {
-    title: "What is a Sunday Like 2",
-    data: {
-      role: "church member",
-      name: "John Doe 2",
-      video: "7yhe4p60vn",
-      thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
-      mobileContent:
-        "“It's given me a lot of peace and clarity around my church.”",
-      content:
-        "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
-    },
-  },
-  {
-    title: "What is a Sunday Like 3",
-    data: {
-      role: "church member",
-      name: "John Doe 3",
-      video: "7yhe4p60vn",
-      thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
-      mobileContent:
-        "“It's given me a lot of peace and clarity around my church.”",
-      content:
-        "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
-    },
-  },
+  // {
+  //   title: "What is a Sunday Like 2",
+  //   data: {
+  //     role: "church member",
+  //     name: "John Doe 2",
+  //     video: "7yhe4p60vn",
+  //     thumbnail:
+  //       "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+  //     mobileContent:
+  //       "“It's given me a lot of peace and clarity around my church.”",
+  //     content:
+  //       "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
+  //   },
+  // },
+  // {
+  //   title: "What is a Sunday Like 3",
+  //   data: {
+  //     role: "church member",
+  //     name: "John Doe 3",
+  //     video: "7yhe4p60vn",
+  //     thumbnail:
+  //       "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
+  //     mobileContent:
+  //       "“It's given me a lot of peace and clarity around my church.”",
+  //     content:
+  //       "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
+  //   },
+  // },
 ];
