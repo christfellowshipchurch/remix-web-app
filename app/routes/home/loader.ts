@@ -4,6 +4,7 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { fetchAuthorArticles, fetchPersonAliasGuid } from "../author/loader";
 import { calculateReadTime, createImageUrlFromGuid } from "~/lib/utils";
 import { Author, AuthorArticleProps } from "../author/types";
+import { formatDate } from "date-fns";
 
 const getAuthorIdsByPathname = async (person: Author): Promise<string> => {
   try {
@@ -48,7 +49,10 @@ export const loader = async (): Promise<{
             (article: any): AuthorArticleProps => ({
               title: article.title,
               readTime: calculateReadTime(article.content),
-              publishDate: article.startDateTime,
+              publishDate: formatDate(
+                new Date(article.startDateTime),
+                "MMMM d, yyyy"
+              ),
               coverImage: createImageUrlFromGuid(
                 article.attributeValues.image.value
               ),
