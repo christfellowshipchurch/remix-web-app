@@ -19,6 +19,7 @@ type ShareLinksProps = {
   overrideCopyUrl?: string;
   backgroundColor?: string;
   socialMedia: SocialMedia[];
+  hideSocialLinks?: boolean;
 };
 
 type SocialMedia = { type: string; url: string };
@@ -29,12 +30,17 @@ export function ShareLinks({
   url,
   overrideCopyUrl,
   backgroundColor,
+  hideSocialLinks = false,
 }: ShareLinksProps) {
   // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side. We'll use "any" return type for flexibliity
   const data = useLoaderData<any>();
   const hostUrl = url || data?.hostUrl;
   const { pathname } = useLocation();
   const fullPath = `${hostUrl}${pathname}`;
+
+  if (hideSocialLinks) {
+    return null;
+  }
 
   return socialIcons?.map((icon, index) => {
     const socialLink = socialMedia?.find(

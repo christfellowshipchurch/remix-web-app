@@ -43,7 +43,7 @@ export const SearchBar = ({
     >
       <button
         type="submit"
-        className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative"
+        className="flex items-center justify-center p-2 bg-dark-navy rounded-full relative"
       >
         <Icon
           name="search"
