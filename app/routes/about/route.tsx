@@ -1,6 +1,6 @@
 import { type MetaFunction } from "react-router-dom";
 import { DynamicHero } from "~/components/dynamic-hero";
-import { MissionSection } from "./partials/mission.partial";
+import { OurMissionSection } from "./partials/mission.partial";
 import { HistorySection } from "./partials/history.partial";
 import { BeliefsSection } from "./partials/beliefs.partial";
 import { LeadershipSection } from "./partials/leadership.partial";
@@ -36,10 +36,10 @@ export default function AboutPage() {
           },
         ]}
       />
-      <MissionSection />
+      <OurMissionSection />
       <HistorySection />
-      <BeliefsSection />
-      <LeadershipSection />
+      <BeliefsSection bgClass="bg-dark-navy" tabsClass="bg-navy" />
+      <LeadershipSection layout="vertical" />
       <ImpactSection />
     </main>
   );

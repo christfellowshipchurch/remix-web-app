@@ -9,7 +9,11 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 import { beliefsData } from "../about.data";
 
-export function BeliefsCarousel() {
+export function BeliefsCarousel({
+  tabBgClass = "bg-[#00354D]/30",
+}: {
+  tabBgClass?: string;
+}) {
   return (
     <div className="z-30">
       <img
@@ -56,7 +60,12 @@ export function BeliefsCarousel() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex px-6 items-center justify-between h-18 w-full bg-[#00354D]/30">
+          <div
+            className={cn(
+              "flex px-6 items-center justify-between h-18 w-full",
+              tabBgClass ? tabBgClass : "bg-[#00354D]/30"
+            )}
+          >
             <CarouselDots
               activeClassName="bg-white"
               inactiveClassName="bg-white opacity-50"
