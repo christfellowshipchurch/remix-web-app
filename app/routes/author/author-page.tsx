@@ -1,5 +1,5 @@
 import React from "react";
-import { Author } from "./loader";
+import { Author } from "./types";
 import { useLoaderData } from "react-router-dom";
 import BackButton from "./components/back-button";
 import AuthorTabs from "./components/author-tabs";
@@ -22,11 +22,7 @@ export const AuthorPage: React.FC = () => {
           <div className="flex flex-col items-start bg-gray md:bg-transparent pt-12 md:pb-12 content-padding">
             <BackButton />
             <div className="mb-8 pt-4 md:hidden">
-              <AuthorBio
-                fullName={data?.fullName}
-                profilePhoto={data?.profilePhoto}
-                authorAttributes={data?.authorAttributes}
-              />
+              <AuthorBio author={data} />
             </div>
             <h1 className="hidden text-[40px] font-bold md:block">
               {data?.fullName}
@@ -34,17 +30,15 @@ export const AuthorPage: React.FC = () => {
           </div>
 
           <div className="content-padding pb-12 md:pb-0">
-            <AuthorTabs articles={data?.authorAttributes?.publications} />
+            <AuthorTabs
+              articles={data?.authorAttributes?.publications?.articles}
+            />
           </div>
         </div>
 
         {/* Sidebar - takes up 1/3 on desktop */}
         <div className="hidden md:block md:col-span-1 py-12 px-4 md:px-0">
-          <AuthorBio
-            fullName={data?.fullName}
-            profilePhoto={data?.profilePhoto}
-            authorAttributes={data?.authorAttributes}
-          />
+          <AuthorBio author={data} />
         </div>
       </section>
     </div>

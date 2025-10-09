@@ -1,51 +1,35 @@
 import { LoaderFunction } from "react-router-dom";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { fetchAuthorData } from "../articles/article-single/loader";
 import { format } from "date-fns";
 import { Author } from "./types";
+import {
+  fetchAuthorData,
+  fetchPersonAliasGuid,
+  fetchAuthorArticles,
+  fetchAuthorId,
+  fetchAuthorByPathname,
+} from "~/lib/.server/author-utils";
 
-export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
-  const personAlias: any = await fetchRockData({
-    endpoint: "PersonAlias",
-    queryParams: {
-      $filter: `Id eq ${primaryAliasId}`,
-    },
-  });
-
-  return personAlias?.guid;
+// Utility function to check if a string is a GUID
+const isGuid = (str: string): boolean => {
+  const guidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return guidRegex.test(str);
 };
 
-export const fetchAuthorArticles = async (personAliasGuid: string) => {
-  const articles = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
-    queryParams: {
-      attributeKey: "Author",
-      value: personAliasGuid,
-      $filter: "Status eq 'Approved' and ContentChannelId eq 43",
-      $orderby: "StartDateTime desc",
-      $top: "6",
-      loadAttributes: "simple",
-    },
-  });
-
-  return articles;
-};
-
-export const getAuthorDetails = async (personId: string) => {
+export const getAuthorDetailsByPathname = async (pathname: string) => {
   try {
-    const authorData = await fetchAuthorData({
-      authorId: personId,
-    });
+    // Fetch author data using pathname
+    const authorData = await fetchAuthorByPathname(pathname);
 
     if (!authorData) {
-      throw new Response(`Author data not found`, {
+      throw new Response(`Author not found for pathname: ${pathname}`, {
         status: 404,
         statusText: "Not Found",
       });
     }
 
-    // Get the author's GUID
+    // Get the author's GUID for fetching articles
     const personAliasGuid = await fetchPersonAliasGuid(
       authorData?.primaryAliasId
     );
@@ -82,7 +66,140 @@ export const getAuthorDetails = async (personId: string) => {
 
     return {
       id: authorData.id,
-      fullName: `${authorData.firstName} ${authorData.lastName}`,
+      fullName:
+        authorData.fullName || `${authorData.firstName} ${authorData.lastName}`,
+      photo: {
+        uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
+      },
+      authorAttributes: {
+        bio: authorData?.attributeValues?.authorBio?.value || "",
+        authorId: authorData.id,
+        jobTitle: authorData?.attributeValues?.jobTitle?.value || "",
+        socialLinks,
+        publications: {
+          articles: authorArticles
+            .map((article: any) => {
+              if (!article) return null;
+
+              try {
+                return {
+                  title: article.title || "",
+                  readTime: Math.max(
+                    1,
+                    Math.round((article.content?.split(" ") || []).length / 200)
+                  ),
+                  publishDate: format(
+                    new Date(article?.startDateTime),
+                    "d MMM yyyy"
+                  ),
+                  coverImage:
+                    createImageUrlFromGuid(
+                      article.attributeValues?.image?.value
+                    ) || null,
+                  summary: article.attributeValues?.summary?.value || "",
+                  url: article.attributeValues?.url?.value || "",
+                };
+              } catch (error) {
+                console.error("Error processing article:", error);
+                return null;
+              }
+            })
+            .filter(Boolean),
+          books: [],
+          podcasts: [],
+        },
+        pathname: authorData?.attributeValues?.pathname?.value || "",
+      },
+    };
+  } catch (error) {
+    console.error("Error in getAuthorDetailsByPathname:", error);
+    throw new Response(`Failed to fetch author details`, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+};
+
+export const getAuthorDetails = async (personId: string) => {
+  try {
+    let authorData;
+    let personAliasGuid;
+
+    // Check if the personId is a GUID
+    if (isGuid(personId)) {
+      // If it's a GUID, get the PersonId first, then fetch author data
+      const authorIdResult = await fetchAuthorId(personId);
+      if (!authorIdResult?.personId) {
+        throw new Response(`Author ID not found for GUID`, {
+          status: 404,
+          statusText: "Not Found",
+        });
+      }
+
+      authorData = await fetchAuthorData({
+        authorId: authorIdResult.personId,
+      });
+
+      // For GUID-based lookups, we can use the GUID directly for articles
+      personAliasGuid = personId;
+    } else {
+      // Original logic for non-GUID IDs
+      authorData = await fetchAuthorData({
+        authorId: personId,
+      });
+
+      if (!authorData) {
+        throw new Response(`Author data not found`, {
+          status: 404,
+          statusText: "Not Found",
+        });
+      }
+
+      // Get the author's GUID
+      personAliasGuid = await fetchPersonAliasGuid(authorData?.primaryAliasId);
+
+      if (!personAliasGuid) {
+        throw new Response(`Person alias GUID not found`, {
+          status: 404,
+          statusText: "Not Found",
+        });
+      }
+    }
+
+    if (!authorData) {
+      throw new Response(`Author data not found`, {
+        status: 404,
+        statusText: "Not Found",
+      });
+    }
+
+    // Get articles by the author
+    const authorArticles = await fetchAuthorArticles(personAliasGuid);
+
+    // Get the author's social links with null checks
+    const socialLinks = [
+      {
+        url: authorData?.attributeValues?.twitter?.value || null,
+        type: "twitter",
+      },
+      {
+        url: authorData?.attributeValues?.facebook?.value || null,
+        type: "facebook",
+      },
+      {
+        url: authorData?.attributeValues?.instagram?.value || null,
+        type: "instagram",
+      },
+      {
+        url: authorData?.attributeValues?.linkedIn?.value || null,
+        type: "linkedIn",
+      },
+    ].filter((link) => link.url !== null);
+
+    return {
+      id: authorData.id,
+      fullName:
+        authorData.fullName || `${authorData.firstName} ${authorData.lastName}`,
       photo: {
         uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
       },
@@ -136,13 +253,14 @@ export const getAuthorDetails = async (personId: string) => {
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const authorId = params?.authorId || "";
+  const authorPathname = params?.authorId || "";
 
-  const data = await getAuthorDetails(authorId);
+  // Use the new pathname-based approach
+  const data = await getAuthorDetailsByPathname(authorPathname);
 
   if (!data) {
     // This should stop execution and propagate the error to Remix's error boundary
-    throw new Response("Author not found at: /author/" + authorId, {
+    throw new Response("Author not found at: /author/" + authorPathname, {
       status: 404,
       statusText: "Not Found",
     });

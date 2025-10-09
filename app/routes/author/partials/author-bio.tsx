@@ -11,7 +11,7 @@ export function AuthorBio({
   hideSocialLinks = false,
 }: AuthorBioProps) {
   const { id, fullName, profilePhoto, authorAttributes } = author;
-  const { bio, jobTitle, socialLinks } = authorAttributes;
+  const { bio, jobTitle, socialLinks, pathname } = authorAttributes;
 
   // Determine styling based on variant
   const isLeadersVariant = variant === "leaders";
@@ -20,15 +20,17 @@ export function AuthorBio({
   const circleLoaderSize = isLeadersVariant ? 32 : 20;
 
   // ShareLinks props based on variant
+  const authorUrl = pathname || id;
   const shareLinksProps =
-    isLeadersVariant && id && homeUrl
+    isLeadersVariant && authorUrl && homeUrl
       ? {
-          overrideCopyUrl: `${homeUrl}/author/${id}`,
+          overrideCopyUrl: `${homeUrl}/author/${authorUrl}`,
           size: shareLinksSize,
           socialMedia: socialLinks,
         }
       : {
-          url: id && homeUrl ? `${homeUrl}/author/${id}` : undefined,
+          url:
+            authorUrl && homeUrl ? `${homeUrl}/author/${authorUrl}` : undefined,
           size: shareLinksSize,
           socialMedia: socialLinks,
         };
