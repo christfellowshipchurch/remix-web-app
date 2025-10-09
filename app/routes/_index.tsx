@@ -38,7 +38,7 @@ export default function HomePage() {
       </div>
       {/* The rest of your sections (not snapped) */}
       <WhatWeOfferSection />
-      <HistorySection sectionTitle="History" title="Who We Are" />
+      <HistorySection sectionTitle="history" title="Who We Are" />
       <BeliefsSection />
       <WhatToExpectSection />
       <LeadershipSection className="lg:py-52" />

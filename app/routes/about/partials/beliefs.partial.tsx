@@ -3,7 +3,13 @@ import { BeliefsCarousel } from "../components/beliefs-carousel.component";
 import { cn } from "~/lib/utils";
 import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.component";
 
-export function BeliefsSection({}: {}) {
+export function BeliefsSection({
+  bgClass = "bg-navy",
+  tabsClass = "bg-[#00354D]/30",
+}: {
+  bgClass?: string;
+  tabsClass?: string;
+}) {
   return (
     <section
       id="beliefs"
@@ -32,12 +38,21 @@ export function BeliefsSection({}: {}) {
           </div>
           {/* Beliefs Carousel */}
           <div className="hidden md:block">
-            <BeliefsCarousel />
+            <BeliefsCarousel
+              tabBgClass={tabsClass ? tabsClass : "bg-[#00354D]/30"}
+            />
           </div>
         </div>
       </div>
+
       {/* Navy BG */}
-      <div className="absolute bottom-0 w-full h-[50%] bg-navy z-[-1]" />
+      <div
+        className={cn(
+          "absolute bottom-0 w-full h-[50%] z-[-1]",
+          bgClass ? bgClass : "bg-navy"
+        )}
+      />
+
       {/* Mobile Beliefs Carousel */}
       <div className="block md:hidden">
         <BeliefsCarouselMobile />
