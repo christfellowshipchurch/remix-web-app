@@ -39,7 +39,7 @@ export let leaders: Author[] = [
     id: "3",
     fullName: "Ryan McDermott",
     authorAttributes: {
-      jobTitle: "Executive Pastor",
+      jobTitle: "Teaching Pastor",
       bio: "Pastor Ryan McDermott serves as Executive Director of Family Ministries, as well as a teaching pastor, and has led in a variety of ministry roles at Christ Fellowship since 2010. Ryan frequently speaks at events and camps with organizations like Lifeway and Student Leadership University (SLU) and is a part of the teaching faculty at Christ Fellowship’s Leadership College and Southeastern University. He holds an undergraduate degree in Christian Leadership and Youth Ministry from Palm Beach Atlantic University and a master's in Ministerial Leadership from Southeastern University. In 2023, he authored his first book, Unbound: Experiencing Life & Freedom in Christ. Ryan’s mission in life is to love his wife well, be his kids' hero, lead thousands to Jesus, and help students be brave enough to believe they can change the world.",
       socialLinks: [],
       publications: {
@@ -56,7 +56,7 @@ export let leaders: Author[] = [
     id: "4",
     fullName: "Dr. John Maxwell",
     authorAttributes: {
-      jobTitle: "Leadership Pastor",
+      jobTitle: "Teaching Pastor",
       bio: "Dr. John C. Maxwell is a #1 New York Times bestselling author, coach, and speaker who has sold more than 25 million books in 50 languages. As the founder of The John Maxwell Company, The John Maxwell Team, EQUIP, and the John Maxwell Foundation, he has trained more than 5 million leaders—including reaching the milestone of having trained leaders from every country of the world. The recipient of the Mother Teresa Prize for Global Peace and Leadership from the Luminary Leadership Network, Dr. Maxwell speaks each year to Fortune 500 companies, presidents of nations, and many of the world’s top business leaders. Before devoting himself full-time to speaking and writing, he was a pastor for more than 30 years.",
       socialLinks: [],
       publications: {

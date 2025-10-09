@@ -1,6 +1,6 @@
 import { SectionTitle } from "~/components";
 
-export function MissionSection() {
+export function OurMissionSection() {
   return (
     <section id="mission" className="py-2 lg:py-24 content-padding">
       <div className="container max-w-screen-content grid items-center justify-center grid-cols-1  lg:grid-cols-5 gap-8 mx-auto">
@@ -13,19 +13,19 @@ export function MissionSection() {
             sectionTitle="our mission."
             className="hidden md:block"
           />
-          <h3 className="text-[28px] md:text-5xl font-extrabold my-6">
+          <h3 className="text-[48px] leading-tight md:text-5xl font-extrabold my-6">
             <span className="text-ocean">Everyone,</span>{" "}
             <span className="text-navy">Everyday,</span>{" "}
             <span className="text-dark-navy">Everywhere</span>
           </h3>
           <p className="text-lg text-text-secondary">
-            Christ Fellowship is a church in South Florida with a mission to
-            take you from Soul to Soul. We believe that your relationship with
-            God and your life should work together for God's glory. We believe
-            that you make Northern Palm or your local home, church is wherever
-            you feel Led by better person. Today is your life-time, feel free
-            give me a chance to have a deeper understanding for Jesus Christ in
-            your life.
+            Our mission is to help you know God and grow in your relationships
+            so that you can discover your purpose and impact the world.
+            <br />
+            <br />
+            In addition to our mission, God has given us a vision to lead a
+            radical transformation for Jesus Christ in this region and beyond.
+            Everyone, Everyday, Everywhere.
           </p>
         </div>
         <img
