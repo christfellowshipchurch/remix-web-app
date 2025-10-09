@@ -79,11 +79,11 @@ const MobileVersion = () => {
           <img
             src="/assets/images/home/app-left.webp"
             alt="App Section Image"
-            className={cn("w-[50vw]", "aspect-[9/21]")}
+            className={cn("w-[50vw]", "aspect-[9/21]", "max-w-[140px]")}
           />
         </div>
 
-        <p className="text-white text-center leading-tight">
+        <p className="text-white text-center leading-tight max-w-[420px]">
           The Christ Fellowship App experience was designed to help you grow in
           your faith every day of the week. Through its features, you can stay
           consistent in your time with God.
@@ -108,7 +108,9 @@ const AppButtons = () => {
       >
         Download The App Now!
       </Button>
-      <p className="text-sm opacity-60">Available for IOS and Android</p>
+      <p className="text-sm opacity-60 text-center md:text-left">
+        Available for IOS and Android
+      </p>
     </div>
   );
 };
