@@ -2,8 +2,8 @@ import { type LoaderFunction } from "react-router-dom";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
-import { createImageUrlFromGuid } from "~/lib/utils";
 import { getRelatedArticlesByContentItem } from "~/lib/.server/fetch-related-articles";
+import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
 
 export type LoaderReturnType = {
   hostUrl: string;
@@ -57,42 +57,6 @@ const fetchArticleData = async (articlePath: string) => {
   }
 };
 
-const fetchAuthorId = async (authorId: string) => {
-  return fetchRockData({
-    endpoint: "PersonAlias",
-    queryParams: {
-      $filter: `Guid eq guid'${authorId}'`,
-      $select: "PersonId",
-    },
-  });
-};
-
-export const fetchAuthorData = async ({ authorId }: { authorId: string }) => {
-  return fetchRockData({
-    endpoint: "People",
-    queryParams: {
-      $filter: `Id eq ${authorId}`,
-      $expand: "Photo",
-      loadAttributes: "simple",
-    },
-  });
-};
-
-export const getAuthorDetails = async (authorId: string) => {
-  const { personId } = await fetchAuthorId(authorId);
-  const authorData = await fetchAuthorData({ authorId: personId });
-
-  return {
-    fullName: `${authorData.firstName} ${authorData.lastName}`,
-    photo: {
-      uri: createImageUrlFromGuid(authorData.photo?.guid),
-    },
-    authorAttributes: {
-      authorId: personId,
-    },
-  };
-};
-
 export const loader: LoaderFunction = async ({ params }) => {
   const articlePath = params?.path || "";
 
@@ -112,7 +76,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   let authorDetails = null;
   if (author?.value) {
-    authorDetails = await getAuthorDetails(author.value);
+    authorDetails = await getBasicAuthorInfoFlexible(author.value);
   }
 
   const relatedArticles = await getRelatedArticlesByContentItem(guid);
