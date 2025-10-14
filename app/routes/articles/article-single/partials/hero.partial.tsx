@@ -12,6 +12,7 @@ export interface AuthorProps {
   };
   authorAttributes?: {
     authorId: string;
+    pathname: string;
   };
 }
 

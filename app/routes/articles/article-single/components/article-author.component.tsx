@@ -16,7 +16,10 @@ export default function ArticleAuthor({
     <div className="flex">
       <Link
         prefetch="intent"
-        to={`/author/${author?.authorAttributes?.authorId}`}
+        to={`/author/${
+          author?.authorAttributes?.pathname ||
+          author?.authorAttributes?.authorId
+        }`}
       >
         <Avatar.Root className="flex cursor-pointer duration-300 hover:scale-105">
           <Avatar.Image
@@ -34,7 +37,10 @@ export default function ArticleAuthor({
         <h2 className="semibold mb-2">
           By{" "}
           <Link
-            to={`/author/${author?.authorAttributes?.authorId}`}
+            to={`/author/${
+              author?.authorAttributes?.pathname ||
+              author?.authorAttributes?.authorId
+            }`}
             prefetch="intent"
             className="underline hover:text-text-secondary"
           >

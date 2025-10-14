@@ -29,7 +29,7 @@ const AuthorTabs = ({ articles, books, podcasts }: AuthorTabsProps) => {
           )}
         </Tabs.List>
 
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 overflow-y-auto min-h-0 mx-4 md:mx-0">
           <Tabs.Content className={tabContentStyles} value="articles">
             {articles &&
               articles.map((article, index) => (
