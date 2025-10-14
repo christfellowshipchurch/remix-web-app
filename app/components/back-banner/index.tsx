@@ -21,9 +21,13 @@ const BackBanner = ({
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex gap-4 items-center md:gap-6">
-        <Link to={link} prefetch="intent" className="flex gap-4">
-          <Icon name="arrowBack" color="black" size={16} />
-          <p className="text-xs font-bold text-black">{backText}</p>
+        <Link
+          to={link}
+          prefetch="intent"
+          className="flex gap-4 text-black hover:text-ocean"
+        >
+          <Icon name="arrowBack" size={16} />
+          <p className="text-xs font-bold">{backText}</p>
         </Link>
 
         <p className="text-xs text-black font-medium">{pageTitle}</p>
