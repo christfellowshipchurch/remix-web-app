@@ -316,7 +316,7 @@ export function Navbar() {
                           </NavigationMenuTrigger>
                           <NavigationMenuContent
                             className={cn(
-                              "relative z-10 bg-white shadow-lg",
+                              "relative z-10 bg-white shadow-sm",
                               navigationMenuContentStyle()
                             )}
                           >
@@ -337,7 +337,7 @@ export function Navbar() {
 
             {/* Desktop Actions */}
             <div
-              className="hidden lg:flex items-center gap-6"
+              className="hidden lg:flex items-center gap-1 ml-2 xl:ml-0"
               style={{
                 width: isSearchOpen ? "100%" : "auto",
                 alignItems: isSearchOpen ? "end" : "center",
@@ -365,9 +365,8 @@ export function Navbar() {
                 >
                   <Icon
                     name="search"
-                    size={20}
                     className={cn(
-                      "hover:text-ocean transition-colors cursor-pointer",
+                      "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5",
                       mode === "light"
                         ? "text-neutral-dark"
                         : "text-white group-hover:text-text"
@@ -378,21 +377,24 @@ export function Navbar() {
 
               {(!isSearchOpen || isXLarge) && (
                 <div className="flex gap-2">
-                  <Button
-                    href="/locations"
-                    className="font-semibold text-base w-[190px]"
-                  >
-                    <Icon name="mapFilled" size={20} className="mr-2" />
-                    Find a Service
-                  </Button>
                   <AuthModal
                     buttonStyle={cn(
-                      "font-semibold text-base w-[140px] border-1 border-ocean text-ocean rounded-md",
+                      "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
                       mode === "dark" &&
                         "border-white text-white group-hover:text-ocean group-hover:border-ocean"
                     )}
-                    buttonText="My Church"
+                    buttonText="Login"
                   />
+                  <Button
+                    href="/locations"
+                    className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
+                  >
+                    <Icon
+                      name="mapFilled"
+                      className="mr-1 xl:mr-2 size-4 xl:size-5"
+                    />
+                    Find a Service
+                  </Button>
                 </div>
               )}
             </div>
