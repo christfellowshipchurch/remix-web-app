@@ -26,7 +26,8 @@ export function AuthorArticle({
           {title}
         </h2>
         <div className="gap-2 text-sm font-light text-neutral-600 flex">
-          <p>{publishDate}</p> <p className="hidden md:block">•</p>{" "}
+          <p>{publishDate}</p> <p className="hidden md:block">•</p>
+          {`${readTime} min read`}
           <br className="md:hidden" />
         </div>
         <p className="font-light lg:max-w-[380px] hidden md:block">{summary}</p>

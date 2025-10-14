@@ -1,7 +1,7 @@
 import lodash from "lodash";
 import { fetchRockData, getImages } from "./fetch-rock-data";
 import { format } from "date-fns";
-import { getAuthorDetails } from "~/routes/articles/article-single/loader";
+import { getBasicAuthorInfoFlexible } from "./author-utils";
 
 const DEFAULT_TAG_ID = 1533; // "For You" - default tag id
 const TOP_TAGGED_ITEMS_LIMIT = 20;
@@ -75,7 +75,9 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
           coverImage: getImages({ attributeValues, attributes }),
           publishDate: format(new Date(startDateTime), "d MMM yyyy"),
           readTime: Math.round(content.split(" ").length / 200),
-          author: author?.value ? await getAuthorDetails(author?.value) : null,
+          author: author?.value
+            ? await getBasicAuthorInfoFlexible(author?.value)
+            : null,
         };
       })
     );
