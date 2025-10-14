@@ -36,7 +36,7 @@ export function AuthorBio({
         };
 
   return (
-    <div className="flex flex-col gap-5 md:gap-8 font-light text-neutral-700 pr-0 md:pr-8 lg:pr-0 w-full">
+    <div className="flex flex-col gap-5 md:gap-8 font-light text-neutral-700 w-full">
       {/* Desktop layout: vertical stack */}
       <div className="hidden md:flex flex-col gap-5">
         <Avatar.Root>
