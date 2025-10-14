@@ -144,8 +144,10 @@ export const EventBanner = ({
         isNavbarOpen ? "top-16 md:top-20" : "top-0"
       )}
     >
-      <div className="max-w-screen-content mx-auto w-full flex items-center justify-between">
-        <p className="font-medium">{title}</p>
+      <div className="max-w-screen-content mx-auto w-full flex items-center">
+        <div className="flex-1 flex justify-start">
+          <p className="font-medium">{title}</p>
+        </div>
 
         <div className="hidden md:flex gap-2">
           {sections.map(({ id, label }) => (
@@ -164,9 +166,15 @@ export const EventBanner = ({
           ))}
         </div>
 
-        <Button href={cta.href} intent="primary" className={`${buttonStyles}`}>
-          {cta.title}
-        </Button>
+        <div className="flex-1 flex justify-end">
+          <Button
+            href={cta.href}
+            intent="primary"
+            className={`${buttonStyles}`}
+          >
+            {cta.title}
+          </Button>
+        </div>
       </div>
     </div>
   );

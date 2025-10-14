@@ -6,10 +6,12 @@ export const EventsSingleHero = ({
   imagePath,
   ctas,
   customTitle,
+  subtitle = "A really engaging paragraph. Introduction to the event, just one or two sentences.",
 }: {
   imagePath: string;
   ctas: { title: string; href: string }[];
   customTitle?: string;
+  subtitle?: string;
 }) => {
   const location = useLocation();
   const pagePath =
@@ -25,18 +27,19 @@ export const EventsSingleHero = ({
 
   return (
     <div className="w-full flex items-center content-padding py-8 md:py-12 lg:py-16">
-      <div className="flex flex-col-reverse md:flex-row w-full mx-auto gap-2 md:gap-8 lg:gap-10 xl:!justify-between items-center justify-center self-stretch max-w-screen-content md:mb-12">
+      <div className="flex flex-col-reverse md:flex-row w-full mx-auto gap-2 md:gap-8 lg:gap-16 xl:!justify-between items-center justify-center self-stretch max-w-screen-content md:mb-12">
         {/* Left / Bottom Side (Desktop) */}
         <div className="flex flex-col gap-10 mb-4 md:mb-0">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 max-w-[600px]">
             <h1 className="font-extrabold heading-h4 md:heading-h3 lg:text-[52px] text-text-primary leading-tight !text-pretty -mb-1">
               {customTitle || pagePath}
             </h1>
 
-            <p className="font-medium lg:text-lg text-[#717182]">
-              A really engaging paragraph. Introduction to the event, just one
-              or two sentences.
-            </p>
+            {subtitle && (
+              <p className="font-medium lg:text-lg text-[#717182] max-w-[420px]">
+                {subtitle}
+              </p>
+            )}
 
             {/* CTAs */}
             <div className="mt-5 md:mt-0 flex flex-wrap gap-2 sm:gap-4">
@@ -55,8 +58,8 @@ export const EventsSingleHero = ({
           {/* Bullet Points */}
           <BulletPoints
             dotStyles="bg-navy size-[6px]"
-            textStyles="text-[#717182] lg:text-base"
-            className="gap-1"
+            textStyles="text-[#717182] text-sm font-medium"
+            className="gap-1 lg:gap-2"
             points={[
               "Connect with others and build meaningful relationships",
               "Learn and grow through engaging content and discussions",
@@ -69,7 +72,7 @@ export const EventsSingleHero = ({
         <img
           src={imagePath}
           alt={customTitle || pagePath}
-          className="w-full max-w-[90vw] md:max-w-[340px] lg:max-w-[480px] xl:!max-w-[638px] aspect-[638/478] object-cover rounded-[14px] shadow-lg"
+          className="w-full max-w-[90vw] md:max-w-[340px] lg:max-w-[480px] xl:!max-w-[638px] aspect-[638/478] object-cover rounded-[14px] shadow-xl"
         />
       </div>
     </div>
