@@ -309,9 +309,46 @@ export const faqCfEverywhereData = [
 ];
 
 // TODO: Update faqEventData here or if from Rock then remove here and update in EventSinglePage.tsx
-export const faqEventData = [
-  { title: "Question 1", content: "Response 1" },
-  { title: "Question 2", content: "Response 2" },
+export interface FaqEventItem {
+  title: string;
+  content: string;
+}
+
+export const faqEventData: FaqEventItem[] = [
+  {
+    title: "What time does the event start?",
+    content:
+      "The event begins at 10:00 AM. Please arrive 15 minutes early to check in.",
+  },
+  {
+    title: "Is parking available?",
+    content: "Yes, free parking is available on-site for all attendees.",
+  },
+  {
+    title: "Will there be food and drinks?",
+    content:
+      "Complimentary snacks and beverages will be provided throughout the event.",
+  },
+  {
+    title: "Can I bring a guest?",
+    content:
+      "Absolutely! Please make sure your guest registers in advance to secure their spot.",
+  },
+  {
+    title: "Is childcare provided?",
+    content:
+      "Yes, childcare is available for children ages 2-10. Please indicate your needs during registration.",
+  },
+  {
+    title: "What should I bring?",
+    content:
+      "Bring a notebook, pen, and your ticket confirmation (digital or printed).",
+  },
+  {
+    title: "How do I contact the organizers?",
+    content:
+      'You can reach us at <a href="mailto:events@christfellowship.church">events@christfellowship.church</a> with any questions.',
+  },
 ];
 
 export const faqData = (campus: string) => {
