@@ -81,9 +81,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
           setStep(LoginStep.PIN_SCREEN);
           break;
         default:
-          console.error(
-            "Error: Invalid identity input inside handleAccountCreation()"
-          );
+          // Invalid identity input
           break;
       }
     }
@@ -123,7 +121,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
           setStep(LoginStep.PIN_SCREEN);
           break;
         default:
-          console.error("Error: Invalid identity input inside handleLogin()");
+          // Invalid identity input
           break;
       }
     }
@@ -132,12 +130,8 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   };
 
   const handlePasswordLogin = async (password: string) => {
-    try {
-      await loginWithEmail(identity, password);
-      setOpenModal(false);
-    } catch (error) {
-      throw error;
-    }
+    await loginWithEmail(identity, password);
+    setOpenModal(false);
   };
 
   const handlePinLoginOrRegistration = async (pin: string) => {

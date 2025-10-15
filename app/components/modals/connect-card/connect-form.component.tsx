@@ -94,7 +94,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         method: "post",
         action: "/connect-card",
       });
-    } catch (err) {
+    } catch (_err) {
       setError(
         "An error occurred while submitting the form. Please try again."
       );
@@ -200,7 +200,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 id={otherCheckbox.guid}
                 name={otherCheckbox.guid}
                 value={otherCheckbox.guid}
-                onChange={(e) => setIsOther(!isOther)}
+                onChange={(_e) => setIsOther(!isOther)}
               />
             </Form.Control>
             <Form.Label className="font-bold leading-4">

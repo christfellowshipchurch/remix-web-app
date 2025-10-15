@@ -35,7 +35,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
 
     try {
       onSubmit(password);
-    } catch (err) {
+    } catch (_err) {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);

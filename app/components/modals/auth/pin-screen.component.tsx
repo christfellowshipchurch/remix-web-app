@@ -85,7 +85,7 @@ const PinScreen: React.FC<PinScreenProps> = ({
 
     try {
       await onSubmit(fullPin);
-    } catch (err) {
+    } catch (_err) {
       setError("Wrong code, please try again");
     } finally {
       setLoading(false);
@@ -95,7 +95,7 @@ const PinScreen: React.FC<PinScreenProps> = ({
   const handleResend = async () => {
     try {
       await onResend();
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to resend code. Please try again.");
     }
   };

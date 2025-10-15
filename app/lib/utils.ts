@@ -94,7 +94,8 @@ interface EventDetails {
 }
 
 export const icsLink = (event: EventDetails): string => {
-  let { title, description, address, startTime, endTime, url } = event;
+  const { title, description, address, url } = event;
+  let { startTime, endTime } = event;
 
   if (isString(startTime) || isString(endTime)) {
     startTime = parseISO(startTime as string);
@@ -125,8 +126,8 @@ export const icsLink = (event: EventDetails): string => {
   ].join("\n");
 
   // We use blob method and removed `charset=utf8` in order to be compatible with Safari IOS
-  let blob = new Blob([icsString], { type: "text/calendar" });
-  let calendarLink = window.URL.createObjectURL(blob);
+  const blob = new Blob([icsString], { type: "text/calendar" });
+  const calendarLink = window.URL.createObjectURL(blob);
 
   return calendarLink;
 };
@@ -139,7 +140,7 @@ function parseTimeAsInt(_time: string) {
     .trim()
     .split(":")
     .map((n) => parseInt(n));
-  let hour24 = a === "PM" ? hour + 12 : hour;
+  const hour24 = a === "PM" ? hour + 12 : hour;
 
   return [hour24, minute];
 }
@@ -160,9 +161,9 @@ export function icsLinkEvents({
   campusName: string;
   url?: string;
 }) {
-  return serviceTimes.map(({ day, time }) => {
-    let now = new Date();
-    let [hour, minute] = parseTimeAsInt(time);
+  return serviceTimes.map(({ day: _day, time }) => {
+    const now = new Date();
+    const [hour, minute] = parseTimeAsInt(time);
     let sunday = nextSunday(now);
     sunday = setMinutes(sunday, minute ?? 0);
     sunday = setHours(sunday, hour ?? 0);

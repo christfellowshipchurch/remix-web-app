@@ -167,32 +167,28 @@ export const deleteRockData = async (endpoint: string) => {
  * @returns response body as JSON
  */
 export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
-  try {
-    const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization-Token": `${process.env.ROCK_TOKEN}`,
-      },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      const errorDetails = await response.text();
-      throw new Error(
-        `Failed to post data: ${response.status}, details: ${errorDetails}`
-      );
-    }
-
-    const responseBody = await response.text();
-    if (!responseBody) {
-      return {};
-    }
-
-    return JSON.parse(responseBody);
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    const errorDetails = await response.text();
+    throw new Error(
+      `Failed to post data: ${response.status}, details: ${errorDetails}`
+    );
   }
+
+  const responseBody = await response.text();
+  if (!responseBody) {
+    return {};
+  }
+
+  return JSON.parse(responseBody);
 };
 
 /**

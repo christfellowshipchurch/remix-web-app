@@ -31,9 +31,7 @@ export async function getChannelIdByGuid(channelGuid: string) {
     throw new Error("Error fetching channel from Rock");
   }
 
-  if (!Array.isArray(channel)) {
-    channel = channel;
-  } else {
+  if (Array.isArray(channel)) {
     channel = channel[0];
   }
 
@@ -102,9 +100,7 @@ export async function getPodcast(path: string) {
       },
     });
 
-    if (!Array.isArray(podcastData)) {
-      podcastData = podcastData;
-    } else {
+    if (Array.isArray(podcastData)) {
       podcastData = podcastData[0];
     }
   } catch (error) {

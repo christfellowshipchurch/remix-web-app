@@ -59,7 +59,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
         method: "post",
         action: "/set-a-reminder",
       });
-    } catch (err) {
+    } catch (_err) {
       setError("An error occurred. Please try again.");
       setLoading(false);
     }

@@ -3,7 +3,7 @@ import { formatDate } from "date-fns";
 import { LoaderReturnType } from "../loader";
 import HTMLRenderer from "~/primitives/html-renderer";
 
-export const MessageContent = ({}) => {
+export const MessageContent = () => {
   const { message } = useLoaderData<LoaderReturnType>();
 
   const formattedDate = formatDate(

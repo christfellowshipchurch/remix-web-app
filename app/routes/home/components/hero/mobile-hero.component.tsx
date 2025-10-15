@@ -11,7 +11,7 @@ export const MobileHeroSection = () => {
           alt="Hero Background"
           className="w-full h-full object-cover absolute inset-0 z-1"
           loading="eager"
-          // @ts-ignore
+          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
           fetchpriority="high"
         />
         <iframe

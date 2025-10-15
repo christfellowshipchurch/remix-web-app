@@ -58,6 +58,8 @@ export default [
         ResizeObserver: "readonly",
         // DOMParser
         DOMParser: "readonly",
+        // HTML Elements
+        HTMLIFrameElement: "readonly",
       },
     },
     plugins: {

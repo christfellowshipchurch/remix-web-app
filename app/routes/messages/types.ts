@@ -1,5 +1,3 @@
-import { Author } from "../author/loader";
-
 export type MessageType = {
   title: string;
   content: string;
