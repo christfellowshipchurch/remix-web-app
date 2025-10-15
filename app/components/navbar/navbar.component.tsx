@@ -2,14 +2,6 @@ import { useLocation, Outlet } from "react-router-dom";
 import { useRouteLoaderData } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useResponsive } from "~/hooks/use-responsive";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuLink,
-  NavigationMenuContent,
-  NavigationMenuTrigger,
-} from "@radix-ui/react-navigation-menu";
 import lowerCase from "lodash/lowerCase";
 
 import { Button } from "~/primitives/button/button.primitive";
@@ -20,12 +12,6 @@ import { SearchBar } from "./desktop/search/search.component";
 
 import { cn } from "~/lib/utils";
 import { shouldUseDarkMode } from "./navbar-routes";
-import {
-  angleDownIconStyle,
-  navigationMenuContentStyle,
-  navigationMenuTriggerStyle,
-} from "./navbar.styles";
-
 // Data
 import {
   mainNavLinks,
@@ -51,6 +37,7 @@ export function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   // Theme mode state
   let initialMode: "light" | "dark";
@@ -65,6 +52,22 @@ export function Navbar() {
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
 
   const { setIsNavbarVisible } = useNavbarVisibility();
+
+  // Click outside detection to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        openDropdown &&
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openDropdown]);
 
   useEffect(() => {
     if (siteBanner && siteBanner?.content?.length > 0) {
@@ -182,12 +185,23 @@ export function Navbar() {
   // Search handling
   const handleSearchClick = () => {
     setIsSearchOpen(true);
+    setOpenDropdown(null); // Close any open dropdown
     setTimeout(() => {
       const searchInput = document.querySelector(".ais-SearchBox-input");
       if (searchInput instanceof HTMLInputElement) {
         searchInput.focus();
       }
     }, 0);
+  };
+
+  // Dropdown handling
+  const handleDropdownToggle = (dropdownTitle: string) => {
+    if (openDropdown === dropdownTitle) {
+      setOpenDropdown(null);
+    } else {
+      setOpenDropdown(dropdownTitle);
+      setIsSearchOpen(false); // Close search when opening dropdown
+    }
   };
 
   useEffect(() => {
@@ -274,50 +288,54 @@ export function Navbar() {
                   display: isSearchOpen ? "none" : isLarge ? "inline" : "none",
                 }}
               >
-                <NavigationMenu>
-                  <NavigationMenuList className="flex items-center space-x-6 xl:space-x-10">
-                    {mainNavLinks.map((link) => (
-                      <NavigationMenuItem key={link.title}>
-                        <NavigationMenuLink
-                          href={link.url}
+                <nav className="flex items-center space-x-6 xl:space-x-10">
+                  {mainNavLinks.map((link) => (
+                    <a
+                      key={link.title}
+                      href={link.url}
+                      className={cn(
+                        "transition-colors xl:text-lg",
+                        mode === "light"
+                          ? "text-neutral-dark"
+                          : "text-white group-hover:text-text"
+                      )}
+                    >
+                      <span className="hover:text-ocean">{link.title}</span>
+                    </a>
+                  ))}
+
+                  {menuLinks.map((menuLink) =>
+                    menuLink.content ? (
+                      <div key={menuLink.title} className="relative">
+                        <button
+                          onClick={() => handleDropdownToggle(menuLink.title)}
                           className={cn(
-                            "transition-colors xl:text-lg",
+                            "transition-colors xl:text-lg cursor-pointer",
+                            openDropdown === menuLink.title &&
+                              "border-b-3 border-ocean",
                             mode === "light"
                               ? "text-neutral-dark"
                               : "text-white group-hover:text-text"
                           )}
                         >
-                          <span className="hover:text-ocean">{link.title}</span>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    ))}
-
-                    {menuLinks.map((menuLink) =>
-                      menuLink.content ? (
-                        <NavigationMenuItem
-                          value={menuLink.title}
-                          key={menuLink.title}
-                        >
-                          <NavigationMenuTrigger
-                            className={cn(
-                              navigationMenuTriggerStyle(),
-                              "xl:text-lg cursor-pointer transition-colors duration-200",
-                              mode === "light"
-                                ? "text-neutral-dark"
-                                : "text-white group-hover:text-text"
-                            )}
-                          >
+                          <span className="hover:text-ocean flex items-center gap-1">
                             {menuLink.title}
                             <Icon
                               name="chevronDown"
-                              className={angleDownIconStyle()}
+                              className={cn(
+                                "relative top-[1px] size-4 lg:size-6 transition duration-200",
+                                openDropdown === menuLink.title && "rotate-180"
+                              )}
                               aria-hidden="true"
                             />
-                          </NavigationMenuTrigger>
-                          <NavigationMenuContent
+                          </span>
+                        </button>
+
+                        {openDropdown === menuLink.title && (
+                          <div
                             className={cn(
-                              "relative z-10 bg-white shadow-sm",
-                              navigationMenuContentStyle()
+                              "fixed top-[82px] left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
+                              "animate-in slide-in-from-top-2 duration-200"
                             )}
                           >
                             <MenuContent
@@ -326,12 +344,12 @@ export function Navbar() {
                               mainContent={menuLink.content.mainContent}
                               featureCards={menuLink.content.featureCards}
                             />
-                          </NavigationMenuContent>
-                        </NavigationMenuItem>
-                      ) : null
-                    )}
-                  </NavigationMenuList>
-                </NavigationMenu>
+                          </div>
+                        )}
+                      </div>
+                    ) : null
+                  )}
+                </nav>
               </div>
             </div>
 

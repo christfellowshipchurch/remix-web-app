@@ -41,7 +41,7 @@ export function HeroNavCard({
       <img
         src={image}
         alt={title}
-        className={`w--80 2xl:!w-[420px] rounded-lg ${
+        className={`w-80 2xl:!w-[420px] rounded-lg bg-center bg-cover ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
         onLoad={() => setLoaded(true)}
