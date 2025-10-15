@@ -1,22 +1,20 @@
 // This Loader is currenlty being use for both Home and About pages
 import { leaders } from "../about/components/leaders-data";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { fetchAuthorArticles, fetchPersonAliasGuid } from "../author/loader";
+import {
+  fetchAuthorArticles,
+  fetchPersonAliasGuid,
+  fetchAuthorByPathname,
+} from "~/lib/.server/author-utils";
 import { calculateReadTime, createImageUrlFromGuid } from "~/lib/utils";
 import { Author, AuthorArticleProps } from "../author/types";
 import { formatDate } from "date-fns";
 
 const getAuthorIdsByPathname = async (person: Author): Promise<string> => {
   try {
-    const authorData = await fetchRockData({
-      endpoint: "People/GetByAttributeValue",
-      queryParams: {
-        attributeKey: "Pathname",
-        value: person.authorAttributes.pathname,
-        $select: "PrimaryAliasId",
-      },
-    });
-
+    const authorData = await fetchAuthorByPathname(
+      person.authorAttributes.pathname
+    );
     return authorData.primaryAliasId;
   } catch (error) {
     console.error("Error fetching author:", error);
@@ -45,7 +43,7 @@ export const loader = async (): Promise<{
       ...leader.authorAttributes,
       publications: {
         articles:
-          authorArticles[index].map(
+          (authorArticles[index] as any[]).map(
             (article: any): AuthorArticleProps => ({
               title: article.title,
               readTime: calculateReadTime(article.content),
