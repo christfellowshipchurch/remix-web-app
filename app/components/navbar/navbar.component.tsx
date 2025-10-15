@@ -255,6 +255,8 @@ export function Navbar() {
             "w-full content-padding transition-colors duration-200",
             mode === "light"
               ? "bg-white shadow-sm"
+              : openDropdown
+              ? "bg-white shadow-sm"
               : "bg-transparent group-hover:bg-white"
           )}
         >
@@ -275,6 +277,8 @@ export function Navbar() {
                   className={cn(
                     "size-32 my-[-48px] transition-colors duration-200",
                     mode === "light"
+                      ? "text-ocean"
+                      : openDropdown
                       ? "text-ocean"
                       : "text-white group-hover:text-ocean"
                   )}
@@ -297,6 +301,8 @@ export function Navbar() {
                         "transition-colors xl:text-lg",
                         mode === "light"
                           ? "text-neutral-dark"
+                          : openDropdown
+                          ? "text-neutral-dark"
                           : "text-white group-hover:text-text"
                       )}
                     >
@@ -314,6 +320,8 @@ export function Navbar() {
                             openDropdown === menuLink.title &&
                               "border-b-3 border-ocean",
                             mode === "light"
+                              ? "text-neutral-dark"
+                              : openDropdown
                               ? "text-neutral-dark"
                               : "text-white group-hover:text-text"
                           )}
@@ -387,6 +395,8 @@ export function Navbar() {
                       "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5",
                       mode === "light"
                         ? "text-neutral-dark"
+                        : openDropdown
+                        ? "text-neutral-dark"
                         : "text-white group-hover:text-text"
                     )}
                   />
@@ -399,6 +409,7 @@ export function Navbar() {
                     buttonStyle={cn(
                       "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
                       mode === "dark" &&
+                        !openDropdown &&
                         "border-white text-white group-hover:text-ocean group-hover:border-ocean"
                     )}
                     buttonText="Login"
