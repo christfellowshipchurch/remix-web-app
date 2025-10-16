@@ -33,7 +33,7 @@ export function HeroNavCard({
     <a
       href={callToAction?.url}
       className={cn(
-        "bg-white p-4 rounded-lg shadow-medium hover:text-ocean transition-colors max-w-xxs",
+        "bg-white p-4 rounded-lg shadow-medium hover:text-ocean transition-colors max-w-[420px]",
         variant === "mobile" && "p-3"
       )}
     >
@@ -41,7 +41,9 @@ export function HeroNavCard({
       <img
         src={image}
         alt={title}
-        className={`w-80 rounded-lg ${loaded ? "opacity-100" : "opacity-0"}`}
+        className={`w-80 2xl:!w-[420px] rounded-lg bg-center bg-cover ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
         onLoad={() => setLoaded(true)}
       />
       <h5 className="font-medium uppercase text-text-secondary text-xs mt-2">
@@ -67,7 +69,7 @@ export function NavCard({
     <Link
       to={callToAction?.url}
       prefetch="intent"
-      className="bg-white p-2 rounded-lg shadow-medium text-text-secondary w-full grid grid-cols-5 gap-4 hover:shadow-lg transition-all duration-300 group/nav-card"
+      className="bg-white p-2 rounded-lg shadow-medium text-text-secondary w-full grid grid-cols-5 gap-4 hover:shadow-lg transition-all duration-300 group/nav-card max-w-[420px]"
     >
       <div className="col-span-2 relative pb-9/16 overflow-hidden rounded-lg">
         {!loaded && <ImageLoader height={90} />}

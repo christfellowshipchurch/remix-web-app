@@ -51,7 +51,7 @@ export const navigationMenuTriggerStyle = cva(
 );
 
 export const navigationMenuContentStyle = cva(
-  "fixed top-[72px] left-0 data-[motion=from-end]:animate-enterFromRight data-[motion=from-start]:animate-enterFromLeft data-[motion=to-end]:animate-exitToRight data-[motion=to-start]:animate-exitToLeft sm:w-auto"
+  "fixed top-[82px] left-0 data-[motion=from-end]:animate-enterFromRight data-[motion=from-start]:animate-enterFromLeft data-[motion=to-end]:animate-exitToRight data-[motion=to-start]:animate-exitToLeft sm:w-auto border-t border-gray-100"
 );
 
 export const angleDownIconStyle = cva(
