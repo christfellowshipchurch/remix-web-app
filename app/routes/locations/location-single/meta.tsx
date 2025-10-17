@@ -1,7 +1,15 @@
 import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
 
-export const meta: MetaFunction<typeof loader> = ({ data }: any) => {
+interface LocationData {
+  campusName?: string;
+}
+
+export const meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: LocationData;
+}) => {
   if (!data) return [];
   return [
     {

@@ -9,10 +9,19 @@ export type Ministry = {
   url: string;
 };
 
+interface MinistryData {
+  title: string;
+  content: string;
+  attributeValues?: {
+    heroImage?: { value: string };
+    pathname?: { value: string };
+  };
+}
+
 const mapMinistryChannelItems = async (
-  ministriesData: any
+  ministriesData: MinistryData[]
 ): Promise<Ministry[]> => {
-  return ministriesData.map((ministry: any): Ministry => {
+  return ministriesData.map((ministry: MinistryData): Ministry => {
     return {
       title: ministry.title,
       description: ministry.content,

@@ -72,6 +72,7 @@ interface Person {
   firstName?: string;
   lastName?: string;
   email?: string;
+  primaryAliasId?: number;
 }
 
 export const getCurrentPerson = async (cookie: string): Promise<Person> => {
@@ -108,7 +109,16 @@ export const getCurrentPerson = async (cookie: string): Promise<Person> => {
   }
 };
 
-export const createRockSession = async (cookie: string): Promise<any> => {
+interface RockSessionResponse {
+  id: number;
+  personAliasId: number;
+  sessionData?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+export const createRockSession = async (
+  cookie: string
+): Promise<RockSessionResponse> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
   }

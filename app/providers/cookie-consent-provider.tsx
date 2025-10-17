@@ -14,11 +14,13 @@ const CookieConsentContext = createContext<
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const handleAcceptCookies = () => {
     // Add any additional cookie acceptance logic here
+    // eslint-disable-next-line no-console
     console.log("Cookies accepted");
   };
 
   const handleDeclineCookies = () => {
     // Add any additional cookie declination logic here
+    // eslint-disable-next-line no-console
     console.log("Cookies declined");
   };
 
