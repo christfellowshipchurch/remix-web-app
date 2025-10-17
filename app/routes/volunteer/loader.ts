@@ -125,23 +125,36 @@ export type LoaderReturnType = {
 export async function loader({ request: _request }: LoaderFunctionArgs) {
   const fetchMissions = await fetchMissionTrips();
 
-  const missionTrips: Trip[] = fetchMissions.map((item: any) => ({
-    id: item.id,
-    title: item.title,
-    description: item.content,
-    coverImage: createImageUrlFromGuid(item.attributeValues?.coverImage.value),
-    applyUrl: item.attributeValues?.applyUrl.value,
-    donateUrl: item.attributeValues?.donateUrl.value,
-    groupType: item.attributeValues?.groupType.value,
-    city: item.attributeValues?.city.value,
-    country: item.attributeValues?.country.value,
-    dateOfTrip: item.attributeValues?.dateOfTrip.value,
-    cost: item.attributeValues?.cost.value,
-    coordinates: {
-      lat: Number(item.attributeValues?.latitude.value) || 0,
-      lng: Number(item.attributeValues?.longitude.value) || 0,
-    },
-  }));
+  const missionTrips: Trip[] = fetchMissions.map(
+    (item: {
+      id: string;
+      title: string;
+      content: string;
+      attributeValues?: {
+        coverImage: { value: string };
+        applyUrl: { value: string };
+        donateUrl: { value: string };
+      };
+    }) => ({
+      id: item.id,
+      title: item.title,
+      description: item.content,
+      coverImage: createImageUrlFromGuid(
+        item.attributeValues?.coverImage.value
+      ),
+      applyUrl: item.attributeValues?.applyUrl.value,
+      donateUrl: item.attributeValues?.donateUrl.value,
+      groupType: item.attributeValues?.groupType.value,
+      city: item.attributeValues?.city.value,
+      country: item.attributeValues?.country.value,
+      dateOfTrip: item.attributeValues?.dateOfTrip.value,
+      cost: item.attributeValues?.cost.value,
+      coordinates: {
+        lat: Number(item.attributeValues?.latitude.value) || 0,
+        lng: Number(item.attributeValues?.longitude.value) || 0,
+      },
+    })
+  );
 
   // Group trips by country
   const groupedTrips = missionTrips.reduce(

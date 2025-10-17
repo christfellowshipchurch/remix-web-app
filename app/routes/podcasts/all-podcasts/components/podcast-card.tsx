@@ -67,7 +67,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                   className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
                 >
                   <Icon
-                    name={link.icon as any}
+                    name={link.icon as keyof typeof import("~/lib/icons").icons}
                     color="white"
                     size={link.icon === "amazonMusic" ? 36 : 24}
                     className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
@@ -121,7 +121,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                   className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[72px]"
                 >
                   <Icon
-                    name={link.icon as any}
+                    name={link.icon as keyof typeof import("~/lib/icons").icons}
                     color="white"
                     size={link.icon === "amazonMusic" ? 50 : 36}
                     className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}

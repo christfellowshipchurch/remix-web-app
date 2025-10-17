@@ -32,8 +32,8 @@ export function ShareLinks({
   backgroundColor,
   hideSocialLinks = false,
 }: ShareLinksProps) {
-  // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side. We'll use "any" return type for flexibliity
-  const data = useLoaderData<any>();
+  // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side
+  const data = useLoaderData<{ hostUrl?: string }>();
   const hostUrl = url || data?.hostUrl;
   const { pathname } = useLocation();
   const fullPath = `${hostUrl}${pathname}`;

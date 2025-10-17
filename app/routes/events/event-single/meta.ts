@@ -6,7 +6,7 @@ interface EventData {
   summary: string;
 }
 
-export const meta: MetaFunction = ({ data }: { data: any }) => {
+export const meta: MetaFunction = ({ data }: { data: EventData | null }) => {
   const eventData = data as EventData | null;
   if (!eventData) {
     return [

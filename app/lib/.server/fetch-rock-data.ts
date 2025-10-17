@@ -71,7 +71,7 @@ export const fetchRockData = async ({
     try {
       await redis.del(cacheKey);
     } catch {
-      console.log("⚠️ Redis cache deletion failed");
+      console.error("⚠️ Redis cache deletion failed");
     }
   }
 
@@ -83,7 +83,9 @@ export const fetchRockData = async ({
         return JSON.parse(cachedData);
       }
     } catch {
-      console.log("⚠️ Redis cache retrieval failed, falling back to API call");
+      console.error(
+        "⚠️ Redis cache retrieval failed, falling back to API call"
+      );
     }
   }
 
@@ -110,7 +112,7 @@ export const fetchRockData = async ({
     const data = await res
       .json()
       .then((data) => normalize(data))
-      .then((data: any) =>
+      .then((data: unknown) =>
         Array.isArray(data) && data?.length === 1 ? data[0] : data
       );
 
@@ -119,7 +121,7 @@ export const fetchRockData = async ({
       try {
         await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
       } catch {
-        console.log("⚠️ Redis cache storage failed");
+        console.error("⚠️ Redis cache storage failed");
       }
     }
 
@@ -262,7 +264,7 @@ export const deleteCacheKey = async ({
   queryParams?: RockQueryParams;
 }): Promise<boolean> => {
   if (!redis) {
-    console.log("⚠️ Redis not available for cache deletion");
+    console.error("⚠️ Redis not available for cache deletion");
     return false;
   }
 

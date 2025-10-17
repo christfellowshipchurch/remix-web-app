@@ -210,7 +210,6 @@ export const loader: LoaderFunction = async ({ request }) => {
             elements.forEach(el => {
               const style = el.getAttribute('style');
               if (style && style.includes('url(/')) {
-                // eslint-disable-next-line no-useless-escape
                 el.setAttribute('style', style.replace(/url\(\//g, 'url(' + '${baseUrlString}/'));
               }
             });

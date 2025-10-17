@@ -18,7 +18,15 @@ const RockGenderMap: { [key in Gender]: number } = {
   [Gender.Female]: 2,
 };
 
-export const createPerson = async (profile: any | any) => {
+interface PersonProfile {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  [key: string]: unknown;
+}
+
+export const createPerson = async (profile: PersonProfile) => {
   const inputProfileFields = await mapInputFieldsToRock(profile);
   return await postRockData({
     endpoint: "People",

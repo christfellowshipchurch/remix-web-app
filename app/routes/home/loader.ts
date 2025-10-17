@@ -43,8 +43,16 @@ export const loader = async (): Promise<{
       ...leader.authorAttributes,
       publications: {
         articles:
-          (authorArticles[index] as any[]).map(
-            (article: any): AuthorArticleProps => ({
+          (
+            authorArticles[index] as {
+              title: string;
+              content: string;
+              publishDate: string;
+              coverImage: string;
+              summary: string;
+            }[]
+          ).map(
+            (article): AuthorArticleProps => ({
               title: article.title,
               readTime: calculateReadTime(article.content),
               publishDate: formatDate(

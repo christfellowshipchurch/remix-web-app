@@ -15,6 +15,7 @@ try {
   });
 
   redis.on("connect", () => {
+    // eslint-disable-next-line no-console
     console.log("✅ Redis connected successfully");
   });
 
@@ -29,7 +30,7 @@ try {
     });
 
     if (error.code === "ETIMEDOUT" || error.code === "ECONNREFUSED") {
-      console.log(
+      console.error(
         "⚠️ Redis connection failed, falling back to direct API calls"
       );
       redis = null;
@@ -38,7 +39,7 @@ try {
     }
   });
 } catch (error) {
-  console.log(
+  console.error(
     "⚠️ Redis initialization failed, falling back to direct API calls",
     error
   );

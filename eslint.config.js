@@ -72,7 +72,7 @@ export default [
         { argsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
-      "no-console": "warn",
+      "no-console": ["warn", { allow: ["error", "warn"] }],
       "prefer-const": "error",
       "no-var": "error",
       // Allow React without import in JSX files

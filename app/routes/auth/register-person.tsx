@@ -29,8 +29,12 @@ export const registerPerson = async ({
             "Content-Type": "application/json",
           },
         });
-      } catch (error: any) {
-        return data({ error: error.message }, { status: error.statusCode });
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        const statusCode =
+          (error as { statusCode?: number })?.statusCode || 500;
+        return data({ error: errorMessage }, { status: statusCode });
       }
     case "email":
       try {
@@ -41,8 +45,12 @@ export const registerPerson = async ({
             "Content-Type": "application/json",
           },
         });
-      } catch (error: any) {
-        return data({ error: error.message }, { status: error.statusCode });
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        const statusCode =
+          (error as { statusCode?: number })?.statusCode || 500;
+        return data({ error: errorMessage }, { status: statusCode });
       }
     default:
       return data({ error: "Invalid registration type" }, { status: 400 });

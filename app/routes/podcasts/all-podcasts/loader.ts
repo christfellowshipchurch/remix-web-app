@@ -24,7 +24,18 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
 
   //map podcastShows to PodcastShow type
   const podcastShows: PodcastShow[] = podcastShowsData.map(
-    (podcastShow: any) => ({
+    (podcastShow: {
+      id: string;
+      title: string;
+      content: string;
+      attributeValues?: {
+        coverImage: { value: string };
+        apple: { value: string };
+        spotify: { value: string };
+        amazon: { value: string };
+        url: { value: string };
+      };
+    }) => ({
       id: podcastShow.id || "",
       title: podcastShow.title || "",
       description: podcastShow.content || "",

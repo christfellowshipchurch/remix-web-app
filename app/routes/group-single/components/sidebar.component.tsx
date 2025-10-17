@@ -115,11 +115,13 @@ export function GroupSingleSidebar({
 }) {
   const handleJoinGroup = () => {
     // TODO: Implement join group functionality
+    // eslint-disable-next-line no-console
     console.log("Join group clicked");
   };
 
   const handleMessageLeader = () => {
     // TODO: Implement message leader functionality
+    // eslint-disable-next-line no-console
     console.log("Message leader clicked");
   };
 

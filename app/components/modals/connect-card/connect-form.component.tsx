@@ -32,7 +32,15 @@ export const renderInputField = (
   </Form.Field>
 );
 
-export const renderCheckboxField = (checkbox: any, index: number) => (
+interface CheckboxOption {
+  guid: string;
+  value: string;
+}
+
+export const renderCheckboxField = (
+  checkbox: CheckboxOption,
+  index: number
+) => (
   <Form.Field
     key={index}
     name={`allThatApplies-${index}`}

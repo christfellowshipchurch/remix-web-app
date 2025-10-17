@@ -11,7 +11,12 @@ export const HTMLRenderer = ({
   stripFormattingTags?: boolean;
 }) => {
   const options = {
-    replace(domNode: any) {
+    replace(domNode: {
+      type: string;
+      name?: string;
+      children?: unknown[];
+      [key: string]: unknown;
+    }) {
       // Remove <b>, <strong>, <i>, <em> tags by unwrapping their children if enabled
       if (
         stripFormattingTags &&

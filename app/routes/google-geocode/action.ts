@@ -33,7 +33,7 @@ export const action: ActionFunction = async ({ request }) => {
       throw new Error("Failed to fetch geocode data");
     }
 
-    const data: LocationSearchCoordinatesType = (await response.json()) as any;
+    const data: LocationSearchCoordinatesType = await response.json();
 
     if (data.status === "ZERO_RESULTS") {
       return Response.json(

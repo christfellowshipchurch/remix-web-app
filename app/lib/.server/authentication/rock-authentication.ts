@@ -66,7 +66,15 @@ export const fetchUserCookie = async (
   }
 };
 
-export const getCurrentPerson = async (cookie: string): Promise<any> => {
+interface Person {
+  id: number;
+  guid: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}
+
+export const getCurrentPerson = async (cookie: string): Promise<Person> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
   }
@@ -156,7 +164,7 @@ export const createUserProfile = async ({
   ...otherFields
 }: {
   email?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   try {
     const person = await createPerson({
@@ -225,7 +233,10 @@ export const registerPersonWithEmail = async ({
   email: string;
   phoneNumber?: string;
   password: string;
-  userProfile: any;
+  userProfile: {
+    field: string;
+    value: unknown;
+  }[];
 }) => {
   const personExists = await checkUserExists(email);
   if (personExists) throw new Error("User already exists!");

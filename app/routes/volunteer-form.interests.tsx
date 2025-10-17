@@ -37,6 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   // TODO: Save data
+  // eslint-disable-next-line no-console
   console.log("Preferences Info received:", defaultValues);
   return redirect("/volunteer-form/confirmation");
 };

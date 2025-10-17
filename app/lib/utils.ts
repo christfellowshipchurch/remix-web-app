@@ -26,13 +26,18 @@ export function normalize(data: object): object {
   return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
 }
 
-export const fieldsAsObject = (fields: any[]) =>
+interface FieldObject {
+  field: string;
+  value: unknown;
+}
+
+export const fieldsAsObject = (fields: FieldObject[]) =>
   fields.reduce(
     (accum, { field, value }) => ({
       ...accum,
       [field]: typeof value === "string" ? value.trim() : value,
     }),
-    {}
+    {} as Record<string, unknown>
   );
 
 export const enforceProtocol = (uri: string) =>
@@ -43,7 +48,7 @@ export const createImageUrlFromGuid = (uri: string) =>
     ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
     : enforceProtocol(uri);
 
-export const getIdentifierType = (identifier: any) => {
+export const getIdentifierType = (identifier: string | number) => {
   const guidRegex =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const intRegex = /\D/g;
