@@ -1,6 +1,6 @@
 // This Loader is currenlty being use for both Home and About pages
 import { leaders } from "../about/components/leaders-data";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+// import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import {
   fetchAuthorArticles,
   fetchPersonAliasGuid,

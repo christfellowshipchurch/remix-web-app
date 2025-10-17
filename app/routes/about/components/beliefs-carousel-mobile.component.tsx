@@ -85,7 +85,7 @@ export function BeliefsCarouselMobile() {
           className="w-full relative mb-12"
         >
           <CarouselContent>
-            {beliefsData.map((belief, index) => (
+            {beliefsData.map((belief, _index) => (
               <CarouselItem
                 key={belief.title}
                 className={cn(

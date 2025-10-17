@@ -70,7 +70,7 @@ export const fetchRockData = async ({
   if (redis && !cache) {
     try {
       await redis.del(cacheKey);
-    } catch (error) {
+    } catch {
       console.log("⚠️ Redis cache deletion failed");
     }
   }
@@ -82,7 +82,7 @@ export const fetchRockData = async ({
       if (cachedData) {
         return JSON.parse(cachedData);
       }
-    } catch (error) {
+    } catch {
       console.log("⚠️ Redis cache retrieval failed, falling back to API call");
     }
   }
@@ -118,7 +118,7 @@ export const fetchRockData = async ({
     if (redis && cache) {
       try {
         await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
-      } catch (error) {
+      } catch {
         console.log("⚠️ Redis cache storage failed");
       }
     }

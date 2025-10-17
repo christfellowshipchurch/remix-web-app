@@ -168,7 +168,7 @@ export const createUserProfile = async ({
       ...otherFields,
     });
     return person;
-  } catch (err) {
+  } catch {
     throw new Error("Unable to create profile!");
   }
 };
@@ -211,7 +211,7 @@ export const createUserLogin = async (
         LastLoginDateTime: new Date(),
       },
     });
-  } catch (err) {
+  } catch {
     throw new Error("Unable to create user login!");
   }
 };

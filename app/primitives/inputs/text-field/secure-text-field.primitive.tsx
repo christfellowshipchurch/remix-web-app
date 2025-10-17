@@ -40,8 +40,8 @@ const SecureTextFieldInput = forwardRef<
       const len = rawValue.length;
       if (len === 0) return "";
 
-      const first = rawValue.slice(0, 3);
-      const mid = rawValue.slice(3, 5);
+      // const _first = rawValue.slice(0, 3);
+      // const _mid = rawValue.slice(3, 5);
       const last = rawValue.slice(5);
 
       if (len <= 3) {

@@ -137,7 +137,7 @@ export const CampusInfo = ({
 };
 
 const OnlineCampusInfo = ({
-  campusName,
+  campusName: _campusName,
   digitalTourVideo,
   phoneNumber,
   additionalInfo,

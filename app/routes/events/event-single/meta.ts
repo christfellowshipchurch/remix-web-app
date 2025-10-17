@@ -1,5 +1,5 @@
 import type { MetaFunction } from "react-router-dom";
-import { loader } from "./loader";
+// import { loader } from "./loader";
 
 interface EventData {
   title: string;

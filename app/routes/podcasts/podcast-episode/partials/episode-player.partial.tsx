@@ -3,6 +3,7 @@ import { PodcastEpisode } from "../../types";
 
 // Declare custom Wistia player element
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
       "wistia-player": React.DetailedHTMLProps<

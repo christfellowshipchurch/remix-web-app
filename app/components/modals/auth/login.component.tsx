@@ -55,7 +55,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
 
     try {
       await onSubmit(identity);
-    } catch (_err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);

@@ -6,7 +6,7 @@ export type LoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request: _request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 

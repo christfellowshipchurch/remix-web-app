@@ -57,7 +57,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
 
     try {
       await onSubmit(userData);
-    } catch (_err) {
+    } catch {
       setError(
         "An error occurred while creating your account. Please try again."
       );

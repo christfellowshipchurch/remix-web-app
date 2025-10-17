@@ -25,7 +25,7 @@ type ShareLinksProps = {
 type SocialMedia = { type: string; url: string };
 
 export function ShareLinks({
-  size = 8,
+  size: _size = 8,
   socialMedia,
   url,
   overrideCopyUrl,

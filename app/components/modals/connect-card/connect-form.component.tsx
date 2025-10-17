@@ -94,7 +94,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         method: "post",
         action: "/connect-card",
       });
-    } catch (_err) {
+    } catch {
       setError(
         "An error occurred while submitting the form. Please try again."
       );

@@ -122,7 +122,7 @@ export type LoaderReturnType = {
   featuredEvent: Event;
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request: _request }: LoaderFunctionArgs) {
   const fetchMissions = await fetchMissionTrips();
 
   const missionTrips: Trip[] = fetchMissions.map((item: any) => ({

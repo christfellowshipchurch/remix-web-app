@@ -27,7 +27,7 @@ export async function getChannelIdByGuid(channelGuid: string) {
         $select: "Id",
       },
     });
-  } catch (error) {
+  } catch {
     throw new Error("Error fetching channel from Rock");
   }
 
@@ -56,7 +56,7 @@ export async function getLatestEpisodes(channelGuid: string) {
     if (!Array.isArray(episodes)) {
       episodes = [episodes];
     }
-  } catch (error) {
+  } catch {
     throw new Error("Error fetching episodes from Rock");
   }
 
@@ -103,7 +103,7 @@ export async function getPodcast(path: string) {
     if (Array.isArray(podcastData)) {
       podcastData = podcastData[0];
     }
-  } catch (error) {
+  } catch {
     throw new Error("Error fetching podcast from Rock");
   }
 

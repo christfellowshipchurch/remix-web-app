@@ -17,7 +17,7 @@ export default function MobileMenu({
   setMode: (mode: "light" | "dark") => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [orginalMode, setOrginalMode] = useState(mode);
+  const [orginalMode] = useState(mode);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isHydrated = useHydrated();
   const { user, isLoading: authLoading, logout } = useAuth();

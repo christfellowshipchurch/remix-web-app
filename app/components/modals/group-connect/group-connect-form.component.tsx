@@ -68,7 +68,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         method: "post",
         action: "/group-finder",
       });
-    } catch (_err) {
+    } catch {
       setError("An error occurred. Please try again.");
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { algoliasearch, SearchClient } from "algoliasearch";
+import { algoliasearch } from "algoliasearch";
 import { useEffect, useRef } from "react";
 import { Configure, InstantSearch } from "react-instantsearch";
 import { useFetcher, useLoaderData } from "react-router-dom";
@@ -24,15 +24,14 @@ export const LocationSearch = () => {
     lng: number;
   } | null>(null);
 
-  let newSearchClient: SearchClient | null = globalSearchClient;
   // Create or retrieve the Algolia client
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
-      newSearchClient = algoliasearch(
-        ALGOLIA_APP_ID,
-        ALGOLIA_SEARCH_API_KEY,
-        {}
-      );
+      // const newSearchClient = algoliasearch(
+      //   ALGOLIA_APP_ID,
+      //   ALGOLIA_SEARCH_API_KEY,
+      //   {}
+      // );
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 

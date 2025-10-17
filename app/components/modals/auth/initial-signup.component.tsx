@@ -52,7 +52,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
 
     try {
       await onSubmit(identity);
-    } catch (_err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
