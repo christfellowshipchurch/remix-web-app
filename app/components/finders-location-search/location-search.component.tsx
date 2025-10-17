@@ -5,7 +5,7 @@
 import Icon from "~/primitives/icon";
 
 import { InstantSearch, Configure } from "react-instantsearch";
-import { algoliasearch, SearchClient } from "algoliasearch";
+import { algoliasearch } from "algoliasearch";
 import { useFetcher, useLoaderData } from "react-router-dom";
 import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
@@ -38,15 +38,14 @@ export const FinderLocationSearch = ({
   if (!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_API_KEY) {
     return null;
   }
-  let newSearchClient: SearchClient | null = globalSearchClient;
   // Create or retrieve the Algolia client
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
-      newSearchClient = algoliasearch(
-        ALGOLIA_APP_ID,
-        ALGOLIA_SEARCH_API_KEY,
-        {}
-      );
+      // const newSearchClient = algoliasearch(
+      //   ALGOLIA_APP_ID,
+      //   ALGOLIA_SEARCH_API_KEY,
+      //   {}
+      // );
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 

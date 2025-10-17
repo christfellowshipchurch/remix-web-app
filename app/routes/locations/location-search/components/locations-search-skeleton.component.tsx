@@ -23,7 +23,7 @@ export function LocationsLoader() {
   return (
     <div className="flex flex-col items-center py-12">
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
-        {data?.map((campus: any, index: number) => {
+        {data?.map((_campus: unknown, index: number) => {
           return <LocationSkeletonCard key={index} />;
         })}
       </div>

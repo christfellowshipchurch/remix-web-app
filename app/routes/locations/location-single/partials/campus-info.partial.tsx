@@ -17,7 +17,9 @@ interface CampusInfoProps {
     postalCode: string;
   };
   serviceTimes: string;
-  weekdaySchedule?: any;
+  weekdaySchedule?: {
+    [key: string]: string[];
+  };
   phoneNumber: string;
   additionalInfo: string[];
 }
@@ -137,7 +139,7 @@ export const CampusInfo = ({
 };
 
 const OnlineCampusInfo = ({
-  campusName,
+  campusName: _campusName,
   digitalTourVideo,
   phoneNumber,
   additionalInfo,

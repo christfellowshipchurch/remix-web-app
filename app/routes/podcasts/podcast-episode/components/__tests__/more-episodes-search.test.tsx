@@ -12,8 +12,8 @@ vi.mock("react-instantsearch", () => ({
     hitComponent: HitComponent,
     classNames,
   }: {
-    hitComponent: any;
-    classNames: any;
+    hitComponent: React.ComponentType<{ hit: unknown }>;
+    classNames: { list: string };
   }) => (
     <div data-testid="hits" className={classNames.list}>
       <HitComponent

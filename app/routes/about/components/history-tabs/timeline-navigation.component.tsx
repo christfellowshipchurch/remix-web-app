@@ -5,7 +5,11 @@ function TimelineNavigation({
   activeTab,
   handleTabChange,
 }: {
-  timelineData: any[];
+  timelineData: {
+    year: string;
+    title: string;
+    description: string;
+  }[];
   activeTab: number;
   handleTabChange: (index: number) => void;
 }) {

@@ -1,10 +1,10 @@
-import { useLoaderData } from "react-router-dom";
-import type { LoaderReturnType } from "../loader";
+// import { useLoaderData } from "react-router-dom";
+// import type { LoaderReturnType } from "../loader";
 import { GroupFAQ } from "./faq.component";
 
 export function GroupSingleBasicContent({
-  tags,
-  groupName,
+  tags: _tags,
+  groupName: _groupName,
   summary,
 }: {
   tags: string[];

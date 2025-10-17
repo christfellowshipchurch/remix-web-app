@@ -24,8 +24,12 @@ export const fetchAuthorByPathname = async (pathname: string) => {
   });
 };
 
+interface PersonAlias {
+  guid: string;
+}
+
 export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
-  const personAlias: any = await fetchRockData({
+  const personAlias: PersonAlias = await fetchRockData({
     endpoint: "PersonAlias",
     queryParams: {
       $filter: `Id eq ${primaryAliasId}`,

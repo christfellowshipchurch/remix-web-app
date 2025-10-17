@@ -175,7 +175,7 @@ export const WhatToExpectMobileScroll = () => {
           )}
         >
           {WhatToExpectData.map((item, index) => {
-            const { video, mobileContent, name, role, thumbnail } = item.data;
+            const { video, name, thumbnail } = item.data;
             const isPlaying = playingIndex === index;
 
             return (

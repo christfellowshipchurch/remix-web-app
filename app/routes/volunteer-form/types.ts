@@ -1,5 +1,3 @@
-import { icons } from "~/lib/icons";
-
 // Types for Volunteer Form multi-step process
 export const INTERESTS = [
   "Children & Youth",
@@ -20,6 +18,7 @@ export const STRENGTHS = [
   "One-on-one conversations",
 ] as const;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface VolunteerFormWelcome {
   // No fields needed, just a welcome step
 }
@@ -82,6 +81,7 @@ export interface VolunteerFormInterests {
   ssn: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface VolunteerFormConfirmation {
   // No fields needed, just a confirmation/results step
 }

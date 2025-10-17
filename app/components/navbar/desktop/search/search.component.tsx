@@ -45,7 +45,10 @@ function CurrentQueryProvider({ children }: { children: React.ReactNode }) {
   // Clone the children with the current query prop
   return React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement<any>, { query });
+      return React.cloneElement(
+        child as React.ReactElement<{ query?: string }>,
+        { query }
+      );
     }
     return child;
   });

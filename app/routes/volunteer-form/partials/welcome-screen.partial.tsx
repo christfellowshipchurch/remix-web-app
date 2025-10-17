@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 

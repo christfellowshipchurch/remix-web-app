@@ -5,7 +5,7 @@ export function LottieAnimation({
   animationData,
   size = "150px",
 }: {
-  animationData: any;
+  animationData: object;
   size?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);

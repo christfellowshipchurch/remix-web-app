@@ -16,36 +16,42 @@ export const action: ActionFunction = async ({ request }) => {
   const formType = formData.get("formType");
 
   switch (formType) {
-    case "authenticate":
+    case "authenticate": {
       const identity = formData.get("identity");
       const password = formData.get("password");
       return await authenticate({
         identity: identity as string,
         password: password as string,
       });
-    case "requestSmsPin":
+    }
+    case "requestSmsPin": {
       const requestNumber = formData.get("phoneNumber");
       return await requestSmsPinLogin(requestNumber as string);
-    case "loginWithSms":
+    }
+    case "loginWithSms": {
       const phoneNumber = formData.get("phoneNumber");
       const pin = formData.get("pin");
       return await authenticateSms({
         phoneNumber: phoneNumber as string,
         pin: pin as string,
       });
-    case "currentUser":
+    }
+    case "currentUser": {
       const token = formData.get("token");
       return await currentUser(token as string);
-    case "checkUserExists":
+    }
+    case "checkUserExists": {
       const checkIdentity = formData.get("identity");
       return await userExists(checkIdentity as string);
-    case "registerPerson":
+    }
+    case "registerPerson": {
       const registrationType = formData.get("registrationType");
       const userInputData = formData.get("userInputData");
       return await registerPerson({
         registrationType: registrationType as RegistrationTypes,
         userInputData: userInputData as unknown as UserInputData,
       });
+    }
     default:
       return data({ error: "Invalid form type" }, { status: 400 });
   }

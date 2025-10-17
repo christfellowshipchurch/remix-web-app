@@ -1,4 +1,4 @@
-import { SearchBox, useInstantSearch, useSearchBox } from "react-instantsearch";
+import { SearchBox, useSearchBox } from "react-instantsearch";
 
 import { Hits } from "react-instantsearch";
 import { cn, isValidZip } from "~/lib/utils";
@@ -18,21 +18,21 @@ export function GroupsSearchPopup({
   isOpen: boolean;
   onSearchSubmit: (query: string | null) => void;
 }) {
-  const { setIndexUiState } = useInstantSearch();
+  // const { setIndexUiState } = useInstantSearch();
 
   const { query, refine } = useSearchBox();
   const [zipCode, setZipCode] = useState<string | null>(null);
-  const handleLocationSelect = (location: string) => {
-    setSelectedLocation(location);
-    setIndexUiState((prevState) => ({
-      ...prevState,
-      refinementList: {
-        ...prevState.refinementList,
-        campusName: [location],
-      },
-    }));
-    setIsOpen(false);
-  };
+  // const _handleLocationSelect = (location: string) => {
+  //   setSelectedLocation(location);
+  //   setIndexUiState((prevState) => ({
+  //     ...prevState,
+  //     refinementList: {
+  //       ...prevState.refinementList,
+  //       campusName: [location],
+  //     },
+  //   }));
+  //   setIsOpen(false);
+  // };
 
   useEffect(() => {
     if (query.length === 5 && isValidZip(query)) {

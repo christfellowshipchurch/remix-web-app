@@ -55,7 +55,7 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
         .replace("PDT", "PT");
 
       return `${displayHours}:${displayMinutes}${ampm} ${shortTimeZone}`;
-    } catch (error) {
+    } catch {
       // Fallback to original format if parsing fails
       return timeString;
     }

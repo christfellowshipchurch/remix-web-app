@@ -27,21 +27,13 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
 
     try {
       await onSubmit(password);
-    } catch (err: any) {
-      if (lodash.includes(err.message, "Invalid credentials")) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+
+      if (lodash.includes(errorMessage, "Invalid credentials")) {
         setError("Invalid password. Please try again.");
       } else {
-        switch (typeof err) {
-          case "string":
-            setError(err);
-            break;
-          case "object":
-            setError(err.message);
-            break;
-          default:
-            setError("An unknown error occurred. Please try again.");
-            break;
-        }
+        setError(errorMessage);
       }
       setLoading(false); // Ensure loading is set to false when an error occurs
 

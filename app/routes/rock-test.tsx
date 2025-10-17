@@ -26,7 +26,7 @@ export default function RockTestPage() {
 
     setIsLoading(true);
     // Add some basic validation and URL formatting
-    let formattedUrl = rockUrl.trim();
+    const formattedUrl = rockUrl.trim();
 
     // If it doesn't start with http, assume it's a relative path
     if (!formattedUrl.startsWith("http")) {

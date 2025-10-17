@@ -39,8 +39,15 @@ export const generateAndLogCryptoTokens = (): void => {
   const cryptoSecret = generateCryptoToken(32); // 256 bits
   const cryptoIv = generateIV(); // 16 digit IV
 
-  console.log("\n=== Generated Crypto Tokens ===");
-  console.log(`CRYPTO_SECRET=${cryptoSecret}`);
-  console.log(`CRYPTO_IV=${cryptoIv}`);
-  console.log("===============================\n");
+  // Only log in development environment
+  if (process.env.NODE_ENV === "development") {
+    // eslint-disable-next-line no-console
+    console.log("\n=== Generated Crypto Tokens ===");
+    // eslint-disable-next-line no-console
+    console.log(`CRYPTO_SECRET=${cryptoSecret}`);
+    // eslint-disable-next-line no-console, no-console
+    console.log(`CRYPTO_IV=${cryptoIv}`);
+    // eslint-disable-next-line no-console
+    console.log("===============================\n");
+  }
 };

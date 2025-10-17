@@ -17,13 +17,17 @@ export const action: ActionFunction = async ({ request }) => {
     },
   });
 
-  campuses.forEach((campus: any) => {
-    if (campus && campus.attributeValues.campusImage.value) {
-      campus.image = createImageUrlFromGuid(
-        campus.attributeValues.campusImage.value
-      );
+  campuses.forEach(
+    (
+      campus: Campus & { attributeValues: { campusImage: { value: string } } }
+    ) => {
+      if (campus && campus.attributeValues.campusImage.value) {
+        campus.image = createImageUrlFromGuid(
+          campus.attributeValues.campusImage.value
+        );
+      }
     }
-  });
+  );
 
   return await getByLocation({ latitude, longitude, campuses });
 };
@@ -42,15 +46,19 @@ export const getByLocation = async ({
   );
   campuses = campuses.filter(({ name }: Campus) => !name.includes("Online"));
 
-  campuses = campuses.map((campus: any) => ({
-    ...campus,
-    distanceFromLocation: latLonDistance(
-      latitude,
-      longitude,
-      campus.location.latitude,
-      campus.location.longitude
-    ),
-  }));
+  campuses = campuses.map(
+    (
+      campus: Campus & { location: { latitude: number; longitude: number } }
+    ) => ({
+      ...campus,
+      distanceFromLocation: latLonDistance(
+        latitude,
+        longitude,
+        campus.location.latitude,
+        campus.location.longitude
+      ),
+    })
+  );
 
   campuses = campuses.sort(
     (a: Campus, b: Campus) =>

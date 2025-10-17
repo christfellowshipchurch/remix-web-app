@@ -10,7 +10,16 @@ export type LoaderReturnType = {
   series: Series;
   messages: MessageType[];
   // A series resource will be anything tagged with the series defined value that is not a message
-  resources: any[];
+  resources: {
+    id: string;
+    title: string;
+    coverImage: string;
+    attributeValues: {
+      image: { value: string };
+      url: { value: string };
+    };
+    contentChannelId: string;
+  }[];
 };
 
 export type Series = {
@@ -63,17 +72,27 @@ const getSeriesResources = async (seriesGuid: string) => {
     ? seriesResources
     : [seriesResources];
 
-  resources.forEach((resource: any) => {
-    resource.coverImage = createImageUrlFromGuid(
-      resource.attributeValues.image.value
-    );
-  });
+  resources.forEach(
+    (resource: {
+      attributeValues: { image: { value: string } };
+      coverImage: string;
+    }) => {
+      resource.coverImage = createImageUrlFromGuid(
+        resource.attributeValues.image.value
+      );
+    }
+  );
 
-  resources.forEach((resource: any) => {
-    resource.attributeValues.url.value = `${getContentChannelUrl(
-      resource.contentChannelId
-    )}/${resource.attributeValues.url.value}`;
-  });
+  resources.forEach(
+    (resource: {
+      attributeValues: { url: { value: string } };
+      contentChannelId: string;
+    }) => {
+      resource.attributeValues.url.value = `${getContentChannelUrl(
+        resource.contentChannelId
+      )}/${resource.attributeValues.url.value}`;
+    }
+  );
 
   return resources;
 };

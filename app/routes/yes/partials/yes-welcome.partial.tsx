@@ -1,9 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Button } from "~/primitives/button/button.primitive";
 import { Video } from "~/primitives/video/video.primitive";
 
 export const YesWelcomePartial = () => {
-  const navigate = useNavigate();
+  // const _navigate = useNavigate();
 
   return (
     <section className="w-full content-padding relative">

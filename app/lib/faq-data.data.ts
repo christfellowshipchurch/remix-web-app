@@ -40,7 +40,7 @@ export const faqGive = [
   {
     title: "Why should I tithe?",
     content: `Tithing is a biblical principle that means the tenth. The first tenth, which belongs to God, is Holy and set apart for Him. Tithing is about training our hearts to trust God at His Word. He gave us the greatest gift, His Son, and in response to this gift, we also give.
-        Tithing isn’t as much about finances as it is about faith. It’s not about what God wants from you but what He has for you.  <br/><br/>In Malachi 3:10, The Bible says we can test this promise. When we bring our first and best back to God, He promises to bless the rest of our resources so that we could be a blessing toward others.`,
+        Tithing isn't as much about finances as it is about faith. It's not about what God wants from you but what He has for you. <br/><br/>In Malachi 3:10, The Bible says we can test this promise. When we bring our first and best back to God, He promises to bless the rest of our resources so that we could be a blessing toward others.`,
   },
   {
     title: "What’s the best way to give?",

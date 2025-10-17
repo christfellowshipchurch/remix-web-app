@@ -1,5 +1,4 @@
 import { Breadcrumbs, ShareLinks } from "~/components";
-import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";

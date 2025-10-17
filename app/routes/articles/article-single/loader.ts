@@ -17,7 +17,14 @@ export type LoaderReturnType = {
   relatedArticles?: {
     tag: string;
     tagId: string;
-    articles: any[];
+    articles: {
+      id: number;
+      title: string;
+      summary: string;
+      coverImage: string;
+      publishDate: string;
+      readTime: number;
+    }[];
   };
 };
 

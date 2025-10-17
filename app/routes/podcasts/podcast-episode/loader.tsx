@@ -98,7 +98,7 @@ async function getPodcastChannel(path: string): Promise<RockChannel> {
     const channelData = getFirstItem(channel) as RockChannel;
 
     return channelData;
-  } catch (error) {
+  } catch {
     throw new Error(ERROR_MESSAGES.CHANNEL_FETCH_ERROR);
   }
 }
@@ -125,7 +125,7 @@ async function getPodcastEpisode({
     });
 
     return getFirstItem(episode) as RockPodcastEpisode;
-  } catch (error) {
+  } catch {
     throw new Error(ERROR_MESSAGES.EPISODE_FETCH_ERROR);
   }
 }

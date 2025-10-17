@@ -73,9 +73,11 @@ export const RegionCard = ({
   );
 };
 
-export const RegionCardWrapper = ({ resource }: { resource: any }) => (
-  <RegionCard {...resource} />
-);
+export const RegionCardWrapper = ({
+  resource,
+}: {
+  resource: RegionCardType;
+}) => <RegionCard {...resource} />;
 
 const RegionCardInfo = ({
   icon,

@@ -13,6 +13,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     phone: formData.get("phone"),
     dateOfBirth: formData.get("dateOfBirth"),
   };
+  // eslint-disable-next-line no-console
   console.log("Personal Info received:", data);
 
   // TODO: Validate data and save it

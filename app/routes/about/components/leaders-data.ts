@@ -1,6 +1,6 @@
 import { Author } from "~/routes/author/types";
 
-export let leaders: Author[] = [
+export const leaders: Author[] = [
   {
     id: "1",
     fullName: "Todd & Julie Mullins",

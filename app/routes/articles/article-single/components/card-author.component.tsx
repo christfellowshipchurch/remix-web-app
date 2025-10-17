@@ -1,5 +1,4 @@
 import * as Avatar from "@radix-ui/react-avatar";
-import { cva, VariantProps } from "class-variance-authority";
 import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
 
 export const CardAuthor = ({
@@ -39,23 +38,7 @@ export const CardAuthor = ({
   );
 };
 
-const card = cva(["flex"], {
-  variants: {
-    // UPDATE
-    size: {
-      sm: ["min-w-20", "h-full", "min-h-10", "text-sm", "px-4"],
-      lg: ["min-w-32", "h-full", "min-h-12", "text-lg", "px-6"],
-    },
-    underline: { true: ["underline"], false: [] },
-  },
-  defaultVariants: {
-    size: "lg",
-  },
-});
-
-export interface ArticleCardProps
-  extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof card> {
+export interface ArticleCardProps extends React.HTMLAttributes<HTMLElement> {
   href?: string;
   title: string;
   description: string;

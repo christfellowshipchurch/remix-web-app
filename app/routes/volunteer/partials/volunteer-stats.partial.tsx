@@ -47,7 +47,7 @@ export function VolunteerStats(props: Partial<VolunteerStatsProps> = {}) {
     <section id="stats" className="w-full bg-white py-20 content-padding">
       <div className="max-w-screen-content mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:flex w-full gap-6 justify-between items-end">
-          {stats.map((stat, idx) => (
+          {stats.map((stat, _idx) => (
             <div
               className="flex flex-col-reverse lg:flex-col items-start justify-between h-full xl:min-w-[278px]"
               key={stat.label}

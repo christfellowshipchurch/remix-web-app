@@ -37,7 +37,7 @@ interface LeaderGalleryProps {
 const LeaderGallery = ({ leaders }: LeaderGalleryProps) => (
   <div className="flex flex-col gap-2 px-6">
     <div className="flex gap-2">
-      {leaders?.map((leader, i) => (
+      {leaders?.map((leader, _i) => (
         <img
           key={leader.firstName}
           src={leader.photo.uri || defaultLeaderPhoto}
@@ -115,11 +115,13 @@ export function GroupSingleSidebar({
 }) {
   const handleJoinGroup = () => {
     // TODO: Implement join group functionality
+    // eslint-disable-next-line no-console
     console.log("Join group clicked");
   };
 
   const handleMessageLeader = () => {
     // TODO: Implement message leader functionality
+    // eslint-disable-next-line no-console
     console.log("Message leader clicked");
   };
 

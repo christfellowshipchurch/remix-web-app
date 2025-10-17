@@ -70,8 +70,8 @@ export const fetchRockData = async ({
   if (redis && !cache) {
     try {
       await redis.del(cacheKey);
-    } catch (error) {
-      console.log("⚠️ Redis cache deletion failed");
+    } catch {
+      console.error("⚠️ Redis cache deletion failed");
     }
   }
 
@@ -82,8 +82,10 @@ export const fetchRockData = async ({
       if (cachedData) {
         return JSON.parse(cachedData);
       }
-    } catch (error) {
-      console.log("⚠️ Redis cache retrieval failed, falling back to API call");
+    } catch {
+      console.error(
+        "⚠️ Redis cache retrieval failed, falling back to API call"
+      );
     }
   }
 
@@ -110,7 +112,7 @@ export const fetchRockData = async ({
     const data = await res
       .json()
       .then((data) => normalize(data))
-      .then((data: any) =>
+      .then((data: unknown) =>
         Array.isArray(data) && data?.length === 1 ? data[0] : data
       );
 
@@ -118,8 +120,8 @@ export const fetchRockData = async ({
     if (redis && cache) {
       try {
         await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
-      } catch (error) {
-        console.log("⚠️ Redis cache storage failed");
+      } catch {
+        console.error("⚠️ Redis cache storage failed");
       }
     }
 
@@ -167,32 +169,28 @@ export const deleteRockData = async (endpoint: string) => {
  * @returns response body as JSON
  */
 export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
-  try {
-    const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization-Token": `${process.env.ROCK_TOKEN}`,
-      },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      const errorDetails = await response.text();
-      throw new Error(
-        `Failed to post data: ${response.status}, details: ${errorDetails}`
-      );
-    }
-
-    const responseBody = await response.text();
-    if (!responseBody) {
-      return {};
-    }
-
-    return JSON.parse(responseBody);
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    const errorDetails = await response.text();
+    throw new Error(
+      `Failed to post data: ${response.status}, details: ${errorDetails}`
+    );
   }
+
+  const responseBody = await response.text();
+  if (!responseBody) {
+    return {};
+  }
+
+  return JSON.parse(responseBody);
 };
 
 /**
@@ -266,7 +264,7 @@ export const deleteCacheKey = async ({
   queryParams?: RockQueryParams;
 }): Promise<boolean> => {
   if (!redis) {
-    console.log("⚠️ Redis not available for cache deletion");
+    console.error("⚠️ Redis not available for cache deletion");
     return false;
   }
 
