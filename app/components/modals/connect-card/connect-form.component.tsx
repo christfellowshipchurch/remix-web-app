@@ -32,7 +32,15 @@ export const renderInputField = (
   </Form.Field>
 );
 
-export const renderCheckboxField = (checkbox: any, index: number) => (
+interface CheckboxOption {
+  guid: string;
+  value: string;
+}
+
+export const renderCheckboxField = (
+  checkbox: CheckboxOption,
+  index: number
+) => (
   <Form.Field
     key={index}
     name={`allThatApplies-${index}`}
@@ -94,7 +102,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         method: "post",
         action: "/connect-card",
       });
-    } catch (err) {
+    } catch {
       setError(
         "An error occurred while submitting the form. Please try again."
       );
@@ -200,7 +208,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 id={otherCheckbox.guid}
                 name={otherCheckbox.guid}
                 value={otherCheckbox.guid}
-                onChange={(e) => setIsOther(!isOther)}
+                onChange={(_e) => setIsOther(!isOther)}
               />
             </Form.Control>
             <Form.Label className="font-bold leading-4">

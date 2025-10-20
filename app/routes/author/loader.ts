@@ -2,6 +2,17 @@ import { LoaderFunction } from "react-router-dom";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { format } from "date-fns";
 import { Author } from "./types";
+
+interface ArticleData {
+  title: string;
+  content?: string;
+  startDateTime: string;
+  attributeValues?: {
+    image?: { value: string };
+    summary?: { value: string };
+    url?: { value: string };
+  };
+}
 import {
   fetchAuthorData,
   fetchPersonAliasGuid,
@@ -78,7 +89,7 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
         socialLinks,
         publications: {
           articles: authorArticles
-            .map((article: any) => {
+            .map((article: ArticleData) => {
               if (!article) return null;
 
               try {
@@ -210,7 +221,7 @@ export const getAuthorDetails = async (personId: string) => {
         socialLinks,
         publications: {
           articles: authorArticles
-            .map((article: any) => {
+            .map((article: ArticleData) => {
               if (!article) return null;
 
               try {

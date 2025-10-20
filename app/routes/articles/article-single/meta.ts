@@ -5,7 +5,7 @@ interface ArticleData {
   summary: string;
 }
 
-export const meta: MetaFunction = ({ data }: { data: any }) => {
+export const meta: MetaFunction = ({ data }: { data: ArticleData | null }) => {
   const articleData = data as ArticleData | null;
   if (!articleData) {
     return [

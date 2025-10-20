@@ -51,10 +51,12 @@ const fetchDailyDevo = async () => {
 
   // Filter to get the most recent item that has started (StartDateTime <= current date)
   const currentDate = new Date();
-  const validItems = dailyDevoItems.filter((item: any) => {
-    const startDate = new Date(item.startDateTime);
-    return startDate <= currentDate;
-  });
+  const validItems = dailyDevoItems.filter(
+    (item: { startDateTime: string }) => {
+      const startDate = new Date(item.startDateTime);
+      return startDate <= currentDate;
+    }
+  );
 
   return validItems[0]; // Return the most recent valid item
 };

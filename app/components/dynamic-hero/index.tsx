@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { Breadcrumbs } from "../breadcrumbs";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { Button, ButtonProps } from "~/primitives/button/button.primitive";
+import { Button } from "~/primitives/button/button.primitive";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";

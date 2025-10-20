@@ -18,7 +18,16 @@ const RockGenderMap: { [key in Gender]: number } = {
   [Gender.Female]: 2,
 };
 
-export const createPerson = async (profile: any | any) => {
+interface PersonProfile {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  BirthDate?: string;
+  [key: string]: unknown;
+}
+
+export const createPerson = async (profile: PersonProfile) => {
   const inputProfileFields = await mapInputFieldsToRock(profile);
   return await postRockData({
     endpoint: "People",
@@ -78,10 +87,22 @@ export const updatePerson = async (
 };
 
 // Uses the Person Alias GUID to get the Person
+interface PersonData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  photo?: {
+    guid: string;
+    path: string;
+  };
+  [key: string]: unknown;
+}
+
 export const getPersonByAliasGuid = async (
   guid: string,
   loadAttributes?: boolean
-): Promise<any | null> => {
+): Promise<PersonData | null> => {
   const getPersonId = async () => {
     const person = await fetchRockData({
       endpoint: "PersonAlias",
@@ -105,7 +126,9 @@ export const getPersonByAliasGuid = async (
 };
 
 // Uses the Person Alias ID to get the Person
-export const getPersonByAliasId = async (id: string): Promise<any | null> => {
+export const getPersonByAliasId = async (
+  id: string
+): Promise<PersonData | null> => {
   const personAlias = await fetchRockData({
     endpoint: `PersonAlias/${id}`,
     queryParams: {},
@@ -128,7 +151,7 @@ export const getPersonAliasGuid = async (
 export const getFromId = async (
   id: string,
   loadAttributes?: boolean
-): Promise<any> => {
+): Promise<PersonData> => {
   const person = await fetchRockData({
     endpoint: "People",
     queryParams: {
@@ -143,7 +166,7 @@ export const getFromId = async (
 export const getProfileImage = async (id: string): Promise<string | null> => {
   const person = await getFromId(id);
   const { photo } = person;
-  return Object.keys(photo).length !== 0
+  return photo && Object.keys(photo).length !== 0
     ? createImageUrlFromGuid(photo.guid)
     : null;
 };
@@ -157,7 +180,7 @@ export const mapGender = (gender: number): Gender | undefined => {
 };
 
 // Add this to create profile when ready...
-export const mapInputFieldsToRock = (fields: any) => {
+export const mapInputFieldsToRock = (fields: PersonProfile) => {
   const profileFields = fields;
 
   // Create a shallow copy of profileFields

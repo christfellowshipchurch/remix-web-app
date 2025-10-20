@@ -26,7 +26,7 @@ export async function fetchWistiaData({
     const { assets } = data;
 
     const videoUrl = assets
-      .find((asset: any) => asset.width === size)
+      .find((asset: { width: number }) => asset.width === size)
       .url.replace("http", "https")
       .replace("bin", "mp4");
 

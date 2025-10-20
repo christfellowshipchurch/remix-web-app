@@ -12,6 +12,11 @@ import {
   postRockData,
 } from "~/lib/.server/fetch-rock-data";
 import { fieldsAsObject } from "~/lib/utils";
+
+interface FieldObject {
+  field: string;
+  value: unknown;
+}
 import { sendSms } from "~/lib/.server/twilio";
 import { createUserProfile, fetchUserLogin } from "./rock-authentication";
 import { SmsPinResult } from "./authentication.types";
@@ -85,7 +90,7 @@ export const createOrFindSmsLoginUserId = async ({
   email = null,
 }: {
   phoneNumber: string;
-  userProfile: any[];
+  userProfile: unknown[];
   email?: string | null;
 }): Promise<string> => {
   const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
@@ -104,8 +109,11 @@ export const createOrFindSmsLoginUserId = async ({
     return existingPhoneNumbers[0].personId;
   }
 
-  const profileFields = fieldsAsObject(userProfile || []);
-  const personId = await createUserProfile({ email, ...profileFields });
+  const profileFields = fieldsAsObject((userProfile || []) as FieldObject[]);
+  const personId = await createUserProfile({
+    email: email ?? undefined,
+    ...profileFields,
+  });
 
   if (!countryCode) {
     throw new AuthenticationError("Country code is required for phone number");
@@ -172,9 +180,16 @@ export const requestSmsLogin = async (
       to: e164,
       body: `Your login code is ${pin}`,
     });
-  } catch (error: any) {
-    console.error("Failed to send SMS:", error.message);
-    throw new AuthenticationError(`Failed to send SMS: ${error.message}`);
+  } catch (error) {
+    console.error(
+      "Failed to send SMS:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    throw new AuthenticationError(
+      `Failed to send SMS: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 
   return {

@@ -104,6 +104,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       })
       .join("\n");
 
+    /* eslint-disable no-useless-escape */
     // Modify the HTML to work better in iframe
     const modifiedHtml = html
       // Remove any X-Frame-Options meta tags
@@ -217,6 +218,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         </script>
         </head>`
       );
+    /* eslint-enable no-useless-escape */
 
     return new Response(modifiedHtml, {
       headers: {

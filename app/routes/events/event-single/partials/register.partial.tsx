@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { icons } from "~/lib/icons";
+// import { icons } from "~/lib/icons";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
@@ -7,9 +7,9 @@ import Icon from "~/primitives/icon";
 
 export const ResgisterPartial = ({ title }: { title: string }) => {
   const [step, setStep] = useState(1);
-  const [selectedCampus, setSelectedCampus] = useState("Select Campus");
-  const [selectedDate, setSelectedDate] = useState("Select a Date");
-  const [selectedTime, setSelectedTime] = useState("Select a Time");
+  // const [_selectedCampus, _setSelectedCampus] = useState("Select Campus");
+  // const [_selectedDate, _setSelectedDate] = useState("Select a Date");
+  // const [_selectedTime, _setSelectedTime] = useState("Select a Time");
 
   const handleContinue = () => {
     if (step < 4) {
@@ -93,28 +93,28 @@ export const ResgisterPartial = ({ title }: { title: string }) => {
 };
 
 // WORK IN PROGRESS - THIS IS NOT COMPLETE
-const SelectedBar = ({
-  icon,
-  text,
-}: {
-  icon: keyof typeof icons;
-  text: string;
-}) => {
-  return (
-    <div className="flex gap-2">
-      <Icon name={icon} />
-      <p>{text}</p>
-    </div>
-  );
-};
+// const _SelectedBar = ({
+//   icon,
+//   text,
+// }: {
+//   icon: keyof typeof icons;
+//   text: string;
+// }) => {
+//   return (
+//     <div className="flex gap-2">
+//       <Icon name={icon} />
+//       <p>{text}</p>
+//     </div>
+//   );
+// };
 
-const ClickableCard = () => {
-  return (
-    <div>
-      <div></div>
-    </div>
-  );
-};
+// const _ClickableCard = () => {
+//   return (
+//     <div>
+//       <div></div>
+//     </div>
+//   );
+// };
 
 const StepsData = [
   { step: 1, title: "Choose Your Campus" },

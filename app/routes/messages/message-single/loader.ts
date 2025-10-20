@@ -10,8 +10,26 @@ export type LoaderReturnType = {
   ALGOLIA_APP_ID: string | undefined;
   ALGOLIA_SEARCH_API_KEY: string | undefined;
 };
+interface RockItem {
+  attributeValues: {
+    author?: { value: string };
+    primaryCategory?: { value: string };
+    secondaryCategory?: { value: string };
+    media?: { value: string };
+    messageSeries?: { value: string; valueFormatted: string };
+    url?: { value: string };
+    summary?: { value: string };
+  };
+  attributes?: unknown;
+  image?: string;
+  startDateTime?: string;
+  expireDateTime?: string;
+  title: string;
+  content?: string;
+}
+
 export const mapRockDataToMessage = async (
-  rockItem: any
+  rockItem: RockItem
 ): Promise<MessageType> => {
   const { attributeValues, attributes, image, startDateTime, expireDateTime } =
     rockItem;

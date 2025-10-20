@@ -9,9 +9,17 @@ import { CardCarouselSection } from "~/components/resource-carousel";
 import { RelatedArticleCard } from "./components/related-article-card.components";
 
 // Wrapper component to adapt RelatedArticleCard to ResourceCarousel's interface
-const RelatedArticleCardWrapper: React.FC<{ resource: any }> = ({
-  resource,
-}) => {
+const RelatedArticleCardWrapper: React.FC<{
+  resource: {
+    author: string;
+    url: string;
+    title: string;
+    summary: string;
+    coverImage: string;
+    publishDate: string;
+    readTime: number;
+  };
+}> = ({ resource }) => {
   return (
     <RelatedArticleCard
       author={resource.author}

@@ -8,7 +8,11 @@ interface GroupData {
   groupName: string;
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }: { data: any }) => {
+export const meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: GroupData | null;
+}) => {
   const groupData = data as GroupData | null;
   if (!groupData) {
     return [

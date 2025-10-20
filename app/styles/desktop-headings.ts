@@ -2,7 +2,15 @@
  * Add this function to tailwind.config.ts to add desktop headings sizes
  */
 
-export function desktopHeadings({ addComponents, theme }: any) {
+interface TailwindPluginParams {
+  addComponents: (components: Record<string, Record<string, unknown>>) => void;
+  theme: (path: string) => string;
+}
+
+export function desktopHeadings({
+  addComponents,
+  theme,
+}: TailwindPluginParams) {
   addComponents({
     ".heading-h1": {
       "@apply text-h1 font-extrabold": {}, // Mobile

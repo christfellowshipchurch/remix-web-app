@@ -1,8 +1,8 @@
 import { StyledAccordion } from "~/components";
 import { Button } from "~/primitives/button/button.primitive";
 import { faqData } from "~/lib/faq-data.data";
-import { useLoaderData } from "react-router-dom";
-import { LoaderReturnType } from "../loader";
+// import { useLoaderData } from "react-router-dom";
+// import { LoaderReturnType } from "../loader";
 
 export const LocationFAQ = ({ campusName }: { campusName: string }) => {
   const isEspanol = campusName.includes("Español");

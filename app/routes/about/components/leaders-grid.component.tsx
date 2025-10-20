@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { cn } from "~/lib/utils";
 
-import { leaders } from "./leaders-data";
 import { LeadersModal } from "~/components/modals/leaders";
 
 import { Icon } from "~/primitives/icon/icon";

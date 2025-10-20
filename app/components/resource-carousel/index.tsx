@@ -19,7 +19,7 @@ interface CardCarouselSectionProps {
   resources: CollectionItem[];
   mode?: "dark" | "light";
   CardComponent?: React.ComponentType<{
-    resource: CollectionItem | any;
+    resource: CollectionItem;
   }>;
   className?: string;
   backgroundImage?: string;
@@ -120,9 +120,9 @@ export const CardCarousel = ({
   carouselClassName,
 }: {
   CardComponent?: React.ComponentType<{
-    resource: CollectionItem | any;
+    resource: CollectionItem;
   }>;
-  resources: CollectionItem[] | any[];
+  resources: CollectionItem[];
   mode?: "dark" | "light";
   layout?: "arrowsRight" | "arrowsLeft";
   carouselItemClassName?: string;

@@ -21,6 +21,42 @@ import {
 import { format, parseISO } from "date-fns";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
+// Type definitions for Rock API responses
+interface ChildReference {
+  childContentChannelItemId: string;
+}
+
+interface RockAttributeValue {
+  value: string | number | boolean;
+}
+
+// Helper function to safely convert attribute values to strings
+const getStringValue = (value: string | number | boolean): string => {
+  return String(value);
+};
+
+interface RockAttributeValues {
+  [key: string]: RockAttributeValue;
+}
+
+interface RockContentItem {
+  id: string;
+  title: string;
+  content: string;
+  contentChannelId: string;
+  startDateTime?: string;
+  attributeValues?: RockAttributeValues;
+}
+
+interface RockAttributeMatrixItem {
+  id: string;
+  attributeValues: {
+    header: RockAttributeValue;
+    content: RockAttributeValue;
+    image: RockAttributeValue;
+  };
+}
+
 export const fetchChildItems = async (id: string) => {
   const childReferences = await fetchRockData({
     endpoint: `ContentChannelItemAssociations`,
@@ -32,7 +68,7 @@ export const fetchChildItems = async (id: string) => {
   });
 
   if (!childReferences) {
-    console.log("No valid child references found");
+    console.warn("No valid child references found");
     return [];
   }
 
@@ -45,7 +81,7 @@ export const fetchChildItems = async (id: string) => {
   }
 
   const children = await Promise.all(
-    childReferencesArray.map(async (childReference: any) => {
+    childReferencesArray.map(async (childReference: ChildReference) => {
       return await fetchRockData({
         endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
         queryParams: {
@@ -56,7 +92,7 @@ export const fetchChildItems = async (id: string) => {
   );
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
-    console.error("fetchChildItems: No valid children data found", {
+    console.warn("fetchChildItems: No valid children data found", {
       parentId: id,
       childReferencesCount: childReferencesArray.length,
     });
@@ -101,15 +137,17 @@ export const fetchDefinedValue = async (guid: string) => {
   }
 };
 
-const getLinkTreeLayout = async (attributeValues: any) => {
+const getLinkTreeLayout = async (attributeValues: RockAttributeValues) => {
   if (attributeValues?.linkTreeLayout) {
-    return await fetchDefinedValue(attributeValues.linkTreeLayout.value);
+    return await fetchDefinedValue(
+      getStringValue(attributeValues.linkTreeLayout.value)
+    );
   }
   return undefined;
 };
 
 export const mapPageBuilderChildItems = async (
-  children: any[]
+  children: RockContentItem[]
 ): Promise<PageBuilderSection[]> => {
   return Promise.all(
     // Map over the children and define the PageBuilder Section Type
@@ -119,10 +157,9 @@ export const mapPageBuilderChildItems = async (
       const sectionType = getSectionType(typeId) as SectionType;
       // Map the attribute values to a key-value object for easier access
       const attributeValues = Object.fromEntries(
-        Object.entries(child.attributeValues || {}).map(([key, obj]: any) => [
-          key,
-          obj.value,
-        ])
+        Object.entries(child.attributeValues || {}).map(
+          ([key, obj]: [string, RockAttributeValue]) => [key, obj.value]
+        )
       );
 
       if (!sectionType) {
@@ -137,7 +174,7 @@ export const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         content: child.content,
-        linkTreeLayout: await getLinkTreeLayout(child.attributeValues),
+        linkTreeLayout: await getLinkTreeLayout(child.attributeValues || {}),
       };
 
       // If the child is a collection, fetch the child items and return them
@@ -145,64 +182,79 @@ export const mapPageBuilderChildItems = async (
         const collection = await fetchChildItems(child.id);
         return {
           ...baseChild,
-          collection: collection.map((item: any): CollectionItem => {
-            const contentType = getContentType(item.contentChannelId);
-            // Map the attribute values to a key-value object for easier access
-            const itemAttributeValues = Object.fromEntries(
-              Object.entries(item.attributeValues || {}).map(
-                ([key, obj]: any) => [key, obj.value]
-              )
-            );
-
-            if (!contentType) {
-              throw new Error(
-                `Invalid content type for content channel ID: ${item.contentChannelId}`
+          collection: collection.map(
+            (item: RockContentItem): CollectionItem => {
+              const contentType = getContentType(item.contentChannelId);
+              // Map the attribute values to a key-value object for easier access
+              const itemAttributeValues = Object.fromEntries(
+                Object.entries(item.attributeValues || {}).map(
+                  ([key, obj]: [string, RockAttributeValue]) => [key, obj.value]
+                )
               );
-            }
 
-            // Generate the summary for the item
-            const summary = itemAttributeValues?.summary || "";
-            if (!summary) {
-              itemAttributeValues.summary = item.content;
-            }
-
-            // Generate the pathname for the item
-            let pathname = "";
-            switch (contentType) {
-              case "REDIRECT_CARD":
-                pathname = itemAttributeValues?.redirectUrl || "";
-                break;
-              case "EVENT":
-                pathname = getPathname(contentType, itemAttributeValues?.url);
-                break;
-              default:
-                pathname = getPathname(
-                  contentType,
-                  itemAttributeValues?.pathname
+              if (!contentType) {
+                throw new Error(
+                  `Invalid content type for content channel ID: ${item.contentChannelId}`
                 );
-            }
-
-            // Generate the start date for the item
-            let startDate = "";
-            if (contentType !== "REDIRECT_CARD") {
-              const startDateTime = item.startDateTime || "";
-              if (startDateTime) {
-                startDate = format(parseISO(startDateTime), "EEE dd MMM yyyy");
               }
-            }
 
-            return {
-              id: item.id,
-              contentChannelId: item.contentChannelId,
-              contentType: contentType,
-              name: item.title,
-              summary,
-              image: createImageUrlFromGuid(itemAttributeValues?.image) || "",
-              startDate,
-              pathname,
-              // attributeValues,
-            };
-          }),
+              // Generate the summary for the item
+              const summary = getStringValue(
+                itemAttributeValues?.summary || ""
+              );
+              if (!summary) {
+                itemAttributeValues.summary = item.content;
+              }
+
+              // Generate the pathname for the item
+              let pathname = "";
+              switch (contentType) {
+                case "REDIRECT_CARD":
+                  pathname = getStringValue(
+                    itemAttributeValues?.redirectUrl || ""
+                  );
+                  break;
+                case "EVENT":
+                  pathname = getPathname(
+                    contentType,
+                    getStringValue(itemAttributeValues?.url || "")
+                  );
+                  break;
+                default:
+                  pathname = getPathname(
+                    contentType,
+                    getStringValue(itemAttributeValues?.pathname || "")
+                  );
+              }
+
+              // Generate the start date for the item
+              let startDate = "";
+              if (contentType !== "REDIRECT_CARD") {
+                const startDateTime = item.startDateTime || "";
+                if (startDateTime) {
+                  startDate = format(
+                    parseISO(startDateTime),
+                    "EEE dd MMM yyyy"
+                  );
+                }
+              }
+
+              return {
+                id: item.id,
+                contentChannelId: item.contentChannelId,
+                contentType: contentType,
+                name: item.title,
+                summary,
+                image:
+                  createImageUrlFromGuid(
+                    getStringValue(itemAttributeValues?.image || "")
+                  ) || "",
+                startDate,
+                pathname,
+                // attributeValues,
+              };
+            }
+          ),
         };
       }
 
@@ -216,7 +268,7 @@ export const mapPageBuilderChildItems = async (
               key !== "coverImage" &&
               key !== "video"
                 ? await fetchDefinedValue(value)
-                : value;
+                : getStringValue(value);
             return [key, processedValue];
           })
         );
@@ -224,14 +276,19 @@ export const mapPageBuilderChildItems = async (
         const processedValues = Object.fromEntries(updatedValues);
 
         const fetchVideo = attributeValues?.featureVideo
-          ? (await fetchWistiaDataFromRock(attributeValues.featureVideo))
-              .sourceKey
+          ? (
+              await fetchWistiaDataFromRock(
+                getStringValue(attributeValues.featureVideo)
+              )
+            ).sourceKey
           : null;
 
         return {
           ...baseChild,
           ...processedValues,
-          coverImage: createImageUrlFromGuid(attributeValues?.coverImage),
+          coverImage: createImageUrlFromGuid(
+            getStringValue(attributeValues?.coverImage || "")
+          ),
           featureVideo: fetchVideo,
         };
       }
@@ -240,7 +297,9 @@ export const mapPageBuilderChildItems = async (
         const { id: matrixId } = await fetchRockData({
           endpoint: `AttributeMatrices`,
           queryParams: {
-            $filter: `Guid eq guid'${attributeValues?.faqs}'`,
+            $filter: `Guid eq guid'${getStringValue(
+              attributeValues?.faqs || ""
+            )}'`,
             $select: "Id",
           },
         });
@@ -255,7 +314,7 @@ export const mapPageBuilderChildItems = async (
 
         return {
           ...baseChild,
-          faqs: faqs.map((faq: any) => ({
+          faqs: faqs.map((faq: RockAttributeMatrixItem) => ({
             id: faq.id,
             question: faq.attributeValues.header.value,
             answer: faq.attributeValues.content.value,
@@ -267,7 +326,9 @@ export const mapPageBuilderChildItems = async (
         const { id: matrixId } = await fetchRockData({
           endpoint: `AttributeMatrices`,
           queryParams: {
-            $filter: `Guid eq guid'${attributeValues?.images}'`,
+            $filter: `Guid eq guid'${getStringValue(
+              attributeValues?.images || ""
+            )}'`,
             $select: "Id",
           },
         });
@@ -282,8 +343,10 @@ export const mapPageBuilderChildItems = async (
 
         return {
           ...baseChild,
-          imageGallery: imageGallery.map((image: any) =>
-            createImageUrlFromGuid(image.attributeValues.image.value)
+          imageGallery: imageGallery.map((image: RockAttributeMatrixItem) =>
+            createImageUrlFromGuid(
+              getStringValue(image.attributeValues.image.value)
+            )
           ),
         };
       }
@@ -338,16 +401,20 @@ export const loader: LoaderFunction = async ({ params }) => {
     const pageBuilder: PageBuilderLoader = {
       title: page.title,
       heroImage:
-        createImageUrlFromGuid(page.attributeValues?.heroImage?.value) || "",
+        createImageUrlFromGuid(
+          getStringValue(page.attributeValues?.heroImage?.value || "")
+        ) || "",
       content: page.content,
       callsToAction:
-        parseRockKeyValueList(page.attributeValues?.callsToAction?.value) || [],
+        parseRockKeyValueList(
+          getStringValue(page.attributeValues?.callsToAction?.value || "")
+        ) || [],
       sections: mappedChildren,
     };
 
     return pageBuilder;
   } catch (error) {
-    console.error("Error in page builder loader:", error);
+    console.warn("Error in page builder loader:", error);
 
     // If it's already a Response, re-throw it
     if (error instanceof Response) {

@@ -1,5 +1,3 @@
-import { cn } from "~/lib/utils";
-
 /**
  * Section Title Component for our landing/hub pages and their different sections
  * */

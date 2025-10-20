@@ -66,7 +66,16 @@ export const fetchUserCookie = async (
   }
 };
 
-export const getCurrentPerson = async (cookie: string): Promise<any> => {
+interface Person {
+  id: number;
+  guid: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  primaryAliasId?: number;
+}
+
+export const getCurrentPerson = async (cookie: string): Promise<Person> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
   }
@@ -100,7 +109,16 @@ export const getCurrentPerson = async (cookie: string): Promise<any> => {
   }
 };
 
-export const createRockSession = async (cookie: string): Promise<any> => {
+interface RockSessionResponse {
+  id: number;
+  personAliasId: number;
+  sessionData?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+export const createRockSession = async (
+  cookie: string
+): Promise<RockSessionResponse> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
   }
@@ -156,7 +174,7 @@ export const createUserProfile = async ({
   ...otherFields
 }: {
   email?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   try {
     const person = await createPerson({
@@ -168,7 +186,7 @@ export const createUserProfile = async ({
       ...otherFields,
     });
     return person;
-  } catch (err) {
+  } catch {
     throw new Error("Unable to create profile!");
   }
 };
@@ -211,7 +229,7 @@ export const createUserLogin = async (
         LastLoginDateTime: new Date(),
       },
     });
-  } catch (err) {
+  } catch {
     throw new Error("Unable to create user login!");
   }
 };
@@ -225,7 +243,10 @@ export const registerPersonWithEmail = async ({
   email: string;
   phoneNumber?: string;
   password: string;
-  userProfile: any;
+  userProfile: {
+    field: string;
+    value: unknown;
+  }[];
 }) => {
   const personExists = await checkUserExists(email);
   if (personExists) throw new Error("User already exists!");

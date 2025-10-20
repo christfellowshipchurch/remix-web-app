@@ -1,7 +1,15 @@
 import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
 
-export const meta: MetaFunction<typeof loader> = ({ data }: any) => {
+interface LocationData {
+  campusName?: string;
+}
+
+export const meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: LocationData;
+}) => {
   if (!data) return [];
   return [
     {
@@ -16,6 +24,4 @@ export const meta: MetaFunction<typeof loader> = ({ data }: any) => {
       keywords: `church in ${data?.campusName} fl,  churches in ${data?.campusName} fl, church in palm beach county, churches in palm beach county, christ fellowship church in ${data?.campusName} fl, church near me, churches near me, church in my area, churches in my area, christian church near me, christian churches near me, non denominational church near me, non denominational churches near me, church service near me`,
     },
   ];
-
-  return [];
 };

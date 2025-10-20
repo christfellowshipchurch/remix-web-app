@@ -18,7 +18,7 @@ const ReminderFlow: React.FC<ReminderFlowProps> = ({ setOpenModal }) => {
   const [serviceTime, setServiceTime] = useState<string>("");
   const { campusName, campusUrl } = useLoaderData<LoaderReturnType>();
 
-  let renderStep = () => {
+  const renderStep = () => {
     switch (step) {
       case ReminderStep.REMINDER:
         return (

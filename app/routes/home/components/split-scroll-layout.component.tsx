@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { chanceContent } from "./a-chance.data";
 import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/button/button.primitive";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export default function SplitScrollLayout() {

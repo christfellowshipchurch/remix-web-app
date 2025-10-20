@@ -11,7 +11,7 @@ export function DesktopHeroSection() {
           src="/assets/images/home/home-hero-bg.webp"
           alt="Hero Background"
           loading="eager"
-          // @ts-ignore
+          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
           fetchpriority="high"
         />
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
@@ -50,7 +50,7 @@ export function DesktopHeroSection() {
               alt="Hero Background"
               className="w-full h-full object-cover absolute inset-0 z-0"
               loading="eager"
-              // @ts-ignore
+              // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
               fetchpriority="high"
             />
             <iframe
