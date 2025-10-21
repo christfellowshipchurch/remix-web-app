@@ -3,18 +3,13 @@ import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsCustomRefinement } from "~/routes/group-finder/components/popups/groups-custom-refinement.component";
 
-export function UpcomingSessionFilters({
-  setIsSearchOpen,
-}: {
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) {
+export function UpcomingSessionFilters() {
   const [showGroupType, setShowGroupType] = useState(false);
   const [showFrequency, setShowFrequency] = useState(false);
 
   const onHide = () => {
     setShowGroupType(false);
     setShowFrequency(false);
-    setIsSearchOpen(false);
   };
 
   const handleToggle = (
@@ -118,7 +113,7 @@ export function FilterDropdown({
       <Icon name="chevronDown" />
 
       <GroupsCustomRefinement
-        title={title}
+        popupTitle={title}
         data={data}
         onHide={onHide}
         showSection={isOpen}

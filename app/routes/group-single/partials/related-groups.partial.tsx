@@ -15,8 +15,8 @@ function RelatedGroupsHits() {
   const { items } = useHits<GroupType>();
 
   // Wrapper component to adapt resource prop to hit prop
-  const HitComponentWrapper = ({ resource }: { resource: any }) => {
-    return <GroupHit hit={resource} />;
+  const HitComponentWrapper = ({ resource }: { resource: CollectionItem }) => {
+    return <GroupHit hit={resource as unknown as GroupType} />;
   };
 
   return (

@@ -1,7 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, Hits, Configure, Stats } from "react-instantsearch";
-import { useResponsive } from "~/hooks/use-responsive";
+import { InstantSearch, Hits, Stats } from "react-instantsearch";
 
 import { cn } from "~/lib/utils";
 import { LoaderReturnType } from "../loader";
@@ -10,16 +9,16 @@ import { FinderLocationSearch } from "~/components/finders-location-search/locat
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
+import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
 
 export const UpcomingSessionsSection = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
     lng: number | null;
   } | null>(null);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -36,7 +35,11 @@ export const UpcomingSessionsSection = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure selectedLocation={selectedLocation} />
+        <ResponsiveConfigure
+          ageInput=""
+          selectedLocation={null}
+          coordinates={coordinates}
+        />
         <div className="flex flex-col">
           {/* Filters Section */}
           <div
@@ -62,7 +65,7 @@ export const UpcomingSessionsSection = () => {
                 />
 
                 {/* Desktop Filters */}
-                <UpcomingSessionFilters setIsSearchOpen={setIsSearchOpen} />
+                <UpcomingSessionFilters />
               </div>
             </div>
           </div>
@@ -96,35 +99,5 @@ export const UpcomingSessionsSection = () => {
         </div>
       </InstantSearch>
     </div>
-  );
-};
-
-const ResponsiveConfigure = ({
-  selectedLocation,
-}: {
-  selectedLocation: string | null;
-}) => {
-  const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
-
-  const hitsPerPage = (() => {
-    switch (true) {
-      case isXLarge || isLarge:
-        return 16;
-      case isMedium:
-        return 9;
-      case isSmall:
-        return 5;
-      default:
-        return 5;
-    }
-  })();
-
-  return (
-    <Configure
-      hitsPerPage={hitsPerPage}
-      filters={
-        selectedLocation ? `campusName:'${selectedLocation}'` : undefined
-      }
-    />
   );
 };

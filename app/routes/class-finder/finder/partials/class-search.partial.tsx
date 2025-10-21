@@ -1,15 +1,8 @@
 import { useLoaderData } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Hits,
-  SearchBox,
-  Configure,
-  Stats,
-} from "react-instantsearch";
+import { InstantSearch, Hits, SearchBox, Stats } from "react-instantsearch";
 
 import Icon from "~/primitives/icon";
-import { useResponsive } from "~/hooks/use-responsive";
 
 import { LoaderReturnType } from "../loader";
 import { HitComponent } from "../components/hit-component.component";
@@ -20,16 +13,15 @@ import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { DesktopClassFilters } from "../components/popups/group-filters";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
+import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
 
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
     lng: number | null;
   } | null>(null);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -43,7 +35,6 @@ export const ClassSearch = () => {
 
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
-        setIsSearchOpen(false);
         setLastScrollY(currentScrollY);
         return;
       }
@@ -85,7 +76,11 @@ export const ClassSearch = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure selectedLocation={selectedLocation} />
+        <ResponsiveConfigure
+          ageInput=""
+          selectedLocation={null}
+          coordinates={coordinates}
+        />
         <div className="flex flex-col">
           {/* Filters Section */}
           <div
@@ -126,7 +121,7 @@ export const ClassSearch = () => {
 
               {/* TODO: Update to Classes Desktop Filters */}
               <div className="hidden md:block">
-                <DesktopClassFilters setIsSearchOpen={setIsSearchOpen} />
+                <DesktopClassFilters />
               </div>
             </div>
           </div>
@@ -184,33 +179,5 @@ export const ClassSearch = () => {
         </div>
       </InstantSearch>
     </div>
-  );
-};
-
-const ResponsiveConfigure = ({
-  selectedLocation,
-}: {
-  selectedLocation: string | null;
-}) => {
-  const { isSmall, isMedium } = useResponsive();
-
-  const hitsPerPage = (() => {
-    switch (true) {
-      case isMedium:
-        return 6;
-      case isSmall:
-        return 5;
-      default:
-        return 8;
-    }
-  })();
-
-  return (
-    <Configure
-      hitsPerPage={hitsPerPage}
-      filters={
-        selectedLocation ? `campusName:'${selectedLocation}'` : undefined
-      }
-    />
   );
 };

@@ -1,11 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import {
-  Stats,
-  useRefinementList,
-  useInstantSearch,
-} from "react-instantsearch";
+import { Stats, useInstantSearch } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
 import { AllFiltersRefinementContent } from "~/routes/group-finder/components/popups/refinement-content.component";
 

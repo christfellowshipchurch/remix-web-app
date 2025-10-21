@@ -20,19 +20,16 @@ import { useEffect, useState } from "react";
 import { AllFiltersPopup } from "../components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
-import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 import { GroupType } from "../types";
 
 export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
     lng: number | null;
   } | null>(null);
   const [ageInput, setAgeInput] = useState<string>("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -46,7 +43,6 @@ export const GroupSearch = () => {
 
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
-        setIsSearchOpen(false);
         setLastScrollY(currentScrollY);
         return;
       }
@@ -88,7 +84,7 @@ export const GroupSearch = () => {
         }}
       >
         <ResponsiveConfigure
-          selectedLocation={selectedLocation}
+          selectedLocation={null}
           ageInput={ageInput}
           coordinates={coordinates}
         />
@@ -191,7 +187,7 @@ export const GroupSearch = () => {
   );
 };
 
-const ResponsiveConfigure = ({
+export const ResponsiveConfigure = ({
   selectedLocation,
   ageInput,
   coordinates,

@@ -5,11 +5,7 @@ import { ClassesCustomRefinement } from "./classes-custom-refinement.component";
 import { AllClassFiltersPopup } from "./all-filters.component";
 import { cn } from "~/lib/utils";
 
-export function DesktopClassFilters({
-  setIsSearchOpen,
-}: {
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) {
+export function DesktopClassFilters() {
   const [showTopic, setShowTopic] = useState(false);
   const [showFrequency, setShowFrequency] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
@@ -23,7 +19,6 @@ export function DesktopClassFilters({
     setShowFrequency(false);
     setShowPeople(false);
     setShowAllFilters(false);
-    setIsSearchOpen(false);
   };
 
   const boxStyles =

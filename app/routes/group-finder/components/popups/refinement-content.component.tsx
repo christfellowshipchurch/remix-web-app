@@ -90,7 +90,10 @@ export const AllFiltersRefinementContent = ({
       "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy",
   };
 
-  const renderButton = (item: any, index: number) => (
+  const renderButton = (
+    item: { label: string; value: string; isRefined: boolean; count: number },
+    index: number
+  ) => (
     <Button
       key={index}
       intent="secondary"
@@ -115,7 +118,10 @@ export const AllFiltersRefinementContent = ({
     </Button>
   );
 
-  const renderCheckbox = (item: any, index: number) => (
+  const renderCheckbox = (
+    item: { label: string; value: string; isRefined: boolean; count: number },
+    index: number
+  ) => (
     <div
       key={index}
       className="flex items-center gap-2 w-fit !cursor-pointer"
@@ -299,8 +305,18 @@ export const AllFiltersRefinementContent = ({
               <select
                 value={selectedValue}
                 onChange={(e) => {
-                  refine(e.target.value);
-                  setSelectedValue(e.target.value);
+                  if (e.target.value === "") {
+                    // Clear all refinements for this attribute
+                    items.forEach((item) => {
+                      if (item.isRefined) {
+                        refine(item.value);
+                      }
+                    });
+                    setSelectedValue("");
+                  } else {
+                    refine(e.target.value);
+                    setSelectedValue(e.target.value);
+                  }
                 }}
                 className={cn(
                   "flex items-center justify-between w-full rounded-[8px] p-3",
@@ -310,9 +326,7 @@ export const AllFiltersRefinementContent = ({
                 )}
                 aria-label="Select meeting time"
               >
-                <option value="" disabled>
-                  Select
-                </option>
+                <option value="">Select</option>
                 {items.map((item) => (
                   <option key={item.value} value={item.value}>
                     {item.label}
