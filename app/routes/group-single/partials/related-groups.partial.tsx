@@ -6,22 +6,23 @@ import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { CardCarousel } from "~/components/resource-carousel";
-import { GroupHitType } from "~/routes/group-finder/types";
+import { GroupType } from "~/routes/group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 // Custom component to use hits data with ResourceCarousel
 function RelatedGroupsHits() {
-  const { items } = useHits();
+  const { items } = useHits<GroupType>();
 
   // Wrapper component to adapt resource prop to hit prop
-  const HitComponentWrapper = ({ resource }: { resource: GroupHitType }) => {
+  const HitComponentWrapper = ({ resource }: { resource: any }) => {
     return <GroupHit hit={resource} />;
   };
 
   return (
     <CardCarousel
       CardComponent={HitComponentWrapper}
-      resources={items}
+      resources={items as unknown as CollectionItem[]}
       mode="light"
       layout="arrowsRight"
       carouselClassName="overflow-hidden w-screen"
@@ -30,7 +31,7 @@ function RelatedGroupsHits() {
   );
 }
 
-export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
+export function RelatedGroupsPartial({ topics }: { topics: string[] }) {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
@@ -47,7 +48,10 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
             Related Groups
           </h2>
           <div className="hidden md:block">
-            <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
+            <Button
+              intent="secondary"
+              href={`/group-finder/topics/${topics[0]}`}
+            >
               View All
             </Button>
           </div>
@@ -55,14 +59,14 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
 
         <div className="w-full flex gap-4 md:-mt-12">
           <InstantSearch
-            indexName="production_Groups"
+            indexName="dev_daniel_Groups"
             searchClient={searchClient}
             future={{
               preserveSharedStateOnUnmount: true,
             }}
           >
             {/* TODO: Update filters to more accurately reflect related groups */}
-            <Configure filters={`preferences:"${tags[0]}"`} hitsPerPage={6} />
+            <Configure filters={`topics:"${topics[0]}"`} hitsPerPage={6} />
             {/* Results using ResourceCarousel */}
             <RelatedGroupsHits />
           </InstantSearch>
@@ -70,7 +74,7 @@ export function RelatedGroupsPartial({ tags }: { tags: string[] }) {
 
         {/* Mobile Button */}
         <div className="md:hidden w-full flex mt-6">
-          <Button intent="secondary" href={`/group-finder/tags/${tags[0]}`}>
+          <Button intent="secondary" href={`/group-finder/topics/${topics[0]}`}>
             View All
           </Button>
         </div>

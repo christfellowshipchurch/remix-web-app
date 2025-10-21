@@ -15,6 +15,10 @@ export const UpcomingSessionsSection = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [coordinates, setCoordinates] = useState<{
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const searchClient = algoliasearch(
@@ -26,7 +30,7 @@ export const UpcomingSessionsSection = () => {
   return (
     <div className="flex flex-col gap-4 w-full md:pt-12 relative" id="search">
       <InstantSearch
-        indexName="production_Groups"
+        indexName="dev_daniel_Groups"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
@@ -53,10 +57,8 @@ export const UpcomingSessionsSection = () => {
                 {/* Location Select Box */}
                 <FinderLocationSearch
                   className="!w-full md:!w-[266px]"
-                  isSearchOpen={isSearchOpen}
-                  setIsSearchOpen={setIsSearchOpen}
-                  selectedLocation={selectedLocation}
-                  setSelectedLocation={setSelectedLocation}
+                  coordinates={coordinates}
+                  setCoordinates={setCoordinates}
                 />
 
                 {/* Desktop Filters */}

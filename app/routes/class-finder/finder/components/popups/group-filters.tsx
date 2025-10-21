@@ -26,12 +26,15 @@ export function DesktopClassFilters({
     setIsSearchOpen(false);
   };
 
+  const boxStyles =
+    "relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer";
+
   return (
     <div className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center">
       <div className="hidden lg:flex gap-4 w-full">
         {/* Topic */}
         <div
-          className="relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer"
+          className={cn(boxStyles)}
           onClick={() => {
             onHide();
             setShowTopic(!showTopic);
@@ -59,7 +62,7 @@ export function DesktopClassFilters({
         <div className="hidden xl:flex gap-4">
           {/* Frequency */}
           <div
-            className="relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer"
+            className={cn(boxStyles)}
             onClick={() => {
               onHide();
               setShowFrequency(!showFrequency);
@@ -85,7 +88,7 @@ export function DesktopClassFilters({
           </div>
           {/* People */}
           <div
-            className="relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer"
+            className={cn(boxStyles)}
             onClick={() => {
               onHide();
               setShowPeople(!showPeople);

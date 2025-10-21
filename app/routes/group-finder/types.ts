@@ -4,9 +4,7 @@ export interface ImageSource {
     uri: string;
   }[];
 }
-
-// New Group Finder Type we want to use
-export interface GroupHitType {
+export interface GroupType {
   id: string;
   title: string;
   summary: string;
@@ -45,7 +43,7 @@ export interface GroupHitType {
   minAge: number;
   maxAge: number;
   language: "English" | "Spanish";
-  topics: Array<
+  topics: (
     | "Bible Study"
     | "Prayer"
     | "Message Discussion"
@@ -53,10 +51,10 @@ export interface GroupHitType {
     | "Parenting"
     | "Finances"
     | "Friendship"
-    | "Sports"
     | "Activty/Hobby"
     | "Book Club"
-    | "Watch Party"
+    | "Sports"
     | "Podcast"
-  >; // must select one or more, can select up to 3
+    | "Watch Party"
+  )[]; // must select one or more, can select up to 3
 }

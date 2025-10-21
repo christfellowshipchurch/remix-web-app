@@ -25,6 +25,10 @@ export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [coordinates, setCoordinates] = useState<{
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -75,7 +79,7 @@ export const ClassSearch = () => {
     >
       <InstantSearch
         // TODO: Update to Classes Index
-        indexName="production_Groups"
+        indexName="dev_daniel_Groups"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
@@ -115,10 +119,8 @@ export const ClassSearch = () => {
 
                 {/* Location Select Box */}
                 <FinderLocationSearch
-                  isSearchOpen={isSearchOpen}
-                  setIsSearchOpen={setIsSearchOpen}
-                  selectedLocation={selectedLocation}
-                  setSelectedLocation={setSelectedLocation}
+                  coordinates={coordinates}
+                  setCoordinates={setCoordinates}
                 />
               </div>
 

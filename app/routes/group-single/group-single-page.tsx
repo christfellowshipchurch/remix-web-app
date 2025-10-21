@@ -11,7 +11,7 @@ import { Button } from "~/primitives/button/button.primitive";
 
 import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupHitType } from "../group-finder/types";
+import { GroupType } from "../group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
 
 export const GroupNotFound = () => {
@@ -29,17 +29,10 @@ export const GroupNotFound = () => {
   );
 };
 
-export const GroupSingleContent = ({ hit }: { hit: GroupHitType }) => {
-  const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
-  const tags = hit.preferences;
-  const { summary } = hit;
-
-  if (!hit) {
-    return <GroupNotFound />;
-  }
+export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      <FinderSingleHero imagePath={coverImage} />
+      <FinderSingleHero imagePath={hit.coverImage.sources[0].uri} />
       <div className="content-padding w-full flex justify-center">
         <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
           <div className="flex gap-6 items-center">
@@ -58,15 +51,11 @@ export const GroupSingleContent = ({ hit }: { hit: GroupHitType }) => {
           </div>
 
           <div className="w-full flex justify-center">
-            <GroupSingleBasicContent
-              tags={tags}
-              groupName={hit.title}
-              summary={summary}
-            />
+            <GroupSingleBasicContent summary={hit.summary} />
           </div>
         </div>
       </div>
-      <RelatedGroupsPartial tags={tags} />
+      <RelatedGroupsPartial topics={hit.topics} />
     </section>
   );
 };
@@ -82,10 +71,10 @@ export function GroupSinglePage() {
 
   return (
     <InstantSearch
-      indexName="production_Groups"
+      indexName="dev_daniel_Groups"
       searchClient={searchClient}
       initialUiState={{
-        production_Groups: {
+        dev_daniel_Groups: {
           query: `${groupName}`,
         },
       }}

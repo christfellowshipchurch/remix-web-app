@@ -6,7 +6,7 @@ import { ClassSingleBasicContent } from "./components/basic-content.component";
 import { ClassFAQ } from "./components/faq.component";
 import { InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
-import { GroupHitType } from "../../group-finder/types";
+import { GroupType } from "../../group-finder/types";
 import { Button } from "~/primitives/button/button.primitive";
 import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
@@ -29,9 +29,9 @@ export const ClassNotFound = () => {
   );
 };
 
-export const ClassSingleContent = ({ hit }: { hit: GroupHitType }) => {
+export const ClassSingleContent = ({ hit }: { hit: GroupType }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
-  const tags = hit.preferences;
+  const topics = hit.topics;
   const { summary } = hit;
 
   if (!hit) {
@@ -64,12 +64,7 @@ export const ClassSingleContent = ({ hit }: { hit: GroupHitType }) => {
 
           {/* Basic Content */}
           <div className="w-full flex flex-col items-center">
-            <ClassSingleBasicContent
-              tags={tags}
-              // Name of the Class
-              className={hit.title}
-              summary={summary}
-            />
+            <ClassSingleBasicContent tags={topics} summary={summary} />
           </div>
         </div>
       </div>
@@ -100,10 +95,10 @@ export function ClassSinglePage() {
 
   return (
     <InstantSearch
-      indexName="production_Groups"
+      indexName="dev_daniel_Groups"
       searchClient={searchClient}
       initialUiState={{
-        production_Groups: {
+        dev_daniel_Groups: {
           query: `${className}`,
         },
       }}

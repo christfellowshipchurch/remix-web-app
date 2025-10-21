@@ -1,140 +1,102 @@
-/**
- * This component is used to search for locations in the finders, (Groups, Classes, etc...)
- */
-
+import { useFetcher } from "react-router-dom";
+import { cn, isValidZip } from "~/lib/utils";
+import { useEffect, useState } from "react";
+import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
-import { InstantSearch, Configure } from "react-instantsearch";
-import { algoliasearch } from "algoliasearch";
-import { useFetcher, useLoaderData } from "react-router-dom";
-import { emptySearchClient } from "~/routes/search/route";
-import { globalSearchClient } from "~/routes/search/route";
-import { LoaderReturnType } from "~/routes/group-finder/loader";
-import { useEffect, useState } from "react";
-
-import { cn } from "~/lib/utils";
-import { LocationSearchPopup } from "./search-popup.component";
-
 export const FinderLocationSearch = ({
-  selectedLocation,
-  setSelectedLocation,
-  isSearchOpen,
-  setIsSearchOpen,
+  coordinates,
+  setCoordinates,
   className,
 }: {
-  selectedLocation: string | null;
-  setSelectedLocation: (location: string | null) => void;
-  isSearchOpen: boolean;
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
+  coordinates: {
+    lat: number | null;
+    lng: number | null;
+  } | null;
+  setCoordinates: (
+    coordinates: {
+      lat: number | null;
+      lng: number | null;
+    } | null
+  ) => void;
   className?: string;
 }) => {
-  const [coordinates, setCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderReturnType>();
-
-  if (!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_API_KEY) {
-    return null;
-  }
-  // Create or retrieve the Algolia client
-  useEffect(() => {
-    if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
-      // const newSearchClient = algoliasearch(
-      //   ALGOLIA_APP_ID,
-      //   ALGOLIA_SEARCH_API_KEY,
-      //   {}
-      // );
-    }
-  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
-
-  const searchClient =
-    globalSearchClient ||
-    (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
-      ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
-      : emptySearchClient);
-
+  const [inputValue, setInputValue] = useState<string>("");
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const geocodeFetcher = useFetcher();
 
-  const handleSearch = (query: string | null) => {
-    if (!query) {
+  // Handle zip code geocoding
+  useEffect(() => {
+    if (inputValue.length === 5 && isValidZip(inputValue)) {
+      setIsGeocoding(true);
+      const formData = new FormData();
+      formData.append("address", inputValue);
+      geocodeFetcher.submit(formData, {
+        method: "post",
+        action: "/google-geocode",
+      });
+    } else {
       setCoordinates(null);
-      return;
     }
-    const formData = new FormData();
-    formData.append("address", query);
-    geocodeFetcher.submit(formData, {
-      method: "post",
-      action: "/google-geocode",
-    });
-  };
+  }, [inputValue, setCoordinates]);
 
+  // Handle geocoding response
   useEffect(() => {
     if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
       const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
       setCoordinates({ lat, lng });
     }
-  }, [geocodeFetcher.data]);
+    if (geocodeFetcher.data) {
+      setIsGeocoding(false);
+    }
+  }, [geocodeFetcher.data, setCoordinates]);
+
+  const handleCurrentLocationClick = () => {
+    if (!navigator.geolocation) return;
+
+    setIsGeocoding(false);
+    setInputValue("");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => console.error("Error getting current location:", error),
+      { enableHighAccuracy: true, maximumAge: 0 }
+    );
+  };
 
   return (
-    <div className={cn("flex md:relative w-[266px]", className)}>
-      <InstantSearch
-        indexName="dev_Locations"
-        searchClient={searchClient}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-      >
-        {coordinates?.lat && coordinates?.lng ? (
-          <Configure
-            hitsPerPage={20}
-            aroundLatLng={`${coordinates.lat}, ${coordinates.lng}`}
-            aroundRadius="all"
-            aroundLatLngViaIP={false}
-            getRankingInfo={true}
-          />
-        ) : (
-          <Configure hitsPerPage={20} />
+    <div
+      className={cn("flex flex-wrap gap-2 w-full", className)}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <input
+        type="text"
+        placeholder="Zip Code"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        className={cn(
+          "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-[8px] border border-[#AAAAAA] py-2 flex h-full",
+          "transition-all duration-300",
+          {
+            "border-ocean": coordinates,
+          }
         )}
-        {/* Group Search Box */}
-        <div
-          className={cn(
-            "w-full flex items-center rounded-[8px] bg-[#EDF3F8] py-2 cursor-pointer",
-            "md:w-[240px] lg:w-[266px]",
-            "focus-within:border-ocean",
-            "transition-all duration-300",
-            {
-              "border border-ocean": selectedLocation,
-            }
-          )}
-          onClick={() => setIsSearchOpen(!isSearchOpen)}
-        >
-          <Icon
-            name="mapFilled"
-            className={cn("text-[#666666]", "ml-3", {
-              "text-ocean": selectedLocation,
-            })}
-          />
-          <p
-            className={cn(
-              "w-full text-xl px-2 focus:outline-none text-text-secondary transition-all duration-300 line-clamp-1"
-            )}
-          >
-            {selectedLocation?.includes("Christ Fellowship")
-              ? selectedLocation.replace("Christ Fellowship", "").trim()
-              : selectedLocation || "Location"}
-          </p>
-        </div>
-
-        {/* Search Popup */}
-        <LocationSearchPopup
-          setIsOpen={setIsSearchOpen}
-          setSelectedLocation={setSelectedLocation}
-          isOpen={isSearchOpen}
-          onSearchSubmit={handleSearch}
-        />
-      </InstantSearch>
+        disabled={isGeocoding}
+      />
+      <Button
+        onClick={handleCurrentLocationClick}
+        intent="primary"
+        className="min-w-0 min-h-0 pl-2 pr-3 py-[6px] text-sm font-semibold rounded-[5px] flex gap-1"
+        disabled={isGeocoding}
+      >
+        <Icon name="currentLocation" size={16} />
+        <p>Current Location</p>
+      </Button>
     </div>
   );
 };
