@@ -402,7 +402,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       title: page.title,
       heroImage:
         createImageUrlFromGuid(
-          getStringValue(page.attributeValues?.heroImage?.value || "")
+          getStringValue(page.attributeValues?.image?.value || "")
         ) || "",
       content: page.content,
       callsToAction:
