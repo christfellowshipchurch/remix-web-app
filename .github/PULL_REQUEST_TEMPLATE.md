@@ -7,6 +7,7 @@ Provide a summary of the changes. Why are these changes necessary?
 ## Testing
 - How were these changes tested?
 - What steps can someone follow to verify functionality?
+- Was any new linter errors/warnings?
 
 ## Tickets
 [insert Jira ticket reference here]
