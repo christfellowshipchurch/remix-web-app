@@ -5,6 +5,10 @@ export interface ImageSource {
   }[];
 }
 export interface GroupType {
+  _geoloc: {
+    lat: number;
+    lng: number;
+  };
   id: string;
   title: string;
   summary: string;

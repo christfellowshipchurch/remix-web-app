@@ -1,7 +1,6 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
 import { FinderSingleHero } from "./partials/finder-single-hero.partial";
-import { Breadcrumbs } from "~/components";
 
 import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";
@@ -10,9 +9,9 @@ import { useMemo } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 
 import { SearchWrapper } from "./components/search-wrapper.component";
-import { Icon } from "~/primitives/icon/icon";
 import { GroupType } from "../group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { GroupSingleBanner } from "./components/group-single-banner.component";
 
 export const GroupNotFound = () => {
   return (
@@ -32,27 +31,20 @@ export const GroupNotFound = () => {
 export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      <FinderSingleHero imagePath={hit.coverImage.sources[0].uri} />
-      <div className="content-padding w-full flex justify-center">
-        <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
-          <div className="flex gap-6 items-center">
-            <Link
-              className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to="/group-finder"
-            >
-              <Icon name="arrowBack" className="size-6" />
-              <span className="hover:underline text-sm line-clamp-2 md:hidden">
-                Back to Finder
-              </span>
-            </Link>
-            <div className="hidden md:block">
-              <Breadcrumbs />
-            </div>
-          </div>
+      {/* Banner */}
+      <GroupSingleBanner
+        language={hit.language}
+        leaderImages={hit.leaders.map((leader) => leader.photo)}
+        topics={hit.topics}
+        groupName={hit.title}
+      />
 
-          <div className="w-full flex justify-center">
-            <GroupSingleBasicContent summary={hit.summary} />
-          </div>
+      {/* Hero */}
+      <FinderSingleHero hit={hit} />
+
+      <div className="content-padding w-full flex justify-center">
+        <div className="justify-center flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
+          <GroupSingleBasicContent summary={hit.summary} />
         </div>
       </div>
       <RelatedGroupsPartial topics={hit.topics} />

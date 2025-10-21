@@ -135,9 +135,9 @@ export function GroupHit({ hit }: { hit: GroupType }) {
               ))}
             </div>
           </div>
-          <div className="w-full px-6 flex justify-center gap-2 py-3 bg-navy text-white mt-auto">
+          <div className="w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white mt-auto">
             <Icon name="map" size={20} color="white" />
-            <p className="text-center text-sm font-semibold">{hit.campus}</p>
+            <p className="text-sm font-semibold">{hit.campus}</p>
           </div>
         </div>
       </div>
