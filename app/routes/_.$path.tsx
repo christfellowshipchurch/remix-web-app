@@ -1,4 +1,3 @@
-import { MetaFunction } from "react-router";
 import { PageBuilderRoute } from "./page-builder/page-builder-page";
 import { NotFound } from "~/components/not-found";
 
