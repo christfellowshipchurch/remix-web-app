@@ -15,7 +15,8 @@
     "test:ui": "vitest --ui",
     "pnpm:dev": "pnpm dev",
     "pnpm:build": "pnpm build",
-    "pnpm:start": "pnpm start"
+    "pnpm:start": "pnpm start",
+    "print-icon-names": "tsx scripts/print-icon-names.ts"
   },
   "dependencies": {
     "@babel/runtime": "7.24.0",
@@ -106,6 +107,7 @@
     "postcss": "^8.5.1",
     "tailwindcss": "^4.0.2",
     "tiny-invariant": "^1.3.1",
+    "tsx": "^4.20.6",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",
     "vite-tsconfig-paths": "^5.1.4",
