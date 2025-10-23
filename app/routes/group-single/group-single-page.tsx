@@ -47,7 +47,7 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
           <GroupSingleBasicContent summary={hit.summary} />
         </div>
       </div>
-      <RelatedGroupsPartial topics={hit.topics} />
+      <RelatedGroupsPartial topics={hit.topics} currentGroupName={hit.title} />
     </section>
   );
 };

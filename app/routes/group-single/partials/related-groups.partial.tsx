@@ -11,8 +11,17 @@ import { createSearchClient } from "~/lib/create-search-client";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 // Custom component to use hits data with ResourceCarousel
-function RelatedGroupsHits() {
+function RelatedGroupsHits({
+  currentGroupName,
+}: {
+  currentGroupName?: string;
+}) {
   const { items } = useHits<GroupType>();
+
+  // Filter out the current group from the results
+  const filteredItems = items.filter(
+    (item) => !currentGroupName || item.title !== currentGroupName
+  );
 
   // Wrapper component to adapt resource prop to hit prop
   const HitComponentWrapper = ({ resource }: { resource: CollectionItem }) => {
@@ -22,7 +31,7 @@ function RelatedGroupsHits() {
   return (
     <CardCarousel
       CardComponent={HitComponentWrapper}
-      resources={items as unknown as CollectionItem[]}
+      resources={filteredItems as unknown as CollectionItem[]}
       mode="light"
       layout="arrowsRight"
       carouselClassName="overflow-hidden w-screen"
@@ -31,7 +40,13 @@ function RelatedGroupsHits() {
   );
 }
 
-export function RelatedGroupsPartial({ topics }: { topics: string[] }) {
+export function RelatedGroupsPartial({
+  topics,
+  currentGroupName,
+}: {
+  topics: string[];
+  currentGroupName?: string;
+}) {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
@@ -65,10 +80,10 @@ export function RelatedGroupsPartial({ topics }: { topics: string[] }) {
               preserveSharedStateOnUnmount: true,
             }}
           >
-            {/* TODO: Update filters to more accurately reflect related groups */}
             <Configure filters={`topics:"${topics[0]}"`} hitsPerPage={6} />
+
             {/* Results using ResourceCarousel */}
-            <RelatedGroupsHits />
+            <RelatedGroupsHits currentGroupName={currentGroupName} />
           </InstantSearch>
         </div>
 

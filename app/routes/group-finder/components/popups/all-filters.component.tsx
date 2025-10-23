@@ -12,13 +12,13 @@ export const AllFiltersPopup = ({
   setCoordinates,
 }: {
   onHide: () => void;
-  ageInput?: string;
-  setAgeInput?: (age: string) => void;
-  coordinates?: {
+  ageInput: string;
+  setAgeInput: (age: string) => void;
+  coordinates: {
     lat: number | null;
     lng: number | null;
   } | null;
-  setCoordinates?: (
+  setCoordinates: (
     coordinates: {
       lat: number | null;
       lng: number | null;

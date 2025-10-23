@@ -89,7 +89,7 @@ export const GroupSearch = () => {
           coordinates={coordinates}
         />
         <div className="flex flex-col">
-          {/* Filters Section */}
+          {/* Desktop Filters Section */}
           <div
             className={cn(
               "sticky bg-white z-2 content-padding shadow-sm select-none transition-all duration-300",
@@ -149,7 +149,13 @@ export const GroupSearch = () => {
                   : "-z-1 opacity-0"
               )}
             >
-              <AllFiltersPopup onHide={() => setIsMobileOpen(false)} />
+              <AllFiltersPopup
+                onHide={() => setIsMobileOpen(false)}
+                ageInput={ageInput}
+                setAgeInput={setAgeInput}
+                coordinates={coordinates}
+                setCoordinates={setCoordinates}
+              />
             </div>
           </div>
 

@@ -67,8 +67,9 @@ export const GroupSingleBanner = ({
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex justify-between gap-8 items-center">
-        {/* Left Side */}
-        {/* Mobile Leader Images */}
+        {/* Left Side Content*/}
+
+        {/* Mobile Content - Leader Images */}
         <div className="flex md:hidden gap-2">
           <Link to="/group-finder" className="flex items-center">
             <Icon name="arrowBack" size={24} className="text-navy" />
@@ -113,7 +114,7 @@ export const GroupSingleBanner = ({
           </div>
         </div>
 
-        {/* Right Side */}
+        {/* Right Side - Button */}
         <Button
           intent="primary"
           href="#todo"
