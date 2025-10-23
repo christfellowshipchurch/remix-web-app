@@ -86,8 +86,12 @@ export const GroupSingleBanner = ({
         {/* Desktop Content*/}
         <div className="hidden md:flex gap-6 lg:gap-8">
           <div className="flex items-center gap-4">
-            <Link to="/group-finder" className="flex items-center">
-              <Icon name="arrowBack" size={24} className="text-navy" />
+            <Link to="/group-finder" className="flex items-center group">
+              <Icon
+                name="arrowBack"
+                size={24}
+                className="text-navy group-hover:text-dark-navy group-hover:-translate-x-[2px] transition-all duration-300"
+              />
             </Link>
 
             <img
