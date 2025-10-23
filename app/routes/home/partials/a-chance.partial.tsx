@@ -1,14 +1,15 @@
 import { cn } from "~/lib/utils";
-import SplitScrollLayout from "../components/split-scroll-layout.component";
+import { SnapScrollLayout } from "../components/snap-scroll-layout";
 
 export function AChanceSection() {
   return (
-    <section className="relative w-full">
+    <>
       <h2
+        id="a-chance-title"
         className={cn(
           "w-screen text-2xl md:text-[40px] font-extrabold text-center text-pretty",
-          "sticky lg:absolute top-0 z-49",
-          "pt-28",
+          "sticky lg:absolute top-0 -z-20",
+          "pt-10 md:pt-12 lg:pt-28",
           "mb-20 lg:mb-32",
           "md:block",
           "px-3",
@@ -17,16 +18,14 @@ export function AChanceSection() {
       >
         <div
           className={cn(
-            "absolute inset-0 bg-gradient-to-b from-white via-white to-transparent -z-10",
-            "h-72 md:h-72"
+            "fixed left-0 right-0 top-0 bg-gradient-to-b from-white via-white to-transparent -z-10",
+            "h-36 sm:h-72 md:h-96"
           )}
         ></div>
         Think of it less as a chore and more as...{" "}
         <span className="text-ocean">a chance.</span>
       </h2>
-      <div className="relative min-h-[100vh] max-w-[1200px] mx-auto">
-        <SplitScrollLayout />
-      </div>
-    </section>
+      <SnapScrollLayout />
+    </>
   );
 }

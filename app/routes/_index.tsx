@@ -6,8 +6,8 @@ import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
 import { AppSection } from "./home/partials/app.partial";
 import { HeroSection } from "./home/partials/hero.partial";
-import SnapScrollLayout from "./home/components/snap-scroll-layout";
 import { Footer } from "../components";
+import { AChanceSection } from "./home/partials/a-chance.partial";
 
 export { loader } from "./home/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
 
@@ -20,9 +20,9 @@ export const meta: MetaFunction = () => {
 
 export default function HomePage() {
   return (
-    <div className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar">
+    <div className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar -mt-18 md:-mt-0">
       <HeroSection />
-      <SnapScrollLayout />
+      <AChanceSection />
       <WhatWeOfferSection />
       <HistorySection sectionTitle="history" title="Who We Are" />
       <BeliefsSection />
