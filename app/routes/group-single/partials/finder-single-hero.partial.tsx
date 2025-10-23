@@ -93,7 +93,7 @@ const GroupInfo = ({ hit }: { hit: GroupType }) => {
       <InfoItem
         title={adultOnly ? "Adults Only" : "Children Welcome"}
         description={childCareDescription ?? ""}
-        icon="child"
+        icon={adultOnly ? "male" : "child"}
       />
       <InfoItem
         title={campus}
