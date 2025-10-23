@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsCustomRefinement } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
+import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
 
 export function UpcomingSessionFilters() {
   const [showGroupType, setShowGroupType] = useState(false);
@@ -112,7 +112,7 @@ export function FilterDropdown({
       <p>{title}</p>
       <Icon name="chevronDown" />
 
-      <GroupsCustomRefinement
+      <GroupsFinderDropdwnPopup
         popupTitle={title}
         data={data}
         onHide={onHide}
