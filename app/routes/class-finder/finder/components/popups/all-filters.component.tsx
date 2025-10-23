@@ -3,7 +3,7 @@ import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { Stats, useInstantSearch } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
-import { AllFiltersRefinementContent } from "~/routes/group-finder/components/popups/refinement-content.component";
+import { AllFiltersRefinementContent } from "~/routes/group-finder/components/filters/refinement-content.component";
 
 export const AllClassFiltersPopup = ({ onHide }: { onHide: () => void }) => {
   const [showMeetingType, setShowMeetingType] = useState(true);

@@ -8,7 +8,7 @@ import {
   Stats,
 } from "react-instantsearch";
 
-import { DesktopGroupFilters } from "../components/popups/group-filters";
+import { DesktopGroupFilters } from "../components/filters/group-filters";
 
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
@@ -17,7 +17,7 @@ import { FindersCustomPagination } from "../components/finders-custom-pagination
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
 import { useEffect, useState } from "react";
-import { AllFiltersPopup } from "../components/popups/all-filters.component";
+import { AllFiltersPopup } from "../components/filters/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { GroupType } from "../types";
