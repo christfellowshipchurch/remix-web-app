@@ -5,7 +5,7 @@ import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 
-export const GroupsCustomRefinement = ({
+export const GroupsFinderDropdwnPopup = ({
   popupTitle,
   className,
   data,
@@ -74,7 +74,7 @@ export const GroupsCustomRefinement = ({
                 {content.title}
               </h3>
             )}
-            <GroupsCustomRefinementList
+            <GroupsFinderDropdownPopupList
               data={content}
               onHide={onHide}
               ageInput={ageInput}
@@ -88,7 +88,7 @@ export const GroupsCustomRefinement = ({
   );
 };
 
-const GroupsCustomRefinementList = ({
+const GroupsFinderDropdownPopupList = ({
   data,
   onHide,
   ageInput,

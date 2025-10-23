@@ -34,7 +34,7 @@ export const GroupSearch = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Scroll handling effect
+  // Scroll handling effect for fixed search bar
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -159,7 +159,7 @@ export const GroupSearch = () => {
             </div>
           </div>
 
-          {/* Group Search Results & Pagination */}
+          {/* Group Search Hits / Results & Pagination */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
               <Stats

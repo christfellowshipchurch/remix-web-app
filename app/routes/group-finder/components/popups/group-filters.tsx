@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsCustomRefinement } from "./groups-custom-refinement.component";
+import { GroupsFinderDropdwnPopup } from "./groups-finder-dropdown-popup.component";
 import { AllFiltersPopup } from "./all-filters.component";
 import { cn } from "~/lib/utils";
 
@@ -63,7 +63,7 @@ export function DesktopGroupFilters({
     };
   }, [activeDropdown]);
 
-  const boxStyles =
+  const dropdownButtonStyles =
     "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer";
 
   return (
@@ -74,13 +74,13 @@ export function DesktopGroupFilters({
       <div className="hidden lg:flex gap-4 w-full">
         {/* Location Select Box */}
         <div
-          className={cn(boxStyles)}
+          className={cn(dropdownButtonStyles)}
           onClick={() => toggleDropdown("location")}
         >
           <p>Location</p>
           <Icon name="chevronDown" />
 
-          <GroupsCustomRefinement
+          <GroupsFinderDropdwnPopup
             popupTitle="Location"
             data={{
               content: [
@@ -104,11 +104,14 @@ export function DesktopGroupFilters({
         </div>
 
         {/* People */}
-        <div className={cn(boxStyles)} onClick={() => toggleDropdown("people")}>
+        <div
+          className={cn(dropdownButtonStyles)}
+          onClick={() => toggleDropdown("people")}
+        >
           <p>People</p>
           <Icon name="chevronDown" />
 
-          <GroupsCustomRefinement
+          <GroupsFinderDropdwnPopup
             popupTitle="People"
             data={{
               content: [
@@ -138,11 +141,14 @@ export function DesktopGroupFilters({
         </div>
 
         {/* Topics */}
-        <div className={cn(boxStyles)} onClick={() => toggleDropdown("topics")}>
+        <div
+          className={cn(dropdownButtonStyles)}
+          onClick={() => toggleDropdown("topics")}
+        >
           <p>Topics</p>
           <Icon name="chevronDown" />
 
-          <GroupsCustomRefinement
+          <GroupsFinderDropdwnPopup
             popupTitle="Topics"
             data={{
               content: [
@@ -169,13 +175,13 @@ export function DesktopGroupFilters({
         {/* Preferences */}
         <div className="hidden xl:flex gap-4">
           <div
-            className={cn(boxStyles)}
+            className={cn(dropdownButtonStyles)}
             onClick={() => toggleDropdown("preferences")}
           >
             <p>Preferences</p>
             <Icon name="chevronDown" />
 
-            <GroupsCustomRefinement
+            <GroupsFinderDropdwnPopup
               popupTitle="Preferences"
               data={{
                 content: [
