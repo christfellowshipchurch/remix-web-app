@@ -68,7 +68,7 @@ export function GroupHit({ hit }: { hit: GroupType }) {
   const meetingInfo = formattedMeetingDay + " " + formattedMeetingTime;
 
   return (
-    <Link to={`/group-finder/${hit.title}`} className="size-full">
+    <Link to={`/group-finder/${hit.objectID}`} className="size-full">
       <div
         className="mb-4 bg-white rounded-lg overflow-hidden h-full w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300"
         style={{

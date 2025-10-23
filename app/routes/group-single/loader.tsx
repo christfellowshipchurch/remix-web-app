@@ -4,13 +4,13 @@ import { AuthenticationError } from "~/lib/.server/error-types";
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
-  groupName: string;
+  groupId: string;
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const title = params.path || "";
+  const groupId = params.path || "";
 
-  if (!title) {
+  if (!groupId) {
     throw new Error("Group not found");
   }
 
@@ -24,6 +24,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
-    groupName: decodeURIComponent(title),
+    groupId,
   };
 }
