@@ -1,20 +1,15 @@
 import { ReactNode, useState } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsCustomRefinement } from "~/routes/group-finder/components/popups/groups-custom-refinement.component";
+import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
 
-export function UpcomingSessionFilters({
-  setIsSearchOpen,
-}: {
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) {
+export function UpcomingSessionFilters() {
   const [showGroupType, setShowGroupType] = useState(false);
   const [showFrequency, setShowFrequency] = useState(false);
 
   const onHide = () => {
     setShowGroupType(false);
     setShowFrequency(false);
-    setIsSearchOpen(false);
   };
 
   const handleToggle = (
@@ -117,8 +112,8 @@ export function FilterDropdown({
       <p>{title}</p>
       <Icon name="chevronDown" />
 
-      <GroupsCustomRefinement
-        title={title}
+      <GroupsFinderDropdwnPopup
+        popupTitle={title}
         data={data}
         onHide={onHide}
         showSection={isOpen}

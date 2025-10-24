@@ -1,79 +1,101 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
 import { FinderSingleHero } from "./partials/finder-single-hero.partial";
-import { Breadcrumbs } from "~/components";
 
 import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";
-import { InstantSearch } from "react-instantsearch";
-import { useMemo } from "react";
+import {
+  Configure,
+  Hits,
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+} from "react-instantsearch";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 
-import { SearchWrapper } from "./components/search-wrapper.component";
-import { Icon } from "~/primitives/icon/icon";
-import { GroupHitType } from "../group-finder/types";
+import { GroupType } from "../group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { GroupSingleBanner } from "./components/group-single-banner.component";
 
 export const GroupNotFound = () => {
-  return (
-    <div className="flex flex-col items-center gap-6 py-20">
-      <h2 className="text-2xl font-bold text-center">Group Not Found</h2>
-      <p className="text-neutral-500 text-center max-w-md">
-        We couldn't find the group you're looking for. It may have been removed
-        or renamed.
-      </p>
-      <Button intent="primary" href="/group-finder">
-        Browse All Groups
-      </Button>
-    </div>
-  );
+  const { items } = useHits<GroupType>();
+  const { status } = useInstantSearch();
+  const [loadingStarted, setLoadingStarted] = useState<boolean>(false);
+  const [loadingFinished, setLoadingFinished] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (status === "loading") {
+      setLoadingStarted(true);
+    }
+    if (status === "idle" && loadingStarted) {
+      setLoadingFinished(true);
+    }
+  }, [status]);
+
+  if (status === "loading") {
+    return (
+      <div className="heading-h4 flex flex-col items-center justify-center gap-6 py-20 h-[70vh] w-screen">
+        Loading Group...
+      </div>
+    );
+  }
+
+  if (items.length < 1 && status === "idle" && loadingFinished) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-6 h-[70vh] w-screen">
+        <h2 className="text-2xl font-bold text-center">Group Not Found</h2>
+        <p className="text-neutral-500 text-center max-w-md">
+          We couldn't find the group you're looking for. It may have been
+          removed or renamed.
+        </p>
+        <Button intent="primary" href="/group-finder">
+          Browse All Groups
+        </Button>
+      </div>
+    );
+  }
+
+  return null;
 };
 
-export const GroupSingleContent = ({ hit }: { hit: GroupHitType }) => {
-  const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
-  const tags = hit.preferences;
-  const { summary } = hit;
-
-  if (!hit) {
-    return <GroupNotFound />;
-  }
+export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      <FinderSingleHero imagePath={coverImage} />
-      <div className="content-padding w-full flex justify-center">
-        <div className="flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
-          <div className="flex gap-6 items-center">
-            <Link
-              className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to="/group-finder"
-            >
-              <Icon name="arrowBack" className="size-6" />
-              <span className="hover:underline text-sm line-clamp-2 md:hidden">
-                Back to Finder
-              </span>
-            </Link>
-            <div className="hidden md:block">
-              <Breadcrumbs />
-            </div>
-          </div>
+      {/* Banner */}
+      <GroupSingleBanner
+        language={hit.language}
+        leaderImages={hit.leaders.map((leader) => leader.photo)}
+        topics={hit.topics}
+        groupName={hit.title}
+      />
 
-          <div className="w-full flex justify-center">
-            <GroupSingleBasicContent
-              tags={tags}
-              groupName={hit.title}
-              summary={summary}
-            />
-          </div>
+      {/* Hero */}
+      <FinderSingleHero hit={hit} />
+
+      <div className="content-padding w-full flex justify-center">
+        <div className="justify-center flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
+          <GroupSingleBasicContent summary={hit.summary} />
         </div>
       </div>
-      <RelatedGroupsPartial tags={tags} />
+      <RelatedGroupsPartial topics={hit.topics} currentGroupName={hit.title} />
     </section>
   );
 };
 
 export function GroupSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, groupName } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, groupId } =
     useLoaderData<LoaderReturnType>();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Small delay to ensure the component is mounted before starting animation
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
@@ -81,20 +103,22 @@ export function GroupSinglePage() {
   );
 
   return (
-    <InstantSearch
-      indexName="production_Groups"
-      searchClient={searchClient}
-      initialUiState={{
-        production_Groups: {
-          query: `${groupName}`,
-        },
-      }}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-      key={groupName}
+    <div
+      className={`min-h-screen ${
+        isVisible ? "animate-fadeIn duration-400" : "opacity-0"
+      }`}
     >
-      <SearchWrapper groupName={groupName} />
-    </InstantSearch>
+      <InstantSearch
+        indexName="dev_daniel_Groups"
+        searchClient={searchClient}
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
+      >
+        <Configure filters={`objectID:"${groupId}"`} />
+        <Hits hitComponent={GroupSingleContent} />
+        <GroupNotFound />
+      </InstantSearch>
+    </div>
   );
 }

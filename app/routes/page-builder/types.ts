@@ -43,7 +43,7 @@ export type FAQItem = {
 };
 
 /**
- * Represents a collection card in the page builder
+ * Represents a collection card in the page builder, GroupType is one of the types that can be passed into here, make sure both have necesarry attributes
  */
 export type CollectionItem = {
   id: string;

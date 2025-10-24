@@ -4,7 +4,7 @@ import { Hits } from "react-instantsearch";
 import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { useEffect, useState } from "react";
-import { GroupHitType } from "../../types";
+import { GroupType } from "../../types";
 import { GroupHit } from "../group-hit.component";
 
 export function GroupsSearchPopup({
@@ -92,7 +92,7 @@ export function GroupsSearchPopup({
             item: "flex w-full rounded-xl transition-transform duration-300 border-[1px] border-[#E8E8E8] [&:first-child]:!border-navy hover:border-navy",
             list: "flex flex-col gap-3",
           }}
-          hitComponent={({ hit }: { hit: GroupHitType }) => {
+          hitComponent={({ hit }: { hit: GroupType }) => {
             return <GroupHit hit={hit} />;
           }}
         />

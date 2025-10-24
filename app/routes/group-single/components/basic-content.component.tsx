@@ -1,16 +1,6 @@
-// import { useLoaderData } from "react-router-dom";
-// import type { LoaderReturnType } from "../loader";
 import { GroupFAQ } from "./faq.component";
 
-export function GroupSingleBasicContent({
-  tags: _tags,
-  groupName: _groupName,
-  summary,
-}: {
-  tags: string[];
-  groupName: string;
-  summary: string;
-}) {
+export function GroupSingleBasicContent({ summary }: { summary: string }) {
   return (
     <div className="flex flex-col gap-12 md:gap-16">
       <div className="flex flex-col gap-4">

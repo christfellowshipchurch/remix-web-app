@@ -1,13 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import {
-  Stats,
-  useRefinementList,
-  useInstantSearch,
-} from "react-instantsearch";
+import { Stats, useInstantSearch } from "react-instantsearch";
 import { Button } from "~/primitives/button/button.primitive";
-import { icons } from "~/lib/icons";
+import { AllFiltersRefinementContent } from "~/routes/group-finder/components/filters/refinement-content.component";
 
 export const AllClassFiltersPopup = ({ onHide }: { onHide: () => void }) => {
   const [showMeetingType, setShowMeetingType] = useState(true);
@@ -177,7 +173,7 @@ const FilterSection = ({
         />
       </div>
       {/* Content */}
-      <RefinementContent
+      <AllFiltersRefinementContent
         data={{
           content: {
             attribute: attribute,
@@ -190,149 +186,6 @@ const FilterSection = ({
         setSelectedValue={setSelectedValue}
         showSection={showSection}
       />
-    </div>
-  );
-};
-
-export const RefinementContent = ({
-  data,
-  selectedValue,
-  setSelectedValue,
-  showSection,
-}: {
-  data: {
-    content: {
-      attribute: string;
-      icon?: keyof typeof icons;
-      isCheckbox?: boolean;
-      isDropdown?: boolean;
-      isMeetingType?: boolean;
-      showFooter?: boolean;
-    };
-  };
-  selectedValue?: string;
-  setSelectedValue?: (value: string) => void;
-  showSection: boolean;
-}) => {
-  const { items, refine } = useRefinementList({
-    attribute: data.content.attribute,
-  });
-  const content = data.content;
-  const checkboxStyle = "text-text-primary font-regular text-base";
-  const buttonStyles =
-    "min-w-0 min-h-0 px-2 py-[6px] text-sm font-semibold text-black border border-neutral-light hover:border-ocean transition-all duration-300 rounded-[5px]";
-  const meetingTypeButtonStyle =
-    "flex gap-1 text-text-primary font-normal text-base ";
-  const buttonRefinedStyle =
-    "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy";
-
-  return (
-    <div
-      className={cn(
-        "cursor-default",
-        "flex flex-col gap-4 overflow-hidden",
-        showSection ? "h-auto" : "h-0"
-      )}
-    >
-      <div className="flex flex-col gap-5">
-        {/* Checkbox & Buttons Option */}
-        {!content.isDropdown && (
-          <div
-            className={cn(
-              "flex bg-white pr-4",
-              content.isCheckbox
-                ? "gap-4 flex-col"
-                : "flex-wrap gap-y-2 gap-x-2"
-            )}
-          >
-            {items.map((item, index) => {
-              return (
-                <div key={index}>
-                  {/* Checkbox Option */}
-                  {content.isCheckbox ? (
-                    <div
-                      className="flex items-center gap-2 w-fit !cursor-pointer"
-                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        e.stopPropagation();
-                        refine(item.value);
-                      }}
-                    >
-                      <div
-                        className={cn(
-                          "w-4 h-4 border border-ocean rounded-sm bg-[#E7F9FE] hover:bg-ocean transition-all duration-300",
-                          item.isRefined && "bg-ocean"
-                        )}
-                      />
-                      <div className={checkboxStyle}>{item.label}</div>
-                    </div>
-                  ) : (
-                    // Buttons Option
-                    <Button
-                      key={index}
-                      intent="secondary"
-                      className={cn(
-                        buttonStyles,
-                        content.isMeetingType && meetingTypeButtonStyle,
-                        item.isRefined && buttonRefinedStyle
-                      )}
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                        e.stopPropagation();
-                        refine(item.value);
-                      }}
-                    >
-                      {content.isMeetingType && (
-                        <Icon
-                          name={item.label === "Virtual" ? "globe" : "map"}
-                          size={18}
-                        />
-                      )}
-                      {item.label}
-                    </Button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Dropdown Option */}
-        {content.isDropdown && setSelectedValue && (
-          <div className="flex flex-col gap-2">
-            <div className={cn("relative")}>
-              <select
-                value={selectedValue}
-                onChange={(e) => {
-                  refine(e.target.value);
-                  setSelectedValue(e.target.value);
-                }}
-                className={cn(
-                  "flex items-center justify-between w-full rounded-[8px] p-3",
-                  "border border-black text-[#666666]",
-                  "focus:outline-none focus:ring-2 focus:ring-transparent",
-                  "appearance-none"
-                )}
-                aria-label="Select meeting time"
-              >
-                <option value="" disabled>
-                  Select a meeting time
-                </option>
-                {items.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-              <div
-                className={cn(
-                  "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
-                )}
-              >
-                <Icon name="chevronDown" size={18} />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
