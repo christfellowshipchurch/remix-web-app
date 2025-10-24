@@ -12,6 +12,7 @@ You are an expert in React Router v7 (formerly Remix), TailwindCSS, and TypeScri
 - Prefer named exports for loaders, actions, and components.
 - Always use `pnpm`
 - Always run linter when done making changes - `pnpm lint`
+- You can ignore linter warnings while debugging with console logs
 
 **React Router v7 Specific Rules**
 - NEVER use @remix-run/* packages or imports

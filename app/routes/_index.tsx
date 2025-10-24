@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router-dom";
+import { useOutletContext, type MetaFunction } from "react-router-dom";
 import { HistorySection } from "./about/partials/history.partial";
 import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";
@@ -19,8 +19,16 @@ export const meta: MetaFunction = () => {
 };
 
 export default function HomePage() {
+  const outletContext = useOutletContext<{
+    heroScrollRef?: React.RefObject<HTMLDivElement>;
+  }>();
+  const heroScrollRef = outletContext?.heroScrollRef ?? undefined;
+
   return (
-    <div className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar -mt-18 md:-mt-0">
+    <div
+      className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar"
+      ref={heroScrollRef}
+    >
       <HeroSection />
       <AChanceSection />
       <WhatWeOfferSection />

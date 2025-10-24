@@ -9,7 +9,7 @@ export function AChanceSection() {
         className={cn(
           "w-screen text-2xl md:text-[40px] font-extrabold text-center text-pretty",
           "sticky lg:absolute top-0 -z-20",
-          "pt-10 md:pt-12 lg:pt-28",
+          "pt-10 md:pt-32 lg:pt-48",
           "mb-20 lg:mb-32",
           "md:block",
           "px-3",

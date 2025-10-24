@@ -82,24 +82,17 @@ export function Navbar() {
       const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollY;
 
+      // Skip home page - handled by hero scroll
+      if (pathname === "/") {
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
-        let shouldShow = true;
-        if (pathname === "/" && isSmall && heroScrollRef.current) {
-          const node = heroScrollRef.current;
-          const atBottom =
-            node.scrollHeight - node.scrollTop - node.clientHeight < 10;
-          if (atBottom) {
-            shouldShow = false;
-          }
-        }
-        setIsVisible(shouldShow);
+        setIsVisible(true);
         setIsSearchOpen(false);
-        if (pathname === "/" && isSmall) {
-          setMode("dark");
-        } else {
-          setMode(defaultMode);
-        }
+        setMode(defaultMode);
         setLastScrollY(currentScrollY);
         return;
       }
@@ -108,28 +101,72 @@ export function Navbar() {
       if (Math.abs(scrollDelta) > scrollThreshold) {
         setIsVisible(scrollDelta < 0);
         if (currentScrollY > scrollThreshold) {
-          if (pathname === "/" && isSmall) {
-            if (scrollDelta < 0) {
-              // Scrolling up, show navbar in light mode
-              setMode("light");
-            } else {
-              // Scrolling down, keep current mode (handled by hero scroll)
-              // Optionally, you could setMode("light") or do nothing
-            }
-          } else if (pathname !== "/") {
-            setMode(scrollDelta < 0 ? "light" : "dark");
-          } else {
-            setMode(defaultMode);
-          }
+          setMode(scrollDelta < 0 ? "light" : "dark");
         }
       }
 
       setLastScrollY(currentScrollY);
     };
 
+    // Home page scroll handler - listens to heroScrollRef
+    const handleHeroScroll = () => {
+      if (pathname !== "/") return;
+
+      const node = heroScrollRef.current;
+      if (!node) return;
+
+      const scrollTop = node.scrollTop;
+      const scrollThreshold = 10;
+      const scrollDelta = scrollTop - lastScrollY;
+      const atTop = scrollTop < scrollThreshold;
+
+      // Reset at top of page
+      if (atTop) {
+        setIsVisible(true);
+        if (isSmall) {
+          setMode("dark");
+        } else {
+          setMode(defaultMode);
+        }
+        setLastScrollY(scrollTop);
+        return;
+      }
+
+      // Handle scroll direction
+      if (Math.abs(scrollDelta) > scrollThreshold) {
+        setIsVisible(scrollDelta < 0);
+
+        if (isSmall) {
+          // On mobile, use dark mode at top, light mode otherwise
+          setMode(scrollTop < 10 ? "dark" : "light");
+        } else {
+          // On desktop, use default mode
+          setMode(defaultMode);
+        }
+      }
+
+      setLastScrollY(scrollTop);
+    };
+
+    // Always listen to window scroll for non-home pages
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, defaultMode, pathname, isSmall]);
+
+    // For home page, listen to hero scroll
+    if (pathname === "/" && heroScrollRef.current) {
+      heroScrollRef.current.addEventListener("scroll", handleHeroScroll, {
+        passive: true,
+      });
+      // Set initial state
+      handleHeroScroll();
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (pathname === "/" && heroScrollRef.current) {
+        heroScrollRef.current.removeEventListener("scroll", handleHeroScroll);
+      }
+    };
+  }, [lastScrollY, defaultMode, pathname, isSmall, heroScrollRef]);
 
   // Initial mode setup
   useEffect(() => {
@@ -204,43 +241,14 @@ export function Navbar() {
     }
   };
 
-  useEffect(() => {
-    if (pathname !== "/") return; // Only on home page
-    if (!isSmall) return; // Only for small screens
-
-    const node = heroScrollRef.current;
-    if (!node) return;
-
-    const handleHeroScroll = () => {
-      const atTop = node.scrollTop < 10;
-      const atBottom =
-        node.scrollHeight - node.scrollTop - node.clientHeight < 10;
-      if (atBottom) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-        if (atTop) {
-          setMode("dark");
-        } else {
-          setMode("light");
-        }
-      }
-    };
-
-    node.addEventListener("scroll", handleHeroScroll, { passive: true });
-    // Set initial mode and visibility based on current scroll position
-    handleHeroScroll();
-
-    return () => node.removeEventListener("scroll", handleHeroScroll);
-  }, [pathname, isSmall, heroScrollRef]);
-
   // Pass the ref to the Outlet context
   return (
     <>
       <nav
         className={cn(
           "group w-full sticky top-0 z-400 transition-transform duration-300",
-          !isVisible && "-translate-y-full"
+          !isVisible && "-translate-y-full absolute",
+          mode === "dark" && isVisible && "absolute"
         )}
         ref={navbarRef}
       >
