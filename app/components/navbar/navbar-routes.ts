@@ -21,6 +21,12 @@ export const darkModeRoutes: RoutePattern[] = [
   // Add more routes as needed
 ];
 
+// Define routes where the navbar should be completely hidden
+// Include both static and dynamic routes
+export const hideNavbarRoutes: RoutePattern[] = [
+  { path: "/group-finder/", isDynamic: true }, // This will match /groups/[slug]
+];
+
 export function shouldUseDarkMode(pathname: string): boolean {
   return darkModeRoutes.some((route) => {
     // For exact static matches
@@ -32,6 +38,24 @@ export function shouldUseDarkMode(pathname: string): boolean {
     if (route.isDynamic) {
       // Check if the current path starts with the base path
       // For example, /events/ will match /events/123, /events/my-event, etc.
+      return pathname.startsWith(route.path);
+    }
+
+    return false;
+  });
+}
+
+export function shouldHideNavbar(pathname: string): boolean {
+  return hideNavbarRoutes.some((route) => {
+    // For exact static matches
+    if (!route.isDynamic && route.path === pathname) {
+      return true;
+    }
+
+    // For dynamic routes
+    if (route.isDynamic) {
+      // Check if the current path starts with the base path
+      // For example, /presentation/ will match /presentation/123, /presentation/my-presentation, etc.
       return pathname.startsWith(route.path);
     }
 

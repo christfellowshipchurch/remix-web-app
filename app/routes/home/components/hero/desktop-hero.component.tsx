@@ -3,7 +3,7 @@ import { DesktopFeaturedItems } from "./desktop-features.component";
 
 export function DesktopHeroSection() {
   return (
-    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px]">
+    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block snap-start">
       <div className="flex size-full relative">
         {/* Left Column */}
         <img
@@ -16,7 +16,7 @@ export function DesktopHeroSection() {
         />
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
         <div className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
-          <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto">
+          <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto pr-5">
             <h1 className="text-[64px] xl:text-[86px] text-white font-extrabold leading-none max-w-[600px] z-2">
               Find Your <br />
               People.{" "}

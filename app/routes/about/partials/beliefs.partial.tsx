@@ -4,16 +4,14 @@ import { cn } from "~/lib/utils";
 import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.component";
 
 export function BeliefsSection({
-  bgClass = "bg-navy",
-  tabsClass = "bg-[#00354D]/30",
+  background = "default",
 }: {
-  bgClass?: string;
-  tabsClass?: string;
+  background?: "default" | "inverted";
 }) {
   return (
     <section
       id="beliefs"
-      className="relative pt-12 md:pb-16 md:pt-40 lg:pt-56 w-full"
+      className="relative pt-12 md:pb-16 md:pt-40 lg:pt-56 w-full bg-white"
     >
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
@@ -37,9 +35,11 @@ export function BeliefsSection({
             />
           </div>
           {/* Beliefs Carousel */}
-          <div className="hidden md:block">
+          <div className="hidden md:block bg-navy">
             <BeliefsCarousel
-              tabBgClass={tabsClass ? tabsClass : "bg-[#00354D]/30"}
+              tabBgClass={
+                background === "inverted" ? "bg-navy" : "bg-dark-navy/30"
+              }
             />
           </div>
         </div>
@@ -49,7 +49,7 @@ export function BeliefsSection({
       <div
         className={cn(
           "absolute bottom-0 w-full h-[50%] z-[-1]",
-          bgClass ? bgClass : "bg-navy"
+          background === "inverted" ? "bg-dark-navy" : "bg-navy"
         )}
       />
 

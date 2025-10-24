@@ -11,7 +11,7 @@ import MobileMenu from "./mobile/mobile-menu.component";
 import { SearchBar } from "./desktop/search/search.component";
 
 import { cn } from "~/lib/utils";
-import { shouldUseDarkMode } from "./navbar-routes";
+import { shouldUseDarkMode, shouldHideNavbar } from "./navbar-routes";
 // Data
 import {
   mainNavLinks,
@@ -31,7 +31,7 @@ export function Navbar() {
   const { siteBanner, ministries, watchReadListen } = rootData || {};
   const { isSmall, isLarge, isXLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
-  const heroScrollRef = useRef<HTMLDivElement>(null);
+  const homePageScroll = useRef<HTMLDivElement>(null);
 
   // State management
   const [isVisible, setIsVisible] = useState(true);
@@ -52,6 +52,9 @@ export function Navbar() {
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
 
   const { setIsNavbarVisible } = useNavbarVisibility();
+
+  // Check if navbar should be hidden for current route
+  const isNavbarHidden = shouldHideNavbar(pathname);
 
   // Click outside detection to close dropdowns
   useEffect(() => {
@@ -82,24 +85,17 @@ export function Navbar() {
       const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollY;
 
+      // Skip home page - handled by hero scroll
+      if (pathname === "/") {
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
-        let shouldShow = true;
-        if (pathname === "/" && isSmall && heroScrollRef.current) {
-          const node = heroScrollRef.current;
-          const atBottom =
-            node.scrollHeight - node.scrollTop - node.clientHeight < 10;
-          if (atBottom) {
-            shouldShow = false;
-          }
-        }
-        setIsVisible(shouldShow);
+        setIsVisible(true);
         setIsSearchOpen(false);
-        if (pathname === "/" && isSmall) {
-          setMode("dark");
-        } else {
-          setMode(defaultMode);
-        }
+        setMode(defaultMode);
         setLastScrollY(currentScrollY);
         return;
       }
@@ -108,28 +104,72 @@ export function Navbar() {
       if (Math.abs(scrollDelta) > scrollThreshold) {
         setIsVisible(scrollDelta < 0);
         if (currentScrollY > scrollThreshold) {
-          if (pathname === "/" && isSmall) {
-            if (scrollDelta < 0) {
-              // Scrolling up, show navbar in light mode
-              setMode("light");
-            } else {
-              // Scrolling down, keep current mode (handled by hero scroll)
-              // Optionally, you could setMode("light") or do nothing
-            }
-          } else if (pathname !== "/") {
-            setMode(scrollDelta < 0 ? "light" : "dark");
-          } else {
-            setMode(defaultMode);
-          }
+          setMode(scrollDelta < 0 ? "light" : "dark");
         }
       }
 
       setLastScrollY(currentScrollY);
     };
 
+    // Home page scroll handler - listens to homePageScroll
+    const handleHeroScroll = () => {
+      if (pathname !== "/") return;
+
+      const node = homePageScroll.current;
+      if (!node) return;
+
+      const scrollTop = node.scrollTop;
+      const scrollThreshold = 10;
+      const scrollDelta = scrollTop - lastScrollY;
+      const atTop = scrollTop < scrollThreshold;
+
+      // Reset at top of page
+      if (atTop) {
+        setIsVisible(true);
+        if (isSmall) {
+          setMode("dark");
+        } else {
+          setMode(defaultMode);
+        }
+        setLastScrollY(scrollTop);
+        return;
+      }
+
+      // Handle scroll direction
+      if (Math.abs(scrollDelta) > scrollThreshold) {
+        setIsVisible(scrollDelta < 0);
+
+        if (isSmall) {
+          // On mobile, use dark mode at top, light mode otherwise
+          setMode(scrollTop < 10 ? "dark" : "light");
+        } else {
+          // On desktop, use default mode
+          setMode(defaultMode);
+        }
+      }
+
+      setLastScrollY(scrollTop);
+    };
+
+    // Always listen to window scroll for non-home pages
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, defaultMode, pathname, isSmall]);
+
+    // For home page, listen to home page scroll
+    if (pathname === "/" && homePageScroll.current) {
+      homePageScroll.current.addEventListener("scroll", handleHeroScroll, {
+        passive: true,
+      });
+      // Set initial state
+      handleHeroScroll();
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (pathname === "/" && homePageScroll.current) {
+        homePageScroll.current.removeEventListener("scroll", handleHeroScroll);
+      }
+    };
+  }, [lastScrollY, defaultMode, pathname, isSmall, homePageScroll]);
 
   // Initial mode setup
   useEffect(() => {
@@ -161,8 +201,8 @@ export function Navbar() {
   }, [defaultMode]);
 
   useEffect(() => {
-    setIsNavbarVisible(isVisible);
-  }, [isVisible, setIsNavbarVisible]);
+    setIsNavbarVisible(isVisible && !isNavbarHidden);
+  }, [isVisible, isNavbarHidden, setIsNavbarVisible]);
 
   // Menu data
   const menuLinks: MenuLink[] = [
@@ -204,236 +244,214 @@ export function Navbar() {
     }
   };
 
-  useEffect(() => {
-    if (pathname !== "/") return; // Only on home page
-    if (!isSmall) return; // Only for small screens
-
-    const node = heroScrollRef.current;
-    if (!node) return;
-
-    const handleHeroScroll = () => {
-      const atTop = node.scrollTop < 10;
-      const atBottom =
-        node.scrollHeight - node.scrollTop - node.clientHeight < 10;
-      if (atBottom) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-        if (atTop) {
-          setMode("dark");
-        } else {
-          setMode("light");
-        }
-      }
-    };
-
-    node.addEventListener("scroll", handleHeroScroll, { passive: true });
-    // Set initial mode and visibility based on current scroll position
-    handleHeroScroll();
-
-    return () => node.removeEventListener("scroll", handleHeroScroll);
-  }, [pathname, isSmall, heroScrollRef]);
-
   // Pass the ref to the Outlet context
   return (
     <>
-      <nav
-        className={cn(
-          "group w-full sticky top-0 z-400 transition-transform duration-300",
-          !isVisible && "-translate-y-full"
-        )}
-        ref={navbarRef}
-      >
-        <div className={cn(showSiteBanner ? "block" : "hidden")}>
-          <SiteBanner
-            content={siteBanner?.content ?? ""}
-            onClose={() => setShowSiteBanner(false)}
-          />
-        </div>
-        <div
+      {!isNavbarHidden && (
+        <nav
           className={cn(
-            "w-full content-padding transition-colors duration-200",
-            mode === "light"
-              ? "bg-white shadow-sm"
-              : openDropdown
-              ? "bg-white shadow-sm"
-              : "bg-transparent group-hover:bg-white"
+            "group w-full sticky top-0 z-400 transition-transform duration-300",
+            !isVisible && "-translate-y-full absolute",
+            mode === "dark" && isVisible && "absolute"
           )}
+          ref={navbarRef}
         >
+          <div className={cn(showSiteBanner ? "block" : "hidden")}>
+            <SiteBanner
+              content={siteBanner?.content ?? ""}
+              onClose={() => setShowSiteBanner(false)}
+            />
+          </div>
           <div
             className={cn(
-              "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5"
+              "w-full content-padding transition-colors duration-200",
+              mode === "light"
+                ? "bg-white shadow-sm"
+                : openDropdown
+                ? "bg-white shadow-sm"
+                : "bg-transparent group-hover:bg-white"
             )}
-            style={{ gap: isSearchOpen ? "32px" : "0px" }}
           >
-            {/* Logo and Desktop Navigation */}
-            <div className="flex items-center gap-8">
-              <a
-                href="/"
-                className="relative flex items-center justify-center gap-2.5"
-              >
-                <Icon
-                  name="logo"
-                  className={cn(
-                    "size-32 my-[-48px] transition-colors duration-200",
-                    mode === "light"
-                      ? "text-ocean"
-                      : openDropdown
-                      ? "text-ocean"
-                      : "text-white group-hover:text-ocean"
-                  )}
-                />
-              </a>
+            <div
+              className={cn(
+                "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5"
+              )}
+              style={{ gap: isSearchOpen ? "32px" : "0px" }}
+            >
+              {/* Logo and Desktop Navigation */}
+              <div className="flex items-center gap-8">
+                <a
+                  href="/"
+                  className="relative flex items-center justify-center gap-2.5"
+                >
+                  <Icon
+                    name="logo"
+                    className={cn(
+                      "size-32 my-[-48px] transition-colors duration-200",
+                      mode === "light"
+                        ? "text-ocean"
+                        : openDropdown
+                        ? "text-ocean"
+                        : "text-white group-hover:text-ocean"
+                    )}
+                  />
+                </a>
 
-              {/* Desktop Navigation Menu */}
+                {/* Desktop Navigation Menu */}
+                <div
+                  className="hidden lg:inline"
+                  style={{
+                    display: isSearchOpen
+                      ? "none"
+                      : isLarge
+                      ? "inline"
+                      : "none",
+                  }}
+                >
+                  <nav className="flex items-center space-x-6 xl:space-x-10">
+                    {mainNavLinks.map((link) => (
+                      <a
+                        key={link.title}
+                        href={link.url}
+                        className={cn(
+                          "transition-colors xl:text-lg",
+                          mode === "light"
+                            ? "text-neutral-dark"
+                            : openDropdown
+                            ? "text-neutral-dark"
+                            : "text-white group-hover:text-text"
+                        )}
+                      >
+                        <span className="hover:text-ocean">{link.title}</span>
+                      </a>
+                    ))}
+
+                    {menuLinks.map((menuLink) =>
+                      menuLink.content ? (
+                        <div key={menuLink.title} className="relative">
+                          <button
+                            onClick={() => handleDropdownToggle(menuLink.title)}
+                            className={cn(
+                              "transition-colors xl:text-lg cursor-pointer",
+                              openDropdown === menuLink.title &&
+                                "border-b-3 border-ocean",
+                              mode === "light"
+                                ? "text-neutral-dark"
+                                : openDropdown
+                                ? "text-neutral-dark"
+                                : "text-white group-hover:text-text"
+                            )}
+                          >
+                            <span className="hover:text-ocean flex items-center gap-1">
+                              {menuLink.title}
+                              <Icon
+                                name="chevronDown"
+                                className={cn(
+                                  "relative top-[1px] size-4 lg:size-6 transition duration-200",
+                                  openDropdown === menuLink.title &&
+                                    "rotate-180"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </button>
+
+                          {openDropdown === menuLink.title && (
+                            <div
+                              className={cn(
+                                "fixed top-[82px] left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
+                                "animate-in slide-in-from-top-2 duration-200"
+                              )}
+                            >
+                              <MenuContent
+                                menuType={lowerCase(menuLink.title)}
+                                isLoading={false}
+                                mainContent={menuLink.content.mainContent}
+                                featureCards={menuLink.content.featureCards}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ) : null
+                    )}
+                  </nav>
+                </div>
+              </div>
+
+              {/* Desktop Actions */}
               <div
-                className="hidden lg:inline"
+                className="hidden lg:flex items-center gap-1 ml-2 xl:ml-0"
                 style={{
-                  display: isSearchOpen ? "none" : isLarge ? "inline" : "none",
+                  width: isSearchOpen ? "100%" : "auto",
+                  alignItems: isSearchOpen ? "end" : "center",
+                  justifyContent: isSearchOpen ? "space-between" : "start",
+                  height: isSearchOpen ? "52px" : "auto",
                 }}
               >
-                <nav className="flex items-center space-x-6 xl:space-x-10">
-                  {mainNavLinks.map((link) => (
-                    <a
-                      key={link.title}
-                      href={link.url}
+                <div
+                  style={{
+                    display: isSearchOpen ? "block" : "none",
+                    width: "100%",
+                  }}
+                >
+                  <SearchBar
+                    mode={mode}
+                    isSearchOpen={isSearchOpen}
+                    setIsSearchOpen={setIsSearchOpen}
+                  />
+                </div>
+
+                {!isSearchOpen && (
+                  <button
+                    onClick={handleSearchClick}
+                    className="flex items-center"
+                  >
+                    <Icon
+                      name="search"
                       className={cn(
-                        "transition-colors xl:text-lg",
+                        "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5",
                         mode === "light"
                           ? "text-neutral-dark"
                           : openDropdown
                           ? "text-neutral-dark"
                           : "text-white group-hover:text-text"
                       )}
-                    >
-                      <span className="hover:text-ocean">{link.title}</span>
-                    </a>
-                  ))}
-
-                  {menuLinks.map((menuLink) =>
-                    menuLink.content ? (
-                      <div key={menuLink.title} className="relative">
-                        <button
-                          onClick={() => handleDropdownToggle(menuLink.title)}
-                          className={cn(
-                            "transition-colors xl:text-lg cursor-pointer",
-                            openDropdown === menuLink.title &&
-                              "border-b-3 border-ocean",
-                            mode === "light"
-                              ? "text-neutral-dark"
-                              : openDropdown
-                              ? "text-neutral-dark"
-                              : "text-white group-hover:text-text"
-                          )}
-                        >
-                          <span className="hover:text-ocean flex items-center gap-1">
-                            {menuLink.title}
-                            <Icon
-                              name="chevronDown"
-                              className={cn(
-                                "relative top-[1px] size-4 lg:size-6 transition duration-200",
-                                openDropdown === menuLink.title && "rotate-180"
-                              )}
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </button>
-
-                        {openDropdown === menuLink.title && (
-                          <div
-                            className={cn(
-                              "fixed top-[82px] left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
-                              "animate-in slide-in-from-top-2 duration-200"
-                            )}
-                          >
-                            <MenuContent
-                              menuType={lowerCase(menuLink.title)}
-                              isLoading={false}
-                              mainContent={menuLink.content.mainContent}
-                              featureCards={menuLink.content.featureCards}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ) : null
-                  )}
-                </nav>
-              </div>
-            </div>
-
-            {/* Desktop Actions */}
-            <div
-              className="hidden lg:flex items-center gap-1 ml-2 xl:ml-0"
-              style={{
-                width: isSearchOpen ? "100%" : "auto",
-                alignItems: isSearchOpen ? "end" : "center",
-                justifyContent: isSearchOpen ? "space-between" : "start",
-                height: isSearchOpen ? "52px" : "auto",
-              }}
-            >
-              <div
-                style={{
-                  display: isSearchOpen ? "block" : "none",
-                  width: "100%",
-                }}
-              >
-                <SearchBar
-                  mode={mode}
-                  isSearchOpen={isSearchOpen}
-                  setIsSearchOpen={setIsSearchOpen}
-                />
-              </div>
-
-              {!isSearchOpen && (
-                <button
-                  onClick={handleSearchClick}
-                  className="flex items-center"
-                >
-                  <Icon
-                    name="search"
-                    className={cn(
-                      "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5",
-                      mode === "light"
-                        ? "text-neutral-dark"
-                        : openDropdown
-                        ? "text-neutral-dark"
-                        : "text-white group-hover:text-text"
-                    )}
-                  />
-                </button>
-              )}
-
-              {(!isSearchOpen || isXLarge) && (
-                <div className="flex gap-2">
-                  <AuthModal
-                    buttonStyle={cn(
-                      "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
-                      mode === "dark" &&
-                        !openDropdown &&
-                        "border-white text-white group-hover:text-ocean group-hover:border-ocean"
-                    )}
-                    buttonText="Login"
-                  />
-                  <Button
-                    href="/locations"
-                    className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
-                  >
-                    <Icon
-                      name="mapFilled"
-                      className="mr-1 xl:mr-2 size-4 xl:size-5"
                     />
-                    Find a Service
-                  </Button>
-                </div>
-              )}
-            </div>
+                  </button>
+                )}
 
-            {/* Mobile Menu */}
-            <MobileMenu mode={mode} setMode={setMode} />
+                {(!isSearchOpen || isXLarge) && (
+                  <div className="flex gap-2">
+                    <AuthModal
+                      buttonStyle={cn(
+                        "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
+                        mode === "dark" &&
+                          !openDropdown &&
+                          "border-white text-white group-hover:text-ocean group-hover:border-ocean"
+                      )}
+                      buttonText="Login"
+                    />
+                    <Button
+                      href="/locations"
+                      className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
+                    >
+                      <Icon
+                        name="mapFilled"
+                        className="mr-1 xl:mr-2 size-4 xl:size-5"
+                      />
+                      Find a Service
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Menu */}
+              <MobileMenu mode={mode} setMode={setMode} />
+            </div>
           </div>
-        </div>
-      </nav>
-      {pathname === "/" && <Outlet context={{ heroScrollRef }} />}
+        </nav>
+      )}
+      {pathname === "/" && <Outlet context={{ homePageScroll }} />}
     </>
   );
 }

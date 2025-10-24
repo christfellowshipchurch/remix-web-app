@@ -9,7 +9,7 @@ export function HistorySection({
   title?: string;
 }) {
   return (
-    <section id="history" className="py-20 w-full">
+    <section id="history" className="py-20 w-full bg-white">
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
           <div className="flex flex-col lg:flex-row w-full items-start lg:items-center justify-start gap-6 md:gap-0 md:mb-6">
