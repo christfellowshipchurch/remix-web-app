@@ -31,7 +31,7 @@ export function Navbar() {
   const { siteBanner, ministries, watchReadListen } = rootData || {};
   const { isSmall, isLarge, isXLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
-  const heroScrollRef = useRef<HTMLDivElement>(null);
+  const homePageScroll = useRef<HTMLDivElement>(null);
 
   // State management
   const [isVisible, setIsVisible] = useState(true);
@@ -108,11 +108,11 @@ export function Navbar() {
       setLastScrollY(currentScrollY);
     };
 
-    // Home page scroll handler - listens to heroScrollRef
+    // Home page scroll handler - listens to homePageScroll
     const handleHeroScroll = () => {
       if (pathname !== "/") return;
 
-      const node = heroScrollRef.current;
+      const node = homePageScroll.current;
       if (!node) return;
 
       const scrollTop = node.scrollTop;
@@ -151,9 +151,9 @@ export function Navbar() {
     // Always listen to window scroll for non-home pages
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    // For home page, listen to hero scroll
-    if (pathname === "/" && heroScrollRef.current) {
-      heroScrollRef.current.addEventListener("scroll", handleHeroScroll, {
+    // For home page, listen to home page scroll
+    if (pathname === "/" && homePageScroll.current) {
+      homePageScroll.current.addEventListener("scroll", handleHeroScroll, {
         passive: true,
       });
       // Set initial state
@@ -162,11 +162,11 @@ export function Navbar() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (pathname === "/" && heroScrollRef.current) {
-        heroScrollRef.current.removeEventListener("scroll", handleHeroScroll);
+      if (pathname === "/" && homePageScroll.current) {
+        homePageScroll.current.removeEventListener("scroll", handleHeroScroll);
       }
     };
-  }, [lastScrollY, defaultMode, pathname, isSmall, heroScrollRef]);
+  }, [lastScrollY, defaultMode, pathname, isSmall, homePageScroll]);
 
   // Initial mode setup
   useEffect(() => {
@@ -441,7 +441,7 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-      {pathname === "/" && <Outlet context={{ heroScrollRef }} />}
+      {pathname === "/" && <Outlet context={{ homePageScroll }} />}
     </>
   );
 }

@@ -20,14 +20,14 @@ export const meta: MetaFunction = () => {
 
 export default function HomePage() {
   const outletContext = useOutletContext<{
-    heroScrollRef?: React.RefObject<HTMLDivElement>;
+    homePageScroll?: React.RefObject<HTMLDivElement>;
   }>();
-  const heroScrollRef = outletContext?.heroScrollRef ?? undefined;
+  const homePageScroll = outletContext?.homePageScroll ?? undefined;
 
   return (
     <div
       className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar"
-      ref={heroScrollRef}
+      ref={homePageScroll}
     >
       <HeroSection />
       <AChanceSection />
