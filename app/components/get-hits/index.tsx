@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useHits } from "react-instantsearch";
 import { GroupType } from "~/routes/group-finder/types";
 
-export const HitsCheck = ({
+export const GetHits = ({
   setHits,
 }: {
   setHits: (hits: GroupType[]) => void;

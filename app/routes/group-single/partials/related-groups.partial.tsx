@@ -8,7 +8,7 @@ import { CardCarousel } from "~/components/resource-carousel";
 import { GroupType } from "~/routes/group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
 import { CollectionItem } from "~/routes/page-builder/types";
-import { HitsCheck } from "~/components/hits-check";
+import { GetHits } from "~/components/get-hits";
 
 // Custom component to use hits data with ResourceCarousel
 function RelatedGroupsHits({
@@ -66,7 +66,7 @@ export function RelatedGroupsPartial({
       }}
     >
       <Configure filters={`topics:"${topics[0]}"`} hitsPerPage={6} />
-      <HitsCheck setHits={setHits} />
+      <GetHits setHits={setHits} />
       {hits.length > 1 ? (
         <div className="content-padding mt-20 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
           <div className="w-full flex flex-col gap-6 md:gap-16 max-w-screen-content">
