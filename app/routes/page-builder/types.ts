@@ -47,6 +47,7 @@ export type FAQItem = {
  */
 export type CollectionItem = {
   id: string;
+  readTime?: number;
   contentChannelId: string;
   contentType: ContentType;
   name: string;

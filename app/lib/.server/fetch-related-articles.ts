@@ -24,7 +24,7 @@ interface ContentItem {
   attributes: attributeProps;
 }
 
-interface FormattedArticle {
+export interface FormattedArticle {
   title: string;
   summary?: string;
   url?: string;

@@ -2,7 +2,10 @@ import { type LoaderFunction } from "react-router-dom";
 import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
-import { getRelatedArticlesByContentItem } from "~/lib/.server/fetch-related-articles";
+import {
+  FormattedArticle,
+  getRelatedArticlesByContentItem,
+} from "~/lib/.server/fetch-related-articles";
 import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
 
 export type LoaderReturnType = {
@@ -17,14 +20,7 @@ export type LoaderReturnType = {
   relatedArticles?: {
     tag: string;
     tagId: string;
-    articles: {
-      id: number;
-      title: string;
-      summary: string;
-      coverImage: string;
-      publishDate: string;
-      readTime: number;
-    }[];
+    articles: FormattedArticle[];
   };
 };
 

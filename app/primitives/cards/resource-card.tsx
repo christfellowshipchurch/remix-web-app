@@ -18,7 +18,7 @@ export const ResourceCard = ({
     <Link
       to={pathname}
       className={cn(
-        "flex flex-col rounded-[8px] w-full h-full border border-neutral-lighter overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
+        "flex flex-col rounded-[8px] w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
         className
       )}
       prefetch="intent"
@@ -30,7 +30,7 @@ export const ResourceCard = ({
         loading="lazy"
       />
 
-      <div className="flex flex-col gap-4 p-6 bg-white h-fit">
+      <div className="flex flex-col gap-4 p-6 bg-white h-fit border-x border-b border-neutral-lighter ">
         {(startDate || location || author) && (
           <ul className="flex gap-2 md:gap-4 lg:flex-col lg:gap-2 xl:!gap-4 xl:!flex-row">
             {startDate && (
