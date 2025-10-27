@@ -41,7 +41,7 @@ export const Articles = ({
 
       {/* Desktop Layout with URL-based Filtering */}
       <div className="hidden md:block">
-        <div className="content-padding pr-0 xl:pr-18 py-8 lg:pt-20 lg:pb-24 pagination-scroll-to">
+        <div className="content-padding pr-0 xl:pr-18 py-8 lg:pt-20 lg:pb-24 pagination-scroll-to w-full max-w-screen">
           <div className="max-w-screen-content mx-auto flex flex-col w-full gap-12">
             <HubsTagsRefinementList tagName="articlePrimaryTags" />
 

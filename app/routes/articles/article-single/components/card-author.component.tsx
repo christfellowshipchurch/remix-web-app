@@ -1,5 +1,6 @@
 import * as Avatar from "@radix-ui/react-avatar";
 import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
+import { AuthorProps } from "../partials/hero.partial";
 
 export const CardAuthor = ({
   name,
@@ -43,12 +44,7 @@ export interface ArticleCardProps extends React.HTMLAttributes<HTMLElement> {
   title: string;
   description: string;
   image: string;
-  author?: {
-    fullName: string;
-    photo: {
-      uri: string;
-    };
-  };
+  author?: AuthorProps;
   date: string;
   readTime: string;
 }

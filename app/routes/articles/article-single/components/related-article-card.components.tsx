@@ -31,7 +31,7 @@ export function RelatedArticleCard({
           {author && (
             <CardAuthor
               name={author?.fullName}
-              image={author?.photo?.uri}
+              image={author?.photo?.uri || ""}
               date={date}
               timeRead={readTime}
             />

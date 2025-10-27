@@ -7,31 +7,8 @@ import { ArticleContent } from "./partials/content.partial";
 import { ArticleNewsletter } from "./partials/newsletter.partial";
 import { CardCarouselSection } from "~/components/resource-carousel";
 import { RelatedArticleCard } from "./components/related-article-card.components";
-
-// Wrapper component to adapt RelatedArticleCard to ResourceCarousel's interface
-const RelatedArticleCardWrapper: React.FC<{
-  resource: {
-    author: string;
-    url: string;
-    title: string;
-    summary: string;
-    coverImage: string;
-    publishDate: string;
-    readTime: number;
-  };
-}> = ({ resource }) => {
-  return (
-    <RelatedArticleCard
-      author={resource.author}
-      href={resource.url}
-      title={resource.title}
-      description={resource.summary}
-      image={resource.coverImage[0]}
-      date={resource.publishDate}
-      readTime={resource.readTime}
-    />
-  );
-};
+import { CollectionItem } from "~/routes/page-builder/types";
+import { AuthorProps } from "./partials/hero.partial";
 
 export const ArticlePage: React.FC = () => {
   const data = useLoaderData<LoaderReturnType>();
@@ -41,6 +18,7 @@ export const ArticlePage: React.FC = () => {
     <section className="bg-white">
       <ArticleHero {...data} />
       <ArticleContent htmlContent={data.content} />
+
       <CardCarouselSection
         title="Related Reading"
         description="Explore more articles that you might find interesting."
@@ -52,5 +30,22 @@ export const ArticlePage: React.FC = () => {
 
       <ArticleNewsletter />
     </section>
+  );
+};
+
+// Wrapper component to adapt RelatedArticleCard to ResourceCarousel's interface
+const RelatedArticleCardWrapper: React.FC<{
+  resource: CollectionItem & { authorProps?: AuthorProps };
+}> = ({ resource }) => {
+  return (
+    <RelatedArticleCard
+      author={resource.authorProps}
+      href={resource.pathname}
+      title={resource.name}
+      description={resource.summary}
+      image={resource.image}
+      date={resource.startDate || ""}
+      readTime={resource.readTime?.toString() || "0"}
+    />
   );
 };

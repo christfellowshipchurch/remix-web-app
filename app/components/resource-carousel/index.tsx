@@ -135,7 +135,7 @@ export const CardCarousel = ({
       }}
       className={carouselClassName}
     >
-      <CarouselContent className="py-2 gap-6 xl:gap-8 2xl:pr-18">
+      <CarouselContent className="pt-3 gap-6 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
