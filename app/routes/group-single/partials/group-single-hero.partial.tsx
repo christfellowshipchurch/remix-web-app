@@ -4,7 +4,7 @@ import { GroupType } from "~/routes/group-finder/types";
 import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
 
-export function FinderSingleHero({ hit }: { hit: GroupType }) {
+export function GroupSingleHero({ hit }: { hit: GroupType }) {
   const imagePath = hit.coverImage.sources[0].uri;
 
   return (

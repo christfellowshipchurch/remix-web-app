@@ -1,21 +1,13 @@
-import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
-import { FinderSingleHero } from "./partials/finder-single-hero.partial";
+import { GroupSingleHero } from "./partials/group-single-hero.partial";
 
 import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";
-import {
-  Configure,
-  Hits,
-  InstantSearch,
-  useHits,
-  useInstantSearch,
-} from "react-instantsearch";
-import { useEffect, useMemo, useState } from "react";
+import { useHits, useInstantSearch } from "react-instantsearch";
+import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 
 import { GroupType } from "../group-finder/types";
-import { createSearchClient } from "~/lib/create-search-client";
 import { GroupSingleBanner } from "./components/group-single-banner.component";
 
 export const GroupNotFound = () => {
@@ -71,7 +63,7 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
       />
 
       {/* Hero */}
-      <FinderSingleHero hit={hit} />
+      <GroupSingleHero hit={hit} />
 
       <div className="content-padding w-full flex justify-center">
         <div className="justify-center flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content">
@@ -83,9 +75,12 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
   );
 };
 
-export function GroupSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, groupId } =
-    useLoaderData<LoaderReturnType>();
+export function GroupSinglePage({
+  loaderData,
+}: {
+  loaderData: LoaderReturnType;
+}) {
+  const { group } = loaderData;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -97,28 +92,13 @@ export function GroupSinglePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
-  );
-
   return (
     <div
       className={`min-h-screen ${
         isVisible ? "animate-fadeIn duration-400" : "opacity-0"
       }`}
     >
-      <InstantSearch
-        indexName="dev_daniel_Groups"
-        searchClient={searchClient}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-      >
-        <Configure filters={`objectID:"${groupId}"`} />
-        <Hits hitComponent={GroupSingleContent} />
-        <GroupNotFound />
-      </InstantSearch>
+      {group ? <GroupSingleContent hit={group} /> : <GroupNotFound />}
     </div>
   );
 }
