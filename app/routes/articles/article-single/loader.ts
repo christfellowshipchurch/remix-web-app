@@ -6,7 +6,55 @@ import {
   FormattedArticle,
   getRelatedArticlesByContentItem,
 } from "~/lib/.server/fetch-related-articles";
+import { CollectionItem } from "~/routes/page-builder/types";
 import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
+
+// Mapping function to convert FormattedArticle to CollectionItem
+const mapFormattedArticleToCollectionItem = (
+  article: FormattedArticle
+): CollectionItem & { authorProps?: AuthorProps } => {
+  const authorProps: AuthorProps | undefined =
+    typeof article.author === "object" && article.author
+      ? {
+          fullName: `${
+            (article.author as { firstName?: string; lastName?: string })
+              .firstName || ""
+          } ${
+            (article.author as { firstName?: string; lastName?: string })
+              .lastName || ""
+          }`.trim(),
+          photo: (article.author as { photo?: { uri: string } }).photo,
+          authorAttributes: (
+            article.author as {
+              authorAttributes?: { authorId: string; pathname: string };
+            }
+          ).authorAttributes,
+        }
+      : undefined;
+
+  return {
+    id: article.url || "",
+    name: article.title,
+    summary: article.summary || "",
+    image: Array.isArray(article.coverImage) ? article.coverImage[0] : "",
+    pathname: article.url || "",
+    startDate: article.publishDate,
+    author:
+      typeof article.author === "object" && article.author
+        ? `${
+            (article.author as { firstName?: string; lastName?: string })
+              .firstName || ""
+          } ${
+            (article.author as { firstName?: string; lastName?: string })
+              .lastName || ""
+          }`.trim()
+        : String(article.author || ""),
+    readTime: article.readTime,
+    contentChannelId: "43",
+    contentType: "ARTICLES" as const,
+    authorProps,
+  };
+};
 
 export type LoaderReturnType = {
   hostUrl: string;
@@ -20,7 +68,7 @@ export type LoaderReturnType = {
   relatedArticles?: {
     tag: string;
     tagId: string;
-    articles: FormattedArticle[];
+    articles: (CollectionItem & { authorProps?: AuthorProps })[];
   };
 };
 
@@ -82,7 +130,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     authorDetails = await getBasicAuthorInfoFlexible(author.value);
   }
 
-  const relatedArticles = await getRelatedArticlesByContentItem(guid);
+  const relatedArticlesData = await getRelatedArticlesByContentItem(guid);
 
   const pageData: LoaderReturnType = {
     hostUrl: process.env.HOST_URL || "host-url-not-found",
@@ -93,7 +141,15 @@ export const loader: LoaderFunction = async ({ params }) => {
     author: authorDetails,
     publishDate: format(new Date(startDateTime), "d MMM yyyy"),
     readTime: Math.round(content.split(" ").length / 200),
-    relatedArticles,
+    relatedArticles: relatedArticlesData
+      ? {
+          tag: relatedArticlesData.tag,
+          tagId: relatedArticlesData.tagId,
+          articles: relatedArticlesData.articles.map(
+            mapFormattedArticleToCollectionItem
+          ),
+        }
+      : undefined,
   };
 
   return pageData;
