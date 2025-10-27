@@ -10,7 +10,7 @@ import {
 import { beliefsData } from "../about.data";
 
 export function BeliefsCarousel({
-  tabBgClass = "bg-[#00354D]/30",
+  tabBgClass = "bg-dark-navy",
 }: {
   tabBgClass?: string;
 }) {
@@ -63,12 +63,12 @@ export function BeliefsCarousel({
           <div
             className={cn(
               "flex px-6 items-center justify-between h-18 w-full",
-              tabBgClass ? tabBgClass : "bg-[#00354D]/30"
+              tabBgClass ? tabBgClass : "bg-dark-navy"
             )}
           >
             <CarouselDots
-              activeClassName="bg-white"
-              inactiveClassName="bg-white opacity-50"
+              activeClassName="bg-ocean"
+              inactiveClassName="bg-neutral-lighter"
             />
             <div className="relative flex mr-6">
               <CarouselPrevious
