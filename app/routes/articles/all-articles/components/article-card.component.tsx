@@ -13,13 +13,13 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
     <Link
       to={`/articles/${article.url || article.routing.pathname}`}
       prefetch="intent"
-      className="flex flex-col rounded-lg overflow-hidden max-w-[462px] w-full border border-neutral-lighter transition-all duration-300 hover:-translate-y-1"
+      className="flex flex-col p-[2px] overflow-hidden max-w-[462px] w-full transition-all duration-300 hover:-translate-y-1"
     >
       {/* Article Image */}
       <div className="relative">
         <img
           src={article.coverImage.sources[0].uri}
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover rounded-t-lg"
           alt={article.title}
         />
 
@@ -34,7 +34,7 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
       </div>
 
       {/* Article Content */}
-      <div className="p-6 flex flex-col justify-between gap-4 h-full">
+      <div className="p-6 flex flex-col justify-between gap-4 h-full border-x border-b border-neutral-lighter rounded-b-lg">
         {/* Article Title + Summary */}
         <div className="flex flex-col gap-2">
           <h3 className="font-extrabold text-lg break-words">

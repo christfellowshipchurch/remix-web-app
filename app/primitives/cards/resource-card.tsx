@@ -18,7 +18,7 @@ export const ResourceCard = ({
     <Link
       to={pathname}
       className={cn(
-        "flex flex-col rounded-[8px] w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
+        "flex flex-col p-[2px] w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
         className
       )}
       prefetch="intent"
@@ -26,11 +26,11 @@ export const ResourceCard = ({
       <img
         src={image}
         alt={name}
-        className="size-full max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:min-h-[200px] lg:aspect-[41/27]"
+        className="size-full max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:min-h-[200px] lg:aspect-[41/27] rounded-t-[8px]"
         loading="lazy"
       />
 
-      <div className="flex flex-col gap-4 p-6 bg-white h-fit border-x border-b border-neutral-lighter ">
+      <div className="flex flex-col gap-4 p-6 bg-white h-fit border-x border-b border-neutral-lighter rounded-b-[8px]">
         {(startDate || location || author) && (
           <ul className="flex gap-2 md:gap-4 lg:flex-col lg:gap-2 xl:!gap-4 xl:!flex-row">
             {startDate && (
