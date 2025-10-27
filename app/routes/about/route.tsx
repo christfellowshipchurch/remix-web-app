@@ -38,7 +38,7 @@ export default function AboutPage() {
       />
       <OurMissionSection />
       <HistorySection />
-      <BeliefsSection bgClass="bg-dark-navy" tabsClass="bg-navy" />
+      <BeliefsSection background="inverted" />
       <LeadershipSection layout="vertical" />
       <ImpactSection />
     </main>

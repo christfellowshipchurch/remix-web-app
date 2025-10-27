@@ -8,7 +8,7 @@ export function WhatToExpectSection() {
   return (
     <section
       id="what-to-expect"
-      className="py-16 lg:pt-24 lg:pb-40 w-full flex flex-col gap-8 md:gap-16 md:px-12 lg:px-0 lg:pl-18 2xl:px-18"
+      className="py-16 lg:pt-24 lg:pb-40 w-full flex flex-col gap-8 md:gap-16 md:px-12 lg:px-0 lg:pl-18 2xl:px-18 bg-white"
     >
       <div className="px-6">
         <div className="container max-w-screen-content mx-auto">
