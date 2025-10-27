@@ -5,11 +5,7 @@ import { ClassesCustomRefinement } from "./classes-custom-refinement.component";
 import { AllClassFiltersPopup } from "./all-filters.component";
 import { cn } from "~/lib/utils";
 
-export function DesktopClassFilters({
-  setIsSearchOpen,
-}: {
-  setIsSearchOpen: (isSearchOpen: boolean) => void;
-}) {
+export function DesktopClassFilters() {
   const [showTopic, setShowTopic] = useState(false);
   const [showFrequency, setShowFrequency] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
@@ -23,15 +19,17 @@ export function DesktopClassFilters({
     setShowFrequency(false);
     setShowPeople(false);
     setShowAllFilters(false);
-    setIsSearchOpen(false);
   };
+
+  const boxStyles =
+    "relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer";
 
   return (
     <div className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center">
       <div className="hidden lg:flex gap-4 w-full">
         {/* Topic */}
         <div
-          className="relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer"
+          className={cn(boxStyles)}
           onClick={() => {
             onHide();
             setShowTopic(!showTopic);
@@ -59,7 +57,7 @@ export function DesktopClassFilters({
         <div className="hidden xl:flex gap-4">
           {/* Frequency */}
           <div
-            className="relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer"
+            className={cn(boxStyles)}
             onClick={() => {
               onHide();
               setShowFrequency(!showFrequency);
@@ -85,7 +83,7 @@ export function DesktopClassFilters({
           </div>
           {/* People */}
           <div
-            className="relative flex items-center justify-between w-full max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer"
+            className={cn(boxStyles)}
             onClick={() => {
               onHide();
               setShowPeople(!showPeople);

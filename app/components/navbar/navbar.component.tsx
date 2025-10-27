@@ -80,6 +80,11 @@ export function Navbar() {
 
   // Scroll handling effect
   useEffect(() => {
+    // Skip all scroll logic if navbar is hidden
+    if (isNavbarHidden) {
+      return;
+    }
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const scrollThreshold = 10;
@@ -169,7 +174,14 @@ export function Navbar() {
         homePageScroll.current.removeEventListener("scroll", handleHeroScroll);
       }
     };
-  }, [lastScrollY, defaultMode, pathname, isSmall, homePageScroll]);
+  }, [
+    lastScrollY,
+    defaultMode,
+    pathname,
+    isSmall,
+    homePageScroll,
+    isNavbarHidden,
+  ]);
 
   // Initial mode setup
   useEffect(() => {

@@ -10,7 +10,7 @@ export const GroupFinderHero = () => {
           alt="Mission"
           className="w-full max-w-[400px] lg:max-w-none rounded-lg lg:col-span-2 order-2 md:mt-6 lg:mt-0"
         />
-        <div className="col-span-1 lg:col-span-3 order-1 pt-8">
+        <div className="col-span-1 lg:col-span-3 order-1 pt-8 max-w-[620px] xl:max-w-[700px]">
           <SectionTitle sectionTitle="life together" />
           <h3 className="text-[40px] md:text-5xl font-extrabold my-6">
             Find Your Group <span className="hidden md:inline">Today</span>
@@ -33,7 +33,7 @@ export const GroupFinderHero = () => {
               discover your purpose
             </p>
           </div>
-          <div className="flex gap-4 mt-8">
+          <div className="flex flex-wrap gap-4 mt-8">
             <Button
               intent="secondary"
               className="hidden md:block text-base font-normal"

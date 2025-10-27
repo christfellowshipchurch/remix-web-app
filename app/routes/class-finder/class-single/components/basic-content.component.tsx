@@ -7,7 +7,7 @@ export function ClassSingleBasicContent({
   summary,
 }: {
   tags: string[];
-  className: string;
+  className?: string;
   summary: string;
 }) {
   return (

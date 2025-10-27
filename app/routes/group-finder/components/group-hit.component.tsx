@@ -1,62 +1,51 @@
 import Icon from "~/primitives/icon";
-import { GroupHitType } from "../types";
+import { GroupType } from "../types";
 import { Link } from "react-router-dom";
 
 export const defaultLeaderPhoto =
   "https://cloudfront.christfellowship.church/GetAvatar.ashx?PhotoId=&AgeClassification=Adult&Gender=Unknown&RecordTypeId=1&Text=JC&Size=180&Style=icon&BackgroundColor=E4E4E7&ForegroundColor=A1A1AA";
 
-export function GroupHit({ hit }: { hit: GroupHitType }) {
+export function GroupHit({ hit }: { hit: GroupType }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const preference = hit.groupFor;
 
   // Format the time string to show time with AM/PM and timezone
   const formatTime = (timeString: string) => {
-    try {
-      // If the time string already contains AM/PM, return it as is
-      if (
-        timeString.toLowerCase().includes("am") ||
-        timeString.toLowerCase().includes("pm")
-      ) {
-        return timeString;
-      }
+    // If the time string already contains AM/PM, return it as is
+    if (
+      timeString.toLowerCase().includes("am") ||
+      timeString.toLowerCase().includes("pm")
+    ) {
+      return timeString;
+    }
 
-      // Parse time string (expecting format like "12:00" or "14:30")
+    try {
       const [hoursStr, minutesStr] = timeString.split(":");
       const hours = parseInt(hoursStr, 10);
       const minutes = parseInt(minutesStr || "0", 10);
 
-      if (isNaN(hours) || isNaN(minutes)) {
-        return timeString; // Return original if parsing fails
-      }
+      if (isNaN(hours) || isNaN(minutes)) return timeString;
 
       const ampm = hours >= 12 ? "PM" : "AM";
       const displayHours = hours % 12 || 12;
       const displayMinutes = minutes.toString().padStart(2, "0");
 
       // Get current timezone abbreviation
-      const now = new Date();
       const timeZone =
-        now
-          .toLocaleTimeString("en-US", {
-            timeZoneName: "short",
-          })
+        new Date()
+          .toLocaleTimeString("en-US", { timeZoneName: "short" })
           .split(" ")
           .pop() || "";
 
       // Shorten timezone abbreviations
       const shortTimeZone = timeZone
-        .replace("EST", "ET")
-        .replace("EDT", "ET")
-        .replace("CST", "CT")
-        .replace("CDT", "CT")
-        .replace("MST", "MT")
-        .replace("MDT", "MT")
-        .replace("PST", "PT")
-        .replace("PDT", "PT");
+        .replace(/E[SD]T/, "ET")
+        .replace(/C[SD]T/, "CT")
+        .replace(/M[SD]T/, "MT")
+        .replace(/P[SD]T/, "PT");
 
       return `${displayHours}:${displayMinutes}${ampm} ${shortTimeZone}`;
     } catch {
-      // Fallback to original format if parsing fails
       return timeString;
     }
   };
@@ -72,7 +61,6 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
       "Sunday",
     ];
     const isDayOfWeek = daysOfWeek.some((day) => hit.meetingDays.includes(day));
-
     return isDayOfWeek ? hit.meetingDays.slice(0, 3) : hit.meetingDays;
   })();
   const formattedMeetingTime = formatTime(hit.meetingTime);
@@ -80,7 +68,11 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
   const meetingInfo = formattedMeetingDay + " " + formattedMeetingTime;
 
   return (
-    <Link to={`/group-finder/${hit.title}`} className="size-full">
+    <Link
+      prefetch="intent"
+      to={`/group-finder/${hit.objectID}`}
+      className="size-full"
+    >
       <div
         className="mb-4 bg-white rounded-lg overflow-hidden h-full w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300"
         style={{
@@ -142,14 +134,14 @@ export function GroupHit({ hit }: { hit: GroupHitType }) {
 
             {/* Display topics as tags */}
             <div className="flex flex-wrap px-6 gap-x-2">
-              {hit.topics.map((topic, index) => (
+              {hit.topics.map((topic: string, index: number) => (
                 <TagButton key={index} label={topic} />
               ))}
             </div>
           </div>
-          <div className="w-full px-6 flex justify-center gap-2 py-3 bg-navy text-white mt-auto">
+          <div className="w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white mt-auto">
             <Icon name="map" size={20} color="white" />
-            <p className="text-center text-sm font-semibold">{hit.campus}</p>
+            <p className="text-sm font-semibold">{hit.campus}</p>
           </div>
         </div>
       </div>
