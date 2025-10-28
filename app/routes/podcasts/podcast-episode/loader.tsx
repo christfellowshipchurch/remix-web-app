@@ -1,7 +1,6 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import {
   PodcastEpisode,
-  RockChannel,
   RockPodcastEpisode,
   WistiaElement,
   Resource,
@@ -52,7 +51,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   // All other episodes use the new channel type (CFDP Podcasts)
   const showChannel =
     showPath === SISTERHOOD_SHOW_PATH
-      ? { id: OLD_SISTERHOOD_CHANNEL_ID.toString(), name: SHOW_NAME }
+      ? { id: OLD_SISTERHOOD_CHANNEL_ID.toString(), title: SHOW_NAME }
       : await getPodcastChannel(showPath);
 
   if (!showChannel) {
@@ -68,7 +67,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   // Map episode data based on show type
   const episode = showPath.includes(SISTERHOOD_SHOW_PATH)
     ? await mapSisterhoodRockEpisodeToPodcastEpisode(rockEpisode)
-    : await mapRockEpisodeToPodcastEpisode(rockEpisode, showChannel.name);
+    : await mapRockEpisodeToPodcastEpisode(rockEpisode, showChannel.title);
 
   // Get Algolia configuration
   const appId = process.env.ALGOLIA_APP_ID;
@@ -82,22 +81,37 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 /**
- * Fetches the channel ID and name for a given show path
+ * Fetches the PodcastShow ContentChannelItem and returns the show ContentChannel containing the episodes
  */
-async function getPodcastChannel(path: string): Promise<RockChannel> {
+async function getPodcastChannel(
+  path: string
+): Promise<{ id: string; title: string }> {
   try {
     const channel = await fetchRockData({
-      endpoint: "ContentChannels/GetByAttributeValue",
+      endpoint: "ContentChannelItems/GetByAttributeValue",
       queryParams: {
-        attributeKey: "showUrl",
-        $select: "Id, Name",
+        attributeKey: "Url",
         value: path,
+        $filter: "ContentChannelId eq 179",
+        loadAttributes: "simple",
       },
     });
 
-    const channelData = getFirstItem(channel) as RockChannel;
+    const channelData = getFirstItem(channel);
 
-    return channelData;
+    // The showChannel Guid references the ContentChannel that contains the episodes
+    const showChannel = await fetchRockData({
+      endpoint: "ContentChannels",
+      queryParams: {
+        $filter: `Guid eq guid'${channelData.attributeValues?.showChannel?.value}'`,
+        $select: "Id",
+      },
+    });
+
+    return {
+      id: showChannel.id,
+      title: showChannel.title,
+    };
   } catch {
     throw new Error(ERROR_MESSAGES.CHANNEL_FETCH_ERROR);
   }
