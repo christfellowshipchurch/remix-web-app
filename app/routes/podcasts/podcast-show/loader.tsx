@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import { PodcastEpisode, PodcastShow } from "../types";
+import { PodcastEpisode, PodcastShow, RockChannelItem } from "../types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import {
@@ -60,44 +60,30 @@ export async function getLatestEpisodes(channelGuid: string) {
     throw new Error("Error fetching episodes from Rock");
   }
 
-  const formattedEpisodes = episodes.map(
-    (episode: {
-      title: string;
-      attributeValues?: {
-        summary: { value: string };
-        image: { value: string };
-        pathname: { value: string };
-        url: { value: string };
-      };
-    }) => {
-      return {
-        title: episode.title,
-        description: episode.attributeValues?.summary?.value,
-        coverImage: createImageUrlFromGuid(
-          episode.attributeValues?.image?.value
-        ),
-        url:
-          episode.attributeValues?.pathname?.value ||
-          episode.attributeValues?.url?.value ||
-          "",
-        // For season and episode number, we need first check if it contains
-        // the attributes from CFDP Podcast type(episodeNumber and seasonNumber),
-        // if not we use the legacy sisterhood attributes
-        season:
-          episode.attributeValues?.seasonNumber?.value ||
-          episode.attributeValues?.podcastSeason?.valueFormatted?.split(
-            " "
-          )[1] ||
-          "",
-        episodeNumber:
-          episode.attributeValues?.episodeNumber?.value ||
-          episode.attributeValues?.summary?.value
-            ?.split("|")[1]
-            ?.split(" ")[2] ||
-          "",
-      };
-    }
-  );
+  const formattedEpisodes = episodes.map((episode: RockChannelItem) => {
+    return {
+      title: episode.title,
+      description: episode.attributeValues?.summary?.value,
+      coverImage: createImageUrlFromGuid(episode.attributeValues?.image?.value),
+      url:
+        episode.attributeValues?.pathname?.value ||
+        episode.attributeValues?.url?.value ||
+        "",
+      // For season and episode number, we need first check if it contains
+      // the attributes from CFDP Podcast type(episodeNumber and seasonNumber),
+      // if not we use the legacy sisterhood attributes
+      season:
+        episode.attributeValues?.seasonNumber?.value ||
+        episode.attributeValues?.podcastSeason?.value?.split(" ")[1] ||
+        "",
+      episodeNumber:
+        episode.attributeValues?.episodeNumber?.value ||
+        episode.attributeValues?.podcastSeason?.value
+          ?.split("|")[1]
+          ?.split(" ")[2] ||
+        "",
+    };
+  });
 
   return formattedEpisodes;
 }
