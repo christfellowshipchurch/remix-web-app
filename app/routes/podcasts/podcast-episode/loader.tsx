@@ -1,7 +1,6 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import {
   PodcastEpisode,
-  RockChannel,
   RockPodcastEpisode,
   WistiaElement,
   Resource,
@@ -98,7 +97,7 @@ async function getPodcastChannel(
       },
     });
 
-    const channelData = getFirstItem(channel) as RockChannel;
+    const channelData = getFirstItem(channel);
 
     // The showChannel Guid references the ContentChannel that contains the episodes
     const showChannel = await fetchRockData({
