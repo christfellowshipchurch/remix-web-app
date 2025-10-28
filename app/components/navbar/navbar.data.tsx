@@ -13,14 +13,25 @@ export const ministriesData: MenuLink = {
       {
         title: "NEXT GEN",
         items: [
-          { title: "Kids", description: "Ages Birth - Grade 5", url: "#" },
-          { title: "Students", description: "Grades 6 - 12", url: "#" },
-          { title: "Young Adults", description: "Age College - 30s", url: "#" },
+          {
+            title: "Kids",
+            description: "Birth - Grade 5",
+            url: "/ministries/kids",
+          },
+          {
+            title: "Students",
+            description: "Grades 6 - 12",
+            url: "/ministries/students",
+          },
+          {
+            title: "Young Adults",
+            description: "College - 30s",
+            url: "/ministries/young-adults",
+          },
           {
             title: "Special Needs",
-            description:
-              "Support, resources, and community for children and adults with disabilities",
-            url: "#",
+            description: "Children and adults",
+            url: "/ministries/special-needs",
           },
         ],
         link: "View all ministries",
@@ -28,22 +39,25 @@ export const ministriesData: MenuLink = {
       {
         title: "ADULTS",
         items: [
-          { title: "Men", description: "Find your band of brothers", url: "#" },
+          {
+            title: "Men",
+            description: "Men of all ages",
+            url: "/ministries/men",
+          },
           {
             title: "Women",
-            description: "For every girl from every generation",
-            url: "#",
+            description: "Girls in every season",
+            url: "/ministries/women",
           },
           {
             title: "Marriage",
-            description: "Lorem ipsum dolor sit amet",
-            url: "#",
+            description: "Support & Resources",
+            url: "/ministries/marriage",
           },
           {
-            title: "Care",
-            description:
-              "Find healing and freedom from hurts, habits, and hangups.",
-            url: "#",
+            title: "Freedom & Care",
+            description: "Healing and Freedom",
+            url: "/ministries/care-and-assistance",
           },
         ],
       },
@@ -52,22 +66,17 @@ export const ministriesData: MenuLink = {
         items: [
           {
             title: "Group Finder",
-            description: "Lorem ipsum dolor sit amet",
-            url: "/group-finder",
-          },
-          {
-            title: "Class Finder",
-            description: "Lorem ipsum dolor sit amet",
+            description: "Find community",
             url: "/group-finder",
           },
           {
             title: "My Groups & Classes",
-            description: "Lorem ipsum dolor sit amet",
-            url: "/group-finder",
+            description: "Stay connected & up to date",
+            url: "/connect",
           },
           {
             title: "Volunteer",
-            description: "Lorem ipsum dolor sit amet",
+            description: "Find your spot on the Dream Team",
             url: "/volunteer",
           },
         ],
@@ -96,7 +105,10 @@ export const watchReadListenData: MenuLink = {
         title: "WATCH",
         items: [
           { title: "Messages", url: "/messages" },
-          { title: "Live Broadcast", url: "/watch" },
+          {
+            title: "Live Broadcast",
+            url: "https://www.youtube.com/@ChristFellowship.Church/streams",
+          },
         ],
       },
       {
@@ -113,16 +125,19 @@ export const watchReadListenData: MenuLink = {
             title: "So Good Sisterhood Podcast",
             url: "/podcasts/so-good-sisterhood",
           },
-          { title: "Crew Cast Podcast", url: "/podcasts/crew" },
+          { title: "Crew Cast Podcast", url: "/podcasts/crewcast" },
           {
             title: "Young + Adulting Podcast",
             url: "/podcasts/young-and-adulting",
           },
-          { title: "MVMT Music", url: "/podcasts" },
+          {
+            title: "MVMT Music",
+            url: "https://www.youtube.com/@mvmntmsc",
+          },
         ],
       },
     ],
-    // We will primarily pull featureCards from Rock, but will have hardcoding options if needed
+    // TODO: We will primarily pull featureCards from Rock, but will have hardcoding options if needed
     featureCards: [
       {
         title: "LATEST MESSAGE",
