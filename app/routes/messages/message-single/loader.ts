@@ -3,6 +3,7 @@ import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
 import { MessageType } from "../types";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
+import { RockContentItem } from "~/lib/types/rock-types";
 
 export type LoaderReturnType = {
   message: MessageType;
@@ -10,26 +11,9 @@ export type LoaderReturnType = {
   ALGOLIA_APP_ID: string | undefined;
   ALGOLIA_SEARCH_API_KEY: string | undefined;
 };
-interface RockItem {
-  attributeValues: {
-    author?: { value: string };
-    primaryCategory?: { value: string };
-    secondaryCategory?: { value: string };
-    media?: { value: string };
-    messageSeries?: { value: string; valueFormatted: string };
-    url?: { value: string };
-    summary?: { value: string };
-  };
-  attributes?: unknown;
-  image?: string;
-  startDateTime?: string;
-  expireDateTime?: string;
-  title: string;
-  content?: string;
-}
 
 export const mapRockDataToMessage = async (
-  rockItem: RockItem
+  rockItem: RockContentItem
 ): Promise<MessageType> => {
   const { attributeValues, attributes, image, startDateTime, expireDateTime } =
     rockItem;

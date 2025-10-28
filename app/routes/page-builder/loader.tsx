@@ -92,10 +92,7 @@ export const fetchChildItems = async (id: string) => {
   );
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
-    console.warn("fetchChildItems: No valid children data found", {
-      parentId: id,
-      childReferencesCount: childReferencesArray.length,
-    });
+    console.warn("fetchChildItems: No valid children data found");
     return [];
   }
 
