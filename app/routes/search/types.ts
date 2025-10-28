@@ -5,7 +5,7 @@ export interface ContentItemHit {
   author: {
     firstName: string;
     lastName: string;
-    profileImge: string;
+    profileImage: string;
   };
   routing: {
     pathname: string;

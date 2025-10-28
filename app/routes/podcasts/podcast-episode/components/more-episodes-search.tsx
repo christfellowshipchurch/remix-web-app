@@ -18,10 +18,10 @@ const { kebabCase } = lodash;
 
 // Component that checks if there are hits and conditionally renders content
 const HitsWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { hits } = useHits();
+  const { items } = useHits();
 
   // Don't render anything if there are no hits
-  if (hits.length === 0) {
+  if (items.length === 0) {
     return null;
   }
 
@@ -87,7 +87,6 @@ export const MoreEpisodesSearch = ({
       }}
     >
       <Configure filters={filter} hitsPerPage={8} />
-
       {/* Episodes Section - Only render if there are hits */}
       <HitsWrapper>
         <div className="w-full bg-white content-padding">

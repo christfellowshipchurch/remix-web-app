@@ -10,10 +10,10 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
     }`,
 
     profileImage: `${
-      article?.author?.profileImge
-        ? article?.author?.profileImge
+      article?.author?.profileImage
+        ? article?.author?.profileImage
         : "http://cloudfront.christfellowship.church/GetImage.ashx?guid=A62B2B1C-FDFF-44B6-A26E-F1E213285153"
-    }`, // TODO: FIX TYPE NAMING HERE AND IN THE CONTENTITEMHIT TYPE FILE
+    }`,
   };
 
   return (
