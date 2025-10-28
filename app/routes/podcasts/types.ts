@@ -44,9 +44,12 @@ export type PodcastSeason = {
   episodes: PodcastEpisode[];
 };
 
-export interface RockChannel {
+export interface RockChannelItem {
   id: string;
-  name: string;
+  title: string;
+  attributeValues: {
+    [key: string]: { value: string };
+  };
 }
 
 export interface RockAttributeValue {
