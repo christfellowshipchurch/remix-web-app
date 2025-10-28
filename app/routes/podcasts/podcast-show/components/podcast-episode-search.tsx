@@ -21,7 +21,7 @@ interface PodcastEpisodeSearchProps {
 const { kebabCase } = lodash;
 
 const SeasonRefinementList = () => {
-  const { items } = useRefinementList({ attribute: "seasonNumber" });
+  const { items } = useRefinementList({ attribute: "podcastSeasonNumber" });
   const { setIndexUiState } = useInstantSearch();
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ const SeasonRefinementList = () => {
       ...prevState,
       refinementList: {
         ...prevState.refinementList,
-        seasonNumber: [season],
+        podcastSeasonNumber: [season],
       },
       page: 0, // Reset to first page
     }));
@@ -51,7 +51,7 @@ const SeasonRefinementList = () => {
       ...prevState,
       refinementList: {
         ...prevState.refinementList,
-        seasonNumber: [firstSeason],
+        podcastSeasonNumber: [firstSeason],
       },
       page: 0,
     }));
@@ -128,7 +128,7 @@ export const PodcastEpisodeSearch = ({
 
   return (
     <InstantSearch
-      indexName="dev_daniel_contentItems"
+      indexName="dev_contentItems"
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

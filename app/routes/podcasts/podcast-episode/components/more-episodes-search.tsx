@@ -53,7 +53,7 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          Season {hit.seasonNumber} | Episode {hit.episodeNumber}
+          Season {hit.podcastSeasonNumber} | Episode {hit.podcastEpisodeNumber}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
@@ -74,13 +74,13 @@ export const MoreEpisodesSearch = ({
   );
 
   // Filter for episodes from the same show and season, excluding the current episode
-  const filter = `contentType:"Podcast" AND show:"${show}" AND seasonNumber:${season}${
+  const filter = `contentType:"Podcast" AND show:"${show}" AND podcastSeasonNumber:${season}${
     currentEpisodeTitle ? ` AND NOT title:"${currentEpisodeTitle}"` : ""
   }`;
 
   return (
     <InstantSearch
-      indexName="dev_daniel_contentItems"
+      indexName="dev_contentItems"
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
