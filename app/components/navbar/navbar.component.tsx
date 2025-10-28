@@ -286,7 +286,7 @@ export function Navbar() {
           >
             <div
               className={cn(
-                "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5"
+                "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5 min-h-[82px]"
               )}
               style={{ gap: isSearchOpen ? "32px" : "0px" }}
             >
