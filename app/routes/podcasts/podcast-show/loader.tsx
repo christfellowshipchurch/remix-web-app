@@ -74,13 +74,11 @@ export async function getLatestEpisodes(channelGuid: string) {
       // if not we use the legacy sisterhood attributes
       season:
         episode.attributeValues?.seasonNumber?.value ||
-        episode.attributeValues?.podcastSeason?.value?.split(" ")[1] ||
+        episode.attributeValues?.summary?.value?.split(" ")[1] ||
         "",
       episodeNumber:
         episode.attributeValues?.episodeNumber?.value ||
-        episode.attributeValues?.podcastSeason?.value
-          ?.split("|")[1]
-          ?.split(" ")[2] ||
+        episode.attributeValues?.summary?.value?.split("|")[1]?.split(" ")[2] ||
         "",
     };
   });
