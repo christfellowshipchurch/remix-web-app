@@ -5,6 +5,7 @@ export interface ContentItemHit {
   author: {
     firstName: string;
     lastName: string;
+    profileImge: string;
   };
   routing: {
     pathname: string;
@@ -13,13 +14,13 @@ export interface ContentItemHit {
   action: string;
   contentType: string;
   imageLabel: string;
-  htmlContent?: string;
+  htmlContent?: string; // TODO: This is an array of strings in Algolia, how do we handle this?
   seriesName?: string;
   seriesGuid?: string;
-  sermonPrimaryTags: string[];
-  sermonSecondaryTags: string[];
-  articlePrimaryTags: string[];
-  articleSecondaryTags: string[];
+  sermonPrimaryCategories: string[];
+  sermonSecondaryCategories: string[];
+  articlePrimaryCategories: string[];
+  articleSecondaryCategories: string[];
   readTime: number;
   contentTags: string[];
   url: string;
@@ -30,9 +31,9 @@ export interface ContentItemHit {
     }[];
   };
   show?: string;
-  season?: string;
-  seasonNumber?: number;
-  episodeNumber?: number;
+  podcastSeason?: string;
+  podcastSeasonNumber?: number;
+  podcastEpisodeNumber?: number;
   locations?: {
     name: string;
   }[];

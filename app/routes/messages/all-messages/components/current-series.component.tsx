@@ -26,7 +26,7 @@ const CurrentSeries: React.FC = () => {
       <div className="flex flex-col gap-12 max-w-screen-content mx-auto">
         {currentSeriesLoading && <CurrentSeriesLoadingSkeleton />}
         <InstantSearch
-          indexName="dev_daniel_contentItems"
+          indexName="dev_contentItems"
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -83,7 +83,7 @@ const CurrentSeriesHit = ({
             </div>
 
             <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-0">
-              {getFirstParagraph(hit.summary || hit.htmlContent || "")}
+              {hit.summary || getFirstParagraph(hit.htmlContent || "")}
             </div>
           </div>
 

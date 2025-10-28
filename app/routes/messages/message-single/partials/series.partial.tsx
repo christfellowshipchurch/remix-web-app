@@ -16,15 +16,15 @@ const SeriesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
         image: hit.coverImage.sources[0].uri,
         coverImage: hit.coverImage.sources[0].uri,
         video: "",
-        startDateTime: "",
+        startDateTime: hit.startDateTime || "",
         expireDateTime: "",
         seriesId: "",
-        seriesTitle: "",
+        seriesTitle: hit.seriesName || "",
         url: hit.url || hit.routing.pathname,
         primaryCategories:
-          hit.sermonPrimaryTags?.map((tag) => ({ value: tag })) || [],
+          hit.sermonPrimaryCategories?.map((tag) => ({ value: tag })) || [],
         secondaryCategories:
-          hit.sermonSecondaryTags?.map((tag) => ({ value: tag })) || [],
+          hit.sermonSecondaryCategories?.map((tag) => ({ value: tag })) || [],
         speaker: {
           fullName: hit.author.firstName + " " + hit.author.lastName,
           profilePhoto: "",
@@ -61,7 +61,7 @@ export const InThisSeries = () => {
       </div>
 
       <InstantSearch
-        indexName="dev_daniel_contentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,

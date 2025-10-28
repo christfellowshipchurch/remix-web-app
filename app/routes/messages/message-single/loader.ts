@@ -3,6 +3,7 @@ import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
 import { MessageType } from "../types";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
+import { attributeProps, attributeValuesProps } from "~/lib/types/rock-types";
 
 export type LoaderReturnType = {
   message: MessageType;
@@ -33,19 +34,22 @@ export const mapRockDataToMessage = async (
 ): Promise<MessageType> => {
   const { attributeValues, attributes, image, startDateTime, expireDateTime } =
     rockItem;
-  const coverImage = getImages({ attributeValues, attributes });
+  const coverImage = getImages({
+    attributeValues: attributeValues as attributeValuesProps,
+    attributes: attributes as attributeProps,
+  });
 
   const speaker = await fetchSpeakerData(
-    rockItem.attributeValues?.author?.value
+    rockItem.attributeValues?.author?.value || ""
   );
 
   let primaryCategories: { value: string }[] = [{ value: "" }];
   let secondaryCategories: { value: string }[] = [{ value: "" }];
 
-  if (rockItem.attributeValues.primaryCategory.value) {
+  if (rockItem.attributeValues.primaryCategory?.value) {
     // Separate the primary category into an array of values
     const categoryValues =
-      rockItem.attributeValues.primaryCategory.value.split(",");
+      rockItem.attributeValues.primaryCategory?.value.split(",");
 
     // Loop through all category values and fetch their details
     const sermonPrimaryCategories: { value: string }[] = [];
@@ -68,9 +72,9 @@ export const mapRockDataToMessage = async (
     primaryCategories = sermonPrimaryCategories;
   }
 
-  if (rockItem.attributeValues.secondaryCategory.value) {
+  if (rockItem.attributeValues.secondaryCategory?.value) {
     const categoryValues =
-      rockItem.attributeValues.secondaryCategory.value.split(",");
+      rockItem.attributeValues.secondaryCategory?.value.split(",");
 
     const sermonSecondaryCategories: { value: string }[] = [];
     for (const categoryGuid of categoryValues) {
@@ -96,9 +100,9 @@ export const mapRockDataToMessage = async (
     title: rockItem.title,
     content: rockItem.content || "",
     summary: attributeValues?.summary?.value || "",
-    image: createImageUrlFromGuid(image) || "",
+    image: createImageUrlFromGuid(image || "") || "",
     video:
-      (await fetchWistiaDataFromRock(attributeValues?.media?.value))
+      (await fetchWistiaDataFromRock(attributeValues?.media?.value || ""))
         .sourceKey || "",
     coverImage: (coverImage && coverImage[0]) || "",
     primaryCategories,

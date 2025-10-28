@@ -13,24 +13,19 @@ import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
 const mapFormattedArticleToCollectionItem = (
   article: FormattedArticle
 ): CollectionItem & { authorProps?: AuthorProps } => {
-  const authorProps: AuthorProps | undefined =
-    typeof article.author === "object" && article.author
-      ? {
-          fullName: `${
-            (article.author as { firstName?: string; lastName?: string })
-              .firstName || ""
-          } ${
-            (article.author as { firstName?: string; lastName?: string })
-              .lastName || ""
-          }`.trim(),
-          photo: (article.author as { photo?: { uri: string } }).photo,
-          authorAttributes: (
-            article.author as {
-              authorAttributes?: { authorId: string; pathname: string };
-            }
-          ).authorAttributes,
-        }
-      : undefined;
+  const authorProps: AuthorProps | undefined = {
+    fullName: `${
+      article?.author?.fullName
+        ? article?.author?.fullName
+        : `Christ Fellowship Team`
+    }`,
+    photo: (article.author as { photo?: { uri: string } }).photo,
+    authorAttributes: (
+      article.author as {
+        authorAttributes?: { authorId: string; pathname: string };
+      }
+    ).authorAttributes,
+  };
 
   return {
     id: article.url || "",

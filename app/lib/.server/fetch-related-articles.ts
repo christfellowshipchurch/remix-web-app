@@ -31,7 +31,12 @@ export interface FormattedArticle {
   coverImage: unknown;
   publishDate: string;
   readTime: number;
-  author: unknown;
+  author: {
+    fullName: string;
+    photo?: {
+      uri: string;
+    };
+  };
 }
 
 interface Tag {
@@ -120,7 +125,7 @@ export async function getRelatedArticlesByContentItem(guid: string): Promise<{
     return {
       tag: tag?.name,
       tagId: tag?.guid, // todo: add encryption
-      articles: await Promise.all(formattedArticles),
+      articles: (await Promise.all(formattedArticles)) as FormattedArticle[],
     };
   } catch (error: unknown) {
     const errorMessage =

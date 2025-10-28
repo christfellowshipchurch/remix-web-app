@@ -3,10 +3,17 @@ import { ContentItemHit } from "~/routes/search/types";
 
 export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
   const author = {
-    fullName: `${article.author.firstName} ${article.author.lastName}`,
-    photo: {
-      uri: "/logo.png",
-    },
+    fullName: `${
+      article.author.firstName && article.author.lastName
+        ? `${article.author.firstName} ${article.author.lastName}`
+        : `Christ Fellowship Team`
+    }`,
+
+    profileImage: `${
+      article?.author?.profileImge
+        ? article?.author?.profileImge
+        : "http://cloudfront.christfellowship.church/GetImage.ashx?guid=A62B2B1C-FDFF-44B6-A26E-F1E213285153"
+    }`, // TODO: FIX TYPE NAMING HERE AND IN THE CONTENTITEMHIT TYPE FILE
   };
 
   return (
@@ -24,13 +31,13 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
         />
 
         {/* First Secondary Tag */}
-        <div className="absolute top-3 left-4 bg-[#EEEEEE] rounded-[4px] p-1">
-          {article.articleSecondaryTags[0] && (
+        {article.articleSecondaryCategories[0] && (
+          <div className="absolute top-3 left-4 bg-[#EEEEEE] rounded-[4px] p-1">
             <p className="text-xs font-semibold">
-              {article.articleSecondaryTags[0]}
+              {article.articleSecondaryCategories[0]}
             </p>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Article Content */}
@@ -47,8 +54,8 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
         <div className="flex gap-4 items-center">
           {/* Author Image */}
           <img
-            src={author?.photo?.uri}
-            alt="Article icon"
+            src={author?.profileImage || "/logo.png"}
+            alt="Author Profile Image"
             className="size-12 rounded-full object-cover"
           />
 

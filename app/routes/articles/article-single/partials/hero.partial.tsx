@@ -32,7 +32,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
               <div className="flex flex-col gap-8 lg:gap-2">
                 {title && (
                   <h1
-                    className="text-pretty font-extrabold text-[48px] leading-tight tracking-tight text-text_primary dark:text-white  lg:text-6xl"
+                    className="text-pretty font-extrabold text-[48px] leading-tight tracking-tight text-text_primary dark:text-white lg:text-5xl xl:text-6xl"
                     dangerouslySetInnerHTML={{ __html: title }}
                   />
                 )}
