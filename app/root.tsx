@@ -14,8 +14,6 @@ import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 import { GTMProvider } from "./providers/gtm-provider";
 
 import "./styles/tailwind.css";
-import { cn } from "./lib/utils";
-import { shouldUseDarkMode } from "./components/navbar/navbar-routes";
 import { loader } from "./routes/navbar/loader";
 import { NavbarVisibilityProvider } from "./providers/navbar-visibility-context";
 
@@ -52,14 +50,7 @@ export default function App() {
           <NavbarVisibilityProvider>
             <div className="min-h-screen flex flex-col text-pretty">
               <Navbar />
-              <main
-                className={cn(
-                  "flex-1",
-                  `lg:${shouldUseDarkMode(currentPath) && "mt-[-100px]"} ${
-                    shouldUseDarkMode(currentPath) && "mt-[-100px]"
-                  }` // This is to account for the navbar height when dark mode is enabled
-                )}
-              >
+              <main>
                 {/* Remove only on the home page, since the navbar has an Outlet for the home page there*/}
                 {currentPath !== "/" && <Outlet />}
               </main>
