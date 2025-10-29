@@ -70,6 +70,11 @@ export const ministriesData: MenuLink = {
             url: "/group-finder",
           },
           {
+            title: "Class Finder",
+            description: "Learn together",
+            url: "/class-finder",
+          },
+          {
             title: "My Groups & Classes",
             description: "Stay connected & up to date",
             url: "/connect",
