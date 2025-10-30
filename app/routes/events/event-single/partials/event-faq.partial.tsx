@@ -1,8 +1,17 @@
 import { StyledAccordion } from "~/components";
 import { faqEventData } from "~/lib/faq-data.data";
 
-// TODO: Not sure if we want to hardcode this FAQ data or pull it from the loader / Rock?
-export const EventSingleFAQ = ({ title }: { title: string }) => {
+export const EventSingleFAQ = ({
+  title,
+  items,
+}: {
+  title: string;
+  items?: { question: string; answer: string }[];
+}) => {
+  const data = (items ?? []).map((item) => ({
+    title: item.question,
+    content: item.answer,
+  }));
   return (
     <section
       className="flex flex-col gap-12 py-12 md:py-24 content-padding"
@@ -16,7 +25,11 @@ export const EventSingleFAQ = ({ title }: { title: string }) => {
         common questions we receive.
       </p>
 
-      <StyledAccordion data={faqEventData} bg="white" border="#C6C6C6" />
+      <StyledAccordion
+        data={data.length ? data : faqEventData}
+        bg="white"
+        border="#C6C6C6"
+      />
 
       <div className="flex flex-col gap-1 items-center text-[#717182] font-medium text-center">
         <p>If you have questions, we'd love to help.</p>

@@ -1,29 +1,22 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 
-import { LoaderReturnType } from "./loader";
+import { EventSinglePageType } from "./types";
 import { EventsSingleHero } from "./partials/hero.partial";
-import { EventSingleFAQ } from "./components/event-single-faq.component";
-import BackBanner from "~/components/back-banner";
-import { EventBanner } from "./components/event-banner";
+import { EventSingleFAQ } from "./partials/event-faq.partial";
 import { AboutPartial } from "./partials/about.partial";
 import { ResgisterPartial } from "./partials/register.partial";
+import { EventBanner } from "./components/event-banner";
+import BackBanner from "~/components/back-banner";
 
 export const EventSinglePage: React.FC = () => {
-  const data = useLoaderData<LoaderReturnType>();
+  const data = useLoaderData<EventSinglePageType>();
 
-  // TODO: Update this to come from loader? - looking into this more in the future
   const shouldRegister = false;
-
-  // TODO: Get CTAS from loader
-  const mockCtas = [
-    { title: "Invite", href: "#share" },
-    { title: "Save My Spot", href: "#sign-up -> set-a-reminder" },
-  ];
 
   return (
     <>
-      <div className="flex flex-col items-center dark:bg-gray-900">
+      <div className="flex flex-col items-center bg-white">
         <BackBanner
           backText="Back to Events"
           pageTitle={data.title}
@@ -32,13 +25,15 @@ export const EventSinglePage: React.FC = () => {
 
         <EventsSingleHero
           imagePath={data.coverImage}
-          ctas={mockCtas}
+          ctas={data.heroCtas}
           customTitle={data.title}
+          subtitle={data.subtitle}
+          quickPoints={data.quickPoints}
         />
 
         <EventBanner
           title={data.title}
-          cta={mockCtas[0]} // For now just pass the first CTA, not sure if we want this to be the way to figure this button out
+          cta={data.heroCtas[0]}
           sections={[
             { id: "about", label: "About" },
             { id: "faq", label: "FAQ" },
@@ -46,34 +41,16 @@ export const EventSinglePage: React.FC = () => {
           ]}
         />
 
-        {/* About Section - TODO: Pending how to get the data being hardcoded now */}
         <AboutPartial
-          moreInfo="One to two warm sentences offering an invite to the event with an inline link to a form. Or just an example sentence that you could use to invite a friend that the user can copy and paste. Additional details such as anything they need to bring or is provided that may not have been listed above."
-          additionalBlurb="Optional Extra Blurb? You can use this blurb for special audiences, such as: Those new to faith who might have an additional call to action. Certain events, unique features like childcare, guest speakers, or accessibility details"
-          infoCards={[
-            {
-              title: "Key Info Card",
-              description:
-                "Each card should have: An icon, A title and A description",
-              icon: "star",
-            },
-            {
-              title: "Key Info Card",
-              description:
-                "Each card should have: An icon, A title and A description",
-              icon: "star",
-            },
-            {
-              title: "Key Info Card",
-              description:
-                "Each card should have: An icon, A title and A description",
-              icon: "star",
-            },
-          ]}
+          aboutTitle={data.aboutTitle}
+          aboutContent={data.aboutContent}
+          infoCards={data.keyInfoCards}
+          whatToExpect={data.whatToExpect}
+          moreInfo={data.moreInfo ?? ""}
+          additionalBlurb={data.additionalBlurb}
         />
 
-        {/* FAQ Section */}
-        <EventSingleFAQ title={data.title} />
+        <EventSingleFAQ title={data.title} items={data.faqItems} />
 
         {/* Register Section - TODO: NOT COMPLETED, PAUSING FOR NOW*/}
         {shouldRegister && <ResgisterPartial title={data.title} />}

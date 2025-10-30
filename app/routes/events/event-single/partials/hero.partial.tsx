@@ -8,11 +8,13 @@ export const EventsSingleHero = ({
   ctas,
   customTitle,
   subtitle = "A really engaging paragraph. Introduction to the event, just one or two sentences.",
+  quickPoints,
 }: {
   imagePath: string;
   ctas: { title: string; href: string }[];
   customTitle?: string;
   subtitle?: string;
+  quickPoints?: string[];
 }) => {
   const location = useLocation();
   const pagePath =
@@ -63,11 +65,15 @@ export const EventsSingleHero = ({
                 dotStyles="bg-navy size-[6px]"
                 textStyles="text-[#717182] text-sm font-medium"
                 className="gap-1 lg:gap-2"
-                points={[
-                  "Connect with others and build meaningful relationships",
-                  "Learn and grow through engaging content and discussions",
-                  "Make a positive impact in your community",
-                ]}
+                points={
+                  quickPoints?.length
+                    ? quickPoints
+                    : [
+                        "Connect with others and build meaningful relationships",
+                        "Learn and grow through engaging content and discussions",
+                        "Make a positive impact in your community",
+                      ]
+                }
               />
             </div>
 

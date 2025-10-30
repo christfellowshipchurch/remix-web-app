@@ -1,22 +1,53 @@
 import type { LoaderFunction } from "react-router-dom";
-import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
-import { format } from "date-fns";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { EventSinglePageType } from "./types";
 
-// TODO: Figure out how to get the read event date-time
-export type LoaderReturnType = {
-  hostUrl: string;
-  title: string;
-  content: string;
-  summary: string;
-  coverImage: string;
-  publishDate: string;
-  expireDateTime?: string;
-  attributeValues: {
-    summary: { value: string };
-    whatToExpect: { value: string };
-    // TODO: Figure out actions
-    actions: { value: string };
-  };
+const mockEventData: EventSinglePageType = {
+  title: "Test Event",
+  subtitle: "Test Event Subtitle",
+  coverImage:
+    "https://cloudfront.christfellowship.church/GetImage.ashx?guid=71b6f4cf-356d-4cdb-a91a-ace4abd6630b",
+  heroCtas: [{ title: "Test CTA", href: "#test-cta" }],
+  quickPoints: ["Test Quick Point", "Test Quick Point"],
+  aboutTitle: "Test About Title",
+  aboutContent: "Test About Content",
+  keyInfoCards: [
+    {
+      title: "Test Key Info Card",
+      description: "Test Key Info Card Description",
+      icon: "star",
+    },
+    {
+      title: "Test Key Info Card",
+      description: "Test Key Info Card Description",
+      icon: "star",
+    },
+  ],
+  whatToExpect: [
+    {
+      title: "Test What to Expect",
+      description: "Test What to Expect Description",
+    },
+    {
+      title: "Test What to Expect",
+      description: "Test What to Expect Description",
+    },
+  ],
+  moreInfo: "Test More Info",
+  additionalBlurb: [
+    {
+      title: "Test Additional Blurb",
+      description: "Test Additional Blurb Description",
+    },
+    {
+      title: "Test Additional Blurb",
+      description: "Test Additional Blurb Description",
+    },
+  ],
+  faqItems: [
+    { question: "Test FAQ Question", answer: "Test FAQ Answer" },
+    { question: "Test FAQ Question", answer: "Test FAQ Answer" },
+  ],
 };
 
 const fetchEventData = async (eventPath: string) => {
@@ -24,7 +55,7 @@ const fetchEventData = async (eventPath: string) => {
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "Url",
-      $filter: "Status eq 'Approved' and ContentChannelId eq 78",
+      $filter: "Status eq 'Approved' and ContentChannelId eq 186",
       value: eventPath,
       loadAttributes: "simple",
     },
@@ -59,21 +90,14 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const { title, content, startDateTime, attributeValues, attributes } =
-    eventData;
+  // const { title, content, startDateTime, attributeValues, attributes } =
+  //   eventData;
 
-  const coverImage = getImages({ attributeValues, attributes });
-  const { summary } = attributeValues;
+  // const coverImage = getImages({ attributeValues, attributes });
+  // const { summary, coverImage } = attributeValues ?? {};
 
-  const pageData: LoaderReturnType = {
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
-    title,
-    content,
-    summary: summary.value,
-    coverImage: coverImage[0],
-    publishDate: format(new Date(startDateTime), "d MMM yyyy"),
-    attributeValues,
-  };
+  // Using mock data for now, will update with actual data once implemented
+  const pageData: EventSinglePageType = mockEventData;
 
   return pageData;
 };
