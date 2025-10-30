@@ -78,6 +78,9 @@ const SeasonRefinementList = () => {
 };
 
 const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
+  const cardUrl = `/podcasts/${hit.podcastShow
+    ?.toLowerCase()
+    .replace(/ /g, "-")}/${hit.url}`;
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">
@@ -90,7 +93,7 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
           className="w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]"
         />
         <Link
-          to={`/podcasts/${kebabCase(hit.title)}/${hit.title}`}
+          to={cardUrl || "/podcasts"}
           className="absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 transition-colors duration-300"
           style={{
             boxShadow:

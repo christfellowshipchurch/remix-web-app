@@ -11,7 +11,9 @@ export const PodcastEpisodeCard = ({
 }) => {
   const { title, season, episodeNumber, coverImage, url } = podcastEpisode;
 
-  const cardUrl = `/podcasts/${podcastShow}/${url}`;
+  const cardUrl = `/podcasts/${podcastShow
+    .toLowerCase()
+    .replace(/ /g, "-")}/${url}`;
 
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">

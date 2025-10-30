@@ -31,7 +31,7 @@ export const LatestEpisodes = () => {
                 >
                   <PodcastEpisodeCard
                     podcastEpisode={episode}
-                    show={podcast.url}
+                    podcastShow={podcast.title}
                   />
                 </CarouselItem>
               ))}

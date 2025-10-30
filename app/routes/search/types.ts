@@ -21,7 +21,7 @@ export interface ContentItemHit {
   sermonSecondaryCategories: string[];
   articlePrimaryCategories: string[];
   articleSecondaryCategories: string[];
-  readTime: number;
+  articleReadTime: number;
   url: string;
   startDateTime: string;
   coverImage: {

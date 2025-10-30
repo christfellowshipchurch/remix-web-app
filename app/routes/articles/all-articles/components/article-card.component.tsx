@@ -54,7 +54,10 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
         <div className="flex gap-4 items-center">
           {/* Author Image */}
           <img
-            src={author?.profileImage || "/logo.png"}
+            src={
+              author?.profileImage ||
+              "http://cloudfront.christfellowship.church/GetImage.ashx?guid=A62B2B1C-FDFF-44B6-A26E-F1E213285153"
+            }
             alt="Author Profile Image"
             className="size-12 rounded-full object-cover"
           />
@@ -78,10 +81,10 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
                       }
                     )}
                   </p>
-                  {article.readTime && (
+                  {article.articleReadTime && (
                     <span className="flex">
                       <span className="mx-2 md:hidden lg:block">•</span>
-                      {article.readTime} min read
+                      {article.articleReadTime} min read
                     </span>
                   )}
                 </div>
