@@ -56,8 +56,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     heroCtas: parseRockKeyValueList(
       eventData.attributeValues?.heroCtas?.value || ""
     ).map((cta) => ({
-      title: cta.title,
-      url: cta.url,
+      title: cta.key,
+      url: cta.value,
     })),
     quickPoints: parseRockValueList(
       decodeURIComponent(eventData.attributeValues?.quickInfoPoints?.value) ||
@@ -69,21 +69,21 @@ export const loader: LoaderFunction = async ({ params }) => {
     whatToExpect: parseRockKeyValueList(
       eventData.attributeValues?.whatToExpect?.value || ""
     ).map((item) => ({
-      title: item.title,
-      description: item.url,
+      title: item.key,
+      description: item.value,
     })),
     moreInfo: eventData.attributeValues?.moreInfo?.value,
     optionalBlurb: parseRockKeyValueList(
       decodeURIComponent(eventData.attributeValues?.optionalBlurb?.value) || ""
     ).map((item) => ({
-      title: item.title,
-      description: item.url,
+      title: item.key,
+      description: item.value,
     })),
     faqItems: parseRockKeyValueList(
       eventData.attributeValues?.faqItems?.value || ""
     ).map((item) => ({
-      question: item.title,
-      answer: item.url,
+      question: item.key,
+      answer: item.value,
     })),
   };
 

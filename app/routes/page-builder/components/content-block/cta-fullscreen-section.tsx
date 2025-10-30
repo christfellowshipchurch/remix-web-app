@@ -12,7 +12,10 @@ import { getCtaStyles } from "../builder-utils";
 export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
   data,
 }) => {
-  const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  const ctas = parseRockKeyValueList(data.callsToAction ?? "").map((cta) => ({
+    title: cta.key,
+    url: cta.value,
+  }));
   const { isDark, getButtonIntent, getButtonClassName } = getCtaStyles(data, 3);
 
   return (
