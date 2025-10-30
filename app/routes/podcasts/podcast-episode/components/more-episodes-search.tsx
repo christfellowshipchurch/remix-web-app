@@ -9,8 +9,8 @@ import { createSearchClient } from "~/lib/create-search-client";
 interface MoreEpisodesSearchProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
-  show: string;
-  season: string;
+  podcastShow: string;
+  podcastSeason: string;
   currentEpisodeTitle?: string;
 }
 
@@ -18,10 +18,10 @@ const { kebabCase } = lodash;
 
 // Component that checks if there are hits and conditionally renders content
 const HitsWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { hits } = useHits();
+  const { items } = useHits();
 
   // Don't render anything if there are no hits
-  if (hits.length === 0) {
+  if (items.length === 0) {
     return null;
   }
 
@@ -53,7 +53,7 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          Season {hit.seasonNumber} | Episode {hit.episodeNumber}
+          Season {hit.podcastSeasonNumber} | Episode {hit.podcastEpisodeNumber}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
@@ -64,8 +64,8 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 export const MoreEpisodesSearch = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
-  show,
-  season,
+  podcastShow,
+  podcastSeason,
   currentEpisodeTitle,
 }: MoreEpisodesSearchProps) => {
   const searchClient = useMemo(
@@ -74,20 +74,19 @@ export const MoreEpisodesSearch = ({
   );
 
   // Filter for episodes from the same show and season, excluding the current episode
-  const filter = `contentType:"Podcast" AND show:"${show}" AND seasonNumber:${season}${
+  const filter = `contentType:"Podcast" AND podcastShow:"${podcastShow}" AND podcastSeasonNumber:${podcastSeason}${
     currentEpisodeTitle ? ` AND NOT title:"${currentEpisodeTitle}"` : ""
   }`;
 
   return (
     <InstantSearch
-      indexName="dev_daniel_contentItems"
+      indexName="dev_contentItems"
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
     >
       <Configure filters={filter} hitsPerPage={8} />
-
       {/* Episodes Section - Only render if there are hits */}
       <HitsWrapper>
         <div className="w-full bg-white content-padding">

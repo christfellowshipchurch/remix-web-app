@@ -1,8 +1,8 @@
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupHit } from "../../../types";
+import { ClassType } from "../../../types";
 
-export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
+export const UpcomingSessionCard = ({ hit }: { hit: ClassType }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const meetingType = hit.meetingType;
 

@@ -30,21 +30,24 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
       content: string;
       attributeValues?: {
         coverImage: { value: string };
-        apple: { value: string };
+        applePodcast: { value: string };
         spotify: { value: string };
-        amazon: { value: string };
+        amazonMusic: { value: string };
+        showChannel: { value: string };
         url: { value: string };
+        youtube: { value: string };
       };
     }) => ({
       id: podcastShow.id || "",
       title: podcastShow.title || "",
       description: podcastShow.content || "",
-      coverImage: createImageUrlFromGuid(
-        podcastShow.attributeValues?.coverImage?.value
-      ),
       apple: podcastShow.attributeValues?.applePodcast?.value || "",
       spotify: podcastShow.attributeValues?.spotify?.value || "",
       amazon: podcastShow.attributeValues?.amazonMusic?.value || "",
+      youtube: podcastShow.attributeValues?.youtube?.value || "",
+      coverImage: createImageUrlFromGuid(
+        podcastShow.attributeValues?.coverImage?.value || ""
+      ),
       episodesChannelGuid:
         podcastShow.attributeValues?.showChannel?.value || "",
       url: podcastShow.attributeValues?.url?.value || "",

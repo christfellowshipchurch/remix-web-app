@@ -20,7 +20,8 @@ vi.mock("react-instantsearch", () => ({
         hit={{
           title: "Test Episode",
           coverImage: { sources: [{ uri: "/test-image.jpg" }] },
-          contentTags: ["Season 1", "Episode 2"],
+          podcastSeason: "Season 1",
+          podcastEpisodeNumber: 2,
           routing: { pathname: "/test-episode" },
         }}
       />
@@ -38,8 +39,8 @@ describe("MoreEpisodesSearch", () => {
   const defaultProps = {
     ALGOLIA_APP_ID: "test-app-id",
     ALGOLIA_SEARCH_API_KEY: "test-api-key",
-    show: "Test Show",
-    season: "Season 1",
+    podcastShow: "Test Show",
+    podcastSeason: "Season 1",
     currentEpisodeTitle: "Current Episode",
   };
 

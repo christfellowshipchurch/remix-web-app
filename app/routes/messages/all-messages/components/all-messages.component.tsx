@@ -34,7 +34,7 @@ export default function Messages() {
         />
         {allMessagesLoading && <AllMessagesLoadingSkeleton />}
         <InstantSearch
-          indexName="dev_daniel_contentItems"
+          indexName="dev_contentItems"
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -46,7 +46,7 @@ export default function Messages() {
           <div className="mt-10 mb-12">
             <div className="md:hidden">
               <HubsTagsRefinementList
-                tagName="sermonPrimaryTags"
+                tagName="sermonPrimaryCategories"
                 wrapperClass="flex flex-nowrap px-1 pb-1 overflow-x-auto scrollbar-hide"
                 buttonClassDefault="w-fit group px-4 border-b-3 transition-colors flex-shrink-0"
                 buttonClassSelected="border-ocean text-ocean"
@@ -54,7 +54,7 @@ export default function Messages() {
               />
             </div>
             <div className="hidden md:block">
-              <HubsTagsRefinementList tagName="sermonPrimaryTags" />
+              <HubsTagsRefinementList tagName="sermonPrimaryCategories" />
             </div>
           </div>
 
@@ -108,7 +108,10 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
         id: hit.objectID,
         contentChannelId: "63", // MESSAGE type from builder-utils.ts
         contentType: "MESSAGES",
-        author: hit.author.firstName + " " + hit.author.lastName,
+        author:
+          hit?.author?.firstName && hit?.author?.lastName
+            ? hit?.author?.firstName + " " + hit?.author?.lastName
+            : "Christ Fellowship Team",
         image: hit.coverImage.sources[0].uri,
         name: hit.title,
         summary: hit.summary,

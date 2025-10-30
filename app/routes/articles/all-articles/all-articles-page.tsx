@@ -46,7 +46,7 @@ export function AllArticlesPage() {
 
       {articlesLoading && <LoadingSkeleton />}
       <InstantSearch
-        indexName="dev_daniel_contentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,

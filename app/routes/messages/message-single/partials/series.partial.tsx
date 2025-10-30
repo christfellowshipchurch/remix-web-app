@@ -16,15 +16,15 @@ const SeriesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
         image: hit.coverImage.sources[0].uri,
         coverImage: hit.coverImage.sources[0].uri,
         video: "",
-        startDateTime: "",
+        startDateTime: hit.startDateTime || "",
         expireDateTime: "",
         seriesId: "",
-        seriesTitle: "",
+        seriesTitle: hit.sermonSeriesName || "",
         url: hit.url || hit.routing.pathname,
         primaryCategories:
-          hit.sermonPrimaryTags?.map((tag) => ({ value: tag })) || [],
+          hit.sermonPrimaryCategories?.map((tag) => ({ value: tag })) || [],
         secondaryCategories:
-          hit.sermonSecondaryTags?.map((tag) => ({ value: tag })) || [],
+          hit.sermonSecondaryCategories?.map((tag) => ({ value: tag })) || [],
         speaker: {
           fullName: hit.author.firstName + " " + hit.author.lastName,
           profilePhoto: "",
@@ -49,7 +49,7 @@ export const InThisSeries = () => {
     return null;
   }
 
-  const filter = `contentType:"Sermon" AND seriesName:"${message.seriesTitle}" AND NOT title:"${message.title}"`;
+  const filter = `contentType:"Sermon" AND sermonSeriesName:"${message.seriesTitle}" AND NOT title:"${message.title}"`;
 
   return (
     <div className="flex w-full flex-col gap-6 py-12 md:pt-0 md:pb-24 content-padding">
@@ -61,7 +61,7 @@ export const InThisSeries = () => {
       </div>
 
       <InstantSearch
-        indexName="dev_daniel_contentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,

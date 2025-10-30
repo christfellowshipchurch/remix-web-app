@@ -1,7 +1,7 @@
 // TODO: This is a temporary type for the class finder.
 // It will be replaced with the actual type from the Algolia API.
 
-export interface GroupHit {
+export interface ClassType {
   rockItemId: number;
   title: string;
   summary: string;

@@ -2,13 +2,13 @@
  * This component is used to display a hit (cards) in the class finder.
  */
 
-import { GroupHit } from "../../types";
+import { ClassType } from "../../types";
 import { Link } from "react-router-dom";
 
 export const defaultLeaderPhoto =
   "https://cloudfront.christfellowship.church/GetAvatar.ashx?PhotoId=&AgeClassification=Adult&Gender=Unknown&RecordTypeId=1&Text=JC&Size=180&Style=icon&BackgroundColor=E4E4E7&ForegroundColor=A1A1AA";
 
-export function HitComponent({ hit }: { hit: GroupHit }) {
+export function HitComponent({ hit }: { hit: ClassType }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const meetingType = hit.meetingType;
 

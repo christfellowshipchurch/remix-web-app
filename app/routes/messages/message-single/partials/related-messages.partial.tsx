@@ -7,7 +7,7 @@ import { useLoaderData } from "react-router-dom";
 import { SectionTitle } from "~/components";
 
 import { LoaderReturnType } from "../loader";
-import { MessagesCarousel } from "../components/messages-carousel.component";
+import { RelatedMessagesCarousel } from "../components/messages-carousel.component";
 
 export const RelatedMessages = () => {
   const { message } = useLoaderData<LoaderReturnType>();
@@ -35,7 +35,7 @@ export const RelatedMessages = () => {
           </div>
         </div>
 
-        <MessagesCarousel />
+        <RelatedMessagesCarousel />
       </div>
     </div>
   );
