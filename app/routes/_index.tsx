@@ -25,19 +25,23 @@ export default function HomePage() {
   const homePageScroll = outletContext?.homePageScroll ?? undefined;
 
   return (
-    <div
-      className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar"
-      ref={homePageScroll}
-    >
-      <HeroSection />
-      <AChanceSection />
-      <WhatWeOfferSection />
-      <HistorySection sectionTitle="history" title="Who We Are" />
-      <BeliefsSection />
-      <WhatToExpectSection />
-      <LeadershipSection className="lg:py-52" />
-      <AppSection />
-      <Footer />
-    </div>
+    <>
+      {/* White background for the home page */}
+      <div className="w-screen h-screen absolute top-0 left-0 bg-white -z-100" />
+      <div
+        className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar"
+        ref={homePageScroll}
+      >
+        <HeroSection />
+        <AChanceSection />
+        <WhatWeOfferSection />
+        <HistorySection sectionTitle="history" title="Who We Are" />
+        <BeliefsSection />
+        <WhatToExpectSection />
+        <LeadershipSection className="lg:py-52" />
+        <AppSection />
+        <Footer />
+      </div>
+    </>
   );
 }
