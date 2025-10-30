@@ -7,6 +7,7 @@ import {
   parseRockKeyValueList,
   parseRockValueList,
 } from "~/lib/utils";
+import { getAttributeMatrixItems } from "~/lib/.server/rock-utils";
 
 const fetchEventData = async (eventPath: string) => {
   const rockData = await fetchRockData({
@@ -47,6 +48,10 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
+  const keyInfoCardsRockItems = await getAttributeMatrixItems({
+    attributeMatrixGuid: eventData.attributeValues?.keyInfoCards?.value || "",
+  });
+
   const pageData: EventSinglePageType = {
     title: eventData.title,
     subtitle: eventData.attributeValues?.summary?.value || "",
@@ -65,7 +70,11 @@ export const loader: LoaderFunction = async ({ params }) => {
     ),
     aboutTitle: eventData.attributeValues?.aboutSectionTitle?.value,
     aboutContent: eventData.attributeValues?.aboutSectionSummary?.value,
-    keyInfoCards: [] as { title: string; description: string; icon: string }[], //todo fetch Attribute Matrix
+    keyInfoCards: keyInfoCardsRockItems.map((item) => ({
+      title: item.attributeValues?.title?.value || "",
+      description: item.attributeValues?.description?.value || "",
+      icon: item.attributeValues?.icon?.value || "",
+    })),
     whatToExpect: parseRockKeyValueList(
       eventData.attributeValues?.whatToExpect?.value || ""
     ).map((item) => ({

@@ -1,8 +1,9 @@
 import lodash from "lodash";
-import { fetchRockData, getImages } from "./fetch-rock-data";
+import { fetchRockData } from "./fetch-rock-data";
 import { format } from "date-fns";
 import { getBasicAuthorInfoFlexible } from "./author-utils";
 import { attributeValuesProps, attributeProps } from "../types/rock-types";
+import { getImages } from "./rock-utils";
 
 const DEFAULT_TAG_ID = 1533; // "For You" - default tag id
 const TOP_TAGGED_ITEMS_LIMIT = 20;

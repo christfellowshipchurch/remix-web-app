@@ -25,3 +25,19 @@ export type attributeProps = {
     fieldTypeId: number;
   };
 };
+
+export type AttributeMatrix = {
+  id: number;
+  guid: string;
+  attributeMatrixTemplateId: number;
+  attributeMatrixItems: AttributeMatrixItem[];
+};
+
+export type AttributeMatrixItem = {
+  id: number;
+  guid: string;
+  attributeMatrixId: number;
+  attributeMatrixItemTemplateId: number;
+  attributeValues: attributeValuesProps;
+  attributes: attributeProps;
+};

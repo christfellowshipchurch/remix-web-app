@@ -44,7 +44,7 @@ export const EventsSingleHero = ({
                       href={cta.url}
                       intent={i === 0 ? "primary" : "secondary"}
                       size={isSmall || isMedium ? "md" : "lg"}
-                      className="w-full md:w-auto md:w-auto"
+                      className="w-full md:w-auto"
                     >
                       {cta.title}
                     </Button>
