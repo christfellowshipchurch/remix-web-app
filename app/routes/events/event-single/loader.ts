@@ -1,51 +1,12 @@
 import type { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { EventSinglePageType } from "./types";
-
-const mockEventData: EventSinglePageType = {
-  title: "Test Event",
-  subtitle: "Test Event Subtitle",
-  coverImage:
-    "https://cloudfront.christfellowship.church/GetImage.ashx?guid=71b6f4cf-356d-4cdb-a91a-ace4abd6630b",
-  heroCtas: [{ title: "Test CTA", href: "#test-cta" }],
-  quickPoints: ["Test Quick Point", "Test Quick Point"],
-  aboutTitle: "Test About Title",
-  aboutContent: "Test About Content",
-  keyInfoCards: [
-    {
-      title: "Test Key Info Card",
-      description: "Test Key Info Card Description",
-      icon: "star",
-    },
-    {
-      title: "Test Key Info Card",
-      description: "Test Key Info Card Description",
-      icon: "star",
-    },
-  ],
-  whatToExpect: [
-    {
-      title: "Test What to Expect",
-      description: "Test What to Expect Description",
-    },
-    {
-      title: "Test What to Expect",
-      description: "Test What to Expect Description",
-    },
-  ],
-  moreInfo: "Test More Info",
-  additionalBlurb: [
-    {
-      title: "Optional Extra Blurb?",
-      description:
-        "You can use this blurb for special audiences, such as: Those new to faith who might have an additional call to action. Certain events, unique features like childcare, guest speakers, or accessibility details",
-    },
-  ],
-  faqItems: [
-    { question: "Test FAQ Question", answer: "Test FAQ Answer" },
-    { question: "Test FAQ Question", answer: "Test FAQ Answer" },
-  ],
-};
+import { RockContentItem } from "~/lib/types/rock-types";
+import {
+  createImageUrlFromGuid,
+  parseRockKeyValueList,
+  parseRockValueList,
+} from "~/lib/utils";
 
 const fetchEventData = async (eventPath: string) => {
   const rockData = await fetchRockData({
@@ -77,8 +38,7 @@ const fetchEventData = async (eventPath: string) => {
 
 export const loader: LoaderFunction = async ({ params }) => {
   const eventPath = params?.path || "";
-
-  const eventData = await fetchEventData(eventPath);
+  const eventData: RockContentItem | null = await fetchEventData(eventPath);
 
   if (!eventData) {
     throw new Response("Event not found at: /events/" + eventPath, {
@@ -87,14 +47,45 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  // const { title, content, startDateTime, attributeValues, attributes } =
-  //   eventData;
-
-  // const coverImage = getImages({ attributeValues, attributes });
-  // const { summary, coverImage } = attributeValues ?? {};
-
-  // Using mock data for now, will update with actual data once implemented
-  const pageData: EventSinglePageType = mockEventData;
+  const pageData: EventSinglePageType = {
+    title: eventData.title,
+    subtitle: eventData.attributeValues?.summary?.value || "",
+    coverImage: createImageUrlFromGuid(
+      eventData.attributeValues?.image?.value || ""
+    ),
+    heroCtas: parseRockKeyValueList(
+      eventData.attributeValues?.heroCtas?.value || ""
+    ).map((cta) => ({
+      title: cta.title,
+      url: cta.url,
+    })),
+    quickPoints: parseRockValueList(
+      decodeURIComponent(eventData.attributeValues?.quickInfoPoints?.value) ||
+        ""
+    ),
+    aboutTitle: eventData.attributeValues?.aboutSectionTitle?.value,
+    aboutContent: eventData.attributeValues?.aboutSectionSummary?.value,
+    keyInfoCards: [] as { title: string; description: string; icon: string }[], //todo fetch Attribute Matrix
+    whatToExpect: parseRockKeyValueList(
+      eventData.attributeValues?.whatToExpect?.value || ""
+    ).map((item) => ({
+      title: item.title,
+      description: item.url,
+    })),
+    moreInfo: eventData.attributeValues?.moreInfo?.value,
+    optionalBlurb: parseRockKeyValueList(
+      decodeURIComponent(eventData.attributeValues?.optionalBlurb?.value) || ""
+    ).map((item) => ({
+      title: item.title,
+      description: item.url,
+    })),
+    faqItems: parseRockKeyValueList(
+      eventData.attributeValues?.faqItems?.value || ""
+    ).map((item) => ({
+      question: item.title,
+      answer: item.url,
+    })),
+  };
 
   return pageData;
 };

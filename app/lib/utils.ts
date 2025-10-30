@@ -267,6 +267,15 @@ export const parseRockKeyValueList = (
   });
 };
 
+export const parseRockValueList = (input: string): string[] => {
+  if (!input?.trim()) return [];
+  // Remove a trailing pipe and filter out any empty results
+  return input
+    .split("|")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+};
+
 export type dayTimes = {
   day: string;
   hour: string[];

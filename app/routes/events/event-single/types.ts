@@ -1,7 +1,7 @@
 export type EventSinglePageType = {
   title: string;
   subtitle: string;
-  heroCtas: { title: string; href: string }[];
+  heroCtas: { title: string; url: string }[];
   quickPoints?: string[];
   coverImage: string;
   aboutTitle?: string;
@@ -9,6 +9,6 @@ export type EventSinglePageType = {
   keyInfoCards?: { title: string; description: string; icon: string }[];
   whatToExpect?: { title: string; description: string }[];
   moreInfo?: string;
-  additionalBlurb?: { title: string; description: string }[];
+  optionalBlurb?: { title: string; description: string }[];
   faqItems?: { question: string; answer: string }[];
 };

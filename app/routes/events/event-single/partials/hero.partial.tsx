@@ -11,7 +11,7 @@ export const EventsSingleHero = ({
   quickPoints,
 }: {
   imagePath: string;
-  ctas: { title: string; href: string }[];
+  ctas: { title: string; url: string }[];
   customTitle?: string;
   subtitle?: string;
   quickPoints?: string[];
@@ -51,7 +51,7 @@ export const EventsSingleHero = ({
                   {ctas?.map((cta, i) => (
                     <Button
                       key={i}
-                      href={cta.href}
+                      href={cta.url}
                       intent={i === 0 ? "primary" : "secondary"}
                     >
                       {cta.title}

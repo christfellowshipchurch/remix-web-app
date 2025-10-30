@@ -47,7 +47,7 @@ export const EventSinglePage: React.FC = () => {
           infoCards={data.keyInfoCards}
           whatToExpect={data.whatToExpect}
           moreInfo={data.moreInfo ?? ""}
-          additionalBlurb={data.additionalBlurb}
+          optionalBlurb={data.optionalBlurb}
         />
 
         <EventSingleFAQ title={data.title} items={data.faqItems} />

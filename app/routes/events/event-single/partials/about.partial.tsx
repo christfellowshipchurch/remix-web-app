@@ -7,14 +7,14 @@ export const AboutPartial = ({
   infoCards,
   whatToExpect,
   moreInfo,
-  additionalBlurb,
+  optionalBlurb,
 }: {
   aboutTitle?: string;
   aboutContent?: string;
   infoCards?: EventInfoCardType[];
   whatToExpect?: { title: string; description: string }[];
   moreInfo?: string;
-  additionalBlurb?: { title: string; description: string }[];
+  optionalBlurb?: { title: string; description: string }[];
 }) => {
   const cardsToDisplay = (infoCards ?? []).slice(0, 4);
 
@@ -76,7 +76,7 @@ export const AboutPartial = ({
               )}
             </div>
 
-            {(additionalBlurb ?? []).map((blurb, index) => (
+            {(optionalBlurb ?? []).map((blurb, index) => (
               <div
                 key={`${blurb.title}-${index}`}
                 className="bg-white border border-[#BEBDC3] rounded-[12px] flex items-center p-4"
