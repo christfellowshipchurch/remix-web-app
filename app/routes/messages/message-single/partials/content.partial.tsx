@@ -18,16 +18,16 @@ export const MessageContent = () => {
         {/* Speaker/Date Section */}
         <div className="flex flex-col">
           <h2 className="font-extrabold text-[32px] leading-tight">
-            {message.summary}
+            {message?.summary}
           </h2>
           <div className="flex gap-1 text-[#AAAAAA]">
-            <p>{message.speaker.fullName}</p>
+            <p>{message?.speaker?.fullName}</p>
             <span>-</span>
             <p>{formattedDate}</p>
           </div>
         </div>
         {/* TODO: Content - Update HTML Renderer */}
-        <HTMLRenderer html={message.content} />
+        <HTMLRenderer html={message?.content} />
       </div>
     </div>
   );
