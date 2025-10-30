@@ -1,15 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsFinderDropdwnPopup } from "./groups-finder-dropdown-popup.component";
-import { AllGroupFiltersPopup } from "./all-filters.component";
+import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
+import { AllClassFiltersPopup } from "~/routes/class-finder/finder/components/popups/all-filters.component";
 import { cn } from "~/lib/utils";
 
-export function DesktopGroupFilters({
+export function DesktopClassFilters({
   coordinates,
   setCoordinates,
-  ageInput,
-  setAgeInput,
 }: {
   coordinates: {
     lat: number | null;
@@ -21,8 +19,6 @@ export function DesktopGroupFilters({
       lng: number | null;
     } | null
   ) => void;
-  ageInput: string;
-  setAgeInput: (age: string) => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -85,16 +81,11 @@ export function DesktopGroupFilters({
             data={{
               content: [
                 {
-                  title: "I want to meet...",
-                  attribute: "meetingType",
-                  isMeetingType: true,
-                },
-                {
-                  title: "Find a group nearby",
                   attribute: "campus",
                   isLocation: true,
                   coordinates: coordinates,
                   setCoordinates: setCoordinates,
+                  showFooter: true,
                 },
               ],
             }}
@@ -103,117 +94,79 @@ export function DesktopGroupFilters({
           />
         </div>
 
-        {/* People */}
+        {/* Topic */}
         <div
           className={cn(dropdownButtonStyles)}
-          onClick={() => toggleDropdown("people")}
+          onClick={() => toggleDropdown("topic")}
         >
-          <p>People</p>
+          <p>Topic</p>
           <Icon name="chevronDown" />
 
           <GroupsFinderDropdwnPopup
-            popupTitle="People"
+            popupTitle="Topic"
             data={{
               content: [
                 {
-                  title: "I want to join a group for...",
-                  attribute: "groupFor",
-                },
-                {
-                  title: "I want to meet people who are...",
-                  attribute: "peopleWhoAre",
-                },
-                {
-                  title: "Age Range",
-                  attribute: "minAge",
-                  input: true,
-                  inputPlaceholder: "Your Age",
-                  isAgeRange: true,
+                  attribute: "topic",
                   showFooter: true,
                 },
               ],
             }}
             onHide={closeAllDropdowns}
-            showSection={activeDropdown === "people"}
-            ageInput={ageInput}
-            setAgeInput={setAgeInput}
+            showSection={activeDropdown === "topic"}
           />
         </div>
 
-        {/* Topics */}
+        {/* Language */}
+
         <div
           className={cn(dropdownButtonStyles)}
-          onClick={() => toggleDropdown("topics")}
+          onClick={() => toggleDropdown("language")}
         >
-          <p>Topics</p>
+          <p>Language</p>
           <Icon name="chevronDown" />
 
           <GroupsFinderDropdwnPopup
-            popupTitle="Topics"
+            popupTitle="Language"
             data={{
               content: [
                 {
-                  title: "Spiritual Growth",
-                  attribute: "topics",
-                },
-                {
-                  title: "Life & Support",
-                  attribute: "topics",
-                },
-                {
-                  title: "Community & Fun",
-                  attribute: "topics",
+                  attribute: "language",
                   showFooter: true,
                 },
               ],
             }}
             onHide={closeAllDropdowns}
-            showSection={activeDropdown === "topics"}
+            showSection={activeDropdown === "language"}
           />
         </div>
 
-        {/* Preferences */}
-        <div className="hidden xl:flex gap-4">
-          <div
-            className={cn(dropdownButtonStyles)}
-            onClick={() => toggleDropdown("preferences")}
-          >
-            <p>Preferences</p>
-            <Icon name="chevronDown" />
+        {/* Format */}
 
-            <GroupsFinderDropdwnPopup
-              popupTitle="Preferences"
-              data={{
-                content: [
-                  {
-                    title: "Meeting Days",
-                    attribute: "meetingDays",
-                    isMeetingDays: true,
-                  },
-                  {
-                    title: "Meeting Frequency",
-                    attribute: "meetingFrequency",
-                  },
-                  {
-                    title: "Child Care",
-                    attribute: "adultOnly",
-                    checkboxLayout: "horizontal",
-                    checkbox: true,
-                  },
-                  {
-                    title: "Language",
-                    attribute: "language",
-                    showFooter: true,
-                  },
-                ],
-              }}
-              onHide={closeAllDropdowns}
-              showSection={activeDropdown === "preferences"}
-            />
-          </div>
+        <div
+          className={cn(dropdownButtonStyles)}
+          onClick={() => toggleDropdown("format")}
+        >
+          <p>Format</p>
+          <Icon name="chevronDown" />
+
+          <GroupsFinderDropdwnPopup
+            popupTitle="Format"
+            data={{
+              content: [
+                {
+                  attribute: "format",
+                  showFooter: true,
+                },
+              ],
+            }}
+            onHide={closeAllDropdowns}
+            showSection={activeDropdown === "format"}
+          />
         </div>
       </div>
-      <div className="w-full items-center gap-4 h-full hidden md:flex xl:!hidden">
+
+      <div className="w-full items-center gap-4 h-full hidden md:flex lg:hidden">
         <div className="w-px h-full bg-text-secondary hidden lg:block" />
         <Button
           intent="secondary"
@@ -239,10 +192,8 @@ export function DesktopGroupFilters({
             "transition-all duration-300"
           )}
         >
-          <AllGroupFiltersPopup
+          <AllClassFiltersPopup
             onHide={closeAllDropdowns}
-            ageInput={ageInput}
-            setAgeInput={setAgeInput}
             coordinates={coordinates}
             setCoordinates={setCoordinates}
           />

@@ -17,7 +17,7 @@ import { FindersCustomPagination } from "../components/finders-custom-pagination
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
 import { useEffect, useState } from "react";
-import { AllFiltersPopup } from "../components/filters/all-filters.component";
+import { AllGroupFiltersPopup } from "../components/filters/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { GroupType } from "../types";
@@ -93,7 +93,7 @@ export const GroupSearch = () => {
           <div
             className={cn(
               "sticky bg-white z-2 content-padding shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-22" : "top-0"
+              isNavbarOpen ? "top-18 md:top-20" : "top-0"
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
@@ -130,7 +130,7 @@ export const GroupSearch = () => {
           </div>
 
           {/* Mobile Filters */}
-          <div className="md:hidden bg-white pb-4 border-b-2 border-black/10 border-solid select-none">
+          <div className="md:hidden bg-white border-b-2 border-black/10 border-solid select-none">
             <div className="content-padding">
               <Button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -149,7 +149,7 @@ export const GroupSearch = () => {
                   : "-z-1 opacity-0"
               )}
             >
-              <AllFiltersPopup
+              <AllGroupFiltersPopup
                 onHide={() => setIsMobileOpen(false)}
                 ageInput={ageInput}
                 setAgeInput={setAgeInput}
