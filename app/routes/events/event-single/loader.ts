@@ -36,12 +36,9 @@ const mockEventData: EventSinglePageType = {
   moreInfo: "Test More Info",
   additionalBlurb: [
     {
-      title: "Test Additional Blurb",
-      description: "Test Additional Blurb Description",
-    },
-    {
-      title: "Test Additional Blurb",
-      description: "Test Additional Blurb Description",
+      title: "Optional Extra Blurb?",
+      description:
+        "You can use this blurb for special audiences, such as: Those new to faith who might have an additional call to action. Certain events, unique features like childcare, guest speakers, or accessibility details",
     },
   ],
   faqItems: [

@@ -49,7 +49,7 @@ export const AboutPartial = ({
           )}
         </div>
 
-        {/* More Data */}
+        {/* Schedule / What to Expect & More Info */}
         <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-8 lg:justify-between w-full pb-6">
           {/* Left / Top (Mobile) Side */}
           <div className="w-full max-w-[590px] flex flex-col gap-4">
@@ -67,7 +67,7 @@ export const AboutPartial = ({
             </div>
           </div>
 
-          {/* Right / Bot (Mobile) Side */}
+          {/* Right / Bottom (Mobile) Side */}
           <div className="flex flex-col gap-5 max-w-[640px] w-full">
             <div className="flex flex-col gap-3">
               <h3 className="text-black text-xl font-semibold">More Info</h3>
@@ -79,11 +79,12 @@ export const AboutPartial = ({
             {(additionalBlurb ?? []).map((blurb, index) => (
               <div
                 key={`${blurb.title}-${index}`}
-                className="bg-white border border-[#BEBDC3] rounded-[12px] flex items-center justify-center p-4"
+                className="bg-white border border-[#BEBDC3] rounded-[12px] flex items-center p-4"
               >
-                <div className="flex flex-col gap-1">
-                  <p className="text-black font-semibold">{blurb.title}</p>
-                  <p className="text-black">{blurb.description}</p>
+                <div className="flex gap-1">
+                  <p className="text-black">
+                    <b>{blurb.title}</b> {blurb.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -121,7 +122,10 @@ const InfoCardComponent = ({ title, description, icon }: EventInfoCardType) => {
   return (
     <div className="bg-white pb-10 px-4 pt-6 rounded-lg flex flex-col items-center text-center gap-8 border border-[#E5E5E5] w-full max-w-[312px]">
       <div className="bg-ocean flex items-center justify-center text-center p-2 rounded-full">
-        <Icon name={(icon as keyof typeof icons) ?? "star"} className="text-white ml-[2px]" />
+        <Icon
+          name={(icon as keyof typeof icons) ?? "star"}
+          className="text-white ml-[2px]"
+        />
       </div>
 
       <div className="flex flex-col gap-6">
