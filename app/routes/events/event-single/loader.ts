@@ -80,7 +80,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       description: item.value,
     })),
     faqItems: parseRockKeyValueList(
-      eventData.attributeValues?.faqItems?.value || ""
+      eventData.attributeValues?.faqs?.value || ""
     ).map((item) => ({
       question: item.key,
       answer: item.value,
