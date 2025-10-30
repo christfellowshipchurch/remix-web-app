@@ -56,7 +56,7 @@ const CurrentSeriesHit = ({
   if (items.length === 0) return null;
 
   const hit = items[0];
-  const currentSeriesTitle = hit?.seriesName || "Current Series";
+  const currentSeriesTitle = hit?.sermonSeriesName || "Current Series";
 
   const iconButtonClass =
     "text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean lg:text-base xl:!text-lg";
@@ -89,9 +89,9 @@ const CurrentSeriesHit = ({
 
           {/* Buttons */}
           <div className="mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8">
-            {hit.seriesGuid && (
+            {hit.sermonSeriesGuid && (
               <IconButton
-                to={`/series-resources/${kebabCase(hit.seriesGuid)}`}
+                to={`/series-resources/${kebabCase(hit.sermonSeriesGuid)}`}
                 className={iconButtonClass}
               >
                 Series & Resources

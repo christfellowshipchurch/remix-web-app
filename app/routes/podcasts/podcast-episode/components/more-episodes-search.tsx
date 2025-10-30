@@ -9,8 +9,8 @@ import { createSearchClient } from "~/lib/create-search-client";
 interface MoreEpisodesSearchProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
-  show: string;
-  season: string;
+  podcastShow: string;
+  podcastSeason: string;
   currentEpisodeTitle?: string;
 }
 
@@ -64,8 +64,8 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 export const MoreEpisodesSearch = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
-  show,
-  season,
+  podcastShow,
+  podcastSeason,
   currentEpisodeTitle,
 }: MoreEpisodesSearchProps) => {
   const searchClient = useMemo(
@@ -74,7 +74,7 @@ export const MoreEpisodesSearch = ({
   );
 
   // Filter for episodes from the same show and season, excluding the current episode
-  const filter = `contentType:"Podcast" AND show:"${show}" AND podcastSeasonNumber:${season}${
+  const filter = `contentType:"Podcast" AND podcastShow:"${podcastShow}" AND podcastSeasonNumber:${podcastSeason}${
     currentEpisodeTitle ? ` AND NOT title:"${currentEpisodeTitle}"` : ""
   }`;
 

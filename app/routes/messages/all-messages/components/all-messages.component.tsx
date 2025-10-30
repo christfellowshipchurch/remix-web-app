@@ -108,7 +108,10 @@ const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
         id: hit.objectID,
         contentChannelId: "63", // MESSAGE type from builder-utils.ts
         contentType: "MESSAGES",
-        author: hit.author.firstName + " " + hit.author.lastName,
+        author:
+          hit?.author?.firstName && hit?.author?.lastName
+            ? hit?.author?.firstName + " " + hit?.author?.lastName
+            : "Christ Fellowship Team",
         image: hit.coverImage.sources[0].uri,
         name: hit.title,
         summary: hit.summary,

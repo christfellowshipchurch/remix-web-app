@@ -12,7 +12,7 @@ import lodash from "lodash";
 import { ContentItemHit } from "~/routes/search/types";
 import { createSearchClient } from "~/lib/create-search-client";
 
-interface PodcastEpisodeSearchProps {
+interface PodcastEpisodeListProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
   podcastTitle: string;
@@ -102,11 +102,8 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          {hit.contentTags?.find((tag) => tag.includes("Season")) || "Season 1"}{" "}
-          | Episode{" "}
-          {hit.contentTags
-            ?.find((tag) => tag.includes("Episode"))
-            ?.split(" ")[1] || "1"}
+          {hit.podcastSeason || "Season 1"} | Episode{" "}
+          {hit.podcastEpisodeNumber || "1"}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
@@ -114,17 +111,17 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   );
 };
 
-export const PodcastEpisodeSearch = ({
+export const PodcastEpisodeList = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
   podcastTitle,
-}: PodcastEpisodeSearchProps) => {
+}: PodcastEpisodeListProps) => {
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
-  const filter = `contentType:"Podcast" AND show:"${podcastTitle}"`;
+  const filter = `contentType:"Podcast" AND podcastShow:"${podcastTitle}"`;
 
   return (
     <InstantSearch

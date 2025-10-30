@@ -19,7 +19,7 @@ const SeriesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
         startDateTime: hit.startDateTime || "",
         expireDateTime: "",
         seriesId: "",
-        seriesTitle: hit.seriesName || "",
+        seriesTitle: hit.sermonSeriesName || "",
         url: hit.url || hit.routing.pathname,
         primaryCategories:
           hit.sermonPrimaryCategories?.map((tag) => ({ value: tag })) || [],
@@ -49,7 +49,7 @@ export const InThisSeries = () => {
     return null;
   }
 
-  const filter = `contentType:"Sermon" AND seriesName:"${message.seriesTitle}" AND NOT title:"${message.title}"`;
+  const filter = `contentType:"Sermon" AND sermonSeriesName:"${message.seriesTitle}" AND NOT title:"${message.title}"`;
 
   return (
     <div className="flex w-full flex-col gap-6 py-12 md:pt-0 md:pb-24 content-padding">

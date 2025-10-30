@@ -20,13 +20,13 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
     <Link
       to={`/articles/${article.url || article.routing.pathname}`}
       prefetch="intent"
-      className="flex flex-col p-[2px] overflow-hidden max-w-[462px] w-full transition-all duration-300 hover:-translate-y-1"
+      className="flex flex-col p-[2px] overflow-hidden max-w-[456px] w-full transition-all duration-300 hover:-translate-y-1"
     >
       {/* Article Image */}
       <div className="relative">
         <img
           src={article.coverImage.sources[0].uri}
-          className="w-full h-auto object-cover rounded-t-lg"
+          className="w-full h-[200px] lg:h-[258px] xl:h-auto object-cover aspect-video object-center rounded-t-lg"
           alt={article.title}
         />
 

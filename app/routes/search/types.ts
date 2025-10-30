@@ -15,14 +15,13 @@ export interface ContentItemHit {
   contentType: string;
   imageLabel: string;
   htmlContent?: string; // TODO: This is an array of strings in Algolia, how do we handle this?
-  seriesName?: string;
-  seriesGuid?: string;
+  sermonSeriesName?: string;
+  sermonSeriesGuid?: string;
   sermonPrimaryCategories: string[];
   sermonSecondaryCategories: string[];
   articlePrimaryCategories: string[];
   articleSecondaryCategories: string[];
   readTime: number;
-  contentTags: string[];
   url: string;
   startDateTime: string;
   coverImage: {
@@ -30,7 +29,7 @@ export interface ContentItemHit {
       uri: string;
     }[];
   };
-  show?: string;
+  podcastShow?: string;
   podcastSeason?: string;
   podcastSeasonNumber?: number;
   podcastEpisodeNumber?: number;
