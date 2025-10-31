@@ -5,14 +5,12 @@ import { EventSinglePageType } from "./types";
 import { EventsSingleHero } from "./partials/hero.partial";
 import { EventSingleFAQ } from "./partials/event-faq.partial";
 import { AboutPartial } from "./partials/about.partial";
-import { ResgisterPartial } from "./partials/register.partial";
-import { EventBanner } from "./components/event-banner";
+import { EventBanner } from "./components/event-banner.component";
+import { RegistrationSection } from "./partials/registration.partial";
 import BackBanner from "~/components/back-banner";
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
-
-  const shouldRegister = false;
 
   return (
     <>
@@ -52,8 +50,9 @@ export const EventSinglePage: React.FC = () => {
 
         <EventSingleFAQ title={data.title} items={data.faqItems} />
 
-        {/* Register Section - TODO: NOT COMPLETED, PAUSING FOR NOW*/}
-        {shouldRegister && <ResgisterPartial title={data.title} />}
+        {data.sessionScheduleCards && data.sessionScheduleCards.length > 0 && (
+          <RegistrationSection />
+        )}
       </div>
     </>
   );

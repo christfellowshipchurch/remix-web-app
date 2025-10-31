@@ -1,3 +1,5 @@
+import { icons } from "~/lib/icons";
+
 export type EventSinglePageType = {
   title: string;
   subtitle: string;
@@ -11,4 +13,15 @@ export type EventSinglePageType = {
   moreInfo?: string;
   optionalBlurb?: { title: string; description: string }[];
   faqItems?: { question: string; answer: string }[];
+  sessionScheduleCards?: SessionRegistrationCardType[];
+};
+
+export type SessionRegistrationCardType = {
+  icon: keyof typeof icons;
+  title: string;
+  description: string;
+  date: string;
+  programTime: string;
+  partyTime: string;
+  additionalInfo?: string;
 };

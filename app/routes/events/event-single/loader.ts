@@ -94,6 +94,50 @@ export const loader: LoaderFunction = async ({ params }) => {
       question: item.key,
       answer: item.value,
     })),
+    // enter test data for session schedule cards
+    sessionScheduleCards: [
+      {
+        icon: "currentLocation",
+        title: "Palm Beach Gardens",
+        description: "1000 Jupiter Park Dr, Jupiter, FL 33458",
+        date: "Thursday, September 11th",
+        programTime: "10AM",
+        partyTime: "11AM",
+        additionalInfo: "something else",
+      },
+      {
+        icon: "globe",
+        title: "Online Experience",
+        description: "Join us from anywhere",
+        date: "Thursday, September 11th",
+        programTime: "10AM",
+        partyTime: "11AM",
+      },
+      {
+        icon: "globe",
+        title: "Online Experience",
+        description: "Join us from anywhere",
+        date: "Thursday, September 11th",
+        programTime: "10AM",
+        partyTime: "11AM",
+      },
+      {
+        icon: "globe",
+        title: "Online Experience",
+        description: "Join us from anywhere",
+        date: "Thursday, September 11th",
+        programTime: "10AM",
+        partyTime: "11AM",
+      },
+      {
+        icon: "globe",
+        title: "Online Experience",
+        description: "Join us from anywhere",
+        date: "Thursday, September 11th",
+        programTime: "10AM",
+        partyTime: "11AM",
+      },
+    ],
   };
 
   return pageData;
