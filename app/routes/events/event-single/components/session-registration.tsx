@@ -48,7 +48,7 @@ const SessionRegistrationCard = ({
   card: SessionRegistrationCardType;
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-5 flex flex-col text-left w-[240px] h-[374px]">
+    <div className="bg-white rounded-lg shadow-sm p-5 flex flex-col text-left w-[248px] h-[374px]">
       {/* Location Section */}
       <div className="flex gap-4 items-start">
         <div className="bg-navy-subdued rounded-lg p-3 flex-shrink-0">

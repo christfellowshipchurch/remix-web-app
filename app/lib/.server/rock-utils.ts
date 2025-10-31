@@ -42,7 +42,7 @@ export const getAttributeMatrixItems = async ({
   attributeMatrixGuid,
 }: {
   attributeMatrixGuid: string;
-}) => {
+}): Promise<AttributeMatrixItem[]> => {
   const attributeMatrix: AttributeMatrix = await fetchRockData({
     endpoint: `AttributeMatrices`,
     queryParams: {
