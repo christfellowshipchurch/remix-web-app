@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { EventSinglePageType, SessionRegistrationCardType } from "../types";
 import Icon from "~/primitives/icon";
+import { Button } from "~/primitives/button/button.primitive";
 
 export function SessionRegistration() {
   const { title, sessionScheduleCards } = useLoaderData<EventSinglePageType>();
@@ -113,9 +114,11 @@ const SessionRegistrationCard = ({
       </div>
 
       {/* Get Tickets Button */}
-      <button className="mt-auto w-full bg-ocean text-white font-bold py-3 px-4 rounded-lg hover:bg-navy transition-colors">
-        Get Tickets
-      </button>
+      <div className="mt-auto">
+        <Button intent="primary" href={card.url} size="md" className="w-full">
+          Get Tickets
+        </Button>
+      </div>
     </div>
   );
 };

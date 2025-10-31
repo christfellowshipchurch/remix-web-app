@@ -104,6 +104,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         programTime: "10AM",
         partyTime: "11AM",
         additionalInfo: "something else",
+        url: "https://www.google.com",
       },
       {
         icon: "globe",
@@ -112,6 +113,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         date: "Thursday, September 11th",
         programTime: "10AM",
         partyTime: "11AM",
+        url: "https://www.google.com",
       },
       {
         icon: "globe",
@@ -120,6 +122,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         date: "Thursday, September 11th",
         programTime: "10AM",
         partyTime: "11AM",
+        url: "https://www.google.com",
       },
       {
         icon: "globe",
@@ -128,6 +131,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         date: "Thursday, September 11th",
         programTime: "10AM",
         partyTime: "11AM",
+        url: "https://www.google.com",
       },
       {
         icon: "globe",
@@ -136,6 +140,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         date: "Thursday, September 11th",
         programTime: "10AM",
         partyTime: "11AM",
+        url: "https://www.google.com",
       },
     ],
   };

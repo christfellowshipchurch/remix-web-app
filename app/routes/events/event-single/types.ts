@@ -24,4 +24,5 @@ export type SessionRegistrationCardType = {
   programTime: string;
   partyTime: string;
   additionalInfo?: string;
+  url: string;
 };
