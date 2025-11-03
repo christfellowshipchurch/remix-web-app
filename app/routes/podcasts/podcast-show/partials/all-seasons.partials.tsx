@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import { PodcastEpisodeList } from "../components/podcast-episode-search";
+import { PodcastEpisodeList } from "../components/podcast-episode-list";
 
 export const AllSeasons = () => {
   const { podcast, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

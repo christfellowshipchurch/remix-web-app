@@ -8,7 +8,6 @@ import {
 } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
-import lodash from "lodash";
 import { ContentItemHit } from "~/routes/search/types";
 import { createSearchClient } from "~/lib/create-search-client";
 
@@ -17,8 +16,6 @@ interface PodcastEpisodeListProps {
   ALGOLIA_SEARCH_API_KEY: string;
   podcastTitle: string;
 }
-
-const { kebabCase } = lodash;
 
 const SeasonRefinementList = () => {
   const { items } = useRefinementList({ attribute: "podcastSeasonNumber" });

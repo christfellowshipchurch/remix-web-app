@@ -31,7 +31,6 @@ export function MessageSinglePage() {
       </div>
 
       <InThisSeries />
-
       <RelatedMessages />
     </div>
   );

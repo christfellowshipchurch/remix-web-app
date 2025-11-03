@@ -81,6 +81,7 @@ export const mapRockDataToMessage = async (
   }
 
   return {
+    id: rockItem.id,
     title: rockItem.title,
     content: rockItem.content || "",
     summary: attributeValues?.summary?.value || "",

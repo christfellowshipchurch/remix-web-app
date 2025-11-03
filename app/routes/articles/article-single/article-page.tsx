@@ -85,7 +85,7 @@ const CardCarouselSectionWrapper = () => {
         },
       }))}
       viewMoreText="More Articles"
-      viewMoreLink={`/articles/topics/todo`}
+      viewMoreLink={`/articles`}
       CardComponent={RelatedArticleCardWrapper}
     />
   );
@@ -103,7 +103,7 @@ const RelatedArticleCardWrapper: React.FC<{
       description={resource.summary}
       image={resource.image}
       date={resource.startDate || ""}
-      readTime={resource.readTime?.toString() || "1".toString()}
+      readTime={resource.readTime?.toString() || "1"}
     />
   );
 };
