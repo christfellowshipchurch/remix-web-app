@@ -8,20 +8,17 @@ import {
 } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
-import lodash from "lodash";
 import { ContentItemHit } from "~/routes/search/types";
 import { createSearchClient } from "~/lib/create-search-client";
 
-interface PodcastEpisodeSearchProps {
+interface PodcastEpisodeListProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
   podcastTitle: string;
 }
 
-const { kebabCase } = lodash;
-
 const SeasonRefinementList = () => {
-  const { items } = useRefinementList({ attribute: "seasonNumber" });
+  const { items } = useRefinementList({ attribute: "podcastSeasonNumber" });
   const { setIndexUiState } = useInstantSearch();
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
 
@@ -33,7 +30,7 @@ const SeasonRefinementList = () => {
       ...prevState,
       refinementList: {
         ...prevState.refinementList,
-        seasonNumber: [season],
+        podcastSeasonNumber: [season],
       },
       page: 0, // Reset to first page
     }));
@@ -51,7 +48,7 @@ const SeasonRefinementList = () => {
       ...prevState,
       refinementList: {
         ...prevState.refinementList,
-        seasonNumber: [firstSeason],
+        podcastSeasonNumber: [firstSeason],
       },
       page: 0,
     }));
@@ -78,6 +75,9 @@ const SeasonRefinementList = () => {
 };
 
 const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
+  const cardUrl = `/podcasts/${hit.podcastShow
+    ?.toLowerCase()
+    .replace(/ /g, "-")}/${hit.url}`;
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">
@@ -90,7 +90,7 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
           className="w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]"
         />
         <Link
-          to={`/podcasts/${kebabCase(hit.title)}/${hit.title}`}
+          to={cardUrl || "/podcasts"}
           className="absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 transition-colors duration-300"
           style={{
             boxShadow:
@@ -102,11 +102,8 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          {hit.contentTags?.find((tag) => tag.includes("Season")) || "Season 1"}{" "}
-          | Episode{" "}
-          {hit.contentTags
-            ?.find((tag) => tag.includes("Episode"))
-            ?.split(" ")[1] || "1"}
+          {hit.podcastSeason || "Season 1"} | Episode{" "}
+          {hit.podcastEpisodeNumber || "1"}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
@@ -114,21 +111,21 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   );
 };
 
-export const PodcastEpisodeSearch = ({
+export const PodcastEpisodeList = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
   podcastTitle,
-}: PodcastEpisodeSearchProps) => {
+}: PodcastEpisodeListProps) => {
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
-  const filter = `contentType:"Podcast" AND show:"${podcastTitle}"`;
+  const filter = `contentType:"Podcast" AND podcastShow:"${podcastTitle}"`;
 
   return (
     <InstantSearch
-      indexName="dev_daniel_contentItems"
+      indexName="dev_contentItems"
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

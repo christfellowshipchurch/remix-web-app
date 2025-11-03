@@ -1,4 +1,5 @@
 export type MessageType = {
+  id: string;
   title: string;
   content: string;
   summary: string;

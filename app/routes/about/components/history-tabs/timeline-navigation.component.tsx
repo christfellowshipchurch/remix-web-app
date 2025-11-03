@@ -7,8 +7,6 @@ function TimelineNavigation({
 }: {
   timelineData: {
     year: string;
-    title: string;
-    description: string;
   }[];
   activeTab: number;
   handleTabChange: (index: number) => void;

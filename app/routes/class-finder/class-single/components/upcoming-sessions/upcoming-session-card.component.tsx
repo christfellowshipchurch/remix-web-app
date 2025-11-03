@@ -2,7 +2,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { ClassHitType } from "../../../types";
 
-export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
+export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const { schedule, startDate, endDate, format, topic, language, title } = hit;
 
