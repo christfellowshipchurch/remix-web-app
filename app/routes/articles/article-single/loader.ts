@@ -1,5 +1,5 @@
 import { type LoaderFunction } from "react-router-dom";
-import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
 import {
@@ -8,6 +8,7 @@ import {
 } from "~/lib/.server/fetch-related-articles";
 import { CollectionItem } from "~/routes/page-builder/types";
 import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
+import { getImages } from "~/lib/.server/rock-utils";
 
 // Mapping function to convert FormattedArticle to CollectionItem
 const mapFormattedArticleToCollectionItem = (

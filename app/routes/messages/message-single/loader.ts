@@ -1,9 +1,10 @@
 import type { LoaderFunction } from "react-router-dom";
-import { fetchRockData, getImages } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
 import { MessageType } from "../types";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 import { RockContentItem } from "~/lib/types/rock-types";
+import { getImages } from "~/lib/.server/rock-utils";
 
 export type LoaderReturnType = {
   message: MessageType;
