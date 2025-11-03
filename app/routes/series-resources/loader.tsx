@@ -89,7 +89,7 @@ const getSeriesResources = async (seriesGuid: string) => {
       contentChannelId: string;
     }) => {
       resource.attributeValues.url.value = `${getContentChannelUrl(
-        Number(resource.contentChannelId)
+        parseInt(resource.contentChannelId)
       )}/${resource.attributeValues.url.value}`;
     }
   );

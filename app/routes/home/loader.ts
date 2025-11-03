@@ -48,6 +48,9 @@ export const loader = async (): Promise<{
               title: string;
               content: string;
               startDateTime: string;
+              publishDate: string;
+              coverImage: string;
+              summary: string;
               attributeValues?: {
                 image?: { value: string };
                 summary?: { value: string };
@@ -62,12 +65,9 @@ export const loader = async (): Promise<{
                 new Date(article.startDateTime),
                 "MMMM d, yyyy"
               ),
-              coverImage:
-                article.attributeValues?.image?.value
-                  ? createImageUrlFromGuid(
-                      article.attributeValues.image.value
-                    )
-                  : "",
+              coverImage: article.attributeValues?.image?.value
+                ? createImageUrlFromGuid(article.attributeValues.image.value)
+                : "",
               summary: article.attributeValues?.summary?.value || "",
               url: article.attributeValues?.url?.value || "",
             })

@@ -44,21 +44,20 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
       title: podcastShow.title || "",
       description: podcastShow.content || "",
       coverImage: podcastShow.attributeValues?.coverImage?.value
-        ? createImageUrlFromGuid(
-            podcastShow.attributeValues.coverImage.value
-          )
+        ? createImageUrlFromGuid(podcastShow.attributeValues.coverImage.value)
         : "",
       apple:
-        podcastShow.attributeValues?.apple?.value ||
         podcastShow.attributeValues?.applePodcast?.value ||
+        podcastShow.attributeValues?.apple?.value ||
         "",
       spotify: podcastShow.attributeValues?.spotify?.value || "",
       amazon:
-        podcastShow.attributeValues?.amazon?.value ||
         podcastShow.attributeValues?.amazonMusic?.value ||
+        podcastShow.attributeValues?.amazon?.value ||
         "",
       youtube: podcastShow.attributeValues?.youtube?.value || "",
-      episodesChannelGuid: podcastShow.attributeValues?.showChannel?.value || "",
+      episodesChannelGuid:
+        podcastShow.attributeValues?.showChannel?.value || "",
       url: podcastShow.attributeValues?.url?.value || "",
     })
   );
