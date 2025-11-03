@@ -28,7 +28,7 @@ export const UpcomingSessionsSection = () => {
 
   return (
     <div
-      className="hidden md:flex flex-col gap-4 w-full md:pt-12 relative"
+      className="hidden md:flex flex-col gap-4 w-full pt-12 relative"
       id="search"
     >
       <InstantSearch
@@ -60,7 +60,7 @@ export const UpcomingSessionsSection = () => {
                 <div className="hidden lg:block h-full w-[1px] bg-text-secondary" />
               </div>
 
-              <div className="flex flex-col md:flex-row gap-4 w-full md:w-fit overflow-x-auto md:overflow-x-visible scrollbar-hide relative">
+              <div className="flex flex-row gap-4 w-fit overflow-x-visible scrollbar-hide relative">
                 {/* Filters */}
                 <UpcomingSessionFilters
                   coordinates={coordinates}
@@ -71,8 +71,8 @@ export const UpcomingSessionsSection = () => {
           </div>
 
           {/* Session Results & Pagination */}
-          <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
-            <div className="max-w-screen-content mx-auto md:w-full">
+          <div className="flex flex-col bg-gray pt-12 pb-20 w-full content-padding">
+            <div className="max-w-screen-content mx-auto w-full">
               <Stats
                 classNames={{
                   root: "text-text-secondary mb-6",
@@ -85,13 +85,13 @@ export const UpcomingSessionsSection = () => {
 
               <Hits
                 classNames={{
-                  root: "flex items-center justify-center md:items-start md:justify-start w-full",
-                  item: "flex items-center justify-center md:items-start md:justify-start w-full",
-                  list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
+                  root: "flex items-center items-start justify-start w-full",
+                  item: "flex items-center items-start justify-start w-full",
+                  list: "grid grid-cols-3 lg:grid-cols-4 gap-x-4 xl:!gap-x-8 gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
                 }}
                 hitComponent={UpcomingSessionCard}
               />
-              <div className="mt-6 flex justify-center md:justify-start">
+              <div className="mt-6 flex justify-start">
                 <FindersCustomPagination />
               </div>
             </div>
@@ -102,7 +102,7 @@ export const UpcomingSessionsSection = () => {
   );
 };
 
-const ResponsiveClassesSingleConfigure = ({
+export const ResponsiveClassesSingleConfigure = ({
   selectedLocation,
   classUrl,
   coordinates,

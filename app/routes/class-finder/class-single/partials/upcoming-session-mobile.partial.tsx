@@ -8,12 +8,12 @@ import { AllClassFiltersPopup } from "~/routes/class-finder/finder/components/po
 import { Button } from "~/primitives/button/button.primitive";
 
 import { Hits, InstantSearch, Stats } from "react-instantsearch";
-import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
+import { ResponsiveClassesSingleConfigure } from "./upcoming-sections.partial";
 
 export function UpcomingSessionMobileSection() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { classUrl, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
@@ -46,8 +46,8 @@ export function UpcomingSessionMobileSection() {
             preserveSharedStateOnUnmount: true,
           }}
         >
-          <ResponsiveConfigure
-            ageInput=""
+          <ResponsiveClassesSingleConfigure
+            classUrl={classUrl}
             selectedLocation={null}
             coordinates={coordinates}
           />
@@ -83,7 +83,7 @@ export function UpcomingSessionMobileSection() {
 
             {/* Class Search Results / Class Type Filters */}
             <div className="flex flex-col bg-gray py-8 w-full content-padding">
-              <div className="max-w-screen-content mx-auto">
+              <div className="max-w-screen-content mx-auto ">
                 <div className="flex flex-col bg-gray py-8 w-full content-padding">
                   <div className="max-w-screen-content mx-auto">
                     <Stats
