@@ -78,6 +78,7 @@ export function SeriesResources() {
             title="Related Resources"
             summary="Explore other resources that may be of interest to you"
             items={resources.map((resource) => ({
+              id: resource.id,
               title: resource.title,
               content: "",
               summary: "",
