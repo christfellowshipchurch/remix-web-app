@@ -1,32 +1,28 @@
 import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
 
-interface ClassData {
-  className: string;
-}
-
-export const meta: MetaFunction<typeof loader> = ({
-  data,
-}: {
-  data: ClassData | null;
-}) => {
-  const classData = data as ClassData | null;
-  if (!classData) {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
     return [
-      { title: "404 - Group Not Found" },
+      { title: "404 - Class Not Found" },
       {
         name: "description",
-        content: "The message you are looking for does not exist.",
+        content: "The class you are looking for does not exist.",
       },
     ];
   }
 
-  // TODO: Get class title from data
-  const className = classData.className;
+  const classUrl = data.classUrl;
+  const classTitle = classUrl
+    .split("-")
+    .join(" ")
+    .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
   return [
-    { title: `${className} | Christ Fellowship Church` },
-    // TODO: Add description
-    { name: "description", content: "Messages from Christ Fellowship Church" },
+    { title: `${classTitle} | Christ Fellowship Church` },
+    {
+      name: "description",
+      content: `Register for ${classTitle} at Christ Fellowship Church`,
+    },
   ];
 };

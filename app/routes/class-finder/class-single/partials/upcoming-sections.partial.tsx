@@ -1,18 +1,17 @@
 import { useLoaderData } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, Hits, Stats } from "react-instantsearch";
+import { InstantSearch, Hits, Stats, Configure } from "react-instantsearch";
 
 import { cn } from "~/lib/utils";
 import { LoaderReturnType } from "../loader";
 import { useState } from "react";
-import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
-import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
+import { useResponsive } from "~/hooks/use-responsive";
 
 export const UpcomingSessionsSection = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classUrl } =
     useLoaderData<LoaderReturnType>();
 
   const [coordinates, setCoordinates] = useState<{
@@ -29,43 +28,40 @@ export const UpcomingSessionsSection = () => {
   return (
     <div className="flex flex-col gap-4 w-full md:pt-12 relative" id="search">
       <InstantSearch
-        indexName="dev_daniel_Groups"
+        indexName="dev_Classes"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure
-          ageInput=""
+        <ResponsiveClassesSingleConfigure
           selectedLocation={null}
           coordinates={coordinates}
+          classUrl={classUrl}
         />
         <div className="flex flex-col">
           {/* Filters Section */}
           <div
             className={cn(
-              "bg-white content-padding shadow-sm select-none transition-all duration-300"
+              "bg-white content-padding shadow-sm select-none transition-all duration-300",
+              "relative z-10"
             )}
           >
             <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 py-4 max-w-screen-content mx-auto lg:h-20 pagination-scroll-to">
               {/* Title */}
               <div className="flex items-center gap-4 w-fit">
-                <h2 className="text-[28px] font-extrabold w-fit">
+                <h2 className="text-[28px] font-extrabold w-fit min-w-[260px]">
                   Upcoming Sessions
                 </h2>
                 <div className="hidden lg:block h-full w-[1px] bg-text-secondary" />
               </div>
 
-              <div className="flex flex-col md:flex-row gap-4 w-full md:w-fit">
-                {/* Location Select Box */}
-                <FinderLocationSearch
-                  className="!w-full md:!w-[266px]"
+              <div className="flex flex-col md:flex-row gap-4 w-full md:w-fit overflow-x-auto md:overflow-x-visible scrollbar-hide relative">
+                {/* Filters */}
+                <UpcomingSessionFilters
                   coordinates={coordinates}
                   setCoordinates={setCoordinates}
                 />
-
-                {/* Desktop Filters */}
-                <UpcomingSessionFilters />
               </div>
             </div>
           </div>
@@ -87,7 +83,7 @@ export const UpcomingSessionsSection = () => {
                 classNames={{
                   root: "flex items-center justify-center md:items-start md:justify-start w-full",
                   item: "flex items-center justify-center md:items-start md:justify-start w-full",
-                  list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
+                  list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
                 }}
                 hitComponent={UpcomingSessionCard}
               />
@@ -99,5 +95,58 @@ export const UpcomingSessionsSection = () => {
         </div>
       </InstantSearch>
     </div>
+  );
+};
+
+const ResponsiveClassesSingleConfigure = ({
+  selectedLocation,
+  classUrl,
+  coordinates,
+}: {
+  selectedLocation: string | null;
+  classUrl: string;
+  coordinates: {
+    lat: number | null;
+    lng: number | null;
+  } | null;
+}) => {
+  const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
+
+  const hitsPerPage = (() => {
+    switch (true) {
+      case isXLarge || isLarge:
+        return 12;
+      case isMedium:
+        return 9;
+      case isSmall:
+        return 5;
+      default:
+        return 5;
+    }
+  })();
+
+  // Build filters array
+  const filters = [];
+  if (selectedLocation) {
+    filters.push(`campusName:'${selectedLocation}'`);
+  }
+  if (classUrl) {
+    filters.push(`classTypeUrl:"${classUrl}"`);
+  }
+
+  return (
+    <Configure
+      key={`${coordinates?.lat}-${coordinates?.lng}-${selectedLocation}-${classUrl}`}
+      hitsPerPage={hitsPerPage}
+      filters={filters.length > 0 ? filters.join(" AND ") : undefined}
+      aroundLatLng={
+        coordinates?.lat && coordinates?.lng
+          ? `${coordinates.lat}, ${coordinates.lng}`
+          : undefined
+      }
+      aroundRadius="all"
+      aroundLatLngViaIP={false}
+      getRankingInfo={true}
+    />
   );
 };

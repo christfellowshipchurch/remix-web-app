@@ -1,31 +1,25 @@
 import { Button } from "~/primitives/button/button.primitive";
 
 export function ClassSingleBasicContent({
-  tags,
-  // Name of Class
-  className,
+  topic,
+  classTitle,
   summary,
 }: {
-  tags: string[];
-  className?: string;
+  topic: string;
+  classTitle?: string;
   summary: string;
 }) {
   return (
-    <div className="w-full pb-20 md:pb-28">
+    <div className="w-full pb-12 lg:pb-16 xl:pb-20">
       <div className="flex flex-col gap-12 md:gap-16">
         <div className="flex flex-col gap-4">
           <h1 className="text-[40px] lg:text-[52px] font-extrabold leading-tight">
-            {className}
+            {classTitle}
           </h1>
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag, i) => (
-              <span
-                key={i}
-                className="text-sm bg-gray-100 px-2 py-1 rounded-sm"
-              >
-                {tag}
-              </span>
-            ))}
+            <span className="text-sm bg-gray-100 px-2 py-1 rounded-sm">
+              {topic}
+            </span>
           </div>
         </div>
 
@@ -37,7 +31,7 @@ export function ClassSingleBasicContent({
           <p className="md:text-xl">{summary}</p>
 
           {/* CTAs */}
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6">
             <Button intent="secondary" size="md" href="#todo">
               View Discussion Guide
             </Button>

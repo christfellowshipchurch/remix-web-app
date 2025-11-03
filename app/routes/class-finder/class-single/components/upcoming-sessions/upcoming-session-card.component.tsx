@@ -1,10 +1,19 @@
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupHit } from "../../../types";
+import { ClassHitType } from "../../../types";
 
-export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
+export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
-  const meetingType = hit.meetingType;
+  const { schedule, startDate, endDate, format, topic, language, title } = hit;
+
+  const formattedStartDate = new Date(startDate).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+  const formattedEndDate = new Date(endDate).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div
@@ -17,8 +26,8 @@ export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
       <div className="flex flex-col w-full h-full pb-4">
         <img
           src={coverImage}
-          alt={hit.title}
-          className="w-full h-[250px] lg:h-[180px] object-cover overflow-hidden"
+          alt={title}
+          className="w-full h-[180px] object-cover overflow-hidden"
         />
 
         <div className="flex flex-col gap-6 px-6 pb-4 pt-5 w-full h-fit flex-1">
@@ -27,30 +36,16 @@ export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
             <div className="flex flex-wrap gap-[6px]">
               <p
                 className={`${
-                  meetingType === "Virtual"
-                    ? "bg-ocean text-white"
-                    : "bg-[#EBEBEB]"
+                  format === "Online" ? "bg-ocean text-white" : "bg-[#EBEBEB]"
                 } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
               >
-                {meetingType}
+                {format}
               </p>
-              <p
-                className={`${
-                  meetingType === "Virtual"
-                    ? "bg-ocean text-white"
-                    : "bg-[#EBEBEB]"
-                } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
-              >
-                {meetingType}
+              <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
+                {topic}
               </p>
-              <p
-                className={`${
-                  meetingType === "Virtual"
-                    ? "bg-ocean text-white"
-                    : "bg-[#EBEBEB]"
-                } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
-              >
-                Español
+              <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
+                {language}
               </p>
             </div>
 
@@ -60,19 +55,21 @@ export const UpcomingSessionCard = ({ hit }: { hit: GroupHit }) => {
                 {/* Campus */}
                 <div className="flex items-center gap-2">
                   <Icon name="map" size={20} color="black" />
-                  <p className="text-sm font-semibold">{hit.campusName}</p>
+                  <p className="text-sm font-semibold">{hit.campus.name}</p>
                 </div>
 
                 {/* Meeting Day - Update */}
                 <div className="flex items-center gap-2">
                   <Icon name="calendarAlt" size={20} color="black" />
-                  <p className="text-sm font-semibold">June 29 - August 16</p>
+                  <p className="text-sm font-semibold">
+                    {formattedStartDate} - {formattedEndDate}
+                  </p>
                 </div>
 
                 {/* Meeting Time - Update */}
                 <div className="flex items-center gap-2">
                   <Icon name="timeFive" size={20} color="black" />
-                  <p className="text-sm font-semibold">Sunday at 8:00 AM</p>
+                  <p className="text-sm font-semibold">{schedule} EST</p>
                 </div>
               </div>
             </div>
