@@ -12,8 +12,8 @@ export function MoreEpisodes() {
     <MoreEpisodesSearch
       ALGOLIA_APP_ID={ALGOLIA_APP_ID}
       ALGOLIA_SEARCH_API_KEY={ALGOLIA_SEARCH_API_KEY}
-      show={show}
-      season={season}
+      podcastShow={show}
+      podcastSeason={season}
       currentEpisodeTitle={episode.title}
     />
   );

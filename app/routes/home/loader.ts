@@ -47,9 +47,15 @@ export const loader = async (): Promise<{
             authorArticles[index] as {
               title: string;
               content: string;
+              startDateTime: string;
               publishDate: string;
               coverImage: string;
               summary: string;
+              attributeValues: {
+                image: { value: string };
+                summary: { value: string };
+                url: { value: string };
+              };
             }[]
           ).map(
             (article): AuthorArticleProps => ({

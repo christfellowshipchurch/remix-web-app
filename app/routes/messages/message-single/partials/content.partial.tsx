@@ -21,12 +21,16 @@ export const MessageContent = () => {
             {message?.summary}
           </h2>
           <div className="flex gap-1 text-[#AAAAAA]">
-            <p>{message?.speaker?.fullName}</p>
-            <span>-</span>
-            <p>{formattedDate}</p>
+            {message?.speaker?.fullName && (
+              <p>
+                {message?.speaker?.fullName} <span>-</span>
+              </p>
+            )}
+
+            {formattedDate && <p>{formattedDate}</p>}
           </div>
         </div>
-        {/* TODO: Content - Update HTML Renderer */}
+        {/* TODO: Content - Update HTML Renderer? */}
         <HTMLRenderer html={message?.content} />
       </div>
     </div>

@@ -3,34 +3,41 @@ import { ContentItemHit } from "~/routes/search/types";
 
 export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
   const author = {
-    fullName: `${article.author.firstName} ${article.author.lastName}`,
-    photo: {
-      uri: "/logo.png",
-    },
+    fullName: `${
+      article.author.firstName && article.author.lastName
+        ? `${article.author.firstName} ${article.author.lastName}`
+        : `Christ Fellowship Team`
+    }`,
+
+    profileImage: `${
+      article?.author?.profileImage
+        ? article?.author?.profileImage
+        : "http://cloudfront.christfellowship.church/GetImage.ashx?guid=A62B2B1C-FDFF-44B6-A26E-F1E213285153"
+    }`,
   };
 
   return (
     <Link
       to={`/articles/${article.url || article.routing.pathname}`}
       prefetch="intent"
-      className="flex flex-col p-[2px] overflow-hidden max-w-[462px] w-full transition-all duration-300 hover:-translate-y-1"
+      className="flex flex-col p-[2px] overflow-hidden max-w-[456px] w-full transition-all duration-300 hover:-translate-y-1"
     >
       {/* Article Image */}
       <div className="relative">
         <img
           src={article.coverImage.sources[0].uri}
-          className="w-full h-auto object-cover rounded-t-lg"
+          className="w-full h-[200px] lg:h-[258px] xl:h-auto object-cover aspect-video object-center rounded-t-lg"
           alt={article.title}
         />
 
         {/* First Secondary Tag */}
-        <div className="absolute top-3 left-4 bg-[#EEEEEE] rounded-[4px] p-1">
-          {article.articleSecondaryTags[0] && (
+        {article.articleSecondaryCategories[0] && (
+          <div className="absolute top-3 left-4 bg-[#EEEEEE] rounded-[4px] p-1">
             <p className="text-xs font-semibold">
-              {article.articleSecondaryTags[0]}
+              {article.articleSecondaryCategories[0]}
             </p>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Article Content */}
@@ -47,8 +54,11 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
         <div className="flex gap-4 items-center">
           {/* Author Image */}
           <img
-            src={author?.photo?.uri}
-            alt="Article icon"
+            src={
+              author?.profileImage ||
+              "http://cloudfront.christfellowship.church/GetImage.ashx?guid=A62B2B1C-FDFF-44B6-A26E-F1E213285153"
+            }
+            alt="Author Profile Image"
             className="size-12 rounded-full object-cover"
           />
 
@@ -71,10 +81,10 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
                       }
                     )}
                   </p>
-                  {article.readTime && (
+                  {article.articleReadTime && (
                     <span className="flex">
                       <span className="mx-2 md:hidden lg:block">•</span>
-                      {article.readTime} min read
+                      {article.articleReadTime} min read
                     </span>
                   )}
                 </div>

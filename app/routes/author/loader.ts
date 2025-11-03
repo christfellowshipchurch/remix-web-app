@@ -105,7 +105,7 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
                   ),
                   coverImage:
                     createImageUrlFromGuid(
-                      article.attributeValues?.image?.value
+                      article.attributeValues?.image?.value || ""
                     ) || null,
                   summary: article.attributeValues?.summary?.value || "",
                   url: article.attributeValues?.url?.value || "",
@@ -237,7 +237,7 @@ export const getAuthorDetails = async (personId: string) => {
                   ),
                   coverImage:
                     createImageUrlFromGuid(
-                      article.attributeValues?.image?.value
+                      article.attributeValues?.image?.value || ""
                     ) || null,
                   summary: article.attributeValues?.summary?.value || "",
                   url: article.attributeValues?.url?.value || "",
