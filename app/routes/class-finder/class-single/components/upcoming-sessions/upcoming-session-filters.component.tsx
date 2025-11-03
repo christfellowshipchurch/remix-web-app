@@ -148,7 +148,6 @@ export function FilterDropdown({
   refinementClassName,
 }: FilterDropdownProps) {
   const buttonRef = useRef<HTMLDivElement>(null);
-  const [topPosition, setTopPosition] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -160,13 +159,6 @@ export function FilterDropdown({
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  useEffect(() => {
-    if (isOpen && buttonRef.current && isMobile) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setTopPosition(rect.bottom + 16);
-    }
-  }, [isOpen, isMobile]);
 
   return (
     <div
@@ -183,12 +175,7 @@ export function FilterDropdown({
         "cursor-pointer",
         "flex-shrink-0"
       )}
-      style={{
-        maxWidth: maxWidth,
-        ...(isOpen && topPosition > 0
-          ? { "--popup-top": `${topPosition}px` }
-          : {}),
-      }}
+      style={{ maxWidth: maxWidth }}
       onClick={onToggle}
     >
       <p>{title}</p>
@@ -201,16 +188,12 @@ export function FilterDropdown({
         showSection={isOpen}
         className={cn(
           "w-fit md:w-[330px]",
-          "fixed md:absolute left-0 right-0 md:right-1/2 md:translate-x-1/2",
+          "absolute left-0 right-0 md:right-1/2 md:translate-x-1/2",
           "top-0 md:top-[65px]",
           "z-50",
           refinementClassName
         )}
-        style={
-          isMobile && isOpen && topPosition > 0
-            ? { top: `${topPosition}px` }
-            : undefined
-        }
+        style={isMobile && isOpen ? { top: `65px` } : undefined}
       />
     </div>
   );
