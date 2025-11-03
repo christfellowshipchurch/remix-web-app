@@ -43,6 +43,23 @@ export type FAQItem = {
 };
 
 /**
+ * Represents FAQ data structure for mock data
+ */
+export type FAQ = {
+  id: string;
+  faqs: FAQItem[];
+};
+
+/**
+ * Represents Image Gallery data structure for mock data
+ */
+export type ImageGallery = {
+  id: string;
+  images: string[];
+  description?: string;
+};
+
+/**
  * Represents a collection card in the page builder, GroupType is one of the types that can be passed into here, make sure both have necesarry attributes
  */
 export type CollectionItem = {

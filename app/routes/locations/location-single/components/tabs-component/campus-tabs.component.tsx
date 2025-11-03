@@ -50,7 +50,7 @@ interface TabData {
 }
 
 interface CampusTabsProps {
-  tabs: ComponentType<unknown>[];
+  tabs: Array<ComponentType<any>>;
   setReminderVideo?: string;
   isOnline?: boolean;
 }
@@ -133,8 +133,10 @@ const CustomTabs = ({
             >
               {TabComponent && (
                 <TabComponent
-                  setReminderVideo={setReminderVideo}
-                  isOnline={isOnline}
+                  {...({
+                    setReminderVideo,
+                    isOnline,
+                  } as any)}
                 />
               )}
             </Tabs.Content>

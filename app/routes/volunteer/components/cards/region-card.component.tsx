@@ -3,6 +3,7 @@ import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
 import { useState } from "react";
 import { RegionCard as RegionCardType } from "../../types";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 export const RegionCard = ({
   title,
@@ -76,8 +77,21 @@ export const RegionCard = ({
 export const RegionCardWrapper = ({
   resource,
 }: {
-  resource: RegionCardType;
-}) => <RegionCard {...resource} />;
+  resource: CollectionItem;
+}) => {
+  // Convert CollectionItem to RegionCard format
+  const regionCard: RegionCardType = {
+    title: resource.name || "",
+    image: resource.image || "",
+    spotsLeft: 0,
+    description: resource.summary || "",
+    location: "",
+    date: "",
+    time: "",
+    href: resource.pathname || "",
+  };
+  return <RegionCard {...regionCard} />;
+};
 
 const RegionCardInfo = ({
   icon,

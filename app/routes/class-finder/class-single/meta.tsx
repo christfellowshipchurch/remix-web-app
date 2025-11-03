@@ -1,17 +1,8 @@
 import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
 
-interface ClassData {
-  className: string;
-}
-
-export const meta: MetaFunction<typeof loader> = ({
-  data,
-}: {
-  data: ClassData | null;
-}) => {
-  const classData = data as ClassData | null;
-  if (!classData) {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
     return [
       { title: "404 - Group Not Found" },
       {
@@ -22,7 +13,7 @@ export const meta: MetaFunction<typeof loader> = ({
   }
 
   // TODO: Get class title from data
-  const className = classData.className;
+  const className = data.className;
 
   return [
     { title: `${className} | Christ Fellowship Church` },

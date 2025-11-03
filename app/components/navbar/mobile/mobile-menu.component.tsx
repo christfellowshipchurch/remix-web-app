@@ -161,7 +161,7 @@ export default function MobileMenu({
           className={`h-full flex flex-col transition-opacity duration-500
             ${isSearchOpen ? "opacity-100" : "opacity-0"}`}
         >
-          <MobileSearch mode={mode} setIsSearchOpen={setIsSearchOpen} />
+          <MobileSearch setIsSearchOpen={setIsSearchOpen} />
         </div>
       </div>
     </div>

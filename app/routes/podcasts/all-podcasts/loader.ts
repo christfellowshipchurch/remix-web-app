@@ -29,24 +29,36 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
       title: string;
       content: string;
       attributeValues?: {
-        coverImage: { value: string };
-        apple: { value: string };
-        spotify: { value: string };
-        amazon: { value: string };
-        url: { value: string };
+        coverImage?: { value: string };
+        apple?: { value: string };
+        applePodcast?: { value: string };
+        spotify?: { value: string };
+        amazon?: { value: string };
+        amazonMusic?: { value: string };
+        showChannel?: { value: string };
+        youtube?: { value: string };
+        url?: { value: string };
       };
     }) => ({
       id: podcastShow.id || "",
       title: podcastShow.title || "",
       description: podcastShow.content || "",
-      coverImage: createImageUrlFromGuid(
-        podcastShow.attributeValues?.coverImage?.value
-      ),
-      apple: podcastShow.attributeValues?.applePodcast?.value || "",
+      coverImage: podcastShow.attributeValues?.coverImage?.value
+        ? createImageUrlFromGuid(
+            podcastShow.attributeValues.coverImage.value
+          )
+        : "",
+      apple:
+        podcastShow.attributeValues?.apple?.value ||
+        podcastShow.attributeValues?.applePodcast?.value ||
+        "",
       spotify: podcastShow.attributeValues?.spotify?.value || "",
-      amazon: podcastShow.attributeValues?.amazonMusic?.value || "",
-      episodesChannelGuid:
-        podcastShow.attributeValues?.showChannel?.value || "",
+      amazon:
+        podcastShow.attributeValues?.amazon?.value ||
+        podcastShow.attributeValues?.amazonMusic?.value ||
+        "",
+      youtube: podcastShow.attributeValues?.youtube?.value || "",
+      episodesChannelGuid: podcastShow.attributeValues?.showChannel?.value || "",
       url: podcastShow.attributeValues?.url?.value || "",
     })
   );

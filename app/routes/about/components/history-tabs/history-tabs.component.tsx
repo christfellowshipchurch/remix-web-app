@@ -81,7 +81,11 @@ function HistoryTabs() {
         <div className="flex flex-col justify-start h-full px-5 md:px-4 lg:px-0">
           {/* Desktop Timeline Navigation */}
           <TimelineNavigation
-            timelineData={timelineData}
+            timelineData={timelineData.map(({ year, title, body: description }) => ({
+              year,
+              title,
+              description,
+            }))}
             activeTab={activeTab}
             handleTabChange={handleTabChange}
           />

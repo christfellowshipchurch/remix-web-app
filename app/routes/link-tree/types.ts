@@ -1,4 +1,4 @@
-import { PageBuilderSection } from "../ministry-builder/types";
+import { PageBuilderSection } from "../page-builder/types";
 
 export type RockLinkTreeData = {
   id: string;

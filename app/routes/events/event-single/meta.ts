@@ -1,13 +1,9 @@
 import type { MetaFunction } from "react-router-dom";
-// import { loader } from "./loader";
+import { loader } from "./loader";
+import type { LoaderReturnType } from "./loader";
 
-interface EventData {
-  title: string;
-  summary: string;
-}
-
-export const meta: MetaFunction = ({ data }: { data: EventData | null }) => {
-  const eventData = data as EventData | null;
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const eventData = data as LoaderReturnType | undefined;
   if (!eventData) {
     return [
       { title: "404 - Event Not Found" },

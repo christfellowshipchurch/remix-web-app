@@ -65,7 +65,15 @@ export function VolunteerCommunity() {
             <CardCarousel
               layout="arrowsLeft"
               CardComponent={RegionCardWrapper}
-              resources={mockRegionData}
+              resources={mockRegionData.map((card) => ({
+                id: "",
+                contentChannelId: "",
+                contentType: "PAGE_BUILDER" as const,
+                name: card.title,
+                summary: card.description,
+                image: card.image,
+                pathname: card.href,
+              }))}
             />
           </div>
         </div>

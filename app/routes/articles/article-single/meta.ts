@@ -1,12 +1,9 @@
 import type { MetaFunction } from "react-router-dom";
+import type { loader } from "./loader";
+import type { LoaderReturnType } from "./loader";
 
-interface ArticleData {
-  title: string;
-  summary: string;
-}
-
-export const meta: MetaFunction = ({ data }: { data: ArticleData | null }) => {
-  const articleData = data as ArticleData | null;
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const articleData = data as LoaderReturnType | undefined;
   if (!articleData) {
     return [
       { title: "404 - Article Not Found" },
