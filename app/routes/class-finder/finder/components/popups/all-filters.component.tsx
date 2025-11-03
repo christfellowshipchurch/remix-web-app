@@ -5,10 +5,12 @@ import { FiltersHeader } from "~/routes/group-finder/components/filters/filters-
 import { FiltersFooter } from "~/routes/group-finder/components/filters/filters-footer.component";
 
 export const AllClassFiltersPopup = ({
+  hideTopic = false,
   onHide,
   coordinates,
   setCoordinates,
 }: {
+  hideTopic?: boolean;
   onHide: () => void;
   coordinates: {
     lat: number | null;
@@ -41,7 +43,7 @@ export const AllClassFiltersPopup = ({
   };
 
   return (
-    <div className="bg-white flex flex-col shadow-md w-full md:overflow-y-scroll md:max-h-[85vh]">
+    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll md:max-h-[85vh]">
       {/* Title Section */}
       <FiltersHeader onHide={onHide} />
 
@@ -58,13 +60,17 @@ export const AllClassFiltersPopup = ({
           coordinates={coordinates}
           setCoordinates={setCoordinates}
         />
-        <AllFiltersFilterSection
-          title="Topic"
-          attribute="topic"
-          showSection={showTopics}
-          setShowSection={setShowTopics}
-          isTopics={true}
-        />
+
+        {!hideTopic && (
+          <AllFiltersFilterSection
+            title="Topic"
+            attribute="topic"
+            showSection={showTopics}
+            setShowSection={setShowTopics}
+            isTopics={true}
+          />
+        )}
+
         <AllFiltersFilterSection
           title="Language"
           attribute="language"

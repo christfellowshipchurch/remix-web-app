@@ -64,7 +64,7 @@ export const ClassSearch = () => {
 
   return (
     <div
-      className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
+      className="flex flex-col gap-4 w-screen pt-12 pagination-scroll-to"
       id="search"
     >
       <InstantSearch

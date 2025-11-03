@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { UpcomingSessionsSection } from "./partials/upcoming-sections.partial";
+import { UpcomingSessionMobileSection } from "./partials/upcoming-session-mobile.partial";
 import { createSearchClient } from "~/lib/create-search-client";
 import { ClassHitType } from "../types";
 
@@ -73,8 +74,11 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
       </div>
 
       <div className="w-full flex flex-col">
-        {/* Upcoming Sessions Section */}
+        {/* Desktop Upcoming Sessions Section */}
         <UpcomingSessionsSection />
+
+        {/* Mobile Upcoming Sessions Section */}
+        <UpcomingSessionMobileSection />
 
         {/* FAQs */}
         <div className="content-padding w-full flex flex-col items-center">

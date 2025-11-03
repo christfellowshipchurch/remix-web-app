@@ -55,7 +55,7 @@ export const AllGroupFiltersPopup = ({
   };
 
   return (
-    <div className="bg-white flex flex-col shadow-md w-full md:overflow-y-scroll md:max-h-[85vh]">
+    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll md:max-h-[85vh]">
       {/* Title Section */}
       <FiltersHeader onHide={onHide} />
 

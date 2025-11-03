@@ -7,8 +7,9 @@ import { LoaderReturnType } from "../loader";
 import { useState } from "react";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
-import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
+
 import { useResponsive } from "~/hooks/use-responsive";
+import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
 
 export const UpcomingSessionsSection = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classUrl } =
@@ -26,7 +27,10 @@ export const UpcomingSessionsSection = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 w-full md:pt-12 relative" id="search">
+    <div
+      className="hidden md:flex flex-col gap-4 w-full md:pt-12 relative"
+      id="search"
+    >
       <InstantSearch
         indexName="dev_Classes"
         searchClient={searchClient}
