@@ -4,7 +4,7 @@ import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
 import { MessageType } from "../types";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 import { attributeProps, attributeValuesProps } from "~/lib/types/rock-types";
-import { RockContentItem } from "~/lib/types/rock-types";
+import { RockContentChannelItem } from "~/lib/types/rock-types";
 
 export type LoaderReturnType = {
   message: MessageType;
@@ -14,9 +14,9 @@ export type LoaderReturnType = {
 };
 
 export const mapRockDataToMessage = async (
-  rockItem: RockContentItem
+  rockItem: RockContentChannelItem
 ): Promise<MessageType> => {
-  const { attributeValues, attributes, image, startDateTime, expireDateTime } =
+  const { attributeValues, attributes, startDateTime, expireDateTime } =
     rockItem;
   const coverImage = getImages({
     attributeValues: attributeValues as attributeValuesProps,
@@ -85,7 +85,7 @@ export const mapRockDataToMessage = async (
     title: rockItem.title,
     content: rockItem.content || "",
     summary: attributeValues?.summary?.value || "",
-    image: createImageUrlFromGuid(image || "") || "",
+    image: createImageUrlFromGuid(attributeValues?.image?.value || "") || "",
     video:
       (await fetchWistiaDataFromRock(attributeValues?.media?.value || ""))
         .sourceKey || "",
