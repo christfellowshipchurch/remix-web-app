@@ -12,6 +12,10 @@ import BackBanner from "~/components/back-banner";
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
 
+  // TODO: Add logic for click through registration as well later, right now we're only showing the session registration
+  const showRegistration =
+    data.sessionScheduleCards && data.sessionScheduleCards.length > 0;
+
   return (
     <>
       <div className="flex flex-col items-center bg-white">
@@ -35,7 +39,9 @@ export const EventSinglePage: React.FC = () => {
           sections={[
             { id: "about", label: "About" },
             { id: "faq", label: "FAQ" },
-            // { id: "register", label: "Register" },
+            ...(showRegistration
+              ? [{ id: "register", label: "Register" }]
+              : []),
           ]}
         />
 
@@ -50,9 +56,7 @@ export const EventSinglePage: React.FC = () => {
 
         <EventSingleFAQ title={data.title} items={data.faqItems} />
 
-        {data.sessionScheduleCards && data.sessionScheduleCards.length > 0 && (
-          <RegistrationSection />
-        )}
+        {showRegistration && <RegistrationSection />}
       </div>
     </>
   );

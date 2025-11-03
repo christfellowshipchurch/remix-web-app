@@ -48,9 +48,9 @@ const SessionRegistrationCard = ({
   card: SessionRegistrationCardType;
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-5 flex flex-col text-left w-[248px] h-[374px]">
+    <div className="bg-white rounded-lg shadow-sm p-5 flex flex-col text-left w-[248px] h-[374px] relative">
       {/* Location Section */}
-      <div className="flex gap-4 items-start">
+      <div className="flex flex-2 gap-4 items-start">
         <div className="bg-navy-subdued rounded-lg p-3 flex-shrink-0">
           <Icon name={card.icon} color="currentColor" />
         </div>
@@ -63,7 +63,7 @@ const SessionRegistrationCard = ({
       </div>
 
       {/* Event Details Section */}
-      <div className="flex flex-col gap-3 mt-12">
+      <div className="flex flex-col flex-3 gap-3">
         {/* Date */}
         <div className="flex items-center gap-3">
           <Icon
@@ -95,7 +95,7 @@ const SessionRegistrationCard = ({
               className="flex-shrink-0 text-ocean"
             />
             <p className="text-sm text-gray-500">
-              Programs start at {card.programTime}
+              Program starts at {card.programTime}
             </p>
           </div>
         )}
@@ -114,7 +114,7 @@ const SessionRegistrationCard = ({
       </div>
 
       {/* Get Tickets Button */}
-      <div className="mt-auto">
+      <div className="mt-auto absolute bottom-0 left-0 w-full px-4 pb-4">
         <Button intent="primary" href={card.url} size="md" className="w-full">
           Get Tickets
         </Button>
