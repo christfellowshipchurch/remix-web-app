@@ -43,7 +43,7 @@ export const AllClassFiltersPopup = ({
   };
 
   return (
-    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll md:max-h-[85vh]">
+    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll min-h-[55vh] md:min-h-0 md:max-h-[85vh]">
       {/* Title Section */}
       <FiltersHeader onHide={onHide} />
 
@@ -76,7 +76,6 @@ export const AllClassFiltersPopup = ({
           attribute="language"
           showSection={showLanguage}
           setShowSection={setShowLanguage}
-          hideBorder={true}
         />
       </div>
 

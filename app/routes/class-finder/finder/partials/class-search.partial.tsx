@@ -134,7 +134,7 @@ export const ClassSearch = () => {
               className={cn(
                 "absolute transition-all duration-300",
                 isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(100%)]"
+                  ? "z-4 opacity-100 top-[calc(102%)]"
                   : "-z-1 opacity-0"
               )}
             >

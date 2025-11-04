@@ -145,7 +145,7 @@ export const GroupSearch = () => {
               className={cn(
                 "absolute transition-all duration-300 w-full",
                 isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(100%_+_24px)]"
+                  ? "z-4 opacity-100 top-[calc(92%_+_24px)]"
                   : "-z-1 opacity-0"
               )}
             >

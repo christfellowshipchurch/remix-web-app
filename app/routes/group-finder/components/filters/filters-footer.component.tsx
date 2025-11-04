@@ -8,7 +8,7 @@ interface FiltersFooterProps {
 
 export const FiltersFooter = ({ onHide, onClearAll }: FiltersFooterProps) => {
   return (
-    <div className="flex justify-between md:justify-end items-center gap-4 px-4 py-4 border-t border-black w-full">
+    <div className="mt-auto md:mt-0 flex justify-between md:justify-end items-center gap-4 px-4 py-4 border-t border-black w-full">
       <div
         className="cursor-pointer text-text-secondary hover:text-ocean transition-colors duration-300"
         onClick={() => {
