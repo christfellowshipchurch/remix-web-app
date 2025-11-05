@@ -53,7 +53,10 @@ export const FeatureSection: FC<{
     url: string;
   }[];
 }> = ({ data, customCtas }) => {
-  const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  const ctas = parseRockKeyValueList(data.callsToAction ?? "").map((cta) => ({
+    title: cta.key,
+    url: cta.value,
+  }));
   const slicedCtas = ctas.slice(0, 2);
   const grayBg = data.backgroundColor === "GRAY" || null;
 

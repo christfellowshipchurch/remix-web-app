@@ -9,7 +9,7 @@ export function AChanceSection() {
         className={cn(
           "w-screen text-2xl md:text-[40px] font-extrabold text-center text-pretty",
           "sticky lg:absolute top-0 -z-20",
-          "pt-10 md:pt-32 lg:pt-48",
+          "pt-10 md:pt-18 lg:pt-24",
           "mb-20 lg:mb-32",
           "md:block",
           "px-3",
@@ -19,7 +19,7 @@ export function AChanceSection() {
         <div
           className={cn(
             "fixed left-0 right-0 top-0 bg-gradient-to-b from-white via-white to-transparent -z-10",
-            "h-36 sm:h-72 md:h-96"
+            "h-36 sm:h-72 md:h-64 lg:h-96"
           )}
         ></div>
         Think of it less as a chore and more as...{" "}

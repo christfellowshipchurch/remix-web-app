@@ -4,7 +4,7 @@ import { AllFiltersFilterSection } from "./filter-section.component";
 import { FiltersHeader } from "./filters-header.component";
 import { FiltersFooter } from "./filters-footer.component";
 
-export const AllFiltersPopup = ({
+export const AllGroupFiltersPopup = ({
   onHide,
   ageInput,
   setAgeInput,
@@ -55,7 +55,7 @@ export const AllFiltersPopup = ({
   };
 
   return (
-    <div className="bg-white flex flex-col pb-4 shadow-md w-full md:overflow-y-scroll md:max-h-[85vh]">
+    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll md:max-h-[85vh]">
       {/* Title Section */}
       <FiltersHeader onHide={onHide} />
 

@@ -4,16 +4,16 @@ import { Breadcrumbs } from "~/components";
 
 import { ClassSingleBasicContent } from "./components/basic-content.component";
 import { ClassFAQ } from "./components/faq.component";
-import { InstantSearch } from "react-instantsearch";
+import { Configure, InstantSearch, useHits } from "react-instantsearch";
 import { useMemo } from "react";
-import { GroupType } from "../../group-finder/types";
 import { Button } from "~/primitives/button/button.primitive";
-import { SearchWrapper } from "./components/search-wrapper.component";
 import { Icon } from "~/primitives/icon/icon";
 import { UpcomingSessionsSection } from "./partials/upcoming-sections.partial";
+import { UpcomingSessionMobileSection } from "./partials/upcoming-session-mobile.partial";
 import { createSearchClient } from "~/lib/create-search-client";
+import { ClassHitType } from "../types";
 
-export const ClassNotFound = () => {
+const ClassNotFound = () => {
   return (
     <div className="flex flex-col items-center gap-6 py-20">
       <h2 className="text-2xl font-bold text-center">Class Not Found</h2>
@@ -28,9 +28,8 @@ export const ClassNotFound = () => {
   );
 };
 
-export const ClassSingleContent = ({ hit }: { hit: GroupType }) => {
-  const topics = hit.topics;
-  const { summary } = hit;
+const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
+  const { subtitle, classType, topic } = hit;
 
   if (!hit) {
     return <ClassNotFound />;
@@ -38,7 +37,11 @@ export const ClassSingleContent = ({ hit }: { hit: GroupType }) => {
 
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      {/* Hero - TODO */}
+      <img
+        src={hit.coverImage.sources[0].uri}
+        alt={hit.title}
+        className="w-full h-[250px] lg:h-[500px] object-cover overflow-hidden flex-shrink-0"
+      />
 
       {/* Content */}
       <div className="content-padding w-full flex flex-col items-center">
@@ -61,14 +64,21 @@ export const ClassSingleContent = ({ hit }: { hit: GroupType }) => {
 
           {/* Basic Content */}
           <div className="w-full flex flex-col items-center">
-            <ClassSingleBasicContent tags={topics} summary={summary} />
+            <ClassSingleBasicContent
+              topic={topic}
+              summary={subtitle}
+              classTitle={classType}
+            />
           </div>
         </div>
       </div>
 
       <div className="w-full flex flex-col">
-        {/* Upcoming Sessions Section */}
+        {/* Desktop Upcoming Sessions Section */}
         <UpcomingSessionsSection />
+
+        {/* Mobile Upcoming Sessions Section */}
+        <UpcomingSessionMobileSection />
 
         {/* FAQs */}
         <div className="content-padding w-full flex flex-col items-center">
@@ -82,7 +92,7 @@ export const ClassSingleContent = ({ hit }: { hit: GroupType }) => {
 };
 
 export function ClassSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, className } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classUrl } =
     useLoaderData<LoaderReturnType>();
 
   const searchClient = useMemo(
@@ -92,20 +102,43 @@ export function ClassSinglePage() {
 
   return (
     <InstantSearch
-      indexName="dev_daniel_Groups"
+      indexName="dev_Classes"
       searchClient={searchClient}
       initialUiState={{
-        dev_daniel_Groups: {
-          query: `${className}`,
+        dev_Classes: {
+          query: `${classUrl}`,
         },
       }}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
-      key={className}
+      key={classUrl}
     >
       {/* Name of Class */}
-      <SearchWrapper className={className} />
+      <Configure
+        hitsPerPage={1}
+        queryType="prefixNone"
+        removeWordsIfNoResults="none"
+        typoTolerance={false}
+        exactOnSingleWordQuery="word"
+        filters={`classTypeUrl:"${classUrl}"`}
+      />
+
+      <CustomClassSingleHits />
     </InstantSearch>
   );
 }
+
+const CustomClassSingleHits = () => {
+  const { items } = useHits<ClassHitType>();
+
+  return (
+    <div className="w-full">
+      {items.length > 0 ? (
+        items.map((hit) => <ClassSingleContent key={hit.objectID} hit={hit} />)
+      ) : (
+        <ClassNotFound />
+      )}
+    </div>
+  );
+};

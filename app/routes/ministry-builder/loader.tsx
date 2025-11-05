@@ -46,8 +46,11 @@ export const loader: LoaderFunction = async ({ params }) => {
         "",
       content: pageData.content,
       callsToAction:
-        parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value) ||
-        [],
+        parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value)
+          ?.map((cta) => ({
+            title: cta.key,
+            url: cta.value,
+          })) || [],
       sections: mappedChildren,
     };
 
