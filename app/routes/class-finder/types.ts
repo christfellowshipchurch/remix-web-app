@@ -1,32 +1,32 @@
-// TODO: This is a temporary type for the class finder.
-// It will be replaced with the actual type from the Algolia API.
+import { ImageSource } from "../group-finder/types";
 
-export interface ClassType {
-  rockItemId: number;
-  title: string;
-  summary: string;
-  dateTime: string;
-  leaders: {
-    firstName: string;
-    lastName: string;
-    photo: {
-      uri: string;
-    };
-  }[];
-  priority: number;
-  action: string;
-  campusName: string;
-  meetingTime: string;
-  meetingDay: string;
-  meetingType: string;
-  preferences: string[];
-  coverImage: {
-    sources: {
-      uri: string;
-    }[];
-  };
-  _typename: string;
+export interface ClassHitType {
   objectID: string;
+  id: string;
+  title: string; // this will either be Rock Class Title
+  classType: string;
+  classTypeUrl: string;
+  subtitle: string; // this will be the subtitle of the class inside Class Preference Define Type
+  summary: string; // this will be the summary of the class inside the individual Classes
+  coverImage: ImageSource;
+  campus: {
+    name: string;
+  };
+  _geoloc: {
+    lat: number;
+    lng: number;
+  }; // will be coordinates of the campus
+  startDate: string;
+  endDate: string;
+  schedule: string; // Sunday at 8:00 AM
+  topic:
+    | "Care & Recovery"
+    | "Finances"
+    | "Relationships"
+    | "Parenting"
+    | "Spiritual Growth";
+  language: "English" | "Español" | "Multiple Languages";
+  format: "In-Person" | "Online";
   _highlightResult: {
     title: {
       value: string;

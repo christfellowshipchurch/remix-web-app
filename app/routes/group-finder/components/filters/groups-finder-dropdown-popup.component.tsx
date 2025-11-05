@@ -13,6 +13,7 @@ export const GroupsFinderDropdwnPopup = ({
   onHide,
   ageInput,
   setAgeInput,
+  style,
 }: {
   popupTitle: string;
   className?: string;
@@ -45,6 +46,7 @@ export const GroupsFinderDropdwnPopup = ({
   onHide: () => void;
   ageInput?: string;
   setAgeInput?: (age: string) => void;
+  style?: React.CSSProperties;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -53,11 +55,12 @@ export const GroupsFinderDropdwnPopup = ({
       ref={ref}
       className={cn(
         "cursor-default absolute top-[65px] right-1/2 translate-x-1/2 z-4",
-        className,
         "w-[330px] xl:w-[380px] flex flex-col gap-4 bg-white",
         "rounded-[1rem] border border-neutral-lighter overflow-hidden",
-        showSection ? "z-4 opacity-100" : "-left-9999 -z-1 opacity-0"
+        showSection ? "z-4 opacity-100" : "-left-9999 -z-1 opacity-0",
+        className
       )}
+      style={style}
     >
       <div className="flex items-center justify-between p-4 pb-1">
         <h3 className="text-xl font-bold text-black">{popupTitle}</h3>
