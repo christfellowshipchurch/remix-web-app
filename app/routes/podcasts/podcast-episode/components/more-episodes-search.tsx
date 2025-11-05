@@ -1,34 +1,24 @@
 import { useMemo } from "react";
-import { InstantSearch, Hits, Configure, useHits } from "react-instantsearch";
+import { InstantSearch, Hits, Configure } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 import { Link } from "react-router-dom";
-import lodash from "lodash";
 import { ContentItemHit } from "~/routes/search/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { HitsWrapper } from "~/components/hits-wrapper";
 
 interface MoreEpisodesSearchProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
-  show: string;
-  season: string;
+  podcastShow: string;
+  podcastSeason: string;
   currentEpisodeTitle?: string;
 }
 
-const { kebabCase } = lodash;
-
-// Component that checks if there are hits and conditionally renders content
-const HitsWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { hits } = useHits();
-
-  // Don't render anything if there are no hits
-  if (hits.length === 0) {
-    return null;
-  }
-
-  return <>{children}</>;
-};
-
 const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
+  const cardUrl = `/podcasts/${hit.podcastShow
+    ?.toLowerCase()
+    .replace(/ /g, "-")}/${hit.url}`;
+
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">
@@ -41,7 +31,7 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
           className="w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]"
         />
         <Link
-          to={`/podcasts/${kebabCase(hit.title)}/${hit.title}`}
+          to={cardUrl}
           className="absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 transition-colors duration-300"
           style={{
             boxShadow:
@@ -53,7 +43,7 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          Season {hit.seasonNumber} | Episode {hit.episodeNumber}
+          Season {hit.podcastSeasonNumber} | Episode {hit.podcastEpisodeNumber}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
@@ -64,8 +54,8 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 export const MoreEpisodesSearch = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
-  show,
-  season,
+  podcastShow,
+  podcastSeason,
   currentEpisodeTitle,
 }: MoreEpisodesSearchProps) => {
   const searchClient = useMemo(
@@ -74,13 +64,13 @@ export const MoreEpisodesSearch = ({
   );
 
   // Filter for episodes from the same show and season, excluding the current episode
-  const filter = `contentType:"Podcast" AND show:"${show}" AND seasonNumber:${season}${
+  const filter = `contentType:"Podcast" AND podcastShow:"${podcastShow}" AND podcastSeasonNumber:${podcastSeason}${
     currentEpisodeTitle ? ` AND NOT title:"${currentEpisodeTitle}"` : ""
   }`;
 
   return (
     <InstantSearch
-      indexName="dev_daniel_contentItems"
+      indexName="dev_contentItems"
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

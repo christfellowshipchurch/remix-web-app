@@ -9,6 +9,7 @@ export function MessageSinglePage() {
     <div className="flex flex-col items-center bg-gradient-to-br from-[#050A0D] to-[#5B5348] text-white pt-32">
       <MessageVideo />
       <MessageContent />
+
       <div className="content-padding">
         <div className="w-full max-w-screen-content">
           <div className="mt-24 pb-24">
@@ -28,8 +29,8 @@ export function MessageSinglePage() {
           </div>
         </div>
       </div>
-      <InThisSeries />
 
+      <InThisSeries />
       <RelatedMessages />
     </div>
   );
