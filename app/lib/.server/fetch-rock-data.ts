@@ -1,5 +1,4 @@
-import { createImageUrlFromGuid, normalize } from "~/lib/utils";
-import { attributeProps, attributeValuesProps } from "../types/rock-types";
+import { normalize } from "~/lib/utils";
 import redis from "./redis-config";
 interface RockDataRequest {
   endpoint: string;
@@ -216,38 +215,6 @@ export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
   }
 
   return response.status;
-};
-
-// Todo : move to utils
-export const attributeIsImage = ({
-  key,
-  attributeValues,
-}: {
-  key: string;
-  attributeValues: attributeValuesProps;
-}): boolean => {
-  return (
-    key.toLowerCase().includes("image") &&
-    typeof attributeValues[key].value === "string"
-  ); // looks like an image url
-};
-
-export const getImages = ({
-  attributeValues,
-  attributes,
-}: {
-  attributeValues: attributeValuesProps;
-  attributes: attributeProps;
-}) => {
-  const imageKeys = Object.keys(attributes).filter((key) =>
-    attributeIsImage({
-      key,
-      attributeValues,
-    })
-  );
-  return imageKeys.map((key) =>
-    createImageUrlFromGuid(attributeValues[key].value)
-  );
 };
 
 /**

@@ -203,7 +203,10 @@ async function mapRockEpisodeToPodcastEpisode(
     youtube: rockEpisode?.attributeValues?.youtube?.value || "",
     resources: parseRockKeyValueList(
       rockEpisode?.attributeValues?.additionalResources?.value || ""
-    ),
+    ).map((resource) => ({
+      title: resource.key,
+      url: resource.value,
+    })),
   };
 }
 

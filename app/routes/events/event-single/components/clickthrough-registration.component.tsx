@@ -5,7 +5,7 @@ import Icon from "~/primitives/icon";
 
 // TODO: This component is pending some more thought and work around registering for events since it can very a lot per event
 
-export const ResgisterPartial = ({ title }: { title: string }) => {
+export const ClickThroughRegistration = ({ title }: { title: string }) => {
   const [step, setStep] = useState(1);
   // const [_selectedCampus, _setSelectedCampus] = useState("Select Campus");
   // const [_selectedDate, _setSelectedDate] = useState("Select a Date");

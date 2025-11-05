@@ -8,7 +8,10 @@ import { getCtaStyles } from "../builder-utils";
 
 // CTA Card Layout
 export const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
-  const ctas = parseRockKeyValueList(data.callsToAction ?? "");
+  const ctas = parseRockKeyValueList(data.callsToAction ?? "").map((cta) => ({
+    title: cta.key,
+    url: cta.value,
+  }));
   const { isDark, getButtonIntent, getButtonClassName } = getCtaStyles(data, 2);
 
   return (
