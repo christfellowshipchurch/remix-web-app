@@ -30,7 +30,9 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
       )}
       aria-label={data.name}
     >
-      <h2 className="heading-h2">{data.name}</h2>
+      <h2 className="text-2xl md:text-4xl lg:text-[52px] font-extrabold leading-tight">
+        {data.name}
+      </h2>
       <HTMLRenderer
         className={cn("max-w-3xl text-pretty", {
           "text-text-alternate": isDark,

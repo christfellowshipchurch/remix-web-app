@@ -1,11 +1,10 @@
 import { cn } from "~/lib/utils";
 import {
   Carousel,
+  CarouselArrows,
   CarouselContent,
   CarouselDots,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "~/primitives/shadcn-primitives/carousel";
 import { beliefsData } from "../about.data";
 
@@ -62,25 +61,23 @@ export function BeliefsCarousel({
           </CarouselContent>
           <div
             className={cn(
-              "flex px-6 items-center justify-between h-18 w-full",
+              "flex px-6 items-center justify-between h-18 w-full relative",
               tabBgClass ? tabBgClass : "bg-dark-navy"
             )}
           >
-            <CarouselDots
-              activeClassName="bg-ocean"
-              inactiveClassName="bg-neutral-lighter"
-            />
-            <div className="relative flex mr-6">
-              <CarouselPrevious
-                className="cursor-pointer hover:bg-white/20 border-white disabled:border-neutral-light"
-                fill="white"
-                disabledFill="#AAAAAA"
+            <div className="absolute h-12 top-7 left-4">
+              <CarouselDots
+                activeClassName="bg-ocean"
+                inactiveClassName="bg-neutral-lighter"
               />
-              <CarouselNext
-                className="-left-2 cursor-pointer hover:bg-white/20 border-white disabled:border-neutral-light"
-                fill="white"
-                disabledFill="#AAAAAA"
-              />
+            </div>
+
+            <div
+              className={cn(
+                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28"
+              )}
+            >
+              <CarouselArrows arrowStyles="text-white border-white hover:text-neutral-light hover:border-neutral-light bg-transparent transition-colors duration-300" />
             </div>
           </div>
         </Carousel>

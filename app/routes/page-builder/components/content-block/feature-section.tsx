@@ -63,7 +63,7 @@ export const FeatureSection: FC<{
   return (
     <section
       className={cn(
-        "content-padding py-16",
+        "content-padding py-12 md:py-16",
         grayBg ? "bg-gray" : "bg-transparent"
       )}
       aria-label={data.name}
@@ -97,7 +97,7 @@ export const FeatureSection: FC<{
             {slicedCtas.map((cta, idx) => (
               <Button
                 linkClassName="w-full px-6 sm:w-auto sm:px-0"
-                className="font-normal w-full"
+                className="font-normal w-full rounded-[8px]"
                 intent={
                   slicedCtas.length > 1 && idx === 0 ? "white" : "primary"
                 }
@@ -110,7 +110,7 @@ export const FeatureSection: FC<{
             {customCtas?.map((cta, idx) => (
               <Button
                 linkClassName="w-full px-6 sm:w-auto sm:px-0"
-                className="font-normal w-full"
+                className="font-normal w-full rounded-[8px] "
                 intent={"secondary"}
                 key={idx}
                 href={cta.url}

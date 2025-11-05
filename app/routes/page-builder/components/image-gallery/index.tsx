@@ -76,15 +76,19 @@ const ImageGalleryComponent = ({ data }: { data: string[] | undefined }) => {
           "lg:mt-6 lg:pb-0": data.length < 4,
         })}
       >
-        <div className="absolute h-8 top-4 left-0">
+        <div className="absolute h-12 top-7 left-0">
           <CarouselDots
-            activeClassName="bg-black"
+            activeClassName="bg-ocean"
             inactiveClassName="bg-neutral-lighter"
           />
         </div>
 
-        <div className={cn("absolute h-8 right-24")}>
-          <CarouselArrows arrowStyles="text-black border-black hover:text-black hover:border-black bg-transparent" />
+        <div
+          className={cn(
+            "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28"
+          )}
+        >
+          <CarouselArrows />
         </div>
       </div>
     </Carousel>

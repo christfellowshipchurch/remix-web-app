@@ -164,7 +164,7 @@ export const CardCarousel = ({
       >
         {layout === "arrowsLeft" ? (
           <>
-            <div className={cn("absolute h-8 left-0")}>
+            <div className={cn("absolute h-12 left-0")}>
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"
@@ -174,7 +174,7 @@ export const CardCarousel = ({
               />
             </div>
 
-            <div className="absolute h-8 top-4 right-8">
+            <div className="absolute h-12 top-7 right-44 lg:right-44 2xl:right-36 3xl:right-28">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"
@@ -183,7 +183,7 @@ export const CardCarousel = ({
           </>
         ) : (
           <>
-            <div className="absolute h-8 top-4 left-0">
+            <div className="absolute h-12 top-7 left-0">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"
@@ -192,7 +192,7 @@ export const CardCarousel = ({
 
             <div
               className={cn(
-                "absolute h-8 right-24 lg:right-40 2xl:right-32 3xl:right-24"
+                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28"
               )}
             >
               <CarouselArrows
