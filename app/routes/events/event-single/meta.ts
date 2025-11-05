@@ -1,13 +1,9 @@
 import type { MetaFunction } from "react-router-dom";
-// import { loader } from "./loader";
+import { loader } from "./loader";
+import { EventSinglePageType } from "./types";
 
-interface EventData {
-  title: string;
-  summary: string;
-}
-
-export const meta: MetaFunction = ({ data }: { data: EventData | null }) => {
-  const eventData = data as EventData | null;
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const eventData = data as EventSinglePageType | undefined;
   if (!eventData) {
     return [
       { title: "404 - Event Not Found" },
@@ -20,6 +16,6 @@ export const meta: MetaFunction = ({ data }: { data: EventData | null }) => {
 
   return [
     { title: `${eventData.title} | Christ Fellowship Church` },
-    { name: "description", content: eventData.summary },
+    { name: "description", content: eventData.subtitle },
   ];
 };

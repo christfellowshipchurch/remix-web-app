@@ -18,8 +18,13 @@ interface CampusInfoProps {
   };
   serviceTimes: string;
   weekdaySchedule?: {
-    [key: string]: string[];
-  };
+    day: string;
+    events: {
+      event: string;
+      time: string;
+      url: string;
+    }[];
+  }[];
   phoneNumber: string;
   additionalInfo: string[];
 }
@@ -115,7 +120,9 @@ export const CampusInfo = ({
             {/* Desktop CTAs */}
             <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
               <CTAs />
-              <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+              {weekdaySchedule && weekdaySchedule.length > 0 && (
+                <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+              )}
             </div>
           </div>
         </div>
@@ -131,7 +138,9 @@ export const CampusInfo = ({
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
           <CTAs />
-          <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+          {weekdaySchedule && weekdaySchedule.length > 0 && (
+            <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+          )}
         </div>
       </div>
     </div>

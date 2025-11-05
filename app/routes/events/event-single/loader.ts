@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "react-router-dom";
 import { EventSinglePageType } from "./types";
-import { RockContentItem } from "~/lib/types/rock-types";
+import { RockContentChannelItem } from "~/lib/types/rock-types";
 import {
   createImageUrlFromGuid,
   parseRockKeyValueList,
@@ -11,7 +11,9 @@ import { fetchEventData, mapSessionScheduleCards } from "./utils";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const eventPath = params?.path || "";
-  const eventData: RockContentItem | null = await fetchEventData(eventPath);
+  const eventData: RockContentChannelItem | null = await fetchEventData(
+    eventPath
+  );
 
   if (!eventData) {
     throw new Response("Event not found at: /events/" + eventPath, {

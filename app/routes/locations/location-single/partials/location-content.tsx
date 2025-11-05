@@ -58,7 +58,9 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
       />
       <CampusTabs
         tabs={[
-          SundayDetails,
+          (props: { setReminderVideo?: string; isOnline?: boolean }) => (
+            <SundayDetails {...props} setReminderVideo={setReminderVideo || ""} />
+          ),
           () => (
             <AboutUs
               campusPastor={campusPastor}
@@ -114,7 +116,7 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
       />
       <CampusTabs
         tabs={[
-          SundayDetails,
+          (props) => <SundayDetails {...props} setReminderVideo="" />,
           () => (
             <AboutUs
               campusPastor={campusPastor}

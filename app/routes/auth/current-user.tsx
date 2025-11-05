@@ -9,6 +9,7 @@ import {
 } from "~/lib/.server/error-types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { User } from "~/providers/auth-provider";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 
 export const currentUser = async (token: string) => {
   try {
@@ -29,22 +30,55 @@ export const currentUser = async (token: string) => {
       throw new AuthenticationError("rockCookie is undefined");
     }
 
-    const { id, fullName, phoneNumbers, photo, email } = await getCurrentPerson(
-      rockCookie
-    );
+    const person = await getCurrentPerson(rockCookie);
+    const { id, firstName, lastName, email } = person;
+
+    // Fetch phone numbers separately
+    const phoneNumbers = await fetchRockData({
+      endpoint: "PhoneNumbers",
+      queryParams: {
+        $filter: `PersonId eq ${id}`,
+      },
+      customHeaders: {
+        Cookie: rockCookie,
+      },
+      cache: false,
+    });
+
+    // Fetch photo separately
+    const personWithPhoto = await fetchRockData({
+      endpoint: "People",
+      queryParams: {
+        $filter: `Id eq ${id}`,
+        $expand: "Photo",
+      },
+      customHeaders: {
+        Cookie: rockCookie,
+      },
+      cache: false,
+    });
+
+    const fullName = [firstName, lastName].filter(Boolean).join(" ") || "";
+    const photoData = Array.isArray(personWithPhoto)
+      ? personWithPhoto[0]?.photo
+      : personWithPhoto?.photo;
+    const phoneNumber =
+      Array.isArray(phoneNumbers) && phoneNumbers.length > 0
+        ? phoneNumbers[0].number || ""
+        : "";
 
     /**
      * todo: Finish implementing the rest of the user data
      */
     const currentUser: User = {
-      id,
+      id: String(id),
       fullName,
-      email,
-      phoneNumber: phoneNumbers[0]?.number,
+      email: email || "",
+      phoneNumber,
       birthDate: "",
       gender: "",
       guid: "",
-      photo: photo ? createImageUrlFromGuid(photo.guid) : "",
+      photo: photoData?.guid ? createImageUrlFromGuid(photoData.guid) : "",
     };
 
     return new Response(JSON.stringify(currentUser), {

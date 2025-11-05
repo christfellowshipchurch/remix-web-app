@@ -18,7 +18,7 @@ export const MessageContent = () => {
         {/* Speaker/Date Section */}
         <div className="flex flex-col">
           <h2 className="font-extrabold text-[32px] leading-tight">
-            {message?.summary}
+            {message?.title}
           </h2>
           <div className="flex gap-1 text-[#AAAAAA]">
             {message?.speaker?.fullName && (

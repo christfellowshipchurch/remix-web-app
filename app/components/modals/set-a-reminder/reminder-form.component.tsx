@@ -71,9 +71,9 @@ const ReminderForm: React.FC<ReminderProps> = ({
 
   const { serviceTimes, campusName, user } = formData || {};
   const isEspanol = campusName?.includes("Español");
-  const firstName = user?.fullName?.split(" ")[0] || null;
-  const lastName = user?.fullName?.split(" ")[1] || null;
-  const phoneNumber = user?.phoneNumber || null;
+  const firstName = user?.firstName || null;
+  const lastName = user?.lastName || null;
+  const phoneNumber = null;
   const email = user?.email || null;
 
   return (
@@ -92,7 +92,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           isEspanol
             ? "Profavor ingrese su primer nombre"
             : "Please enter your first name",
-          firstName || null
+          firstName || undefined
         )}
         {renderInputField(
           "lastName",
@@ -101,7 +101,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           isEspanol
             ? "Porfavor ingrese su apellido"
             : "Please enter your last name",
-          lastName || null
+          lastName || undefined
         )}
         {renderInputField(
           "phone",
@@ -110,7 +110,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           isEspanol
             ? "Porfavor ingrese un número de teléfono válido"
             : "Please enter a valid number",
-          phoneNumber || null
+          phoneNumber || undefined
         )}
         {renderInputField(
           "email",
@@ -119,7 +119,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           isEspanol
             ? "Porfavor ingrese un correo electrónico válido"
             : "Please enter a valid email",
-          email || null
+          email || undefined
         )}
 
         <Form.Field name="campus" className="flex flex-col">

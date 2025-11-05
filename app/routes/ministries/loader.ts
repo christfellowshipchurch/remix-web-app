@@ -26,8 +26,9 @@ const mapMinistryChannelItems = async (
       title: ministry.title,
       description: ministry.content,
       image:
-        createImageUrlFromGuid(ministry.attributeValues?.heroImage?.value) ||
-        "",
+        ministry.attributeValues?.heroImage?.value
+          ? createImageUrlFromGuid(ministry.attributeValues.heroImage.value)
+          : "",
       url: ministry.attributeValues?.pathname?.value || "",
     };
   });

@@ -44,32 +44,32 @@ export const loader = async (): Promise<{
       publications: {
         articles:
           (
-            authorArticles[index] as {
+            authorArticles[index] as Array<{
               title: string;
               content: string;
               startDateTime: string;
               publishDate: string;
               coverImage: string;
               summary: string;
-              attributeValues: {
-                image: { value: string };
-                summary: { value: string };
-                url: { value: string };
+              attributeValues?: {
+                image?: { value: string };
+                summary?: { value: string };
+                url?: { value: string };
               };
-            }[]
+            }>
           ).map(
             (article): AuthorArticleProps => ({
               title: article.title,
-              readTime: calculateReadTime(article.content),
+              readTime: calculateReadTime(article.content || ""),
               publishDate: formatDate(
                 new Date(article.startDateTime),
                 "MMMM d, yyyy"
               ),
-              coverImage: createImageUrlFromGuid(
-                article.attributeValues.image.value
-              ),
-              summary: article.attributeValues.summary.value,
-              url: article.attributeValues.url.value,
+              coverImage: article.attributeValues?.image?.value
+                ? createImageUrlFromGuid(article.attributeValues.image.value)
+                : "",
+              summary: article.attributeValues?.summary?.value || "",
+              url: article.attributeValues?.url?.value || "",
             })
           ) || [],
         books: [],

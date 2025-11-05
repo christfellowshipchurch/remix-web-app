@@ -49,8 +49,13 @@ interface TabData {
   value: string;
 }
 
+interface TabComponentProps {
+  setReminderVideo?: string;
+  isOnline?: boolean;
+}
+
 interface CampusTabsProps {
-  tabs: ComponentType<unknown>[];
+  tabs: Array<ComponentType<TabComponentProps>>;
   setReminderVideo?: string;
   isOnline?: boolean;
 }
@@ -79,7 +84,7 @@ const CustomTabs = ({
   isOnline,
 }: {
   data: TabData[];
-  tabs: ComponentType<unknown>[];
+  tabs: ComponentType<TabComponentProps>[];
   setReminderVideo?: string;
   isOnline?: boolean;
 }) => {

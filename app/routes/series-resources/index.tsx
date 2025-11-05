@@ -77,7 +77,27 @@ export function SeriesResources() {
           <SeriesResourceCarousel
             title="Related Resources"
             summary="Explore other resources that may be of interest to you"
-            items={resources}
+            items={resources.map((resource) => ({
+              id: resource.id,
+              title: resource.title,
+              content: "",
+              summary: "",
+              image: resource.coverImage,
+              coverImage: resource.coverImage,
+              video: "",
+              startDateTime: "",
+              expireDateTime: "",
+              seriesId: "",
+              seriesTitle: "",
+              url: resource.attributeValues.url.value,
+              primaryCategories: [],
+              secondaryCategories: [],
+              speaker: {
+                fullName: "",
+                profilePhoto: "",
+                guid: "",
+              },
+            }))}
             bg="white"
           />
         )}
