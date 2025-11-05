@@ -34,7 +34,7 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
         {data.name}
       </h2>
       <HTMLRenderer
-        className={cn("max-w-3xl text-pretty", {
+        className={cn("content-padding w-full md:max-w-3xl text-pretty", {
           "text-text-alternate": isDark,
           "text-text-secondary": !isDark,
         })}

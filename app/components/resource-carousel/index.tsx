@@ -39,7 +39,7 @@ export const CardCarouselSection = ({
 }: CardCarouselSectionProps) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:pl-18 2xl:!pl-0", className)}
+      className={cn("w-full md:pl-12 lg:pl-18 2xl:!pl-0", className)}
       style={
         backgroundImage
           ? {
@@ -54,7 +54,7 @@ export const CardCarouselSection = ({
         <div className="w-full flex justify-center">
           <div className="w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28">
             {/* Header */}
-            <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
+            <div className="pl-5 md:pl-0 w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
               <div
                 className={cn(
                   "flex flex-col gap-2",
@@ -91,7 +91,7 @@ export const CardCarouselSection = ({
             </div>
 
             {/* Mobile View All */}
-            <div className="w-full flex justify-start mt-8 md:hidden">
+            <div className="pl-5 md:pl-0 w-full flex justify-start mt-8 md:hidden">
               <Button
                 href={viewMoreLink}
                 size="md"
@@ -142,7 +142,11 @@ export const CardCarousel = ({
             className={cn(
               carouselItemClassName
                 ? carouselItemClassName
-                : "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%] pl-0"
+                : "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%]",
+              index === 0 ? "ml-5 md:ml-0" : "ml-0",
+              index === resources.length - 1
+                ? "mr-5 md:mr-12 lg:mr-18 2xl:!mr-0"
+                : "pr-0"
             )}
           >
             {CardComponent ? (
@@ -158,13 +162,13 @@ export const CardCarousel = ({
       </CarouselContent>
 
       <div
-        className={cn("w-full relative mt-16 pb-8", {
+        className={cn("w-full relative mt-12 md:mt-16 pb-4 md:pb-8", {
           "lg:mt-0 lg:pb-0": resources.length < 4,
         })}
       >
         {layout === "arrowsLeft" ? (
           <>
-            <div className={cn("absolute h-12 left-0")}>
+            <div className={cn("absolute h-12 left-5 md:left-0")}>
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"
@@ -183,7 +187,7 @@ export const CardCarousel = ({
           </>
         ) : (
           <>
-            <div className="absolute h-12 top-7 left-0">
+            <div className="absolute h-12 top-7 left-5 md:left-0">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"

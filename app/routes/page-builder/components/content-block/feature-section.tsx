@@ -7,7 +7,7 @@ import { ContentBlockData } from "../../types";
 export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
   return (
     <div
-      className={cn("w-full mb-4 md:mb-0 md:ml-8", {
+      className={cn("w-full mb-4 md:mb-0", {
         "lg:w-1/4 md:w-1/3": data.aspectRatio === "4by5",
         "md:w-1/3": data.aspectRatio === "1by1",
         "lg:w-1/2 md:w-1/3": data.aspectRatio === "16by9",
@@ -63,7 +63,7 @@ export const FeatureSection: FC<{
   return (
     <section
       className={cn(
-        "content-padding py-12 md:py-16",
+        "content-padding py-12 lg:py-16",
         grayBg ? "bg-gray" : "bg-transparent"
       )}
       aria-label={data.name}
@@ -84,7 +84,7 @@ export const FeatureSection: FC<{
           </h2>
           {data.subtitle && (
             <h4
-              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest hidden md:block`}
+              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest -mt-2 md:mt-0`}
             >
               {data.subtitle}
             </h4>
