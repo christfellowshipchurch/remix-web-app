@@ -1,9 +1,9 @@
 import type { MetaFunction } from "react-router-dom";
 import { loader } from "./loader";
-import type { LoaderReturnType } from "./loader";
+import { EventSinglePageType } from "./types";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  const eventData = data as LoaderReturnType | undefined;
+  const eventData = data as EventSinglePageType | undefined;
   if (!eventData) {
     return [
       { title: "404 - Event Not Found" },
@@ -16,6 +16,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
   return [
     { title: `${eventData.title} | Christ Fellowship Church` },
-    { name: "description", content: eventData.summary },
+    { name: "description", content: eventData.subtitle },
   ];
 };
