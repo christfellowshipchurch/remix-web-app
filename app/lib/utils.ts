@@ -253,18 +253,27 @@ export const getFirstParagraph = (html: string): string => {
 export const parseRockKeyValueList = (
   input: string
 ): {
-  title: string;
-  url: string;
+  key: string;
+  value: string;
 }[] => {
   if (!input || input === "") return [];
 
   return input.split("|").map((item) => {
-    const [title, url] = item.split("^");
+    const [key, value] = item.split("^");
     return {
-      title: title.trim(),
-      url: url.trim(),
+      key: key.trim(),
+      value: value.trim(),
     };
   });
+};
+
+export const parseRockValueList = (input: string): string[] => {
+  if (!input?.trim()) return [];
+  // Remove a trailing pipe and filter out any empty results
+  return input
+    .split("|")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
 };
 
 export type dayTimes = {

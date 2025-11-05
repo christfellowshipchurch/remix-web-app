@@ -34,6 +34,8 @@ export default {
         "slide-in": "slide-in 0.3s ease-in-out",
         "slide-out": "slide-out 0.3s ease-in-out",
         "grow-line-from-left": "grow-line-from-left 600ms ease-in forwards",
+        "accordion-down": "accordion-down 0.3s ease-out",
+        "accordion-up": "accordion-up 0.3s ease-out",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,6 +82,14 @@ export default {
         "grow-line-from-left": {
           "0%": { width: "0%" },
           "100%": { width: "100%" },
+        },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       maxWidth: {

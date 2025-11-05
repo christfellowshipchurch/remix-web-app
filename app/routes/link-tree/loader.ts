@@ -57,9 +57,16 @@ export const loader = async ({
 
   const additionalResources = parseRockKeyValueList(
     additionalResourcesKeyValues
-  );
+  ).map((resource) => ({
+    title: resource.key,
+    url: resource.value,
+  }));
 
-  const primaryCallToAction = parseRockKeyValueList(calltoActionKeyValues)[0]; // only returning the first call to action
+  const primaryCallToAction = parseRockKeyValueList(calltoActionKeyValues)
+    .map((cta) => ({
+      title: cta.key,
+      url: cta.value,
+    }))[0]; // only returning the first call to action
 
   const children = await fetchChildItems(id);
   const collections = await mapPageBuilderChildItems(children);

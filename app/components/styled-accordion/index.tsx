@@ -44,7 +44,7 @@ export const StyledAccordion = ({
                 />
               </Accordion.Trigger>
             </Accordion.Header>
-            <Accordion.Content className="AccordionContent pb-6">
+            <Accordion.Content className="AccordionContent pb-6 overflow-hidden transition-all duration-300 ease-in-out data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
               <div className="AccordionContentText">
                 <HTMLRenderer html={item?.content} />
               </div>
