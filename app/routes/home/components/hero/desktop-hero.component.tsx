@@ -4,19 +4,9 @@ import { DesktopFeaturedItems } from "./desktop-features.component";
 export function DesktopHeroSection() {
   return (
     <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block snap-start">
-      <div className="flex size-full relative">
-        {/* Left Column */}
-        <img
-          className="absolute inset-0 w-1/2 h-full object-cover object-left z-0"
-          src="/assets/images/home/home-hero-bg.webp"
-          alt="Hero Background"
-          loading="eager"
-          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
-          fetchpriority="high"
-        />
-        <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
-        <div className="flex-1 flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
-          <div className="flex flex-col gap-8 pl-8 h-full justify-center ml-auto xl:pl-0 xl:mx-auto pr-5">
+      <div className="absolute inset-0 w-full h-full z-10 content-padding">
+        <div className="max-w-screen-content h-full mx-auto w-full">
+          <div className="flex flex-col gap-8 h-full justify-center items-start w-full">
             <h1 className="text-[64px] xl:text-[86px] text-white font-extrabold leading-none max-w-[600px] z-2">
               Find Your <br />
               People.{" "}
@@ -35,15 +25,30 @@ export function DesktopHeroSection() {
               <LocationSearch />
             </div>
           </div>
+        </div>
+      </div>
 
+      {/* background image and video */}
+      <div className="grid grid-cols-2 size-full relative">
+        {/* Left Column */}
+        <img
+          className="absolute inset-0 w-1/2 h-full object-cover object-left z-0"
+          src="/assets/images/home/home-hero-bg.webp"
+          alt="Hero Background"
+          loading="eager"
+          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
+          fetchpriority="high"
+        />
+        <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
+        <div className="flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
           {/* Bottom Bar */}
-          <div className="z-1 w-full">
+          <div className="z-1 w-full mt-auto">
             <DesktopFeaturedItems />
           </div>
         </div>
 
         {/* Right Column - Background Video */}
-        <div className="flex-1 relative h-full">
+        <div className="relative h-full">
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             <img
               src="/assets/images/home/bg-vid.webp"
