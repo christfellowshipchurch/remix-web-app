@@ -3,7 +3,7 @@ import { MobileFeaturedItems } from "./mobile-features.component";
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-[100dvh] w-full bg-white pb-8 relative max-h-[700px] block lg:hidden">
+    <section className="h-[100dvh] w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
       {/*  Background Video */}
       <div className="absolute inset-0 w-full h-full z-1">
         <img

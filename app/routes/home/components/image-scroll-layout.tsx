@@ -75,8 +75,8 @@ export function ImageScrollLayout() {
   }, []);
 
   return (
-    <div className="relative pt-48">
-      <div className="absolute top-0 left-0 w-screen h-1/8 bg-gradient-to-b from-white to-transparent z-10" />
+    <div className="relative pt-32 md:pt-48">
+      <div className="absolute top-0 left-0 w-screen h-48 md:h-1/8 bg-gradient-to-b from-white to-transparent z-20" />
       {/* Fixed Image Container */}
       <div className="hidden md:block fixed left-0 top-0 w-1/2 h-screen -z-10">
         <div className="sticky top-0 w-full h-screen flex items-center justify-center p-12">
@@ -98,7 +98,7 @@ export function ImageScrollLayout() {
       </div>
 
       {/* Scrollable Content Sections */}
-      <div className="md:ml-[50%]">
+      <div className="md:ml-[50%] relative z-0">
         {chanceContent.map((section, index) => (
           <section
             key={section.title}
@@ -141,7 +141,7 @@ export function ImageScrollLayout() {
           </section>
         ))}
       </div>
-      <div className="absolute bottom-0 left-0 w-screen h-1/8 bg-gradient-to-t from-white to-transparent" />
+      <div className="absolute bottom-0 left-0 w-screen h-1/8 bg-gradient-to-t from-white to-transparent z-30" />
     </div>
   );
 }

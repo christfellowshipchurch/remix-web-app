@@ -14,7 +14,7 @@ const DesktopVersion = () => {
   return (
     <section
       className={cn(
-        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-28 hidden md:block"
+        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-28 hidden md:block relative z-30"
       )}
     >
       <div
@@ -62,7 +62,7 @@ const MobileVersion = () => {
   return (
     <section
       className={cn(
-        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-16 md:hidden"
+        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-16 md:hidden relative z-30"
       )}
     >
       <div className="max-w-screen-content mx-auto flex flex-col gap-8 items-center">
