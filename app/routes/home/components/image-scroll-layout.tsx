@@ -75,7 +75,8 @@ export function ImageScrollLayout() {
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative pt-48">
+      <div className="absolute top-0 left-0 w-screen h-1/8 bg-gradient-to-b from-white to-transparent z-10" />
       {/* Fixed Image Container */}
       <div className="hidden md:block fixed left-0 top-0 w-1/2 h-screen -z-10">
         <div className="sticky top-0 w-full h-screen flex items-center justify-center p-12">
@@ -85,8 +86,10 @@ export function ImageScrollLayout() {
                 key={section.image}
                 src={section.image}
                 alt={section.title}
-                className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ${
-                  index === activeSection ? "opacity-100 z-10" : "opacity-0 z-0"
+                className={`absolute inset-0 w-full h-full object-contain transition-all duration-700 ${
+                  index === activeSection
+                    ? "opacity-100 translate-x-0 z-10"
+                    : "opacity-0 -translate-x-8 z-0"
                 }`}
               />
             ))}
@@ -135,7 +138,6 @@ export function ImageScrollLayout() {
                 </IconButton>
               </div>
             </div>
-            {/* a white gradient that goes from the bottom to the top of the section to fade out the image and content */}
           </section>
         ))}
       </div>
