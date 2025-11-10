@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { SnapScrollLayout } from "../components/snap-scroll-layout";
+import { ImageScrollLayout } from "../components/image-scroll-layout";
 
 export function AChanceSection() {
   return (
@@ -25,7 +25,7 @@ export function AChanceSection() {
         Think of it less as a chore and more as...{" "}
         <span className="text-ocean">a chance.</span>
       </h2>
-      <SnapScrollLayout />
+      <ImageScrollLayout />
     </>
   );
 }

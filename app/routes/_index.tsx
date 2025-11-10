@@ -29,7 +29,7 @@ export default function HomePage() {
       {/* White background for the home page */}
       <div className="w-screen h-screen absolute top-0 left-0 bg-white -z-100" />
       <div
-        className="h-screen overflow-y-auto snap-y scroll-smooth no-scrollbar"
+        className="h-screen overflow-y-auto scroll-smooth no-scrollbar"
         ref={homePageScroll}
       >
         <HeroSection />

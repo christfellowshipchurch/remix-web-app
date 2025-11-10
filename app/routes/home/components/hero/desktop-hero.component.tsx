@@ -3,7 +3,7 @@ import { DesktopFeaturedItems } from "./desktop-features.component";
 
 export function DesktopHeroSection() {
   return (
-    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block snap-start relative">
+    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block relative">
       {/* background image and video */}
       <div className="grid grid-cols-2 size-full relative">
         {/* Left Column */}
