@@ -3,31 +3,7 @@ import { DesktopFeaturedItems } from "./desktop-features.component";
 
 export function DesktopHeroSection() {
   return (
-    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block snap-start">
-      <div className="absolute inset-0 w-full h-full z-10 content-padding">
-        <div className="max-w-screen-content h-full mx-auto w-full">
-          <div className="flex flex-col gap-8 h-full justify-center items-start w-full">
-            <h1 className="text-[64px] xl:text-[86px] text-white font-extrabold leading-none max-w-[600px] z-2">
-              Find Your <br />
-              People.{" "}
-              <span className="text-dark-navy">
-                Find <br />
-                Your Purpose.
-              </span>
-            </h1>
-            <p className="text-white max-w-[529px] text-xl z-2">
-              From inspiring messages to genuine community, Christ Fellowship is
-              a place where you and your family can grow in your faith and make
-              lifelong friendships.
-            </p>
-            <div className="flex w-fit relative pb-10 z-3">
-              {/* Location Search */}
-              <LocationSearch />
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block snap-start relative">
       {/* background image and video */}
       <div className="grid grid-cols-2 size-full relative">
         {/* Left Column */}
@@ -60,8 +36,33 @@ export function DesktopHeroSection() {
             />
             <iframe
               src={`https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover`}
-              className="w-full h-full absolute inset-0 z-2"
+              className="w-full h-full absolute inset-0 z-2 pointer-events-none"
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Content Overlay */}
+      <div className="absolute inset-0 w-full h-full z-10 content-padding pointer-events-none">
+        <div className="max-w-screen-content h-full mx-auto w-full pointer-events-auto">
+          <div className="flex flex-col gap-8 h-full justify-center items-start w-full">
+            <h1 className="text-[64px] xl:text-[86px] text-white font-extrabold leading-none max-w-[600px] z-2">
+              Find Your <br />
+              People.{" "}
+              <span className="text-dark-navy">
+                Find <br />
+                Your Purpose.
+              </span>
+            </h1>
+            <p className="text-white max-w-[529px] text-xl z-2">
+              From inspiring messages to genuine community, Christ Fellowship is
+              a place where you and your family can grow in your faith and make
+              lifelong friendships.
+            </p>
+            <div className="flex w-fit relative pb-10 z-3">
+              {/* Location Search */}
+              <LocationSearch />
+            </div>
           </div>
         </div>
       </div>
