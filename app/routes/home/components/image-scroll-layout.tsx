@@ -80,7 +80,7 @@ export function ImageScrollLayout() {
       {/* Fixed Image Container */}
       <div className="hidden md:block fixed left-0 top-0 w-1/2 h-screen -z-10">
         <div className="sticky top-0 w-full h-screen flex items-center justify-center p-12">
-          <div className="relative w-full max-w-xl mx-auto aspect-square">
+          <div className="relative w-full max-w-md xl:max-w-xl mx-auto aspect-square xl:ml-24">
             {chanceContent.map((section, index) => (
               <img
                 key={section.image}

@@ -3,12 +3,12 @@ import { ImageScrollLayout } from "../components/image-scroll-layout";
 
 export function AChanceSection() {
   return (
-    <>
+    <div className="relative">
       <h2
         id="a-chance-title"
         className={cn(
           "w-screen text-2xl md:text-[40px] font-extrabold text-center text-pretty",
-          "absolute top-0 z-10",
+          "fixed top-0 z-10",
           "pt-20 lg:pt-24",
           "px-10 md:px-12",
           "md:w-full"
@@ -27,6 +27,6 @@ export function AChanceSection() {
         </span>
       </h2>
       <ImageScrollLayout />
-    </>
+    </div>
   );
 }

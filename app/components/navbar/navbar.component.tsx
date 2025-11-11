@@ -1,4 +1,4 @@
-import { useLocation, Outlet } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useRouteLoaderData } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useResponsive } from "~/hooks/use-responsive";
@@ -31,7 +31,6 @@ export function Navbar() {
   const { siteBanner, ministries, watchReadListen } = rootData || {};
   const { isSmall, isLarge, isXLarge } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
-  const homePageScroll = useRef<HTMLDivElement>(null);
 
   // State management
   const [isVisible, setIsVisible] = useState(true);
@@ -90,12 +89,6 @@ export function Navbar() {
       const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollY;
 
-      // Skip home page - handled by hero scroll
-      if (pathname === "/") {
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
         setIsVisible(true);
@@ -116,70 +109,16 @@ export function Navbar() {
       setLastScrollY(currentScrollY);
     };
 
-    // Home page scroll handler - listens to homePageScroll
-    const handleHeroScroll = () => {
-      if (pathname !== "/") return;
-
-      const node = homePageScroll.current;
-      if (!node) return;
-
-      const scrollTop = node.scrollTop;
-      const scrollThreshold = 10;
-      const scrollDelta = scrollTop - lastScrollY;
-      const atTop = scrollTop < scrollThreshold;
-
-      // Reset at top of page
-      if (atTop) {
-        setIsVisible(true);
-        if (isSmall) {
-          setMode("dark");
-        } else {
-          setMode(defaultMode);
-        }
-        setLastScrollY(scrollTop);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        setIsVisible(scrollDelta < 0);
-
-        if (isSmall) {
-          // On mobile, use dark mode at top, light mode otherwise
-          setMode(scrollTop < 10 ? "dark" : "light");
-        } else {
-          // On desktop, use default mode
-          setMode(defaultMode);
-        }
-      }
-
-      setLastScrollY(scrollTop);
-    };
-
-    // Always listen to window scroll for non-home pages
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // For home page, listen to home page scroll
-    if (pathname === "/" && homePageScroll.current) {
-      homePageScroll.current.addEventListener("scroll", handleHeroScroll, {
-        passive: true,
-      });
-      // Set initial state
-      handleHeroScroll();
-    }
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (pathname === "/" && homePageScroll.current) {
-        homePageScroll.current.removeEventListener("scroll", handleHeroScroll);
-      }
     };
   }, [
     lastScrollY,
     defaultMode,
     pathname,
     isSmall,
-    homePageScroll,
     isNavbarHidden,
   ]);
 
@@ -256,7 +195,6 @@ export function Navbar() {
     }
   };
 
-  // Pass the ref to the Outlet context
   return (
     <>
       {!isNavbarHidden && (
@@ -463,7 +401,6 @@ export function Navbar() {
           </div>
         </nav>
       )}
-      {pathname === "/" && <Outlet context={{ homePageScroll }} />}
     </>
   );
 }
