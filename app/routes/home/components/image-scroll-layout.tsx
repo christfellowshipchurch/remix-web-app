@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { chanceContent } from "./a-chance.data";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
+import { cn } from "~/lib/utils";
 
 export function ImageScrollLayout() {
   const [activeSection, setActiveSection] = useState<number>(0);
@@ -103,7 +104,10 @@ export function ImageScrollLayout() {
           <section
             key={section.title}
             ref={(el) => (sectionRefs.current[index] = el)}
-            className="relative flex items-center p-12 min-h-screen w-full"
+            className={cn(
+              "relative flex items-center p-12 min-h-screen w-full",
+              index === 2 && "pb-24 md:pb-0" // Add padding to the last section on mobile to prevent content from grayed out from gradient
+            )}
             data-card-index={index}
           >
             <div className="flex flex-col justify-center items-center gap-12 max-w-2xl mx-auto w-full">
@@ -141,7 +145,7 @@ export function ImageScrollLayout() {
           </section>
         ))}
       </div>
-      <div className="absolute bottom-0 left-0 w-screen h-1/8 bg-gradient-to-t from-white to-transparent z-30" />
+      <div className="absolute bottom-0 left-0 w-screen h-32 md:h-1/8 bg-gradient-to-t from-white to-transparent z-30" />
     </div>
   );
 }
