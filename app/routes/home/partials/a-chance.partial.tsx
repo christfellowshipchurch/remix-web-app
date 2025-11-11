@@ -17,7 +17,7 @@ export function AChanceSection() {
         <div
           className={cn(
             "absolute left-0 right-0 top-0 bg-gradient-to-b from-white via-white to-transparent z-[5]",
-            "h-52 sm:h-72 md:h-64 lg:h-96",
+            "h-64 sm:h-72 md:h-64 lg:h-96",
             "w-screen"
           )}
         />
