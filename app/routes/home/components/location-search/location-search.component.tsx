@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { algoliasearch } from "algoliasearch";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Configure, InstantSearch } from "react-instantsearch";
 import { useFetcher, useLoaderData } from "react-router-dom";
 import { SearchPopup } from "./search-popup";
@@ -11,14 +10,24 @@ import { SearchBar } from "./search-bar";
 import { loader } from "~/routes/home/loader";
 
 // This component is used to search for locations on the home page
-export const LocationSearch = () => {
+export const LocationSearch = ({
+  isSearching: controlledIsSearching,
+  setIsSearching: controlledSetIsSearching,
+}: {
+  isSearching?: boolean;
+  setIsSearching?: (isSearching: boolean) => void;
+} = {}) => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<typeof loader>();
   const geocodeFetcher = useFetcher();
 
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
-  const [isSearching, setIsSearching] = useState(false);
+  const [internalIsSearching, setInternalIsSearching] = useState(false);
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
+
+  // Use controlled state if provided, otherwise use internal state
+  const isSearching = controlledIsSearching ?? internalIsSearching;
+  const setIsSearching = controlledSetIsSearching ?? setInternalIsSearching;
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -93,16 +102,7 @@ export const LocationSearch = () => {
   }, [geocodeFetcher.data]);
 
   return (
-    <div
-      className={cn(
-        "flex flex-col w-full",
-        "left-0 -bottom-2 max-w-[100vw] justify-end",
-        "md:px-0 md:left-auto md:bottom-1/4 md:max-w-auto md:size-auto md:justify-start",
-        "lg:bottom-4 lg:size-full",
-        isSearching && "mt-32"
-      )}
-      ref={locationSearchBarRef}
-    >
+    <div className={cn(isSearching && "mt-32")} ref={locationSearchBarRef}>
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
@@ -133,7 +133,7 @@ export const LocationSearch = () => {
           className={cn(
             "relative w-full md:w-90 z-50 rounded-[1rem] transition-all duration-300",
             {
-              "bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[520px] lg:-translate-y-30 shorter:-translate-y-70":
+              "bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[430px] lg:-translate-y-30 shorter:-translate-y-70":
                 isSearching,
               "bg-transparent": !isSearching,
             }
