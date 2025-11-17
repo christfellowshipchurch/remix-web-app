@@ -15,10 +15,10 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
     >
       {data.featureVideo ? (
         <div
-          className={cn("rounded-lg overflow-hidden", {
-            "aspect-[16/9]": data.aspectRatio === "16by9",
-            "aspect-[4/5]": data.aspectRatio === "4by5",
-            "aspect-[1/1]": data.aspectRatio === "1by1",
+          className={cn("rounded-lg overflow-hidden aspect-[1/1]", {
+            "md:aspect-[16/9]": data.aspectRatio === "16by9",
+            "md:aspect-[4/5]": data.aspectRatio === "4by5",
+            "md:aspect-[1/1]": data.aspectRatio === "1by1",
           })}
         >
           <iframe
@@ -32,11 +32,11 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
           src={data.coverImage}
           alt={data.name}
           className={cn(
-            "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
+            "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto aspect-[1/1]",
             {
-              "aspect-[16/9]": data.aspectRatio === "16by9",
-              "aspect-[4/5]": data.aspectRatio === "4by5",
-              "aspect-[1/1]": data.aspectRatio === "1by1",
+              "md:aspect-[16/9]": data.aspectRatio === "16by9",
+              "md:aspect-[4/5]": data.aspectRatio === "4by5",
+              "md:aspect-[1/1]": data.aspectRatio === "1by1",
             }
           )}
         />
