@@ -9,7 +9,7 @@ export function HistorySection({
   title?: string;
 }) {
   return (
-    <section id="history" className="py-20 w-full bg-white">
+    <section id="history" className="py-20 w-full bg-white relative z-30">
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
           <div className="flex flex-col lg:flex-row w-full items-start lg:items-center justify-start gap-6 md:gap-0 md:mb-6">
@@ -22,8 +22,10 @@ export function HistorySection({
         </div>
       </div>
 
-      <div className="2xl:bg-gray w-full">
-        <div className="max-w-screen-content mx-auto">
+      <div className="w-full relative">
+        {/* Gray BG */}
+        <div className="hidden md:block absolute top-0 right-0 h-full w-[80%] bg-gray z-0" />
+        <div className="max-w-screen-content mx-auto relative">
           <HistoryTabs />
         </div>
       </div>

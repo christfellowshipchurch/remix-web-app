@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TimelineNavigation from "./timeline-navigation.component";
+import MobileTimelineNavigation from "./mobile-timeline-navigation.component";
 
 interface TimelineItem {
   year: string;
@@ -63,9 +64,6 @@ function HistoryTabs() {
 
   return (
     <div className="pt-6 md:pt-12 pb-12 lg:py-24 w-full relative">
-      {/* Gray BG */}
-      <div className="hidden md:px-0 overflow-scroll md:block relative md:absolute top-0 right-0 h-full w-[80%] bg-gray z-0" />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-8 items-center">
         {/* Image */}
         <div className="relative mx-auto md:mx-0 h-full min-h-[300px] max-w-full md:max-h-[500px] md:max-w-none lg:min-h-[500px] overflow-hidden z-20 content-padding md:px-0">
@@ -79,13 +77,21 @@ function HistoryTabs() {
         </div>
         {/* Content */}
         <div className="flex flex-col justify-start h-full px-5 md:px-4 lg:px-0">
+          {/* Mobile Timeline Navigation */}
+          <MobileTimelineNavigation
+            timelineData={timelineData.map(({ year }) => ({ year }))}
+            activeTab={activeTab}
+            handleTabChange={handleTabChange}
+          />
           {/* Desktop Timeline Navigation */}
           <TimelineNavigation
-            timelineData={timelineData.map(({ year, title, body: description }) => ({
-              year,
-              title,
-              description,
-            }))}
+            timelineData={timelineData.map(
+              ({ year, title, body: description }) => ({
+                year,
+                title,
+                description,
+              })
+            )}
             activeTab={activeTab}
             handleTabChange={handleTabChange}
           />

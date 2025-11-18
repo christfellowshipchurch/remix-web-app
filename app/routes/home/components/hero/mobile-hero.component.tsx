@@ -3,7 +3,7 @@ import { MobileFeaturedItems } from "./mobile-features.component";
 
 export const MobileHeroSection = () => {
   return (
-    <section className="h-[100dvh] w-full bg-white pb-8 relative max-h-[700px] block lg:hidden snap-start">
+    <section className="h-[100dvh] w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
       {/*  Background Video */}
       <div className="absolute inset-0 w-full h-full z-1">
         <img
@@ -20,7 +20,7 @@ export const MobileHeroSection = () => {
         />
       </div>
       {/*  Background Gradient Overlay */}
-      <div className="absolute inset-0 w-full h-full z-2 bg-gradient-to-b from-ocean/40 to-ocean" />
+      <div className="absolute inset-0 w-full h-full z-2 bg-gradient-to-b from-black/20 to-black/80" />
       {/*  Content */}
       <div className="relative z-3 flex flex-col justify-end gap-8 h-full px-4">
         {/*  Top Divider */}
@@ -32,7 +32,7 @@ export const MobileHeroSection = () => {
           <h1 className="text-5xl text-white font-extrabold leading-none md:px-4">
             Find your <br className="hidden md:block " />
             People.
-            <span className="text-dark-navy">
+            <span className="text-ocean">
               {" "}
               Find <br />
               Your Purpose.

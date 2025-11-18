@@ -11,7 +11,7 @@ export function BeliefsSection({
   return (
     <section
       id="beliefs"
-      className="relative pt-12 md:pb-16 md:pt-40 lg:pt-56 w-full bg-white"
+      className="relative pt-12 md:pb-16 md:pt-40 lg:pt-56 w-full bg-white z-30"
     >
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">

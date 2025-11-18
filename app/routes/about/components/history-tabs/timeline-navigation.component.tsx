@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 function TimelineNavigation({
   timelineData,
   activeTab,
@@ -11,44 +9,15 @@ function TimelineNavigation({
   activeTab: number;
   handleTabChange: (index: number) => void;
 }) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const innerDiv = container.children[0] as HTMLElement;
-      const activeButton = innerDiv.children[activeTab] as HTMLElement;
-
-      if (activeButton && innerDiv) {
-        // Only apply centering on mobile screens (below xl breakpoint)
-        const isMobile = window.innerWidth < 1280; // xl breakpoint is 1280px
-
-        if (isMobile) {
-          const containerWidth = container.offsetWidth;
-          const buttonLeft = activeButton.offsetLeft;
-          const buttonWidth = activeButton.offsetWidth;
-          const scrollLeft = buttonLeft - containerWidth / 2 + buttonWidth / 2;
-
-          container.scrollTo({
-            left: scrollLeft,
-            behavior: "smooth",
-          });
-        }
-      }
-    }
-  }, [activeTab]);
   return (
-    <div className="relative mb-12">
-      <div
-        ref={scrollContainerRef}
-        className="flex items-center xl:px-12 overflow-x-auto xl:overflow-x-visible scrollbar-hide snap-x snap-mandatory xl:snap-none"
-      >
-        <div className="flex justify-between items-center w-full min-w-[700px] xl:min-w-0 px-16 xl:px-0">
+    <div className="relative mb-12 hidden md:block">
+      <div className="flex items-center xl:px-12 overflow-x-visible">
+        <div className="flex justify-between items-center w-full xl:min-w-0 xl:px-0">
           {timelineData.map((item, index) => (
             <button
               key={item.year}
               onClick={() => handleTabChange(index)}
-              className="flex flex-col items-center space-y-2 relative cursor-pointer px-4 select-none flex-shrink-0 snap-center xl:snap-none"
+              className="flex flex-col items-center space-y-2 relative cursor-pointer px-4 select-none flex-shrink-0"
             >
               <span
                 className={`text-lg font-bold transition-colors duration-300 ${

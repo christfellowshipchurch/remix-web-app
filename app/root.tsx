@@ -4,7 +4,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation,
 } from "react-router-dom";
 import { type ReactNode } from "react";
 
@@ -40,9 +39,6 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  const location = useLocation();
-  const currentPath = location.pathname;
-
   return (
     <GTMProvider gtmId="GTM-PFW26V4V">
       <AuthProvider>
@@ -51,11 +47,9 @@ export default function App() {
             <div className="min-h-screen flex flex-col text-pretty">
               <Navbar />
               <main>
-                {/* Remove only on the home page, since the navbar has an Outlet for the home page there*/}
-                {currentPath !== "/" && <Outlet />}
+                <Outlet />
               </main>
-              {/* Footer only shows on non-homepage routes */}
-              {currentPath !== "/" && <Footer />}
+              <Footer />
             </div>
           </NavbarVisibilityProvider>
         </CookieConsentProvider>
