@@ -219,7 +219,7 @@ const CarouselPrevious = React.forwardRef<
         variant={variant}
         size={size}
         className={cn(
-          "absolute h-8 w-8 rounded-full",
+          "absolute size-12 rounded-full",
           orientation === "horizontal"
             ? "-left-12 top-1/2 -translate-y-1/2"
             : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -231,7 +231,7 @@ const CarouselPrevious = React.forwardRef<
       >
         <Icon
           name="arrowBack" // TODO: change to arrowLeft
-          className="h-4 w-4"
+          className="size-6"
           color={canScrollPrev ? fill : disabledFill || fill}
         />
         <span className="sr-only">Previous slide</span>
@@ -264,7 +264,7 @@ const CarouselNext = React.forwardRef<
         variant={variant}
         size={size}
         className={cn(
-          "absolute h-8 w-8 rounded-full",
+          "absolute size-12 rounded-full",
           orientation === "horizontal"
             ? "-right-12 top-1/2 -translate-y-1/2"
             : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -276,7 +276,7 @@ const CarouselNext = React.forwardRef<
       >
         <Icon
           name="arrowRight"
-          className="h-4 w-4"
+          className="size-6"
           color={canScrollNext ? fill : disabledFill || fill}
         />
         <span className="sr-only">Next slide</span>
@@ -335,11 +335,11 @@ const CarouselArrows = ({
       {slides.length > 1 && (
         <>
           <CarouselPrevious
-            className={cn("cursor-pointer left-2", arrowStyles)}
+            className={cn("cursor-pointer left-12", arrowStyles)}
             disabledFill="#AAAAAA"
           />
           <CarouselNext
-            className={cn("cursor-pointer left-12", arrowStyles)}
+            className={cn("cursor-pointer left-26", arrowStyles)}
             disabledFill="#AAAAAA"
           />
         </>

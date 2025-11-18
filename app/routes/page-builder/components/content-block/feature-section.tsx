@@ -7,7 +7,7 @@ import { ContentBlockData } from "../../types";
 export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
   return (
     <div
-      className={cn("w-full mb-4 md:mb-0 md:ml-8", {
+      className={cn("w-full mb-4 md:mb-0", {
         "lg:w-1/4 md:w-1/3": data.aspectRatio === "4by5",
         "md:w-1/3": data.aspectRatio === "1by1",
         "lg:w-1/2 md:w-1/3": data.aspectRatio === "16by9",
@@ -15,10 +15,10 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
     >
       {data.featureVideo ? (
         <div
-          className={cn("rounded-lg overflow-hidden", {
-            "aspect-[16/9]": data.aspectRatio === "16by9",
-            "aspect-[4/5]": data.aspectRatio === "4by5",
-            "aspect-[1/1]": data.aspectRatio === "1by1",
+          className={cn("rounded-lg overflow-hidden aspect-[1/1]", {
+            "md:aspect-[16/9]": data.aspectRatio === "16by9",
+            "md:aspect-[4/5]": data.aspectRatio === "4by5",
+            "md:aspect-[1/1]": data.aspectRatio === "1by1",
           })}
         >
           <iframe
@@ -32,11 +32,11 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
           src={data.coverImage}
           alt={data.name}
           className={cn(
-            "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto",
+            "object-cover rounded-lg max-h-none sm:max-h-[500px] mr-auto md:mx-auto aspect-[1/1]",
             {
-              "aspect-[16/9]": data.aspectRatio === "16by9",
-              "aspect-[4/5]": data.aspectRatio === "4by5",
-              "aspect-[1/1]": data.aspectRatio === "1by1",
+              "md:aspect-[16/9]": data.aspectRatio === "16by9",
+              "md:aspect-[4/5]": data.aspectRatio === "4by5",
+              "md:aspect-[1/1]": data.aspectRatio === "1by1",
             }
           )}
         />
@@ -63,7 +63,7 @@ export const FeatureSection: FC<{
   return (
     <section
       className={cn(
-        "content-padding py-16",
+        "content-padding py-12 lg:py-16",
         grayBg ? "bg-gray" : "bg-transparent"
       )}
       aria-label={data.name}
@@ -84,7 +84,7 @@ export const FeatureSection: FC<{
           </h2>
           {data.subtitle && (
             <h4
-              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest hidden md:block`}
+              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest -mt-2 md:mt-0`}
             >
               {data.subtitle}
             </h4>
@@ -97,7 +97,7 @@ export const FeatureSection: FC<{
             {slicedCtas.map((cta, idx) => (
               <Button
                 linkClassName="w-full px-6 sm:w-auto sm:px-0"
-                className="font-normal w-full"
+                className="font-normal w-full rounded-[8px]"
                 intent={
                   slicedCtas.length > 1 && idx === 0 ? "white" : "primary"
                 }
@@ -110,7 +110,7 @@ export const FeatureSection: FC<{
             {customCtas?.map((cta, idx) => (
               <Button
                 linkClassName="w-full px-6 sm:w-auto sm:px-0"
-                className="font-normal w-full"
+                className="font-normal w-full rounded-[8px] "
                 intent={"secondary"}
                 key={idx}
                 href={cta.url}

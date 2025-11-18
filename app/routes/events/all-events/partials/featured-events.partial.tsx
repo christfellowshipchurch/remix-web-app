@@ -91,14 +91,14 @@ const FeaturedEventsHits = () => {
             </CarouselContent>
 
             <div className="w-full relative mt-4 pb-4">
-              <div className="absolute h-8 top-4 left-5">
+              <div className="absolute h-12 top-7 left-5">
                 <CarouselDots
                   activeClassName="bg-ocean"
                   inactiveClassName="bg-neutral-lighter"
                 />
               </div>
 
-              <div className="absolute h-8 right-24">
+              <div className="absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28">
                 <CarouselArrows />
               </div>
             </div>

@@ -106,14 +106,17 @@ export const getCtaStyles = (data: ContentBlockData, buttonLimit: number) => {
   };
 
   const getButtonClassName = (index: number) => {
-    return cn("w-full sm:w-auto hover:enabled:bg-white/10", {
-      "text-soft-white border-soft-white": isDark && isNotLastButton(index),
-      "hover:enabled:bg-white/10": isOcean && isNotLastButton(index),
-      "hover:enabled:bg-ocean": !isDark,
-      "hover:enabled:bg-white/80": isOcean && !isNotLastButton(index),
-      "hover:enabled:bg-navy hover:enabled:text-white":
-        !isDark && !isNotLastButton(index),
-    });
+    return cn(
+      "w-full sm:w-auto hover:enabled:bg-white/10 transition-colors duration-300",
+      {
+        "text-soft-white border-soft-white": isDark && isNotLastButton(index),
+        "hover:enabled:bg-white/10": isOcean && isNotLastButton(index),
+        "hover:enabled:bg-ocean": !isDark,
+        "hover:enabled:bg-white/80": isOcean && !isNotLastButton(index),
+        "hover:enabled:bg-navy hover:enabled:text-white":
+          !isDark && !isNotLastButton(index),
+      }
+    );
   };
 
   return {
