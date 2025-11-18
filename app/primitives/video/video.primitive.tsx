@@ -1,4 +1,19 @@
+import { useEffect, useRef } from "react";
 import { cn } from "~/lib/utils";
+
+// Declare Wistia types
+declare global {
+  interface Window {
+    _wq: Array<{
+      id: string;
+      onReady: (video: {
+        play: () => void;
+        pause: () => void;
+        muted: (muted: boolean) => void;
+      }) => void;
+    }>;
+  }
+}
 
 type VideoProps = {
   src?: string;
@@ -12,17 +27,115 @@ type VideoProps = {
 } & ({ src: string } | { wistiaId: string });
 
 export const Video = (props: VideoProps) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    if (!props?.wistiaId || !props.autoPlay) return;
+    if (!iframeRef.current) return;
+
+    // Load Wistia embed script if not already loaded (needed for API)
+    const loadWistiaScript = (): Promise<void> => {
+      return new Promise((resolve) => {
+        const existingScript = document.querySelector(
+          'script[src*="fast.wistia.com/assets/external/E-v1.js"]'
+        );
+        if (existingScript) {
+          resolve();
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://fast.wistia.com/assets/external/E-v1.js";
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => resolve(); // Resolve anyway to continue
+        document.head.appendChild(script);
+      });
+    };
+
+    // Initialize Wistia queue if it doesn't exist
+    window._wq = window._wq || [];
+
+    // Wait for iframe to load before setting up Wistia API
+    const setupWistiaVideo = () => {
+      // Add video to Wistia queue to handle when it's ready
+      window._wq.push({
+        id: props.wistiaId!,
+        onReady: (video) => {
+          // Ensure video is muted for autoplay policy compliance
+          if (props.muted !== false) {
+            video.muted(true);
+          }
+          // Set loop if needed
+          if (props.loop && 'loop' in video && typeof (video as { loop?: (value: boolean) => void }).loop === 'function') {
+            (video as { loop: (value: boolean) => void }).loop(true);
+          }
+          // Programmatically play the video
+          if (props.autoPlay) {
+            video.play().catch(() => {
+              // Autoplay might be blocked, but that's okay - user can interact
+              // Silently fail - this is expected behavior in some browsers
+            });
+          }
+        },
+      });
+    };
+
+    // Load script first, then set up video
+    let iframeLoadHandler: (() => void) | null = null;
+    
+    loadWistiaScript().then(() => {
+      // Set up immediately (Wistia queue handles timing)
+      setupWistiaVideo();
+
+      // Also try after iframe loads as a fallback
+      const iframe = iframeRef.current;
+      if (iframe) {
+        iframeLoadHandler = () => {
+          // Small delay to ensure Wistia is ready
+          setTimeout(() => {
+            setupWistiaVideo();
+          }, 100);
+        };
+
+        // Check if iframe is already loaded
+        try {
+          if (iframe.contentDocument?.readyState === 'complete') {
+            iframeLoadHandler();
+          } else {
+            iframe.addEventListener('load', iframeLoadHandler);
+          }
+        } catch {
+          // Cross-origin iframe, can't access contentDocument
+          iframe.addEventListener('load', iframeLoadHandler);
+        }
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      // Remove event listener
+      if (iframeRef.current && iframeLoadHandler) {
+        iframeRef.current.removeEventListener('load', iframeLoadHandler);
+      }
+      // Remove this video from the queue on unmount
+      if (window._wq && props.wistiaId) {
+        window._wq = window._wq.filter((item) => item.id !== props.wistiaId);
+      }
+    };
+  }, [props.wistiaId, props.autoPlay, props.muted, props.loop]);
+
+  // Build iframe URL - match home page approach (no autoplay in URL, control via API)
+  const iframeSrc = props?.wistiaId
+    ? `https://fast.wistia.net/embed/iframe/${props.wistiaId}?fitStrategy=cover`
+    : undefined;
+
   return (
     <>
       {props?.wistiaId ? (
         <iframe
-          src={`https://fast.wistia.net/embed/iframe/${
-            props.wistiaId
-          }?fitStrategy=cover&autoplay=${props.autoPlay ? 1 : 0}&muted=${
-            props.muted ? 1 : 0
-          }&loop=${props.loop ? 1 : 0}&controls=${
-            props.controls ? 1 : 0
-          }&playbar=${props.controls ? 1 : 0}&endVideoBehavior=loop`}
+          ref={iframeRef}
+          src={iframeSrc}
           allow="autoplay; fullscreen"
           allowFullScreen
           className={cn("size-full", props.className)}
