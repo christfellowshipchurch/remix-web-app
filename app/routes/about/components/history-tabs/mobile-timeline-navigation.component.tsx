@@ -36,16 +36,16 @@ function MobileTimelineNavigation({
     <div className="my-6 md:hidden">
       <div
         ref={scrollContainerRef}
-        className="flex items-center justify-center flex-wrap gap-[6px] px-4 sm:gap-[10px]"
+        className="flex items-center justify-center gap-[6px] sm:gap-[10px] flex-wrap"
       >
         {timelineData.map((item, index) => (
           <button
             key={item.year}
             onClick={() => handleTabChange(index)}
-            className={`px-3 py-2 sm:px-4 sm:py-3 rounded-full font-bold text-sm transition-all duration-300 flex-shrink-0 snap-center whitespace-nowrap ${
+            className={`px-3 py-2 sm:px-4 sm:py-3 rounded-full font-bold text-sm transition-all duration-300 flex-shrink-0 snap-center whitespace-nowrap flex-grow ${
               activeTab === index
                 ? "bg-ocean text-white"
-                : "bg-gray-200 text-text-secondary hover:bg-gray-300"
+                : "border-2 border-neutral-lightest text-text-secondary hover:bg-gray-100"
             }`}
           >
             {item.year}

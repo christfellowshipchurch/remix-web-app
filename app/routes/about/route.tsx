@@ -21,10 +21,11 @@ export { loader } from "../home/loader"; // Using the home loader for the about 
 
 export default function AboutPage() {
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex flex-col min-h-screen bg-white">
       <DynamicHero
         customTitle="About Us"
-        imagePath="/assets/images/events-hero-bg.jpg"
+        wistiaId="wcs977y9ac"
+        fullOverlay
         ctas={[
           {
             title: "Beliefs",
