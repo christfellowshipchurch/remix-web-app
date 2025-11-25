@@ -57,7 +57,7 @@ export const CardCarouselSection = ({
             <div className="pl-5 md:pl-0 w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
               <div
                 className={cn(
-                  "flex flex-col gap-2",
+                  "flex flex-col w-full gap-2",
                   mode === "dark" && "text-white"
                 )}
               >
@@ -71,7 +71,7 @@ export const CardCarouselSection = ({
                 href={viewMoreLink}
                 size="md"
                 className={cn(
-                  "hidden md:block",
+                  "hidden md:block min-w-28 w-fit",
                   mode === "dark" &&
                     "text-white border-white hover:!bg-white/10",
                   viewMoreStyles
