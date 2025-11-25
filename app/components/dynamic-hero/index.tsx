@@ -111,7 +111,7 @@ export const DynamicHero = ({
               <div
                 role="separator"
                 aria-hidden="true"
-                className="md:hidden h-[2px] self-stretch bg-[#D9D9D9]"
+                className="md:hidden h-[2px] self-stretch bg-[#D9D9D9] opacity-50"
               />
               {/* Desktop CTAs */}
               <div className="hidden lg:flex mt-5 flex-wrap justify-between gap-3 pr-1">
