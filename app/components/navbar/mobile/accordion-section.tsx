@@ -12,6 +12,7 @@ interface AccordionSectionProps {
   onToggle: (id: string) => void;
   layout?: "list" | "grid";
   showViewMore?: boolean;
+  viewMoreLink?: string;
   closeMenu: () => void;
 }
 
@@ -24,6 +25,7 @@ export function AccordionSection({
   onToggle,
   layout = "list",
   showViewMore = false,
+  viewMoreLink = "",
   closeMenu,
 }: AccordionSectionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -116,9 +118,9 @@ export function AccordionSection({
 
             {showViewMore && (
               <Link
-                to={`/${id}`}
+                to={viewMoreLink || ""}
                 onClick={closeMenu}
-                className="mt-6 flex items-center text-primary font-semibold"
+                className="mt-6 flex items-center text-navy font-semibold"
               >
                 View More
                 <Icon name="arrowRight" className="ml-2 size-5" />
