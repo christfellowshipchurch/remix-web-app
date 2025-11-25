@@ -12,9 +12,9 @@ const GridItem = ({
   return (
     <div
       id={id}
-      className="flex flex-col items-center justify-center text-center p-6 aspect-square border-[0.5px] border-neutral-500 md:max-h-[220px] lg:max-h-none"
+      className="flex flex-col items-center justify-center text-center p-6 aspect-square border-[0.5px] border-neutral-500 max-h-[220px] w-full md:max-h-[220px] lg:max-h-none"
     >
-      <div className="text-[80px] font-extrabold text-primary-300 mb-4 md:mb-0 lg:mb-4 text-ocean">
+      <div className="text-[80px] md:text-[60px] xl:text-[80px] font-extrabold text-primary-300 md:mb-0 lg:mb-4 text-ocean">
         {value}
       </div>
       <p className="font-bold uppercase tracking-wider">{description}</p>
@@ -34,7 +34,7 @@ export function ImpactSection() {
             <div className="row-span-1">
               <div className="flex flex-col gap-8">
                 <SectionTitle sectionTitle="our impact 2025." />
-                <h3 className="text-[52px] md:text-5xl leading-tight font-extrabold mb-6">
+                <h3 className="text-[32px] xl:text-5xl leading-tight font-extrabold mb-6">
                   Together, We’re <br />
                   Making a Difference
                 </h3>
@@ -54,7 +54,7 @@ export function ImpactSection() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 lg:w-[580px] xl:w-[640px] h-full mx-auto">
-            <div className="w-full md:w-[220px] hidden md:flex lg:hidden flex-col justify-between">
+            <div className="w-full md:w-[220px] flex lg:hidden flex-col justify-between">
               <div className="hidden md:block lg:hidden"></div>
               <img
                 src="/assets/images/about/impact-1.webp"

@@ -5,7 +5,6 @@ import { Button } from "~/primitives/button/button.primitive";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";
-import React from "react";
 import { Video } from "~/primitives/video/video.primitive";
 
 export type DynamicHeroTypes = {
@@ -16,6 +15,7 @@ export type DynamicHeroTypes = {
   mobileHeight?: string;
   ipadHeight?: string;
   desktopHeight?: string;
+  fullOverlay?: boolean;
 };
 
 export const DynamicHero = ({
@@ -26,6 +26,7 @@ export const DynamicHero = ({
   mobileHeight,
   ipadHeight,
   desktopHeight,
+  fullOverlay = false,
 }: DynamicHeroTypes) => {
   const location = useLocation();
   const pagePath =
@@ -60,12 +61,25 @@ export const DynamicHero = ({
       {/* Video if passed in */}
       {wistiaId && (
         <div className={"absolute size-full overflow-hidden"}>
-          <Video wistiaId={wistiaId} autoPlay muted loop />
+          <Video
+            key={`${location.pathname}-${wistiaId}`}
+            wistiaId={wistiaId}
+            autoPlay
+            muted
+            loop
+          />
         </div>
       )}
 
-      {/* Bottom Background Gradient Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-black to-transparent z-0 opacity-70" />
+      {/* Bottom Background Gradient Overlay or full overlay */}
+      <div
+        className={cn(
+          "absolute bottom-0 left-0 right-0 h-full z-0",
+          fullOverlay
+            ? "bg-black/60"
+            : "bg-gradient-to-t from-black to-transparent opacity-70"
+        )}
+      />
 
       {/* Content */}
       <div
