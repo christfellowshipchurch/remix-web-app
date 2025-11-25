@@ -86,7 +86,8 @@ export default function MobileMenuContent({
             isOpen={openSection === "ministries"}
             onToggle={toggleSection}
             layout="grid"
-            showViewMore
+            showViewMore={true}
+            viewMoreLink="/ministries"
             closeMenu={closeMenu}
           />
         </section>

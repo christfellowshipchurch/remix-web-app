@@ -20,7 +20,7 @@ export function WhatWeOfferSection() {
 
   return (
     <section
-      className="md:px-12 lg:px-18 w-full py-24 md:pt-38 md:pb-23 bg-navy"
+      className="md:px-12 lg:px-18 w-full py-24 md:pt-38 md:pb-23 bg-navy relative z-30"
       style={{
         backgroundImage: `url('${backgroundImages[activeTab]}')`,
         backgroundSize: "cover",

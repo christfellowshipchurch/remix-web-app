@@ -53,7 +53,7 @@ export default function MobileMenu({
         }}
         aria-label="Close menu"
       >
-        <Icon name="chevronLeft" size={50} />
+        <Icon name="chevronRight" size={50} />
       </button>
 
       {/* Backdrop */}

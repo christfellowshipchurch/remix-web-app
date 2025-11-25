@@ -67,10 +67,10 @@ export function AuthorBio({
 
       {/* Mobile layout: horizontal avatar + name, then social links, then bio */}
       <div className="flex md:hidden flex-col gap-4 w-full">
-        <div className="flex items-center gap-4">
+        <div className="flex gap-4 items-center">
           <Avatar.Root>
             <Avatar.Image
-              className={`w-32 h-32 object-cover object-center ${avatarRounded}`}
+              className={`w-full h-auto min-w-20 max-w-32 object-cover object-center ${avatarRounded}`}
               src={profilePhoto}
               alt={fullName}
             />

@@ -15,7 +15,7 @@ export function LeadershipSection({
   return (
     <section
       id="leadership"
-      className={cn("pt-16 pb-24 lg:px-18 w-full", bg || "bg-gray", className)}
+      className={cn("pt-16 pb-24 lg:px-18 w-full relative z-30", bg || "bg-gray", className)}
     >
       <div className="max-w-screen-content mx-auto">
         <div className="content-padding lg:px-0 lg:flex flex-col lg:gap-28">

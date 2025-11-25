@@ -11,7 +11,7 @@ export default function AllMinistriesPage() {
     <div>
       <DynamicHero
         imagePath="/assets/images/ministries-hero.webp"
-        ctas={[{ href: "#testing", title: "Volunteer" }]}
+        ctas={[{ href: "/volunteer", title: "Volunteer" }]}
       />
       <AllMinistriesPartial ministries={ministries} />
     </div>
