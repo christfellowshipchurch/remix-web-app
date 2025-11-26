@@ -55,7 +55,7 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
             image={onlineCampus?.campusImage || ""}
             distanceFromLocation={0}
             key={onlineCampus?.objectID}
-            link="/locations/cf-everywhere"
+            link="/cf-everywhere"
           />
         )}
 
@@ -63,8 +63,6 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
           let url = "";
           if (hit?.campusName?.includes("Español")) {
             url = hit?.campusName.substring(25, hit?.campusName.length);
-          } else if (hit?.campusName?.includes("Online")) {
-            url = "cf-everywhere";
           }
 
           // Converting the distance from meters to miles
