@@ -31,6 +31,12 @@ export type LocationCardListProps = {
 
 export const LocationCardList = ({ loading }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
+  const onlineCampus = items?.find((item) =>
+    item.campusName?.includes("Online")
+  );
+  const filteredItems = items?.filter(
+    (item) => !item.campusName?.includes("Online")
+  );
 
   if (loading) {
     return <LocationsLoader />;
@@ -43,7 +49,17 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
     >
       {/* Hits */}
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
-        {items?.map((hit, index) => {
+        {onlineCampus && (
+          <LocationCard
+            name="Online"
+            image={onlineCampus?.campusImage || ""}
+            distanceFromLocation={0}
+            key={onlineCampus?.objectID}
+            link="/locations/cf-everywhere"
+          />
+        )}
+
+        {filteredItems?.map((hit, index) => {
           let url = "";
           if (hit?.campusName?.includes("Español")) {
             url = hit?.campusName.substring(25, hit?.campusName.length);
@@ -76,7 +92,7 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
 
       {/* Prison Location */}
       <div className="mt-24">
-        <Link to="/locations/prison-locations" prefetch="intent">
+        <Link to="/ministries/prison" prefetch="intent">
           <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
               className="absolute size-full opacity-80"
