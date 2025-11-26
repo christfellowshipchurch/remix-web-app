@@ -1,5 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import { ComponentType, useState } from "react";
+import { ComponentType, Fragment, useState } from "react";
 import { cn } from "~/lib/utils";
 
 const tabData = [
@@ -105,10 +105,9 @@ const CustomTabs = ({
         )}
       >
         {data.map((tab, index) => (
-          <>
+          <Fragment key={`${tab.value}-${index}`}>
             {/* Desktop Tabs */}
             <Tabs.Trigger
-              key={index}
               value={tab.value}
               className="hidden md:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
             >
@@ -117,13 +116,12 @@ const CustomTabs = ({
 
             {/* Mobile Tabs */}
             <Tabs.Trigger
-              key={index}
               value={tab.value}
               className="md:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
             >
               {tab.mobileLabel}
             </Tabs.Trigger>
-          </>
+          </Fragment>
         ))}
       </Tabs.List>
 

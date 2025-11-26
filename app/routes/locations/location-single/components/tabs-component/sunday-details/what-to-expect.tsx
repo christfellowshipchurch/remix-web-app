@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { SetAReminderModal } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
@@ -74,15 +75,22 @@ export const WhatToExpect = ({
   );
 };
 
-const ModalButton = ({ ...props }: ButtonProps) => {
-  return (
-    <button {...props}>
-      <Button intent="primary" className="font-normal text-base rounded-[8px]">
-        Set a Reminder
+const ModalButton = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <Button
+        ref={ref}
+        intent="primary"
+        className={cn("font-normal text-base rounded-[8px]", className)}
+        {...props}
+      >
+        {children ?? "Set a Reminder"}
       </Button>
-    </button>
-  );
-};
+    );
+  }
+);
+
+ModalButton.displayName = "ModalButton";
 
 const ExpectItem = ({
   title,
