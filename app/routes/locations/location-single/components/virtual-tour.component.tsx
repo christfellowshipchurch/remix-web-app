@@ -54,7 +54,7 @@ export const VirtualTourTabs = ({
         <TabContent
           value="tour"
           title="Take a Virtual Tour"
-          description="Experience our campus before you visit. "
+          description="Experience what it’s like to attend Christ Fellowship before your visit."
           wistiaId={wistiaId}
         />
 

@@ -7,6 +7,21 @@ import { AboutUs } from "./tabs/about-us";
 import { SundayDetails } from "./tabs/sunday-details";
 import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
+import { useResponsive } from "~/hooks/use-responsive";
+
+function useResponsiveVideo(
+  backgroundVideoMobile?: string,
+  backgroundVideoDesktop?: string
+) {
+  const { isSmall } = useResponsive();
+
+  // On mobile: prefer mobile video, fallback to desktop
+  // On desktop: prefer desktop video, fallback to mobile
+  if (isSmall) {
+    return backgroundVideoMobile || backgroundVideoDesktop;
+  }
+  return backgroundVideoDesktop || backgroundVideoMobile;
+}
 
 export function LocationSingle({ hit }: { hit: LocationHitType }) {
   if (!hit) {
@@ -16,6 +31,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   const {
     campusName,
     campusLocation = undefined,
+    campusImage,
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
@@ -24,12 +40,15 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     setReminderVideo = "",
     weekdaySchedule = [],
     additionalInfo,
-    // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
+    // TODO: Fix desktop/mobile videos not showing up in Algolia properly
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
-  // TODO: Figure out Spanish campuses and their translations
-  // const _isEspanol = campusName?.includes("Español");
+
+  const wistiaId = useResponsiveVideo(
+    backgroundVideoMobile,
+    backgroundVideoDesktop
+  );
 
   const isOnline = campusName?.includes("Online");
   if (isOnline) {
@@ -39,7 +58,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
-        wistiaId={backgroundVideoDesktop || backgroundVideoMobile}
+        wistiaId={wistiaId}
+        imagePath={campusImage}
         desktopHeight="800px"
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
@@ -47,6 +67,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
           { title: "Map & Directions", href: "#" },
         ]}
       />
+
       <CampusInfo
         serviceTimes={serviceTimes}
         phoneNumber={phoneNumber}
@@ -56,10 +77,14 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         digitalTourVideo={digitalTourVideo}
         weekdaySchedule={weekdaySchedule}
       />
+
       <CampusTabs
         tabs={[
           (props: { setReminderVideo?: string; isOnline?: boolean }) => (
-            <SundayDetails {...props} setReminderVideo={setReminderVideo || ""} />
+            <SundayDetails
+              {...props}
+              setReminderVideo={setReminderVideo || ""}
+            />
           ),
           () => (
             <AboutUs
@@ -73,6 +98,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         ]}
         setReminderVideo={setReminderVideo}
       />
+
       <LocationFAQ campusName={campusName} />
     </div>
   );
@@ -81,6 +107,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
   const {
     campusName,
+    campusImage,
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
@@ -92,10 +119,16 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     backgroundVideoDesktop,
   } = hit;
 
+  const wistiaId = useResponsiveVideo(
+    backgroundVideoMobile,
+    backgroundVideoDesktop
+  );
+
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
-        wistiaId={backgroundVideoDesktop || backgroundVideoMobile}
+        wistiaId={wistiaId}
+        imagePath={campusImage}
         desktopHeight="800px"
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[

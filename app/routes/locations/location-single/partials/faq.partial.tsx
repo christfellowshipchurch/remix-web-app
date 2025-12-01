@@ -1,8 +1,6 @@
 import { StyledAccordion } from "~/components";
 import { Button } from "~/primitives/button/button.primitive";
 import { faqData } from "~/lib/faq-data.data";
-// import { useLoaderData } from "react-router-dom";
-// import { LoaderReturnType } from "../loader";
 
 export const LocationFAQ = ({ campusName }: { campusName: string }) => {
   const isEspanol = campusName.includes("Español");
@@ -10,15 +8,11 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
   return (
     <div className="content-padding bg-white">
       <div className="max-w-screen-content mx-auto flex justify-center">
-        <div className="flex flex-col items-center gap-12 md:gap-20 py-16 md:pb-24 md:pt-14 max-w-[770px]">
+        <div className="flex flex-col items-center gap-12 md:gap-20 py-16 md:pb-24 md:pt-14 w-full max-w-[770px]">
           <div className="flex flex-col items-center gap-5 md:gap-6">
             <h2 className=" max-w-[90vw] text-center heading-h3 font-extrabold text-2xl md:text-[52px]">
               {isEspanol ? `Preguntas Frequentes` : `First Time FAQs`}
             </h2>
-            <p className="text-center md:text-lg">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse varius enim in eros elementum tristique.
-            </p>
           </div>
 
           <StyledAccordion
@@ -40,12 +34,12 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
                 : `Someone from our team is happy to answer any of your questions!`}
             </p>
             <Button
-              href="https://rock.gocf.org/contactus"
+              href="mailto:hello@christfellowship.church"
               target="_blank"
               className="w-full rounded-sm"
               intent="secondary"
             >
-              {isEspanol ? `Contáctanos` : `Contact`}
+              {isEspanol ? `Contáctanos` : `Contact Us`}
             </Button>
           </div>
         </div>

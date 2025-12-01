@@ -31,7 +31,7 @@ export const CTAs = () => {
         icon="mobileAlt"
         title="Contact Us"
         target="_blank"
-        href="https://rock.gocf.org/contactus"
+        href="mailto:hello@christfellowship.church"
       />
     </div>
   );

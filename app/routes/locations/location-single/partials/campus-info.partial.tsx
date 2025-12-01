@@ -79,6 +79,23 @@ export const CampusInfo = ({
       />
     );
   }
+
+  let campusHeadingLine = "";
+  if (campusName === "CF Everywhere") {
+    campusHeadingLine = "Christ Fellowship Church Online";
+  } else if (campusName === "Trinity") {
+    campusHeadingLine = `Christ Fellowship Church Trinity in Palm Beach Gardens`;
+  } else if (campusName.includes("Español") || campusName.includes("Espanol")) {
+    const espanolCampusLocation = campusName
+      .replace("Español", "")
+      .replace("Espanol", "")
+      .replace("Christ Fellowship", "")
+      .trim();
+    campusHeadingLine = `Christ Fellowship Español en ${espanolCampusLocation}, FL`;
+  } else {
+    campusHeadingLine = `Christ Fellowship Church in ${campusName}, FL`;
+  }
+
   return (
     <div className="w-full content-padding">
       <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
@@ -91,7 +108,7 @@ export const CampusInfo = ({
               <p className="font-medium">Campus Location</p>
             </div>
             <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
-              Christ Fellowship Church in {campusName}, FL
+              {campusHeadingLine}
             </h1>
           </div>
 
@@ -149,7 +166,7 @@ export const CampusInfo = ({
 
 const OnlineCampusInfo = ({
   campusName: _campusName,
-  digitalTourVideo,
+  // digitalTourVideo,
   phoneNumber,
   additionalInfo,
   serviceTimes,
@@ -158,7 +175,7 @@ const OnlineCampusInfo = ({
     <div className="w-full content-padding">
       <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
         {/* Location Info */}
-        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]">
+        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[900px]">
           {/* Campus Name Section*/}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 text-ocean">
@@ -202,10 +219,10 @@ const OnlineCampusInfo = ({
           </div>
         </div>
 
-        {/* Tour */}
-        <div className="flex-1 lg:pt-16 max-w-[670px]">
+        {/* TODO: Hiding Tour for now */}
+        {/* <div className="flex-1 lg:pt-16 max-w-[670px]">
           <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline />
-        </div>
+        </div> */}
 
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">

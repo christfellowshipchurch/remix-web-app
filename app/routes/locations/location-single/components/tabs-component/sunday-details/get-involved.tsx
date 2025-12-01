@@ -2,12 +2,10 @@ import { CardCarouselSection } from "~/components/resource-carousel";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 export const GetInvolved = ({ isOnline }: { isOnline?: boolean }) => {
-  // TODO: Update BG image
   return (
     <CardCarouselSection
       backgroundImage="/assets/images/locations/bg.jpg"
       title="Get Involved"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
       resources={isOnline ? onlineResources : resources}
       viewMoreLink="/next-steps"
       mode="dark"
@@ -19,42 +17,39 @@ const resources: CollectionItem[] = [
   {
     name: "Kids",
     summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=30f01384-367f-4eb0-9015-b8ab4c281563&quality=20",
+      "For Newborns Through Elementary School - Christ Fellowship Kids is designed to partner with parents as together, we lead our kids to love Jesus, love others, and love life.",
+    image: "/assets/images/locations/get-involved/kids.webp",
     pathname: "/ministries/kids",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "1",
   },
   {
-    name: "Young Adults",
-    summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=fef0535a-8f41-4b5e-9fe1-ac4c6be7b411&quality=20",
-    pathname: "/ministries/young-adults",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "2",
-  },
-  {
     name: "Students",
     summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=09476292-7708-4884-8f10-9e3042c4e35f&quality=20",
+      "For Middle School & High School Students - A place where your student can grow in their relationship with Jesus and their relationships with others.",
+    image: "/assets/images/locations/get-involved/students.webp",
     pathname: "/ministries/students",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "3",
   },
   {
-    name: "Groups",
+    name: "Young Adults",
     summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+      "For College Students & Young Adults - The perfect place for those who are looking to grow their relationship with Jesus as well as connect with other young adults throughout South Florida.",
+    image: "/assets/images/locations/get-involved/ya.webp",
+    pathname: "/ministries/young-adults",
+    contentType: "REDIRECT_CARD",
+    contentChannelId: "1234",
+    id: "2",
+  },
+  {
+    name: "Groups & Classes",
+    summary:
+      "For Everyone - Everything you need to get connected and grow in your faith.",
     image: "/assets/images/groups-bg.webp",
-    pathname: "/ministries/groups",
+    pathname: "/group-finder",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "4",
@@ -64,11 +59,10 @@ const resources: CollectionItem[] = [
 const onlineResources: CollectionItem[] = [
   {
     name: "Journey",
-    summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+    summary: "Your first step to getting connected!",
     image:
       "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=5cbd4b27-2ff1-4e5c-ae77-45b51399be94&quality=20",
-    pathname: "/journey",
+    pathname: "/event-finder/journey",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "1",
@@ -76,10 +70,9 @@ const onlineResources: CollectionItem[] = [
   {
     name: "Volunteer",
     summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    // TODO: Update image once we have the correct one in Rock
-    image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=fef0535a-8f41-4b5e-9fe1-ac4c6be7b411&quality=20",
+      "Volunteer with others to help make a difference in the lives of others.",
+
+    image: "/assets/images/volunteer/hero.webp",
     pathname: "/volunteer",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
@@ -87,11 +80,8 @@ const onlineResources: CollectionItem[] = [
   },
   {
     name: "Classes",
-    summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    // TODO: Update image once we have the correct one in Rock
-    image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=fef0535a-8f41-4b5e-9fe1-ac4c6be7b411&quality=20",
+    summary: "Take a class to grow in your faith and connect with others.",
+    image: "/assets/images/volunteer/interested-in.webp", // TODO: This image needs to be updated
     pathname: "/class-finder",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
@@ -99,10 +89,8 @@ const onlineResources: CollectionItem[] = [
   },
   {
     name: "Groups",
-    summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
-    image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=fef0535a-8f41-4b5e-9fe1-ac4c6be7b411&quality=20",
+    summary: "Join a group to grow in your faith and connect with others.",
+    image: "/assets/images/groups-bg.webp",
     pathname: "/group-finder",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",

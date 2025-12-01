@@ -59,8 +59,8 @@ export const DynamicHero = ({
       )}
     >
       {/* Video if passed in */}
-      {wistiaId && (
-        <div className={"absolute size-full overflow-hidden"}>
+      <div className={"absolute size-full overflow-hidden"}>
+        {wistiaId && (
           <Video
             key={`${location.pathname}-${wistiaId}`}
             wistiaId={wistiaId}
@@ -68,8 +68,15 @@ export const DynamicHero = ({
             muted
             loop
           />
-        </div>
-      )}
+        )}
+        {!wistiaId && imagePath && (
+          <img
+            src={imagePath}
+            alt="Hero Background"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+      </div>
 
       {/* Bottom Background Gradient Overlay or full overlay */}
       <div

@@ -1,5 +1,4 @@
 import { CardCarouselSection } from "~/components/resource-carousel";
-import { GetInvolved } from "../../components/tabs-component/upcoming-events/get-involved";
 import { upcomingEventsData } from "./tabs.data";
 
 export const UpcomingEvents = () => {
@@ -14,7 +13,9 @@ export const UpcomingEvents = () => {
           viewMoreLink="#tbd"
         />
       </div>
-      <GetInvolved />
+
+      {/* FOR NOW WE ARE NOT SHOWING THE GET INVOLVED SECTION */}
+      {/* <GetInvolved /> */}
     </div>
   );
 };

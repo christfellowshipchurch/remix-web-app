@@ -22,11 +22,11 @@ export const AboutUs = ({
     <div className="flex flex-col w-full">
       <CampusPastorsQuote
         title="Proud to be your nearest Christ Fellowship location"
-        quote="We gather together as a church community throughout the week for various opportunities to connect, grow, and serve (though our main worship gathering is on Sunday). Here you can find information on our different ministries, small groups, upcoming events, and ways to get involved. We're honored to be a part of this community and would love for you to join us as we live out our faith together. If you're looking for a church family nearby, it's our pleasure to connect with you."
+        quote="Our main worship services are on Sundays, and we also gather as a church community throughout the week, through various events, to connect, grow, and serve together. <br /> <br /> We’re honored to be a part of this community and would love for you to join us for a service this Sunday. If you’re looking for a church family nearby, it would be our pleasure to host you and get to know you."
         campusPastor={campusPastor}
       />
       <OurMissionSection />
-      <BeliefsSection />
+      <BeliefsSection hideChapelImage={true} />
       <ImpactSection />
       <ConnectWithUs
         campusName={campusName || ""}

@@ -2,9 +2,8 @@ const faqDefaultData = [
   {
     title: "What does Christ Fellowship believe?",
     content:
-      'Christ Fellowship is a church in South Florida with a passion to help you know God and grow in your relationships so that you can discover your purpose and impact your world. Led by senior pastors Todd & Julie Mullins, our mission is to impact the world with the love and message of Jesus Christ—everyone, everyday, everywhere. <br />  <br />  Find out more about <a className="underline text-ocean" target="_blank" href="/about">our church and our beliefs.</a>',
+      'Christ Fellowship is a church in Florida with a passion to help you know God and grow in your relationships so that you can discover your purpose and impact your world. Led by Senior Pastors Todd & Julie Mullins, our mission is to impact the world with the love and message of Jesus Christ—everyone, everyday, everywhere. <a className="underline text-ocean" target="_blank" href="/about">Find out more about our church and our beliefs.</a>',
   },
-
   {
     title: "Are there any expectations for visitors?",
     content: `Not at all. When we say "welcome home", we mean it! Be yourself, relax, and enjoy the service. We can't wait to see you!`,

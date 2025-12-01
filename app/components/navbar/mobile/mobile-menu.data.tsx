@@ -181,7 +181,7 @@ export const moreMenuItems: SubMenuItem[] = [
   {
     id: "contact-us",
     title: "Contact Us",
-    to: "/contact",
+    to: "mailto:hello@christfellowship.church",
   },
   {
     id: "resources",
