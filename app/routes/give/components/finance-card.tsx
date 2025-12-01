@@ -18,7 +18,7 @@ export const FinanceCard = ({
     <Link
       to={pathname}
       className={cn(
-        "flex flex-col rounded-[8px] w-full h-full border border-neutral-lighter overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
+        "flex flex-col rounded-lg w-full h-full border border-neutral-lighter overflow-hidden hover:translate-y-[-4px] transition-all duration-300",
         className
       )}
       prefetch="intent"

@@ -182,8 +182,7 @@ export const WhatToExpectMobileScroll = () => {
               <div
                 key={index}
                 data-card
-                className="w-[300px] h-[400px] rounded-[8px] mx-auto"
-                // className="w-[220px] h-[290px] rounded-[8px] relative flex-shrink-0"
+                className="w-[300px] h-[400px] rounded-lg mx-auto"
                 style={{
                   marginLeft: index === 0 ? "8px" : "0",
                   marginRight:
@@ -191,7 +190,7 @@ export const WhatToExpectMobileScroll = () => {
                 }}
               >
                 {isPlaying ? (
-                  <div className="relative overflow-hidden rounded-[8px] transition-opacity duration-200">
+                  <div className="relative overflow-hidden rounded-lg transition-opacity duration-200">
                     <iframe
                       src={`https://fast.wistia.net/embed/iframe/${video}?fitStrategy=cover`}
                       className="w-full h-full object-cover aspect-[300/400]"
@@ -209,7 +208,7 @@ export const WhatToExpectMobileScroll = () => {
                     <img
                       src={thumbnail}
                       alt={name}
-                      className="w-full h-full object-cover rounded-[8px]"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                     <div
                       className="absolute bottom-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"

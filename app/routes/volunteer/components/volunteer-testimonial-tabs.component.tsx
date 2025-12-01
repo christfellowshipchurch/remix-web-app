@@ -176,7 +176,7 @@ export const VolunteerTestimonialsMobile = () => {
               <div
                 key={index}
                 data-card
-                className="w-[220px] h-[290px] rounded-[8px] relative flex-shrink-0"
+                className="w-[220px] h-[290px] rounded-lg relative flex-shrink-0"
                 style={{
                   marginLeft: index === 0 ? "8px" : "0",
                   marginRight:
@@ -186,7 +186,7 @@ export const VolunteerTestimonialsMobile = () => {
                 }}
               >
                 {isPlaying ? (
-                  <div className="relative overflow-hidden rounded-[8px] transition-opacity duration-200">
+                  <div className="relative overflow-hidden rounded-lg transition-opacity duration-200">
                     <Video
                       wistiaId={video}
                       controls
@@ -204,7 +204,7 @@ export const VolunteerTestimonialsMobile = () => {
                     <img
                       src={thumbnail}
                       alt={name}
-                      className="w-full h-full object-cover rounded-[8px]"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                     <div
                       className="absolute bottom-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"

@@ -67,7 +67,14 @@ export const WhatToExpect = ({
 
           {/* Button */}
           <div className={cn("flex", isOnline && "mt-4 lg:t-8")}>
-            <SetAReminderModal ModalButton={ModalButton} />
+            <SetAReminderModal
+              ModalButton={ModalButton}
+              className={`${
+                isOnline
+                  ? "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy rounded-lg"
+                  : ""
+              }`}
+            />
           </div>
         </div>
       </div>
@@ -81,7 +88,7 @@ const ModalButton = forwardRef<HTMLButtonElement, ButtonProps>(
       <Button
         ref={ref}
         intent="primary"
-        className={cn("font-normal text-base rounded-[8px]", className)}
+        className={cn("font-normal text-base rounded-lg", className)}
         {...props}
       >
         {children ?? "Set a Reminder"}

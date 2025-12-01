@@ -207,7 +207,7 @@ export const AllFiltersRefinementContent = ({
                   placeholder="Your age"
                   value={ageInput}
                   onChange={(e) => setAgeInput?.(e.target.value)}
-                  className="w-full max-w-[120px] text-base px-2 focus:outline-none rounded-[8px] border border-[#AAAAAA] py-2 flex h-full"
+                  className="w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -224,7 +224,7 @@ export const AllFiltersRefinementContent = ({
                 placeholder="Your age"
                 value={ageInput}
                 onChange={(e) => setAgeInput?.(e.target.value)}
-                className="w-full max-w-[120px] text-base px-2 focus:outline-none rounded-[8px] border border-[#AAAAAA] py-2 flex h-full"
+                className="w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full"
                 onClick={(e) => e.stopPropagation()}
               />
               <span className="text-sm text-gray-600">years old</span>
@@ -319,7 +319,7 @@ export const AllFiltersRefinementContent = ({
                   }
                 }}
                 className={cn(
-                  "flex items-center justify-between w-full rounded-[8px] p-3",
+                  "flex items-center justify-between w-full rounded-lg p-3",
                   "border border-black text-[#666666]",
                   "focus:outline-none focus:ring-2 focus:ring-transparent",
                   "appearance-none"

@@ -19,7 +19,7 @@ export const GroupSingleBanner = ({
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const imageStyles =
-    "size-16 md:size-20 rounded-[8px] md:rounded-[10px] object-cover ";
+    "size-16 md:size-20 rounded-lg md:rounded-[10px] object-cover ";
 
   // Navbar scroll handling effect
   useEffect(() => {

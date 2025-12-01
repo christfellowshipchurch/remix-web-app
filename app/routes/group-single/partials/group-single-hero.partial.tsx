@@ -28,7 +28,7 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
           <img
             src={imagePath}
             alt="Group Finder Hero"
-            className="w-full lg:hidden max-w-screen aspect-video object-cover rounded-[8px]"
+            className="w-full lg:hidden max-w-screen aspect-video object-cover rounded-lg"
           />
 
           <GroupInfo hit={hit} />
@@ -38,7 +38,7 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
         <img
           src={imagePath}
           alt="Group Finder Hero"
-          className="hidden lg:block w-full max-w-[735px] xl:max-w-[935px] aspect-video object-cover rounded-[8px]"
+          className="hidden lg:block w-full max-w-[735px] xl:max-w-[935px] aspect-video object-cover rounded-lg"
         />
       </div>
     </div>

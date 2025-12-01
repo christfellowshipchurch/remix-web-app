@@ -26,7 +26,7 @@ export const ConnectWithUs = ({
               here at this campus.
             </p>
             <Button
-              className="w-fit rounded-[8px]"
+              className="w-fit rounded-lg"
               href={campusInstagram}
               target="_blank"
             >
@@ -55,7 +55,7 @@ export const ConnectWithUs = ({
 const ModalButton = ({ ...props }: ButtonProps) => {
   return (
     <Button
-      className="w-fit rounded-[8px] px-16 lg:w-[155px] lg:px-0 lg:h-[48px] lg:text-base lg:font-normal"
+      className="w-fit rounded-lg px-16 lg:w-[155px] lg:px-0 lg:h-[48px] lg:text-base lg:font-normal"
       {...props}
     >
       Set a Reminder

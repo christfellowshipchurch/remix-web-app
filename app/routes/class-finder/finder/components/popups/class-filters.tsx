@@ -60,7 +60,7 @@ export function DesktopClassFilters({
   }, [activeDropdown]);
 
   const dropdownButtonStyles =
-    "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-[8px] p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer";
+    "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-lg p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer";
 
   return (
     <div
