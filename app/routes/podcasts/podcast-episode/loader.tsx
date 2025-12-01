@@ -1,18 +1,7 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import {
-  PodcastEpisode,
-  RockPodcastEpisode,
-  WistiaElement,
-  Resource,
-  PlatformLinks,
-} from "../types";
+import { PodcastEpisode, RockPodcastEpisode, WistiaElement } from "../types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
-
-// Constants
-const SISTERHOOD_SHOW_PATH = "so-good-sisterhood";
-const OLD_SISTERHOOD_CHANNEL_ID = 95;
-const SHOW_NAME = "So Good Sisterhood";
 
 // Error messages
 const ERROR_MESSAGES = {
@@ -32,7 +21,6 @@ export type LoaderReturnType = {
 
 /**
  * Loader function for podcast episode pages
- * Handles both new podcast episodes and legacy sisterhood episodes
  */
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { episode: episodePath, show: showPath } = params;
@@ -46,13 +34,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     throw new Response(ERROR_MESSAGES.SHOW_NOT_FOUND, { status: 404 });
   }
 
-  // Determine channel ID based on show type
-  // Legacy sisterhood episodes use old content channel (ID 95)
-  // All other episodes use the new channel type (CFDP Podcasts)
-  const showChannel =
-    showPath === SISTERHOOD_SHOW_PATH
-      ? { id: OLD_SISTERHOOD_CHANNEL_ID.toString(), title: SHOW_NAME }
-      : await getPodcastChannel(showPath);
+  // Get the podcast channel
+  const showChannel = await getPodcastChannel(showPath);
 
   if (!showChannel) {
     throw new Response(ERROR_MESSAGES.CHANNEL_NOT_FOUND, { status: 404 });
@@ -64,10 +47,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     channelId: showChannel.id,
   });
 
-  // Map episode data based on show type
-  const episode = showPath.includes(SISTERHOOD_SHOW_PATH)
-    ? await mapSisterhoodRockEpisodeToPodcastEpisode(rockEpisode)
-    : await mapRockEpisodeToPodcastEpisode(rockEpisode, showChannel.title);
+  // Map episode data
+  const episode = await mapRockEpisodeToPodcastEpisode(
+    rockEpisode,
+    showChannel.title
+  );
 
   // Get Algolia configuration
   const appId = process.env.ALGOLIA_APP_ID;
@@ -167,7 +151,7 @@ async function getWistiaElement(guid: string): Promise<WistiaElement | null> {
 }
 
 /**
- * Maps a Rock episode to a PodcastEpisode for new podcast episodes
+ * Maps a Rock episode to a PodcastEpisode
  */
 async function mapRockEpisodeToPodcastEpisode(
   rockEpisode: RockPodcastEpisode,
@@ -208,116 +192,6 @@ async function mapRockEpisodeToPodcastEpisode(
       url: resource.value,
     })),
   };
-}
-
-/**
- * Maps a Rock episode to a PodcastEpisode for legacy sisterhood episodes
- * Handles the old content channel format with different attribute structure
- */
-async function mapSisterhoodRockEpisodeToPodcastEpisode(
-  rockEpisode: RockPodcastEpisode
-): Promise<PodcastEpisode> {
-  const attributeValues = rockEpisode?.attributeValues || {};
-
-  // Extract episode number from rock label (e.g., "Season 13 | Episode 4" -> "4")
-  const rockLabel = attributeValues.rockLabel?.value || "";
-  const summary = attributeValues.summary?.value || "";
-  const episodeNumberMatch = rockLabel.match(/Episode\s+(\d+)/);
-  const episodeNumber = episodeNumberMatch ? episodeNumberMatch[1] : "";
-
-  // Extract season from rock label or summary (e.g., "Season 13 | Episode 4" -> "13")
-  const seasonMatch =
-    rockLabel !== ""
-      ? rockLabel.match(/Season\s+(\d+)/)
-      : summary.match(/Season\s+(\d+)/);
-  const season = seasonMatch ? seasonMatch[1] : "";
-
-  // Parse calls to action for resources and platform links
-  const callsToAction = attributeValues.callsToAction?.value || "";
-  const { resources, platformLinks } = parseCallsToAction(callsToAction);
-
-  // Convert image GUID to full URL
-  const imageGuid = attributeValues.image?.value || "";
-  const coverImage = createImageUrlFromGuid(imageGuid);
-
-  // Extract Wistia ID from media attribute
-  const mediaGuid = attributeValues.media?.value || null;
-  const wistiaElement =
-    (mediaGuid && (await getWistiaElement(mediaGuid))) || null;
-
-  return {
-    show: SHOW_NAME,
-    title: rockEpisode?.title || "",
-    publishDate: rockEpisode?.startDateTime
-      ? new Date(rockEpisode.startDateTime).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      : "",
-    season,
-    episodeNumber,
-    audio: wistiaElement?.sourceKey || "",
-    coverImage,
-    summary: attributeValues.summary?.value || "",
-    showGuests: attributeValues.author?.persistedTextValue || "",
-    url: attributeValues.pathname?.value || "",
-    apple: platformLinks.apple || "",
-    spotify: platformLinks.spotify || "",
-    amazon: platformLinks.amazon || "",
-    youtube: platformLinks.youtube || "",
-    content: rockEpisode.content || "",
-    resources,
-  };
-}
-
-/**
- * Parses calls to action string to extract resources and platform links
- * Format: "Title^URL|Title^URL" where platform links contain APPLE/SPOTIFY/AMAZON
- */
-function parseCallsToAction(callsToAction: string): {
-  resources: Resource[];
-  platformLinks: PlatformLinks;
-} {
-  if (!callsToAction) {
-    return {
-      resources: [],
-      platformLinks: { apple: "", spotify: "", amazon: "", youtube: "" },
-    };
-  }
-
-  const platformLinks: PlatformLinks = {
-    apple: "",
-    spotify: "",
-    amazon: "",
-    youtube: "",
-  };
-  const resources: Resource[] = [];
-
-  // Split by | and parse each call to action
-  callsToAction.split("|").forEach((action) => {
-    const parts = action.split("^");
-    if (parts.length >= 2) {
-      const title = parts[0].trim();
-      const url = parts[1].trim();
-
-      // Check if this is a platform link
-      if (title.includes("APPLE")) {
-        platformLinks.apple = url;
-      } else if (title.includes("SPOTIFY")) {
-        platformLinks.spotify = url;
-      } else if (title.includes("AMAZON")) {
-        platformLinks.amazon = url;
-      } else if (title.includes("YOUTUBE")) {
-        platformLinks.youtube = url;
-      } else {
-        // This is a general resource
-        resources.push({ title, url });
-      }
-    }
-  });
-
-  return { resources, platformLinks };
 }
 
 /**
