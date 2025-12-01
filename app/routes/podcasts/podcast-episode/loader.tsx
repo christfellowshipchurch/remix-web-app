@@ -164,13 +164,8 @@ async function mapRockEpisodeToPodcastEpisode(
   return {
     show: showName,
     title: rockEpisode?.title || "",
-    publishDate: rockEpisode?.startDateTime
-      ? new Date(rockEpisode.startDateTime).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      : "",
+    publishDate:
+      rockEpisode?.attributeValues?.releaseDate?.valueFormatted || "",
     season: rockEpisode?.attributeValues?.seasonNumber?.value || "",
     episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value || "",
     audio: wistiaElement?.sourceKey || "",
