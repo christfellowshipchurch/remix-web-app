@@ -45,26 +45,28 @@ export const SubscribeSection = ({
             {title}
           </h2>
           <div className="flex gap-4 w-full justify-center sm:w-auto md:gap-12">
-            {links.map((link, index) => (
-              <div
-                className="flex flex-col items-center justify-center gap-2 bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
-                key={index}
-              >
-                <a href={link.href} target="_blank">
-                  <Icon
-                    name={link.icon as keyof typeof icons}
-                    size={link.icon === "amazonMusic" ? 62 : 52}
-                  />
-                </a>
-                <p
-                  className={`text-[10px] md:text-xs font-extrabold ${
-                    link.icon === "amazonMusic" ? "-mt-3" : ""
-                  }`}
+            {links
+              .filter((link) => link.href && link.href !== "")
+              .map((link, index) => (
+                <div
+                  className="flex flex-col items-center justify-center gap-2 bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
+                  key={index}
                 >
-                  {link.label}
-                </p>
-              </div>
-            ))}
+                  <a href={link.href} target="_blank">
+                    <Icon
+                      name={link.icon as keyof typeof icons}
+                      size={link.icon === "amazonMusic" ? 62 : 52}
+                    />
+                  </a>
+                  <p
+                    className={`text-[10px] md:text-xs font-extrabold ${
+                      link.icon === "amazonMusic" ? "-mt-3" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </p>
+                </div>
+              ))}
           </div>
         </div>
       </div>
