@@ -40,7 +40,6 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     setReminderVideo = "",
     weekdaySchedule = [],
     additionalInfo,
-    // TODO: Fix desktop/mobile videos not showing up in Algolia properly
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
@@ -114,7 +113,6 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     phoneNumber,
     serviceTimes,
     additionalInfo,
-    // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;

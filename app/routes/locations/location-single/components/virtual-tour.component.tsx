@@ -53,8 +53,12 @@ export const VirtualTourTabs = ({
         )}
         <TabContent
           value="tour"
-          title="Take a Virtual Tour"
-          description="Experience what it’s like to attend Christ Fellowship before your visit."
+          title={isOnline ? "Join Us Online!" : "Take a Virtual Tour"}
+          description={
+            isOnline
+              ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
+              : "Experience what it’s like to attend Christ Fellowship before your visit."
+          }
           wistiaId={wistiaId}
         />
 

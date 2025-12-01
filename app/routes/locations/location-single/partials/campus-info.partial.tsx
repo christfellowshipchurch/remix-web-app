@@ -166,7 +166,7 @@ export const CampusInfo = ({
 
 const OnlineCampusInfo = ({
   campusName: _campusName,
-  // digitalTourVideo,
+  digitalTourVideo,
   phoneNumber,
   additionalInfo,
   serviceTimes,
@@ -220,9 +220,9 @@ const OnlineCampusInfo = ({
         </div>
 
         {/* TODO: Hiding Tour for now */}
-        {/* <div className="flex-1 lg:pt-16 max-w-[670px]">
+        <div className="flex-1 lg:pt-16 max-w-[670px]">
           <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline />
-        </div> */}
+        </div>
 
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
