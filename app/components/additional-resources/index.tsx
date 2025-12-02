@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useResponsive } from "~/hooks/use-responsive";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 
@@ -42,6 +43,7 @@ const AdditionalResourcesButtons = ({
   resources: Resource[];
   color?: string;
 }) => {
+  const { isSmall } = useResponsive();
   return (
     <div className="flex flex-wrap gap-4 md:gap-6 mt-2">
       {resources.map((resource, index) => (
@@ -55,6 +57,7 @@ const AdditionalResourcesButtons = ({
             `hover:enabled:text-${color}`,
             `hover:enabled:bg-${color}/10`
           )}
+          size={isSmall ? "sm" : "lg"}
         >
           {resource.title}
         </Button>

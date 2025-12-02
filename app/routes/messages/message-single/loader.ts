@@ -1,6 +1,10 @@
 import type { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
+import {
+  createImageUrlFromGuid,
+  ensureArray,
+  parseRockKeyValueList,
+} from "~/lib/utils";
 import { MessageType } from "../types";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 import { attributeProps, attributeValuesProps } from "~/lib/types/rock-types";
@@ -99,6 +103,12 @@ export const mapRockDataToMessage = async (
     seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || "",
     speaker,
     url: rockItem.attributeValues?.url?.value || "",
+    additionalResources: parseRockKeyValueList(
+      rockItem.attributeValues?.additionalResources?.value || ""
+    ).map((resource) => ({
+      title: resource.key,
+      url: resource.value,
+    })),
   };
 };
 

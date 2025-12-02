@@ -18,4 +18,8 @@ export type MessageType = {
     profilePhoto: string;
     guid: string;
   };
+  additionalResources: {
+    title: string;
+    url: string;
+  }[];
 };
