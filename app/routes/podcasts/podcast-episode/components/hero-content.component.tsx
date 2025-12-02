@@ -17,7 +17,10 @@ export const HeroContent = () => {
         <p className="text-xs font-medium uppercase">
           Season {season} | Episode {episodeNumber}
         </p>
-        <p className="text-base font-normal">{`${showGuests} - ${publishDate}`}</p>
+        <p className="text-base font-normal">
+          {showGuests && showGuests !== "" && showGuests}
+          {publishDate && publishDate !== "" ? ` - ${publishDate}` : ""}
+        </p>
       </div>
       {summary && (
         <p
