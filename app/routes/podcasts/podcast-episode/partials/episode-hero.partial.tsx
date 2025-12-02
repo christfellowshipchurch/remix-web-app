@@ -9,7 +9,7 @@ export function EpisodeHero() {
   const { coverImage, title } = episode;
 
   return (
-    <div className="w-full bg-gradient-to-b bg-[#313038] from-navy/30 to-ocean/30 backdrop-blur-lg content-padding">
+    <div className="w-full bg-gradient-to-b bg-[#313038] from-dark-navy/60 to-ocean/30 backdrop-blur-lg content-padding">
       <div className="max-w-[1150px] mx-auto">
         <div className="flex py-6 md:py-16 lg:pt-24">
           <div className="flex flex-col-reverse md:flex-row items-center md:items-start lg:items-center justify-center w-full gap-6 lg:gap-16">
