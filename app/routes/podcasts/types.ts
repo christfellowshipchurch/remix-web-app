@@ -54,6 +54,7 @@ export interface RockChannelItem {
 
 export interface RockAttributeValue {
   value: string;
+  valueFormatted: string;
   persistedTextValue?: string;
 }
 
@@ -77,6 +78,7 @@ export interface RockPodcastEpisode {
     callsToAction?: RockAttributeValue;
     summary?: RockAttributeValue;
     additionalResources?: RockAttributeValue;
+    releaseDate?: RockAttributeValue;
   };
 }
 
