@@ -11,27 +11,10 @@ const SeriesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   return (
     <SeriesCard
       message={{
-        id: hit.rockItemId.toString(),
         title: hit.title,
-        content: hit?.htmlContent || "",
         summary: hit.summary,
-        image: hit.coverImage.sources[0].uri,
         coverImage: hit.coverImage.sources[0].uri,
-        video: "",
-        startDateTime: hit.startDateTime || "",
-        expireDateTime: "",
-        seriesId: "",
-        seriesTitle: hit.sermonSeriesName || "",
         url: hit.url || hit.routing.pathname,
-        primaryCategories:
-          hit.sermonPrimaryCategories?.map((tag) => ({ value: tag })) || [],
-        secondaryCategories:
-          hit.sermonSecondaryCategories?.map((tag) => ({ value: tag })) || [],
-        speaker: {
-          fullName: hit.author.firstName + " " + hit.author.lastName,
-          profilePhoto: "",
-          guid: "",
-        },
       }}
     />
   );
@@ -51,7 +34,7 @@ export const InThisSeries = () => {
     return null;
   }
 
-  const filter = `contentType:"Sermon" AND sermonSeriesName:"${message.seriesTitle}" AND NOT rockItemId:"${message.id}"`;
+  const filter = `contentType:"Sermon" AND sermonSeriesName:"${message.seriesTitle}" AND rockItemId != ${message.id}`;
 
   return (
     <InstantSearch

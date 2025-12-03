@@ -1,12 +1,16 @@
 import { Link } from "react-router";
-import { MessageType } from "~/routes/messages/types";
 
 export const SeriesCard = ({
   message,
   headingClass,
   pClass,
 }: {
-  message: MessageType;
+  message: {
+    title: string;
+    summary: string;
+    coverImage: string;
+    url: string;
+  };
   headingClass?: string;
   pClass?: string;
 }) => {
