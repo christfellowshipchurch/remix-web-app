@@ -182,6 +182,7 @@ const CampusTabsWrapper = ({
 }) => {
   return (
     <div className="relative h-full w-full">
+      {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
       {activeTab == "sunday-details" && (
         <WhatToExpect setReminderVideo={setReminderVideo} isOnline={isOnline} />
       )}
@@ -198,6 +199,7 @@ const CampusTabsWrapper = ({
         isOnline={isOnline}
       />
 
+      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them oustide of the Tabs component*/}
       {activeTab == "about-us" && (
         <ConnectWithUs
           campusName={campusName || ""}
