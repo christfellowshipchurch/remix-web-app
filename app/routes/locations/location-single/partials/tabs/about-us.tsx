@@ -1,16 +1,11 @@
 import { OurMissionSection } from "~/routes/about/partials/mission.partial";
 import { BeliefsSection } from "~/routes/about/partials/beliefs.partial";
 import { ImpactSection } from "~/routes/about/partials/impact.partial";
-import { ConnectWithUs } from "../../components/tabs-component/about-us/connect-with-us";
 import { CampusPastorsQuote } from "../../components/tabs-component/about-us/campus-pastors-quote";
 
 export const AboutUs = ({
-  campusName,
-  campusInstagram,
   campusPastor,
 }: {
-  campusName: string;
-  campusInstagram: string;
   campusPastor: {
     email: string;
     firstName: string;
@@ -28,10 +23,6 @@ export const AboutUs = ({
       <OurMissionSection />
       <BeliefsSection hideChapelImage={true} />
       <ImpactSection />
-      <ConnectWithUs
-        campusName={campusName || ""}
-        campusInstagram={campusInstagram || ""}
-      />
     </div>
   );
 };

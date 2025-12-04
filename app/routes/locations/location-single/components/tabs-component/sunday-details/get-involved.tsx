@@ -1,10 +1,16 @@
 import { CardCarouselSection } from "~/components/resource-carousel";
+import { cn } from "~/lib/utils";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 export const GetInvolved = ({ isOnline }: { isOnline?: boolean }) => {
   return (
     <CardCarouselSection
-      backgroundImage="/assets/images/locations/bg.jpg"
+      backgroundImage={
+        !isOnline ? "/assets/images/locations/bg.jpg" : undefined
+      }
+      className={cn(
+        isOnline ? "bg-gradient-to-br from-[#1C3647] to-ocean" : ""
+      )}
       title="Get Involved"
       resources={isOnline ? onlineResources : resources}
       viewMoreLink="/next-steps"

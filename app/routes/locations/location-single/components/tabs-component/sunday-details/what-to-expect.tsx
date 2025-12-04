@@ -33,7 +33,7 @@ export const WhatToExpect = ({
             isOnline && "lg:w-full lg:max-w-[964px] lg:items-center"
           )}
         >
-          <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[52px]">
+          <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[48px] xl:text-[52px]">
             What to Expect
           </h2>
           <div
@@ -88,7 +88,10 @@ const ModalButton = forwardRef<HTMLButtonElement, ButtonProps>(
       <Button
         ref={ref}
         intent="primary"
-        className={cn("font-normal text-base rounded-lg", className)}
+        className={cn(
+          "font-normal text-base !rounded-lg !bg-ocean !text-white hover:!bg-navy",
+          className
+        )}
         {...props}
       >
         {children ?? "Set a Reminder"}

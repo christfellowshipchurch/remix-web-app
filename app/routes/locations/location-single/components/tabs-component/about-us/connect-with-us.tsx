@@ -1,5 +1,7 @@
 import { SetAReminderModal } from "~/components";
 import { Button, ButtonProps } from "~/primitives/button/button.primitive";
+import React from "react";
+import { cn } from "~/lib/utils";
 
 export const ConnectWithUs = ({
   campusName,
@@ -8,6 +10,24 @@ export const ConnectWithUs = ({
   campusName: string;
   campusInstagram: string;
 }) => {
+  const isOnline = campusName.toLowerCase().includes("online");
+
+  const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    ({ className, ...props }, ref) => (
+      <Button
+        ref={ref}
+        intent="primary"
+        className={cn(
+          "w-fit !rounded-lg !bg-ocean !text-white hover:!bg-navy",
+          className
+        )}
+        {...props}
+      >
+        Set a Reminder
+      </Button>
+    )
+  );
+
   return (
     <div className="w-full bg-dark-navy py-28 content-padding flex justify-center">
       <div className="w-full flex flex-col gap-16 max-w-screen-content mx-auto">
@@ -30,7 +50,7 @@ export const ConnectWithUs = ({
               href={campusInstagram}
               target="_blank"
             >
-              {campusName} on Instagram
+              {!isOnline ? campusName : "Christ Fellowship Church"} on Instagram
             </Button>
           </div>
         </div>
@@ -40,25 +60,15 @@ export const ConnectWithUs = ({
             <h2 className="font-extrabold text-2xl lg:text-[2rem]">
               Looking forward to seeing you this weekend!{" "}
             </h2>
-            <p className="lg:text-lg">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.{" "}
-            </p>
-          </div>
 
-          <SetAReminderModal ModalButton={ModalButton} />
+            {/* TODO: Commenting out for now until we have a description */}
+            {/* <p className="lg:text-lg">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.{" "}
+            </p> */}
+          </div>
+          <SetAReminderModal ModalButton={CustomButton} />
         </div>
       </div>
     </div>
-  );
-};
-
-const ModalButton = ({ ...props }: ButtonProps) => {
-  return (
-    <Button
-      className="w-fit rounded-lg px-16 lg:w-[155px] lg:px-0 lg:h-[48px] lg:text-base lg:font-normal"
-      {...props}
-    >
-      Set a Reminder
-    </Button>
   );
 };

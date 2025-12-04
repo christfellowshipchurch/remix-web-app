@@ -8,6 +8,9 @@ import { SundayDetails } from "./tabs/sunday-details";
 import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
 import { useResponsive } from "~/hooks/use-responsive";
+import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
+import { useState } from "react";
+import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -27,6 +30,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   if (!hit) {
     return <></>;
   }
+
+  const [activeTab, setActiveTab] = useState("sunday-details");
 
   const {
     campusName,
@@ -77,25 +82,14 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         weekdaySchedule={weekdaySchedule}
       />
 
-      <CampusTabs
-        tabs={[
-          (props: { setReminderVideo?: string; isOnline?: boolean }) => (
-            <SundayDetails
-              {...props}
-              setReminderVideo={setReminderVideo || ""}
-            />
-          ),
-          () => (
-            <AboutUs
-              campusPastor={campusPastor}
-              campusName={campusName}
-              campusInstagram={campusInstagram}
-            />
-          ),
-          ForFamilies,
-          UpcomingEvents,
-        ]}
+      <CampusTabsWrapper
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         setReminderVideo={setReminderVideo}
+        isOnline={false}
+        campusPastor={campusPastor}
+        campusName={campusName}
+        campusInstagram={campusInstagram}
       />
 
       <LocationFAQ campusName={campusName} />
@@ -110,12 +104,15 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
+    setReminderVideo = "",
     phoneNumber,
     serviceTimes,
     additionalInfo,
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
+
+  const [activeTab, setActiveTab] = useState("sunday-details");
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
@@ -145,21 +142,68 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
         digitalTourVideo={digitalTourVideo}
         isOnline={true}
       />
+
+      <CampusTabsWrapper
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        setReminderVideo={setReminderVideo}
+        isOnline={true}
+        campusPastor={campusPastor}
+        campusName={campusName}
+        campusInstagram={campusInstagram}
+      />
+
+      <LocationFAQ campusName={campusName} />
+    </div>
+  );
+};
+
+const CampusTabsWrapper = ({
+  activeTab,
+  campusPastor,
+  campusName,
+  campusInstagram,
+  setActiveTab,
+  setReminderVideo,
+  isOnline,
+}: {
+  activeTab: string;
+  campusPastor: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    photo: string;
+  };
+  campusName: string;
+  campusInstagram: string;
+  setActiveTab: (tab: string) => void;
+  setReminderVideo: string;
+  isOnline: boolean;
+}) => {
+  return (
+    <div className="relative h-full w-full">
+      {activeTab == "sunday-details" && (
+        <WhatToExpect setReminderVideo={setReminderVideo} isOnline={isOnline} />
+      )}
+
       <CampusTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         tabs={[
-          (props) => <SundayDetails {...props} setReminderVideo="" />,
-          () => (
-            <AboutUs
-              campusPastor={campusPastor}
-              campusName={campusName}
-              campusInstagram={campusInstagram}
-            />
-          ),
+          () => <SundayDetails isOnline={isOnline} />,
+          () => <AboutUs campusPastor={campusPastor} />,
+          ...(!isOnline ? [ForFamilies] : []),
           UpcomingEvents,
         ]}
-        isOnline={true}
+        isOnline={isOnline}
       />
-      <LocationFAQ campusName={campusName} />
+
+      {activeTab == "about-us" && (
+        <ConnectWithUs
+          campusName={campusName || ""}
+          campusInstagram={campusInstagram || ""}
+        />
+      )}
     </div>
   );
 };
