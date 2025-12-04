@@ -28,10 +28,10 @@ export const SearchPopup = ({
             hitComponent={({ hit }) => {
               const contentData: MobileContentHitType = {
                 routing: hit.routing || { pathname: hit.url || "" },
-                coverImage: hit.coverImage,
+                coverImage: hit.coverImage || null,
                 title: hit.title,
                 contentType: hit.contentType,
-                summary: hit.summary,
+                summary: hit.summary || "",
               };
               return <MobileContentHit hit={contentData} />;
             }}

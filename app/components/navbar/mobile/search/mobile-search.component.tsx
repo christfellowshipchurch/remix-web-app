@@ -77,7 +77,7 @@ export const MobileSearch = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={7} />
+        <Configure hitsPerPage={9} />
 
         <div className="flex flex-col gap-6 pb-2 sticky top-0 bg-white shadow-sm border-b border-[#E0E0E0]">
           {/* Search Bar */}

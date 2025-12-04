@@ -12,6 +12,7 @@ export type HitContentType =
   | "Article"
   | "Event"
   | "Page Builder"
+  | "Location Page"
   | "Ministry Page"
   | "Redirect Card"
   | "Sermon"
@@ -26,6 +27,7 @@ const getIconName = (hit: ContentHitType) => {
     case "Page Builder":
     case "Ministry Page":
     case "Redirect Card":
+    case "Location Page":
       return "windowAlt";
     case "Sermon":
       return "moviePlay";
@@ -129,7 +131,7 @@ export function ContentHit({
     <Link
       to={hitPath}
       prefetch="intent"
-      className="my-2 flex gap-2 hover:translate-x-1 transition-transform duration-300"
+      className="pr-8 py-2 flex gap-2 hover:translate-x-1 transition-transform duration-300"
     >
       <Icon name={iconName} color="#666666" size={28} />
       <div className="flex flex-col">
@@ -137,10 +139,11 @@ export function ContentHit({
           {highlightQuery(hit.title, query)}
         </h3>
         <p className="text-[10px] text-text-secondary font-medium">
-          {hit.contentType === "Page Builder"
-            ? "Resources"
+          {hit.contentType === "Page Builder" ||
+          hit.contentType === "Redirect Card"
+            ? "Resource Page"
             : hit.contentType === "Ministry Page"
-            ? "Ministry"
+            ? "Ministry Page"
             : hit.contentType}
         </p>
       </div>
