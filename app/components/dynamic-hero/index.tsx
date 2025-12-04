@@ -10,12 +10,12 @@ import { Video } from "~/primitives/video/video.primitive";
 export type DynamicHeroTypes = {
   wistiaId?: string;
   imagePath?: string;
-  ctas?: {
+  ctas?: Array<{
     href: string;
     title: string;
     isSetAReminder?: boolean;
     target?: string;
-  }[];
+  }> & { length?: 1 | 2 }; // Only 1 or 2 CTAs are allowed
   customTitle?: string;
   mobileHeight?: string;
   ipadHeight?: string;
@@ -163,7 +163,7 @@ export const DynamicHero = ({
                           i === 0 && ctas.length > 1 ? "secondary" : "primary"
                         }
                         className={cn(
-                          "w-full md:w-auto",
+                          "w-full md:w-auto min-w-[280px]",
                           i !== 0 ? "" : "text-white border-white"
                         )}
                       />
@@ -176,9 +176,10 @@ export const DynamicHero = ({
                           i === 0 && ctas.length > 1 ? "secondary" : "primary"
                         }
                         href={cta.href}
-                        className={`w-full md:w-auto ${
-                          i !== 0 ? "" : "text-white border-white"
-                        }`}
+                        className={cn(
+                          "w-full md:w-auto min-w-[280px]",
+                          i == 0 && ctas.length > 1 && "text-white border-white"
+                        )}
                       >
                         {cta.title}
                       </Button>
