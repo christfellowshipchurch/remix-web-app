@@ -40,7 +40,7 @@ export const VirtualTourTabs = ({
   return (
     <div className="flex flex-col pt-8 rounded-[18px] border border-neutral-lighter">
       <Tabs.Root defaultValue="tour">
-        {!isOnline && (
+        {!isOnline && address && GOOGLE_MAPS_API_KEY && (
           <TabContent
             value="map"
             address={address}
@@ -62,14 +62,14 @@ export const VirtualTourTabs = ({
           wistiaId={wistiaId}
         />
 
-        <Tabs.List className="flex gap-4 p-8">
-          {!isOnline && (
+        {!isOnline && address && GOOGLE_MAPS_API_KEY && (
+          <Tabs.List className="flex p-8">
             <>
               <TourButton value="map">Map</TourButton>
               <TourButton value="tour">Virtual Tour</TourButton>
             </>
-          )}
-        </Tabs.List>
+          </Tabs.List>
+        )}
       </Tabs.Root>
     </div>
   );
@@ -114,7 +114,7 @@ const TabContent = ({
 }) => {
   return (
     <Tabs.Content value={value}>
-      <div className="flex flex-col p-8 !pt-0">
+      <div className="flex flex-col p-5 md:p-8 !pt-0">
         <h3 className="text-lg font-bold">{title}</h3>
         <p>{description}</p>
       </div>
@@ -123,10 +123,13 @@ const TabContent = ({
       {address && value === "map" && apiKey && (
         <GoogleMap address={address} apiKey={apiKey} />
       )}
+
       {wistiaId && value === "tour" && (
         <Video
           wistiaId={wistiaId}
-          className="aspect-67/35 relative z-3"
+          className={`aspect-67/35 relative z-3 ${
+            !address ? "rounded-b-[18px]" : ""
+          }`}
           controls={false}
         />
       )}

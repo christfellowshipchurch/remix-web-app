@@ -56,7 +56,7 @@ const CTAButton = ({
   if (isSetAReminder) {
     const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       (props, ref) => (
-        <button ref={ref} {...props}>
+        <button ref={ref} {...props} className="mr-0">
           <CTAButtonContent icon={icon} title={title} />
         </button>
       )

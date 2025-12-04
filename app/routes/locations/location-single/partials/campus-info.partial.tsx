@@ -52,7 +52,7 @@ const IconText = ({
 
   return (
     <div className="flex items-start gap-2">
-      <Icon name={icon} className="text-ocean mb-auto mt-[6px] md:m-0" />
+      <Icon name={icon} className="text-ocean mb-auto mt-[3px] md:m-0" />
       {text ? (
         <p className="text-lg font-semibold">{text}</p>
       ) : (

@@ -93,8 +93,7 @@ export const familiesMappedChildren: ContentBlockData[] = [
     layoutType: "BANNER",
     subtitle: "",
     callsToAction: "",
-    coverImage:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=80a465c2-1a17-467e-ab83-11007cb2deb5",
+    coverImage: "/assets/images/locations/mix-banner.webp",
     featureVideo: undefined,
     aspectRatio: "16by9",
     imageLayout: "LEFT",

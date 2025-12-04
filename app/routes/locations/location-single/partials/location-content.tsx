@@ -68,7 +68,11 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
           { title: "Set a Reminder", href: "#", isSetAReminder: true },
-          { title: "Map & Directions", href: "#" },
+          {
+            title: "Map & Directions",
+            href: hit.mapLink || "#",
+            target: "_blank",
+          },
         ]}
       />
 
