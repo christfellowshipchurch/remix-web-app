@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
 import { CardCarouselSection } from "~/components/resource-carousel";
 import { cn } from "~/lib/utils";
+import HtmlRenderer from "~/primitives/html-renderer";
 import { CollectionItem } from "~/routes/page-builder/types";
 
 export const GetInvolved = ({ isOnline }: { isOnline?: boolean }) => {
@@ -12,10 +14,42 @@ export const GetInvolved = ({ isOnline }: { isOnline?: boolean }) => {
         isOnline ? "bg-gradient-to-br from-[#1C3647] to-ocean" : ""
       )}
       title="Get Involved"
+      carouselItemClassName="w-full basis-[75%] sm:basis-[40%] lg:basis-[21.2%] xl:basis-[21.5%] 2xl:!basis-[24%]"
+      CardComponent={GetInvolvedCard}
       resources={isOnline ? onlineResources : resources}
       viewMoreLink="/next-steps"
       mode="dark"
     />
+  );
+};
+
+const GetInvolvedCard = ({ resource }: { resource: CollectionItem }) => {
+  const { name, summary, image, pathname } = resource;
+  return (
+    <Link
+      to={pathname}
+      className={cn(
+        "flex flex-col p-[2px] w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300 max-w-[332px] 3xl:max-w-none"
+      )}
+      prefetch="intent"
+    >
+      <img
+        src={image}
+        alt={name}
+        className="w-full h-auto max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:aspect-[41/27] rounded-t-[8px]"
+        loading="lazy"
+      />
+
+      <div className="flex-1 flex flex-col gap-4 p-6 bg-white h-fit border-x border-b border-neutral-lighter rounded-b-[8px]">
+        <div className="flex flex-col gap-2">
+          <h4 className="font-extrabold text-lg leading-tight text-pretty">
+            {name}
+          </h4>
+
+          <HtmlRenderer html={summary || ""} className="line-clamp-6" />
+        </div>
+      </div>
+    </Link>
   );
 };
 

@@ -18,6 +18,7 @@ interface CardCarouselSectionProps {
   description?: string;
   resources: CollectionItem[];
   mode?: "dark" | "light";
+  carouselItemClassName?: string;
   CardComponent?: React.ComponentType<{
     resource: CollectionItem;
   }>;
@@ -27,6 +28,7 @@ interface CardCarouselSectionProps {
 
 export const CardCarouselSection = ({
   CardComponent,
+  carouselItemClassName,
   className,
   backgroundImage,
   title,
@@ -89,6 +91,7 @@ export const CardCarouselSection = ({
                 resources={resources}
                 mode={mode}
                 CardComponent={CardComponent}
+                carouselItemClassName={carouselItemClassName}
               />
             </div>
 
