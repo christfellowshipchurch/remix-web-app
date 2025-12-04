@@ -78,7 +78,7 @@ export const SeriesResourceCarousel = (data: {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="flex justify-between w-full absolute -bottom-8">
+            <div className="flex justify-between w-full absolute -bottom-12">
               {/* Dots */}
               {showDots && (
                 <div className="flex gap-2">
@@ -128,7 +128,7 @@ const CarouselArrows = ({
         }
       >
         <CarouselPrevious
-          className="right-16 left-auto border-navy disabled:border-[#AAAAAA]"
+          className="right-18 left-auto border-navy disabled:border-[#AAAAAA]"
           fill="#004f71"
           disabledFill="#AAAAAA"
         />

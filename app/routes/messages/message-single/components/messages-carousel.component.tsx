@@ -8,9 +8,13 @@ import {
 import { useHits } from "react-instantsearch";
 import { ContentItemHit } from "~/routes/search/types";
 import { SeriesCard } from "./this-series-card.component";
+import { cn } from "~/lib/utils";
 
 export function RelatedMessagesCarousel() {
   const { items } = useHits<ContentItemHit>();
+
+  const arrowBaseStyles =
+    "border-navy disabled:border-[#AAAAAA] hover:bg-navy/10 cursor-pointer";
 
   return (
     <Carousel
@@ -53,19 +57,20 @@ export function RelatedMessagesCarousel() {
                   profilePhoto: "",
                   guid: "",
                 },
+                additionalResources: [],
               }}
             />
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="absolute -bottom-7">
+      <div className="absolute -bottom-10">
         <CarouselPrevious
-          className="left-0 border-navy disabled:border-[#AAAAAA]"
+          className={cn("left-0", arrowBaseStyles)}
           fill="#004f71"
           disabledFill="#AAAAAA"
         />
         <CarouselNext
-          className="left-12 border-navy disabled:border-[#AAAAAA]"
+          className={cn("left-14", arrowBaseStyles)}
           fill="#004f71"
           disabledFill="#AAAAAA"
         />

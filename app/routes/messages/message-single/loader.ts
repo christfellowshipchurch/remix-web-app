@@ -1,6 +1,10 @@
 import type { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
+import {
+  createImageUrlFromGuid,
+  ensureArray,
+  parseRockKeyValueList,
+} from "~/lib/utils";
 import { MessageType } from "../types";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 import { attributeProps, attributeValuesProps } from "~/lib/types/rock-types";
@@ -9,7 +13,6 @@ import { getImages } from "~/lib/.server/rock-utils";
 
 export type LoaderReturnType = {
   message: MessageType;
-  seriesMessages: MessageType[];
   ALGOLIA_APP_ID: string | undefined;
   ALGOLIA_SEARCH_API_KEY: string | undefined;
 };
@@ -99,6 +102,12 @@ export const mapRockDataToMessage = async (
     seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || "",
     speaker,
     url: rockItem.attributeValues?.url?.value || "",
+    additionalResources: parseRockKeyValueList(
+      rockItem.attributeValues?.additionalResources?.value || ""
+    ).map((resource) => ({
+      title: resource.key,
+      url: resource.value,
+    })),
   };
 };
 
@@ -126,26 +135,6 @@ const fetchMessageByPath = async (path: string) => {
   }
 
   return messages[0];
-};
-
-const fetchSeriesMessages = async (
-  seriesGuid: string
-): Promise<MessageType[]> => {
-  const rockData = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
-    queryParams: {
-      attributeKey: "MessageSeries",
-      $filter: "ContentChannelId eq 63 and Status eq 'Approved'",
-      value: seriesGuid,
-      loadAttributes: "simple",
-    },
-  });
-
-  const messages = ensureArray(rockData);
-
-  const seriesMessages = await Promise.all(messages.map(mapRockDataToMessage));
-
-  return seriesMessages;
 };
 
 // TODO: Centralize this function to work with articles, messages, series, authors, etc.
@@ -209,16 +198,10 @@ export const loader: LoaderFunction = async ({
     });
   }
 
-  const seriesGuid = messageData.attributeValues?.messageSeries?.value;
-
-  const [message, seriesMessages] = await Promise.all([
-    mapRockDataToMessage(messageData),
-    seriesGuid ? fetchSeriesMessages(seriesGuid) : Promise.resolve([]),
-  ]);
+  const message = await mapRockDataToMessage(messageData);
 
   return {
     message,
-    seriesMessages,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
   };
