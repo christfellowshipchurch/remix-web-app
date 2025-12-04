@@ -37,20 +37,36 @@ const IconText = ({
   icon: keyof typeof icons;
   text?: string;
   serviceTimes?: dayTimes[];
-}) => (
-  <div className="flex gap-2">
-    <Icon name={icon} className="text-ocean" />
-    {text ? (
-      <p className="text-lg font-semibold">{text}</p>
-    ) : (
-      serviceTimes?.map((time, index) => (
-        <p key={index} className="text-lg font-semibold">
-          {time.day} | {time.hour.join(", ")}
-        </p>
-      ))
-    )}
-  </div>
-);
+}) => {
+  const formattedTimes = serviceTimes?.map((time) => {
+    return {
+      day: time.day,
+      hour:
+        time.day?.toLowerCase() === "ondemand"
+          ? undefined
+          : time.hour
+          ? time.hour.join(", ")
+          : time.hour || "",
+    };
+  });
+
+  return (
+    <div className="flex items-start gap-2">
+      <Icon name={icon} className="text-ocean mb-auto mt-[6px] md:m-0" />
+      {text ? (
+        <p className="text-lg font-semibold">{text}</p>
+      ) : (
+        <div className="flex flex-col md:flex-row md:gap-2">
+          {formattedTimes?.map((time, index) => (
+            <p key={index} className="text-lg font-semibold">
+              {index > 0 && "| "} {time.day} {time.hour ? `| ${time.hour}` : ""}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CampusInfo = ({
   isOnline,
@@ -166,7 +182,7 @@ export const CampusInfo = ({
 
 const OnlineCampusInfo = ({
   campusName: _campusName,
-  digitalTourVideo,
+  // digitalTourVideo,
   phoneNumber,
   additionalInfo,
   serviceTimes,
@@ -220,9 +236,9 @@ const OnlineCampusInfo = ({
         </div>
 
         {/* TODO: Hiding Tour for now */}
-        <div className="flex-1 lg:pt-16 max-w-[670px]">
+        {/* <div className="flex-1 lg:pt-16 max-w-[670px]">
           <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline />
-        </div>
+        </div> */}
 
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">

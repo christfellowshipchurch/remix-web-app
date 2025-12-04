@@ -25,14 +25,14 @@ export const DuringTheWeek = ({
               {schedule?.events?.map((event, i) => (
                 <p
                   key={i}
-                  className="text-[#666666] lg:text-xs font-medium flex items-center"
+                  className="text-[#666666] lg:text-xs font-medium max-w-[180px]"
                 >
-                  {event.time} | {event.event}
-                  <Link to={event?.url}>
+                  {event.time} | {event.event}{" "}
+                  <Link to={event?.url} className="inline align-middle">
                     <Icon
                       name="linkExternal"
                       size={16}
-                      className="text-ocean"
+                      className="text-ocean inline-block align-middle mb-[3px]"
                     />
                   </Link>
                 </p>
