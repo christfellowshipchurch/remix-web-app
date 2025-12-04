@@ -20,12 +20,12 @@ export const ArticleNewsletter = () => {
             {/* Form */}
             <form className="flex w-full flex-col xl:justify-end gap-4 xl:flex-row">
               <input
-                className="w-full xl:max-w-96 p-3 bg-white text-base text-text-secondary rounded-[8px] xl:rounded-none"
+                className="w-full xl:max-w-96 p-3 bg-white text-base text-text-secondary rounded-lg xl:rounded-none"
                 type="email"
                 placeholder="Enter your email"
               />
               <Button
-                className="w-full xl:max-w-96 xl:w-auto rounded-[8px] xl:rounded-none font-normal xl:text-xl"
+                className="w-full xl:max-w-96 xl:w-auto rounded-lg xl:rounded-none font-normal xl:text-xl"
                 intent="primary"
                 href="#testing"
               >

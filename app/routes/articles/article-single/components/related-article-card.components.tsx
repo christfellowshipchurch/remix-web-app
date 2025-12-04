@@ -16,7 +16,7 @@ export function RelatedArticleCard({
       <Link
         to={`/articles/${href}`}
         prefetch="intent"
-        className="flex flex-1 h-full cursor-pointer flex-col overflow-hidden bg-transparent transition-transform duration-300 hover:-translate-y-3 rounded-[1rem] md:rounded-[8px] border border-neutral-lighter"
+        className="flex flex-1 h-full cursor-pointer flex-col overflow-hidden bg-transparent transition-transform duration-300 hover:-translate-y-3 rounded-[1rem] md:rounded-lg border border-neutral-lighter"
       >
         <img
           className="relative h-60 w-full sm:h-80 md:h-96 lg:h-64 lg:w-full xl:h-72 object-cover"

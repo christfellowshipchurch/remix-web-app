@@ -7,15 +7,36 @@ import { AboutUs } from "./tabs/about-us";
 import { SundayDetails } from "./tabs/sunday-details";
 import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
+import { useResponsive } from "~/hooks/use-responsive";
+import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
+import { useState } from "react";
+import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
+
+function useResponsiveVideo(
+  backgroundVideoMobile?: string,
+  backgroundVideoDesktop?: string
+) {
+  const { isSmall } = useResponsive();
+
+  // On mobile: prefer mobile video, fallback to desktop
+  // On desktop: prefer desktop video, fallback to mobile
+  if (isSmall) {
+    return backgroundVideoMobile || backgroundVideoDesktop;
+  }
+  return backgroundVideoDesktop || backgroundVideoMobile;
+}
 
 export function LocationSingle({ hit }: { hit: LocationHitType }) {
   if (!hit) {
     return <></>;
   }
 
+  const [activeTab, setActiveTab] = useState("sunday-details");
+
   const {
     campusName,
     campusLocation = undefined,
+    campusImage,
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
@@ -24,12 +45,14 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     setReminderVideo = "",
     weekdaySchedule = [],
     additionalInfo,
-    // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
-  // TODO: Figure out Spanish campuses and their translations
-  // const _isEspanol = campusName?.includes("Español");
+
+  const wistiaId = useResponsiveVideo(
+    backgroundVideoMobile,
+    backgroundVideoDesktop
+  );
 
   const isOnline = campusName?.includes("Online");
   if (isOnline) {
@@ -39,14 +62,20 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
-        wistiaId={backgroundVideoDesktop || backgroundVideoMobile}
+        wistiaId={wistiaId}
+        imagePath={campusImage}
         desktopHeight="800px"
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
           { title: "Set a Reminder", href: "#", isSetAReminder: true },
-          { title: "Map & Directions", href: "#" },
+          {
+            title: "Map & Directions",
+            href: hit.mapLink || "#",
+            target: "_blank",
+          },
         ]}
       />
+
       <CampusInfo
         serviceTimes={serviceTimes}
         phoneNumber={phoneNumber}
@@ -56,23 +85,17 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         digitalTourVideo={digitalTourVideo}
         weekdaySchedule={weekdaySchedule}
       />
-      <CampusTabs
-        tabs={[
-          (props: { setReminderVideo?: string; isOnline?: boolean }) => (
-            <SundayDetails {...props} setReminderVideo={setReminderVideo || ""} />
-          ),
-          () => (
-            <AboutUs
-              campusPastor={campusPastor}
-              campusName={campusName}
-              campusInstagram={campusInstagram}
-            />
-          ),
-          ForFamilies,
-          UpcomingEvents,
-        ]}
+
+      <CampusTabsWrapper
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         setReminderVideo={setReminderVideo}
+        isOnline={false}
+        campusPastor={campusPastor}
+        campusName={campusName}
+        campusInstagram={campusInstagram}
       />
+
       <LocationFAQ campusName={campusName} />
     </div>
   );
@@ -81,21 +104,30 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
   const {
     campusName,
+    campusImage,
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
+    setReminderVideo = "",
     phoneNumber,
     serviceTimes,
     additionalInfo,
-    // TODO: Fix desktop/mobile videos -> mobile is the desktop video??
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
 
+  const [activeTab, setActiveTab] = useState("sunday-details");
+
+  const wistiaId = useResponsiveVideo(
+    backgroundVideoMobile,
+    backgroundVideoDesktop
+  );
+
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
-        wistiaId={backgroundVideoDesktop || backgroundVideoMobile}
+        wistiaId={wistiaId}
+        imagePath={campusImage}
         desktopHeight="800px"
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
@@ -114,21 +146,70 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
         digitalTourVideo={digitalTourVideo}
         isOnline={true}
       />
+
+      <CampusTabsWrapper
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        setReminderVideo={setReminderVideo}
+        isOnline={true}
+        campusPastor={campusPastor}
+        campusName={campusName}
+        campusInstagram={campusInstagram}
+      />
+
+      <LocationFAQ campusName={campusName} />
+    </div>
+  );
+};
+
+const CampusTabsWrapper = ({
+  activeTab,
+  campusPastor,
+  campusName,
+  campusInstagram,
+  setActiveTab,
+  setReminderVideo,
+  isOnline,
+}: {
+  activeTab: string;
+  campusPastor: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    photo: string;
+  };
+  campusName: string;
+  campusInstagram: string;
+  setActiveTab: (tab: string) => void;
+  setReminderVideo: string;
+  isOnline: boolean;
+}) => {
+  return (
+    <div className="relative h-full w-full">
+      {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
+      {activeTab == "sunday-details" && (
+        <WhatToExpect setReminderVideo={setReminderVideo} isOnline={isOnline} />
+      )}
+
       <CampusTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         tabs={[
-          (props) => <SundayDetails {...props} setReminderVideo="" />,
-          () => (
-            <AboutUs
-              campusPastor={campusPastor}
-              campusName={campusName}
-              campusInstagram={campusInstagram}
-            />
-          ),
+          () => <SundayDetails isOnline={isOnline} />,
+          () => <AboutUs campusPastor={campusPastor} />,
+          ...(!isOnline ? [ForFamilies] : []),
           UpcomingEvents,
         ]}
-        isOnline={true}
+        isOnline={isOnline}
       />
-      <LocationFAQ campusName={campusName} />
+
+      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them oustide of the Tabs component*/}
+      {activeTab == "about-us" && (
+        <ConnectWithUs
+          campusName={campusName || ""}
+          campusInstagram={campusInstagram || ""}
+        />
+      )}
     </div>
   );
 };

@@ -57,7 +57,7 @@ export function UpcomingSessionMobileSection() {
                 <Button
                   onClick={() => setIsMobileOpen(!isMobileOpen)}
                   intent="secondary"
-                  className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-[8px]"
+                  className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
                 >
                   <Icon name="sliderAlt" className="text-navy" />
                   All Filters

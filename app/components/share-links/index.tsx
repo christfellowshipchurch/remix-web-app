@@ -1,5 +1,5 @@
 import { useLoaderData, useLocation } from "react-router-dom";
-import CopyLink from "./copy-link.component";
+import CopyToClipboard from "./copy-link.component";
 import Icon from "~/primitives/icon";
 
 const socialIcons: {
@@ -67,7 +67,7 @@ export function ShareLinks({
     } else if (icon?.name === "linkAlt") {
       return (
         <div key={index}>
-          <CopyLink textToCopy={overrideCopyUrl || fullPath}>
+          <CopyToClipboard textToCopy={overrideCopyUrl || fullPath}>
             <Icon
               name="linkAlt"
               size={38}
@@ -75,7 +75,7 @@ export function ShareLinks({
                 backgroundColor || "bg-white"
               }`}
             />
-          </CopyLink>
+          </CopyToClipboard>
         </div>
       );
     }

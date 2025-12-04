@@ -15,25 +15,25 @@ import Icon from "~/primitives/icon";
 const items = [
   {
     title: "Volunteer with Others",
-    image: "/assets/images/locations/volunteer.jpg",
+    image: "/assets/images/volunteer/hero.webp",
     cta: {
       label: "Learn More",
-      url: "/",
+      url: "/volunteer",
     },
   },
   {
     title: "Join a Group",
-    image: "/assets/images/locations/group.jpg",
+    image: "/assets/images/volunteer/hero.webp",
     cta: {
-      label: "Find Now",
+      label: "Join a Group Now",
       url: "/group-finder",
     },
   },
   {
     title: "Take a Class",
-    image: "/assets/images/locations/class.jpg",
+    image: "/assets/images/volunteer/hero.webp",
     cta: {
-      label: "Find Now",
+      label: "Find a Class Now",
       url: "/group-finder",
     },
   },

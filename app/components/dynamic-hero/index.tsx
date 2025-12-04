@@ -10,7 +10,12 @@ import { Video } from "~/primitives/video/video.primitive";
 export type DynamicHeroTypes = {
   wistiaId?: string;
   imagePath?: string;
-  ctas?: { href: string; title: string; isSetAReminder?: boolean }[];
+  ctas?: {
+    href: string;
+    title: string;
+    isSetAReminder?: boolean;
+    target?: string;
+  }[];
   customTitle?: string;
   mobileHeight?: string;
   ipadHeight?: string;
@@ -59,8 +64,8 @@ export const DynamicHero = ({
       )}
     >
       {/* Video if passed in */}
-      {wistiaId && (
-        <div className={"absolute size-full overflow-hidden"}>
+      <div className={"absolute size-full overflow-hidden"}>
+        {wistiaId && (
           <Video
             key={`${location.pathname}-${wistiaId}`}
             wistiaId={wistiaId}
@@ -68,8 +73,15 @@ export const DynamicHero = ({
             muted
             loop
           />
-        </div>
-      )}
+        )}
+        {!wistiaId && imagePath && (
+          <img
+            src={imagePath}
+            alt="Hero Background"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+      </div>
 
       {/* Bottom Background Gradient Overlay or full overlay */}
       <div
@@ -131,6 +143,7 @@ export const DynamicHero = ({
                         to={cta.href}
                         className="text-white border-[#FAFAFC] border"
                         withRotatingArrow={i === ctas.length - 1}
+                        target={cta.target}
                       >
                         {cta.title}
                       </IconButton>

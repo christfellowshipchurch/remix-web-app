@@ -1,12 +1,16 @@
 import { Link } from "react-router";
-import { MessageType } from "~/routes/messages/types";
 
 export const SeriesCard = ({
   message,
   headingClass,
   pClass,
 }: {
-  message: MessageType;
+  message: {
+    title: string;
+    summary: string;
+    coverImage: string;
+    url: string;
+  };
   headingClass?: string;
   pClass?: string;
 }) => {
@@ -21,7 +25,7 @@ export const SeriesCard = ({
     >
       <img
         src={message.coverImage}
-        className={`w-full aspect-video rounded-[8px] ${hoverClasses}`}
+        className={`w-full aspect-video rounded-lg ${hoverClasses}`}
       />
       <div
         className={`flex flex-col gap-1 md:gap-2 py-4 bg-transparent ${hoverClasses}`}

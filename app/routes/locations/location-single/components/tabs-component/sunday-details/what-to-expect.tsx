@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { SetAReminderModal } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
@@ -32,7 +33,7 @@ export const WhatToExpect = ({
             isOnline && "lg:w-full lg:max-w-[964px] lg:items-center"
           )}
         >
-          <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[52px]">
+          <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[48px] xl:text-[52px]">
             What to Expect
           </h2>
           <div
@@ -44,29 +45,36 @@ export const WhatToExpect = ({
             <div className={cn("flex flex-col gap-6", isOnline && "lg:flex-1")}>
               <ExpectItem
                 title="Come As You Are, Seriously!"
-                description="Comfortable clothes are the norm - no need to dress up to check us out."
+                description="Comfortable clothes are the norm—no need to dress up to check out a service."
               />
               <ExpectItem
-                title="Real Talk, Real Life (in about 1 hour)"
-                description="Engaging and thought-provoking messages based on the Bible that connect with everyday challenges and questions."
+                title="Messages That Speak to Real Life (in about 1 hour)"
+                description="Engaging and inspiring, Bible-based messages that connect with everyday challenges and questions."
               />
             </div>
 
             <div className={cn("flex flex-col gap-6", isOnline && "lg:flex-1")}>
               <ExpectItem
-                title="Friendly Faces, Easy Welcome."
-                description="We're here to help you feel comfortable from the moment you arrive."
+                title="Friendly Faces and Helpful People"
+                description="We’re here to help you feel comfortable from the moment you arrive."
               />
               <ExpectItem
                 title="Kids Have Fun Too! "
-                description="Safe and engaging programs available for newborns through 5th grade during the service."
+                description="Safe and engaging programs are available for newborns through 5th grade (adjust the age ranges based on each campus) during the service."
               />
             </div>
           </div>
 
           {/* Button */}
           <div className={cn("flex", isOnline && "mt-4 lg:t-8")}>
-            <SetAReminderModal ModalButton={ModalButton} />
+            <SetAReminderModal
+              ModalButton={ModalButton}
+              className={`${
+                isOnline
+                  ? "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy rounded-lg"
+                  : ""
+              }`}
+            />
           </div>
         </div>
       </div>
@@ -74,15 +82,25 @@ export const WhatToExpect = ({
   );
 };
 
-const ModalButton = ({ ...props }: ButtonProps) => {
-  return (
-    <button {...props}>
-      <Button intent="primary" className="font-normal text-base rounded-[8px]">
-        Set a Reminder
+const ModalButton = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <Button
+        ref={ref}
+        intent="primary"
+        className={cn(
+          "font-normal text-base !rounded-lg !bg-ocean !text-white hover:!bg-navy",
+          className
+        )}
+        {...props}
+      >
+        {children ?? "Set a Reminder"}
       </Button>
-    </button>
-  );
-};
+    );
+  }
+);
+
+ModalButton.displayName = "ModalButton";
 
 const ExpectItem = ({
   title,

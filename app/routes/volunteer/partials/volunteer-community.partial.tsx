@@ -37,7 +37,7 @@ export function VolunteerCommunity() {
               Meet The Needs In Our Region
             </h3>
             <div className="relative w-full md:w-80">
-              <select className="border border-neutral-light rounded-[8px] px-3 py-2 w-full appearance-none bg-white text-lg text-[#666666] focus:outline-none">
+              <select className="border border-neutral-light rounded-lg px-3 py-2 w-full appearance-none bg-white text-lg text-[#666666] focus:outline-none">
                 <option value="">Filter by location</option>
                 <option value="all">All Locations</option>
                 <option value="north">North Region</option>

@@ -187,7 +187,7 @@ const GroupsFinderDropdownPopupList = ({
     buttonRefined:
       "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy",
     input:
-      "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-[8px] border border-[#AAAAAA] py-2 flex h-full",
+      "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full",
   };
 
   return (
