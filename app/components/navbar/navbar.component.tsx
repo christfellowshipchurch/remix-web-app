@@ -391,7 +391,12 @@ export function Navbar() {
               </div>
 
               {/* Mobile Menu */}
-              <MobileMenu mode={mode} setMode={setMode} />
+
+              <MobileMenu
+                mode={mode}
+                setMode={setMode}
+                showSiteBanner={showSiteBanner}
+              />
             </div>
           </div>
         </nav>

@@ -12,9 +12,11 @@ const mobileMenuButtonStyle =
 export default function MobileMenu({
   mode,
   setMode,
+  showSiteBanner,
 }: {
   mode: "light" | "dark";
   setMode: (mode: "light" | "dark") => void;
+  showSiteBanner?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [orginalMode] = useState(mode);
@@ -58,7 +60,9 @@ export default function MobileMenu({
 
       {/* Backdrop */}
       <div
-        className={`fixed md:top-[90px] inset-0 bg-black/50 z-10 transition-opacity duration-300 lg:hidden
+        className={`fixed ${
+          showSiteBanner ? "top-[48px]" : "top-[0px]"
+        } inset-0 bg-black/50 z-10 transition-opacity duration-300 lg:hidden
           ${
             isOpen
               ? "opacity-100 visible"
@@ -126,7 +130,9 @@ export default function MobileMenu({
 
       {/* Menu Content */}
       <div
-        className={`fixed top-0 md:top-[90px] right-0 w-4/5 max-w-[400px] h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        className={`fixed ${
+          showSiteBanner ? "top-[48px]" : "top-[0px]"
+        } right-0 w-4/5 max-w-[400px] h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
           ${
             !isOpen
               ? "translate-x-full invisible opacity-0"
@@ -150,7 +156,9 @@ export default function MobileMenu({
 
       {/* Search Open */}
       <div
-        className={`fixed top-0 md:top-[90px] right-0 w-full h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        className={`fixed ${
+          showSiteBanner ? "top-[48px]" : "top-[0px]"
+        } right-0 w-full h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
           ${
             !isSearchOpen
               ? "translate-x-full invisible opacity-0"
