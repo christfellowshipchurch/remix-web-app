@@ -14,7 +14,7 @@ export function MessageSinglePage() {
       <MessageContent />
 
       <div className="w-full content-padding">
-        <div className="w-full max-w-screen-content">
+        <div className="mx-auto max-w-screen-content">
           <div className="mt-24 pb-24 flex justify-start">
             {message.additionalResources.length > 0 && (
               <AdditionalResources
