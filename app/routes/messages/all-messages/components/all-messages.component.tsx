@@ -44,18 +44,7 @@ export default function Messages() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <div className="md:hidden">
-              <HubsTagsRefinementList
-                tagName="sermonPrimaryCategories"
-                wrapperClass="flex flex-nowrap px-1 pb-1 overflow-x-auto scrollbar-hide"
-                buttonClassDefault="w-fit group px-4 border-b-3 transition-colors flex-shrink-0"
-                buttonClassSelected="border-ocean text-ocean"
-                buttonClassUnselected="border-neutral-lighter text-text-secondary"
-              />
-            </div>
-            <div className="hidden md:block">
-              <HubsTagsRefinementList tagName="sermonPrimaryCategories" />
-            </div>
+            <HubsTagsRefinementList tagName="sermonPrimaryCategories" />
           </div>
 
           {/* Results Grid */}
