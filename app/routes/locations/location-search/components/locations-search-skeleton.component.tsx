@@ -29,7 +29,7 @@ export function LocationsLoader() {
       </div>
       {/* Prison Location */}
       <div className="mt-12">
-        <Link to="/locations/prison-locations">
+        <Link to="/ministries/prison">
           <div className="relative h-[150px] w-[90vw] rounded-md md:h-[250px] md:w-[600px]">
             <div
               className="absolute size-full opacity-80"

@@ -27,7 +27,7 @@ export function SetAReminderModal({
           intent={intent}
           onClick={() => setOpenModal(true)}
           className={cn(
-            "text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10",
+            "text-white border-[#FAFAFC] rounded-md md:rounded-none border hover:bg-white/10",
             className
           )}
         >

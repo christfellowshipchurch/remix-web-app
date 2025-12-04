@@ -37,20 +37,36 @@ const IconText = ({
   icon: keyof typeof icons;
   text?: string;
   serviceTimes?: dayTimes[];
-}) => (
-  <div className="flex gap-2">
-    <Icon name={icon} className="text-ocean" />
-    {text ? (
-      <p className="text-lg font-semibold">{text}</p>
-    ) : (
-      serviceTimes?.map((time, index) => (
-        <p key={index} className="text-lg font-semibold">
-          {time.day} | {time.hour.join(", ")}
-        </p>
-      ))
-    )}
-  </div>
-);
+}) => {
+  const formattedTimes = serviceTimes?.map((time) => {
+    return {
+      day: time.day,
+      hour:
+        time.day?.toLowerCase() === "ondemand"
+          ? undefined
+          : time.hour
+          ? time.hour.join(", ")
+          : time.hour || "",
+    };
+  });
+
+  return (
+    <div className="flex items-start gap-2">
+      <Icon name={icon} className="text-ocean mb-auto mt-[3px] md:m-0" />
+      {text ? (
+        <p className="text-lg font-semibold">{text}</p>
+      ) : (
+        <div className="flex flex-col md:flex-row md:gap-2">
+          {formattedTimes?.map((time, index) => (
+            <p key={index} className="text-lg font-semibold">
+              {index > 0 && "| "} {time.day} {time.hour ? `| ${time.hour}` : ""}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CampusInfo = ({
   isOnline,
@@ -79,6 +95,23 @@ export const CampusInfo = ({
       />
     );
   }
+
+  let campusHeadingLine = "";
+  if (campusName === "CF Everywhere") {
+    campusHeadingLine = "Christ Fellowship Church Online";
+  } else if (campusName === "Trinity") {
+    campusHeadingLine = `Christ Fellowship Church Trinity in Palm Beach Gardens`;
+  } else if (campusName.includes("Español") || campusName.includes("Espanol")) {
+    const espanolCampusLocation = campusName
+      .replace("Español", "")
+      .replace("Espanol", "")
+      .replace("Christ Fellowship", "")
+      .trim();
+    campusHeadingLine = `Christ Fellowship Español en ${espanolCampusLocation}, FL`;
+  } else {
+    campusHeadingLine = `Christ Fellowship Church in ${campusName}, FL`;
+  }
+
   return (
     <div className="w-full content-padding">
       <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
@@ -91,7 +124,7 @@ export const CampusInfo = ({
               <p className="font-medium">Campus Location</p>
             </div>
             <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
-              Christ Fellowship Church in {campusName}, FL
+              {campusHeadingLine}
             </h1>
           </div>
 
@@ -149,7 +182,7 @@ export const CampusInfo = ({
 
 const OnlineCampusInfo = ({
   campusName: _campusName,
-  digitalTourVideo,
+  // digitalTourVideo,
   phoneNumber,
   additionalInfo,
   serviceTimes,
@@ -158,7 +191,7 @@ const OnlineCampusInfo = ({
     <div className="w-full content-padding">
       <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
         {/* Location Info */}
-        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]">
+        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[900px]">
           {/* Campus Name Section*/}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 text-ocean">
@@ -202,9 +235,11 @@ const OnlineCampusInfo = ({
           </div>
         </div>
 
-        {/* Tour */}
+        {/* TODO: Hiding Tour for now */}
         <div className="flex-1 lg:pt-16 max-w-[670px]">
-          <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline />
+          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> */}
+          {/* Hardcoded wistiaId for now */}
+          <VirtualTourTabs wistiaId="beicrozg21" isOnline />
         </div>
 
         {/* Mobile CTAs */}

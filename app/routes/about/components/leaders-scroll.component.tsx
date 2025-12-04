@@ -34,7 +34,7 @@ export function LeaderScroll() {
               <img
                 src={seniorLeaderItem.profilePhoto}
                 alt={seniorLeaderItem.fullName}
-                className="w-full aspect-[3/2] sm:aspect-[16/9] md:aspect-[16/7] object-cover object-top rounded-[8px]"
+                className="w-full aspect-[3/2] sm:aspect-[16/9] md:aspect-[16/7] object-cover object-top rounded-lg"
               />
               <div
                 className="absolute right-2 -bottom-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg"
@@ -94,7 +94,7 @@ const MobileLeaderCard = ({
           )}
         >
           <div className="relative mb-6">
-            <div className="overflow-hidden rounded-[8px]">
+            <div className="overflow-hidden rounded-lg">
               <img
                 src={leader.profilePhoto}
                 alt={leader.fullName}

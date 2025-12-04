@@ -89,7 +89,7 @@ export const ClassSearch = () => {
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
               {/* Group Search Box */}
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-[8px] bg-[#EDF3F8] focus-within:border-ocean py-2">
+              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
                 <Icon name="searchAlt" className="text-[#666666] ml-3" />
                 <SearchBox
                   placeholder="Keyword"
@@ -124,7 +124,7 @@ export const ClassSearch = () => {
               <Button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
                 intent="secondary"
-                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-[8px]"
+                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
               >
                 <Icon name="sliderAlt" className="text-navy" />
                 All Filters

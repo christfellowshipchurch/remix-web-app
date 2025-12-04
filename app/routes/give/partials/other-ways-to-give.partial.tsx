@@ -11,7 +11,7 @@ export const OtherWaysToGive = () => {
           <h2 className="text-[32px] md:text-[52px] font-extrabold leading-tight">
             Other Ways to Give
           </h2>
-          <div className="bg-ocean w-[160px] md:w-[265px] h-2 rounded-[8px]" />
+          <div className="bg-ocean w-[160px] md:w-[265px] h-2 rounded-lg" />
         </div>
 
         {/* Cards */}

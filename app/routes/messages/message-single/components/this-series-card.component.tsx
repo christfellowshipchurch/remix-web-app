@@ -25,7 +25,7 @@ export const SeriesCard = ({
     >
       <img
         src={message.coverImage}
-        className={`w-full aspect-video rounded-[8px] ${hoverClasses}`}
+        className={`w-full aspect-video rounded-lg ${hoverClasses}`}
       />
       <div
         className={`flex flex-col gap-1 md:gap-2 py-4 bg-transparent ${hoverClasses}`}

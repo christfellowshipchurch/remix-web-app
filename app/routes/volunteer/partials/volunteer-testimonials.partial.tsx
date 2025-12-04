@@ -55,7 +55,7 @@ export function VolunteerTestimonials() {
               Get Started
             </IconButton>
           </div>
-          <Button className="lg:hidden w-full max-w-[262px] py-3 rounded-[8px]">
+          <Button className="lg:hidden w-full max-w-[262px] py-3 rounded-lg">
             Help me find a Spot
           </Button>
         </div>

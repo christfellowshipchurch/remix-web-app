@@ -3,12 +3,12 @@ import { SectionTitle } from "~/components";
 export function OurMissionSection() {
   return (
     <section id="mission" className="py-2 lg:py-24 content-padding">
-      <div className="container max-w-screen-content grid items-center justify-center grid-cols-1  lg:grid-cols-5 gap-8 mx-auto">
+      <div className="container max-w-screen-content grid items-center justify-center grid-cols-1 lg:grid-cols-5 gap-8 mx-auto">
         <SectionTitle
           sectionTitle="our mission."
           className="block md:hidden mb-[-90px]"
         />
-        <div className="md:col-span-3 order-2 lg:order-1">
+        <div className="md:col-span-3 order-2 lg:order-1 max-w-[780px]">
           <SectionTitle
             sectionTitle="our mission."
             className="hidden md:block"

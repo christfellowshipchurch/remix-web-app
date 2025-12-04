@@ -167,7 +167,7 @@ export function FilterDropdown({
         "relative",
         "flex items-center justify-between",
         "w-fit",
-        "rounded-[8px]",
+        "rounded-lg",
         "p-3",
         "border border-[#666666]",
         "text-text-secondary",

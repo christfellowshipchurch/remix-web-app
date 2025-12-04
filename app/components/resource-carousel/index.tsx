@@ -15,9 +15,10 @@ interface CardCarouselSectionProps {
   viewMoreLink: string;
   viewMoreText?: string;
   title: string;
-  description: string;
+  description?: string;
   resources: CollectionItem[];
   mode?: "dark" | "light";
+  carouselItemClassName?: string;
   CardComponent?: React.ComponentType<{
     resource: CollectionItem;
   }>;
@@ -27,6 +28,7 @@ interface CardCarouselSectionProps {
 
 export const CardCarouselSection = ({
   CardComponent,
+  carouselItemClassName,
   className,
   backgroundImage,
   title,
@@ -64,7 +66,9 @@ export const CardCarouselSection = ({
                 <h2 className="heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight">
                   {title}
                 </h2>
-                <p className="md:text-lg leading-none">{description}</p>
+                {description && (
+                  <p className="md:text-lg leading-none">{description}</p>
+                )}
               </div>
 
               <Button
@@ -87,6 +91,7 @@ export const CardCarouselSection = ({
                 resources={resources}
                 mode={mode}
                 CardComponent={CardComponent}
+                carouselItemClassName={carouselItemClassName}
               />
             </div>
 

@@ -3,36 +3,36 @@ import { Icon } from "~/primitives/icon/icon";
 
 const amenities: { title: string; icon: keyof typeof icons }[] = [
   {
-    title: "Accessible Parking",
+    title: "Free Parking",
     icon: "car",
   },
   {
-    title: "Accessible Restrooms",
+    title: "Clean Restrooms",
     icon: "maleFemale",
   },
   {
-    title: "Accessible Seating & Entrance",
+    title: "Accessible Entrances & Seating",
     icon: "handicap",
   },
   {
-    title: "Children's Ministry",
-    icon: "face",
-  },
-  {
-    title: "Greeters & Ushers",
+    title: "Helpful Greeters & Ushers",
     icon: "happy",
   },
   {
-    title: "Security & First Aid",
-    icon: "shield",
-  },
-  {
-    title: "Wifi",
-    icon: "wifi",
+    title: "Kids Ministry",
+    icon: "face",
   },
   {
     title: "Family/Nursing Room",
     icon: "universalAccess",
+  },
+  {
+    title: "Free Wifi",
+    icon: "wifi",
+  },
+  {
+    title: "Security & First Aid",
+    icon: "shield",
   },
 ];
 

@@ -133,7 +133,7 @@ export const DailyHero = () => {
                     "_blank"
                   )
                 }
-                className="w-full md:w-auto flex items-center gap-3 rounded-[8px] bg-transparent border border-solid border-neutral-lighter hover:!bg-neutral-lightest"
+                className="w-full md:w-auto flex items-center gap-3 rounded-lg bg-transparent border border-solid border-neutral-lighter hover:!bg-neutral-lightest"
               >
                 <div className="flex -space-x-[10px]">
                   {avatars.slice(0, 3).map((avatar, i) => (

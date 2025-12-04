@@ -19,8 +19,8 @@ export const CampusPastorsQuote = ({
           <h2 className="font-extrabold text-[40px] lg:text-[52px] max-w-[780px] leading-tight">
             {title}
           </h2>
-          <p className="lg:text-xl lg:max-w-[520px] text-pretty max-w-[620px]">
-            {quote}
+          <p className="lg:text-xl max-w-[520px] text-pretty lg:max-w-[620px]">
+            <span dangerouslySetInnerHTML={{ __html: quote }} />
           </p>
         </div>
 
@@ -32,7 +32,7 @@ export const CampusPastorsQuote = ({
             className="size-[90px] object-cover aspect-square rounded-full"
           />
           <div className="flex flex-col justify-center items-center md:items-start">
-            <h4 className="text-lg text-text-secondary">Campus Pastor</h4>
+            <h4 className="text-lg text-text-secondary">Campus Pastors</h4>
             <h3 className="font-semibold text-[22px]">
               {campusPastor.firstName} {campusPastor.lastName}
             </h3>

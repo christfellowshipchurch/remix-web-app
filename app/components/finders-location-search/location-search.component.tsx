@@ -80,7 +80,7 @@ export const FinderLocationSearch = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         className={cn(
-          "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-[8px] border border-[#AAAAAA] py-2 flex h-full",
+          "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full",
           "transition-all duration-300",
           {
             "border-ocean": coordinates,

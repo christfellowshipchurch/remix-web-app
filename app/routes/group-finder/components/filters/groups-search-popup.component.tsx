@@ -77,7 +77,7 @@ export function GroupsSearchPopup({
             root: "flex-grow",
             form: "flex",
             input:
-              "w-full text-xl px-2 focus:outline-none rounded-[8px] bg-[#EDF3F8] px-4 py-2 flex h-full",
+              "w-full text-xl px-2 focus:outline-none rounded-lg bg-[#EDF3F8] px-4 py-2 flex h-full",
             resetIcon: "hidden",
             submit: "hidden",
           }}

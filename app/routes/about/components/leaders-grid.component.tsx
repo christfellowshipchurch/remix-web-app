@@ -42,7 +42,7 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
         data-leader-name={leader.fullName}
       >
         <div className="relative mb-6">
-          <div className="relative overflow-hidden rounded-[8px]">
+          <div className="relative overflow-hidden rounded-lg">
             <img
               src={leader.profilePhoto}
               alt={leader.fullName}

@@ -3,7 +3,11 @@ declare global {
   interface Window {
     _wq: Array<{
       id: string;
-      onReady: () => void;
+      onReady: (video: {
+        play: () => Promise<void>;
+        pause: () => void;
+        muted: (muted: boolean) => void;
+      }) => void;
     }>;
   }
 }

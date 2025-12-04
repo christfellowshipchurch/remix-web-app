@@ -29,7 +29,7 @@ export const footerColumns: FooterColumn[] = [
         title: "Subscribe to Updates",
         url: "https://church.us11.list-manage.com/subscribe?u=76848e191018191e2e2d01d77&id=3265404466",
       },
-      { title: "Contact Us", url: "/contactus" },
+      { title: "Contact Us", url: "mailto:hello@christfellowship.church" },
     ],
   },
   {
