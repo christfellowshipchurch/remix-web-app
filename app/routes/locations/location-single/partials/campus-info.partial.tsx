@@ -236,9 +236,11 @@ const OnlineCampusInfo = ({
         </div>
 
         {/* TODO: Hiding Tour for now */}
-        {/* <div className="flex-1 lg:pt-16 max-w-[670px]">
-          <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline />
-        </div> */}
+        <div className="flex-1 lg:pt-16 max-w-[670px]">
+          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> */}
+          {/* Hardcoded wistiaId for now */}
+          <VirtualTourTabs wistiaId="beicrozg21" isOnline />
+        </div>
 
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
