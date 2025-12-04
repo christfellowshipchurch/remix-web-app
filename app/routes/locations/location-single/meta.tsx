@@ -5,6 +5,13 @@ import type { LoaderReturnType } from "./loader";
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const locationData = data as LoaderReturnType | undefined;
   if (!locationData) return [];
+
+  const espanolCampusName = locationData?.campusName
+    ?.toLowerCase()
+    .includes("iglesia")
+    ? locationData?.campusName.replace("Iglesia", "").trim()
+    : locationData?.campusName;
+
   return [
     {
       title: `${
@@ -14,7 +21,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
             locationData?.campusName?.toLowerCase().includes("everywhere")
           ? "Christ Fellowship Church Online | Get the Most Out of Life"
           : locationData?.campusName?.toLowerCase().includes("iglesia")
-          ? `Christ Fellowship Español en ${locationData?.campusName}, FL | Christ Fellowship Church`
+          ? `Christ Fellowship Español en ${espanolCampusName}, FL | Christ Fellowship Church`
           : `Church in ${locationData?.campusName},  Fl | Christ Fellowship Church`
       }`,
       description: `Join us at Christ Fellowship Church in`,
