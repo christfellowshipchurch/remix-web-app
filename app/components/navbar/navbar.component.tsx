@@ -114,13 +114,7 @@ export function Navbar() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [
-    lastScrollY,
-    defaultMode,
-    pathname,
-    isSmall,
-    isNavbarHidden,
-  ]);
+  }, [lastScrollY, defaultMode, pathname, isSmall, isNavbarHidden]);
 
   // Initial mode setup
   useEffect(() => {
@@ -309,8 +303,9 @@ export function Navbar() {
                           {openDropdown === menuLink.title && (
                             <div
                               className={cn(
-                                "fixed top-[82px] left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
-                                "animate-in slide-in-from-top-2 duration-200"
+                                "fixed left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
+                                "animate-in slide-in-from-top-2 duration-200",
+                                showSiteBanner ? "top-[130px]" : "top-[82px]"
                               )}
                             >
                               <MenuContent

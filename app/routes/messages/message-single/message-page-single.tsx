@@ -3,13 +3,24 @@ import { MessageContent } from "./partials/content.partial";
 import { InThisSeries } from "./partials/series.partial";
 import { RelatedMessages } from "./partials/related-messages.partial";
 import { AdditionalResources } from "~/components";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
+import { cn } from "~/lib/utils";
+import { RootLoaderData } from "~/routes/navbar/loader";
 
 export function MessageSinglePage() {
   const { message } = useLoaderData<LoaderReturnType>();
+  const { siteBanner } = (useRouteLoaderData("root") as RootLoaderData) || {};
+
   return (
-    <div className="flex flex-col items-center bg-gradient-to-br from-[#050A0D] to-[#003045] text-white pt-32">
+    <div
+      className={cn(
+        "flex flex-col items-center",
+        "bg-gradient-to-br from-[#050A0D] to-[#003045]",
+        "text-white",
+        siteBanner?.content?.length > 0 ? "pt-38" : "pt-32"
+      )}
+    >
       <MessageVideo />
       <MessageContent />
 
