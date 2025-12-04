@@ -32,7 +32,7 @@ const emptySearchClient = {
           query: "",
           params: "",
           processingTimeMS: 0,
-          index: "production_ContentItems",
+          index: "dev_contentItems",
         },
       ],
     }),
@@ -134,20 +134,20 @@ export const SearchBar = ({
   return (
     <div className="relative size-full" ref={searchBarRef}>
       <InstantSearch
-        indexName="production_ContentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          production_ContentItems: {
+          dev_contentItems: {
             query: "",
           },
         }}
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={20} />
+        <Configure hitsPerPage={10} />
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button

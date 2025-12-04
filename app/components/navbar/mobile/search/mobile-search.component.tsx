@@ -27,7 +27,7 @@ const emptySearchClient = {
           query: "",
           params: "",
           processingTimeMS: 0,
-          index: "production_ContentItems",
+          index: "dev_contentItems",
         },
       ],
     }),
@@ -64,13 +64,13 @@ export const MobileSearch = ({
   return (
     <div className="h-full overflow-y-auto bg-white">
       <InstantSearch
-        indexName="production_ContentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          production_ContentItems: {
+          dev_contentItems: {
             query: "",
           },
         }}

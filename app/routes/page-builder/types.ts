@@ -14,6 +14,7 @@ export type ContentType =
   | "MESSAGES"
   | "ARTICLES"
   | "DEVOTIONALS"
+  | "MINISTRY_PAGE"
   | "PODCASTS"
   | "REDIRECT_CARD"
   | "PAGE_BUILDER";

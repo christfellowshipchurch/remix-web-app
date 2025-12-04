@@ -1,6 +1,7 @@
 import { Hits } from "react-instantsearch";
-import { ContentHit, ContentHitType } from "./content-hit.component";
+import { ContentHit } from "./content-hit.component";
 import { SearchCustomRefinementList } from "./custom-refinements.component";
+import { ContentItemHit } from "~/routes/search/types";
 
 export const SearchPopup = ({
   setIsSearchOpen,
@@ -31,15 +32,9 @@ export const SearchPopup = ({
             list: "flex flex-col",
           }}
           hitComponent={({ hit }) => {
-            if (hit?.routing?.pathname) {
-              const contentData: ContentHitType = {
-                routing: hit.routing || { pathname: hit.url || "" },
-                title: hit.title,
-                contentType: hit.contentType,
-              };
-              return <ContentHit hit={contentData} query={query || null} />;
-            }
-            return null;
+            return (
+              <ContentHit hit={hit as ContentItemHit} query={query || null} />
+            );
           }}
         />
       </div>
