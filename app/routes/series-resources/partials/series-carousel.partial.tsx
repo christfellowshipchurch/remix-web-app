@@ -1,4 +1,3 @@
-import { MessageType } from "~/routes/messages/types";
 import {
   CarouselContent,
   CarouselItem,
@@ -11,7 +10,12 @@ import { MinistryCard } from "~/primitives/cards/ministry-card";
 import { useResponsive } from "~/hooks/use-responsive";
 
 export const SeriesResourceCarousel = (data: {
-  items: MessageType[];
+  items: {
+    title: string;
+    summary: string;
+    coverImage: string;
+    url: string;
+  }[];
   title: string;
   summary?: string;
   bg?: string;

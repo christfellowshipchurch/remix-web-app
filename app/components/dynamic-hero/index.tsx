@@ -10,12 +10,12 @@ import { Video } from "~/primitives/video/video.primitive";
 export type DynamicHeroTypes = {
   wistiaId?: string;
   imagePath?: string;
-  ctas?: Array<{
+  ctas?: {
     href: string;
     title: string;
     isSetAReminder?: boolean;
     target?: string;
-  }> & { length?: 1 | 2 }; // Only 1 or 2 CTAs are allowed
+  }[];
   customTitle?: string;
   mobileHeight?: string;
   ipadHeight?: string;
