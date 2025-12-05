@@ -3,8 +3,8 @@ import { useInstantSearch, useRefinementList } from "react-instantsearch";
 
 export const HubsTagsRefinementList = ({
   tagName = "sermonPrimaryCategories",
-  wrapperClass = "flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide",
-  buttonClassDefault = "text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300",
+  wrapperClass = "flex gap-3 md:gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide",
+  buttonClassDefault = "md:text-lg shrink-0 px-4 py-2 md:px-6 md:py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300",
   buttonClassSelected = "border border-neutral-600 text-neutral-600 bg-white font-semibold",
   buttonClassUnselected = "bg-gray text-neutral-500 hover:bg-neutral-200",
 }: {

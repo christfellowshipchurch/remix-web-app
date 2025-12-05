@@ -7,7 +7,13 @@ export default function MessagesPage() {
     <div>
       <DynamicHero
         imagePath="/assets/images/messages-hero-bg.jpg"
-        ctas={[{ href: "#testing", title: "Watch Live" }]}
+        ctas={[
+          {
+            href: "https://www.youtube.com/@ChristFellowship.Church",
+            title: "Watch Live",
+            target: "_blank",
+          },
+        ]}
       />
       <CurrentSeries />
       <AllMessages />

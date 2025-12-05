@@ -33,31 +33,10 @@ export function RelatedMessagesCarousel() {
               headingClass="text-text-primary"
               pClass="text-text-primary"
               message={{
-                id: hit.rockItemId.toString(),
                 title: hit.title,
-                content: hit?.htmlContent || "",
                 summary: hit.summary,
-                image: hit.coverImage.sources[0].uri,
                 coverImage: hit.coverImage.sources[0].uri,
-                video: "",
-                startDateTime: hit.startDateTime || "",
-                expireDateTime: "",
-                seriesId: "",
-                seriesTitle: hit.sermonSeriesName || "",
-                url: hit.url || hit.routing.pathname,
-                primaryCategories:
-                  hit.sermonPrimaryCategories?.map((tag) => ({ value: tag })) ||
-                  [],
-                secondaryCategories:
-                  hit.sermonSecondaryCategories?.map((tag) => ({
-                    value: tag,
-                  })) || [],
-                speaker: {
-                  fullName: hit.author.firstName + " " + hit.author.lastName,
-                  profilePhoto: "",
-                  guid: "",
-                },
-                additionalResources: [],
+                url: hit.url,
               }}
             />
           </CarouselItem>
