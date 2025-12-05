@@ -66,7 +66,7 @@ const CurrentSeriesHit = ({
       <SectionTitle title={currentSeriesTitle} sectionTitle="current series" />
 
       {/* Latest Message Card */}
-      <div className="flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] lg:h-[620px] xl:h-[540px] 2xl:h-[500px]">
+      <div className="flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] lg:h-[620px]">
         <div className="flex flex-col h-full lg:w-1/2 justify-between lg:justify-center lg:gap-16 bg-white w-full p-8 md:p-16 lg:px-10 lg:py-12 xl:p-16">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
@@ -111,7 +111,7 @@ const CurrentSeriesHit = ({
         <img
           src={hit.coverImage.sources[0].uri}
           alt={currentSeriesTitle}
-          className="w-full lg:w-1/2 lg:h-[620px] xl:h-[500px] object-cover"
+          className="w-full lg:w-1/2 lg:h-[620px] object-cover"
         />
       </div>
     </>

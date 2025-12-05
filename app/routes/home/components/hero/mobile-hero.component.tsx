@@ -1,7 +1,10 @@
+import { useRouteLoaderData } from "react-router-dom";
 import { LocationSearch } from "../location-search/location-search.component";
 import { MobileFeaturedItems } from "./mobile-features.component";
+import { RootLoaderData } from "~/routes/navbar/loader";
 
 export const MobileHeroSection = () => {
+  const { siteBanner } = useRouteLoaderData("root") as RootLoaderData;
   return (
     <section className="h-[100dvh] w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
       {/*  Background Video */}
@@ -23,8 +26,10 @@ export const MobileHeroSection = () => {
       <div className="absolute inset-0 w-full h-full z-2 bg-gradient-to-b from-black/20 to-black/80" />
       {/*  Content */}
       <div className="relative z-3 flex flex-col justify-end gap-8 h-full px-4">
-        {/*  Top Divider */}
-        <div className="md:hidden absolute top-[82px] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[1px] w-full bg-[#D9D9D9] opacity-50 max-w-[340px] sm:max-w-[500px]" />
+        {/*  Top Divider - hide if site banner is shown so it doesn't overlap */}
+        {!siteBanner && (
+          <div className="md:hidden absolute top-[82px] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[1px] w-full bg-[#D9D9D9] opacity-50 max-w-[340px] sm:max-w-[500px]" />
+        )}
 
         {/*  Main content */}
         <div className="flex flex-col gap-8 justify-end">
