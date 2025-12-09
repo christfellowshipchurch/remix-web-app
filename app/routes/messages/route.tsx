@@ -1,4 +1,4 @@
-import MessagesPage from "./all-messages/messages-page";
+import { MessagesPage } from "./all-messages/messages-page";
 
 export { loader } from "./all-messages/loader";
 
