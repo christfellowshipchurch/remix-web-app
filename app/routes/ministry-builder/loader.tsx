@@ -7,6 +7,7 @@ import {
   mapPageBuilderChildItems,
 } from "../page-builder/loader";
 import { PageBuilderLoader } from "../page-builder/types";
+import { RockCampuses } from "~/lib/rock-config";
 
 export const loader: LoaderFunction = async ({ params }) => {
   try {
@@ -46,12 +47,33 @@ export const loader: LoaderFunction = async ({ params }) => {
         "",
       content: pageData.content,
       callsToAction:
-        parseRockKeyValueList(pageData.attributeValues?.callsToAction?.value)
-          ?.map((cta) => ({
-            title: cta.key,
-            url: cta.value,
-          })) || [],
+        parseRockKeyValueList(
+          pageData.attributeValues?.callsToAction?.value
+        )?.map((cta) => ({
+          title: cta.key,
+          url: cta.value,
+        })) || [],
       sections: mappedChildren,
+      services: [
+        {
+          id: "1",
+          ministryType: "cf-kids",
+          location: RockCampuses[0], //Gardens
+          daysOfWeek: "Sunday",
+          times: "8AM, 9:30AM, 11AM",
+          learnMoreLink: "/service",
+          planYourVisit: true,
+        },
+        {
+          id: "2",
+          ministryType: "kids-university",
+          location: RockCampuses[0], //Gardens
+          daysOfWeek: "Sunday",
+          times: "6:30PM",
+          learnMoreLink: "/service",
+          planYourVisit: true,
+        },
+      ],
     };
 
     return pageBuilder;

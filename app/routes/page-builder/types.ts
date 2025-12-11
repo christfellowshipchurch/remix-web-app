@@ -1,3 +1,5 @@
+import { RockCampus } from "~/lib/rock-config";
+
 /**
  * Represents a section type in the page builder
  */
@@ -102,6 +104,31 @@ export type PageBuilderLoader = {
   callsToAction: CallToAction[];
   content: string;
   sections: PageBuilderSection[];
+  services?: MinistryService[];
+};
+
+/**
+ * Ministry Types
+ */
+export type MinistryType =
+  | "cf-kids"
+  | "kids-university"
+  | "students-high-school"
+  | "students-middle-school"
+  | "young-adults"
+  | "college-nights";
+
+/**
+ * Represents a ministry service in the page builder
+ */
+export type MinistryService = {
+  id: string;
+  ministryType: MinistryType;
+  location: RockCampus;
+  daysOfWeek: string;
+  times: string;
+  learnMoreLink: string;
+  planYourVisit: boolean;
 };
 
 /**

@@ -9,6 +9,7 @@ export function MinistryBuilderRoute() {
 
   return (
     <div>
+      {/* Insert services component here */}
       <DynamicHero
         customTitle={title}
         imagePath={heroImage}

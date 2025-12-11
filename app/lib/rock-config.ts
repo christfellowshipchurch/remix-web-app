@@ -25,3 +25,69 @@ export const getContentChannelUrl = (key: number): string => {
 
   return channelMap[key] || "/";
 };
+
+/**
+ * Default Rock Campuses and types for campus related UI elements
+ */
+export const RockCampuses = [
+  {
+    name: "Palm Beach Gardens",
+    link: "/palm-beach-gardens",
+  },
+  {
+    name: "Port St. Lucie",
+    link: "/port-st-lucie",
+  },
+  {
+    name: "Royal Palm Beach",
+    link: "/royal-palm-beach",
+  },
+  {
+    name: "Boynton Beach",
+    link: "/boynton-beach",
+  },
+  {
+    name: "Downtown West Palm Beach",
+    link: "/downtown-west-palm-beach",
+  },
+  {
+    name: "Jupiter",
+    link: "/jupiter",
+  },
+  {
+    name: "Stuart",
+    link: "/stuart",
+  },
+  {
+    name: "Okeechobee",
+    link: "/okeechobee",
+  },
+  {
+    name: "Belle Glade",
+    link: "/belle-glade",
+  },
+  {
+    name: "Vero Beach",
+    link: "/vero-beach",
+  },
+  {
+    name: "Boca Raton",
+    link: "/boca-raton",
+  },
+  {
+    name: "Riviera Beach",
+    link: "/riviera-beach",
+  },
+  {
+    name: "Trinity",
+    link: "/trinity",
+  },
+  {
+    name: "Westlake",
+    link: "/westlake",
+  },
+] as const;
+
+export type RockCampus = (typeof RockCampuses)[number];
+export type RockCampusName = RockCampus["name"];
+export type RockCampusLink = RockCampus["link"];
