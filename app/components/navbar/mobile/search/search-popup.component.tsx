@@ -1,9 +1,75 @@
-import { Hits, useCurrentRefinements, useSearchBox } from "react-instantsearch";
+import { useState, useEffect } from "react";
+import {
+  Configure,
+  Index,
+  useCurrentRefinements,
+  useHits,
+  useInstantSearch,
+  useSearchBox,
+} from "react-instantsearch";
 import { PopularSearches } from "./popular-searches.component";
 import {
   MobileContentHit,
   MobileContentHitType,
 } from "./mobile-content-hit.component";
+
+const ContentItemsHitsCollector = ({
+  onHitsChange,
+}: {
+  onHitsChange: (hits: MobileContentHitType[]) => void;
+}) => {
+  const { items } = useHits<Record<string, unknown>>();
+
+  useEffect(() => {
+    const contentHits: MobileContentHitType[] = items.map((hit) => ({
+      routing: {
+        pathname:
+          (hit.routing as { pathname?: string })?.pathname ||
+          (hit.url as string) ||
+          "",
+      },
+      coverImage:
+        (hit.coverImage as MobileContentHitType["coverImage"]) || null,
+      title: (hit.title as string) || "",
+      contentType: (hit.contentType as string) || "",
+      summary: (hit.summary as string) || "",
+    }));
+
+    onHitsChange(contentHits);
+  }, [items, onHitsChange]);
+
+  return null;
+};
+
+const LocationsHitsCollector = ({
+  onHitsChange,
+}: {
+  onHitsChange: (hits: MobileContentHitType[]) => void;
+}) => {
+  const { items } = useHits<Record<string, unknown>>();
+
+  useEffect(() => {
+    const locationHits: MobileContentHitType[] = items
+      .filter((hit) => hit?.campusName)
+      .map((hit) => ({
+        routing: {
+          pathname: (hit.campusUrl as string) || "",
+        },
+        coverImage: hit.campusImage
+          ? {
+              sources: [{ uri: hit.campusImage as string }],
+            }
+          : null,
+        title: hit.campusName as string,
+        contentType: "Location Page",
+        summary: "",
+      }));
+
+    onHitsChange(locationHits);
+  }, [items, onHitsChange]);
+
+  return null;
+};
 
 export const SearchPopup = ({
   setIsSearchOpen,
@@ -12,30 +78,52 @@ export const SearchPopup = ({
 }) => {
   const { query } = useSearchBox();
   const { items } = useCurrentRefinements();
-  const isSearching = query.trim().length > 0 || items.length > 0;
+  const { indexUiState } = useInstantSearch();
+  const [contentHits, setContentHits] = useState<MobileContentHitType[]>([]);
+  const [locationHits, setLocationHits] = useState<MobileContentHitType[]>([]);
+
+  const selectedItems =
+    (indexUiState?.refinementList?.contentType as string[]) || [];
+  const isPagesSelected =
+    selectedItems.includes("Ministry Page") ||
+    selectedItems.includes("Page Builder");
+
+  const isSearching =
+    query.trim().length > 0 || items.length > 0 || isPagesSelected;
+
+  const hasQuery = query.trim().length > 0;
+  const shouldShowLocations = isPagesSelected || hasQuery;
+  const combinedHits = shouldShowLocations
+    ? [...contentHits, ...locationHits]
+    : contentHits;
 
   return (
     <div className="size-full p-4 !pt-0 md:p-6 md:!pt-6">
-      {/* Search Results */}
       <div className="border-t border-[#E0E0E0] pt-6 space-y-4">
         {isSearching ? (
-          <Hits
-            onClick={() => setIsSearchOpen(false)}
-            classNames={{
-              item: "flex",
-              list: "grid md:grid-cols-1 gap-4",
-            }}
-            hitComponent={({ hit }) => {
-              const contentData: MobileContentHitType = {
-                routing: hit.routing || { pathname: hit.url || "" },
-                coverImage: hit.coverImage || null,
-                title: hit.title,
-                contentType: hit.contentType,
-                summary: hit.summary || "",
-              };
-              return <MobileContentHit hit={contentData} />;
-            }}
-          />
+          <>
+            <Index indexName="dev_contentItems">
+              <Configure hitsPerPage={9} />
+              <ContentItemsHitsCollector onHitsChange={setContentHits} />
+            </Index>
+
+            <Index indexName="dev_Locations">
+              <Configure hitsPerPage={9} />
+              <LocationsHitsCollector onHitsChange={setLocationHits} />
+            </Index>
+
+            <div className="grid md:grid-cols-1 gap-4">
+              {combinedHits.map((hit, index) => (
+                <div
+                  key={`${hit.routing.pathname}-${index}`}
+                  className="flex"
+                  onClick={() => setIsSearchOpen(false)}
+                >
+                  <MobileContentHit hit={hit} />
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
           <PopularSearches />
         )}

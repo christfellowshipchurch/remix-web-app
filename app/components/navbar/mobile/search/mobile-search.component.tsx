@@ -73,6 +73,9 @@ export const MobileSearch = ({
           dev_contentItems: {
             query: "",
           },
+          dev_Locations: {
+            query: "",
+          },
         }}
         insights={false}
         key={SEARCH_INSTANCE_ID}
