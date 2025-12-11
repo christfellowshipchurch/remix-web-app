@@ -16,7 +16,7 @@ export function RelatedArticles() {
   const {
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    title,
+    id,
     articlePrimaryCategories,
   } = data;
 
@@ -29,7 +29,7 @@ export function RelatedArticles() {
   return (
     <InstantSearch indexName="dev_contentItems" searchClient={searchClient}>
       <Configure
-        filters={`contentType:"Article" AND NOT title:"${title}" AND articlePrimaryCategories:"${articlePrimaryCategories[0]}"`}
+        filters={`contentType:"Article" AND articlePrimaryCategories:"${articlePrimaryCategories[0]}" AND rockItemId != ${id}`}
         hitsPerPage={6}
       />
       <CardCarouselSectionWrapper />
