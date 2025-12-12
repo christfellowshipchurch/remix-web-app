@@ -127,8 +127,8 @@ export type MinistryService = {
   location: RockCampus;
   daysOfWeek: string;
   times: string;
-  learnMoreLink: string;
-  planYourVisit: boolean;
+  learnMoreLink?: string;
+  planYourVisit?: boolean;
 };
 
 /**

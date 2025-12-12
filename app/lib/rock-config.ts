@@ -32,62 +32,62 @@ export const getContentChannelUrl = (key: number): string => {
 export const RockCampuses = [
   {
     name: "Palm Beach Gardens",
-    link: "/palm-beach-gardens",
+    pathname: "palm-beach-gardens",
   },
   {
     name: "Port St. Lucie",
-    link: "/port-st-lucie",
+    pathname: "port-st-lucie",
   },
   {
     name: "Royal Palm Beach",
-    link: "/royal-palm-beach",
+    pathname: "royal-palm-beach",
   },
   {
     name: "Boynton Beach",
-    link: "/boynton-beach",
+    pathname: "boynton-beach",
   },
   {
     name: "Downtown West Palm Beach",
-    link: "/downtown-west-palm-beach",
+    pathname: "downtown-west-palm-beach",
   },
   {
     name: "Jupiter",
-    link: "/jupiter",
+    pathname: "jupiter",
   },
   {
     name: "Stuart",
-    link: "/stuart",
+    pathname: "stuart",
   },
   {
     name: "Okeechobee",
-    link: "/okeechobee",
+    pathname: "okeechobee",
   },
   {
     name: "Belle Glade",
-    link: "/belle-glade",
+    pathname: "belle-glade",
   },
   {
     name: "Vero Beach",
-    link: "/vero-beach",
+    pathname: "vero-beach",
   },
   {
     name: "Boca Raton",
-    link: "/boca-raton",
+    pathname: "boca-raton",
   },
   {
     name: "Riviera Beach",
-    link: "/riviera-beach",
+    pathname: "riviera-beach",
   },
   {
     name: "Trinity",
-    link: "/trinity",
+    pathname: "trinity",
   },
   {
     name: "Westlake",
-    link: "/westlake",
+    pathname: "westlake",
   },
 ] as const;
 
 export type RockCampus = (typeof RockCampuses)[number];
 export type RockCampusName = RockCampus["name"];
-export type RockCampusLink = RockCampus["link"];
+export type RockCampusPathname = RockCampus["pathname"];

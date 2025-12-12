@@ -8,7 +8,6 @@ import {
 } from "../page-builder/loader";
 import { PageBuilderLoader } from "../page-builder/types";
 import { RockCampuses } from "~/lib/rock-config";
-
 export const loader: LoaderFunction = async ({ params }) => {
   try {
     const pathname = params?.path;
@@ -61,8 +60,7 @@ export const loader: LoaderFunction = async ({ params }) => {
           location: RockCampuses[0], //Gardens
           daysOfWeek: "Sunday",
           times: "8AM, 9:30AM, 11AM",
-          learnMoreLink: "/service",
-          planYourVisit: true,
+          learnMoreLink: "/kids-university",
         },
         {
           id: "2",
