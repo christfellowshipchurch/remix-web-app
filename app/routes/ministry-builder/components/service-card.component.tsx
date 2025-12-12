@@ -1,36 +1,14 @@
 import { Icon } from "~/primitives/icon/icon";
 import { Button } from "~/primitives/button/button.primitive";
 import { Link } from "react-router-dom";
-import { MinistryService, MinistryType } from "../../page-builder/types";
-
-/**
- * Maps ministry type to display name for alt text and accessibility
- */
-const getMinistryDisplayName = (ministryType: MinistryType): string => {
-  const displayNames: Record<MinistryType, string> = {
-    "cf-kids": "CF Kids",
-    "kids-university": "Kids University",
-    "students-high-school": "Students High School",
-    "students-middle-school": "Students Middle School",
-    "young-adults": "Young Adults",
-    "college-nights": "College Nights",
-  };
-  return displayNames[ministryType] || ministryType;
-};
-
-/**
- * Gets the photo path for a ministry type
- */
-const getMinistryPhotoPath = (ministryType: MinistryType): string => {
-  return `/assets/images/ministry-pages/services/${ministryType}.webp`;
-};
+import { MinistryService } from "../../page-builder/types";
+import { getMinistryPhotoPath } from "../utils";
 
 /**
  * Service Card Component
  */
 export const ServiceCard = ({ service }: { service: MinistryService }) => {
   const photoPath = getMinistryPhotoPath(service.ministryType);
-  const displayName = getMinistryDisplayName(service.ministryType);
   const primaryButtonText = service.planYourVisit
     ? "Plan my Visit"
     : "Learn More";
@@ -41,7 +19,7 @@ export const ServiceCard = ({ service }: { service: MinistryService }) => {
       <div className="flex justify-center">
         <img
           src={photoPath}
-          alt={displayName}
+          alt={service.ministryType}
           className="h-[120px] w-auto object-contain"
           onError={(e) => {
             // Fallback to placeholder if image doesn't exist

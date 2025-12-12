@@ -1,12 +1,21 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation } from "react-router-dom";
 import { DynamicHero } from "~/components";
 import { PageBuilderLoader } from "../page-builder/types";
 import { renderSection } from "../page-builder/page-builder-page";
 import { MinistryServiceTimes } from "./components/ministry-service-times.component";
+import { displayServiceTimes } from "./utils";
 
 export function MinistryBuilderRoute() {
   const { title, heroImage, callsToAction, sections, services } =
     useLoaderData<PageBuilderLoader>();
+  const { pathname } = useLocation();
+
+  const cleanPathname = pathname.split("/")[2].toLowerCase();
+
+  const shouldDisplayServiceTimes = displayServiceTimes(
+    services || [],
+    cleanPathname
+  );
 
   return (
     <div>
@@ -20,7 +29,10 @@ export function MinistryBuilderRoute() {
       />
 
       {sections.map(renderSection)}
-      <MinistryServiceTimes services={services} />
+
+      {shouldDisplayServiceTimes && (
+        <MinistryServiceTimes services={services} />
+      )}
     </div>
   );
 }
