@@ -69,7 +69,7 @@ export const MinistryServiceTimes = ({
   }
 
   return (
-    <div className="bg-navy md:bg-gray">
+    <div className="bg-navy md:bg-gray sticky bottom-0 z-10">
       {/* Title Section with Accordion Toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -85,7 +85,7 @@ export const MinistryServiceTimes = ({
         </div>
         <div className="flex items-center justify-center w-6 h-6 bg-ocean rounded-md">
           <Icon
-            name="chevronDown"
+            name="chevronUp"
             className={`text-white transition-transform duration-300 ${
               isExpanded ? "rotate-180" : ""
             }`}
@@ -96,7 +96,7 @@ export const MinistryServiceTimes = ({
       <div className="max-w-screen-content mx-auto content-padding">
         {/* Collapsible Content */}
         {isExpanded && (
-          <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-top-2 duration-300 py-8">
+          <div className="flex flex-col gap-6 animate-in fade-in duration-300 py-8">
             {/* Location Filter */}
             <div className="w-full max-w-[300px] mx-auto">
               <Dropdown

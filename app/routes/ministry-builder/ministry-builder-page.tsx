@@ -10,7 +10,6 @@ export function MinistryBuilderRoute() {
 
   return (
     <div>
-      <MinistryServiceTimes services={services} />
       <DynamicHero
         customTitle={title}
         imagePath={heroImage}
@@ -21,6 +20,7 @@ export function MinistryBuilderRoute() {
       />
 
       {sections.map(renderSection)}
+      <MinistryServiceTimes services={services} />
     </div>
   );
 }
