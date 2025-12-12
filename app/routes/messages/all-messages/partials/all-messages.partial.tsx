@@ -13,7 +13,7 @@ import {
 import { createSearchClient } from "~/lib/create-search-client";
 import { AllMessagesLoaderReturnType } from "../loader";
 
-export default function Messages() {
+export function AllMessages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<AllMessagesLoaderReturnType>();
 

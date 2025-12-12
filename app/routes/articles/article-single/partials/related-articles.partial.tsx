@@ -1,23 +1,24 @@
 import React, { useMemo } from "react";
-import { LoaderReturnType } from "./loader";
 import { useLoaderData } from "react-router-dom";
+import { Configure, InstantSearch, useHits } from "react-instantsearch";
 import { format } from "date-fns";
 
-import { ArticleHero } from "./partials/hero.partial";
-import { ArticleContent } from "./partials/content.partial";
-import { ArticleNewsletter } from "./partials/newsletter.partial";
 import { CardCarouselSection } from "~/components/resource-carousel";
-import { RelatedArticleCard } from "./components/related-article-card.components";
+import { RelatedArticleCard } from "../components/related-article-card.components";
 import { CollectionItem } from "~/routes/page-builder/types";
-import { AuthorProps } from "./partials/hero.partial";
-import { Configure, InstantSearch, useHits } from "react-instantsearch";
+import { AuthorProps } from "./hero.partial";
 import { createSearchClient } from "~/lib/create-search-client";
 import { ContentItemHit } from "~/routes/search/types";
+import { LoaderReturnType } from "../loader";
 
-export const ArticlePage: React.FC = () => {
+export function RelatedArticles() {
   const data = useLoaderData<LoaderReturnType>();
-
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = data;
+  const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
+    id,
+    articlePrimaryCategories,
+  } = data;
 
   const searchClient = useMemo(
     () =>
@@ -25,26 +26,16 @@ export const ArticlePage: React.FC = () => {
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
-  const { title, articlePrimaryCategories } = data;
-
   return (
-    <section className="bg-white">
-      <ArticleHero {...data} />
-      <ArticleContent htmlContent={data.content} />
-
-      {/* Related Articles Section */}
-      <InstantSearch indexName="dev_contentItems" searchClient={searchClient}>
-        <Configure
-          filters={`contentType:"Article" AND NOT title:"${title}" AND articlePrimaryCategories:"${articlePrimaryCategories[0]}"`}
-          hitsPerPage={6}
-        />
-        <CardCarouselSectionWrapper />
-      </InstantSearch>
-
-      <ArticleNewsletter />
-    </section>
+    <InstantSearch indexName="dev_contentItems" searchClient={searchClient}>
+      <Configure
+        filters={`contentType:"Article" AND articlePrimaryCategories:"${articlePrimaryCategories[0]}" AND rockItemId != ${id}`}
+        hitsPerPage={6}
+      />
+      <CardCarouselSectionWrapper />
+    </InstantSearch>
   );
-};
+}
 
 const CardCarouselSectionWrapper = () => {
   const { items } = useHits<ContentItemHit>();
