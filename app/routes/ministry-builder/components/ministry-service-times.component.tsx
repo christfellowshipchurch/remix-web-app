@@ -6,6 +6,7 @@ import Dropdown, {
 import { MinistryService } from "../../page-builder/types";
 import { RockCampuses } from "~/lib/rock-config";
 import { ServiceCard } from "./service-card.component";
+import { cn } from "~/lib/utils";
 
 interface MinistryServiceTimesProps {
   services?: MinistryService[];
@@ -68,15 +69,20 @@ export const MinistryServiceTimes = ({
   }
 
   return (
-    <div className="bg-background-secondary">
+    <div className="bg-navy md:bg-gray">
       {/* Title Section with Accordion Toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-center gap-2 w-full bg-white rounded-lg px-6 py-4 hover:bg-ocean/10 transition-colors cursor-pointer"
+        className="flex items-center justify-between md:justify-center gap-2 w-full bg-dark-navy md:bg-white px-6 py-4 hover:bg-ocean/10 transition-colors cursor-pointer"
         aria-expanded={isExpanded}
         aria-label="Toggle Service Times section"
       >
-        <h2 className="font-extrabold">Kids Service Times</h2>
+        <div className="flex items-center gap-2">
+          <Icon name="calendarAlt" className="text-white md:hidden" size={20} />
+          <h2 className="font-medium md:font-extrabold text-white md:text-text-primary mt-[2px]">
+            Kids Service Times
+          </h2>
+        </div>
         <div className="flex items-center justify-center w-6 h-6 bg-ocean rounded-md">
           <Icon
             name="chevronDown"
@@ -87,7 +93,7 @@ export const MinistryServiceTimes = ({
           />
         </div>
       </button>
-      <div className="max-w-screen-content mx-auto content-padding bg-gray">
+      <div className="max-w-screen-content mx-auto content-padding">
         {/* Collapsible Content */}
         {isExpanded && (
           <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-top-2 duration-300 py-8">
@@ -103,9 +109,20 @@ export const MinistryServiceTimes = ({
             <hr className="border-neutral-200 w-full max-w-[500px] mx-auto" />
             {/* Service Cards Grid */}
             {filteredServices.length > 0 && (
-              <div className="flex flex-wrap gap-4 justify-center">
-                {filteredServices.map((service) => (
-                  <ServiceCard key={service.id} service={service} />
+              <div className="flex gap-4 md:justify-center overflow-x-auto pb-2 md:flex-wrap md:overflow-x-visible -mx-6">
+                {filteredServices.map((service, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "flex-shrink-0",
+                      "md:flex-shrink",
+                      "md:w-auto",
+                      i === 0 && "ml-6 md:ml-0",
+                      i === filteredServices.length - 1 && "mr-6 md:mr-0"
+                    )}
+                  >
+                    <ServiceCard service={service} />
+                  </div>
                 ))}
               </div>
             )}
