@@ -57,7 +57,7 @@ export const ServiceCard = ({ service }: { service: MinistryService }) => {
   const photoPath = getMinistryPhotoPath(service.ministryType);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col gap-4 w-[280px]">
+    <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col gap-4 w-[280px] h-full">
       {/* Ministry Photo/Logo */}
       <div className="flex justify-center">
         <img
@@ -75,23 +75,23 @@ export const ServiceCard = ({ service }: { service: MinistryService }) => {
       {/* Schedule Information */}
       <div className="flex flex-col gap-3">
         {/* Days of Week */}
-        <div className="flex items-start gap-2">
+        <div className="flex items-start justify-start gap-2">
           <Icon
             name="calendarAlt"
-            className="text-ocean flex-shrink-0 mt-1"
+            className="text-ocean flex-shrink-0 self-start mt-[2px]"
             size={20}
           />
-          <p className="text-neutral-400 font-medium">{service.daysOfWeek}</p>
+          <p className="text-neutral-400">{service.daysOfWeek}</p>
         </div>
 
         {/* Service Times */}
-        <div className="flex items-start gap-2">
+        <div className="flex items-start justify-start gap-2">
           <Icon
             name="timeFive"
-            className="text-ocean flex-shrink-0 mt-1"
+            className="text-ocean flex-shrink-0 self-start mt-[2px]"
             size={20}
           />
-          <p className="text-neutral-400 font-medium">{service.times}</p>
+          <p className="text-neutral-400">{service.times}</p>
         </div>
       </div>
 
