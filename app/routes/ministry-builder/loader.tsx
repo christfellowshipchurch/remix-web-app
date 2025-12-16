@@ -1,13 +1,81 @@
 import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
-
 import {
   fetchChildItems,
   mapPageBuilderChildItems,
 } from "../page-builder/loader";
-import { PageBuilderLoader } from "../page-builder/types";
-import { RockCampuses } from "~/lib/rock-config";
+import { MinistryService, PageBuilderLoader } from "../page-builder/types";
+import { RockCampus, RockCampuses } from "~/lib/rock-config";
+import { getAttributeMatrixItems } from "~/lib/.server/rock-utils";
+import {
+  AttributeMatrixItem,
+  RockContentChannelItem,
+} from "~/lib/types/rock-types";
+import { formatDaysOfWeek } from "./utils";
+
+export const fetchMinistryServices = async () => {
+  const allCampuses = await fetchRockData({
+    endpoint: "Campuses",
+    queryParams: {
+      $filter: "IsActive eq true",
+      loadAttributes: "simple",
+    },
+  });
+
+  const campusServicesGuids = allCampuses
+    .map((campus: RockContentChannelItem) => ({
+      name: campus.name,
+      servicesGuid: campus.attributeValues?.weeklyMinistryServices?.value ?? "",
+    }))
+    .filter(
+      (campus: { servicesGuid: string }) =>
+        !!campus.servicesGuid && campus.servicesGuid !== ""
+    );
+
+  const campusMinistryServices = await Promise.all(
+    campusServicesGuids.map(
+      async (campus: { name: string; servicesGuid: string }) => {
+        const currentCampus = campus.name;
+        const matrixItems = await getAttributeMatrixItems({
+          attributeMatrixGuid: campus.servicesGuid,
+        });
+
+        const ministryServices: MinistryService[] = matrixItems.map(
+          (matrixItem: AttributeMatrixItem) => {
+            const attributeValues = matrixItem.attributeValues;
+
+            const ministryService: MinistryService = {
+              id: matrixItem.guid,
+              ministryType: attributeValues?.ministryType
+                ?.value as MinistryService["ministryType"],
+              location: RockCampuses.find(
+                (campus: RockCampus) => campus.name === currentCampus
+              ) as RockCampus,
+              daysOfWeek: formatDaysOfWeek(
+                attributeValues?.dayOfTheWeek?.valueFormatted ?? ""
+              ),
+              times: attributeValues?.serviceTime?.valueFormatted ?? "",
+              learnMoreLink: attributeValues?.learnMoreUrl?.value || undefined,
+              planYourVisit:
+                attributeValues?.planMyVisit?.valueFormatted?.toLowerCase() ===
+                  "on" ||
+                attributeValues?.planMyVisit?.value?.toLowerCase() === "true" ||
+                false,
+            };
+
+            return ministryService;
+          }
+        );
+
+        return ministryServices;
+      }
+    )
+  );
+
+  return campusMinistryServices.flat();
+};
+
 export const loader: LoaderFunction = async ({ params }) => {
   try {
     const pathname = params?.path;
@@ -25,7 +93,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         attributeKey: "Pathname",
         value: pathname,
         loadAttributes: "simple",
-        $filter: "ContentChannelId eq 171", //TODO: this is the ministries page, update this to be dynamic
+        $filter: "ContentChannelId eq 171 and Status eq 'Approved'",
       },
     });
 
@@ -38,6 +106,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 
     const children = await fetchChildItems(pageData.id);
     const mappedChildren = await mapPageBuilderChildItems(children);
+
+    const campusMinistryServices = await fetchMinistryServices();
 
     const pageBuilder: PageBuilderLoader = {
       title: pageData.title,
@@ -53,25 +123,7 @@ export const loader: LoaderFunction = async ({ params }) => {
           url: cta.value,
         })) || [],
       sections: mappedChildren,
-      services: [
-        {
-          id: "1",
-          ministryType: "cf-kids",
-          location: RockCampuses[0], //Gardens
-          daysOfWeek: "Sunday",
-          times: "8AM, 9:30AM, 11AM",
-          learnMoreLink: "/kids-university",
-        },
-        {
-          id: "2",
-          ministryType: "kids-university",
-          location: RockCampuses[0], //Gardens
-          daysOfWeek: "Sunday",
-          times: "6:30PM",
-          learnMoreLink: "/service",
-          planYourVisit: true,
-        },
-      ],
+      services: campusMinistryServices,
     };
 
     return pageBuilder;

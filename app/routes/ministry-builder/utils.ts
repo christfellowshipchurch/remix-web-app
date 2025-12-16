@@ -48,3 +48,13 @@ export const getMinistryPhotoPath = (ministryType: MinistryType): string => {
   }
   return `/assets/images/ministry-pages/services/${pathName}.webp`;
 };
+
+/**
+ * Formats the days of week for a ministry service
+ */
+export const formatDaysOfWeek = (daysOfWeek: string) => {
+  return daysOfWeek
+    .split(",")
+    .map((day: string) => `${day.trim()}s`)
+    .join(" and ");
+};
