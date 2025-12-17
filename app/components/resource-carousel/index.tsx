@@ -26,6 +26,7 @@ interface CardCarouselSectionProps {
   backgroundImage?: string;
 }
 
+// Known as Resource Collection in Rock RMS
 export const CardCarouselSection = ({
   CardComponent,
   carouselItemClassName,
