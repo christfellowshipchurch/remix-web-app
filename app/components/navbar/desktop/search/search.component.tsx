@@ -38,16 +38,25 @@ const emptySearchClient = {
     }),
 };
 
-// Create a component to provide the current query
-function CurrentQueryProvider({ children }: { children: React.ReactNode }) {
+// Create a component to provide the current query and searchClient
+function CurrentQueryProvider({
+  children,
+  searchClient,
+}: {
+  children: React.ReactNode;
+  searchClient: SearchClient | { search: () => Promise<unknown> };
+}) {
   const { query } = useSearchBox();
 
-  // Clone the children with the current query prop
+  // Clone the children with the current query and searchClient props
   return React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(
-        child as React.ReactElement<{ query?: string }>,
-        { query }
+        child as React.ReactElement<{
+          query?: string;
+          searchClient?: SearchClient | { search: () => Promise<unknown> };
+        }>,
+        { query, searchClient }
       );
     }
     return child;
@@ -180,7 +189,7 @@ export const SearchBar = ({
             }}
           />
         </div>
-        <CurrentQueryProvider>
+        <CurrentQueryProvider searchClient={searchClient}>
           <SearchPopup setIsSearchOpen={setIsSearchOpen} />
         </CurrentQueryProvider>
       </InstantSearch>

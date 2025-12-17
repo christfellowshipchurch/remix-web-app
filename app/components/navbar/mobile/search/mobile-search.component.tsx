@@ -114,7 +114,10 @@ export const MobileSearch = ({
         </div>
 
         {/* Search Results + Refinements */}
-        <SearchPopup setIsSearchOpen={setIsSearchOpen} />
+        <SearchPopup
+          setIsSearchOpen={setIsSearchOpen}
+          searchClient={searchClient}
+        />
       </InstantSearch>
     </div>
   );

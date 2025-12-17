@@ -91,6 +91,11 @@ export const getPathname = (
     return `/events/${pathname}`;
   }
 
+  // Location Page - set to "locations"
+  if (contentTypeLower === "location page") {
+    return `/locations/${pathname}`;
+  }
+
   // Default: use contentType as-is (lowercased)
   return `/${contentType.toLowerCase()}/${pathname}`;
 };
