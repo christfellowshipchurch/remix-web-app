@@ -3,6 +3,7 @@ import { Breadcrumbs, ShareLinks } from "~/components";
 import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
 import { LoaderReturnType } from "../loader";
+import { Video } from "~/primitives/video/video.primitive";
 
 export interface AuthorProps {
   fullName: string;
@@ -17,6 +18,7 @@ export interface AuthorProps {
 
 export const ArticleHero: React.FC<LoaderReturnType> = ({
   coverImage,
+  wistiaId,
   title,
   summary,
   author,
@@ -73,12 +75,23 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
                 </div>
               </div>
             </div>
-            {/* Cover Image */}
-            <img
-              className="rounded-md h-full w-full object-cover lg:max-w-[320px] lg:h-[520px] xl:h-full xl:max-w-[700px]"
-              src={coverImage}
-              alt={title || "Cover"}
-            />
+
+            {/* Video */}
+            {wistiaId && (
+              <Video
+                wistiaId={wistiaId}
+                className="rounded-md h-full w-full object-cover lg:max-w-[320px] lg:h-[520px] xl:h-full xl:max-w-[700px]"
+              />
+            )}
+
+            {/* Cover Image if no video */}
+            {!wistiaId && (
+              <img
+                className="rounded-md h-full w-full object-cover lg:max-w-[320px] lg:h-[520px] xl:h-full xl:max-w-[700px]"
+                src={coverImage}
+                alt={title || "Cover"}
+              />
+            )}
           </div>
           <div className="hidden md:block w-full">
             <hr className="border-neutral-lighter hidden lg:block" />
