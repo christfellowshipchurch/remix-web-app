@@ -71,19 +71,21 @@ export const CardCarouselSection = ({
                 )}
               </div>
 
-              <Button
-                href={viewMoreLink}
-                size="md"
-                className={cn(
-                  "hidden md:block min-w-28 w-fit",
-                  mode === "dark" &&
-                    "text-white border-white hover:!bg-white/10",
-                  viewMoreStyles
-                )}
-                intent="secondary"
-              >
-                {viewMoreText}
-              </Button>
+              {viewMoreLink && (
+                <Button
+                  href={viewMoreLink}
+                  size="md"
+                  className={cn(
+                    "hidden md:block min-w-28 w-fit",
+                    mode === "dark" &&
+                      "text-white border-white hover:!bg-white/10",
+                    viewMoreStyles
+                  )}
+                  intent="secondary"
+                >
+                  {viewMoreText}
+                </Button>
+              )}
             </div>
 
             <div className="w-full max-w-full text-text-primary">
@@ -96,19 +98,21 @@ export const CardCarouselSection = ({
             </div>
 
             {/* Mobile View All */}
-            <div className="pl-5 md:pl-0 w-full flex justify-start mt-8 md:hidden">
-              <Button
-                href={viewMoreLink}
-                size="md"
-                className={cn(
-                  mode === "dark" && "text-white border-white",
-                  viewMoreStyles
-                )}
-                intent="secondary"
-              >
-                {viewMoreText}
-              </Button>
-            </div>
+            {viewMoreLink && (
+              <div className="pl-5 md:pl-0 w-full flex justify-start mt-8 md:hidden">
+                <Button
+                  href={viewMoreLink}
+                  size="md"
+                  className={cn(
+                    mode === "dark" && "text-white border-white",
+                    viewMoreStyles
+                  )}
+                  intent="secondary"
+                >
+                  {viewMoreText}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
