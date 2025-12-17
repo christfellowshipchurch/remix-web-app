@@ -1,4 +1,4 @@
-import { MinistryService, MinistryType } from "../page-builder/types";
+import { MinistryService } from "../page-builder/types";
 
 // Custom rules for mapping path segments to ministry types
 export const ministryTypeRules: Record<string, string[]> = {
@@ -33,22 +33,6 @@ export function displayServiceTimes(
     relatedMinistryTypes.includes(service.ministryType)
   );
 }
-
-/**
- * Gets the photo path for a ministry type
- */
-export const getMinistryPhotoPath = (ministryType: MinistryType): string => {
-  let pathName = "";
-  if (
-    ministryType === "students-high-school" ||
-    ministryType === "students-middle-school"
-  ) {
-    pathName = "cf-students";
-  } else {
-    pathName = ministryType;
-  }
-  return `/assets/images/ministry-pages/services/${pathName}.webp`;
-};
 
 /**
  * Formats the days of week for a ministry service

@@ -2,21 +2,18 @@ import { Icon } from "~/primitives/icon/icon";
 import { Button } from "~/primitives/button/button.primitive";
 import { Link } from "react-router-dom";
 import { MinistryService } from "../../page-builder/types";
-import { getMinistryPhotoPath } from "../utils";
 import { formatDaysOfWeek, formattedServiceTimes } from "../utils";
 
 /**
  * Service Card Component
  */
 export const ServiceCard = ({ service }: { service: MinistryService }) => {
-  const photoPath = getMinistryPhotoPath(service.ministryType);
-
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col gap-4 w-[280px] h-full">
       {/* Ministry Photo/Logo */}
       <div className="flex justify-center">
         <img
-          src={photoPath}
+          src={`/assets/images/ministry-pages/services/${service.ministryType}.webp`}
           alt={service.ministryType}
           className="h-[120px] w-auto object-contain"
           onError={(e) => {
