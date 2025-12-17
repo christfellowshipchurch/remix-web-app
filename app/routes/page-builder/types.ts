@@ -128,7 +128,7 @@ export type MinistryService = {
   daysOfWeek: string;
   times: string;
   learnMoreLink?: string;
-  planYourVisit?: boolean;
+  planAVisit?: boolean;
 };
 
 /**

@@ -18,7 +18,7 @@ export function MinistryBuilderRoute() {
   );
 
   return (
-    <div>
+    <div className="bg-white">
       <DynamicHero
         customTitle={title}
         imagePath={heroImage}

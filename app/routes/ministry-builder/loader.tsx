@@ -12,7 +12,6 @@ import {
   AttributeMatrixItem,
   RockContentChannelItem,
 } from "~/lib/types/rock-types";
-import { formatDaysOfWeek } from "./utils";
 
 export const fetchMinistryServices = async () => {
   const allCampuses = await fetchRockData({
@@ -24,10 +23,13 @@ export const fetchMinistryServices = async () => {
   });
 
   const campusServicesGuids = allCampuses
-    .map((campus: RockContentChannelItem) => ({
-      name: campus.name,
-      servicesGuid: campus.attributeValues?.weeklyMinistryServices?.value ?? "",
-    }))
+    .map((campus: RockContentChannelItem) => {
+      return {
+        name: campus.name,
+        servicesGuid:
+          campus.attributeValues?.weeklyMinistryServices?.value ?? "",
+      };
+    })
     .filter(
       (campus: { servicesGuid: string }) =>
         !!campus.servicesGuid && campus.servicesGuid !== ""
@@ -52,12 +54,10 @@ export const fetchMinistryServices = async () => {
               location: RockCampuses.find(
                 (campus: RockCampus) => campus.name === currentCampus
               ) as RockCampus,
-              daysOfWeek: formatDaysOfWeek(
-                attributeValues?.dayOfTheWeek?.valueFormatted ?? ""
-              ),
-              times: attributeValues?.serviceTime?.valueFormatted ?? "",
+              daysOfWeek: attributeValues?.dayOfTheWeek?.valueFormatted ?? "",
+              times: attributeValues?.serviceTimes?.value ?? "",
               learnMoreLink: attributeValues?.learnMoreUrl?.value || undefined,
-              planYourVisit:
+              planAVisit:
                 attributeValues?.planMyVisit?.valueFormatted?.toLowerCase() ===
                   "on" ||
                 attributeValues?.planMyVisit?.value?.toLowerCase() === "true" ||

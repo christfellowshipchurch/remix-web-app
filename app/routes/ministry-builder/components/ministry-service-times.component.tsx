@@ -7,6 +7,9 @@ import { MinistryService } from "../../page-builder/types";
 import { RockCampuses } from "~/lib/rock-config";
 import { ServiceCard } from "./service-card.component";
 import { cn } from "~/lib/utils";
+import { useLocation } from "react-router-dom";
+import lodash from "lodash";
+import { ministryTypeRules } from "../utils";
 
 interface MinistryServiceTimesProps {
   services?: MinistryService[];
@@ -18,17 +21,43 @@ interface MinistryServiceTimesProps {
 export const MinistryServiceTimes = ({
   services = [],
 }: MinistryServiceTimesProps) => {
+  const { pathname } = useLocation();
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  // Extract unique locations from services
+  const { capitalize } = lodash;
+
+  const pathnameTitle = pathname
+    .split("/")[2]
+    .split("-")
+    .map((word: string) => (word !== "and" ? capitalize(word) : word))
+    .join(" ");
+
+  // Filter services to only show those relevant to the current page
+  const relevantServices = useMemo(() => {
+    const pathSegment = pathname.split("/")[2]?.toLowerCase() || "";
+
+    // Find the rule whose key matches the current path segment
+    const relatedMinistryTypes = ministryTypeRules[pathSegment];
+
+    if (!relatedMinistryTypes) {
+      return [];
+    }
+
+    // Filter services to only include those whose ministryType matches
+    return services.filter((service) =>
+      relatedMinistryTypes.includes(service.ministryType)
+    );
+  }, [services, pathname]);
+
+  // Extract unique locations from relevant services
   const uniqueLocations = useMemo(() => {
     const locationSet = new Set<string>();
-    services.forEach((service) => {
+    relevantServices.forEach((service) => {
       locationSet.add(service.location.name);
     });
     return Array.from(locationSet).sort();
-  }, [services]);
+  }, [relevantServices]);
 
   // Create dropdown options from RockCampuses that exist in services
   const locationOptions: DropdownOption[] = useMemo(() => {
@@ -49,12 +78,12 @@ export const MinistryServiceTimes = ({
   // Filter services based on selected location
   const filteredServices = useMemo(() => {
     if (!selectedLocation) {
-      return services;
+      return relevantServices;
     }
-    return services.filter(
+    return relevantServices.filter(
       (service) => service.location.name === selectedLocation
     );
-  }, [services, selectedLocation]);
+  }, [relevantServices, selectedLocation]);
 
   // Set default location to first available if none selected
   useEffect(() => {
@@ -63,8 +92,8 @@ export const MinistryServiceTimes = ({
     }
   }, [selectedLocation, uniqueLocations]);
 
-  // Don't render if no services
-  if (services.length === 0) {
+  // Don't render if no relevant services
+  if (relevantServices.length === 0) {
     return null;
   }
 
@@ -80,7 +109,7 @@ export const MinistryServiceTimes = ({
         <div className="flex items-center gap-2">
           <Icon name="calendarAlt" className="text-white md:hidden" size={20} />
           <h2 className="font-medium md:font-extrabold text-white md:text-text-primary mt-[2px]">
-            Kids Service Times
+            {pathnameTitle} Service Times
           </h2>
         </div>
         <div className="flex items-center justify-center w-6 h-6 bg-ocean rounded-md">

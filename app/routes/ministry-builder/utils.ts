@@ -1,5 +1,13 @@
 import { MinistryService, MinistryType } from "../page-builder/types";
 
+// Custom rules for mapping path segments to ministry types
+export const ministryTypeRules: Record<string, string[]> = {
+  kids: ["cf-kids", "kids-university"],
+  students: ["students", "the-mix"],
+  "young-adults": ["young-adults", "college-nights"],
+  "care-and-assistance": ["celebrate-recovery"],
+};
+
 /**
  * Determines if the service times should be displayed based on the current path
  */
@@ -10,13 +18,6 @@ export function displayServiceTimes(
   if (!services || services.length === 0) {
     return false;
   }
-
-  // Custom rules for mapping path segments to ministry types
-  const ministryTypeRules: Record<string, string[]> = {
-    kids: ["cf-kids", "kids-university"],
-    students: ["students-high-school", "students-middle-school"],
-    "young-adults": ["young-adults", "college-nights"],
-  };
 
   // Find the first rule whose key is included in the current path
   const relatedMinistryTypes = Object.entries(ministryTypeRules).find(
@@ -57,4 +58,11 @@ export const formatDaysOfWeek = (daysOfWeek: string) => {
     .split(",")
     .map((day: string) => `${day.trim()}s`)
     .join(" and ");
+};
+
+/**
+ * Formats the service times for a ministry service
+ */
+export const formattedServiceTimes = (serviceTimes: string) => {
+  return serviceTimes.split("|").join(", ");
 };
