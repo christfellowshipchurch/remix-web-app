@@ -113,10 +113,11 @@ export type PageBuilderLoader = {
 export type MinistryType =
   | "cf-kids"
   | "kids-university"
-  | "students-high-school"
-  | "students-middle-school"
+  | "students"
+  | "the-mix"
   | "young-adults"
-  | "college-nights";
+  | "college-nights"
+  | "celebrate-recovery";
 
 /**
  * Represents a ministry service in the page builder
