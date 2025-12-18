@@ -87,7 +87,7 @@ export const MobileSearch = ({
           <div className="flex w-full items-center pt-6 px-4 gap-3">
             <button
               onClick={() => setIsSearchOpen(false)}
-              className="flex items-center md:hidden"
+              className="flex items-center lg:hidden"
             >
               <Icon
                 name="arrowBack"

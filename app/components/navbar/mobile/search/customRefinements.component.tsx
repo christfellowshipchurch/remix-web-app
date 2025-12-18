@@ -14,10 +14,11 @@ export const MobileSearchCustomRefinementList = ({
   const selectedItems =
     (indexUiState?.refinementList?.[attribute] as string[]) || [];
 
-  // Check if either "Ministry Page" or "Page Builder" is selected
+  // Check if "Ministry Page", "Page Builder", or "Redirect Card" is selected
   const isPagesSelected =
     selectedItems.includes("Ministry Page") ||
-    selectedItems.includes("Page Builder");
+    selectedItems.includes("Page Builder") ||
+    selectedItems.includes("Redirect Card");
 
   // Filter out "Ministry Page", "Page Builder", and "Redirect Card" from regular items
   const filteredItems = items.filter(
@@ -43,11 +44,14 @@ export const MobileSearchCustomRefinementList = ({
 
   const handlePagesClick = () => {
     const currentSelected = selectedItems.filter(
-      (item) => item !== "Ministry Page" && item !== "Page Builder"
+      (item) =>
+        item !== "Ministry Page" &&
+        item !== "Page Builder" &&
+        item !== "Redirect Card"
     );
 
     if (isPagesSelected) {
-      // Deselect both "Ministry Page" and "Page Builder"
+      // Deselect "Ministry Page", "Page Builder", and "Redirect Card"
       setIndexUiState((prevState) => ({
         ...prevState,
         refinementList: {
@@ -56,12 +60,17 @@ export const MobileSearchCustomRefinementList = ({
         },
       }));
     } else {
-      // Select both "Ministry Page" and "Page Builder"
+      // Select "Ministry Page", "Page Builder", and "Redirect Card"
       setIndexUiState((prevState) => ({
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
-          [attribute]: [...currentSelected, "Ministry Page", "Page Builder"],
+          [attribute]: [
+            ...currentSelected,
+            "Ministry Page",
+            "Page Builder",
+            "Redirect Card",
+          ],
         },
       }));
     }
