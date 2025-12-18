@@ -12,7 +12,7 @@ import { CollectionItem } from "~/routes/page-builder/types";
 
 interface CardCarouselSectionProps {
   viewMoreStyles?: string;
-  viewMoreLink: string;
+  viewMoreLink?: string;
   viewMoreText?: string;
   title: string;
   description?: string;

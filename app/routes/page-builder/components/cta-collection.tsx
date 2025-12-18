@@ -15,7 +15,7 @@ export const CTACollectionSection = ({
   title: string;
   description: string;
   resources: CollectionItem[];
-  viewMoreLink: string;
+  viewMoreLink?: string;
 }) => {
   return (
     <div className={cn("w-full content-padding", className)}>
@@ -32,7 +32,7 @@ export const CTACollectionSection = ({
 };
 
 interface PageBuilderCTACollectionProps {
-  viewMoreLink: string;
+  viewMoreLink?: string;
   title: string;
   description: string;
   resources: CollectionItem[];
