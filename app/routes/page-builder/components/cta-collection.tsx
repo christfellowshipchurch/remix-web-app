@@ -56,14 +56,16 @@ const PageBuilderCTACollection = ({
             <p className="md:text-lg">{description}</p>
           </div>
 
-          <Button
-            href={viewMoreLink}
-            size="md"
-            className="hidden md:block"
-            intent="secondary"
-          >
-            View All
-          </Button>
+          {viewMoreLink && (
+            <Button
+              href={viewMoreLink}
+              size="md"
+              className="hidden md:block"
+              intent="secondary"
+            >
+              View All
+            </Button>
+          )}
         </div>
 
         <div
@@ -85,16 +87,18 @@ const PageBuilderCTACollection = ({
           <CardCarousel resources={resources} />
         </div>
 
-        <div className="w-full flex justify-start mt-8">
-          <Button
-            href={viewMoreLink}
-            size="md"
-            className="md:hidden"
-            intent="secondary"
-          >
-            View All
-          </Button>
-        </div>
+        {viewMoreLink && (
+          <div className="w-full flex justify-start mt-8">
+            <Button
+              href={viewMoreLink}
+              size="md"
+              className="md:hidden"
+              intent="secondary"
+            >
+              View All
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
