@@ -63,7 +63,8 @@ export const SearchPopup = ({
     (indexUiState?.refinementList?.contentType as string[]) || [];
   const isPagesSelected =
     selectedItems.includes("Ministry Page") ||
-    selectedItems.includes("Page Builder");
+    selectedItems.includes("Page Builder") ||
+    selectedItems.includes("Redirect Card");
 
   const isSearching =
     query.trim().length > 0 || items.length > 0 || isPagesSelected;
@@ -112,7 +113,7 @@ export const SearchPopup = ({
                 }
               : null,
             title: hit.campusName || "",
-            contentType: "Location Page",
+            contentType: "Location",
             summary: "",
           }));
 

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Icon from "~/primitives/icon";
+import { getDisplayContentType } from "../../search-utils";
 
 export type MobileContentHitType = {
   routing: {
@@ -33,10 +34,7 @@ export function MobileContentHit({ hit }: { hit: MobileContentHitType }) {
           <h3 className="line-clamp-1">{hit.title}</h3>
           <p className="font-normal line-clamp-1">{hit.summary}</p>
           <p className="text-xs text-[#7B7380]">
-            {hit.contentType === "Page Builder" ||
-            hit.contentType === "Redirect Card"
-              ? "Resource Page"
-              : hit.contentType}
+            {getDisplayContentType(hit.contentType)}
           </p>
         </div>
 

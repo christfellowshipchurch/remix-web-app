@@ -43,7 +43,8 @@ export const SearchPopup = ({
     (indexUiState?.refinementList?.contentType as string[]) || [];
   const isPagesSelected =
     selectedItems.includes("Ministry Page") ||
-    selectedItems.includes("Page Builder");
+    selectedItems.includes("Page Builder") ||
+    selectedItems.includes("Redirect Card");
 
   const hasQuery = query && query.trim().length > 0;
   const shouldShowLocations = hasQuery || isPagesSelected;
@@ -86,7 +87,7 @@ export const SearchPopup = ({
           .filter((hit) => hit?.campusName)
           .map((hit) => ({
             title: hit.campusName || "",
-            contentType: "Location Page",
+            contentType: "Location",
             url: hit.campusUrl || "",
             routing: {
               pathname: hit.campusUrl || "",

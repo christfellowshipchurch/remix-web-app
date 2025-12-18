@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Icon from "~/primitives/icon";
 import { ContentItemHit } from "~/routes/search/types";
+import { getDisplayContentType } from "../../search-utils";
 
 export type ContentHitType = {
   url: string;
@@ -13,6 +14,7 @@ export type HitContentType =
   | "Event"
   | "Page Builder"
   | "Location Page"
+  | "Location"
   | "Ministry Page"
   | "Redirect Card"
   | "Sermon"
@@ -28,6 +30,7 @@ const getIconName = (hit: ContentHitType) => {
     case "Ministry Page":
     case "Redirect Card":
     case "Location Page":
+    case "Location":
       return "windowAlt";
     case "Sermon":
       return "moviePlay";
@@ -92,7 +95,7 @@ export const getPathname = (
   }
 
   // Location Page - set to "locations"
-  if (contentTypeLower === "location page") {
+  if (contentTypeLower === "location page" || contentTypeLower === "location") {
     return `/locations/${pathname}`;
   }
 
@@ -144,12 +147,7 @@ export function ContentHit({
           {highlightQuery(hit.title, query)}
         </h3>
         <p className="text-[10px] text-text-secondary font-medium">
-          {hit.contentType === "Page Builder" ||
-          hit.contentType === "Redirect Card"
-            ? "Resource Page"
-            : hit.contentType === "Ministry Page"
-            ? "Ministry Page"
-            : hit.contentType}
+          {getDisplayContentType(hit.contentType)}
         </p>
       </div>
     </Link>
