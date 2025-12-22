@@ -100,28 +100,38 @@ export const SearchBar = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (!isSearchOpen) return;
+
       const target = event.target as HTMLElement;
 
-      // Don't close if clicking inside search bar or search-related elements
+      // Don't close if clicking inside search bar
       if (searchBarRef.current?.contains(target as Node)) return;
 
+      // Don't close if clicking inside search popup
+      const searchPopup = document.querySelector(".popup-search-container");
+      if (searchPopup?.contains(target as Node)) return;
+
+      // Don't close if clicking on search button (to toggle)
       const isSearchButton = target
         .closest("button")
         ?.querySelector('svg[name="search"]');
+      if (isSearchButton) return;
+
+      // Don't close if clicking on Algolia search elements
       const isAlgoliaElement = [
         "ais-Hits",
         "ais-RefinementList",
         "ais-SearchBox",
       ].some((className) => target.closest(`.${className}`));
+      if (isAlgoliaElement) return;
 
-      if (!isSearchButton && !isAlgoliaElement) {
-        setIsSearchOpen(false);
-      }
+      // Close search for all other clicks (including navbar but outside search)
+      setIsSearchOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [setIsSearchOpen]);
+  }, [setIsSearchOpen, isSearchOpen]);
 
   useEffect(() => {
     if (isSearchOpen) {

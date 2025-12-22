@@ -135,10 +135,17 @@ export function ContentHit({
     hit as ContentItemHit
   );
 
+  // Disable prefetch for Page Builder and Redirect Card to avoid 404 errors
+  const contentTypeLower = hit.contentType?.toLowerCase() || "";
+  const shouldPrefetch =
+    contentTypeLower !== "page builder" &&
+    contentTypeLower !== "redirect card" &&
+    hitPath !== "";
+
   return (
     <Link
       to={hitPath}
-      prefetch="intent"
+      prefetch={shouldPrefetch ? "intent" : undefined}
       className="pr-8 py-2 flex gap-2 hover:translate-x-1 transition-transform duration-300"
     >
       <Icon name={iconName} color="#666666" size={28} />
