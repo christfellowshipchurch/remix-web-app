@@ -77,6 +77,19 @@ export function Navbar() {
     }
   }, [siteBanner]);
 
+  // Prevent background scrolling when search is open
+  useEffect(() => {
+    if (isSearchOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isSearchOpen]);
+
   // Scroll handling effect
   useEffect(() => {
     // Skip all scroll logic if navbar is hidden
@@ -85,6 +98,11 @@ export function Navbar() {
     }
 
     const handleScroll = () => {
+      // Don't close search or change navbar visibility when search is open
+      if (isSearchOpen) {
+        return;
+      }
+
       const currentScrollY = window.scrollY;
       const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollY;
@@ -92,7 +110,6 @@ export function Navbar() {
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
         setIsVisible(true);
-        setIsSearchOpen(false);
         setMode(defaultMode);
         setLastScrollY(currentScrollY);
         return;
@@ -114,7 +131,14 @@ export function Navbar() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY, defaultMode, pathname, isSmall, isNavbarHidden]);
+  }, [
+    lastScrollY,
+    defaultMode,
+    pathname,
+    isSmall,
+    isNavbarHidden,
+    isSearchOpen,
+  ]);
 
   // Initial mode setup
   useEffect(() => {
@@ -209,7 +233,7 @@ export function Navbar() {
           <div
             className={cn(
               "w-full content-padding transition-colors duration-200",
-              mode === "light"
+              mode === "light" || isSearchOpen
                 ? "bg-white shadow-sm"
                 : openDropdown
                 ? "bg-white shadow-sm"
@@ -232,7 +256,7 @@ export function Navbar() {
                     name="logo"
                     className={cn(
                       "size-32 my-[-48px] transition-colors duration-200",
-                      mode === "light"
+                      mode === "light" || isSearchOpen
                         ? "text-ocean"
                         : openDropdown
                         ? "text-ocean"

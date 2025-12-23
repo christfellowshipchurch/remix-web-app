@@ -30,7 +30,7 @@ export const emptySearchClient = {
           query: "",
           params: "",
           processingTimeMS: 0,
-          index: "production_ContentItems",
+          index: "dev_contentItems",
         },
       ],
     }),
@@ -57,7 +57,7 @@ export default function TestingSearch() {
           This is a test page to see how Algolia search works in the app.
         </p>
         <InstantSearch
-          indexName="production_ContentItems"
+          indexName="dev_contentItems"
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true, // Set this to true to adopt the new behavior

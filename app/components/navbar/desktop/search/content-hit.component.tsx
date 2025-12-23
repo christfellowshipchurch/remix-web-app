@@ -1,40 +1,113 @@
 import { Link } from "react-router-dom";
 import Icon from "~/primitives/icon";
+import { ContentItemHit } from "~/routes/search/types";
+import { getDisplayContentType } from "../../search-utils";
 
 export type ContentHitType = {
-  routing?: {
-    pathname: string;
-  };
+  url: string;
   title: string;
   contentType: string;
 };
 
+export type HitContentType =
+  | "Article"
+  | "Event"
+  | "Page Builder"
+  | "Location Page"
+  | "Location"
+  | "Ministry Page"
+  | "Redirect Card"
+  | "Sermon"
+  | "Person";
+
 const getIconName = (hit: ContentHitType) => {
-  // TODO: Update the type names once the new index is created in Algolia
   switch (hit.contentType) {
-    case "Articles & Blogs":
+    case "Article":
       return "file";
-    case "Digital Platform Events & Live Streams":
+    case "Event":
       return "calendarAlt";
     case "Page Builder":
-    case "Location Pages [New]":
+    case "Ministry Page":
+    case "Redirect Card":
+    case "Location Page":
+    case "Location":
       return "windowAlt";
     case "Sermon":
       return "moviePlay";
     case "Person":
       return "user";
-    case "So Good Sisterhood":
+    case "Podcast":
       return "microphone";
     default:
       return "file"; // Fallback icon
   }
 };
 
+export const getPathname = (
+  contentType: HitContentType,
+  pathname: string,
+  hit?: ContentItemHit
+): string => {
+  if (!contentType || !pathname || pathname === "") {
+    return pathname;
+  }
+
+  const contentTypeLower = contentType.toLowerCase();
+
+  let podcastShow = "so-good-sisterhood";
+  if (hit) {
+    podcastShow =
+      hit.podcastShow?.toLowerCase().replace(/ /g, "-").replace(/\+/g, "and") ||
+      "so-good-sisterhood";
+  }
+
+  // Redirect card and page builder - just use pathname (no contentType prefix)
+  if (
+    contentTypeLower === "redirect card" ||
+    contentTypeLower === "page builder"
+  ) {
+    return `/${pathname}`;
+  }
+
+  // Ministry Page - set to "messages"
+  if (contentTypeLower === "ministry page") {
+    return `/ministries/${pathname}`;
+  }
+
+  // Sermon - set to "messages"
+  if (contentTypeLower === "sermon") {
+    return `/messages/${pathname}`;
+  }
+
+  // Podcasts - set to "messages"
+  if (contentTypeLower === "podcast") {
+    return `/podcasts/${podcastShow}/${pathname}`;
+  }
+
+  // Articles - ensure it's "articles" (add "s" if singular)
+  if (contentTypeLower === "article") {
+    return `/articles/${pathname}`;
+  }
+
+  // Events - ensure it's "events" (add "s" if singular)
+  if (contentTypeLower === "event") {
+    return `/events/${pathname}`;
+  }
+
+  // Location Page - set to "locations"
+  if (contentTypeLower === "location page" || contentTypeLower === "location") {
+    return `/locations/${pathname}`;
+  }
+
+  // Default: use contentType as-is (lowercased)
+  return `/${contentType.toLowerCase()}/${pathname}`;
+};
+
 export function ContentHit({
   hit,
   query,
 }: {
-  hit: ContentHitType;
+  hit: ContentItemHit;
   query: string | null;
 }) {
   const iconName = getIconName(hit);
@@ -56,11 +129,24 @@ export function ContentHit({
     );
   };
 
+  const hitPath = getPathname(
+    hit.contentType as HitContentType,
+    hit.url || "",
+    hit as ContentItemHit
+  );
+
+  // Disable prefetch for Page Builder and Redirect Card to avoid 404 errors
+  const contentTypeLower = hit.contentType?.toLowerCase() || "";
+  const shouldPrefetch =
+    contentTypeLower !== "page builder" &&
+    contentTypeLower !== "redirect card" &&
+    hitPath !== "";
+
   return (
     <Link
-      to={`/${hit?.routing?.pathname}`}
-      prefetch="intent"
-      className="my-2 flex gap-2 hover:translate-x-1 transition-transform duration-300"
+      to={hitPath}
+      prefetch={shouldPrefetch ? "intent" : undefined}
+      className="pr-8 py-2 flex gap-2 hover:translate-x-1 transition-transform duration-300"
     >
       <Icon name={iconName} color="#666666" size={28} />
       <div className="flex flex-col">
@@ -68,7 +154,7 @@ export function ContentHit({
           {highlightQuery(hit.title, query)}
         </h3>
         <p className="text-[10px] text-text-secondary font-medium">
-          {hit.contentType}
+          {getDisplayContentType(hit.contentType)}
         </p>
       </div>
     </Link>
