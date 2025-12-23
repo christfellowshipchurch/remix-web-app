@@ -20,7 +20,7 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
     <Link
       to={`/articles/${article.url || article.routing.pathname}`}
       prefetch="intent"
-      className="flex flex-col p-[2px] overflow-hidden max-w-[456px] w-full transition-all duration-300 hover:-translate-y-1 h-full"
+      className="flex flex-col overflow-hidden max-w-[456px] w-full transition-all duration-300 hover:-translate-y-1 h-full border border-neutral-lighter rounded-lg"
     >
       {/* Article Image */}
       <div className="relative">
@@ -41,7 +41,7 @@ export const ArticleCard = ({ article }: { article: ContentItemHit }) => {
       </div>
 
       {/* Article Content */}
-      <div className="p-6 flex flex-col justify-between gap-4 h-full border-x border-b border-neutral-lighter rounded-b-lg">
+      <div className="p-6 flex flex-col justify-between gap-4 h-full">
         {/* Article Title + Summary */}
         <div className="flex flex-col gap-2">
           <h3 className="font-extrabold text-lg break-words">

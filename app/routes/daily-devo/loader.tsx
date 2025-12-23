@@ -1,4 +1,5 @@
 import { LoaderFunction } from "react-router";
+import https from "https";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 
@@ -21,18 +22,35 @@ export type LoaderReturnType = {
   dailyDevo: DailyDevo;
 };
 
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: process.env.NODE_ENV === "production",
+});
+
 const fetchScripture = async (scripture: string) => {
-  const response = await fetch(`https://bible-api.com/${scripture}`);
+  try {
+    const url = `https://bible-api.com/${scripture}`;
+    const data = await new Promise<string>((resolve, reject) => {
+      https
+        .get(url, { agent: httpsAgent }, (res) => {
+          let body = "";
+          res.on("data", (chunk) => (body += chunk));
+          res.on("end", () => resolve(body));
+        })
+        .on("error", reject);
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch scripture");
+    return JSON.parse(data) as {
+      reference: string;
+      text: string;
+      translation_id: string;
+    };
+  } catch {
+    return {
+      reference: scripture,
+      text: "Scripture text unavailable",
+      translation_id: "unknown",
+    };
   }
-
-  return (await response.json()) as {
-    reference: string;
-    text: string;
-    translation_id: string;
-  };
 };
 
 const fetchDailyDevo = async () => {
@@ -70,7 +88,6 @@ const avatars = [
 
 export const loader: LoaderFunction = async (): Promise<LoaderReturnType> => {
   const dailyDevoRockData = await fetchDailyDevo();
-
   const scripturesRockData = dailyDevoRockData.attributeValues.scriptures.value
     .split(",")
     .map((s: string) => s.trim());

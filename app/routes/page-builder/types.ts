@@ -94,6 +94,7 @@ export type PageBuilderSection = {
   faqs?: FAQItem[];
   cta?: CallToAction; // Used in FAQs component
   imageGallery?: string[];
+  viewMoreLink?: string | undefined;
 };
 
 /**
