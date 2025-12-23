@@ -7,7 +7,7 @@ export function AllArticlesPage() {
       <DynamicHero
         customTitle="Articles"
         imagePath="/assets/images/articles-hero-bg.jpg"
-        ctas={[{ href: "/daily-devo", title: "Daily Devotional" }]}
+        ctas={[{ href: "/class-finder", title: "Take a Class" }]}
       />
       <AllArticles />
     </div>

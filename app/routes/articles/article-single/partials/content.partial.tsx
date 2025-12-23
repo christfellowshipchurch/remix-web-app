@@ -14,7 +14,6 @@ export const ArticleContent = ({
   return (
     <div className="flex flex-col content-padding py-10 lg:pt-16">
       <div className="article-content flex w-full mx-auto max-w-screen-lg flex-col lg:max-w-screen-content">
-        <h3 className="my-4 text-xl font-bold">IN THIS ARTICLE</h3>
         <HTMLRenderer
           html={htmlContent || ""}
           className="xl:text-lg font-regular"

@@ -17,7 +17,7 @@ export function renderSection(section: PageBuilderSection) {
           title={section.name}
           description={section.content}
           resources={section.collection || []}
-          viewMoreLink="#tbd"
+          viewMoreLink={section.viewMoreLink || undefined}
         />
       );
     case "CTA_COLLECTION":
@@ -27,7 +27,7 @@ export function renderSection(section: PageBuilderSection) {
           title={section.name}
           description={section.content}
           resources={section.collection || []}
-          viewMoreLink="#tbd"
+          viewMoreLink={section.viewMoreLink || undefined}
         />
       );
     case "FAQs":

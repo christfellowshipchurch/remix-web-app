@@ -3,7 +3,7 @@ import { LoaderReturnType } from "../loader";
 import Icon from "~/primitives/icon";
 import { useLoaderData } from "react-router";
 import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
-import { useRef, useState, useEffect } from "react";
+import { VideoModal } from "~/components/modals/video-modal";
 
 export const DailyHero = () => {
   const { appPromoVideo, avatars, dailyDevo } =
@@ -15,67 +15,6 @@ export const DailyHero = () => {
     day: "numeric",
     year: "numeric",
   });
-
-  const [isMobileFullscreen, setIsMobileFullscreen] = useState(false);
-
-  // Desktop Video fullscreen functions
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [videoUrl, setVideoUrl] = useState(
-    `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`
-  );
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement) {
-        setIsVideoPlaying(false);
-        // Reset video URL to stop autoplay and reset the video
-        setVideoUrl(
-          `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`
-        );
-      }
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullscreenChange
-      );
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullscreenChange
-      );
-      document.removeEventListener(
-        "MSFullscreenChange",
-        handleFullscreenChange
-      );
-    };
-  }, [appPromoVideo]);
-
-  const handleFullscreen = () => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    setIsVideoPlaying(true);
-    setVideoUrl(
-      `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove&autoplay=1`
-    );
-
-    if (isMobile) {
-      setIsMobileFullscreen(true); // use fake fullscreen
-      return;
-    }
-
-    // Try true fullscreen on desktop
-    if (iframeRef.current?.requestFullscreen) {
-      iframeRef.current.requestFullscreen();
-    }
-  };
 
   return (
     <>
@@ -103,28 +42,21 @@ export const DailyHero = () => {
             </div>
 
             <div className="relative flex flex-col-reverse md:flex-row lg:flex-wrap gap-4 mt-8 md:mt-0">
-              <iframe
-                ref={iframeRef}
-                src={videoUrl}
-                allow="autoplay; fullscreen"
-                allowFullScreen
-                className={cn(
-                  "size-full",
-                  "rounded-[12px] -bottom-40 z-10 absolute",
-                  {
-                    "opacity-100": isVideoPlaying,
-                    "opacity-0": !isVideoPlaying,
-                  }
-                )}
-              />
-              <Button
-                onClick={handleFullscreen}
+              <VideoModal
+                wistiaId={appPromoVideo}
                 intent="primary"
-                className="w-full md:w-fit flex items-center gap-2 min-w-[122px] rounded-[4px]"
-              >
-                <Icon name="playCircle" />
-                Intro
-              </Button>
+                ModalButton={({ onClick, ...props }) => (
+                  <Button
+                    {...props}
+                    onClick={onClick}
+                    className="w-full md:w-fit flex items-center gap-2 min-w-[122px] rounded-[4px]"
+                  >
+                    <Icon name="playCircle" />
+                    Intro
+                  </Button>
+                )}
+                videoClassName="w-full h-full rounded-lg"
+              />
 
               <Button
                 onClick={() =>
@@ -180,28 +112,6 @@ export const DailyHero = () => {
           </div>
         </div>
       </div>
-      {isMobileFullscreen && (
-        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-          <button
-            onClick={() => {
-              setIsMobileFullscreen(false);
-              setIsVideoPlaying(false);
-              setVideoUrl(
-                `https://fast.wistia.net/embed/iframe/${appPromoVideo}?fitStrategy=cove`
-              );
-            }}
-            className="absolute top-4 right-4 text-white text-2xl"
-          >
-            ✕
-          </button>
-          <iframe
-            src={videoUrl}
-            allow="autoplay; fullscreen"
-            allowFullScreen
-            className="w-full h-full"
-          />
-        </div>
-      )}
     </>
   );
 };
