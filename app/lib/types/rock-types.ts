@@ -3,6 +3,7 @@ export interface RockContentChannelItem {
   id: string;
   contentChannelId: string;
   title: string;
+  name: string;
   content: string;
   attributeValues: attributeValuesProps;
   attributes: attributeProps;

@@ -1,8 +1,8 @@
 import { DynamicHero } from "~/components";
-import CurrentSeries from "./components/current-series.component";
-import AllMessages from "./components/all-messages.component";
+import CurrentSeries from "./partials/current-series.partial";
+import { AllMessages } from "./partials/all-messages.partial";
 
-export default function MessagesPage() {
+export function MessagesPage() {
   return (
     <div>
       <DynamicHero
