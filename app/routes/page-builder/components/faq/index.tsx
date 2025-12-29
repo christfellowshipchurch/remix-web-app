@@ -23,15 +23,21 @@ export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
           ))}
         </div>
 
-        <div className="w-full flex flex-col items-center text-center gap-6 md:-mt-8">
-          <h2 className="text-2xl md:text-[28px] font-extrabold">
-            Still have questions?
-          </h2>
+        {data.stillHaveQuestionsLink && (
+          <div className="w-full flex flex-col items-center text-center gap-6 md:-mt-8">
+            <h2 className="text-2xl md:text-[28px] font-extrabold">
+              Still have questions?
+            </h2>
 
-          <Button href="/contact" intent="secondary" className="font-normal">
-            Contact
-          </Button>
-        </div>
+            <Button
+              href={data.stillHaveQuestionsLink}
+              intent="secondary"
+              className="font-normal"
+            >
+              Contact
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
