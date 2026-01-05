@@ -14,7 +14,7 @@ import { cn } from "~/lib/utils";
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   // If the path is exactly /yes (no trailing slash or anything after)
-  if (url.pathname === "/yes") {
+  if (url.pathname === "/yes" || url.pathname === "/yes/") {
     return redirect("/yes/welcome");
   }
   return null;
