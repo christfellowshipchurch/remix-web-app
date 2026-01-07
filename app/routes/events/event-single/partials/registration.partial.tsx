@@ -6,7 +6,7 @@ import { ClickThroughRegistration } from "../components/clickthrough-registratio
 export function RegistrationSection() {
   const { title, sessionScheduleCards } = useLoaderData<EventSinglePageType>();
 
-  const showClickThroughRegistration = false; // TODO: change this to true when the click through registration is implemented
+  const showClickThroughRegistration = true; // TODO: change this to true when the click through registration is implemented
 
   return (
     <>

@@ -1,30 +1,81 @@
-import { useState } from "react";
-// import { icons } from "~/lib/icons";
-import { Button } from "~/primitives/button/button.primitive";
+import { useState, useMemo } from "react";
+import { useLocation, useRouteLoaderData } from "react-router-dom";
+import { InstantSearch, Configure, useHits } from "react-instantsearch";
+import { createSearchClient } from "~/lib/create-search-client";
 import Icon from "~/primitives/icon";
+import { RockProxyEmbed } from "~/components/rock-embed";
+import { EventFinderHit } from "../types";
+import { RootLoaderData } from "~/routes/navbar/loader";
 
-// TODO: This component is pending some more thought and work around registering for events since it can very a lot per event
+interface ClickThroughRegistrationProps {
+  title: string;
+  groupType?: string;
+}
 
-export const ClickThroughRegistration = ({ title }: { title: string }) => {
-  const [step, setStep] = useState(1);
-  // const [_selectedCampus, _setSelectedCampus] = useState("Select Campus");
-  // const [_selectedDate, _setSelectedDate] = useState("Select a Date");
-  // const [_selectedTime, _setSelectedTime] = useState("Select a Time");
-
-  const handleContinue = () => {
-    if (step < 4) {
-      setStep(step + 1);
-    }
+export const ClickThroughRegistration = ({
+  title,
+  groupType,
+}: ClickThroughRegistrationProps) => {
+  const location = useLocation();
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const algolia = rootData?.algolia ?? {
+    ALGOLIA_APP_ID: "",
+    ALGOLIA_SEARCH_API_KEY: "",
   };
+
+  // Extract groupType from URL if not provided as prop
+  // URL format: /events/kids or /events/baptism
+  const pathParts = location.pathname.split("/");
+  const lastPart = pathParts[pathParts.length - 1] || "";
+  const extractedGroupType =
+    groupType ||
+    (lastPart ? lastPart.charAt(0).toUpperCase() + lastPart.slice(1) : "");
+
+  const [step, setStep] = useState(1);
+  const [selectedCampus, setSelectedCampus] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [campusSearchQuery, setCampusSearchQuery] = useState<string>("");
+
+  const searchClient = useMemo(
+    () =>
+      createSearchClient(
+        algolia.ALGOLIA_APP_ID || "",
+        algolia.ALGOLIA_SEARCH_API_KEY || ""
+      ),
+    [algolia.ALGOLIA_APP_ID, algolia.ALGOLIA_SEARCH_API_KEY]
+  );
 
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
+      // Clear selections when going back
+      if (step === 4) {
+        setSelectedTime("");
+      } else if (step === 3) {
+        setSelectedDate("");
+      } else if (step === 2) {
+        setSelectedCampus("");
+      }
     }
   };
 
   const getCurrentStepData = () => {
     return StepsData.find((data) => data.step === step) || StepsData[0];
+  };
+
+  const buildFilter = () => {
+    if (!extractedGroupType) return "";
+    let filter = `groupType:"${extractedGroupType}"`;
+    if (selectedCampus) {
+      filter += ` AND campus.name:"${selectedCampus.trim()}"`;
+    }
+    if (selectedDate) {
+      // Ensure date format matches exactly (YYYY-MM-DD)
+      const trimmedDate = selectedDate.trim();
+      filter += ` AND date:"${trimmedDate}"`;
+    }
+    return filter;
   };
 
   return (
@@ -43,78 +94,476 @@ export const ClickThroughRegistration = ({ title }: { title: string }) => {
           </p>
         </div>
 
-        {/* From here down will change based on step */}
-        <div className="flex flex-col gap-3">
-          {/* Top */}
-          <div className="flex flex-col gap-2 items-center">
-            <div className="flex gap-4">
-              {step > 1 && (
-                <div
-                  className="flex items-center cursor-pointer"
-                  onClick={handleBack}
-                >
-                  <Icon name="chevronLeft" size={16} className="text-black" />
-                  <p className="text-xs font-semibold text-[#616161]">Back</p>
-                </div>
-              )}
-              <h3 className="text-xl font-bold text-black">
-                {getCurrentStepData().title}
-              </h3>
+        <InstantSearch
+          indexName="dev_EventFinderItems"
+          searchClient={searchClient}
+          future={{
+            preserveSharedStateOnUnmount: true,
+          }}
+        >
+          <Configure filters={buildFilter()} hitsPerPage={1000} />
+
+          <div className="flex flex-col gap-3">
+            {/* Top */}
+            <div className="flex flex-col gap-2 items-center">
+              <div className="flex gap-4 items-center">
+                {step > 1 && (
+                  <div
+                    className="flex items-center cursor-pointer"
+                    onClick={handleBack}
+                  >
+                    <Icon name="chevronLeft" size={16} className="text-black" />
+                    <p className="text-xs font-semibold text-[#616161]">Back</p>
+                  </div>
+                )}
+                <h3 className="text-xl font-bold text-black">
+                  {getCurrentStepData().title}
+                </h3>
+              </div>
+
+              <div className="flex gap-2 items-center">
+                {[1, 2, 3, 4].map((dotStep) => (
+                  <div
+                    key={dotStep}
+                    className={`${
+                      dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
+                    } size-[10px] rounded-full`}
+                  />
+                ))}
+              </div>
+
+              <p className="text-black font-semibold text-sm">
+                Step {step} of 4
+              </p>
             </div>
 
-            <div className="flex gap-2 items-center">
-              {[1, 2, 3, 4].map((dotStep) => (
-                <div
-                  key={dotStep}
-                  className={`${
-                    dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
-                  } size-[10px] rounded-full`}
-                />
-              ))}
-            </div>
+            {/* Selected Bar - shows previous selections */}
+            {(selectedCampus || selectedDate || selectedTime) && (
+              <div className="flex gap-4 items-center justify-center flex-wrap">
+                {selectedCampus && (
+                  <SelectedBar icon="map" text={selectedCampus} />
+                )}
+                {selectedDate && (
+                  <SelectedBar
+                    icon="calendarAlt"
+                    text={formatDate(selectedDate)}
+                  />
+                )}
+                {selectedTime && (
+                  <SelectedBar icon="timeFive" text={selectedTime} />
+                )}
+              </div>
+            )}
 
-            <p className="text-black font-semibold text-sm">Step {step} of 4</p>
+            {/* Step Content */}
+            <StepContent
+              step={step}
+              selectedCampus={selectedCampus}
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              campusSearchQuery={campusSearchQuery}
+              onCampusSelect={(campus) => {
+                setSelectedCampus(campus);
+                setStep(2);
+              }}
+              onDateSelect={(date) => {
+                setSelectedDate(date);
+                setStep(3);
+              }}
+              onTimeSelect={(time) => {
+                setSelectedTime(time);
+                setStep(4);
+              }}
+              onCampusSearchChange={setCampusSearchQuery}
+            />
           </div>
-
-          {/* Bot - empty for now*/}
-          <div>
-            <Button
-              intent="primary"
-              onClick={handleContinue}
-              disabled={step === 4}
-            >
-              {step === 4 ? "Complete" : "Continue"}
-            </Button>
-          </div>
-        </div>
+        </InstantSearch>
       </div>
     </section>
   );
 };
 
-// WORK IN PROGRESS - THIS IS NOT COMPLETE
-// const _SelectedBar = ({
-//   icon,
-//   text,
-// }: {
-//   icon: keyof typeof icons;
-//   text: string;
-// }) => {
-//   return (
-//     <div className="flex gap-2">
-//       <Icon name={icon} />
-//       <p>{text}</p>
-//     </div>
-//   );
-// };
+// SelectedBar Component
+const SelectedBar = ({
+  icon,
+  text,
+}: {
+  icon: "map" | "calendarAlt" | "timeFive";
+  text: string;
+}) => {
+  return (
+    <div className="flex gap-2 items-center">
+      <Icon name={icon} size={16} className="text-black" />
+      <p className="text-sm text-black">{text}</p>
+    </div>
+  );
+};
 
-// const _ClickableCard = () => {
-//   return (
-//     <div>
-//       <div></div>
-//     </div>
-//   );
-// };
+// Step Content Component
+interface StepContentProps {
+  step: number;
+  selectedCampus: string;
+  selectedDate: string;
+  selectedTime: string;
+  campusSearchQuery: string;
+  onCampusSelect: (campus: string) => void;
+  onDateSelect: (date: string) => void;
+  onTimeSelect: (time: string) => void;
+  onCampusSearchChange: (query: string) => void;
+}
+
+const StepContent = ({
+  step,
+  selectedCampus,
+  selectedDate,
+  selectedTime,
+  campusSearchQuery,
+  onCampusSelect,
+  onDateSelect,
+  onTimeSelect,
+  onCampusSearchChange,
+}: StepContentProps) => {
+  const { items } = useHits<EventFinderHit>();
+
+  if (step === 1) {
+    return (
+      <CampusStep
+        hits={items}
+        onSelect={onCampusSelect}
+        searchQuery={campusSearchQuery}
+        onSearchChange={onCampusSearchChange}
+      />
+    );
+  }
+
+  if (step === 2) {
+    return (
+      <DateStep
+        hits={items}
+        selectedCampus={selectedCampus}
+        onSelect={onDateSelect}
+      />
+    );
+  }
+
+  if (step === 3) {
+    return (
+      <TimeStep
+        hits={items}
+        selectedCampus={selectedCampus}
+        selectedDate={selectedDate}
+        onSelect={onTimeSelect}
+      />
+    );
+  }
+
+  if (step === 4) {
+    const matchingHit = items.find(
+      (hit) =>
+        hit.time === selectedTime &&
+        hit.date === selectedDate &&
+        hit.campus.name === selectedCampus
+    );
+    return (
+      <FormStep
+        groupGuid={matchingHit?.groupGuid || ""}
+        selectedCampus={selectedCampus}
+        selectedDate={selectedDate}
+        selectedTime={selectedTime}
+      />
+    );
+  }
+
+  return null;
+};
+
+// Campus Step Component
+interface CampusStepProps {
+  hits: EventFinderHit[];
+  onSelect: (campus: string) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+}
+
+const CampusStep = ({
+  hits,
+  onSelect,
+  searchQuery,
+  onSearchChange,
+}: CampusStepProps) => {
+  // Get unique campuses
+  const uniqueCampuses = useMemo(() => {
+    const campusMap = new Map<string, { name: string; location?: string }>();
+    hits.forEach((hit) => {
+      if (!campusMap.has(hit.campus.name)) {
+        campusMap.set(hit.campus.name, {
+          name: hit.campus.name,
+          location: hit.location || undefined,
+        });
+      }
+    });
+    return Array.from(campusMap.values());
+  }, [hits]);
+
+  // Filter campuses by search query
+  const filteredCampuses = useMemo(() => {
+    if (!searchQuery) return uniqueCampuses;
+    const query = searchQuery.toLowerCase();
+    return uniqueCampuses.filter(
+      (campus) =>
+        campus.name.toLowerCase().includes(query) ||
+        campus.location?.toLowerCase().includes(query)
+    );
+  }, [uniqueCampuses, searchQuery]);
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Search Input */}
+      <div className="relative">
+        <Icon
+          name="search"
+          size={20}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#717182]"
+        />
+        <input
+          type="text"
+          placeholder="Search campuses by name or city..."
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 rounded-lg border border-[#AEAEAE] focus:outline-none focus:ring-2 focus:ring-ocean"
+        />
+      </div>
+
+      {/* Campus Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {filteredCampuses.map((campus) => (
+          <ClickableCard
+            key={campus.name}
+            icon="map"
+            title={campus.name}
+            subtitle={campus.location || ""}
+            onClick={() => onSelect(campus.name)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Date Step Component
+interface DateStepProps {
+  hits: EventFinderHit[];
+  selectedCampus: string;
+  onSelect: (date: string) => void;
+}
+
+const DateStep = ({ hits, selectedCampus, onSelect }: DateStepProps) => {
+  // Get unique dates for selected campus
+  const uniqueDates = useMemo(() => {
+    const dateMap = new Map<string, { date: string; day: string }>();
+    hits
+      .filter((hit) => hit.campus.name === selectedCampus)
+      .forEach((hit) => {
+        if (!dateMap.has(hit.date)) {
+          dateMap.set(hit.date, {
+            date: hit.date,
+            day: hit.day,
+          });
+        }
+      });
+    return Array.from(dateMap.values()).sort((a, b) =>
+      a.date.localeCompare(b.date)
+    );
+  }, [hits, selectedCampus]);
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {uniqueDates.map((dateInfo) => (
+        <ClickableCard
+          key={dateInfo.date}
+          icon="calendarAlt"
+          title={formatDateDisplay(dateInfo.date, dateInfo.day)}
+          subtitle={dateInfo.day}
+          onClick={() => onSelect(dateInfo.date)}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Time Step Component
+interface TimeStepProps {
+  hits: EventFinderHit[];
+  selectedCampus: string;
+  selectedDate: string;
+  onSelect: (time: string) => void;
+}
+
+const TimeStep = ({
+  hits,
+  selectedCampus,
+  selectedDate,
+  onSelect,
+}: TimeStepProps) => {
+  // Get unique times for selected campus and date
+  const uniqueTimes = useMemo(() => {
+    const timeMap = new Map<string, { time: string; groupGuid: string }>();
+
+    // Filter hits that match both campus and date exactly
+    // Trim values to handle any whitespace issues
+    const matchingHits = hits.filter(
+      (hit) =>
+        hit.campus.name.trim() === selectedCampus.trim() &&
+        hit.date.trim() === selectedDate.trim()
+    );
+
+    matchingHits.forEach((hit) => {
+      if (!timeMap.has(hit.time)) {
+        timeMap.set(hit.time, {
+          time: hit.time,
+          groupGuid: hit.groupGuid,
+        });
+      }
+    });
+
+    return Array.from(timeMap.values());
+  }, [hits, selectedCampus, selectedDate]);
+
+  if (uniqueTimes.length === 0) {
+    return (
+      <div className="w-full p-8 text-center">
+        <p className="text-gray-600">
+          No times available for the selected date. Please go back and select a
+          different date.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {uniqueTimes.map((timeInfo) => (
+        <ClickableCard
+          key={timeInfo.time}
+          icon="timeFive"
+          title={timeInfo.time}
+          subtitle="Eastern Time"
+          onClick={() => onSelect(timeInfo.time)}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Form Step Component
+interface FormStepProps {
+  groupGuid: string;
+  selectedCampus: string;
+  selectedDate: string;
+  selectedTime: string;
+}
+
+const FormStep = ({
+  groupGuid,
+  selectedCampus: _selectedCampus,
+  selectedDate: _selectedDate,
+  selectedTime: _selectedTime,
+}: FormStepProps) => {
+  const rockEmbedUrl = `https://rock.gocf.org/page/3253?Group=${groupGuid}`;
+
+  if (!groupGuid) {
+    return (
+      <div className="w-full p-8 text-center">
+        <p className="text-gray-600">
+          Unable to load registration form. Please go back and try again.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      <RockProxyEmbed
+        url={rockEmbedUrl}
+        height={800}
+        showLoading={true}
+        useAdvancedProxy={true}
+        className="w-full"
+      />
+    </div>
+  );
+};
+
+// ClickableCard Component
+interface ClickableCardProps {
+  icon: "map" | "calendarAlt" | "timeFive";
+  title: string;
+  subtitle: string;
+  onClick: () => void;
+}
+
+const ClickableCard = ({
+  icon,
+  title,
+  subtitle,
+  onClick,
+}: ClickableCardProps) => {
+  return (
+    <div
+      onClick={onClick}
+      className="bg-white rounded-lg border border-[#AEAEAE] p-6 cursor-pointer hover:border-ocean transition-all duration-300 flex flex-col items-center gap-3"
+    >
+      <div className="bg-[#E7F9FE] rounded-full p-3">
+        <Icon name={icon} size={24} className="text-ocean" />
+      </div>
+      <h4 className="font-bold text-black text-center">{title}</h4>
+      {subtitle && (
+        <p className="text-sm text-[#717182] text-center">{subtitle}</p>
+      )}
+    </div>
+  );
+};
+
+// Helper Functions
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const formatDateDisplay = (dateString: string, dayName?: string): string => {
+  // Parse date string manually to avoid timezone issues
+  // Date format is YYYY-MM-DD
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+
+  const monthName = date.toLocaleDateString("en-US", { month: "short" });
+  const dayNum = date.getDate();
+  const suffix = getDaySuffix(dayNum);
+
+  // Use provided dayName if available, otherwise calculate it
+  const weekday =
+    dayName || date.toLocaleDateString("en-US", { weekday: "short" });
+
+  return `${weekday} ${monthName} ${dayNum}${suffix}`;
+};
+
+const getDaySuffix = (day: number): string => {
+  if (day > 3 && day < 21) return "th";
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+};
 
 const StepsData = [
   { step: 1, title: "Choose Your Campus" },

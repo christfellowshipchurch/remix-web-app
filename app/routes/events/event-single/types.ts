@@ -26,3 +26,17 @@ export type SessionRegistrationCardType = {
   additionalInfo?: string;
   url: string;
 };
+
+export interface EventFinderHit {
+  objectID: string;
+  campus: { name: string };
+  groupType: string;
+  rockItemId: number;
+  groupGuid: string;
+  summary: string;
+  location: string;
+  day: string;
+  time: string;
+  date: string;
+  subGroupType: string;
+}
