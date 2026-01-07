@@ -34,8 +34,15 @@ export const YesRoute: React.FC = () => {
           isWelcomeStep && "justify-center"
         )}
       >
-        {/* Render the current step */}
-        <Outlet />
+        <div
+          key={location.pathname}
+          className="w-full"
+          style={{
+            animation: "route-slide-in 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          <Outlet />
+        </div>
       </main>
     </div>
   );
