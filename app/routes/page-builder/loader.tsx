@@ -311,6 +311,9 @@ export const mapPageBuilderChildItems = async (
 
         return {
           ...baseChild,
+          stillHaveQuestionsLink: getStringValue(
+            attributeValues?.stillHaveQuestionsLink || ""
+          ),
           faqs: faqs.map((faq: RockAttributeMatrixItem) => ({
             id: faq.id,
             question: faq.attributeValues.header.value,
