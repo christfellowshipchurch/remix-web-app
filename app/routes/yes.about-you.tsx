@@ -1,30 +1,18 @@
 import React from "react";
-import { ActionFunctionArgs, redirect, useLoaderData } from "react-router-dom";
-import { mockPersonalInfo } from "./volunteer-form/mock-data";
+import { useLoaderData } from "react-router-dom";
 import YesAboutYou from "./yes/partials/yes-about-you.partial";
 import { YesFormPersonalInfo } from "./yes/types";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const data = {
-    firstName: formData.get("firstName"),
-    lastName: formData.get("lastName"),
-    email: formData.get("email"),
-    phone: formData.get("phone"),
-    dateOfBirth: formData.get("dateOfBirth"),
-  };
-  // eslint-disable-next-line no-console
-  console.log("Personal Info received:", data);
-
-  // TODO: Validate data and save it
-
-  return redirect("/yes/devotional");
-};
-
 export const loader = async () => {
-  return new Response(JSON.stringify({ defaultValues: mockPersonalInfo }), {
-    headers: { "Content-Type": "application/json" },
-  });
+  const defaultValues: YesFormPersonalInfo = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    dateOfBirth: "",
+  };
+
+  return Response.json({ defaultValues });
 };
 
 export const YesAboutYouRoute: React.FC = () => {
