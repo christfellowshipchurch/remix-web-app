@@ -15,6 +15,7 @@ const allCampuses = [
   "iglesia-royal-palm-beach",
   "royal-palm-beach",
   "cf-everywhere",
+  // "online",
   "vero-beach",
   "boynton-beach",
   "jupiter",

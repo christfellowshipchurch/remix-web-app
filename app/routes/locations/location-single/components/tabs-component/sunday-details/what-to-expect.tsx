@@ -29,8 +29,9 @@ export const WhatToExpect = ({
           className={cn(
             "flex flex-1 w-full flex-col gap-6",
             "lg:flex-auto",
-            !isOnline && setReminderVideo && "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
-            (isOnline || !setReminderVideo) && "lg:w-full lg:max-w-[964px] lg:items-center",
+            !isOnline && "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
+            isOnline && "lg:w-full lg:max-w-[964px] lg:items-center",
+            !setReminderVideo && "lg:w-full lg:max-w-[964px] lg:items-center"
           )}
         >
           <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[48px] xl:text-[52px]">
@@ -45,7 +46,7 @@ export const WhatToExpect = ({
             <div className={cn("flex flex-col gap-6", isOnline && "lg:flex-1")}>
               <ExpectItem
                 title="Come As You Are, Seriously!"
-              description="Comfortable clothes are the norm—no need to dress up to check out a service."
+                description="Comfortable clothes are the norm—no need to dress up to check out a service."
               />
               <ExpectItem
                 title="Messages That Speak to Real Life (in about 1 hour)"
