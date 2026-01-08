@@ -8,14 +8,14 @@ export const WhatToExpect = ({
   setReminderVideo,
   isOnline,
 }: {
-  setReminderVideo: string;
+  setReminderVideo: string | null | undefined;
   isOnline?: boolean;
 }) => {
   return (
     <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-36 md:pt-40 pb-20 lg:pb-28 content-padding flex justify-center">
       <div className="w-ful flex flex-col lg:flex-row gap-12 xl:gap-20 items-center justify-center max-w-screen-content mx-auto">
         {/* Left Side */}
-        {!isOnline && (
+        {!isOnline && setReminderVideo && (
           <div className="flex-1 w-full lg:flex-auto lg:w-5/7 xl:w-4/7">
             <iframe
               src={`https://fast.wistia.net/embed/iframe/${setReminderVideo}?fitStrategy=cover`}
@@ -30,7 +30,8 @@ export const WhatToExpect = ({
             "flex flex-1 w-full flex-col gap-6",
             "lg:flex-auto",
             !isOnline && "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
-            isOnline && "lg:w-full lg:max-w-[964px] lg:items-center"
+            isOnline && "lg:w-full lg:max-w-[964px] lg:items-center",
+            !setReminderVideo && "lg:w-full lg:max-w-[964px] lg:items-center"
           )}
         >
           <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[48px] xl:text-[52px]">

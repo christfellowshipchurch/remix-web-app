@@ -206,6 +206,23 @@ export const isAppleDevice = (): boolean => {
 
 export const isValidZip = (zip: string) => /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
 
+/**
+ * Validates if a string is a valid Wistia video ID format
+ * Wistia IDs are typically alphanumeric strings, sometimes with hyphens or underscores
+ */
+export const isValidWistiaIdFormat = (
+  id: string | null | undefined
+): boolean => {
+  if (!id || typeof id !== "string") {
+    return false;
+  }
+
+  // Wistia IDs are typically alphanumeric with possible hyphens/underscores
+  // They should be non-empty and not contain spaces or special characters that could break the URL
+  const wistiaIdPattern = /^[a-zA-Z0-9_-]+$/;
+  return wistiaIdPattern.test(id.trim()) && id.trim().length > 0;
+};
+
 export const latLonDistance = (
   lat1: number,
   lon1: number,

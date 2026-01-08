@@ -39,7 +39,7 @@ export const VirtualTourTabs = ({
 
   return (
     <div className="flex flex-col pt-8 rounded-[18px] border border-neutral-lighter">
-      <Tabs.Root defaultValue="tour">
+      <Tabs.Root defaultValue={wistiaId ? "tour" : "map"}>
         {!isOnline && address && GOOGLE_MAPS_API_KEY && (
           <TabContent
             value="map"
@@ -51,22 +51,24 @@ export const VirtualTourTabs = ({
               programs and facilities."
           />
         )}
-        <TabContent
-          value="tour"
-          title={isOnline ? "Join Us Online!" : "Take a Virtual Tour"}
-          description={
-            isOnline
-              ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
-              : "Experience what it’s like to attend Christ Fellowship before your visit."
-          }
-          wistiaId={wistiaId}
-        />
+        {wistiaId && (
+          <TabContent
+            value="tour"
+            title={isOnline ? "Join Us Online!" : "Take a Virtual Tour"}
+            description={
+              isOnline
+                ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
+                : "Experience what it’s like to attend Christ Fellowship before your visit."
+            }
+            wistiaId={wistiaId}
+          />
+        )}
 
         {!isOnline && address && GOOGLE_MAPS_API_KEY && (
-          <Tabs.List className="flex p-8">
+          <Tabs.List className="flex justify-center gap-4 p-8">
             <>
               <TourButton value="map">Map</TourButton>
-              <TourButton value="tour">Virtual Tour</TourButton>
+              {wistiaId && <TourButton value="tour">Virtual Tour</TourButton>}
             </>
           </Tabs.List>
         )}
