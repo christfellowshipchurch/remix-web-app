@@ -7,7 +7,7 @@ export const EventBanner = ({
   title,
   sections,
 }: {
-  cta: { title: string; url: string };
+  cta?: { title: string; url: string };
   title: string;
   sections: { id: string; label: string }[];
 }) => {
@@ -167,9 +167,15 @@ export const EventBanner = ({
         </div>
 
         <div className="flex-1 flex justify-end">
-          <Button href={cta.url} intent="primary" className={`${buttonStyles}`}>
-            {cta.title}
-          </Button>
+          {cta && (
+            <Button
+              href={cta.url}
+              intent="primary"
+              className={`${buttonStyles}`}
+            >
+              {cta.title}
+            </Button>
+          )}
         </div>
       </div>
     </div>

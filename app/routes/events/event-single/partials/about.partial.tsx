@@ -53,9 +53,11 @@ export const AboutPartial = ({
         <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-8 lg:justify-between w-full pb-6">
           {/* Left / Top (Mobile) Side */}
           <div className="w-full max-w-[590px] flex flex-col gap-4">
-            <h3 className="text-xl text-black font-semibold">
-              Schedule / What to Expect
-            </h3>
+            {whatToExpect && whatToExpect.length > 0 && (
+              <h3 className="text-xl text-black font-semibold">
+                Schedule / What to Expect
+              </h3>
+            )}
             <div className="flex flex-col gap-2 items-start">
               {(whatToExpect ?? []).map((item, index) => (
                 <ScheduleItem
@@ -69,12 +71,12 @@ export const AboutPartial = ({
 
           {/* Right / Bottom (Mobile) Side */}
           <div className="flex flex-col gap-5 max-w-[640px] w-full">
-            <div className="flex flex-col gap-3">
-              <h3 className="text-black text-xl font-semibold">More Info</h3>
-              {moreInfo && (
+            {moreInfo && (
+              <div className="flex flex-col gap-3">
+                <h3 className="text-black text-xl font-semibold">More Info</h3>
                 <p className="text-[#717182] text-sm font-medium">{moreInfo}</p>
-              )}
-            </div>
+              </div>
+            )}
 
             {(optionalBlurb ?? []).map((blurb, index) => (
               <div

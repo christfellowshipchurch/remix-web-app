@@ -1,9 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useLocation, useRouteLoaderData } from "react-router-dom";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { createSearchClient } from "~/lib/create-search-client";
 import Icon from "~/primitives/icon";
 import { RockProxyEmbed } from "~/components/rock-embed";
+import { HitsWrapper } from "~/components/hits-wrapper";
 import { EventFinderHit } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 
@@ -33,9 +34,12 @@ export const ClickThroughRegistration = ({
 
   const [step, setStep] = useState(1);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
+  const [selectedSubGroupType, setSelectedSubGroupType] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>("");
+  const [isGoingBack, setIsGoingBack] = useState(false);
+  const previousStepRef = useRef<number>(1);
 
   const searchClient = useMemo(
     () =>
@@ -48,16 +52,41 @@ export const ClickThroughRegistration = ({
 
   const handleBack = () => {
     if (step > 1) {
-      setStep(step - 1);
-      // Clear selections when going back
-      if (step === 4) {
+      // Set flag to disable auto-select (will be reset when user makes a selection)
+      setIsGoingBack(true);
+      previousStepRef.current = step;
+      // Clear selections when going back based on current step
+      if (step === 5) {
         setSelectedTime("");
-      } else if (step === 3) {
+      } else if (step === 4) {
         setSelectedDate("");
+      } else if (step === 3) {
+        setSelectedSubGroupType("");
       } else if (step === 2) {
         setSelectedCampus("");
       }
+      setStep(step - 1);
     }
+  };
+
+  const navigateToStep = (targetStep: number) => {
+    // Set flag to disable auto-select (will be reset when user makes a selection)
+    setIsGoingBack(true);
+    previousStepRef.current = step;
+    // Clear selections for steps after the target step
+    if (targetStep < 5) {
+      setSelectedTime("");
+    }
+    if (targetStep < 4) {
+      setSelectedDate("");
+    }
+    if (targetStep < 3) {
+      setSelectedSubGroupType("");
+    }
+    if (targetStep < 2) {
+      setSelectedCampus("");
+    }
+    setStep(targetStep);
   };
 
   const getCurrentStepData = () => {
@@ -70,6 +99,9 @@ export const ClickThroughRegistration = ({
     if (selectedCampus) {
       filter += ` AND campus.name:"${selectedCampus.trim()}"`;
     }
+    if (selectedSubGroupType) {
+      filter += ` AND subGroupType:"${selectedSubGroupType.trim()}"`;
+    }
     if (selectedDate) {
       // Ensure date format matches exactly (YYYY-MM-DD)
       const trimmedDate = selectedDate.trim();
@@ -79,107 +111,148 @@ export const ClickThroughRegistration = ({
   };
 
   return (
-    <section
-      className="flex items-center w-full py-8 md:py-16 content-padding bg-gray"
-      id="register"
+    <InstantSearch
+      indexName="dev_EventFinderItems"
+      searchClient={searchClient}
+      future={{
+        preserveSharedStateOnUnmount: true,
+      }}
     >
-      <div className="w-full max-w-3xl flex flex-col gap-13 mx-auto">
-        <div className="flex flex-col gap-4">
-          <h2 className="font-extrabold text-center text-black text-[32px]">
-            Register for {title}
-          </h2>
-          <p className="text-center text-[#717182] text-lg font-medium md:mx-4">
-            Ready to take the next step? Complete our four-step registration
-            process to secure your spot.
-          </p>
-        </div>
+      <Configure filters={buildFilter()} hitsPerPage={1000} />
 
-        <InstantSearch
-          indexName="dev_EventFinderItems"
-          searchClient={searchClient}
-          future={{
-            preserveSharedStateOnUnmount: true,
-          }}
+      <HitsWrapper>
+        <section
+          className="flex items-center w-full py-8 md:py-16 content-padding bg-gray"
+          id="register"
         >
-          <Configure filters={buildFilter()} hitsPerPage={1000} />
-
-          <div className="flex flex-col gap-3">
-            {/* Top */}
-            <div className="flex flex-col gap-2 items-center">
-              <div className="flex gap-4 items-center">
-                {step > 1 && (
-                  <div
-                    className="flex items-center cursor-pointer"
-                    onClick={handleBack}
-                  >
-                    <Icon name="chevronLeft" size={16} className="text-black" />
-                    <p className="text-xs font-semibold text-[#616161]">Back</p>
-                  </div>
-                )}
-                <h3 className="text-xl font-bold text-black">
-                  {getCurrentStepData().title}
-                </h3>
-              </div>
-
-              <div className="flex gap-2 items-center">
-                {[1, 2, 3, 4].map((dotStep) => (
-                  <div
-                    key={dotStep}
-                    className={`${
-                      dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
-                    } size-[10px] rounded-full`}
-                  />
-                ))}
-              </div>
-
-              <p className="text-black font-semibold text-sm">
-                Step {step} of 4
+          <div className="w-full max-w-3xl flex flex-col gap-13 mx-auto">
+            <div className="flex flex-col gap-4">
+              <h2 className="font-extrabold text-center text-black text-[32px]">
+                Register for {title}
+              </h2>
+              <p className="text-center text-[#717182] text-lg font-medium md:mx-4">
+                Ready to take the next step? Complete our five-step registration
+                process to secure your spot.
               </p>
             </div>
 
-            {/* Selected Bar - shows previous selections */}
-            {(selectedCampus || selectedDate || selectedTime) && (
-              <div className="flex gap-4 items-center justify-center flex-wrap">
-                {selectedCampus && (
-                  <SelectedBar icon="map" text={selectedCampus} />
-                )}
-                {selectedDate && (
-                  <SelectedBar
-                    icon="calendarAlt"
-                    text={formatDate(selectedDate)}
-                  />
-                )}
-                {selectedTime && (
-                  <SelectedBar icon="timeFive" text={selectedTime} />
-                )}
-              </div>
-            )}
+            <div className="flex flex-col gap-3">
+              {/* Top */}
+              <div className="flex flex-col gap-2 items-center">
+                <div className="flex gap-4 items-center">
+                  {step > 1 && (
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={handleBack}
+                    >
+                      <Icon
+                        name="chevronLeft"
+                        size={16}
+                        className="text-black"
+                      />
+                      <p className="text-xs font-semibold text-[#616161]">
+                        Back
+                      </p>
+                    </div>
+                  )}
+                  <h3 className="text-xl font-bold text-black">
+                    {getCurrentStepData().title}
+                  </h3>
+                </div>
 
-            {/* Step Content */}
-            <StepContent
-              step={step}
-              selectedCampus={selectedCampus}
-              selectedDate={selectedDate}
-              selectedTime={selectedTime}
-              campusSearchQuery={campusSearchQuery}
-              onCampusSelect={(campus) => {
-                setSelectedCampus(campus);
-                setStep(2);
-              }}
-              onDateSelect={(date) => {
-                setSelectedDate(date);
-                setStep(3);
-              }}
-              onTimeSelect={(time) => {
-                setSelectedTime(time);
-                setStep(4);
-              }}
-              onCampusSearchChange={setCampusSearchQuery}
-            />
+                <div className="flex gap-2 items-center">
+                  {[1, 2, 3, 4, 5].map((dotStep) => (
+                    <div
+                      key={dotStep}
+                      className={`${
+                        dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
+                      } size-[10px] rounded-full`}
+                    />
+                  ))}
+                </div>
+
+                <p className="text-black font-semibold text-sm">
+                  Step {step} of 5
+                </p>
+              </div>
+
+              {/* Selected Bar - shows previous selections */}
+              {(selectedCampus ||
+                selectedSubGroupType ||
+                selectedDate ||
+                selectedTime) && (
+                <div className="flex gap-4 items-center justify-center flex-wrap">
+                  {selectedCampus && (
+                    <SelectedBar
+                      icon="map"
+                      text={selectedCampus}
+                      onClick={() => navigateToStep(1)}
+                    />
+                  )}
+                  {selectedSubGroupType && (
+                    <SelectedBar
+                      icon="group"
+                      text={selectedSubGroupType}
+                      onClick={() => navigateToStep(2)}
+                    />
+                  )}
+                  {selectedDate && (
+                    <SelectedBar
+                      icon="calendarAlt"
+                      text={formatDateDisplay(selectedDate)}
+                      onClick={() => navigateToStep(3)}
+                    />
+                  )}
+                  {selectedTime && (
+                    <SelectedBar
+                      icon="timeFive"
+                      text={`${selectedTime} ET`}
+                      onClick={() => navigateToStep(4)}
+                    />
+                  )}
+                </div>
+              )}
+
+              {/* Step Content */}
+              <StepContent
+                step={step}
+                selectedCampus={selectedCampus}
+                selectedSubGroupType={selectedSubGroupType}
+                selectedDate={selectedDate}
+                selectedTime={selectedTime}
+                campusSearchQuery={campusSearchQuery}
+                isGoingBack={isGoingBack}
+                onCampusSelect={(campus) => {
+                  setSelectedCampus(campus);
+                  setIsGoingBack(false);
+                  previousStepRef.current = 1;
+                  setStep(2);
+                }}
+                onSubGroupTypeSelect={(subGroupType) => {
+                  setSelectedSubGroupType(subGroupType);
+                  setIsGoingBack(false);
+                  previousStepRef.current = 2;
+                  setStep(3);
+                }}
+                onDateSelect={(date) => {
+                  setSelectedDate(date);
+                  setIsGoingBack(false);
+                  previousStepRef.current = 3;
+                  setStep(4);
+                }}
+                onTimeSelect={(time) => {
+                  setSelectedTime(time);
+                  setIsGoingBack(false);
+                  previousStepRef.current = 4;
+                  setStep(5);
+                }}
+                onCampusSearchChange={setCampusSearchQuery}
+              />
+            </div>
           </div>
-        </InstantSearch>
-      </div>
-    </section>
+        </section>
+      </HitsWrapper>
+    </InstantSearch>
   );
 };
 
@@ -187,14 +260,21 @@ export const ClickThroughRegistration = ({
 const SelectedBar = ({
   icon,
   text,
+  onClick,
 }: {
-  icon: "map" | "calendarAlt" | "timeFive";
+  icon: "map" | "group" | "calendarAlt" | "timeFive";
   text: string;
+  onClick?: () => void;
 }) => {
   return (
-    <div className="flex gap-2 items-center">
+    <div
+      onClick={onClick}
+      className={`flex gap-2 items-center bg-white rounded-lg border border-neutral-lighter px-3 py-1 ${
+        onClick ? "cursor-pointer hover:border-ocean transition-colors" : ""
+      }`}
+    >
       <Icon name={icon} size={16} className="text-black" />
-      <p className="text-sm text-black">{text}</p>
+      <p className="text-sm text-black font-medium">{text}</p>
     </div>
   );
 };
@@ -203,10 +283,13 @@ const SelectedBar = ({
 interface StepContentProps {
   step: number;
   selectedCampus: string;
+  selectedSubGroupType: string;
   selectedDate: string;
   selectedTime: string;
   campusSearchQuery: string;
+  isGoingBack: boolean;
   onCampusSelect: (campus: string) => void;
+  onSubGroupTypeSelect: (subGroupType: string) => void;
   onDateSelect: (date: string) => void;
   onTimeSelect: (time: string) => void;
   onCampusSearchChange: (query: string) => void;
@@ -215,15 +298,32 @@ interface StepContentProps {
 const StepContent = ({
   step,
   selectedCampus,
+  selectedSubGroupType,
   selectedDate,
   selectedTime,
   campusSearchQuery,
+  isGoingBack,
   onCampusSelect,
+  onSubGroupTypeSelect,
   onDateSelect,
   onTimeSelect,
   onCampusSearchChange,
 }: StepContentProps) => {
   const { items } = useHits<EventFinderHit>();
+  const stepRef = useRef(step);
+  const wasGoingBackRef = useRef(false);
+
+  // Track if we're going back by comparing current step to previous step
+  useEffect(() => {
+    if (step < stepRef.current) {
+      // Going backward - set flag
+      wasGoingBackRef.current = true;
+    } else if (step > stepRef.current) {
+      // Going forward - clear flag
+      wasGoingBackRef.current = false;
+    }
+    stepRef.current = step;
+  }, [step]);
 
   if (step === 1) {
     return (
@@ -232,37 +332,54 @@ const StepContent = ({
         onSelect={onCampusSelect}
         searchQuery={campusSearchQuery}
         onSearchChange={onCampusSearchChange}
+        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
 
   if (step === 2) {
     return (
-      <DateStep
+      <SubGroupTypeStep
         hits={items}
         selectedCampus={selectedCampus}
-        onSelect={onDateSelect}
+        onSelect={onSubGroupTypeSelect}
+        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
 
   if (step === 3) {
     return (
-      <TimeStep
+      <DateStep
         hits={items}
         selectedCampus={selectedCampus}
-        selectedDate={selectedDate}
-        onSelect={onTimeSelect}
+        selectedSubGroupType={selectedSubGroupType}
+        onSelect={onDateSelect}
+        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
 
   if (step === 4) {
+    return (
+      <TimeStep
+        hits={items}
+        selectedCampus={selectedCampus}
+        selectedSubGroupType={selectedSubGroupType}
+        selectedDate={selectedDate}
+        onSelect={onTimeSelect}
+        isGoingBack={isGoingBack || wasGoingBackRef.current}
+      />
+    );
+  }
+
+  if (step === 5) {
     const matchingHit = items.find(
       (hit) =>
         hit.time === selectedTime &&
         hit.date === selectedDate &&
-        hit.campus.name === selectedCampus
+        hit.campus.name === selectedCampus &&
+        hit.subGroupType === selectedSubGroupType
     );
     return (
       <FormStep
@@ -283,6 +400,7 @@ interface CampusStepProps {
   onSelect: (campus: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  isGoingBack: boolean;
 }
 
 const CampusStep = ({
@@ -290,6 +408,7 @@ const CampusStep = ({
   onSelect,
   searchQuery,
   onSearchChange,
+  isGoingBack,
 }: CampusStepProps) => {
   // Get unique campuses
   const uniqueCampuses = useMemo(() => {
@@ -315,6 +434,13 @@ const CampusStep = ({
         campus.location?.toLowerCase().includes(query)
     );
   }, [uniqueCampuses, searchQuery]);
+
+  // Auto-select if only one option (only when not searching and not going back)
+  useEffect(() => {
+    if (!isGoingBack && !searchQuery && filteredCampuses.length === 1) {
+      onSelect(filteredCampuses[0].name);
+    }
+  }, [filteredCampuses, searchQuery, onSelect, isGoingBack]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -350,19 +476,91 @@ const CampusStep = ({
   );
 };
 
+// SubGroupType Step Component
+interface SubGroupTypeStepProps {
+  hits: EventFinderHit[];
+  selectedCampus: string;
+  onSelect: (subGroupType: string) => void;
+  isGoingBack: boolean;
+}
+
+const SubGroupTypeStep = ({
+  hits,
+  selectedCampus,
+  onSelect,
+  isGoingBack,
+}: SubGroupTypeStepProps) => {
+  // Get unique subGroupTypes for selected campus
+  const uniqueSubGroupTypes = useMemo(() => {
+    const subGroupTypeMap = new Map<string, string>();
+    hits
+      .filter((hit) => hit.campus.name.trim() === selectedCampus.trim())
+      .forEach((hit) => {
+        if (hit.subGroupType && !subGroupTypeMap.has(hit.subGroupType)) {
+          subGroupTypeMap.set(hit.subGroupType, hit.subGroupType);
+        }
+      });
+    return Array.from(subGroupTypeMap.values()).sort();
+  }, [hits, selectedCampus]);
+
+  // Auto-select if only one option (only when not going back)
+  useEffect(() => {
+    if (!isGoingBack && uniqueSubGroupTypes.length === 1) {
+      onSelect(uniqueSubGroupTypes[0]);
+    }
+  }, [uniqueSubGroupTypes, onSelect, isGoingBack]);
+
+  if (uniqueSubGroupTypes.length === 0) {
+    return (
+      <div className="w-full p-8 text-center">
+        <p className="text-gray-600">
+          No event types available for the selected campus. Please go back and
+          select a different campus.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {uniqueSubGroupTypes.map((subGroupType) => (
+        <ClickableCard
+          key={subGroupType}
+          icon="group"
+          title={subGroupType}
+          subtitle=""
+          onClick={() => onSelect(subGroupType)}
+        />
+      ))}
+    </div>
+  );
+};
+
 // Date Step Component
 interface DateStepProps {
   hits: EventFinderHit[];
   selectedCampus: string;
+  selectedSubGroupType: string;
   onSelect: (date: string) => void;
+  isGoingBack: boolean;
 }
 
-const DateStep = ({ hits, selectedCampus, onSelect }: DateStepProps) => {
-  // Get unique dates for selected campus
+const DateStep = ({
+  hits,
+  selectedCampus,
+  selectedSubGroupType,
+  onSelect,
+  isGoingBack,
+}: DateStepProps) => {
+  // Get unique dates for selected campus and subGroupType
   const uniqueDates = useMemo(() => {
     const dateMap = new Map<string, { date: string; day: string }>();
     hits
-      .filter((hit) => hit.campus.name === selectedCampus)
+      .filter(
+        (hit) =>
+          hit.campus.name.trim() === selectedCampus.trim() &&
+          hit.subGroupType.trim() === selectedSubGroupType.trim()
+      )
       .forEach((hit) => {
         if (!dateMap.has(hit.date)) {
           dateMap.set(hit.date, {
@@ -374,7 +572,14 @@ const DateStep = ({ hits, selectedCampus, onSelect }: DateStepProps) => {
     return Array.from(dateMap.values()).sort((a, b) =>
       a.date.localeCompare(b.date)
     );
-  }, [hits, selectedCampus]);
+  }, [hits, selectedCampus, selectedSubGroupType]);
+
+  // Auto-select if only one option (only when not going back)
+  useEffect(() => {
+    if (!isGoingBack && uniqueDates.length === 1) {
+      onSelect(uniqueDates[0].date);
+    }
+  }, [uniqueDates, onSelect, isGoingBack]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -395,25 +600,30 @@ const DateStep = ({ hits, selectedCampus, onSelect }: DateStepProps) => {
 interface TimeStepProps {
   hits: EventFinderHit[];
   selectedCampus: string;
+  selectedSubGroupType: string;
   selectedDate: string;
   onSelect: (time: string) => void;
+  isGoingBack: boolean;
 }
 
 const TimeStep = ({
   hits,
   selectedCampus,
+  selectedSubGroupType,
   selectedDate,
   onSelect,
+  isGoingBack,
 }: TimeStepProps) => {
-  // Get unique times for selected campus and date
+  // Get unique times for selected campus, subGroupType, and date
   const uniqueTimes = useMemo(() => {
     const timeMap = new Map<string, { time: string; groupGuid: string }>();
 
-    // Filter hits that match both campus and date exactly
+    // Filter hits that match campus, subGroupType, and date exactly
     // Trim values to handle any whitespace issues
     const matchingHits = hits.filter(
       (hit) =>
         hit.campus.name.trim() === selectedCampus.trim() &&
+        hit.subGroupType.trim() === selectedSubGroupType.trim() &&
         hit.date.trim() === selectedDate.trim()
     );
 
@@ -427,7 +637,14 @@ const TimeStep = ({
     });
 
     return Array.from(timeMap.values());
-  }, [hits, selectedCampus, selectedDate]);
+  }, [hits, selectedCampus, selectedSubGroupType, selectedDate]);
+
+  // Auto-select if only one option (only when not going back)
+  useEffect(() => {
+    if (!isGoingBack && uniqueTimes.length === 1) {
+      onSelect(uniqueTimes[0].time);
+    }
+  }, [uniqueTimes, onSelect, isGoingBack]);
 
   if (uniqueTimes.length === 0) {
     return (
@@ -496,7 +713,7 @@ const FormStep = ({
 
 // ClickableCard Component
 interface ClickableCardProps {
-  icon: "map" | "calendarAlt" | "timeFive";
+  icon: "map" | "group" | "calendarAlt" | "timeFive";
   title: string;
   subtitle: string;
   onClick: () => void;
@@ -525,15 +742,6 @@ const ClickableCard = ({
 };
 
 // Helper Functions
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
-
 const formatDateDisplay = (dateString: string, dayName?: string): string => {
   // Parse date string manually to avoid timezone issues
   // Date format is YYYY-MM-DD
@@ -567,7 +775,8 @@ const getDaySuffix = (day: number): string => {
 
 const StepsData = [
   { step: 1, title: "Choose Your Campus" },
-  { step: 2, title: "Select the Date" },
-  { step: 3, title: "Pick Your Time" },
-  { step: 4, title: "Personal Information" },
+  { step: 2, title: "Select the Event Type" },
+  { step: 3, title: "Select the Date" },
+  { step: 4, title: "Pick Your Time" },
+  { step: 5, title: "Personal Information" },
 ];
