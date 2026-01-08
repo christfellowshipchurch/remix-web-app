@@ -91,7 +91,7 @@ const CurrentSeriesHit = ({
           <div className="mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8">
             {hit.sermonSeriesGuid && (
               <IconButton
-                to={`/series-resources/${kebabCase(hit.sermonSeriesGuid)}`}
+                to={`/series-resources/${hit.sermonSeriesGuid}`}
                 className={iconButtonClass}
               >
                 Series & Resources
