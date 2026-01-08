@@ -235,11 +235,10 @@ const OnlineCampusInfo = ({
           </div>
         </div>
 
-        {/* TODO: Hiding Tour for now */}
         <div className="flex-1 lg:pt-16 max-w-[670px]">
-          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> */}
           {/* Hardcoded wistiaId for now */}
           <VirtualTourTabs wistiaId="beicrozg21" isOnline />
+          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> TODO: Uncomment this when the video gets added to the Online Campus in Rock*/}
         </div>
 
         {/* Mobile CTAs */}
