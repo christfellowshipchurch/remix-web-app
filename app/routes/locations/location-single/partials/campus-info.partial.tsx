@@ -45,8 +45,8 @@ const IconText = ({
         time.day?.toLowerCase() === "ondemand"
           ? undefined
           : time.hour
-            ? time.hour.join(", ")
-            : time.hour || "",
+          ? time.hour.join(", ")
+          : time.hour || "",
     };
   });
 
@@ -80,9 +80,11 @@ export const CampusInfo = ({
 }: CampusInfoProps) => {
   const isSpanish = campusName?.includes("Español");
 
-  const address = `${campusLocation?.street1}${campusLocation?.street2 ? ` ${campusLocation?.street2}` : ""
-    }, ${campusLocation?.city}, ${campusLocation?.state} ${campusLocation?.postalCode
-    }`;
+  const address = `${campusLocation?.street1}${
+    campusLocation?.street2 ? ` ${campusLocation?.street2}` : ""
+  }, ${campusLocation?.city}, ${campusLocation?.state} ${
+    campusLocation?.postalCode
+  }`;
 
   if (isOnline) {
     return (
@@ -121,7 +123,9 @@ export const CampusInfo = ({
           <div className="flex flex-col gap-3">
             <div className="flex items-end gap-2 text-ocean">
               <Icon name="church" className="lg:size-[40px] size-[24px]" />
-              <p className="font-medium">Campus Location</p>
+              <p className="font-medium">
+                {isSpanish ? "Ubicación del Campus" : "Campus Location"}
+              </p>
             </div>
             <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
               {campusHeadingLine}
@@ -154,7 +158,10 @@ export const CampusInfo = ({
             <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
               <CTAs isSpanish={isSpanish} />
               {weekdaySchedule && weekdaySchedule.length > 0 && (
-                <DuringTheWeek weekdaySchedule={weekdaySchedule} isSpanish={isSpanish} />
+                <DuringTheWeek
+                  weekdaySchedule={weekdaySchedule}
+                  isSpanish={isSpanish}
+                />
               )}
             </div>
           </div>
@@ -173,7 +180,10 @@ export const CampusInfo = ({
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
           <CTAs isSpanish={isSpanish} />
           {weekdaySchedule && weekdaySchedule.length > 0 && (
-            <DuringTheWeek weekdaySchedule={weekdaySchedule} isSpanish={isSpanish} />
+            <DuringTheWeek
+              weekdaySchedule={weekdaySchedule}
+              isSpanish={isSpanish}
+            />
           )}
         </div>
       </div>

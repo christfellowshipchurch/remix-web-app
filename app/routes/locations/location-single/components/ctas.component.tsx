@@ -26,8 +26,16 @@ const CTAButtonContent = ({
 export const CTAs = ({ isSpanish }: { isSpanish?: boolean }) => {
   return (
     <div className="w-full flex-wrap justify-center md:justify-start flex gap-4 lg:gap-0 lg:justify-between">
-      <CTAButton icon="calendarAlt" title={isSpanish ? "Recuérdame" : "Set a Reminder"} isSetAReminder />
-      <CTAButton icon="paperPlane" title={isSpanish ? "Invita a un amigo" : "Invite a Friend"} isShareButton />
+      <CTAButton
+        icon="calendarAlt"
+        title={isSpanish ? "Recuérdame" : "Set a Reminder"}
+        isSetAReminder
+      />
+      <CTAButton
+        icon="paperPlane"
+        title={isSpanish ? "Invita a un amigo" : "Invite a Friend"}
+        isShareButton
+      />
       <CTAButton
         icon="mobileAlt"
         title={isSpanish ? "Contáctanos" : "Contact Us"}
@@ -71,7 +79,13 @@ const CTAButton = ({
 
   if (isShareButton) {
     return (
-      <ShareButton shareMessage={isSpanish ? "Ven conmigo a un servicio en Christ Fellowship Church!" : "Come with me to a service at Christ Fellowship Church!"}>
+      <ShareButton
+        shareMessage={
+          isSpanish
+            ? "Ven conmigo a un servicio en Christ Fellowship Church!"
+            : "Come with me to a service at Christ Fellowship Church!"
+        }
+      >
         {content}
       </ShareButton>
     );

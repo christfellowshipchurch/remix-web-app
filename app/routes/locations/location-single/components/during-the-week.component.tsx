@@ -17,7 +17,9 @@ export const DuringTheWeek = ({
 }) => {
   return (
     <div className="flex flex-col gap-3 rounded-[1rem] px-6 md:px-8 py-4 border border-neutral-lighter w-full">
-      <h3 className="text-lg lg:text-[16px] font-semibold">{isSpanish ? "Durante la semana" : "During the Week"}</h3>
+      <h3 className="text-lg lg:text-[16px] font-semibold">
+        {isSpanish ? "Durante la semana" : "During the Week"}
+      </h3>
       {/* Schedules */}
       <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
         {weekdaySchedule?.map((schedule, i) => (
