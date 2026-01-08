@@ -51,7 +51,7 @@ export const VirtualTourTabs = ({
               programs and facilities."
           />
         )}
-        {wistiaId && (
+        {wistiaId && wistiaId !== "" && (
           <TabContent
             value="tour"
             title={isOnline ? "Join Us Online!" : "Take a Virtual Tour"}
@@ -68,7 +68,7 @@ export const VirtualTourTabs = ({
           <Tabs.List className="flex justify-center gap-4 p-8">
             <>
               <TourButton value="map">Map</TourButton>
-              {wistiaId && <TourButton value="tour">Virtual Tour</TourButton>}
+              {wistiaId && wistiaId !== "" && <TourButton value="tour">Virtual Tour</TourButton>}
             </>
           </Tabs.List>
         )}
@@ -126,7 +126,7 @@ const TabContent = ({
         <GoogleMap address={address} apiKey={apiKey} />
       )}
 
-      {wistiaId && value === "tour" && (
+      {wistiaId && wistiaId !== "" && value === "tour" && (
         <Video
           wistiaId={wistiaId}
           className={`aspect-67/35 relative z-3 ${

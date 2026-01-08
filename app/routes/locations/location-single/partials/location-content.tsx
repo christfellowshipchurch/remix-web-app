@@ -33,7 +33,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   }
 
   const [activeTab, setActiveTab] = useState("sunday-details");
-  const fetcher = useFetcher<{ isValid: boolean }>();
+  const reminderFetcher = useFetcher<{ isValid: boolean }>();
+  const tourFetcher = useFetcher<{ isValid: boolean }>();
 
   const {
     campusName,
@@ -41,7 +42,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     campusImage,
     campusInstagram,
     campusPastor,
-    digitalTourVideo = "",
+    digitalTourVideo: originalDigitalTourVideo = "",
     phoneNumber,
     serviceTimes,
     setReminderVideo: originalSetReminderVideo = "",
@@ -54,16 +55,24 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   // Validate Wistia ID if it exists
   useEffect(() => {
     if (originalSetReminderVideo) {
-      fetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalSetReminderVideo)}`);
+      reminderFetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalSetReminderVideo)}`);
+    }
+    if (originalDigitalTourVideo) {
+      tourFetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalDigitalTourVideo)}`);
     }
   }, [originalSetReminderVideo]);
 
-  // Use validated video ID - only use it if validation passed
+  // Use validated video IDs - only use it if validation passed
   // Don't render video while validation is in progress or if validation failed
   const setReminderVideo =
-    originalSetReminderVideo && fetcher.state === "idle" && fetcher.data?.isValid === true
+    originalSetReminderVideo && reminderFetcher.state === "idle" && reminderFetcher.data?.isValid === true
       ? originalSetReminderVideo
       : undefined;
+
+  const digitalTourVideo =
+      originalDigitalTourVideo && tourFetcher.state === "idle" && tourFetcher.data?.isValid === true
+        ? originalDigitalTourVideo
+        : undefined;
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
@@ -98,7 +107,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         additionalInfo={additionalInfo}
         campusName={campusName}
         campusLocation={campusLocation}
-        digitalTourVideo={digitalTourVideo}
+        digitalTourVideo={digitalTourVideo || ""}
         weekdaySchedule={weekdaySchedule}
       />
 
