@@ -45,8 +45,8 @@ const IconText = ({
         time.day?.toLowerCase() === "ondemand"
           ? undefined
           : time.hour
-          ? time.hour.join(", ")
-          : time.hour || "",
+            ? time.hour.join(", ")
+            : time.hour || "",
     };
   });
 
@@ -78,11 +78,11 @@ export const CampusInfo = ({
   additionalInfo,
   serviceTimes,
 }: CampusInfoProps) => {
-  const address = `${campusLocation?.street1}${
-    campusLocation?.street2 ? ` ${campusLocation?.street2}` : ""
-  }, ${campusLocation?.city}, ${campusLocation?.state} ${
-    campusLocation?.postalCode
-  }`;
+  const isSpanish = campusName?.includes("Español");
+
+  const address = `${campusLocation?.street1}${campusLocation?.street2 ? ` ${campusLocation?.street2}` : ""
+    }, ${campusLocation?.city}, ${campusLocation?.state} ${campusLocation?.postalCode
+    }`;
 
   if (isOnline) {
     return (
@@ -152,9 +152,9 @@ export const CampusInfo = ({
           <div className="flex flex-col gap-16">
             {/* Desktop CTAs */}
             <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
-              <CTAs />
+              <CTAs isSpanish={isSpanish} />
               {weekdaySchedule && weekdaySchedule.length > 0 && (
-                <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+                <DuringTheWeek weekdaySchedule={weekdaySchedule} isSpanish={isSpanish} />
               )}
             </div>
           </div>
@@ -165,14 +165,15 @@ export const CampusInfo = ({
           <VirtualTourTabs
             wistiaId={digitalTourVideo || ""}
             address={address}
+            isSpanish={isSpanish}
           />
         </div>
 
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
-          <CTAs />
+          <CTAs isSpanish={isSpanish} />
           {weekdaySchedule && weekdaySchedule.length > 0 && (
-            <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+            <DuringTheWeek weekdaySchedule={weekdaySchedule} isSpanish={isSpanish} />
           )}
         </div>
       </div>

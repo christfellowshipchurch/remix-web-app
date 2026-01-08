@@ -54,14 +54,20 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   // Validate Wistia ID if it exists
   useEffect(() => {
     if (originalSetReminderVideo) {
-      fetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalSetReminderVideo)}`);
+      fetcher.load(
+        `/validate-wistia?videoId=${encodeURIComponent(
+          originalSetReminderVideo
+        )}`
+      );
     }
   }, [originalSetReminderVideo]);
 
   // Use validated video ID - only use it if validation passed
   // Don't render video while validation is in progress or if validation failed
   const setReminderVideo =
-    originalSetReminderVideo && fetcher.state === "idle" && fetcher.data?.isValid === true
+    originalSetReminderVideo &&
+    fetcher.state === "idle" &&
+    fetcher.data?.isValid === true
       ? originalSetReminderVideo
       : undefined;
 
@@ -81,7 +87,11 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   const heading1 = isSpanish ? "Eres" : "You're";
   const heading2 = isSpanish ? "bienvenido aquí" : "welcome here";
   const ctas = [
-    { title: isSpanish ? "Establece un recordatorio" : "Set a Reminder", href: "#", isSetAReminder: true },
+    {
+      title: isSpanish ? "Establece un recordatorio" : "Set a Reminder",
+      href: "#",
+      isSetAReminder: true,
+    },
     {
       title: isSpanish ? "Mapa y direcciones" : "Map & Directions",
       href: hit.mapLink || "#",
@@ -112,6 +122,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
       <CampusTabsWrapper
         activeTab={activeTab}
+        isSpanish={isSpanish}
         setActiveTab={setActiveTab}
         setReminderVideo={setReminderVideo}
         isOnline={false}
@@ -145,14 +156,20 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
   // Validate Wistia ID if it exists
   useEffect(() => {
     if (originalSetReminderVideo) {
-      fetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalSetReminderVideo)}`);
+      fetcher.load(
+        `/validate-wistia?videoId=${encodeURIComponent(
+          originalSetReminderVideo
+        )}`
+      );
     }
   }, [originalSetReminderVideo]);
 
   // Use validated video ID - only use it if validation passed
   // Don't render video while validation is in progress or if validation failed
   const setReminderVideo =
-    originalSetReminderVideo && fetcher.state === "idle" && fetcher.data?.isValid === true
+    originalSetReminderVideo &&
+    fetcher.state === "idle" &&
+    fetcher.data?.isValid === true
       ? originalSetReminderVideo
       : undefined;
 
@@ -204,6 +221,7 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
 
 const CampusTabsWrapper = ({
   activeTab,
+  isSpanish,
   campusPastor,
   campusName,
   campusInstagram,
@@ -220,6 +238,7 @@ const CampusTabsWrapper = ({
   };
   campusName: string;
   campusInstagram: string;
+  isSpanish?: boolean;
   setActiveTab: (tab: string) => void;
   setReminderVideo: string | undefined;
   isOnline: boolean;
@@ -228,14 +247,19 @@ const CampusTabsWrapper = ({
     <div className="relative h-full w-full">
       {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
       {activeTab == "sunday-details" && (
-        <WhatToExpect setReminderVideo={setReminderVideo} isOnline={isOnline} />
+        <WhatToExpect
+          setReminderVideo={setReminderVideo}
+          isOnline={isOnline}
+          isSpanish={isSpanish}
+        />
       )}
 
       <CampusTabs
         activeTab={activeTab}
+        isSpanish={isSpanish}
         setActiveTab={setActiveTab}
         tabs={[
-          () => <SundayDetails isOnline={isOnline} />,
+          () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
           () => <AboutUs campusPastor={campusPastor} />,
           ...(!isOnline ? [ForFamilies] : []),
           UpcomingEvents,

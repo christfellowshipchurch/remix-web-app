@@ -30,10 +30,12 @@ export const VirtualTourTabs = ({
   wistiaId,
   address,
   isOnline,
+  isSpanish,
 }: {
   wistiaId: string;
   address?: string;
   isOnline?: boolean;
+  isSpanish?: boolean;
 }) => {
   const { GOOGLE_MAPS_API_KEY } = useLoaderData<LoaderReturnType>();
 
@@ -45,19 +47,29 @@ export const VirtualTourTabs = ({
             value="map"
             address={address}
             apiKey={GOOGLE_MAPS_API_KEY}
-            title="Visit Us"
-            description="Come experience our campus in person! Our friendly staff is ready
-              to give you a tour and answer any questions you may have about our
-              programs and facilities."
+            title={isSpanish ? "Visítanos" : "Visit Us"}
+            description={
+              isSpanish
+                ? "Ven a conocer nuestro campus en persona! Nuestro personal amable está listo para darte un tour y responder cualquier pregunta que tengas sobre nuestros programas y instalaciones."
+                : "Come experience our campus in person! Our friendly staff is ready to give you a tour and answer any questions you have about our programs and facilities."
+            }
           />
         )}
         {wistiaId && (
           <TabContent
             value="tour"
-            title={isOnline ? "Join Us Online!" : "Take a Virtual Tour"}
+            title={
+              isOnline
+                ? "Join Us Online!"
+                : isSpanish
+                ? "Toma Un Tour Virtual"
+                : "Take a Virtual Tour"
+            }
             description={
               isOnline
                 ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
+                : isSpanish
+                ? "Experimenta lo que es ser parte de Christ Fellowship antes de tu visita."
                 : "Experience what it’s like to attend Christ Fellowship before your visit."
             }
             wistiaId={wistiaId}
@@ -67,8 +79,12 @@ export const VirtualTourTabs = ({
         {!isOnline && address && GOOGLE_MAPS_API_KEY && (
           <Tabs.List className="flex justify-center gap-4 p-8">
             <>
-              <TourButton value="map">Map</TourButton>
-              {wistiaId && <TourButton value="tour">Virtual Tour</TourButton>}
+              <TourButton value="map">{isSpanish ? "Mapa" : "Map"}</TourButton>
+              {wistiaId && (
+                <TourButton value="tour">
+                  {isSpanish ? "Tour Virtual" : "Virtual Tour"}
+                </TourButton>
+              )}
             </>
           </Tabs.List>
         )}
