@@ -3,6 +3,7 @@ import { SetAReminderModal } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ButtonProps } from "~/primitives/button/button.primitive";
+import { Video } from "~/primitives/video/video.primitive";
 
 export const WhatToExpect = ({
   setReminderVideo,
@@ -17,10 +18,7 @@ export const WhatToExpect = ({
         {/* Left Side */}
         {!isOnline && setReminderVideo && (
           <div className="flex-1 w-full lg:flex-auto lg:w-5/7 xl:w-4/7">
-            <iframe
-              src={`https://fast.wistia.net/embed/iframe/${setReminderVideo}?fitStrategy=cover`}
-              className="w-full h-[414px] aspect-73/41 rounded-[1rem]"
-            />
+            <Video wistiaId={setReminderVideo} className="w-full h-[414px] aspect-73/41 rounded-[1rem]" />
           </div>
         )}
 
