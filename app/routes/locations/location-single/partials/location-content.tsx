@@ -9,8 +9,9 @@ import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
 import { useResponsive } from "~/hooks/use-responsive";
 import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
+import { useFetcher } from "react-router-dom";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -32,6 +33,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   }
 
   const [activeTab, setActiveTab] = useState("sunday-details");
+  const fetcher = useFetcher<{ isValid: boolean }>();
 
   const {
     campusName,
@@ -42,12 +44,26 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     digitalTourVideo = "",
     phoneNumber,
     serviceTimes,
-    setReminderVideo = "",
+    setReminderVideo: originalSetReminderVideo = "",
     weekdaySchedule = [],
     additionalInfo,
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
+
+  // Validate Wistia ID if it exists
+  useEffect(() => {
+    if (originalSetReminderVideo) {
+      fetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalSetReminderVideo)}`);
+    }
+  }, [originalSetReminderVideo]);
+
+  // Use validated video ID - only use it if validation passed
+  // Don't render video while validation is in progress or if validation failed
+  const setReminderVideo =
+    originalSetReminderVideo && fetcher.state === "idle" && fetcher.data?.isValid === true
+      ? originalSetReminderVideo
+      : undefined;
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
@@ -102,19 +118,35 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 }
 
 const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
+  const fetcher = useFetcher<{ isValid: boolean }>();
+
   const {
     campusName,
     campusImage,
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
-    setReminderVideo = "",
+    setReminderVideo: originalSetReminderVideo = "",
     phoneNumber,
     serviceTimes,
     additionalInfo,
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
+
+  // Validate Wistia ID if it exists
+  useEffect(() => {
+    if (originalSetReminderVideo) {
+      fetcher.load(`/validate-wistia?videoId=${encodeURIComponent(originalSetReminderVideo)}`);
+    }
+  }, [originalSetReminderVideo]);
+
+  // Use validated video ID - only use it if validation passed
+  // Don't render video while validation is in progress or if validation failed
+  const setReminderVideo =
+    originalSetReminderVideo && fetcher.state === "idle" && fetcher.data?.isValid === true
+      ? originalSetReminderVideo
+      : undefined;
 
   const [activeTab, setActiveTab] = useState("sunday-details");
 
@@ -181,7 +213,7 @@ const CampusTabsWrapper = ({
   campusName: string;
   campusInstagram: string;
   setActiveTab: (tab: string) => void;
-  setReminderVideo: string;
+  setReminderVideo: string | undefined;
   isOnline: boolean;
 }) => {
   return (
