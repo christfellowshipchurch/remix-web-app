@@ -2,7 +2,7 @@ import { Icon } from "~/primitives/icon/icon";
 import {
   englishCampusAmenities,
   spanishCampusAmenities,
-} from "./sunday-details-data";
+} from "../../../location-single-data";
 
 export const CampusAmenities = ({ isSpanish }: { isSpanish?: boolean }) => {
   const title = isSpanish ? "Amenidades del Campus" : "Campus Amenities";

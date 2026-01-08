@@ -4,7 +4,10 @@ import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ButtonProps } from "~/primitives/button/button.primitive";
 import { Video } from "~/primitives/video/video.primitive";
-import { expectEnglishItems, expectSpanishItems } from "./sunday-details-data";
+import {
+  expectEnglishItems,
+  expectSpanishItems,
+} from "../../../location-single-data";
 
 export const WhatToExpect = ({
   setReminderVideo,

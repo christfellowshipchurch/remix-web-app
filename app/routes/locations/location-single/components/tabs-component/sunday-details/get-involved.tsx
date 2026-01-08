@@ -7,7 +7,7 @@ import {
   englishGetInvolvedResources,
   onlineGetInvolvedResources,
   spanishGetInvolvedResources,
-} from "./sunday-details-data";
+} from "../../../location-single-data";
 
 export const GetInvolved = ({
   isOnline,

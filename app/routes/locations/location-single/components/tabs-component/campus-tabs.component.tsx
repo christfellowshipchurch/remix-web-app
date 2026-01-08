@@ -5,7 +5,7 @@ import {
   englishTabData,
   onlineTabsData,
   spanishTabData,
-} from "./sunday-details/sunday-details-data";
+} from "../../location-single-data";
 
 interface TabComponentProps {
   setReminderVideo?: string;
@@ -47,7 +47,11 @@ export const CampusTabs = ({
         className={cn(
           "flex md:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
           isSpanish ? "gap-0 text-[14.5px] sm:text-base" : "gap-2",
-          isOnline ? "max-w-[520px]" : "max-w-[668px]",
+          isOnline
+            ? "max-w-[520px]"
+            : isSpanish
+            ? "max-w-[580px]"
+            : "max-w-[668px]",
           tasListStyle,
           activeTab === "sunday-details" && "!absolute -top-9 left-1/2"
         )}
