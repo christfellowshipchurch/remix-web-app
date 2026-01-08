@@ -71,25 +71,33 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   );
 
   const isOnline = campusName?.includes("Online");
+  const isSpanish = campusName?.includes("Español");
+
   if (isOnline) {
     return <OnlineCampus hit={hit} />;
   }
 
+  // Dynamic Hero Hardcoded Content / Data
+  const heading1 = isSpanish ? "Eres" : "You're";
+  const heading2 = isSpanish ? "bienvenido aquí" : "welcome here";
+  const ctas = [
+    { title: isSpanish ? "Establece un recordatorio" : "Set a Reminder", href: "#", isSetAReminder: true },
+    {
+      title: isSpanish ? "Mapa y direcciones" : "Map & Directions",
+      href: hit.mapLink || "#",
+      target: "_blank",
+    },
+  ];
+
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
+        isSpanish={isSpanish}
         wistiaId={wistiaId}
         imagePath={campusImage}
         desktopHeight="800px"
-        customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
-        ctas={[
-          { title: "Set a Reminder", href: "#", isSetAReminder: true },
-          {
-            title: "Map & Directions",
-            href: hit.mapLink || "#",
-            target: "_blank",
-          },
-        ]}
+        customTitle={`<h1 style='font-weight: 800;'><span style='color: #0092BC;'>${heading1}</span> <br/>${heading2}</h1>`}
+        ctas={ctas}
       />
 
       <CampusInfo
