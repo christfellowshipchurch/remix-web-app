@@ -29,7 +29,7 @@ export type SessionRegistrationCardType = {
 
 export interface EventFinderHit {
   objectID: string;
-  campus: { name: string };
+  campus: { name: string; street1: string; city: string; state: string };
   groupType: string;
   rockItemId: number;
   groupGuid: string;

@@ -4,9 +4,10 @@ import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { createSearchClient } from "~/lib/create-search-client";
 import Icon from "~/primitives/icon";
 import { RockProxyEmbed } from "~/components/rock-embed";
-import { HitsWrapper } from "~/components/hits-wrapper";
 import { EventFinderHit } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
+import { ClickableCard } from "./clickable-card.component";
+import { RockCampuses } from "~/lib/rock-config";
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -120,138 +121,130 @@ export const ClickThroughRegistration = ({
     >
       <Configure filters={buildFilter()} hitsPerPage={1000} />
 
-      <HitsWrapper>
-        <section
-          className="flex items-center w-full py-8 md:py-16 content-padding bg-gray"
-          id="register"
-        >
-          <div className="w-full max-w-3xl flex flex-col gap-13 mx-auto">
-            <div className="flex flex-col gap-4">
-              <h2 className="font-extrabold text-center text-black text-[32px]">
-                Register for {title}
-              </h2>
-              <p className="text-center text-[#717182] text-lg font-medium md:mx-4">
-                Ready to take the next step? Complete our five-step registration
-                process to secure your spot.
+      <section
+        className="flex items-center w-full py-8 md:py-16 content-padding bg-gray"
+        id="register"
+      >
+        <div className="w-full max-w-3xl flex flex-col gap-13 mx-auto">
+          <div className="flex flex-col gap-4">
+            <h2 className="font-extrabold text-center text-black text-[32px]">
+              Register for {title}
+            </h2>
+            <p className="text-center text-[#717182] text-lg font-medium md:mx-4">
+              Ready to take the next step? Complete our five-step registration
+              process to secure your spot.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {/* Top */}
+            <div className="flex flex-col gap-2 items-center">
+              <div className="flex gap-4 items-center">
+                {step > 1 && (
+                  <div
+                    className="flex items-center cursor-pointer"
+                    onClick={handleBack}
+                  >
+                    <Icon name="chevronLeft" size={16} className="text-black" />
+                    <p className="text-xs font-semibold text-[#616161]">Back</p>
+                  </div>
+                )}
+                <h3 className="text-xl font-bold text-black">
+                  {getCurrentStepData().title}
+                </h3>
+              </div>
+
+              <div className="flex gap-2 items-center">
+                {[1, 2, 3, 4, 5].map((dotStep) => (
+                  <div
+                    key={dotStep}
+                    className={`${
+                      dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
+                    } size-[10px] rounded-full`}
+                  />
+                ))}
+              </div>
+
+              <p className="text-black font-semibold text-sm mb-4">
+                Step {step} of 5
               </p>
             </div>
 
-            <div className="flex flex-col gap-3">
-              {/* Top */}
-              <div className="flex flex-col gap-2 items-center">
-                <div className="flex gap-4 items-center">
-                  {step > 1 && (
-                    <div
-                      className="flex items-center cursor-pointer"
-                      onClick={handleBack}
-                    >
-                      <Icon
-                        name="chevronLeft"
-                        size={16}
-                        className="text-black"
-                      />
-                      <p className="text-xs font-semibold text-[#616161]">
-                        Back
-                      </p>
-                    </div>
-                  )}
-                  <h3 className="text-xl font-bold text-black">
-                    {getCurrentStepData().title}
-                  </h3>
-                </div>
-
-                <div className="flex gap-2 items-center">
-                  {[1, 2, 3, 4, 5].map((dotStep) => (
-                    <div
-                      key={dotStep}
-                      className={`${
-                        dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
-                      } size-[10px] rounded-full`}
-                    />
-                  ))}
-                </div>
-
-                <p className="text-black font-semibold text-sm">
-                  Step {step} of 5
-                </p>
+            {/* Selected Bar - shows previous selections */}
+            {(selectedCampus ||
+              selectedSubGroupType ||
+              selectedDate ||
+              selectedTime) && (
+              <div className="flex gap-4 items-center justify-center flex-wrap mb-4">
+                {selectedCampus && (
+                  <SelectedBar
+                    icon="map"
+                    text={selectedCampus}
+                    onClick={() => navigateToStep(1)}
+                  />
+                )}
+                {selectedSubGroupType && (
+                  <SelectedBar
+                    icon="group"
+                    text={selectedSubGroupType}
+                    onClick={() => navigateToStep(2)}
+                  />
+                )}
+                {selectedDate && (
+                  <SelectedBar
+                    icon="calendarAlt"
+                    text={formatDateDisplay(selectedDate)}
+                    onClick={() => navigateToStep(3)}
+                  />
+                )}
+                {selectedTime && (
+                  <SelectedBar
+                    icon="timeFive"
+                    text={`${selectedTime} ET`}
+                    onClick={() => navigateToStep(4)}
+                  />
+                )}
               </div>
+            )}
 
-              {/* Selected Bar - shows previous selections */}
-              {(selectedCampus ||
-                selectedSubGroupType ||
-                selectedDate ||
-                selectedTime) && (
-                <div className="flex gap-4 items-center justify-center flex-wrap">
-                  {selectedCampus && (
-                    <SelectedBar
-                      icon="map"
-                      text={selectedCampus}
-                      onClick={() => navigateToStep(1)}
-                    />
-                  )}
-                  {selectedSubGroupType && (
-                    <SelectedBar
-                      icon="group"
-                      text={selectedSubGroupType}
-                      onClick={() => navigateToStep(2)}
-                    />
-                  )}
-                  {selectedDate && (
-                    <SelectedBar
-                      icon="calendarAlt"
-                      text={formatDateDisplay(selectedDate)}
-                      onClick={() => navigateToStep(3)}
-                    />
-                  )}
-                  {selectedTime && (
-                    <SelectedBar
-                      icon="timeFive"
-                      text={`${selectedTime} ET`}
-                      onClick={() => navigateToStep(4)}
-                    />
-                  )}
-                </div>
-              )}
-
-              {/* Step Content */}
-              <StepContent
-                step={step}
-                selectedCampus={selectedCampus}
-                selectedSubGroupType={selectedSubGroupType}
-                selectedDate={selectedDate}
-                selectedTime={selectedTime}
-                campusSearchQuery={campusSearchQuery}
-                isGoingBack={isGoingBack}
-                onCampusSelect={(campus) => {
-                  setSelectedCampus(campus);
-                  setIsGoingBack(false);
-                  previousStepRef.current = 1;
-                  setStep(2);
-                }}
-                onSubGroupTypeSelect={(subGroupType) => {
-                  setSelectedSubGroupType(subGroupType);
-                  setIsGoingBack(false);
-                  previousStepRef.current = 2;
-                  setStep(3);
-                }}
-                onDateSelect={(date) => {
-                  setSelectedDate(date);
-                  setIsGoingBack(false);
-                  previousStepRef.current = 3;
-                  setStep(4);
-                }}
-                onTimeSelect={(time) => {
-                  setSelectedTime(time);
-                  setIsGoingBack(false);
-                  previousStepRef.current = 4;
-                  setStep(5);
-                }}
-                onCampusSearchChange={setCampusSearchQuery}
-              />
-            </div>
+            {/* Step Content */}
+            <StepContent
+              step={step}
+              selectedCampus={selectedCampus}
+              selectedSubGroupType={selectedSubGroupType}
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              campusSearchQuery={campusSearchQuery}
+              isGoingBack={isGoingBack}
+              onCampusSelect={(campus) => {
+                setSelectedCampus(campus);
+                setIsGoingBack(false);
+                previousStepRef.current = 1;
+                setStep(2);
+              }}
+              onSubGroupTypeSelect={(subGroupType) => {
+                setSelectedSubGroupType(subGroupType);
+                setIsGoingBack(false);
+                previousStepRef.current = 2;
+                setStep(3);
+              }}
+              onDateSelect={(date) => {
+                setSelectedDate(date);
+                setIsGoingBack(false);
+                previousStepRef.current = 3;
+                setStep(4);
+              }}
+              onTimeSelect={(time) => {
+                setSelectedTime(time);
+                setIsGoingBack(false);
+                previousStepRef.current = 4;
+                setStep(5);
+              }}
+              onCampusSearchChange={setCampusSearchQuery}
+            />
           </div>
-        </section>
-      </HitsWrapper>
+        </div>
+      </section>
     </InstantSearch>
   );
 };
@@ -325,6 +318,17 @@ const StepContent = ({
     stepRef.current = step;
   }, [step]);
 
+  // Handle case where no hits are available
+  if (items.length === 0 && step !== 5) {
+    return (
+      <div className="w-full p-8 text-center">
+        <p className="text-gray-600">
+          No events found. Please check your selections and try again.
+        </p>
+      </div>
+    );
+  }
+
   if (step === 1) {
     return (
       <CampusStep
@@ -376,6 +380,8 @@ const StepContent = ({
   if (step === 5) {
     const matchingHit = items.find(
       (hit) =>
+        hit.campus &&
+        hit.campus.name &&
         hit.time === selectedTime &&
         hit.date === selectedDate &&
         hit.campus.name === selectedCampus &&
@@ -413,15 +419,28 @@ const CampusStep = ({
   // Get unique campuses
   const uniqueCampuses = useMemo(() => {
     const campusMap = new Map<string, { name: string; location?: string }>();
-    hits.forEach((hit) => {
-      if (!campusMap.has(hit.campus.name)) {
-        campusMap.set(hit.campus.name, {
-          name: hit.campus.name,
-          location: hit.location || undefined,
-        });
-      }
+    hits
+      .filter((hit) => hit.campus && hit.campus.name)
+      .forEach((hit) => {
+        if (!campusMap.has(hit.campus.name)) {
+          campusMap.set(hit.campus.name, {
+            name: hit.campus.name,
+            location: hit.campus.street1 || undefined, //matching design format for now
+          });
+        }
+      });
+
+    // Sort campuses based on the order in RockCampuses
+    const campuses = Array.from(campusMap.values());
+    const campusOrderMap = new Map<string, number>(
+      RockCampuses.map((campus, index) => [campus.name, index])
+    );
+
+    return campuses.sort((a, b) => {
+      const orderA = campusOrderMap.get(a.name) ?? Infinity;
+      const orderB = campusOrderMap.get(b.name) ?? Infinity;
+      return orderA - orderB;
     });
-    return Array.from(campusMap.values());
   }, [hits]);
 
   // Filter campuses by search query
@@ -445,26 +464,27 @@ const CampusStep = ({
   return (
     <div className="flex flex-col gap-4">
       {/* Search Input */}
-      <div className="relative">
+      <div className="relative w-full max-w-[400px] mx-auto mb-4">
         <Icon
           name="search"
-          size={20}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#717182]"
+          size={18}
+          className="absolute left-3 top-[45%] -translate-y-1/2 text-black"
         />
         <input
           type="text"
           placeholder="Search campuses by name or city..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 rounded-lg border border-[#AEAEAE] focus:outline-none focus:ring-2 focus:ring-ocean"
+          className="w-full pl-10 pr-4 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-ocean"
         />
       </div>
 
       {/* Campus Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         {filteredCampuses.map((campus) => (
           <ClickableCard
             key={campus.name}
+            variant="campus"
             icon="map"
             title={campus.name}
             subtitle={campus.location || ""}
@@ -494,7 +514,12 @@ const SubGroupTypeStep = ({
   const uniqueSubGroupTypes = useMemo(() => {
     const subGroupTypeMap = new Map<string, string>();
     hits
-      .filter((hit) => hit.campus.name.trim() === selectedCampus.trim())
+      .filter(
+        (hit) =>
+          hit.campus &&
+          hit.campus.name &&
+          hit.campus.name.trim() === selectedCampus.trim()
+      )
       .forEach((hit) => {
         if (hit.subGroupType && !subGroupTypeMap.has(hit.subGroupType)) {
           subGroupTypeMap.set(hit.subGroupType, hit.subGroupType);
@@ -522,16 +547,22 @@ const SubGroupTypeStep = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {uniqueSubGroupTypes.map((subGroupType) => (
-        <ClickableCard
-          key={subGroupType}
-          icon="group"
-          title={subGroupType}
-          subtitle=""
-          onClick={() => onSelect(subGroupType)}
-        />
-      ))}
+    <div className="flex flex-wrap justify-center gap-4">
+      {uniqueSubGroupTypes.map((subGroupType) => {
+        return (
+          <ClickableCard
+            key={subGroupType}
+            variant="eventType"
+            icon={"group"}
+            title={subGroupType}
+            description={
+              "TODO: find where to store description for each event type"
+            }
+            buttonText={`Select ${subGroupType}`}
+            onClick={() => onSelect(subGroupType)}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -558,7 +589,10 @@ const DateStep = ({
     hits
       .filter(
         (hit) =>
+          hit.campus &&
+          hit.campus.name &&
           hit.campus.name.trim() === selectedCampus.trim() &&
+          hit.subGroupType &&
           hit.subGroupType.trim() === selectedSubGroupType.trim()
       )
       .forEach((hit) => {
@@ -582,10 +616,11 @@ const DateStep = ({
   }, [uniqueDates, onSelect, isGoingBack]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="flex flex-wrap justify-center gap-4">
       {uniqueDates.map((dateInfo) => (
         <ClickableCard
           key={dateInfo.date}
+          variant="date"
           icon="calendarAlt"
           title={formatDateDisplay(dateInfo.date, dateInfo.day)}
           subtitle={dateInfo.day}
@@ -622,8 +657,12 @@ const TimeStep = ({
     // Trim values to handle any whitespace issues
     const matchingHits = hits.filter(
       (hit) =>
+        hit.campus &&
+        hit.campus.name &&
         hit.campus.name.trim() === selectedCampus.trim() &&
+        hit.subGroupType &&
         hit.subGroupType.trim() === selectedSubGroupType.trim() &&
+        hit.date &&
         hit.date.trim() === selectedDate.trim()
     );
 
@@ -658,10 +697,11 @@ const TimeStep = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex flex-wrap justify-center gap-4">
       {uniqueTimes.map((timeInfo) => (
         <ClickableCard
           key={timeInfo.time}
+          variant="time"
           icon="timeFive"
           title={timeInfo.time}
           subtitle="Eastern Time"
@@ -699,44 +739,14 @@ const FormStep = ({
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-[600px] mx-auto rounded-xl overflow-hidden">
       <RockProxyEmbed
         url={rockEmbedUrl}
-        height={800}
+        height={1000}
         showLoading={true}
         useAdvancedProxy={true}
         className="w-full"
       />
-    </div>
-  );
-};
-
-// ClickableCard Component
-interface ClickableCardProps {
-  icon: "map" | "group" | "calendarAlt" | "timeFive";
-  title: string;
-  subtitle: string;
-  onClick: () => void;
-}
-
-const ClickableCard = ({
-  icon,
-  title,
-  subtitle,
-  onClick,
-}: ClickableCardProps) => {
-  return (
-    <div
-      onClick={onClick}
-      className="bg-white rounded-lg border border-[#AEAEAE] p-6 cursor-pointer hover:border-ocean transition-all duration-300 flex flex-col items-center gap-3"
-    >
-      <div className="bg-[#E7F9FE] rounded-full p-3">
-        <Icon name={icon} size={24} className="text-ocean" />
-      </div>
-      <h4 className="font-bold text-black text-center">{title}</h4>
-      {subtitle && (
-        <p className="text-sm text-[#717182] text-center">{subtitle}</p>
-      )}
     </div>
   );
 };
