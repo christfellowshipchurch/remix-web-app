@@ -1,53 +1,11 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { ComponentType, Fragment } from "react";
 import { cn } from "~/lib/utils";
-
-const tabData = [
-  {
-    label: "Sunday Details",
-    mobileLabel: "Sunday",
-    value: "sunday-details",
-  },
-  {
-    label: "About Us",
-    mobileLabel: "About",
-    value: "about-us",
-  },
-  {
-    label: "For Families",
-    mobileLabel: "Families",
-    value: "for-families",
-  },
-  {
-    label: "Upcoming Events",
-    mobileLabel: "Events",
-    value: "upcoming-events",
-  },
-];
-
-const OnlineTabsData = [
-  {
-    label: "Sunday Details",
-    mobileLabel: "Sunday",
-    value: "sunday-details",
-  },
-  {
-    label: "About Us",
-    mobileLabel: "About",
-    value: "about-us",
-  },
-  {
-    label: "Upcoming Events",
-    mobileLabel: "Events",
-    value: "upcoming-events",
-  },
-];
-
-interface TabData {
-  label: string;
-  mobileLabel: string;
-  value: string;
-}
+import {
+  englishTabData,
+  onlineTabsData,
+  spanishTabData,
+} from "../../location-single-data";
 
 interface TabComponentProps {
   setReminderVideo?: string;
@@ -60,6 +18,7 @@ interface CampusTabsProps {
   isOnline?: boolean;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  isSpanish?: boolean;
 }
 const tasListStyle =
   "absolute z-1 top-[-2rem] left-1/2 -translate-x-1/2 items-center justify-center rounded-[1rem] bg-white";
@@ -70,34 +29,13 @@ export const CampusTabs = ({
   tabs,
   setReminderVideo,
   isOnline,
+  isSpanish,
 }: CampusTabsProps) => {
-  return (
-    <CustomTabs
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      data={isOnline ? OnlineTabsData : tabData}
-      tabs={tabs}
-      setReminderVideo={setReminderVideo}
-      isOnline={isOnline}
-    />
-  );
-};
-
-const CustomTabs = ({
-  activeTab,
-  setActiveTab,
-  data,
-  tabs,
-  setReminderVideo,
-  isOnline,
-}: {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  data: TabData[];
-  tabs: ComponentType<TabComponentProps>[];
-  setReminderVideo?: string;
-  isOnline?: boolean;
-}) => {
+  const data = isOnline
+    ? onlineTabsData
+    : isSpanish
+    ? spanishTabData
+    : englishTabData;
   return (
     <Tabs.Root
       value={activeTab}
@@ -107,8 +45,13 @@ const CustomTabs = ({
       {/* iPad/Desktop Tabs */}
       <Tabs.List
         className={cn(
-          "flex gap-2 md:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
-          isOnline ? "max-w-[520px]" : "max-w-[668px]",
+          "flex md:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
+          isSpanish ? "gap-0 text-[14.5px] sm:text-base" : "gap-2",
+          isOnline
+            ? "max-w-[520px]"
+            : isSpanish
+            ? "max-w-[580px]"
+            : "max-w-[668px]",
           tasListStyle,
           activeTab === "sunday-details" && "!absolute -top-9 left-1/2"
         )}

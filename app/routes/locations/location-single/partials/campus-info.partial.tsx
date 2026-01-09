@@ -78,6 +78,8 @@ export const CampusInfo = ({
   additionalInfo,
   serviceTimes,
 }: CampusInfoProps) => {
+  const isSpanish = campusName?.includes("Español");
+
   const address = `${campusLocation?.street1}${
     campusLocation?.street2 ? ` ${campusLocation?.street2}` : ""
   }, ${campusLocation?.city}, ${campusLocation?.state} ${
@@ -121,7 +123,9 @@ export const CampusInfo = ({
           <div className="flex flex-col gap-3">
             <div className="flex items-end gap-2 text-ocean">
               <Icon name="church" className="lg:size-[40px] size-[24px]" />
-              <p className="font-medium">Campus Location</p>
+              <p className="font-medium">
+                {isSpanish ? "Ubicación del Campus" : "Campus Location"}
+              </p>
             </div>
             <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
               {campusHeadingLine}
@@ -152,9 +156,12 @@ export const CampusInfo = ({
           <div className="flex flex-col gap-16">
             {/* Desktop CTAs */}
             <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
-              <CTAs />
+              <CTAs isSpanish={isSpanish} />
               {weekdaySchedule && weekdaySchedule.length > 0 && (
-                <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+                <DuringTheWeek
+                  weekdaySchedule={weekdaySchedule}
+                  isSpanish={isSpanish}
+                />
               )}
             </div>
           </div>
@@ -165,14 +172,18 @@ export const CampusInfo = ({
           <VirtualTourTabs
             wistiaId={digitalTourVideo || ""}
             address={address}
+            isSpanish={isSpanish}
           />
         </div>
 
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
-          <CTAs />
+          <CTAs isSpanish={isSpanish} />
           {weekdaySchedule && weekdaySchedule.length > 0 && (
-            <DuringTheWeek weekdaySchedule={weekdaySchedule} />
+            <DuringTheWeek
+              weekdaySchedule={weekdaySchedule}
+              isSpanish={isSpanish}
+            />
           )}
         </div>
       </div>
@@ -235,11 +246,10 @@ const OnlineCampusInfo = ({
           </div>
         </div>
 
-        {/* TODO: Hiding Tour for now */}
         <div className="flex-1 lg:pt-16 max-w-[670px]">
-          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> */}
           {/* Hardcoded wistiaId for now */}
           <VirtualTourTabs wistiaId="beicrozg21" isOnline />
+          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> TODO: Uncomment this when the video gets added to the Online Campus in Rock*/}
         </div>
 
         {/* Mobile CTAs */}

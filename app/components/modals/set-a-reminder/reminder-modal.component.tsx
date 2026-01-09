@@ -31,7 +31,7 @@ export function SetAReminderModal({
             className
           )}
         >
-          {campusUrl?.includes("Español") ? "Recuérdame" : "Set a Reminder"}
+          {campusUrl?.includes("iglesia") ? "Recuérdame" : "Set a Reminder"}
         </ModalButton>
       </Modal.Button>
       <Modal.Content>

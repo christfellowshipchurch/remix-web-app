@@ -21,6 +21,7 @@ export type DynamicHeroTypes = {
   ipadHeight?: string;
   desktopHeight?: string;
   fullOverlay?: boolean;
+  isSpanish?: boolean;
 };
 
 export const DynamicHero = ({
