@@ -3,6 +3,7 @@ import { useLoaderData } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
 import { LoaderReturnType } from "../loader";
+import { cn } from "~/lib/utils";
 
 const GoogleMap = ({
   address,
@@ -21,7 +22,6 @@ const GoogleMap = ({
       allowFullScreen
       loading="lazy"
       referrerPolicy="no-referrer-when-downgrade"
-      className="rounded-lg"
     />
   );
 };
@@ -45,6 +45,7 @@ export const VirtualTourTabs = ({
         {!isOnline && address && GOOGLE_MAPS_API_KEY && (
           <TabContent
             value="map"
+            isOnline={isOnline}
             address={address}
             apiKey={GOOGLE_MAPS_API_KEY}
             title={isSpanish ? "Visítanos" : "Visit Us"}
@@ -57,6 +58,7 @@ export const VirtualTourTabs = ({
         )}
         {wistiaId && (
           <TabContent
+            isOnline={isOnline}
             value="tour"
             title={
               isOnline
@@ -122,6 +124,7 @@ const TabContent = ({
   wistiaId,
   value,
   apiKey,
+  isOnline,
 }: {
   address?: string;
   title: string;
@@ -129,6 +132,7 @@ const TabContent = ({
   wistiaId?: string;
   value: string;
   apiKey?: string;
+  isOnline?: boolean;
 }) => {
   return (
     <Tabs.Content value={value}>
@@ -137,7 +141,6 @@ const TabContent = ({
         <p>{description}</p>
       </div>
 
-      {/* TODO: Maybe add some sort of loader for when map or video is loading */}
       {address && value === "map" && apiKey && (
         <GoogleMap address={address} apiKey={apiKey} />
       )}
@@ -146,7 +149,7 @@ const TabContent = ({
         <Video
           wistiaId={wistiaId}
           className={`aspect-67/35 relative z-3 ${
-            !address ? "rounded-b-[18px]" : ""
+            isOnline ? "rounded-b-[18px]" : ""
           }`}
           controls={false}
         />
