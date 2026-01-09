@@ -119,7 +119,16 @@ export const ClickThroughRegistration = ({
         preserveSharedStateOnUnmount: true,
       }}
     >
-      <Configure filters={buildFilter()} hitsPerPage={1000} />
+      <Configure
+        filters={buildFilter()}
+        hitsPerPage={1000}
+        query={step === 1 && campusSearchQuery ? campusSearchQuery : ""}
+        restrictSearchableAttributes={
+          step === 1 && campusSearchQuery
+            ? ["campus.name", "campus.city"]
+            : undefined
+        }
+      />
 
       <section
         className="flex items-center w-full py-8 md:py-16 content-padding bg-gray"
@@ -216,6 +225,7 @@ export const ClickThroughRegistration = ({
               selectedTime={selectedTime}
               campusSearchQuery={campusSearchQuery}
               isGoingBack={isGoingBack}
+              groupType={extractedGroupType}
               onCampusSelect={(campus) => {
                 setSelectedCampus(campus);
                 setIsGoingBack(false);
@@ -281,6 +291,7 @@ interface StepContentProps {
   selectedTime: string;
   campusSearchQuery: string;
   isGoingBack: boolean;
+  groupType: string;
   onCampusSelect: (campus: string) => void;
   onSubGroupTypeSelect: (subGroupType: string) => void;
   onDateSelect: (date: string) => void;
@@ -296,6 +307,7 @@ const StepContent = ({
   selectedTime,
   campusSearchQuery,
   isGoingBack,
+  groupType,
   onCampusSelect,
   onSubGroupTypeSelect,
   onDateSelect,
@@ -346,6 +358,7 @@ const StepContent = ({
       <SubGroupTypeStep
         hits={items}
         selectedCampus={selectedCampus}
+        groupType={groupType}
         onSelect={onSubGroupTypeSelect}
         isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
@@ -418,7 +431,10 @@ const CampusStep = ({
 }: CampusStepProps) => {
   // Get unique campuses
   const uniqueCampuses = useMemo(() => {
-    const campusMap = new Map<string, { name: string; location?: string }>();
+    const campusMap = new Map<
+      string,
+      { name: string; location?: string; city?: string }
+    >();
     hits
       .filter((hit) => hit.campus && hit.campus.name)
       .forEach((hit) => {
@@ -426,6 +442,7 @@ const CampusStep = ({
           campusMap.set(hit.campus.name, {
             name: hit.campus.name,
             location: hit.campus.street1 || undefined, //matching design format for now
+            city: hit.campus.city || undefined,
           });
         }
       });
@@ -450,7 +467,8 @@ const CampusStep = ({
     return uniqueCampuses.filter(
       (campus) =>
         campus.name.toLowerCase().includes(query) ||
-        campus.location?.toLowerCase().includes(query)
+        campus.location?.toLowerCase().includes(query) ||
+        campus.city?.toLowerCase().includes(query)
     );
   }, [uniqueCampuses, searchQuery]);
 
@@ -500,6 +518,7 @@ const CampusStep = ({
 interface SubGroupTypeStepProps {
   hits: EventFinderHit[];
   selectedCampus: string;
+  groupType: string;
   onSelect: (subGroupType: string) => void;
   isGoingBack: boolean;
 }
@@ -507,6 +526,7 @@ interface SubGroupTypeStepProps {
 const SubGroupTypeStep = ({
   hits,
   selectedCampus,
+  groupType,
   onSelect,
   isGoingBack,
 }: SubGroupTypeStepProps) => {
@@ -555,10 +575,11 @@ const SubGroupTypeStep = ({
             variant="eventType"
             icon={"group"}
             title={subGroupType}
+            subtitle={groupType}
             description={
-              "TODO: find where to store description for each event type"
+              "A two-part conversation about knowing God, growing in relationships, discovering your purpose, and impacting your world."
             }
-            buttonText={`Select ${subGroupType}`}
+            buttonText={`Select ${groupType} Event`}
             onClick={() => onSelect(subGroupType)}
           />
         );

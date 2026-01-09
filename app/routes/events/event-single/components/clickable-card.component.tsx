@@ -4,7 +4,7 @@ interface ClickableCardProps {
   variant: "campus" | "eventType" | "date" | "time";
   icon: "map" | "group" | "calendarAlt" | "timeFive";
   title: string;
-  subtitle?: string; // For campus, date, time
+  subtitle?: string; // For campus, date, time, eventType
   description?: string; // For eventType
   buttonText?: string; // For eventType (dynamic)
   onClick: () => void;
@@ -57,7 +57,7 @@ export const ClickableCard = ({
           </div>
         )} */}
         <h4 className="font-semibold text-center leading-tight mb-0 mt-8">
-          {title}
+          {subtitle && subtitle + " "} {title}
         </h4>
         {description && (
           <p className="text-sm text-[#717182] text-center leading-relaxed mb-8">
