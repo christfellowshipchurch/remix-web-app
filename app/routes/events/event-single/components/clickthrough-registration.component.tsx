@@ -8,6 +8,7 @@ import { EventFinderHit } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { ClickableCard } from "./clickable-card.component";
 import { RockCampuses } from "~/lib/rock-config";
+import { getSubGroupTypeDescription } from "../registration.data";
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -576,9 +577,7 @@ const SubGroupTypeStep = ({
             icon={"group"}
             title={subGroupType}
             subtitle={groupType}
-            description={
-              "A two-part conversation about knowing God, growing in relationships, discovering your purpose, and impacting your world."
-            }
+            description={getSubGroupTypeDescription(subGroupType)}
             buttonText={`Select ${groupType} Event`}
             onClick={() => onSelect(subGroupType)}
           />
