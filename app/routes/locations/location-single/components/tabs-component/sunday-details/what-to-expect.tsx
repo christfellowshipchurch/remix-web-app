@@ -3,22 +3,32 @@ import { SetAReminderModal } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { ButtonProps } from "~/primitives/button/button.primitive";
+import { Video } from "~/primitives/video/video.primitive";
+import {
+  expectEnglishItems,
+  expectSpanishItems,
+} from "../../../location-single-data";
 
 export const WhatToExpect = ({
   setReminderVideo,
   isOnline,
+  isSpanish,
 }: {
-  setReminderVideo: string;
+  setReminderVideo: string | null | undefined;
   isOnline?: boolean;
+  isSpanish?: boolean;
 }) => {
+  const title = isSpanish ? "¿Qué puedo esperar?" : "What to Expect";
+  const expectItems = isSpanish ? expectSpanishItems : expectEnglishItems;
+
   return (
     <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-36 md:pt-40 pb-20 lg:pb-28 content-padding flex justify-center">
       <div className="w-ful flex flex-col lg:flex-row gap-12 xl:gap-20 items-center justify-center max-w-screen-content mx-auto">
         {/* Left Side */}
-        {!isOnline && (
+        {!isOnline && setReminderVideo && (
           <div className="flex-1 w-full lg:flex-auto lg:w-5/7 xl:w-4/7">
-            <iframe
-              src={`https://fast.wistia.net/embed/iframe/${setReminderVideo}?fitStrategy=cover`}
+            <Video
+              wistiaId={setReminderVideo}
               className="w-full h-[414px] aspect-73/41 rounded-[1rem]"
             />
           </div>
@@ -29,12 +39,15 @@ export const WhatToExpect = ({
           className={cn(
             "flex flex-1 w-full flex-col gap-6",
             "lg:flex-auto",
-            !isOnline && "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
-            isOnline && "lg:w-full lg:max-w-[964px] lg:items-center"
+            !isOnline &&
+              setReminderVideo &&
+              "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
+            (isOnline || !setReminderVideo) &&
+              "lg:w-full lg:max-w-[964px] lg:items-center"
           )}
         >
           <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[48px] xl:text-[52px]">
-            What to Expect
+            {title}
           </h2>
           <div
             className={cn(
@@ -43,25 +56,23 @@ export const WhatToExpect = ({
             )}
           >
             <div className={cn("flex flex-col gap-6", isOnline && "lg:flex-1")}>
-              <ExpectItem
-                title="Come As You Are, Seriously!"
-                description="Comfortable clothes are the norm—no need to dress up to check out a service."
-              />
-              <ExpectItem
-                title="Messages That Speak to Real Life (in about 1 hour)"
-                description="Engaging and inspiring, Bible-based messages that connect with everyday challenges and questions."
-              />
+              {expectItems.slice(0, 2).map((item, index) => (
+                <ExpectItem
+                  key={index}
+                  title={item.title}
+                  description={item.description}
+                />
+              ))}
             </div>
 
             <div className={cn("flex flex-col gap-6", isOnline && "lg:flex-1")}>
-              <ExpectItem
-                title="Friendly Faces and Helpful People"
-                description="We’re here to help you feel comfortable from the moment you arrive."
-              />
-              <ExpectItem
-                title="Kids Have Fun Too! "
-                description="Safe and engaging programs are available for newborns through 5th grade (adjust the age ranges based on each campus) during the service."
-              />
+              {expectItems.slice(2).map((item, index) => (
+                <ExpectItem
+                  key={index}
+                  title={item.title}
+                  description={item.description}
+                />
+              ))}
             </div>
           </div>
 

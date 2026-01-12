@@ -16,6 +16,17 @@ export const HTMLRenderer = ({
   className?: string;
   stripFormattingTags?: boolean;
 }) => {
+  // Check if the content is just plain text (no HTML tags)
+  const isPlainText = (content: string): boolean => {
+    // Trim whitespace and check if it contains any HTML tags
+    const trimmed = content.trim();
+    // If it doesn't contain < or >, it's likely plain text
+    // Also check that it's not empty
+    return (
+      trimmed.length > 0 && !trimmed.includes("<") && !trimmed.includes(">")
+    );
+  };
+
   const options = {
     replace(domNode: DOMNode) {
       // Remove <b>, <strong>, <i>, <em> tags by unwrapping their children if enabled
@@ -83,5 +94,13 @@ export const HTMLRenderer = ({
     },
   };
 
-  return <div className={`${className || ""}`}>{parse(html, options)}</div>;
+  const parsedContent = parse(html, options);
+  const isText = isPlainText(html);
+
+  // Use <p> tag for plain text, <div> for HTML content
+  if (isText) {
+    return <p className={cn(className)}>{parsedContent}</p>;
+  }
+
+  return <div className={cn(className)}>{parsedContent}</div>;
 };
