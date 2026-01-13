@@ -8,7 +8,10 @@ import { EventFinderHit } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { ClickableCard } from "./clickable-card.component";
 import { RockCampuses } from "~/lib/rock-config";
-import { getSubGroupTypeDescription } from "../registration.data";
+import {
+  getSubGroupTypeDescription,
+  getPageIdForGroupType,
+} from "../registration.data";
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -404,6 +407,7 @@ const StepContent = ({
     return (
       <FormStep
         groupGuid={matchingHit?.groupGuid || ""}
+        groupType={groupType}
         selectedCampus={selectedCampus}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
@@ -735,6 +739,7 @@ const TimeStep = ({
 // Form Step Component
 interface FormStepProps {
   groupGuid: string;
+  groupType: string;
   selectedCampus: string;
   selectedDate: string;
   selectedTime: string;
@@ -742,11 +747,13 @@ interface FormStepProps {
 
 const FormStep = ({
   groupGuid,
+  groupType,
   selectedCampus: _selectedCampus,
   selectedDate: _selectedDate,
   selectedTime: _selectedTime,
 }: FormStepProps) => {
-  const rockEmbedUrl = `https://rock.gocf.org/page/3253?Group=${groupGuid}`;
+  const pageId = getPageIdForGroupType(groupType);
+  const rockEmbedUrl = `https://rock.gocf.org/page/${pageId}?Group=${groupGuid}`;
 
   if (!groupGuid) {
     return (

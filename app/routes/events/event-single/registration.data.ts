@@ -27,3 +27,26 @@ export const subGroupTypeDescriptions: Record<string, SubGroupTypeDescription> =
 export const getSubGroupTypeDescription = (subGroupType: string): string => {
   return subGroupTypeDescriptions[subGroupType]?.description || "";
 };
+
+export const GROUP_TYPE_TO_PAGE_ID: Record<string, number> = {
+  Kids: 3253,
+  Journey: 2464,
+  Baptism: 4861,
+  "Dream Team Kickoff": 5166,
+};
+
+export const getPageIdForGroupType = (groupType: string): number => {
+  if (!groupType) {
+    return GROUP_TYPE_TO_PAGE_ID.Kids; // Default fallback
+  }
+
+  // Normalize group type: handle hyphens, case variations
+  // Similar to normalization in event-single-page.tsx
+  const normalized = groupType
+    .replace(/-/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+
+  return GROUP_TYPE_TO_PAGE_ID[normalized] || GROUP_TYPE_TO_PAGE_ID.Kids;
+};
