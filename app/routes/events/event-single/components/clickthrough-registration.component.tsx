@@ -861,7 +861,7 @@ const FormStep = ({
         url={rockEmbedUrl}
         height={1000}
         showLoading={true}
-        useAdvancedProxy={true}
+        useAdvancedProxy={false}
         className="w-full"
       />
     </div>
