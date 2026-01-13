@@ -14,7 +14,13 @@ export const EventSinglePage: React.FC = () => {
   const location = useLocation();
 
   // Valid groupTypes for ClickThroughRegistration
-  const validGroupTypes = ["Kids", "Journey", "Baptism", "Dream Team Kickoff"];
+  const validGroupTypes = [
+    "Kids Dedication",
+    "Kids Starting Line",
+    "Journey",
+    "Baptism",
+    "Dream Team Kickoff",
+  ];
 
   // Check if sessionScheduleCards exist
   const hasSessionRegistration =

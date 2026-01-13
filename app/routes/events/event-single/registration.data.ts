@@ -28,8 +28,21 @@ export const getSubGroupTypeDescription = (subGroupType: string): string => {
   return subGroupTypeDescriptions[subGroupType]?.description || "";
 };
 
+// New helper to determine if groupType has subGroupTypes
+export const GROUP_TYPES_WITH_SUB_GROUP_TYPES = ["Journey", "Baptism"];
+
+export const hasSubGroupTypes = (groupType: string): boolean => {
+  const normalized = groupType
+    .replace(/-/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+  return GROUP_TYPES_WITH_SUB_GROUP_TYPES.includes(normalized);
+};
+
 export const GROUP_TYPE_TO_PAGE_ID: Record<string, number> = {
-  Kids: 3253,
+  "Kids Dedication": 3253,
+  "Kids Starting Line": 3253,
   Journey: 2464,
   Baptism: 4861,
   "Dream Team Kickoff": 5166,
@@ -37,7 +50,7 @@ export const GROUP_TYPE_TO_PAGE_ID: Record<string, number> = {
 
 export const getPageIdForGroupType = (groupType: string): number => {
   if (!groupType) {
-    return GROUP_TYPE_TO_PAGE_ID.Kids; // Default fallback
+    return GROUP_TYPE_TO_PAGE_ID["Kids Dedication"]; // Default fallback
   }
 
   // Normalize group type: handle hyphens, case variations
@@ -48,5 +61,8 @@ export const getPageIdForGroupType = (groupType: string): number => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 
-  return GROUP_TYPE_TO_PAGE_ID[normalized] || GROUP_TYPE_TO_PAGE_ID.Kids;
+  return (
+    GROUP_TYPE_TO_PAGE_ID[normalized] ||
+    GROUP_TYPE_TO_PAGE_ID["Kids Dedication"]
+  );
 };

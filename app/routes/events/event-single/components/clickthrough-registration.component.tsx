@@ -11,6 +11,7 @@ import { RockCampuses } from "~/lib/rock-config";
 import {
   getSubGroupTypeDescription,
   getPageIdForGroupType,
+  hasSubGroupTypes,
 } from "../registration.data";
 
 interface ClickThroughRegistrationProps {
@@ -30,12 +31,43 @@ export const ClickThroughRegistration = ({
   };
 
   // Extract groupType from URL if not provided as prop
-  // URL format: /events/kids or /events/baptism
+  // URL format: /events/kids-dedication or /events/baptism
   const pathParts = location.pathname.split("/");
   const lastPart = pathParts[pathParts.length - 1] || "";
   const extractedGroupType =
     groupType ||
-    (lastPart ? lastPart.charAt(0).toUpperCase() + lastPart.slice(1) : "");
+    (lastPart
+      ? lastPart
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+      : "");
+
+  // Normalize groupType to handle variations
+  const normalizedGroupType = extractedGroupType
+    .replace(/-/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+
+  const hasSubGroups = hasSubGroupTypes(normalizedGroupType);
+  const totalSteps = hasSubGroups ? 5 : 4;
+
+  // Map display step to actual step
+  // For groupTypes without subGroupTypes: 1->1, 2->3, 3->4, 4->5
+  const getActualStep = (displayStep: number): number => {
+    if (hasSubGroups) return displayStep;
+    if (displayStep === 1) return 1;
+    return displayStep + 1;
+  };
+
+  // Map actual step to display step
+  // For groupTypes without subGroupTypes: 1->1, 3->2, 4->3, 5->4
+  const getDisplayStep = (actualStep: number): number => {
+    if (hasSubGroups) return actualStep;
+    if (actualStep === 1) return 1;
+    return actualStep - 1;
+  };
 
   const [step, setStep] = useState(1);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
@@ -66,45 +98,74 @@ export const ClickThroughRegistration = ({
       } else if (step === 4) {
         setSelectedDate("");
       } else if (step === 3) {
-        setSelectedSubGroupType("");
+        if (hasSubGroups) {
+          setSelectedSubGroupType("");
+        } else {
+          setSelectedDate("");
+        }
       } else if (step === 2) {
-        setSelectedCampus("");
+        if (hasSubGroups) {
+          setSelectedCampus("");
+        } else {
+          setSelectedCampus("");
+        }
       }
       setStep(step - 1);
     }
   };
 
-  const navigateToStep = (targetStep: number) => {
+  const navigateToStep = (targetDisplayStep: number) => {
     // Set flag to disable auto-select (will be reset when user makes a selection)
     setIsGoingBack(true);
     previousStepRef.current = step;
+    const targetActualStep = getActualStep(targetDisplayStep);
     // Clear selections for steps after the target step
-    if (targetStep < 5) {
+    if (targetActualStep < 5) {
       setSelectedTime("");
     }
-    if (targetStep < 4) {
+    if (targetActualStep < 4) {
       setSelectedDate("");
     }
-    if (targetStep < 3) {
+    if (targetActualStep < 3) {
       setSelectedSubGroupType("");
     }
-    if (targetStep < 2) {
+    if (targetActualStep < 2) {
       setSelectedCampus("");
     }
-    setStep(targetStep);
+    setStep(targetActualStep);
+  };
+
+  const getStepsData = () => {
+    if (hasSubGroups) {
+      return [
+        { step: 1, title: "Choose Your Campus" },
+        { step: 2, title: "Select the Event Type" },
+        { step: 3, title: "Select the Date" },
+        { step: 4, title: "Pick Your Time" },
+        { step: 5, title: "Personal Information" },
+      ];
+    }
+    return [
+      { step: 1, title: "Choose Your Campus" },
+      { step: 2, title: "Select the Date" },
+      { step: 3, title: "Pick Your Time" },
+      { step: 4, title: "Personal Information" },
+    ];
   };
 
   const getCurrentStepData = () => {
-    return StepsData.find((data) => data.step === step) || StepsData[0];
+    const displayStep = getDisplayStep(step);
+    const stepsData = getStepsData();
+    return stepsData.find((data) => data.step === displayStep) || stepsData[0];
   };
 
   const buildFilter = () => {
-    if (!extractedGroupType) return "";
-    let filter = `groupType:"${extractedGroupType}"`;
+    if (!normalizedGroupType) return "";
+    let filter = `groupType:"${normalizedGroupType}"`;
     if (selectedCampus) {
       filter += ` AND campus.name:"${selectedCampus.trim()}"`;
     }
-    if (selectedSubGroupType) {
+    if (selectedSubGroupType && hasSubGroups) {
       filter += ` AND subGroupType:"${selectedSubGroupType.trim()}"`;
     }
     if (selectedDate) {
@@ -144,8 +205,8 @@ export const ClickThroughRegistration = ({
               Register for {title}
             </h2>
             <p className="text-center text-[#717182] text-lg font-medium md:mx-4">
-              Ready to take the next step? Complete our five-step registration
-              process to secure your spot.
+              Ready to take the next step? Complete our {totalSteps}-step
+              registration process to secure your spot.
             </p>
           </div>
 
@@ -168,18 +229,23 @@ export const ClickThroughRegistration = ({
               </div>
 
               <div className="flex gap-2 items-center">
-                {[1, 2, 3, 4, 5].map((dotStep) => (
-                  <div
-                    key={dotStep}
-                    className={`${
-                      dotStep <= step ? "bg-ocean" : "bg-[#AEAEAE]"
-                    } size-[10px] rounded-full`}
-                  />
-                ))}
+                {Array.from({ length: totalSteps }, (_, i) => i + 1).map(
+                  (dotStep) => {
+                    const displayStep = getDisplayStep(step);
+                    return (
+                      <div
+                        key={dotStep}
+                        className={`${
+                          dotStep <= displayStep ? "bg-ocean" : "bg-[#AEAEAE]"
+                        } size-[10px] rounded-full`}
+                      />
+                    );
+                  }
+                )}
               </div>
 
               <p className="text-black font-semibold text-sm mb-4">
-                Step {step} of 5
+                Step {getDisplayStep(step)} of {totalSteps}
               </p>
             </div>
 
@@ -196,7 +262,7 @@ export const ClickThroughRegistration = ({
                     onClick={() => navigateToStep(1)}
                   />
                 )}
-                {selectedSubGroupType && (
+                {selectedSubGroupType && hasSubGroups && (
                   <SelectedBar
                     icon="group"
                     text={selectedSubGroupType}
@@ -207,14 +273,14 @@ export const ClickThroughRegistration = ({
                   <SelectedBar
                     icon="calendarAlt"
                     text={formatDateDisplay(selectedDate)}
-                    onClick={() => navigateToStep(3)}
+                    onClick={() => navigateToStep(hasSubGroups ? 3 : 2)}
                   />
                 )}
                 {selectedTime && (
                   <SelectedBar
                     icon="timeFive"
                     text={`${selectedTime} ET`}
-                    onClick={() => navigateToStep(4)}
+                    onClick={() => navigateToStep(hasSubGroups ? 4 : 3)}
                   />
                 )}
               </div>
@@ -234,7 +300,7 @@ export const ClickThroughRegistration = ({
                 setSelectedCampus(campus);
                 setIsGoingBack(false);
                 previousStepRef.current = 1;
-                setStep(2);
+                setStep(hasSubGroups ? 2 : 3);
               }}
               onSubGroupTypeSelect={(subGroupType) => {
                 setSelectedSubGroupType(subGroupType);
@@ -245,15 +311,16 @@ export const ClickThroughRegistration = ({
               onDateSelect={(date) => {
                 setSelectedDate(date);
                 setIsGoingBack(false);
-                previousStepRef.current = 3;
+                previousStepRef.current = hasSubGroups ? 3 : 3;
                 setStep(4);
               }}
               onTimeSelect={(time) => {
                 setSelectedTime(time);
                 setIsGoingBack(false);
-                previousStepRef.current = 4;
+                previousStepRef.current = hasSubGroups ? 4 : 3;
                 setStep(5);
               }}
+              hasSubGroups={hasSubGroups}
               onCampusSearchChange={setCampusSearchQuery}
             />
           </div>
@@ -296,6 +363,7 @@ interface StepContentProps {
   campusSearchQuery: string;
   isGoingBack: boolean;
   groupType: string;
+  hasSubGroups: boolean;
   onCampusSelect: (campus: string) => void;
   onSubGroupTypeSelect: (subGroupType: string) => void;
   onDateSelect: (date: string) => void;
@@ -312,6 +380,7 @@ const StepContent = ({
   campusSearchQuery,
   isGoingBack,
   groupType,
+  hasSubGroups,
   onCampusSelect,
   onSubGroupTypeSelect,
   onDateSelect,
@@ -357,7 +426,7 @@ const StepContent = ({
     );
   }
 
-  if (step === 2) {
+  if (step === 2 && hasSubGroups) {
     return (
       <SubGroupTypeStep
         hits={items}
@@ -369,12 +438,13 @@ const StepContent = ({
     );
   }
 
-  if (step === 3) {
+  if (step === 3 || (step === 2 && !hasSubGroups)) {
     return (
       <DateStep
         hits={items}
         selectedCampus={selectedCampus}
         selectedSubGroupType={selectedSubGroupType}
+        hasSubGroups={hasSubGroups}
         onSelect={onDateSelect}
         isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
@@ -388,6 +458,7 @@ const StepContent = ({
         selectedCampus={selectedCampus}
         selectedSubGroupType={selectedSubGroupType}
         selectedDate={selectedDate}
+        hasSubGroups={hasSubGroups}
         onSelect={onTimeSelect}
         isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
@@ -395,15 +466,18 @@ const StepContent = ({
   }
 
   if (step === 5) {
-    const matchingHit = items.find(
-      (hit) =>
+    const matchingHit = items.find((hit) => {
+      const campusMatch =
         hit.campus &&
         hit.campus.name &&
-        hit.time === selectedTime &&
-        hit.date === selectedDate &&
         hit.campus.name === selectedCampus &&
-        hit.subGroupType === selectedSubGroupType
-    );
+        hit.time === selectedTime &&
+        hit.date === selectedDate;
+      if (hasSubGroups) {
+        return campusMatch && hit.subGroupType === selectedSubGroupType;
+      }
+      return campusMatch;
+    });
     return (
       <FormStep
         groupGuid={matchingHit?.groupGuid || ""}
@@ -596,6 +670,7 @@ interface DateStepProps {
   hits: EventFinderHit[];
   selectedCampus: string;
   selectedSubGroupType: string;
+  hasSubGroups: boolean;
   onSelect: (date: string) => void;
   isGoingBack: boolean;
 }
@@ -604,21 +679,28 @@ const DateStep = ({
   hits,
   selectedCampus,
   selectedSubGroupType,
+  hasSubGroups,
   onSelect,
   isGoingBack,
 }: DateStepProps) => {
-  // Get unique dates for selected campus and subGroupType
+  // Get unique dates for selected campus and subGroupType (if applicable)
   const uniqueDates = useMemo(() => {
     const dateMap = new Map<string, { date: string; day: string }>();
     hits
-      .filter(
-        (hit) =>
+      .filter((hit) => {
+        const campusMatch =
           hit.campus &&
           hit.campus.name &&
-          hit.campus.name.trim() === selectedCampus.trim() &&
-          hit.subGroupType &&
-          hit.subGroupType.trim() === selectedSubGroupType.trim()
-      )
+          hit.campus.name.trim() === selectedCampus.trim();
+        if (hasSubGroups) {
+          return (
+            campusMatch &&
+            hit.subGroupType &&
+            hit.subGroupType.trim() === selectedSubGroupType.trim()
+          );
+        }
+        return campusMatch;
+      })
       .forEach((hit) => {
         if (!dateMap.has(hit.date)) {
           dateMap.set(hit.date, {
@@ -630,7 +712,7 @@ const DateStep = ({
     return Array.from(dateMap.values()).sort((a, b) =>
       a.date.localeCompare(b.date)
     );
-  }, [hits, selectedCampus, selectedSubGroupType]);
+  }, [hits, selectedCampus, selectedSubGroupType, hasSubGroups]);
 
   // Auto-select if only one option (only when not going back)
   useEffect(() => {
@@ -661,6 +743,7 @@ interface TimeStepProps {
   selectedCampus: string;
   selectedSubGroupType: string;
   selectedDate: string;
+  hasSubGroups: boolean;
   onSelect: (time: string) => void;
   isGoingBack: boolean;
 }
@@ -670,25 +753,32 @@ const TimeStep = ({
   selectedCampus,
   selectedSubGroupType,
   selectedDate,
+  hasSubGroups,
   onSelect,
   isGoingBack,
 }: TimeStepProps) => {
-  // Get unique times for selected campus, subGroupType, and date
+  // Get unique times for selected campus, subGroupType (if applicable), and date
   const uniqueTimes = useMemo(() => {
     const timeMap = new Map<string, { time: string; groupGuid: string }>();
 
-    // Filter hits that match campus, subGroupType, and date exactly
+    // Filter hits that match campus, subGroupType (if applicable), and date exactly
     // Trim values to handle any whitespace issues
-    const matchingHits = hits.filter(
-      (hit) =>
+    const matchingHits = hits.filter((hit) => {
+      const campusMatch =
         hit.campus &&
         hit.campus.name &&
-        hit.campus.name.trim() === selectedCampus.trim() &&
-        hit.subGroupType &&
-        hit.subGroupType.trim() === selectedSubGroupType.trim() &&
-        hit.date &&
-        hit.date.trim() === selectedDate.trim()
-    );
+        hit.campus.name.trim() === selectedCampus.trim();
+      const dateMatch = hit.date && hit.date.trim() === selectedDate.trim();
+      if (hasSubGroups) {
+        return (
+          campusMatch &&
+          dateMatch &&
+          hit.subGroupType &&
+          hit.subGroupType.trim() === selectedSubGroupType.trim()
+        );
+      }
+      return campusMatch && dateMatch;
+    });
 
     matchingHits.forEach((hit) => {
       if (!timeMap.has(hit.time)) {
@@ -700,7 +790,7 @@ const TimeStep = ({
     });
 
     return Array.from(timeMap.values());
-  }, [hits, selectedCampus, selectedSubGroupType, selectedDate]);
+  }, [hits, selectedCampus, selectedSubGroupType, selectedDate, hasSubGroups]);
 
   // Auto-select if only one option (only when not going back)
   useEffect(() => {
@@ -809,11 +899,3 @@ const getDaySuffix = (day: number): string => {
       return "th";
   }
 };
-
-const StepsData = [
-  { step: 1, title: "Choose Your Campus" },
-  { step: 2, title: "Select the Event Type" },
-  { step: 3, title: "Select the Date" },
-  { step: 4, title: "Pick Your Time" },
-  { step: 5, title: "Personal Information" },
-];
