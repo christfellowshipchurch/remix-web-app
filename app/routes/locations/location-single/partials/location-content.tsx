@@ -9,8 +9,9 @@ import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
 import { useResponsive } from "~/hooks/use-responsive";
 import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
+import { useFetcher } from "react-router-dom";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -32,6 +33,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   }
 
   const [activeTab, setActiveTab] = useState("sunday-details");
+  const fetcher = useFetcher<{ isValid: boolean }>();
 
   const {
     campusName,
@@ -42,12 +44,32 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     digitalTourVideo = "",
     phoneNumber,
     serviceTimes,
-    setReminderVideo = "",
+    setReminderVideo: originalSetReminderVideo = "",
     weekdaySchedule = [],
     additionalInfo,
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
+
+  // Validate Wistia ID if it exists
+  useEffect(() => {
+    if (originalSetReminderVideo) {
+      fetcher.load(
+        `/validate-wistia?videoId=${encodeURIComponent(
+          originalSetReminderVideo
+        )}`
+      );
+    }
+  }, [originalSetReminderVideo]);
+
+  // Use validated video ID - only use it if validation passed
+  // Don't render video while validation is in progress or if validation failed
+  const setReminderVideo =
+    originalSetReminderVideo &&
+    fetcher.state === "idle" &&
+    fetcher.data?.isValid === true
+      ? originalSetReminderVideo
+      : undefined;
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
@@ -55,25 +77,37 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   );
 
   const isOnline = campusName?.includes("Online");
+  const isSpanish = campusName?.includes("Español");
+
   if (isOnline) {
     return <OnlineCampus hit={hit} />;
   }
 
+  // Dynamic Hero Hardcoded Content / Data
+  const heading1 = isSpanish ? "Eres" : "You're";
+  const heading2 = isSpanish ? "bienvenido aquí" : "welcome here";
+  const ctas = [
+    {
+      title: isSpanish ? "Establece un recordatorio" : "Set a Reminder",
+      href: "#",
+      isSetAReminder: true,
+    },
+    {
+      title: isSpanish ? "Mapa y direcciones" : "Map & Directions",
+      href: hit.mapLink || "#",
+      target: "_blank",
+    },
+  ];
+
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
+        isSpanish={isSpanish}
         wistiaId={wistiaId}
         imagePath={campusImage}
         desktopHeight="800px"
-        customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
-        ctas={[
-          { title: "Set a Reminder", href: "#", isSetAReminder: true },
-          {
-            title: "Map & Directions",
-            href: hit.mapLink || "#",
-            target: "_blank",
-          },
-        ]}
+        customTitle={`<h1 style='font-weight: 800;'><span style='color: #0092BC;'>${heading1}</span> <br/>${heading2}</h1>`}
+        ctas={ctas}
       />
 
       <CampusInfo
@@ -88,6 +122,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
       <CampusTabsWrapper
         activeTab={activeTab}
+        isSpanish={isSpanish}
         setActiveTab={setActiveTab}
         setReminderVideo={setReminderVideo}
         isOnline={false}
@@ -102,19 +137,41 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 }
 
 const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
+  const fetcher = useFetcher<{ isValid: boolean }>();
+
   const {
     campusName,
     campusImage,
     campusInstagram,
     campusPastor,
     digitalTourVideo = "",
-    setReminderVideo = "",
+    setReminderVideo: originalSetReminderVideo = "",
     phoneNumber,
     serviceTimes,
     additionalInfo,
     backgroundVideoMobile,
     backgroundVideoDesktop,
   } = hit;
+
+  // Validate Wistia ID if it exists
+  useEffect(() => {
+    if (originalSetReminderVideo) {
+      fetcher.load(
+        `/validate-wistia?videoId=${encodeURIComponent(
+          originalSetReminderVideo
+        )}`
+      );
+    }
+  }, [originalSetReminderVideo]);
+
+  // Use validated video ID - only use it if validation passed
+  // Don't render video while validation is in progress or if validation failed
+  const setReminderVideo =
+    originalSetReminderVideo &&
+    fetcher.state === "idle" &&
+    fetcher.data?.isValid === true
+      ? originalSetReminderVideo
+      : undefined;
 
   const [activeTab, setActiveTab] = useState("sunday-details");
 
@@ -164,6 +221,7 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
 
 const CampusTabsWrapper = ({
   activeTab,
+  isSpanish,
   campusPastor,
   campusName,
   campusInstagram,
@@ -180,22 +238,28 @@ const CampusTabsWrapper = ({
   };
   campusName: string;
   campusInstagram: string;
+  isSpanish?: boolean;
   setActiveTab: (tab: string) => void;
-  setReminderVideo: string;
+  setReminderVideo: string | undefined;
   isOnline: boolean;
 }) => {
   return (
     <div className="relative h-full w-full">
       {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
       {activeTab == "sunday-details" && (
-        <WhatToExpect setReminderVideo={setReminderVideo} isOnline={isOnline} />
+        <WhatToExpect
+          setReminderVideo={setReminderVideo}
+          isOnline={isOnline}
+          isSpanish={isSpanish}
+        />
       )}
 
       <CampusTabs
         activeTab={activeTab}
+        isSpanish={isSpanish}
         setActiveTab={setActiveTab}
         tabs={[
-          () => <SundayDetails isOnline={isOnline} />,
+          () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
           () => <AboutUs campusPastor={campusPastor} />,
           ...(!isOnline ? [ForFamilies] : []),
           UpcomingEvents,
