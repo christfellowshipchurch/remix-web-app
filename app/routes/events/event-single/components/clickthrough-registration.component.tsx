@@ -845,8 +845,6 @@ const FormStep = ({
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType);
   const rockEmbedUrl = `https://rock.gocf.org/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}`;
 
-  console.log("rockEmbedUrl", rockEmbedUrl);
-
   if (!groupGuid) {
     return (
       <div className="w-full p-8 text-center">
