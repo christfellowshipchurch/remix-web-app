@@ -15,7 +15,7 @@ export function renderSection(section: PageBuilderSection) {
     case "RESOURCE_COLLECTION":
     case "EVENT_COLLECTION":
       return (
-        <div key={section.id} id={anchorId}>
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
           <CardCarouselSection
             title={section.name}
             description={section.content}
@@ -26,7 +26,7 @@ export function renderSection(section: PageBuilderSection) {
       );
     case "CTA_COLLECTION":
       return (
-        <div key={section.id} id={anchorId}>
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
           <CTACollectionSection
             title={section.name}
             description={section.content}
@@ -38,7 +38,7 @@ export function renderSection(section: PageBuilderSection) {
     case "FAQs":
       if (section.faqs) {
         return (
-          <div key={section.id} id={anchorId}>
+          <div key={section.id} id={anchorId} className="scroll-mt-18">
             <FAQsComponent data={section} />
           </div>
         );
@@ -52,7 +52,7 @@ export function renderSection(section: PageBuilderSection) {
     case "IMAGE_GALLERY":
       if (section.imageGallery) {
         return (
-          <div key={section.id} id={anchorId}>
+          <div key={section.id} id={anchorId} className="scroll-mt-18">
             <ImageGallerySection data={section} />
           </div>
         );
@@ -65,13 +65,13 @@ export function renderSection(section: PageBuilderSection) {
       return null;
     case "CONTENT_BLOCK":
       return (
-        <div key={section.id} id={anchorId}>
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
           <ContentBlock data={section as unknown as ContentBlockData} />
         </div>
       );
     default:
       return (
-        <div key={section.id} id={anchorId}>
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
           <h2>{section.name}</h2>
           <p>{section.type}</p>
         </div>
