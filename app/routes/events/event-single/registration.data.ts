@@ -40,17 +40,17 @@ export const hasSubGroupTypes = (groupType: string): boolean => {
   return GROUP_TYPES_WITH_SUB_GROUP_TYPES.includes(normalized);
 };
 
-export const GROUP_TYPE_TO_PAGE_ID: Record<string, number> = {
-  "Kids Dedication": 3253,
-  "Kids Starting Line": 3253,
-  Journey: 2464,
-  Baptism: 4861,
-  "Dream Team Kickoff": 5166,
+export const GROUP_TYPE_TO_WORKFLOW_TYPE_GUID: Record<string, string> = {
+  "Kids Dedication": "3165147d-80d3-4750-94ca-9a69285755fc",
+  "Kids Starting Line": "3165147d-80d3-4750-94ca-9a69285755fc",
+  Journey: "9bfec348-46a2-48af-b11a-afc074a92ae8",
+  Baptism: "06853125-f3d0-43ba-952e-bb312d9ba620",
+  "Dream Team Kickoff": "98615e2e-d75a-4a44-91fc-dcf4f468e654",
 };
 
-export const getPageIdForGroupType = (groupType: string): number => {
+export const getWorkflowTypeGuidForGroupType = (groupType: string): string => {
   if (!groupType) {
-    return GROUP_TYPE_TO_PAGE_ID["Kids Dedication"]; // Default fallback
+    return GROUP_TYPE_TO_WORKFLOW_TYPE_GUID["Kids Dedication"]; // Default fallback
   }
 
   // Normalize group type: handle hyphens, case variations
@@ -62,7 +62,7 @@ export const getPageIdForGroupType = (groupType: string): number => {
     .join(" ");
 
   return (
-    GROUP_TYPE_TO_PAGE_ID[normalized] ||
-    GROUP_TYPE_TO_PAGE_ID["Kids Dedication"]
+    GROUP_TYPE_TO_WORKFLOW_TYPE_GUID[normalized] ||
+    GROUP_TYPE_TO_WORKFLOW_TYPE_GUID["Kids Dedication"]
   );
 };

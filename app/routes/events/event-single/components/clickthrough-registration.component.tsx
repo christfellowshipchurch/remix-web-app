@@ -10,7 +10,7 @@ import { ClickableCard } from "./clickable-card.component";
 import { RockCampuses } from "~/lib/rock-config";
 import {
   getSubGroupTypeDescription,
-  getPageIdForGroupType,
+  getWorkflowTypeGuidForGroupType,
   hasSubGroupTypes,
 } from "../registration.data";
 
@@ -842,8 +842,8 @@ const FormStep = ({
   selectedDate: _selectedDate,
   selectedTime: _selectedTime,
 }: FormStepProps) => {
-  const pageId = getPageIdForGroupType(groupType);
-  const rockEmbedUrl = `https://rock.gocf.org/page/${pageId}?Group=${groupGuid}`;
+  const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType);
+  const rockEmbedUrl = `https://rock.gocf.org/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}`;
 
   if (!groupGuid) {
     return (
