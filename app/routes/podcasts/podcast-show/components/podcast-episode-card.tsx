@@ -11,9 +11,14 @@ export const PodcastEpisodeCard = ({
 }) => {
   const { title, season, episodeNumber, coverImage, url } = podcastEpisode;
 
-  const cardUrl = `/podcasts/${podcastShow
-    .toLowerCase()
-    .replace(/ /g, "-")}/${url}`;
+  // Handle special case for "young + adulting" - should probably revisit this later for better handling of pathnames
+  const getPodcastShowPath = (name: string): string => {
+    return name.trim().toLowerCase() === "young + adulting"
+      ? "young-and-adulting"
+      : name.toLowerCase().replace(/ /g, "-");
+  };
+
+  const cardUrl = `/podcasts/${getPodcastShowPath(podcastShow)}/${url}`;
 
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
