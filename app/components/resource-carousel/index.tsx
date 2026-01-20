@@ -42,7 +42,7 @@ export const CardCarouselSection = ({
 }: CardCarouselSectionProps) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:pl-18 2xl:!pl-0", className)}
+      className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}
       style={
         backgroundImage
           ? {
@@ -153,9 +153,8 @@ export const CardCarousel = ({
               carouselItemClassName
                 ? carouselItemClassName
                 : "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%]",
-              // index === 0 ? "ml-5 md:ml-0" : "ml-0",
               index === resources.length - 1
-                ? "mr-5 md:mr-12 lg:mr-18 2xl:!mr-0"
+                ? "mr-5 md:mr-12 lg:mr-18"
                 : "pr-0"
             )}
           >
