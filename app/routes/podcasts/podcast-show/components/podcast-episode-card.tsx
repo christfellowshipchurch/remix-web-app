@@ -1,31 +1,22 @@
 import { Icon } from "~/primitives/icon/icon";
-import { PodcastEpisode } from "../../types";
 import { Link } from "react-router-dom";
+import { CollectionItem } from "~/routes/page-builder/types";
 
 export const PodcastEpisodeCard = ({
-  podcastEpisode,
-  podcastShow,
+  resource,
 }: {
-  podcastEpisode: PodcastEpisode;
-  podcastShow: string;
+  resource: CollectionItem;
 }) => {
-  const { title, season, episodeNumber, coverImage, url } = podcastEpisode;
+  const { name, summary, image, pathname } = resource;
 
-  // Handle special case for "young + adulting" - should probably revisit this later for better handling of pathnames
-  const getPodcastShowPath = (name: string): string => {
-    return name.trim().toLowerCase() === "young + adulting"
-      ? "young-and-adulting"
-      : name.toLowerCase().replace(/ /g, "-");
-  };
-
-  const cardUrl = `/podcasts/${getPodcastShowPath(podcastShow)}/${url}`;
+  const cardUrl = `/podcasts/${pathname}`;
 
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">
         <img
-          src={coverImage}
-          alt={title}
+          src={image}
+          alt={name}
           className="w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]"
         />
         <Link
@@ -40,8 +31,8 @@ export const PodcastEpisodeCard = ({
         </Link>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-text-secondary">{`Season ${season} | Episode ${episodeNumber}`}</p>
-        <h3 className="text-lg font-bold">{title}</h3>
+        <p className="text-sm text-text-secondary">{summary}</p>
+        <h3 className="text-lg font-bold">{name}</h3>
       </div>
     </div>
   );

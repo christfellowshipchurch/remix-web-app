@@ -1,56 +1,29 @@
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "~/primitives/shadcn-primitives/carousel";
+import { CardCarouselSection } from "~/components/resource-carousel";
+import { PodcastEpisode } from "../../types";
 import { PodcastEpisodeCard } from "../components/podcast-episode-card";
 
 export const LatestEpisodes = () => {
   const { latestEpisodes, podcast } = useLoaderData<LoaderReturnType>();
 
   return (
-    <div className="w-full bg-white content-padding">
-      <div className="max-w-screen-content mx-auto py-16 md:py-28">
-        <div className="flex flex-col gap-4">
-          <h2 className="text-[28px] font-extrabold">Latest Episodes</h2>
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="mt-8 relative mb-12"
-          >
-            <CarouselContent className="flex pb-4 lg:pb-0 lg:max-w-full gap-6 lg:gap-10 xl:gap-8">
-              {latestEpisodes.map((episode, index) => (
-                <CarouselItem
-                  key={index}
-                  className="w-full aspect-video basis-[75%] md:basis-[50%] lg:basis-[38%] xl:basis-[29%] pl-0"
-                >
-                  <PodcastEpisodeCard
-                    podcastEpisode={episode}
-                    podcastShow={podcast.title}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="absolute -bottom-7">
-              <CarouselPrevious
-                className="left-0 border-navy disabled:border-[#AAAAAA]"
-                fill="#004f71"
-                disabledFill="#AAAAAA"
-              />
-              <CarouselNext
-                className="left-12 border-navy disabled:border-[#AAAAAA]"
-                fill="#004f71"
-                disabledFill="#AAAAAA"
-              />
-            </div>
-          </Carousel>
+    <div className="w-full bg-white">
+      <div className="py-16 md:py-28">
+          <CardCarouselSection
+            title="Latest Episodes"
+            CardComponent={PodcastEpisodeCard}
+            resources={latestEpisodes.map((episode: PodcastEpisode) => ({
+              id: episode.id,
+              name: episode.title,
+              summary: `Season ${episode.season} | Episode ${episode.episodeNumber}`,
+              image: episode.coverImage,
+              pathname: podcast.url + "/" + episode.url,
+              contentChannelId: podcast.episodesChannelGuid,
+              contentType: "PODCASTS" as const,
+            }))}
+            />
         </div>
       </div>
-    </div>
   );
 };

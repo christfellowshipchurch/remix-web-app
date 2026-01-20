@@ -15,6 +15,7 @@ export type PodcastShow = {
 };
 
 export type PodcastEpisode = {
+  id: string;
   show: string;
   title: string;
   publishDate: string;

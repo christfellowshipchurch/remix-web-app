@@ -18,8 +18,8 @@ export const HeroContent = () => {
           Season {season} | Episode {episodeNumber}
         </p>
         <p className="text-base font-normal">
-          {showGuests && showGuests !== "" && showGuests}
-          {publishDate && publishDate !== "" ? ` - ${publishDate}` : ""}
+          {showGuests && showGuests !== "" && `- ${showGuests}`}
+          {publishDate && publishDate !== "" ? publishDate : ""}
         </p>
       </div>
       {summary && (
