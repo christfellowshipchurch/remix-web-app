@@ -99,8 +99,8 @@ export const HTMLRenderer = ({
 
   // Use <p> tag for plain text, <div> for HTML content
   if (isText) {
-    return <p className={cn(className)}>{parsedContent}</p>;
+    return <p className={cn("html-renderer", className)}>{parsedContent}</p>;
   }
 
-  return <div className={cn(className)}>{parsedContent}</div>;
+  return <div className={cn("html-renderer", className)}>{parsedContent}</div>;
 };
