@@ -29,6 +29,9 @@ export const HeroContent = ({
               dangerouslySetInnerHTML={{ __html: description }}
             />
           )}
+
+          <div className="block md:hidden my-6 h-[1px] w-full bg-[#D9D9D9] opacity-50" />
+
           {latestEpisode && latestEpisode.url && (
             <Link
               to={latestEpisode.url || ""}

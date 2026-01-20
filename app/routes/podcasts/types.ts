@@ -15,6 +15,7 @@ export type PodcastShow = {
 };
 
 export type PodcastEpisode = {
+  id: string;
   show: string;
   title: string;
   publishDate: string;
@@ -73,9 +74,9 @@ export interface RockPodcastEpisode {
     applePodcast?: RockAttributeValue;
     spotify?: RockAttributeValue;
     amazonMusic?: RockAttributeValue;
-    youtube?: RockAttributeValue;
+    ytLink?: RockAttributeValue;
     rockLabel?: RockAttributeValue;
-    callsToAction?: RockAttributeValue;
+    callsToAction?: RockAttributeValue; // Mobile app only CTAs
     summary?: RockAttributeValue;
     additionalResources?: RockAttributeValue;
     releaseDate?: RockAttributeValue;

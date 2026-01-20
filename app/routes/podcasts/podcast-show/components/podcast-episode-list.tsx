@@ -7,9 +7,10 @@ import {
   useRefinementList,
 } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import { ContentItemHit } from "~/routes/search/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { LoaderReturnType } from "../loader";
 
 interface PodcastEpisodeListProps {
   ALGOLIA_APP_ID: string;
@@ -75,9 +76,9 @@ const SeasonRefinementList = () => {
 };
 
 const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
-  const cardUrl = `/podcasts/${hit.podcastShow
-    ?.toLowerCase()
-    .replace(/ /g, "-")}/${hit.url}`;
+  const {podcast} = useLoaderData<LoaderReturnType>();
+  const cardUrl = `/podcasts/${podcast.url}/${hit.url}`;
+  
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">

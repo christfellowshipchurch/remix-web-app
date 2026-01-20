@@ -44,12 +44,12 @@ export const SubscribeSection = ({
           <h2 className="text-[24px] md:text-[28px] font-extrabold leading-none">
             {title}
           </h2>
-          <div className="flex gap-4 w-full justify-center sm:w-auto md:gap-12">
+          <div  className="flex flex-wrap sm:flex-nowrap justify-center items-center gap-4 md:gap-12">
             {links
               .filter((link) => link.href && link.href !== "")
               .map((link, index) => (
                 <div
-                  className="flex flex-col items-center justify-center gap-2 bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
+                  className="flex flex-col items-center justify-center gap-2 basis-1/3 md:basis-auto bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
                   key={index}
                 >
                   <a href={link.href} target="_blank">
@@ -59,7 +59,7 @@ export const SubscribeSection = ({
                     />
                   </a>
                   <p
-                    className={`text-[10px] md:text-xs font-extrabold ${
+                    className={`text-[10px] md:text-xs text-center font-extrabold ${
                       link.icon === "amazonMusic" ? "-mt-3" : ""
                     }`}
                   >

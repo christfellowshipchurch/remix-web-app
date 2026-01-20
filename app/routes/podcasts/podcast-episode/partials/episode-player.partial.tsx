@@ -51,7 +51,7 @@ export function EpisodePlayer({ audio }: { audio: PodcastEpisode["audio"] }) {
         <wistia-player
           media-id={audio}
           swatch="false"
-          style={{ width: "100%", height: "100px" }}
+          style={{ width: "100%", height: "100px", color: "white" }}
         />
       </div>
     </div>

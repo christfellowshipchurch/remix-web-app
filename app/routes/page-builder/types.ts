@@ -63,7 +63,7 @@ export type ImageGallery = {
 };
 
 /**
- * Represents a collection card in the page builder, GroupType is one of the types that can be passed into here, make sure both have necesarry attributes
+ * Represents a collection card in the page builder
  */
 export type CollectionItem = {
   id: string;
