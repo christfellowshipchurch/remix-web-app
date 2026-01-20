@@ -32,22 +32,31 @@ const emptySearchClient = {
           query: "",
           params: "",
           processingTimeMS: 0,
-          index: "production_ContentItems",
+          index: "dev_contentItems",
         },
       ],
     }),
 };
 
-// Create a component to provide the current query
-function CurrentQueryProvider({ children }: { children: React.ReactNode }) {
+// Create a component to provide the current query and searchClient
+function CurrentQueryProvider({
+  children,
+  searchClient,
+}: {
+  children: React.ReactNode;
+  searchClient: SearchClient | { search: () => Promise<unknown> };
+}) {
   const { query } = useSearchBox();
 
-  // Clone the children with the current query prop
+  // Clone the children with the current query and searchClient props
   return React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(
-        child as React.ReactElement<{ query?: string }>,
-        { query }
+        child as React.ReactElement<{
+          query?: string;
+          searchClient?: SearchClient | { search: () => Promise<unknown> };
+        }>,
+        { query, searchClient }
       );
     }
     return child;
@@ -91,28 +100,38 @@ export const SearchBar = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (!isSearchOpen) return;
+
       const target = event.target as HTMLElement;
 
-      // Don't close if clicking inside search bar or search-related elements
+      // Don't close if clicking inside search bar
       if (searchBarRef.current?.contains(target as Node)) return;
 
+      // Don't close if clicking inside search popup
+      const searchPopup = document.querySelector(".popup-search-container");
+      if (searchPopup?.contains(target as Node)) return;
+
+      // Don't close if clicking on search button (to toggle)
       const isSearchButton = target
         .closest("button")
         ?.querySelector('svg[name="search"]');
+      if (isSearchButton) return;
+
+      // Don't close if clicking on Algolia search elements
       const isAlgoliaElement = [
         "ais-Hits",
         "ais-RefinementList",
         "ais-SearchBox",
       ].some((className) => target.closest(`.${className}`));
+      if (isAlgoliaElement) return;
 
-      if (!isSearchButton && !isAlgoliaElement) {
-        setIsSearchOpen(false);
-      }
+      // Close search for all other clicks (including navbar but outside search)
+      setIsSearchOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [setIsSearchOpen]);
+  }, [setIsSearchOpen, isSearchOpen]);
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -134,20 +153,23 @@ export const SearchBar = ({
   return (
     <div className="relative size-full" ref={searchBarRef}>
       <InstantSearch
-        indexName="production_ContentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          production_ContentItems: {
+          dev_contentItems: {
+            query: "",
+          },
+          dev_Locations: {
             query: "",
           },
         }}
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={20} />
+        <Configure hitsPerPage={10} />
 
         <div className="flex w-full items-center pb-2 border-b border-neutral-lighter gap-4">
           <button
@@ -177,7 +199,7 @@ export const SearchBar = ({
             }}
           />
         </div>
-        <CurrentQueryProvider>
+        <CurrentQueryProvider searchClient={searchClient}>
           <SearchPopup setIsSearchOpen={setIsSearchOpen} />
         </CurrentQueryProvider>
       </InstantSearch>

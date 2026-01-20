@@ -1,58 +1,126 @@
-import { RefinementList } from "react-instantsearch";
-import { useRef, useEffect } from "react";
+import { useRefinementList, useInstantSearch } from "react-instantsearch";
+import { useRef } from "react";
 
 export const MobileSearchCustomRefinementList = ({
   attribute,
 }: {
   attribute: string;
 }) => {
+  const { items, refine } = useRefinementList({ attribute });
+  const { indexUiState, setIndexUiState } = useInstantSearch();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+  // Get currently selected items from the index state
+  const selectedItems =
+    (indexUiState?.refinementList?.[attribute] as string[]) || [];
 
-    const handleClick = (event: Event) => {
-      // Check if the click was on a refinement item
-      const target = event.target as HTMLElement;
-      if (
-        target.closest('[data-testid="refinement-list-item"]') ||
-        target.closest(".ais-RefinementList-item")
-      ) {
-        // Scroll to the start after a short delay
-        setTimeout(() => {
-          const scrollContainer = container.querySelector(
-            ".ais-RefinementList-list"
-          ) as HTMLElement;
-          if (scrollContainer) {
-            scrollContainer.scrollTo({
-              left: 0,
-              behavior: "smooth",
-            });
-          }
-        }, 100);
+  // Check if "Ministry Page", "Page Builder", or "Redirect Card" is selected
+  const isPagesSelected =
+    selectedItems.includes("Ministry Page") ||
+    selectedItems.includes("Page Builder") ||
+    selectedItems.includes("Redirect Card");
+
+  // Filter out "Ministry Page", "Page Builder", and "Redirect Card" from regular items
+  const filteredItems = items.filter(
+    (item) =>
+      item.value !== "Ministry Page" &&
+      item.value !== "Page Builder" &&
+      item.value !== "Redirect Card"
+  );
+
+  const handleItemClick = (value: string) => {
+    refine(value);
+
+    // Scroll to the start after a short delay
+    setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
       }
-    };
+    }, 100);
+  };
 
-    container.addEventListener("click", handleClick);
-    return () => container.removeEventListener("click", handleClick);
-  }, []);
+  const handlePagesClick = () => {
+    const currentSelected = selectedItems.filter(
+      (item) =>
+        item !== "Ministry Page" &&
+        item !== "Page Builder" &&
+        item !== "Redirect Card"
+    );
+
+    if (isPagesSelected) {
+      // Deselect "Ministry Page", "Page Builder", and "Redirect Card"
+      setIndexUiState((prevState) => ({
+        ...prevState,
+        refinementList: {
+          ...prevState.refinementList,
+          [attribute]: currentSelected,
+        },
+      }));
+    } else {
+      // Select "Ministry Page", "Page Builder", and "Redirect Card"
+      setIndexUiState((prevState) => ({
+        ...prevState,
+        refinementList: {
+          ...prevState.refinementList,
+          [attribute]: [
+            ...currentSelected,
+            "Ministry Page",
+            "Page Builder",
+            "Redirect Card",
+          ],
+        },
+      }));
+    }
+
+    // Scroll to the start after a short delay
+    setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
+  };
 
   return (
-    <div ref={containerRef}>
-      <RefinementList
-        classNames={{
-          list: "flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 scrollbar-hide",
-          checkbox: "hidden",
-          count: "hidden",
-          item: "first:ml-4 flex items-center justify-center text-center text-sm font-bold text-[#7B7382] px-4 py-1 whitespace-nowrap transition-all duration-300",
-          selectedItem:
-            "flex items-center justify-center text-center text-sm font-bold text-white px-4 py-1 whitespace-nowrap  bg-navy rounded-[55px] transition-all duration-300",
-          label:
-            "flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer",
-        }}
-        attribute={attribute}
-      />
+    <div
+      ref={containerRef}
+      className="flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 scrollbar-hide"
+    >
+      {/* Custom "Pages" button combining Ministry Page and Page Builder */}
+      <button
+        onClick={handlePagesClick}
+        className={`flex items-center justify-center text-center text-sm font-bold px-4 py-1 whitespace-nowrap transition-all duration-300 ml-4 ${
+          isPagesSelected
+            ? "text-white bg-navy rounded-[55px]"
+            : "text-[#7B7382]"
+        }`}
+      >
+        Pages
+      </button>
+
+      {/* Other refinement items */}
+      {filteredItems.map((item) => {
+        const isSelected = selectedItems.includes(item.value);
+
+        return (
+          <button
+            key={item.value}
+            onClick={() => handleItemClick(item.value)}
+            className={`flex items-center justify-center text-center text-sm font-bold px-4 py-1 whitespace-nowrap transition-all duration-300 ${
+              isSelected
+                ? "text-white bg-navy rounded-[55px]"
+                : "text-[#7B7382]"
+            }`}
+          >
+            {item.label}
+          </button>
+        );
+      })}
     </div>
   );
 };

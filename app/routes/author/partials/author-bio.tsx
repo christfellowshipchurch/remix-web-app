@@ -53,11 +53,7 @@ export function AuthorBio({
           <h2 className="text-2xl font-semibold">{fullName}</h2>
           {jobTitle && <h3 className="text-lg">{jobTitle}</h3>}
         </div>
-        {bio && (
-          <p>
-            <HTMLRenderer html={bio} />
-          </p>
-        )}
+        {bio && <HTMLRenderer html={bio} />}
         {!hideSocialLinks && (
           <div className="flex gap-2">
             {socialLinks && <ShareLinks {...shareLinksProps} />}

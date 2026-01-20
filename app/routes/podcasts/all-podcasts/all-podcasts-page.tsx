@@ -12,7 +12,6 @@ export function AllPodcastsPage() {
       <DynamicHero
         imagePath="/assets/images/podcasts/hero.jpg"
         customTitle="Podcasts"
-        ctas={[{ href: "#latest", title: "Call to Action" }]}
       />
       <div className="py-10 md:py-20 w-full">
         <div className="flex flex-col">

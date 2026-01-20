@@ -27,7 +27,7 @@ const emptySearchClient = {
           query: "",
           params: "",
           processingTimeMS: 0,
-          index: "production_ContentItems",
+          index: "dev_contentItems",
         },
       ],
     }),
@@ -64,27 +64,30 @@ export const MobileSearch = ({
   return (
     <div className="h-full overflow-y-auto bg-white">
       <InstantSearch
-        indexName="production_ContentItems"
+        indexName="dev_contentItems"
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          production_ContentItems: {
+          dev_contentItems: {
+            query: "",
+          },
+          dev_Locations: {
             query: "",
           },
         }}
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={7} />
+        <Configure hitsPerPage={9} />
 
         <div className="flex flex-col gap-6 pb-2 sticky top-0 bg-white shadow-sm border-b border-[#E0E0E0]">
           {/* Search Bar */}
           <div className="flex w-full items-center pt-6 px-4 gap-3">
             <button
               onClick={() => setIsSearchOpen(false)}
-              className="flex items-center md:hidden"
+              className="flex items-center lg:hidden"
             >
               <Icon
                 name="arrowBack"
@@ -111,7 +114,10 @@ export const MobileSearch = ({
         </div>
 
         {/* Search Results + Refinements */}
-        <SearchPopup setIsSearchOpen={setIsSearchOpen} />
+        <SearchPopup
+          setIsSearchOpen={setIsSearchOpen}
+          searchClient={searchClient}
+        />
       </InstantSearch>
     </div>
   );

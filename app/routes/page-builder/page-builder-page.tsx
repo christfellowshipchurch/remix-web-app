@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router-dom";
+import kebabCase from "lodash/kebabCase";
 import { PageBuilderLoader, PageBuilderSection } from "./types";
 import { CardCarouselSection } from "~/components/resource-carousel";
 import { CTACollectionSection } from "./components/cta-collection";
@@ -8,31 +9,39 @@ import { ImageGallerySection } from "./components/image-gallery";
 import { FAQsComponent } from "./components/faq";
 
 export function renderSection(section: PageBuilderSection) {
+  const anchorId = kebabCase(section.name);
+
   switch (section.type) {
     case "RESOURCE_COLLECTION":
     case "EVENT_COLLECTION":
       return (
-        <CardCarouselSection
-          key={section.id}
-          title={section.name}
-          description={section.content}
-          resources={section.collection || []}
-          viewMoreLink="#tbd"
-        />
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
+          <CardCarouselSection
+            title={section.name}
+            description={section.content}
+            resources={section.collection || []}
+            viewMoreLink={section.viewMoreLink || undefined}
+          />
+        </div>
       );
     case "CTA_COLLECTION":
       return (
-        <CTACollectionSection
-          key={section.id}
-          title={section.name}
-          description={section.content}
-          resources={section.collection || []}
-          viewMoreLink="#tbd"
-        />
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
+          <CTACollectionSection
+            title={section.name}
+            description={section.content}
+            resources={section.collection || []}
+            viewMoreLink={section.viewMoreLink || undefined}
+          />
+        </div>
       );
     case "FAQs":
       if (section.faqs) {
-        return <FAQsComponent key={section.id} data={section} />;
+        return (
+          <div key={section.id} id={anchorId} className="scroll-mt-18">
+            <FAQsComponent data={section} />
+          </div>
+        );
       }
 
       console.error(
@@ -42,7 +51,11 @@ export function renderSection(section: PageBuilderSection) {
       return null;
     case "IMAGE_GALLERY":
       if (section.imageGallery) {
-        return <ImageGallerySection key={section.id} data={section} />;
+        return (
+          <div key={section.id} id={anchorId} className="scroll-mt-18">
+            <ImageGallerySection data={section} />
+          </div>
+        );
       }
 
       console.error(
@@ -52,14 +65,13 @@ export function renderSection(section: PageBuilderSection) {
       return null;
     case "CONTENT_BLOCK":
       return (
-        <ContentBlock
-          key={section.id}
-          data={section as unknown as ContentBlockData}
-        />
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
+          <ContentBlock data={section as unknown as ContentBlockData} />
+        </div>
       );
     default:
       return (
-        <div key={section.id}>
+        <div key={section.id} id={anchorId} className="scroll-mt-18">
           <h2>{section.name}</h2>
           <p>{section.type}</p>
         </div>

@@ -80,8 +80,10 @@ const TitleSection = () => {
           take alone. We’re excited to share this with you! If you’d like, you
           can{" "}
           <a
-            href="/assets/pdf/yes-devotional.pdf"
+            href="https://rock.gocf.org/Content/website/journey/YouSaidYes_Devotional.pdf"
             download
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-ocean underline cursor-pointer"
           >
             download it as a PDF.

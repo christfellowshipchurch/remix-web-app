@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { CollectionItem } from "~/routes/page-builder/types";
 import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
 import { getImages } from "~/lib/.server/rock-utils";
+import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -15,6 +16,7 @@ export type LoaderReturnType = {
   content: string;
   summary: string;
   coverImage: string;
+  wistiaId?: string;
   author: AuthorProps | null;
   publishDate: string;
   readTime: number;
@@ -88,6 +90,18 @@ export const loader: LoaderFunction = async ({ params }) => {
     )) as AuthorProps;
   }
 
+  let wistiaId: string | undefined;
+  const mediaGuid = attributeValues?.media?.value;
+  if (mediaGuid) {
+    try {
+      const mediaElement = await fetchWistiaDataFromRock(mediaGuid);
+      wistiaId = mediaElement?.sourceKey || undefined;
+    } catch (error) {
+      console.error("Error fetching Wistia data:", error);
+      wistiaId = undefined;
+    }
+  }
+
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || "",
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY || "",
@@ -97,6 +111,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     content,
     summary: summary.value,
     coverImage: coverImage[0],
+    wistiaId,
     author: {
       fullName: authorDetails?.fullName || "",
       photo: {
