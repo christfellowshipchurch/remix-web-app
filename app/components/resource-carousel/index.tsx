@@ -57,7 +57,7 @@ export const CardCarouselSection = ({
         <div className="w-full flex justify-center">
           <div className="w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28">
             {/* Header */}
-            <div className="pl-5 md:pl-0 w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
+            <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
               <div
                 className={cn(
                   "flex flex-col w-full gap-2",
