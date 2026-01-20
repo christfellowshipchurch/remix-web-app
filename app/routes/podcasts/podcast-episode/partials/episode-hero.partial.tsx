@@ -19,7 +19,6 @@ export function EpisodeHero() {
               alt={title || "Cover"}
             />
             <div>
-              +
               <HeroContent />
               <div className="hidden md:block lg:hidden mt-6">
                 <IconButton

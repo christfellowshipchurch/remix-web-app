@@ -10,7 +10,7 @@ type PodcastCardProps = {
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, apple, spotify, amazon, url, coverImage } =
+  const { title, description, apple, spotify, amazon, youtube, url, coverImage } =
     podcast;
 
   const links = [
@@ -28,6 +28,11 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
       label: "Amazon Music",
       icon: "amazonMusic",
       href: amazon,
+    },
+    {
+      label: "YouTube",
+      icon: "youtube",
+      href: youtube,
     },
   ];
 
@@ -59,28 +64,34 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
             </Button>
 
             <div className="flex gap-2">
-              {links.map((link, index) => (
-                <Link
-                  key={index}
-                  to={link.href}
-                  target="_blank"
-                  className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
-                >
-                  <Icon
-                    name={link.icon as keyof typeof import("~/lib/icons").icons}
-                    color="white"
-                    size={link.icon === "amazonMusic" ? 36 : 24}
-                    className={`${link.icon === "amazonMusic" ? "-mt-1" : ""}`}
-                  />
-                  <p
-                    className={`text-[7px] font-extrabold text-white ${
-                      link.icon === "amazonMusic" ? "-mt-2" : ""
-                    }`}
+              {links
+                .filter((link) => !!link.href)
+                .map((link, index) => (
+                  <Link
+                    key={index}
+                    to={link.href}
+                    target="_blank"
+                    className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
                   >
-                    {link.label}
-                  </p>
-                </Link>
-              ))}
+                    <Icon
+                      name={
+                        link.icon as keyof typeof import("~/lib/icons").icons
+                      }
+                      color="white"
+                      size={link.icon === "amazonMusic" ? 36 : 24}
+                      className={`${
+                        link.icon === "amazonMusic" ? "-mt-1" : ""
+                      }`}
+                    />
+                    <p
+                      className={`text-[7px] font-extrabold text-white ${
+                        link.icon === "amazonMusic" ? "-mt-2" : ""
+                      }`}
+                    >
+                      {link.label}
+                    </p>
+                  </Link>
+                ))}
             </div>
           </div>
         </div>
