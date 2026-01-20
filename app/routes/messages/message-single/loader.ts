@@ -103,7 +103,7 @@ export const mapRockDataToMessage = async (
     speaker,
     url: rockItem.attributeValues?.url?.value || "",
     additionalResources: parseRockKeyValueList(
-      rockItem.attributeValues?.additionalResources?.value || ""
+      rockItem.attributeValues?.callsToAction?.value || ""
     ).map((resource) => ({
       title: resource.key,
       url: resource.value,

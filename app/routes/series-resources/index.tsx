@@ -4,7 +4,7 @@ import { SeriesResourceCarousel } from "./partials/series-carousel.partial";
 import { Button } from "~/primitives/button/button.primitive";
 
 export function SeriesResources() {
-  const { series, messages, resources } = useLoaderData<LoaderReturnType>();
+  const { series, messages, resources, events } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className="flex flex-col">
@@ -41,29 +41,27 @@ export function SeriesResources() {
               >
                 App Devoltional
               </Button>
-
-              {/* TODO: If we want CTAs to come from Rock */}
-              {/* {series.attributeValues.callToActions &&
-              series.attributeValues.callToActions.length > 0 && (
-                <div className="flex flex-col md:flex-row gap-4 w-full  md:w-auto">
-                  {series.attributeValues.callToActions?.map((cta, index) => (
-                    <Button
-                      key={index}
-                      intent={index === 0 ? "primary" : "secondary"}
-                      className="w-full"
-                      size="lg"
-                      href={cta.url}
-                    >
-                      {cta.title}
-                    </Button>
-                  ))}
-                </div>
-              )} */}
             </div>
           </div>
         </div>
       </div>
+
       <div className="w-full flex flex-col">
+        {/* Events Resources Section */}
+        {events && events.length > 0 && (
+          <SeriesResourceCarousel
+            type="resources"
+            title="Events"
+            items={events.map((event) => ({
+              title: event.title,
+              summary: event.summary,
+              coverImage: event.coverImage,
+              url: `/events/${event.attributeValues.url.value}`,
+            }))}
+            bg="gray"
+          />
+        )}
+
         {/* Series Messages */}
         <SeriesResourceCarousel
           type="messages"
@@ -79,7 +77,7 @@ export function SeriesResources() {
             summary="Explore other resources that may be of interest to you"
             items={resources.map((resource) => ({
               title: resource.title,
-              summary: "",
+              summary: resource.summary,
               coverImage: resource.coverImage,
               url: resource.attributeValues.url.value,
             }))}
