@@ -156,6 +156,33 @@
   }
 }
 
+.faq-content {
+  /* Lists */
+  ul,
+  ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  /* Nested/indented lists */
+  ul ul {
+    list-style-type: circle;
+    margin-top: 0;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin: 0.1rem 0;
+  }
+}
+
 .devotional-content {
   p {
     margin-bottom: 0.5rem;
