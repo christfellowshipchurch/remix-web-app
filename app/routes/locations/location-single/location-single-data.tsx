@@ -90,7 +90,7 @@ export const spanishGetInvolvedResources: CollectionItem[] = [
   {
     name: "Niños",
     summary:
-      "Para Bebés Hasta 5º Grado - Christ Fellowship Kids es diseñado para colaborar con los padres como juntos, llevamos a nuestros niños a amar a Jesús, amar a otros y amar la vida.",
+      "Para recién nacidos hasta primaria - Christ Fellowship Kids está diseñado para asociarse con los padres para que, juntos, guiemos a nuestros niños a amar a Jesús, amar a los demás y amar la vida.",
     image: "/assets/images/locations/get-involved/kids.webp",
     pathname: "/ministries/kids",
     contentType: "REDIRECT_CARD",
@@ -100,7 +100,7 @@ export const spanishGetInvolvedResources: CollectionItem[] = [
   {
     name: "Estudiantes",
     summary:
-      "Para Estudiantes de Secundaria y Universitarios - Un lugar donde tu estudiante puede crecer en su relación con Jesús y con otros.",
+      "Para estudiantes de Middle School  y High School - Un lugar donde tu estudiante puede crecer en su relación con Jesús y en sus relaciones con los demás.",
     image: "/assets/images/locations/get-involved/students.webp",
     pathname: "/ministries/students",
     contentType: "REDIRECT_CARD",
@@ -110,7 +110,7 @@ export const spanishGetInvolvedResources: CollectionItem[] = [
   {
     name: "Jóvenes Adultos",
     summary:
-      "Para Estudiantes de Secundaria y Universitarios - Un lugar donde tu estudiante puede crecer en su relación con Jesús y con otros.",
+      "Para estudiantes universitarios y jóvenes adultos - El lugar perfecto para quienes desean crecer en su relación con Jesús y conectarse con otros jóvenes adultos en todo el sur de Florida.",
     image: "/assets/images/locations/get-involved/ya.webp",
     pathname: "/ministries/young-adults",
     contentType: "REDIRECT_CARD",
@@ -120,7 +120,7 @@ export const spanishGetInvolvedResources: CollectionItem[] = [
   {
     name: "Grupos y Clases",
     summary:
-      "Para Todos - Todo lo que necesitas para conectarte y crecer en tu fe.",
+      "Para todos - Todo lo que necesitas para conectarte y crecer en tu fe.",
     image: "/assets/images/groups-bg.webp",
     pathname: "/group-finder",
     contentType: "REDIRECT_CARD",
@@ -171,7 +171,7 @@ export const englishCampusAmenities: CampusAmenity[] = [
 
 export const spanishCampusAmenities: CampusAmenity[] = [
   {
-    title: "Estacionamiento Gratis",
+    title: "Estacionamiento Gratuito",
     icon: "car",
   },
   {
@@ -183,7 +183,7 @@ export const spanishCampusAmenities: CampusAmenity[] = [
     icon: "handicap",
   },
   {
-    title: "Ujieres Amables y Serviciales",
+    title: "Anfitriones y Acomodadores Serviciales",
     icon: "happy",
   },
   {
@@ -191,7 +191,7 @@ export const spanishCampusAmenities: CampusAmenity[] = [
     icon: "face",
   },
   {
-    title: "Sala de Lactancia/Cuna",
+    title: "Sala Familiar / Lactancia",
     icon: "universalAccess",
   },
   {
@@ -235,22 +235,22 @@ export const englishTabData: TabData[] = [
 
 export const spanishTabData: TabData[] = [
   {
-    label: "Cada Domingo",
+    label: "Detalles del Domingo",
     mobileLabel: "Domingos",
     value: "sunday-details",
   },
   {
-    label: "Conócenos",
+    label: "Quienes Somos",
     mobileLabel: "Conócenos",
     value: "about-us",
   },
   {
-    label: "Familias",
+    label: "Para las Familias",
     mobileLabel: "Familias",
     value: "for-families",
   },
   {
-    label: "Eventos",
+    label: "Próximos Eventos",
     mobileLabel: "Eventos",
     value: "upcoming-events",
   },
@@ -276,24 +276,24 @@ export const onlineTabsData: TabData[] = [
 
 export const expectSpanishItems = [
   {
-    title: "Ven Como Eres, Seriamente!",
+    title: "Ven Como Eres (en serio)",
     description:
-      "Los vestidos casuales son la norma—no necesitas vestirte para asistir a un servicio.",
+      "La ropa cómoda es lo normal.  No necesitas arreglarte de más para visitar un servicio.",
   },
   {
-    title: "Mensajes Que Hablan de la Vida Real (en aproximadamente 1 hora)",
+    title: "Mensajes Relevantes Que Hablan a la Vida Real (aprox. 1 hora)",
     description:
-      "Mensajes inspiradores y basados en la Biblia que conectan con desafíos y preguntas de la vida cotidiana.",
+      "Mensajes bíblicos, dinámicos e inspiradores que se relacionan con los desafíos y las preguntas del día a día.",
   },
   {
-    title: "Personas Amables y Serviciales",
+    title: "Rostros Amigables y Personas Dispuestas a Ayudar",
     description:
       "Estamos aquí para ayudarte a sentirte cómodo desde el momento en que llegas.",
   },
   {
-    title: "Los Niños También Tienen Diversión! ",
+    title: "Los Niños También Se Divierten!",
     description:
-      "Programas seguros y entretenidos están disponibles para bebés hasta 5º grado (ajusta las edades según cada campus) durante el servicio.",
+      "Programas seguros y atractivos están disponibles para niños desde recién nacidos hasta 5.º grado(los rangos de edad se ajustan según cada campus) durante el servicio.",
   },
 ];
 

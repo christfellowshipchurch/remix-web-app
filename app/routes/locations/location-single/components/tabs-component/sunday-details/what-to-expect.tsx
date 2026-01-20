@@ -18,7 +18,7 @@ export const WhatToExpect = ({
   isOnline?: boolean;
   isSpanish?: boolean;
 }) => {
-  const title = isSpanish ? "¿Qué puedo esperar?" : "What to Expect";
+  const title = isSpanish ? "¿Qué esperar?" : "What to Expect";
   const expectItems = isSpanish ? expectSpanishItems : expectEnglishItems;
 
   return (
@@ -40,10 +40,10 @@ export const WhatToExpect = ({
             "flex flex-1 w-full flex-col gap-6",
             "lg:flex-auto",
             !isOnline &&
-              setReminderVideo &&
-              "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
+            setReminderVideo &&
+            "lg:w-3/7 lg:max-w-[616px] xl:w-3/7",
             (isOnline || !setReminderVideo) &&
-              "lg:w-full lg:max-w-[964px] lg:items-center"
+            "lg:w-full lg:max-w-[964px] lg:items-center"
           )}
         >
           <h2 className="font-extrabold text-[24px] md:text-[36px] lg:text-[48px] xl:text-[52px]">
@@ -80,11 +80,10 @@ export const WhatToExpect = ({
           <div className={cn("flex", isOnline && "mt-4 lg:t-8")}>
             <SetAReminderModal
               ModalButton={ModalButton}
-              className={`${
-                isOnline
-                  ? "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy rounded-lg"
-                  : ""
-              }`}
+              className={`${isOnline
+                ? "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy rounded-lg"
+                : ""
+                }`}
             />
           </div>
         </div>

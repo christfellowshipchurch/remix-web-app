@@ -239,7 +239,7 @@ export const faqEspanolData = [
   {
     title: "¿En qué cree Christ Fellowship?",
     content:
-      'Christ Fellowship es una iglesia en el sur de Florida con una pasión por ayudarte a conocer a Dios y crecer en tus relaciones para que puedas descubrir tu propósito e impactar tu mundo. Dirigidos por los Senior Pastors Todd y Julie Mullins, nuestra misión es impactar al mundo con el amor y el mensaje de Jesucristo: a todos, todos los días, en todas partes. <br />  <br />  Obtén más información sobre <a target="_blank" href="/about">nuestra iglesia y nuestras creencias.</a>',
+      'Christ Fellowship es una iglesia en el sur de Florida con una pasión por ayudarte a conocer a Dios y crecer en tus relaciones para que puedas descubrir tu propósito e impactar tu mundo. Dirigidos por los Pastores principales Todd y Julie, nuestra misión es impactar al mundo con el amor y el mensaje de Jesucristo: Todos Nosotros, En todo Momento, En todo lugar. <br />  <br />  Obtén más información sobre <a target="_blank" href="/about">nuestra iglesia y nuestras creencias.</a>',
   },
   {
     title: "¿Hay alguna expectativa de parte de los visitantes?",

@@ -34,24 +34,24 @@ export const CampusTabs = ({
   const data = isOnline
     ? onlineTabsData
     : isSpanish
-    ? spanishTabData
-    : englishTabData;
+      ? spanishTabData
+      : englishTabData;
   return (
     <Tabs.Root
       value={activeTab}
       onValueChange={setActiveTab}
       className={cn("w-full flex flex-col justify-center items-center")}
     >
-      {/* iPad/Desktop Tabs */}
+      {/* Desktop Tabs */}
       <Tabs.List
         className={cn(
-          "flex md:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
+          "flex w-[90vw] lg:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
           isSpanish ? "gap-0 text-[14.5px] sm:text-base" : "gap-2",
           isOnline
             ? "max-w-[520px]"
             : isSpanish
-            ? "max-w-[580px]"
-            : "max-w-[668px]",
+              ? "max-w-[570px] lg:max-w-[800px]"
+              : "max-w-[668px]",
           tasListStyle,
           activeTab === "sunday-details" && "!absolute -top-9 left-1/2"
         )}
@@ -61,7 +61,7 @@ export const CampusTabs = ({
             {/* Desktop Tabs */}
             <Tabs.Trigger
               value={tab.value}
-              className="hidden md:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
+              className="hidden lg:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
             >
               {tab.label}
             </Tabs.Trigger>
@@ -69,7 +69,7 @@ export const CampusTabs = ({
             {/* Mobile Tabs */}
             <Tabs.Trigger
               value={tab.value}
-              className="md:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
+              className="lg:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer"
             >
               {tab.mobileLabel}
             </Tabs.Trigger>

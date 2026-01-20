@@ -64,14 +64,14 @@ export const VirtualTourTabs = ({
               isOnline
                 ? "Join Us Online!"
                 : isSpanish
-                ? "Toma Un Tour Virtual"
+                ? "Toma Un Recorrido Virtual"
                 : "Take a Virtual Tour"
             }
             description={
               isOnline
                 ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
                 : isSpanish
-                ? "Experimenta lo que es ser parte de Christ Fellowship antes de tu visita."
+                ? "Descubre cómo es asistir a Christ Fellowship antes de visitarnos."
                 : "Experience what it’s like to attend Christ Fellowship before your visit."
             }
             wistiaId={wistiaId}
@@ -84,7 +84,7 @@ export const VirtualTourTabs = ({
               <TourButton value="map">{isSpanish ? "Mapa" : "Map"}</TourButton>
               {wistiaId && (
                 <TourButton value="tour">
-                  {isSpanish ? "Tour Virtual" : "Virtual Tour"}
+                  {isSpanish ? "Recorrido Virtual" : "Virtual Tour"}
                 </TourButton>
               )}
             </>

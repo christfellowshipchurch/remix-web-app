@@ -84,8 +84,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   }
 
   // Dynamic Hero Hardcoded Content / Data
-  const heading1 = isSpanish ? "Eres" : "You're";
-  const heading2 = isSpanish ? "bienvenido aquí" : "welcome here";
+  const heading1 = isSpanish ? "Este es un" : "You're";
+  const heading2 = isSpanish ? "lugar para ti" : "welcome here";
   const ctas = [
     {
       title: isSpanish ? "Establece un recordatorio" : "Set a Reminder",
