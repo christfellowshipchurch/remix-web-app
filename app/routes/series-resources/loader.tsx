@@ -133,9 +133,7 @@ const getSeriesEvents = async (seriesGuid: string) => {
       event.coverImage = createImageUrlFromGuid(
         event.attributeValues.image.value
       );
-      event.attributeValues.url.value = `${getContentChannelUrl(
-        parseInt(event.contentChannelId)
-      )}/${event.attributeValues.url.value}`;
+      event.attributeValues.url.value = event.attributeValues.url.value;
       event.summary = event.attributeValues.summary.value;
     }
   );

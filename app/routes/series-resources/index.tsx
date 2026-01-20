@@ -56,7 +56,7 @@ export function SeriesResources() {
               title: event.title,
               summary: event.summary,
               coverImage: event.coverImage,
-              url: event.attributeValues.url.value,
+              url: `/events/${event.attributeValues.url.value}`,
             }))}
             bg="gray"
           />
