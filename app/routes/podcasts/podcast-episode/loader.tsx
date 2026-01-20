@@ -179,7 +179,7 @@ async function mapRockEpisodeToPodcastEpisode(
     apple: rockEpisode?.attributeValues?.applePodcast?.value || "",
     spotify: rockEpisode?.attributeValues?.spotify?.value || "",
     amazon: rockEpisode?.attributeValues?.amazonMusic?.value || "",
-    youtube: rockEpisode?.attributeValues?.youtube?.value || "",
+    youtube: rockEpisode?.attributeValues?.ytLink?.value || "",
     resources: parseRockKeyValueList(
       rockEpisode?.attributeValues?.additionalResources?.value || ""
     ).map((resource) => ({

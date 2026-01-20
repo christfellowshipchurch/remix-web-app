@@ -10,7 +10,7 @@ type PodcastCardProps = {
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, apple, spotify, amazon, url, coverImage } =
+  const { title, description, apple, spotify, amazon, youtube, url, coverImage } =
     podcast;
 
   const links = [
@@ -28,6 +28,11 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
       label: "Amazon Music",
       icon: "amazonMusic",
       href: amazon,
+    },
+    {
+      label: "YouTube",
+      icon: "youtube",
+      href: youtube,
     },
   ];
 

@@ -73,7 +73,7 @@ export interface RockPodcastEpisode {
     applePodcast?: RockAttributeValue;
     spotify?: RockAttributeValue;
     amazonMusic?: RockAttributeValue;
-    youtube?: RockAttributeValue;
+    ytLink?: RockAttributeValue;
     rockLabel?: RockAttributeValue;
     callsToAction?: RockAttributeValue; // Mobile app only CTAs
     summary?: RockAttributeValue;
