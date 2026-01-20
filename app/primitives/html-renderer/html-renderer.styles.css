@@ -1,5 +1,28 @@
-/* .article-content is being added so that only the child tags of the article-content elements have this edited styling */
+ul,
+ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
 
+ul {
+  list-style-type: disc;
+}
+
+/* Nested/indented lists */
+ul ul {
+  list-style-type: circle;
+  margin-top: 0;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin: 0.1rem 0;
+}
+
+/* .article-content is being added so that only the child tags of the article-content elements have this edited styling */
 /* H1 - H3 -> Titles */
 .article-content,
 .content-block {
@@ -153,33 +176,6 @@
   em,
   i {
     font-style: italic;
-  }
-}
-
-.faq-content {
-  /* Lists */
-  ul,
-  ol {
-    margin: 0.75rem 0;
-    padding-left: 1.5rem;
-  }
-
-  ul {
-    list-style-type: disc;
-  }
-
-  /* Nested/indented lists */
-  ul ul {
-    list-style-type: circle;
-    margin-top: 0;
-  }
-
-  ol {
-    list-style-type: decimal;
-  }
-
-  li {
-    margin: 0.1rem 0;
   }
 }
 
