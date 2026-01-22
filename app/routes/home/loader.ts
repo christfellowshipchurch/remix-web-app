@@ -1,6 +1,6 @@
 // This Loader is currenlty being use for both Home and About pages
 import { leaders } from "../about/components/leaders-data";
-// import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+
 import {
   fetchAuthorArticles,
   fetchPersonAliasGuid,
@@ -9,6 +9,12 @@ import {
 import { calculateReadTime, createImageUrlFromGuid } from "~/lib/utils";
 import { Author, AuthorArticleProps } from "../author/types";
 import { formatDate } from "date-fns";
+
+export type HomeLoaderData = {
+  leadersWithArticles: Author[];
+  ALGOLIA_APP_ID?: string;
+  ALGOLIA_SEARCH_API_KEY?: string;
+};
 
 const getAuthorIdsByPathname = async (person: Author): Promise<string> => {
   try {
@@ -25,7 +31,7 @@ const getAuthorIdsByPathname = async (person: Author): Promise<string> => {
 };
 
 // Grabs author data for the LeadersGrid and LeaderScroll components
-export const loader = async () => {
+export const loader = async (): Promise<Response> => {
   try {
     const authorIds = await Promise.all(leaders.map(getAuthorIdsByPathname));
     const authorGuids = await Promise.all(authorIds.map(fetchPersonAliasGuid));

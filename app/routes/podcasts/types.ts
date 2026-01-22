@@ -60,6 +60,7 @@ export interface RockAttributeValue {
 }
 
 export interface RockPodcastEpisode {
+  id: string;
   title: string;
   content: string;
   startDateTime: string;
