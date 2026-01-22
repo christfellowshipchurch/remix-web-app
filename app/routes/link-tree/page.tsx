@@ -26,7 +26,7 @@ export function LinkTreePage() {
 
   return (
     <div className=" bg-navy py-30 content-padding text-white text-center">
-      <h1 className="heading-h1 my-16 ">{title}</h1>
+      <h1 className="text-[72px] font-extrabold my-16 ">{title}</h1>
 
       <div
         className={cn(
@@ -41,8 +41,8 @@ export function LinkTreePage() {
           "font-light"
         )}
       >
-        <h2 className="heading-h5 font-bold">{subtitle}</h2>
-        <HTMLRenderer html={content} />
+        {subtitle && <h2 className="heading-h5 font-bold">{subtitle}</h2>}
+        {content && <HTMLRenderer html={content} />}
         {primaryCta && (
           <Button
             href={primaryCta.url}
@@ -52,7 +52,7 @@ export function LinkTreePage() {
             {primaryCta.title}
           </Button>
         )}
-        {callsToActions.length > 0 && (
+        {callsToActions && callsToActions.length > 0 && (
           <>
             <h2 className="heading-h5 font-bold mt-4">Helpful Links</h2>
             <div className="flex flex-col gap-4 w-full">

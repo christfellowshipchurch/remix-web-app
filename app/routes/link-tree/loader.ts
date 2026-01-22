@@ -101,20 +101,23 @@ export const loader = async ({
     (collection) => collection.type === "RESOURCE_COLLECTION"
   ) as Array<PageBuilderSection & { type: "RESOURCE_COLLECTION" }>;
 
+  const isPrimaryCta = rockLinkTreePage.attributeValues?.primaryCtaCall?.value !== undefined && rockLinkTreePage.attributeValues?.primaryCtaAction?.value !== undefined;
+  const isCallsToActions = rockLinkTreePage.attributeValues?.callsToAction?.value !== undefined;
+
 
   return {
     id: rockLinkTreePage.id ?? '',
     title: rockLinkTreePage.title ?? '',
     subtitle: rockLinkTreePage.attributeValues?.subtitle?.value ?? '',
     content: rockLinkTreePage.content ?? '',
-    primaryCta: {
+      primaryCta: isPrimaryCta ? {
       title: rockLinkTreePage.attributeValues?.primaryCtaCall?.value ?? '',
       url: rockLinkTreePage.attributeValues?.primaryCtaAction?.value ?? '',
-    },
-    callsToActions: parseRockKeyValueList(rockLinkTreePage.attributeValues?.callsToAction?.value ?? '').map((item) => ({
-      title: item.key,
-      url: item.value,
-    })),
+    } : undefined,
+    callsToActions: isCallsToActions ? parseRockKeyValueList(rockLinkTreePage.attributeValues?.callsToAction?.value ?? '').map((item) => ({
+        title: item.key,
+        url: item.value,
+      })) : [],
     resourceCollections: resourceCollections ?? [],
   };
 
