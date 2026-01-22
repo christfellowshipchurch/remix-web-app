@@ -21,7 +21,7 @@ export type LoaderReturnType = {
     };
     contentChannelId: string;
   }[];
-  
+
   // A series resource will be anything tagged with the series defined value that is not a message or an event
   resources: {
     id: string;
@@ -109,7 +109,7 @@ const getSeriesResources = async (seriesGuid: string) => {
 };
 
 const getSeriesEvents = async (seriesGuid: string) => {
-  let seriesEvents = await fetchRockData({
+  const seriesEvents = await fetchRockData({
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "MessageSeries",
@@ -133,7 +133,6 @@ const getSeriesEvents = async (seriesGuid: string) => {
       event.coverImage = createImageUrlFromGuid(
         event.attributeValues.image.value
       );
-      event.attributeValues.url.value = event.attributeValues.url.value;
       event.summary = event.attributeValues.summary.value;
     }
   );

@@ -162,6 +162,7 @@ async function mapRockEpisodeToPodcastEpisode(
   );
 
   return {
+    id: rockEpisode?.id || "",
     show: showName,
     title: rockEpisode?.title || "",
     publishDate:
