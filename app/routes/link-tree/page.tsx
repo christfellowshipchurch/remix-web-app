@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { LinkTreeLoaderData } from "./types";
+import { LinkTreeLoaderData } from "./loader";
 import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
@@ -17,11 +17,12 @@ export function LinkTreePage() {
   const {
     title,
     content,
-    summary,
-    additionalResources,
-    primaryCallToAction,
+    subtitle,
+    callsToActions,
+    primaryCta,
     resourceCollections,
   } = useLoaderData<LinkTreeLoaderData>();
+
 
   return (
     <div className=" bg-navy py-30 content-padding text-white text-center">
@@ -40,28 +41,34 @@ export function LinkTreePage() {
           "font-light"
         )}
       >
-        <h2 className="heading-h5 font-bold">{summary}</h2>
+        <h2 className="heading-h5 font-bold">{subtitle}</h2>
         <HTMLRenderer html={content} />
-        <Button
-          href={primaryCallToAction?.url}
-          linkClassName="mt-10 w-full"
-          className={linkTreeButtonClass}
-        >
-          {primaryCallToAction?.title}
-        </Button>
-        <h2 className="heading-h5 font-bold mt-4">Helpful Links</h2>
-        <div className="flex flex-col gap-4 w-full">
-          {additionalResources.map((resource) => (
-            <Button
-              href={resource.url}
-              linkClassName="w-full"
-              className={linkTreeButtonClass}
-            >
-              {resource.title}
-            </Button>
-          ))}
-        </div>
-
+        {primaryCta && (
+          <Button
+            href={primaryCta.url}
+            linkClassName="mt-10 w-full"
+            className={linkTreeButtonClass}
+          >
+            {primaryCta.title}
+          </Button>
+        )}
+        {callsToActions.length > 0 && (
+          <>
+            <h2 className="heading-h5 font-bold mt-4">Helpful Links</h2>
+            <div className="flex flex-col gap-4 w-full">
+              {callsToActions.map((resource, index) => (
+                <Button
+                  key={index}
+                  href={resource.url}
+                  linkClassName="w-full"
+                  className={linkTreeButtonClass}
+                >
+                  {resource.title}
+                </Button>
+              ))}
+            </div>
+          </>
+        )}
         {resourceCollections.map((item) => {
           const layout = item.linkTreeLayout || "GRID";
           const Component = layout === "GRID" ? ResourceGrid : ResourceList;
