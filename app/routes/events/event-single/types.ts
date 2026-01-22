@@ -2,6 +2,7 @@ import { icons } from "~/lib/icons";
 
 export type EventSinglePageType = {
   title: string;
+  titleOverride?: string;
   subtitle: string;
   heroCtas: { title: string; url: string }[];
   quickPoints?: string[];
@@ -10,7 +11,8 @@ export type EventSinglePageType = {
   aboutContent?: string;
   keyInfoCards?: { title: string; description: string; icon: string }[];
   whatToExpect?: { title: string; description: string }[];
-  moreInfo?: string;
+  moreInfoTitle?: string;
+  moreInfoText?: string;
   optionalBlurb?: { title: string; description: string }[];
   faqItems?: { question: string; answer: string }[];
   sessionScheduleCards?: SessionRegistrationCardType[];

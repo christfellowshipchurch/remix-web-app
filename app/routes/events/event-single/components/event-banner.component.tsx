@@ -146,7 +146,7 @@ export const EventBanner = ({
     >
       <div className="max-w-screen-content mx-auto w-full flex items-center">
         <div className="flex-1 flex justify-start">
-          <p className="font-medium">{title}</p>
+          <p className="font-medium">{title} Event</p>
         </div>
 
         <div className="hidden md:flex gap-2">

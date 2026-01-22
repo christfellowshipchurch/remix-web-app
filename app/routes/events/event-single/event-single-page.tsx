@@ -48,7 +48,7 @@ export const EventSinglePage: React.FC = () => {
   const showRegistration =
     hasSessionRegistration || hasClickThroughRegistration;
 
-  const aboutInformationExists = data.aboutTitle && data.aboutTitle !== '' || data.aboutContent && data.aboutContent !== '' || data.keyInfoCards && data.keyInfoCards.length > 0 || data.whatToExpect && data.whatToExpect.length > 0 || data.moreInfo && data.moreInfo !== '' || data.optionalBlurb && data.optionalBlurb.length > 0;
+  const aboutInformationExists = data.aboutTitle && data.aboutTitle !== '' || data.aboutContent && data.aboutContent !== '' || data.keyInfoCards && data.keyInfoCards.length > 0 || data.whatToExpect && data.whatToExpect.length > 0 || data.moreInfoTitle && data.moreInfoTitle !== '' || data.optionalBlurb && data.optionalBlurb.length > 0;
 
   return (
     <>
@@ -62,7 +62,7 @@ export const EventSinglePage: React.FC = () => {
         <EventsSingleHero
           imagePath={data.coverImage}
           ctas={data.heroCtas}
-          customTitle={data.title}
+          customTitle={data.titleOverride || data.title}
           subtitle={data.subtitle}
           quickPoints={data.quickPoints}
         />
@@ -83,7 +83,8 @@ export const EventSinglePage: React.FC = () => {
             aboutContent={data.aboutContent}
             infoCards={data.keyInfoCards}
             whatToExpect={data.whatToExpect}
-            moreInfo={data.moreInfo ?? ""}
+            moreInfoTitle={data.moreInfoTitle}
+            moreInfoText={data.moreInfoText}
             optionalBlurb={data.optionalBlurb}
           />
         )}

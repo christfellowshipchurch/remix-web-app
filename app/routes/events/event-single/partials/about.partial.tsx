@@ -6,14 +6,16 @@ export const AboutPartial = ({
   aboutContent,
   infoCards,
   whatToExpect,
-  moreInfo,
+  moreInfoTitle,
+  moreInfoText,
   optionalBlurb,
 }: {
   aboutTitle?: string;
   aboutContent?: string;
   infoCards?: EventInfoCardType[];
   whatToExpect?: { title: string; description: string }[];
-  moreInfo?: string;
+  moreInfoTitle?: string;
+  moreInfoText?: string;
   optionalBlurb?: { title: string; description: string }[];
 }) => {
   const cardsToDisplay = (infoCards ?? []).slice(0, 4);
@@ -62,6 +64,7 @@ export const AboutPartial = ({
               {(whatToExpect ?? []).map((item, index) => (
                 <ScheduleItem
                   key={index}
+                  number={index + 1}
                   title={item.title}
                   description={item.description}
                 />
@@ -71,10 +74,10 @@ export const AboutPartial = ({
 
           {/* Right / Bottom (Mobile) Side */}
           <div className="flex flex-col gap-5 max-w-[640px] w-full">
-            {moreInfo && (
+            {moreInfoTitle && moreInfoText && (
               <div className="flex flex-col gap-3">
-                <h3 className="text-black text-xl font-semibold">More Info</h3>
-                <p className="text-[#717182] text-sm font-medium">{moreInfo}</p>
+                <h3 className="text-black text-xl font-semibold">{moreInfoTitle}</h3>
+                <p className="text-[#717182] text-sm font-medium">{moreInfoText}</p>
               </div>
             )}
 
@@ -100,15 +103,20 @@ export const AboutPartial = ({
 const ScheduleItem = ({
   title,
   description,
-}: {
-  title: string;
+  number,
+  }: {
+    title: string;
   description: string;
+  number: number;
 }) => {
   return (
     <div className="flex items-start gap-3">
+      <span className="bg-navy text-white rounded-full flex items-center justify-center text-center px-3 size-[30px]">
+          {number}
+      </span>
       <div className="flex flex-col gap-1">
         <h4 className="font-semibold text-lg text-black">{title}</h4>
-        <p className="text-[#717182] text-sm font-medium">{description}</p>
+        <p className="text-[#717182] text-sm font-medium">{decodeURIComponent(description)}</p>
       </div>
     </div>
   );
