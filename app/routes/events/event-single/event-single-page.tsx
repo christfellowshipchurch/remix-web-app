@@ -48,6 +48,8 @@ export const EventSinglePage: React.FC = () => {
   const showRegistration =
     hasSessionRegistration || hasClickThroughRegistration;
 
+  const aboutInformationExists = data.aboutTitle && data.aboutTitle !== '' || data.aboutContent && data.aboutContent !== '' || data.keyInfoCards && data.keyInfoCards.length > 0 || data.whatToExpect && data.whatToExpect.length > 0 || data.moreInfo && data.moreInfo !== '' || data.optionalBlurb && data.optionalBlurb.length > 0;
+
   return (
     <>
       <div className="flex flex-col items-center bg-white">
@@ -69,22 +71,22 @@ export const EventSinglePage: React.FC = () => {
           title={data.title}
           cta={data.heroCtas[0]}
           sections={[
-            { id: "about", label: "About" },
-            { id: "faq", label: "FAQ" },
-            ...(showRegistration
-              ? [{ id: "register", label: "Register" }]
-              : []),
+            ...(aboutInformationExists ? [{ id: 'about', label: 'About' }] : []),
+            ...(data.faqItems && data.faqItems.length > 0 ? [{ id: 'faq', label: 'FAQ' }] : []),
+            ...(showRegistration ? [{ id: 'register', label: 'Register' }] : []),
           ]}
         />
 
-        <AboutPartial
-          aboutTitle={data.aboutTitle}
-          aboutContent={data.aboutContent}
-          infoCards={data.keyInfoCards}
-          whatToExpect={data.whatToExpect}
-          moreInfo={data.moreInfo ?? ""}
-          optionalBlurb={data.optionalBlurb}
-        />
+        {aboutInformationExists && (
+          <AboutPartial
+            aboutTitle={data.aboutTitle}
+            aboutContent={data.aboutContent}
+            infoCards={data.keyInfoCards}
+            whatToExpect={data.whatToExpect}
+            moreInfo={data.moreInfo ?? ""}
+            optionalBlurb={data.optionalBlurb}
+          />
+        )}
 
         {data.faqItems && data.faqItems.length > 0 && (
           <EventSingleFAQ title={data.title} items={data.faqItems} />
