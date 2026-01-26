@@ -1,6 +1,12 @@
 import { createContext, useContext, ReactNode } from "react";
 import { CookieConsent } from "../components/cookie-consent";
 
+declare global {
+  interface Window {
+    dataLayer: Array<Record<string, unknown>>;
+  }
+}
+
 interface CookieConsentContextType {
   hasConsent: boolean | null;
   acceptCookies: () => void;
@@ -13,15 +19,25 @@ const CookieConsentContext = createContext<
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const handleAcceptCookies = () => {
-    // Add any additional cookie acceptance logic here
-    // eslint-disable-next-line no-console
-    console.log("Cookies accepted");
+    // Push consent update to GTM dataLayer
+    if (typeof window !== "undefined" && window.dataLayer) {
+      window.dataLayer.push({
+        event: "consent",
+        ad_storage: "granted",
+        analytics_storage: "granted",
+      });
+    }
   };
 
   const handleDeclineCookies = () => {
-    // Add any additional cookie declination logic here
-    // eslint-disable-next-line no-console
-    console.log("Cookies declined");
+    // Push consent denial to GTM dataLayer
+    if (typeof window !== "undefined" && window.dataLayer) {
+      window.dataLayer.push({
+        event: "consent",
+        ad_storage: "denied",
+        analytics_storage: "denied",
+      });
+    }
   };
 
   return (
