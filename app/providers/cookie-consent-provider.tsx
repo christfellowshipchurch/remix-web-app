@@ -25,6 +25,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         event: "consent",
         ad_storage: "granted",
         analytics_storage: "granted",
+        ad_user_data: "granted",
+        ad_personalization: "granted",
       });
     }
   };
@@ -36,6 +38,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         event: "consent",
         ad_storage: "denied",
         analytics_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
       });
     }
   };
