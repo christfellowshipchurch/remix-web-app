@@ -3,7 +3,7 @@ import { CookieConsent } from "../components/cookie-consent";
 
 declare global {
   interface Window {
-    dataLayer: Array<Record<string, unknown>>;
+    dataLayer: Array<Record<string, unknown> | unknown[]>;
   }
 }
 
@@ -18,29 +18,41 @@ const CookieConsentContext = createContext<
 >(undefined);
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
+  // Define the gtag helper function for GTM Consent API
+  const gtag = (...args: unknown[]) => {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(args);
+    }
+  };
+
   const handleAcceptCookies = () => {
-    // Push consent update to GTM dataLayer
-    if (typeof window !== "undefined" && window.dataLayer) {
-      window.dataLayer.push({
-        event: "consent",
+    if (typeof window !== "undefined") {
+      // Use gtag command for GTM Consent API
+      gtag('consent', 'update', {
         ad_storage: "granted",
         analytics_storage: "granted",
         ad_user_data: "granted",
         ad_personalization: "granted",
       });
+
+      // Optional: Keep a regular event push for custom triggers
+      window.dataLayer.push({ event: "cookie_consent_accepted" });
     }
   };
 
   const handleDeclineCookies = () => {
-    // Push consent denial to GTM dataLayer
-    if (typeof window !== "undefined" && window.dataLayer) {
-      window.dataLayer.push({
-        event: "consent",
+    if (typeof window !== "undefined") {
+      // Use gtag command for GTM Consent API
+      gtag('consent', 'update', {
         ad_storage: "denied",
         analytics_storage: "denied",
         ad_user_data: "denied",
         ad_personalization: "denied",
       });
+
+      // Optional: Keep a regular event push for custom triggers
+      window.dataLayer.push({ event: "cookie_consent_declined" });
     }
   };
 
