@@ -3,7 +3,7 @@ import { CookieConsent } from "../components/cookie-consent";
 
 declare global {
   interface Window {
-    dataLayer: Array<Record<string, unknown> | unknown[]>;
+    dataLayer: Array<Record<string, unknown> | unknown[] | IArguments>;
   }
 }
 
@@ -18,17 +18,21 @@ const CookieConsentContext = createContext<
 >(undefined);
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
-  // Define the gtag helper function for GTM Consent API
-  const gtag = (...args: unknown[]) => {
+  // GTM specifically looks for the 'arguments' object to be pushed
+  // Use function declaration (not arrow function) to access arguments object
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gtag: (...args: any[]) => void = function() {
     if (typeof window !== "undefined") {
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push(args);
+      // This matches the exact specification Google provides
+      // Use arguments object for GTM compatibility
+      window.dataLayer.push(arguments);
     }
   };
 
   const handleAcceptCookies = () => {
     if (typeof window !== "undefined") {
-      // Use gtag command for GTM Consent API
+      // This will now correctly trigger GTM's internal Consent state
       gtag('consent', 'update', {
         ad_storage: "granted",
         analytics_storage: "granted",
@@ -36,14 +40,13 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         ad_personalization: "granted",
       });
 
-      // Optional: Keep a regular event push for custom triggers
       window.dataLayer.push({ event: "cookie_consent_accepted" });
+      localStorage.setItem("cookieConsent", "true");
     }
   };
 
   const handleDeclineCookies = () => {
     if (typeof window !== "undefined") {
-      // Use gtag command for GTM Consent API
       gtag('consent', 'update', {
         ad_storage: "denied",
         analytics_storage: "denied",
@@ -51,8 +54,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         ad_personalization: "denied",
       });
 
-      // Optional: Keep a regular event push for custom triggers
       window.dataLayer.push({ event: "cookie_consent_declined" });
+      localStorage.setItem("cookieConsent", "false");
     }
   };
 
