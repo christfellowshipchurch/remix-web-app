@@ -35,9 +35,8 @@ const InternshipsFAQs = () => {
         <h2 className="text-[52px] font-bold text-dark-navy">FAQs</h2>
         <StyledAccordion
           data={faqs}
-          bg="#DAEAF1"
-          center
-          border="#DAEAF1"
+          itemsStyle="bg-navy-subdued border border-navy-subdued"
+          rootStyle="items-center"
           headerStyle="font-semibold text-lg md:text-xl lg:text-2xl"
           contentStyle="text-black/55"
         />

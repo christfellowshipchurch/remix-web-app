@@ -29,9 +29,8 @@ export const EventSingleFAQ = ({
                 content: item.answer,
               })) ?? []
             }
-            bg="white"
-            center
-            border="#C6C6C6"
+            rootStyle="items-center"
+            itemsStyle="bg-white border border-[#C6C6C6"
           />
 
           <div className="flex flex-col gap-1 items-center text-[#717182] font-medium text-center mt-10">

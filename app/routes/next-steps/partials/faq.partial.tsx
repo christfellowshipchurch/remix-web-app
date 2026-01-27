@@ -37,7 +37,11 @@ export function FAQSection() {
           Your questions, answered!
         </h2>
         <div className="max-w-3xl mx-auto">
-          <StyledAccordion data={faqs} bg="white" center border="#E5E7EB" />
+          <StyledAccordion
+            data={faqs}
+            rootStyle="items-center"
+            itemsStyle="bg-white border border-[#E5E7EB]"
+          />
         </div>
         <div className="flex flex-col items-center gap-6 mt-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">

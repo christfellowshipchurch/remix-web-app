@@ -4,9 +4,8 @@ import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 
 type AccordionDataType = {
-  bg?: string;
-  center?: boolean;
-  border?: string;
+  itemsStyle?: string;
+  rootStyle?: string;
   headerStyle?: string;
   triggerStyle?: string;
   contentStyle?: string;
@@ -18,28 +17,28 @@ type AccordionDataType = {
 
 export const StyledAccordion = ({
   data,
-  bg,
-  border,
-  center,
+  itemsStyle,
+  rootStyle,
   headerStyle,
   triggerStyle,
   contentStyle,
 }: AccordionDataType) => {
   return (
     <Accordion.Root
-      className="AccordionRoot flex w-full flex-col gap-4"
+      className={cn(
+        "AccordionRoot flex w-full flex-col flex-start gap-4",
+        rootStyle,
+      )}
       type="multiple"
-      style={{ alignItems: `${center ? "center" : "flex-start"}` }}
     >
       {data?.map((item, index) => {
         return (
           <Accordion.Item
             key={index}
-            style={{
-              backgroundColor: bg ? bg : `#E7F9FE`,
-              border: `${border ? `1px solid ${border}` : ""}`,
-            }}
-            className={`AccordionItem w-full rounded-lg px-6 md:max-w-none cursor-pointer`}
+            className={cn(
+              "AccordionItem w-full rounded-lg px-6 md:max-w-none cursor-pointer bg-ocean-subdued",
+              itemsStyle,
+            )}
             value={`item-${index + 1}`}
           >
             <Accordion.Header
