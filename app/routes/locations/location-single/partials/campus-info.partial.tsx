@@ -45,8 +45,8 @@ const IconText = ({
         time.day?.toLowerCase() === "ondemand"
           ? undefined
           : time.hour
-          ? time.hour.join(", ")
-          : time.hour || "",
+            ? time.hour.join(", ")
+            : time.hour || "",
     };
   });
 
@@ -145,7 +145,7 @@ export const CampusInfo = ({
 
             <div className="flex flex-col">
               {additionalInfo.map((info, index) => (
-                <p key={index} className="text-xs text-[#666666]">
+                <p key={index} className="text-xs text-neutral-default">
                   *{info}
                 </p>
               ))}
@@ -230,7 +230,7 @@ const OnlineCampusInfo = ({
 
             <div className="flex flex-col">
               {additionalInfo.map((info, index) => (
-                <p key={index} className="text-xs text-[#666666]">
+                <p key={index} className="text-xs text-neutral-default">
                   *{info}
                 </p>
               ))}
