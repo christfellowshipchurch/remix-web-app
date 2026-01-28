@@ -131,10 +131,10 @@ export type EventInfoCardType = {
 const InfoCardComponent = ({ title, description, icon }: EventInfoCardType) => {
   return (
     <div className="bg-white pb-10 px-4 pt-6 rounded-lg flex flex-col items-center text-center gap-8 border border-[#E5E5E5] w-full max-w-[312px]">
-      <div className="bg-ocean flex items-center justify-center text-center p-2 rounded-full">
+      <div className="bg-ocean flex items-center justify-center text-center rounded-full p-2">
         <Icon
           name={(icon as keyof typeof icons) ?? "star"}
-          className="text-white ml-[2px]"
+          className="text-white"
         />
       </div>
 
