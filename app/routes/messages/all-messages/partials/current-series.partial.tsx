@@ -4,7 +4,6 @@ import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 import type { AllMessagesLoaderReturnType } from "../loader";
 import { getFirstParagraph } from "~/lib/utils";
-import kebabCase from "lodash/kebabCase";
 import { SectionTitle } from "~/components";
 import { ContentItemHit } from "~/routes/search/types";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";

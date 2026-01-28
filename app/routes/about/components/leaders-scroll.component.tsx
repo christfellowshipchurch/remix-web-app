@@ -5,10 +5,10 @@ import { Author } from "~/routes/author/types";
 import { LeadersModal } from "~/components/modals/leaders";
 import Modal from "~/primitives/Modal";
 import { useLoaderData } from "react-router-dom";
-import { loader } from "~/routes/home/loader";
+import { HomeLoaderData } from "~/routes/home/loader";
 
 export function LeaderScroll() {
-  const { leadersWithArticles } = useLoaderData<typeof loader>();
+  const { leadersWithArticles } = useLoaderData<HomeLoaderData>();
   const [openModal, setOpenModal] = useState(false);
 
   const seniorLeaderItem = leadersWithArticles[0];

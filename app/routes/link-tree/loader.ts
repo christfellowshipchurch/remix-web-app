@@ -1,87 +1,124 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { parseRockKeyValueList } from "~/lib/utils";
-import { LinkTreeLoaderData, RockLinkTreeData } from "./types";
+import { parseRockKeyValueList } from "~/lib/utils"
+
+import { PageBuilderSection } from "../page-builder/types";
+import { RockContentChannelItem } from '~/lib/types/rock-types';
 
 import {
   fetchChildItems,
   mapPageBuilderChildItems,
 } from "../page-builder/loader";
-import { PageBuilderSection } from "../page-builder/types";
 
-const fetchLinkTreePage = async (pathname: string) => {
+
+export type LinkTreeLoaderData = {
+  id: string;
+  title: string;
+  content: string;
+  subtitle: string;
+  callsToActions: Array<{ title: string; url: string }>;
+  primaryCta: { title: string; url: string } | undefined;
+  resourceCollections: Array<
+    PageBuilderSection & { type: "RESOURCE_COLLECTION" }
+  >;
+};
+
+
+const fetchLinkTreePage = async (pathname: string): Promise<RockContentChannelItem> => {
   const linkTreePage = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
+    endpoint: 'ContentChannelItems/GetByAttributeValue',
     queryParams: {
-      attributeKey: "Pathname",
-      $filter: "ContentChannelId eq 166 and Status eq 'Approved'",
+      attributeKey: 'Url',
+      $filter: "ContentChannelId eq 190 and Status eq 'Approved'",
       value: pathname,
-      loadAttributes: "simple",
-    },
+      loadAttributes: 'simple',
+    }
   });
 
   if (!linkTreePage || linkTreePage.length === 0) {
-    throw new Response("Link tree page not found at: /link-tree/" + pathname, {
+    throw new Response(`Link tree page not found at: /link-tree/${pathname}`, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 
-  return linkTreePage;
+  return linkTreePage as RockContentChannelItem;
 };
 
 export const loader = async ({
   request,
 }: LoaderFunctionArgs): Promise<LinkTreeLoaderData | []> => {
-  const pathname = request.url.split("/").pop();
+  const pathname = request.url.split('/').pop();
+
   if (!pathname) {
-    return [];
+    throw new Response(
+      JSON.stringify({ error: 'Pathname not provided in request URL.' }),
+      {
+        status: 400,
+        statusText: 'Bad Request',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
-  const linkTreePage = await fetchLinkTreePage(pathname);
-
-  if (!linkTreePage) {
-    return [];
+  let rockLinkTreePage: RockContentChannelItem;
+  try {
+    rockLinkTreePage = await fetchLinkTreePage(pathname);
+  } catch (error) {
+    throw new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'An unknown error occurred while fetching the link tree page.',
+      }),
+      {
+        status: 404,
+        statusText: 'Not Found',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
-  const {
-    id,
-    title,
-    content,
-    attributeValues: {
-      summary: { value: summary },
-      additionalResources: { value: additionalResourcesKeyValues },
-      calltoAction: { value: calltoActionKeyValues },
-    },
-  } = linkTreePage as RockLinkTreeData;
+  if (!rockLinkTreePage) {
+    throw new Response(
+      JSON.stringify({
+        error: `Link tree page not found at: /link-tree/${pathname}`,
+      }),
+      {
+        status: 404,
+        statusText: 'Not Found',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
 
-  const additionalResources = parseRockKeyValueList(
-    additionalResourcesKeyValues
-  ).map((resource) => ({
-    title: resource.key,
-    url: resource.value,
-  }));
-
-  const primaryCallToAction = parseRockKeyValueList(calltoActionKeyValues)
-    .map((cta) => ({
-      title: cta.key,
-      url: cta.value,
-    }))[0]; // only returning the first call to action
-
-  const children = await fetchChildItems(id);
+  // Use the page builder loader to fetch the child items and map them to the page builder sections
+  const children = await fetchChildItems(rockLinkTreePage.id);
   const collections = await mapPageBuilderChildItems(children);
   // Ensure we only return resource collections
   const resourceCollections = collections.filter(
     (collection) => collection.type === "RESOURCE_COLLECTION"
   ) as Array<PageBuilderSection & { type: "RESOURCE_COLLECTION" }>;
 
+  const isPrimaryCta = rockLinkTreePage.attributeValues?.primaryCtaCall?.value !== undefined && rockLinkTreePage.attributeValues?.primaryCtaAction?.value !== undefined;
+  const isCallsToActions = rockLinkTreePage.attributeValues?.callsToAction?.value !== undefined;
+
+
   return {
-    id,
-    title,
-    content,
-    summary,
-    additionalResources,
-    primaryCallToAction,
-    resourceCollections,
+    id: rockLinkTreePage.id ?? '',
+    title: rockLinkTreePage.title ?? '',
+    subtitle: rockLinkTreePage.attributeValues?.subtitle?.value ?? '',
+    content: rockLinkTreePage.content ?? '',
+      primaryCta: isPrimaryCta ? {
+      title: rockLinkTreePage.attributeValues?.primaryCtaCall?.value ?? '',
+      url: rockLinkTreePage.attributeValues?.primaryCtaAction?.value ?? '',
+    } : undefined,
+    callsToActions: isCallsToActions ? parseRockKeyValueList(rockLinkTreePage.attributeValues?.callsToAction?.value ?? '').map((item) => ({
+        title: item.key,
+        url: item.value,
+      })) : [],
+    resourceCollections: resourceCollections ?? [],
   };
+
 };

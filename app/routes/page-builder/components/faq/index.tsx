@@ -13,7 +13,7 @@ export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
             {data.name}
           </h2>
           {data?.content?.length > 0 && (
-            <HTMLRenderer className="md:text-lg" html={data.content} />
+            <HTMLRenderer className="faq-content md:text-lg" html={data.content} />
           )}
         </div>
 
@@ -70,7 +70,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         }`}
       >
         <div className="overflow-hidden">
-          <HTMLRenderer html={answer} />
+          <HTMLRenderer className="faq-content" html={answer} />
         </div>
       </div>
     </div>

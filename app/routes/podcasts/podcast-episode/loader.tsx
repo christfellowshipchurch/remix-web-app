@@ -115,7 +115,7 @@ async function getPodcastEpisode({
     const episode = await fetchRockData({
       endpoint: "ContentChannelItems/GetByAttributeValue",
       queryParams: {
-        $filter: `ContentChannelId eq ${channelId}`,
+        $filter: `ContentChannelId eq ${channelId} and StartDateTime le datetime'${new Date().toISOString()}'`,
         attributeKey: "Url",
         value: path,
         loadAttributes: "simple",
@@ -162,6 +162,7 @@ async function mapRockEpisodeToPodcastEpisode(
   );
 
   return {
+    id: rockEpisode?.id || "",
     show: showName,
     title: rockEpisode?.title || "",
     publishDate:
@@ -179,7 +180,7 @@ async function mapRockEpisodeToPodcastEpisode(
     apple: rockEpisode?.attributeValues?.applePodcast?.value || "",
     spotify: rockEpisode?.attributeValues?.spotify?.value || "",
     amazon: rockEpisode?.attributeValues?.amazonMusic?.value || "",
-    youtube: rockEpisode?.attributeValues?.youtube?.value || "",
+    youtube: rockEpisode?.attributeValues?.ytLink?.value || "",
     resources: parseRockKeyValueList(
       rockEpisode?.attributeValues?.additionalResources?.value || ""
     ).map((resource) => ({

@@ -9,12 +9,27 @@ import { mapRockDataToMessage } from "../messages/message-single/loader";
 export type LoaderReturnType = {
   series: Series;
   messages: MessageType[];
-  // A series resource will be anything tagged with the series defined value that is not a message
+  events: {
+    id: string;
+    title: string;
+    summary: string;
+    coverImage: string;
+    attributeValues: {
+      summary: { value: string };
+      image: { value: string };
+      url: { value: string };
+    };
+    contentChannelId: string;
+  }[];
+
+  // A series resource will be anything tagged with the series defined value that is not a message or an event
   resources: {
     id: string;
     title: string;
+    summary: string;
     coverImage: string;
     attributeValues: {
+      summary: { value: string };
       image: { value: string };
       url: { value: string };
     };
@@ -53,12 +68,13 @@ const getSeries = async (guid: string) => {
   return series[0];
 };
 
+// ContentChannelId 63 is messages, 186 is events
 const getSeriesResources = async (seriesGuid: string) => {
   const seriesResources = await fetchRockData({
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "MessageSeries",
-      $filter: "ContentChannelId ne 63 and Status eq 'Approved'",
+      $filter: "ContentChannelId ne 63 and ContentChannelId ne 186 and Status eq 'Approved'",
       value: `${seriesGuid}`,
       loadAttributes: "simple",
     },
@@ -74,20 +90,15 @@ const getSeriesResources = async (seriesGuid: string) => {
 
   resources.forEach(
     (resource: {
-      attributeValues: { image: { value: string } };
+      attributeValues: { image: { value: string }, summary: { value: string }, url: { value: string } };
+      contentChannelId: string;
       coverImage: string;
+      summary: string;
     }) => {
+      resource.summary = resource.attributeValues.summary.value;
       resource.coverImage = createImageUrlFromGuid(
         resource.attributeValues.image.value
       );
-    }
-  );
-
-  resources.forEach(
-    (resource: {
-      attributeValues: { url: { value: string } };
-      contentChannelId: string;
-    }) => {
       resource.attributeValues.url.value = `${getContentChannelUrl(
         parseInt(resource.contentChannelId)
       )}/${resource.attributeValues.url.value}`;
@@ -95,6 +106,38 @@ const getSeriesResources = async (seriesGuid: string) => {
   );
 
   return resources;
+};
+
+const getSeriesEvents = async (seriesGuid: string) => {
+  const seriesEvents = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
+    queryParams: {
+      attributeKey: "MessageSeries",
+      $filter: "ContentChannelId eq 186 and Status eq 'Approved'",
+      value: `${seriesGuid}`,
+      loadAttributes: "simple",
+    },
+  });
+
+  const events = Array.isArray(seriesEvents)
+    ? seriesEvents
+    : [seriesEvents];
+
+  events.forEach(
+    (event: {
+      attributeValues: { image: { value: string }, summary: { value: string }, url: { value: string } };
+      contentChannelId: string;
+      coverImage: string;
+      summary: string;
+    }) => {
+      event.coverImage = createImageUrlFromGuid(
+        event.attributeValues.image.value
+      );
+      event.summary = event.attributeValues.summary.value;
+    }
+  );
+
+  return events;
 };
 
 const getSeriesMessages = async (seriesGuid: string) => {
@@ -142,5 +185,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
     series: series,
     messages: await Promise.all(seriesMessageData.map(mapRockDataToMessage)),
     resources: await getSeriesResources(series.guid),
+    events: await getSeriesEvents(series.guid),
   };
 }
