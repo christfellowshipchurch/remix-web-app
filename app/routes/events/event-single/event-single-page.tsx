@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation } from "react-router-dom";
 
 import { EventSinglePageType } from "./types";
 import { EventsSingleHero } from "./partials/hero.partial";
@@ -11,10 +11,44 @@ import BackBanner from "~/components/back-banner";
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
+  const location = useLocation();
 
-  // TODO: Add logic for click through registration as well later, right now we're only showing the session registration
-  const showRegistration =
+  // Valid groupTypes for ClickThroughRegistration
+  const validGroupTypes = [
+    "Kids Dedication",
+    "Kids Starting Line",
+    "Journey",
+    "Baptism",
+    "Dream Team Kickoff",
+  ];
+
+  // Check if sessionScheduleCards exist
+  const hasSessionRegistration =
     data.sessionScheduleCards && data.sessionScheduleCards.length > 0;
+
+  // Check if ClickThroughRegistration would be useful
+  // It extracts groupType from the URL path (last part of path)
+  // URL format: /events/kids or /events/baptism
+  const pathParts = location.pathname.split("/");
+  const lastPart = pathParts[pathParts.length - 1] || "";
+  const extractedGroupType = lastPart
+    ? lastPart.charAt(0).toUpperCase() + lastPart.slice(1)
+    : "";
+
+  // Handle "dream-team-kickoff" or "dream team kickoff" variations
+  const normalizedGroupType = extractedGroupType
+    .replace(/-/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+
+  const hasClickThroughRegistration =
+    validGroupTypes.includes(normalizedGroupType);
+
+  const showRegistration =
+    hasSessionRegistration || hasClickThroughRegistration;
+
+  const aboutInformationExists = data.aboutTitle && data.aboutTitle !== '' || data.aboutContent && data.aboutContent !== '' || data.keyInfoCards && data.keyInfoCards.length > 0 || data.whatToExpect && data.whatToExpect.length > 0 || data.moreInfoTitle && data.moreInfoTitle !== '' || data.optionalBlurb && data.optionalBlurb.length > 0;
 
   return (
     <>
@@ -28,7 +62,7 @@ export const EventSinglePage: React.FC = () => {
         <EventsSingleHero
           imagePath={data.coverImage}
           ctas={data.heroCtas}
-          customTitle={data.title}
+          customTitle={data.titleOverride || data.title}
           subtitle={data.subtitle}
           quickPoints={data.quickPoints}
         />
@@ -37,26 +71,29 @@ export const EventSinglePage: React.FC = () => {
           title={data.title}
           cta={data.heroCtas[0]}
           sections={[
-            { id: "about", label: "About" },
-            { id: "faq", label: "FAQ" },
-            ...(showRegistration
-              ? [{ id: "register", label: "Register" }]
-              : []),
+            ...(aboutInformationExists ? [{ id: 'about', label: 'About' }] : []),
+            ...(data.faqItems && data.faqItems.length > 0 ? [{ id: 'faq', label: 'FAQ' }] : []),
+            ...(showRegistration ? [{ id: 'register', label: 'Register' }] : []),
           ]}
         />
 
-        <AboutPartial
-          aboutTitle={data.aboutTitle}
-          aboutContent={data.aboutContent}
-          infoCards={data.keyInfoCards}
-          whatToExpect={data.whatToExpect}
-          moreInfo={data.moreInfo ?? ""}
-          optionalBlurb={data.optionalBlurb}
-        />
+        {aboutInformationExists && (
+          <AboutPartial
+            aboutTitle={data.aboutTitle}
+            aboutContent={data.aboutContent}
+            infoCards={data.keyInfoCards}
+            whatToExpect={data.whatToExpect}
+            moreInfoTitle={data.moreInfoTitle}
+            moreInfoText={data.moreInfoText}
+            optionalBlurb={data.optionalBlurb}
+          />
+        )}
 
-        <EventSingleFAQ title={data.title} items={data.faqItems} />
+        {data.faqItems && data.faqItems.length > 0 && (
+          <EventSingleFAQ title={data.title} items={data.faqItems} />
+        )}
 
-        {showRegistration && <RegistrationSection />}
+        <RegistrationSection />
       </div>
     </>
   );
