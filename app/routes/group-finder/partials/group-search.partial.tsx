@@ -68,7 +68,7 @@ export const GroupSearch = () => {
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   return (
@@ -93,13 +93,13 @@ export const GroupSearch = () => {
           <div
             className={cn(
               "sticky bg-white z-2 content-padding shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0"
+              isNavbarOpen ? "top-18 md:top-20" : "top-0",
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
               {/* Group Search Box */}
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
-                <Icon name="searchAlt" className="text-[#666666] ml-3" />
+                <Icon name="searchAlt" className="text-neutral-default ml-3" />
                 <SearchBox
                   placeholder="Keyword"
                   translations={{
@@ -146,7 +146,7 @@ export const GroupSearch = () => {
                 "absolute transition-all duration-300 w-full",
                 isMobileOpen
                   ? "z-4 opacity-100 top-[calc(92%_+_24px)]"
-                  : "-z-1 opacity-0"
+                  : "-z-1 opacity-0",
               )}
             >
               <AllGroupFiltersPopup

@@ -15,7 +15,7 @@ export function UpcomingSessionFilters({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null
+    } | null,
   ) => void;
 }) {
   const [showGroupType, setShowGroupType] = useState(false);
@@ -30,7 +30,7 @@ export function UpcomingSessionFilters({
 
   const handleToggle = (
     setter: (value: boolean) => void,
-    currentValue: boolean
+    currentValue: boolean,
   ) => {
     onHide();
     setter(!currentValue);
@@ -130,7 +130,7 @@ interface FilterDropdownProps {
         coordinates: {
           lat: number | null;
           lng: number | null;
-        } | null
+        } | null,
       ) => void;
     }>;
   };
@@ -169,11 +169,11 @@ export function FilterDropdown({
         "w-fit",
         "rounded-lg",
         "p-3",
-        "border border-[#666666]",
+        "border border-neutral-default",
         "text-text-secondary",
         "font-semibold",
         "cursor-pointer",
-        "flex-shrink-0"
+        "flex-shrink-0",
       )}
       style={{ maxWidth: maxWidth }}
       onClick={onToggle}
@@ -191,7 +191,7 @@ export function FilterDropdown({
           "absolute left-0 right-0 md:right-1/2 md:translate-x-1/2",
           "top-0 md:top-[65px]",
           "z-50",
-          refinementClassName
+          refinementClassName,
         )}
         style={isMobile && isOpen ? { top: `65px` } : undefined}
       />

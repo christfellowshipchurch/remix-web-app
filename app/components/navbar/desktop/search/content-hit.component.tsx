@@ -46,7 +46,7 @@ const getIconName = (hit: ContentHitType) => {
 export const getPathname = (
   contentType: HitContentType,
   pathname: string,
-  hit?: ContentItemHit
+  hit?: ContentItemHit,
 ): string => {
   if (!contentType || !pathname || pathname === "") {
     return pathname;
@@ -125,14 +125,14 @@ export function ContentHit({
         </span>
       ) : (
         part
-      )
+      ),
     );
   };
 
   const hitPath = getPathname(
     hit.contentType as HitContentType,
     hit.url || "",
-    hit as ContentItemHit
+    hit as ContentItemHit,
   );
 
   // Disable prefetch for Page Builder and Redirect Card to avoid 404 errors

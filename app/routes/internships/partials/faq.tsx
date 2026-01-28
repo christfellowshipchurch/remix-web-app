@@ -1,5 +1,4 @@
 import { StyledAccordion } from "~/components";
-import { Button } from "~/primitives/button/button.primitive";
 
 const faqs = [
   {
@@ -29,36 +28,21 @@ const faqs = [
   },
 ];
 
-export function FAQSection() {
+const InternshipsFAQs = () => {
   return (
-    <section className="w-full py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
-          Your questions, answered!
-        </h2>
-        <div className="max-w-3xl mx-auto">
-          <StyledAccordion
-            data={faqs}
-            rootStyle="items-center"
-            itemsStyle="bg-white border border-[#E5E7EB]"
-          />
-        </div>
-        <div className="flex flex-col items-center gap-6 mt-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
-            Still have questions?
-          </h2>
-          <p className="text-center">
-            Reach out to someone on our team for more information.
-          </p>
-          <Button
-            href="https://rock.gocf.org/contactus"
-            target="_blank"
-            intent="secondary"
-          >
-            Contact
-          </Button>
-        </div>
+    <section className="w-full content-padding py-16">
+      <div className="max-w-screen-content mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
+        <h2 className="text-[52px] font-bold text-dark-navy">FAQs</h2>
+        <StyledAccordion
+          data={faqs}
+          itemsStyle="bg-navy-subdued border border-navy-subdued"
+          rootStyle="items-center"
+          headerStyle="font-semibold text-lg md:text-xl lg:text-2xl"
+          contentStyle="text-black/55"
+        />
       </div>
     </section>
   );
-}
+};
+
+export default InternshipsFAQs;

@@ -17,9 +17,8 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
 
           <StyledAccordion
             data={faqData(campusName)}
-            bg="white"
-            center
-            border="#C6C6C6"
+            rootStyle="items-center"
+            itemsStyle="bg-white border border-[#C6C6C6]"
           />
 
           <div className="flex flex-col items-center gap-5 text-center">

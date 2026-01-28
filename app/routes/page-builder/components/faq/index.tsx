@@ -13,7 +13,10 @@ export const FAQsComponent = ({ data }: { data: PageBuilderSection }) => {
             {data.name}
           </h2>
           {data?.content?.length > 0 && (
-            <HTMLRenderer className="faq-content md:text-lg" html={data.content} />
+            <HTMLRenderer
+              className="faq-content md:text-lg"
+              html={data.content}
+            />
           )}
         </div>
 
@@ -48,7 +51,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
   return (
     <div
-      className="rounded-[1rem] text-left flex flex-col py-4 px-5 md:py-5 md:px-6 border border-[#666666] max-w-[768px] lg:max-w-none hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+      className="rounded-[1rem] text-left flex flex-col py-4 px-5 md:py-5 md:px-6 border border-neutral-default max-w-[768px] lg:max-w-none hover:bg-gray-50 transition-all duration-200 cursor-pointer"
       onClick={() => setIsExpanded(!isExpanded)}
     >
       <div className="flex justify-between gap-2 w-full cursor-pointer">

@@ -154,7 +154,7 @@ export const SearchPopup = ({
         setLocationHits([]);
       }
     },
-    [searchClient]
+    [searchClient],
   );
 
   // Search locations when query changes or when Pages is selected
@@ -185,7 +185,7 @@ export const SearchPopup = ({
       <ContentItemsHitsCollector onHitsChange={setContentHits} />
 
       <div className="mt-2 space-y-4">
-        <div className="flex flex-col overflow-y-scroll max-h-[300px] scrollbar-thin [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-[#666666]/60 [&::-webkit-scrollbar-track]:bg-gray">
+        <div className="flex flex-col overflow-y-scroll max-h-[300px] scrollbar-thin [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-neutral-default/60 [&::-webkit-scrollbar-track]:bg-gray">
           {combinedHits.map((hit) => (
             <div
               key={hit.objectID}
