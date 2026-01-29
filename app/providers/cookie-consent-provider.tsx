@@ -30,9 +30,11 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Re-apply consent from localStorage on mount so GTM "remembers" for returning users
+  // Re-apply consent from localStorage on mount so GTM "remembers" for returning users.
+  // Only push cookie_consent_accepted once per session so Page View fires once; History Change handles subsequent navigations.
   useEffect(() => {
     const savedConsent = localStorage.getItem("cookieConsent");
+
     if (savedConsent === "true") {
       gtag("consent", "update", {
         ad_storage: "granted",
@@ -40,7 +42,11 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         ad_user_data: "granted",
         ad_personalization: "granted",
       });
-      window.dataLayer.push({ event: "cookie_consent_accepted" });
+
+      if (!sessionStorage.getItem("gtm_consent_fired")) {
+        window.dataLayer.push({ event: "cookie_consent_accepted" });
+        sessionStorage.setItem("gtm_consent_fired", "true");
+      }
     } else if (savedConsent === "false") {
       gtag("consent", "update", {
         ad_storage: "denied",
@@ -62,6 +68,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       });
 
       window.dataLayer.push({ event: "cookie_consent_accepted" });
+      sessionStorage.setItem("gtm_consent_fired", "true");
       localStorage.setItem("cookieConsent", "true");
     }
   };
