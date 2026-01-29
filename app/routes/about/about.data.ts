@@ -17,7 +17,6 @@ export const beliefsData: Belief[] = [
     verses:
       "Genesis 1:1,26-27 | Psalm 90:2 | Psalm 145:8-9 | Matthew 28:19 | 1 Peter 1:3-5 | 2 Corinthians 13:14",
     description:
-      "God loves us so much that He sent His Son Jesus to do for us what we couldn't do for ourselves. Jesus, fully human and fully God, lived a sinless life and offered Himself as the perfect sacrifice for our sins by dying on the Cross. He rose from the dead after three days to demonstrate His power over sin and death and will return again.",
       "God the Father is the Creator and Ruler of the universe who has eternally existed in the three persons of the Trinity: the Father, the Son, and the Holy Spirit. He is all-powerful, all-knowing, ever-present, and He never changes. He is holy and He deserves all of our trust because He is a loving, compassionate Father and is faithful to His promises.",
   },
   {
