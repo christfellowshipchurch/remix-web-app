@@ -12,7 +12,7 @@ export type SectionType =
   | "IMAGE_GALLERY";
 
 export type ContentType =
-  | "EVENT"
+  | "EVENTS"
   | "MESSAGES"
   | "ARTICLES"
   | "DEVOTIONALS"

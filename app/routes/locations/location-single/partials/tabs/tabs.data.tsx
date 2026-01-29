@@ -4,61 +4,6 @@ import {
   PageBuilderSection,
 } from "~/routes/page-builder/types";
 
-export const upcomingEventsData: PageBuilderSection & {
-  type: "EVENT_COLLECTION";
-} = {
-  id: "19003",
-  type: "EVENT_COLLECTION",
-  name: "Test Event Resources",
-  content: "testing the event resources",
-  collection: [
-    {
-      id: "8387",
-      contentChannelId: "78",
-      contentType: "EVENT" as ContentType,
-      name: "Sunday Baptism",
-      summary: "Make a splash with your faith!",
-      image:
-        "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=ba11d3be-c012-4a5c-9c39-31de69807928",
-      startDate: "Tue 12 Nov 2024",
-      pathname: "/event/interested-in-getting-baptized",
-    },
-    {
-      id: "11664",
-      contentChannelId: "78",
-      contentType: "EVENT" as ContentType,
-      name: "Journey",
-      summary: "Your first step to getting connected!",
-      image:
-        "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=60a08ab5-bcad-4757-b8dc-241e89f882f1",
-      startDate: "Tue 12 Nov 2024",
-      pathname: "/event/journey",
-    },
-    {
-      id: "18592",
-      contentChannelId: "78",
-      contentType: "EVENT" as ContentType,
-      name: "Find your spot to serve at Christ Fellowship!",
-      summary: "",
-      image:
-        "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=7232b18b-d0b9-47b2-a798-2e4e87f3479e",
-      startDate: "Wed 13 Nov 2024",
-      pathname: "/event/dream-team-kickoff",
-    },
-    {
-      id: "9220",
-      contentChannelId: "78",
-      contentType: "EVENT" as ContentType,
-      name: "Missions: Serve Locally",
-      summary: "Help meet the needs of thousands in our region!",
-      image:
-        "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=5a32346c-898c-4814-bd2b-46be0823c09f",
-      startDate: "Wed 13 Nov 2024",
-      pathname: "/event/4th-saturday-serve",
-    },
-  ],
-};
-
 export const familiesMappedChildren: ContentBlockData[] = [
   {
     id: "19038",

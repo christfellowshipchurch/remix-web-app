@@ -6,7 +6,7 @@ import { ContentBlockData, ContentType, SectionType } from "../types";
  * Maps content channel IDs to their corresponding content types
  */
 const CONTENT_TYPE_MAP: Record<string, ContentType> = {
-  "186": "EVENT", // New Events Content Channel ID
+  "186": "EVENTS", // New Events Content Channel ID
   "63": "MESSAGES",
   "90": "REDIRECT_CARD",
   "43": "ARTICLES",

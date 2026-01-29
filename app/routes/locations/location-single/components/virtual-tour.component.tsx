@@ -63,7 +63,7 @@ export const VirtualTourTabs = ({
               isOnline
                 ? "Join Us Online!"
                 : isSpanish
-                  ? "Toma Un Recorrido Virtual"
+                  ? "Haz Un Recorrido Virtual"
                   : "Take a Virtual Tour"
             }
             description={

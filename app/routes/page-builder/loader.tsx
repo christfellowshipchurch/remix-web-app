@@ -218,7 +218,7 @@ export const mapPageBuilderChildItems = async (
                     itemAttributeValues?.redirectUrl || "",
                   );
                   break;
-                case "EVENT":
+                case "EVENTS":
                   pathname = getPathname(
                     contentType,
                     getStringValue(itemAttributeValues?.url || ""),

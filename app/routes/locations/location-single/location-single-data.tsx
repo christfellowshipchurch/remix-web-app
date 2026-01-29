@@ -50,7 +50,7 @@ export const onlineGetInvolvedResources: CollectionItem[] = [
     summary: "Your first step to getting connected!",
     image:
       "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=5cbd4b27-2ff1-4e5c-ae77-45b51399be94&quality=20",
-    pathname: "/event-finder/journey",
+    pathname: "/events/journey",
     contentType: "REDIRECT_CARD",
     contentChannelId: "1234",
     id: "1",
