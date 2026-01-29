@@ -17,7 +17,7 @@ export function DesktopClassFilters({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null
+    } | null,
   ) => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -60,7 +60,7 @@ export function DesktopClassFilters({
   }, [activeDropdown]);
 
   const dropdownButtonStyles =
-    "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-lg p-3 border border-[#666666] md:w-[900px] text-text-secondary font-semibold cursor-pointer";
+    "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-lg p-3 border border-neutral-default md:w-[900px] text-text-secondary font-semibold cursor-pointer";
 
   return (
     <div
@@ -187,9 +187,9 @@ export function DesktopClassFilters({
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-              ? "z-1"
-              : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300"
+                ? "z-1"
+                : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300",
           )}
         >
           <AllClassFiltersPopup
