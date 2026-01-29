@@ -5,6 +5,7 @@ import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-fiel
 import { useFetcher } from "react-router-dom";
 import { renderInputField } from "../connect-card/connect-form.component";
 import { LoaderReturnType } from "~/routes/set-a-reminder/loader";
+import { pushFormEvent } from "~/lib/gtm";
 
 interface ReminderProps {
   setServiceTime: (time: string) => void;
@@ -42,6 +43,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
       if (data.error) {
         setError(data.error);
       } else {
+        pushFormEvent('form_complete', 'set_a_reminder', 'Set a Reminder');
         onSuccess();
       }
     }

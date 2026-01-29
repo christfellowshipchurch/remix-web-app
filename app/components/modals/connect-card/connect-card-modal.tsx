@@ -3,6 +3,7 @@ import Modal from "~/primitives/Modal";
 import ConnectCardFlow from "./connect-card-flow.component";
 import { Button } from "~/primitives/button/button.primitive";
 import { ButtonProps } from "~/primitives/button/button.primitive";
+import { pushFormEvent } from "~/lib/gtm";
 
 interface ConnectCardModalProps {
   buttonTitle?: string;
@@ -19,8 +20,15 @@ export function ConnectCardModal({
 }: ConnectCardModalProps) {
   const [openModal, setOpenModal] = useState(false);
 
+  const handleOpenChange = (open: boolean) => {
+    setOpenModal(open);
+    if (open) {
+      pushFormEvent('form_start', 'connect_card', 'Connect Card');
+    }
+  };
+
   return (
-    <Modal open={openModal} onOpenChange={setOpenModal}>
+    <Modal open={openModal} onOpenChange={handleOpenChange}>
       <Modal.Button asChild className="mr-2">
         <TriggerButton intent="white" className={triggerStyles}>
           {buttonTitle
