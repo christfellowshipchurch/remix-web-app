@@ -10,7 +10,11 @@ interface RockProxyEmbedProps {
   showLoading?: boolean;
   /** Custom CSS classes */
   className?: string;
-  /** Whether to use the advanced proxy (better CSS support) */
+  /**
+   * Whether to use the advanced proxy (better CSS support).
+   * When true, uses server-side proxy to handle CORS and CSS issues.
+   * When false, embeds directly (may fail due to CORS/X-Frame-Options restrictions).
+   */
   useAdvancedProxy?: boolean;
   /** Additional iframe attributes */
   iframeProps?: React.IframeHTMLAttributes<HTMLIFrameElement>;
@@ -42,14 +46,16 @@ export function RockProxyEmbed({
     setHasError(true);
   };
 
-  // Build the proxy URL
-  const proxyUrl = useAdvancedProxy
+  // Build the iframe source URL
+  // When useAdvancedProxy is true, use the server-side proxy to handle CORS and CSS issues
+  // When false, embed directly (may fail due to CORS/X-Frame-Options restrictions)
+  const iframeSrc = useAdvancedProxy
     ? `/rock-page?url=${encodeURIComponent(url)}`
-    : `/rock-proxy?url=${encodeURIComponent(url)}`;
+    : url;
 
   const iframeAttributes = {
     ref: iframeRef,
-    src: proxyUrl,
+    src: iframeSrc,
     className: cn("w-full border-0", hasError && "hidden"),
     style: { height: `${height}px` },
     title: "Rock RMS Embedded Content",
