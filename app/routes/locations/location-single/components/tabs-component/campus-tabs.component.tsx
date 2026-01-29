@@ -7,6 +7,12 @@ import {
   spanishTabData,
 } from "../../location-single-data";
 
+type TabData = {
+  label: string;
+  mobileLabel: string;
+  value: string;
+};
+
 interface TabComponentProps {
   setReminderVideo?: string;
   isOnline?: boolean;
@@ -14,6 +20,7 @@ interface TabComponentProps {
 
 interface CampusTabsProps {
   tabs: Array<ComponentType<TabComponentProps>>;
+  tabData?: TabData[];
   setReminderVideo?: string;
   isOnline?: boolean;
   activeTab: string;
@@ -27,15 +34,17 @@ export const CampusTabs = ({
   activeTab = "sunday-details",
   setActiveTab,
   tabs,
+  tabData,
   setReminderVideo,
   isOnline,
   isSpanish,
 }: CampusTabsProps) => {
-  const data = isOnline
+  const defaultData = isOnline
     ? onlineTabsData
     : isSpanish
       ? spanishTabData
       : englishTabData;
+  const data = tabData ?? defaultData;
   return (
     <Tabs.Root
       value={activeTab}
@@ -45,15 +54,10 @@ export const CampusTabs = ({
       {/* Desktop Tabs */}
       <Tabs.List
         className={cn(
-          "flex w-[90vw] lg:w-full md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
+          "flex max-w-[90vw] md:max-w-none lg:w-auto md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0",
           isSpanish ? "gap-0 text-[14.5px] sm:text-base" : "gap-2",
-          isOnline
-            ? "max-w-[520px]"
-            : isSpanish
-              ? "max-w-[570px] lg:max-w-[800px]"
-              : "max-w-[668px]",
           tasListStyle,
-          activeTab === "sunday-details" && "!absolute -top-9 left-1/2"
+          activeTab === "sunday-details" && "!absolute -top-9 left-1/2",
         )}
       >
         {data.map((tab, index) => (

@@ -7,11 +7,17 @@ import { AboutUs } from "./tabs/about-us";
 import { SundayDetails } from "./tabs/sunday-details";
 import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
+import {
+  englishTabData,
+  onlineTabsData,
+  spanishTabData,
+} from "../location-single-data";
 import { useResponsive } from "~/hooks/use-responsive";
 import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
 import { useState, useEffect } from "react";
 import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
-import { useFetcher } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
+import { LoaderReturnType } from "../loader";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -243,10 +249,33 @@ const CampusTabsWrapper = ({
   setReminderVideo: string | undefined;
   isOnline: boolean;
 }) => {
+  const { upcomingEvents } = useLoaderData<LoaderReturnType>();
+  const hasUpcomingEvents = (upcomingEvents.collection?.length ?? 0) > 0;
+
+  const defaultTabData = isOnline
+    ? onlineTabsData
+    : isSpanish
+      ? spanishTabData
+      : englishTabData;
+  const tabData = hasUpcomingEvents
+    ? defaultTabData
+    : defaultTabData.filter((tab) => tab.value !== "upcoming-events");
+
+  const activeTabValue = tabData.some((tab) => tab.value === activeTab)
+    ? activeTab
+    : "sunday-details";
+
+  const tabs = [
+    () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
+    () => <AboutUs campusPastor={campusPastor} isSpanish={isSpanish} />,
+    ...(!isOnline ? [() => <ForFamilies isSpanish={isSpanish} />] : []),
+    ...(hasUpcomingEvents ? [() => <UpcomingEvents />] : []),
+  ];
+
   return (
     <div className="relative h-full w-full">
       {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
-      {activeTab == "sunday-details" && (
+      {activeTabValue === "sunday-details" && (
         <WhatToExpect
           setReminderVideo={setReminderVideo}
           isOnline={isOnline}
@@ -255,20 +284,16 @@ const CampusTabsWrapper = ({
       )}
 
       <CampusTabs
-        activeTab={activeTab}
+        activeTab={activeTabValue}
         isSpanish={isSpanish}
         setActiveTab={setActiveTab}
-        tabs={[
-          () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
-          () => <AboutUs campusPastor={campusPastor} isSpanish={isSpanish} />,
-          ...(!isOnline ? [() => <ForFamilies isSpanish={isSpanish} />] : []),
-          () => <UpcomingEvents />,
-        ]}
+        tabs={tabs}
+        tabData={tabData}
         isOnline={isOnline}
       />
 
-      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them oustide of the Tabs component*/}
-      {activeTab == "about-us" && (
+      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
+      {activeTabValue === "about-us" && (
         <ConnectWithUs
           isSpanish={isSpanish}
           campusName={campusName || ""}
