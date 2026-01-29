@@ -100,8 +100,7 @@ const getSeriesResources = async (seriesGuid: string) => {
       coverImage: string;
       summary: string;
     }) => {
-      resource.summary = 
-        resource.attributeValues.summary?.value,
+      resource.summary = resource.attributeValues.summary?.value ?? "";
       resource.coverImage = createImageUrlFromGuid(
         resource.attributeValues.image.value,
       );
@@ -143,9 +142,11 @@ const getSeriesEvents = async (seriesGuid: string) => {
       event.coverImage = createImageUrlFromGuid(
         event?.attributeValues?.image?.value,
       );
-      event.summary = 
-        event?.attributeValues?.summary?.value || event?.attributeValues?.aboutSectionSummary?.value || event?.content || "",
-
+      event.summary =
+        event?.attributeValues?.summary?.value ||
+        event?.attributeValues?.aboutSectionSummary?.value ||
+        event?.content ||
+        "";
     },
   );
 
