@@ -1,9 +1,8 @@
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { LoaderFunctionArgs } from "react-router-dom";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
 import { MessageType } from "../messages/types";
 import { getContentChannelUrl } from "~/lib/rock-config";
-import { ensureArray } from "~/lib/utils";
 import { mapRockDataToMessage } from "../messages/message-single/loader";
 
 export type LoaderReturnType = {
@@ -74,7 +73,8 @@ const getSeriesResources = async (seriesGuid: string) => {
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "MessageSeries",
-      $filter: "ContentChannelId ne 63 and ContentChannelId ne 186 and Status eq 'Approved'",
+      $filter:
+        "ContentChannelId ne 63 and ContentChannelId ne 186 and Status eq 'Approved'",
       value: `${seriesGuid}`,
       loadAttributes: "simple",
     },
@@ -90,19 +90,23 @@ const getSeriesResources = async (seriesGuid: string) => {
 
   resources.forEach(
     (resource: {
-      attributeValues: { image: { value: string }, summary: { value: string }, url: { value: string } };
+      attributeValues: {
+        image: { value: string };
+        summary: { value: string };
+        url: { value: string };
+      };
       contentChannelId: string;
       coverImage: string;
       summary: string;
     }) => {
       resource.summary = resource.attributeValues.summary.value;
       resource.coverImage = createImageUrlFromGuid(
-        resource.attributeValues.image.value
+        resource.attributeValues.image.value,
       );
       resource.attributeValues.url.value = `${getContentChannelUrl(
-        parseInt(resource.contentChannelId)
+        parseInt(resource.contentChannelId),
       )}/${resource.attributeValues.url.value}`;
-    }
+    },
   );
 
   return resources;
@@ -119,22 +123,32 @@ const getSeriesEvents = async (seriesGuid: string) => {
     },
   });
 
-  const events = Array.isArray(seriesEvents)
-    ? seriesEvents
-    : [seriesEvents];
+  if (!seriesEvents) {
+    return [];
+  }
+
+  const events = Array.isArray(seriesEvents) ? seriesEvents : [seriesEvents];
 
   events.forEach(
     (event: {
-      attributeValues: { image: { value: string }, summary: { value: string }, url: { value: string } };
+      attributeValues: {
+        aboutSectionSummary: { value: string };
+        image: { value: string };
+        summary: { value: string };
+        url: { value: string };
+      };
       contentChannelId: string;
       coverImage: string;
       summary: string;
+      content: string;
     }) => {
       event.coverImage = createImageUrlFromGuid(
-        event.attributeValues.image.value
+        event?.attributeValues?.image?.value,
       );
-      event.summary = event.attributeValues.summary.value;
-    }
+      event.summary =
+        event?.attributeValues?.summary?.value ||
+        event?.attributeValues?.aboutSectionSummary?.value;
+    },
   );
 
   return events;
@@ -176,15 +190,23 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
   series.attributeValues.coverImage = createImageUrlFromGuid(
-    series.attributeValues.coverImage.value
+    series.attributeValues.coverImage.value,
   );
 
   const seriesMessageData = await getSeriesMessages(series.guid);
 
+  const messages = await Promise.all(
+    seriesMessageData.map(mapRockDataToMessage),
+  );
+
+  const resources = await getSeriesResources(series.guid);
+
+  const events = await getSeriesEvents(series.guid);
+
   return {
     series: series,
-    messages: await Promise.all(seriesMessageData.map(mapRockDataToMessage)),
-    resources: await getSeriesResources(series.guid),
-    events: await getSeriesEvents(series.guid),
+    messages,
+    resources,
+    events,
   };
 }

@@ -4,7 +4,8 @@ import { SeriesResourceCarousel } from "./partials/series-carousel.partial";
 import { Button } from "~/primitives/button/button.primitive";
 
 export function SeriesResources() {
-  const { series, messages, resources, events } = useLoaderData<LoaderReturnType>();
+  const { series, messages, resources, events } =
+    useLoaderData<LoaderReturnType>();
 
   return (
     <div className="flex flex-col">
@@ -37,9 +38,9 @@ export function SeriesResources() {
                 intent="secondary"
                 className="w-full"
                 size="lg"
-                href="/app"
+                href="/daily-devo"
               >
-                App Devoltional
+                Daily Devotional
               </Button>
             </div>
           </div>
