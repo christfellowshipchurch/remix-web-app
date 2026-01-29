@@ -7,10 +7,10 @@ import { Icon } from "~/primitives/icon/icon";
 import Modal from "~/primitives/Modal";
 import { Author } from "~/routes/author/types";
 import { useLoaderData } from "react-router-dom";
-import { loader } from "~/routes/home/loader";
+import { HomeLoaderData } from "~/routes/home/loader";
 
 export function LeaderGrid() {
-  const { leadersWithArticles } = useLoaderData<typeof loader>();
+  const { leadersWithArticles } = useLoaderData<HomeLoaderData>();
 
   return (
     <div className="flex items-start lg:items-end gap-3">

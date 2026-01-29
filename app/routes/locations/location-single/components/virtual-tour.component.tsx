@@ -3,7 +3,6 @@ import { useLoaderData } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
 import { LoaderReturnType } from "../loader";
-import { cn } from "~/lib/utils";
 
 const GoogleMap = ({
   address,
@@ -64,15 +63,15 @@ export const VirtualTourTabs = ({
               isOnline
                 ? "Join Us Online!"
                 : isSpanish
-                ? "Toma Un Recorrido Virtual"
-                : "Take a Virtual Tour"
+                  ? "Toma Un Recorrido Virtual"
+                  : "Take a Virtual Tour"
             }
             description={
               isOnline
                 ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
                 : isSpanish
-                ? "Descubre cómo es asistir a Christ Fellowship antes de visitarnos."
-                : "Experience what it’s like to attend Christ Fellowship before your visit."
+                  ? "Descubre cómo es asistir a Christ Fellowship antes de visitarnos."
+                  : "Experience what it’s like to attend Christ Fellowship before your visit."
             }
             wistiaId={wistiaId}
           />
