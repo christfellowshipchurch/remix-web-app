@@ -74,7 +74,8 @@ const getSeriesResources = async (seriesGuid: string) => {
     endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
       attributeKey: "MessageSeries",
-      $filter: "ContentChannelId ne 63 and ContentChannelId ne 186 and Status eq 'Approved'",
+      $filter:
+        "ContentChannelId ne 63 and ContentChannelId ne 186 and Status eq 'Approved'",
       value: `${seriesGuid}`,
       loadAttributes: "simple",
     },
@@ -90,19 +91,24 @@ const getSeriesResources = async (seriesGuid: string) => {
 
   resources.forEach(
     (resource: {
-      attributeValues: { image: { value: string }, summary: { value: string }, url: { value: string } };
+      attributeValues: {
+        image: { value: string };
+        summary: { value: string };
+        url: { value: string };
+      };
       contentChannelId: string;
       coverImage: string;
       summary: string;
     }) => {
-      resource.summary = resource.attributeValues.summary.value;
+      resource.summary = 
+        resource.attributeValues.summary?.value,
       resource.coverImage = createImageUrlFromGuid(
-        resource.attributeValues.image.value
+        resource.attributeValues.image.value,
       );
       resource.attributeValues.url.value = `${getContentChannelUrl(
-        parseInt(resource.contentChannelId)
+        parseInt(resource.contentChannelId),
       )}/${resource.attributeValues.url.value}`;
-    }
+    },
   );
 
   return resources;
@@ -119,22 +125,28 @@ const getSeriesEvents = async (seriesGuid: string) => {
     },
   });
 
-  const events = Array.isArray(seriesEvents)
-    ? seriesEvents
-    : [seriesEvents];
+  const events = Array.isArray(seriesEvents) ? seriesEvents : [seriesEvents];
 
   events.forEach(
     (event: {
-      attributeValues: { image: { value: string }, summary: { value: string }, url: { value: string } };
+      attributeValues: {
+        image: { value: string };
+        aboutSectionSummary: { value: string };
+        summary: { value: string };
+        url: { value: string };
+      };
       contentChannelId: string;
       coverImage: string;
       summary: string;
+      content?: string;
     }) => {
       event.coverImage = createImageUrlFromGuid(
-        event.attributeValues.image.value
+        event?.attributeValues?.image?.value,
       );
-      event.summary = event.attributeValues.summary.value;
-    }
+      event.summary = 
+        event?.attributeValues?.summary?.value || event?.attributeValues?.aboutSectionSummary?.value || event?.content || "",
+
+    },
   );
 
   return events;
@@ -176,7 +188,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
   series.attributeValues.coverImage = createImageUrlFromGuid(
-    series.attributeValues.coverImage.value
+    series.attributeValues.coverImage.value,
   );
 
   const seriesMessageData = await getSeriesMessages(series.guid);
