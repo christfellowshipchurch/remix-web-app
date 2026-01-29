@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, useEffect, ReactNode } from "react";
 import { CookieConsent } from "../components/cookie-consent";
 
 declare global {
@@ -29,6 +29,27 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       window.dataLayer.push(arguments);
     }
   };
+
+  // Re-apply consent from localStorage on mount so GTM "remembers" for returning users
+  useEffect(() => {
+    const savedConsent = localStorage.getItem("cookieConsent");
+    if (savedConsent === "true") {
+      gtag("consent", "update", {
+        ad_storage: "granted",
+        analytics_storage: "granted",
+        ad_user_data: "granted",
+        ad_personalization: "granted",
+      });
+      window.dataLayer.push({ event: "cookie_consent_accepted" });
+    } else if (savedConsent === "false") {
+      gtag("consent", "update", {
+        ad_storage: "denied",
+        analytics_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+      });
+    }
+  }, []);
 
   const handleAcceptCookies = () => {
     if (typeof window !== "undefined") {

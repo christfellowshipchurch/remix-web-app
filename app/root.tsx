@@ -25,6 +25,24 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* 1. CONSENT DEFAULT (Must be first) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              
+              // Set default consent to 'denied' immediately
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'wait_for_update': 500 // Gives your React app 500ms to load cached consent
+              });
+            `,
+          }}
+        />
         {/* Google Consent Mode v2 - Default to denied */}
         {gtmId && (
           <script
