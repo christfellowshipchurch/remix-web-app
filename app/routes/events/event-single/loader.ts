@@ -36,7 +36,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const pageData: EventSinglePageType = {
     title: eventData.title,
-    subtitle: eventData.attributeValues?.summary?.value || "",
+    titleOverride: eventData.attributeValues?.titleOverride?.value || "",
+    subtitle: eventData?.content || "",
     coverImage: createImageUrlFromGuid(
       eventData.attributeValues?.image?.value || ""
     ),
@@ -63,7 +64,8 @@ export const loader: LoaderFunction = async ({ params }) => {
       title: item.key,
       description: item.value,
     })),
-    moreInfo: eventData.attributeValues?.moreInfo?.value,
+    moreInfoTitle: eventData.attributeValues?.moreInfoTitle?.value,
+    moreInfoText: eventData.attributeValues?.moreInfoText?.value,
     optionalBlurb: parseRockKeyValueList(
       decodeURIComponent(eventData.attributeValues?.optionalBlurb?.value) || ""
     ).map((item) => ({
