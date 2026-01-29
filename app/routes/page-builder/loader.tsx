@@ -42,6 +42,7 @@ interface RockAttributeValues {
 interface RockContentItem {
   id: string;
   title: string;
+  titleOverride?: string;
   content: string;
   contentChannelId: string;
   startDateTime?: string;
@@ -88,7 +89,7 @@ export const fetchChildItems = async (id: string) => {
           loadAttributes: "simple",
         },
       });
-    })
+    }),
   );
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
@@ -137,14 +138,14 @@ export const fetchDefinedValue = async (guid: string) => {
 const getLinkTreeLayout = async (attributeValues: RockAttributeValues) => {
   if (attributeValues?.linkTreeLayout) {
     return await fetchDefinedValue(
-      getStringValue(attributeValues.linkTreeLayout.value)
+      getStringValue(attributeValues.linkTreeLayout.value),
     );
   }
   return undefined;
 };
 
 export const mapPageBuilderChildItems = async (
-  children: RockContentItem[]
+  children: RockContentItem[],
 ): Promise<PageBuilderSection[]> => {
   return Promise.all(
     // Map over the children and define the PageBuilder Section Type
@@ -155,13 +156,13 @@ export const mapPageBuilderChildItems = async (
       // Map the attribute values to a key-value object for easier access
       const attributeValues = Object.fromEntries(
         Object.entries(child.attributeValues || {}).map(
-          ([key, obj]: [string, RockAttributeValue]) => [key, obj.value]
-        )
+          ([key, obj]: [string, RockAttributeValue]) => [key, obj.value],
+        ),
       );
 
       if (!sectionType) {
         throw new Error(
-          `Invalid section type for content channel ID: ${typeId}`
+          `Invalid section type for content channel ID: ${typeId}`,
         );
       }
 
@@ -170,6 +171,9 @@ export const mapPageBuilderChildItems = async (
         id: child.id,
         type: sectionType,
         name: child.title,
+        titleOverride: getStringValue(
+          child.attributeValues?.titleOverride?.value ?? "",
+        ),
         content: child.content,
         linkTreeLayout: await getLinkTreeLayout(child.attributeValues || {}),
       };
@@ -185,19 +189,22 @@ export const mapPageBuilderChildItems = async (
               // Map the attribute values to a key-value object for easier access
               const itemAttributeValues = Object.fromEntries(
                 Object.entries(item.attributeValues || {}).map(
-                  ([key, obj]: [string, RockAttributeValue]) => [key, obj.value]
-                )
+                  ([key, obj]: [string, RockAttributeValue]) => [
+                    key,
+                    obj.value,
+                  ],
+                ),
               );
 
               if (!contentType) {
                 throw new Error(
-                  `Invalid content type for content channel ID: ${item.contentChannelId}`
+                  `Invalid content type for content channel ID: ${item.contentChannelId}`,
                 );
               }
 
               // Generate the summary for the item
               const summary = getStringValue(
-                itemAttributeValues?.summary || ""
+                itemAttributeValues?.summary || "",
               );
               if (!summary) {
                 itemAttributeValues.summary = item.content;
@@ -208,19 +215,19 @@ export const mapPageBuilderChildItems = async (
               switch (contentType) {
                 case "REDIRECT_CARD":
                   pathname = getStringValue(
-                    itemAttributeValues?.redirectUrl || ""
+                    itemAttributeValues?.redirectUrl || "",
                   );
                   break;
                 case "EVENT":
                   pathname = getPathname(
                     contentType,
-                    getStringValue(itemAttributeValues?.url || "")
+                    getStringValue(itemAttributeValues?.url || ""),
                   );
                   break;
                 default:
                   pathname = getPathname(
                     contentType,
-                    getStringValue(itemAttributeValues?.pathname || "")
+                    getStringValue(itemAttributeValues?.pathname || ""),
                   );
               }
 
@@ -231,7 +238,7 @@ export const mapPageBuilderChildItems = async (
                 if (startDateTime) {
                   startDate = format(
                     parseISO(startDateTime),
-                    "EEE dd MMM yyyy"
+                    "EEE dd MMM yyyy",
                   );
                 }
               }
@@ -244,13 +251,13 @@ export const mapPageBuilderChildItems = async (
                 summary,
                 image:
                   createImageUrlFromGuid(
-                    getStringValue(itemAttributeValues?.image || "")
+                    getStringValue(itemAttributeValues?.image || ""),
                   ) || "",
                 startDate,
                 pathname,
                 // attributeValues,
               };
-            }
+            },
           ),
         };
       }
@@ -267,7 +274,7 @@ export const mapPageBuilderChildItems = async (
                 ? await fetchDefinedValue(value)
                 : getStringValue(value);
             return [key, processedValue];
-          })
+          }),
         );
 
         const processedValues = Object.fromEntries(updatedValues);
@@ -275,7 +282,7 @@ export const mapPageBuilderChildItems = async (
         const fetchVideo = attributeValues?.featureVideo
           ? (
               await fetchWistiaDataFromRock(
-                getStringValue(attributeValues.featureVideo)
+                getStringValue(attributeValues.featureVideo),
               )
             ).sourceKey
           : null;
@@ -284,7 +291,7 @@ export const mapPageBuilderChildItems = async (
           ...baseChild,
           ...processedValues,
           coverImage: createImageUrlFromGuid(
-            getStringValue(attributeValues?.coverImage || "")
+            getStringValue(attributeValues?.coverImage || ""),
           ),
           featureVideo: fetchVideo,
         };
@@ -295,7 +302,7 @@ export const mapPageBuilderChildItems = async (
           endpoint: `AttributeMatrices`,
           queryParams: {
             $filter: `Guid eq guid'${getStringValue(
-              attributeValues?.faqs || ""
+              attributeValues?.faqs || "",
             )}'`,
             $select: "Id",
           },
@@ -312,7 +319,7 @@ export const mapPageBuilderChildItems = async (
         return {
           ...baseChild,
           stillHaveQuestionsLink: getStringValue(
-            attributeValues?.stillHaveQuestionsLink || ""
+            attributeValues?.stillHaveQuestionsLink || "",
           ),
           faqs: faqs.map((faq: RockAttributeMatrixItem) => ({
             id: faq.id,
@@ -327,7 +334,7 @@ export const mapPageBuilderChildItems = async (
           endpoint: `AttributeMatrices`,
           queryParams: {
             $filter: `Guid eq guid'${getStringValue(
-              attributeValues?.images || ""
+              attributeValues?.images || "",
             )}'`,
             $select: "Id",
           },
@@ -345,14 +352,14 @@ export const mapPageBuilderChildItems = async (
           ...baseChild,
           imageGallery: imageGallery.map((image: RockAttributeMatrixItem) =>
             createImageUrlFromGuid(
-              getStringValue(image.attributeValues.image.value)
-            )
+              getStringValue(image.attributeValues.image.value),
+            ),
           ),
         };
       }
 
       return baseChild;
-    })
+    }),
   );
 };
 
@@ -402,12 +409,12 @@ export const loader: LoaderFunction = async ({ params }) => {
       title: page.title,
       heroImage:
         createImageUrlFromGuid(
-          getStringValue(page.attributeValues?.image?.value || "")
+          getStringValue(page.attributeValues?.image?.value || ""),
         ) || "",
       content: page.content,
       callsToAction:
         parseRockKeyValueList(
-          getStringValue(page.attributeValues?.callsToAction?.value || "")
+          getStringValue(page.attributeValues?.callsToAction?.value || ""),
         ).map((cta) => ({
           title: cta.key,
           url: cta.value,
