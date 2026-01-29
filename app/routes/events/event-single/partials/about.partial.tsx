@@ -6,14 +6,16 @@ export const AboutPartial = ({
   aboutContent,
   infoCards,
   whatToExpect,
-  moreInfo,
+  moreInfoTitle,
+  moreInfoText,
   optionalBlurb,
 }: {
   aboutTitle?: string;
   aboutContent?: string;
   infoCards?: EventInfoCardType[];
   whatToExpect?: { title: string; description: string }[];
-  moreInfo?: string;
+  moreInfoTitle?: string;
+  moreInfoText?: string;
   optionalBlurb?: { title: string; description: string }[];
 }) => {
   const cardsToDisplay = (infoCards ?? []).slice(0, 4);
@@ -53,13 +55,16 @@ export const AboutPartial = ({
         <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-8 lg:justify-between w-full pb-6">
           {/* Left / Top (Mobile) Side */}
           <div className="w-full max-w-[590px] flex flex-col gap-4">
-            <h3 className="text-xl text-black font-semibold">
-              Schedule / What to Expect
-            </h3>
+            {whatToExpect && whatToExpect.length > 0 && (
+              <h3 className="text-xl text-black font-semibold">
+                Schedule / What to Expect
+              </h3>
+            )}
             <div className="flex flex-col gap-2 items-start">
               {(whatToExpect ?? []).map((item, index) => (
                 <ScheduleItem
                   key={index}
+                  number={index + 1}
                   title={item.title}
                   description={item.description}
                 />
@@ -69,12 +74,12 @@ export const AboutPartial = ({
 
           {/* Right / Bottom (Mobile) Side */}
           <div className="flex flex-col gap-5 max-w-[640px] w-full">
-            <div className="flex flex-col gap-3">
-              <h3 className="text-black text-xl font-semibold">More Info</h3>
-              {moreInfo && (
-                <p className="text-[#717182] text-sm font-medium">{moreInfo}</p>
-              )}
-            </div>
+            {moreInfoTitle && moreInfoText && (
+              <div className="flex flex-col gap-3">
+                <h3 className="text-black text-xl font-semibold">{moreInfoTitle}</h3>
+                <p className="text-[#717182] text-sm font-medium">{moreInfoText}</p>
+              </div>
+            )}
 
             {(optionalBlurb ?? []).map((blurb, index) => (
               <div
@@ -98,15 +103,20 @@ export const AboutPartial = ({
 const ScheduleItem = ({
   title,
   description,
-}: {
-  title: string;
+  number,
+  }: {
+    title: string;
   description: string;
+  number: number;
 }) => {
   return (
     <div className="flex items-start gap-3">
+      <span className="bg-navy text-white rounded-full flex items-center justify-center text-center px-3 size-[30px]">
+          {number}
+      </span>
       <div className="flex flex-col gap-1">
         <h4 className="font-semibold text-lg text-black">{title}</h4>
-        <p className="text-[#717182] text-sm font-medium">{description}</p>
+        <p className="text-[#717182] text-sm font-medium">{decodeURIComponent(description)}</p>
       </div>
     </div>
   );
@@ -121,10 +131,10 @@ export type EventInfoCardType = {
 const InfoCardComponent = ({ title, description, icon }: EventInfoCardType) => {
   return (
     <div className="bg-white pb-10 px-4 pt-6 rounded-lg flex flex-col items-center text-center gap-8 border border-[#E5E5E5] w-full max-w-[312px]">
-      <div className="bg-ocean flex items-center justify-center text-center p-2 rounded-full">
+      <div className="bg-ocean flex items-center justify-center text-center rounded-full p-2">
         <Icon
           name={(icon as keyof typeof icons) ?? "star"}
-          className="text-white ml-[2px]"
+          className="text-white"
         />
       </div>
 
