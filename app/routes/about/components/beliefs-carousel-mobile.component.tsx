@@ -5,10 +5,16 @@ import {
   CarouselItem,
   useCarousel,
 } from "~/primitives/shadcn-primitives/carousel";
-import { beliefsData } from "../about.data";
+import { beliefsData, spanishBeliefData } from "../about.data";
 import Icon from "~/primitives/icon";
 
-const BeliefsMobilePagination = () => {
+const BeliefsMobilePagination = ({
+  isSpanish = false,
+}: {
+  isSpanish?: boolean;
+}) => {
+  const data = isSpanish ? spanishBeliefData : beliefsData;
+
   const {
     currentSlide,
     scrollNext,
@@ -17,7 +23,7 @@ const BeliefsMobilePagination = () => {
     canScrollNext,
     canScrollPrev,
   } = useCarousel();
-  const totalSlides = beliefsData.length;
+  const totalSlides = data.length;
   const visibleButtons = 5;
 
   // Calculate the start index of the visible buttons window
@@ -30,7 +36,7 @@ const BeliefsMobilePagination = () => {
   const startIndex = getStartIndex();
   const visibleIndices = Array.from(
     { length: visibleButtons },
-    (_, i) => startIndex + i
+    (_, i) => startIndex + i,
   );
 
   return (
@@ -39,7 +45,7 @@ const BeliefsMobilePagination = () => {
         onClick={() => scrollPrev()}
         className={cn(
           "flex items-center justify-center size-9 border-2 border-neutral-lighter text-neutral-lighter",
-          !canScrollPrev && "opacity-50"
+          !canScrollPrev && "opacity-50",
         )}
       >
         <Icon name="chevronLeft" size={24} />
@@ -50,7 +56,7 @@ const BeliefsMobilePagination = () => {
           key={index}
           className={cn(
             "flex items-center justify-center size-9 border-2 border-neutral-lighter text-neutral-lighter",
-            currentSlide === index && "bg-ocean border-ocean"
+            currentSlide === index && "bg-ocean border-ocean",
           )}
         >
           {index + 1}
@@ -60,7 +66,7 @@ const BeliefsMobilePagination = () => {
         onClick={() => scrollNext()}
         className={cn(
           "flex items-center justify-center size-9 border-2 border-neutral-lighter text-neutral-lighter",
-          !canScrollNext && "opacity-50"
+          !canScrollNext && "opacity-50",
         )}
       >
         <Icon name="chevronRight" size={24} />
@@ -69,7 +75,13 @@ const BeliefsMobilePagination = () => {
   );
 };
 
-export function BeliefsCarouselMobile() {
+export function BeliefsCarouselMobile({
+  isSpanish = false,
+}: {
+  isSpanish?: boolean;
+}) {
+  const data = isSpanish ? spanishBeliefData : beliefsData;
+
   return (
     <div className="z-30">
       <img
@@ -85,14 +97,14 @@ export function BeliefsCarouselMobile() {
           className="w-full relative mb-12"
         >
           <CarouselContent>
-            {beliefsData.map((belief, _index) => (
+            {data.map((belief, _index) => (
               <CarouselItem
                 key={belief.title}
                 className={cn(
                   "pl-0",
                   "basis-[100%]",
                   "md:basis-[50%]",
-                  "lg:basis-[33.333%]"
+                  "lg:basis-[33.333%]",
                 )}
                 data-belief-title={belief.title}
               >
@@ -110,7 +122,7 @@ export function BeliefsCarouselMobile() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <BeliefsMobilePagination />
+          <BeliefsMobilePagination isSpanish={isSpanish} />
         </Carousel>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { CampusPastorsQuote } from "../../components/tabs-component/about-us/cam
 
 export const AboutUs = ({
   campusPastor,
+  isSpanish,
 }: {
   campusPastor: {
     email: string;
@@ -12,6 +13,7 @@ export const AboutUs = ({
     lastName: string;
     photo: string;
   };
+  isSpanish?: boolean;
 }) => {
   return (
     <div className="flex flex-col w-full">
@@ -21,7 +23,7 @@ export const AboutUs = ({
         campusPastor={campusPastor}
       />
       <OurMissionSection />
-      <BeliefsSection hideChapelImage={true} />
+      <BeliefsSection hideChapelImage={true} isSpanish={isSpanish} />
       <ImpactSection />
     </div>
   );

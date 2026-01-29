@@ -15,7 +15,7 @@ import { useFetcher } from "react-router-dom";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
-  backgroundVideoDesktop?: string
+  backgroundVideoDesktop?: string,
 ) {
   const { isSmall } = useResponsive();
 
@@ -56,8 +56,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     if (originalSetReminderVideo) {
       fetcher.load(
         `/validate-wistia?videoId=${encodeURIComponent(
-          originalSetReminderVideo
-        )}`
+          originalSetReminderVideo,
+        )}`,
       );
     }
   }, [originalSetReminderVideo]);
@@ -73,7 +73,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
-    backgroundVideoDesktop
+    backgroundVideoDesktop,
   );
 
   const isOnline = campusName?.includes("Online");
@@ -158,8 +158,8 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     if (originalSetReminderVideo) {
       fetcher.load(
         `/validate-wistia?videoId=${encodeURIComponent(
-          originalSetReminderVideo
-        )}`
+          originalSetReminderVideo,
+        )}`,
       );
     }
   }, [originalSetReminderVideo]);
@@ -177,7 +177,7 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
-    backgroundVideoDesktop
+    backgroundVideoDesktop,
   );
 
   return (
@@ -260,7 +260,7 @@ const CampusTabsWrapper = ({
         setActiveTab={setActiveTab}
         tabs={[
           () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
-          () => <AboutUs campusPastor={campusPastor} />,
+          () => <AboutUs campusPastor={campusPastor} isSpanish={isSpanish} />,
           ...(!isOnline ? [ForFamilies] : []),
           UpcomingEvents,
         ]}
