@@ -30,9 +30,9 @@ export const AboutUs = ({
         quote={pastorQuote}
         title={pastorTitle}
       />
-      <OurMissionSection />
+      <OurMissionSection isSpanish={isSpanish} />
       <BeliefsSection hideChapelImage={true} isSpanish={isSpanish} />
-      <ImpactSection />
+      <ImpactSection isSpanish={isSpanish} />
     </div>
   );
 };

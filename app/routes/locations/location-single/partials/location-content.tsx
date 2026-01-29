@@ -88,7 +88,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   const heading2 = isSpanish ? "lugar para ti" : "welcome here";
   const ctas = [
     {
-      title: isSpanish ? "Establece un recordatorio" : "Set a Reminder",
+      title: isSpanish ? "Recuérdame" : "Set a Reminder",
       href: "#",
       isSetAReminder: true,
     },
@@ -261,8 +261,8 @@ const CampusTabsWrapper = ({
         tabs={[
           () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
           () => <AboutUs campusPastor={campusPastor} isSpanish={isSpanish} />,
-          ...(!isOnline ? [ForFamilies] : []),
-          UpcomingEvents,
+          ...(!isOnline ? [() => <ForFamilies isSpanish={isSpanish} />] : []),
+          () => <UpcomingEvents />,
         ]}
         isOnline={isOnline}
       />
@@ -270,6 +270,7 @@ const CampusTabsWrapper = ({
       {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them oustide of the Tabs component*/}
       {activeTab == "about-us" && (
         <ConnectWithUs
+          isSpanish={isSpanish}
           campusName={campusName || ""}
           campusInstagram={campusInstagram || ""}
         />
