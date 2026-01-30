@@ -10,7 +10,6 @@ import { type ReactNode } from "react";
 import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
 import { CookieConsentProvider } from "./providers/cookie-consent-provider";
-import { GTMProvider } from "./providers/gtm-provider";
 
 import "./styles/tailwind.css";
 import { loader } from "./routes/navbar/loader";
@@ -21,15 +20,71 @@ export { ErrorBoundary } from "./error";
 export { loader }; // root loader currently being used for the navbar data
 
 export function Layout({ children }: { children: ReactNode }) {
+  const gtmId = import.meta.env.VITE_GTM_ID;
+
   return (
     <html lang="en">
       <head>
+        {/* 1. CONSENT DEFAULT (Must be first) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              
+              // Set default consent to 'denied' immediately
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'wait_for_update': 500 // Gives your React app 500ms to load cached consent
+              });
+            `,
+          }}
+        />
+        {/* Google Consent Mode v2 - Default to denied */}
+        {gtmId && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+              });`,
+            }}
+          />
+        )}
+        {/* GTM Script */}
+        {gtmId && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${gtmId}');`,
+            }}
+          />
+        )}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
       <body>
+        {/* GTM Noscript (Fallback) */}
+        {gtmId && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
+        )}
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -40,20 +95,18 @@ export function Layout({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
-    <GTMProvider gtmId="GTM-PFW26V4V">
-      <AuthProvider>
-        <CookieConsentProvider>
-          <NavbarVisibilityProvider>
-            <div className="min-h-screen flex flex-col text-pretty">
-              <Navbar />
-              <main>
-                <Outlet />
-              </main>
-              <Footer />
-            </div>
-          </NavbarVisibilityProvider>
-        </CookieConsentProvider>
-      </AuthProvider>
-    </GTMProvider>
+    <AuthProvider>
+      <CookieConsentProvider>
+        <NavbarVisibilityProvider>
+          <div className="min-h-screen flex flex-col text-pretty">
+            <Navbar />
+            <main>
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+        </NavbarVisibilityProvider>
+      </CookieConsentProvider>
+    </AuthProvider>
   );
 }
