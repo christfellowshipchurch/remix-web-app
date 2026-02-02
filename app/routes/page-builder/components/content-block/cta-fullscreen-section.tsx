@@ -33,6 +33,15 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
       <h2 className="text-2xl md:text-4xl lg:text-[52px] font-extrabold leading-tight">
         {data.name}
       </h2>
+
+      {data.subtitle && (
+        <h3
+          className={`text-text-secondary text-lg font-extrabold tracking-widest`}
+        >
+          {data.subtitle}
+        </h3>
+      )}
+
       <HTMLRenderer
         className={cn("content-padding w-full md:max-w-3xl text-pretty", {
           "text-text-alternate": isDark,

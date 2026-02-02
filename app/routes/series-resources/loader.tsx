@@ -99,14 +99,14 @@ const getSeriesResources = async (seriesGuid: string) => {
       coverImage: string;
       summary: string;
     }) => {
-      resource.summary = resource.attributeValues.summary.value;
+      resource.summary = resource.attributeValues.summary?.value ?? "";
       resource.coverImage = createImageUrlFromGuid(
-        resource.attributeValues.image.value,
+        resource.attributeValues.image.value
       );
       resource.attributeValues.url.value = `${getContentChannelUrl(
-        parseInt(resource.contentChannelId),
+        parseInt(resource.contentChannelId)
       )}/${resource.attributeValues.url.value}`;
-    },
+    }
   );
 
   return resources;
@@ -123,16 +123,11 @@ const getSeriesEvents = async (seriesGuid: string) => {
     },
   });
 
-  if (!seriesEvents) {
-    return [];
-  }
-
   const events = Array.isArray(seriesEvents) ? seriesEvents : [seriesEvents];
 
   events.forEach(
     (event: {
       attributeValues: {
-        aboutSectionSummary: { value: string };
         image: { value: string };
         summary: { value: string };
         url: { value: string };
@@ -140,15 +135,12 @@ const getSeriesEvents = async (seriesGuid: string) => {
       contentChannelId: string;
       coverImage: string;
       summary: string;
-      content: string;
     }) => {
       event.coverImage = createImageUrlFromGuid(
-        event?.attributeValues?.image?.value,
+        event?.attributeValues?.image?.value
       );
-      event.summary =
-        event?.attributeValues?.summary?.value ||
-        event?.attributeValues?.aboutSectionSummary?.value;
-    },
+      event.summary = event.attributeValues.summary.value;
+    }
   );
 
   return events;
@@ -190,13 +182,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
   series.attributeValues.coverImage = createImageUrlFromGuid(
-    series.attributeValues.coverImage.value,
+    series.attributeValues.coverImage.value
   );
 
   const seriesMessageData = await getSeriesMessages(series.guid);
 
   const messages = await Promise.all(
-    seriesMessageData.map(mapRockDataToMessage),
+    seriesMessageData.map(mapRockDataToMessage)
   );
 
   const resources = await getSeriesResources(series.guid);

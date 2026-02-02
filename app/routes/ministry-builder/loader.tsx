@@ -32,7 +32,7 @@ export const fetchMinistryServices = async () => {
     })
     .filter(
       (campus: { servicesGuid: string }) =>
-        !!campus.servicesGuid && campus.servicesGuid !== ""
+        !!campus.servicesGuid && campus.servicesGuid !== "",
     );
 
   const campusMinistryServices = await Promise.all(
@@ -52,7 +52,7 @@ export const fetchMinistryServices = async () => {
               ministryType: attributeValues?.ministryType
                 ?.value as MinistryService["ministryType"],
               location: RockCampuses.find(
-                (campus: RockCampus) => campus.name === currentCampus
+                (campus: RockCampus) => campus.name === currentCampus,
               ) as RockCampus,
               daysOfWeek: attributeValues?.dayOfTheWeek?.valueFormatted ?? "",
               times: attributeValues?.serviceTimes?.value ?? "",
@@ -65,12 +65,12 @@ export const fetchMinistryServices = async () => {
             };
 
             return ministryService;
-          }
+          },
         );
 
         return ministryServices;
-      }
-    )
+      },
+    ),
   );
 
   return campusMinistryServices.flat();
@@ -117,7 +117,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       content: pageData.content,
       callsToAction:
         parseRockKeyValueList(
-          pageData.attributeValues?.callsToAction?.value
+          pageData.attributeValues?.callsToAction?.value,
         )?.map((cta) => ({
           title: cta.key,
           url: cta.value,
