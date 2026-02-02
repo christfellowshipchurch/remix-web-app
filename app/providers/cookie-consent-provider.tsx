@@ -1,5 +1,11 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, useEffect, ReactNode } from "react";
 import { CookieConsent } from "../components/cookie-consent";
+
+declare global {
+  interface Window {
+    dataLayer: Array<Record<string, unknown> | unknown[] | IArguments>;
+  }
+}
 
 interface CookieConsentContextType {
   hasConsent: boolean | null;
@@ -12,16 +18,73 @@ const CookieConsentContext = createContext<
 >(undefined);
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
+  // GTM specifically looks for the 'arguments' object to be pushed
+  // Use function declaration (not arrow function) to access arguments object
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gtag: (...args: any[]) => void = function() {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      // This matches the exact specification Google provides
+      // Use arguments object for GTM compatibility
+      window.dataLayer.push(arguments);
+    }
+  };
+
+  // Re-apply consent from localStorage on mount so GTM "remembers" for returning users.
+  // Only push cookie_consent_accepted once per session so Page View fires once; History Change handles subsequent navigations.
+  useEffect(() => {
+    const savedConsent = localStorage.getItem("cookieConsent");
+
+    if (savedConsent === "true") {
+      gtag("consent", "update", {
+        ad_storage: "granted",
+        analytics_storage: "granted",
+        ad_user_data: "granted",
+        ad_personalization: "granted",
+      });
+
+      if (!sessionStorage.getItem("gtm_consent_fired")) {
+        window.dataLayer.push({ event: "cookie_consent_accepted" });
+        sessionStorage.setItem("gtm_consent_fired", "true");
+      }
+    } else if (savedConsent === "false") {
+      gtag("consent", "update", {
+        ad_storage: "denied",
+        analytics_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+      });
+    }
+  }, []);
+
   const handleAcceptCookies = () => {
-    // Add any additional cookie acceptance logic here
-    // eslint-disable-next-line no-console
-    console.log("Cookies accepted");
+    if (typeof window !== "undefined") {
+      // This will now correctly trigger GTM's internal Consent state
+      gtag('consent', 'update', {
+        ad_storage: "granted",
+        analytics_storage: "granted",
+        ad_user_data: "granted",
+        ad_personalization: "granted",
+      });
+
+      window.dataLayer.push({ event: "cookie_consent_accepted" });
+      sessionStorage.setItem("gtm_consent_fired", "true");
+      localStorage.setItem("cookieConsent", "true");
+    }
   };
 
   const handleDeclineCookies = () => {
-    // Add any additional cookie declination logic here
-    // eslint-disable-next-line no-console
-    console.log("Cookies declined");
+    if (typeof window !== "undefined") {
+      gtag('consent', 'update', {
+        ad_storage: "denied",
+        analytics_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+      });
+
+      window.dataLayer.push({ event: "cookie_consent_declined" });
+      localStorage.setItem("cookieConsent", "false");
+    }
   };
 
   return (

@@ -12,7 +12,8 @@ const CONTENT_TYPE_MAP: Record<string, ContentType> = {
   "43": "ARTICLES",
   "83": "DEVOTIONALS",
   "55": "PODCASTS",
-  // Todo: Add the rest of the content types
+  "171": "MINISTRY_PAGE",
+  "176": "PAGE_BUILDER",
 } as const;
 
 /**
@@ -72,6 +73,12 @@ export const getPathname = (
   pathname: string,
 ): string => {
   if (contentType && pathname && pathname !== "") {
+    if (contentType === "MINISTRY_PAGE") {
+      return `/ministries/${pathname}`;
+    }
+    if (contentType === "PAGE_BUILDER") {
+      return `/${pathname}`;
+    }
     return `/${contentType.toLowerCase()}/${pathname}`;
   }
   return pathname;
