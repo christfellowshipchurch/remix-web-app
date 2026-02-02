@@ -12,7 +12,7 @@ export type SectionType =
   | "IMAGE_GALLERY";
 
 export type ContentType =
-  | "EVENT"
+  | "EVENTS"
   | "MESSAGES"
   | "ARTICLES"
   | "DEVOTIONALS"
@@ -87,6 +87,7 @@ export type CollectionItem = {
 export type PageBuilderSection = {
   id: string;
   name: string;
+  titleOverride?: string;
   content: string;
   type: SectionType;
   linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
+import { weekdaySpanishTranslation } from "../util";
 
 export const DuringTheWeek = ({
   weekdaySchedule,
@@ -24,12 +25,14 @@ export const DuringTheWeek = ({
       <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
         {weekdaySchedule?.map((schedule, i) => (
           <div key={i} className="flex flex-col gap-2">
-            <h4 className="font-semibold lg:text-xs">{schedule.day}</h4>
+            <h4 className="font-semibold lg:text-xs">
+              {isSpanish ? weekdaySpanishTranslation(schedule.day) : schedule.day}
+            </h4>
             <div className="flex flex-col md:gap-2">
               {schedule?.events?.map((event, i) => (
                 <p
                   key={i}
-                  className="text-[#666666] lg:text-xs font-medium md:max-w-[260px] lg:max-w-[180px]"
+                  className="text-neutral-default lg:text-xs font-medium md:max-w-[260px] lg:max-w-[180px]"
                 >
                   {event.time} | {event.event}{" "}
                   <Link to={event?.url} className="inline align-middle">

@@ -31,13 +31,13 @@ export const EventsSingleHero = ({
                 </h1>
 
                 {subtitle && (
-                  <p className="font-medium lg:text-lg text-[#717182] max-w-[420px]">
+                  <p className="font-medium lg:text-lg text-[#717182]">
                     {subtitle}
                   </p>
                 )}
 
                 {/* CTAs */}
-                <div className="flex flex-col md:flex-wrap gap-2 sm:gap-4">
+                <div className="flex flex-col md:flex-row gap-2 sm:gap-4">
                   {ctas?.map((cta, i) => (
                     <Button
                       key={i}

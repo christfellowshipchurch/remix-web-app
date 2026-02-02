@@ -1,4 +1,7 @@
 import { LoaderFunction } from "react-router-dom";
+import { mapPageBuilderChildItems } from "~/routes/page-builder/loader";
+import { PageBuilderSection } from "~/routes/page-builder/types";
+import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -6,9 +9,10 @@ export type LoaderReturnType = {
   GOOGLE_MAPS_API_KEY: string;
   campusUrl: string;
   campusName: string;
+  upcomingEvents: PageBuilderSection & { type: "EVENT_COLLECTION" };
 };
 
-// TODO: Remove this once we have a better way to get error check
+// TODO: We might want to find a better way to handle this and remove this, but for now we will keep it
 const allCampuses = [
   "palm-beach-gardens",
   "iglesia-palm-beach-gardens",
@@ -36,7 +40,6 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  // TODO: Remove this once we have a better way to get error check
   // Check if the current campus URL is in the list of valid campuses
   if (!allCampuses.includes(campusUrl)) {
     throw new Response("Campus not found", {
@@ -64,12 +67,65 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
+  const campus = await fetchRockData({
+    endpoint: "Campuses",
+    queryParams: {
+      $filter: `Url eq '${campusUrl}'`,
+      loadAttributes: "simple",
+      $top: "1",
+    },
+  });
+
+  const upcomingEventsCollectionGuid = String(
+    campus?.attributeValues?.upcomingEventsCollection?.value,
+  ).trim();
+
+  let upcomingEvents: PageBuilderSection & { type: "EVENT_COLLECTION" } = {
+    id: "",
+    type: "EVENT_COLLECTION",
+    name: "",
+    content: "",
+    collection: [],
+  };
+
+  if (upcomingEventsCollectionGuid) {
+    try {
+      const upcomingEventsCollection = await fetchRockData({
+        endpoint: "ContentChannelItems",
+        queryParams: {
+          $filter: `Guid eq guid'${upcomingEventsCollectionGuid}'`,
+          loadAttributes: "simple",
+        },
+      });
+
+      const collectionItem = Array.isArray(upcomingEventsCollection)
+        ? upcomingEventsCollection[0]
+        : upcomingEventsCollection;
+
+      if (collectionItem) {
+        const mappedCollections = await mapPageBuilderChildItems([
+          collectionItem,
+        ]);
+
+        const mappedSection = mappedCollections.find(
+          (section) => section.type === "EVENT_COLLECTION",
+        );
+        if (mappedSection) {
+          upcomingEvents = mappedSection as LoaderReturnType["upcomingEvents"];
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to load upcoming events from Rock:", error);
+    }
+  }
+
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     GOOGLE_MAPS_API_KEY: googleMapsApiKey,
     campusUrl: decodeURIComponent(campusUrl),
     campusName: campusName,
+    upcomingEvents,
   };
 
   return pageData;

@@ -63,14 +63,14 @@ export const VirtualTourTabs = ({
               isOnline
                 ? "Join Us Online!"
                 : isSpanish
-                  ? "Toma Un Tour Virtual"
+                  ? "Haz Un Recorrido Virtual"
                   : "Take a Virtual Tour"
             }
             description={
               isOnline
                 ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
                 : isSpanish
-                  ? "Experimenta lo que es ser parte de Christ Fellowship antes de tu visita."
+                  ? "Descubre cómo es asistir a Christ Fellowship antes de visitarnos."
                   : "Experience what it’s like to attend Christ Fellowship before your visit."
             }
             wistiaId={wistiaId}
@@ -83,7 +83,7 @@ export const VirtualTourTabs = ({
               <TourButton value="map">{isSpanish ? "Mapa" : "Map"}</TourButton>
               {wistiaId && (
                 <TourButton value="tour">
-                  {isSpanish ? "Tour Virtual" : "Virtual Tour"}
+                  {isSpanish ? "Recorrido Virtual" : "Virtual Tour"}
                 </TourButton>
               )}
             </>
@@ -147,8 +147,9 @@ const TabContent = ({
       {wistiaId && value === "tour" && (
         <Video
           wistiaId={wistiaId}
-          className={`aspect-67/35 relative z-3 ${isOnline ? "rounded-b-[18px]" : ""
-            }`}
+          className={`aspect-67/35 relative z-3 ${
+            isOnline ? "rounded-b-[18px]" : ""
+          }`}
           controls={false}
         />
       )}

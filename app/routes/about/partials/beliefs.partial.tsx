@@ -6,25 +6,30 @@ import { BeliefsCarouselMobile } from "../components/beliefs-carousel-mobile.com
 export function BeliefsSection({
   background = "default",
   hideChapelImage = false,
+  isSpanish = false,
 }: {
   background?: "default" | "inverted";
   hideChapelImage?: boolean;
+  isSpanish?: boolean;
 }) {
   return (
     <section
       id="beliefs"
       className={cn(
         "relative pt-12 md:pb-16 w-full bg-white z-30",
-        hideChapelImage ? "md:pt-28 lg:pt-28" : "md:pt-40 lg:pt-56"
+        hideChapelImage ? "md:pt-28 lg:pt-28" : "md:pt-40 lg:pt-56",
       )}
     >
       <div className="content-padding">
         <div className="container max-w-screen-content mx-auto">
           {/* Beliefs Title */}
           <div className="relative flex flex-col gap-6 pb-12 w-full">
-            <SectionTitle sectionTitle="our beliefs." />
+            <SectionTitle
+              sectionTitle={isSpanish ? "nuestras creencias." : "our beliefs."}
+            />
             <h3 className="font-extrabold text-text-primary text-[28px] md:text-5xl leading-tight">
-              What We <br className="sm:hidden" /> Believe
+              {isSpanish ? "Lo Que" : "What We"} <br className="sm:hidden" />{" "}
+              {isSpanish ? "Creemos" : "Believe"}
             </h3>
             {/* Chapel Image */}
             {!hideChapelImage && (
@@ -36,7 +41,7 @@ export function BeliefsSection({
                   "max-h-[300px] sm:max-h-none",
                   "sm:w-[30vw]",
                   "md:right-1/12 md:w-[20vw]",
-                  "lg:right-1/8 lg:max-w-[300px]"
+                  "lg:right-1/8 lg:max-w-[300px]",
                 )}
               />
             )}
@@ -44,6 +49,7 @@ export function BeliefsSection({
           {/* Beliefs Carousel */}
           <div className="hidden md:block bg-navy">
             <BeliefsCarousel
+              isSpanish={isSpanish}
               tabBgClass={
                 background === "inverted" ? "bg-navy" : "bg-dark-navy/30"
               }
@@ -56,13 +62,13 @@ export function BeliefsSection({
       <div
         className={cn(
           "absolute bottom-0 w-full h-[50%] z-[-1]",
-          background === "inverted" ? "bg-dark-navy" : "bg-navy"
+          background === "inverted" ? "bg-dark-navy" : "bg-navy",
         )}
       />
 
       {/* Mobile Beliefs Carousel */}
       <div className="block md:hidden">
-        <BeliefsCarouselMobile />
+        <BeliefsCarouselMobile isSpanish={isSpanish} />
       </div>
     </section>
   );

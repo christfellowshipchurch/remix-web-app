@@ -4,6 +4,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import { useFetcher } from "react-router-dom";
 import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
+import { pushFormEvent } from "~/lib/gtm";
 
 interface ConnectCardProps {
   onSuccess: () => void;
@@ -83,6 +84,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       } else {
         // This was a successful form submission
         setError(null);
+        pushFormEvent('form_complete', 'connect_card', 'Connect Card');
         onSuccess();
       }
     }

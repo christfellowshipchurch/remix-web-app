@@ -24,17 +24,17 @@ export const GetInvolved = ({
         !isOnline ? "/assets/images/locations/bg.jpg" : undefined
       }
       className={cn(
-        isOnline ? "bg-gradient-to-br from-[#1C3647] to-ocean" : ""
+        isOnline ? "bg-gradient-to-br from-[#1C3647] to-ocean" : "",
       )}
       title={title}
-      carouselItemClassName="w-full basis-[75%] sm:basis-[40%] lg:basis-[21.2%] xl:basis-[21.5%] 2xl:!basis-[24%]"
+      carouselItemClassName="w-full basis-[75%] sm:basis-[40%] lg:basis-[22%] xl:basis-[21.8%] 2xl:!basis-[24%] 3xl:!basis-[24.59%]"
       CardComponent={GetInvolvedCard}
       resources={
         isOnline
           ? onlineGetInvolvedResources
           : isSpanish
-          ? spanishGetInvolvedResources
-          : englishGetInvolvedResources
+            ? spanishGetInvolvedResources
+            : englishGetInvolvedResources
       }
       viewMoreLink="/next-steps"
       mode="dark"
@@ -48,7 +48,7 @@ const GetInvolvedCard = ({ resource }: { resource: CollectionItem }) => {
     <Link
       to={pathname}
       className={cn(
-        "flex flex-col p-[2px] w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300 max-w-[332px] 3xl:max-w-none"
+        "flex flex-col p-[2px] w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300 max-w-[332px] 3xl:max-w-none",
       )}
       prefetch="intent"
     >
