@@ -4,10 +4,15 @@ import { Link } from "react-router-dom";
 import { MinistryService } from "../../page-builder/types";
 import { formatDaysOfWeek, formattedServiceTimes } from "../utils";
 
+interface ServiceCardProps {
+  service: MinistryService;
+  onLinkClick?: () => void;
+}
+
 /**
  * Service Card Component
  */
-export const ServiceCard = ({ service }: { service: MinistryService }) => {
+export const ServiceCard = ({ service, onLinkClick }: ServiceCardProps) => {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col gap-4 w-[280px] h-full">
       {/* Ministry Photo/Logo */}
@@ -52,7 +57,14 @@ export const ServiceCard = ({ service }: { service: MinistryService }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-3 mt-auto pt-2 ">
+      <div
+        className="flex gap-3 mt-auto pt-2 "
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest('a, [href]')) {
+            onLinkClick?.();
+          }
+        }}
+      >
         {/* Primary Action Button */}
         {(service.planAVisit === true ||
           service.learnMoreLink !== undefined) && (
@@ -77,6 +89,7 @@ export const ServiceCard = ({ service }: { service: MinistryService }) => {
           to={`/locations/${service?.location?.pathname ?? ""}`}
           className="flex items-center justify-center w-11 h-11 bg-ocean text-white rounded-md hover:bg-navy transition-colors"
           aria-label={`View ${service?.location?.name ?? ""} location`}
+          onClick={onLinkClick}
         >
           <Icon name="mapFilled" className="text-white" size={20} />
         </Link>

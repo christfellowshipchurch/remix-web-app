@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Icon } from "~/primitives/icon/icon";
 import Dropdown, {
   type DropdownOption,
@@ -24,6 +24,7 @@ export const MinistryServiceTimes = ({
   const { pathname } = useLocation();
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const { capitalize } = lodash;
 
@@ -96,13 +97,29 @@ export const MinistryServiceTimes = ({
     }
   }, [locationOptions, selectedLocation]);
 
+  // Close panel when clicking outside (mousedown so we run before dropdown
+  // unmounts its options on select — otherwise the clicked node is no longer
+  // in the panel and we incorrectly treat it as an outside click)
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const handleMouseDownOutside = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleMouseDownOutside);
+    return () => document.removeEventListener('mousedown', handleMouseDownOutside);
+  }, [isExpanded]);
+
   // Don't render if no relevant services
   if (relevantServices.length === 0) {
     return null;
   }
 
   return (
-    <div className="bg-navy md:bg-gray sticky bottom-0 z-10">
+    <div ref={panelRef} className="bg-navy md:bg-gray sticky bottom-0 z-10">
       {/* Title Section with Accordion Toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -154,7 +171,10 @@ export const MinistryServiceTimes = ({
                       i === filteredServices.length - 1 && "mr-6 md:mr-0"
                     )}
                   >
-                    <ServiceCard service={service} />
+                    <ServiceCard
+                      service={service}
+                      onLinkClick={() => setIsExpanded(false)}
+                    />
                   </div>
                 ))}
               </div>

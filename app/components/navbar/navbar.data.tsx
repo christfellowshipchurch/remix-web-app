@@ -57,7 +57,7 @@ export const ministriesData: MenuLink = {
           {
             title: "Freedom & Care",
             description: "Healing and Freedom",
-            url: "/ministries/care-and-assistance",
+            url: "/ministries/freedom-and-care",
           },
         ],
       },
