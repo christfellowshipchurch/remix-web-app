@@ -74,9 +74,9 @@ export const ServiceCard = ({ service }: { service: MinistryService }) => {
 
         {/* Secondary Location Pin Button */}
         <Link
-          to={`/locations/${service.location.pathname}`}
+          to={`/locations/${service?.location?.pathname ?? ""}`}
           className="flex items-center justify-center w-11 h-11 bg-ocean text-white rounded-md hover:bg-navy transition-colors"
-          aria-label={`View ${service.location.name} location`}
+          aria-label={`View ${service?.location?.name ?? ""} location`}
         >
           <Icon name="mapFilled" className="text-white" size={20} />
         </Link>

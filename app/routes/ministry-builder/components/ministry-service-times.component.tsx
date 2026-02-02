@@ -54,7 +54,7 @@ export const MinistryServiceTimes = ({
   const uniqueLocations = useMemo(() => {
     const locationSet = new Set<string>();
     relevantServices.forEach((service) => {
-      locationSet.add(service.location.name);
+      locationSet.add(service?.location?.name ?? "");
     });
     return Array.from(locationSet).sort();
   }, [relevantServices]);
@@ -81,7 +81,7 @@ export const MinistryServiceTimes = ({
       return relevantServices;
     }
     return relevantServices.filter(
-      (service) => service.location.name === selectedLocation
+      (service) => service?.location?.name === selectedLocation
     );
   }, [relevantServices, selectedLocation]);
 
