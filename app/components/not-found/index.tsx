@@ -5,10 +5,11 @@ export const NotFound = () => {
       title: "Find a Christ Fellowship location near you.",
       link: "/locations",
     },
-    { title: "Sign up for a Group or Class.", link: "/groups" },
+    { title: "Sign up for a Group.", link: "/group-finder" },
+    { title: "Sign up for a Class.", link: "/class-finder" },
     {
       title: "Discover more about our Ministries.",
-      link: "/discover?c=ministries",
+      link: "/ministries",
     },
     { title: "Learn more about Christ Fellowship.", link: "/about" },
     { title: "Get connected.", link: "/next-steps" },
