@@ -1,7 +1,5 @@
 import {
   ContentBlockData,
-  ContentType,
-  PageBuilderSection,
 } from "~/routes/page-builder/types";
 
 export const familiesMappedChildren: ContentBlockData[] = [
