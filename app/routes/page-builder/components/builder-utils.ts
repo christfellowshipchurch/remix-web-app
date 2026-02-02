@@ -6,7 +6,7 @@ import { ContentBlockData, ContentType, SectionType } from "../types";
  * Maps content channel IDs to their corresponding content types
  */
 const CONTENT_TYPE_MAP: Record<string, ContentType> = {
-  "78": "EVENT",
+  "186": "EVENTS", // New Events Content Channel ID
   "63": "MESSAGES",
   "90": "REDIRECT_CARD",
   "43": "ARTICLES",
@@ -43,7 +43,7 @@ type CollectionTypes = (typeof COLLECTION_TYPES_MAP)[number];
  * Gets the section type for a given content channel ID
  */
 export const getSectionType = (
-  contentChannelId: string
+  contentChannelId: string,
 ): SectionType | undefined => {
   return SECTION_TYPE_MAP[contentChannelId];
 };
@@ -52,7 +52,7 @@ export const getSectionType = (
  * Gets the content type for a given content channel ID
  */
 export const getContentType = (
-  contentChannelId: string
+  contentChannelId: string,
 ): ContentType | undefined => {
   return CONTENT_TYPE_MAP[contentChannelId];
 };
@@ -70,7 +70,7 @@ export const isCollectionType = (contentChannelId: string): boolean => {
  */
 export const getPathname = (
   contentType: ContentType,
-  pathname: string
+  pathname: string,
 ): string => {
   if (contentType && pathname && pathname !== "") {
     if (contentType === "MINISTRY_PAGE") {
@@ -122,7 +122,7 @@ export const getCtaStyles = (data: ContentBlockData, buttonLimit: number) => {
         "hover:enabled:bg-white/80": isOcean && !isNotLastButton(index),
         "hover:enabled:bg-navy hover:enabled:text-white":
           !isDark && !isNotLastButton(index),
-      }
+      },
     );
   };
 

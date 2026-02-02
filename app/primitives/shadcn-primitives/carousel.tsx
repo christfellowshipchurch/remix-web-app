@@ -55,14 +55,14 @@ const Carousel = React.forwardRef<
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
       },
-      plugins
+      plugins,
     );
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);
     const [canScrollNext, setCanScrollNext] = React.useState(false);
@@ -96,7 +96,7 @@ const Carousel = React.forwardRef<
           scrollNext();
         }
       },
-      [scrollPrev, scrollNext]
+      [scrollPrev, scrollNext],
     );
 
     React.useEffect(() => {
@@ -148,7 +148,7 @@ const Carousel = React.forwardRef<
         </div>
       </CarouselContext.Provider>
     );
-  }
+  },
 );
 Carousel.displayName = "Carousel";
 
@@ -165,7 +165,7 @@ const CarouselContent = React.forwardRef<
         className={cn(
           "flex",
           orientation === "horizontal" ? "" : "flex-col",
-          className
+          className,
         )}
         {...props}
       />
@@ -188,7 +188,7 @@ const CarouselItem = React.forwardRef<
       className={cn(
         "min-w-0 shrink-0 grow-0 basis-full",
         orientation !== "horizontal" && "pt-4",
-        className
+        className,
       )}
       {...props}
     />
@@ -209,7 +209,7 @@ const CarouselPrevious = React.forwardRef<
       size = "icon",
       ...props
     },
-    ref
+    ref,
   ) => {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
@@ -223,7 +223,7 @@ const CarouselPrevious = React.forwardRef<
           orientation === "horizontal"
             ? "-left-12 top-1/2 -translate-y-1/2"
             : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
-          className
+          className,
         )}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
@@ -237,7 +237,7 @@ const CarouselPrevious = React.forwardRef<
         <span className="sr-only">Previous slide</span>
       </Button>
     );
-  }
+  },
 );
 CarouselPrevious.displayName = "CarouselPrevious";
 
@@ -254,7 +254,7 @@ const CarouselNext = React.forwardRef<
       size = "icon",
       ...props
     },
-    ref
+    ref,
   ) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
 
@@ -268,7 +268,7 @@ const CarouselNext = React.forwardRef<
           orientation === "horizontal"
             ? "-right-12 top-1/2 -translate-y-1/2"
             : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-          className
+          className,
         )}
         disabled={!canScrollNext}
         onClick={scrollNext}
@@ -282,7 +282,7 @@ const CarouselNext = React.forwardRef<
         <span className="sr-only">Next slide</span>
       </Button>
     );
-  }
+  },
 );
 CarouselNext.displayName = "CarouselNext";
 
@@ -311,7 +311,7 @@ const CarouselDots = React.forwardRef<
               "h-2 w-2 rounded-full transition-colors",
               currentSlide === index
                 ? activeClassName || "bg-primary"
-                : inactiveClassName || "bg-muted"
+                : inactiveClassName || "bg-muted",
             )}
             onClick={() => api?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}

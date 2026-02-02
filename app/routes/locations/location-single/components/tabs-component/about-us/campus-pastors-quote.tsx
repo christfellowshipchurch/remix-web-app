@@ -1,16 +1,18 @@
 export const CampusPastorsQuote = ({
-  title,
-  quote,
   campusPastor,
+  isSpanish = false,
+  quote,
+  title,
 }: {
-  title: string;
-  quote: string;
   campusPastor: {
     email: string;
     firstName: string;
     lastName: string;
     photo: string;
   };
+  isSpanish?: boolean;
+  quote: string;
+  title: string;
 }) => {
   return (
     <div className="w-full rounded-t-[24px] md:rounded-none bg-gray pt-34 md:pt-40 pb-28 content-padding flex justify-center">
@@ -32,7 +34,9 @@ export const CampusPastorsQuote = ({
             className="size-[90px] object-cover aspect-square rounded-full"
           />
           <div className="flex flex-col justify-center items-center md:items-start">
-            <h4 className="text-lg text-text-secondary">Campus Pastors</h4>
+            <h4 className="text-lg text-text-secondary">
+              {isSpanish ? "Pastores del Campus" : "Campus Pastors"}
+            </h4>
             <h3 className="font-semibold text-[22px]">
               {campusPastor.firstName} {campusPastor.lastName}
             </h3>

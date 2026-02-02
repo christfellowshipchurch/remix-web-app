@@ -22,7 +22,7 @@ const GridItem = ({
   );
 };
 
-export function ImpactSection() {
+export function ImpactSection({ isSpanish = false }: { isSpanish?: boolean }) {
   return (
     <section
       id="impact"
@@ -33,16 +33,20 @@ export function ImpactSection() {
           <div className="grid lg:grid-rows-2 flex-1 h-full">
             <div className="row-span-1">
               <div className="flex flex-col gap-8">
-                <SectionTitle sectionTitle="our impact 2025." />
+                <SectionTitle
+                  sectionTitle={
+                    isSpanish ? "nuestro impacto 2025." : "our impact 2025."
+                  }
+                />
                 <h3 className="text-[32px] xl:text-5xl leading-tight font-extrabold mb-6">
-                  Together, We’re <br />
-                  Making a Difference
+                  {isSpanish ? "Juntos, Estamos" : "Together, We’re"} <br />
+                  {isSpanish ? "Marcando la Diferencia" : "Making a Difference"}
                 </h3>
               </div>
               <p className="text-lg xl:text-xl pr-2 lg:max-w-[526px]">
-                A small glimpse into the impact that Christ Fellowship Church
-                has had on the world, all thanks to our incredibly generous
-                church family.
+                {isSpanish
+                  ? "Una pequeña muestra del impacto que Christ Fellowship Church ha tenido en el mundo, todo gracias a la increíble generosidad de nuestra familia de la iglesia."
+                  : "A small glimpse into the impact that Christ Fellowship Church has had on the world, all thanks to our incredibly generous church family."}
               </p>
             </div>
             <div className="row-span-1 hidden lg:block">
@@ -66,12 +70,20 @@ export function ImpactSection() {
               <GridItem
                 id="grid-item-1"
                 value="695K"
-                description="People Impacted Through Mission Efforts"
+                description={
+                  isSpanish
+                    ? "Personas Impactadas a Través de Esfuerzos Misioneros."
+                    : "People Impacted Through Mission Efforts."
+                }
               />
               <GridItem
                 id="grid-item-3"
                 value="8,010"
-                description="People said “yes” to Jesus."
+                description={
+                  isSpanish
+                    ? "Personas que dijeron “sí“ a Jesús."
+                    : "People said “yes” to Jesus."
+                }
               />
             </div>
             <div className="w-full md:w-[220px] lg:w-[290px] xl:w-[320px]">
@@ -84,7 +96,11 @@ export function ImpactSection() {
               <GridItem
                 id="grid-item-4"
                 value="41"
-                description="Disasters Responded to locally & globally"
+                description={
+                  isSpanish
+                    ? "Respuestas a desastres a nivel local y global"
+                    : "Disasters Responded to locally & globally."
+                }
               />
             </div>
           </div>

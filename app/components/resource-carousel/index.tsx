@@ -61,7 +61,7 @@ export const CardCarouselSection = ({
               <div
                 className={cn(
                   "flex flex-col w-full gap-2",
-                  mode === "dark" && "text-white"
+                  mode === "dark" && "text-white",
                 )}
               >
                 <h2 className="heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight">
@@ -80,7 +80,7 @@ export const CardCarouselSection = ({
                     "hidden md:block min-w-28 w-fit",
                     mode === "dark" &&
                       "text-white border-white hover:!bg-white/10",
-                    viewMoreStyles
+                    viewMoreStyles,
                   )}
                   intent="secondary"
                 >
@@ -106,7 +106,7 @@ export const CardCarouselSection = ({
                   size="md"
                   className={cn(
                     mode === "dark" && "text-white border-white",
-                    viewMoreStyles
+                    viewMoreStyles,
                   )}
                   intent="secondary"
                 >
@@ -152,10 +152,11 @@ export const CardCarousel = ({
             className={cn(
               carouselItemClassName
                 ? carouselItemClassName
-                : "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] 2xl:basis-[33.33%]",
-              index === resources.length - 1
-                ? "mr-5 md:mr-12 lg:mr-18"
-                : "pr-0"
+                : `w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] ${
+                    index === resources.length - 1
+                      ? "mr-5 md:mr-12 lg:mr-18"
+                      : "pr-0"
+                  }`,
             )}
           >
             {CardComponent ? (
@@ -205,7 +206,7 @@ export const CardCarousel = ({
 
             <div
               className={cn(
-                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28"
+                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28",
               )}
             >
               <CarouselArrows

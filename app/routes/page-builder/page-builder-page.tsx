@@ -17,7 +17,7 @@ export function renderSection(section: PageBuilderSection) {
       return (
         <div key={section.id} id={anchorId} className="scroll-mt-18">
           <CardCarouselSection
-            title={section.name}
+            title={section.titleOverride || section.name}
             description={section.content}
             resources={section.collection || []}
             viewMoreLink={section.viewMoreLink || undefined}
@@ -28,7 +28,7 @@ export function renderSection(section: PageBuilderSection) {
       return (
         <div key={section.id} id={anchorId} className="scroll-mt-18">
           <CTACollectionSection
-            title={section.name}
+            title={section.titleOverride || section.name}
             description={section.content}
             resources={section.collection || []}
             viewMoreLink={section.viewMoreLink || undefined}
@@ -46,7 +46,7 @@ export function renderSection(section: PageBuilderSection) {
 
       console.error(
         "FAQs section is missing the required faq data:",
-        section.id
+        section.id,
       );
       return null;
     case "IMAGE_GALLERY":
@@ -60,7 +60,7 @@ export function renderSection(section: PageBuilderSection) {
 
       console.error(
         "Image Gallery section is missing the required imageGallery data:",
-        section.id
+        section.id,
       );
       return null;
     case "CONTENT_BLOCK":
@@ -72,7 +72,7 @@ export function renderSection(section: PageBuilderSection) {
     default:
       return (
         <div key={section.id} id={anchorId} className="scroll-mt-18">
-          <h2>{section.name}</h2>
+          <h2>{section.titleOverride || section.name}</h2>
           <p>{section.type}</p>
         </div>
       );

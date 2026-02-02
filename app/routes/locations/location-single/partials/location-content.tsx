@@ -7,15 +7,21 @@ import { AboutUs } from "./tabs/about-us";
 import { SundayDetails } from "./tabs/sunday-details";
 import { UpcomingEvents } from "./tabs/upcoming-events";
 import { ForFamilies } from "./tabs/families";
+import {
+  englishTabData,
+  onlineTabsData,
+  spanishTabData,
+} from "../location-single-data";
 import { useResponsive } from "~/hooks/use-responsive";
 import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
 import { useState, useEffect } from "react";
 import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
-import { useFetcher } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
+import { LoaderReturnType } from "../loader";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
-  backgroundVideoDesktop?: string
+  backgroundVideoDesktop?: string,
 ) {
   const { isSmall } = useResponsive();
 
@@ -56,8 +62,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     if (originalSetReminderVideo) {
       fetcher.load(
         `/validate-wistia?videoId=${encodeURIComponent(
-          originalSetReminderVideo
-        )}`
+          originalSetReminderVideo,
+        )}`,
       );
     }
   }, [originalSetReminderVideo]);
@@ -73,7 +79,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
-    backgroundVideoDesktop
+    backgroundVideoDesktop,
   );
 
   const isOnline = campusName?.includes("Online");
@@ -84,11 +90,11 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   }
 
   // Dynamic Hero Hardcoded Content / Data
-  const heading1 = isSpanish ? "Eres" : "You're";
-  const heading2 = isSpanish ? "bienvenido aquí" : "welcome here";
+  const heading1 = isSpanish ? "Este es un" : "You're";
+  const heading2 = isSpanish ? "lugar para ti" : "welcome here";
   const ctas = [
     {
-      title: isSpanish ? "Establece un recordatorio" : "Set a Reminder",
+      title: isSpanish ? "Recuérdame" : "Set a Reminder",
       href: "#",
       isSetAReminder: true,
     },
@@ -158,8 +164,8 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     if (originalSetReminderVideo) {
       fetcher.load(
         `/validate-wistia?videoId=${encodeURIComponent(
-          originalSetReminderVideo
-        )}`
+          originalSetReminderVideo,
+        )}`,
       );
     }
   }, [originalSetReminderVideo]);
@@ -177,7 +183,7 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
-    backgroundVideoDesktop
+    backgroundVideoDesktop,
   );
 
   return (
@@ -243,10 +249,33 @@ const CampusTabsWrapper = ({
   setReminderVideo: string | undefined;
   isOnline: boolean;
 }) => {
+  const { upcomingEvents } = useLoaderData<LoaderReturnType>();
+  const hasUpcomingEvents = (upcomingEvents.collection?.length ?? 0) > 0;
+
+  const defaultTabData = isOnline
+    ? onlineTabsData
+    : isSpanish
+      ? spanishTabData
+      : englishTabData;
+  const tabData = hasUpcomingEvents
+    ? defaultTabData
+    : defaultTabData.filter((tab) => tab.value !== "upcoming-events");
+
+  const activeTabValue = tabData.some((tab) => tab.value === activeTab)
+    ? activeTab
+    : "sunday-details";
+
+  const tabs = [
+    () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
+    () => <AboutUs campusPastor={campusPastor} isSpanish={isSpanish} />,
+    ...(!isOnline ? [() => <ForFamilies isSpanish={isSpanish} />] : []),
+    ...(hasUpcomingEvents ? [() => <UpcomingEvents />] : []),
+  ];
+
   return (
     <div className="relative h-full w-full">
       {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
-      {activeTab == "sunday-details" && (
+      {activeTabValue === "sunday-details" && (
         <WhatToExpect
           setReminderVideo={setReminderVideo}
           isOnline={isOnline}
@@ -255,21 +284,18 @@ const CampusTabsWrapper = ({
       )}
 
       <CampusTabs
-        activeTab={activeTab}
+        activeTab={activeTabValue}
         isSpanish={isSpanish}
         setActiveTab={setActiveTab}
-        tabs={[
-          () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
-          () => <AboutUs campusPastor={campusPastor} />,
-          ...(!isOnline ? [ForFamilies] : []),
-          UpcomingEvents,
-        ]}
+        tabs={tabs}
+        tabData={tabData}
         isOnline={isOnline}
       />
 
-      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them oustide of the Tabs component*/}
-      {activeTab == "about-us" && (
+      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
+      {activeTabValue === "about-us" && (
         <ConnectWithUs
+          isSpanish={isSpanish}
           campusName={campusName || ""}
           campusInstagram={campusInstagram || ""}
         />

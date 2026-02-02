@@ -1,10 +1,15 @@
 import { renderSection } from "~/routes/page-builder/page-builder-page";
-import { familiesMappedChildren } from "./tabs.data";
+import {
+  familiesMappedChildren,
+  spanishFamiliesMappedChildren,
+} from "./tabs.data";
 
-export const ForFamilies = () => {
+export const ForFamilies = ({ isSpanish }: { isSpanish?: boolean }) => {
   return (
     <div className="flex flex-col w-full rounded-t-[24px] md:rounded-none bg-gray pt-20 md:pt-24">
-      {familiesMappedChildren.map((section) => renderSection(section))}
+      {isSpanish
+        ? spanishFamiliesMappedChildren.map((section) => renderSection(section))
+        : familiesMappedChildren.map((section) => renderSection(section))}
     </div>
   );
 };
