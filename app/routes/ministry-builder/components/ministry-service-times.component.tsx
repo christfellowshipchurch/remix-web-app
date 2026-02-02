@@ -75,22 +75,26 @@ export const MinistryServiceTimes = ({
     return options;
   }, [uniqueLocations]);
 
-  // Filter services based on selected location
+  // Use first location as effective default so we filter immediately when data is ready
+  const effectiveLocation = selectedLocation || locationOptions[0]?.value || '';
+
+  // Filter services based on selected location (or first option when none selected yet)
   const filteredServices = useMemo(() => {
-    if (!selectedLocation) {
+    if (!effectiveLocation) {
       return relevantServices;
     }
     return relevantServices.filter(
-      (service) => service?.location?.name === selectedLocation
+      (service) => service?.location?.name === effectiveLocation
     );
-  }, [relevantServices, selectedLocation]);
+  }, [relevantServices, effectiveLocation]);
 
-  // Set default location to first available if none selected
+  // Default to first location in dropdown when data is ready (so we filter immediately)
   useEffect(() => {
-    if (!selectedLocation && uniqueLocations.length > 0) {
-      setSelectedLocation(uniqueLocations[0]);
+    const firstOption = locationOptions[0]?.value;
+    if (firstOption && !selectedLocation) {
+      setSelectedLocation(firstOption);
     }
-  }, [selectedLocation, uniqueLocations]);
+  }, [locationOptions, selectedLocation]);
 
   // Don't render if no relevant services
   if (relevantServices.length === 0) {
@@ -130,7 +134,7 @@ export const MinistryServiceTimes = ({
             <div className="w-full max-w-[300px] mx-auto">
               <Dropdown
                 options={locationOptions}
-                value={selectedLocation}
+                value={effectiveLocation}
                 onChange={setSelectedLocation}
                 placeholder="Select Location"
               />
