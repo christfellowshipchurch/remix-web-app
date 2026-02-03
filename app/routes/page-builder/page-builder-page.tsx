@@ -9,7 +9,10 @@ import { ImageGallerySection } from "./components/image-gallery";
 import { FAQsComponent } from "./components/faq";
 
 export function renderSection(section: PageBuilderSection) {
-  const anchorId = kebabCase(section.name);
+
+  const sectionName = section.titleOverride !== '' ? section.titleOverride : section.name;
+
+  const anchorId = kebabCase(sectionName?.toLowerCase() || '');
 
   switch (section.type) {
     case "RESOURCE_COLLECTION":

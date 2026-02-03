@@ -26,7 +26,7 @@ export const EventSingleFAQ = ({
             data={
               items?.map((item) => ({
                 title: item.question,
-                content: item.answer,
+                content: decodeURIComponent(item.answer),
               })) ?? []
             }
             rootStyle="items-center"

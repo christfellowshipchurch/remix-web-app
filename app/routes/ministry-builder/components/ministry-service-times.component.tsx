@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Icon } from "~/primitives/icon/icon";
 import Dropdown, {
   type DropdownOption,
@@ -24,6 +24,7 @@ export const MinistryServiceTimes = ({
   const { pathname } = useLocation();
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const { capitalize } = lodash;
 
@@ -54,7 +55,7 @@ export const MinistryServiceTimes = ({
   const uniqueLocations = useMemo(() => {
     const locationSet = new Set<string>();
     relevantServices.forEach((service) => {
-      locationSet.add(service.location.name);
+      locationSet.add(service?.location?.name ?? "");
     });
     return Array.from(locationSet).sort();
   }, [relevantServices]);
@@ -75,22 +76,42 @@ export const MinistryServiceTimes = ({
     return options;
   }, [uniqueLocations]);
 
-  // Filter services based on selected location
+  // Use first location as effective default so we filter immediately when data is ready
+  const effectiveLocation = selectedLocation || locationOptions[0]?.value || '';
+
+  // Filter services based on selected location (or first option when none selected yet)
   const filteredServices = useMemo(() => {
-    if (!selectedLocation) {
+    if (!effectiveLocation) {
       return relevantServices;
     }
     return relevantServices.filter(
-      (service) => service.location.name === selectedLocation
+      (service) => service?.location?.name === effectiveLocation
     );
-  }, [relevantServices, selectedLocation]);
+  }, [relevantServices, effectiveLocation]);
 
-  // Set default location to first available if none selected
+  // Default to first location in dropdown when data is ready (so we filter immediately)
   useEffect(() => {
-    if (!selectedLocation && uniqueLocations.length > 0) {
-      setSelectedLocation(uniqueLocations[0]);
+    const firstOption = locationOptions[0]?.value;
+    if (firstOption && !selectedLocation) {
+      setSelectedLocation(firstOption);
     }
-  }, [selectedLocation, uniqueLocations]);
+  }, [locationOptions, selectedLocation]);
+
+  // Close panel when clicking outside (mousedown so we run before dropdown
+  // unmounts its options on select — otherwise the clicked node is no longer
+  // in the panel and we incorrectly treat it as an outside click)
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const handleMouseDownOutside = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleMouseDownOutside);
+    return () => document.removeEventListener('mousedown', handleMouseDownOutside);
+  }, [isExpanded]);
 
   // Don't render if no relevant services
   if (relevantServices.length === 0) {
@@ -98,7 +119,7 @@ export const MinistryServiceTimes = ({
   }
 
   return (
-    <div className="bg-navy md:bg-gray sticky bottom-0 z-10">
+    <div ref={panelRef} className="bg-navy md:bg-gray sticky bottom-0 z-10">
       {/* Title Section with Accordion Toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -130,7 +151,7 @@ export const MinistryServiceTimes = ({
             <div className="w-full max-w-[300px] mx-auto">
               <Dropdown
                 options={locationOptions}
-                value={selectedLocation}
+                value={effectiveLocation}
                 onChange={setSelectedLocation}
                 placeholder="Select Location"
               />
@@ -150,7 +171,10 @@ export const MinistryServiceTimes = ({
                       i === filteredServices.length - 1 && "mr-6 md:mr-0"
                     )}
                   >
-                    <ServiceCard service={service} />
+                    <ServiceCard
+                      service={service}
+                      onLinkClick={() => setIsExpanded(false)}
+                    />
                   </div>
                 ))}
               </div>

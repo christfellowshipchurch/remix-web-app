@@ -3,6 +3,7 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
 import {
   fetchChildItems,
+  fetchDefinedValue,
   mapPageBuilderChildItems,
 } from "../page-builder/loader";
 import { MinistryService, PageBuilderLoader } from "../page-builder/types";
@@ -43,14 +44,17 @@ export const fetchMinistryServices = async () => {
           attributeMatrixGuid: campus.servicesGuid,
         });
 
-        const ministryServices: MinistryService[] = matrixItems.map(
-          (matrixItem: AttributeMatrixItem) => {
+        const ministryServices: MinistryService[] = await Promise.all(
+          matrixItems.map(async (matrixItem: AttributeMatrixItem) => {
             const attributeValues = matrixItem.attributeValues;
+            const ministryTypeGuid = attributeValues?.ministryType?.value;
+            const ministryType = ministryTypeGuid
+              ? ((await fetchDefinedValue(ministryTypeGuid)) as MinistryService["ministryType"])
+              : ("" as MinistryService["ministryType"]);
 
             const ministryService: MinistryService = {
               id: matrixItem.guid,
-              ministryType: attributeValues?.ministryType
-                ?.value as MinistryService["ministryType"],
+              ministryType,
               location: RockCampuses.find(
                 (campus: RockCampus) => campus.name === currentCampus,
               ) as RockCampus,
@@ -65,7 +69,7 @@ export const fetchMinistryServices = async () => {
             };
 
             return ministryService;
-          },
+          })
         );
 
         return ministryServices;
