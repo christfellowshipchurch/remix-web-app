@@ -141,6 +141,16 @@ const GroupsFinderDropdownPopupList = ({
     "Podcast",
   ];
 
+  const MEETING_DAYS_ORDER = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
   // Filter items based on category and popup title
   const getFilteredItems = () => {
     if (popupTitle === "Topics" && data.attribute === "topics") {
@@ -153,6 +163,13 @@ const GroupsFinderDropdownPopupList = ({
       } else if (data.title === "Community & Fun") {
         return items.filter((item) => communityFunTopics.includes(item.label));
       }
+    }
+    if (data.attribute === "meetingDays") {
+      return [...items].sort(
+        (a, b) =>
+          MEETING_DAYS_ORDER.indexOf(a.label) -
+          MEETING_DAYS_ORDER.indexOf(b.label)
+      );
     }
     return items;
   };
@@ -214,9 +231,10 @@ const GroupsFinderDropdownPopupList = ({
                 className={styles.input}
                 value={localAgeInput}
                 onChange={(e) => {
-                  setLocalAgeInput(e.target.value);
+                  const value = e.target.value;
+                  setLocalAgeInput(value);
                   if (setAgeInput) {
-                    setAgeInput(e.target.value);
+                    setAgeInput(value);
                   }
                 }}
                 onClick={(e) => e.stopPropagation()}
