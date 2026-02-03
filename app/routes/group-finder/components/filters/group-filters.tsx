@@ -10,6 +10,7 @@ export function DesktopGroupFilters({
   setCoordinates,
   ageInput,
   setAgeInput,
+  onClearAllToUrl,
 }: {
   coordinates: {
     lat: number | null;
@@ -19,10 +20,11 @@ export function DesktopGroupFilters({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null,
+    } | null
   ) => void;
   ageInput: string;
   setAgeInput: (age: string) => void;
+  onClearAllToUrl?: () => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -234,9 +236,9 @@ export function DesktopGroupFilters({
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-                ? "z-1"
-                : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300",
+              ? "z-1"
+              : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300"
           )}
         >
           <AllGroupFiltersPopup
@@ -245,6 +247,7 @@ export function DesktopGroupFilters({
             setAgeInput={setAgeInput}
             coordinates={coordinates}
             setCoordinates={setCoordinates}
+            onClearAllToUrl={onClearAllToUrl}
           />
         </div>
       </div>

@@ -24,11 +24,22 @@ import { GroupType } from "../types";
 import {
   parseGroupFinderUrlState,
   groupFinderUrlStateToParams,
+  groupFinderEmptyState,
   type GroupFinderUrlState,
 } from "../group-finder-url-state";
+import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { GroupFinderClearAllButton } from "../components/clear-all-button.component";
 
 const INDEX_NAME = "dev_daniel_Groups";
 
+/**
+ * Map URL state (from parseGroupFinderUrlState) to initial React state and InstantSearch initialUiState.
+ * Called once on mount with current searchParams so the first render matches the URL (e.g. shared link or back/forward).
+ *
+ * Reuse pattern: For another finder, define a similar function that maps your URL state type to:
+ * - Custom React state (e.g. coordinates, ageInput, selectedLocation)
+ * - initialUiState[yourIndexName] = { query?, page (0-based)?, refinementList? }
+ */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const coordinates =
@@ -64,6 +75,13 @@ export const GroupSearch = () => {
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: groupFinderUrlStateToParams,
+    debounceMs: 400,
+  });
+
   const initial = useMemo(
     () => getInitialStateFromUrl(searchParams),
     [] // only on mount
@@ -81,11 +99,16 @@ export const GroupSearch = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  /** Bumped on Clear All so InstantSearch remounts with empty state and triggers a fresh Algolia refetch. */
+  const [instantSearchKey, setInstantSearchKey] = useState(0);
+
+  /** Ref used when syncing to URL: onStateChange reads this so the URL includes custom filters (campus, age, location) not stored in InstantSearch uiState. */
   type CustomState = {
     coordinates: { lat: number | null; lng: number | null } | null;
     ageInput: string;
     selectedLocation: string | null;
   };
+
   const customStateRef = useRef<CustomState>({
     coordinates: initial.coordinates,
     ageInput: initial.ageInput,
@@ -97,38 +120,7 @@ export const GroupSearch = () => {
     selectedLocation,
   };
 
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const searchParamsRef = useRef(searchParams);
-  searchParamsRef.current = searchParams;
-  const DEBOUNCE_MS = 400;
-
-  const updateUrlIfChanged = useRef((urlState: GroupFinderUrlState) => {
-    const nextParams = groupFinderUrlStateToParams(urlState);
-    const nextString = nextParams.toString();
-    const currentString = searchParamsRef.current.toString();
-    if (nextString !== currentString) {
-      setSearchParams(nextParams, {
-        replace: true,
-        preventScrollReset: true,
-      });
-    }
-  }).current;
-
-  const debouncedUpdateUrl = useRef((urlState: GroupFinderUrlState) => {
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    debounceTimerRef.current = setTimeout(() => {
-      debounceTimerRef.current = null;
-      updateUrlIfChanged(urlState);
-    }, DEBOUNCE_MS);
-  }).current;
-
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    };
-  }, []);
-
-  // Sync custom state from URL when user navigates back/forward
+  /** When the user navigates back/forward, update our React state from the URL so the UI reflects the new URL. */
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     if (urlState.lat != null && urlState.lng != null) {
@@ -177,6 +169,24 @@ export const GroupSearch = () => {
     {}
   );
 
+  const clearAllFiltersFromUrl = () => {
+    cancelDebounce();
+    customStateRef.current = {
+      coordinates: null,
+      ageInput: "",
+      selectedLocation: null,
+    };
+    setCoordinatesState(null);
+    setAgeInputState("");
+    setSelectedLocationState(null);
+    setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), {
+      replace: true,
+      preventScrollReset: true,
+    });
+    setInstantSearchKey((k) => k + 1);
+  };
+
+  /** Merge a partial URL state with current (from searchParams) and schedule a debounced URL update. Used when user changes a single custom filter. */
   const mergeUrlState = (partial: Partial<GroupFinderUrlState>) => {
     const current = parseGroupFinderUrlState(searchParams);
     const merged: GroupFinderUrlState = { ...current, ...partial };
@@ -198,6 +208,10 @@ export const GroupSearch = () => {
     });
   };
 
+  /**
+   * Called from InstantSearch onStateChange: build full URL state from index uiState (query, page, refinementList)
+   * plus custom state from ref (campus, age, lat/lng), then debouncedUpdateUrl so the URL stays in sync.
+   */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: GroupFinderUrlState = {
       ...parseGroupFinderUrlState(searchParams),
@@ -221,11 +235,15 @@ export const GroupSearch = () => {
       className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
       id="search"
     >
+      {/* key: when instantSearchKey bumps (Clear all), InstantSearch remounts with initialUiState = {} so Algolia refetches with no filters. */}
       <InstantSearch
+        key={instantSearchKey}
         indexName={INDEX_NAME}
         searchClient={searchClient}
         initialUiState={
-          Object.keys(initial.initialUiState).length > 0
+          instantSearchKey > 0
+            ? { [INDEX_NAME]: {} }
+            : Object.keys(initial.initialUiState).length > 0
             ? initial.initialUiState
             : undefined
         }
@@ -272,13 +290,17 @@ export const GroupSearch = () => {
                 />
               </div>
 
-              {/* Desktop Filters */}
-              <div className="hidden md:block">
+              {/* Desktop Filters + Clear All */}
+              <div className="hidden md:flex items-center gap-4 flex-1">
                 <DesktopGroupFilters
                   coordinates={coordinates}
                   setCoordinates={setCoordinates}
                   ageInput={ageInput}
                   setAgeInput={setAgeInput}
+                  onClearAllToUrl={clearAllFiltersFromUrl}
+                />
+                <GroupFinderClearAllButton
+                  onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
@@ -310,6 +332,7 @@ export const GroupSearch = () => {
                 setAgeInput={setAgeInput}
                 coordinates={coordinates}
                 setCoordinates={setCoordinates}
+                onClearAllToUrl={clearAllFiltersFromUrl}
               />
             </div>
           </div>

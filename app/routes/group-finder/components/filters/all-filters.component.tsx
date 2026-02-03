@@ -10,6 +10,7 @@ export const AllGroupFiltersPopup = ({
   setAgeInput,
   coordinates,
   setCoordinates,
+  onClearAllToUrl,
 }: {
   onHide: () => void;
   ageInput: string;
@@ -24,6 +25,7 @@ export const AllGroupFiltersPopup = ({
       lng: number | null;
     } | null
   ) => void;
+  onClearAllToUrl?: () => void;
 }) => {
   const [showCampus, setShowCampus] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
@@ -38,6 +40,13 @@ export const AllGroupFiltersPopup = ({
   const { setIndexUiState } = useInstantSearch();
 
   const clearAllRefinements = () => {
+    setIndexUiState((state) => ({
+      ...state,
+      query: "",
+      refinementList: {},
+      page: 0,
+    }));
+    onClearAllToUrl?.();
     setSelectedValue("");
     setCoordinates?.({ lat: null, lng: null });
     setAgeInput?.("");
@@ -48,10 +57,6 @@ export const AllGroupFiltersPopup = ({
     setShowMeetingFrequency(false);
     setShowChildCare(false);
     setShowLanguage(false);
-    setIndexUiState((state) => ({
-      ...state,
-      refinementList: {},
-    }));
   };
 
   return (
