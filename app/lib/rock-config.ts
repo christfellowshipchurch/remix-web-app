@@ -86,6 +86,14 @@ export const RockCampuses = [
     name: "Westlake",
     pathname: "westlake",
   },
+  {
+    name: "Christ Fellowship Español Palm Beach Gardens",
+    pathname: "iglesia-palm-beach-gardens",
+  },
+  {
+    name: "Christ Fellowship Español Royal Palm Beach",
+    pathname: "iglesia-royal-palm-beach",
+  },
 ] as const;
 
 export type RockCampus = (typeof RockCampuses)[number];
