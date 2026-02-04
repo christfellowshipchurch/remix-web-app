@@ -2,6 +2,8 @@
 
 This guide describes how to add the same URL-driven search state to a **new** Algolia-based search page (e.g. another finder, events list, content search). There are **two patterns**; choose based on whether the standard approach keeps results and filter UI in sync.
 
+Implementation files reference this doc with "§" (e.g. "§ Pattern A step 1") so you can jump to the matching section.
+
 ## Which pattern to use
 
 - **Pattern A (recommended first):** `initialUiState` + `onStateChange` + `useAlgoliaUrlSync`. Use this when all filter state lives in InstantSearch (refinementList, query, page) or you have a small amount of custom state (e.g. coordinates, age) that you keep in a ref and merge when syncing to the URL. **Reference:** Group Finder, Class Finder, Class Finder single (upcoming sessions).

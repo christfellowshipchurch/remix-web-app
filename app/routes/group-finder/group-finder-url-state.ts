@@ -1,21 +1,11 @@
-/**
- * Group Finder URL state: parse/serialize search and filter state to the URL.
- *
- * This module uses the reusable helpers from ~/lib/algolia-url-state.ts. To build a similar
- * URL sync for another Algolia finder (e.g. class finder, events), copy this pattern and
- * define your own param keys, refinement attributes, and custom parse/toParams.
- *
- */
+/** Group Finder URL state. See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 1. */
 
 import type { AlgoliaUrlStateBase } from "~/lib/algolia-url-state";
 import { createAlgoliaUrlStateConfig } from "~/lib/algolia-url-state";
 
-/** URL param keys used by the group finder. Exported so other code can reference them if needed. */
 export const GROUP_FINDER_PARAMS = {
   QUERY: "q",
   PAGE: "page",
-
-  // Refinement list attributes use the same name as the Algolia attribute in the URL - INDEX UNIQUE
   CAMPUS: "campus",
   AGE: "age",
   LAT: "lat",
@@ -30,10 +20,6 @@ export const GROUP_FINDER_PARAMS = {
   LANGUAGE: "language",
 } as const;
 
-/**
- * Full URL state type for the group finder.
- * Base (query, page, refinementList) is shared with other finders; the rest is specific to groups.
- */
 export type GroupFinderUrlState = AlgoliaUrlStateBase & {
   campus?: string;
   age?: string;
@@ -41,7 +27,6 @@ export type GroupFinderUrlState = AlgoliaUrlStateBase & {
   lng?: number;
 };
 
-/** Algolia refinement list attributes that we persist in the URL (multi-value via repeated params). */
 const REFINEMENT_LIST_ATTRIBUTES = [
   "meetingType",
   "campus",

@@ -2,7 +2,7 @@ import { useInstantSearch } from "react-instantsearch";
 import { cn } from "~/lib/utils";
 
 interface AlgoliaFinderClearAllButtonProps {
-  /** Called after clearing InstantSearch state; parent clears URL, custom state, and bumps InstantSearch key. */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 5 or Pattern B step 4. */
   onClearAllToUrl: () => void;
   className?: string;
 }

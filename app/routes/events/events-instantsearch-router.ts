@@ -21,10 +21,7 @@ export type EventsRouterRefs = {
   >;
 };
 
-/**
- * Creates a custom InstantSearch router that reads/writes the URL via React Router's
- * searchParams so that the URL is the single source of truth and UI state stays in sync.
- */
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B step 2 (router). */
 export function createEventsInstantSearchRouter(refs: EventsRouterRefs) {
   const {
     searchParamsRef,
@@ -58,10 +55,7 @@ export function createEventsInstantSearchRouter(refs: EventsRouterRefs) {
   };
 }
 
-/**
- * State mapping between InstantSearch uiState and our URL route state.
- * Used with the custom router so stateToRoute / routeToState match our URL format.
- */
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B step 2 (state mapping). */
 export function createEventsStateMapping() {
   return {
     stateToRoute(uiState: { [indexId: string]: Record<string, unknown> }) {

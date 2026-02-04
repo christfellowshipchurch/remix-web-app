@@ -32,14 +32,7 @@ import { AlgoliaFinderClearAllButton } from "../components/clear-all-button.comp
 
 const INDEX_NAME = "dev_daniel_Groups";
 
-/**
- * Map URL state (from parseGroupFinderUrlState) to initial React state and InstantSearch initialUiState.
- * Called once on mount with current searchParams so the first render matches the URL (e.g. shared link or back/forward).
- *
- * Reuse pattern: For another finder, define a similar function that maps your URL state type to:
- * - Custom React state (e.g. coordinates, ageInput, selectedLocation)
- * - initialUiState[yourIndexName] = { query?, page (0-based)?, refinementList? }
- */
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const coordinates =
@@ -82,10 +75,7 @@ export const GroupSearch = () => {
     debounceMs: 400,
   });
 
-  const initial = useMemo(
-    () => getInitialStateFromUrl(searchParams),
-    [] // only on mount
-  );
+  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
   const [coordinates, setCoordinatesState] = useState<{
     lat: number | null;
@@ -99,10 +89,9 @@ export const GroupSearch = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  /** Bumped on Clear All so InstantSearch remounts with empty state and triggers a fresh Algolia refetch. */
   const [instantSearchKey, setInstantSearchKey] = useState(0);
 
-  /** Ref used when syncing to URL: onStateChange reads this so the URL includes custom filters (campus, age, location) not stored in InstantSearch uiState. */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref, key bump). */
   type CustomState = {
     coordinates: { lat: number | null; lng: number | null } | null;
     ageInput: string;
@@ -120,7 +109,7 @@ export const GroupSearch = () => {
     selectedLocation,
   };
 
-  /** When the user navigates back/forward, update our React state from the URL so the UI reflects the new URL. */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 4 (sync custom state from URL). */
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     if (urlState.lat != null && urlState.lng != null) {
@@ -186,7 +175,7 @@ export const GroupSearch = () => {
     setInstantSearchKey((k) => k + 1);
   };
 
-  /** Merge a partial URL state with current (from searchParams) and schedule a debounced URL update. Used when user changes a single custom filter. */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 4 (custom filter → URL). */
   const mergeUrlState = (partial: Partial<GroupFinderUrlState>) => {
     const current = parseGroupFinderUrlState(searchParams);
     const merged: GroupFinderUrlState = { ...current, ...partial };
@@ -208,10 +197,7 @@ export const GroupSearch = () => {
     });
   };
 
-  /**
-   * Called from InstantSearch onStateChange: build full URL state from index uiState (query, page, refinementList)
-   * plus custom state from ref (campus, age, lat/lng), then debouncedUpdateUrl so the URL stays in sync.
-   */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: GroupFinderUrlState = {
       ...parseGroupFinderUrlState(searchParams),
@@ -235,7 +221,6 @@ export const GroupSearch = () => {
       className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
       id="search"
     >
-      {/* key: when instantSearchKey bumps (Clear all), InstantSearch remounts with initialUiState = {} so Algolia refetches with no filters. */}
       <InstantSearch
         key={instantSearchKey}
         indexName={INDEX_NAME}

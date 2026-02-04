@@ -24,6 +24,7 @@ import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/cl
 
 const INDEX_NAME = "dev_Classes";
 
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
   const coordinates =
