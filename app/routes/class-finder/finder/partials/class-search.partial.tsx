@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
 
@@ -13,17 +13,79 @@ import { cn } from "~/lib/utils";
 import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
 import { DesktopClassFilters } from "../components/popups/class-filters";
 import { ClassHitType } from "../../types";
+import {
+  parseClassFinderUrlState,
+  classFinderUrlStateToParams,
+  classFinderEmptyState,
+  type ClassFinderUrlState,
+} from "../../class-finder-url-state";
+import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+
+const INDEX_NAME = "dev_Classes";
+
+function getInitialStateFromUrl(searchParams: URLSearchParams) {
+  const urlState = parseClassFinderUrlState(searchParams);
+  const coordinates =
+    urlState.lat != null && urlState.lng != null
+      ? { lat: urlState.lat, lng: urlState.lng }
+      : null;
+  const initialUiState: { [key: string]: Record<string, unknown> } = {};
+  if (
+    urlState.query !== undefined ||
+    urlState.page !== undefined ||
+    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
+  ) {
+    initialUiState[INDEX_NAME] = {};
+    if (urlState.query !== undefined)
+      initialUiState[INDEX_NAME].query = urlState.query;
+    if (urlState.page != null && urlState.page > 1) {
+      initialUiState[INDEX_NAME].page = urlState.page - 1;
+    }
+    if (
+      urlState.refinementList &&
+      Object.keys(urlState.refinementList).length > 0
+    ) {
+      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
+    }
+  }
+  return { coordinates, initialUiState };
+}
 
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [coordinates, setCoordinates] = useState<{
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: classFinderUrlStateToParams,
+    debounceMs: 400,
+  });
+
+  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+
+  const [coordinates, setCoordinatesState] = useState<{
     lat: number | null;
     lng: number | null;
-  } | null>(null);
+  } | null>(initial.coordinates);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [instantSearchKey, setInstantSearchKey] = useState(0);
+
+  const customStateRef = useRef({ coordinates: initial.coordinates });
+  customStateRef.current = { coordinates };
+
+  useEffect(() => {
+    const urlState = parseClassFinderUrlState(searchParams);
+    if (urlState.lat != null && urlState.lng != null) {
+      setCoordinatesState({ lat: urlState.lat, lng: urlState.lng });
+    } else {
+      setCoordinatesState(null);
+    }
+  }, [searchParams]);
 
   // Scroll handling effect
   useEffect(() => {
@@ -59,8 +121,49 @@ export const ClassSearch = () => {
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {},
+    {}
   );
+
+  const clearAllFiltersFromUrl = () => {
+    cancelDebounce();
+    customStateRef.current = { coordinates: null };
+    setCoordinatesState(null);
+    setSearchParams(classFinderUrlStateToParams(classFinderEmptyState), {
+      replace: true,
+      preventScrollReset: true,
+    });
+    setInstantSearchKey((k) => k + 1);
+  };
+
+  const mergeUrlState = (partial: Partial<ClassFinderUrlState>) => {
+    const current = parseClassFinderUrlState(searchParams);
+    const merged: ClassFinderUrlState = { ...current, ...partial };
+    debouncedUpdateUrl(merged);
+  };
+
+  const setCoordinates = (next: typeof coordinates) => {
+    setCoordinatesState(next);
+    mergeUrlState({
+      lat: next?.lat ?? undefined,
+      lng: next?.lng ?? undefined,
+    });
+  };
+
+  const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    const urlState: ClassFinderUrlState = {
+      ...parseClassFinderUrlState(searchParams),
+      query: (indexUiState.query as string) ?? undefined,
+      page:
+        typeof indexUiState.page === "number" && indexUiState.page > 0
+          ? indexUiState.page + 1
+          : undefined,
+      refinementList:
+        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
+      lat: customStateRef.current.coordinates?.lat ?? undefined,
+      lng: customStateRef.current.coordinates?.lng ?? undefined,
+    };
+    debouncedUpdateUrl(urlState);
+  };
 
   return (
     <div
@@ -68,8 +171,21 @@ export const ClassSearch = () => {
       id="search"
     >
       <InstantSearch
-        indexName="dev_Classes"
+        key={instantSearchKey}
+        indexName={INDEX_NAME}
         searchClient={searchClient}
+        initialUiState={
+          instantSearchKey > 0
+            ? { [INDEX_NAME]: {} }
+            : Object.keys(initial.initialUiState).length > 0
+            ? initial.initialUiState
+            : undefined
+        }
+        onStateChange={({ uiState }) => {
+          const indexState = uiState[INDEX_NAME];
+          if (indexState)
+            syncUrlFromUiState(indexState as Record<string, unknown>);
+        }}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
@@ -80,15 +196,13 @@ export const ClassSearch = () => {
           coordinates={coordinates}
         />
         <div className="flex flex-col">
-          {/* Desktop Filters Section */}
           <div
             className={cn(
               "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0",
+              isNavbarOpen ? "top-18 md:top-20" : "top-0"
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              {/* Group Search Box */}
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
                 <Icon name="searchAlt" className="text-neutral-default ml-3" />
                 <SearchBox
@@ -108,17 +222,20 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              {/* Desktop Filters */}
-              <div className="hidden md:block">
+              <div className="hidden md:flex items-center gap-4">
                 <DesktopClassFilters
                   coordinates={coordinates}
                   setCoordinates={setCoordinates}
+                  onClearAllToUrl={clearAllFiltersFromUrl}
+                />
+                <AlgoliaFinderClearAllButton
+                  className="hidden lg:block"
+                  onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
           </div>
 
-          {/* Mobile Filters */}
           <div className="md:hidden bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
             <div className="content-padding">
               <Button
@@ -135,13 +252,14 @@ export const ClassSearch = () => {
                 "absolute transition-all duration-300",
                 isMobileOpen
                   ? "z-4 opacity-100 top-[calc(102%)]"
-                  : "-z-1 opacity-0",
+                  : "-z-1 opacity-0 pointer-events-none"
               )}
             >
               <AllClassFiltersPopup
                 onHide={() => setIsMobileOpen(false)}
                 coordinates={coordinates}
                 setCoordinates={setCoordinates}
+                onClearAllToUrl={clearAllFiltersFromUrl}
               />
             </div>
           </div>

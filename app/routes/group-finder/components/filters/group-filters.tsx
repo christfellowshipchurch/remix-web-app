@@ -229,7 +229,7 @@ export function DesktopGroupFilters({
         <div
           className={cn(
             "absolute right-0 top-[80px] border-t border-neutral-300",
-            "w-full max-w-[484px] h-[85vh] max-h-[85vh] flex flex-col",
+            "w-full max-w-[484px] h-auto max-h-[85vh] md:max-h-none flex flex-col",
             "hidden md:flex",
             hasInteracted
               ? activeDropdown === "allFilters"

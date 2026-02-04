@@ -9,6 +9,7 @@ export const AllClassFiltersPopup = ({
   onHide,
   coordinates,
   setCoordinates,
+  onClearAllToUrl,
 }: {
   hideTopic?: boolean;
   onHide: () => void;
@@ -22,6 +23,7 @@ export const AllClassFiltersPopup = ({
       lng: number | null;
     } | null
   ) => void;
+  onClearAllToUrl?: () => void;
 }) => {
   const [showLocation, setShowLocation] = useState(false);
   const [showTopics, setShowTopics] = useState(false);
@@ -31,24 +33,27 @@ export const AllClassFiltersPopup = ({
   const { setIndexUiState } = useInstantSearch();
 
   const clearAllRefinements = () => {
+    setIndexUiState((state) => ({
+      ...state,
+      query: "",
+      refinementList: {},
+      page: 0,
+    }));
+    onClearAllToUrl?.();
     setSelectedValue("");
     setCoordinates?.({ lat: null, lng: null });
     setShowLocation(false);
     setShowTopics(false);
     setShowLanguage(false);
-    setIndexUiState((state) => ({
-      ...state,
-      refinementList: {},
-    }));
   };
 
   return (
-    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll min-h-[55vh] md:min-h-0 md:max-h-[85vh]">
-      {/* Title Section */}
-      <FiltersHeader onHide={onHide} />
+    <div className="bg-white flex flex-col shadow-md w-full h-auto min-h-0 max-h-[85vh] md:max-h-none overflow-hidden">
+      <div className="flex-shrink-0">
+        <FiltersHeader onHide={onHide} />
+      </div>
 
-      {/* Filters Section */}
-      <div className="flex flex-col gap-4 px-4">
+      <div className="flex flex-col gap-4 px-4 overflow-y-auto min-h-0 flex-1">
         <AllFiltersFilterSection
           title="Location"
           attribute="format"
@@ -79,8 +84,9 @@ export const AllClassFiltersPopup = ({
         />
       </div>
 
-      {/* Bottom/Footer Section */}
-      <FiltersFooter onHide={onHide} onClearAll={clearAllRefinements} />
+      <div className="flex-shrink-0">
+        <FiltersFooter onHide={onHide} onClearAll={clearAllRefinements} />
+      </div>
     </div>
   );
 };

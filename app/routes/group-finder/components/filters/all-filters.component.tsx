@@ -60,7 +60,7 @@ export const AllGroupFiltersPopup = ({
   };
 
   return (
-    <div className="bg-white flex flex-col shadow-md w-full h-auto min-h-0 max-h-[85vh] overflow-hidden">
+    <div className="bg-white flex flex-col shadow-md w-full h-auto min-h-0 max-h-[85vh] md:max-h-none overflow-hidden">
       <div className="flex-shrink-0">
         <FiltersHeader onHide={onHide} />
       </div>

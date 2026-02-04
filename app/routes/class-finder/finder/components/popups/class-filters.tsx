@@ -8,6 +8,7 @@ import { cn } from "~/lib/utils";
 export function DesktopClassFilters({
   coordinates,
   setCoordinates,
+  onClearAllToUrl,
 }: {
   coordinates: {
     lat: number | null;
@@ -17,8 +18,9 @@ export function DesktopClassFilters({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null,
+    } | null
   ) => void;
+  onClearAllToUrl?: () => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -180,22 +182,23 @@ export function DesktopClassFilters({
         <div
           className={cn(
             "absolute right-0 top-[80px] border-t border-neutral-300",
-            "size-full max-w-[484px]",
-            "hidden md:block",
+            "w-full max-w-[484px] h-auto max-h-[85vh] md:max-h-none flex flex-col",
+            "hidden md:flex",
             hasInteracted
               ? activeDropdown === "allFilters"
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-                ? "z-1"
-                : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300",
+              ? "z-1"
+              : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300"
           )}
         >
           <AllClassFiltersPopup
             onHide={closeAllDropdowns}
             coordinates={coordinates}
             setCoordinates={setCoordinates}
+            onClearAllToUrl={onClearAllToUrl}
           />
         </div>
       </div>
