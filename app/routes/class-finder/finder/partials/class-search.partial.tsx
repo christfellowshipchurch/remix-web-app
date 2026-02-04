@@ -76,7 +76,13 @@ export const ClassSearch = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [instantSearchKey, setInstantSearchKey] = useState(0);
 
-  const customStateRef = useRef({ coordinates: initial.coordinates });
+  type CoordinatesState = {
+    lat: number | null;
+    lng: number | null;
+  } | null;
+  const customStateRef = useRef<{ coordinates: CoordinatesState }>({
+    coordinates: initial.coordinates,
+  });
   customStateRef.current = { coordinates };
 
   useEffect(() => {
