@@ -1,15 +1,14 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { parseRockKeyValueList } from "~/lib/utils"
+import { parseRockKeyValueList } from "~/lib/utils";
 
 import { PageBuilderSection } from "../page-builder/types";
-import { RockContentChannelItem } from '~/lib/types/rock-types';
+import { RockContentChannelItem } from "~/lib/types/rock-types";
 
 import {
   fetchChildItems,
   mapPageBuilderChildItems,
 } from "../page-builder/loader";
-
 
 export type LinkTreeLoaderData = {
   id: string;
@@ -23,22 +22,23 @@ export type LinkTreeLoaderData = {
   >;
 };
 
-
-const fetchLinkTreePage = async (pathname: string): Promise<RockContentChannelItem> => {
+const fetchLinkTreePage = async (
+  pathname: string
+): Promise<RockContentChannelItem> => {
   const linkTreePage = await fetchRockData({
-    endpoint: 'ContentChannelItems/GetByAttributeValue',
+    endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
-      attributeKey: 'Url',
+      attributeKey: "Url",
       $filter: "ContentChannelId eq 190 and Status eq 'Approved'",
       value: pathname,
-      loadAttributes: 'simple',
-    }
+      loadAttributes: "simple",
+    },
   });
 
   if (!linkTreePage || linkTreePage.length === 0) {
     throw new Response(`Link tree page not found at: /link-tree/${pathname}`, {
       status: 404,
-      statusText: 'Not Found',
+      statusText: "Not Found",
     });
   }
 
@@ -48,15 +48,15 @@ const fetchLinkTreePage = async (pathname: string): Promise<RockContentChannelIt
 export const loader = async ({
   request,
 }: LoaderFunctionArgs): Promise<LinkTreeLoaderData | []> => {
-  const pathname = request.url.split('/').pop();
+  const pathname = request.url.split("/").pop();
 
   if (!pathname) {
     throw new Response(
-      JSON.stringify({ error: 'Pathname not provided in request URL.' }),
+      JSON.stringify({ error: "Pathname not provided in request URL." }),
       {
         status: 400,
-        statusText: 'Bad Request',
-        headers: { 'Content-Type': 'application/json' },
+        statusText: "Bad Request",
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
@@ -70,12 +70,12 @@ export const loader = async ({
         error:
           error instanceof Error
             ? error.message
-            : 'An unknown error occurred while fetching the link tree page.',
+            : "An unknown error occurred while fetching the link tree page.",
       }),
       {
         status: 404,
-        statusText: 'Not Found',
-        headers: { 'Content-Type': 'application/json' },
+        statusText: "Not Found",
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
@@ -87,8 +87,8 @@ export const loader = async ({
       }),
       {
         status: 404,
-        statusText: 'Not Found',
-        headers: { 'Content-Type': 'application/json' },
+        statusText: "Not Found",
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
@@ -101,24 +101,34 @@ export const loader = async ({
     (collection) => collection.type === "RESOURCE_COLLECTION"
   ) as Array<PageBuilderSection & { type: "RESOURCE_COLLECTION" }>;
 
-  const isPrimaryCta = rockLinkTreePage.attributeValues?.primaryCtaCall?.value !== undefined && rockLinkTreePage.attributeValues?.primaryCtaAction?.value !== undefined;
-  const isCallsToActions = rockLinkTreePage.attributeValues?.callsToAction?.value !== undefined;
-
+  const isPrimaryCta =
+    rockLinkTreePage.attributeValues?.primaryCtaCall?.value !== undefined &&
+    rockLinkTreePage.attributeValues?.primaryCtaCall?.value !== "" &&
+    rockLinkTreePage.attributeValues?.primaryCtaAction?.value !== undefined &&
+    rockLinkTreePage.attributeValues?.primaryCtaAction?.value !== "";
+  const isCallsToActions =
+    rockLinkTreePage.attributeValues?.callsToAction?.value !== undefined &&
+    rockLinkTreePage.attributeValues?.callsToAction?.value !== "";
 
   return {
-    id: rockLinkTreePage.id ?? '',
-    title: rockLinkTreePage.title ?? '',
-    subtitle: rockLinkTreePage.attributeValues?.subtitle?.value ?? '',
-    content: rockLinkTreePage.content ?? '',
-      primaryCta: isPrimaryCta ? {
-      title: rockLinkTreePage.attributeValues?.primaryCtaCall?.value ?? '',
-      url: rockLinkTreePage.attributeValues?.primaryCtaAction?.value ?? '',
-    } : undefined,
-    callsToActions: isCallsToActions ? parseRockKeyValueList(rockLinkTreePage.attributeValues?.callsToAction?.value ?? '').map((item) => ({
-        title: item.key,
-        url: item.value,
-      })) : [],
+    id: rockLinkTreePage.id ?? "",
+    title: rockLinkTreePage.title ?? "",
+    subtitle: rockLinkTreePage.attributeValues?.subtitle?.value ?? "",
+    content: rockLinkTreePage.content ?? "",
+    primaryCta: isPrimaryCta
+      ? {
+          title: rockLinkTreePage.attributeValues?.primaryCtaCall?.value ?? "",
+          url: rockLinkTreePage.attributeValues?.primaryCtaAction?.value ?? "",
+        }
+      : undefined,
+    callsToActions: isCallsToActions
+      ? parseRockKeyValueList(
+          rockLinkTreePage.attributeValues?.callsToAction?.value ?? ""
+        ).map((item) => ({
+          title: item.key,
+          url: item.value,
+        }))
+      : [],
     resourceCollections: resourceCollections ?? [],
   };
-
 };
