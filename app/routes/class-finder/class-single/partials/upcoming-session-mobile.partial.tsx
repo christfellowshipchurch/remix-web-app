@@ -1,9 +1,9 @@
 import { algoliasearch } from "algoliasearch";
-import { useState } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { LoaderReturnType } from "../loader";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import { AllClassFiltersPopup } from "~/routes/class-finder/finder/components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 
@@ -11,15 +11,124 @@ import { Hits, InstantSearch, Stats } from "react-instantsearch";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 import { ResponsiveClassesSingleConfigure } from "./upcoming-sections.partial";
+import {
+  parseClassSingleUrlState,
+  classSingleUrlStateToParams,
+  classSingleEmptyState,
+  type ClassSingleUrlState,
+} from "../class-single-url-state";
+import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+
+const INDEX_NAME = "dev_Classes";
+
+function getInitialStateFromUrl(searchParams: URLSearchParams) {
+  const urlState = parseClassSingleUrlState(searchParams);
+  const coordinates =
+    urlState.lat != null && urlState.lng != null
+      ? { lat: urlState.lat, lng: urlState.lng }
+      : null;
+  const initialUiState: { [key: string]: Record<string, unknown> } = {};
+  if (
+    urlState.query !== undefined ||
+    urlState.page !== undefined ||
+    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
+  ) {
+    initialUiState[INDEX_NAME] = {};
+    if (urlState.query !== undefined)
+      initialUiState[INDEX_NAME].query = urlState.query;
+    if (urlState.page != null && urlState.page > 1) {
+      initialUiState[INDEX_NAME].page = urlState.page - 1;
+    }
+    if (
+      urlState.refinementList &&
+      Object.keys(urlState.refinementList).length > 0
+    ) {
+      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
+    }
+  }
+  return { coordinates, initialUiState };
+}
 
 export function UpcomingSessionMobileSection() {
   const { classUrl, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [coordinates, setCoordinates] = useState<{
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: classSingleUrlStateToParams,
+    debounceMs: 400,
+  });
+
+  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+
+  const [coordinates, setCoordinatesState] = useState<{
     lat: number | null;
     lng: number | null;
-  } | null>(null);
+  } | null>(initial.coordinates);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [instantSearchKey, setInstantSearchKey] = useState(0);
+
+  const customStateRef = useRef({ coordinates: initial.coordinates });
+  customStateRef.current = { coordinates };
+
+  useEffect(() => {
+    const urlState = parseClassSingleUrlState(searchParams);
+    if (urlState.lat != null && urlState.lng != null) {
+      setCoordinatesState({ lat: urlState.lat, lng: urlState.lng });
+    } else {
+      setCoordinatesState(null);
+    }
+  }, [searchParams]);
+
+  const clearAllFiltersFromUrl = () => {
+    cancelDebounce();
+    customStateRef.current = { coordinates: null };
+    setCoordinatesState(null);
+    setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
+      replace: true,
+      preventScrollReset: true,
+    });
+    setInstantSearchKey((k) => k + 1);
+  };
+
+  const mergeUrlState = (partial: Partial<ClassSingleUrlState>) => {
+    const current = parseClassSingleUrlState(searchParams);
+    const merged: ClassSingleUrlState = { ...current, ...partial };
+    debouncedUpdateUrl(merged);
+  };
+
+  const setCoordinates = (next: typeof coordinates) => {
+    setCoordinatesState(next);
+    mergeUrlState({
+      lat: next?.lat ?? undefined,
+      lng: next?.lng ?? undefined,
+    });
+  };
+
+  const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    const urlState: ClassSingleUrlState = {
+      ...parseClassSingleUrlState(searchParams),
+      query: (indexUiState.query as string) ?? undefined,
+      page:
+        typeof indexUiState.page === "number" && indexUiState.page > 0
+          ? indexUiState.page + 1
+          : undefined,
+      refinementList:
+        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
+      lat: customStateRef.current.coordinates?.lat ?? undefined,
+      lng: customStateRef.current.coordinates?.lng ?? undefined,
+    };
+    debouncedUpdateUrl(urlState);
+  };
+
+  const initialUiState =
+    instantSearchKey > 0
+      ? { [INDEX_NAME]: {} }
+      : Object.keys(initial.initialUiState).length > 0
+      ? initial.initialUiState
+      : undefined;
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -40,8 +149,15 @@ export function UpcomingSessionMobileSection() {
         id="search"
       >
         <InstantSearch
-          indexName="dev_Classes"
+          key={instantSearchKey}
+          indexName={INDEX_NAME}
           searchClient={searchClient}
+          initialUiState={initialUiState}
+          onStateChange={({ uiState }) => {
+            const indexState = uiState[INDEX_NAME];
+            if (indexState)
+              syncUrlFromUiState(indexState as Record<string, unknown>);
+          }}
           future={{
             preserveSharedStateOnUnmount: true,
           }}
@@ -69,7 +185,7 @@ export function UpcomingSessionMobileSection() {
                   "absolute transition-all duration-300",
                   isMobileOpen
                     ? "z-4 opacity-100 top-[calc(99%)]"
-                    : "-z-1 opacity-0"
+                    : "-z-1 opacity-0 pointer-events-none"
                 )}
               >
                 <AllClassFiltersPopup
@@ -77,6 +193,7 @@ export function UpcomingSessionMobileSection() {
                   onHide={() => setIsMobileOpen(false)}
                   coordinates={coordinates}
                   setCoordinates={setCoordinates}
+                  onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
