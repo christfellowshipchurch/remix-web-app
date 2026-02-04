@@ -1,13 +1,16 @@
 import { useInstantSearch } from "react-instantsearch";
+import { cn } from "~/lib/utils";
 
-interface GroupFinderClearAllButtonProps {
+interface AlgoliaFinderClearAllButtonProps {
   /** Called after clearing InstantSearch state; parent clears URL, custom state, and bumps InstantSearch key. */
   onClearAllToUrl: () => void;
+  className?: string;
 }
 
-export const GroupFinderClearAllButton = ({
+export const AlgoliaFinderClearAllButton = ({
   onClearAllToUrl,
-}: GroupFinderClearAllButtonProps) => {
+  className,
+}: AlgoliaFinderClearAllButtonProps) => {
   const { setIndexUiState } = useInstantSearch();
 
   const handleClearAll = () => {
@@ -24,7 +27,10 @@ export const GroupFinderClearAllButton = ({
     <button
       type="button"
       onClick={handleClearAll}
-      className="cursor-pointer text-text-secondary hover:text-ocean transition-colors duration-300 font-semibold text-base shrink-0"
+      className={cn(
+        "cursor-pointer text-text-secondary hover:text-ocean transition-colors duration-300 font-semibold text-base shrink-0",
+        className
+      )}
     >
       Clear All
     </button>

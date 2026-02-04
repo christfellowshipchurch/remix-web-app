@@ -28,7 +28,7 @@ import {
   type GroupFinderUrlState,
 } from "../group-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { GroupFinderClearAllButton } from "../components/clear-all-button.component";
+import { AlgoliaFinderClearAllButton } from "../components/clear-all-button.component";
 
 const INDEX_NAME = "dev_daniel_Groups";
 
@@ -291,7 +291,7 @@ export const GroupSearch = () => {
               </div>
 
               {/* Desktop Filters + Clear All */}
-              <div className="hidden md:flex items-center gap-4 flex-1">
+              <div className="hidden md:flex items-center gap-4">
                 <DesktopGroupFilters
                   coordinates={coordinates}
                   setCoordinates={setCoordinates}
@@ -299,7 +299,8 @@ export const GroupSearch = () => {
                   setAgeInput={setAgeInput}
                   onClearAllToUrl={clearAllFiltersFromUrl}
                 />
-                <GroupFinderClearAllButton
+                <AlgoliaFinderClearAllButton
+                  className="hidden xl:block"
                   onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>

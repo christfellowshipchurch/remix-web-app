@@ -71,9 +71,9 @@ export function DesktopGroupFilters({
   return (
     <div
       ref={containerRef}
-      className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center"
+      className="flex gap-4 bg-white col-span-1 h-full items-center"
     >
-      <div className="hidden lg:flex gap-4 w-full">
+      <div className="hidden lg:flex gap-4">
         {/* Location Select Box */}
         <div
           className={cn(dropdownButtonStyles)}
@@ -229,8 +229,8 @@ export function DesktopGroupFilters({
         <div
           className={cn(
             "absolute right-0 top-[80px] border-t border-neutral-300",
-            "size-full max-w-[484px]",
-            "hidden md:block",
+            "w-full max-w-[484px] h-[85vh] max-h-[85vh] flex flex-col",
+            "hidden md:flex",
             hasInteracted
               ? activeDropdown === "allFilters"
                 ? "animate-slide-in z-1"
