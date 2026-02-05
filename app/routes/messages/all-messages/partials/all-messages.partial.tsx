@@ -1,6 +1,6 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useSearchParams, useLocation } from "react-router-dom";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
@@ -12,14 +12,61 @@ import {
 } from "~/components/hubs-tags-refinement";
 import { createSearchClient } from "~/lib/create-search-client";
 import { AllMessagesLoaderReturnType } from "../loader";
+import { parseAllMessagesUrlState } from "../all-messages-url-state";
+import {
+  createAllMessagesInstantSearchRouter,
+  createAllMessagesStateMapping,
+} from "../all-messages-instantsearch-router";
 
+const INDEX_NAME = "dev_contentItems";
+
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B (routing). */
 export function AllMessages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<AllMessagesLoaderReturnType>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  const searchParamsRef = useRef(searchParams);
+  const setSearchParamsRef = useRef(setSearchParams);
+  const pathnameRef = useRef(location.pathname);
+  const onUpdateCallbackRef = useRef<
+    ((route: ReturnType<typeof parseAllMessagesUrlState>) => void) | null
+  >(null);
+
+  searchParamsRef.current = searchParams;
+  setSearchParamsRef.current = setSearchParams;
+  pathnameRef.current = location.pathname;
+
+  const router = useMemo(
+    () =>
+      createAllMessagesInstantSearchRouter({
+        searchParamsRef,
+        setSearchParamsRef,
+        pathnameRef,
+        onUpdateCallbackRef,
+      }),
+    []
+  );
+
+  const stateMapping = useMemo(() => createAllMessagesStateMapping(), []);
+
+  useEffect(() => {
+    const cb = onUpdateCallbackRef.current;
+    if (cb) cb(parseAllMessagesUrlState(searchParams));
+  }, [searchParams]);
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+  );
+
+  const routing = useMemo(
+    () => ({
+      router,
+      stateMapping,
+    }),
+    [router, stateMapping]
   );
 
   const [allMessagesLoading, setAllMessagesLoading] = useState(true);
@@ -34,8 +81,9 @@ export function AllMessages() {
         />
         {allMessagesLoading && <AllMessagesLoadingSkeleton />}
         <InstantSearch
-          indexName="dev_contentItems"
+          indexName={INDEX_NAME}
           searchClient={searchClient}
+          routing={routing}
           future={{
             preserveSharedStateOnUnmount: true,
           }}
