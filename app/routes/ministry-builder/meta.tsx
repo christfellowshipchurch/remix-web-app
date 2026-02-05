@@ -16,8 +16,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
         .substring(0, 160)
         .trim() + (content.length > 160 ? "..." : "")
     : `Explore ${title} at Christ Fellowship Church`;
+  const metaTitle = title ? `${title} Ministry` : "Ministry";
   return createMeta({
-    title: title ?? "Ministry",
+    title: metaTitle,
     description,
     image: data.heroImage,
   });
