@@ -826,6 +826,26 @@ const TimeStep = ({
   );
 };
 
+// Manual embed height per group type (px). Adjust as needed for each form.
+const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
+  'Kids Dedication': 1000,
+  'Kids Starting Line': 1000,
+  Journey: 700,
+  Baptism: 1000,
+  'Dream Team Kickoff': 1000,
+};
+
+const DEFAULT_EMBED_HEIGHT = 1000;
+
+function getEmbedHeightForGroupType(groupType: string): number {
+  const normalized = groupType
+    .replace(/-/g, ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+  return EMBED_HEIGHT_BY_GROUP_TYPE[normalized] ?? DEFAULT_EMBED_HEIGHT;
+}
+
 // Form Step Component
 interface FormStepProps {
   groupGuid: string;
@@ -844,6 +864,7 @@ const FormStep = ({
 }: FormStepProps) => {
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType);
   const rockEmbedUrl = `https://rock.gocf.org/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}`;
+  const embedHeight = getEmbedHeightForGroupType(groupType);
 
   if (!groupGuid) {
     return (
@@ -859,7 +880,7 @@ const FormStep = ({
     <div className="w-full max-w-[600px] mx-auto rounded-xl overflow-hidden">
       <RockProxyEmbed
         url={rockEmbedUrl}
-        height={1000}
+        height={embedHeight}
         showLoading={true}
         useAdvancedProxy={false}
         className="w-full"
