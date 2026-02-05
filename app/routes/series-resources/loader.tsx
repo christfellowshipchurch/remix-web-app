@@ -88,28 +88,44 @@ const getSeriesResources = async (seriesGuid: string) => {
     ? seriesResources
     : [seriesResources];
 
-  resources.forEach(
-    (resource: {
-      attributeValues: {
-        image: { value: string };
-        summary: { value: string };
-        url: { value: string };
-      };
-      contentChannelId: string;
-      coverImage: string;
-      summary: string;
-    }) => {
-      resource.summary = resource.attributeValues.summary?.value ?? "";
-      resource.coverImage = createImageUrlFromGuid(
-        resource.attributeValues.image.value
-      );
-      resource.attributeValues.url.value = `${getContentChannelUrl(
-        parseInt(resource.contentChannelId)
-      )}/${resource.attributeValues.url.value}`;
-    }
-  );
+  const mappedResources = resources
+    .map(
+      (resource: {
+        attributeValues: {
+          image: { value: string };
+          summary: { value: string };
+          url: { value: string };
+        };
+        contentChannelId: string;
+        coverImage: string;
+        summary: string;
+        startDateTime?: string;
+      }) => {
+        return {
+          ...resource,
+          summary: resource.attributeValues.summary?.value ?? "",
+          coverImage: createImageUrlFromGuid(
+            resource.attributeValues.image.value
+          ),
+          attributeValues: {
+            ...resource.attributeValues,
+            url: {
+              ...resource.attributeValues.url,
+              value: `${getContentChannelUrl(
+                parseInt(resource.contentChannelId)
+              )}/${resource.attributeValues.url.value}`,
+            },
+          },
+        };
+      }
+    )
+    .sort((a, b) => {
+      const aDate = a.startDateTime ? new Date(a.startDateTime).getTime() : 0;
+      const bDate = b.startDateTime ? new Date(b.startDateTime).getTime() : 0;
+      return bDate - aDate; // newest / most recent first
+    });
 
-  return resources;
+  return mappedResources;
 };
 
 const getSeriesEvents = async (seriesGuid: string) => {
@@ -135,6 +151,7 @@ const getSeriesEvents = async (seriesGuid: string) => {
       contentChannelId: string;
       coverImage: string;
       summary: string;
+      startDateTime?: string;
     }) => {
       event.coverImage = createImageUrlFromGuid(
         event?.attributeValues?.image?.value
@@ -142,6 +159,17 @@ const getSeriesEvents = async (seriesGuid: string) => {
       event.summary = event?.attributeValues?.summary?.value || "";
     }
   );
+
+  // TODO: Replace startDateTime with firstDateOfEvent when it's updated in Rock
+  events.sort((a, b) => {
+    const aDate = (a as { startDateTime?: string }).startDateTime
+      ? new Date((a as { startDateTime: string }).startDateTime).getTime()
+      : 0;
+    const bDate = (b as { startDateTime?: string }).startDateTime
+      ? new Date((b as { startDateTime: string }).startDateTime).getTime()
+      : 0;
+    return bDate - aDate; // newest / most recent first
+  });
 
   return events;
 };
