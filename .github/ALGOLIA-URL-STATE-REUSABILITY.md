@@ -38,7 +38,9 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
   - `pageParamKey` — e.g. `'page'` (URL is 1-based; InstantSearch uses 0-based internally).
   - `refinementAttributes` — array of attribute names that map to refinementList in UI state.
   - `custom` (optional) — `{ parse(params) => partial state, toParams(state, params) => set params }` for any param that is not query, page, or refinementList (e.g. campus, lat, lng, age).
-- Export `parse`, `toParams`, and `emptyState` (and param constants if useful). **Reference:** `group-finder-url-state.ts`, `class-finder-url-state.ts`.
+- Export `parse`, `toParams`, and `emptyState` (and param constants if useful).
+
+**Group Finder example:** `app/routes/group-finder/group-finder-url-state.ts` — `GroupFinderUrlState` (campus, age, lat, lng), `GROUP_FINDER_PARAMS`, `REFINEMENT_LIST_ATTRIBUTES`, `createAlgoliaUrlStateConfig` with `custom.parse`/`custom.toParams` for campus/age/lat/lng, exports `parseGroupFinderUrlState`, `groupFinderUrlStateToParams`, `groupFinderEmptyState`.
 
 **2. Wire the search component to the URL**
 
@@ -52,6 +54,8 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
   - Initialize React state from `initial` (e.g. `useState(initial.coordinates)`, `useState(initial.ageInput)`).
   - If you have custom state that is not in InstantSearch's uiState, keep it in a **ref** as well (e.g. `customStateRef.current = { coordinates, ageInput, selectedLocation }`) so that when you sync to the URL you can merge index uiState + custom state into one urlState object.
 
+**Group Finder example:** `app/routes/group-finder/partials/group-search.partial.tsx` — `useSearchParams()`, `useAlgoliaUrlSync({ toParams: groupFinderUrlStateToParams, debounceMs: 400 })`; `getInitialStateFromUrl(searchParams)` returns `coordinates`, `ageInput`, `selectedLocation`, `initialUiState` (query, 1→0-based page, refinementList); `useState(initial.*)` for each; `customStateRef` updated each render with current `coordinates`, `ageInput`, `selectedLocation`.
+
 **3. Pass initialUiState and onStateChange to InstantSearch**
 
 - Compute `initialUiState` for `<InstantSearch>`:
@@ -59,10 +63,14 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
 - Pass `initialUiState={...}` and `onStateChange={({ uiState }) => { ... } }` to `<InstantSearch>`.
 - In `onStateChange`: read `uiState[indexName]`, build a full urlState object (index's query, page, refinementList plus `customStateRef.current`), then call `debouncedUpdateUrl(urlState)`.
 
+**Group Finder example:** `group-search.partial.tsx` — `<InstantSearch key={instantSearchKey} initialUiState={instantSearchKey > 0 ? { [INDEX_NAME]: {} } : initial.initialUiState} onStateChange={...} />`; `syncUrlFromUiState(indexUiState)` merges index uiState with `customStateRef.current` (campus, age, lat/lng) and calls `debouncedUpdateUrl(urlState)`.
+
 **4. Keep custom state in sync with the URL**
 
 - When the user changes a custom filter (e.g. location, age, campus): update your React state and call `debouncedUpdateUrl(mergedState)` with the full state (InstantSearch state + your custom state). You can read current InstantSearch state from the ref or from the last `onStateChange` if you store it.
 - When the URL changes externally (e.g. back/forward): run a `useEffect` that depends on `searchParams`, call `parse(searchParams)`, and update your custom React state (e.g. set coordinates, age, campus) so the UI reflects the URL.
+
+**Group Finder example:** `group-search.partial.tsx` — `mergeUrlState(partial)` merges `parseGroupFinderUrlState(searchParams)` with `partial` and calls `debouncedUpdateUrl(merged)`; used by `setCoordinates`, `setAgeInput` (and campus when selected). Back/forward: `useEffect([searchParams])` calls `parseGroupFinderUrlState(searchParams)` and updates `setCoordinatesState`, `setAgeInputState`, `setSelectedLocationState`.
 
 **5. Clear All**
 
@@ -73,10 +81,14 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
   - If you use a key to remount InstantSearch on clear, run `setInstantSearchKey((k) => k + 1)` so the next render remounts `<InstantSearch>` with empty `initialUiState`.
 - Optionally use the shared **`AlgoliaFinderClearAllButton`** (`app/routes/group-finder/components/clear-all-button.component.tsx`): it clears InstantSearch uiState (query, refinementList, page) and calls an `onClearAllToUrl` prop where you do `cancelDebounce`, `setSearchParams(toParams(emptyState))`, and key bump if needed.
 
+**Group Finder example:** `group-search.partial.tsx` — `clearAllFiltersFromUrl()` calls `cancelDebounce()`, clears `customStateRef` and all related `setState`s, `setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), { replace: true, preventScrollReset: true })`, then `setInstantSearchKey((k) => k + 1)`. Passed to `<AlgoliaFinderClearAllButton onClearAllToUrl={clearAllFiltersFromUrl} />` in toolbar (XL) and inside All Filters popup (MD/LG).
+
 **6. URL update options**
 
 - Use `replace: true` and `preventScrollReset: true` when calling `setSearchParams` so filter/search changes don't add a new history entry per keystroke and don't scroll the page.
 - The hook's internal `updateUrlIfChanged` only calls `setSearchParams` when the serialized state string differs from the current URL, which avoids unnecessary updates.
+
+**Group Finder example:** `useAlgoliaUrlSync` is called with default `replace: true`, `preventScrollReset: true`; all `setSearchParams` calls in Group Finder use `{ replace: true, preventScrollReset: true }` (e.g. in `clearAllFiltersFromUrl` and inside the hook).
 
 **Checklist for Pattern A**
 
