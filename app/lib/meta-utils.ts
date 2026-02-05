@@ -4,11 +4,15 @@
 
 export const SITE_NAME = "Christ Fellowship Church";
 
-/** Default OG image path. Set VITE_SITE_URL in env for absolute OG URL in production. */
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? "";
-export const DEFAULT_OG_IMAGE = SITE_URL
-  ? `${SITE_URL.replace(/\/$/, "")}/metadata_image.jpg`
-  : "/metadata_image.jpg";
+/** Default OG image path (site logo). Absolute URL is built in createMeta using window.location.origin when available. */
+export const DEFAULT_OG_IMAGE = "/logo.png";
+
+function getOrigin(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  return "";
+}
 
 export type CreateMetaOptions = {
   title: string;
@@ -24,6 +28,7 @@ export type CreateMetaOptions = {
 /**
  * Returns a meta array for React Router meta export. Use for static or dynamic routes.
  * Title is normalized to "Page Title | Christ Fellowship Church" when not already suffixed.
+ * OG image and og:url use window.location.origin when available (client); otherwise relative paths (SSR).
  */
 export function createMeta({
   title,
@@ -40,7 +45,12 @@ export function createMeta({
   const fullTitle = title.includes(SITE_NAME)
     ? title
     : `${title} | ${SITE_NAME}`;
-  const ogImage = image ?? DEFAULT_OG_IMAGE;
+  const origin = getOrigin();
+  const imagePath = image ?? DEFAULT_OG_IMAGE;
+  const ogImage =
+    imagePath.startsWith("http") || !origin
+      ? imagePath
+      : `${origin}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
   const base: Array<{
     title?: string;
     name?: string;
@@ -58,11 +68,11 @@ export function createMeta({
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: ogImage },
   ];
-  if (path && SITE_URL) {
-    base.push({
-      property: "og:url",
-      content: `${SITE_URL.replace(/\/$/, "")}${path}`,
-    });
+  if (path) {
+    const ogUrl = origin
+      ? `${origin}${path.startsWith("/") ? "" : "/"}${path}`
+      : path;
+    base.push({ property: "og:url", content: ogUrl });
   }
   if (noIndex) {
     base.push({ name: "robots", content: "noindex, nofollow" });
