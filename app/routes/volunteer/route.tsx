@@ -10,6 +10,7 @@ import { VolunteerFeaturedEvent } from "./partials/volunteer-feature-event.parti
 import { VolunteerTestimonials } from "./partials/volunteer-testimonials.partial";
 
 export { loader } from "./loader";
+export { meta } from "./meta";
 
 function VolunteerPage() {
   return (

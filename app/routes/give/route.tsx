@@ -10,6 +10,7 @@ import { giveFaqData, giveImproveFinancesData } from "./give-data";
 import { FinanceCard } from "./components/finance-card";
 
 export { loader };
+export { meta } from "./meta";
 
 export default function Give() {
   return (

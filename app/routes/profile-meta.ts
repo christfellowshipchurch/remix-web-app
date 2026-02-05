@@ -3,9 +3,10 @@ import { createMeta } from "~/lib/meta-utils";
 
 export const meta: MetaFunction = () => {
   return createMeta({
-    title: "Daily Devotional",
+    title: "My Profile",
     description:
-      "Daily devotional from Christ Fellowship Church. Start each day with Scripture and reflection.",
-    path: "/daily-devo",
+      "Manage your Christ Fellowship Church profile, preferences, and account.",
+    path: "/profile",
+    noIndex: true,
   });
 };

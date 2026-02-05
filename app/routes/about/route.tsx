@@ -1,4 +1,5 @@
 import { type MetaFunction } from "react-router-dom";
+import { createMeta } from "~/lib/meta-utils";
 import { DynamicHero } from "~/components/dynamic-hero";
 import { OurMissionSection } from "./partials/mission.partial";
 import { HistorySection } from "./partials/history.partial";
@@ -7,14 +8,12 @@ import { LeadershipSection } from "./partials/leadership.partial";
 import { ImpactSection } from "./partials/impact.partial";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "About Us | Christ Fellowship Church" },
-    {
-      name: "description",
-      content:
-        "Learn about Christ Fellowship Church, our mission, history, beliefs and leadership team.",
-    },
-  ];
+  return createMeta({
+    title: "About Us",
+    description:
+      "Learn about Christ Fellowship Church: our mission, history, beliefs, and leadership team.",
+    path: "/about",
+  });
 };
 
 export { loader } from "../home/loader"; // Using the home loader for the about page to grab author data for the leaders grid and scroll components

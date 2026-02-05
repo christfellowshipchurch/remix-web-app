@@ -11,6 +11,8 @@ import { registerPerson } from "./register-person";
  * In order to consolidate all of our auth route functions we decided to setup a single action function that will handle all of the different form types that we have. This will allow us to have a single route file for all of our auth routes.
  */
 
+export { meta } from "./meta";
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const formType = formData.get("formType");

@@ -11,6 +11,8 @@ import { cn } from "~/lib/utils";
 // Step 2: Personal Info
 // Step 3: 21 Day Devotional
 
+export { meta } from "./meta";
+
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   // If the path is exactly /yes (no trailing slash or anything after)
