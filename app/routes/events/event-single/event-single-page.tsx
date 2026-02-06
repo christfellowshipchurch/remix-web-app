@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLoaderData, useLocation } from "react-router-dom";
 
 import { EventSinglePageType } from "./types";
@@ -9,9 +9,22 @@ import { EventBanner } from "./components/event-banner.component";
 import { RegistrationSection } from "./partials/registration.partial";
 import BackBanner from "~/components/back-banner";
 
+const SECTION_IDS = ["about", "faq", "register"] as const;
+
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
   const location = useLocation();
+
+  // Scroll to section when landing with a hash (e.g. /events/baptism#register)
+  useEffect(() => {
+    const hash = location.hash?.slice(1);
+    if (!hash || !SECTION_IDS.includes(hash as (typeof SECTION_IDS)[number]))
+      return;
+    const el = document.getElementById(hash);
+    if (!el) return;
+    const offsetTop = el.getBoundingClientRect().top + window.scrollY - 100;
+    window.scrollTo({ top: offsetTop, behavior: "smooth" });
+  }, [location.hash]);
 
   // Valid groupTypes for ClickThroughRegistration
   const validGroupTypes = [
@@ -48,7 +61,13 @@ export const EventSinglePage: React.FC = () => {
   const showRegistration =
     hasSessionRegistration || hasClickThroughRegistration;
 
-  const aboutInformationExists = data.aboutTitle && data.aboutTitle !== '' || data.aboutContent && data.aboutContent !== '' || data.keyInfoCards && data.keyInfoCards.length > 0 || data.whatToExpect && data.whatToExpect.length > 0 || data.moreInfoTitle && data.moreInfoTitle !== '' || data.optionalBlurb && data.optionalBlurb.length > 0;
+  const aboutInformationExists =
+    (data.aboutTitle && data.aboutTitle !== "") ||
+    (data.aboutContent && data.aboutContent !== "") ||
+    (data.keyInfoCards && data.keyInfoCards.length > 0) ||
+    (data.whatToExpect && data.whatToExpect.length > 0) ||
+    (data.moreInfoTitle && data.moreInfoTitle !== "") ||
+    (data.optionalBlurb && data.optionalBlurb.length > 0);
 
   return (
     <>
@@ -71,9 +90,15 @@ export const EventSinglePage: React.FC = () => {
           title={data.title}
           cta={data.heroCtas[0]}
           sections={[
-            ...(aboutInformationExists ? [{ id: 'about', label: 'About' }] : []),
-            ...(data.faqItems && data.faqItems.length > 0 ? [{ id: 'faq', label: 'FAQ' }] : []),
-            ...(showRegistration ? [{ id: 'register', label: 'Register' }] : []),
+            ...(aboutInformationExists
+              ? [{ id: "about", label: "About" }]
+              : []),
+            ...(data.faqItems && data.faqItems.length > 0
+              ? [{ id: "faq", label: "FAQ" }]
+              : []),
+            ...(showRegistration
+              ? [{ id: "register", label: "Register" }]
+              : []),
           ]}
         />
 

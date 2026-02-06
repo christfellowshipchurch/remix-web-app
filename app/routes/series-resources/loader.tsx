@@ -147,6 +147,7 @@ const getSeriesEvents = async (seriesGuid: string) => {
         image: { value: string };
         summary: { value: string };
         url: { value: string };
+        firstDateOfEvent: { value: string };
       };
       contentChannelId: string;
       coverImage: string;
@@ -160,15 +161,16 @@ const getSeriesEvents = async (seriesGuid: string) => {
     }
   );
 
-  // TODO: Replace startDateTime with firstDateOfEvent when it's updated in Rock
   events.sort((a, b) => {
-    const aDate = (a as { startDateTime?: string }).startDateTime
-      ? new Date((a as { startDateTime: string }).startDateTime).getTime()
-      : 0;
-    const bDate = (b as { startDateTime?: string }).startDateTime
-      ? new Date((b as { startDateTime: string }).startDateTime).getTime()
-      : 0;
-    return bDate - aDate; // newest / most recent first
+    const aVal = (
+      a as { attributeValues?: { firstDateOfEvent?: { value: string } } }
+    ).attributeValues?.firstDateOfEvent?.value;
+    const bVal = (
+      b as { attributeValues?: { firstDateOfEvent?: { value: string } } }
+    ).attributeValues?.firstDateOfEvent?.value;
+    const aDate = aVal ? new Date(aVal).getTime() : 0;
+    const bDate = bVal ? new Date(bVal).getTime() : 0;
+    return aDate - bDate; // soonest first (ascending by date)
   });
 
   return events;
