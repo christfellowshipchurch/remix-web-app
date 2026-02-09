@@ -127,7 +127,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
         contentChannelId: "78", // EVENT type from builder-utils.ts
         contentType: "EVENTS",
         name: hit.title,
-        summary: hit.cardSubtitle || hit.summary || "",
+        summary: hit.summary || "",
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
         startDate: formattedDate,

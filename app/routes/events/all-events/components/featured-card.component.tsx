@@ -10,7 +10,6 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
     startDateTime,
     locations,
     summary,
-    cardSubtitle,
     url,
     htmlContent,
   } = card;
@@ -53,9 +52,7 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
           <h4 className="font-extrabold text-[28px] leading-tight text-pretty">
             {title}
           </h4>
-          {cardSubtitle ? (
-            <p>{cardSubtitle}</p>
-          ) : summary ? (
+          {summary ? (
             <p>{summary}</p>
           ) : (
             <HtmlRenderer

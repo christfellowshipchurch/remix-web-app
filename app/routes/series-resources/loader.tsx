@@ -147,7 +147,7 @@ const getSeriesEvents = async (seriesGuid: string) => {
         image: { value: string };
         summary: { value: string };
         url: { value: string };
-        firstDateOfEvent: { value: string };
+        eventStartDate: { value: string };
       };
       contentChannelId: string;
       coverImage: string;
@@ -163,11 +163,11 @@ const getSeriesEvents = async (seriesGuid: string) => {
 
   events.sort((a, b) => {
     const aVal = (
-      a as { attributeValues?: { firstDateOfEvent?: { value: string } } }
-    ).attributeValues?.firstDateOfEvent?.value;
+      a as { attributeValues?: { eventStartDate?: { value: string } } }
+    ).attributeValues?.eventStartDate?.value;
     const bVal = (
-      b as { attributeValues?: { firstDateOfEvent?: { value: string } } }
-    ).attributeValues?.firstDateOfEvent?.value;
+      b as { attributeValues?: { eventStartDate?: { value: string } } }
+    ).attributeValues?.eventStartDate?.value;
     const aDate = aVal ? new Date(aVal).getTime() : 0;
     const bDate = bVal ? new Date(bVal).getTime() : 0;
     return aDate - bDate; // soonest first (ascending by date)

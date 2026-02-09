@@ -7,10 +7,10 @@ import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import {
   EVENTS_INDEX,
-  EVENTS_INDEX_SORT_BY_FIRST_DATE,
+  EVENTS_INDEX_SORT_BY_EVENT_START_DATE,
   EventsClearFiltersText,
   EventsTagsRefinementList,
-  USE_FIRST_DATE_OF_EVENT_SORT,
+  USE_EVENT_START_DATE_SORT,
 } from "../components/events-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
 import { createSearchClient } from "~/lib/create-search-client";
@@ -31,10 +31,10 @@ export const AllEvents = () => {
           indexName={EVENTS_INDEX}
           searchClient={searchClient}
           initialUiState={
-            USE_FIRST_DATE_OF_EVENT_SORT
+            USE_EVENT_START_DATE_SORT
               ? {
                   [EVENTS_INDEX]: {
-                    sortBy: EVENTS_INDEX_SORT_BY_FIRST_DATE,
+                    sortBy: EVENTS_INDEX_SORT_BY_EVENT_START_DATE,
                   },
                 }
               : undefined
