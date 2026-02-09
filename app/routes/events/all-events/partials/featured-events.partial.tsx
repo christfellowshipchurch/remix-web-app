@@ -54,12 +54,10 @@ const FeaturedEventsHits = () => {
 
   return (
     <>
-      <div className="content-padding">
-        <FeaturedEventCard card={firstHit} />
-      </div>
+      <FeaturedEventCard card={firstHit} />
 
       {/* Desktop Layout */}
-      <div className="hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start content-padding">
+      <div className="hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start">
         {remainingHits?.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
