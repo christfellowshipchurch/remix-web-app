@@ -20,7 +20,7 @@ export function FeaturedEvents() {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
   return (
@@ -116,7 +116,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
       year: "numeric",
       month: "long",
       day: "numeric",
-    },
+    }
   );
 
   return (
@@ -127,7 +127,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
         contentChannelId: "78", // EVENT type from builder-utils.ts
         contentType: "EVENTS",
         name: hit.title,
-        summary: hit.summary,
+        summary: hit.cardSubtitle || hit.summary || "",
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
         startDate: formattedDate,

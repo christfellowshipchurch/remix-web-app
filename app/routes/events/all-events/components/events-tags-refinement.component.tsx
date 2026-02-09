@@ -1,10 +1,35 @@
 import { useState, useEffect } from "react";
-import { useInstantSearch, useRefinementList } from "react-instantsearch";
+import {
+  useInstantSearch,
+  useRefinementList,
+  useSortBy,
+} from "react-instantsearch";
 import Icon from "~/primitives/icon";
+
+/** Main events index (relevance). Replica for date sort must exist in Algolia. */
+export const EVENTS_INDEX = "dev_daniel_contentItems";
+/** Replica index sorted by firstDateOfEvent desc (chronological "Recent"). */
+export const EVENTS_INDEX_SORT_BY_FIRST_DATE =
+  "dev_daniel_contentItems_firstDateOfEvent_desc";
+
+/**
+ * TODO: Set to true once firstDateOfEvent is in Algolia and replica index
+ * dev_daniel_contentItems_firstDateOfEvent_desc exists. When false, "Recent"
+ * uses main index only (no date sort).
+ */
+export const USE_FIRST_DATE_OF_EVENT_SORT = false;
+
+const SORT_BY_ITEMS = USE_FIRST_DATE_OF_EVENT_SORT
+  ? [
+      { value: EVENTS_INDEX_SORT_BY_FIRST_DATE, label: "By first date" },
+      { value: EVENTS_INDEX, label: "Relevance" },
+    ]
+  : [{ value: EVENTS_INDEX, label: "Relevance" }];
 
 export const EventsTagsRefinementList = () => {
   const { items } = useRefinementList({ attribute: "eventTags" });
   const { setIndexUiState, indexUiState } = useInstantSearch();
+  const { refine: refineSortBy } = useSortBy({ items: SORT_BY_ITEMS });
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   // Sync local state with Algolia search state
@@ -21,7 +46,9 @@ export const EventsTagsRefinementList = () => {
     setSelectedTag(tag);
 
     if (tag === null) {
-      // "Recent" - clear all refinements
+      if (USE_FIRST_DATE_OF_EVENT_SORT) {
+        refineSortBy(EVENTS_INDEX_SORT_BY_FIRST_DATE);
+      }
       setIndexUiState((prevState) => ({
         ...prevState,
         refinementList: {
@@ -31,7 +58,9 @@ export const EventsTagsRefinementList = () => {
         page: 0, // Reset to first page
       }));
     } else {
-      // Specific tag
+      if (USE_FIRST_DATE_OF_EVENT_SORT) {
+        refineSortBy(EVENTS_INDEX);
+      }
       setIndexUiState((prevState) => ({
         ...prevState,
         refinementList: {
@@ -77,11 +106,15 @@ export const EventsTagsRefinementList = () => {
 
 export const EventsClearFiltersText = () => {
   const { setIndexUiState } = useInstantSearch();
+  const { refine: refineSortBy } = useSortBy({ items: SORT_BY_ITEMS });
 
   return (
     <div
       className="flex items-center gap-1 group cursor-pointer"
       onClick={() => {
+        if (USE_FIRST_DATE_OF_EVENT_SORT) {
+          refineSortBy(EVENTS_INDEX_SORT_BY_FIRST_DATE);
+        }
         setIndexUiState((state) => ({
           ...state,
           refinementList: {},

@@ -33,6 +33,8 @@ export interface ContentItemHit {
   podcastSeason?: string;
   podcastSeasonNumber?: number;
   podcastEpisodeNumber?: number;
+  firstDateOfEvent?: string; // Events only attribute
+  cardSubtitle?: string; // Events only attribute
   locations?: {
     name: string;
   }[];

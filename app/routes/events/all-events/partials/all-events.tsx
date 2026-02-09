@@ -6,8 +6,11 @@ import { Configure, Hits, InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import {
+  EVENTS_INDEX,
+  EVENTS_INDEX_SORT_BY_FIRST_DATE,
   EventsClearFiltersText,
   EventsTagsRefinementList,
+  USE_FIRST_DATE_OF_EVENT_SORT,
 } from "../components/events-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
 import { createSearchClient } from "~/lib/create-search-client";
@@ -18,15 +21,24 @@ export const AllEvents = () => {
     useLoaderData<EventReturnType>();
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
   return (
     <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <InstantSearch
-          indexName="dev_daniel_contentItems"
+          indexName={EVENTS_INDEX}
           searchClient={searchClient}
+          initialUiState={
+            USE_FIRST_DATE_OF_EVENT_SORT
+              ? {
+                  [EVENTS_INDEX]: {
+                    sortBy: EVENTS_INDEX_SORT_BY_FIRST_DATE,
+                  },
+                }
+              : undefined
+          }
           future={{
             preserveSharedStateOnUnmount: true,
           }}
@@ -77,7 +89,7 @@ const EventHit = ({ hit }: { hit: ContentItemHit }) => {
       year: "numeric",
       month: "long",
       day: "numeric",
-    },
+    }
   );
 
   return (
