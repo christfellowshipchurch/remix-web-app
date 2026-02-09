@@ -1,84 +1,45 @@
 import { useState, useEffect } from "react";
-import {
-  useInstantSearch,
-  useRefinementList,
-  useSortBy,
-} from "react-instantsearch";
+import { useInstantSearch, useRefinementList } from "react-instantsearch";
+import startCase from "lodash/startCase";
 import Icon from "~/primitives/icon";
 
-/** Main events index (relevance). Replica for date sort must exist in Algolia. */
-export const EVENTS_INDEX = "dev_daniel_contentItems";
-/** Replica index sorted by eventStartDate desc (chronological "Recent"). */
-export const EVENTS_INDEX_SORT_BY_EVENT_START_DATE =
-  "dev_daniel_contentItems_eventStartDate_desc";
-
-/**
- * TODO: Set to true once eventStartDate is in Algolia and replica index
- * dev_daniel_contentItems_eventStartDate_desc exists. When false, "Recent"
- * uses main index only (no date sort).
- */
-export const USE_EVENT_START_DATE_SORT = false;
-
-const SORT_BY_ITEMS = USE_EVENT_START_DATE_SORT
-  ? [
-      { value: EVENTS_INDEX_SORT_BY_EVENT_START_DATE, label: "By event date" },
-      { value: EVENTS_INDEX, label: "Relevance" },
-    ]
-  : [{ value: EVENTS_INDEX, label: "Relevance" }];
+/** Main events index. No replica; "Recent" order is done via client-side sort. */
+export const EVENTS_INDEX = "dev_contentItems";
 
 export const EventsTagsRefinementList = () => {
-  const { items } = useRefinementList({ attribute: "eventTags" });
+  const { items } = useRefinementList({ attribute: "eventCategories" });
   const { setIndexUiState, indexUiState } = useInstantSearch();
-  const { refine: refineSortBy } = useSortBy({ items: SORT_BY_ITEMS });
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Sync local state with Algolia search state
   useEffect(() => {
-    const eventTags = indexUiState?.refinementList?.eventTags || [];
-    if (eventTags.length === 0) {
-      setSelectedTag(null);
-    } else if (eventTags.length === 1) {
-      setSelectedTag(eventTags[0]);
+    const eventCategories = indexUiState?.refinementList?.eventCategories || [];
+    if (eventCategories.length === 0) {
+      setSelectedCategory(null);
+    } else if (eventCategories.length === 1) {
+      setSelectedCategory(eventCategories[0]);
     }
-  }, [indexUiState?.refinementList?.eventTags]);
+  }, [indexUiState?.refinementList?.eventCategories]);
 
-  const handleTagClick = (tag: string | null) => {
-    setSelectedTag(tag);
-
-    if (tag === null) {
-      if (USE_EVENT_START_DATE_SORT) {
-        refineSortBy(EVENTS_INDEX_SORT_BY_EVENT_START_DATE);
-      }
-      setIndexUiState((prevState) => ({
-        ...prevState,
-        refinementList: {
-          ...prevState.refinementList,
-          eventTags: [],
-        },
-        page: 0, // Reset to first page
-      }));
-    } else {
-      if (USE_EVENT_START_DATE_SORT) {
-        refineSortBy(EVENTS_INDEX);
-      }
-      setIndexUiState((prevState) => ({
-        ...prevState,
-        refinementList: {
-          ...prevState.refinementList,
-          eventTags: [tag],
-        },
-        page: 0, // Reset to first page
-      }));
-    }
+  const handleCategoryClick = (category: string | null) => {
+    setSelectedCategory(category);
+    setIndexUiState((prevState) => ({
+      ...prevState,
+      refinementList: {
+        ...prevState.refinementList,
+        eventCategories: category === null ? [] : [category],
+      },
+      page: 0,
+    }));
   };
 
   return (
     <div className="-ml-5 md:ml-0 w-screen md:w-full flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide">
-      {/* Recent Tag */}
+      {/* Recent */}
       <button
-        onClick={() => handleTagClick(null)}
+        onClick={() => handleCategoryClick(null)}
         className={`ml-4 md:ml-0 text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
-          selectedTag === null
+          selectedCategory === null
             ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
             : "bg-gray text-neutral-500 hover:bg-neutral-200"
         }`}
@@ -86,18 +47,18 @@ export const EventsTagsRefinementList = () => {
         Recent
       </button>
 
-      {/* Dynamic Tags */}
+      {/* Event categories */}
       {items.map((item) => (
         <button
           key={item.value}
-          onClick={() => handleTagClick(item.value)}
+          onClick={() => handleCategoryClick(item.value)}
           className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
-            selectedTag === item.value
+            selectedCategory === item.value
               ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
               : "bg-gray text-neutral-500 hover:bg-neutral-200"
           }`}
         >
-          {item.label}
+          {startCase(item.label)}
         </button>
       ))}
     </div>
@@ -106,15 +67,11 @@ export const EventsTagsRefinementList = () => {
 
 export const EventsClearFiltersText = () => {
   const { setIndexUiState } = useInstantSearch();
-  const { refine: refineSortBy } = useSortBy({ items: SORT_BY_ITEMS });
 
   return (
     <div
       className="flex items-center gap-1 group cursor-pointer"
       onClick={() => {
-        if (USE_EVENT_START_DATE_SORT) {
-          refineSortBy(EVENTS_INDEX_SORT_BY_EVENT_START_DATE);
-        }
         setIndexUiState((state) => ({
           ...state,
           refinementList: {},
