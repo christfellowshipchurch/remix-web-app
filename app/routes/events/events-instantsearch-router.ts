@@ -62,10 +62,6 @@ export function createEventsStateMapping() {
       const idx = uiState[INDEX_NAME] || {};
       return {
         query: (idx.query as string) ?? undefined,
-        page:
-          typeof idx.page === "number" && idx.page > 0
-            ? idx.page + 1
-            : undefined,
         refinementList:
           (idx.refinementList as Record<string, string[]>) ?? undefined,
       } as EventsFinderUrlState;
@@ -74,10 +70,6 @@ export function createEventsStateMapping() {
       return {
         [INDEX_NAME]: {
           query: routeState.query,
-          page:
-            routeState.page != null && routeState.page > 1
-              ? routeState.page - 1
-              : 0,
           refinementList: routeState.refinementList ?? {},
         },
       };

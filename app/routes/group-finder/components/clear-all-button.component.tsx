@@ -14,13 +14,13 @@ export const AlgoliaFinderClearAllButton = ({
   const { setIndexUiState } = useInstantSearch();
 
   const handleClearAll = () => {
+    onClearAllToUrl();
     setIndexUiState((state) => ({
       ...state,
       query: "",
       refinementList: {},
       page: 0,
     }));
-    onClearAllToUrl();
   };
 
   return (

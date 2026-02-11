@@ -1,5 +1,5 @@
 import { algoliasearch } from "algoliasearch";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { LoaderReturnType } from "../loader";
@@ -23,22 +23,14 @@ const INDEX_NAME = "dev_Classes";
 
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassSingleUrlState(searchParams);
-  const coordinates =
-    urlState.lat != null && urlState.lng != null
-      ? { lat: urlState.lat, lng: urlState.lng }
-      : null;
   const initialUiState: { [key: string]: Record<string, unknown> } = {};
   if (
     urlState.query !== undefined ||
-    urlState.page !== undefined ||
     (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
   ) {
     initialUiState[INDEX_NAME] = {};
     if (urlState.query !== undefined)
       initialUiState[INDEX_NAME].query = urlState.query;
-    if (urlState.page != null && urlState.page > 1) {
-      initialUiState[INDEX_NAME].page = urlState.page - 1;
-    }
     if (
       urlState.refinementList &&
       Object.keys(urlState.refinementList).length > 0
@@ -46,7 +38,7 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
       initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
     }
   }
-  return { coordinates, initialUiState };
+  return { coordinates: null, initialUiState };
 }
 
 export function UpcomingSessionMobileSection() {
@@ -79,15 +71,6 @@ export function UpcomingSessionMobileSection() {
   });
   customStateRef.current = { coordinates };
 
-  useEffect(() => {
-    const urlState = parseClassSingleUrlState(searchParams);
-    if (urlState.lat != null && urlState.lng != null) {
-      setCoordinatesState({ lat: urlState.lat, lng: urlState.lng });
-    } else {
-      setCoordinatesState(null);
-    }
-  }, [searchParams]);
-
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
     customStateRef.current = { coordinates: null };
@@ -99,32 +82,16 @@ export function UpcomingSessionMobileSection() {
     setInstantSearchKey((k) => k + 1);
   };
 
-  const mergeUrlState = (partial: Partial<ClassSingleUrlState>) => {
-    const current = parseClassSingleUrlState(searchParams);
-    const merged: ClassSingleUrlState = { ...current, ...partial };
-    debouncedUpdateUrl(merged);
-  };
-
   const setCoordinates = (next: typeof coordinates) => {
     setCoordinatesState(next);
-    mergeUrlState({
-      lat: next?.lat ?? undefined,
-      lng: next?.lng ?? undefined,
-    });
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: ClassSingleUrlState = {
       ...parseClassSingleUrlState(searchParams),
       query: (indexUiState.query as string) ?? undefined,
-      page:
-        typeof indexUiState.page === "number" && indexUiState.page > 0
-          ? indexUiState.page + 1
-          : undefined,
       refinementList:
         (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
-      lat: customStateRef.current.coordinates?.lat ?? undefined,
-      lng: customStateRef.current.coordinates?.lng ?? undefined,
     };
     debouncedUpdateUrl(urlState);
   };

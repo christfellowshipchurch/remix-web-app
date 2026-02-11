@@ -3,22 +3,19 @@
  * See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 1 (url-state module).
  */
 
-/** Base shape of URL state shared by all Algolia finders: query, page, refinementList. */
+/** Base shape of URL state shared by all Algolia finders: query, refinementList. Page is not synced to URL. */
 export type AlgoliaUrlStateBase = {
   query?: string;
-  page?: number;
   refinementList?: Record<string, string[]>;
 };
 
 export type AlgoliaUrlStateConfig<T extends AlgoliaUrlStateBase> = {
   /** URL param key for the search query (e.g. 'q'). */
   queryParamKey: string;
-  /** URL param key for the current page (e.g. 'page'). Algolia uses 0-based page; URL typically uses 1-based. */
-  pageParamKey: string;
   /** Algolia refinement list attribute names to read/write as URL params (multi-value = repeated param). */
   refinementAttributes: readonly string[];
   /**
-   * Optional custom URL params (e.g. campus, age, lat/lng).
+   * Optional custom URL params (e.g. campus, age).
    * parse: read custom params from URLSearchParams into a partial T.
    * toParams: write custom fields from state into the URLSearchParams (called after base params are set).
    */
@@ -41,19 +38,13 @@ export type AlgoliaUrlStateHandlers<T extends AlgoliaUrlStateBase> = {
 export function createAlgoliaUrlStateConfig<T extends AlgoliaUrlStateBase>(
   config: AlgoliaUrlStateConfig<T>
 ): AlgoliaUrlStateHandlers<T> {
-  const { queryParamKey, pageParamKey, refinementAttributes, custom } = config;
+  const { queryParamKey, refinementAttributes, custom } = config;
 
   function parse(params: URLSearchParams): T {
     const state = {} as T;
 
     const q = params.get(queryParamKey);
     if (q) (state as AlgoliaUrlStateBase).query = q;
-
-    const pageStr = params.get(pageParamKey);
-    if (pageStr) {
-      const p = parseInt(pageStr, 10);
-      if (!isNaN(p) && p >= 1) (state as AlgoliaUrlStateBase).page = p;
-    }
 
     const refinementList: Record<string, string[]> = {};
     for (const attr of refinementAttributes) {
@@ -77,9 +68,6 @@ export function createAlgoliaUrlStateConfig<T extends AlgoliaUrlStateBase>(
 
     if (base.query?.trim()) {
       params.set(queryParamKey, base.query.trim());
-    }
-    if (base.page != null && base.page > 1) {
-      params.set(pageParamKey, String(base.page));
     }
     if (base.refinementList) {
       for (const [attr, values] of Object.entries(base.refinementList)) {

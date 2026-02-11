@@ -64,10 +64,6 @@ export function createAllArticlesStateMapping() {
       const idx = uiState[INDEX_NAME] || {};
       return {
         query: (idx.query as string) ?? undefined,
-        page:
-          typeof idx.page === "number" && idx.page > 0
-            ? idx.page + 1
-            : undefined,
         refinementList:
           (idx.refinementList as Record<string, string[]>) ?? undefined,
       } as AllArticlesUrlState;
@@ -76,10 +72,6 @@ export function createAllArticlesStateMapping() {
       return {
         [INDEX_NAME]: {
           query: routeState.query,
-          page:
-            routeState.page != null && routeState.page > 1
-              ? routeState.page - 1
-              : 0,
           refinementList: routeState.refinementList ?? {},
         },
       };

@@ -20,6 +20,7 @@ import {
   type ClassFinderUrlState,
 } from "../../class-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 
 const INDEX_NAME = "dev_Classes";
@@ -27,22 +28,14 @@ const INDEX_NAME = "dev_Classes";
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
-  const coordinates =
-    urlState.lat != null && urlState.lng != null
-      ? { lat: urlState.lat, lng: urlState.lng }
-      : null;
   const initialUiState: { [key: string]: Record<string, unknown> } = {};
   if (
     urlState.query !== undefined ||
-    urlState.page !== undefined ||
     (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
   ) {
     initialUiState[INDEX_NAME] = {};
     if (urlState.query !== undefined)
       initialUiState[INDEX_NAME].query = urlState.query;
-    if (urlState.page != null && urlState.page > 1) {
-      initialUiState[INDEX_NAME].page = urlState.page - 1;
-    }
     if (
       urlState.refinementList &&
       Object.keys(urlState.refinementList).length > 0
@@ -50,7 +43,7 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
       initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
     }
   }
-  return { coordinates, initialUiState };
+  return { coordinates: null, initialUiState };
 }
 
 export const ClassSearch = () => {
@@ -84,15 +77,6 @@ export const ClassSearch = () => {
     coordinates: initial.coordinates,
   });
   customStateRef.current = { coordinates };
-
-  useEffect(() => {
-    const urlState = parseClassFinderUrlState(searchParams);
-    if (urlState.lat != null && urlState.lng != null) {
-      setCoordinatesState({ lat: urlState.lat, lng: urlState.lng });
-    } else {
-      setCoordinatesState(null);
-    }
-  }, [searchParams]);
 
   // Scroll handling effect
   useEffect(() => {
@@ -142,35 +126,27 @@ export const ClassSearch = () => {
     setInstantSearchKey((k) => k + 1);
   };
 
-  const mergeUrlState = (partial: Partial<ClassFinderUrlState>) => {
-    const current = parseClassFinderUrlState(searchParams);
-    const merged: ClassFinderUrlState = { ...current, ...partial };
-    debouncedUpdateUrl(merged);
-  };
-
   const setCoordinates = (next: typeof coordinates) => {
     setCoordinatesState(next);
-    mergeUrlState({
-      lat: next?.lat ?? undefined,
-      lng: next?.lng ?? undefined,
-    });
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: ClassFinderUrlState = {
       ...parseClassFinderUrlState(searchParams),
       query: (indexUiState.query as string) ?? undefined,
-      page:
-        typeof indexUiState.page === "number" && indexUiState.page > 0
-          ? indexUiState.page + 1
-          : undefined,
       refinementList:
         (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
-      lat: customStateRef.current.coordinates?.lat ?? undefined,
-      lng: customStateRef.current.coordinates?.lng ?? undefined,
     };
     debouncedUpdateUrl(urlState);
   };
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseClassFinderUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
 
   return (
     <div
@@ -389,16 +365,18 @@ const CustomClassTypeFacets = () => {
 
   return (
     <>
-      <p className="text-text-secondary mb-6">
-        {mappedClassTypes.length} Results Found
-      </p>
+      <div className="min-h-[320px]">
+        <p className="text-text-secondary mb-6">
+          {mappedClassTypes.length} Results Found
+        </p>
 
-      <div className="flex items-center justify-center md:items-start md:justify-start w-full">
         <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
-            {paginatedItems.map((hit) => (
-              <ClassHitComponent key={hit.objectID} hit={hit} />
-            ))}
+          <div className="flex items-center justify-center md:items-start md:justify-start w-full">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
+              {paginatedItems.map((hit) => (
+                <ClassHitComponent key={hit.objectID} hit={hit} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

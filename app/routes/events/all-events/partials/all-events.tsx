@@ -19,6 +19,7 @@ import {
   createEventsStateMapping,
 } from "../../events-instantsearch-router";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 
 const INDEX_NAME = "dev_daniel_contentItems";
 
@@ -77,6 +78,14 @@ export const AllEvents = () => {
     [router, stateMapping]
   );
 
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseEventsFinderUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
+
   return (
     <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
@@ -112,16 +121,17 @@ export const AllEvents = () => {
             <EventsTagsRefinementList />
           </div>
 
-          <Hits
-            hitComponent={({ hit }: { hit: ContentItemHit }) => {
-              return <EventHit hit={hit} />;
-            }}
-            classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
-              item: "w-full",
-            }}
-          />
-
+          <div className="min-h-[320px]">
+            <Hits
+              hitComponent={({ hit }: { hit: ContentItemHit }) => {
+                return <EventHit hit={hit} />;
+              }}
+              classNames={{
+                list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
+                item: "w-full",
+              }}
+            />
+          </div>
           <CustomPagination />
         </InstantSearch>
       </div>

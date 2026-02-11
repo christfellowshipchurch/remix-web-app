@@ -13,7 +13,6 @@ const {
   emptyState: allMessagesEmptyState,
 } = createAlgoliaUrlStateConfig<AllMessagesUrlState>({
   queryParamKey: "q",
-  pageParamKey: "page",
   refinementAttributes: REFINEMENT_LIST_ATTRIBUTES,
 });
 

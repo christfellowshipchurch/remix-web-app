@@ -13,7 +13,6 @@ const {
   emptyState: allArticlesEmptyState,
 } = createAlgoliaUrlStateConfig<AllArticlesUrlState>({
   queryParamKey: "q",
-  pageParamKey: "page",
   refinementAttributes: REFINEMENT_LIST_ATTRIBUTES,
 });
 

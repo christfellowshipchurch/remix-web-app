@@ -28,6 +28,7 @@ import {
   type GroupFinderUrlState,
 } from "../group-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { AlgoliaFinderClearAllButton } from "../components/clear-all-button.component";
 
 const INDEX_NAME = "dev_daniel_Groups";
@@ -35,24 +36,16 @@ const INDEX_NAME = "dev_daniel_Groups";
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
-  const coordinates =
-    urlState.lat != null && urlState.lng != null
-      ? { lat: urlState.lat, lng: urlState.lng }
-      : null;
   const ageInput = urlState.age ?? "";
   const selectedLocation = urlState.campus ?? null;
   const initialUiState: { [key: string]: Record<string, unknown> } = {};
   if (
     urlState.query !== undefined ||
-    urlState.page !== undefined ||
     (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
   ) {
     initialUiState[INDEX_NAME] = {};
     if (urlState.query !== undefined)
       initialUiState[INDEX_NAME].query = urlState.query;
-    if (urlState.page != null && urlState.page > 1) {
-      initialUiState[INDEX_NAME].page = urlState.page - 1;
-    }
     if (
       urlState.refinementList &&
       Object.keys(urlState.refinementList).length > 0
@@ -60,7 +53,7 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
       initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
     }
   }
-  return { coordinates, ageInput, selectedLocation, initialUiState };
+  return { coordinates: null, ageInput, selectedLocation, initialUiState };
 }
 
 export const GroupSearch = () => {
@@ -68,7 +61,7 @@ export const GroupSearch = () => {
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+  const { cancelDebounce, updateUrlIfChanged } = useAlgoliaUrlSync({
     searchParams,
     setSearchParams,
     toParams: groupFinderUrlStateToParams,
@@ -112,11 +105,6 @@ export const GroupSearch = () => {
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 4 (sync custom state from URL). */
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
-    if (urlState.lat != null && urlState.lng != null) {
-      setCoordinatesState({ lat: urlState.lat, lng: urlState.lng });
-    } else {
-      setCoordinatesState(null);
-    }
     setAgeInputState(urlState.age ?? "");
     setSelectedLocationState(urlState.campus ?? null);
   }, [searchParams]);
@@ -175,45 +163,41 @@ export const GroupSearch = () => {
     setInstantSearchKey((k) => k + 1);
   };
 
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 4 (custom filter → URL). */
-  const mergeUrlState = (partial: Partial<GroupFinderUrlState>) => {
-    const current = parseGroupFinderUrlState(searchParams);
-    const merged: GroupFinderUrlState = { ...current, ...partial };
-    debouncedUpdateUrl(merged);
-  };
-
   const setCoordinates = (next: typeof coordinates) => {
     setCoordinatesState(next);
-    mergeUrlState({
-      lat: next?.lat ?? undefined,
-      lng: next?.lng ?? undefined,
-    });
   };
 
   const setAgeInput = (next: string) => {
     setAgeInputState(next);
-    mergeUrlState({
-      age: next.trim().length >= 2 ? next.trim() : undefined,
-    });
+    const ageValue = next.trim().length >= 2 ? next.trim() : undefined;
+    const merged: GroupFinderUrlState = {
+      ...parseGroupFinderUrlState(searchParams),
+      age: ageValue,
+    };
+    updateUrlIfChanged(merged);
   };
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseGroupFinderUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList ?? {}).length > 0) ||
+      s.campus != null ||
+      (s.age?.trim?.()?.length ?? 0) > 0
+    );
+  });
 
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: GroupFinderUrlState = {
       ...parseGroupFinderUrlState(searchParams),
       query: (indexUiState.query as string) ?? undefined,
-      page:
-        typeof indexUiState.page === "number" && indexUiState.page > 0
-          ? indexUiState.page + 1
-          : undefined,
       refinementList:
         (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
       campus: customStateRef.current.selectedLocation ?? undefined,
       age: customStateRef.current.ageInput || undefined,
-      lat: customStateRef.current.coordinates?.lat ?? undefined,
-      lng: customStateRef.current.coordinates?.lng ?? undefined,
     };
-    debouncedUpdateUrl(urlState);
+    updateUrlIfChanged(urlState);
   };
 
   return (
@@ -335,17 +319,18 @@ export const GroupSearch = () => {
                     `${nbHits.toLocaleString()} Results Found`,
                 }}
               />
-
-              <Hits
-                classNames={{
-                  root: "flex items-center justify-center md:items-start md:justify-start w-full",
-                  item: "flex items-center justify-center md:items-start md:justify-start w-full",
-                  list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
-                }}
-                hitComponent={({ hit }: { hit: GroupType }) => {
-                  return <GroupHit hit={hit} />;
-                }}
-              />
+              <div className="min-h-[320px]">
+                <Hits
+                  classNames={{
+                    root: "flex items-center justify-center md:items-start md:justify-start w-full",
+                    item: "flex items-center justify-center md:items-start md:justify-start w-full",
+                    list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
+                  }}
+                  hitComponent={({ hit }: { hit: GroupType }) => {
+                    return <GroupHit hit={hit} />;
+                  }}
+                />
+              </div>
               <div className="mt-6 flex justify-center md:justify-start">
                 <FindersCustomPagination />
               </div>

@@ -40,13 +40,13 @@ export const AllGroupFiltersPopup = ({
   const { setIndexUiState } = useInstantSearch();
 
   const clearAllRefinements = () => {
+    onClearAllToUrl?.();
     setIndexUiState((state) => ({
       ...state,
       query: "",
       refinementList: {},
       page: 0,
     }));
-    onClearAllToUrl?.();
     setSelectedValue("");
     setCoordinates?.({ lat: null, lng: null });
     setAgeInput?.("");
