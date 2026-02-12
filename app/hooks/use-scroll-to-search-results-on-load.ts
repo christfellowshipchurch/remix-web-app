@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const SCROLL_DELAY_MS = 100;
+const SCROLL_DELAY_MS = 400;
 const SCROLL_TARGET_SELECTOR = ".pagination-scroll-to";
 
 /**
@@ -13,6 +13,10 @@ export function useScrollToSearchResultsOnLoad(
 ) {
   const hasScrolledRef = useRef(false);
 
+  // Depend on stringified params so the effect doesn't re-run on every render
+  // (searchParams reference can change), which would clear the timeout before it fires.
+  const searchString = searchParams.toString();
+
   useEffect(() => {
     if (hasScrolledRef.current) return;
     if (!hasActiveFilters(searchParams)) return;
@@ -21,11 +25,13 @@ export function useScrollToSearchResultsOnLoad(
       hasScrolledRef.current = true;
       const target = document.querySelector(SCROLL_TARGET_SELECTOR);
       if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.requestAnimationFrame(() => {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
       }
     }, SCROLL_DELAY_MS);
 
     return () => window.clearTimeout(id);
-    // Only re-run when searchParams change; hasActiveFilters is read from closure
-  }, [searchParams]);
+    // searchString is stable so we only re-run when the URL search actually changes
+  }, [searchString]);
 }

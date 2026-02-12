@@ -17,6 +17,7 @@ import {
   type ClassSingleUrlState,
 } from "../class-single-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 
 const INDEX_NAME = "dev_Classes";
@@ -94,6 +95,14 @@ export const UpcomingSessionsSection = () => {
     };
     debouncedUpdateUrl(urlState);
   };
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseClassSingleUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
 
   const initialUiState =
     instantSearchKey > 0
