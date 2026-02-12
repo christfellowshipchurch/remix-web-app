@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useLocation } from "react-router-dom";
 import { LoaderReturnType } from "./loader";
 import { Breadcrumbs } from "~/components";
 
@@ -29,6 +29,12 @@ const ClassNotFound = () => {
 };
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
+  const location = useLocation();
+  const backToClassFinderUrl =
+    typeof location.state?.fromClassFinder === "string"
+      ? location.state.fromClassFinder
+      : "/class-finder";
+
   const { subtitle, classType, topic } = hit;
 
   if (!hit) {
@@ -50,7 +56,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           <div className="flex gap-6 items-center">
             <Link
               className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to="/class-finder"
+              to={backToClassFinderUrl}
             >
               <Icon name="arrowBack" className="size-6" />
               <span className="hover:underline text-sm line-clamp-2 md:hidden">

@@ -1,4 +1,4 @@
-import { useLoaderData, useSearchParams } from "react-router-dom";
+import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import {
   InstantSearch,
@@ -60,6 +60,7 @@ export const GroupSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const { cancelDebounce, updateUrlIfChanged } = useAlgoliaUrlSync({
     searchParams,
@@ -187,6 +188,10 @@ export const GroupSearch = () => {
     );
   });
 
+  const fromGroupFinderUrl =
+    location.pathname +
+    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: GroupFinderUrlState = {
@@ -234,7 +239,7 @@ export const GroupSearch = () => {
           {/* Desktop Filters Section */}
           <div
             className={cn(
-              "sticky bg-white z-2 content-padding shadow-sm select-none transition-all duration-300",
+              "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
               isNavbarOpen ? "top-18 md:top-20" : "top-0"
             )}
           >
@@ -277,7 +282,7 @@ export const GroupSearch = () => {
           </div>
 
           {/* Mobile Filters */}
-          <div className="md:hidden bg-white border-b-2 border-black/10 border-solid select-none">
+          <div className="md:hidden bg-white border-b-2 border-black/10 border-solid select-none pb-4">
             <div className="content-padding">
               <Button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -327,7 +332,12 @@ export const GroupSearch = () => {
                     list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
-                    return <GroupHit hit={hit} />;
+                    return (
+                      <GroupHit
+                        hit={hit}
+                        fromGroupFinderUrl={fromGroupFinderUrl}
+                      />
+                    );
                   }}
                 />
               </div>

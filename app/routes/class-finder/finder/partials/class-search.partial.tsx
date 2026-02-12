@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect, useRef } from "react";
-import { useLoaderData, useSearchParams } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
+import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
 
@@ -50,6 +50,7 @@ export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
     searchParams,
@@ -60,23 +61,10 @@ export const ClassSearch = () => {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const [coordinates, setCoordinatesState] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(initial.coordinates);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  type CoordinatesState = {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  const customStateRef = useRef<{ coordinates: CoordinatesState }>({
-    coordinates: initial.coordinates,
-  });
-  customStateRef.current = { coordinates };
 
   // Scroll handling effect
   useEffect(() => {
@@ -117,17 +105,11 @@ export const ClassSearch = () => {
 
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
-    customStateRef.current = { coordinates: null };
-    setCoordinatesState(null);
     setSearchParams(classFinderUrlStateToParams(classFinderEmptyState), {
       replace: true,
       preventScrollReset: true,
     });
     setInstantSearchKey((k) => k + 1);
-  };
-
-  const setCoordinates = (next: typeof coordinates) => {
-    setCoordinatesState(next);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -147,6 +129,10 @@ export const ClassSearch = () => {
       (s.refinementList && Object.keys(s.refinementList).length > 0)
     );
   });
+
+  const fromClassFinderUrl =
+    location.pathname +
+    (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
     <div
@@ -176,7 +162,7 @@ export const ClassSearch = () => {
         <ResponsiveConfigure
           ageInput=""
           selectedLocation={null}
-          coordinates={coordinates}
+          coordinates={null}
         />
         <div className="flex flex-col">
           <div
@@ -206,11 +192,7 @@ export const ClassSearch = () => {
               </div>
 
               <div className="hidden md:flex items-center gap-4">
-                <DesktopClassFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                />
+                <DesktopClassFilters onClearAllToUrl={clearAllFiltersFromUrl} />
                 <AlgoliaFinderClearAllButton
                   className="hidden lg:block"
                   onClearAllToUrl={clearAllFiltersFromUrl}
@@ -240,8 +222,6 @@ export const ClassSearch = () => {
             >
               <AllClassFiltersPopup
                 onHide={() => setIsMobileOpen(false)}
-                coordinates={coordinates}
-                setCoordinates={setCoordinates}
                 onClearAllToUrl={clearAllFiltersFromUrl}
               />
             </div>
@@ -250,7 +230,7 @@ export const ClassSearch = () => {
           {/* Class Search Results / Class Type Filters */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
-              <CustomClassTypeFacets />
+              <CustomClassTypeFacets fromClassFinderUrl={fromClassFinderUrl} />
             </div>
           </div>
         </div>
@@ -271,7 +251,11 @@ interface GroupedClassType {
   language: "English" | "Español" | "Multiple Languages";
 }
 
-const CustomClassTypeFacets = () => {
+const CustomClassTypeFacets = ({
+  fromClassFinderUrl,
+}: {
+  fromClassFinderUrl?: string;
+}) => {
   const { items } = useHits<ClassHitType>();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -374,7 +358,11 @@ const CustomClassTypeFacets = () => {
           <div className="flex items-center justify-center md:items-start md:justify-start w-full">
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
               {paginatedItems.map((hit) => (
-                <ClassHitComponent key={hit.objectID} hit={hit} />
+                <ClassHitComponent
+                  key={hit.objectID}
+                  hit={hit}
+                  fromClassFinderUrl={fromClassFinderUrl}
+                />
               ))}
             </div>
           </div>

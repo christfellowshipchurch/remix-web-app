@@ -3,21 +3,7 @@ import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
 
-export function UpcomingSessionFilters({
-  coordinates,
-  setCoordinates,
-}: {
-  coordinates: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  setCoordinates: (
-    coordinates: {
-      lat: number | null;
-      lng: number | null;
-    } | null,
-  ) => void;
-}) {
+export function UpcomingSessionFilters() {
   const [showGroupType, setShowGroupType] = useState(false);
   const [showFrequency, setShowFrequency] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
@@ -30,7 +16,7 @@ export function UpcomingSessionFilters({
 
   const handleToggle = (
     setter: (value: boolean) => void,
-    currentValue: boolean,
+    currentValue: boolean
   ) => {
     onHide();
     setter(!currentValue);
@@ -38,9 +24,9 @@ export function UpcomingSessionFilters({
 
   return (
     <FilterContainer>
-      {/* Location */}
+      {/* Campus */}
       <FilterDropdown
-        title="Location"
+        title="Campus"
         isOpen={showLocation}
         onToggle={() => handleToggle(setShowLocation, showLocation)}
         onHide={onHide}
@@ -49,13 +35,6 @@ export function UpcomingSessionFilters({
             {
               title: "Christ Fellowship Campus",
               attribute: "campus.name",
-            },
-            {
-              title: "Find closest to...",
-              attribute: "campus",
-              isLocation: true,
-              coordinates: coordinates,
-              setCoordinates: setCoordinates,
             },
           ],
         }}
@@ -119,19 +98,8 @@ interface FilterDropdownProps {
       title?: string;
       attribute: string;
       isMeetingType?: boolean;
-      isLocation?: boolean;
       checkbox?: boolean;
       showFooter?: boolean;
-      coordinates?: {
-        lat: number | null;
-        lng: number | null;
-      } | null;
-      setCoordinates?: (
-        coordinates: {
-          lat: number | null;
-          lng: number | null;
-        } | null,
-      ) => void;
     }>;
   };
   maxWidth?: number;
@@ -173,7 +141,7 @@ export function FilterDropdown({
         "text-text-secondary",
         "font-semibold",
         "cursor-pointer",
-        "flex-shrink-0",
+        "flex-shrink-0"
       )}
       style={{ maxWidth: maxWidth }}
       onClick={onToggle}
@@ -191,7 +159,7 @@ export function FilterDropdown({
           "absolute left-0 right-0 md:right-1/2 md:translate-x-1/2",
           "top-0 md:top-[65px]",
           "z-50",
-          refinementClassName,
+          refinementClassName
         )}
         style={isMobile && isOpen ? { top: `65px` } : undefined}
       />

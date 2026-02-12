@@ -1,5 +1,5 @@
 import { algoliasearch } from "algoliasearch";
-import { useState, useRef, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { LoaderReturnType } from "../loader";
@@ -56,35 +56,16 @@ export function UpcomingSessionMobileSection() {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const [coordinates, setCoordinatesState] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(initial.coordinates);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [instantSearchKey, setInstantSearchKey] = useState(0);
 
-  type CoordinatesState = {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  const customStateRef = useRef<{ coordinates: CoordinatesState }>({
-    coordinates: initial.coordinates,
-  });
-  customStateRef.current = { coordinates };
-
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
-    customStateRef.current = { coordinates: null };
-    setCoordinatesState(null);
     setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
       replace: true,
       preventScrollReset: true,
     });
     setInstantSearchKey((k) => k + 1);
-  };
-
-  const setCoordinates = (next: typeof coordinates) => {
-    setCoordinatesState(next);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -147,7 +128,6 @@ export function UpcomingSessionMobileSection() {
           <ResponsiveClassesSingleConfigure
             classUrl={classUrl}
             selectedLocation={null}
-            coordinates={coordinates}
           />
           <div className="flex flex-col">
             <div className="bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
@@ -173,8 +153,6 @@ export function UpcomingSessionMobileSection() {
                 <AllClassFiltersPopup
                   hideTopic={true}
                   onHide={() => setIsMobileOpen(false)}
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
                   onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>

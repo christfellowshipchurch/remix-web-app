@@ -48,7 +48,13 @@ export const EventSinglePage: React.FC = () => {
   const showRegistration =
     hasSessionRegistration || hasClickThroughRegistration;
 
-  const aboutInformationExists = data.aboutTitle && data.aboutTitle !== '' || data.aboutContent && data.aboutContent !== '' || data.keyInfoCards && data.keyInfoCards.length > 0 || data.whatToExpect && data.whatToExpect.length > 0 || data.moreInfoTitle && data.moreInfoTitle !== '' || data.optionalBlurb && data.optionalBlurb.length > 0;
+  const aboutInformationExists =
+    (data.aboutTitle && data.aboutTitle !== "") ||
+    (data.aboutContent && data.aboutContent !== "") ||
+    (data.keyInfoCards && data.keyInfoCards.length > 0) ||
+    (data.whatToExpect && data.whatToExpect.length > 0) ||
+    (data.moreInfoTitle && data.moreInfoTitle !== "") ||
+    (data.optionalBlurb && data.optionalBlurb.length > 0);
 
   return (
     <>
@@ -56,7 +62,11 @@ export const EventSinglePage: React.FC = () => {
         <BackBanner
           backText="Back to Events"
           pageTitle={data.title}
-          link="/events"
+          link={
+            typeof location.state?.fromEvents === "string"
+              ? location.state.fromEvents
+              : "/events"
+          }
         />
 
         <EventsSingleHero
@@ -71,9 +81,15 @@ export const EventSinglePage: React.FC = () => {
           title={data.title}
           cta={data.heroCtas[0]}
           sections={[
-            ...(aboutInformationExists ? [{ id: 'about', label: 'About' }] : []),
-            ...(data.faqItems && data.faqItems.length > 0 ? [{ id: 'faq', label: 'FAQ' }] : []),
-            ...(showRegistration ? [{ id: 'register', label: 'Register' }] : []),
+            ...(aboutInformationExists
+              ? [{ id: "about", label: "About" }]
+              : []),
+            ...(data.faqItems && data.faqItems.length > 0
+              ? [{ id: "faq", label: "FAQ" }]
+              : []),
+            ...(showRegistration
+              ? [{ id: "register", label: "Register" }]
+              : []),
           ]}
         />
 

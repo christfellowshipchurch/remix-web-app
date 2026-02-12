@@ -4,7 +4,7 @@ import { InstantSearch, Hits, Stats, Configure } from "react-instantsearch";
 
 import { cn } from "~/lib/utils";
 import { LoaderReturnType } from "../loader";
-import { useState, useRef, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 
@@ -56,34 +56,15 @@ export const UpcomingSessionsSection = () => {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const [coordinates, setCoordinatesState] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(initial.coordinates);
   const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  type CoordinatesState = {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  const customStateRef = useRef<{ coordinates: CoordinatesState }>({
-    coordinates: initial.coordinates,
-  });
-  customStateRef.current = { coordinates };
 
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
-    customStateRef.current = { coordinates: null };
-    setCoordinatesState(null);
     setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
       replace: true,
       preventScrollReset: true,
     });
     setInstantSearchKey((k) => k + 1);
-  };
-
-  const setCoordinates = (next: typeof coordinates) => {
-    setCoordinatesState(next);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -138,14 +119,13 @@ export const UpcomingSessionsSection = () => {
       >
         <ResponsiveClassesSingleConfigure
           selectedLocation={null}
-          coordinates={coordinates}
           classUrl={classUrl}
         />
         <div className="flex flex-col">
           {/* Filters Section */}
           <div
             className={cn(
-              "bg-white content-padding shadow-sm select-none transition-all duration-300",
+              "bg-white content-padding md:shadow-sm select-none transition-all duration-300",
               "relative z-10"
             )}
           >
@@ -159,10 +139,7 @@ export const UpcomingSessionsSection = () => {
               </div>
 
               <div className="flex flex-row gap-4 w-fit overflow-x-visible scrollbar-hide relative items-center">
-                <UpcomingSessionFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
-                />
+                <UpcomingSessionFilters />
                 <AlgoliaFinderClearAllButton
                   onClearAllToUrl={clearAllFiltersFromUrl}
                 />
@@ -205,14 +182,9 @@ export const UpcomingSessionsSection = () => {
 export const ResponsiveClassesSingleConfigure = ({
   selectedLocation,
   classUrl,
-  coordinates,
 }: {
   selectedLocation: string | null;
   classUrl: string;
-  coordinates: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
 
@@ -240,17 +212,9 @@ export const ResponsiveClassesSingleConfigure = ({
 
   return (
     <Configure
-      key={`${coordinates?.lat}-${coordinates?.lng}-${selectedLocation}-${classUrl}`}
+      key={`${selectedLocation}-${classUrl}`}
       hitsPerPage={hitsPerPage}
       filters={filters.length > 0 ? filters.join(" AND ") : undefined}
-      aroundLatLng={
-        coordinates?.lat && coordinates?.lng
-          ? `${coordinates.lat}, ${coordinates.lng}`
-          : undefined
-      }
-      aroundRadius="all"
-      aroundLatLngViaIP={false}
-      getRankingInfo={true}
     />
   );
 };

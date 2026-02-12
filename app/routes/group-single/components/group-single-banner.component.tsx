@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
@@ -16,6 +16,12 @@ export const GroupSingleBanner = ({
   leaderImages: ImageSource[];
   groupName: string;
 }) => {
+  const location = useLocation();
+  const backToGroupFinderUrl =
+    typeof location.state?.fromGroupFinder === "string"
+      ? location.state.fromGroupFinder
+      : "/group-finder";
+
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const imageStyles =
@@ -71,7 +77,7 @@ export const GroupSingleBanner = ({
 
         {/* Mobile Content - Leader Images */}
         <div className="flex md:hidden gap-2">
-          <Link to="/group-finder" className="flex items-center">
+          <Link to={backToGroupFinderUrl} className="flex items-center">
             <Icon name="arrowBack" size={24} className="text-navy" />
           </Link>
           {leaderImages.slice(0, 2).map((image) => (
@@ -87,7 +93,7 @@ export const GroupSingleBanner = ({
         {/* Desktop Content*/}
         <div className="hidden md:flex gap-6 lg:gap-8">
           <div className="flex items-center gap-4">
-            <Link to="/group-finder" className="flex items-center group">
+            <Link to={backToGroupFinderUrl} className="flex items-center group">
               <Icon
                 name="arrowBack"
                 size={24}

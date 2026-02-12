@@ -10,8 +10,8 @@ export type LocationSearchCoordinatesType = {
     {
       geometry: {
         location: {
-          latitutde: number;
-          longitude: number;
+          lat: number;
+          lng: number;
         };
       };
     }
@@ -26,7 +26,9 @@ export const action: ActionFunction = async ({ request }) => {
     const address = formData.address as string;
 
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+      )}&key=${apiKey}`
     );
 
     if (!response.ok) {

@@ -86,6 +86,10 @@ export const AllEvents = () => {
     );
   });
 
+  const fromEventsUrl =
+    location.pathname +
+    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+
   return (
     <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
@@ -124,7 +128,7 @@ export const AllEvents = () => {
           <div className="min-h-[320px]">
             <Hits
               hitComponent={({ hit }: { hit: ContentItemHit }) => {
-                return <EventHit hit={hit} />;
+                return <EventHit hit={hit} fromEventsUrl={fromEventsUrl} />;
               }}
               classNames={{
                 list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
@@ -139,7 +143,13 @@ export const AllEvents = () => {
   );
 };
 
-const EventHit = ({ hit }: { hit: ContentItemHit }) => {
+const EventHit = ({
+  hit,
+  fromEventsUrl,
+}: {
+  hit: ContentItemHit;
+  fromEventsUrl: string;
+}) => {
   const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
     "en-US",
     {
@@ -165,6 +175,7 @@ const EventHit = ({ hit }: { hit: ContentItemHit }) => {
             ? "Multiple Locations"
             : hit.locations?.[0]?.name || "Christ Fellowship Church",
       }}
+      linkState={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
     />
   );
 };

@@ -7,28 +7,14 @@ import { FiltersFooter } from "~/routes/group-finder/components/filters/filters-
 export const AllClassFiltersPopup = ({
   hideTopic = false,
   onHide,
-  coordinates,
-  setCoordinates,
   onClearAllToUrl,
 }: {
   hideTopic?: boolean;
   onHide: () => void;
-  coordinates: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  setCoordinates: (
-    coordinates: {
-      lat: number | null;
-      lng: number | null;
-    } | null
-  ) => void;
   onClearAllToUrl?: () => void;
 }) => {
-  const [showLocation, setShowLocation] = useState(false);
   const [showTopics, setShowTopics] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
 
   const { setIndexUiState } = useInstantSearch();
 
@@ -40,9 +26,6 @@ export const AllClassFiltersPopup = ({
       page: 0,
     }));
     onClearAllToUrl?.();
-    setSelectedValue("");
-    setCoordinates?.({ lat: null, lng: null });
-    setShowLocation(false);
     setShowTopics(false);
     setShowLanguage(false);
   };
@@ -54,18 +37,6 @@ export const AllClassFiltersPopup = ({
       </div>
 
       <div className="flex flex-col gap-4 px-4 overflow-y-auto min-h-0 flex-1">
-        <AllFiltersFilterSection
-          title="Location"
-          attribute="format"
-          showSection={showLocation}
-          setShowSection={setShowLocation}
-          isLocation={true}
-          selectedValue={selectedValue}
-          setSelectedValue={setSelectedValue}
-          coordinates={coordinates}
-          setCoordinates={setCoordinates}
-        />
-
         {!hideTopic && (
           <AllFiltersFilterSection
             title="Topic"
@@ -81,6 +52,7 @@ export const AllClassFiltersPopup = ({
           attribute="language"
           showSection={showLanguage}
           setShowSection={setShowLanguage}
+          hideBorder
         />
       </div>
 
