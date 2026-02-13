@@ -1,21 +1,30 @@
 import type { MetaFunction } from "react-router-dom";
 import type { loader } from "./loader";
 import type { LoaderReturnType } from "./loader";
+import { createMeta } from "~/lib/meta-utils";
+import { generateMetaKeywords } from "~/lib/generate-meta-keywords";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   const articleData = data as LoaderReturnType | undefined;
   if (!articleData) {
-    return [
-      { title: "404 - Article Not Found" },
-      {
-        name: "description",
-        content: "The article you are looking for does not exist.",
-      },
-    ];
+    return createMeta({
+      title: "404 – Article Not Found",
+      description: "The article you are looking for does not exist.",
+    });
   }
-
-  return [
-    { title: `${articleData.title} | Christ Fellowship Church` },
-    { name: "description", content: articleData.summary },
-  ];
+  const keywords = generateMetaKeywords({
+    title: articleData.title,
+    categories: articleData.articlePrimaryCategories ?? [],
+    authorOrSpeaker: articleData.author?.fullName,
+    type: "article",
+  });
+  return createMeta({
+    title: articleData.title,
+    description:
+      articleData.summary ?? "Read this article at Christ Fellowship Church.",
+    image: articleData.coverImage,
+    path: location.pathname,
+    keywords,
+    author: articleData.author?.fullName?.trim() || undefined,
+  });
 };

@@ -1,0 +1,22 @@
+# Christ Fellowship Church
+
+> Christ Fellowship is a multisite church in South Florida (Palm Beach, Broward, Miami) with in-person campuses, church online, and resources to help people grow in faith through services, groups, and ministries.
+
+Christ Fellowship Church offers weekend services, small groups, volunteer opportunities, and ministries for all ages. The website provides information about locations, events, messages, podcasts, and ways to give or get connected.
+
+## Main sections
+
+- [About](https://christfellowship.com/about): Who we are, beliefs, and leadership
+- [Locations](https://christfellowship.com/locations): Campus addresses and service times
+- [Services & messages](https://christfellowship.com/messages): Sermons and message series
+- [Events](https://christfellowship.com/events): Upcoming events and registration
+- [Give](https://christfellowship.com/give): Giving and generosity
+- [Ministries](https://christfellowship.com/ministries): Ministries and ways to serve
+- [Group finder](https://christfellowship.com/group-finder): Find small groups and community
+- [Volunteer](https://christfellowship.com/volunteer): Volunteer opportunities
+- [Podcasts](https://christfellowship.com/podcasts): Podcast shows and episodes
+
+## Optional
+
+- [Connect card](https://christfellowship.com/connect-card): Get connected or request information
+- [Next steps](https://christfellowship.com/next-steps): Spiritual next steps

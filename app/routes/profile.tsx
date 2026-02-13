@@ -6,6 +6,8 @@ import { useAuth } from "~/providers/auth-provider";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import type { User } from "~/providers/auth-provider";
 
+export { meta } from "./profile-meta";
+
 interface LoaderData {
   user: User;
   message: string;

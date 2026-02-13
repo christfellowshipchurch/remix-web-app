@@ -161,6 +161,11 @@ async function mapRockEpisodeToPodcastEpisode(
     rockEpisode?.attributeValues?.media?.value || ""
   );
 
+  const authorFormatted =
+    rockEpisode?.attributeValues?.author?.valueFormatted ||
+    rockEpisode?.attributeValues?.author?.value ||
+    "";
+
   return {
     id: rockEpisode?.id || "",
     show: showName,
@@ -175,6 +180,7 @@ async function mapRockEpisodeToPodcastEpisode(
     ),
     summary: rockEpisode?.attributeValues?.summary?.value || "",
     content: rockEpisode?.content || "",
+    author: authorFormatted.trim() || undefined,
     showGuests: rockEpisode?.attributeValues?.showGuests?.value || "",
     url: rockEpisode?.attributeValues?.pathname?.value || "",
     apple: rockEpisode?.attributeValues?.applePodcast?.value || "",

@@ -12,6 +12,7 @@ import { useLoaderData } from "react-router";
 import { LoaderReturnType } from "./loader";
 
 export { loader } from "./loader";
+export { meta } from "./meta";
 
 function VolunteerPage() {
   const { featuredEvent } = useLoaderData<LoaderReturnType>();

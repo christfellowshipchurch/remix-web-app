@@ -4,6 +4,7 @@ import ConnectCardConfirmation from "~/components/modals/connect-card/confirmati
 
 export { action } from "./action";
 export { loader } from "./loader";
+export { meta } from "./meta";
 
 export default function ConnectCardFormPage() {
   const [isSuccess, setIsSuccess] = useState(false);

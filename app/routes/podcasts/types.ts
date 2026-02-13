@@ -25,6 +25,8 @@ export type PodcastEpisode = {
   coverImage: string;
   summary: string;
   content: string;
+  /** Author/host from Rock (e.g. show host name). Used for meta author and keywords. */
+  author?: string;
   showGuests: string;
   url: string;
   apple: string;

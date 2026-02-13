@@ -1,13 +1,12 @@
 import type { MetaFunction } from "react-router-dom";
+import { createMeta } from "~/lib/meta-utils";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Font Styles - Design System" },
-    {
-      name: "description",
-      content: "Typography styles and font system documentation",
-    },
-  ];
+  return createMeta({
+    title: "Font Styles – Design System",
+    description: "Typography styles and font system documentation.",
+    noIndex: true,
+  });
 };
 
 export default function FontStylesPage() {
