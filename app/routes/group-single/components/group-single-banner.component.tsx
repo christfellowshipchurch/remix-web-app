@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
@@ -22,42 +21,8 @@ export const GroupSingleBanner = ({
       ? location.state.fromGroupFinder
       : "/group-finder";
 
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const imageStyles =
     "size-16 md:size-20 rounded-lg md:rounded-[10px] object-cover ";
-
-  // Navbar scroll handling effect
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setIsNavbarOpen(false);
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   //  If language is Spanish, add "Español" to the list of Tags displayed
   const tags =
@@ -68,8 +33,7 @@ export const GroupSingleBanner = ({
   return (
     <div
       className={cn(
-        "w-full bg-white content-padding pt-8 pb-4 sticky z-10 shadow-sm transition-all duration-300",
-        isNavbarOpen ? "top-16 md:top-20" : "top-0"
+        "w-full bg-white content-padding pt-8 pb-4 sticky top-0 z-10 shadow-sm"
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex justify-between gap-8 items-center">

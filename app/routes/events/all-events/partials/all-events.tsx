@@ -7,7 +7,6 @@ import { useEffect, useMemo, useRef } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import {
   EVENTS_INDEX,
-  EventsClearFiltersText,
   EventsTagsRefinementList,
 } from "../components/events-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
@@ -24,8 +23,6 @@ import {
 } from "../../events-instantsearch-router";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-
-const INDEX_NAME = "dev_daniel_contentItems";
 
 export const AllEvents = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

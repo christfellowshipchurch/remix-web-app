@@ -24,7 +24,7 @@ export function FeaturedEvents() {
   );
 
   return (
-    <div className="w-full py-28 bg-gray">
+    <div className="w-full py-28 content-padding bg-gray">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <InstantSearch
           indexName="dev_daniel_contentItems"

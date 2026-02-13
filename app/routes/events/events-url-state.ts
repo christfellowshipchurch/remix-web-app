@@ -7,7 +7,10 @@ export const EVENTS_FINDER_PARAMS = {
 
 export type EventsFinderUrlState = AlgoliaUrlStateBase;
 
-const REFINEMENT_LIST_ATTRIBUTES = ["eventTags", "locations.name"] as const;
+const REFINEMENT_LIST_ATTRIBUTES = [
+  "eventCategories",
+  "eventLocations",
+] as const;
 
 const {
   parse: parseEventsFinderUrlState,

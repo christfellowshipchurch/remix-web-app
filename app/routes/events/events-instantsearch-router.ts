@@ -5,7 +5,7 @@ import {
   eventsFinderUrlStateToParams,
 } from "./events-url-state";
 
-const INDEX_NAME = "dev_daniel_contentItems";
+const INDEX_NAME = "dev_contentItems";
 
 export type EventsRouterRefs = {
   searchParamsRef: MutableRefObject<URLSearchParams>;
