@@ -43,6 +43,8 @@ export type CreateMetaOptions = {
   generator?: string;
   /** Optional license URL or text. */
   license?: string;
+  /** Author name for meta author, article:author, and twitter:creator. */
+  author?: string;
 };
 
 type MetaDescriptor =
@@ -63,6 +65,7 @@ export function createMeta({
   keywords,
   generator,
   license,
+  author,
 }: CreateMetaOptions): MetaDescriptor[] {
   const fullTitle = title.includes(SITE_NAME)
     ? title
@@ -87,6 +90,11 @@ export function createMeta({
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: ogImage },
   ];
+  if (author?.trim()) {
+    base.push({ name: "author", content: author.trim() });
+    base.push({ property: "article:author", content: author.trim() });
+    base.push({ name: "twitter:creator", content: author.trim() });
+  }
   if (path) {
     const fullUrl = origin
       ? `${origin}${path.startsWith("/") ? "" : "/"}${path}`

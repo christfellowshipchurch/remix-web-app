@@ -1,8 +1,9 @@
 import type { MetaFunction } from "react-router-dom";
 import type { loader } from "./loader";
 import { createMeta } from "~/lib/meta-utils";
+import { generateMetaKeywords } from "~/lib/generate-meta-keywords";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   if (!data?.episode) {
     return createMeta({
       title: "Episode Not Found",
@@ -16,9 +17,19 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
       ? summary.substring(0, 160) + "..."
       : summary ||
         `${episode.title} – ${episode.show} | Christ Fellowship Church`;
+  const author = episode.author?.trim() || episode.show?.trim() || undefined;
+  const keywords = generateMetaKeywords({
+    title: episode.title,
+    authorOrSpeaker: author,
+    seriesTitle: episode.show,
+    type: "podcast",
+  });
   return createMeta({
     title: `${episode.title} – ${episode.show}`,
     description,
     image: episode.coverImage,
+    path: location.pathname,
+    keywords,
+    author,
   });
 };
