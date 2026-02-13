@@ -1,11 +1,13 @@
-import { MetaFunction } from "react-router-dom";
+import type { MetaFunction } from "react-router-dom";
 import { RockEmbed } from "~/components";
+import { createMeta } from "~/lib/meta-utils";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Rock RMS Embed Example" },
-    { name: "description", content: "Example of embedding Rock RMS content" },
-  ];
+  return createMeta({
+    title: "Rock RMS Embed Example",
+    description: "Example of embedding Rock RMS content",
+    noIndex: true,
+  });
 };
 
 export default function RockEmbedExample() {

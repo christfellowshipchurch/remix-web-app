@@ -7,11 +7,16 @@ import { VolunteerGlobe } from "./partials/volunteer-globe.partial";
 import { OnboardingProcess } from "./partials/volunteer-onboarding.partial";
 import { VolunteerStats } from "./partials/volunteer-stats.partial";
 import { VolunteerFeaturedEvent } from "./partials/volunteer-feature-event.partial";
-import { VolunteerTestimonials } from "./partials/volunteer-testimonials.partial";
+// import { VolunteerTestimonials } from "./partials/volunteer-testimonials.partial";
+import { useLoaderData } from "react-router";
+import { LoaderReturnType } from "./loader";
 
 export { loader } from "./loader";
+export { meta } from "./meta";
 
 function VolunteerPage() {
+  const { featuredEvent } = useLoaderData<LoaderReturnType>();
+
   return (
     <div>
       <DynamicHero
@@ -26,8 +31,9 @@ function VolunteerPage() {
       <VolunteerGlobe />
       <OnboardingProcess />
       <VolunteerStats />
-      <VolunteerFeaturedEvent />
-      <VolunteerTestimonials />
+
+      {featuredEvent && <VolunteerFeaturedEvent />}
+      {/* <VolunteerTestimonials /> */}
     </div>
   );
 }

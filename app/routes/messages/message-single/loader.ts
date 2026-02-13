@@ -18,17 +18,18 @@ export type LoaderReturnType = {
 };
 
 export const mapRockDataToMessage = async (
-  rockItem: RockContentChannelItem
+  rockItem: RockContentChannelItem,
 ): Promise<MessageType> => {
   const { attributeValues, attributes, startDateTime, expireDateTime } =
     rockItem;
+
   const coverImage = getImages({
     attributeValues: attributeValues as attributeValuesProps,
     attributes: attributes as attributeProps,
   });
 
   const speaker = await fetchSpeakerData(
-    rockItem.attributeValues?.author?.value || ""
+    rockItem.attributeValues?.author?.value || "",
   );
 
   let primaryCategories: { value: string }[] = [{ value: "" }];
@@ -84,15 +85,24 @@ export const mapRockDataToMessage = async (
     secondaryCategories = sermonSecondaryCategories;
   }
 
+  let video = "";
+  const mediaValue = attributeValues?.media?.value;
+  if (mediaValue?.trim()) {
+    try {
+      const wistiaData = await fetchWistiaDataFromRock(mediaValue);
+      video = wistiaData?.sourceKey || "";
+    } catch (error) {
+      console.error("Error fetching Wistia data for message:", error);
+    }
+  }
+
   return {
     id: rockItem.id,
     title: rockItem.title,
     content: rockItem.content || "",
     summary: attributeValues?.summary?.value || "",
     image: createImageUrlFromGuid(attributeValues?.image?.value || "") || "",
-    video:
-      (await fetchWistiaDataFromRock(attributeValues?.media?.value || ""))
-        .sourceKey || "",
+    video,
     coverImage: (coverImage && coverImage[0]) || "",
     primaryCategories,
     secondaryCategories,
@@ -103,7 +113,7 @@ export const mapRockDataToMessage = async (
     speaker,
     url: rockItem.attributeValues?.url?.value || "",
     additionalResources: parseRockKeyValueList(
-      rockItem.attributeValues?.callsToAction?.value || ""
+      rockItem.attributeValues?.callsToAction?.value || "",
     ).map((resource) => ({
       title: resource.key,
       url: resource.value,
@@ -130,7 +140,7 @@ const fetchMessageByPath = async (path: string) => {
 
   if (messages.length > 1) {
     console.error(
-      `More than one message was found with the same path: /messages/${path}`
+      `More than one message was found with the same path: /messages/${path}`,
     );
   }
 

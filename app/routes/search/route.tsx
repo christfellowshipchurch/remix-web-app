@@ -12,6 +12,7 @@ import { LoaderReturnType } from "./loader";
 import { SearchClient } from "algoliasearch";
 
 export { loader } from "./loader";
+export { meta } from "./meta";
 
 // Global reference to maintain Algolia search client instance
 export const globalSearchClient: SearchClient | null = null;

@@ -10,6 +10,7 @@ import { VolunteerFormNav } from "~/routes/volunteer-form/components/form-nav.co
 // Step 5: Confirmation/Results
 
 export { loader } from "./loader";
+export { meta } from "./meta";
 
 export const VolunteerFormRoute: React.FC = () => {
   const location = useLocation();

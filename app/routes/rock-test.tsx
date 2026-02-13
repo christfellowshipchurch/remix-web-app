@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { MetaFunction } from "react-router-dom";
+import type { MetaFunction } from "react-router-dom";
 import { RockEmbed } from "~/components";
+import { createMeta } from "~/lib/meta-utils";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Rock RMS Embed Test" },
-    {
-      name: "description",
-      content: "Test page for embedding Rock RMS content",
-    },
-  ];
+  return createMeta({
+    title: "Rock RMS Embed Test",
+    description: "Test page for embedding Rock RMS content",
+    noIndex: true,
+  });
 };
 
 export default function RockTestPage() {
