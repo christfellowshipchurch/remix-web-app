@@ -65,7 +65,7 @@ const FeaturedEventsHits = () => {
 
       {/* Mobile Layout - Carousel */}
       {remainingHits.length > 0 && (
-        <div className="mt-12 md:hidden">
+        <div className="-ml-5 md:ml-0 mt-12 md:hidden">
           <Carousel
             opts={{
               align: "start",
