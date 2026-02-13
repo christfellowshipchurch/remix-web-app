@@ -4,14 +4,28 @@
 
 export const SITE_NAME = "Christ Fellowship Church";
 
-/** Default OG image path (site logo). Absolute URL is built in createMeta using window.location.origin when available. */
-export const DEFAULT_OG_IMAGE = "/logo.png";
+/** Default image for SEO/OG if none is provided. Located at @public/assets/images/metadata_image.jpg. */
+export const DEFAULT_META_IMAGE = "/assets/images/metadata_image.jpg";
 
+/** Default keywords used site-wide when not overridden per route. */
+export const DEFAULT_KEYWORDS =
+  "Christ Fellowship Church, church South Florida, multisite church, church online, services, groups, ministries, grow in faith, Palm Beach, Broward, Miami";
+
+/** Default generator used site-wide when not overridden per route. */
+export const DEFAULT_GENERATOR = "React Router";
+
+/**
+ * Origin for absolute OG/twitter image and og:url. On the client uses window.location.origin.
+ * On the server (SSR) uses VITE_PUBLIC_ORIGIN so crawlers get absolute URLs.
+ * Set VITE_PUBLIC_ORIGIN in .env (e.g. https://yoursite.com or http://localhost:5173 for local checks).
+ */
 function getOrigin(): string {
   if (typeof window !== "undefined" && window.location?.origin) {
     return window.location.origin;
   }
-  return "";
+  const env = (import.meta as { env?: Record<string, unknown> }).env;
+  const envOrigin = env?.VITE_PUBLIC_ORIGIN;
+  return typeof envOrigin === "string" ? envOrigin : "";
 }
 
 export type CreateMetaOptions = {
@@ -19,16 +33,26 @@ export type CreateMetaOptions = {
   description: string;
   /** Override OG/twitter image (use absolute URL for best compatibility). */
   image?: string;
-  /** Optional path for og:url (e.g. /about). */
+  /** Optional path for og:url and canonical link (e.g. /about). */
   path?: string;
   /** If true, add robots noindex. */
   noIndex?: boolean;
+  /** Override default keywords (defaults to DEFAULT_KEYWORDS). */
+  keywords?: string;
+  /** Override default generator (defaults to DEFAULT_GENERATOR). */
+  generator?: string;
+  /** Optional license URL or text. */
+  license?: string;
 };
+
+type MetaDescriptor =
+  | { title?: string; name?: string; property?: string; content?: string }
+  | { tagName: "link"; rel: string; href: string };
 
 /**
  * Returns a meta array for React Router meta export. Use for static or dynamic routes.
  * Title is normalized to "Page Title | Christ Fellowship Church" when not already suffixed.
- * OG image and og:url use window.location.origin when available (client); otherwise relative paths (SSR).
+ * OG image and og:url use window.location.origin on the client; on the server they use VITE_PUBLIC_ORIGIN for absolute URLs.
  */
 export function createMeta({
   title,
@@ -36,32 +60,27 @@ export function createMeta({
   image,
   path,
   noIndex,
-}: CreateMetaOptions): Array<{
-  title?: string;
-  name?: string;
-  property?: string;
-  content?: string;
-}> {
+  keywords,
+  generator,
+  license,
+}: CreateMetaOptions): MetaDescriptor[] {
   const fullTitle = title.includes(SITE_NAME)
     ? title
     : `${title} | ${SITE_NAME}`;
   const origin = getOrigin();
-  const imagePath = image ?? DEFAULT_OG_IMAGE;
+  const imagePath = image ?? DEFAULT_META_IMAGE;
   const ogImage =
     imagePath.startsWith("http") || !origin
       ? imagePath
       : `${origin}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
-  const base: Array<{
-    title?: string;
-    name?: string;
-    property?: string;
-    content?: string;
-  }> = [
+  const base: MetaDescriptor[] = [
     { title: fullTitle },
     { name: "description", content: description },
+    { name: "application-name", content: SITE_NAME },
     { property: "og:title", content: fullTitle },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
+    { property: "og:site_name", content: SITE_NAME },
     { property: "og:image", content: ogImage },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: fullTitle },
@@ -69,13 +88,30 @@ export function createMeta({
     { name: "twitter:image", content: ogImage },
   ];
   if (path) {
-    const ogUrl = origin
+    const fullUrl = origin
       ? `${origin}${path.startsWith("/") ? "" : "/"}${path}`
-      : path;
-    base.push({ property: "og:url", content: ogUrl });
+      : path.startsWith("/")
+        ? path
+        : `/${path}`;
+    if (origin) {
+      base.push({ property: "og:url", content: fullUrl });
+    }
+    base.push({ tagName: "link", rel: "canonical", href: fullUrl });
   }
-  if (noIndex) {
-    base.push({ name: "robots", content: "noindex, nofollow" });
+  base.push({
+    name: "robots",
+    content: noIndex ? "noindex, nofollow" : "index, follow",
+  });
+  base.push({
+    name: "keywords",
+    content: keywords ?? DEFAULT_KEYWORDS,
+  });
+  base.push({
+    name: "generator",
+    content: generator ?? DEFAULT_GENERATOR,
+  });
+  if (license) {
+    base.push({ name: "license", content: license });
   }
   return base;
 }
