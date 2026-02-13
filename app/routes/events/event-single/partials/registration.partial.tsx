@@ -7,7 +7,7 @@ export function RegistrationSection() {
   const { title, sessionScheduleCards } = useLoaderData<EventSinglePageType>();
 
   return (
-    <>
+    <section id="register" className="w-full">
       {/* Session Registration */}
       {sessionScheduleCards && sessionScheduleCards.length > 0 && (
         <SessionRegistration />
@@ -15,6 +15,6 @@ export function RegistrationSection() {
 
       {/* Click Through Registration */}
       <ClickThroughRegistration title={title} />
-    </>
+    </section>
   );
 }

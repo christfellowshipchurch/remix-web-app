@@ -10,15 +10,13 @@ interface EventsHubLocationSearchProps {
 export const EventsHubLocationSearch = ({
   placeholder = "Select Campus",
 }: EventsHubLocationSearchProps) => {
-  const { items } = useRefinementList({ attribute: "locations.name" });
+  const { items } = useRefinementList({ attribute: "eventLocations" });
   const { setIndexUiState, indexUiState } = useInstantSearch();
 
-  // Get currently selected campus from Algolia state
-  const selectedCampus =
-    indexUiState?.refinementList?.["locations.name"]?.[0] || "";
+  const selectedLocation =
+    indexUiState?.refinementList?.eventLocations?.[0] || "";
 
-  // Create options array with "Filter By Campus Location" as first option
-  const campusOptions: DropdownOption[] = [
+  const locationOptions: DropdownOption[] = [
     { value: "", label: "Filter By Campus Location" },
     ...items.map((item) => ({
       value: item.value,
@@ -26,22 +24,22 @@ export const EventsHubLocationSearch = ({
     })),
   ];
 
-  const handleCampusSelect = (campusValue: string) => {
+  const handleLocationSelect = (locationValue: string) => {
     setIndexUiState((prevState) => ({
       ...prevState,
       refinementList: {
         ...prevState.refinementList,
-        "locations.name": campusValue ? [campusValue] : [],
+        eventLocations: locationValue ? [locationValue] : [],
       },
-      page: 0, // Reset to first page when filtering
+      page: 0,
     }));
   };
 
   return (
     <Dropdown
-      options={campusOptions}
-      value={selectedCampus}
-      onChange={handleCampusSelect}
+      options={locationOptions}
+      value={selectedLocation}
+      onChange={handleLocationSelect}
       placeholder={placeholder}
       className="min-w-[260px]"
       chevronColor="navy"

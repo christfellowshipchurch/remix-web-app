@@ -88,28 +88,44 @@ const getSeriesResources = async (seriesGuid: string) => {
     ? seriesResources
     : [seriesResources];
 
-  resources.forEach(
-    (resource: {
-      attributeValues: {
-        image: { value: string };
-        summary: { value: string };
-        url: { value: string };
-      };
-      contentChannelId: string;
-      coverImage: string;
-      summary: string;
-    }) => {
-      resource.summary = resource.attributeValues.summary?.value ?? "";
-      resource.coverImage = createImageUrlFromGuid(
-        resource.attributeValues.image.value
-      );
-      resource.attributeValues.url.value = `${getContentChannelUrl(
-        parseInt(resource.contentChannelId)
-      )}/${resource.attributeValues.url.value}`;
-    }
-  );
+  const mappedResources = resources
+    .map(
+      (resource: {
+        attributeValues: {
+          image: { value: string };
+          summary: { value: string };
+          url: { value: string };
+        };
+        contentChannelId: string;
+        coverImage: string;
+        summary: string;
+        startDateTime?: string;
+      }) => {
+        return {
+          ...resource,
+          summary: resource.attributeValues.summary?.value ?? "",
+          coverImage: createImageUrlFromGuid(
+            resource.attributeValues.image.value
+          ),
+          attributeValues: {
+            ...resource.attributeValues,
+            url: {
+              ...resource.attributeValues.url,
+              value: `${getContentChannelUrl(
+                parseInt(resource.contentChannelId)
+              )}/${resource.attributeValues.url.value}`,
+            },
+          },
+        };
+      }
+    )
+    .sort((a, b) => {
+      const aDate = a.startDateTime ? new Date(a.startDateTime).getTime() : 0;
+      const bDate = b.startDateTime ? new Date(b.startDateTime).getTime() : 0;
+      return bDate - aDate; // newest / most recent first
+    });
 
-  return resources;
+  return mappedResources;
 };
 
 const getSeriesEvents = async (seriesGuid: string) => {
@@ -131,17 +147,31 @@ const getSeriesEvents = async (seriesGuid: string) => {
         image: { value: string };
         summary: { value: string };
         url: { value: string };
+        eventStartDate: { value: string };
       };
       contentChannelId: string;
       coverImage: string;
       summary: string;
+      startDateTime?: string;
     }) => {
       event.coverImage = createImageUrlFromGuid(
         event?.attributeValues?.image?.value
       );
-      event.summary = event.attributeValues.summary.value;
+      event.summary = event?.attributeValues?.summary?.value || "";
     }
   );
+
+  events.sort((a, b) => {
+    const aVal = (
+      a as { attributeValues?: { eventStartDate?: { value: string } } }
+    ).attributeValues?.eventStartDate?.value;
+    const bVal = (
+      b as { attributeValues?: { eventStartDate?: { value: string } } }
+    ).attributeValues?.eventStartDate?.value;
+    const aDate = aVal ? new Date(aVal).getTime() : 0;
+    const bDate = bVal ? new Date(bVal).getTime() : 0;
+    return aDate - bDate; // soonest first (ascending by date)
+  });
 
   return events;
 };

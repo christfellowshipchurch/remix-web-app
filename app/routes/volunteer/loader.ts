@@ -46,27 +46,29 @@ type Event = {
   };
 };
 
-const fetchFeaturedEvent = async (): Promise<Event> => {
-  // TODO: We'll need to create some sort of tag/filter to specify the event we want to show. For now, we'll just show the latest event.
-  const featuredEvents = await fetchRockData({
-    endpoint: "ContentChannelItems",
+const fetchFeaturedEvent = async (): Promise<Event | null> => {
+  const response = await fetchRockData({
+    endpoint: "ContentChannelItems/GetByAttributeValue",
     queryParams: {
-      $filter: `ContentChannelId eq 78 and Status eq 'Approved'`,
-      $orderby: "ExpireDateTime desc",
+      attributeKey: "ShowOnVolunteerPage",
+      value: "True",
+      $filter: `ContentChannelId eq 186 and Status eq 'Approved'`,
+      $orderby: "StartDateTime desc",
       $top: "1",
       loadAttributes: "simple",
     },
   });
 
-  // Ensure we have an array and get the first event
-  const events = Array.isArray(featuredEvents)
-    ? featuredEvents
-    : [featuredEvents];
-  const featuredEvent = events[0];
+  const rawEvents = Array.isArray(response) ? response : [response];
+  const featuredEvent = rawEvents[0];
 
   if (!featuredEvent) {
-    throw new Error("No featured event found");
+    return null;
   }
+
+  const attr = featuredEvent.attributeValues ?? {};
+  const eventUrl =
+    attr?.featuredVolunteerEventURL?.value?.trim() || attr.url?.value || "";
 
   // Transform to match Event type from events loader
   const event: Event = {
@@ -77,26 +79,14 @@ const fetchFeaturedEvent = async (): Promise<Event> => {
     expireDateTime: featuredEvent.expireDateTime,
     startDate: "", // Will be calculated below
     startDateTime: featuredEvent.startDateTime,
-    image: createImageUrlFromGuid(
-      featuredEvent.attributeValues?.image?.value || ""
-    ),
+    image: createImageUrlFromGuid(attr.image?.value || ""),
     attributeValues: {
-      campus: featuredEvent.attributeValues?.campus
-        ? {
-            value: featuredEvent.attributeValues.campus.value,
-          }
-        : undefined,
-      summary: {
-        value: featuredEvent.attributeValues?.summary?.value || "",
-      },
+      campus: attr.campus ? { value: attr.campus.value } : undefined,
+      summary: { value: attr.summary?.value || "" },
       image: {
-        value: createImageUrlFromGuid(
-          featuredEvent.attributeValues?.image?.value || ""
-        ),
+        value: createImageUrlFromGuid(attr.image?.value || ""),
       },
-      url: {
-        value: featuredEvent.attributeValues?.url?.value || "",
-      },
+      url: { value: eventUrl },
     },
   };
 
@@ -119,7 +109,7 @@ export type LoaderReturnType = {
   missionTrips: Record<string, Trip[]>;
   mockCommunityData: CommunityCard[];
   mockRegionData: RegionCard[];
-  featuredEvent: Event;
+  featuredEvent: Event | null;
 };
 
 export async function loader({ request: _request }: LoaderFunctionArgs) {

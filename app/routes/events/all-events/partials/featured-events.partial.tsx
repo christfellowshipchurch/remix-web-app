@@ -20,7 +20,7 @@ export function FeaturedEvents() {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
   return (
@@ -54,12 +54,10 @@ const FeaturedEventsHits = () => {
 
   return (
     <>
-      <div className="content-padding">
-        <FeaturedEventCard card={firstHit} />
-      </div>
+      <FeaturedEventCard card={firstHit} />
 
       {/* Desktop Layout */}
-      <div className="hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start content-padding">
+      <div className="hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start">
         {remainingHits?.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
@@ -116,7 +114,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
       year: "numeric",
       month: "long",
       day: "numeric",
-    },
+    }
   );
 
   return (
@@ -127,7 +125,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
         contentChannelId: "78", // EVENT type from builder-utils.ts
         contentType: "EVENTS",
         name: hit.title,
-        summary: hit.summary,
+        summary: hit.summary || "",
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
         startDate: formattedDate,

@@ -36,7 +36,10 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
 
       {data.subtitle && (
         <h3
-          className={`text-text-secondary text-lg font-extrabold tracking-widest`}
+          className={cn(
+            "text-lg font-extrabold tracking-widest",
+            !isDark ? "text-text-secondary" : "text-white"
+          )}
         >
           {data.subtitle}
         </h3>

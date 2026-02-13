@@ -6,6 +6,7 @@ import { Configure, Hits, InstantSearch } from "react-instantsearch";
 import { useMemo } from "react";
 import { ContentItemHit } from "~/routes/search/types";
 import {
+  EVENTS_INDEX,
   EventsClearFiltersText,
   EventsTagsRefinementList,
 } from "../components/events-tags-refinement.component";
@@ -18,14 +19,14 @@ export const AllEvents = () => {
     useLoaderData<EventReturnType>();
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
   return (
     <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <InstantSearch
-          indexName="dev_daniel_contentItems"
+          indexName={EVENTS_INDEX}
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -40,10 +41,7 @@ export const AllEvents = () => {
             <EventsClearFiltersText />
           </div>
 
-          <Configure
-            filters='contentType:"Event" AND isFeatured:false'
-            hitsPerPage={9}
-          />
+          <Configure filters='contentType:"Event"' hitsPerPage={9} />
 
           {/* Filters */}
           <div className="flex gap-6 flex-col md:flex-row md:flex-nowrap px-1 pb-4 overflow-y-visible mt-10 mb-12 md:mt-14 lg:mb-24 xl:mb-28">
@@ -57,6 +55,13 @@ export const AllEvents = () => {
             hitComponent={({ hit }: { hit: ContentItemHit }) => {
               return <EventHit hit={hit} />;
             }}
+            transformItems={(items) =>
+              [...items].sort(
+                (a, b) =>
+                  new Date(b.startDateTime).getTime() -
+                  new Date(a.startDateTime).getTime()
+              )
+            }
             classNames={{
               list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
               item: "w-full",
@@ -77,7 +82,7 @@ const EventHit = ({ hit }: { hit: ContentItemHit }) => {
       year: "numeric",
       month: "long",
       day: "numeric",
-    },
+    }
   );
 
   return (
@@ -92,9 +97,11 @@ const EventHit = ({ hit }: { hit: ContentItemHit }) => {
         pathname: `/events/${hit.url}`,
         startDate: formattedDate,
         location:
-          hit.locations && hit.locations.length > 1
+          hit.eventLocations && hit.eventLocations.length > 1
             ? "Multiple Locations"
-            : hit.locations?.[0]?.name || "Christ Fellowship Church",
+            : hit.eventLocations?.[0] ||
+              hit.locations?.[0]?.name ||
+              "Christ Fellowship Church",
       }}
     />
   );

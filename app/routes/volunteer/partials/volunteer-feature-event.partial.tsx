@@ -6,6 +6,11 @@ import HTMLRenderer from "~/primitives/html-renderer";
 
 export function VolunteerFeaturedEvent() {
   const { featuredEvent } = useLoaderData<LoaderReturnType>();
+
+  if (!featuredEvent) {
+    return null;
+  }
+
   const { title, content, attributeValues } = featuredEvent;
 
   return (
