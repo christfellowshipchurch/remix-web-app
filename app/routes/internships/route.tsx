@@ -7,6 +7,8 @@ import ProgramDetails, { ProgramDetailsData } from "./partials/program-details";
 import InternshipsFAQs from "./partials/faq";
 import InternshipsTestimonials from "./partials/testimonials";
 
+export { meta } from "./meta";
+
 const programDetailsData: ProgramDetailsData[] = [
   {
     title: "Duration",

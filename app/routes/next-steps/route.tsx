@@ -1,4 +1,5 @@
 import type { MetaFunction } from "react-router-dom";
+import { createMeta } from "~/lib/meta-utils";
 import { HeroSection } from "./partials/hero.partial";
 import { NextStepsSection } from "./partials/next-steps.partial";
 import { JourneySection } from "./partials/journey.partial";
@@ -6,14 +7,12 @@ import { FAQSection } from "./partials/faq.partial";
 import { HelpSection } from "./partials/help.partial";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Next Steps - Christ Fellowship Church" },
-    {
-      name: "description",
-      content:
-        "Find your next step at Christ Fellowship Church. Join a group, take a class, or serve with others.",
-    },
-  ];
+  return createMeta({
+    title: "Next Steps",
+    description:
+      "Find your next step at Christ Fellowship Church. Join a group, take a class, or serve with others.",
+    path: "/next-steps",
+  });
 };
 
 export default function NextSteps() {

@@ -1,11 +1,11 @@
-import { MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router-dom";
+import { createMeta } from "~/lib/meta-utils";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Daily Devotional | Christ Fellowship Church" },
-    {
-      name: "description",
-      content: "Daily Devotional from Christ Fellowship Church.",
-    },
-  ];
+  return createMeta({
+    title: "Daily Devotional",
+    description:
+      "Daily devotional from Christ Fellowship Church. Start each day with Scripture and reflection.",
+    path: "/daily-devo",
+  });
 };
