@@ -1,6 +1,11 @@
-import { useLoaderData } from "react-router-dom";
-import { InstantSearch, Configure, useHits } from "react-instantsearch";
-import { useMemo, useState, useEffect } from "react";
+import { useLoaderData, useSearchParams, useLocation } from "react-router-dom";
+import {
+  InstantSearch,
+  Configure,
+  useHits,
+  useInstantSearch,
+} from "react-instantsearch";
+import { useMemo, useState, useEffect, useRef } from "react";
 
 import { SectionTitle } from "~/components";
 import { ResourceCard } from "~/primitives/cards/resource-card";
@@ -12,17 +17,73 @@ import {
 } from "~/components/hubs-tags-refinement";
 import { createSearchClient } from "~/lib/create-search-client";
 import { AllMessagesLoaderReturnType } from "../loader";
+import { parseAllMessagesUrlState } from "../all-messages-url-state";
+import {
+  createAllMessagesInstantSearchRouter,
+  createAllMessagesStateMapping,
+} from "../all-messages-instantsearch-router";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 
+const INDEX_NAME = "dev_contentItems";
+
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B (routing). */
 export function AllMessages() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<AllMessagesLoaderReturnType>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  const searchParamsRef = useRef(searchParams);
+  const setSearchParamsRef = useRef(setSearchParams);
+  const pathnameRef = useRef(location.pathname);
+  const onUpdateCallbackRef = useRef<
+    ((route: ReturnType<typeof parseAllMessagesUrlState>) => void) | null
+  >(null);
+
+  searchParamsRef.current = searchParams;
+  setSearchParamsRef.current = setSearchParams;
+  pathnameRef.current = location.pathname;
+
+  const router = useMemo(
+    () =>
+      createAllMessagesInstantSearchRouter({
+        searchParamsRef,
+        setSearchParamsRef,
+        pathnameRef,
+        onUpdateCallbackRef,
+      }),
+    []
+  );
+
+  const stateMapping = useMemo(() => createAllMessagesStateMapping(), []);
+
+  useEffect(() => {
+    const cb = onUpdateCallbackRef.current;
+    if (cb) cb(parseAllMessagesUrlState(searchParams));
+  }, [searchParams]);
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
   );
 
+  const routing = useMemo(
+    () => ({
+      router,
+      stateMapping,
+    }),
+    [router, stateMapping]
+  );
+
   const [allMessagesLoading, setAllMessagesLoading] = useState(true);
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseAllMessagesUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
 
   return (
     <section className="relative py-32 min-h-screen bg-white content-padding pagination-scroll-to">
@@ -34,8 +95,9 @@ export function AllMessages() {
         />
         {allMessagesLoading && <AllMessagesLoadingSkeleton />}
         <InstantSearch
-          indexName="dev_contentItems"
+          indexName={INDEX_NAME}
           searchClient={searchClient}
+          routing={routing}
           future={{
             preserveSharedStateOnUnmount: true,
           }}
@@ -48,8 +110,9 @@ export function AllMessages() {
           </div>
 
           {/* Results Grid */}
-          <AllMessagesHit setAllMessagesLoading={setAllMessagesLoading} />
-
+          <div className="min-h-[320px]">
+            <AllMessagesHit setAllMessagesLoading={setAllMessagesLoading} />
+          </div>
           <CustomPagination />
         </InstantSearch>
       </div>
@@ -63,14 +126,21 @@ const AllMessagesHit = ({
   setAllMessagesLoading: (allMessagesLoading: boolean) => void;
 }) => {
   const { items } = useHits<ContentItemHit>();
+  const { status } = useInstantSearch();
 
   useEffect(() => {
-    if (items.length > 0) {
+    if (status === "idle") {
       setAllMessagesLoading(false);
     }
-  }, [items]);
+  }, [status, setAllMessagesLoading]);
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <p className="text-text-secondary text-center py-8">
+        No messages found. Try adjusting your filters or search.
+      </p>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center">

@@ -24,7 +24,7 @@ export function FeaturedEvents() {
   );
 
   return (
-    <div className="w-full py-28 bg-gray">
+    <div className="w-full py-28 content-padding bg-gray">
       <div className="flex flex-col max-w-screen-content mx-auto">
         <InstantSearch
           indexName="dev_daniel_contentItems"
@@ -65,7 +65,7 @@ const FeaturedEventsHits = () => {
 
       {/* Mobile Layout - Carousel */}
       {remainingHits.length > 0 && (
-        <div className="mt-12 md:hidden">
+        <div className="-ml-5 md:ml-0 mt-12 md:hidden">
           <Carousel
             opts={{
               align: "start",

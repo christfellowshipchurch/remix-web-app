@@ -10,6 +10,7 @@ export function DesktopGroupFilters({
   setCoordinates,
   ageInput,
   setAgeInput,
+  onClearAllToUrl,
 }: {
   coordinates: {
     lat: number | null;
@@ -19,10 +20,11 @@ export function DesktopGroupFilters({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null,
+    } | null
   ) => void;
   ageInput: string;
   setAgeInput: (age: string) => void;
+  onClearAllToUrl?: () => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -69,9 +71,9 @@ export function DesktopGroupFilters({
   return (
     <div
       ref={containerRef}
-      className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center"
+      className="flex gap-4 bg-white col-span-1 h-full items-center"
     >
-      <div className="hidden lg:flex gap-4 w-full">
+      <div className="hidden lg:flex gap-4">
         {/* Location Select Box */}
         <div
           className={cn(dropdownButtonStyles)}
@@ -227,16 +229,16 @@ export function DesktopGroupFilters({
         <div
           className={cn(
             "absolute right-0 top-[80px] border-t border-neutral-300",
-            "size-full max-w-[484px]",
-            "hidden md:block",
+            "w-full max-w-[484px] h-auto max-h-[85vh] md:max-h-none flex flex-col",
+            "hidden md:flex",
             hasInteracted
               ? activeDropdown === "allFilters"
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-                ? "z-1"
-                : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300",
+              ? "z-1"
+              : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300"
           )}
         >
           <AllGroupFiltersPopup
@@ -245,6 +247,7 @@ export function DesktopGroupFilters({
             setAgeInput={setAgeInput}
             coordinates={coordinates}
             setCoordinates={setCoordinates}
+            onClearAllToUrl={onClearAllToUrl}
           />
         </div>
       </div>

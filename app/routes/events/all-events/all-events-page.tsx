@@ -6,12 +6,10 @@ import { AllEvents } from "./partials/all-events";
 export function AllEventsPage() {
   return (
     <div className="flex flex-col items-center">
-      {/* Update to Video Header */}
       <DynamicHero
         customTitle="Events"
         imagePath="/assets/images/events-hero-bg.jpg"
       />
-
       <FeaturedEvents />
       <AllEvents />
     </div>

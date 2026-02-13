@@ -7,9 +7,12 @@ import { CollectionItem } from "~/routes/page-builder/types";
 export const ResourceCard = ({
   resource,
   className,
+  linkState,
 }: {
   resource: CollectionItem;
   className?: string;
+  /** Optional state to pass to the Link (e.g. { fromEvents: '/events?q=...' } for back navigation). */
+  linkState?: Record<string, unknown>;
 }) => {
   const { summary, startDate, location, author, image, name, pathname } =
     resource;
@@ -17,6 +20,7 @@ export const ResourceCard = ({
   return (
     <Link
       to={pathname}
+      state={linkState}
       className={cn(
         "flex flex-col w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300 border border-neutral-lighter rounded-lg",
         className

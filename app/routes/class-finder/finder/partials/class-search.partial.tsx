@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
 
@@ -13,17 +13,58 @@ import { cn } from "~/lib/utils";
 import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
 import { DesktopClassFilters } from "../components/popups/class-filters";
 import { ClassHitType } from "../../types";
+import {
+  parseClassFinderUrlState,
+  classFinderUrlStateToParams,
+  classFinderEmptyState,
+  type ClassFinderUrlState,
+} from "../../class-finder-url-state";
+import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
+import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+
+const INDEX_NAME = "dev_Classes";
+
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2. */
+function getInitialStateFromUrl(searchParams: URLSearchParams) {
+  const urlState = parseClassFinderUrlState(searchParams);
+  const initialUiState: { [key: string]: Record<string, unknown> } = {};
+  if (
+    urlState.query !== undefined ||
+    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
+  ) {
+    initialUiState[INDEX_NAME] = {};
+    if (urlState.query !== undefined)
+      initialUiState[INDEX_NAME].query = urlState.query;
+    if (
+      urlState.refinementList &&
+      Object.keys(urlState.refinementList).length > 0
+    ) {
+      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
+    }
+  }
+  return { coordinates: null, initialUiState };
+}
 
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [coordinates, setCoordinates] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: classFinderUrlStateToParams,
+    debounceMs: 400,
+  });
+
+  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [instantSearchKey, setInstantSearchKey] = useState(0);
 
   // Scroll handling effect
   useEffect(() => {
@@ -59,8 +100,39 @@ export const ClassSearch = () => {
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {},
+    {}
   );
+
+  const clearAllFiltersFromUrl = () => {
+    cancelDebounce();
+    setSearchParams(classFinderUrlStateToParams(classFinderEmptyState), {
+      replace: true,
+      preventScrollReset: true,
+    });
+    setInstantSearchKey((k) => k + 1);
+  };
+
+  const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    const urlState: ClassFinderUrlState = {
+      ...parseClassFinderUrlState(searchParams),
+      query: (indexUiState.query as string) ?? undefined,
+      refinementList:
+        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
+    };
+    debouncedUpdateUrl(urlState);
+  };
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseClassFinderUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
+
+  const fromClassFinderUrl =
+    location.pathname +
+    (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
     <div
@@ -68,8 +140,21 @@ export const ClassSearch = () => {
       id="search"
     >
       <InstantSearch
-        indexName="dev_Classes"
+        key={instantSearchKey}
+        indexName={INDEX_NAME}
         searchClient={searchClient}
+        initialUiState={
+          instantSearchKey > 0
+            ? { [INDEX_NAME]: {} }
+            : Object.keys(initial.initialUiState).length > 0
+            ? initial.initialUiState
+            : undefined
+        }
+        onStateChange={({ uiState }) => {
+          const indexState = uiState[INDEX_NAME];
+          if (indexState)
+            syncUrlFromUiState(indexState as Record<string, unknown>);
+        }}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
@@ -77,18 +162,16 @@ export const ClassSearch = () => {
         <ResponsiveConfigure
           ageInput=""
           selectedLocation={null}
-          coordinates={coordinates}
+          coordinates={null}
         />
         <div className="flex flex-col">
-          {/* Desktop Filters Section */}
           <div
             className={cn(
               "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0",
+              isNavbarOpen ? "top-18 md:top-20" : "top-0"
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              {/* Group Search Box */}
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
                 <Icon name="searchAlt" className="text-neutral-default ml-3" />
                 <SearchBox
@@ -108,17 +191,16 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              {/* Desktop Filters */}
-              <div className="hidden md:block">
-                <DesktopClassFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
+              <div className="hidden md:flex items-center gap-4">
+                <DesktopClassFilters onClearAllToUrl={clearAllFiltersFromUrl} />
+                <AlgoliaFinderClearAllButton
+                  className="hidden lg:block"
+                  onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
           </div>
 
-          {/* Mobile Filters */}
           <div className="md:hidden bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
             <div className="content-padding">
               <Button
@@ -135,13 +217,12 @@ export const ClassSearch = () => {
                 "absolute transition-all duration-300",
                 isMobileOpen
                   ? "z-4 opacity-100 top-[calc(102%)]"
-                  : "-z-1 opacity-0",
+                  : "-z-1 opacity-0 pointer-events-none"
               )}
             >
               <AllClassFiltersPopup
                 onHide={() => setIsMobileOpen(false)}
-                coordinates={coordinates}
-                setCoordinates={setCoordinates}
+                onClearAllToUrl={clearAllFiltersFromUrl}
               />
             </div>
           </div>
@@ -149,7 +230,7 @@ export const ClassSearch = () => {
           {/* Class Search Results / Class Type Filters */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
-              <CustomClassTypeFacets />
+              <CustomClassTypeFacets fromClassFinderUrl={fromClassFinderUrl} />
             </div>
           </div>
         </div>
@@ -170,7 +251,11 @@ interface GroupedClassType {
   language: "English" | "Español" | "Multiple Languages";
 }
 
-const CustomClassTypeFacets = () => {
+const CustomClassTypeFacets = ({
+  fromClassFinderUrl,
+}: {
+  fromClassFinderUrl?: string;
+}) => {
   const { items } = useHits<ClassHitType>();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -264,16 +349,22 @@ const CustomClassTypeFacets = () => {
 
   return (
     <>
-      <p className="text-text-secondary mb-6">
-        {mappedClassTypes.length} Results Found
-      </p>
+      <div className="min-h-[320px]">
+        <p className="text-text-secondary mb-6">
+          {mappedClassTypes.length} Results Found
+        </p>
 
-      <div className="flex items-center justify-center md:items-start md:justify-start w-full">
         <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
-            {paginatedItems.map((hit) => (
-              <ClassHitComponent key={hit.objectID} hit={hit} />
-            ))}
+          <div className="flex items-center justify-center md:items-start md:justify-start w-full">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
+              {paginatedItems.map((hit) => (
+                <ClassHitComponent
+                  key={hit.objectID}
+                  hit={hit}
+                  fromClassFinderUrl={fromClassFinderUrl}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

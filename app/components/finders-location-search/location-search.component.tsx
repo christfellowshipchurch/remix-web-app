@@ -1,6 +1,6 @@
 import { useFetcher } from "react-router-dom";
 import { cn, isValidZip } from "~/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
@@ -24,32 +24,48 @@ export const FinderLocationSearch = ({
   const [inputValue, setInputValue] = useState<string>("");
   const [isGeocoding, setIsGeocoding] = useState(false);
   const geocodeFetcher = useFetcher();
+  const lastSubmittedZipRef = useRef<string | null>(null);
 
-  // Handle zip code geocoding
+  // Submit only when zip changes to a new valid 5 digits (avoid re-submitting after fetcher returns to idle).
+  // Only clear coordinates when the user has typed something that's not a valid zip (not when empty),
+  // so that clicking "Current Location" (which clears the input) doesn't wipe coordinates before getCurrentPosition runs.
   useEffect(() => {
     if (inputValue.length === 5 && isValidZip(inputValue)) {
-      setIsGeocoding(true);
-      const formData = new FormData();
-      formData.append("address", inputValue);
-      geocodeFetcher.submit(formData, {
-        method: "post",
-        action: "/google-geocode",
-      });
-    } else {
+      if (
+        lastSubmittedZipRef.current !== inputValue &&
+        geocodeFetcher.state === "idle"
+      ) {
+        lastSubmittedZipRef.current = inputValue;
+        setIsGeocoding(true);
+        const formData = new FormData();
+        formData.append("address", inputValue);
+        geocodeFetcher.submit(formData, {
+          method: "post",
+          action: "/google-geocode",
+        });
+      }
+    } else if (inputValue.length > 0) {
+      lastSubmittedZipRef.current = null;
       setCoordinates(null);
+    } else {
+      lastSubmittedZipRef.current = null;
     }
-  }, [inputValue, setCoordinates]);
+  }, [inputValue, setCoordinates, geocodeFetcher.state]);
 
   // Handle geocoding response
   useEffect(() => {
-    if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
-      const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
-      setCoordinates({ lat, lng });
-    }
-    if (geocodeFetcher.data) {
+    if (geocodeFetcher.state === "idle" && geocodeFetcher.data) {
+      const location = geocodeFetcher.data?.results?.[0]?.geometry?.location;
+      if (
+        location &&
+        typeof location.lat === "number" &&
+        typeof location.lng === "number"
+      ) {
+        setCoordinates({ lat: location.lat, lng: location.lng });
+      }
       setIsGeocoding(false);
     }
-  }, [geocodeFetcher.data, setCoordinates]);
+  }, [geocodeFetcher.data, geocodeFetcher.state, setCoordinates]);
 
   const handleCurrentLocationClick = () => {
     if (!navigator.geolocation) return;
