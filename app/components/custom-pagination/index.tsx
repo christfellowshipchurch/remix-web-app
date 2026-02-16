@@ -2,32 +2,31 @@ import { usePagination, UsePaginationProps } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
 
 export const CustomPagination = (props: UsePaginationProps) => {
-  const { currentRefinement, isFirstPage, isLastPage, refine, createURL } =
+  const { currentRefinement, isFirstPage, isLastPage, refine } =
     usePagination(props);
 
-  // Ensure to add "pagination-scroll-to" class to the element you want to scroll to
-  const handlePageChange = (newPage: number) => {
-    refine(newPage);
-    // Scroll to the pagination-scroll-to element
+  const handlePageChange = (newPageIndex: number) => {
+    refine(newPageIndex);
     const scrollTarget = document.querySelector(".pagination-scroll-to");
     if (scrollTarget) {
       scrollTarget.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const prevIndex = currentRefinement - 1;
+  const nextIndex = currentRefinement + 1;
+
   return (
     <div className="flex items-center justify-start gap-4 mt-16">
-      {/* Previous Button */}
       <PaginationButton
         isDisabled={isFirstPage}
-        onClick={() => handlePageChange(currentRefinement - 1)}
-        href={createURL(currentRefinement - 1)}
+        onClick={() => handlePageChange(prevIndex)}
+        href="#"
         className="w-12 h-12"
       >
         <Icon name="chevronLeft" size={24} />
       </PaginationButton>
 
-      {/* Current Page */}
       <PaginationButton
         isActive={true}
         onClick={() => {}}
@@ -37,11 +36,10 @@ export const CustomPagination = (props: UsePaginationProps) => {
         {currentRefinement + 1}
       </PaginationButton>
 
-      {/* Next Button */}
       <PaginationButton
         isDisabled={isLastPage}
-        onClick={() => handlePageChange(currentRefinement + 1)}
-        href={createURL(currentRefinement + 1)}
+        onClick={() => handlePageChange(nextIndex)}
+        href="#"
         className="w-12 h-12"
       >
         <Icon name="chevronRight" size={24} />

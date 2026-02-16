@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useInstantSearch, useRefinementList } from "react-instantsearch";
 
 export const HubsTagsRefinementList = ({
@@ -16,12 +16,12 @@ export const HubsTagsRefinementList = ({
 }) => {
   const { items } = useRefinementList({ attribute: tagName });
   const { setIndexUiState } = useInstantSearch();
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleTagClick = (tag: string | null) => {
-    setSelectedTag(tag);
+  /** Derived from refinement state so UI stays in sync after remount or URL-driven state (e.g. Articles/Messages). */
+  const selectedTag = items.find((item) => item.isRefined)?.value ?? null;
 
+  const handleTagClick = (tag: string | null) => {
     // Scroll to the beginning of the wrapper element
     setTimeout(() => {
       if (wrapperRef.current) {

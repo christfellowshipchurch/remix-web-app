@@ -7,14 +7,17 @@ import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
 import { AppSection } from "./home/partials/app.partial";
 import { HeroSection } from "./home/partials/hero.partial";
 import { AChanceSection } from "./home/partials/a-chance.partial";
+import { createMeta } from "~/lib/meta-utils";
 
 export { loader } from "./home/loader"; // Using the about loader for the home page to grab author data for the leaders grid and scroll components
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Christ Fellowship Web App v3" },
-    { name: "description", content: "Welcome to the CFDP!" },
-  ];
+  return createMeta({
+    title: "Christ Fellowship Church | Get the Most Out of Life",
+    description:
+      "Christ Fellowship Church is a multisite church in South Florida and online. Find services, groups, classes, and ways to grow in faith and serve your community.",
+    path: "/",
+  });
 };
 
 export default function HomePage() {

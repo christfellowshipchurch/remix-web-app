@@ -6,19 +6,9 @@ import { AllClassFiltersPopup } from "~/routes/class-finder/finder/components/po
 import { cn } from "~/lib/utils";
 
 export function DesktopClassFilters({
-  coordinates,
-  setCoordinates,
+  onClearAllToUrl,
 }: {
-  coordinates: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  setCoordinates: (
-    coordinates: {
-      lat: number | null;
-      lng: number | null;
-    } | null,
-  ) => void;
+  onClearAllToUrl?: () => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -68,32 +58,6 @@ export function DesktopClassFilters({
       className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center"
     >
       <div className="hidden lg:flex gap-4 w-full">
-        {/* Location Select Box */}
-        <div
-          className={cn(dropdownButtonStyles)}
-          onClick={() => toggleDropdown("location")}
-        >
-          <p>Location</p>
-          <Icon name="chevronDown" />
-
-          <GroupsFinderDropdwnPopup
-            popupTitle="Location"
-            data={{
-              content: [
-                {
-                  attribute: "campus",
-                  isLocation: true,
-                  coordinates: coordinates,
-                  setCoordinates: setCoordinates,
-                  showFooter: true,
-                },
-              ],
-            }}
-            onHide={closeAllDropdowns}
-            showSection={activeDropdown === "location"}
-          />
-        </div>
-
         {/* Topic */}
         <div
           className={cn(dropdownButtonStyles)}
@@ -180,22 +144,21 @@ export function DesktopClassFilters({
         <div
           className={cn(
             "absolute right-0 top-[80px] border-t border-neutral-300",
-            "size-full max-w-[484px]",
-            "hidden md:block",
+            "w-full max-w-[484px] h-auto max-h-[85vh] md:max-h-none flex flex-col",
+            "hidden md:flex",
             hasInteracted
               ? activeDropdown === "allFilters"
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-                ? "z-1"
-                : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300",
+              ? "z-1"
+              : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300"
           )}
         >
           <AllClassFiltersPopup
             onHide={closeAllDropdowns}
-            coordinates={coordinates}
-            setCoordinates={setCoordinates}
+            onClearAllToUrl={onClearAllToUrl}
           />
         </div>
       </div>

@@ -33,7 +33,7 @@ interface AllFiltersRefinementContentProps {
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null,
+    } | null
   ) => void;
 }
 
@@ -90,9 +90,28 @@ export const AllFiltersRefinementContent = ({
       "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy",
   };
 
+  const MEETING_DAYS_ORDER = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const sortedItems =
+    content.attribute === "meetingDays"
+      ? [...items].sort(
+          (a, b) =>
+            MEETING_DAYS_ORDER.indexOf(a.label) -
+            MEETING_DAYS_ORDER.indexOf(b.label)
+        )
+      : items;
+
   const renderButton = (
     item: { label: string; value: string; isRefined: boolean; count: number },
-    index: number,
+    index: number
   ) => (
     <Button
       key={index}
@@ -100,7 +119,7 @@ export const AllFiltersRefinementContent = ({
       className={cn(
         styles.button,
         content.isMeetingType && styles.meetingTypeButton,
-        item.isRefined && styles.buttonRefined,
+        item.isRefined && styles.buttonRefined
       )}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
@@ -120,7 +139,7 @@ export const AllFiltersRefinementContent = ({
 
   const renderCheckbox = (
     item: { label: string; value: string; isRefined: boolean; count: number },
-    index: number,
+    index: number
   ) => (
     <div
       key={index}
@@ -133,7 +152,7 @@ export const AllFiltersRefinementContent = ({
       <div
         className={cn(
           "w-4 h-4 border border-ocean rounded-sm bg-[#E7F9FE] hover:bg-ocean transition-all duration-300",
-          item.isRefined && "bg-ocean",
+          item.isRefined && "bg-ocean"
         )}
       />
       <div className={styles.checkbox}>
@@ -151,7 +170,7 @@ export const AllFiltersRefinementContent = ({
       className={cn(
         "cursor-default",
         "flex flex-col gap-4 overflow-hidden",
-        showSection ? "h-auto" : "h-0",
+        showSection ? "h-auto" : "h-0"
       )}
     >
       <div className="flex flex-col gap-5">
@@ -165,10 +184,10 @@ export const AllFiltersRefinementContent = ({
                 "flex bg-white pr-4",
                 content.isCheckbox && content.checkboxLayout === "vertical"
                   ? "gap-4 flex-col"
-                  : "flex-wrap gap-y-2 gap-x-2",
+                  : "flex-wrap gap-y-2 gap-x-2"
               )}
             >
-              {items.map((item, index) => renderButton(item, index))}
+              {sortedItems.map((item, index) => renderButton(item, index))}
             </div>
 
             {/* Location Search */}
@@ -239,7 +258,7 @@ export const AllFiltersRefinementContent = ({
                 <div className="flex flex-wrap gap-y-2 gap-x-2">
                   {items
                     .filter((item) =>
-                      spiritualGrowthTopics.includes(item.label),
+                      spiritualGrowthTopics.includes(item.label)
                     )
                     .map((item, index) => (
                       <div key={index}>{renderButton(item, index)}</div>
@@ -284,10 +303,10 @@ export const AllFiltersRefinementContent = ({
                 "flex bg-white pr-4",
                 content.isCheckbox && content.checkboxLayout === "vertical"
                   ? "gap-4 flex-col"
-                  : "flex-wrap gap-y-2 gap-x-2",
+                  : "flex-wrap gap-y-2 gap-x-2"
               )}
             >
-              {items.map((item, index) => (
+              {sortedItems.map((item, index) => (
                 <div key={index}>
                   {content.isCheckbox
                     ? renderCheckbox(item, index)
@@ -322,12 +341,12 @@ export const AllFiltersRefinementContent = ({
                   "flex items-center justify-between w-full rounded-lg p-3",
                   "border border-black text-neutral-default",
                   "focus:outline-none focus:ring-2 focus:ring-transparent",
-                  "appearance-none",
+                  "appearance-none"
                 )}
                 aria-label="Select meeting time"
               >
                 <option value="">Select</option>
-                {items.map((item) => (
+                {sortedItems.map((item) => (
                   <option key={item.value} value={item.value}>
                     {item.label}
                   </option>
@@ -335,7 +354,7 @@ export const AllFiltersRefinementContent = ({
               </select>
               <div
                 className={cn(
-                  "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
+                  "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
                 )}
               >
                 <Icon name="chevronDown" size={18} />

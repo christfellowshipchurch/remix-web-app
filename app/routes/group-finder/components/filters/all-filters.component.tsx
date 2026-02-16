@@ -10,6 +10,7 @@ export const AllGroupFiltersPopup = ({
   setAgeInput,
   coordinates,
   setCoordinates,
+  onClearAllToUrl,
 }: {
   onHide: () => void;
   ageInput: string;
@@ -24,6 +25,7 @@ export const AllGroupFiltersPopup = ({
       lng: number | null;
     } | null
   ) => void;
+  onClearAllToUrl?: () => void;
 }) => {
   const [showCampus, setShowCampus] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
@@ -38,6 +40,13 @@ export const AllGroupFiltersPopup = ({
   const { setIndexUiState } = useInstantSearch();
 
   const clearAllRefinements = () => {
+    onClearAllToUrl?.();
+    setIndexUiState((state) => ({
+      ...state,
+      query: "",
+      refinementList: {},
+      page: 0,
+    }));
     setSelectedValue("");
     setCoordinates?.({ lat: null, lng: null });
     setAgeInput?.("");
@@ -48,19 +57,15 @@ export const AllGroupFiltersPopup = ({
     setShowMeetingFrequency(false);
     setShowChildCare(false);
     setShowLanguage(false);
-    setIndexUiState((state) => ({
-      ...state,
-      refinementList: {},
-    }));
   };
 
   return (
-    <div className="bg-white flex flex-col shadow-md w-screen md:overflow-y-scroll md:max-h-[85vh]">
-      {/* Title Section */}
-      <FiltersHeader onHide={onHide} />
+    <div className="bg-white flex flex-col shadow-md w-full h-auto min-h-0 max-h-[85vh] md:max-h-none overflow-hidden">
+      <div className="flex-shrink-0">
+        <FiltersHeader onHide={onHide} />
+      </div>
 
-      {/* Filters Section */}
-      <div className="flex flex-col gap-4 px-4">
+      <div className="flex flex-col gap-4 px-4 overflow-y-auto min-h-0 flex-1">
         <AllFiltersFilterSection
           title="Location"
           attribute="meetingType"
@@ -128,8 +133,9 @@ export const AllGroupFiltersPopup = ({
         />
       </div>
 
-      {/* Bottom/Footer Section */}
-      <FiltersFooter onHide={onHide} onClearAll={clearAllRefinements} />
+      <div className="flex-shrink-0">
+        <FiltersFooter onHide={onHide} onClearAll={clearAllRefinements} />
+      </div>
     </div>
   );
 };

@@ -5,7 +5,13 @@ import { Link } from "react-router-dom";
 export const defaultLeaderPhoto =
   "https://cloudfront.christfellowship.church/GetAvatar.ashx?PhotoId=&AgeClassification=Adult&Gender=Unknown&RecordTypeId=1&Text=JC&Size=180&Style=icon&BackgroundColor=E4E4E7&ForegroundColor=A1A1AA";
 
-export function GroupHit({ hit }: { hit: GroupType }) {
+export function GroupHit({
+  hit,
+  fromGroupFinderUrl,
+}: {
+  hit: GroupType;
+  fromGroupFinderUrl?: string;
+}) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const preference = hit.groupFor;
 
@@ -71,6 +77,9 @@ export function GroupHit({ hit }: { hit: GroupType }) {
     <Link
       prefetch="intent"
       to={`/group-finder/${hit.objectID}`}
+      state={
+        fromGroupFinderUrl ? { fromGroupFinder: fromGroupFinderUrl } : undefined
+      }
       className="size-full"
     >
       <div

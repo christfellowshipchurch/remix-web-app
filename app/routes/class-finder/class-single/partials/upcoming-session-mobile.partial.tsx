@@ -1,9 +1,9 @@
 import { algoliasearch } from "algoliasearch";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { LoaderReturnType } from "../loader";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import { AllClassFiltersPopup } from "~/routes/class-finder/finder/components/popups/all-filters.component";
 import { Button } from "~/primitives/button/button.primitive";
 
@@ -11,15 +11,87 @@ import { Hits, InstantSearch, Stats } from "react-instantsearch";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 import { ResponsiveClassesSingleConfigure } from "./upcoming-sections.partial";
+import {
+  parseClassSingleUrlState,
+  classSingleUrlStateToParams,
+  classSingleEmptyState,
+  type ClassSingleUrlState,
+} from "../class-single-url-state";
+import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
+
+const INDEX_NAME = "dev_Classes";
+
+function getInitialStateFromUrl(searchParams: URLSearchParams) {
+  const urlState = parseClassSingleUrlState(searchParams);
+  const initialUiState: { [key: string]: Record<string, unknown> } = {};
+  if (
+    urlState.query !== undefined ||
+    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
+  ) {
+    initialUiState[INDEX_NAME] = {};
+    if (urlState.query !== undefined)
+      initialUiState[INDEX_NAME].query = urlState.query;
+    if (
+      urlState.refinementList &&
+      Object.keys(urlState.refinementList).length > 0
+    ) {
+      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
+    }
+  }
+  return { coordinates: null, initialUiState };
+}
 
 export function UpcomingSessionMobileSection() {
   const { classUrl, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [coordinates, setCoordinates] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: classSingleUrlStateToParams,
+    debounceMs: 400,
+  });
+
+  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [instantSearchKey, setInstantSearchKey] = useState(0);
+
+  const clearAllFiltersFromUrl = () => {
+    cancelDebounce();
+    setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
+      replace: true,
+      preventScrollReset: true,
+    });
+    setInstantSearchKey((k) => k + 1);
+  };
+
+  const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    const urlState: ClassSingleUrlState = {
+      ...parseClassSingleUrlState(searchParams),
+      query: (indexUiState.query as string) ?? undefined,
+      refinementList:
+        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
+    };
+    debouncedUpdateUrl(urlState);
+  };
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseClassSingleUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
+
+  const initialUiState =
+    instantSearchKey > 0
+      ? { [INDEX_NAME]: {} }
+      : Object.keys(initial.initialUiState).length > 0
+      ? initial.initialUiState
+      : undefined;
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -40,8 +112,15 @@ export function UpcomingSessionMobileSection() {
         id="search"
       >
         <InstantSearch
-          indexName="dev_Classes"
+          key={instantSearchKey}
+          indexName={INDEX_NAME}
           searchClient={searchClient}
+          initialUiState={initialUiState}
+          onStateChange={({ uiState }) => {
+            const indexState = uiState[INDEX_NAME];
+            if (indexState)
+              syncUrlFromUiState(indexState as Record<string, unknown>);
+          }}
           future={{
             preserveSharedStateOnUnmount: true,
           }}
@@ -49,7 +128,6 @@ export function UpcomingSessionMobileSection() {
           <ResponsiveClassesSingleConfigure
             classUrl={classUrl}
             selectedLocation={null}
-            coordinates={coordinates}
           />
           <div className="flex flex-col">
             <div className="bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
@@ -69,14 +147,13 @@ export function UpcomingSessionMobileSection() {
                   "absolute transition-all duration-300",
                   isMobileOpen
                     ? "z-4 opacity-100 top-[calc(99%)]"
-                    : "-z-1 opacity-0"
+                    : "-z-1 opacity-0 pointer-events-none"
                 )}
               >
                 <AllClassFiltersPopup
                   hideTopic={true}
                   onHide={() => setIsMobileOpen(false)}
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
+                  onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>

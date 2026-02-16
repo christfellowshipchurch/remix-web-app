@@ -5,12 +5,21 @@
 import { ClassHitType } from "../../types";
 import { Link } from "react-router-dom";
 
-export function ClassHitComponent({ hit }: { hit: ClassHitType }) {
+export function ClassHitComponent({
+  hit,
+  fromClassFinderUrl,
+}: {
+  hit: ClassHitType;
+  fromClassFinderUrl?: string;
+}) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
 
   return (
     <Link
       to={`/class-finder/${hit.classTypeUrl || hit.title}`}
+      state={
+        fromClassFinderUrl ? { fromClassFinder: fromClassFinderUrl } : undefined
+      }
       className="size-full"
     >
       <div

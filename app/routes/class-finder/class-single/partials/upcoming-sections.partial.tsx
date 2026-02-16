@@ -1,24 +1,96 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, Hits, Stats, Configure } from "react-instantsearch";
 
 import { cn } from "~/lib/utils";
 import { LoaderReturnType } from "../loader";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
 import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
 
 import { useResponsive } from "~/hooks/use-responsive";
 import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
+import {
+  parseClassSingleUrlState,
+  classSingleUrlStateToParams,
+  classSingleEmptyState,
+  type ClassSingleUrlState,
+} from "../class-single-url-state";
+import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
+import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+
+const INDEX_NAME = "dev_Classes";
+
+function getInitialStateFromUrl(searchParams: URLSearchParams) {
+  const urlState = parseClassSingleUrlState(searchParams);
+  const initialUiState: { [key: string]: Record<string, unknown> } = {};
+  if (
+    urlState.query !== undefined ||
+    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
+  ) {
+    initialUiState[INDEX_NAME] = {};
+    if (urlState.query !== undefined)
+      initialUiState[INDEX_NAME].query = urlState.query;
+    if (
+      urlState.refinementList &&
+      Object.keys(urlState.refinementList).length > 0
+    ) {
+      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
+    }
+  }
+  return { coordinates: null, initialUiState };
+}
 
 export const UpcomingSessionsSection = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classUrl } =
     useLoaderData<LoaderReturnType>();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [coordinates, setCoordinates] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(null);
+  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: classSingleUrlStateToParams,
+    debounceMs: 400,
+  });
+
+  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+
+  const [instantSearchKey, setInstantSearchKey] = useState(0);
+
+  const clearAllFiltersFromUrl = () => {
+    cancelDebounce();
+    setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
+      replace: true,
+      preventScrollReset: true,
+    });
+    setInstantSearchKey((k) => k + 1);
+  };
+
+  const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    const urlState: ClassSingleUrlState = {
+      ...parseClassSingleUrlState(searchParams),
+      query: (indexUiState.query as string) ?? undefined,
+      refinementList:
+        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
+    };
+    debouncedUpdateUrl(urlState);
+  };
+
+  useScrollToSearchResultsOnLoad(searchParams, (params) => {
+    const s = parseClassSingleUrlState(params);
+    return !!(
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      (s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  });
+
+  const initialUiState =
+    instantSearchKey > 0
+      ? { [INDEX_NAME]: {} }
+      : Object.keys(initial.initialUiState).length > 0
+      ? initial.initialUiState
+      : undefined;
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -32,22 +104,28 @@ export const UpcomingSessionsSection = () => {
       id="search"
     >
       <InstantSearch
-        indexName="dev_Classes"
+        key={instantSearchKey}
+        indexName={INDEX_NAME}
         searchClient={searchClient}
+        initialUiState={initialUiState}
+        onStateChange={({ uiState }) => {
+          const indexState = uiState[INDEX_NAME];
+          if (indexState)
+            syncUrlFromUiState(indexState as Record<string, unknown>);
+        }}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
       >
         <ResponsiveClassesSingleConfigure
           selectedLocation={null}
-          coordinates={coordinates}
           classUrl={classUrl}
         />
         <div className="flex flex-col">
           {/* Filters Section */}
           <div
             className={cn(
-              "bg-white content-padding shadow-sm select-none transition-all duration-300",
+              "bg-white content-padding md:shadow-sm select-none transition-all duration-300",
               "relative z-10"
             )}
           >
@@ -60,11 +138,10 @@ export const UpcomingSessionsSection = () => {
                 <div className="hidden lg:block h-full w-[1px] bg-text-secondary" />
               </div>
 
-              <div className="flex flex-row gap-4 w-fit overflow-x-visible scrollbar-hide relative">
-                {/* Filters */}
-                <UpcomingSessionFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
+              <div className="flex flex-row gap-4 w-fit overflow-x-visible scrollbar-hide relative items-center">
+                <UpcomingSessionFilters />
+                <AlgoliaFinderClearAllButton
+                  onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
@@ -105,14 +182,9 @@ export const UpcomingSessionsSection = () => {
 export const ResponsiveClassesSingleConfigure = ({
   selectedLocation,
   classUrl,
-  coordinates,
 }: {
   selectedLocation: string | null;
   classUrl: string;
-  coordinates: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
 
@@ -140,17 +212,9 @@ export const ResponsiveClassesSingleConfigure = ({
 
   return (
     <Configure
-      key={`${coordinates?.lat}-${coordinates?.lng}-${selectedLocation}-${classUrl}`}
+      key={`${selectedLocation}-${classUrl}`}
       hitsPerPage={hitsPerPage}
       filters={filters.length > 0 ? filters.join(" AND ") : undefined}
-      aroundLatLng={
-        coordinates?.lat && coordinates?.lng
-          ? `${coordinates.lat}, ${coordinates.lng}`
-          : undefined
-      }
-      aroundRadius="all"
-      aroundLatLngViaIP={false}
-      getRankingInfo={true}
     />
   );
 };

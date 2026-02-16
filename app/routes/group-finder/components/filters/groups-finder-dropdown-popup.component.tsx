@@ -57,10 +57,16 @@ export const GroupsFinderDropdwnPopup = ({
         "cursor-default absolute top-[65px] right-1/2 translate-x-1/2 z-4",
         "w-[330px] xl:w-[380px] flex flex-col gap-4 bg-white",
         "rounded-[1rem] border border-neutral-lighter overflow-hidden",
-        showSection ? "z-4 opacity-100" : "-left-9999 -z-1 opacity-0",
+        showSection
+          ? "z-4 opacity-100"
+          : "-left-[9999px] -z-1 opacity-0 pointer-events-none",
         className
       )}
-      style={style}
+      style={
+        showSection
+          ? style
+          : { ...style, left: "-9999px", pointerEvents: "none" }
+      }
     >
       <div className="flex items-center justify-between p-4 pb-1">
         <h3 className="text-xl font-bold text-black">{popupTitle}</h3>
@@ -141,6 +147,16 @@ const GroupsFinderDropdownPopupList = ({
     "Podcast",
   ];
 
+  const MEETING_DAYS_ORDER = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
   // Filter items based on category and popup title
   const getFilteredItems = () => {
     if (popupTitle === "Topics" && data.attribute === "topics") {
@@ -153,6 +169,13 @@ const GroupsFinderDropdownPopupList = ({
       } else if (data.title === "Community & Fun") {
         return items.filter((item) => communityFunTopics.includes(item.label));
       }
+    }
+    if (data.attribute === "meetingDays") {
+      return [...items].sort(
+        (a, b) =>
+          MEETING_DAYS_ORDER.indexOf(a.label) -
+          MEETING_DAYS_ORDER.indexOf(b.label)
+      );
     }
     return items;
   };
@@ -214,9 +237,10 @@ const GroupsFinderDropdownPopupList = ({
                 className={styles.input}
                 value={localAgeInput}
                 onChange={(e) => {
-                  setLocalAgeInput(e.target.value);
+                  const value = e.target.value;
+                  setLocalAgeInput(value);
                   if (setAgeInput) {
-                    setAgeInput(e.target.value);
+                    setAgeInput(value);
                   }
                 }}
                 onClick={(e) => e.stopPropagation()}
