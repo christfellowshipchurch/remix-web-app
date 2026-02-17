@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router";
+import { GroupConnectModal } from "~/components/modals/group-connect/group-connect-modal";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
@@ -85,13 +86,17 @@ export const GroupSingleBanner = ({
         </div>
 
         {/* Right Side - Button */}
-        <Button
-          intent="primary"
-          href="#todo"
-          className="min-w-0 px-2 md:px-4 lg:px-5 min-h-0 py-2 md:py-3 text-base lg:text-lg"
-        >
-          I'm Interested
-        </Button>
+        <GroupConnectModal
+          groupName={groupName}
+          buttonText="I'm Interested"
+          ModalButton={(props) => (
+            <Button
+              intent="primary"
+              className="min-w-0 px-2 md:px-4 lg:px-5 min-h-0 py-2 md:py-3 text-base lg:text-lg"
+              {...props}
+            />
+          )}
+        />
       </div>
     </div>
   );
