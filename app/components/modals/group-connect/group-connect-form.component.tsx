@@ -4,6 +4,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import { useFetcher } from "react-router-dom";
 import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
 import RadioButtons from "~/primitives/inputs/radio-buttons";
+import { pushFormEvent } from "~/lib/gtm";
 
 interface GroupConnectFormProps {
   groupName: string;
@@ -28,6 +29,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
       if (data.error) {
         setError(data.error);
       } else {
+        pushFormEvent("form_complete", "group_connect", "Group Connect");
         onSuccess();
       }
     }
@@ -57,7 +59,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
     if (age < 13) {
       setBirthDateError(
-        "You must be at least 13 years old to create an account."
+        "You must be at least 13 years old to create an account.",
       );
       setLoading(false);
       return;
