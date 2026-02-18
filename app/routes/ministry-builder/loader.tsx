@@ -1,4 +1,3 @@
-import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
 import {
@@ -80,7 +79,11 @@ export const fetchMinistryServices = async () => {
   return campusMinistryServices.flat();
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({
+  params,
+}: {
+  params: { path?: string };
+}): Promise<PageBuilderLoader> => {
   try {
     const pathname = params?.path;
 
