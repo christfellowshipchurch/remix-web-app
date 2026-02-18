@@ -135,10 +135,9 @@
 }
 
 .content-block {
-  p {
-    color: #666666;
-    margin-bottom: 0.5rem;
-  }
+  /* base font styles */
+  color: #666666;
+  font-weight: 400;
 
   /* Lists */
   ul,
@@ -164,15 +163,17 @@
 
   li {
     margin: 0.1rem 0;
-    color: #666666;
     font-weight: 300;
   }
 
   /* Text formatting */
+  p {
+    margin-bottom: 0.5rem;
+  }
+
   strong,
   b {
-    font-weight: 600;
-    color: #666666;
+    font-weight: 700;
   }
 
   em,
