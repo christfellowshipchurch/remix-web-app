@@ -176,6 +176,9 @@ export const mapPageBuilderChildItems = async (
         ),
         content: child.content,
         linkTreeLayout: await getLinkTreeLayout(child.attributeValues || {}),
+        viewMoreLink: child.attributeValues?.viewAllButton?.value as
+          | string
+          | undefined,
       };
 
       // If the child is a collection, fetch the child items and return them
