@@ -256,7 +256,7 @@ const WhatToExpectData: WhatToExpectCardType[] = [
   {
     title: "What is a Sunday Like 1",
     data: {
-      role: "church member",
+      role: "church members",
       name: "Vanessa & Ben Castillo",
       video: "1xbxw63g50",
       thumbnail:
