@@ -257,14 +257,16 @@ const WhatToExpectData: WhatToExpectCardType[] = [
     title: "What is a Sunday Like 1",
     data: {
       role: "church member",
-      name: "Member Name",
-      video: "zesthhomv2",
+      name: "Vanessa & Ben Castillo",
+      video: "1xbxw63g50",
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/4e64e97530eec63588b73a28afbeaae1.webp?image_crop_resized=640x1138",
+        "https://embed-ssl.wistia.com/deliveries/91963465eb82ccfb612d9d4113ab73d2",
+      // Short content for mobile
       mobileContent:
-        "“It's given me a lot of peace and clarity around my church.”",
+        "A welcoming community that believes and prays with you—this is the place to be.",
+      // Long content for desktop
       content:
-        "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
+        "“When we first started coming to Christ Fellowship Church, we were just looking for a place to belong. But what we found was a community that didn't just pray for us—they believed with us. If you're walking through a season of waiting, this is the place to be.”",
     },
   },
   // {
