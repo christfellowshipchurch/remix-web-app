@@ -37,7 +37,7 @@ export const CardCarouselSection = ({
   resources,
   viewMoreStyles,
   viewMoreLink,
-  viewMoreText = "View All",
+  viewMoreText = "View More",
   mode = "light",
 }: CardCarouselSectionProps) => {
   return (
@@ -77,7 +77,7 @@ export const CardCarouselSection = ({
                   href={viewMoreLink}
                   size="md"
                   className={cn(
-                    "hidden md:block min-w-28 w-fit",
+                    "hidden md:block min-w-32 w-fit",
                     mode === "dark" &&
                       "text-white border-white hover:!bg-white/10",
                     viewMoreStyles,

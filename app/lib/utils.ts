@@ -37,7 +37,7 @@ export const fieldsAsObject = (fields: FieldObject[]) =>
       ...accum,
       [field]: typeof value === "string" ? value.trim() : value,
     }),
-    {} as Record<string, unknown>
+    {} as Record<string, unknown>,
   );
 
 export const enforceProtocol = (uri: string) =>
@@ -210,7 +210,7 @@ export const latLonDistance = (
   lat1: number,
   lon1: number,
   lat2: number,
-  lon2: number
+  lon2: number,
 ): number => {
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
@@ -251,7 +251,7 @@ export const getFirstParagraph = (html: string): string => {
 };
 
 export const parseRockKeyValueList = (
-  input: string
+  input: string,
 ): {
   key: string;
   value: string;
@@ -261,7 +261,7 @@ export const parseRockKeyValueList = (
   return input.split("|").map((item) => {
     const [key, value] = item.split("^");
     return {
-      key: key.trim(),
+      key: decodeURIComponent(key.trim()), // decode the key to handle special characters like %20 for CTAs
       value: value.trim(),
     };
   });
