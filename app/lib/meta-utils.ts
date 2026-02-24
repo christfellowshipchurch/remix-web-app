@@ -15,12 +15,14 @@ export const DEFAULT_KEYWORDS =
 export const DEFAULT_GENERATOR = "React Router";
 
 /**
- * Origin for absolute OG/twitter image and og:url.
- * Uses only VITE_PUBLIC_ORIGIN so server and client render the same value (avoids hydration mismatch).
- * When unset, meta tags use relative paths (e.g. /assets/images/metadata_image.jpg); crawlers resolve them against the page URL.
- * Set VITE_PUBLIC_ORIGIN in .env for local dev (e.g. http://localhost:5174) and production (e.g. https://yoursite.com) if you want absolute OG URLs.
+ * Origin for absolute OG/twitter image and og:url. On the client uses window.location.origin.
+ * On the server (SSR) uses VITE_PUBLIC_ORIGIN so crawlers get absolute URLs.
+ * Set VITE_PUBLIC_ORIGIN in .env (e.g. https://yoursite.com or http://localhost:5173 for local checks).
  */
 function getOrigin(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
   const env = (import.meta as { env?: Record<string, unknown> }).env;
   const envOrigin = env?.VITE_PUBLIC_ORIGIN;
   return typeof envOrigin === "string" ? envOrigin : "";
@@ -52,7 +54,7 @@ type MetaDescriptor =
 /**
  * Returns a meta array for React Router meta export. Use for static or dynamic routes.
  * Title is normalized to "Page Title | Christ Fellowship Church" when not already suffixed.
- * OG image and og:url use VITE_PUBLIC_ORIGIN when set (same on server and client to avoid hydration mismatch); otherwise relative paths.
+ * OG image and og:url use window.location.origin on the client; on the server they use VITE_PUBLIC_ORIGIN for absolute URLs.
  */
 export function createMeta({
   title,
