@@ -35,7 +35,7 @@ export const MenuContent: React.FC<
     <div
       style={{
         background:
-          "linear-gradient(to right, white 0%, white 80%, #F3F5FA 60%, #F3F5FA 100%)",
+          "linear-gradient(to right, white 0%, white 60%, #F3F5FA 60%, #F3F5FA 100%)",
       }}
       className="w-screen shadow-sm flex items-center justify-center content-padding"
     >
