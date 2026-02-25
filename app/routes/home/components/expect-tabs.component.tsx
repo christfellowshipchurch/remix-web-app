@@ -263,7 +263,7 @@ const WhatToExpectData: WhatToExpectCardType[] = [
         "https://embed-ssl.wistia.com/deliveries/91963465eb82ccfb612d9d4113ab73d2",
       // Short content for mobile
       mobileContent:
-        "A welcoming community that believes and prays with you—this is the place to be.",
+        "“If you're walking through a season of waiting, this is the place to be.”",
       // Long content for desktop
       content:
         "“When we first started coming to Christ Fellowship Church, we were just looking for a place to belong. But what we found was a community that didn't just pray for us—they believed with us. If you're walking through a season of waiting, this is the place to be.”",
