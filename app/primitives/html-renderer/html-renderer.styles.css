@@ -50,13 +50,19 @@
     margin-bottom: 1rem;
   }
 
-  /* H4 - H6 -> Subtitles */
+  /* H4 - h5 -> Subtitles */
   h4,
-  h5,
-  h6 {
+  h5 {
     color: #222222;
     font-weight: 600;
     font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h6 {
+    color: #222222;
+    font-weight: 600;
+    font-size: 0.8rem;
     margin-bottom: 0.5rem;
   }
 }
