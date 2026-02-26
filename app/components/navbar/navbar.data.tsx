@@ -81,7 +81,7 @@ export const ministriesData: MenuLink = {
           },
           {
             title: "Volunteer",
-            description: "Find your spot on the Dream Team",
+            description: "Local & Global Opportunities",
             url: "/volunteer",
           },
         ],

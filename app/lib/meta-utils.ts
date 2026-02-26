@@ -99,8 +99,8 @@ export function createMeta({
     const fullUrl = origin
       ? `${origin}${path.startsWith("/") ? "" : "/"}${path}`
       : path.startsWith("/")
-        ? path
-        : `/${path}`;
+      ? path
+      : `/${path}`;
     if (origin) {
       base.push({ property: "og:url", content: fullUrl });
     }
