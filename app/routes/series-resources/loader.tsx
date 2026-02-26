@@ -105,19 +105,19 @@ const getSeriesResources = async (seriesGuid: string) => {
           ...resource,
           summary: resource.attributeValues.summary?.value ?? "",
           coverImage: createImageUrlFromGuid(
-            resource.attributeValues.image.value
+            resource.attributeValues.image.value,
           ),
           attributeValues: {
             ...resource.attributeValues,
             url: {
               ...resource.attributeValues.url,
               value: `${getContentChannelUrl(
-                parseInt(resource.contentChannelId)
-              )}/${resource.attributeValues.url.value}`,
+                parseInt(resource.contentChannelId),
+              )}/${resource.attributeValues?.url?.value}`,
             },
           },
         };
-      }
+      },
     )
     .sort((a, b) => {
       const aDate = a.startDateTime ? new Date(a.startDateTime).getTime() : 0;
@@ -155,10 +155,10 @@ const getSeriesEvents = async (seriesGuid: string) => {
       startDateTime?: string;
     }) => {
       event.coverImage = createImageUrlFromGuid(
-        event?.attributeValues?.image?.value
+        event?.attributeValues?.image?.value,
       );
       event.summary = event?.attributeValues?.summary?.value || "";
-    }
+    },
   );
 
   events.sort((a, b) => {
@@ -212,13 +212,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
   series.attributeValues.coverImage = createImageUrlFromGuid(
-    series.attributeValues.coverImage.value
+    series.attributeValues.coverImage.value,
   );
 
   const seriesMessageData = await getSeriesMessages(series.guid);
 
   const messages = await Promise.all(
-    seriesMessageData.map(mapRockDataToMessage)
+    seriesMessageData.map(mapRockDataToMessage),
   );
 
   const resources = await getSeriesResources(series.guid);

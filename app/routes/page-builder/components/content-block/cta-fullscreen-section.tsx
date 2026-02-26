@@ -26,7 +26,7 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
         {
           "text-white": isDark,
           "text-gray-900": !isDark,
-        }
+        },
       )}
       aria-label={data.name}
     >
@@ -37,8 +37,8 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
       {data.subtitle && (
         <h3
           className={cn(
-            "text-lg font-extrabold tracking-widest",
-            !isDark ? "text-text-secondary" : "text-white"
+            "text-lg font-extrabold",
+            !isDark ? "text-text-secondary" : "text-white",
           )}
         >
           {data.subtitle}
@@ -46,10 +46,13 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
       )}
 
       <HTMLRenderer
-        className={cn("content-padding w-full md:max-w-3xl text-pretty", {
-          "text-text-alternate": isDark,
-          "text-text-secondary": !isDark,
-        })}
+        className={cn(
+          "content-padding w-full md:max-w-3xl text-pretty text-lg font-regular",
+          {
+            "text-text-alternate": isDark,
+            "text-text-secondary": !isDark,
+          },
+        )}
         html={data.content}
       />
       <div className="flex flex-wrap gap-4 justify-center">

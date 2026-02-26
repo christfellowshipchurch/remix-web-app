@@ -17,7 +17,7 @@ const GroupConnectFlow = ({
   groupName,
 }: GroupConnectFlowProps) => {
   const [step, setStep] = useState<GroupConnectStep>(
-    GroupConnectStep.GROUP_CONNECT_FORM
+    GroupConnectStep.GROUP_CONNECT_FORM,
   );
 
   const renderStep = () => {
@@ -41,7 +41,7 @@ const GroupConnectFlow = ({
   };
 
   return (
-    <div className="text-center text-text_primary px-8 md:px-4 lg:px-16 pb-10 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
+    <div className="text-center text-text_primary p-6 md:p-10 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
       {renderStep()}
     </div>
   );

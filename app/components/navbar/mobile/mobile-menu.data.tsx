@@ -42,7 +42,7 @@ export const getInvolvedItems: MenuItem[] = [
   {
     id: "volunteer",
     title: "Volunteer",
-    description: "Serve with others",
+    description: "Local & Global Opportunities",
     icon: "handHeart",
     to: "/volunteer",
   },
@@ -156,7 +156,7 @@ export const ministriesItems: SubMenuItem[] = [
   {
     id: "marriage",
     title: "Marriage",
-    description: "Lorem ipsum",
+    description: "Support & Resources",
     to: "/ministries/marriage",
   },
   {
