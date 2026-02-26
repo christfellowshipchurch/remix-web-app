@@ -1,5 +1,8 @@
 import { LoaderFunction } from "react-router-dom";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import {
+  fetchRockData,
+  isItemInDateRange,
+} from "~/lib/.server/fetch-rock-data";
 import {
   createImageUrlFromGuid,
   getIdentifierType,
@@ -46,6 +49,7 @@ interface RockContentItem {
   content: string;
   contentChannelId: string;
   startDateTime?: string;
+  expireDateTime?: string;
   attributeValues?: RockAttributeValues;
 }
 
@@ -184,9 +188,13 @@ export const mapPageBuilderChildItems = async (
       // If the child is a collection, fetch the child items and return them
       if (isCollection) {
         const collection = await fetchChildItems(child.id);
+        const now = new Date();
+        const visibleItems = collection.filter((item: RockContentItem) =>
+          isItemInDateRange(item, now)
+        );
         return {
           ...baseChild,
-          collection: collection.map(
+          collection: visibleItems.map(
             (item: RockContentItem): CollectionItem => {
               const contentType = getContentType(item.contentChannelId);
               // Map the attribute values to a key-value object for easier access

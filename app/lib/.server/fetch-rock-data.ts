@@ -52,18 +52,86 @@ interface RockQueryParams {
   value?: string;
 }
 
+/** Options for fetchRockData beyond query params */
+interface FetchRockDataOptions {
+  endpoint: string;
+  queryParams?: RockQueryParams;
+  customHeaders?: Record<string, string>;
+  cache?: boolean;
+  /** When true, merge $filter so only items where now is within [StartDateTime, ExpireDateTime] are returned */
+  filterByDateRange?: boolean;
+  /** When true, merge $filter with Status eq 'Approved' */
+  filterByStatusApproved?: boolean;
+}
+
+/**
+ * Item with optional start/expire dates (camelCase or PascalCase from Rock API).
+ * Use with isItemInDateRange to filter in-memory lists (e.g. by-ID fetches).
+ */
+export type ItemWithDateRange = {
+  startDateTime?: string;
+  expireDateTime?: string;
+  StartDateTime?: string;
+  ExpireDateTime?: string;
+};
+
+export const isItemInDateRange = (
+  item: ItemWithDateRange,
+  now: Date
+): boolean => {
+  const start = item.startDateTime ?? item.StartDateTime;
+  const expire = item.expireDateTime ?? item.ExpireDateTime;
+  if (start) {
+    const startDate = new Date(start);
+    if (now < startDate) return false;
+  }
+  if (expire) {
+    const expireDate = new Date(expire);
+    if (now > expireDate) return false;
+  }
+  return true;
+};
+
+const buildMergedFilter = (
+  existingFilter: string | undefined,
+  filterByDateRange: boolean,
+  filterByStatusApproved: boolean
+): string | undefined => {
+  const clauses: string[] = [];
+
+  if (filterByDateRange) {
+    const isoNow = new Date().toISOString();
+    clauses.push(
+      `StartDateTime le datetime'${isoNow}' and (ExpireDateTime eq null or ExpireDateTime ge datetime'${isoNow}')`
+    );
+  }
+  if (filterByStatusApproved) {
+    clauses.push("Status eq 'Approved'");
+  }
+  if (clauses.length === 0) {
+    return existingFilter;
+  }
+  const newClause = clauses.join(" and ");
+  return existingFilter ? `(${existingFilter}) and (${newClause})` : newClause;
+};
+
 export const fetchRockData = async ({
   endpoint,
   queryParams = {},
   customHeaders = {},
   cache = true,
-}: {
-  endpoint: string;
-  queryParams?: RockQueryParams;
-  customHeaders?: Record<string, string>;
-  cache?: boolean;
-}) => {
-  const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+  filterByDateRange = false,
+  filterByStatusApproved = false,
+}: FetchRockDataOptions) => {
+  const mergedQueryParams = { ...queryParams };
+  if (filterByDateRange || filterByStatusApproved) {
+    mergedQueryParams.$filter = buildMergedFilter(
+      queryParams.$filter,
+      filterByDateRange,
+      filterByStatusApproved
+    );
+  }
+  const cacheKey = `${endpoint}:${JSON.stringify(mergedQueryParams)}`;
 
   // Clear cache if cache is disabled
   if (redis && !cache) {
@@ -90,7 +158,7 @@ export const fetchRockData = async ({
 
   try {
     const queryString = new URLSearchParams(
-      queryParams as Record<string, string>
+      mergedQueryParams as Record<string, string>
     ).toString();
     const url = `${baseUrl}${endpoint}?${queryString}`;
 
@@ -118,7 +186,7 @@ export const fetchRockData = async ({
     // Try to cache the response if Redis is available and caching is enabled
     if (redis && cache) {
       try {
-        await redis.set(cacheKey, JSON.stringify(data), "EX", 3600); // Cache for 1 hour
+        await redis.set(cacheKey, JSON.stringify(data), "EX", 3600);
       } catch {
         console.error("⚠️ Redis cache storage failed");
       }
