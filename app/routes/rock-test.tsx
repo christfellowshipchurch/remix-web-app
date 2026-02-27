@@ -17,8 +17,7 @@ export default function RockTestPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [height, setHeight] = useState(600);
   const [showLoading, setShowLoading] = useState(true);
-
-  // The RockProxyEmbed component automatically uses the advanced proxy
+  const [useAdvancedProxy, setUseAdvancedProxy] = useState(true);
 
   const handleTestEmbed = () => {
     if (!rockUrl.trim()) return;
@@ -75,11 +74,17 @@ export default function RockTestPage() {
             </div>
 
             <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-              <p className="text-sm text-green-800">
-                <strong>✅ Advanced Proxy Enabled:</strong> The component
-                automatically uses the advanced proxy to bypass CORS
-                restrictions and load CSS properly.
-              </p>
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={useAdvancedProxy}
+                  onChange={(e) => setUseAdvancedProxy(e.target.checked)}
+                  className="rounded"
+                />
+                <span className="text-sm text-green-800 font-medium">
+                  Use advanced proxy (bypasses CORS, loads CSS properly)
+                </span>
+              </label>
             </div>
 
             <div className="flex space-x-4">
@@ -107,7 +112,7 @@ export default function RockTestPage() {
               <h2 className="text-xl font-semibold text-gray-900">
                 Embedded Content Preview
               </h2>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <label className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -117,6 +122,17 @@ export default function RockTestPage() {
                   />
                   <span className="text-sm text-gray-700">
                     Show loading state
+                  </span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={useAdvancedProxy}
+                    onChange={(e) => setUseAdvancedProxy(e.target.checked)}
+                    className="rounded"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Use advanced proxy
                   </span>
                 </label>
               </div>
@@ -141,7 +157,7 @@ export default function RockTestPage() {
                 url={embedUrl}
                 height={height}
                 showLoading={showLoading}
-                useAdvancedProxy={true}
+                useAdvancedProxy={useAdvancedProxy}
                 className="w-full"
               />
             </div>
