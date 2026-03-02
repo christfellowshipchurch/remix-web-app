@@ -18,6 +18,8 @@ interface RockProxyEmbedProps {
   useAdvancedProxy?: boolean;
   /** Additional iframe attributes */
   iframeProps?: React.IframeHTMLAttributes<HTMLIFrameElement>;
+  /** Called each time the iframe finishes loading (including after in-frame navigation). */
+  onLoad?: () => void;
 }
 
 export function RockProxyEmbed({
@@ -27,6 +29,7 @@ export function RockProxyEmbed({
   className,
   useAdvancedProxy = true,
   iframeProps = {},
+  onLoad,
 }: RockProxyEmbedProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -39,6 +42,7 @@ export function RockProxyEmbed({
 
   const handleLoad = () => {
     setIsLoading(false);
+    onLoad?.();
   };
 
   const handleError = () => {

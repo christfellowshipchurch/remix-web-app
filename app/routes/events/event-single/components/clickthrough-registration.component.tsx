@@ -837,6 +837,9 @@ const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
 
 const DEFAULT_EMBED_HEIGHT = 1000;
 
+/** Single fixed height for the confirmation page (after form submit). */
+const CONFIRMATION_EMBED_HEIGHT = 600;
+
 function getEmbedHeightForGroupType(groupType: string): number {
   const normalized = groupType
     .replace(/-/g, " ")
@@ -864,7 +867,16 @@ const FormStep = ({
 }: FormStepProps) => {
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType);
   const rockEmbedUrl = `https://rock.gocf.org/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true`;
-  const embedHeight = getEmbedHeightForGroupType(groupType);
+  const formHeight = getEmbedHeightForGroupType(groupType);
+  const [embedHeight, setEmbedHeight] = useState(formHeight);
+  const loadCountRef = useRef(0);
+
+  const handleEmbedLoad = () => {
+    loadCountRef.current += 1;
+    setEmbedHeight(
+      loadCountRef.current % 2 === 1 ? formHeight : CONFIRMATION_EMBED_HEIGHT,
+    );
+  };
 
   if (!groupGuid) {
     return (
@@ -884,6 +896,7 @@ const FormStep = ({
         showLoading={true}
         useAdvancedProxy={false}
         className="w-full"
+        onLoad={handleEmbedLoad}
       />
     </div>
   );
