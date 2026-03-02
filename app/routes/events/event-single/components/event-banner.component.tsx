@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 
+import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+
 export const EventBanner = ({
   cta,
   title,
@@ -24,7 +26,7 @@ export const EventBanner = ({
   // Derive active section from scroll position to improve accuracy when scrolling up - this function worked
   //  better than IntersectionObserver alone or other alternatives I tried
   const updateActiveSectionFromOffsets = () => {
-    const offset = 100; // match scroll offset logic
+    const offset = ANCHOR_SCROLL_OFFSET;
     const currentY = window.scrollY + offset;
     const candidates = sections
       .map(({ id }) => {
@@ -57,11 +59,7 @@ export const EventBanner = ({
     if (element) {
       const elementRect = element.getBoundingClientRect();
       const absoluteElementTop = elementRect.top + window.scrollY;
-
-      // Check if scrolling up or down
-      const isScrollingUp = absoluteElementTop < window.scrollY;
-      const offset = isScrollingUp ? 120 : 40;
-      const offsetTop = absoluteElementTop - offset;
+      const offsetTop = absoluteElementTop - ANCHOR_SCROLL_OFFSET;
 
       window.scrollTo({
         top: offsetTop,
@@ -118,8 +116,7 @@ export const EventBanner = ({
       },
       {
         threshold: [0.1, 0.25, 0.5, 0.75, 1],
-        // Slightly smaller top offset and less aggressive bottom for tablets
-        rootMargin: "-80px 0px -35% 0px",
+        rootMargin: `-${ANCHOR_SCROLL_OFFSET}px 0px -35% 0px`,
       }
     );
 
