@@ -76,9 +76,9 @@ const SeasonRefinementList = () => {
 };
 
 const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
-  const {podcast} = useLoaderData<LoaderReturnType>();
+  const { podcast } = useLoaderData<LoaderReturnType>();
   const cardUrl = `/podcasts/${podcast.url}/${hit.url}`;
-  
+
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">
@@ -103,8 +103,8 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          {hit.podcastSeason || "Season 1"} | Episode{" "}
-          {hit.podcastEpisodeNumber || "1"}
+          {hit.podcastSeasonNumber && `Season ${hit.podcastSeasonNumber}`} |
+          Episode {hit.podcastEpisodeNumber || "1"}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
