@@ -831,7 +831,7 @@ const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
   "Kids Dedication": 1000,
   "Kids Starting Line": 1000,
   Journey: 700,
-  Baptism: 1426,
+  Baptism: 1440,
   "Dream Team Kickoff": 1000,
 };
 
