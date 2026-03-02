@@ -8,9 +8,7 @@ import path from "path";
 export default defineConfig(({ isSsrBuild, command }) => ({
   build: {
     rollupOptions: isSsrBuild
-      ? {
-          input: "./server/app.ts",
-        }
+      ? undefined
       : {
           external: ["fs", "path", "url"],
         },

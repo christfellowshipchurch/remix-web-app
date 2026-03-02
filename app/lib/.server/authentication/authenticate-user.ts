@@ -25,18 +25,20 @@ export const authenticateUser = async (
       return { encryptedToken };
     } catch (error) {
       if (error instanceof EncryptionError) {
-        throw new EncryptionError(error.message);
+        throw new EncryptionError(error.message, { cause: error });
       }
-      throw new Error("Failed to encrypt authentication token");
+      throw new Error("Failed to encrypt authentication token", { cause: error });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
-      throw new AuthenticationError(error.message);
+      throw new AuthenticationError(error.message, { cause: error });
     }
     if (error instanceof RockAPIError) {
-      throw new RockAPIError(error.message, error.statusCode);
+      throw new RockAPIError(error.message, error.statusCode, { cause: error });
     }
     console.error("Unhandled authentication error:", error);
-    throw new Error("An unexpected error occurred during authentication");
+    throw new Error("An unexpected error occurred during authentication", {
+      cause: error,
+    });
   }
 };

@@ -78,12 +78,9 @@ export const fetchChildItems = async (id: string) => {
   }
 
   //ensure childReferences is an array
-  let childReferencesArray = [];
-  if (!Array.isArray(childReferences)) {
-    childReferencesArray = [childReferences];
-  } else {
-    childReferencesArray = childReferences;
-  }
+  const childReferencesArray = Array.isArray(childReferences)
+    ? childReferences
+    : [childReferences];
 
   const children = await Promise.all(
     childReferencesArray.map(async (childReference: ChildReference) => {
@@ -102,12 +99,7 @@ export const fetchChildItems = async (id: string) => {
   }
 
   // Ensure children is an array
-  let childrenArray = [];
-  if (!Array.isArray(children)) {
-    childrenArray = [children];
-  } else {
-    childrenArray = children;
-  }
+  const childrenArray = Array.isArray(children) ? children : [children];
 
   return childrenArray;
 };
@@ -125,12 +117,9 @@ export const fetchDefinedValue = async (guid: string) => {
   }
 
   // ensure definedValue is an array
-  let definedValueArray = [];
-  if (!Array.isArray(definedValue)) {
-    definedValueArray = [definedValue];
-  } else {
-    definedValueArray = definedValue;
-  }
+  const definedValueArray = Array.isArray(definedValue)
+    ? definedValue
+    : [definedValue];
 
   if (definedValueArray.length > 0) {
     return definedValueArray[0].value;
@@ -222,7 +211,7 @@ export const mapPageBuilderChildItems = async (
               }
 
               // Generate the pathname for the item
-              let pathname = "";
+              let pathname: string;
               switch (contentType) {
                 case "REDIRECT_CARD":
                   pathname = getStringValue(

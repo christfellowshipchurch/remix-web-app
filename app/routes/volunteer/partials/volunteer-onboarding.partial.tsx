@@ -207,7 +207,9 @@ export function OnboardingProcess() {
                 {steps.map((step, i) => (
                   <div
                     key={step.title}
-                    ref={(el) => (stepRefs.current[i] = el)}
+                    ref={(el) => {
+                      stepRefs.current[i] = el;
+                    }}
                     className={`onboarding-step min-h-[320px] max-h-[320px] py-10 text-white snap-center flex items-start transition-opacity duration-300 ${
                       centerIdx === i ? "opacity-100" : "opacity-50"
                     }`}

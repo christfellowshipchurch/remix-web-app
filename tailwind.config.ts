@@ -17,7 +17,6 @@ export default {
     "./app/**/*.{js,jsx,ts,tsx}",
     "./app/**/**/*.{js,jsx,ts,tsx}",
     "./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/@relume_io/relume-ui/dist/**/*.{js,ts,jsx,tsx}",
   ],
   future: {
     // Enable v4 features

@@ -33,7 +33,7 @@ export async function fetchWistiaData({
     return videoUrl;
   } catch (err) {
     console.error(err);
-    throw new Error("Failed to fetch Wistia data");
+    throw new Error("Failed to fetch Wistia data", { cause: err });
   }
 }
 
@@ -50,12 +50,9 @@ export async function fetchWistiaDataFromRock(guid: string) {
   }
 
   // Ensure mediaElement is an array
-  let mediaElementArray = [];
-  if (!Array.isArray(mediaElement)) {
-    mediaElementArray = [mediaElement];
-  } else {
-    mediaElementArray = mediaElement;
-  }
+  const mediaElementArray = Array.isArray(mediaElement)
+    ? mediaElement
+    : [mediaElement];
 
   if (mediaElementArray.length === 0) {
     throw new Error(`No media element found for GUID: ${guid}`);

@@ -103,7 +103,9 @@ export function ImageScrollLayout() {
         {chanceContent.map((section, index) => (
           <section
             key={section.title}
-            ref={(el) => (sectionRefs.current[index] = el)}
+            ref={(el) => {
+              sectionRefs.current[index] = el;
+            }}
             className={cn(
               "relative flex items-center p-12 min-h-screen w-full",
               index === 2 && "pb-24 md:pb-0" // Add padding to the last section on mobile to prevent content from grayed out from gradient
