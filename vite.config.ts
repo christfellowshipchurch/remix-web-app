@@ -24,6 +24,6 @@ export default defineConfig(({ isSsrBuild, command }) => ({
   },
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), netlifyPlugin()],
   optimizeDeps: {
-    exclude: ["twilio"],
+    exclude: ["twilio", "ioredis"],
   },
 }));

@@ -107,6 +107,20 @@ export async function isValidWistiaId(
   } catch (error) {
     // Log error for debugging
     console.error(`Error validating Wistia ID ${trimmedId}:`, error);
+    // TLS/certificate errors (e.g. UNABLE_TO_GET_ISSUER_CERT_LOCALLY) often occur
+    // behind corporate proxies or VPNs. For local dev only you can set
+    // NODE_TLS_REJECT_UNAUTHORIZED=0 (insecure; do not use in production).
+    const cause = error instanceof Error ? error.cause : null;
+    const isTls =
+      cause &&
+      typeof cause === "object" &&
+      "code" in cause &&
+      cause.code === "UNABLE_TO_GET_ISSUER_CERT_LOCALLY";
+    if (isTls) {
+      console.warn(
+        "Wistia validation failed due to TLS certificate verification. If you're behind a corporate proxy/VPN, install the CA or use NODE_TLS_REJECT_UNAUTHORIZED=0 for local dev only."
+      );
+    }
     return false;
   }
 }
