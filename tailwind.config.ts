@@ -1,6 +1,5 @@
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
-import customColors from "./app/styles/colors";
 
 export default {
   darkMode: "class",
@@ -9,12 +8,6 @@ export default {
     "./app/**/**/*.{js,jsx,ts,tsx}",
     "./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}",
   ],
-  future: {
-    // Enable v4 features
-    hoverOnlyWhenSupported: true,
-    disableColorOpacityUtilitiesByDefault: true,
-    respectDefaultRingColorOpacity: true,
-  },
   theme: {
     extend: {
       borderRadius: {
@@ -31,7 +24,6 @@ export default {
         "8": "8px",
         DEFAULT: "1px",
       },
-      colors: customColors,
       fontFamily: {
         sans: ["Proxima-Nova", ...defaultTheme.fontFamily.sans],
         serif: ["Merriweather", ...defaultTheme.fontFamily.serif],

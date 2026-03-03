@@ -43,6 +43,72 @@
   --animate-grow-line-from-left: grow-line-from-left 600ms ease-in forwards;
 }
 
+/* ------------ Theme Colors (from app/styles/colors.ts) ------------ */
+@theme {
+  /* Primitive */
+  --color-black: #000000;
+  --color-gray: #F3F5FA;
+  --color-white: #FFFFFF;
+  --color-soft-white: #FAFAFC;
+  --color-dark-navy: #00354D;
+  --color-navy: #004F71;
+  --color-navy-subdued: #DAEAF1;
+  --color-ocean: #0092BC;
+  --color-ocean-subdued: #E7F9FE;
+  --color-cotton-candy: #6BCABA;
+  --color-coconut: #D0D0CE;
+  --color-apple: #CB2C30;
+  --color-tangerine: #FF8F1C;
+  --color-peach: #E8927C;
+  --color-lemon: #FCD757;
+
+  /* System */
+  --color-alert: #B42318;
+  --color-alert-light: #FEF3F2;
+  --color-success: #1EC27F;
+  --color-success-light: #ECFDF3;
+  --color-warning: #E09541;
+
+  /* Neutral */
+  --color-neutral-lightest: #EEEEEE;
+  --color-neutral-lighter: #CCCCCC;
+  --color-neutral-light: #AAAAAA;
+  --color-neutral-default: #666666;
+  --color-neutral-dark: #444444;
+  --color-neutral-darker: #222222;
+  --color-neutral-darkest: #111111;
+
+  /* Semantic – background */
+  --color-background-primary: var(--color-white);
+  --color-background-secondary: var(--color-soft-white);
+  --color-background-tertiary: var(--color-neutral-default);
+  --color-background-alternate: var(--color-black);
+  --color-background-success: var(--color-success-light);
+  --color-background-error: var(--color-alert-light);
+
+  /* Semantic – border */
+  --color-border-primary: var(--color-black);
+  --color-border-secondary: var(--color-neutral-light);
+  --color-border-tertiary: var(--color-neutral-dark);
+  --color-border-alternate: var(--color-white);
+  --color-border-success: var(--color-success);
+  --color-border-error: var(--color-alert);
+  --color-border: var(--color-border-primary);
+
+  /* Semantic – text */
+  --color-text-primary: var(--color-neutral-darker);
+  --color-text-secondary: var(--color-neutral-default);
+  --color-text-alternate: var(--color-white);
+  --color-text-success: var(--color-success);
+  --color-text-error: var(--color-alert);
+  --color-text: var(--color-text-primary);
+
+  /* Semantic – link */
+  --color-link-primary: var(--color-black);
+  --color-link-secondary: var(--color-neutral-default);
+  --color-link-alternate: var(--color-white);
+}
+
 /* ------------ Custom Keyframes ------------ */
 @keyframes enterFromRight {
   from { opacity: 0; transform: translateX(200px); }
