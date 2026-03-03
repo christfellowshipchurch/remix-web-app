@@ -2,6 +2,7 @@
 
 import type { LoaderFunctionArgs } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchTopSearches } from "~/lib/.server/fetch-top-searches";
 import type { FeatureCard } from "~/components/navbar/types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
@@ -20,6 +21,8 @@ export interface RootLoaderData {
     ALGOLIA_APP_ID: string | undefined;
     ALGOLIA_SEARCH_API_KEY: string | undefined;
   };
+  /** Top 12 most searched queries from Algolia Analytics (empty if Analytics not configured). */
+  popularSearches: string[];
   siteBanner: {
     content: string;
     ctas?: {
@@ -143,6 +146,12 @@ export async function loader({
       !Array.isArray(rawFeatureCards) ||
       rawFeatureCards.length === 0
     ) {
+      const popularSearches = await fetchTopSearches(
+        process.env.ALGOLIA_APP_ID,
+        process.env.ALGOLIA_ANALYTICS_API_KEY ??
+          process.env.ALGOLIA_SEARCH_API_KEY,
+        12
+      );
       return {
         userData: null,
         ministries: { featureCards: [] },
@@ -151,7 +160,7 @@ export async function loader({
           ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
           ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
         },
-
+        popularSearches,
         // Site Banner Data
         siteBanner: {
           content: "",
@@ -194,6 +203,13 @@ export async function loader({
     // Site Banner Data
     const siteBanner = await fetchSiteBanner();
 
+    const popularSearches = await fetchTopSearches(
+      process.env.ALGOLIA_APP_ID,
+      process.env.ALGOLIA_ANALYTICS_API_KEY ??
+        process.env.ALGOLIA_SEARCH_API_KEY,
+      12
+    );
+
     return {
       // Navbar Data
       userData: parsedUserData,
@@ -207,7 +223,7 @@ export async function loader({
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
       },
-
+      popularSearches,
       // Site Banner Data
       siteBanner: siteBanner,
     };
@@ -223,7 +239,7 @@ export async function loader({
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
       },
-
+      popularSearches: [],
       // Site Banner Data
       siteBanner: {
         content: "",
