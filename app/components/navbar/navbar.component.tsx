@@ -162,6 +162,7 @@ export function Navbar() {
     setMode(newMode);
     setLastScrollY(0);
     setIsVisible(true);
+    setOpenDropdown(null); // Close menu when navigating to a new page
   }, [pathname, isSmall]);
 
   // Mode sync effect
