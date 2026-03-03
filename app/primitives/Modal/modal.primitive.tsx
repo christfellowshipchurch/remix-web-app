@@ -35,8 +35,14 @@ function ModalContent({
     <Dialog.Portal>
       <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=closed]:animate-dialogOverlayHide data-[state=open]:animate-dialogOverlayShow z-499" />
       <Dialog.Content
+        style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
         className={cn(
-          "fixed sm:h-auto max-h-[90vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding"
+          "sm:h-auto max-h-[90vh] data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding"
         )}
       >
         <div
