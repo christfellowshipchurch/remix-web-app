@@ -1,6 +1,5 @@
 import { redirect, useNavigate, useRevalidator } from "react-router-dom";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useHydrated } from "~/hooks/use-hydrated";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -88,11 +87,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const isHydrated = useHydrated();
 
   useEffect(() => {
-    if (!isHydrated) return;
-
     const loadToken = async () => {
       try {
         const encryptedToken = localStorage.getItem(AUTH_TOKEN_KEY);
@@ -134,10 +130,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
     loadToken();
-  }, [isHydrated]);
+  }, []);
 
   const handleLogin = async (token: string) => {
-    if (!isHydrated) return;
 
     document.cookie = `auth-token=${token}; path=/;`;
     localStorage.setItem(AUTH_TOKEN_KEY, token);

@@ -29,7 +29,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const rootData = useRouteLoaderData("root") as RootLoaderData;
   const { siteBanner, ministries, watchReadListen } = rootData || {};
-  const { isSmall, isLarge, isXLarge } = useResponsive();
+  const { isSmall } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // State management
@@ -266,16 +266,7 @@ export function Navbar() {
                 </a>
 
                 {/* Desktop Navigation Menu */}
-                <div
-                  className="hidden lg:inline"
-                  style={{
-                    display: isSearchOpen
-                      ? "none"
-                      : isLarge
-                      ? "inline"
-                      : "none",
-                  }}
-                >
+                <div className={cn("hidden lg:inline", isSearchOpen && "!hidden")}>
                   <nav className="flex items-center space-x-6 xl:space-x-10">
                     {mainNavLinks.map((link) => (
                       <a
@@ -389,8 +380,7 @@ export function Navbar() {
                   </button>
                 )}
 
-                {(!isSearchOpen || isXLarge) && (
-                  <div className="flex gap-2">
+                <div className={cn("flex gap-2", isSearchOpen && "hidden xl:flex")}>
                     <AuthModal
                       buttonStyle={cn(
                         "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
@@ -410,8 +400,7 @@ export function Navbar() {
                       />
                       Find a Service
                     </Button>
-                  </div>
-                )}
+                </div>
               </div>
 
               {/* Mobile Menu */}

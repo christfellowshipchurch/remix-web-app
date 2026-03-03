@@ -2,11 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { getImageUrl } from "~/lib/utils";
-import { useResponsive } from "~/hooks/use-responsive";
 
 export function HelpSection() {
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { isXSmall } = useResponsive();
 
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +53,8 @@ export function HelpSection() {
           "text-center",
           "bg-cover",
           "bg-center",
+          "bg-[image:var(--bg-mobile)]",
+          "sm:bg-[image:var(--bg-desktop)]",
           "rounded-xl",
           "overflow-hidden",
           "relative",
@@ -63,8 +63,9 @@ export function HelpSection() {
           "md:aspect-video",
         ])}
         style={{
-          backgroundImage: `url(${isXSmall ? mobileBgImage : desktopBgImage})`,
-        }}
+          "--bg-mobile": `url(${mobileBgImage})`,
+          "--bg-desktop": `url(${desktopBgImage})`,
+        } as React.CSSProperties}
       >
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
           <div
