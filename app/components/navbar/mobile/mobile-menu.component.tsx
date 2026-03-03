@@ -1,7 +1,6 @@
 import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
-import { useHydrated } from "~/hooks/use-hydrated";
 import { useAuth } from "~/providers/auth-provider";
 import { Button } from "~/primitives/button/button.primitive";
 import { MobileSearch } from "./search/mobile-search.component";
@@ -21,14 +20,11 @@ export default function MobileMenu({
   const [isOpen, setIsOpen] = useState(false);
   const [orginalMode] = useState(mode);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const isHydrated = useHydrated();
   const { user, isLoading: authLoading, logout } = useAuth();
   const { isMedium } = useResponsive();
 
   // Prevent background scroll when menu is open
   useEffect(() => {
-    if (!isHydrated) return;
-
     if (isOpen || isSearchOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -37,7 +33,7 @@ export default function MobileMenu({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, isSearchOpen, isHydrated]);
+  }, [isOpen, isSearchOpen]);
 
   return (
     <div

@@ -30,10 +30,6 @@ export function WistiaPlayer({
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
 
     // Wistia embed code
     const script1 = document.createElement("script");
@@ -61,20 +57,23 @@ export function WistiaPlayer({
       });
 
       return () => {
-        // Cleanup code
         container.innerHTML = "";
         setIsLoaded(false);
       };
     }
-  }, [videoId, wrapper, isMounted]);
-
-  if (!isMounted && fallback) {
-    return <>{fallback}</>;
-  }
+  }, [videoId, wrapper]);
 
   return (
     <div className="relative">
-      {fallback && <div className="absolute inset-0 z-0">{fallback}</div>}
+      {fallback && (
+        <div
+          className={`absolute inset-0 transition-[z-index] ${
+            isMounted ? "z-0" : "z-10"
+          }`}
+        >
+          {fallback}
+        </div>
+      )}
       <div
         className={`${className} relative z-10 transition-opacity duration-500 ${
           isLoaded ? "opacity-100" : "opacity-0"

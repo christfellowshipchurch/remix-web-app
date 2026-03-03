@@ -1,4 +1,4 @@
-import { useResponsive } from "~/hooks/use-responsive";
+import { Fragment } from "react";
 import BulletPoints from "~/primitives/bullet-points";
 import { Button } from "~/primitives/button/button.primitive";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
@@ -16,8 +16,6 @@ export const EventsSingleHero = ({
   subtitle?: string;
   quickPoints?: string[];
 }) => {
-  // viewport hook
-  const { isSmall, isMedium } = useResponsive();
   return (
     <div className="w-full" style={heroBgImgStyles(imagePath)}>
       <div className="bg-white/85 backdrop-blur-xl w-full">
@@ -39,15 +37,24 @@ export const EventsSingleHero = ({
                 {/* CTAs */}
                 <div className="flex flex-col md:flex-row gap-2 sm:gap-4">
                   {ctas?.map((cta, i) => (
-                    <Button
-                      key={i}
-                      href={cta.url}
-                      intent={i === 0 ? "primary" : "secondary"}
-                      size={isSmall || isMedium ? "md" : "lg"}
-                      className="w-full md:w-auto"
-                    >
-                      {cta.title}
-                    </Button>
+                    <Fragment key={i}>
+                      <Button
+                        href={cta.url}
+                        intent={i === 0 ? "primary" : "secondary"}
+                        size="md"
+                        className="w-full md:w-auto lg:hidden"
+                      >
+                        {cta.title}
+                      </Button>
+                      <Button
+                        href={cta.url}
+                        intent={i === 0 ? "primary" : "secondary"}
+                        size="lg"
+                        className="w-full md:w-auto hidden lg:inline-flex"
+                      >
+                        {cta.title}
+                      </Button>
+                    </Fragment>
                   ))}
                 </div>
               </div>
