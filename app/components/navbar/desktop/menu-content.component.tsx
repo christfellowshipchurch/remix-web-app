@@ -40,7 +40,7 @@ export const MenuContent: React.FC<
       className="w-screen shadow-sm flex items-center justify-center content-padding"
     >
       <div className="max-w-screen-content mx-auto w-full flex flex-col lg:flex-row">
-        <div className="bg-white grid grid-cols-3 xl:gap-8 w-full min-w-[640px] max-w-[720px] xl:min-w-[745px] xl:max-w-[760px] 2xl:!max-w-[875px] ml-auto 2xl:!mr-56 3xl:!mr-70 xl:mr-28">
+        <div className="bg-white grid grid-cols-3 xl:gap-8 w-full min-w-[640px] max-w-[720px] xl:min-w-[745px] xl:max-w-[760px] 2xl:max-w-[875px]! ml-auto 2xl:mr-56! 3xl:mr-70! xl:mr-28">
           {mainContent.map((section, index) => (
             <div className="w-full max-w-70 xl:max-w-92 px-4 py-8" key={index}>
               <h4 className="font-medium text-link-secondary">
@@ -74,7 +74,7 @@ export const MenuContent: React.FC<
         </div>
 
         <div
-          className={`pl-4 py-6 3xl:!pl-6 w-full bg-gray flex flex-col gap-4 items-end ${
+          className={`pl-4 py-6 3xl:pl-6! w-full bg-gray flex flex-col gap-4 items-end ${
             featureCards.length > 1 && "pb-14"
           }`}
         >
