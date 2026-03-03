@@ -16,17 +16,18 @@ const links: { name: "youtube" | "instagram" | "linkedIn"; url: string }[] = [
   },
 ];
 
-export const FooterLinks = () => {
+export const FooterSocialLinks = () => {
   return (
     <div className="flex gap-2">
       {links.map((link, index) => (
         <a
           href={link?.url}
           key={index}
+          className="text-white hover:text-white/50 transition-colors"
           data-gtm="footer-link"
           data-link-name={link.name}
         >
-          <Icon name={link?.name} size={36} color="white" />
+          <Icon name={link?.name} size={36} />
         </a>
       ))}
     </div>
