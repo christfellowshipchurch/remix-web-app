@@ -1,76 +1,75 @@
-import InternshipTabs from "../components/internship-tabs";
+const TESTIMONIALS = [
+  {
+    quote:
+      '"The Christ Fellowship internship has not only impacted my leadership, but has confirmed the calling on my life. Through this experience, I have grown in my confidence and my ability to take tasks and make them my own. This internship has equipped me to thrive in ministry in ways I would not have been prepared for otherwise."',
+    name: "Joelene Dolak",
+    ministry: "Students Ministry",
+  },
+  {
+    quote:
+      '"The internship gave me real-time, hands-on training in ministry. It allowed ministry to become more than just a sight from a distance, but a tangible, personal experience! Through my willingness to be flexible and learn, I was able to be in proximity to high capacity leaders who would call me up into the woman of God I was created to be and challenge me to be a better leader!"',
+    name: "Lacey Nease",
+    ministry: "Foster Care & Kids Ministry",
+  },
+  {
+    quote:
+      '"The CF Internship taught me not only how to do ministry, but what excellence in ministry truly looks like. I learned both the technical side of production and the pastoral heart behind it, through the incredible leadership training and hands-on opportunities within the intern program."',
+    name: "Julz Bracco",
+    ministry: "Production Ministry",
+  },
+];
+
+const TESTIMONIAL_PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect fill='%23e5e7eb' width='80' height='80' rx='8'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='10' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle'%3EIntern%3C/text%3E%3C/svg%3E";
 
 const InternshipsTestimonials = () => {
   return (
-    <div className="content-padding w-full py-24">
-      <div className="max-w-screen-content mx-auto w-full flex flex-col gap-10 md:gap-20 lg:gap-30">
-        <h2 className="font-medium text-[2rem] md:font-semibold md:text-[52px]">
-          Hear From Our Interns
-        </h2>
+    <section
+      className="content-padding w-full py-16 md:py-24"
+      id="testimonies"
+    >
+      <div className="max-w-screen-content mx-auto w-full">
+        <div className="flex flex-col gap-8 md:gap-12">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#7B7380]">
+              Intern Testimonials
+            </p>
+            <h2 className="mt-2 text-[28px] md:text-[40px] font-bold text-dark-navy">
+              Hear From Our Interns
+            </h2>
+          </div>
 
-        <InternshipTabs
-          tabs={[
-            {
-              value: "all",
-              label: "All",
-              subtitle: "All",
-              content: (
-                <InternshipTabContent
-                  title="“My time working at Christ Fellowship changed the course of my career and helped me in my relationship with God.”"
-                  description="Taylor M., 28 years old"
-                  image="/assets/images/internships/testimonial-1.jpg"
-                />
-              ),
-            },
-            {
-              value: "summer",
-              label: "Summer",
-              subtitle: "Summer",
-              content: (
-                <InternshipTabContent
-                  title="“My time working at Christ Fellowship changed the course of my career and helped me in my relationship with God.”"
-                  description="Taylor M., 28 years old"
-                  image="/assets/images/internships/testimonial-1.jpg"
-                />
-              ),
-            },
-            {
-              value: "semester",
-              label: "Semester",
-              subtitle: "Semester",
-              content: (
-                <InternshipTabContent
-                  title="“My time working at Christ Fellowship changed the course of my career and helped me in my relationship with God.”"
-                  description="Taylor M., 28 years old"
-                  image="/assets/images/internships/testimonial-1.jpg"
-                />
-              ),
-            },
-          ]}
-        />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+            {TESTIMONIALS.map((item) => (
+              <div
+                key={item.name}
+                className="flex flex-col gap-6 p-6 bg-white rounded-xl border border-black/5"
+              >
+                <h3 className="text-lg md:text-xl font-medium text-dark-navy leading-relaxed">
+                  {item.quote}
+                </h3>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={TESTIMONIAL_PLACEHOLDER}
+                    alt=""
+                    className="size-12 md:size-14 rounded-lg object-cover flex-shrink-0"
+                    loading="lazy"
+                  />
+                  <div>
+                    <div className="font-semibold text-dark-navy">
+                      {item.name}
+                    </div>
+                    <div className="text-sm text-[#7B7380]">
+                      {item.ministry}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  );
-};
-
-const InternshipTabContent = ({
-  title,
-  description,
-  image,
-}: {
-  title: string;
-  description: string;
-  image: string;
-}) => {
-  return (
-    <div className="flex flex-col gap-12 pt-10 md:pt-0 md:px-6 lg:pl-10 lg:pr-[30px]">
-      <h3 className="text-2xl">{title}</h3>
-
-      <div className="flex items-center gap-7">
-        <img src={image} alt={title} className="size-12 rounded-[1rem]" />
-        <p>{description}</p>
-      </div>
-    </div>
+    </section>
   );
 };
 

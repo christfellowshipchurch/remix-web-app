@@ -1,6 +1,38 @@
 import { StyledAccordion } from "~/components";
 
-const faqs = [
+export const summerFaqs = [
+  {
+    title: "Do I have to be enrolled in college to be a Summer Intern?",
+    content:
+      "No, however you must have a high school diploma and be at least one year removed from high school.",
+  },
+  {
+    title: "Is the Summer Internship paid?",
+    content:
+      "Our interns receive a stipend for their summer with us. All interns receive the stipend in the form of two payments during the summer.",
+  },
+  {
+    title: "Do I need a certain major to be considered for an internship?",
+    content:
+      "No. We are just as concerned with your skills, interests, and curiosity as we are with your major. Students are encouraged to select their internship with respect to their major(s) and career/ministry goals.",
+  },
+  {
+    title: "Once I complete an internship, is it possible to do another?",
+    content:
+      "Absolutely! You are able to reapply for any internship in the future. This includes another Summer Internship or a year long College Internship if you have completed the necessary requirements.",
+  },
+  {
+    title: "What if I need housing?",
+    content: "We will provide housing on a needs basis only.",
+  },
+  {
+    title: "Do you provide transportation or travel costs?",
+    content:
+      "No. You will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
+  },
+];
+
+export const yearLongFaqs = [
   {
     title: "What does Christ Fellowship believe as a church?",
     content:
@@ -28,14 +60,31 @@ const faqs = [
   },
 ];
 
-const InternshipsFAQs = () => {
+const InternshipsFAQs = ({
+  faqs = [],
+  sectionSubheading,
+  sectionTitle,
+}: {
+  faqs?: { title: string; content: string }[];
+  sectionSubheading?: string;
+  sectionTitle?: string;
+}) => {
+  if (faqs.length === 0) return null;
+
   return (
-    <section className="w-full content-padding py-16">
+    <section className="w-full content-padding py-16" id="faq">
       <div className="max-w-screen-content mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
-        <h2 className="text-[52px] font-bold text-dark-navy">FAQs</h2>
+        {sectionSubheading && (
+          <p className="text-sm font-semibold uppercase tracking-wide text-ocean text-center">
+            {sectionSubheading}
+          </p>
+        )}
+        <h2 className="text-[28px] md:text-[40px] font-bold text-dark-navy text-center">
+          {sectionTitle ?? "FAQs"}
+        </h2>
         <StyledAccordion
           data={faqs}
-          itemsStyle="bg-navy-subdued border border-navy-subdued"
+          itemsStyle=""
           rootStyle="items-center"
           headerStyle="font-semibold text-lg md:text-xl lg:text-2xl"
           contentStyle="text-black/55"

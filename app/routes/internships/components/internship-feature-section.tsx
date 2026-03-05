@@ -5,13 +5,13 @@ const InternshipFeatureSection = ({
   alignRight,
   title = "",
   description = "",
-  image = "",
+  images = [],
 }: {
   imageRight?: boolean;
   alignRight?: boolean;
   title?: string;
   description?: string;
-  image?: string;
+  images?: string[];
   imageAlt?: string;
 }) => {
   return (
@@ -22,14 +22,23 @@ const InternshipFeatureSection = ({
           "md:flex-row-reverse": imageRight,
           "lg:ml-auto": alignRight,
           "lg:mr-auto": !alignRight,
-        },
+        }
       )}
     >
-      <img
-        src={image}
-        alt="Internship Feature Section"
-        className="w-full md:max-w-[301px] lg:max-w-[435px] object-cover rounded-xl"
-      />
+      <div>
+        {images.map((image) => (
+          <img
+            src={image}
+            alt="Internship Feature Section"
+            className={cn(
+              "w-full object-cover rounded-xl",
+              images.length > 1
+                ? "md:max-w-[150px] lg:max-w-[256px]"
+                : "md:max-w-[301px] lg:max-w-[435px]"
+            )}
+          />
+        ))}
+      </div>
 
       <div className="flex flex-col gap-6 md:gap-10">
         <h2 className="text-dark-navy font-semibold text-[40px] leading-[1.05]">

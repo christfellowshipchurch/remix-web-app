@@ -1,7 +1,7 @@
 const InternshipsBanner = () => {
   return (
     <img
-      className="w-full h-auto xl:min-h-[600px] md:max-h-[80svh] lg:max-h-[75svh] object-cover"
+      className="w-full h-auto md:max-h-[600px] object-cover"
       src="/assets/images/internships/banner.webp"
       alt="Internships Banner"
     />
