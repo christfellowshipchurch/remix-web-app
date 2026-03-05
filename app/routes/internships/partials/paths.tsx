@@ -4,13 +4,16 @@ import { Icon } from "~/primitives/icon/icon";
 
 const Paths = () => {
   return (
-    <section className="w-full content-padding py-12 md:py-16 lg:py-24 bg-[#F9F9F9]">
+    <section
+      className="w-full content-padding py-12 md:py-16 lg:py-24 bg-[#F9F9F9]"
+      id="programs"
+    >
       <div className="max-w-screen-content mx-auto w-full flex flex-col gap-16 items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4 w-full text-center">
-          <p className="text-sm font-semibold uppercase tracking-wide text-ocean">
+          <p className="text-sm font-medium uppercase tracking-[2px] text-ocean">
             Choose Your Path
           </p>
-          <h2 className="text-[32px] md:text-[40px] lg:text-[52px] font-bold leading-[1.05] text-[#00354d]">
+          <h2 className="text-[32px] md:text-[40px] lg:text-[52px] font-bold leading-[1.05] text-dark-navy">
             Two Programs, One Mission
           </h2>
           <p className="text-neutral-default max-w-[540px] w-full mx-auto">
@@ -20,11 +23,11 @@ const Paths = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 w-full max-w-[1158px]">
           <PathsItem
             title="Summer Internships"
             description="Experience a summer like never before! Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact."
-            imageSrc="/assets/images/internships/summer.webp"
+            imageSrc="/assets/images/internships/summer-hero.webp"
             duration="12-Week Program"
             pills={["Mid-May – Mid-August", "Full-Time", "Stipend"]}
             ctaLink="/summer-internships"
@@ -32,7 +35,7 @@ const Paths = () => {
           <PathsItem
             title="College Internships"
             description="A year-round opportunity designed to equip and develop students for future ministry leadership. Grow personally, professionally, and spiritually while learning from experienced leaders."
-            imageSrc="/assets/images/internships/year-round.webp"
+            imageSrc="/assets/images/internships/year-long-hero.webp"
             duration="12-Week Program"
             pills={["August – August", "Part-Time · 25 hrs/wk", "Hourly Wage"]}
             ctaLink="/year-round-internships"
@@ -59,14 +62,14 @@ const PathsItem = ({
   ctaLink: string;
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 w-full">
-      <div className="aspect-video h-[280px] relative">
+    <div className="flex flex-col items-center justify-center w-full rounded-[20px] overflow-hidden shadow-lg">
+      <div className="h-auto max-h-[240px] md:max-h-[360px] lg:max-h-[280px] w-full object-cover relative bg-center">
         <img
           src={imageSrc}
           alt={title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/40 to-transparent" />
 
         {duration && (
           <p className="absolute bottom-0 left-0 bg-ocean text-sm text-bold ml-4 mb-4 py-1 px-2 rounded-[16777200]">
@@ -74,8 +77,9 @@ const PathsItem = ({
           </p>
         )}
       </div>
-      <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <h3 className="text-[24px] md:text-[32px] font-bold leading-[1.05] text-[#00354d]">
+
+      <div className="flex flex-col gap-4 w-full bg-white p-4 md:p-8">
+        <h3 className="text-[24px] md:text-[32px] font-bold leading-[1.05] text-dark-navy">
           {title}
         </h3>
 
@@ -87,7 +91,7 @@ const PathsItem = ({
           {pills.map((pill) => (
             <p
               key={pill}
-              className="text-neutral-default text-base md:text-lg leading-relaxed"
+              className="text-xs font-medium leading-[18px] bg-ocean-subdued text-navy px-4 py-2 rounded-[16777200px]"
             >
               {pill}
             </p>

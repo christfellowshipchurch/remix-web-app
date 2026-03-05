@@ -8,11 +8,11 @@ import ProgramDetails, {
 
 export { meta } from "./meta";
 
-const programDetailsData: ProgramDetailsData[] = [
+const summerProgramDetailsData: ProgramDetailsData[] = [
   {
     title: "Duration",
     subtitle: "12 Weeks",
-    icon: "calendarAlt",
+    icon: "hourglass",
     description:
       "Full-time program running from mid-May through mid-August. Interns gain hands-on experience in various ministries throughout the church.",
   },
@@ -26,7 +26,7 @@ const programDetailsData: ProgramDetailsData[] = [
   {
     title: "Housing",
     subtitle: "As-Needed Basis",
-    icon: "map",
+    icon: "house",
     description:
       "Complimentary housing may be provided on an as-needed basis, depending on availability. Contact us for more details.",
   },
@@ -41,16 +41,23 @@ export default function SummerInternshipsPage() {
         subtitle="Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact."
         ctas={[
           {
-            href: "#apply-now",
+            href: "#todo",
             text: "Apply Now",
           },
         ]}
-        imageSrc="/assets/images/internships/summer-internship.webp"
+        imageSrc="/assets/images/internships/summer-hero.webp"
         imageAlt="Summer Internship"
       />
       <InternshipsAbout
         subheading="About the program"
         description="Interns grow spiritually, personally, and professionally through collaborative teamwork, meaningful ministry opportunities, and intentional mentorship from some of the best leaders in ministry. If you're eager to deepen your faith, develop your gifts, and thrive in a team environment, this summer could change everything."
+      />
+
+      <ProgramDetails
+        description={
+          "The Christ Fellowship Summer Internship is a full-time, twelve-week program running from mid-May through mid-August. Interns must be college-aged, though current college enrollment is not required."
+        }
+        data={summerProgramDetailsData}
       />
 
       <DiveIn

@@ -74,20 +74,22 @@ const InternshipsFAQs = ({
   return (
     <section className="w-full content-padding py-16" id="faq">
       <div className="max-w-screen-content mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
-        {sectionSubheading && (
-          <p className="text-sm font-semibold uppercase tracking-wide text-ocean text-center">
-            {sectionSubheading}
-          </p>
-        )}
-        <h2 className="text-[28px] md:text-[40px] font-bold text-dark-navy text-center">
-          {sectionTitle ?? "FAQs"}
-        </h2>
+        <div className="flex flex-col items-center justify-center gap-4">
+          {sectionSubheading && (
+            <p className="text-sm font-medium uppercase tracking-[2px] text-ocean text-center">
+              {sectionSubheading}
+            </p>
+          )}
+          <h2 className="text-[28px] md:text-[40px] font-bold text-dark-navy text-center">
+            {sectionTitle ?? "FAQs"}
+          </h2>
+        </div>
         <StyledAccordion
           data={faqs}
-          itemsStyle=""
+          itemsStyle="bg-transparent border-b border-[#E0E0E0] rounded-none"
           rootStyle="items-center"
-          headerStyle="font-semibold text-lg md:text-xl lg:text-2xl"
-          contentStyle="text-black/55"
+          headerStyle="font-semibold text-[17px] lg:text-lg text-dark-navy"
+          contentStyle="text-neutral-default"
         />
       </div>
     </section>

@@ -5,19 +5,17 @@ import { Icon } from "~/primitives/icon/icon";
 export type ProgramDetailsData = {
   title: string;
   subtitle: string;
-  icon?: keyof typeof icons;
-  /** When set, shown instead of icon (e.g. summer variant with hourglass, money, housing images). */
-  imageSrc?: string;
+  icon: keyof typeof icons;
   description: string;
 };
 
 const ProgramDetails = ({
-  sectionTitle = "Program Details",
+  sectionTitle = "Key Program Details",
   description,
   data,
 }: {
   sectionTitle?: string;
-  description: string;
+  description?: string;
   data: ProgramDetailsData[];
 }) => {
   return (
@@ -30,12 +28,14 @@ const ProgramDetails = ({
           <h2 className="text-dark-navy text-[24px] md:text-[40px] font-bold">
             {sectionTitle}
           </h2>
-          <div className="text-neutral-default text-base md:text-lg">
-            <HTMLRenderer html={description} />
-          </div>
+          {description && (
+            <div className="text-neutral-default text-base leading-[23.2px]">
+              <HTMLRenderer html={description} />
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
           {data.map((item, index) => (
             <ProgramDetailsContentItem key={index} item={item} />
           ))}
@@ -46,32 +46,19 @@ const ProgramDetails = ({
 };
 
 const ProgramDetailsContentItem = ({ item }: { item: ProgramDetailsData }) => {
-  const hasImage = Boolean(item.imageSrc);
-
   return (
     <div className="flex flex-col gap-4 md:gap-5 p-6 bg-white rounded-xl border border-black/5">
-      {hasImage && item.imageSrc ? (
-        <img
-          src={item.imageSrc}
-          alt=""
-          className="w-12 h-12 object-contain"
-          loading="lazy"
-        />
-      ) : item.icon ? (
-        <Icon name={item.icon} size={30} className="text-ocean" />
-      ) : null}
+      <div className="flex items-center justify-center size-10 bg-ocean-subdued rounded-full">
+        <Icon name={item.icon} size={20} className="text-ocean" />
+      </div>
 
       <div className="flex flex-col gap-1">
-        <p className="text-sm font-semibold uppercase tracking-wide text-ocean">
+        <p className="text-xs font-medium uppercase tracking-[1.5px] text-ocean">
           {item.title}
         </p>
-        <h3 className="text-xl md:text-2xl font-bold text-dark-navy">
-          {item.subtitle}
-        </h3>
+        <h3 className="text-xl font-bold text-dark-navy">{item.subtitle}</h3>
       </div>
-      <p className="text-[#2F2F2F] text-sm md:text-base leading-relaxed">
-        {item.description}
-      </p>
+      <p className="text-neutral-default text-sm">{item.description}</p>
     </div>
   );
 };

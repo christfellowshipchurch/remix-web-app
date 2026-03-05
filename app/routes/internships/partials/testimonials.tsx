@@ -24,17 +24,14 @@ const TESTIMONIAL_PLACEHOLDER =
 
 const InternshipsTestimonials = () => {
   return (
-    <section
-      className="content-padding w-full py-16 md:py-24"
-      id="testimonies"
-    >
+    <section className="content-padding w-full py-16 md:py-24" id="testimonies">
       <div className="max-w-screen-content mx-auto w-full">
         <div className="flex flex-col gap-8 md:gap-12">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#7B7380]">
+            <p className="text-sm font-medium uppercase tracking-[2px] text-ocean">
               Intern Testimonials
             </p>
-            <h2 className="mt-2 text-[28px] md:text-[40px] font-bold text-dark-navy">
+            <h2 className="mt-2 text-[32px] lg:text-[44px] font-bold text-dark-navy">
               Hear From Our Interns
             </h2>
           </div>
@@ -43,25 +40,22 @@ const InternshipsTestimonials = () => {
             {TESTIMONIALS.map((item) => (
               <div
                 key={item.name}
-                className="flex flex-col gap-6 p-6 bg-white rounded-xl border border-black/5"
+                className="shadow-lg flex flex-col justify-between gap-6 p-6 bg-white rounded-xl border border-black/5 shrink-0"
               >
-                <h3 className="text-lg md:text-xl font-medium text-dark-navy leading-relaxed">
+                <h3 className="text-sm md:text-base text-neutral-dark leading-relaxed">
                   {item.quote}
                 </h3>
-                <div className="flex items-center gap-4">
+
+                <div className="flex items-center gap-4 border-t border-neutral-lightest pt-2">
                   <img
                     src={TESTIMONIAL_PLACEHOLDER}
                     alt=""
-                    className="size-12 md:size-14 rounded-lg object-cover flex-shrink-0"
+                    className="size-12 rounded-[#17509800] object-cover flex-shrink-0"
                     loading="lazy"
                   />
                   <div>
-                    <div className="font-semibold text-dark-navy">
-                      {item.name}
-                    </div>
-                    <div className="text-sm text-[#7B7380]">
-                      {item.ministry}
-                    </div>
+                    <p className="font-bold text-dark-navy">{item.name}</p>
+                    <p className="text-sm text-[#888888]">{item.ministry}</p>
                   </div>
                 </div>
               </div>

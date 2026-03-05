@@ -15,22 +15,22 @@ const DiveIn = ({
 }: DiveInProps) => {
   return (
     <section
-      className="w-full content-padding py-12 md:py-16"
+      className="w-full bg-navy content-padding py-12 md:py-16"
       id="find-your-place"
     >
       <div className="max-w-screen-content mx-auto w-full">
-        <div className="flex flex-col-reverse md:flex-row gap-0 overflow-hidden">
-          <div className="flex-1 flex flex-col justify-center gap-6 md:gap-8 p-8 md:p-12 lg:p-16 text-white">
-            <h2 className="text-[28px] md:text-[36px] lg:text-[40px] font-bold leading-[1.05]">
+        <div className="flex flex-col-reverse md:flex-row gap-4 md:gap-8 overflow-hidden">
+          <div className="flex-1 flex flex-col justify-center gap-3 md:gap-8">
+            <h2 className="text-[32px] md:text-[44px] font-bold leading-[1.05] text-white">
               {title}
             </h2>
-            <p className="text-white/90 text-base md:text-lg leading-relaxed max-w-xl">
+            <p className="text-base md:text-lg leading-relaxed text-white/80 max-w-xl">
               {paragraph}
             </p>
             <Button
               href={ctaHref}
-              intent="white"
-              className="w-fit min-w-[120px] min-h-[44px] px-6 font-semibold text-dark-navy rounded-[52px] border-none"
+              intent="primary"
+              className="mt-3 md:mt-0 w-fit min-w-[120px] min-h-[44px] px-6 font-semibold rounded-[52px] border-ocean hover:border-white"
             >
               {ctaText}
             </Button>
@@ -39,7 +39,7 @@ const DiveIn = ({
           <img
             src="/assets/images/internships/dive-in.webp"
             alt="Dive In"
-            className="w-full md:max-w-[50%] md:min-h-[320px] object-cover object-center"
+            className="w-full md:max-w-[50%] md:min-h-[320px] object-cover object-center rounded-[1rem]"
           />
         </div>
       </div>

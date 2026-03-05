@@ -1,6 +1,6 @@
 import InternshipFeatureSection from "../components/internship-feature-section";
 
-const FeatureSections = () => {
+const IntenrshipFeatureSections = () => {
   return (
     <div className="content-padding w-full">
       <div className="flex flex-col items-center max-w-screen-content mx-auto w-full">
@@ -39,4 +39,4 @@ const FeatureSections = () => {
   );
 };
 
-export default FeatureSections;
+export default IntenrshipFeatureSections;

@@ -6,6 +6,8 @@ import InternshipsHero from "../internships/partials/hero";
 import ProgramDetails, {
   ProgramDetailsData,
 } from "../internships/partials/program-details";
+import InternshipsTestimonials from "../internships/partials/testimonials";
+import IntenrshipFeatureSections from "../internships/partials/feature-sections";
 
 export { meta } from "./meta";
 
@@ -33,17 +35,14 @@ const programDetailsData: ProgramDetailsData[] = [
 ];
 
 export default function YearLongInternshipsPage() {
-  const programDetailsDescription =
-    "The Christ Fellowship Summer Internship Program is designed to offer ministry experience to college-aged students. Our goal is to cultivate an environment where interns can thrive under the mentorship of leaders, fostering spiritual, personal, and professional growth through collaborative teamwork and hands-on development experiences.<br /><br /> <b>* Interns must be college-aged, but do not have to be currently enrolled in college</b>";
-
   return (
     <div>
       <InternshipsHero
-        subheading="Year-Round Internships"
-        title="Grow Your Ministry Career with Us"
-        subtitle="Year-Round Internships"
+        subheading="College Internship · Year-Round"
+        title="Equipped for Ministry Leadership"
+        subtitle="A year-round opportunity designed to equip and develop students for future ministry leadership through hands-on experience, intentional mentorship, and a supportive team environment."
         ctas={[{ href: "#todo", text: "Apply Now" }]}
-        imageSrc="/assets/images/internships/year-round-internships.webp"
+        imageSrc="/assets/images/internships/year-long-hero.webp"
         imageAlt="Year-Round Internships Hero"
       />
       <InternshipsAbout
@@ -51,10 +50,9 @@ export default function YearLongInternshipsPage() {
         subheading="About the program"
         description="College interns are equipped with practical ministry skills and leadership experience that will prepare you to serve with confidence and purpose wherever God leads. You will grow personally, professionally, and spiritually while learning from experienced leaders."
       />
-      <ProgramDetails
-        description={programDetailsDescription}
-        data={programDetailsData}
-      />
+      <ProgramDetails data={programDetailsData} />
+      <IntenrshipFeatureSections />
+      <InternshipsTestimonials />
       <InternshipsBanner />
       <DiveIn />
       <InternshipsFAQs faqs={yearLongFaqs} />

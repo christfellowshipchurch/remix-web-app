@@ -17,7 +17,7 @@ export default function InternshipsPage() {
             href: "#programs",
             text: "Explore Programs",
           },
-          { href: "#todo", text: "Apply Now" },
+          { href: "#apply", text: "Apply Now" },
         ]}
         imageSrc="/assets/images/internships/hero.webp"
         imageAlt="Internships Hero"

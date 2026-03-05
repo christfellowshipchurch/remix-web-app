@@ -37,7 +37,7 @@ export const FeatureImage: FC<{ data: ContentBlockData }> = ({ data }) => {
               "md:aspect-[16/9]": data.aspectRatio === "16by9",
               "md:aspect-[4/5]": data.aspectRatio === "4by5",
               "md:aspect-[1/1]": data.aspectRatio === "1by1",
-            }
+            },
           )}
         />
       )}
@@ -64,7 +64,7 @@ export const FeatureSection: FC<{
     <section
       className={cn(
         "content-padding py-12 lg:py-16",
-        grayBg ? "bg-gray" : "bg-transparent"
+        grayBg ? "bg-gray" : "bg-transparent",
       )}
       aria-label={data.name}
     >
@@ -73,7 +73,7 @@ export const FeatureSection: FC<{
           "flex flex-col md:flex-row gap-12 xl:gap-20 items-center max-w-screen-content mx-auto",
           {
             "flex-col-reverse": data.imageLayout === "RIGHT",
-          }
+          },
         )}
       >
         {(data.coverImage || data.featureVideo) &&
