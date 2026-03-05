@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   InstantSearch,
   Hits,
@@ -23,6 +23,30 @@ const SeasonRefinementList = () => {
   const { setIndexUiState } = useInstantSearch();
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
 
+  const sortedItems = useMemo(
+    () =>
+      items
+        .map((item) => ({ ...item, label: `Season ${item.label}` }))
+        .sort((a, b) => Number(b.value) - Number(a.value)),
+    [items]
+  );
+
+  // Auto-select latest season when items first become available
+  useEffect(() => {
+    if (sortedItems.length > 0 && selectedSeason === null) {
+      const latestSeason = sortedItems[0].value;
+      setSelectedSeason(latestSeason);
+      setIndexUiState((prevState) => ({
+        ...prevState,
+        refinementList: {
+          ...prevState.refinementList,
+          podcastSeasonNumber: [latestSeason],
+        },
+        page: 0,
+      }));
+    }
+  }, [sortedItems, selectedSeason, setIndexUiState]);
+
   const handleSeasonClick = (season: string) => {
     setSelectedSeason(season);
 
@@ -36,24 +60,6 @@ const SeasonRefinementList = () => {
       page: 0, // Reset to first page
     }));
   };
-
-  const sortedItems = items
-    .map((item) => ({ ...item, label: `Season ${item.label}` }))
-    .sort((a, b) => Number(a.value) - Number(b.value));
-
-  // Set default selection to first season when items are available
-  if (sortedItems.length > 0 && selectedSeason === null) {
-    const firstSeason = sortedItems[0].value;
-    setSelectedSeason(firstSeason);
-    setIndexUiState((prevState) => ({
-      ...prevState,
-      refinementList: {
-        ...prevState.refinementList,
-        podcastSeasonNumber: [firstSeason],
-      },
-      page: 0,
-    }));
-  }
 
   return (
     <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto">
@@ -76,9 +82,9 @@ const SeasonRefinementList = () => {
 };
 
 const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
-  const {podcast} = useLoaderData<LoaderReturnType>();
+  const { podcast } = useLoaderData<LoaderReturnType>();
   const cardUrl = `/podcasts/${podcast.url}/${hit.url}`;
-  
+
   return (
     <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
       <div className="relative md:w-[340px] lg:w-full">
@@ -103,8 +109,8 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm text-text-secondary">
-          {hit.podcastSeason || "Season 1"} | Episode{" "}
-          {hit.podcastEpisodeNumber || "1"}
+          {hit.podcastSeasonNumber && `Season ${hit.podcastSeasonNumber}`} |
+          Episode {hit.podcastEpisodeNumber || "1"}
         </p>
         <h3 className="text-lg font-bold">{hit.title}</h3>
       </div>
@@ -137,9 +143,16 @@ export const PodcastEpisodeList = ({
       {/* Season Filter */}
       <SeasonRefinementList />
 
-      {/* Episodes Grid */}
+      {/* Episodes Grid - newest first via client-side sort */}
       <Hits
         hitComponent={PodcastEpisodeHitComponent}
+        transformItems={(hits) =>
+          [...hits].sort(
+            (a, b) =>
+              new Date((b as ContentItemHit).startDateTime).getTime() -
+              new Date((a as ContentItemHit).startDateTime).getTime()
+          )
+        }
         classNames={{
           list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
         }}
