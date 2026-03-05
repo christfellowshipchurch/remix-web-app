@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   InstantSearch,
   Hits,
@@ -23,6 +23,30 @@ const SeasonRefinementList = () => {
   const { setIndexUiState } = useInstantSearch();
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
 
+  const sortedItems = useMemo(
+    () =>
+      items
+        .map((item) => ({ ...item, label: `Season ${item.label}` }))
+        .sort((a, b) => Number(b.value) - Number(a.value)),
+    [items]
+  );
+
+  // Auto-select latest season when items first become available
+  useEffect(() => {
+    if (sortedItems.length > 0 && selectedSeason === null) {
+      const latestSeason = sortedItems[0].value;
+      setSelectedSeason(latestSeason);
+      setIndexUiState((prevState) => ({
+        ...prevState,
+        refinementList: {
+          ...prevState.refinementList,
+          podcastSeasonNumber: [latestSeason],
+        },
+        page: 0,
+      }));
+    }
+  }, [sortedItems, selectedSeason, setIndexUiState]);
+
   const handleSeasonClick = (season: string) => {
     setSelectedSeason(season);
 
@@ -36,24 +60,6 @@ const SeasonRefinementList = () => {
       page: 0, // Reset to first page
     }));
   };
-
-  const sortedItems = items
-    .map((item) => ({ ...item, label: `Season ${item.label}` }))
-    .sort((a, b) => Number(a.value) - Number(b.value));
-
-  // Set default selection to first season when items are available
-  if (sortedItems.length > 0 && selectedSeason === null) {
-    const firstSeason = sortedItems[0].value;
-    setSelectedSeason(firstSeason);
-    setIndexUiState((prevState) => ({
-      ...prevState,
-      refinementList: {
-        ...prevState.refinementList,
-        podcastSeasonNumber: [firstSeason],
-      },
-      page: 0,
-    }));
-  }
 
   return (
     <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto">
@@ -137,9 +143,16 @@ export const PodcastEpisodeList = ({
       {/* Season Filter */}
       <SeasonRefinementList />
 
-      {/* Episodes Grid */}
+      {/* Episodes Grid - newest first via client-side sort */}
       <Hits
         hitComponent={PodcastEpisodeHitComponent}
+        transformItems={(hits) =>
+          [...hits].sort(
+            (a, b) =>
+              new Date((b as ContentItemHit).startDateTime).getTime() -
+              new Date((a as ContentItemHit).startDateTime).getTime()
+          )
+        }
         classNames={{
           list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
         }}
