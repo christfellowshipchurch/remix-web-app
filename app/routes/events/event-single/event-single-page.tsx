@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useLoaderData, useLocation } from "react-router-dom";
 
+import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+
 import { EventSinglePageType } from "./types";
 import { EventsSingleHero } from "./partials/hero.partial";
 import { EventSingleFAQ } from "./partials/event-faq.partial";
@@ -22,7 +24,8 @@ export const EventSinglePage: React.FC = () => {
       return;
     const el = document.getElementById(hash);
     if (!el) return;
-    const offsetTop = el.getBoundingClientRect().top + window.scrollY - 100;
+    const offsetTop =
+      el.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
     window.scrollTo({ top: offsetTop, behavior: "smooth" });
   }, [location.hash]);
 
