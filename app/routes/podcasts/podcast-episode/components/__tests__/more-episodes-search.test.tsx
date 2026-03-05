@@ -21,6 +21,7 @@ vi.mock("react-instantsearch", () => ({
           title: "Test Episode",
           coverImage: { sources: [{ uri: "/test-image.jpg" }] },
           podcastSeason: "Season 1",
+          podcastSeasonNumber: 1,
           podcastEpisodeNumber: 2,
           routing: { pathname: "/test-episode" },
         }}
@@ -28,6 +29,7 @@ vi.mock("react-instantsearch", () => ({
     </div>
   ),
   Configure: () => <div data-testid="configure" />,
+  useHits: () => ({ items: [{}] }),
 }));
 
 // Mock algoliasearch
