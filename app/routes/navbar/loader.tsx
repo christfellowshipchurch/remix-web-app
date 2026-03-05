@@ -21,8 +21,8 @@ export interface RootLoaderData {
     ALGOLIA_APP_ID: string | undefined;
     ALGOLIA_SEARCH_API_KEY: string | undefined;
   };
-  /** Top 12 most searched queries from Algolia Analytics (empty if Analytics not configured). */
-  popularSearches: string[];
+  /** Popular results (content users click most). From Algolia getTopHits when available; else empty and UI uses hardcoded fallback. */
+  popularResults: { title: string; pathname: string }[];
   siteBanner: {
     content: string;
     ctas?: {
@@ -160,7 +160,7 @@ export async function loader({
           ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
           ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
         },
-        popularSearches,
+        popularResults: [],
         // Site Banner Data
         siteBanner: {
           content: "",
@@ -223,7 +223,7 @@ export async function loader({
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
       },
-      popularSearches,
+      popularResults: [],
       // Site Banner Data
       siteBanner: siteBanner,
     };
@@ -239,7 +239,7 @@ export async function loader({
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
       },
-      popularSearches: [],
+      popularResults: [],
       // Site Banner Data
       siteBanner: {
         content: "",

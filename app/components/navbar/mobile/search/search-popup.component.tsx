@@ -158,7 +158,7 @@ export const SearchPopup = ({
             ))}
           </div>
         ) : (
-          <PopularSearches />
+          <PopularSearches onNavigate={() => setIsSearchOpen(false)} />
         )}
       </div>
     </div>
