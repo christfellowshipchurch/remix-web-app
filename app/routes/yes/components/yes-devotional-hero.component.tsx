@@ -6,7 +6,7 @@ export const YesHero = () => {
     <div className="flex flex-col items-center w-full h-screen lg:h-full lg:min-h-[110svh]">
       <div className="flex flex-col gap-6 items-center justify-center w-full h-[120svh] lg:h-full lg:min-h-[110svh] px-4">
         <div className="flex flex-col gap-3 items-center text-center">
-          <h1 className="text-[40px] lg:text-[100px] font-extrabold text-[#00354D] leading-tight">
+          <h1 className="text-[40px] lg:text-[100px] font-extrabold text-dark-navy leading-tight">
             You Said <span className="text-white">YES!</span>
           </h1>
           <p className="text-lg lg:text-xl text-white">

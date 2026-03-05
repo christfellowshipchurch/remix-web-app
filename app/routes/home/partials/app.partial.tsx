@@ -14,12 +14,12 @@ const DesktopVersion = () => {
   return (
     <section
       className={cn(
-        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-28 hidden md:block relative z-30"
+        "bg-gradient-to-b from-dark-navy via-dark-navy to-navy content-padding w-full py-28 hidden md:block relative z-30",
       )}
     >
       <div
         className={cn(
-          "max-w-screen-content mx-auto flex justify-center gap-8 lg:gap-16 items-center flex-row-reverse"
+          "max-w-screen-content mx-auto flex justify-center gap-8 lg:gap-16 items-center flex-row-reverse",
         )}
       >
         <div className="flex flex-col gap-16 text-white">
@@ -62,13 +62,13 @@ const MobileVersion = () => {
   return (
     <section
       className={cn(
-        "bg-gradient-to-b from-[#00354D] via-[#00354D] to-navy content-padding w-full py-16 md:hidden relative z-30"
+        "bg-gradient-to-b from-dark-navy via-dark-navy to-navy content-padding w-full py-16 md:hidden relative z-30",
       )}
     >
       <div className="max-w-screen-content mx-auto flex flex-col gap-8 items-center">
         <h2
           className={cn(
-            "text-white text-center text-[32px] leading-tight max-w-[340px]"
+            "text-white text-center text-[32px] leading-tight max-w-[340px]",
           )}
         >
           Grow in your <span className="font-extrabold">faith. Every day </span>
