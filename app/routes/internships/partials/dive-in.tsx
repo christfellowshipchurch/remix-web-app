@@ -1,3 +1,4 @@
+import { getImageUrl } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 
 export type DiveInProps = {
@@ -37,7 +38,7 @@ const DiveIn = ({
           </div>
 
           <img
-            src="/assets/images/internships/dive-in.webp"
+            src={getImageUrl("3141720")}
             alt="Dive In"
             className="w-full md:max-w-[50%] md:min-h-[320px] object-cover object-center rounded-[1rem]"
           />

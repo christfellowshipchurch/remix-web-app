@@ -5,6 +5,7 @@ import InternshipsHero from "../internships/partials/hero";
 import ProgramDetails, {
   ProgramDetailsData,
 } from "../internships/partials/program-details";
+import { getImageUrl } from "~/lib/utils";
 
 export { meta } from "./meta";
 
@@ -45,7 +46,7 @@ export default function SummerInternshipsPage() {
             text: "Apply Now",
           },
         ]}
-        imageSrc="/assets/images/internships/summer-hero.webp"
+        imageSrc={getImageUrl("3141721")}
         imageAlt="Summer Internship"
       />
       <InternshipsAbout

@@ -8,6 +8,7 @@ import ProgramDetails, {
 } from "../internships/partials/program-details";
 import InternshipsTestimonials from "../internships/partials/testimonials";
 import IntenrshipFeatureSections from "../internships/partials/feature-sections";
+import { getImageUrl } from "~/lib/utils";
 
 export { meta } from "./meta";
 
@@ -42,11 +43,11 @@ export default function YearLongInternshipsPage() {
         title="Equipped for Ministry Leadership"
         subtitle="A year-round opportunity designed to equip and develop students for future ministry leadership through hands-on experience, intentional mentorship, and a supportive team environment."
         ctas={[{ href: "#todo", text: "Apply Now" }]}
-        imageSrc="/assets/images/internships/year-long-hero.webp"
+        imageSrc={getImageUrl("3141716")}
         imageAlt="Year-Round Internships Hero"
       />
       <InternshipsAbout
-        isYearLong={true}
+        isYearLong
         subheading="About the program"
         description="College interns are equipped with practical ministry skills and leadership experience that will prepare you to serve with confidence and purpose wherever God leads. You will grow personally, professionally, and spiritually while learning from experienced leaders."
       />

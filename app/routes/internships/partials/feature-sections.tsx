@@ -1,3 +1,4 @@
+import { getImageUrl } from "~/lib/utils";
 import InternshipFeatureSection from "../components/internship-feature-section";
 
 const IntenrshipFeatureSections = () => {
@@ -7,29 +8,23 @@ const IntenrshipFeatureSections = () => {
         <InternshipFeatureSection
           title="Mentorship"
           description="Work closely with experienced leaders who will guide and invest in your personal growth."
-          images={["/assets/images/internships/m.webp"]}
+          images={[getImageUrl("3141723")]}
         />
         <InternshipFeatureSection
           title="Community"
           description="Build lasting relationships with other interns and become part of a supportive community."
-          images={[
-            "/assets/images/internships/c-1.webp",
-            "/assets/images/internships/c-2.webp",
-          ]}
+          images={[getImageUrl("3141717"), getImageUrl("3141718")]}
           imageRight={true}
         />
         <InternshipFeatureSection
           title="Practical Experience"
           description="Apply your skills in a dynamic environment and make a real impact from day one."
-          images={[
-            "/assets/images/internships/pe-1.webp",
-            "/assets/images/internships/pe-2.webp",
-          ]}
+          images={[getImageUrl("3141724"), getImageUrl("3141725")]}
         />
         <InternshipFeatureSection
           title="Leadership Development"
           description="Gain hands-on experience in leadership and team management through real-world projects."
-          images={["/assets/images/internships/led-dev.webp"]}
+          images={[getImageUrl("3141719")]}
           imageRight={true}
         />
       </div>

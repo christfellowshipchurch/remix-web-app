@@ -2,6 +2,7 @@ import InternshipsHero from "./partials/hero";
 import FindYourPlace from "./partials/find-your-place";
 import InternshipsBanner from "./partials/banner";
 import Paths from "./partials/paths";
+import { getImageUrl } from "~/lib/utils";
 
 export { meta } from "./meta";
 
@@ -19,7 +20,7 @@ export default function InternshipsPage() {
           },
           { href: "#apply", text: "Apply Now" },
         ]}
-        imageSrc="/assets/images/internships/hero.webp"
+        imageSrc={getImageUrl("3141722")}
         imageAlt="Internships Hero"
       />
       <Paths />

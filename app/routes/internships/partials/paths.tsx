@@ -1,5 +1,5 @@
-import React from "react";
 import { Link } from "react-router";
+import { getImageUrl } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 
 const Paths = () => {
@@ -27,7 +27,7 @@ const Paths = () => {
           <PathsItem
             title="Summer Internships"
             description="Experience a summer like never before! Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact."
-            imageSrc="/assets/images/internships/summer-hero.webp"
+            imageSrc={getImageUrl("3141721")}
             duration="12-Week Program"
             pills={["Mid-May – Mid-August", "Full-Time", "Stipend"]}
             ctaLink="/summer-internships"
@@ -35,7 +35,7 @@ const Paths = () => {
           <PathsItem
             title="College Internships"
             description="A year-round opportunity designed to equip and develop students for future ministry leadership. Grow personally, professionally, and spiritually while learning from experienced leaders."
-            imageSrc="/assets/images/internships/year-long-hero.webp"
+            imageSrc={getImageUrl("3141716")}
             duration="12-Week Program"
             pills={["August – August", "Part-Time · 25 hrs/wk", "Hourly Wage"]}
             ctaLink="/year-round-internships"
@@ -72,7 +72,7 @@ const PathsItem = ({
         <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/40 to-transparent" />
 
         {duration && (
-          <p className="absolute bottom-0 left-0 bg-ocean text-sm text-bold ml-4 mb-4 py-1 px-2 rounded-[16777200]">
+          <p className="absolute bottom-0 left-0 text-white bg-ocean text-sm text-bold ml-4 mb-4 py-1 px-3 rounded-[16777200px]">
             {duration}
           </p>
         )}
