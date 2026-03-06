@@ -18,7 +18,7 @@ const DiveIn = ({
       className="w-full bg-navy content-padding py-12 md:py-16"
       id="find-your-place"
     >
-      <div className="max-w-screen-content mx-auto w-full">
+      <div className="max-w-[1120px] mx-auto w-full">
         <div className="flex flex-col-reverse md:flex-row gap-4 md:gap-8 overflow-hidden">
           <div className="flex-1 flex flex-col justify-center gap-3 md:gap-8">
             <h2 className="text-[32px] md:text-[44px] font-bold leading-[1.05] text-white">

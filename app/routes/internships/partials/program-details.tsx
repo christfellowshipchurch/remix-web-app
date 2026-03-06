@@ -23,7 +23,7 @@ const ProgramDetails = ({
       className="content-padding w-full py-12 md:py-20 bg-[#F5F5FA]"
       id="program-details"
     >
-      <div className="max-w-screen-content mx-auto w-full flex flex-col gap-10 md:gap-16">
+      <div className="max-w-[1120px] mx-auto w-full flex flex-col gap-10 md:gap-16">
         <div className="flex flex-col gap-4 md:gap-6">
           <h2 className="text-dark-navy text-[24px] md:text-[40px] font-bold">
             {sectionTitle}

@@ -73,7 +73,7 @@ const InternshipsFAQs = ({
 
   return (
     <section className="w-full content-padding py-16" id="faq">
-      <div className="max-w-screen-content mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
+      <div className="max-w-[1120px] mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
         <div className="flex flex-col items-center justify-center gap-4">
           {sectionSubheading && (
             <p className="text-sm font-medium uppercase tracking-[2px] text-ocean text-center">

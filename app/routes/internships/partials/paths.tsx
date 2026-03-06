@@ -8,7 +8,7 @@ const Paths = () => {
       className="w-full content-padding py-12 md:py-16 lg:py-24 bg-[#F9F9F9]"
       id="programs"
     >
-      <div className="max-w-screen-content mx-auto w-full flex flex-col gap-16 items-center justify-center">
+      <div className="max-w-[1120px] mx-auto w-full flex flex-col gap-16 items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4 w-full text-center">
           <p className="text-sm font-medium uppercase tracking-[2px] text-ocean">
             Choose Your Path

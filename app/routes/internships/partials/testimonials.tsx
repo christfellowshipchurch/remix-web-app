@@ -24,8 +24,11 @@ const TESTIMONIAL_PLACEHOLDER =
 
 const InternshipsTestimonials = () => {
   return (
-    <section className="content-padding w-full py-16 md:py-24" id="testimonies">
-      <div className="max-w-screen-content mx-auto w-full">
+    <section
+      className="content-padding w-full py-16 md:py-24 bg-[#F9F9F9]"
+      id="testimonies"
+    >
+      <div className="max-w-[1120px] mx-auto w-full">
         <div className="flex flex-col gap-8 md:gap-12">
           <div className="text-center">
             <p className="text-sm font-medium uppercase tracking-[2px] text-ocean">

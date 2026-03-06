@@ -29,7 +29,7 @@ const InternshipsHero = ({
         "w-full py-10 md:py-16 lg:py-20 content-padding rounded-b-[1rem] md:rounded-b-none",
       )}
     >
-      <div className="max-w-screen-content mx-auto w-full flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-10 md:gap-8 xl:gap-16">
+      <div className="max-w-[1120px] mx-auto w-full flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-10 md:gap-8 xl:gap-16">
         <div className="flex flex-col gap-8 md:gap-10 max-w-[520px]">
           {subheading && (
             <p className="text-ocean text-sm font-medium uppercase tracking-[2px] leading-[21px]">

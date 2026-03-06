@@ -16,7 +16,7 @@ export const InternshipsAbout = ({
 }) => {
   return (
     <section className="w-full content-padding py-12 md:py-16" id="about">
-      <div className="max-w-screen-content mx-auto w-full">
+      <div className="max-w-[1120px] mx-auto w-full">
         <div className="flex flex-col md:flex-row gap-8 md:gap-24">
           <div className="flex flex-col gap-4 md:gap-6">
             <p className="text-sm font-medium uppercase tracking-[2px] text-ocean">

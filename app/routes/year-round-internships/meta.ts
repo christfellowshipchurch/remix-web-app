@@ -3,9 +3,9 @@ import { createMeta } from "~/lib/meta-utils";
 
 export const meta: MetaFunction = () => {
   return createMeta({
-    title: "Summer Internships",
+    title: "Year Round Internships",
     description:
-      "Summer internship opportunities at Christ Fellowship Church. Gain experience and grow in your faith.",
-    path: "/summer-internships",
+      "A year-round opportunity designed to equip and develop students for future ministry leadership through hands-on experience, intentional mentorship, and a supportive team environment.",
+    path: "/year-round-internships",
   });
 };
