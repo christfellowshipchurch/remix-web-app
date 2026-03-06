@@ -26,7 +26,7 @@ export const PopularSearches = ({
 
   return (
     <div className="flex flex-col">
-      <h2 className="text-xl text-[#00354D] font-extrabold leading-none">
+      <h2 className="text-xl text-dark-navy font-extrabold leading-none">
         Popular Results
       </h2>
       <ul className="mt-2">

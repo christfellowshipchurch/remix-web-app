@@ -5,7 +5,7 @@ export const meta: MetaFunction = () => {
   return createMeta({
     title: "Summer Internships",
     description:
-      "Summer internship opportunities at Christ Fellowship Church. Gain experience and grow in your faith.",
+      "Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact.",
     path: "/summer-internships",
   });
 };
