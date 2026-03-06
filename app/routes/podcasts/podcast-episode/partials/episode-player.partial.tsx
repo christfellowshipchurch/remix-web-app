@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { PodcastEpisode } from "../../types";
 
-// Declare custom Wistia player element
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+// Augment React JSX for Wistia custom element (required for TypeScript)
+/* eslint-disable @typescript-eslint/no-namespace */
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       "wistia-player": React.DetailedHTMLProps<
@@ -16,6 +16,7 @@ declare global {
     }
   }
 }
+/* eslint-enable @typescript-eslint/no-namespace */
 
 export function EpisodePlayer({ audio }: { audio: PodcastEpisode["audio"] }) {
   useEffect(() => {

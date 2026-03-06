@@ -25,8 +25,8 @@ import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/cl
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 
 export const AllEvents = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<EventReturnType>();
+  const loaderData = useLoaderData<EventReturnType>();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = loaderData ?? {};
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 

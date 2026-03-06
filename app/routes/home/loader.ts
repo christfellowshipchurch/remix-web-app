@@ -25,7 +25,8 @@ const getAuthorIdsByPathname = async (person: Author): Promise<string> => {
   } catch (error) {
     console.error("Error fetching author:", error);
     throw new Error(
-      `Failed to fetch author ID for ${person.authorAttributes.pathname}`
+      `Failed to fetch author ID for ${person.authorAttributes.pathname}`,
+      { cause: error }
     );
   }
 };

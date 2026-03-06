@@ -15,12 +15,12 @@ import {
 } from "~/primitives/shadcn-primitives/carousel";
 
 export function FeaturedEvents() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<EventReturnType>();
+  const loaderData = useLoaderData<EventReturnType>();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = loaderData ?? {};
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   return (
@@ -114,7 +114,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
       year: "numeric",
       month: "long",
       day: "numeric",
-    }
+    },
   );
 
   return (

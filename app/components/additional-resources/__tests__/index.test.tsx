@@ -34,9 +34,12 @@ describe("AdditionalResources", () => {
     );
 
     mockResources.forEach((resource) => {
-      const button = screen.getByText(resource.title);
-      expect(button).toBeInTheDocument();
-      expect(button.closest("a")).toHaveAttribute("href", resource.url);
+      // Each resource renders two buttons (sm + lg sizes), both point to the same URL
+      const buttons = screen.getAllByText(resource.title);
+      expect(buttons.length).toBeGreaterThanOrEqual(1);
+      buttons.forEach((button) => {
+        expect(button.closest("a")).toHaveAttribute("href", resource.url);
+      });
     });
   });
 
@@ -47,7 +50,8 @@ describe("AdditionalResources", () => {
       </MemoryRouter>
     );
     const buttons = screen.getAllByRole("link");
-    expect(buttons).toHaveLength(mockResources.length);
+    // Each resource renders two buttons (sm for mobile, lg for desktop)
+    expect(buttons).toHaveLength(mockResources.length * 2);
   });
 
   it("renders cards when type is 'card'", () => {
@@ -85,6 +89,7 @@ describe("AdditionalResources", () => {
       </MemoryRouter>
     );
     const buttons = screen.getAllByRole("link");
-    expect(buttons).toHaveLength(mockResources.length);
+    // Each resource renders two buttons (sm for mobile, lg for desktop)
+    expect(buttons).toHaveLength(mockResources.length * 2);
   });
 });

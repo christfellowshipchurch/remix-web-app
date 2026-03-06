@@ -1,5 +1,4 @@
-import { useMediaQuery } from "react-responsive";
-import { useHydrated } from "./use-hydrated";
+import { useEffect, useState } from "react";
 
 export const breakpoints = {
   xs: 480,
@@ -11,23 +10,22 @@ export const breakpoints = {
 } as const;
 
 export function useResponsive() {
-  const isHydrated = useHydrated();
+  const [width, setWidth] = useState<number | null>(null);
 
-  const isXSmall = useMediaQuery({ maxWidth: breakpoints.sm - 1 });
-  const isSmall = useMediaQuery({ maxWidth: breakpoints.md - 1 });
-  const isMedium = useMediaQuery({
-    minWidth: breakpoints.md,
-    maxWidth: breakpoints.lg - 1,
-  });
-  const isLarge = useMediaQuery({ minWidth: breakpoints.lg });
-  const isXLarge = useMediaQuery({ minWidth: breakpoints["xl"] });
-  const isXXLarge = useMediaQuery({ minWidth: breakpoints["2xl"] });
+  useEffect(() => {
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
 
-  // Return mobile-first defaults when not hydrated
-  if (!isHydrated) {
+    handleResize(); // set initial width
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (width === null) {
     return {
-      isXSmall: true,
-      isSmall: true,
+      isXSmall: false,
+      isSmall: false,
       isMedium: false,
       isLarge: false,
       isXLarge: false,
@@ -37,12 +35,12 @@ export function useResponsive() {
   }
 
   return {
-    isXSmall,
-    isSmall,
-    isMedium,
-    isLarge,
-    isXLarge,
-    isXXLarge,
+    isXSmall: width < breakpoints.sm,
+    isSmall: width < breakpoints.md,
+    isMedium: width >= breakpoints.md && width < breakpoints.lg,
+    isLarge: width >= breakpoints.lg,
+    isXLarge: width >= breakpoints.xl,
+    isXXLarge: width >= breakpoints["2xl"],
     breakpoints,
   };
 }

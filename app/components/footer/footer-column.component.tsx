@@ -19,14 +19,18 @@ export const FooterColumnComponent = ({ column }: FooterColumnProps) => {
         link.url === "#connect-card" ? (
           <ConnectCardModal
             key={link.title}
-            triggerStyles="text-lg font-light text-[#D0D0CE] m-0 p-0 border-0 rounded-none bg-transparent items-start justify-start min-h-0 min-w-0 hover:enabled:bg-transparent hover:cursor-pointer"
+            triggerStyles="text-lg font-light text-coconut m-0 p-0 border-0 rounded-none bg-transparent items-start justify-start min-h-0 min-w-0 hover:enabled:bg-transparent hover:cursor-pointer"
             buttonTitle={link.title}
           />
         ) : (
-          <a key={link.title} className="text-lg font-light" href={link.url}>
+          <a
+            key={link.title}
+            className="text-lg hover:text-white/50 transition-colors"
+            href={link.url}
+          >
             {link.title}
           </a>
-        )
+        ),
       )}
     </div>
   );

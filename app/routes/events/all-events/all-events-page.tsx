@@ -8,6 +8,7 @@ export function AllEventsPage() {
     <div className="flex flex-col items-center">
       <DynamicHero
         customTitle="Events"
+        fullOverlay
         imagePath="/assets/images/events-hero-bg.jpg"
       />
       <FeaturedEvents />

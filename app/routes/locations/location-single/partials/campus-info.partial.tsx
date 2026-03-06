@@ -98,7 +98,7 @@ export const CampusInfo = ({
     );
   }
 
-  let campusHeadingLine = "";
+  let campusHeadingLine: string;
   if (campusName === "CF Everywhere") {
     campusHeadingLine = "Christ Fellowship Church Online";
   } else if (campusName === "Trinity") {
