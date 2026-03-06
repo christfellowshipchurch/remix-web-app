@@ -17,7 +17,7 @@ export const InternshipsAbout = ({
   return (
     <section className="w-full content-padding py-12 md:py-16" id="about">
       <div className="max-w-[1120px] mx-auto w-full">
-        <div className="flex flex-col md:flex-row gap-8 md:gap-24">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-24">
           <div className="flex flex-col gap-4 md:gap-6">
             <p className="text-sm font-medium uppercase tracking-[2px] text-ocean">
               {subheading}
@@ -28,7 +28,7 @@ export const InternshipsAbout = ({
           </div>
 
           {isYearLong && (
-            <div className="w-full md:max-w-[380px] flex flex-col gap-5 bg-ocean-subdued p-6 md:p-8 rounded-[20px]">
+            <div className="w-full lg:max-w-[380px] flex flex-col gap-5 bg-ocean-subdued p-6 md:p-8 rounded-[20px]">
               <h2 className="text-navy text-[20px] font-bold">Requirements</h2>
               <div className="flex flex-col gap-4">
                 <YearLongRequirementsItem item="Completed at least Sophomore year (60 credit hours)" />

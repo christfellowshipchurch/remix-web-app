@@ -39,11 +39,11 @@ const InternshipsTestimonials = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
             {TESTIMONIALS.map((item) => (
               <div
                 key={item.name}
-                className="shadow-lg flex flex-col justify-between gap-6 p-6 bg-white rounded-xl border border-black/5 shrink-0"
+                className="mx-auto md:max-w-[360px] lg:max-w-none shadow-lg flex flex-col justify-between gap-6 p-6 bg-white rounded-xl border border-black/5 shrink-0"
               >
                 <h3 className="text-sm md:text-base text-neutral-dark leading-relaxed">
                   {item.quote}
