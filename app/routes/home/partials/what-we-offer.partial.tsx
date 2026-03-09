@@ -6,7 +6,7 @@ import { getImageUrl } from "~/lib/utils";
 const backgroundImages = {
   family: getImageUrl("3143922"),
   "young-adults": getImageUrl("3143923"),
-  everyone: "/assets/images/home/everyone-bg.jpg",
+  everyone: getImageUrl("3143927"),
 };
 
 export function WhatWeOfferSection() {
