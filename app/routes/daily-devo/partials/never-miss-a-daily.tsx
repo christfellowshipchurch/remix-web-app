@@ -1,7 +1,7 @@
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
-import { appleLink, googleLink, isAppleDevice } from "~/lib/utils";
+import { appleLink, getImageUrl, googleLink, isAppleDevice } from "~/lib/utils";
 import {
   FloatingCard,
   FloatingCardType,
@@ -23,7 +23,7 @@ export const NeverMissADaily = () => {
 
         <div className="flex flex-col items-center w-full gap-8 max-w-[700px] mt-16 md:mt-0">
           <img
-            src="/assets/images/daily/daily-sample-week.png"
+            src={getImageUrl("3143837")}
             alt="Sample Week"
             className="w-full md:w-[90%] aspect-61/8"
           />

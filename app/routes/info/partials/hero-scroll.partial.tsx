@@ -1,5 +1,8 @@
+import { getImageUrl } from "~/lib/utils";
 import { HeroScrollCard } from "../components/hero-scroll-card.component";
 import { useRef, useEffect, useState } from "react";
+
+const infoBgUrl = getImageUrl("3143889");
 
 /**
  * Creates an infinite scroll of cards used for the CF Info Page
@@ -85,7 +88,7 @@ export const HeroCardScroll = () => {
         isVisible ? "animate-fadeIn duration-400" : "opacity-0"
       }`}
       style={{
-        backgroundImage: "url(/assets/images/info-bg.jpg)",
+        backgroundImage: `url(${infoBgUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -104,7 +107,7 @@ export const HeroCardScroll = () => {
             return (
               <div
                 key={`${card.cta.label}-${index}`}
-                className={`hero-card flex-shrink-0 snap-center transition-all duration-100 p-7 w-[306px] ${
+                className={`hero-card shrink-0 snap-center transition-all duration-100 p-7 w-[306px] ${
                   isCenterCard ? "scale-115 " : "scale-100"
                 }`}
               >
@@ -120,23 +123,23 @@ export const HeroCardScroll = () => {
 
 const mockCards = [
   {
-    image: "/assets/images/info-bg.jpg",
+    image: infoBgUrl,
     cta: { label: "1", href: "/donate" },
   },
   {
-    image: "/assets/images/info-bg.jpg",
+    image: infoBgUrl,
     cta: { label: "2", href: "/donate" },
   },
   {
-    image: "/assets/images/info-bg.jpg",
+    image: infoBgUrl,
     cta: { label: "3", href: "/donate" },
   },
   {
-    image: "/assets/images/info-bg.jpg",
+    image: infoBgUrl,
     cta: { label: "4", href: "/donate" },
   },
   {
-    image: "/assets/images/info-bg.jpg",
+    image: infoBgUrl,
     cta: { label: "5", href: "/donate" },
   },
 ];

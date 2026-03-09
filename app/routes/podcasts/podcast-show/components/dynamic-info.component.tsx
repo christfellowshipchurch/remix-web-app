@@ -1,11 +1,12 @@
 import { Button } from "~/primitives/button/button.primitive";
+import { getImageUrl } from "~/lib/utils";
 
 export const DynamicInfo = () => {
   const title = "So Good Podcast Groups";
   const description = "Listen to the Sisterhood Podcast with a group!";
   const content =
     "Join a So Good Sisterhood Podcast group to have conversations about living intentionally, leading confidently, and loving generously. Find a group that works with your schedule, and get ready to discuss your favorite episodes. Have a few friends you want to listen to the podcast with? Shownotes Plus includes detailed notes from each episode, discussion questions, key Scripture verses, and links to more resources and devotionals so you can dive deeper. Enter your email address to gain access!";
-  const image = "/assets/images/podcasts/sisterhood-info.jpg";
+  const image = getImageUrl("3143850");
   const ctas = [
     { title: "Find a Group", href: "#testing1" },
     { title: "Subscribe to Show Notes Plus", href: "#testing2" },
