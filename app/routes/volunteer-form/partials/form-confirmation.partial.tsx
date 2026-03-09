@@ -72,7 +72,7 @@ export const VolunteerFormConfirmationPartial: React.FC = () => (
         <img
           src="https://picsum.photos/320/280"
           alt="Start Your Journey"
-          className="w-80 rounded-lg aspect-[4/3]"
+          className="w-80 rounded-lg aspect-4/3"
         />
         <h5 className="font-medium uppercase text-text-secondary text-xs mt-2">
           the best first step

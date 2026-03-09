@@ -30,7 +30,7 @@ export const ResourceCard = ({
       <img
         src={image}
         alt={name}
-        className="w-full h-auto max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:aspect-[41/27] rounded-t-[8px]"
+        className="w-full h-auto max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:aspect-41/27 rounded-t-[8px]"
         loading="lazy"
       />
 

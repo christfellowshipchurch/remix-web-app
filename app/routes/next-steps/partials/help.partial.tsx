@@ -58,8 +58,8 @@ export function HelpSection() {
           "rounded-xl",
           "overflow-hidden",
           "relative",
-          "aspect-[3/6]",
-          "sm:aspect-[16/10]",
+          "aspect-3/6",
+          "sm:aspect-16/10",
           "md:aspect-video",
         ])}
         style={{

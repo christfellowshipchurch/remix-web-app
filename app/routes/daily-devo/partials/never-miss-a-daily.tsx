@@ -25,7 +25,7 @@ export const NeverMissADaily = () => {
           <img
             src="/assets/images/daily/daily-sample-week.png"
             alt="Sample Week"
-            className="w-full md:w-[90%] aspect-[61/8]"
+            className="w-full md:w-[90%] aspect-61/8"
           />
 
           <Button

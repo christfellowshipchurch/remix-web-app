@@ -12,7 +12,7 @@ export const GridCard = ({ resource }: { resource: CollectionItem }) => (
       <img
         src={resource.image}
         alt={resource.name}
-        className="aspect-[3/2] object-cover max-h-48"
+        className="aspect-3/2 object-cover max-h-48"
         loading="lazy"
       />
       <div className="flex flex-col px-4 py-3 md:px-6 md:py-4 text-left">

@@ -23,12 +23,12 @@ export const GiveHero = () => {
           <img
             src="/assets/images/give/float-2.png"
             alt="Floating Image 2"
-            className="absolute -top-30 left-12 md:-top-40 lg:-bottom-4 lg:!top-auto lg:left-14 rotate-[9.6deg] w-[90px] md:w-[120px] lg:w-[155px] aspect-[155/198] rounded-[5px]"
+            className="absolute -top-30 left-12 md:-top-40 lg:-bottom-4 lg:!top-auto lg:left-14 rotate-[9.6deg] w-[90px] md:w-[120px] lg:w-[155px] aspect-155/198 rounded-[5px]"
           />
           <img
             src="/assets/images/give/float-3.png"
             alt="Floating Image 3"
-            className="absolute -top-26 right-4 md:-top-32 md:right-12 lg:bottom-14 lg:right-auto lg:top-auto lg:left-80 rotate-[-5.5deg] w-[105px] md:w-[136px] lg:w-[177px] aspect-[177/171] rounded-[7px]"
+            className="absolute -top-26 right-4 md:-top-32 md:right-12 lg:bottom-14 lg:right-auto lg:top-auto lg:left-80 rotate-[-5.5deg] w-[105px] md:w-[136px] lg:w-[177px] aspect-177/171 rounded-[7px]"
           />
         </div>
 
