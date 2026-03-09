@@ -6,7 +6,7 @@ export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <section className="h-[100vh] w-full bg-white pb-16 mt-[-26px] hidden lg:block relative z-30">
+    <section className="h-screen w-full bg-white pb-16 mt-[-26px] hidden lg:block relative z-30">
       {/* background image and video */}
       <div className="grid grid-cols-2 size-full relative">
         {/* Left Column */}
@@ -21,7 +21,7 @@ export function DesktopHeroSection() {
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
         <div className="flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
           {/* Bottom Bar */}
-          <div className="z-1 w-full mt-auto">
+          <div className="z-11 w-full mt-auto">
             <DesktopFeaturedItems />
           </div>
         </div>

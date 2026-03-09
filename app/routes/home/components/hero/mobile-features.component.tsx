@@ -1,26 +1,24 @@
-import { IconName } from "~/primitives/button/types";
 import { Icon } from "~/primitives/icon/icon";
 import { cn } from "~/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useRouteLoaderData } from "react-router-dom";
+import { HeroAction, RootLoaderData } from "~/routes/navbar/loader";
 
 export const MobileFeaturedItems = () => {
+  const { actions } = useRouteLoaderData("root") as RootLoaderData;
+
   return (
     <div className="w-full md:ml-4">
       <div className="flex justify-center md:justify-start gap-2">
-        <MobileFeaturedItem
-          iconName="church"
-          heading="Iglesia en Español"
-          title="Iglesia en Español"
-          url="/cfe"
-          position={1}
-        />
-        <MobileFeaturedItem
-          iconName="calendarAlt"
-          heading="On Sale Now"
-          title="Diesel Tickets"
-          url="/events/diesel"
-          position={2}
-        />
+        {(actions ?? []).map((action) => (
+          <MobileFeaturedItem
+            key={action.position}
+            iconName={action.iconName}
+            heading={action.heading}
+            title={action.title}
+            url={action.url}
+            position={action.position}
+          />
+        ))}
       </div>
     </div>
   );
@@ -32,13 +30,7 @@ export const MobileFeaturedItem = ({
   title,
   url,
   position,
-}: {
-  iconName: IconName;
-  heading: string;
-  title: string;
-  url: string;
-  position: number;
-}) => {
+}: HeroAction) => {
   return (
     <Link
       to={url}
@@ -52,9 +44,9 @@ export const MobileFeaturedItem = ({
         "py-3",
         "px-3 sm:px-4",
         "min-w-[100px]",
-        position === 2 ? "flex-grow" : "flex-none",
+        position === 2 ? "grow" : "flex-none",
         "sm:flex-none",
-        "max-w-[50%]"
+        "max-w-[50%]",
       )}
       data-gtm="featured-item"
       data-position={position}
