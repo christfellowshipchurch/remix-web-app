@@ -15,10 +15,10 @@ const mockFetch = fetchRockData as ReturnType<typeof vi.fn>;
 
 describe("attributeIsImage", () => {
   const attributeValues = {
-    coverImage: { value: "some-guid" },
-    title: { value: "Some Title" },
-    backgroundImageUrl: { value: "another-guid" },
-    count: { value: 5 as unknown as string },
+    coverImage: { value: "some-guid", valueFormatted: "some-guid" },
+    title: { value: "Some Title", valueFormatted: "Some Title" },
+    backgroundImageUrl: { value: "another-guid", valueFormatted: "another-guid" },
+    count: { value: 5 as unknown as string, valueFormatted: "5" },
   };
 
   it("returns true when key contains 'image' and value is a string", () => {
@@ -40,7 +40,7 @@ describe("attributeIsImage", () => {
   });
 
   it("is case-insensitive on the key", () => {
-    const av = { Image: { value: "guid-x" } };
+    const av = { Image: { value: "guid-x", valueFormatted: "guid-x" } };
     expect(attributeIsImage({ key: "Image", attributeValues: av })).toBe(true);
   });
 });
@@ -48,29 +48,32 @@ describe("attributeIsImage", () => {
 describe("getImages", () => {
   it("returns transformed image URLs for image keys", () => {
     const attributes = {
-      coverImage: {},
-      title: {},
+      coverImage: { key: "coverImage", name: "Cover Image", fieldTypeId: 1 },
+      title: { key: "title", name: "Title", fieldTypeId: 2 },
     };
     const attributeValues = {
-      coverImage: { value: "guid-123" },
-      title: { value: "Hello" },
+      coverImage: { value: "guid-123", valueFormatted: "guid-123" },
+      title: { value: "Hello", valueFormatted: "Hello" },
     };
     const result = getImages({
-      attributeValues: attributeValues as Parameters<typeof getImages>[0]["attributeValues"],
-      attributes: attributes as Parameters<typeof getImages>[0]["attributes"],
+      attributeValues,
+      attributes,
     });
     expect(result).toEqual(["https://cdn.example.com/guid-123"]);
   });
 
   it("returns empty array when no image keys exist", () => {
-    const attributes = { title: {}, count: {} };
+    const attributes = {
+      title: { key: "title", name: "Title", fieldTypeId: 1 },
+      count: { key: "count", name: "Count", fieldTypeId: 2 },
+    };
     const attributeValues = {
-      title: { value: "Hello" },
-      count: { value: "5" },
+      title: { value: "Hello", valueFormatted: "Hello" },
+      count: { value: "5", valueFormatted: "5" },
     };
     const result = getImages({
-      attributeValues: attributeValues as Parameters<typeof getImages>[0]["attributeValues"],
-      attributes: attributes as Parameters<typeof getImages>[0]["attributes"],
+      attributeValues,
+      attributes,
     });
     expect(result).toEqual([]);
   });

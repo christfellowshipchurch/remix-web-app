@@ -25,7 +25,8 @@ describe("cn", () => {
   });
 
   it("handles conditional classes", () => {
-    expect(cn("foo", false && "bar", "baz")).toBe("foo baz");
+    const includeBar = false;
+    expect(cn("foo", includeBar && "bar", "baz")).toBe("foo baz");
   });
 
   it("merges conflicting tailwind classes", () => {
@@ -157,6 +158,15 @@ describe("shareMessaging", () => {
     const result = shareMessaging({
       title: "Test Article",
       url: "https://example.com/article",
+      shareMessages: {
+        faceBook: "Check out this article from Christ Fellowship Church!",
+        twitter: "Test Article at Christ Fellowship Church",
+        email: {
+          subject: "Test Article - Christ Fellowship Church",
+          body: "I thought you might be interested in this article from Christ Fellowship: https://example.com/article \n\n",
+        },
+        sms: "I thought you might be interested in this article from Christ Fellowship: https://example.com/article",
+      },
     });
     expect(result.title).toBe("Test Article");
     expect(result.faceBook).toContain("Christ Fellowship");
@@ -168,7 +178,15 @@ describe("shareMessaging", () => {
     const result = shareMessaging({
       title: "Test",
       url: "https://example.com",
-      shareMessages: { faceBook: "Custom FB message" },
+      shareMessages: {
+        faceBook: "Custom FB message",
+        twitter: "Test at Christ Fellowship Church",
+        email: {
+          subject: "Test - Christ Fellowship Church",
+          body: "I thought you might be interested in this article from Christ Fellowship: https://example.com \n\n",
+        },
+        sms: "I thought you might be interested in this article from Christ Fellowship: https://example.com",
+      },
     });
     expect(result.faceBook).toBe("Custom FB message");
     expect(result.twitter).toContain("Test");

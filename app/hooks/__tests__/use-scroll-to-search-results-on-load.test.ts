@@ -16,7 +16,7 @@ describe("useScrollToSearchResultsOnLoad", () => {
     const scrollIntoView = vi.fn();
     vi.spyOn(document, "querySelector").mockReturnValue({
       scrollIntoView,
-    } as unknown as Element);
+    } as unknown as HTMLElement);
 
     const hasActiveFilters = vi.fn().mockReturnValue(false);
     renderHook(() =>
@@ -31,7 +31,7 @@ describe("useScrollToSearchResultsOnLoad", () => {
     const scrollIntoView = vi.fn();
     vi.spyOn(document, "querySelector").mockReturnValue({
       scrollIntoView,
-    } as unknown as Element);
+    } as unknown as HTMLElement);
 
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
       cb(0);
@@ -73,7 +73,7 @@ describe("useScrollToSearchResultsOnLoad", () => {
     const scrollIntoView = vi.fn();
     vi.spyOn(document, "querySelector").mockReturnValue({
       scrollIntoView,
-    } as unknown as Element);
+    } as unknown as HTMLElement);
 
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
       cb(0);

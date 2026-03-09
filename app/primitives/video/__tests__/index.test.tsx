@@ -1,4 +1,4 @@
-import { render, act } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Video } from "../video.primitive";
 
@@ -35,7 +35,8 @@ describe("Video - src mode", () => {
   it("passes muted prop to <video>", () => {
     render(<Video src="/video.mp4" muted />);
     // jsdom reflects muted as a DOM property, not an HTML attribute
-    expect((document.querySelector("video") as HTMLVideoElement).muted).toBe(true);
+    const video = document.querySelector("video");
+    expect((video as { muted: boolean }).muted).toBe(true);
   });
 
   it("passes controls prop to <video>", () => {
