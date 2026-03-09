@@ -25,6 +25,7 @@ export interface RootLoaderData {
   popularResults: { title: string; pathname: string }[];
   siteBanner: {
     content: string;
+    link?: string;
     ctas?: {
       title: string;
       url: string;
@@ -165,6 +166,7 @@ export async function loader({
         // Site Banner Data
         siteBanner: {
           content: "",
+          link: "",
         },
       };
     }
@@ -202,7 +204,20 @@ export async function loader({
     );
 
     // Site Banner Data
-    const siteBanner = await fetchSiteBanner();
+    const rawSiteBanner = await fetchSiteBanner();
+    const siteBannerContent =
+      typeof rawSiteBanner?.content === "string" ? rawSiteBanner.content : "";
+    const callsToActionValue =
+      rawSiteBanner?.attributeValues?.callsToAction?.value;
+    const siteBannerLink =
+      typeof callsToActionValue === "string" && callsToActionValue.includes("^")
+        ? (callsToActionValue.split("^").pop()?.trim() ?? "")
+        : "";
+
+    const siteBanner = {
+      content: siteBannerContent,
+      link: typeof siteBannerLink === "string" ? siteBannerLink : "",
+    };
 
     // TODO: uncomment this once we have the real data for the popular searches
     // const popularSearches = await fetchTopSearches(
@@ -245,6 +260,7 @@ export async function loader({
       // Site Banner Data
       siteBanner: {
         content: "",
+        link: "",
       },
     };
   }
