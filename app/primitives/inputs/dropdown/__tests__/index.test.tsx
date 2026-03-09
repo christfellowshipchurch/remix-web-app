@@ -88,4 +88,51 @@ describe("Dropdown", () => {
     // After Escape the list should be closed — options no longer present as listbox items
     expect(screen.queryAllByRole("option")).toHaveLength(0);
   });
+
+  it("opens dropdown when Enter key is pressed", () => {
+    render(<Dropdown options={mockOptions} />);
+    fireEvent.keyDown(screen.getByRole("button"), { key: "Enter" });
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
+  it("opens dropdown when Space key is pressed", () => {
+    render(<Dropdown options={mockOptions} />);
+    fireEvent.keyDown(screen.getByRole("button"), { key: " " });
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
+  it("opens dropdown when ArrowDown is pressed", () => {
+    render(<Dropdown options={mockOptions} />);
+    fireEvent.keyDown(screen.getByRole("button"), { key: "ArrowDown" });
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
+  it("opens dropdown when ArrowUp is pressed", () => {
+    render(<Dropdown options={mockOptions} />);
+    fireEvent.keyDown(screen.getByRole("button"), { key: "ArrowUp" });
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
+  it("closes dropdown when an option is selected", async () => {
+    const user = userEvent.setup();
+    render(<Dropdown options={mockOptions} />);
+    await user.click(screen.getByRole("button"));
+    const options = screen.getAllByRole("option");
+    await user.click(options[0]);
+    expect(screen.queryAllByRole("option")).toHaveLength(0);
+  });
+
+  it("sets aria-expanded to true when open", async () => {
+    const user = userEvent.setup();
+    render(<Dropdown options={mockOptions} />);
+    expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "false");
+    await user.click(screen.getByRole("button"));
+    expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("ignores keyboard when disabled", () => {
+    render(<Dropdown options={mockOptions} disabled />);
+    fireEvent.keyDown(screen.getByRole("button"), { key: "Enter" });
+    expect(screen.queryAllByRole("option")).toHaveLength(0);
+  });
 });
