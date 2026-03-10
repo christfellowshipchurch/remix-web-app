@@ -36,7 +36,7 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
           "md:w-[50%]",
           "lg:w-[25%]",
           index === 0 && "lg:w-[28%]",
-          "cursor-pointer"
+          "cursor-pointer",
         )}
         onClick={() => setOpenModal(true)}
         data-leader-name={leader.fullName}
@@ -47,8 +47,8 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
               src={leader.profilePhoto}
               alt={leader.fullName}
               className={cn(
-                "w-full aspect-[32/46] object-cover",
-                "transform transition-transform duration-300 group-hover:scale-105"
+                "w-full aspect-32/46 object-cover",
+                "transform transition-transform duration-300 group-hover:scale-105",
               )}
             />
             <div className="absolute size-[212px]">

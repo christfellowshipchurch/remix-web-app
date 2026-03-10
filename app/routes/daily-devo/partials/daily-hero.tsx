@@ -99,7 +99,7 @@ export const DailyHero = () => {
                 src={dailyDevo.coverImage}
                 alt="Daily Devo Hero"
                 className={cn(
-                  "w-full object-cover max-w-xl lg:max-w-[60vw] rounded aspect-[4/3]",
+                  "w-full object-cover max-w-xl lg:max-w-[60vw] rounded aspect-4/3",
                   "lg:max-w-[480px] md:aspect-auto lg:object-cover"
                 )}
               />

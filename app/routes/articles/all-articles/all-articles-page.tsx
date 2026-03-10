@@ -1,5 +1,6 @@
 import { DynamicHero } from "~/components";
 import { AllArticles } from "./partials/all-articles.partial";
+import { getImageUrl } from "~/lib/utils";
 
 export function AllArticlesPage() {
   return (
@@ -8,7 +9,7 @@ export function AllArticlesPage() {
         <DynamicHero
           customTitle="Articles"
           fullOverlay
-          imagePath="/assets/images/articles-hero-bg.jpg"
+          imagePath={getImageUrl("3143898")}
           ctas={[{ href: "/class-finder", title: "Take a Class" }]}
         />
       </div>
