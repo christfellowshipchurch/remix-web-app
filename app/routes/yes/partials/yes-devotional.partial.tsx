@@ -1,13 +1,14 @@
 import { AppSection } from "~/routes/home/partials/app.partial";
 import { DevotionalSection } from "../components/yes-devotional.component";
 import { YesHero as HeroSection } from "../components/yes-devotional-hero.component";
+import { getImageUrl } from "~/lib/utils";
 
 export const YesDevotional = () => {
   return (
     <div className="flex flex-col w-full relative">
       {/* Mobile Image */}
       <img
-        src="/assets/images/yes-hero-mobile.png"
+        src={getImageUrl("3143896")}
         alt="Yes Hero"
         className="md:hidden w-full h-screen object-cover absolute top-0"
       />

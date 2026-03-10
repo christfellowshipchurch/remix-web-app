@@ -26,7 +26,7 @@ export const FinanceCard = ({
       <img
         src={image}
         alt={name}
-        className="w-full h-full max-h-[400px] aspect-[9/16] object-cover"
+        className="w-full h-full max-h-[400px] aspect-9/16 object-cover"
         loading="lazy"
       />
 

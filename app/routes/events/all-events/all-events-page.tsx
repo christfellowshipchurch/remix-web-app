@@ -2,6 +2,7 @@ import { DynamicHero } from "~/components";
 
 import { FeaturedEvents } from "./partials/featured-events.partial";
 import { AllEvents } from "./partials/all-events";
+import { getImageUrl } from "~/lib/utils";
 
 export function AllEventsPage() {
   return (
@@ -9,7 +10,7 @@ export function AllEventsPage() {
       <DynamicHero
         customTitle="Events"
         fullOverlay
-        imagePath="/assets/images/events-hero-bg.jpg"
+        imagePath={getImageUrl("3143899")}
       />
       <FeaturedEvents />
       <AllEvents />

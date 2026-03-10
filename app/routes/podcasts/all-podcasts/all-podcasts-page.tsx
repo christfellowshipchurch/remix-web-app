@@ -3,16 +3,14 @@ import { DynamicHero } from "~/components";
 import { PodcastHubCard } from "./components/podcast-card";
 import { loader } from "./loader";
 import { PodcastShow } from "../types";
+import { getImageUrl } from "~/lib/utils";
 
 export function AllPodcastsPage() {
   const { podcastShows } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col items-center">
-      <DynamicHero
-        imagePath="/assets/images/podcasts/hero.jpg"
-        customTitle="Podcasts"
-      />
+      <DynamicHero imagePath={getImageUrl("3143814")} customTitle="Podcasts" />
       <div className="py-10 md:py-20 w-full">
         <div className="flex flex-col">
           {podcastShows.map((podcast: PodcastShow, index: number) => (

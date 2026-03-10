@@ -1,3 +1,4 @@
+import { getImageUrl } from "~/lib/utils";
 import { CollectionItem, PageBuilderSection } from "../page-builder/types";
 
 export const giveFaqData: PageBuilderSection = {
@@ -62,7 +63,7 @@ export const giveImproveFinancesData: CollectionItem[] = [
     contentChannelId: "give-improve-finances-2",
     summary:
       "It’s not about what God wants from you but what He wants for you!",
-    image: "/assets/images/give/messages.jpg",
+    image: getImageUrl("3143917"),
   },
   {
     id: "give-improve-finances-3",
@@ -71,6 +72,6 @@ export const giveImproveFinancesData: CollectionItem[] = [
     pathname: "/articles",
     contentChannelId: "give-improve-finances-3",
     summary: "Read more about the topic of finances and biblical stewardship.",
-    image: "/assets/images/give/articles-and-devotionals.jpg",
+    image: getImageUrl("3143868"),
   },
 ];

@@ -1,5 +1,6 @@
 import { useMapDimensions } from "~/hooks/use-map-dimensions";
 import { Trip } from "../types";
+import { getImageUrl } from "~/lib/utils";
 
 export function GlobalMap({ trips }: { trips: Trip[] }) {
   const { ref, dimensions, offset } = useMapDimensions();
@@ -23,7 +24,7 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
     <div className="relative w-full max-w-[1030px] mx-auto">
       <img
         ref={ref}
-        src="/assets/images/volunteer/map.png"
+        src={getImageUrl("3143905")}
         alt="World map"
         className="w-full h-auto"
       />
@@ -31,7 +32,7 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
       {trips.map((trip) => {
         const { x, y } = projectToMap(
           trip.coordinates.lat,
-          trip.coordinates.lng
+          trip.coordinates.lng,
         );
         return (
           <div
