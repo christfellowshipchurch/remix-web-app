@@ -30,7 +30,7 @@ export const WhatWeOfferCard = ({
                 "max-h-[190px] w-auto",
                 content.imageAspectRatio
                   ? `aspect-[${content.imageAspectRatio}]`
-                  : "aspect-[200/125]"
+                  : "aspect-200/125"
               )}
             />
           </div>
