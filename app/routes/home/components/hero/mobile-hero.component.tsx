@@ -4,9 +4,10 @@ import { MobileFeaturedItems } from "./mobile-features.component";
 import { RootLoaderData } from "~/routes/navbar/loader";
 
 export const MobileHeroSection = () => {
-  const { siteBanner } = useRouteLoaderData("root") as RootLoaderData;
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const siteBanner = rootData?.siteBanner;
   return (
-    <section className="h-[100dvh] w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
+    <section className="h-dvh w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
       {/*  Background Video */}
       <div className="absolute inset-0 w-full h-full z-1">
         <img
@@ -23,12 +24,12 @@ export const MobileHeroSection = () => {
         />
       </div>
       {/*  Background Gradient Overlay */}
-      <div className="absolute inset-0 w-full h-full z-2 bg-gradient-to-b from-black/20 to-black/80" />
+      <div className="absolute inset-0 w-full h-full z-2 bg-linear-to-b from-black/20 to-black/80" />
       {/*  Content */}
       <div className="relative z-3 flex flex-col justify-end gap-8 h-full px-4">
         {/*  Top Divider - hide if site banner is shown so it doesn't overlap */}
         {!siteBanner && (
-          <div className="md:hidden absolute top-[82px] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[1px] w-full bg-[#D9D9D9] opacity-50 max-w-[340px] sm:max-w-[500px]" />
+          <div className="md:hidden absolute top-[82px] left-1/2 -translate-x-1/2 -translate-y-1/2 h-px w-full bg-[#D9D9D9] opacity-50 max-w-[340px] sm:max-w-[500px]" />
         )}
 
         {/*  Main content */}
@@ -60,7 +61,7 @@ export const MobileHeroSection = () => {
         {/*  Bottom Divider */}
         {/*  Top spacer */}
         <div className="flex items-center justify-center">
-          <div className="h-[1px] w-full bg-[#D9D9D9] opacity-50" />
+          <div className="h-px w-full bg-[#D9D9D9] opacity-50" />
         </div>
         <MobileFeaturedItems />
       </div>

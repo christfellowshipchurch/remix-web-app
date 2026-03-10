@@ -50,7 +50,7 @@ const DesktopVersion = () => {
           <img
             src="/assets/images/home/app-left.webp"
             alt="App Section Image"
-            className={cn("w-full aspect-[9/21] max-w-[220px]")}
+            className={cn("w-full aspect-9/21 max-w-[220px]")}
           />
         </div>
       </div>
@@ -79,7 +79,7 @@ const MobileVersion = () => {
           <img
             src="/assets/images/home/app-left.webp"
             alt="App Section Image"
-            className={cn("w-[50vw]", "aspect-[9/21]", "max-w-[140px]")}
+            className={cn("w-[50vw]", "aspect-9/21", "max-w-[140px]")}
           />
         </div>
 

@@ -20,8 +20,8 @@ export function HelpSection() {
           0,
           Math.min(
             1,
-            (windowHeight - rect.top) / (windowHeight + elementHeight)
-          )
+            (windowHeight - rect.top) / (windowHeight + elementHeight),
+          ),
         );
         setScrollProgress(progress);
       }
@@ -42,6 +42,7 @@ export function HelpSection() {
   // BG Images
   const mobileBgImage = getImageUrl("3064840");
   const desktopBgImage = getImageUrl("3063943");
+  const helpTextImage = getImageUrl("3143910");
 
   return (
     <section ref={sectionRef} className="w-full py-16 lg:py-24 bg-gray-50 px-6">
@@ -53,19 +54,22 @@ export function HelpSection() {
           "text-center",
           "bg-cover",
           "bg-center",
-          "bg-[image:var(--bg-mobile)]",
-          "sm:bg-[image:var(--bg-desktop)]",
+          "bg-(image:--bg-mobile)",
+          "sm:bg-(image:--bg-desktop)",
           "rounded-xl",
           "overflow-hidden",
           "relative",
-          "aspect-[3/6]",
-          "sm:aspect-[16/10]",
+          "aspect-3/6",
+          "sm:aspect-16/10",
           "md:aspect-video",
         ])}
-        style={{
-          "--bg-mobile": `url(${mobileBgImage})`,
-          "--bg-desktop": `url(${desktopBgImage})`,
-        } as React.CSSProperties}
+        style={
+          {
+            "--bg-mobile": `url(${mobileBgImage})`,
+            "--bg-desktop": `url(${desktopBgImage})`,
+            "--help-text-image": `url(${helpTextImage})`,
+          } as React.CSSProperties
+        }
       >
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
           <div
@@ -74,7 +78,7 @@ export function HelpSection() {
               "md:w-[350px]",
               "h-[200px]",
               "mx-auto",
-              "bg-[url('assets/images/next-steps/help-text.png')]",
+              "bg-(image:--help-text-image)",
               "py-10",
               "bg-contain",
               "bg-no-repeat",

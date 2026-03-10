@@ -74,7 +74,7 @@ export const EventsSingleHero = ({
             <img
               src={imagePath}
               alt={customTitle}
-              className="order-1 md:order-2 w-full max-w-lg md:max-w-[340px] lg:max-w-[480px] xl:!max-w-[638px] aspect-[638/478] md:aspect-[5/6] lg:aspect-[638/478] object-cover rounded-[14px] shadow-xl"
+              className="order-1 md:order-2 w-full max-w-lg md:max-w-[340px] lg:max-w-[480px] xl:!max-w-[638px] aspect-638/478 md:aspect-5/6 lg:aspect-638/478 object-cover rounded-[14px] shadow-xl"
             />
           </div>
         </div>
