@@ -1,5 +1,5 @@
 import { ContactInfo } from "./footer-contact.partial";
-import { FooterLinks } from "./footer-links.partial";
+import { FooterSocialLinks } from "./footer-links.partial";
 import { FooterColumnComponent } from "./footer-column.component";
 import { footerColumns } from "./footer-data";
 import { Icon } from "~/primitives/icon/icon";
@@ -17,7 +17,7 @@ export const Footer = () => {
         <ContactInfo />
 
         {/* Info Section */}
-        <div className="w-full border-t border-[#417890] items-start py-14 text-lg text-[#D0D0CE] grid grid-cols-2 md:grid-cols-[repeat(21,1fr)] lg:grid-cols-5 gap-y-14 md:gap-y-8">
+        <div className="w-full border-t border-[#417890] items-start py-14 text-lg text-coconut grid grid-cols-2 md:grid-cols-[repeat(21,1fr)] lg:grid-cols-5 gap-y-14 md:gap-y-8">
           <div className="flex flex-col items-center md:items-start md:gap-8 col-span-2 md:col-span-5 lg:col-span-1 mr-4">
             <div className="h-[100px] md:h-auto">
               <Icon
@@ -27,7 +27,7 @@ export const Footer = () => {
               />
             </div>
             <div className="flex flex-col gap-3">
-              <FooterLinks />
+              <FooterSocialLinks />
             </div>
           </div>
 
@@ -38,8 +38,8 @@ export const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="flex justify-center w-full border-t py-8 text-xs md:text-base text-[#D0D0CE] border-[#417890]">
-        <p className="text-[#D0D0CE]">
+      <div className="flex justify-center w-full border-t py-8 text-xs md:text-base text-coconut border-[#417890]">
+        <p className="text-coconut">
           © {year} Christ Fellowship Church. All Rights Reserved
         </p>
       </div>

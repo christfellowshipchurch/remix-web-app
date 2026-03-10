@@ -43,7 +43,7 @@ export const DynamicHero = ({
         segment
           .split("-")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ")
+          .join(" "),
       )[0] || "Home";
 
   return (
@@ -57,11 +57,11 @@ export const DynamicHero = ({
       }}
       className={cn(
         "relative flex items-center justify-start self-stretch",
-        "[height:var(--mobile-height)]",
-        "md:[height:var(--ipad-height)]",
-        "lg:[height:var(--desktop-height)]",
+        "h-(--mobile-height)",
+        "md:h-(--ipad-height)",
+        "lg:h-(--desktop-height)",
         imagePath && "bg-cover bg-center bg-no-repeat",
-        imagePath && "before:absolute before:inset-0 before:bg-black/50"
+        imagePath && "before:absolute before:inset-0 before:bg-black/50",
       )}
     >
       {/* Video if passed in */}
@@ -90,7 +90,7 @@ export const DynamicHero = ({
           "absolute bottom-0 left-0 right-0 h-full z-0",
           fullOverlay
             ? "bg-black/60"
-            : "bg-gradient-to-t from-black to-transparent opacity-70"
+            : "bg-linear-to-t from-black to-transparent opacity-70",
         )}
       />
 
@@ -98,13 +98,13 @@ export const DynamicHero = ({
       <div
         className={cn(
           "flex flex-col w-full items-start justify-end self-stretch z-10",
-          "px-5 md:px-12 lg:px-18"
+          "px-5 md:px-12 lg:px-18",
         )}
       >
         <div
           className={cn(
             "w-full max-w-screen-content mx-auto flex flex-col",
-            "gap-5 pb-8 md:gap-12 md:pb-16"
+            "gap-5 pb-8 md:gap-12 md:pb-16",
           )}
         >
           <h1 className="font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[100px] text-white">
@@ -165,7 +165,7 @@ export const DynamicHero = ({
                         }
                         className={cn(
                           "w-full md:w-auto min-w-[280px]",
-                          i !== 0 ? "" : "text-white border-white"
+                          i !== 0 ? "" : "text-white border-white",
                         )}
                       />
                     );
@@ -179,7 +179,9 @@ export const DynamicHero = ({
                         href={cta.href}
                         className={cn(
                           "w-full md:w-auto min-w-[280px]",
-                          i == 0 && ctas.length > 1 && "text-white border-white"
+                          i == 0 &&
+                            ctas.length > 1 &&
+                            "text-white border-white",
                         )}
                       >
                         {cta.title}

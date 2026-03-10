@@ -145,7 +145,8 @@ async function getWistiaElement(guid: string): Promise<WistiaElement | null> {
     throw new Error(
       `${ERROR_MESSAGES.WISTIA_FETCH_ERROR} for guid ${guid}: ${
         error instanceof Error ? error.message : String(error)
-      }`
+      }`,
+      { cause: error }
     );
   }
 }

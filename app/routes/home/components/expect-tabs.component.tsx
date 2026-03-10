@@ -171,7 +171,7 @@ export const WhatToExpectMobileScroll = () => {
           ref={containerRef}
           className={cn(
             "flex gap-4 flex-nowrap overflow-x-auto pt-2",
-            "items-center justify-center w-full"
+            "items-center justify-center w-full",
           )}
         >
           {WhatToExpectData.map((item, index) => {
@@ -257,7 +257,7 @@ const WhatToExpectData: WhatToExpectCardType[] = [
     title: "What is a Sunday Like 1",
     data: {
       role: "church members",
-      name: "Vanessa & Ben Castillo",
+      name: "Kim & Sebastian Castillo",
       video: "1xbxw63g50",
       thumbnail:
         "https://embed-ssl.wistia.com/deliveries/91963465eb82ccfb612d9d4113ab73d2",

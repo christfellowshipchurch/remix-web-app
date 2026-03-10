@@ -7,6 +7,7 @@ export function AllArticlesPage() {
       <div className="flex-none">
         <DynamicHero
           customTitle="Articles"
+          fullOverlay
           imagePath="/assets/images/articles-hero-bg.jpg"
           ctas={[{ href: "/class-finder", title: "Take a Class" }]}
         />

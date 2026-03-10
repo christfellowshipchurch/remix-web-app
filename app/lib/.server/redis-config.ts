@@ -1,6 +1,6 @@
 import Redis from "ioredis";
 
-let redis: Redis | null = null;
+let redis: Redis | null;
 
 try {
   redis = new Redis({

@@ -29,7 +29,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const rootData = useRouteLoaderData("root") as RootLoaderData;
   const { siteBanner, ministries, watchReadListen } = rootData || {};
-  const { isSmall, isLarge, isXLarge } = useResponsive();
+  const { isSmall } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // State management
@@ -162,6 +162,7 @@ export function Navbar() {
     setMode(newMode);
     setLastScrollY(0);
     setIsVisible(true);
+    setOpenDropdown(null); // Close menu when navigating to a new page
   }, [pathname, isSmall]);
 
   // Mode sync effect
@@ -220,7 +221,7 @@ export function Navbar() {
           className={cn(
             "group w-full sticky top-0 z-400 transition-transform duration-300",
             !isVisible && "-translate-y-full absolute",
-            mode === "dark" && isVisible && "absolute"
+            mode === "dark" && isVisible && "absolute",
           )}
           ref={navbarRef}
         >
@@ -236,13 +237,13 @@ export function Navbar() {
               mode === "light" || isSearchOpen
                 ? "bg-white shadow-sm"
                 : openDropdown
-                ? "bg-white shadow-sm"
-                : "bg-transparent group-hover:bg-white"
+                  ? "bg-white shadow-sm"
+                  : "bg-transparent group-hover:bg-white",
             )}
           >
             <div
               className={cn(
-                "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5 min-h-[82px]"
+                "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5 min-h-[82px]",
               )}
               style={{ gap: isSearchOpen ? "32px" : "0px" }}
             >
@@ -259,22 +260,15 @@ export function Navbar() {
                       mode === "light" || isSearchOpen
                         ? "text-ocean"
                         : openDropdown
-                        ? "text-ocean"
-                        : "text-white group-hover:text-ocean"
+                          ? "text-ocean"
+                          : "text-white group-hover:text-ocean",
                     )}
                   />
                 </a>
 
                 {/* Desktop Navigation Menu */}
                 <div
-                  className="hidden lg:inline"
-                  style={{
-                    display: isSearchOpen
-                      ? "none"
-                      : isLarge
-                      ? "inline"
-                      : "none",
-                  }}
+                  className={cn("hidden lg:inline", isSearchOpen && "hidden!")}
                 >
                   <nav className="flex items-center space-x-6 xl:space-x-10">
                     {mainNavLinks.map((link) => (
@@ -286,8 +280,8 @@ export function Navbar() {
                           mode === "light"
                             ? "text-neutral-dark"
                             : openDropdown
-                            ? "text-neutral-dark"
-                            : "text-white group-hover:text-text"
+                              ? "text-neutral-dark"
+                              : "text-white group-hover:text-text",
                         )}
                       >
                         <span className="hover:text-ocean">{link.title}</span>
@@ -306,8 +300,8 @@ export function Navbar() {
                               mode === "light"
                                 ? "text-neutral-dark"
                                 : openDropdown
-                                ? "text-neutral-dark"
-                                : "text-white group-hover:text-text"
+                                  ? "text-neutral-dark"
+                                  : "text-white group-hover:text-text",
                             )}
                           >
                             <span className="hover:text-ocean flex items-center gap-1">
@@ -315,9 +309,9 @@ export function Navbar() {
                               <Icon
                                 name="chevronDown"
                                 className={cn(
-                                  "relative top-[1px] size-4 lg:size-6 transition duration-200",
+                                  "relative top-px size-4 lg:size-6 transition duration-200",
                                   openDropdown === menuLink.title &&
-                                    "rotate-180"
+                                    "rotate-180",
                                 )}
                                 aria-hidden="true"
                               />
@@ -329,7 +323,7 @@ export function Navbar() {
                               className={cn(
                                 "fixed left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
                                 "animate-in slide-in-from-top-2 duration-200",
-                                showSiteBanner ? "top-[130px]" : "top-[82px]"
+                                showSiteBanner ? "top-[130px]" : "top-[82px]",
                               )}
                             >
                               <MenuContent
@@ -341,7 +335,7 @@ export function Navbar() {
                             </div>
                           )}
                         </div>
-                      ) : null
+                      ) : null,
                     )}
                   </nav>
                 </div>
@@ -382,36 +376,36 @@ export function Navbar() {
                         mode === "light"
                           ? "text-neutral-dark"
                           : openDropdown
-                          ? "text-neutral-dark"
-                          : "text-white group-hover:text-text"
+                            ? "text-neutral-dark"
+                            : "text-white group-hover:text-text",
                       )}
                     />
                   </button>
                 )}
 
-                {(!isSearchOpen || isXLarge) && (
-                  <div className="flex gap-2">
-                    <AuthModal
-                      buttonStyle={cn(
-                        "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
-                        mode === "dark" &&
-                          !openDropdown &&
-                          "border-white text-white group-hover:text-ocean group-hover:border-ocean"
-                      )}
-                      buttonText="Login"
+                <div
+                  className={cn("flex gap-2", isSearchOpen && "hidden xl:flex")}
+                >
+                  <AuthModal
+                    buttonStyle={cn(
+                      "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
+                      mode === "dark" &&
+                        !openDropdown &&
+                        "border-white text-white group-hover:text-ocean group-hover:border-ocean",
+                    )}
+                    buttonText="Login"
+                  />
+                  <Button
+                    href="/locations"
+                    className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
+                  >
+                    <Icon
+                      name="mapFilled"
+                      className="mr-1 xl:mr-2 size-4 xl:size-5"
                     />
-                    <Button
-                      href="/locations"
-                      className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
-                    >
-                      <Icon
-                        name="mapFilled"
-                        className="mr-1 xl:mr-2 size-4 xl:size-5"
-                      />
-                      Find a Service
-                    </Button>
-                  </div>
-                )}
+                    Find a Service
+                  </Button>
+                </div>
               </div>
 
               {/* Mobile Menu */}

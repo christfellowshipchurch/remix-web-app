@@ -133,6 +133,8 @@ dist
 # React Router
 .react-router/
 
+# Vite / React Router build output
+build/
 
 # Misc
 .DS_Store

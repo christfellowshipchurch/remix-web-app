@@ -95,7 +95,7 @@ export function OnboardingProcess() {
       const container = containerRef.current;
       // Only select step elements, not overlays
       const children = Array.from(
-        container.querySelectorAll(".onboarding-step")
+        container.querySelectorAll(".onboarding-step"),
       ) as HTMLDivElement[];
       const containerRect = container.getBoundingClientRect();
       let minDiff = Infinity;
@@ -137,7 +137,7 @@ export function OnboardingProcess() {
       <section
         className={cn(
           "w-full bg-dark-navy content-padding hidden md:block",
-          "bg-[url('/assets/images/volunteer/onboarding-bg.webp')] bg-cover bg-center"
+          "bg-[url('/assets/images/volunteer/onboarding-bg.webp')] bg-cover bg-center",
         )}
       >
         <div className="max-w-screen-content mx-auto">
@@ -154,7 +154,7 @@ export function OnboardingProcess() {
               className={cn(
                 "relative",
                 "hidden md:block col-span-2 xl:col-span-1",
-                "h-[560px]"
+                "h-[560px]",
               )}
             >
               {/* overlays are siblings, absolutely positioned */}
@@ -190,7 +190,7 @@ export function OnboardingProcess() {
                 className={cn(
                   "h-full pt-10 pb-10 pl-10 pr-2 gap-8",
                   "overflow-y-auto snap-y snap-mandatory no-scrollbar",
-                  "rounded-lg"
+                  "rounded-lg",
                 )}
                 style={{
                   scrollBehavior: "smooth",
@@ -207,14 +207,16 @@ export function OnboardingProcess() {
                 {steps.map((step, i) => (
                   <div
                     key={step.title}
-                    ref={(el) => (stepRefs.current[i] = el)}
+                    ref={(el) => {
+                      stepRefs.current[i] = el;
+                    }}
                     className={`onboarding-step min-h-[320px] max-h-[320px] py-10 text-white snap-center flex items-start transition-opacity duration-300 ${
                       centerIdx === i ? "opacity-100" : "opacity-50"
                     }`}
                     tabIndex={0}
                     aria-current={centerIdx === i}
                   >
-                    <div className="flex-shrink-0 mt-2 mr-6">
+                    <div className="shrink-0 mt-2 mr-6">
                       <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-ocean">
                         <Icon name="check" color="white" size={28} />
                       </span>
