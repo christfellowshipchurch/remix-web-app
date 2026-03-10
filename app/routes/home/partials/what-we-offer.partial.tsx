@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { WhatWeOfferMobile } from "../components/we-offer-tabs/mobile.component";
 import { WhatWeOfferDesktop } from "../components/we-offer-tabs/desktop.component";
+import { getImageUrl } from "~/lib/utils";
 
 const backgroundImages = {
-  family: "/assets/images/home/sfe-bg.jpg",
-  "young-adults": "/assets/images/home/young-adults-bg.jpg",
-  everyone: "/assets/images/home/everyone-bg.jpg",
+  family: getImageUrl("3143922"),
+  "young-adults": getImageUrl("3143923"),
+  everyone: getImageUrl("3143927"),
 };
 
 export function WhatWeOfferSection() {

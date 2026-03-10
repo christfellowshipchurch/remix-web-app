@@ -85,7 +85,7 @@ const WhatToExpectDesktopCard = ({
             <Video
               wistiaId={video}
               controls
-              className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px]"
+              className="w-[340px] xl:w-[520px] aspect-520/650 rounded-[12px]"
             />
             <div
               className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors"
@@ -98,7 +98,7 @@ const WhatToExpectDesktopCard = ({
           </div>
         ) : (
           <div
-            className="w-[340px] xl:w-[520px] aspect-[520/650] rounded-[12px] bg-black relative cursor-pointer group overflow-hidden transition-opacity duration-300"
+            className="w-[340px] xl:w-[520px] aspect-520/650 rounded-[12px] bg-black relative cursor-pointer group overflow-hidden transition-opacity duration-300"
             onClick={handlePlayClick}
           >
             <img
@@ -193,7 +193,7 @@ export const WhatToExpectMobileScroll = () => {
                   <div className="relative overflow-hidden rounded-lg transition-opacity duration-200">
                     <iframe
                       src={`https://fast.wistia.net/embed/iframe/${video}?fitStrategy=cover`}
-                      className="w-full h-full object-cover aspect-[300/400]"
+                      className="w-full h-full object-cover aspect-300/400"
                       title={`What to Expect Video - ${name}`}
                     />
                     <div

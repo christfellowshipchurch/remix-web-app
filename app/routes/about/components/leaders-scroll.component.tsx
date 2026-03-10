@@ -34,7 +34,7 @@ export function LeaderScroll() {
               <img
                 src={seniorLeaderItem.profilePhoto}
                 alt={seniorLeaderItem.fullName}
-                className="w-full aspect-[3/2] sm:aspect-[16/9] md:aspect-[16/7] object-cover object-top rounded-lg"
+                className="w-full aspect-3/2 sm:aspect-16/9 md:aspect-16/7 object-cover object-top rounded-lg"
               />
               <div
                 className="absolute right-2 -bottom-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg"
@@ -99,7 +99,7 @@ const MobileLeaderCard = ({
                 src={leader.profilePhoto}
                 alt={leader.fullName}
                 className={cn(
-                  "w-full aspect-[32/46] object-cover",
+                  "w-full aspect-32/46 object-cover",
                   "transform transition-transform duration-300 group-hover:scale-105"
                 )}
               />

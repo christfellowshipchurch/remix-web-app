@@ -48,7 +48,7 @@ export const HeroContent = ({
         </div>
 
         <img
-          className="rounded-[1rem] aspect-[4/3] md:aspect-[3/4] lg:aspect-[4/3] w-full object-cover order-1 md:order-2 mx-auto"
+          className="rounded-[1rem] aspect-4/3 md:aspect-3/4 lg:aspect-4/3 w-full object-cover order-1 md:order-2 mx-auto"
           src={coverImage}
           alt={title || "Cover"}
         />

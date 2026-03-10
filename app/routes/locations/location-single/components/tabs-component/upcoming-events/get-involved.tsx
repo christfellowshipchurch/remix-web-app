@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SectionTitle } from "~/components/section-title";
 import { useResponsive } from "~/hooks/use-responsive";
-import { cn } from "~/lib/utils";
+import { cn, getImageUrl } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import {
   CarouselContent,
@@ -56,13 +56,18 @@ export const GetInvolved = () => {
 
   const slides = itemsLength - itemsPerSlide + 1;
 
+  const bgLogoUrl = getImageUrl("3143912");
   return (
     <div
-      style={{ backgroundColor: "#00354D" }}
+      style={
+        {
+          "--bg-logo-image": `url(${bgLogoUrl})`,
+        } as React.CSSProperties
+      }
       className={cn(
         "w-full py-28 content-padding flex items-center justify-center",
-        'bg-[url("/assets/images/locations/bg-logo.png")]',
-        "bg-[top_0px_left_0px] bg-no-repeat bg-[length:70%] md:bg-[length:35%] xl:bg-[length:25%]"
+        `bg-(image:--bg-logo-image)`,
+        "bg-top-0 left-0 bg-no-repeat bg-length-70% md:bg-length-35% xl:bg-length-25%",
       )}
     >
       <div className="w-full flex flex-col gap-16 md:gap-28 max-w-screen-content">
@@ -165,7 +170,7 @@ const CarouselArrows = ({
           setCurrentSlide(
             currentSlide !== itemsLength - 1
               ? currentSlide + 1
-              : itemsLength - 1
+              : itemsLength - 1,
           )
         }
       >

@@ -15,7 +15,7 @@ export const PushpayGiving = ({ campusList }: { campusList: string[] }) => {
   const [inputValue, setInputValue] = useState("");
   const [inputWidth, setInputWidth] = useState(0);
   const [giftType, setGiftType] = useState<"one-time" | "recurring">(
-    "one-time"
+    "one-time",
   );
   const [campus, setCampus] = useState("");
   const [giveType, setGiveType] =
@@ -127,7 +127,7 @@ export const PushpayGiving = ({ campusList }: { campusList: string[] }) => {
         />
       </div>
 
-      <div className="flex flex-col gap-6 size-full w-[392px]">
+      <div className="flex flex-col gap-6 size-full">
         <div className="flex flex-col gap-2 bg-white rounded-[14px] p-4 size-full">
           {/* Gift Type Section */}
           <h3 className="font-bold leading-tight">Gift Type</h3>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { CardCarouselSection } from "~/components/resource-carousel";
-import { cn } from "~/lib/utils";
+import { cn, getImageUrl } from "~/lib/utils";
 import HtmlRenderer from "~/primitives/html-renderer";
 import { CollectionItem } from "~/routes/page-builder/types";
 import {
@@ -20,12 +20,8 @@ export const GetInvolved = ({
 
   return (
     <CardCarouselSection
-      backgroundImage={
-        !isOnline ? "/assets/images/locations/bg.jpg" : undefined
-      }
-      className={cn(
-        isOnline ? "bg-gradient-to-br from-[#1C3647] to-ocean" : "",
-      )}
+      backgroundImage={!isOnline ? getImageUrl("3143911") : undefined}
+      className={cn(isOnline ? "bg-linear-to-br from-[#1C3647] to-ocean" : "")}
       title={title}
       carouselItemClassName="w-full basis-[75%] sm:basis-[40%] lg:basis-[22%] xl:basis-[21.8%] 2xl:!basis-[24%] 3xl:!basis-[24.59%]"
       CardComponent={GetInvolvedCard}
@@ -55,7 +51,7 @@ const GetInvolvedCard = ({ resource }: { resource: CollectionItem }) => {
       <img
         src={image}
         alt={name}
-        className="w-full h-auto max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:aspect-[41/27] rounded-t-[8px]"
+        className="w-full h-auto max-h-[200px] aspect-video object-cover md:max-w-[480px] md:max-h-[277px] lg:aspect-41/27 rounded-t-[8px]"
         loading="lazy"
       />
 

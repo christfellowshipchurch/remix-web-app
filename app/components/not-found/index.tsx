@@ -1,3 +1,5 @@
+import { getImageUrl } from "~/lib/utils";
+
 export const NotFound = () => {
   const links = [
     { title: "Visit our homepage.", link: "/" },
@@ -21,7 +23,7 @@ export const NotFound = () => {
       <img
         alt="Error Image"
         className="w-full mx-auto max-w-[750px] my-10"
-        src="/assets/images/error.png"
+        src={getImageUrl("3143900")}
       />
 
       <div className="mx-auto max-w-[1100px] px-4 md:px-8 lg:px-0">

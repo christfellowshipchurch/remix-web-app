@@ -228,6 +228,7 @@ export function Navbar() {
           <div className={cn(showSiteBanner ? "block" : "hidden")}>
             <SiteBanner
               content={siteBanner?.content ?? ""}
+              link={siteBanner?.link ?? ""}
               onClose={() => setShowSiteBanner(false)}
             />
           </div>
