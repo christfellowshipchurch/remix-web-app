@@ -9,6 +9,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { createSearchClient } from "~/lib/create-search-client";
 import { StudyHitType } from "../types";
+import { CurriculumItem } from "./components/curriculum-item.component";
 
 const StudyNotFound = () => {
   return (
@@ -72,7 +73,36 @@ const StudySingleContent = ({ hit }: { hit: StudyHitType }) => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col">{/* Curriculum Section */}</div>
+      {/* Mobile Curriculum Section */}
+      <div className="flex md:hidden flex-col gap-5.5 md:mt-12 pt-8 pb-12 content-padding bg-gray w-full">
+        <h3 className="text-lg font-semibold text-black leading-tight">
+          Curriculum
+        </h3>
+        <div className="flex flex-col gap-4">
+          <CurriculumItem
+            title="Week 1: Getting Started"
+            subtitle="Release date: June 12, 2024"
+            items={[
+              {
+                type: "Video",
+                description: "Week 1: Getting Started",
+                wistiaId: "wcs977y9ac",
+              },
+            ]}
+          />
+          <CurriculumItem
+            title="Week 1: Getting Started"
+            subtitle="Release date: June 12, 2024"
+            items={[
+              {
+                type: "Video",
+                description: "Week 1: Getting Started",
+                wistiaId: "wcs977y9ac",
+              },
+            ]}
+          />
+        </div>
+      </div>
     </section>
   );
 };

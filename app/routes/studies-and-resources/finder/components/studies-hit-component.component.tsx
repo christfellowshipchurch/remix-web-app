@@ -5,6 +5,7 @@
 import { Icon } from "~/primitives/icon/icon";
 import { StudyHitType } from "../../types";
 import { Link } from "react-router-dom";
+import { StudiesTagItem } from "../../studies-single/partials/basic-content.partial";
 
 export function StudyHitComponent({
   hit,
@@ -54,18 +55,11 @@ export function StudyHitComponent({
 
             {/* Attributes */}
             <div className="flex flex-wrap gap-[6px]">
-              <div className="flex items-center gap-2 bg-[#EBEBEB] w-fit rounded-sm text-xs font-semibold px-2 py-1">
-                <Icon name="church" size={16} color="black" />
-                <span>{hit.topic}</span>
-              </div>
-              <div className="flex items-center gap-2 bg-[#EBEBEB] w-fit rounded-sm text-xs font-semibold px-2 py-1">
-                <Icon name="user" size={16} color="black" />
-                <span>{hit.audience}</span>
-              </div>
-              <div className="flex items-center gap-2 bg-[#EBEBEB] w-fit rounded-sm text-xs font-semibold px-2 py-1">
-                <Icon name="bible" size={16} color="black" />
-                <span>{hit.format}</span>
-              </div>
+              <StudiesTagItem icon="bible" label={hit.format} />
+              <StudiesTagItem label={hit.topic} />
+              <StudiesTagItem icon="alarm" label={hit.duration} />
+              <StudiesTagItem icon="user" label={hit.audience} />
+              <StudiesTagItem icon="church" label={hit.source} />
             </div>
           </div>
         </div>

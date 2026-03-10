@@ -246,7 +246,6 @@ interface GroupedStudyType {
   title: string;
   url: string;
   summary: string;
-  subtitle: string;
   topic: StudyHitType["topic"];
   format: StudyHitType["format"] | "Multiple Formats";
   duration: StudyHitType["duration"];
@@ -278,7 +277,6 @@ const CustomStudyTypeFacets = ({
           title: hit.title,
           url: hit.url,
           summary: hit.description ?? hit.summary ?? "",
-          subtitle: hit.subtitle ?? "",
           topic: hit.topic ?? "Spiritual Growth",
           format: hit.format ?? "Video",
           duration: hit.duration ?? "Short",
@@ -301,7 +299,6 @@ const CustomStudyTypeFacets = ({
         title: group.title,
         studyType: group.title as StudyHitType["studyType"],
         url: group.url as StudyHitType["url"],
-        subtitle: group.subtitle,
         summary: group.summary,
         description: group.summary,
         coverImage: {
