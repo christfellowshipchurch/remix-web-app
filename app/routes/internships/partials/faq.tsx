@@ -14,7 +14,7 @@ export const summerFaqs = [
   {
     title: "Do I need a certain major to be considered for an internship?",
     content:
-      "No. We are just as concerned with your skills, interests, and curiosity as we are with your major. Students are encouraged to select their internship with respect to their major(s) and career/ministry goals.",
+      "No, we are just as concerned with your skills, interests, and curiosity as we are with your major. Students are encouraged to select their internship with respect to their major(s) and career/ministry goals.",
   },
   {
     title: "Once I complete an internship, is it possible to do another?",
@@ -29,7 +29,7 @@ export const summerFaqs = [
   {
     title: "Do you provide transportation or travel costs?",
     content:
-      "No. You will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
+      "No, you will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
   },
 ];
 
@@ -41,7 +41,7 @@ export const yearLongFaqs = [
   },
   {
     title: "Are college interns paid?",
-    content: "Yes. Our interns receive an hourly wage.",
+    content: "Yes, our interns receive an hourly wage.",
   },
   {
     title: "What ministries are interns able to apply for?",
@@ -66,12 +66,12 @@ export const yearLongFaqs = [
   {
     title: "Do I receive paid vacation benefits during my internship?",
     content:
-      "No. Each Intern is allowed one week of vacation each semester during their time here with us. This must be approved by your supervisor and the Intern Pastor.",
+      "No, each Intern is allowed one week of vacation each semester during their time here with us. This must be approved by your supervisor and the Intern Pastor.",
   },
   {
     title: "Do you provide transportation or travel costs?",
     content:
-      "No. You will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
+      "No, you will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
   },
 ];
 
