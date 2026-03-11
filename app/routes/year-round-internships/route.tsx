@@ -15,23 +15,24 @@ export { meta } from "./meta";
 const programDetailsData: ProgramDetailsData[] = [
   {
     title: "Duration",
-    subtitle: "12-weeks",
-    icon: "bookOpenText",
-    description: "12-week program (mid-May to mid-August each year)",
+    subtitle: "Full Year (August – August)",
+    icon: "hourglass",
+    description:
+      "A year-long commitment that gives you deep, sustained ministry experience and growth across multiple seasons of church life.",
+  },
+  {
+    title: "Schedule",
+    subtitle: "Part-Time · 25 hrs/week",
+    icon: "calendarAlt",
+    description:
+      "Designed to work alongside your full-time college schedule, giving you the flexibility to balance academics and ministry.",
   },
   {
     title: "Compensation",
-    subtitle: "Stipend",
-    icon: "bookOpenText",
+    subtitle: "Hourly Wage",
+    icon: "dollar",
     description:
-      "* Full-time (40 hrs/week), stipend program ($1000 for the summer)",
-  },
-  {
-    title: "Housing",
-    subtitle: "Provided on Needs Basis",
-    icon: "bookOpenText",
-    description:
-      "* Housing available on an as-needed basis and based on availability",
+      "College interns receive an hourly wage for their work, with limited housing available on an as-needed basis.",
   },
 ];
 

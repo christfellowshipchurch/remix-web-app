@@ -19,11 +19,12 @@ export const summerFaqs = [
   {
     title: "Once I complete an internship, is it possible to do another?",
     content:
-      "Absolutely! You are able to reapply for any internship in the future. This includes another Summer Internship or a year long College Internship if you have completed the necessary requirements.",
+      "Absolutely! You are welcome to reapply for internships in the future, including another Summer Internship or a year-long College Internship, as long as you meet the required qualifications.",
   },
   {
     title: "What if I need housing?",
-    content: "We will provide housing on a needs basis only.",
+    content:
+      "Housing may be available for interns based on individual need and availability.",
   },
   {
     title: "Do you provide transportation or travel costs?",
@@ -34,29 +35,43 @@ export const summerFaqs = [
 
 export const yearLongFaqs = [
   {
-    title: "What does Christ Fellowship believe as a church?",
+    title: "Do I have to be enrolled in college to be a College Intern?",
     content:
-      "At Christ Fellowship, our goal and our vision is that, together, we would lead a radical transformation for Jesus Christ in this region and beyond—everyone, everyday, everywhere. To do this, we rally around this shared vision and some shared biblically-based beliefs and values. Learn more about <a className='underline text-ocean' href='/about#beliefs'>what we believe</a> and our core values of what we do as a church.",
+      "Yes, you must be enrolled as a full-time college student and have at least 60 credit hours completed along with a 3.0 GPA. ",
   },
   {
-    title: "What does Christ Fellowship have for families?",
-    content:
-      "No matter what age or stage of life, there's something here for the whole family! We have environments designed specifically for your <a className='underline text-ocean' href='/ministries/kids'>kids</a>, <a className='underline text-ocean' href='/ministries/students'>students</a>, and <a className='underline text-ocean' href='/ministries/young-adults'>young adults</a>—and in fact, we're doing more for the next generation than ever before. Learn more about our Get There First initiative and how your family can be a part of it.",
+    title: "Are college interns paid?",
+    content: "Yes. Our interns receive an hourly wage.",
   },
   {
-    title: "What events does Christ Fellowship have coming up?",
+    title: "What ministries are interns able to apply for?",
     content:
-      "We have ministries for everyone throughout the week and can't-miss special events you'll want on your calendar! See what's <a className='underline text-ocean' href='/events'>coming up at Christ Fellowship</a>.",
+      "We want you to get hands-on training in the area God is calling you to! We have internships available, in Kids, Students, Young Adults, Production, Worship, Missions, Freedom and Care, Groups, Connections, Communications/Marketing, Films, and Graphic Design.",
   },
   {
-    title: "What resources does Christ Fellowship offer?",
+    title: "What if I need housing?",
     content:
-      "Every week, we create a collection of personalized resources including encouraging messages and practical articles, devotionals, and podcasts. We also offer <a className='underline text-ocean' href='/ministries/care'>care ministries</a> throughout the week for every hurt, habit, or hangup. Have something we can be praying with you for? <a className='underline text-ocean' target='_blank' href='https://rock.gocf.org/RequestPrayer'>Share your prayer request!</a>",
+      "Housing may be available for interns based on individual need and availability.",
   },
   {
-    title: "Where is Christ Fellowship located?",
+    title: "What is the application process?",
     content:
-      "Christ Fellowship is one church with many <a className='underline text-ocean' href='/locations'>locations across South Florida</a>, and <a className='underline text-ocean' href='/locations/cf-everywhere'>online</a>—wherever you are!",
+      "Once you have completed the online application, you will then have the following steps: video interview, phone interview with Intern Pastor, zoom interview with ministry leader in your ministry area and an in-person recruit event. ",
+  },
+  {
+    title: "Once I complete an internship, is it possible to do another?",
+    content:
+      "Absolutely! You are welcome to reapply for internships in the future, including another Summer Internship or a year-long College Internship, as long as you meet the required qualifications.",
+  },
+  {
+    title: "Do I receive paid vacation benefits during my internship?",
+    content:
+      "No. Each Intern is allowed one week of vacation each semester during their time here with us. This must be approved by your supervisor and the Intern Pastor.",
+  },
+  {
+    title: "Do you provide transportation or travel costs?",
+    content:
+      "No. You will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
   },
 ];
 

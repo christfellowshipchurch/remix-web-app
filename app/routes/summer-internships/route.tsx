@@ -54,12 +54,7 @@ export default function SummerInternshipsPage() {
         description="Interns grow spiritually, personally, and professionally through collaborative teamwork, meaningful ministry opportunities, and intentional mentorship from some of the best leaders in ministry. If you're eager to deepen your faith, develop your gifts, and thrive in a team environment, this summer could change everything."
       />
 
-      <ProgramDetails
-        description={
-          "The Christ Fellowship Summer Internship is a full-time, twelve-week program running from mid-May through mid-August. Interns must be college-aged, though current college enrollment is not required."
-        }
-        data={summerProgramDetailsData}
-      />
+      <ProgramDetails data={summerProgramDetailsData} />
 
       <DiveIn
         title="Ready to Dive In?"
