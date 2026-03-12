@@ -38,7 +38,7 @@ export const GroupsFinderDropdwnPopup = ({
         coordinates: {
           lat: number | null;
           lng: number | null;
-        } | null
+        } | null,
       ) => void;
     }[];
   };
@@ -60,7 +60,7 @@ export const GroupsFinderDropdwnPopup = ({
         showSection
           ? "z-4 opacity-100"
           : "-left-[9999px] -z-1 opacity-0 pointer-events-none",
-        className
+        className,
       )}
       style={
         showSection
@@ -124,7 +124,7 @@ const GroupsFinderDropdownPopupList = ({
       coordinates: {
         lat: number | null;
         lng: number | null;
-      } | null
+      } | null,
     ) => void;
   };
   onHide: () => void;
@@ -162,7 +162,7 @@ const GroupsFinderDropdownPopupList = ({
     if (popupTitle === "Topics" && data.attribute === "topics") {
       if (data.title === "Spiritual Growth") {
         return items.filter((item) =>
-          spiritualGrowthTopics.includes(item.label)
+          spiritualGrowthTopics.includes(item.label),
         );
       } else if (data.title === "Life & Support") {
         return items.filter((item) => lifeSupportTopics.includes(item.label));
@@ -174,7 +174,7 @@ const GroupsFinderDropdownPopupList = ({
       return [...items].sort(
         (a, b) =>
           MEETING_DAYS_ORDER.indexOf(a.label) -
-          MEETING_DAYS_ORDER.indexOf(b.label)
+          MEETING_DAYS_ORDER.indexOf(b.label),
       );
     }
     return items;
@@ -220,7 +220,7 @@ const GroupsFinderDropdownPopupList = ({
           "flex bg-white",
           data.checkbox && data.checkboxLayout === "vertical"
             ? "gap-4 flex-col"
-            : "flex-wrap gap-y-2 gap-x-2"
+            : "flex-wrap gap-y-2 gap-x-2",
         )}
       >
         {data.isLocation ? (
@@ -255,7 +255,7 @@ const GroupsFinderDropdownPopupList = ({
                       key={index}
                       className={cn(
                         data.checkboxLayout === "horizontal" &&
-                          "flex w-fit gap-x-2 pr-2"
+                          "flex w-fit gap-x-2 pr-2",
                       )}
                     >
                       {data.checkbox ? (
@@ -268,8 +268,8 @@ const GroupsFinderDropdownPopupList = ({
                         >
                           <div
                             className={cn(
-                              "w-4 h-4 border border-ocean rounded-sm bg-[#E7F9FE] hover:bg-ocean transition-all duration-300",
-                              item.isRefined && "bg-ocean"
+                              "w-4 h-4 border border-ocean rounded-sm bg-ocean-subdued hover:bg-ocean transition-all duration-300",
+                              item.isRefined && "bg-ocean",
                             )}
                           />
                           <div className={styles.checkbox}>
@@ -287,7 +287,7 @@ const GroupsFinderDropdownPopupList = ({
                           className={cn(
                             styles.button,
                             data.isMeetingType && styles.meetingTypeButton,
-                            item.isRefined && styles.buttonRefined
+                            item.isRefined && styles.buttonRefined,
                           )}
                           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                             e.stopPropagation();

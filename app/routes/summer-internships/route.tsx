@@ -1,50 +1,71 @@
-import InternshipsBanner from "../internships/partials/banner";
-import InternshipsFAQs from "../internships/partials/faq";
-import FindYourPlace from "../internships/partials/find-your-place";
+import InternshipsAbout from "../internships/partials/about.partial";
+import InternshipsFAQs, { summerFaqs } from "../internships/partials/faq";
+import DiveIn from "../internships/partials/dive-in";
 import InternshipsHero from "../internships/partials/hero";
 import ProgramDetails, {
   ProgramDetailsData,
 } from "../internships/partials/program-details";
+import { getImageUrl } from "~/lib/utils";
 
 export { meta } from "./meta";
 
-const programDetailsData: ProgramDetailsData[] = [
+const summerProgramDetailsData: ProgramDetailsData[] = [
   {
     title: "Duration",
-    subtitle: "12-weeks",
-    icon: "bookOpenText",
-    description: "12-week program (mid-May to mid-August each year)",
+    subtitle: "12 Weeks",
+    icon: "hourglass",
+    description:
+      "Full-time program running from mid-May through mid-August. Interns gain hands-on experience in various ministries throughout the church.",
   },
   {
     title: "Compensation",
     subtitle: "Stipend",
-    icon: "bookOpenText",
+    icon: "dollar",
     description:
-      "* Full-time (40 hrs/week), stipend program ($1000 for the summer)",
+      "Participants receive a stipend paid in two installments during the summer, allowing you to focus on your growth and ministry experience.",
   },
   {
     title: "Housing",
-    subtitle: "Provided on Needs Basis",
-    icon: "bookOpenText",
+    subtitle: "As-Needed Basis",
+    icon: "house",
     description:
-      "* Housing available on an as-needed basis and based on availability",
+      "Complimentary housing may be provided on an as-needed basis, depending on availability. Contact us for more details.",
   },
 ];
 
 export default function SummerInternshipsPage() {
-  const programDetailsDescription =
-    "The Christ Fellowship Summer Internship Program is designed to offer ministry experience to college-aged students. Our goal is to cultivate an environment where interns can thrive under the mentorship of leaders, fostering spiritual, personal, and professional growth through collaborative teamwork and hands-on development experiences.<br /><br /> <b>* Interns must be college-aged, but do not have to be currently enrolled in college</b>";
-
   return (
-    <div>
-      <InternshipsHero isSecondary={true} />
-      <ProgramDetails
-        description={programDetailsDescription}
-        data={programDetailsData}
+    <main className="min-h-screen">
+      <InternshipsHero
+        subheading="Summer Internship"
+        title="Experience a Summer Like Never Before"
+        subtitle="Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact."
+        ctas={[
+          {
+            href: "#todo",
+            text: "Apply Now",
+          },
+        ]}
+        imageSrc={getImageUrl("3141721")}
+        imageAlt="Summer Internship"
       />
-      <InternshipsBanner />
-      <FindYourPlace />
-      <InternshipsFAQs />
-    </div>
+      <InternshipsAbout
+        subheading="About the program"
+        description="Interns grow spiritually, personally, and professionally through collaborative teamwork, meaningful ministry opportunities, and intentional mentorship from some of the best leaders in ministry. If you're eager to deepen your faith, develop your gifts, and thrive in a team environment, this summer could change everything."
+      />
+
+      <ProgramDetails data={summerProgramDetailsData} />
+
+      <DiveIn
+        title="Ready to Dive In?"
+        paragraph="Take the first step toward a transformative summer. Apply today and discover how God wants to use you in ministry."
+      />
+
+      <InternshipsFAQs
+        faqs={summerFaqs}
+        sectionSubheading="FAQs"
+        sectionTitle="Frequently Asked Questions"
+      />
+    </main>
   );
 }
