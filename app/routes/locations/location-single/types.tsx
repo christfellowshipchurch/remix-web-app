@@ -30,12 +30,11 @@ export type LocationHitType = {
   phoneNumber: string;
   serviceTimes: string;
   setReminderVideo?: string;
-  weekdaySchedule?: {
-    day: string;
-    events: {
-      event: string;
-      time: string;
-      url: string;
-    }[];
+  weeklyMinistryServices?: {
+    minstryType: string;
+    dayOfWeek: string;
+    serviceTimes: string;
+    learnMoreUrl: string;
+    planMyvisit: string;
   }[];
 };

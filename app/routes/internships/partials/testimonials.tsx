@@ -67,7 +67,7 @@ const InternshipTabContent = ({
       <h3 className="text-2xl">{title}</h3>
 
       <div className="flex items-center gap-7">
-        <img src={image} alt={title} className="size-12 rounded-[1rem]" />
+        <img src={image} alt={title} className="size-12 rounded-2xl" />
         <p>{description}</p>
       </div>
     </div>
