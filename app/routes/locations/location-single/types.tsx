@@ -1,3 +1,5 @@
+import type { WeeklyMinistryService } from './components/during-the-week.component';
+
 export type LocationHitType = {
   _geoloc?: {
     latitude: number;
@@ -30,11 +32,5 @@ export type LocationHitType = {
   phoneNumber: string;
   serviceTimes: string;
   setReminderVideo?: string;
-  weeklyMinistryServices?: {
-    minstryType: string;
-    dayOfWeek: string;
-    serviceTimes: string;
-    learnMoreUrl: string;
-    planMyvisit: string;
-  }[];
+  weeklyMinistryServices?: WeeklyMinistryService[];
 };

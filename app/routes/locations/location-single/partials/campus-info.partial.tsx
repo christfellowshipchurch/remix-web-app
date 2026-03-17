@@ -1,6 +1,9 @@
 import Icon from "~/primitives/icon";
 import { VirtualTourTabs } from "../components/virtual-tour.component";
-import { DuringTheWeek } from "../components/during-the-week.component";
+import {
+  DuringTheWeek,
+  type WeeklyMinistryService,
+} from "../components/during-the-week.component";
 import { CTAs } from "../components/ctas.component";
 import { icons } from "~/lib/icons";
 import { dayTimes, formattedServiceTimes } from "~/lib/utils";
@@ -17,13 +20,7 @@ interface CampusInfoProps {
     postalCode: string;
   };
   serviceTimes: string;
-  weeklyMinistryServices?: {
-    minstryType: string;
-    dayOfWeek: string;
-    serviceTimes: string;
-    learnMoreUrl: string;
-    planMyvisit: string;
-  }[];
+  weeklyMinistryServices?: WeeklyMinistryService[];
   phoneNumber: string;
   additionalInfo: string[];
 }
