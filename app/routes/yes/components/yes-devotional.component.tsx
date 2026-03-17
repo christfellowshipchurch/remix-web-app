@@ -17,7 +17,7 @@ export const DevotionalSection = () => {
 
 const TabsSection = () => {
   const [activeTab, setActiveTab] = useState(
-    twentyOneDaysDevotionalData[0].value
+    twentyOneDaysDevotionalData[0].value,
   );
 
   return (
@@ -35,7 +35,8 @@ const TabsSection = () => {
             className={cn(
               "flex px-4 py-1 font-semibold bg-white data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[29px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer min-w-[90px] md:min-w-auto items-center justify-center text-center",
               index === 0 && "md:ml-0 ml-4",
-              index === twentyOneDaysDevotionalData.length - 1 && "md:mr-0 mr-4"
+              index === twentyOneDaysDevotionalData.length - 1 &&
+                "md:mr-0 mr-4",
             )}
           >
             {tab.label}
