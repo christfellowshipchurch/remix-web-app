@@ -110,8 +110,8 @@ const TitleSection = ({ isSpanish }: { isSpanish?: boolean }) => {
     : {
         title: "A 21-Day Devotional",
         subtitle:
-          "Inside this devotional, you’ll discover more about what it means to follow Jesus. Each day will include Scriptures to meditate on and ideas to consider as you begin your walk with God. Together, we’ll unpack what it looks like to be in a relationship with Jesus and how that relationship changes our lives from the inside out.",
-        download: "Download it as a PDF.",
+          "Inside this devotional, you’ll discover more about what it means to follow Jesus. Each day will include Scriptures to meditate on and ideas to consider as you begin your walk with God. Together, we’ll unpack what it looks like to be in a relationship with Jesus and how that relationship changes our lives from the inside out. This devotional spans 21 days, but you can go at your own pace. It’s a tool to guide your journey and spark conversations about your learning. Remember, following Jesus is a journey you don’t have to take alone. We’re excited to share this with you! If you’d like, you can",
+        download: "download it as a PDF.",
         link: "https://rock.gocf.org/Content/website/journey/YouSaidYes_Devotional.pdf",
       };
 
