@@ -3,7 +3,7 @@ import { DevotionalSection } from "../components/yes-devotional.component";
 import { YesHero as HeroSection } from "../components/yes-devotional-hero.component";
 import { getImageUrl } from "~/lib/utils";
 
-export const YesDevotional = () => {
+export const YesDevotional = ({ isSpanish }: { isSpanish?: boolean }) => {
   return (
     <div className="flex flex-col w-full relative">
       {/* Mobile Image */}
@@ -20,13 +20,13 @@ export const YesDevotional = () => {
         className="hidden lg:block w-full h-[118svh] 2xl:h-[110svh] object-cover absolute top-0 left-0"
       />
       {/* Hero */}
-      <HeroSection />
+      <HeroSection isSpanish={isSpanish} />
 
       {/* Devotional */}
-      <DevotionalSection />
+      <DevotionalSection isSpanish={isSpanish} />
 
       {/* App Download */}
-      <AppSection />
+      <AppSection isSpanish={isSpanish} />
     </div>
   );
 };
