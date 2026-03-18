@@ -2,7 +2,7 @@ import { appleLink, cn, googleLink, isAppleDevice } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import HTMLRenderer from "~/primitives/html-renderer";
 
-export function AppSection({ isSpanish }: { isSpanish?: boolean }) {
+export function DownloadAppSection({ isSpanish }: { isSpanish?: boolean }) {
   return (
     <>
       <DesktopVersion isSpanish={isSpanish} />
@@ -36,7 +36,7 @@ const DesktopVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
             <p className="max-w-[490px]">{copy.summary}</p>
           </div>
 
-          <AppButtons isSpanish={isSpanish} />
+          <DownloadAppButtons isSpanish={isSpanish} />
         </div>
 
         <div className="flex justify-center items-center">
@@ -81,13 +81,13 @@ const MobileVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
           {copy.summary}
         </p>
 
-        <AppButtons isSpanish={isSpanish} />
+        <DownloadAppButtons isSpanish={isSpanish} />
       </div>
     </section>
   );
 };
 
-const AppButtons = ({ isSpanish }: { isSpanish?: boolean }) => {
+const DownloadAppButtons = ({ isSpanish }: { isSpanish?: boolean }) => {
   const copy = isSpanish ? spanishCopy : englishCopy;
 
   const isApple = isAppleDevice();

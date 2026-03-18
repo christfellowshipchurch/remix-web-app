@@ -1,4 +1,4 @@
-import { AppSection } from "~/routes/home/partials/app.partial";
+import { AppSection } from "~/routes/home/partials/download-app.partial";
 import { DevotionalSection } from "../components/yes-devotional.component";
 import { YesHero as HeroSection } from "../components/yes-devotional-hero.component";
 import { getImageUrl } from "~/lib/utils";
