@@ -1,4 +1,4 @@
-import { AppSection } from "~/routes/home/partials/download-app.partial";
+import { DownloadAppSection } from "~/routes/home/partials/download-app.partial";
 import { DevotionalSection } from "../components/yes-devotional.component";
 import { YesHero as HeroSection } from "../components/yes-devotional-hero.component";
 import { getImageUrl } from "~/lib/utils";
@@ -26,7 +26,7 @@ export const YesDevotional = ({ isSpanish }: { isSpanish?: boolean }) => {
       <DevotionalSection isSpanish={isSpanish} />
 
       {/* App Download */}
-      <AppSection isSpanish={isSpanish} />
+      <DownloadAppSection isSpanish={isSpanish} />
     </div>
   );
 };
