@@ -4,7 +4,7 @@ import { BeliefsSection } from "./about/partials/beliefs.partial";
 import { LeadershipSection } from "./about/partials/leadership.partial";
 import { WhatWeOfferSection } from "./home/partials/what-we-offer.partial";
 import { WhatToExpectSection } from "./home/partials/what-to-expect.partial";
-import { AppSection } from "./home/partials/app.partial";
+import { DownloadAppSection } from "./home/partials/download-app.partial";
 import { HeroSection } from "./home/partials/hero.partial";
 import { AChanceSection } from "./home/partials/a-chance.partial";
 import { createMeta } from "~/lib/meta-utils";
@@ -32,7 +32,7 @@ export default function HomePage() {
       <BeliefsSection />
       <WhatToExpectSection />
       <LeadershipSection className="lg:py-52" />
-      <AppSection />
+      <DownloadAppSection />
     </>
   );
 }

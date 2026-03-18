@@ -1,23 +1,37 @@
 import { Link } from "react-router";
 import { Icon } from "~/primitives/icon/icon";
 
-export const YesHero = () => {
+export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
+  const cardData = isSpanish ? spanishHeroCardData : heroCardData;
+
   return (
     <div className="flex flex-col items-center w-full h-screen lg:h-full lg:min-h-[110svh]">
       <div className="flex flex-col gap-6 items-center justify-center w-full h-[120svh] lg:h-full lg:min-h-[110svh] px-4">
         <div className="flex flex-col gap-3 items-center text-center">
-          <h1 className="text-[40px] lg:text-[100px] font-extrabold text-[#00354D] leading-tight">
-            You Said <span className="text-white">YES!</span>
+          <h1 className="text-[40px] lg:text-[100px] font-extrabold text-dark-navy leading-tight">
+            {isSpanish ? (
+              "¡Dijiste SÍ!"
+            ) : (
+              <>
+                You Said <span className="text-white">YES!</span>
+              </>
+            )}
           </h1>
           <p className="text-lg lg:text-xl text-white">
-            You said yes to Jesus, and we&apos;re so excited for you! Now,
-            what&apos;s next?
+            {isSpanish ? (
+              "¡Dijiste SÍ a Jesús, y estamos muy emocionados por ti! Ahora, ¿qué sigue?"
+            ) : (
+              <>
+                You said yes to Jesus, and we're so excited for you! Now, what's
+                next?
+              </>
+            )}
           </p>
         </div>
 
         {/* Card Sections */}
         <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
-          {HeroCardData.map((card, index) => (
+          {cardData.map((card, index) => (
             <HeroCard key={index} copy={card.copy} link={card.link} />
           ))}
         </div>
@@ -26,7 +40,7 @@ export const YesHero = () => {
   );
 };
 
-const HeroCardData: { link: string; copy: string }[] = [
+const heroCardData: { link: string; copy: string }[] = [
   {
     link: "/app",
     copy: "A two-week course to start your relationship with Jesus.",
@@ -38,6 +52,21 @@ const HeroCardData: { link: string; copy: string }[] = [
   {
     link: "/app",
     copy: "Download the free Bible App from YouVersion",
+  },
+];
+
+const spanishHeroCardData: { link: string; copy: string }[] = [
+  {
+    link: "/app",
+    copy: "Un curso de dos semanas para comenzar tu relación con Jesús.",
+  },
+  {
+    link: "/app",
+    copy: "Accede a recursos, envía oraciones y participa en nuestra app",
+  },
+  {
+    link: "/app",
+    copy: "Descarga la app de la Biblia YouVersion gratis",
   },
 ];
 
