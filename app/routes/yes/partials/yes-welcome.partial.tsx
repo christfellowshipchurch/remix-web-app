@@ -6,7 +6,7 @@ export const YesWelcomePartial = ({ isSpanish }: { isSpanish?: boolean }) => {
   // const _navigate = useNavigate();
 
   return (
-    <section className="w-full content-padding relative">
+    <section className="w-full content-padding">
       {/* Confetti animation */}
       <Video
         src="/assets/confetti-animation.webm"
