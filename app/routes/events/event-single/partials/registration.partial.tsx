@@ -13,11 +13,10 @@ export function RegistrationSection() {
         <SessionRegistration />
       )}
 
-      {/* Click Through Registration */}
-      {!sessionScheduleCards ||
-        (sessionScheduleCards.length < 1 && (
-          <ClickThroughRegistration title={title} />
-        ))}
+      {/* Click Through Registration — only when there are no session cards */}
+      {(!sessionScheduleCards || sessionScheduleCards.length < 1) && (
+        <ClickThroughRegistration title={title} />
+      )}
     </section>
   );
 }
