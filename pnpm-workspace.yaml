@@ -1,5 +1,6 @@
 ignoredBuiltDependencies:
   - core-js
+  - unrs-resolver
 
 onlyBuiltDependencies:
   - esbuild
