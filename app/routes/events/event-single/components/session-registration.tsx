@@ -51,7 +51,7 @@ const SessionRegistrationCard = ({
     <div className="bg-white rounded-lg shadow-sm p-5 flex flex-col text-left w-[248px] h-[374px] relative">
       {/* Location Section */}
       <div className="flex flex-2 gap-4 items-start">
-        <div className="bg-navy-subdued rounded-lg p-3 flex-shrink-0">
+        <div className="bg-navy-subdued rounded-lg p-3 shrink-0">
           <Icon name={card.icon} color="currentColor" />
         </div>
         <div className="flex flex-col">
@@ -66,22 +66,14 @@ const SessionRegistrationCard = ({
       <div className="flex flex-col flex-3 gap-3">
         {/* Date */}
         <div className="flex items-center gap-3">
-          <Icon
-            name="calendarAlt"
-            size={20}
-            className="flex-shrink-0 text-ocean"
-          />
+          <Icon name="calendarAlt" size={20} className="shrink-0 text-ocean" />
           <p className="text-sm text-gray-500">{card.date}</p>
         </div>
 
         {/* Party Time */}
         {card.partyTime && (
           <div className="flex items-center gap-3">
-            <Icon
-              name="timeFive"
-              size={20}
-              className="flex-shrink-0 text-ocean"
-            />
+            <Icon name="timeFive" size={20} className="shrink-0 text-ocean" />
             <p className="text-sm text-gray-500">Party at {card.partyTime}.</p>
           </div>
         )}
@@ -89,11 +81,7 @@ const SessionRegistrationCard = ({
         {/* Program Time */}
         {card.programTime && (
           <div className="flex items-center gap-3">
-            <Icon
-              name="timeFive"
-              size={20}
-              className="flex-shrink-0 text-ocean"
-            />
+            <Icon name="timeFive" size={20} className="shrink-0 text-ocean" />
             <p className="text-sm text-gray-500">
               Program starts at {card.programTime}
             </p>
@@ -103,11 +91,7 @@ const SessionRegistrationCard = ({
         {/* Additional Info */}
         {card.additionalInfo && (
           <div className="flex items-center gap-3">
-            <Icon
-              name="foodMenu"
-              size={20}
-              className="flex-shrink-0 text-ocean"
-            />
+            <Icon name="foodMenu" size={20} className="shrink-0 text-ocean" />
             <p className="text-sm text-gray-500">{card.additionalInfo}</p>
           </div>
         )}

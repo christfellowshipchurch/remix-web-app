@@ -18,7 +18,7 @@ export const EventSingleFAQ = ({
             Frequently Asked Questions
           </h2>
           <p className="text-center mb-6 text-lg font-medium text-gray-600 max-w-xl mx-auto">
-            Questions about {title}, we've got answers. Here are some of the
+            Questions about {title}? We've got answers. Here are some of the
             most common questions we receive.
           </p>
 

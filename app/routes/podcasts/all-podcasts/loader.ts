@@ -10,6 +10,7 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
       endpoint: "ContentChannelItems",
       queryParams: {
         $filter: "ContentChannelId eq 179",
+        $orderby: "Order asc",
         loadAttributes: "simple",
       },
     });
@@ -59,7 +60,7 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
       episodesChannelGuid:
         podcastShow.attributeValues?.showChannel?.value || "",
       url: podcastShow.attributeValues?.url?.value || "",
-    })
+    }),
   );
 
   return { podcastShows };
