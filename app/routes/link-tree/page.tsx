@@ -25,7 +25,7 @@ export function LinkTreePage() {
 
   return (
     <div className=" bg-navy py-30 content-padding text-white text-center">
-      <h1 className="text-[48px] md:text-[52px] font-extrabold my-16 ">
+      <h1 className="text-[48px] md:text-[52px] font-extrabold my-16 leading-tight">
         {title}
       </h1>
 

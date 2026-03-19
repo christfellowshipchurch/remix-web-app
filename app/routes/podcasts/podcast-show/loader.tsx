@@ -46,7 +46,7 @@ export async function getLatestEpisodes(channelGuid: string) {
     episodes = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: `ContentChannelId eq ${channelId} and Status eq 'Approved'`,
+        $filter: `ContentChannelId eq ${channelId} and Status eq 'Approved' and StartDateTime le datetime'${new Date().toISOString()}'`,
         $orderby: "StartDateTime desc",
         $top: "6",
         loadAttributes: "simple",
