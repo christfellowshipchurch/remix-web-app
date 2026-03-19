@@ -51,7 +51,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     phoneNumber,
     serviceTimes,
     setReminderVideo: originalSetReminderVideo = "",
-    weekdaySchedule = [],
+    weeklyMinistryServices = [],
     additionalInfo,
     backgroundVideoMobile,
     backgroundVideoDesktop,
@@ -123,7 +123,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         campusName={campusName}
         campusLocation={campusLocation}
         digitalTourVideo={digitalTourVideo}
-        weekdaySchedule={weekdaySchedule}
+        weeklyMinistryServices={weeklyMinistryServices}
       />
 
       <CampusTabsWrapper
