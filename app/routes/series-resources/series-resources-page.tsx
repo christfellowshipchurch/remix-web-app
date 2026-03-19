@@ -1,9 +1,9 @@
 import { useLoaderData } from "react-router-dom";
-import { LoaderReturnType } from "./loader";
+import type { LoaderReturnType } from "./types";
 import { SeriesResourceCarousel } from "./partials/series-carousel.partial";
 import { Button } from "~/primitives/button/button.primitive";
 
-export function SeriesResources() {
+export function SeriesResourcesPage() {
   const { series, messages, resources, events } =
     useLoaderData<LoaderReturnType>();
 
@@ -57,7 +57,7 @@ export function SeriesResources() {
               title: event.title,
               summary: event.summary,
               coverImage: event.coverImage,
-              url: `/events/${event.attributeValues.url.value}`,
+              url: event.url,
             }))}
             bg="gray"
           />
@@ -80,7 +80,7 @@ export function SeriesResources() {
               title: resource.title,
               summary: resource.summary,
               coverImage: resource.coverImage,
-              url: resource.attributeValues.url.value,
+              url: resource.url,
             }))}
             bg="white"
           />

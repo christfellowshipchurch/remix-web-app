@@ -10,9 +10,10 @@ import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
 
 interface Props {
   data: YesFormPersonalInfo;
+  isSpanish?: boolean;
 }
 
-const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
+const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
   const [formData, setFormData] = useState<YesFormPersonalInfo>(data);
   const [error, setError] = useState<string | null>(null);
   const fetcher = useFetcher();
@@ -37,11 +38,16 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
         setFormFieldData(fetcher.data as ConnectCardLoaderReturnType);
       } else if ("error" in fetcher.data) {
         // This was a failed form submission
-        setError(fetcher.data.error || "An unexpected error occurred");
+        setError(
+          fetcher.data.error ||
+            (isSpanish
+              ? "Ocurrió un error inesperado"
+              : "An unexpected error occurred")
+        );
       } else {
         // This was a successful form submission (not initial load, not error)
         setError(null);
-        navigate("/yes/devotional");
+        navigate(isSpanish ? "/dijiste-si/devocional" : "/yes/devotional");
       }
     }
 
@@ -67,17 +73,36 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
       });
     } catch {
       setError(
-        "An error occurred while submitting the form. Please try again."
+        isSpanish
+          ? "Ocurrió un error al enviar el formulario. Por favor, inténtalo de nuevo."
+          : "An error occurred while submitting the form. Please try again."
       );
     }
   };
 
   const { campuses } = formFieldData;
 
+  const copy = {
+    heading: isSpanish ? "¡Cuéntanos sobre ti!" : "Tell us about yourself!",
+    nameLabel: isSpanish ? "Nombre" : "Name",
+    firstNamePlaceholder: isSpanish ? "Nombre" : "First Name",
+    lastNamePlaceholder: isSpanish ? "Apellido" : "Last Name",
+    emailLabel: isSpanish ? "Correo electrónico" : "Email",
+    emailPlaceholder: isSpanish ? "ejemplo@gmail.com" : "Example@gmail.com",
+    phoneLabel: isSpanish ? "Número de teléfono" : "Phone Number",
+    phonePlaceholder: "xxx-xxx-xxxx",
+    dateOfBirthLabel: isSpanish ? "Fecha de nacimiento" : "Date of Birth",
+    campusLabel: "Campus",
+    required: isSpanish ? "(requerido)" : "(required)",
+    selectCampus: isSpanish ? "Selecciona un campus" : "Select a Campus",
+    loading: isSpanish ? "Cargando..." : "Loading...",
+    submit: isSpanish ? "Enviar" : "Submit",
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full content-padding">
-      <div className="mx-auto flex flex-col gap-4 p-8 w-full max-w-lg bg-white rounded-[1rem] shadow-md mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
-        <h2 className="heading-h4 mb-2 text-pretty">Tell us about yourself!</h2>
+      <div className="mx-auto flex flex-col gap-4 p-8 w-full max-w-lg bg-white rounded-2xl shadow-md mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
+        <h2 className="heading-h4 mb-2 text-pretty">{copy.heading}</h2>
         <div className="flex flex-col gap-4">
           <div className="flex items-end gap-4 w-full">
             <div className="flex-1">
@@ -88,8 +113,8 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
                 error={null}
                 setValue={(val) => handleChange("firstName", val)}
                 setError={() => {}}
-                label="Name"
-                placeholder="First Name"
+                label={copy.nameLabel}
+                placeholder={copy.firstNamePlaceholder}
                 isRequired
               />
             </div>
@@ -101,7 +126,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
                 error={null}
                 setValue={(val) => handleChange("lastName", val)}
                 setError={() => {}}
-                placeholder="Last Name"
+                placeholder={copy.lastNamePlaceholder}
                 isRequired
               />
             </div>
@@ -115,8 +140,8 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
           setValue={(val) => handleChange("email", val)}
           setError={() => {}}
           type="email"
-          label="Email"
-          placeholder="Example@gmail.com"
+          label={copy.emailLabel}
+          placeholder={copy.emailPlaceholder}
           isRequired
         />
         <TextFieldInput
@@ -127,8 +152,8 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
           setValue={(val) => handleChange("phone", val)}
           setError={() => {}}
           type="tel"
-          label="Phone Number"
-          placeholder="xxx-xxx-xxxx"
+          label={copy.phoneLabel}
+          placeholder={copy.phonePlaceholder}
           isRequired
         />
         <DateInput
@@ -138,16 +163,16 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
           error={null}
           setValue={(val) => handleChange("dateOfBirth", val)}
           setError={() => {}}
-          label="Date of Birth"
+          label={copy.dateOfBirthLabel}
           isRequired
           max={new Date().toISOString().split("T")[0]}
         />
         <div className="flex flex-col gap-1 w-full">
           <label className="font-bold text-text-primary mb-1">
             <span className="text-ocean mr-1">{"*"}</span>
-            Campus
+            {copy.campusLabel}
             <span className="font-normal text-text-secondary ml-1 italic">
-              {"(required)"}
+              {copy.required}
             </span>
           </label>
           {campuses && campuses.length > 0 && (
@@ -162,7 +187,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
                 backgroundRepeat: "no-repeat",
               }}
             >
-              <option value={""}>Select a Campus</option>
+              <option value={""}>{copy.selectCampus}</option>
               {campuses.map(({ guid, name }, index) => (
                 <option key={index} value={guid}>
                   {name}
@@ -172,7 +197,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
           )}
         </div>
 
-        {/* Hidden decision checkbox - marked as checked */}
+        {/* Hidden decision checkbox - marked as checked (same value for backend) */}
         <input
           type="checkbox"
           name="decision"
@@ -189,7 +214,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data }) => {
             className="w-full font-normal"
             disabled={loading}
           >
-            {loading ? "Loading..." : "Submit"}
+            {loading ? copy.loading : copy.submit}
           </Button>
         </div>
       </div>

@@ -72,4 +72,25 @@ const InternshipsTestimonials = () => {
   );
 };
 
+const InternshipTabContent = ({
+  title,
+  description,
+  image,
+}: {
+  title: string;
+  description: string;
+  image: string;
+}) => {
+  return (
+    <div className="flex flex-col gap-12 pt-10 md:pt-0 md:px-6 lg:pl-10 lg:pr-[30px]">
+      <h3 className="text-2xl">{title}</h3>
+
+      <div className="flex items-center gap-7">
+        <img src={image} alt={title} className="size-12 rounded-2xl" />
+        <p>{description}</p>
+      </div>
+    </div>
+  );
+};
+
 export default InternshipsTestimonials;
