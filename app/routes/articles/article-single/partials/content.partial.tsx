@@ -19,7 +19,7 @@ export const ArticleContent = ({ htmlContent }: { htmlContent: string }) => {
 
         {/* Call to action */}
         {callToActionSectionTitle && callsToAction?.length > 0 && (
-          <div className="flex flex-col gap-4 md:flex-row w-full items-start md:items-center justify-between border-solid border-2 border-neutral-lighter bg-gray py-10 px-8 mt-10 rounded-[8px]">
+          <div className="flex flex-col gap-6 md:flex-row w-full items-start md:items-center justify-between border-solid border-2 border-neutral-lighter bg-gray py-10 px-8 mt-10 rounded-[8px]">
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-extrabold md:text-[28px] md:font-bold leading-snug my-0!">
                 {callToActionSectionTitle}
