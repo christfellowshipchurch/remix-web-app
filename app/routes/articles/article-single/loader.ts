@@ -2,10 +2,11 @@ import { type LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { AuthorProps } from "./partials/hero.partial";
 import { format } from "date-fns";
-import { CollectionItem } from "~/routes/page-builder/types";
+import { CallToAction, CollectionItem } from "~/routes/page-builder/types";
 import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
 import { getImages } from "~/lib/.server/rock-utils";
 import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
+import { parseRockKeyValueList } from "~/lib/utils";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -20,6 +21,9 @@ export type LoaderReturnType = {
   author: AuthorProps | null;
   publishDate: string;
   readTime: number;
+  callToActionSectionTitle: string;
+  callToActionSectionSubtitle: string;
+  callsToAction: CallToAction[];
   articlePrimaryCategories: string[];
   relatedArticles?: {
     tag: string;
@@ -46,7 +50,7 @@ const fetchArticleData = async (articlePath: string) => {
 
     if (rockData.length > 1) {
       console.error(
-        `More than one article was found with the same path: /articles/${articlePath}`
+        `More than one article was found with the same path: /articles/${articlePath}`,
       );
       return rockData[0];
     }
@@ -59,7 +63,7 @@ const fetchArticleData = async (articlePath: string) => {
       {
         status: 404,
         statusText: "Not Found",
-      }
+      },
     );
   }
 };
@@ -78,6 +82,17 @@ export const loader: LoaderFunction = async ({ params }) => {
   const { title, content, startDateTime, attributeValues, attributes } =
     articleData;
 
+  const callToActionSectionTitle =
+    attributeValues?.callToActionSectionTitle?.value || "";
+  const callToActionSectionSubtitle =
+    attributeValues?.callToActionSectionSubtitle?.value || "";
+  const callsToAction = parseRockKeyValueList(
+    attributeValues?.callsToAction?.value || "",
+  ).map(({ key, value }) => ({
+    title: key,
+    url: value,
+  }));
+
   const articlePrimaryCategories =
     attributeValues.primaryCategory?.valueFormatted.split(",");
   const coverImage = getImages({ attributeValues, attributes });
@@ -86,7 +101,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   let authorDetails: AuthorProps | null = null;
   if (author?.value) {
     authorDetails = (await getBasicAuthorInfoFlexible(
-      author.value
+      author.value,
     )) as AuthorProps;
   }
 
@@ -122,6 +137,9 @@ export const loader: LoaderFunction = async ({ params }) => {
     publishDate: format(new Date(startDateTime), "d MMM yyyy"),
     readTime: Math.max(1, Math.round(content.split(" ").length / 200)),
     articlePrimaryCategories,
+    callToActionSectionTitle,
+    callToActionSectionSubtitle,
+    callsToAction,
   };
 
   return pageData;
