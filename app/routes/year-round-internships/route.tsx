@@ -43,7 +43,12 @@ export default function YearLongInternshipsPage() {
         subheading="College Internship · Year-Round"
         title="Equipped for Ministry Leadership"
         subtitle="A year-round opportunity designed to equip and develop students for future ministry leadership through hands-on experience, intentional mentorship, and a supportive team environment."
-        ctas={[{ href: "#todo", text: "Apply Now" }]}
+        ctas={[
+          {
+            href: "https://job-boards.greenhouse.io/christfellowship?departments%5B%5D=4030237002",
+            text: "Apply Now",
+          },
+        ]}
         imageSrc={getImageUrl("3141716")}
         imageAlt="Year-Round Internships Hero"
       />
@@ -56,7 +61,7 @@ export default function YearLongInternshipsPage() {
       <IntenrshipFeatureSections />
       <InternshipsTestimonials />
       <InternshipsBanner />
-      <DiveIn />
+      <DiveIn ctaHref="https://job-boards.greenhouse.io/christfellowship?departments%5B%5D=4030237002" />
       <InternshipsFAQs faqs={yearLongFaqs} />
     </div>
   );

@@ -42,7 +42,7 @@ export default function SummerInternshipsPage() {
         subtitle="Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact."
         ctas={[
           {
-            href: "#todo",
+            href: "https://job-boards.greenhouse.io/christfellowship?departments%5B%5D=4030237002",
             text: "Apply Now",
           },
         ]}
@@ -59,6 +59,7 @@ export default function SummerInternshipsPage() {
       <DiveIn
         title="Ready to Dive In?"
         paragraph="Take the first step toward a transformative summer. Apply today and discover how God wants to use you in ministry."
+        ctaHref="https://job-boards.greenhouse.io/christfellowship?departments%5B%5D=4030237002"
       />
 
       <InternshipsFAQs

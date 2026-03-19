@@ -18,7 +18,10 @@ export default function InternshipsPage() {
             href: "#programs",
             text: "Explore Programs",
           },
-          { href: "#apply", text: "Apply Now" },
+          {
+            href: "https://job-boards.greenhouse.io/christfellowship?departments%5B%5D=4030237002",
+            text: "Apply Now",
+          },
         ]}
         imageSrc={getImageUrl("3141722")}
         imageAlt="Internships Hero"
