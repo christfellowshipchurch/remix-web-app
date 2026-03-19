@@ -30,13 +30,11 @@ export const ArticleContent = ({ htmlContent }: { htmlContent: string }) => {
             </div>
             <div className="flex flex-col md:flex-row gap-2">
               {callsToAction?.length > 0 &&
-                callsToAction?.map((cta, idx) => (
+                callsToAction?.slice(0, 2).map((cta, idx) => (
                   <Button
                     key={cta.url || idx}
                     className="mt-4 md:mt-0"
-                    intent={
-                      idx === callsToAction.length - 1 ? "primary" : "secondary"
-                    }
+                    intent={idx === 1 ? "primary" : "secondary"}
                     href={cta.url}
                   >
                     {cta.title}
