@@ -1,5 +1,6 @@
 import { LoaderFunction } from "react-router-dom";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { RockContentChannelItem } from "~/lib/types/rock-types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type Ministry = {
@@ -9,26 +10,17 @@ export type Ministry = {
   url: string;
 };
 
-interface MinistryData {
-  title: string;
-  content: string;
-  attributeValues?: {
-    heroImage?: { value: string };
-    pathname?: { value: string };
-  };
-}
-
 const mapMinistryChannelItems = async (
-  ministriesData: MinistryData[]
+  ministriesData: RockContentChannelItem[],
 ): Promise<Ministry[]> => {
   return ministriesData.map((ministry: MinistryData): Ministry => {
+  return ministriesData.map((ministry: RockContentChannelItem): Ministry => {
     return {
       title: ministry.title,
-      description: ministry.content,
-      image:
-        ministry.attributeValues?.heroImage?.value
-          ? createImageUrlFromGuid(ministry.attributeValues.heroImage.value)
-          : "",
+      description: ministry.attributeValues?.summary?.value || "",
+      image: ministry.attributeValues?.image?.value
+        ? createImageUrlFromGuid(ministry.attributeValues?.image?.value)
+        : "",
       url: ministry.attributeValues?.pathname?.value || "",
     };
   });
