@@ -13,7 +13,6 @@ export type Ministry = {
 const mapMinistryChannelItems = async (
   ministriesData: RockContentChannelItem[],
 ): Promise<Ministry[]> => {
-  return ministriesData.map((ministry: MinistryData): Ministry => {
   return ministriesData.map((ministry: RockContentChannelItem): Ministry => {
     return {
       title: ministry.title,
