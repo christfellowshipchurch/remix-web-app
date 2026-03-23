@@ -17,10 +17,10 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      '"The CF Internship taught me not only how to do ministry, but what excellence in ministry truly looks like. I learned both the technical side of production and the pastoral heart behind it, through the incredible leadership training and hands-on opportunities within the intern program."',
-    name: "Julz Bracco",
+      '"The internship at Christ fellowship stretched me! I grew so much in my personal skills and my spiritual disciplines! I also found Godly community who were in the same season of life I was in!"',
+    name: "Johnny Victorino",
     ministry: "Production Ministry",
-    imageSrc: getImageUrl("2872501"),
+    imageSrc: getImageUrl("3032580"),
   },
 ];
 
@@ -69,27 +69,6 @@ const InternshipsTestimonials = () => {
         </div>
       </div>
     </section>
-  );
-};
-
-const InternshipTabContent = ({
-  title,
-  description,
-  image,
-}: {
-  title: string;
-  description: string;
-  image: string;
-}) => {
-  return (
-    <div className="flex flex-col gap-12 pt-10 md:pt-0 md:px-6 lg:pl-10 lg:pr-[30px]">
-      <h3 className="text-2xl">{title}</h3>
-
-      <div className="flex items-center gap-7">
-        <img src={image} alt={title} className="size-12 rounded-2xl" />
-        <p>{description}</p>
-      </div>
-    </div>
   );
 };
 

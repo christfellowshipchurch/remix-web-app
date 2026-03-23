@@ -8,23 +8,23 @@ const IntenrshipFeatureSections = () => {
         <InternshipFeatureSection
           title="Mentorship"
           description="Work closely with experienced leaders who will guide and invest in your personal growth."
-          images={[getImageUrl("3141723")]}
+          images={[getImageUrl("3149958")]}
         />
         <InternshipFeatureSection
           title="Community"
           description="Build lasting relationships with other interns and become part of a supportive community."
-          images={[getImageUrl("3141717"), getImageUrl("3141718")]}
+          images={[getImageUrl("3149953"), getImageUrl("3149952")]}
           imageRight={true}
         />
         <InternshipFeatureSection
           title="Practical Experience"
           description="Apply your skills in a dynamic environment and make a real impact from day one."
-          images={[getImageUrl("3141724"), getImageUrl("3141725")]}
+          images={[getImageUrl("3149950"), getImageUrl("3141725")]}
         />
         <InternshipFeatureSection
           title="Leadership Development"
           description="Gain hands-on experience in leadership and team management through real-world projects."
-          images={[getImageUrl("3141719")]}
+          images={[getImageUrl("3149957")]}
           imageRight={true}
         />
       </div>

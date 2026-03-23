@@ -40,7 +40,7 @@ const DiveIn = ({
           <img
             src={getImageUrl("3141720")}
             alt="Dive In"
-            className="w-full md:max-w-[50%] md:min-h-[320px] object-cover object-center rounded-[1rem]"
+            className="w-full md:max-w-[50%] md:min-h-[320px] object-cover object-center rounded-2xl"
           />
         </div>
       </div>

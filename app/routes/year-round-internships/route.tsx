@@ -49,7 +49,7 @@ export default function YearLongInternshipsPage() {
             text: "Apply Now",
           },
         ]}
-        imageSrc={getImageUrl("3141716")}
+        imageSrc={getImageUrl("3149956")}
         imageAlt="Year-Round Internships Hero"
       />
       <InternshipsAbout

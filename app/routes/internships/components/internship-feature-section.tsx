@@ -33,7 +33,9 @@ const InternshipFeatureSection = ({
           <img
             src={image}
             alt="Internship Feature Section"
-            className={cn("flex-1 w-full object-cover bg-center rounded-xl")}
+            className={cn(
+              "flex-1 w-full h-full object-cover bg-center rounded-xl",
+            )}
           />
         ))}
       </div>

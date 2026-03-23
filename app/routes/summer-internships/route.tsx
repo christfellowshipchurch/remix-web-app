@@ -46,7 +46,7 @@ export default function SummerInternshipsPage() {
             text: "Apply Now",
           },
         ]}
-        imageSrc={getImageUrl("3141721")}
+        imageSrc={getImageUrl("3149952")}
         imageAlt="Summer Internship"
       />
       <InternshipsAbout

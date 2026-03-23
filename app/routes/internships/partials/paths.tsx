@@ -27,7 +27,7 @@ const Paths = () => {
           <PathsItem
             title="Summer Internships"
             description="Experience a summer like never before! Designed for college-aged young adults passionate about ministry, this hands-on experience invites you to dive into the life of our church while making a real Kingdom impact."
-            imageSrc={getImageUrl("3141721")}
+            imageSrc={getImageUrl("3149952")}
             duration="12-Week Program"
             pills={["Mid-May – Mid-August", "Full-Time", "Stipend"]}
             ctaLink="/summer-internships"
@@ -35,7 +35,7 @@ const Paths = () => {
           <PathsItem
             title="College Internships"
             description="A year-round opportunity designed to equip and develop students for future ministry leadership. Grow personally, professionally, and spiritually while learning from experienced leaders."
-            imageSrc={getImageUrl("3141716")}
+            imageSrc={getImageUrl("3149959")}
             duration="12-Week Program"
             pills={["August – August", "Part-Time · 25 hrs/wk", "Hourly Wage"]}
             ctaLink="/year-round-internships"
