@@ -3,6 +3,38 @@ import Redis from "ioredis";
 let redis: Redis | null;
 
 try {
+  const redisUrlEnv = process.env.REDIS_URL;
+  const isUrlConnectionString =
+    typeof redisUrlEnv === "string" &&
+    (redisUrlEnv.startsWith("redis://") ||
+      redisUrlEnv.startsWith("rediss://"));
+  // #region agent log
+  fetch(
+    "http://127.0.0.1:7517/ingest/d70a88e1-509d-4303-ae4f-9cfd513bea71",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-Session-Id": "df7844",
+      },
+      body: JSON.stringify({
+        sessionId: "df7844",
+        hypothesisId: "A",
+        location: "redis-config.ts:pre-connect",
+        message: "Redis env interpretation (Vercel uses full URL string)",
+        data: {
+          hasRedisUrl: Boolean(redisUrlEnv),
+          isUrlConnectionString,
+          redisPortSet: Boolean(process.env.REDIS_PORT),
+          nodeEnv: process.env.NODE_ENV ?? null,
+          tlsOptionInUse: process.env.NODE_ENV === "production",
+        },
+        timestamp: Date.now(),
+      }),
+    }
+  ).catch(() => {});
+  // #endregion
+
   redis = new Redis({
     host: process.env.REDIS_URL || "127.0.0.1",
     port: Number(process.env.REDIS_PORT) || 6379,
