@@ -8,43 +8,26 @@ try {
     typeof redisUrlEnv === "string" &&
     (redisUrlEnv.startsWith("redis://") ||
       redisUrlEnv.startsWith("rediss://"));
-  // #region agent log
-  fetch(
-    "http://127.0.0.1:7517/ingest/d70a88e1-509d-4303-ae4f-9cfd513bea71",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Debug-Session-Id": "df7844",
-      },
-      body: JSON.stringify({
-        sessionId: "df7844",
-        hypothesisId: "A",
-        location: "redis-config.ts:pre-connect",
-        message: "Redis env interpretation (Vercel uses full URL string)",
-        data: {
-          hasRedisUrl: Boolean(redisUrlEnv),
-          isUrlConnectionString,
-          redisPortSet: Boolean(process.env.REDIS_PORT),
-          nodeEnv: process.env.NODE_ENV ?? null,
-          tlsOptionInUse: process.env.NODE_ENV === "production",
-        },
-        timestamp: Date.now(),
-      }),
-    }
-  ).catch(() => {});
-  // #endregion
 
-  redis = new Redis({
-    host: process.env.REDIS_URL || "127.0.0.1",
-    port: Number(process.env.REDIS_PORT) || 6379,
-    tls: process.env.NODE_ENV === "production" ? {} : undefined,
+  const connectOptions = {
     connectTimeout: 10000, // Increase timeout for AWS connections
-    retryStrategy: (times) => {
+    retryStrategy: (times: number) => {
       const delay = Math.min(times * 200, 2000);
       return times >= 3 ? null : delay; // Retry 3 times with increasing delay
     },
-  });
+  };
+
+  // Vercel Redis provides REDIS_URL as redis(s):// — pass it to ioredis as a URL, not as `host`.
+  if (isUrlConnectionString && redisUrlEnv) {
+    redis = new Redis(redisUrlEnv, connectOptions);
+  } else {
+    redis = new Redis({
+      host: redisUrlEnv || "127.0.0.1",
+      port: Number(process.env.REDIS_PORT) || 6379,
+      tls: process.env.NODE_ENV === "production" ? {} : undefined,
+      ...connectOptions,
+    });
+  }
 
   redis.on("connect", () => {
     // eslint-disable-next-line no-console
@@ -55,7 +38,11 @@ try {
     console.error("Redis connection error details:", {
       code: error.code,
       message: error.message,
-      host: process.env.REDIS_URL || "127.0.0.1",
+      connectionMode: isUrlConnectionString ? "url" : "host",
+      host:
+        isUrlConnectionString && redisUrlEnv
+          ? "(REDIS_URL)"
+          : redisUrlEnv || "127.0.0.1",
       port: Number(process.env.REDIS_PORT) || 6379,
       environment: process.env.NODE_ENV,
       stack: error.stack,

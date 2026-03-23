@@ -185,44 +185,10 @@ export const fetchRockData = async ({
 
     // Try to cache the response if Redis is available and caching is enabled
     if (redis && cache) {
-      let serializedForCache: string | undefined;
       try {
-        serializedForCache = JSON.stringify(data);
-        await redis.set(cacheKey, serializedForCache, "EX", 3600);
-      } catch (setErr) {
-        const err = setErr as Error & { code?: string };
-        // #region agent log
-        fetch(
-          "http://127.0.0.1:7517/ingest/d70a88e1-509d-4303-ae4f-9cfd513bea71",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Debug-Session-Id": "df7844",
-            },
-            body: JSON.stringify({
-              sessionId: "df7844",
-              hypothesisId: "B",
-              location: "fetch-rock-data.ts:redis.set",
-              message: "Redis SET threw (cache storage path)",
-              data: {
-                errName: err?.name,
-                errMessage: err?.message,
-                errCode: err?.code,
-                cacheKeyLength: cacheKey.length,
-                serializedLength: serializedForCache?.length ?? 0,
-              },
-              timestamp: Date.now(),
-            }),
-          }
-        ).catch(() => {});
-        // #endregion
-        console.error("⚠️ Redis cache storage failed", {
-          message: err?.message,
-          code: err?.code,
-          cacheKeyLength: cacheKey.length,
-          serializedLength: serializedForCache?.length ?? 0,
-        });
+        await redis.set(cacheKey, JSON.stringify(data), "EX", 3600);
+      } catch {
+        console.error("⚠️ Redis cache storage failed");
       }
     }
 
