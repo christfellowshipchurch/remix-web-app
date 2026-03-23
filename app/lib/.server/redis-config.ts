@@ -4,7 +4,7 @@ let redis: Redis | null;
 
 try {
   redis = new Redis({
-    host: process.env.REDIS_HOST || "127.0.0.1",
+    host: process.env.REDIS_URL || "127.0.0.1",
     port: Number(process.env.REDIS_PORT) || 6379,
     tls: process.env.NODE_ENV === "production" ? {} : undefined,
     connectTimeout: 10000, // Increase timeout for AWS connections
@@ -23,7 +23,7 @@ try {
     console.error("Redis connection error details:", {
       code: error.code,
       message: error.message,
-      host: process.env.REDIS_HOST || "127.0.0.1",
+      host: process.env.REDIS_URL || "127.0.0.1",
       port: Number(process.env.REDIS_PORT) || 6379,
       environment: process.env.NODE_ENV,
       stack: error.stack,
