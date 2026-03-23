@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Link } from "react-router";
 import { getImageUrl } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
@@ -61,15 +62,17 @@ const PathsItem = ({
   pills: string[];
   ctaLink: string;
 }) => {
+  const headingId = useId();
+
   return (
-    <div className="flex flex-col items-center justify-center w-full rounded-[20px] overflow-hidden shadow-lg">
+    <Link
+      to={ctaLink}
+      aria-labelledby={headingId}
+      className="flex flex-col items-center justify-center w-full rounded-[20px] overflow-hidden shadow-lg text-left no-underline text-inherit transition-transform duration-300 ease-in-out hover:-translate-y-[5px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2"
+    >
       <div className="h-auto max-h-[240px] md:max-h-[360px] lg:max-h-[280px] w-full object-cover relative bg-center">
-        <img
-          src={imageSrc}
-          alt={title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/40 to-transparent" />
+        <img src={imageSrc} alt="" className="w-full h-full object-cover" />
+        <div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-black/40 to-transparent" />
 
         {duration && (
           <p className="absolute bottom-0 left-0 text-white bg-ocean text-sm text-bold ml-4 mb-4 py-1 px-3 rounded-[16777200px]">
@@ -79,7 +82,10 @@ const PathsItem = ({
       </div>
 
       <div className="flex flex-col gap-4 w-full bg-white p-4 md:p-8">
-        <h3 className="text-[24px] md:text-[32px] font-bold leading-[1.05] text-dark-navy">
+        <h3
+          id={headingId}
+          className="text-[24px] md:text-[32px] font-bold leading-[1.05] text-dark-navy"
+        >
           {title}
         </h3>
 
@@ -98,15 +104,12 @@ const PathsItem = ({
           ))}
         </div>
 
-        <Link
-          to={ctaLink}
-          className="flex items-center gap-2 text-ocean font-semibold text-[15px]"
-        >
+        <div className="flex items-center gap-2 text-ocean font-semibold text-[15px]">
           <span>Learn More</span>
           <Icon name="arrowRight" className="size-4 text-ocean" />
-        </Link>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
