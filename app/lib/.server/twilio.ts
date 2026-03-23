@@ -1,17 +1,29 @@
 import twilio from "twilio";
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const fromNumber = process.env.TWILIO_FROM_NUMBER;
+type TwilioClient = ReturnType<typeof twilio>;
 
-if (!accountSid || !authToken || !fromNumber) {
-  throw new Error("Missing required Twilio environment variables.");
+let client: TwilioClient | null = null;
+
+function getClient(): TwilioClient {
+  if (client) {
+    return client;
+  }
+
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  if (!accountSid || !authToken) {
+    throw new Error("Missing required Twilio environment variables.");
+  }
+  client = twilio(accountSid, authToken);
+  return client;
 }
 
-const client = twilio(accountSid, authToken);
-
 export function sendSms({ body, to }: { body: string; to: string }) {
-  return client.messages.create({
+  const fromNumber = process.env.TWILIO_FROM_NUMBER;
+  if (!fromNumber) {
+    throw new Error("Missing TWILIO_FROM_NUMBER environment variable.");
+  }
+  return getClient().messages.create({
     body,
     from: fromNumber,
     to,
