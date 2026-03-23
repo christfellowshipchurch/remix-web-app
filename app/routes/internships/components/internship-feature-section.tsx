@@ -2,36 +2,45 @@ import { cn } from "~/lib/utils";
 
 const InternshipFeatureSection = ({
   imageRight = false,
-  alignRight,
   title = "",
   description = "",
-  image = "",
+  images = [],
 }: {
   imageRight?: boolean;
-  alignRight?: boolean;
   title?: string;
   description?: string;
-  image?: string;
-  imageAlt?: string;
+  images?: string[];
 }) => {
   return (
     <section
       className={cn(
-        "flex flex-col items-center justify-center md:flex-row bg-ocean-subdued rounded-[20px] px-4 pt-6 pb-10 md:p-6 lg:p-12 mb-4 md:my-5 gap-18 max-w-[1044px]",
+        "w-full flex flex-col items-center md:flex-row gap-4 md:gap-8 lg:gap-12 xl:gap-16",
         {
           "md:flex-row-reverse": imageRight,
-          "lg:ml-auto": alignRight,
-          "lg:mr-auto": !alignRight,
+        },
+        {
+          "md:justify-between": !imageRight,
         },
       )}
     >
-      <img
-        src={image}
-        alt="Internship Feature Section"
-        className="w-full md:max-w-[301px] lg:max-w-[435px] object-cover rounded-xl"
-      />
+      <div
+        className={cn(
+          "grid grid-cols-1 items-center gap-3 w-full md:max-w-[524px]",
+          images.length > 1 && "md:grid-cols-2",
+        )}
+      >
+        {images.map((image) => (
+          <img
+            src={image}
+            alt="Internship Feature Section"
+            className={cn(
+              "flex-1 w-full h-full object-cover bg-center rounded-xl",
+            )}
+          />
+        ))}
+      </div>
 
-      <div className="flex flex-col gap-6 md:gap-10">
+      <div className="flex flex-col gap-6 md:gap-10 w-full max-w-[528px]">
         <h2 className="text-dark-navy font-semibold text-[40px] leading-[1.05]">
           {title}
         </h2>

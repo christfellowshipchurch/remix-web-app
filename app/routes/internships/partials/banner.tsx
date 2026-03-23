@@ -1,8 +1,10 @@
+import { getImageUrl } from "~/lib/utils";
+
 const InternshipsBanner = () => {
   return (
     <img
-      className="w-full h-auto xl:min-h-[600px] md:max-h-[80svh] lg:max-h-[75svh] object-cover"
-      src="/assets/images/internships/banner.webp"
+      className="w-full h-auto md:max-h-[600px] object-cover"
+      src={getImageUrl("3149956")}
       alt="Internships Banner"
     />
   );
