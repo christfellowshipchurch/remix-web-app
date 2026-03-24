@@ -31,8 +31,7 @@ export const MobileHeroSection = () => {
           className="w-full h-full object-cover absolute inset-0 z-1"
           loading="eager"
           decoding="async"
-          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
-          fetchpriority="high"
+          fetchPriority="high"
         />
         {showVideo ? (
           <iframe

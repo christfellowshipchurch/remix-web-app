@@ -29,8 +29,7 @@ export function DesktopHeroSection() {
           height={839}
           loading="eager"
           decoding="async"
-          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
-          fetchpriority="high"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
         <div className="flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
@@ -51,8 +50,7 @@ export function DesktopHeroSection() {
               className="w-full h-full object-cover absolute inset-0 z-0"
               loading="eager"
               decoding="async"
-              // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
-              fetchpriority="high"
+              fetchPriority="high"
             />
             {showVideo ? (
               <iframe

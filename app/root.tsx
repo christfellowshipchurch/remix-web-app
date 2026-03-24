@@ -15,8 +15,13 @@ import "./styles/tailwind.css";
 import { loader } from "./routes/navbar/loader";
 import { NavbarVisibilityProvider } from "./providers/navbar-visibility-context";
 import { DeferredGtm } from "./components/deferred-gtm";
+import { setupDevWebVitalsLogging } from "~/lib/dev-web-vitals";
 
 export { ErrorBoundary } from "./error";
+
+// Runs only in the browser (setup no-ops without window). Avoid import.meta.env.SSR here—
+// client bundles can still evaluate oddly; window check inside setup is authoritative.
+setupDevWebVitalsLogging();
 
 export { loader }; // root loader currently being used for the navbar data
 
@@ -49,7 +54,8 @@ export function Layout({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      {/* suppressHydrationWarning: extensions (e.g. ColorZilla) inject attrs like cz-shortcut-listen on <body> */}
+      <body suppressHydrationWarning>
         {/* GTM Noscript (Fallback) */}
         {gtmId && (
           <noscript>
