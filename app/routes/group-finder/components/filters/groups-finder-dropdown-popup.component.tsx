@@ -26,6 +26,7 @@ export const GroupsFinderDropdwnPopup = ({
       checkbox?: boolean;
       checkboxLayout?: "vertical" | "horizontal";
       isAgeRange?: boolean;
+      isDropdown?: boolean;
       isLocation?: boolean;
       isMeetingType?: boolean;
       isMeetingDays?: boolean;
@@ -56,7 +57,7 @@ export const GroupsFinderDropdwnPopup = ({
       className={cn(
         "cursor-default absolute top-[65px] right-1/2 translate-x-1/2 z-4",
         "w-[330px] xl:w-[380px] flex flex-col gap-4 bg-white",
-        "rounded-[1rem] border border-neutral-lighter overflow-hidden",
+        "rounded-2xl border border-neutral-lighter overflow-hidden",
         showSection
           ? "z-4 opacity-100"
           : "-left-[9999px] -z-1 opacity-0 pointer-events-none",
@@ -70,7 +71,7 @@ export const GroupsFinderDropdwnPopup = ({
     >
       <div className="flex items-center justify-between p-4 pb-1">
         <h3 className="text-xl font-bold text-black">{popupTitle}</h3>
-        <div className="!cursor-pointer" onClick={() => onHide()}>
+        <div className="cursor-pointer!" onClick={() => onHide()}>
           <Icon name="x" color="black" />
         </div>
       </div>
@@ -112,6 +113,7 @@ const GroupsFinderDropdownPopupList = ({
     input?: boolean;
     inputPlaceholder?: string;
     isAgeRange?: boolean;
+    isDropdown?: boolean;
     isLocation?: boolean;
     isMeetingDays?: boolean;
     isMeetingType?: boolean;
@@ -182,6 +184,20 @@ const GroupsFinderDropdownPopupList = ({
 
   const filteredItems = getFilteredItems();
 
+  const sortedForDropdown = data.isDropdown
+    ? [...filteredItems].sort((a, b) => a.label.localeCompare(b.label))
+    : filteredItems;
+
+  const dropdownSelectValue =
+    sortedForDropdown.find((item) => item.isRefined)?.value ?? "";
+
+  const applyDropdownSelection = (value: string) => {
+    sortedForDropdown.forEach((item) => {
+      if (item.isRefined) refine(item.value);
+    });
+    if (value) refine(value);
+  };
+
   // Sync local age input with parent
   useEffect(() => {
     if (ageInput !== undefined) {
@@ -215,112 +231,156 @@ const GroupsFinderDropdownPopupList = ({
 
   return (
     <>
-      <div
-        className={cn(
-          "flex bg-white",
-          data.checkbox && data.checkboxLayout === "vertical"
-            ? "gap-4 flex-col"
-            : "flex-wrap gap-y-2 gap-x-2",
-        )}
-      >
-        {data.isLocation ? (
-          <FinderLocationSearch
-            coordinates={data.coordinates || null}
-            setCoordinates={data.setCoordinates || (() => {})}
-          />
-        ) : (
-          <>
-            {data.input ? (
-              <input
-                type="number"
-                placeholder={data.inputPlaceholder || "Enter your age"}
-                className={styles.input}
-                value={localAgeInput}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setLocalAgeInput(value);
-                  if (setAgeInput) {
-                    setAgeInput(value);
-                  }
-                }}
-                onClick={(e) => e.stopPropagation()}
-                min="13"
-                max="120"
-              />
-            ) : (
-              <>
-                {filteredItems.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={cn(
-                        data.checkboxLayout === "horizontal" &&
-                          "flex w-fit gap-x-2 pr-2",
-                      )}
-                    >
-                      {data.checkbox ? (
-                        <div
-                          className="flex items-center gap-2 w-fit !cursor-pointer"
-                          onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                            e.stopPropagation();
-                            refine(item.value);
-                          }}
-                        >
+      {!data.isDropdown && (
+        <div
+          className={cn(
+            "flex bg-white",
+            data.checkbox && data.checkboxLayout === "vertical"
+              ? "gap-4 flex-col"
+              : "flex-wrap gap-y-2 gap-x-2",
+          )}
+        >
+          {data.isLocation ? (
+            <FinderLocationSearch
+              coordinates={data.coordinates || null}
+              setCoordinates={data.setCoordinates || (() => {})}
+            />
+          ) : (
+            <>
+              {data.input ? (
+                <input
+                  type="number"
+                  placeholder={data.inputPlaceholder || "Enter your age"}
+                  className={styles.input}
+                  value={localAgeInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setLocalAgeInput(value);
+                    if (setAgeInput) {
+                      setAgeInput(value);
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  min="13"
+                  max="120"
+                />
+              ) : (
+                <>
+                  {filteredItems.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={cn(
+                          data.checkboxLayout === "horizontal" &&
+                            "flex w-fit gap-x-2 pr-2",
+                        )}
+                      >
+                        {data.checkbox ? (
                           <div
-                            className={cn(
-                              "w-4 h-4 border border-ocean rounded-sm bg-ocean-subdued hover:bg-ocean transition-all duration-300",
-                              item.isRefined && "bg-ocean",
-                            )}
-                          />
-                          <div className={styles.checkbox}>
-                            {data.attribute === "adultOnly"
-                              ? item.value === "false"
-                                ? "Children Welcome"
-                                : "Adult Only"
-                              : item.label}
-                          </div>
-                        </div>
-                      ) : (
-                        <Button
-                          key={index}
-                          intent="secondary"
-                          className={cn(
-                            styles.button,
-                            data.isMeetingType && styles.meetingTypeButton,
-                            item.isRefined && styles.buttonRefined,
-                          )}
-                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                            e.stopPropagation();
-                            refine(item.value);
-                          }}
-                        >
-                          {data.isMeetingType && (
-                            <Icon
-                              name={item.label === "Virtual" ? "globe" : "map"}
-                              size={18}
+                            className="flex items-center gap-2 w-fit cursor-pointer!"
+                            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                              e.stopPropagation();
+                              refine(item.value);
+                            }}
+                          >
+                            <div
+                              className={cn(
+                                "w-4 h-4 border border-ocean rounded-sm bg-ocean-subdued hover:bg-ocean transition-all duration-300",
+                                item.isRefined && "bg-ocean",
+                              )}
                             />
-                          )}
-                          {data.isMeetingDays
-                            ? item.label === "Thursday"
-                              ? "Thur"
-                              : item.label.substring(0, 3)
-                            : item.label}
-                        </Button>
-                      )}
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </>
-        )}
-      </div>
+                            <div className={styles.checkbox}>
+                              {data.attribute === "adultOnly"
+                                ? item.value === "false"
+                                  ? "Children Welcome"
+                                  : "Adult Only"
+                                : item.label}
+                            </div>
+                          </div>
+                        ) : (
+                          <Button
+                            key={index}
+                            intent="secondary"
+                            className={cn(
+                              styles.button,
+                              data.isMeetingType && styles.meetingTypeButton,
+                              item.isRefined && styles.buttonRefined,
+                            )}
+                            onClick={(
+                              e: React.MouseEvent<HTMLButtonElement>,
+                            ) => {
+                              e.stopPropagation();
+                              refine(item.value);
+                            }}
+                          >
+                            {data.isMeetingType && (
+                              <Icon
+                                name={
+                                  item.label === "Virtual" ? "globe" : "map"
+                                }
+                                size={18}
+                              />
+                            )}
+                            {data.isMeetingDays
+                              ? item.label === "Thursday"
+                                ? "Thur"
+                                : item.label.substring(0, 3)
+                              : item.label}
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {data.isDropdown && (
+        <div className="flex flex-col gap-2 w-full">
+          <div className="relative w-full">
+            <select
+              value={dropdownSelectValue}
+              onChange={(e) => applyDropdownSelection(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className={cn(
+                "flex items-center justify-between w-full rounded-lg p-3",
+                "border border-black text-neutral-default bg-white",
+                "focus:outline-none focus:ring-2 focus:ring-transparent",
+                "appearance-none cursor-pointer",
+              )}
+              aria-label={
+                popupTitle
+                  ? `Select ${popupTitle.toLowerCase()}`
+                  : "Select filter"
+              }
+            >
+              <option value="">Select</option>
+              {sortedForDropdown.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+            <div
+              className={cn(
+                "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
+              )}
+            >
+              <Icon name="chevronDown" size={18} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer Buttons */}
       {data.showFooter && (
         <div className="mt-5 flex justify-end items-center gap-4 p-2 pt-4 border-t border-neutral-lighter">
           <div
-            className="text-black !cursor-pointer hover:text-text-secondary transition-all duration-300"
+            className="text-black cursor-pointer! hover:text-text-secondary transition-all duration-300"
             onClick={() => reset()}
           >
             Cancel

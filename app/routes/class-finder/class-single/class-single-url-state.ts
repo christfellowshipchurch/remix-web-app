@@ -7,11 +7,8 @@ export const CLASS_SINGLE_PARAMS = {
 
 export type ClassSingleUrlState = AlgoliaUrlStateBase;
 
-const REFINEMENT_LIST_ATTRIBUTES = [
-  "campus.name",
-  "format",
-  "language",
-] as const;
+/** Repeated `campus` query params ↔ InstantSearch `refinementList.campus`. */
+const REFINEMENT_LIST_ATTRIBUTES = ["campus", "format", "language"] as const;
 
 const {
   parse: parseClassSingleUrlState,

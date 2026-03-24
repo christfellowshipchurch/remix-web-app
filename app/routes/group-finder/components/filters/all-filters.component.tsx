@@ -1,5 +1,12 @@
 import { useState } from "react";
 import { useInstantSearch } from "react-instantsearch";
+import { useSearchParams } from "react-router-dom";
+
+import { hasInstantSearchIndexUiActiveFilters } from "~/lib/algolia-active-filters";
+import {
+  parseGroupFinderUrlState,
+  hasGroupFinderNonInstantSearchFilters,
+} from "../../group-finder-url-state";
 import { AllFiltersFilterSection } from "./filter-section.component";
 import { FiltersHeader } from "./filters-header.component";
 import { FiltersFooter } from "./filters-footer.component";
@@ -23,7 +30,7 @@ export const AllGroupFiltersPopup = ({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null
+    } | null,
   ) => void;
   onClearAllToUrl?: () => void;
 }) => {
@@ -37,7 +44,16 @@ export const AllGroupFiltersPopup = ({
   const [showLanguage, setShowLanguage] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
 
-  const { setIndexUiState } = useInstantSearch();
+  const [searchParams] = useSearchParams();
+  const { setIndexUiState, indexUiState } = useInstantSearch();
+
+  const clearAllDisabled = !(
+    hasInstantSearchIndexUiActiveFilters(indexUiState) ||
+    hasGroupFinderNonInstantSearchFilters(
+      parseGroupFinderUrlState(searchParams),
+      coordinates,
+    )
+  );
 
   const clearAllRefinements = () => {
     onClearAllToUrl?.();
@@ -61,7 +77,7 @@ export const AllGroupFiltersPopup = ({
 
   return (
     <div className="bg-white flex flex-col shadow-md w-full h-auto min-h-0 max-h-[85vh] md:max-h-none overflow-hidden">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <FiltersHeader onHide={onHide} />
       </div>
 
@@ -134,7 +150,11 @@ export const AllGroupFiltersPopup = ({
       </div>
 
       <div className="flex-shrink-0">
-        <FiltersFooter onHide={onHide} onClearAll={clearAllRefinements} />
+        <FiltersFooter
+          onHide={onHide}
+          onClearAll={clearAllRefinements}
+          clearAllDisabled={clearAllDisabled}
+        />
       </div>
     </div>
   );

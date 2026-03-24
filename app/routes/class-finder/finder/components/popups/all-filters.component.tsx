@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useInstantSearch } from "react-instantsearch";
+
+import { hasInstantSearchIndexUiActiveFilters } from "~/lib/algolia-active-filters";
 import { AllFiltersFilterSection } from "~/routes/group-finder/components/filters/filter-section.component";
 import { FiltersHeader } from "~/routes/group-finder/components/filters/filters-header.component";
 import { FiltersFooter } from "~/routes/group-finder/components/filters/filters-footer.component";
@@ -16,7 +18,10 @@ export const AllClassFiltersPopup = ({
   const [showTopics, setShowTopics] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
 
-  const { setIndexUiState } = useInstantSearch();
+  const { setIndexUiState, indexUiState } = useInstantSearch();
+
+  const clearAllDisabled =
+    !hasInstantSearchIndexUiActiveFilters(indexUiState);
 
   const clearAllRefinements = () => {
     setIndexUiState((state) => ({
@@ -57,7 +62,11 @@ export const AllClassFiltersPopup = ({
       </div>
 
       <div className="flex-shrink-0">
-        <FiltersFooter onHide={onHide} onClearAll={clearAllRefinements} />
+        <FiltersFooter
+          onHide={onHide}
+          onClearAll={clearAllRefinements}
+          clearAllDisabled={clearAllDisabled}
+        />
       </div>
     </div>
   );

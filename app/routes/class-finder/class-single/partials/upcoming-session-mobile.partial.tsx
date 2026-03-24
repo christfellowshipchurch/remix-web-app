@@ -58,9 +58,14 @@ export function UpcomingSessionMobileSection() {
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [instantSearchKey, setInstantSearchKey] = useState(0);
+  const [coordinates, setCoordinates] = useState<{
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
 
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
+    setCoordinates(null);
     setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
       replace: true,
       preventScrollReset: true,
@@ -90,13 +95,13 @@ export function UpcomingSessionMobileSection() {
     instantSearchKey > 0
       ? { [INDEX_NAME]: {} }
       : Object.keys(initial.initialUiState).length > 0
-      ? initial.initialUiState
-      : undefined;
+        ? initial.initialUiState
+        : undefined;
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   return (
@@ -127,7 +132,7 @@ export function UpcomingSessionMobileSection() {
         >
           <ResponsiveClassesSingleConfigure
             classUrl={classUrl}
-            selectedLocation={null}
+            coordinates={coordinates}
           />
           <div className="flex flex-col">
             <div className="bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
@@ -144,10 +149,10 @@ export function UpcomingSessionMobileSection() {
 
               <div
                 className={cn(
-                  "absolute transition-all duration-300",
+                  "absolute transition-all duration-300 w-full",
                   isMobileOpen
                     ? "z-4 opacity-100 top-[calc(99%)]"
-                    : "-z-1 opacity-0 pointer-events-none"
+                    : "-z-1 opacity-0 pointer-events-none",
                 )}
               >
                 <AllClassFiltersPopup

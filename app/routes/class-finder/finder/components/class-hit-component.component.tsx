@@ -12,11 +12,12 @@ export function ClassHitComponent({
   hit: ClassHitType;
   fromClassFinderUrl?: string;
 }) {
+  const campusLabel = hit.campus?.trim() ?? "";
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
 
   return (
     <Link
-      to={`/class-finder/${hit.classTypeUrl || hit.title}`}
+      to={`/class-finder/${encodeURIComponent(hit.classType || hit.title)}`}
       state={
         fromClassFinderUrl ? { fromClassFinder: fromClassFinderUrl } : undefined
       }
@@ -42,9 +43,11 @@ export function ClassHitComponent({
               <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
                 {hit.topic}
               </p>
-              <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
-                {hit.campus.name}
-              </p>
+              {campusLabel ? (
+                <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
+                  {campusLabel}
+                </p>
+              ) : null}
             </div>
 
             {/* Description Info */}

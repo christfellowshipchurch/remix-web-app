@@ -3,6 +3,7 @@ import { Icon } from "~/primitives/icon/icon";
 import { ClassHitType } from "../../../types";
 
 export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
+  const campusLabel = hit.campus?.trim() ?? "";
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const { schedule, startDate, endDate, format, topic, language, title } = hit;
 
@@ -17,7 +18,7 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
 
   return (
     <div
-      className="mb-4 bg-whi  te rounded-lg overflow-hidden flex w-full h-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
+      className="mb-4 bg-white rounded-lg overflow-hidden flex w-full h-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
       style={{
         boxShadow:
           "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -36,7 +37,7 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
             <div className="flex flex-wrap gap-[6px]">
               <p
                 className={`${
-                  format === "Online" ? "bg-ocean text-white" : "bg-[#EBEBEB]"
+                  format === "Virtual" ? "bg-ocean text-white" : "bg-[#EBEBEB]"
                 } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
               >
                 {format}
@@ -55,7 +56,7 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
                 {/* Campus */}
                 <div className="flex items-center gap-2">
                   <Icon name="map" size={20} color="black" />
-                  <p className="text-sm font-semibold">{hit.campus.name}</p>
+                  <p className="text-sm font-semibold">{campusLabel}</p>
                 </div>
 
                 {/* Meeting Day - Update */}
