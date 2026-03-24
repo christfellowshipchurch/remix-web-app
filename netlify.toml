@@ -9,3 +9,14 @@ NPM_FLAGS = "--no-optional"
 
 [dev]
 command = "pnpm dev"
+
+# Long-lived caching for hashed Vite assets and static marketing images
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

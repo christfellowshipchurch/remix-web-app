@@ -1,9 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LocationSearch } from "../location-search/location-search.component";
 import { DesktopFeaturedItems } from "./desktop-features.component";
 
+const WISTIA_EMBED =
+  "https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover";
+
 export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setShowVideo(true);
+    }, 2000);
+    return () => clearTimeout(id);
+  }, []);
 
   return (
     <section className="h-screen w-full bg-white pb-16 mt-[-26px] hidden lg:block relative z-30">
@@ -13,8 +24,11 @@ export function DesktopHeroSection() {
         <img
           className="absolute inset-0 w-1/2 h-full object-cover object-left z-0"
           src="/assets/images/home/home-hero-bg.webp"
-          alt="Hero Background"
+          alt=""
+          width={1280}
+          height={839}
           loading="eager"
+          decoding="async"
           // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
           fetchpriority="high"
         />
@@ -31,16 +45,23 @@ export function DesktopHeroSection() {
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             <img
               src="/assets/images/home/bg-vid.webp"
-              alt="Hero Background"
+              alt=""
+              width={845}
+              height={479}
               className="w-full h-full object-cover absolute inset-0 z-0"
               loading="eager"
+              decoding="async"
               // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
               fetchpriority="high"
             />
-            <iframe
-              src={`https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover`}
-              className="w-full h-full absolute inset-0 z-2 pointer-events-none"
-            />
+            {showVideo ? (
+              <iframe
+                title="Welcome video"
+                src={WISTIA_EMBED}
+                className="w-full h-full absolute inset-0 z-2 pointer-events-none border-0"
+                allow="autoplay; fullscreen"
+              />
+            ) : null}
           </div>
         </div>
       </div>

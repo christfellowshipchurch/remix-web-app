@@ -58,7 +58,7 @@ export function ImageScrollLayout() {
         }
       },
       {
-        threshold: Array.from({ length: 101 }, (_, i) => i / 100),
+        threshold: [0, 0.25, 0.5, 0.75, 1],
         rootMargin: "0px",
       }
     );
@@ -86,7 +86,9 @@ export function ImageScrollLayout() {
               <img
                 key={section.image}
                 src={section.image}
-                alt={section.title}
+                alt=""
+                width={section.imageWidth}
+                height={section.imageHeight}
                 className={`absolute inset-0 w-full h-full object-contain transition-all duration-700 ${
                   index === activeSection
                     ? "opacity-100 translate-x-0 z-10"
@@ -116,7 +118,9 @@ export function ImageScrollLayout() {
               {/* Mobile Image */}
               <img
                 src={section.image}
-                alt={section.title}
+                alt=""
+                width={section.imageWidth}
+                height={section.imageHeight}
                 className="md:hidden w-full max-w-sm -z-30"
               />
               <div

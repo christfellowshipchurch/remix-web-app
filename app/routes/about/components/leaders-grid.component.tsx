@@ -6,11 +6,10 @@ import { LeadersModal } from "~/components/modals/leaders";
 import { Icon } from "~/primitives/icon/icon";
 import Modal from "~/primitives/Modal";
 import { Author } from "~/routes/author/types";
-import { useLoaderData } from "react-router-dom";
-import { HomeLoaderData } from "~/routes/home/loader";
+import { useLeadersWithArticles } from "../context/leaders-articles-context";
 
 export function LeaderGrid() {
-  const { leadersWithArticles } = useLoaderData<HomeLoaderData>();
+  const { leadersWithArticles } = useLeadersWithArticles();
 
   return (
     <div className="flex items-start lg:items-end gap-3">
@@ -46,6 +45,9 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
             <img
               src={leader.profilePhoto}
               alt={leader.fullName}
+              width={320}
+              height={460}
+              sizes="(min-width: 1024px) 25vw, 50vw"
               className={cn(
                 "w-full aspect-32/46 object-cover",
                 "transform transition-transform duration-300 group-hover:scale-105",

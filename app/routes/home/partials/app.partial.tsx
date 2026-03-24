@@ -49,7 +49,9 @@ const DesktopVersion = () => {
         <div className="flex justify-center items-center">
           <img
             src="/assets/images/home/app-left.webp"
-            alt="App Section Image"
+            alt="Christ Fellowship App on a phone"
+            width={696}
+            height={1774}
             className={cn("w-full aspect-9/21 max-w-[220px]")}
           />
         </div>
@@ -78,7 +80,9 @@ const MobileVersion = () => {
         <div className="flex justify-center items-center">
           <img
             src="/assets/images/home/app-left.webp"
-            alt="App Section Image"
+            alt="Christ Fellowship App on a phone"
+            width={696}
+            height={1774}
             className={cn("w-[50vw]", "aspect-9/21", "max-w-[140px]")}
           />
         </div>
