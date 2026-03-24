@@ -10,6 +10,7 @@ import {
   deleteRockData,
   fetchRockData,
   postRockData,
+  TTL,
 } from "~/lib/.server/fetch-rock-data";
 import { fieldsAsObject } from "~/lib/utils";
 
@@ -23,7 +24,7 @@ import { SmsPinResult } from "./authentication.types";
 import { checkUserExists } from "~/routes/auth/userExists";
 
 export const parsePhoneNumberUtil = (
-  phoneNumber: string
+  phoneNumber: string,
 ): {
   valid: boolean;
   significantNumber: string;
@@ -101,7 +102,7 @@ export const createOrFindSmsLoginUserId = async ({
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    cache: false,
+    ttl: TTL.NONE,
   });
 
   /** if the phone number in Rock already is attached to a person we will just return that person instead */
@@ -124,14 +125,14 @@ export const createOrFindSmsLoginUserId = async ({
 };
 
 export const requestSmsLogin = async (
-  phoneNumber: string
+  phoneNumber: string,
 ): Promise<SmsPinResult> => {
   const { ExistingAppUser, None } = User_Auth_Status;
   const { valid, significantNumber, e164 } = parsePhoneNumberUtil(phoneNumber);
 
   if (!valid) {
     throw new AuthenticationError(
-      `${significantNumber} is not a valid phone number`
+      `${significantNumber} is not a valid phone number`,
     );
   }
 
@@ -171,7 +172,7 @@ export const requestSmsLogin = async (
   if (typeof createNewLogin !== "number") {
     console.error("Failed to create new login for", phoneNumber);
     throw new AuthenticationError(
-      `Failed to create new login for ${phoneNumber}`
+      `Failed to create new login for ${phoneNumber}`,
     );
   }
 
@@ -183,12 +184,12 @@ export const requestSmsLogin = async (
   } catch (error) {
     console.error(
       "Failed to send SMS:",
-      error instanceof Error ? error.message : "Unknown error"
+      error instanceof Error ? error.message : "Unknown error",
     );
     throw new AuthenticationError(
       `Failed to send SMS: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`
+      }`,
     );
   }
 
@@ -199,7 +200,7 @@ export const requestSmsLogin = async (
 };
 
 export const userExists = async (
-  identity: string
+  identity: string,
 ): Promise<User_Auth_Status> => {
   const { significantNumber, valid } = parsePhoneNumberUtil(identity);
 

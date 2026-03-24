@@ -1,6 +1,11 @@
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { parseISO, isValid, getMonth, getDate, getYear } from "date-fns";
-import { fetchRockData, patchRockData, postRockData } from "./fetch-rock-data";
+import {
+  fetchRockData,
+  patchRockData,
+  postRockData,
+  TTL,
+} from "./fetch-rock-data";
 import {
   createPhoneNumberInRock,
   parsePhoneNumberUtil,
@@ -41,7 +46,7 @@ export const createPerson = async (profile: PersonProfile) => {
 
 export const updatePerson = async (
   id: string,
-  fields: { email: string; phoneNumber: string }
+  fields: { email: string; phoneNumber: string },
 ) => {
   // Update User email if user does not have one in Rock
   const emailInRock = await fetchRockData({
@@ -49,7 +54,7 @@ export const updatePerson = async (
     queryParams: {
       $select: "Email",
     },
-    cache: false, // no cache
+    ttl: TTL.NONE, // no cache
   });
   if (!emailInRock.email) {
     await patchRockData({
@@ -62,7 +67,7 @@ export const updatePerson = async (
 
   // Create Phone Number in Rock
   const { significantNumber, countryCode } = parsePhoneNumberUtil(
-    fields.phoneNumber
+    fields.phoneNumber,
   );
 
   const existingPhoneNumbers = await fetchRockData({
@@ -71,7 +76,7 @@ export const updatePerson = async (
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    cache: false, // no cache
+    ttl: TTL.NONE, // no cache
   });
 
   if (!existingPhoneNumbers || existingPhoneNumbers.length === 0) {
@@ -101,7 +106,7 @@ interface PersonData {
 
 export const getPersonByAliasGuid = async (
   guid: string,
-  loadAttributes?: boolean
+  loadAttributes?: boolean,
 ): Promise<PersonData | null> => {
   const getPersonId = async () => {
     const person = await fetchRockData({
@@ -127,7 +132,7 @@ export const getPersonByAliasGuid = async (
 
 // Uses the Person Alias ID to get the Person
 export const getPersonByAliasId = async (
-  id: string
+  id: string,
 ): Promise<PersonData | null> => {
   const personAlias = await fetchRockData({
     endpoint: `PersonAlias/${id}`,
@@ -138,7 +143,7 @@ export const getPersonByAliasId = async (
 
 // Uses the Person Alias ID to get the Person Alias GUID
 export const getPersonAliasGuid = async (
-  id: string
+  id: string,
 ): Promise<string | null> => {
   const personAlias = await fetchRockData({
     endpoint: `PersonAlias/${id}`,
@@ -150,7 +155,7 @@ export const getPersonAliasGuid = async (
 // Get a person from their ID
 export const getFromId = async (
   id: string,
-  loadAttributes?: boolean
+  loadAttributes?: boolean,
 ): Promise<PersonData> => {
   const person = await fetchRockData({
     endpoint: "People",
@@ -158,7 +163,7 @@ export const getFromId = async (
       $expand: "Photo",
       $filter: `Id eq ${id}${loadAttributes ? "&loadAttributes=simple" : ""}`,
     },
-    cache: false, //no cache
+    ttl: TTL.NONE, //no cache
   });
   return person[0];
 };
@@ -175,7 +180,7 @@ export const getProfileImage = async (id: string): Promise<string | null> => {
 export const mapGender = (gender: number): Gender | undefined => {
   // Find the key in RockGenderMap that matches the gender value
   return (Object.keys(RockGenderMap) as Array<keyof typeof RockGenderMap>).find(
-    (key) => RockGenderMap[key] === gender
+    (key) => RockGenderMap[key] === gender,
   ) as Gender | undefined;
 };
 
