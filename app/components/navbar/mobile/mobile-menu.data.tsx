@@ -20,14 +20,14 @@ export const welcomeMenuItems: MenuItem[] = [
     title: "Watch Live",
     description: "Join us from anywhere",
     icon: "broadcast",
-    to: "/watch",
+    to: "https://www.youtube.com/@ChristFellowship.Church/streams",
   },
   {
     id: "latest-message",
     title: "Latest Message",
     description: "See what a service is like",
     icon: "circlePlayFilled",
-    to: "/messages#latest",
+    to: "/messages",
   },
 ];
 
@@ -112,7 +112,7 @@ export const mediaItems: SubMenuItem[] = [
     id: "devotional",
     title: "Daily Devotional",
     icon: "bible",
-    to: "/devotionals",
+    to: "/daily-devo",
   },
 ];
 

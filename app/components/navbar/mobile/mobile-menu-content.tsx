@@ -19,6 +19,8 @@ import { User } from "~/providers/auth-provider";
 
 interface MobileMenuContentProps {
   closeMenu: () => void;
+  /** Same URL as the Media dropdown “Latest Message” feature card (from root loader). */
+  latestMessageTo?: string;
   auth: {
     authLoading: boolean;
     logout: () => void;
@@ -28,11 +30,18 @@ interface MobileMenuContentProps {
 
 export default function MobileMenuContent({
   closeMenu,
+  latestMessageTo,
   auth,
 }: MobileMenuContentProps) {
   const [openSection, setOpenSection] = useState<string | null>(null);
   // Todo: fix user data for mobile/desktop nav menus. Right now mobile is pulling user data client side from useAuth hook, but desktop is pulling user data from the loader data. We need to consolidate this into one source of truth.We will wait until the UI for the logged in experience is complete to fix this.
   const { authLoading, logout, user } = auth;
+
+  const welcomeItems = welcomeMenuItems.map((item) =>
+    item.id === "latest-message"
+      ? { ...item, to: latestMessageTo ?? item.to }
+      : item,
+  );
 
   const toggleSection = (sectionId: string) => {
     setOpenSection(openSection === sectionId ? null : sectionId);
@@ -48,7 +57,7 @@ export default function MobileMenuContent({
       <div className="pb-24">
         <MenuSection
           title="Welcome to Church"
-          items={welcomeMenuItems}
+          items={welcomeItems}
           closeMenu={closeMenu}
         />
         <MenuSection

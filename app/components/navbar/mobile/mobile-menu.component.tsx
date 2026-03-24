@@ -12,10 +12,12 @@ export default function MobileMenu({
   mode,
   setMode,
   showSiteBanner,
+  latestMessageTo,
 }: {
   mode: "light" | "dark";
   setMode: (mode: "light" | "dark") => void;
   showSiteBanner?: boolean;
+  latestMessageTo?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [orginalMode] = useState(mode);
@@ -141,6 +143,7 @@ export default function MobileMenu({
         >
           <MobileMenuContent
             closeMenu={() => setIsOpen(false)}
+            latestMessageTo={latestMessageTo}
             auth={{
               authLoading,
               logout,
