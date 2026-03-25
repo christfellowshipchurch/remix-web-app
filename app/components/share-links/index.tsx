@@ -44,7 +44,7 @@ export function ShareLinks({
 
   return socialIcons?.map((icon, index) => {
     const socialLink = socialMedia?.find(
-      (media) => media?.type === icon?.name
+      (media) => media?.type === icon?.name,
     )?.url;
     if (socialLink) {
       return (
@@ -71,7 +71,7 @@ export function ShareLinks({
             <Icon
               name="linkAlt"
               size={38}
-              className={`duration-300 hover:scale-105 p-1 rounded-full ${
+              className={`text-ocean duration-300 hover:scale-105 p-1 rounded-full ${
                 backgroundColor || "bg-white"
               }`}
             />
