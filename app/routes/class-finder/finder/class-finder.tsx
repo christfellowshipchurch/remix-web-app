@@ -4,7 +4,7 @@ import { Button } from "~/primitives/button/button.primitive";
 
 export function ClassFinderPage() {
   return (
-    <div className="flex flex-col min-h-[100svh]">
+    <div className="flex flex-col min-h-svh">
       <div className="flex-none">
         <div className="flex flex-col items-center w-full">
           {/* Hero Section */}

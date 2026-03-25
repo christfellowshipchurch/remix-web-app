@@ -22,6 +22,11 @@ import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/cl
 
 const INDEX_NAME = "dev_Classes";
 
+/** Escape `\` and `"` for Algolia `filters` strings like `campus:"…"`. */
+export function escapeAlgoliaFilterString(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassSingleUrlState(searchParams);
   const initialUiState: { [key: string]: Record<string, unknown> } = {};
@@ -57,9 +62,14 @@ export const UpcomingSessionsSection = () => {
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
   const [instantSearchKey, setInstantSearchKey] = useState(0);
+  const [coordinates, setCoordinates] = useState<{
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
 
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
+    setCoordinates(null);
     setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
       replace: true,
       preventScrollReset: true,
@@ -89,13 +99,13 @@ export const UpcomingSessionsSection = () => {
     instantSearchKey > 0
       ? { [INDEX_NAME]: {} }
       : Object.keys(initial.initialUiState).length > 0
-      ? initial.initialUiState
-      : undefined;
+        ? initial.initialUiState
+        : undefined;
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   return (
@@ -118,15 +128,15 @@ export const UpcomingSessionsSection = () => {
         }}
       >
         <ResponsiveClassesSingleConfigure
-          selectedLocation={null}
           classUrl={classUrl}
+          coordinates={coordinates}
         />
         <div className="flex flex-col">
           {/* Filters Section */}
           <div
             className={cn(
               "bg-white content-padding md:shadow-sm select-none transition-all duration-300",
-              "relative z-10"
+              "relative z-10",
             )}
           >
             <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 py-4 max-w-screen-content mx-auto lg:h-20 pagination-scroll-to">
@@ -135,13 +145,19 @@ export const UpcomingSessionsSection = () => {
                 <h2 className="text-[28px] font-extrabold w-fit min-w-[260px]">
                   Upcoming Sessions
                 </h2>
-                <div className="hidden lg:block h-full w-[1px] bg-text-secondary" />
+                <div className="hidden lg:block h-full w-px bg-text-secondary" />
               </div>
 
               <div className="flex flex-row gap-4 w-fit overflow-x-visible scrollbar-hide relative items-center">
-                <UpcomingSessionFilters />
+                <UpcomingSessionFilters
+                  coordinates={coordinates}
+                  setCoordinates={setCoordinates}
+                />
                 <AlgoliaFinderClearAllButton
                   onClearAllToUrl={clearAllFiltersFromUrl}
+                  additionalFiltersActive={
+                    coordinates?.lat != null && coordinates?.lng != null
+                  }
                 />
               </div>
             </div>
@@ -180,11 +196,16 @@ export const UpcomingSessionsSection = () => {
 };
 
 export const ResponsiveClassesSingleConfigure = ({
-  selectedLocation,
   classUrl,
+  coordinates,
 }: {
-  selectedLocation: string | null;
+  /** Route param from loader; same string as Algolia `classType`. */
   classUrl: string;
+  /** When set, Algolia ranks/filters by distance like group finder (`_geoloc`). */
+  coordinates: {
+    lat: number | null;
+    lng: number | null;
+  } | null;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
 
@@ -201,20 +222,23 @@ export const ResponsiveClassesSingleConfigure = ({
     }
   })();
 
-  // Build filters array
-  const filters = [];
-  if (selectedLocation) {
-    filters.push(`campusName:'${selectedLocation}'`);
-  }
-  if (classUrl) {
-    filters.push(`classTypeUrl:"${classUrl}"`);
-  }
+  const classTypeFilter = classUrl
+    ? `classType:"${escapeAlgoliaFilterString(classUrl)}"`
+    : undefined;
 
   return (
     <Configure
-      key={`${selectedLocation}-${classUrl}`}
+      key={`${classUrl}-${coordinates?.lat ?? ""}-${coordinates?.lng ?? ""}`}
       hitsPerPage={hitsPerPage}
-      filters={filters.length > 0 ? filters.join(" AND ") : undefined}
+      filters={classTypeFilter}
+      aroundLatLng={
+        coordinates?.lat != null && coordinates?.lng != null
+          ? `${coordinates.lat}, ${coordinates.lng}`
+          : undefined
+      }
+      aroundRadius="all"
+      aroundLatLngViaIP={false}
+      getRankingInfo={true}
     />
   );
 };

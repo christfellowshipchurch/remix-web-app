@@ -3,7 +3,18 @@ import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
 
-export function UpcomingSessionFilters() {
+export type SessionFilterCoordinates = {
+  lat: number | null;
+  lng: number | null;
+};
+
+export function UpcomingSessionFilters({
+  coordinates,
+  setCoordinates,
+}: {
+  coordinates: SessionFilterCoordinates | null;
+  setCoordinates: (next: SessionFilterCoordinates | null) => void;
+}) {
   const [showGroupType, setShowGroupType] = useState(false);
   const [showFrequency, setShowFrequency] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
@@ -16,7 +27,7 @@ export function UpcomingSessionFilters() {
 
   const handleToggle = (
     setter: (value: boolean) => void,
-    currentValue: boolean
+    currentValue: boolean,
   ) => {
     onHide();
     setter(!currentValue);
@@ -26,15 +37,23 @@ export function UpcomingSessionFilters() {
     <FilterContainer>
       {/* Campus */}
       <FilterDropdown
-        title="Campus"
+        title="Location"
         isOpen={showLocation}
         onToggle={() => handleToggle(setShowLocation, showLocation)}
         onHide={onHide}
         data={{
           content: [
             {
-              title: "Christ Fellowship Campus",
-              attribute: "campus.name",
+              attribute: "campus",
+              isDropdown: true,
+            },
+            {
+              title: "Find a group nearby",
+              attribute: "campus",
+              isLocation: true,
+              coordinates,
+              setCoordinates,
+              showFooter: true,
             },
           ],
         }}
@@ -98,8 +117,12 @@ interface FilterDropdownProps {
       title?: string;
       attribute: string;
       isMeetingType?: boolean;
+      isDropdown?: boolean;
+      isLocation?: boolean;
       checkbox?: boolean;
       showFooter?: boolean;
+      coordinates?: SessionFilterCoordinates | null;
+      setCoordinates?: (next: SessionFilterCoordinates | null) => void;
     }>;
   };
   maxWidth?: number;
@@ -141,7 +164,7 @@ export function FilterDropdown({
         "text-text-secondary",
         "font-semibold",
         "cursor-pointer",
-        "flex-shrink-0"
+        "shrink-0",
       )}
       style={{ maxWidth: maxWidth }}
       onClick={onToggle}
@@ -159,7 +182,7 @@ export function FilterDropdown({
           "absolute left-0 right-0 md:right-1/2 md:translate-x-1/2",
           "top-0 md:top-[65px]",
           "z-50",
-          refinementClassName
+          refinementClassName,
         )}
         style={isMobile && isOpen ? { top: `65px` } : undefined}
       />

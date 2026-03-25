@@ -22,6 +22,17 @@ export type GroupFinderUrlState = AlgoliaUrlStateBase & {
   age?: string;
 };
 
+/** Campus / age URL params and map coordinates — not always mirrored in InstantSearch `refinementList`. */
+export function hasGroupFinderNonInstantSearchFilters(
+  urlState: GroupFinderUrlState,
+  coordinates: { lat: number | null; lng: number | null } | null,
+): boolean {
+  if (urlState.campus != null && urlState.campus.trim() !== "") return true;
+  if ((urlState.age?.trim().length ?? 0) > 0) return true;
+  if (coordinates?.lat != null && coordinates?.lng != null) return true;
+  return false;
+}
+
 const REFINEMENT_LIST_ATTRIBUTES = [
   "meetingType",
   "campus",

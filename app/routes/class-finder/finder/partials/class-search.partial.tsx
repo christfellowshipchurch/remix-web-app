@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
@@ -19,13 +19,17 @@ import {
   classFinderEmptyState,
   type ClassFinderUrlState,
 } from "../../class-finder-url-state";
+import {
+  groupClassTypeHits,
+  syntheticHitsFromGrouped,
+} from "../components/group-class-type-hits";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 
 const INDEX_NAME = "dev_Classes";
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2. */
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
   const initialUiState: { [key: string]: Record<string, unknown> } = {};
@@ -46,11 +50,41 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
   return { coordinates: null, initialUiState };
 }
 
+function useNavbarOpenOnScroll() {
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  const lastScrollYRef = useRef(0);
+
+  useEffect(() => {
+    const threshold = 10;
+    const handleScroll = () => {
+      const current = window.scrollY;
+      const prev = lastScrollYRef.current;
+      const delta = current - prev;
+
+      if (current < threshold) {
+        lastScrollYRef.current = current;
+        return;
+      }
+
+      if (Math.abs(delta) > threshold) {
+        setIsNavbarOpen(delta < 0);
+      }
+      lastScrollYRef.current = current;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return isNavbarOpen;
+}
+
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const isNavbarOpen = useNavbarOpenOnScroll();
 
   const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
     searchParams,
@@ -62,45 +96,12 @@ export const ClassSearch = () => {
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  // Scroll handling effect
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   const clearAllFiltersFromUrl = () => {
@@ -147,8 +148,8 @@ export const ClassSearch = () => {
           instantSearchKey > 0
             ? { [INDEX_NAME]: {} }
             : Object.keys(initial.initialUiState).length > 0
-            ? initial.initialUiState
-            : undefined
+              ? initial.initialUiState
+              : undefined
         }
         onStateChange={({ uiState }) => {
           const indexState = uiState[INDEX_NAME];
@@ -163,12 +164,13 @@ export const ClassSearch = () => {
           ageInput=""
           selectedLocation={null}
           coordinates={null}
+          hitsPerPageOverride={1000}
         />
         <div className="flex flex-col">
           <div
             className={cn(
               "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0"
+              isNavbarOpen ? "top-18 md:top-20" : "top-0",
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
@@ -217,7 +219,7 @@ export const ClassSearch = () => {
                 "absolute transition-all duration-300",
                 isMobileOpen
                   ? "z-4 opacity-100 top-[calc(102%)]"
-                  : "-z-1 opacity-0 pointer-events-none"
+                  : "-z-1 opacity-0 pointer-events-none",
               )}
             >
               <AllClassFiltersPopup
@@ -227,10 +229,11 @@ export const ClassSearch = () => {
             </div>
           </div>
 
-          {/* Class Search Results / Class Type Filters */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
-              <CustomClassTypeFacets fromClassFinderUrl={fromClassFinderUrl} />
+              <ClassTypeGroupedResults
+                fromClassFinderUrl={fromClassFinderUrl}
+              />
             </div>
           </div>
         </div>
@@ -239,169 +242,79 @@ export const ClassSearch = () => {
   );
 };
 
-interface GroupedClassType {
-  coverImage: string;
-  title: string;
-  summary: string;
-  subtitle: string;
-  topic: string;
-  classTypeUrl: string;
-  locations: string | "Multiple Locations";
-  format: "In-Person" | "Online" | "Multiple Formats";
-  language: "English" | "Español" | "Multiple Languages";
-}
+const ITEMS_PER_PAGE = 12;
 
-const CustomClassTypeFacets = ({
+function ClassTypeGroupedResults({
   fromClassFinderUrl,
 }: {
   fromClassFinderUrl?: string;
-}) => {
+}) {
   const { items } = useHits<ClassHitType>();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
 
-  const groupedClassTypes: GroupedClassType[] = useMemo(() => {
-    const grouped = items.reduce((acc, hit) => {
-      const classType = hit.classType;
-      const existingGroup = acc.find((group) => group.title === classType);
+  const grouped = useMemo(() => groupClassTypeHits(items), [items]);
+  const mappedHits = useMemo(
+    () => syntheticHitsFromGrouped(grouped),
+    [grouped],
+  );
 
-      if (existingGroup) {
-        // If classType already exists, update locations / language to "Multiple Locations" / "Multiple Languages"
-        existingGroup.locations = "Multiple Locations";
-        existingGroup.language = "Multiple Languages";
-      } else {
-        // Create new group for this classType
-        acc.push({
-          coverImage: hit.coverImage.sources[0]?.uri || "",
-          title: classType,
-          classTypeUrl: hit.classTypeUrl,
-          summary: hit.summary,
-          subtitle: hit.subtitle,
-          topic: hit.topic,
-          locations: hit.campus.name,
-          format: hit.format,
-          language: hit.language,
-        });
-      }
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
 
-      return acc;
-    }, [] as GroupedClassType[]);
-
-    return grouped;
-  }, [items]);
-
-  const mappedClassTypes: ClassHitType[] = useMemo(() => {
-    return groupedClassTypes.map((group, index) => {
-      return {
-        objectID: `grouped-${index}`,
-        id: `grouped-${index}`,
-        title: group.title,
-        classType: group.title as ClassHitType["classType"],
-        classTypeUrl: group.classTypeUrl as ClassHitType["classTypeUrl"],
-        subtitle: group.title,
-        summary: group.subtitle,
-        coverImage: {
-          sources: [{ uri: group.coverImage }],
-        },
-        campus: {
-          name: group.locations,
-        },
-        _geoloc: {
-          lat: 0,
-          lng: 0,
-        },
-        startDate: "",
-        endDate: "",
-        schedule: "",
-        topic: group.topic as ClassHitType["topic"],
-        language: group.language as ClassHitType["language"],
-        format: group.format as ClassHitType["format"],
-        _highlightResult: {
-          title: { value: group.title, matchLevel: "none", matchedWords: [] },
-          summary: {
-            value: group.summary,
-            matchLevel: "none",
-            matchedWords: [],
-          },
-          author: {
-            firstName: { value: "", matchLevel: "none", matchedWords: [] },
-            lastName: { value: "", matchLevel: "none", matchedWords: [] },
-          },
-          routing: {
-            pathname: { value: "", matchLevel: "none", matchedWords: [] },
-          },
-          htmlContent: [],
-        },
-        __position: index,
-      };
-    });
-  }, [groupedClassTypes]);
-
-  // Pagination logic
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedItems = mappedClassTypes.slice(startIndex, endIndex);
-
-  // Reset to page 1 when items change
   useEffect(() => {
     setCurrentPage(1);
-  }, [mappedClassTypes.length]);
+  }, [mappedHits.length]);
 
   return (
     <>
       <div className="min-h-[320px]">
         <p className="text-text-secondary mb-6">
-          {mappedClassTypes.length} Results Found
+          {mappedHits.length} Results Found
         </p>
 
-        <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-          <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
-              {paginatedItems.map((hit) => (
-                <ClassHitComponent
-                  key={hit.objectID}
-                  hit={hit}
-                  fromClassFinderUrl={fromClassFinderUrl}
-                />
-              ))}
-            </div>
+        <div className="flex w-full items-center justify-center md:items-start md:justify-start">
+          <div className="grid w-full max-w-[900px] lg:max-w-[1296px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:gap-x-8! gap-y-6 md:gap-y-8 lg:gap-y-16">
+            {pageHits.map((hit) => (
+              <ClassHitComponent
+                key={hit.objectID}
+                hit={hit}
+                fromClassFinderUrl={fromClassFinderUrl}
+              />
+            ))}
           </div>
         </div>
       </div>
 
-      <ClassSearchCustomPagination
-        mappedClassTypes={mappedClassTypes}
-        itemsPerPage={itemsPerPage}
+      <ClassSearchPagination
+        totalItems={mappedHits.length}
+        itemsPerPage={ITEMS_PER_PAGE}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
     </>
   );
-};
+}
 
-const ClassSearchCustomPagination = ({
-  mappedClassTypes,
-  itemsPerPage = 12,
+function ClassSearchPagination({
+  totalItems,
+  itemsPerPage,
   currentPage,
   onPageChange,
 }: {
-  mappedClassTypes: ClassHitType[];
-  itemsPerPage?: number;
+  totalItems: number;
+  itemsPerPage: number;
   currentPage: number;
   onPageChange: (page: number) => void;
-}) => {
-  const totalPages = Math.ceil(mappedClassTypes.length / itemsPerPage);
-
+}) {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
 
-  const handlePageChange = (newPage: number) => {
+  const goToPage = (newPage: number) => {
     onPageChange(newPage);
-    // Scroll to the pagination-scroll-to element
-    const scrollTarget = document.querySelector(".pagination-scroll-to");
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: "smooth" });
-    }
+    document
+      .querySelector(".pagination-scroll-to")
+      ?.scrollIntoView({ behavior: "smooth" });
   };
 
   if (totalPages <= 1) return null;
@@ -409,46 +322,44 @@ const ClassSearchCustomPagination = ({
   return (
     <div className="mt-6 flex justify-center md:justify-start">
       <div className="flex items-center justify-center gap-2">
-        <ClassPaginationItem
-          isDisabled={isFirstPage}
-          onClick={() => handlePageChange(currentPage - 1)}
+        <PaginationControl
+          disabled={isFirstPage}
+          onClick={() => goToPage(currentPage - 1)}
         >
           <Icon
             name="chevronLeft"
             size={32}
             color={isFirstPage ? "#CECECE" : "#0092BC"}
           />
-        </ClassPaginationItem>
+        </PaginationControl>
         <p>
           {currentPage} of {totalPages}
         </p>
-        <ClassPaginationItem
-          isDisabled={isLastPage}
-          onClick={() => handlePageChange(currentPage + 1)}
+        <PaginationControl
+          disabled={isLastPage}
+          onClick={() => goToPage(currentPage + 1)}
         >
           <Icon
             name="chevronRight"
             size={32}
             color={isLastPage ? "#CECECE" : "#0092BC"}
           />
-        </ClassPaginationItem>
+        </PaginationControl>
       </div>
     </div>
   );
-};
+}
 
-type ClassPaginationItemProps = {
-  onClick: () => void;
-  isDisabled: boolean;
-  children: React.ReactNode;
-};
-
-function ClassPaginationItem({
-  isDisabled,
+function PaginationControl({
+  disabled,
   onClick,
   children,
-}: ClassPaginationItemProps) {
-  if (isDisabled) {
+}: {
+  disabled: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  if (disabled) {
     return (
       <div>
         <span>{children}</span>
@@ -458,7 +369,7 @@ function ClassPaginationItem({
 
   return (
     <div>
-      <button onClick={onClick} className="cursor-pointer">
+      <button type="button" onClick={onClick} className="cursor-pointer">
         {children}
       </button>
     </div>
