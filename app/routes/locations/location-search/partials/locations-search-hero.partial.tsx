@@ -3,31 +3,43 @@ import { useEffect, useState, useRef } from "react";
 import { Video } from "~/primitives/video/video.primitive";
 import { cn, isValidZip } from "~/lib/utils";
 
-type SearchProps = {
-  handleSearch: (query: string | null) => void;
-  setCoordinates: (coordinates: {
+type SetCoordinatesProp = (
+  coordinates: {
     lat: number | null;
     lng: number | null;
-  }) => void;
+  } | null,
+  options?: { scrollWithNavbarOffset?: boolean },
+) => void;
+
+type SearchProps = {
+  handleSearch: (query: string | null) => void;
+  setCoordinates: SetCoordinatesProp;
 };
 
 export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const geolocationFromUserClickRef = useRef(false);
 
   // Set the coordinates to the user's current location
   useEffect(() => {
     if (useCurrentLocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setCoordinates({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
+          const scrollWithNavbarOffset = geolocationFromUserClickRef.current;
+          geolocationFromUserClickRef.current = false;
+          setCoordinates(
+            {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+            { scrollWithNavbarOffset },
+          );
           setLocationActive(true);
         },
         (error) => {
+          geolocationFromUserClickRef.current = false;
           console.error(error);
           setLocationActive(false);
         },
@@ -70,7 +82,10 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
             <div className="flex gap-2">
               <div
                 className="cursor-pointer italic underline"
-                onClick={() => setUseCurrentLocation(true)}
+                onClick={() => {
+                  geolocationFromUserClickRef.current = true;
+                  setUseCurrentLocation(true);
+                }}
               >
                 Use my current location
               </div>
@@ -94,10 +109,7 @@ const SearchBar = ({
   setError,
 }: {
   onSearchSubmit: (query: string | null) => void;
-  setCoordinates: (coordinates: {
-    lat: number | null;
-    lng: number | null;
-  }) => void;
+  setCoordinates: SetCoordinatesProp;
   setError: (error: string | null) => void;
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -135,7 +147,7 @@ const SearchBar = ({
       onSubmit={handleSubmit}
       className={cn(
         "flex w-full md:max-w-[360px] items-center gap-2 rounded-full p-1 mt-2 md:mt-0",
-        inputValue ? "bg-gray" : "bg-white"
+        inputValue ? "bg-gray" : "bg-white",
       )}
     >
       <button

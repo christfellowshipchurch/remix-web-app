@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { Search } from "./partials/locations-search-hero.partial";
-import { LocationCardList } from "./partials/location-card-list.partial";
 import { useFetcher, useRouteLoaderData } from "react-router-dom";
-import { RootLoaderData } from "~/routes/navbar/loader";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { algoliasearch, SearchClient } from "algoliasearch";
-import { emptySearchClient } from "~/routes/search/route";
 import { Configure, InstantSearch } from "react-instantsearch";
+
+import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+import { RootLoaderData } from "~/routes/navbar/loader";
+import { emptySearchClient } from "~/routes/search/route";
+import { LocationCardList } from "./partials/location-card-list.partial";
+import { Search } from "./partials/locations-search-hero.partial";
 
 export type LocationSearchCoordinatesType = {
   results: [
@@ -16,7 +18,7 @@ export type LocationSearchCoordinatesType = {
           longitude: number;
         };
       };
-    }
+    },
   ];
   status: string;
   error: string | undefined | null;
@@ -37,12 +39,29 @@ export function LocationSearchPage() {
     lng: number | null;
   } | null>(null);
 
+  const campusScrollUsesNavbarOffsetRef = useRef(false);
+
+  const setSearchCoordinates = useCallback(
+    (
+      next: {
+        lat: number | null;
+        lng: number | null;
+      } | null,
+      options?: { scrollWithNavbarOffset?: boolean },
+    ) => {
+      campusScrollUsesNavbarOffsetRef.current =
+        options?.scrollWithNavbarOffset ?? false;
+      setCoordinates(next);
+    },
+    [],
+  );
+
   const geocodeFetcher = useFetcher();
   const googleFetcher = useFetcher();
 
   const handleSearch = (query: string | null) => {
     if (!query) {
-      setCoordinates(null);
+      setSearchCoordinates(null);
       return;
     }
     const formData = new FormData();
@@ -58,18 +77,32 @@ export function LocationSearchPage() {
       globalSearchClient = algoliasearch(
         ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY,
-        {}
+        {},
       );
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
   const scrollCampusesIntoView = useCallback(() => {
     const campusesSection = document.getElementById("campuses");
-    campusesSection?.scrollIntoView({ behavior: "smooth" });
+    if (!campusesSection) {
+      return;
+    }
+    const offsetPx = campusScrollUsesNavbarOffsetRef.current
+      ? ANCHOR_SCROLL_OFFSET
+      : 0;
+    const offsetTop =
+      campusesSection.getBoundingClientRect().top +
+      window.scrollY -
+      offsetPx;
+    window.scrollTo({
+      top: Math.max(0, offsetTop),
+      behavior: "smooth",
+    });
   }, []);
 
   useEffect(() => {
     if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
+      campusScrollUsesNavbarOffsetRef.current = true;
       const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
       setCoordinates({ lat, lng });
     }
@@ -122,7 +155,10 @@ export function LocationSearchPage() {
           getRankingInfo={true}
         />
 
-        <Search handleSearch={handleSearch} setCoordinates={setCoordinates} />
+        <Search
+          handleSearch={handleSearch}
+          setCoordinates={setSearchCoordinates}
+        />
         <LocationCardList loading={googleFetcher.state === "loading"} />
       </InstantSearch>
     </div>

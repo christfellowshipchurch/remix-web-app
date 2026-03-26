@@ -136,7 +136,7 @@ export const DynamicHero = ({
                       <SetAReminderModal
                         key={i}
                         intent="secondary"
-                        className="text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10"
+                        className="text-white border-[#FAFAFC] rounded-none border hover:bg-white/10!"
                       />
                     );
                   } else {
