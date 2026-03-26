@@ -35,6 +35,7 @@ export const DynamicHero = ({
   fullOverlay = false,
 }: DynamicHeroTypes) => {
   const location = useLocation();
+
   const pagePath =
     location.pathname
       .split("/")
@@ -73,13 +74,6 @@ export const DynamicHero = ({
             autoPlay
             muted
             loop
-          />
-        )}
-        {!wistiaId && imagePath && (
-          <img
-            src={imagePath}
-            alt="Hero Background"
-            className="absolute inset-0 w-full h-full object-cover"
           />
         )}
       </div>

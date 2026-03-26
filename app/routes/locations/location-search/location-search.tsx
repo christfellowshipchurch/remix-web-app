@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Search } from "./partials/locations-search-hero.partial";
 import { LocationCardList } from "./partials/location-card-list.partial";
 import { useFetcher, useRouteLoaderData } from "react-router-dom";
@@ -63,20 +63,30 @@ export function LocationSearchPage() {
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
-  const scrollCampusesIntoView = () => {
+  const scrollCampusesIntoView = useCallback(() => {
     const campusesSection = document.getElementById("campuses");
     campusesSection?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
       const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
       setCoordinates({ lat, lng });
     }
-
-    // Trigger scroll function to show campuses, id = "campuses"
-    scrollCampusesIntoView();
   }, [geocodeFetcher.data]);
+
+  useEffect(() => {
+    if (
+      coordinates != null &&
+      coordinates.lat != null &&
+      coordinates.lng != null
+    ) {
+      const timeoutId = window.setTimeout(() => {
+        scrollCampusesIntoView();
+      }, 150);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [coordinates, scrollCampusesIntoView]);
 
   const searchClient =
     globalSearchClient ||
@@ -112,11 +122,7 @@ export function LocationSearchPage() {
           getRankingInfo={true}
         />
 
-        <Search
-          handleSearch={handleSearch}
-          setCoordinates={setCoordinates}
-          scrollCampusesIntoView={scrollCampusesIntoView}
-        />
+        <Search handleSearch={handleSearch} setCoordinates={setCoordinates} />
         <LocationCardList loading={googleFetcher.state === "loading"} />
       </InstantSearch>
     </div>

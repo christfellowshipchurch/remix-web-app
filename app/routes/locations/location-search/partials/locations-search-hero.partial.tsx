@@ -4,7 +4,6 @@ import { Video } from "~/primitives/video/video.primitive";
 import { cn, isValidZip } from "~/lib/utils";
 
 type SearchProps = {
-  scrollCampusesIntoView: () => void;
   handleSearch: (query: string | null) => void;
   setCoordinates: (coordinates: {
     lat: number | null;
@@ -12,44 +11,31 @@ type SearchProps = {
   }) => void;
 };
 
-export const Search = ({
-  handleSearch,
-  setCoordinates,
-  scrollCampusesIntoView,
-}: SearchProps) => {
+export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Set the coordinates to the user's current location
   useEffect(() => {
     if (useCurrentLocation) {
-      // Get the current location
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setCoordinates({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
-          if (!isInitialLoad) {
-            scrollCampusesIntoView();
-          }
           setLocationActive(true);
         },
         (error) => {
           console.error(error);
           setLocationActive(false);
-        }
+        },
       );
 
       setUseCurrentLocation(false);
-
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      }
     }
-  }, [useCurrentLocation]);
+  }, [useCurrentLocation, setCoordinates]);
 
   return (
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
