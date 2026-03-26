@@ -44,8 +44,8 @@ export const SearchBar = ({
       <button
         type="submit"
         className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative"
+        aria-label="Search by zip code"
       >
-        <span hidden>Search</span>
         <Icon
           name="search"
           size={20}

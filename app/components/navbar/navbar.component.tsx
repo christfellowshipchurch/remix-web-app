@@ -254,8 +254,8 @@ export function Navbar() {
                   href="/"
                   className="relative flex items-center justify-center gap-2.5"
                 >
-                  <span hidden>Christ Fellowship Church</span>
                   <Icon
+                    aria-label="Christ Fellowship Church"
                     name="logo"
                     className={cn(
                       "size-32 my-[-48px] transition-colors duration-200",
@@ -370,8 +370,8 @@ export function Navbar() {
                   <button
                     onClick={handleSearchClick}
                     className="flex items-center"
+                    aria-label="Search"
                   >
-                    <span hidden>Search</span>
                     <Icon
                       name="search"
                       className={cn(
@@ -401,6 +401,7 @@ export function Navbar() {
                   <Button
                     href="/locations"
                     className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
+                    aria-label="Find a Service"
                   >
                     <Icon
                       name="mapFilled"
