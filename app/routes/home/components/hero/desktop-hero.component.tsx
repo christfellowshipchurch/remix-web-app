@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LocationSearch } from "../location-search/location-search.component";
 import { DesktopFeaturedItems } from "./desktop-features.component";
 
@@ -7,14 +7,6 @@ const WISTIA_EMBED =
 
 export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
-
-  useEffect(() => {
-    const id = window.setTimeout(() => {
-      setShowVideo(true);
-    }, 2000);
-    return () => clearTimeout(id);
-  }, []);
 
   return (
     <section className="h-screen w-full bg-white pb-16 mt-[-26px] hidden lg:block relative z-30">
@@ -52,14 +44,12 @@ export function DesktopHeroSection() {
               decoding="async"
               fetchPriority="high"
             />
-            {showVideo ? (
-              <iframe
-                title="Welcome video"
-                src={WISTIA_EMBED}
-                className="w-full h-full absolute inset-0 z-2 pointer-events-none border-0"
-                allow="autoplay; fullscreen"
-              />
-            ) : null}
+            <iframe
+              title="Welcome video"
+              src={WISTIA_EMBED}
+              className="w-full h-full absolute inset-0 z-2 pointer-events-none border-0"
+              allow="autoplay; fullscreen"
+            />
           </div>
         </div>
       </div>
