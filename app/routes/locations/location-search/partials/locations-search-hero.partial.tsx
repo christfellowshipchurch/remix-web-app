@@ -157,7 +157,7 @@ const SearchBar = ({
         <Icon
           name="search"
           size={20}
-          className={`text-white relative right-[1px] bottom-[1px]`}
+          className={`text-white relative right-px bottom-px`}
         />
       </button>
 
@@ -166,7 +166,7 @@ const SearchBar = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Search by zip code"
-        className="flex-grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
+        className="grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
         onBlur={() => inputRef.current?.blur()}
         ref={inputRef}
       />
