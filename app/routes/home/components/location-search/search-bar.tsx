@@ -38,17 +38,18 @@ export const SearchBar = ({
     <div
       className={cn(
         "flex w-full items-center gap-4 rounded-full p-1",
-        query ? "bg-gray" : "bg-white"
+        query ? "bg-gray" : "bg-white",
       )}
     >
       <button
         type="submit"
         className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative"
       >
+        <span hidden>Search</span>
         <Icon
           name="search"
           size={20}
-          className={`text-white cursor-pointer relative right-[1px] bottom-[1px]`}
+          className={`text-white cursor-pointer relative right-px bottom-px`}
         />
       </button>
 

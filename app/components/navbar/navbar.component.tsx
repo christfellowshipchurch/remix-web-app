@@ -254,6 +254,7 @@ export function Navbar() {
                   href="/"
                   className="relative flex items-center justify-center gap-2.5"
                 >
+                  <span hidden>Christ Fellowship Church</span>
                   <Icon
                     name="logo"
                     className={cn(
@@ -370,6 +371,7 @@ export function Navbar() {
                     onClick={handleSearchClick}
                     className="flex items-center"
                   >
+                    <span hidden>Search</span>
                     <Icon
                       name="search"
                       className={cn(

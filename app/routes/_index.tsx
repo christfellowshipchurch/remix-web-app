@@ -53,17 +53,12 @@ const DownloadAppSectionLazy = lazy(async () => {
 
 function HomeBelowFoldFallback() {
   return (
-    <div
-      className="min-h-[24rem] w-full bg-gray-100 animate-pulse"
-      aria-hidden
-    />
+    <div className="min-h-96 w-full bg-gray-100 animate-pulse" aria-hidden />
   );
 }
 
 function HomeBelowFold({ children }: { children: ReactNode }) {
-  return (
-    <Suspense fallback={<HomeBelowFoldFallback />}>{children}</Suspense>
-  );
+  return <Suspense fallback={<HomeBelowFoldFallback />}>{children}</Suspense>;
 }
 
 export default function HomePage() {
@@ -71,9 +66,9 @@ export default function HomePage() {
     <>
       <div className="w-screen h-screen absolute top-0 left-0 bg-white -z-100" />
       <HeroSection />
-      <AChanceSection />
-      <WhatWeOfferSection />
       <HomeBelowFold>
+        <AChanceSection />
+        <WhatWeOfferSection />
         <HistorySectionLazy sectionTitle="history" title="Who We Are" />
         <BeliefsSectionLazy />
         <WhatToExpectSectionLazy />

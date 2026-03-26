@@ -3,11 +3,12 @@ import HTMLRenderer from "~/primitives/html-renderer";
 import { chanceContent } from "./a-chance.data";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import { cn } from "~/lib/utils";
+import { ConnectCardModal } from "~/components";
 
 export function ImageScrollLayout() {
   const [activeSection, setActiveSection] = useState<number>(0);
   const [visibleSections, setVisibleSections] = useState<Set<number>>(
-    new Set()
+    new Set(),
   );
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const intersectionRatios = useRef<Map<number, number>>(new Map());
@@ -18,7 +19,7 @@ export function ImageScrollLayout() {
       (entries) => {
         entries.forEach((entry) => {
           const index = parseInt(
-            entry.target.getAttribute("data-card-index") || "0"
+            entry.target.getAttribute("data-card-index") || "0",
           );
           const intersectionRatio = entry.intersectionRatio;
 
@@ -60,7 +61,7 @@ export function ImageScrollLayout() {
       {
         threshold: [0, 0.25, 0.5, 0.75, 1],
         rootMargin: "0px",
-      }
+      },
     );
 
     const currentRefs = sectionRefs.current;
@@ -77,7 +78,7 @@ export function ImageScrollLayout() {
 
   return (
     <div className="relative pt-32 md:pt-48">
-      <div className="absolute top-0 left-0 w-screen h-48 md:h-1/8 bg-gradient-to-b from-white to-transparent z-20" />
+      <div className="absolute top-0 left-0 w-screen h-48 md:h-1/8 bg-linear-to-b from-white to-transparent z-20" />
       {/* Fixed Image Container */}
       <div className="hidden md:block fixed left-0 top-0 w-1/2 h-screen -z-10">
         <div className="sticky top-0 w-full h-screen flex items-center justify-center p-12">
@@ -110,7 +111,7 @@ export function ImageScrollLayout() {
             }}
             className={cn(
               "relative flex items-center p-12 min-h-screen w-full",
-              index === 2 && "pb-24 md:pb-0" // Add padding to the last section on mobile to prevent content from grayed out from gradient
+              index === 2 && "pb-24 md:pb-0", // Add padding to the last section on mobile to prevent content from grayed out from gradient
             )}
             data-card-index={index}
           >
@@ -138,20 +139,21 @@ export function ImageScrollLayout() {
                     {section.description}
                   </p>
                 </div>
-                <IconButton
-                  className="rounded-[400px] hover:!text-ocean"
-                  withRotatingArrow
-                  iconClasses="!bg-navy"
-                  to={section.url}
-                >
-                  Learn More
-                </IconButton>
+                <ConnectCardModal key={index}>
+                  <IconButton
+                    className="rounded-[400px] hover:text-ocean!"
+                    withRotatingArrow
+                    iconClasses="!bg-navy"
+                  >
+                    {section.buttonTitle}
+                  </IconButton>
+                </ConnectCardModal>
               </div>
             </div>
           </section>
         ))}
       </div>
-      <div className="absolute bottom-0 left-0 w-screen h-32 md:h-1/8 bg-gradient-to-t from-white to-transparent z-30" />
+      <div className="absolute bottom-0 left-0 w-screen h-32 md:h-1/8 bg-linear-to-t from-white to-transparent z-30" />
     </div>
   );
 }

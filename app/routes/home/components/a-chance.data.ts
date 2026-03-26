@@ -4,7 +4,7 @@ export const chanceContent: {
   imageWidth: number;
   imageHeight: number;
   description: string;
-  url: string;
+  buttonTitle: string;
   aspectRatio?: string;
 }[] = [
   {
@@ -14,7 +14,7 @@ export const chanceContent: {
     imageHeight: 1058,
     description:
       " Looking for community? A place where you can find genuine connection with other people. A place where you're not just a face in the crowd, but someone who belongs. ",
-    url: "/connect",
+    buttonTitle: "Get Connected",
   },
   {
     title: `<span className="font-bold">To hit pause</span> on the chaos of everyday life`,
@@ -23,7 +23,7 @@ export const chanceContent: {
     imageHeight: 806,
     description:
       "Searching for some kind of peace or purpose? Life can throw some curveballs, and sometimes you need a place to reflect, recharge, and find some perspective. ",
-    url: "/connect",
+    buttonTitle: "Find Your Purpose",
     aspectRatio: "600 / 400",
   },
   {
@@ -33,6 +33,6 @@ export const chanceContent: {
     imageHeight: 1134,
     description:
       "Sing some songs, hear a good story, and be reminded that there is still good in the world. ",
-    url: "/connect",
+    buttonTitle: "Find Your Hope",
   },
 ];

@@ -11,14 +11,14 @@ export function AChanceSection() {
           "fixed top-0 z-10",
           "pt-20 lg:pt-24",
           "px-10 md:px-12",
-          "md:w-full"
+          "md:w-full",
         )}
       >
         <div
           className={cn(
-            "absolute left-0 right-0 top-0 bg-gradient-to-b from-white via-white to-transparent z-[5]",
+            "absolute left-0 right-0 top-0 bg-linear-to-b from-white via-white to-transparent z-5",
             "h-64 sm:h-72 md:h-64 lg:h-96",
-            "w-screen"
+            "w-screen",
           )}
         />
         <span className="relative z-20">
