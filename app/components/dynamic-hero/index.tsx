@@ -76,6 +76,14 @@ export const DynamicHero = ({
             loop
           />
         )}
+
+        {imagePath && !wistiaId && (
+          <img
+            src={imagePath}
+            alt="Hero Background"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
       </div>
 
       {/* Bottom Background Gradient Overlay or full overlay */}
