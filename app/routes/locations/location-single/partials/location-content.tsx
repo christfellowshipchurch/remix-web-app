@@ -47,7 +47,7 @@ function useLocationHeroBackgroundImage(
   const [wistiaPosterUrl, setWistiaPosterUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const trimmed = wistiaId?.trim() ?? '';
+    const trimmed = wistiaId?.trim() ?? "";
     if (!trimmed) {
       setWistiaPosterUrl(null);
       return;
@@ -70,7 +70,7 @@ function useLocationHeroBackgroundImage(
           setWistiaPosterUrl(data.thumbnail_url);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {
+        if (err instanceof Error && err.name === "AbortError") {
           return;
         }
       }
@@ -80,7 +80,7 @@ function useLocationHeroBackgroundImage(
     return () => controller.abort();
   }, [wistiaId]);
 
-  const trimmed = wistiaId?.trim() ?? '';
+  const trimmed = wistiaId?.trim() ?? "";
   if (!trimmed) {
     return campusImage;
   }
