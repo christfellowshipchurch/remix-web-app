@@ -63,11 +63,7 @@ export const EventSinglePage: React.FC = () => {
         <BackBanner
           backText="Back to Events"
           pageTitle={data.title}
-          link={
-            typeof location.state?.fromEvents === "string"
-              ? location.state.fromEvents
-              : "/events"
-          }
+          link="/events"
         />
 
         <EventsSingleHero
