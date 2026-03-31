@@ -29,6 +29,7 @@ interface AllFiltersFilterSectionProps {
       lng: number | null;
     } | null
   ) => void;
+  onLocationKind?: (kind: "zip" | "gps" | null) => void;
 }
 
 export const AllFiltersFilterSection = ({
@@ -50,6 +51,7 @@ export const AllFiltersFilterSection = ({
   setAgeInput,
   coordinates,
   setCoordinates,
+  onLocationKind,
 }: AllFiltersFilterSectionProps) => {
   const titleStyles =
     "font-semibold text-base group-hover:text-ocean transition-all duration-300";
@@ -96,6 +98,7 @@ export const AllFiltersFilterSection = ({
         setAgeInput={setAgeInput}
         coordinates={coordinates}
         setCoordinates={setCoordinates}
+        onLocationKind={onLocationKind}
       />
     </div>
   );

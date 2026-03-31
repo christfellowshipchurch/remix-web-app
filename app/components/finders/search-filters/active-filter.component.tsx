@@ -12,9 +12,12 @@ type RefinementChip = {
 
 export function ActiveFilters({
   onClearAllToUrl,
+  additionalFiltersActive,
 }: {
   /** When set, “Clear All” is shown at the end of the row (all breakpoints). */
   onClearAllToUrl?: () => void;
+  /** True when filters live outside InstantSearch uiState (e.g. group finder campus / age / geo). */
+  additionalFiltersActive?: boolean;
 } = {}) {
   const { indexUiState, setIndexUiState } = useInstantSearch();
   const refinementList = (indexUiState.refinementList ?? {}) as Record<
@@ -39,7 +42,12 @@ export function ActiveFilters({
     return out;
   }, [refinementList]);
 
-  if (refinementChips.length === 0) return null;
+  if (
+    refinementChips.length === 0 &&
+    !((additionalFiltersActive ?? false) && onClearAllToUrl)
+  ) {
+    return null;
+  }
 
   const removeRefinement = (attribute: string, value: string) => {
     setIndexUiState((state) => {
@@ -66,32 +74,39 @@ export function ActiveFilters({
             <span className="hidden sm:inline">Filters:</span>
           </p>
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            {refinementChips.map((chip) => (
-              <div
-                key={chip.key}
-                className={chipClassName}
-                role="group"
-                aria-label={`Active filter ${chip.label}`}
-              >
-                <span className="max-w-[220px] truncate" title={chip.label}>
-                  {chip.label}
-                </span>
-                <button
-                  type="button"
-                  className="shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1"
-                  aria-label={`Remove filter ${chip.label}`}
-                  onClick={() => removeRefinement(chip.attribute, chip.value)}
+            {refinementChips.length > 0 ? (
+              refinementChips.map((chip) => (
+                <div
+                  key={chip.key}
+                  className={chipClassName}
+                  role="group"
+                  aria-label={`Active filter ${chip.label}`}
                 >
-                  <Icon name="x" className="text-ocean" size={16} />
-                </button>
-              </div>
-            ))}
+                  <span className="max-w-[220px] truncate" title={chip.label}>
+                    {chip.label}
+                  </span>
+                  <button
+                    type="button"
+                    className="shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1"
+                    aria-label={`Remove filter ${chip.label}`}
+                    onClick={() => removeRefinement(chip.attribute, chip.value)}
+                  >
+                    <Icon name="x" className="text-ocean" size={16} />
+                  </button>
+                </div>
+              ))
+            ) : (additionalFiltersActive ?? false) ? (
+              <p className="text-neutral-default text-sm">
+                Campus, age, or map filters are applied.
+              </p>
+            ) : null}
           </div>
         </div>
         {onClearAllToUrl ? (
           <div className="ml-auto shrink-0">
             <AlgoliaFinderClearAllButton
               onClearAllToUrl={onClearAllToUrl}
+              additionalFiltersActive={additionalFiltersActive}
               className="text-sm sm:text-base"
             />
           </div>

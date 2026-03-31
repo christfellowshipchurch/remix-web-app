@@ -8,17 +8,14 @@ import {
   Stats,
 } from "react-instantsearch";
 
-import { DesktopGroupFilters } from "../components/filters/group-filters";
-
 import Icon from "~/primitives/icon";
 import { useResponsive } from "~/hooks/use-responsive";
 
 import { FindersCustomPagination } from "../components/finders-custom-pagination.component";
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AllGroupFiltersPopup } from "../components/filters/all-filters.component";
-import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { GroupType } from "../types";
 import {
@@ -31,7 +28,15 @@ import {
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
-import { AlgoliaFinderClearAllButton } from "../components/clear-all-button.component";
+import {
+  SearchFilters,
+  type SearchFilterDesktopItem,
+} from "~/components/finders/search-filters";
+import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
+import {
+  getGroupSearchDesktopFilters,
+  GROUP_FINDER_MORE_POPUP_TITLE,
+} from "../group-search-filters.data";
 
 const INDEX_NAME = "dev_daniel_Groups";
 
@@ -63,13 +68,15 @@ export const GroupSearch = () => {
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const stickyTopClass = useStickyTopBelowNavbarClass();
 
-  const { cancelDebounce, updateUrlIfChanged } = useAlgoliaUrlSync({
-    searchParams,
-    setSearchParams,
-    toParams: groupFinderUrlStateToParams,
-    debounceMs: 400,
-  });
+  const { cancelDebounce, debouncedUpdateUrl, updateUrlIfChanged } =
+    useAlgoliaUrlSync({
+      searchParams,
+      setSearchParams,
+      toParams: groupFinderUrlStateToParams,
+      debounceMs: 400,
+    });
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
@@ -77,12 +84,13 @@ export const GroupSearch = () => {
     lat: number | null;
     lng: number | null;
   } | null>(initial.coordinates);
+  const [locationSource, setLocationSource] = useState<
+    "zip" | "gps" | null
+  >(null);
   const [ageInput, setAgeInputState] = useState<string>(initial.ageInput);
   const [selectedLocation, setSelectedLocationState] = useState<string | null>(
-    initial.selectedLocation
+    initial.selectedLocation,
   );
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const stickyTopClass = useStickyTopBelowNavbarClass();
 
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref). */
   type CustomState = {
@@ -112,7 +120,7 @@ export const GroupSearch = () => {
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   const clearAllFiltersFromUrl = () => {
@@ -123,6 +131,7 @@ export const GroupSearch = () => {
       selectedLocation: null,
     };
     setCoordinatesState(null);
+    setLocationSource(null);
     setAgeInputState("");
     setSelectedLocationState(null);
     setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), {
@@ -131,9 +140,18 @@ export const GroupSearch = () => {
     });
   };
 
-  const setCoordinates = (next: typeof coordinates) => {
+  const setCoordinates = useCallback((next: typeof coordinates) => {
     setCoordinatesState(next);
-  };
+    const noCoords =
+      next == null ||
+      next.lat == null ||
+      next.lng == null ||
+      Number.isNaN(next.lat) ||
+      Number.isNaN(next.lng);
+    if (noCoords) {
+      setLocationSource(null);
+    }
+  }, []);
 
   const setAgeInput = (next: string) => {
     setAgeInputState(next);
@@ -159,11 +177,37 @@ export const GroupSearch = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
-  const additionalClearAllFiltersActive =
-    hasGroupFinderNonInstantSearchFilters(
-      parseGroupFinderUrlState(searchParams),
-      coordinates,
-    );
+  const additionalClearAllFiltersActive = hasGroupFinderNonInstantSearchFilters(
+    parseGroupFinderUrlState(searchParams),
+    coordinates,
+  );
+
+  const desktopFilters = useMemo(
+    () =>
+      getGroupSearchDesktopFilters({
+        coordinates,
+        setCoordinates,
+        locationSource,
+        onLocationKind: setLocationSource,
+      }),
+    [coordinates, setCoordinates, locationSource],
+  );
+
+  const isFilterPillSupplementallyActive = useCallback(
+    (item: SearchFilterDesktopItem) => {
+      if (item.id === "people") return ageInput.trim().length >= 2;
+      if (item.id === "location")
+        return (
+          selectedLocation != null ||
+          (coordinates?.lat != null &&
+            coordinates?.lng != null &&
+            !Number.isNaN(coordinates.lat) &&
+            !Number.isNaN(coordinates.lng))
+        );
+      return false;
+    },
+    [ageInput, selectedLocation, coordinates],
+  );
 
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -175,12 +219,12 @@ export const GroupSearch = () => {
       campus: customStateRef.current.selectedLocation ?? undefined,
       age: customStateRef.current.ageInput || undefined,
     };
-    updateUrlIfChanged(urlState);
+    debouncedUpdateUrl(urlState);
   };
 
   return (
     <div
-      className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
+      className="flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to"
       id="search"
     >
       <InstantSearch
@@ -191,7 +235,8 @@ export const GroupSearch = () => {
             ? initial.initialUiState
             : undefined
         }
-        onStateChange={({ uiState }) => {
+        onStateChange={({ uiState, setUiState }) => {
+          setUiState(uiState);
           const indexState = uiState[INDEX_NAME];
           if (indexState)
             syncUrlFromUiState(indexState as Record<string, unknown>);
@@ -206,19 +251,21 @@ export const GroupSearch = () => {
           coordinates={coordinates}
         />
         <div className="flex flex-col">
-          {/* Desktop Filters Section */}
           <div
             className={cn(
-              "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              stickyTopClass
+              "sticky z-20 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
+              stickyTopClass,
             )}
           >
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              {/* Group Search Box */}
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
-                <Icon name="searchAlt" className="text-neutral-default ml-3" />
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
+              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
+                <Icon
+                  name="searchAlt"
+                  className="text-neutral-default ml-3"
+                  size={16}
+                />
                 <SearchBox
-                  placeholder="Keyword"
+                  placeholder="Search"
                   translations={{
                     submitButtonTitle: "Search",
                     resetButtonTitle: "Reset",
@@ -226,7 +273,8 @@ export const GroupSearch = () => {
                   classNames={{
                     root: "flex-grow",
                     form: "flex",
-                    input: "w-full text-xl px-2 focus:outline-none",
+                    input:
+                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none",
                     resetIcon: "hidden",
                     submit: "hidden",
                     loadingIcon: "hidden",
@@ -234,53 +282,38 @@ export const GroupSearch = () => {
                 />
               </div>
 
-              {/* Desktop Filters + Clear All */}
-              <div className="hidden md:flex items-center gap-4">
-                <DesktopGroupFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
-                  ageInput={ageInput}
-                  setAgeInput={setAgeInput}
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                />
-                <AlgoliaFinderClearAllButton
-                  className="hidden xl:block"
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                  additionalFiltersActive={additionalClearAllFiltersActive}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Filters */}
-          <div className="md:hidden bg-white border-b-2 border-black/10 border-solid select-none pb-4">
-            <div className="content-padding">
-              <Button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                intent="secondary"
-                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
-              >
-                <Icon name="sliderAlt" className="text-navy" />
-                All Filters
-              </Button>
-            </div>
-            <div
-              className={cn(
-                "absolute transition-all duration-300 w-full",
-                isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(92%_+_24px)]"
-                  : "-z-1 opacity-0"
-              )}
-            >
-              <AllGroupFiltersPopup
-                onHide={() => setIsMobileOpen(false)}
-                ageInput={ageInput}
-                setAgeInput={setAgeInput}
-                coordinates={coordinates}
-                setCoordinates={setCoordinates}
+              <SearchFilters
                 onClearAllToUrl={clearAllFiltersFromUrl}
+                desktopFilters={desktopFilters}
+                compactInlineFilterCount={2}
+                filterPopupAgeInput={ageInput}
+                setFilterPopupAgeInput={setAgeInput}
+                isFilterPillSupplementallyActive={
+                  isFilterPillSupplementallyActive
+                }
+                renderMorePanel={({
+                  onHide,
+                  onClearAllToUrl,
+                  mobileBottomSheet,
+                }) => (
+                  <AllGroupFiltersPopup
+                    onHide={onHide}
+                    ageInput={ageInput}
+                    setAgeInput={setAgeInput}
+                    coordinates={coordinates}
+                    setCoordinates={setCoordinates}
+                    onLocationKind={setLocationSource}
+                    onClearAllToUrl={onClearAllToUrl}
+                    mobileBottomSheet={mobileBottomSheet}
+                    bottomSheetTitle={GROUP_FINDER_MORE_POPUP_TITLE}
+                  />
+                )}
               />
             </div>
+            <ActiveFilters
+              onClearAllToUrl={clearAllFiltersFromUrl}
+              additionalFiltersActive={additionalClearAllFiltersActive}
+            />
           </div>
 
           {/* Group Search Hits / Results & Pagination */}

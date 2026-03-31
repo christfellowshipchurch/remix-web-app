@@ -52,6 +52,14 @@ export type SearchFilterDesktopItem = {
 export type SearchFiltersAllFiltersRenderProps = {
   onHide: () => void;
   onClearAllToUrl: () => void;
+  /**
+   * True when viewport is narrow mobile (`max-width: 767px`): render the overflow
+   * panel as a bottom sheet (same as single-filter popups). False on tablet compact
+   * row — use inline card chrome instead.
+   */
+  mobileBottomSheet: boolean;
+  /** Same label as the overflow trigger pill (use as bottom sheet title on mobile). */
+  morePanelTitle: string;
 };
 
 export type SearchFiltersProps = {
@@ -63,6 +71,15 @@ export type SearchFiltersProps = {
   renderMorePanel?: (props: SearchFiltersAllFiltersRenderProps) => ReactNode;
   moreButtonLabel?: string;
   moreButtonIcon?: ComponentProps<typeof Icon>["name"];
+  /** Wired into `FilterPopup` for group finder “People” age field (refinement + Configure). */
+  filterPopupAgeInput?: string;
+  setFilterPopupAgeInput?: (value: string) => void;
+  /**
+   * Highlights a pill when active state is not only from `refinementList` (e.g. campus/age/geo URL).
+   */
+  isFilterPillSupplementallyActive?: (
+    item: SearchFilterDesktopItem,
+  ) => boolean;
 };
 
 export function SearchFilters({
@@ -72,6 +89,9 @@ export function SearchFilters({
   renderMorePanel,
   moreButtonLabel = "More",
   moreButtonIcon = "sliderAlt",
+  filterPopupAgeInput,
+  setFilterPopupAgeInput,
+  isFilterPillSupplementallyActive,
 }: SearchFiltersProps) {
   const { indexUiState } = useInstantSearch();
   const refinementList = useMemo(
@@ -108,6 +128,15 @@ export function SearchFilters({
     ? desktopFilters.slice(compactInlineFilterCount)
     : [];
   const showMoreForOverflow = overflowDesktopItems.length > 1;
+
+  const compactRowButtonCount = showCompactRow
+    ? inlineCompactItems.length +
+      (overflowDesktopItems.length === 1
+        ? 1
+        : showMoreForOverflow
+          ? 1
+          : 0)
+    : 0;
 
   const moreOverflowSelectedCount = useMemo(() => {
     if (overflowDesktopItems.length <= 1) return 0;
@@ -175,20 +204,34 @@ export function SearchFilters({
 
   const renderFilterPill = (
     item: SearchFilterDesktopItem,
-    options?: { embedPopup?: boolean },
+    options?: {
+      embedPopup?: boolean;
+      isSingleVisibleButton?: boolean;
+      /** Compact row: split full width evenly across visible pills (e.g. 2 filters + More). */
+      compactEqualWidth?: boolean;
+    },
   ) => {
     const embedPopup = options?.embedPopup ?? true;
+    const isSingleVisibleButton = options?.isSingleVisibleButton ?? false;
+    const compactEqualWidth = options?.compactEqualWidth ?? false;
     const isOpen = activeDropdown === item.id;
     const selectedCount = countRefinementsForAttributes(
       refinementList,
       uniqueAttributesFromFilterData(item.data),
     );
-    const isHighlighted = isOpen || selectedCount > 0;
+    const supplemental =
+      isFilterPillSupplementallyActive?.(item) ?? false;
+    const isHighlighted =
+      isOpen || selectedCount > 0 || supplemental;
     return (
       <div
         className={cn(
           dropdownButtonStyles,
-          "w-full md:w-fit",
+          isSingleVisibleButton
+            ? "w-full md:w-fit"
+            : compactEqualWidth
+              ? "min-w-0 flex-1"
+              : "w-fit",
           embedPopup && "relative",
           isHighlighted && dropdownButtonOpenStyles,
         )}
@@ -201,6 +244,7 @@ export function SearchFilters({
               className={cn(
                 "transition-colors duration-300",
                 isHighlighted ? "text-ocean" : "text-neutral-default",
+                selectedCount > 0 && "hidden lg:inline-block",
               )}
               size={16}
             />
@@ -224,7 +268,7 @@ export function SearchFilters({
         <Icon
           name="chevronDown"
           className={cn(
-            "ml-1 shrink-0 transition-all duration-300",
+            "ml-1 hidden shrink-0 transition-all duration-300 lg:inline-block",
             isHighlighted ? "text-ocean" : "text-neutral-default",
             isOpen && "rotate-180",
           )}
@@ -237,6 +281,8 @@ export function SearchFilters({
             onHide={closeAllDropdowns}
             showSection={isOpen}
             layout="popover"
+            ageInput={filterPopupAgeInput}
+            setAgeInput={setFilterPopupAgeInput}
           />
         ) : null}
       </div>
@@ -261,11 +307,18 @@ export function SearchFilters({
       >
         {showCompactRow ? (
           <div className="flex w-full min-w-0 flex-col gap-2 lg:hidden">
-            <div className="flex flex-wrap items-center gap-2">
+            <div
+              className={cn(
+                "flex w-full min-w-0 items-stretch gap-2",
+                compactRowButtonCount > 1 ? "flex-nowrap" : "flex-wrap",
+              )}
+            >
               {inlineCompactItems.map((item) => (
                 <Fragment key={item.id}>
                   {renderFilterPill(item, {
                     embedPopup: !useMobileBottomSheet,
+                    isSingleVisibleButton: compactRowButtonCount === 1,
+                    compactEqualWidth: compactRowButtonCount > 1,
                   })}
                 </Fragment>
               ))}
@@ -274,13 +327,15 @@ export function SearchFilters({
                 <Fragment key={overflowDesktopItems[0].id}>
                   {renderFilterPill(overflowDesktopItems[0], {
                     embedPopup: !useMobileBottomSheet,
+                    isSingleVisibleButton: compactRowButtonCount === 1,
+                    compactEqualWidth: compactRowButtonCount > 1,
                   })}
                 </Fragment>
               ) : showMoreForOverflow ? (
                 <div
                   className={cn(
                     dropdownButtonStyles,
-                    "w-fit",
+                    compactRowButtonCount > 1 ? "min-w-0 flex-1" : "w-fit",
                     isMoreHighlighted && dropdownButtonOpenStyles,
                   )}
                   onClick={() => openMorePanel()}
@@ -293,6 +348,8 @@ export function SearchFilters({
                         isMoreHighlighted
                           ? "text-ocean"
                           : "text-neutral-default",
+                        moreOverflowSelectedCount > 0 &&
+                          "hidden lg:inline-block",
                       )}
                       size={16}
                     />
@@ -315,7 +372,7 @@ export function SearchFilters({
                   <Icon
                     name="chevronDown"
                     className={cn(
-                      "ml-1 shrink-0 transition-all duration-300",
+                      "ml-1 hidden shrink-0 transition-all duration-300 lg:inline-block",
                       isMoreHighlighted ? "text-ocean" : "text-neutral-default",
                       isMoreOpen && "rotate-180",
                     )}
@@ -332,23 +389,40 @@ export function SearchFilters({
                 onHide={closeAllDropdowns}
                 showSection
                 layout="bottomSheet"
+                ageInput={filterPopupAgeInput}
+                setAgeInput={setFilterPopupAgeInput}
               />
             ) : null}
 
-            {showMoreForOverflow && isMoreOpen && renderMorePanel ? (
-              <div className="w-full overflow-hidden rounded-lg border border-neutral-300 shadow-md">
-                {renderMorePanel({
-                  onHide: closeAllDropdowns,
-                  onClearAllToUrl,
-                })}
-              </div>
-            ) : null}
+            {showMoreForOverflow && isMoreOpen && renderMorePanel
+              ? useMobileBottomSheet
+                ? renderMorePanel({
+                    onHide: closeAllDropdowns,
+                    onClearAllToUrl,
+                    mobileBottomSheet: true,
+                    morePanelTitle: moreButtonLabel,
+                  })
+                : (
+                    <div className="w-full overflow-hidden rounded-lg border border-neutral-300 shadow-md">
+                      {renderMorePanel({
+                        onHide: closeAllDropdowns,
+                        onClearAllToUrl,
+                        mobileBottomSheet: false,
+                        morePanelTitle: moreButtonLabel,
+                      })}
+                    </div>
+                  )
+              : null}
           </div>
         ) : null}
 
         <div className="hidden flex-wrap items-center gap-2 lg:flex">
           {desktopFilters.map((item) => (
-            <Fragment key={item.id}>{renderFilterPill(item)}</Fragment>
+            <Fragment key={item.id}>
+              {renderFilterPill(item, {
+                isSingleVisibleButton: desktopFilters.length === 1,
+              })}
+            </Fragment>
           ))}
         </div>
       </div>

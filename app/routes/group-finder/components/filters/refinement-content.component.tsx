@@ -6,6 +6,11 @@ import { Icon } from "~/primitives/icon/icon";
 import { PeopleSubsection } from "./people-subsection.component";
 import { FinderLocationSearch } from "~/components/finders/location-search";
 
+function meetingTypeUsesGlobeIcon(label: string): boolean {
+  const t = label.trim().toLowerCase();
+  return t === "virtual" || t === "online";
+}
+
 interface AllFiltersRefinementContentProps {
   data: {
     content: {
@@ -36,6 +41,7 @@ interface AllFiltersRefinementContentProps {
       lng: number | null;
     } | null,
   ) => void;
+  onLocationKind?: (kind: "zip" | "gps" | null) => void;
 }
 
 export const AllFiltersRefinementContent = ({
@@ -47,6 +53,7 @@ export const AllFiltersRefinementContent = ({
   setAgeInput,
   coordinates,
   setCoordinates,
+  onLocationKind,
 }: AllFiltersRefinementContentProps) => {
   const { items, refine } = useRefinementList({
     attribute: data.content.attribute,
@@ -82,23 +89,22 @@ export const AllFiltersRefinementContent = ({
     content.attribute === "topics" &&
     items.some((item) => communityFunTopics.includes(item.label));
   const styles = {
-    checkbox: "text-text-primary font-regular text-base",
+    checkbox: "text-text-primary font-regular text-sm",
     button:
-      "min-w-0 min-h-0 px-2 py-[6px] text-sm font-semibold text-black border border-neutral-light hover:border-ocean transition-all duration-300 rounded-[5px]",
-    meetingTypeButton:
-      "flex gap-1 text-text-primary font-normal text-base !pr-3",
+      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
+    meetingTypeButton: "flex items-center gap-1.5",
     buttonRefined:
-      "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy",
+      "bg-ocean !text-white hover:!bg-navy hover:!text-white",
   };
 
   const MEETING_DAYS_ORDER = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
+    "Sunday",
   ];
 
   const sortedItems =
@@ -117,6 +123,7 @@ export const AllFiltersRefinementContent = ({
     <Button
       key={index}
       intent="secondary"
+      size="sm"
       className={cn(
         styles.button,
         content.isMeetingType && styles.meetingTypeButton,
@@ -128,7 +135,11 @@ export const AllFiltersRefinementContent = ({
       }}
     >
       {content.isMeetingType && (
-        <Icon name={item.label === "Virtual" ? "globe" : "map"} size={18} />
+        <Icon
+          name={meetingTypeUsesGlobeIcon(item.label) ? "globe" : "map"}
+          size={16}
+          className={item.isRefined ? "text-white" : "text-[#222222]"}
+        />
       )}
       {content.attribute === "meetingDays"
         ? item.label === "Thursday"
@@ -152,10 +163,19 @@ export const AllFiltersRefinementContent = ({
     >
       <div
         className={cn(
-          "w-4 h-4 border border-ocean rounded-sm bg-ocean-subdued hover:bg-ocean transition-all duration-300",
-          item.isRefined && "bg-ocean",
+          "box-border flex size-4 shrink-0 items-center justify-center rounded border-2 border-[#D1D5DB] bg-transparent",
+          item.isRefined && "border-[#222222]",
         )}
-      />
+        aria-hidden
+      >
+        {item.isRefined ? (
+          <Icon
+            name="check"
+            size={10}
+            className="text-[#222222]"
+          />
+        ) : null}
+      </div>
       <div className={styles.checkbox}>
         {content.attribute === "adultOnly"
           ? item.value === "false"
@@ -185,17 +205,26 @@ export const AllFiltersRefinementContent = ({
                 "flex bg-white pr-4",
                 content.isCheckbox && content.checkboxLayout === "vertical"
                   ? "gap-4 flex-col"
-                  : "flex-wrap gap-y-2 gap-x-2",
+                  : "flex-wrap gap-y-1.5 gap-x-1.5",
               )}
             >
               {sortedItems.map((item, index) => renderButton(item, index))}
             </div>
 
-            {/* Location Search */}
-            <h3 className="text-base text-black mt-4">Location Radius</h3>
+            <h3 className="text-base text-black mt-4">Filter by zip code</h3>
             <FinderLocationSearch
               coordinates={coordinates}
               setCoordinates={setCoordinates}
+              autoGeocodeZip={false}
+              showCurrentLocationButton={false}
+              onLocationKind={onLocationKind}
+            />
+            <h3 className="text-base text-black mt-4">Filter by distance</h3>
+            <FinderLocationSearch
+              coordinates={coordinates}
+              setCoordinates={setCoordinates}
+              showZipInput={false}
+              onLocationKind={onLocationKind}
             />
           </div>
         ) : content.isPeopleGroup ? (
@@ -256,7 +285,7 @@ export const AllFiltersRefinementContent = ({
             {hasSpiritualGrowthItems && (
               <div className="flex flex-col gap-2">
                 <h3 className="text-base text-black">Spiritual Growth</h3>
-                <div className="flex flex-wrap gap-y-2 gap-x-2">
+                <div className="flex flex-wrap gap-y-1.5 gap-x-1.5">
                   {items
                     .filter((item) =>
                       spiritualGrowthTopics.includes(item.label),
@@ -272,7 +301,7 @@ export const AllFiltersRefinementContent = ({
             {hasLifeSupportItems && (
               <div className="flex flex-col gap-2">
                 <h3 className="text-base text-black">Life & Support</h3>
-                <div className="flex flex-wrap gap-y-2 gap-x-2">
+                <div className="flex flex-wrap gap-y-1.5 gap-x-1.5">
                   {items
                     .filter((item) => lifeSupportTopics.includes(item.label))
                     .map((item, index) => (
@@ -286,7 +315,7 @@ export const AllFiltersRefinementContent = ({
             {hasCommunityFunItems && (
               <div className="flex flex-col gap-2">
                 <h3 className="text-base text-black">Community & Fun</h3>
-                <div className="flex flex-wrap gap-y-2 gap-x-2">
+                <div className="flex flex-wrap gap-y-1.5 gap-x-1.5">
                   {items
                     .filter((item) => communityFunTopics.includes(item.label))
                     .map((item, index) => (
@@ -304,7 +333,7 @@ export const AllFiltersRefinementContent = ({
                 "flex bg-white pr-4",
                 content.isCheckbox && content.checkboxLayout === "vertical"
                   ? "gap-4 flex-col"
-                  : "flex-wrap gap-y-2 gap-x-2",
+                  : "flex-wrap gap-y-1.5 gap-x-1.5",
               )}
             >
               {sortedItems.map((item, index) => (

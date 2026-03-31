@@ -25,9 +25,14 @@ export interface FilterPopupSection {
   isWeekdays?: boolean;
   isDropdown?: boolean;
   isLocation?: boolean;
+  /** Zip + Apply only; pair with `isLocation` on a separate row for current GPS. */
+  isCurrentLocation?: boolean;
   isMeetingType?: boolean;
   coordinates?: FilterCoordinates | null;
   setCoordinates?: (coordinates: FilterCoordinates | null) => void;
+  /** Which control last set `coordinates` (group finder split: zip vs GPS). */
+  locationSource?: "zip" | "gps" | null;
+  onLocationKind?: (kind: "zip" | "gps" | null) => void;
 }
 
 export interface FilterPopupData {
@@ -56,7 +61,7 @@ interface FilterPopupProps {
   layout?: "popover" | "bottomSheet";
 }
 
-function MobileFilterBottomSheet({
+export function MobileFilterBottomSheet({
   title,
   onClose,
   scrollable,
@@ -80,7 +85,10 @@ function MobileFilterBottomSheet({
   // (Strict Mode / cancelled frames left the sheet off-screen with only the backdrop).
   useEffect(() => {
     const enableDragTimer = window.setTimeout(() => setDragEnabled(true), 380);
-    const openDoneTimer = window.setTimeout(() => setOpenAnimationDone(true), 420);
+    const openDoneTimer = window.setTimeout(
+      () => setOpenAnimationDone(true),
+      420,
+    );
     return () => {
       window.clearTimeout(enableDragTimer);
       window.clearTimeout(openDoneTimer);
@@ -172,7 +180,7 @@ function MobileFilterBottomSheet({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[500] box-border flex flex-col justify-end overflow-x-hidden overscroll-contain pointer-events-none"
+      className="fixed inset-0 z-500 box-border flex flex-col justify-end overflow-x-hidden overscroll-contain pointer-events-none"
       style={{
         top: 0,
         left: 0,
@@ -218,13 +226,13 @@ function MobileFilterBottomSheet({
             onPointerUp={finishDrag}
             onPointerCancel={finishDrag}
           >
-            <div className="flex justify-center pt-3 pb-2">
+            <div className="flex justify-center pt-2 pb-1.5">
               <div
                 className="h-1.5 w-11 shrink-0 rounded-full bg-neutral-300"
                 aria-hidden
               />
             </div>
-            <div className="flex min-w-0 items-center justify-between gap-2 border-b border-neutral-100 px-4 pb-3 pt-3">
+            <div className="flex min-w-0 items-center justify-between gap-2 border-b border-neutral-100 px-4 pb-3 pt-2">
               <h2
                 id="filter-sheet-title"
                 className="min-w-0 flex-1 truncate text-xl font-bold text-black"
@@ -242,7 +250,7 @@ function MobileFilterBottomSheet({
               </button>
             </div>
           </div>
-          <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
+          <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pt-2">
             {scrollable}
           </div>
           {footer}
@@ -323,7 +331,7 @@ export const FilterPopup = ({
           )}
         >
           {content.title && (
-            <h3 className="font-semibold text-xs text-neutral-default tracking-[0.06em]">
+            <h3 className="uppercase font-semibold text-xs text-neutral-default tracking-[0.6px]">
               {content.title}
             </h3>
           )}
@@ -369,8 +377,8 @@ export const FilterPopup = ({
         <Button
           intent="primary"
           className={cn(
-            "min-h-0 min-w-0 max-w-full shrink rounded-full px-4 py-1 text-base font-semibold",
-            isBottomSheet ? "w-auto whitespace-normal" : "w-fit",
+            "min-h-0 w-fit shrink-0 rounded-full px-4 py-1 text-base font-semibold",
+            isBottomSheet && "whitespace-normal",
           )}
           onClick={() => onHide()}
         >
@@ -406,7 +414,7 @@ export const FilterPopup = ({
       className={cn(
         "cursor-default z-10 flex flex-col gap-4 bg-white",
         "rounded-2xl border border-neutral-lighter overflow-hidden",
-        "absolute top-[65px] right-1/2 w-[330px] translate-x-1/2 xl:w-[380px]",
+        "absolute top-[65px] right-1/2 w-[280px] translate-x-1/2 xl:w-[320px]",
         showSection
           ? "opacity-100"
           : "-left-[9999px] -z-1 opacity-0 pointer-events-none",
@@ -431,6 +439,11 @@ export const FilterPopup = ({
     </div>
   );
 };
+
+function meetingTypeUsesGlobeIcon(label: string): boolean {
+  const t = label.trim().toLowerCase();
+  return t === "virtual" || t === "online";
+}
 
 const FilterPopupContent = ({
   sectionKey,
@@ -457,13 +470,13 @@ const FilterPopupContent = ({
   ];
 
   const MEETING_DAYS_ORDER = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
+    "Sunday",
   ];
 
   // Filter items based on category and popup title
@@ -512,10 +525,28 @@ const FilterPopupContent = ({
     }
   }, [ageInput]);
 
+  const coordsMeaningful = (c: FilterCoordinates | null | undefined) =>
+    c != null &&
+    c.lat != null &&
+    c.lng != null &&
+    !Number.isNaN(c.lat) &&
+    !Number.isNaN(c.lng);
+
   const hasSectionSelection = useMemo(() => {
     if (data.isLocation) {
-      const c = data.coordinates;
-      return c != null && (c.lat != null || c.lng != null);
+      const zipRowUsesSource =
+        data.onLocationKind != null || data.isCurrentLocation === true;
+      if (zipRowUsesSource) {
+        return (
+          data.locationSource === "zip" && coordsMeaningful(data.coordinates)
+        );
+      }
+      return coordsMeaningful(data.coordinates);
+    }
+    if (data.isCurrentLocation) {
+      return (
+        data.locationSource === "gps" && coordsMeaningful(data.coordinates)
+      );
     }
     if (data.input) {
       return localAgeInput.trim() !== "";
@@ -526,6 +557,8 @@ const FilterPopupContent = ({
     return filteredItems.some((i) => i.isRefined);
   }, [
     data.isLocation,
+    data.isCurrentLocation,
+    data.locationSource,
     data.coordinates,
     data.input,
     data.isDropdown,
@@ -542,10 +575,19 @@ const FilterPopupContent = ({
     });
     setLocalAgeInput("");
     setAgeInput?.("");
-    if (data.isLocation) {
+    if (data.isLocation || data.isCurrentLocation) {
       data.setCoordinates?.(null);
+      data.onLocationKind?.(null);
     }
-  }, [items, refine, setAgeInput, data.isLocation, data.setCoordinates]);
+  }, [
+    items,
+    refine,
+    setAgeInput,
+    data.isLocation,
+    data.isCurrentLocation,
+    data.setCoordinates,
+    data.onLocationKind,
+  ]);
 
   useEffect(() => {
     if (!showPopupFooter) return;
@@ -563,14 +605,13 @@ const FilterPopupContent = ({
   ]);
 
   const styles = {
-    checkbox: "min-w-0 break-words text-text-primary font-regular text-base",
+    checkbox: "min-w-0 break-words text-text-primary font-regular text-sm",
     button:
-      "max-w-full min-w-0 whitespace-normal px-4 py-2 bg-gray text-sm border-none font-semibold text-neutral-darker hover:bg-ocean transition-all duration-300 rounded-[16777200px]",
-    meetingTypeButton:
-      "flex max-w-full min-w-0 flex-wrap items-center gap-1 text-text-primary font-normal text-base !pr-3",
-    buttonRefined: "bg-ocean text-white hover:bg-navy",
+      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
+    meetingTypeButton: "flex w-fit flex-wrap items-center gap-1.5",
+    buttonRefined: "bg-ocean !text-white hover:bg-navy",
     input:
-      "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full",
+      "box-border w-full max-w-[120px] min-w-0 rounded border border-[#444444] px-2 py-1.5 text-sm text-[#222222] placeholder:text-[#222222]/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444]",
   };
 
   return (
@@ -581,13 +622,23 @@ const FilterPopupContent = ({
             "flex min-w-0 max-w-full bg-white",
             data.checkbox && data.checkboxLayout === "vertical"
               ? "gap-4 flex-col"
-              : "flex-wrap gap-2",
+              : "flex-wrap gap-1.5",
           )}
         >
           {data.isLocation ? (
             <FinderLocationSearch
               coordinates={data.coordinates || null}
               setCoordinates={data.setCoordinates || (() => {})}
+              autoGeocodeZip={false}
+              showCurrentLocationButton={false}
+              onLocationKind={data.onLocationKind}
+            />
+          ) : data.isCurrentLocation ? (
+            <FinderLocationSearch
+              coordinates={data.coordinates || null}
+              setCoordinates={data.setCoordinates || (() => {})}
+              showZipInput={false}
+              onLocationKind={data.onLocationKind}
             />
           ) : (
             <>
@@ -629,10 +680,19 @@ const FilterPopupContent = ({
                           >
                             <div
                               className={cn(
-                                "w-4 h-4 border border-ocean rounded-sm bg-ocean-subdued hover:bg-ocean transition-all duration-300",
-                                item.isRefined && "bg-ocean",
+                                "box-border flex size-4 shrink-0 items-center justify-center rounded border-2 border-[#D1D5DB] bg-transparent",
+                                item.isRefined && "border-[#222222]",
                               )}
-                            />
+                              aria-hidden
+                            >
+                              {item.isRefined ? (
+                                <Icon
+                                  name="check"
+                                  size={10}
+                                  className="text-[#222222]"
+                                />
+                              ) : null}
+                            </div>
                             <div className={styles.checkbox}>
                               {data.attribute === "adultOnly"
                                 ? item.value === "false"
@@ -645,6 +705,7 @@ const FilterPopupContent = ({
                           <Button
                             key={index}
                             intent="secondary"
+                            size="sm"
                             className={cn(
                               styles.button,
                               data.isMeetingType && styles.meetingTypeButton,
@@ -660,9 +721,16 @@ const FilterPopupContent = ({
                             {data.isMeetingType && (
                               <Icon
                                 name={
-                                  item.label === "Virtual" ? "globe" : "map"
+                                  meetingTypeUsesGlobeIcon(item.label)
+                                    ? "globe"
+                                    : "map"
                                 }
-                                size={18}
+                                size={16}
+                                className={
+                                  item.isRefined
+                                    ? "text-white"
+                                    : "text-[#222222]"
+                                }
                               />
                             )}
                             {data.isWeekdays
@@ -691,10 +759,8 @@ const FilterPopupContent = ({
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               className={cn(
-                "flex items-center justify-between w-full rounded-lg p-3",
-                "border border-black text-neutral-default bg-white",
-                "focus:outline-none focus:ring-2 focus:ring-transparent",
-                "appearance-none cursor-pointer",
+                "box-border flex h-11 w-full cursor-pointer appearance-none items-center justify-between rounded border border-[#444444] bg-white px-3 text-sm text-[#222222]",
+                "focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444]",
               )}
               aria-label={
                 popupTitle
@@ -714,7 +780,11 @@ const FilterPopupContent = ({
                 "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
               )}
             >
-              <Icon name="chevronDown" size={18} />
+              <Icon
+                name="chevronDown"
+                size={16}
+                className="text-[#222222]"
+              />
             </div>
           </div>
         </div>

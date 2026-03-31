@@ -25,8 +25,8 @@ import {
 } from "../components/group-class-type-hits";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
 import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
+import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
 
 const INDEX_NAME = "dev_Classes";
 
@@ -134,14 +134,14 @@ export const ClassSearch = () => {
           coordinates={null}
           hitsPerPageOverride={1000}
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col bg-white pt-4">
           <div
             className={cn(
               "sticky z-20 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
               stickyTopClass,
             )}
           >
-            <div className="mx-auto flex max-w-screen-content flex-col gap-3 pt-8 pb-4 md:flex-row md:items-center md:gap-4">
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
                 <Icon
                   name="searchAlt"
@@ -166,22 +166,37 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              <SearchFilters
-                onClearAllToUrl={clearAllFiltersFromUrl}
-                desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
-                compactInlineFilterCount={2}
-                renderMorePanel={({ onHide, onClearAllToUrl }) => (
-                  <AllClassFiltersPopup
-                    hideTopic
-                    hideLanguage
-                    showFormat
-                    onHide={onHide}
-                    onClearAllToUrl={onClearAllToUrl}
-                  />
-                )}
-              />
+              <div className="lg:hidden w-full">
+                <SearchFilters
+                  onClearAllToUrl={clearAllFiltersFromUrl}
+                  desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
+                  compactInlineFilterCount={2}
+                  renderMorePanel={({
+                    onHide,
+                    onClearAllToUrl,
+                    mobileBottomSheet,
+                    morePanelTitle,
+                  }) => (
+                    <AllClassFiltersPopup
+                      hideTopic
+                      hideLanguage
+                      showFormat
+                      onHide={onHide}
+                      onClearAllToUrl={onClearAllToUrl}
+                      mobileBottomSheet={mobileBottomSheet}
+                      bottomSheetTitle={morePanelTitle}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="hidden min-w-0 flex-1 lg:block">
+                <HubsTagsRefinementList
+                  attribute="topic"
+                  wrapperClass="flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3"
+                />
+              </div>
             </div>
-            <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
           </div>
 
           {/* CLASS SEARCH RESULTS */}
