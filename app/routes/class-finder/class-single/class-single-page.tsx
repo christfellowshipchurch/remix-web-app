@@ -8,7 +8,10 @@ import { Configure, InstantSearch, useHits } from "react-instantsearch";
 import { useMemo } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { UpcomingSessionsSection } from "./partials/upcoming-sections.partial";
+import {
+  UpcomingSessionsSection,
+  escapeAlgoliaFilterString,
+} from "./partials/upcoming-sections.partial";
 import { UpcomingSessionMobileSection } from "./partials/upcoming-session-mobile.partial";
 import { createSearchClient } from "~/lib/create-search-client";
 import { ClassHitType } from "../types";
@@ -46,7 +49,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
       <img
         src={hit.coverImage.sources[0].uri}
         alt={hit.title}
-        className="w-full h-[250px] lg:h-[500px] object-cover overflow-hidden flex-shrink-0"
+        className="w-full h-[250px] lg:h-[500px] object-cover overflow-hidden shrink-0"
       />
 
       {/* Content */}
@@ -103,7 +106,7 @@ export function ClassSinglePage() {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   return (
@@ -127,7 +130,7 @@ export function ClassSinglePage() {
         removeWordsIfNoResults="none"
         typoTolerance={false}
         exactOnSingleWordQuery="word"
-        filters={`classTypeUrl:"${classUrl}"`}
+        filters={`classType:"${escapeAlgoliaFilterString(classUrl)}"`}
       />
 
       <CustomClassSingleHits />

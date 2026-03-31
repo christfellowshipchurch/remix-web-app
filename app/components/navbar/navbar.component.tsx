@@ -192,6 +192,10 @@ export function Navbar() {
     },
   ];
 
+  const latestMessageFeaturedUrl = watchReadListen?.featureCards?.find(
+    (card) => card.subtitle === "Latest Message",
+  )?.callToAction?.url;
+
   // Search handling
   const handleSearchClick = () => {
     setIsSearchOpen(true);
@@ -418,6 +422,7 @@ export function Navbar() {
                 mode={mode}
                 setMode={setMode}
                 showSiteBanner={showSiteBanner}
+                latestMessageTo={latestMessageFeaturedUrl}
               />
             </div>
           </div>

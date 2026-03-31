@@ -25,6 +25,7 @@ import {
   parseGroupFinderUrlState,
   groupFinderUrlStateToParams,
   groupFinderEmptyState,
+  hasGroupFinderNonInstantSearchFilters,
   type GroupFinderUrlState,
 } from "../group-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
@@ -192,6 +193,12 @@ export const GroupSearch = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
+  const additionalClearAllFiltersActive =
+    hasGroupFinderNonInstantSearchFilters(
+      parseGroupFinderUrlState(searchParams),
+      coordinates,
+    );
+
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const urlState: GroupFinderUrlState = {
@@ -276,6 +283,7 @@ export const GroupSearch = () => {
                 <AlgoliaFinderClearAllButton
                   className="hidden xl:block"
                   onClearAllToUrl={clearAllFiltersFromUrl}
+                  additionalFiltersActive={additionalClearAllFiltersActive}
                 />
               </div>
             </div>
@@ -356,6 +364,8 @@ export const ResponsiveConfigure = ({
   selectedLocation,
   ageInput,
   coordinates,
+  /** When set, skips responsive 5–12 caps (e.g. class finder groups many hits by `classType` client-side). */
+  hitsPerPageOverride,
 }: {
   selectedLocation: string | null;
   ageInput: string;
@@ -363,21 +373,24 @@ export const ResponsiveConfigure = ({
     lat: number | null;
     lng: number | null;
   } | null;
+  hitsPerPageOverride?: number;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
 
-  const hitsPerPage = (() => {
-    switch (true) {
-      case isXLarge || isLarge:
-        return 12;
-      case isMedium:
-        return 9;
-      case isSmall:
-        return 5;
-      default:
-        return 5;
-    }
-  })();
+  const hitsPerPage =
+    hitsPerPageOverride ??
+    (() => {
+      switch (true) {
+        case isXLarge || isLarge:
+          return 12;
+        case isMedium:
+          return 9;
+        case isSmall:
+          return 5;
+        default:
+          return 5;
+      }
+    })();
 
   // Build filters array
   const filters = [];

@@ -1,21 +1,28 @@
 import { ImageSource } from "../group-finder/types";
 
+/** Single highlighted field from Algolia search responses. */
+export type ClassHitHighlightField = {
+  value: string;
+  matchLevel: string;
+  matchedWords: string[];
+};
+
+/**
+ * `dev_Classes` record shape + optional `_highlightResult` from search API.
+ */
 export interface ClassHitType {
   objectID: string;
-  id: string;
-  title: string; // this will either be Rock Class Title
+  title: string;
   classType: string;
-  classTypeUrl: string;
-  subtitle: string; // this will be the subtitle of the class inside Class Preference Define Type
-  summary: string; // this will be the summary of the class inside the individual Classes
+  campus: string;
+  groupId: number;
+  subtitle: string;
+  summary: string;
   coverImage: ImageSource;
-  campus: {
-    name: string;
-  };
   _geoloc: {
     lat: number;
     lng: number;
-  }; // will be coordinates of the campus
+  };
   startDate: string;
   endDate: string;
   schedule: string; // Sunday at 8:00 AM
@@ -26,44 +33,20 @@ export interface ClassHitType {
     | "Parenting"
     | "Spiritual Growth";
   language: "English" | "Español" | "Multiple Languages";
-  format: "In-Person" | "Online";
-  _highlightResult: {
-    title: {
-      value: string;
-      matchLevel: string;
-      matchedWords: string[];
+  format: "In-Person" | "Virtual";
+  /** Present on search hits when highlighting is enabled; keys vary by query. */
+  _highlightResult?: {
+    title?: ClassHitHighlightField;
+    summary?: ClassHitHighlightField;
+    author?: {
+      firstName?: ClassHitHighlightField;
+      lastName?: ClassHitHighlightField;
     };
-    summary: {
-      value: string;
-      matchLevel: string;
-      matchedWords: string[];
+    routing?: {
+      pathname?: ClassHitHighlightField;
     };
-    author: {
-      firstName: {
-        value: string;
-        matchLevel: string;
-        matchedWords: string[];
-      };
-      lastName: {
-        value: string;
-        matchLevel: string;
-        matchedWords: string[];
-      };
-    };
-    routing: {
-      pathname: {
-        value: string;
-        matchLevel: string;
-        matchedWords: string[];
-      };
-    };
-    htmlContent: {
-      value: string;
-      matchLevel: string;
-      matchedWords: string[];
-    }[];
+    htmlContent?: ClassHitHighlightField[];
   };
-  __position: number;
 }
 
 export type ContactFormType = {
