@@ -1,3 +1,6 @@
+import { useFetcher, useLoaderData } from "react-router-dom";
+import { useState, useEffect } from "react";
+
 import { CampusInfo } from "./campus-info.partial";
 import { LocationFAQ } from "./faq.partial";
 import { DynamicHero } from "~/components/dynamic-hero";
@@ -14,10 +17,13 @@ import {
 } from "../location-single-data";
 import { useResponsive } from "~/hooks/use-responsive";
 import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
-import { useState, useEffect } from "react";
 import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
-import { useFetcher, useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
+import {
+  buildWistiaOEmbedRequestUrl,
+  buildWistiaSwatchImageUrl,
+  type WistiaOEmbedPayload,
+} from "~/lib/wistia-oembed";
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -31,6 +37,54 @@ function useResponsiveVideo(
     return backgroundVideoMobile || backgroundVideoDesktop;
   }
   return backgroundVideoDesktop || backgroundVideoMobile;
+}
+
+/** Hero backdrop: Wistia oEmbed thumbnail (with swatch fallback) or campus image. */
+function useLocationHeroBackgroundImage(
+  wistiaId: string | undefined,
+  campusImage: string | undefined,
+): string | undefined {
+  const [wistiaPosterUrl, setWistiaPosterUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const trimmed = wistiaId?.trim() ?? "";
+    if (!trimmed) {
+      setWistiaPosterUrl(null);
+      return;
+    }
+
+    setWistiaPosterUrl(null);
+
+    const controller = new AbortController();
+
+    const loadPoster = async () => {
+      try {
+        const response = await fetch(buildWistiaOEmbedRequestUrl(trimmed), {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          return;
+        }
+        const data = (await response.json()) as WistiaOEmbedPayload;
+        if (data.thumbnail_url) {
+          setWistiaPosterUrl(data.thumbnail_url);
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+      }
+    };
+
+    void loadPoster();
+    return () => controller.abort();
+  }, [wistiaId]);
+
+  const trimmed = wistiaId?.trim() ?? "";
+  if (!trimmed) {
+    return campusImage;
+  }
+  return wistiaPosterUrl ?? buildWistiaSwatchImageUrl(trimmed);
 }
 
 export function LocationSingle({ hit }: { hit: LocationHitType }) {
@@ -82,6 +136,11 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     backgroundVideoDesktop,
   );
 
+  const heroBackgroundImage = useLocationHeroBackgroundImage(
+    wistiaId,
+    campusImage,
+  );
+
   const isOnline = campusName?.includes("Online");
   const isSpanish = campusName?.includes("Español");
 
@@ -110,7 +169,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
       <DynamicHero
         isSpanish={isSpanish}
         wistiaId={wistiaId}
-        imagePath={campusImage}
+        imagePath={heroBackgroundImage}
         desktopHeight="800px"
         customTitle={`<h1 style='font-weight: 800;'><span style='color: #0092BC;'>${heading1}</span> <br/>${heading2}</h1>`}
         ctas={ctas}
@@ -186,11 +245,16 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     backgroundVideoDesktop,
   );
 
+  const heroBackgroundImage = useLocationHeroBackgroundImage(
+    wistiaId,
+    campusImage,
+  );
+
   return (
     <div className="w-full overflow-hidden">
       <DynamicHero
         wistiaId={wistiaId}
-        imagePath={campusImage}
+        imagePath={heroBackgroundImage}
         desktopHeight="800px"
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[

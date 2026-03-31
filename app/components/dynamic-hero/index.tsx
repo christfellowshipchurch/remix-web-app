@@ -35,6 +35,7 @@ export const DynamicHero = ({
   fullOverlay = false,
 }: DynamicHeroTypes) => {
   const location = useLocation();
+
   const pagePath =
     location.pathname
       .split("/")
@@ -76,7 +77,8 @@ export const DynamicHero = ({
             loop
           />
         )}
-        {!wistiaId && imagePath && (
+
+        {imagePath && !wistiaId && (
           <img
             src={imagePath}
             alt="Hero Background"
@@ -136,7 +138,7 @@ export const DynamicHero = ({
                       <SetAReminderModal
                         key={i}
                         intent="secondary"
-                        className="text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10"
+                        className="text-white border-[#FAFAFC] rounded-none border hover:bg-white/10!"
                       />
                     );
                   } else {

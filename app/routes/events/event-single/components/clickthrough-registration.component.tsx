@@ -861,11 +861,13 @@ interface FormStepProps {
 const FormStep = ({
   groupGuid,
   groupType,
-  selectedCampus: _selectedCampus,
+  selectedCampus,
   selectedDate: _selectedDate,
   selectedTime: _selectedTime,
 }: FormStepProps) => {
-  const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType);
+  const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
+    selectedCampus,
+  });
   const rockEmbedUrl = `https://rock.gocf.org/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true`;
   const formHeight = getEmbedHeightForGroupType(groupType);
   const [embedHeight, setEmbedHeight] = useState(formHeight);

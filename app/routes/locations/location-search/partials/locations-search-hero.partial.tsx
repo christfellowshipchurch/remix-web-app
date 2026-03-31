@@ -3,53 +3,51 @@ import { useEffect, useState, useRef } from "react";
 import { Video } from "~/primitives/video/video.primitive";
 import { cn, isValidZip } from "~/lib/utils";
 
-type SearchProps = {
-  scrollCampusesIntoView: () => void;
-  handleSearch: (query: string | null) => void;
-  setCoordinates: (coordinates: {
+type SetCoordinatesProp = (
+  coordinates: {
     lat: number | null;
     lng: number | null;
-  }) => void;
+  } | null,
+  options?: { scrollWithNavbarOffset?: boolean },
+) => void;
+
+type SearchProps = {
+  handleSearch: (query: string | null) => void;
+  setCoordinates: SetCoordinatesProp;
 };
 
-export const Search = ({
-  handleSearch,
-  setCoordinates,
-  scrollCampusesIntoView,
-}: SearchProps) => {
+export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const geolocationFromUserClickRef = useRef(false);
 
   // Set the coordinates to the user's current location
   useEffect(() => {
     if (useCurrentLocation) {
-      // Get the current location
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setCoordinates({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          if (!isInitialLoad) {
-            scrollCampusesIntoView();
-          }
+          const scrollWithNavbarOffset = geolocationFromUserClickRef.current;
+          geolocationFromUserClickRef.current = false;
+          setCoordinates(
+            {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+            { scrollWithNavbarOffset },
+          );
           setLocationActive(true);
         },
         (error) => {
+          geolocationFromUserClickRef.current = false;
           console.error(error);
           setLocationActive(false);
         },
       );
 
       setUseCurrentLocation(false);
-
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      }
     }
-  }, [useCurrentLocation]);
+  }, [useCurrentLocation, setCoordinates]);
 
   return (
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
@@ -85,7 +83,10 @@ export const Search = ({
             <div className="flex gap-2">
               <div
                 className="cursor-pointer italic underline"
-                onClick={() => setUseCurrentLocation(true)}
+                onClick={() => {
+                  geolocationFromUserClickRef.current = true;
+                  setUseCurrentLocation(true);
+                }}
               >
                 Use my current location
               </div>
@@ -109,10 +110,7 @@ const SearchBar = ({
   setError,
 }: {
   onSearchSubmit: (query: string | null) => void;
-  setCoordinates: (coordinates: {
-    lat: number | null;
-    lng: number | null;
-  }) => void;
+  setCoordinates: SetCoordinatesProp;
   setError: (error: string | null) => void;
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -161,7 +159,7 @@ const SearchBar = ({
         <Icon
           name="search"
           size={20}
-          className={`text-white relative right-[1px] bottom-[1px]`}
+          className={`text-white relative right-px bottom-px`}
         />
       </button>
 
@@ -170,7 +168,7 @@ const SearchBar = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Search by zip code"
-        className="flex-grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
+        className="grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
         onBlur={() => inputRef.current?.blur()}
         ref={inputRef}
       />
