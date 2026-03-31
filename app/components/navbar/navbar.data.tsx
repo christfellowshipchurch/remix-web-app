@@ -77,7 +77,7 @@ export const ministriesData: MenuLink = {
           {
             title: "My Groups & Classes",
             description: "Stay connected & up to date",
-            url: "/connect",
+            url: "https://legacy-my-groups.vercel.app/login",
           },
           {
             title: "Volunteer",
@@ -120,7 +120,7 @@ export const watchReadListenData: MenuLink = {
         title: "READ",
         items: [
           { title: "Articles", url: "/articles" },
-          { title: "Devotionals", url: "/devotionals" },
+          { title: "Devotionals", url: "/daily-devo" },
         ],
       },
       {
