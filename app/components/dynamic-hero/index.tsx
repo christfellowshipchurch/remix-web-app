@@ -54,20 +54,29 @@ export const DynamicHero = ({
         ["--ipad-height" as string]: ipadHeight || mobileHeight || "640px",
         ["--desktop-height" as string]:
           desktopHeight || ipadHeight || mobileHeight || "640px",
-        ...(wistiaId && imagePath && { backgroundImage: `url(${imagePath})` }),
       }}
       className={cn(
         "relative flex items-center justify-start self-stretch",
         "h-(--mobile-height)",
         "md:h-(--ipad-height)",
         "lg:h-(--desktop-height)",
-        wistiaId && imagePath && "bg-cover bg-center bg-no-repeat",
-        wistiaId && imagePath && "before:absolute before:inset-0 before:bg-black/50",
       )}
       aria-label={`${pagePath} Hero`}
     >
       {/* Video if passed in */}
-      <div className={"absolute size-full overflow-hidden"}>
+      {/* z-0 traps poster/video/dim layer below gradient + content (inner z-[15] stays inside this context) */}
+      <div className="absolute inset-0 z-0 size-full overflow-hidden">
+        {/* Use <img> (not CSS background) so fetchPriority applies when Wistia + poster */}
+        {wistiaId && imagePath && (
+          <img
+            src={imagePath}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 z-0 w-full h-full object-cover"
+            aria-hidden
+          />
+        )}
         {wistiaId && (
           <Video
             key={`${location.pathname}-${wistiaId}`}
@@ -75,6 +84,14 @@ export const DynamicHero = ({
             autoPlay
             muted
             loop
+            className="relative z-10"
+          />
+        )}
+        {/* Above poster + video: outer ::before sat behind the absolute media layer */}
+        {wistiaId && (
+          <div
+            className="pointer-events-none absolute inset-0 z-[15] bg-black/50"
+            aria-hidden
           />
         )}
 
@@ -91,7 +108,7 @@ export const DynamicHero = ({
       {/* Bottom Background Gradient Overlay or full overlay */}
       <div
         className={cn(
-          "absolute bottom-0 left-0 right-0 h-full z-0",
+          "absolute bottom-0 left-0 right-0 h-full z-[1]",
           fullOverlay
             ? "bg-black/60"
             : "bg-linear-to-t from-black to-transparent opacity-70",
@@ -101,7 +118,7 @@ export const DynamicHero = ({
       {/* Content */}
       <div
         className={cn(
-          "flex flex-col w-full items-start justify-end self-stretch z-10",
+          "relative z-10 flex flex-col w-full items-start justify-end self-stretch",
           "px-5 md:px-12 lg:px-18",
         )}
       >

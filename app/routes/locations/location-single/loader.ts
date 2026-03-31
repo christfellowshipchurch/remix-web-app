@@ -2,6 +2,7 @@ import { LoaderFunction } from "react-router-dom";
 import { mapPageBuilderChildItems } from "~/routes/page-builder/loader";
 import { PageBuilderSection } from "~/routes/page-builder/types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { createImageUrlFromGuid } from "~/lib/utils";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -9,6 +10,7 @@ export type LoaderReturnType = {
   GOOGLE_MAPS_API_KEY: string;
   campusUrl: string;
   campusName: string;
+  campusImage: string;
   upcomingEvents: PageBuilderSection & { type: "EVENT_COLLECTION" };
 };
 
@@ -119,12 +121,17 @@ export const loader: LoaderFunction = async ({ params }) => {
     }
   }
 
+  const campusImage = createImageUrlFromGuid(
+    campus?.attributeValues?.campusImage?.value || "",
+  );
+
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     GOOGLE_MAPS_API_KEY: googleMapsApiKey,
     campusUrl: decodeURIComponent(campusUrl),
     campusName: campusName,
+    campusImage,
     upcomingEvents,
   };
 

@@ -51,6 +51,7 @@ export const DuringTheWeek = ({
                     <Link
                       to={ministry.learnMoreUrl}
                       className="inline align-middle"
+                      aria-label={`${ministry.minstryType} Link`}
                     >
                       <Icon
                         name="linkExternal"
