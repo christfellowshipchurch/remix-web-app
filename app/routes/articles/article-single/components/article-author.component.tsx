@@ -45,7 +45,7 @@ export default function ArticleAuthor({
 
       <div className="ml-4 flex flex-col justify-center">
         <h2 className="semibold mb-2">
-          By{" "}
+          Authored by{" "}
           <Link
             to={`/author/${authorPathname}`}
             prefetch="intent"

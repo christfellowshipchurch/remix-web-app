@@ -37,7 +37,7 @@ export const Video = (props: VideoProps) => {
     const loadWistiaScript = (): Promise<void> => {
       return new Promise((resolve) => {
         const existingScript = document.querySelector(
-          'script[src*="fast.wistia.com/assets/external/E-v1.js"]'
+          'script[src*="fast.wistia.com/assets/external/E-v1.js"]',
         );
         if (existingScript) {
           resolve();
