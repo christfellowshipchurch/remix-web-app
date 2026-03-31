@@ -27,10 +27,14 @@
   --animate-fadeOut: fadeOut 200ms ease;
 
   /* Modal */
-  --animate-dialogOverlayShow: dialogOverlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-dialogContentShow: dialogContentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-dialogOverlayHide: dialogOverlayHide 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-dialogContentHide: dialogContentHide 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialogOverlayShow: dialogOverlayShow 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialogContentShow: dialogContentShow 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialogOverlayHide: dialogOverlayHide 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialogContentHide: dialogContentHide 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Accordion */
   --animate-accordion-down: accordion-down 0.3s ease-out;
@@ -47,32 +51,32 @@
 @theme {
   /* Primitive */
   --color-black: #000000;
-  --color-gray: #F3F5FA;
-  --color-white: #FFFFFF;
-  --color-soft-white: #FAFAFC;
-  --color-dark-navy: #00354D;
-  --color-navy: #004F71;
-  --color-navy-subdued: #DAEAF1;
-  --color-ocean: #0092BC;
-  --color-ocean-subdued: #E7F9FE;
-  --color-cotton-candy: #6BCABA;
-  --color-coconut: #D0D0CE;
-  --color-apple: #CB2C30;
-  --color-tangerine: #FF8F1C;
-  --color-peach: #E8927C;
-  --color-lemon: #FCD757;
+  --color-gray: #f3f5fa;
+  --color-white: #ffffff;
+  --color-soft-white: #fafafc;
+  --color-dark-navy: #00354d;
+  --color-navy: #004f71;
+  --color-navy-subdued: #daeaf1;
+  --color-ocean: #0092bc;
+  --color-ocean-subdued: #e7f9fe;
+  --color-cotton-candy: #6bcaba;
+  --color-coconut: #d0d0ce;
+  --color-apple: #cb2c30;
+  --color-tangerine: #ff8f1c;
+  --color-peach: #e8927c;
+  --color-lemon: #fcd757;
 
   /* System */
-  --color-alert: #B42318;
-  --color-alert-light: #FEF3F2;
-  --color-success: #1EC27F;
-  --color-success-light: #ECFDF3;
-  --color-warning: #E09541;
+  --color-alert: #b42318;
+  --color-alert-light: #fef3f2;
+  --color-success: #1ec27f;
+  --color-success-light: #ecfdf3;
+  --color-warning: #e09541;
 
   /* Neutral */
-  --color-neutral-lightest: #EEEEEE;
-  --color-neutral-lighter: #CCCCCC;
-  --color-neutral-light: #AAAAAA;
+  --color-neutral-lightest: #eeeeee;
+  --color-neutral-lighter: #cccccc;
+  --color-neutral-light: #aaaaaa;
   --color-neutral-default: #666666;
   --color-neutral-dark: #444444;
   --color-neutral-darker: #222222;
@@ -111,76 +115,169 @@
 
 /* ------------ Custom Keyframes ------------ */
 @keyframes enterFromRight {
-  from { opacity: 0; transform: translateX(200px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes enterFromLeft {
-  from { opacity: 0; transform: translateX(-200px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes exitToRight {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(200px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(200px);
+  }
 }
 @keyframes exitToLeft {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-200px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: rotateX(-10deg) scale(0.9); }
-  to { opacity: 1; transform: rotateX(0deg) scale(1); }
+  from {
+    opacity: 0;
+    transform: rotateX(-10deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0deg) scale(1);
+  }
 }
 @keyframes scaleOut {
-  from { opacity: 1; transform: rotateX(0deg) scale(1); }
-  to { opacity: 0; transform: rotateX(-10deg) scale(0.95); }
+  from {
+    opacity: 1;
+    transform: rotateX(0deg) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: rotateX(-10deg) scale(0.95);
+  }
 }
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 @keyframes dialogOverlayShow {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes dialogContentShow {
-  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 @keyframes dialogOverlayHide {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 @keyframes dialogContentHide {
-  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  to { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
 }
 @keyframes accordion-down {
-  from { height: 0; }
-  to { height: var(--radix-accordion-content-height); }
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
 }
 @keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); }
-  to { height: 0; }
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 @keyframes gradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 @keyframes slide-in {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 @keyframes slide-out {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(100%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 @keyframes grow-line-from-left {
-  from { width: 0%; }
-  to { width: 100%; }
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 /* Importing fonts directly in tailwind.css */
@@ -242,6 +339,7 @@
 
     font-style: italic;
     font-weight: 400;
+    font-display: swap;
     font-stretch: normal;
   }
 
@@ -253,6 +351,7 @@
     font-style: normal;
     font-weight: 500;
     font-stretch: normal;
+    font-display: swap;
   }
 
   @font-face {
@@ -262,6 +361,7 @@
     font-style: italic;
     font-weight: 500;
     font-stretch: normal;
+    font-display: swap;
   }
 
   /* Semibold */
@@ -281,6 +381,7 @@
     font-style: italic;
     font-weight: 600;
     font-stretch: normal;
+    font-display: swap;
   }
 
   /* Bold */
@@ -291,6 +392,7 @@
     font-style: normal;
     font-weight: 700;
     font-stretch: normal;
+    font-display: swap;
   }
 
   @font-face {
@@ -300,6 +402,7 @@
     font-style: italic;
     font-weight: 700;
     font-stretch: normal;
+    font-display: swap;
   }
 
   /* Extrabold */
@@ -310,6 +413,7 @@
     font-style: normal;
     font-weight: 800;
     font-stretch: normal;
+    font-display: swap;
   }
 
   @font-face {
@@ -319,6 +423,7 @@
     font-style: italic;
     font-weight: 800;
     font-stretch: normal;
+    font-display: swap;
   }
 
   /* Black */
@@ -329,6 +434,7 @@
     font-style: normal;
     font-weight: 900;
     font-stretch: normal;
+    font-display: swap;
   }
 
   @font-face {
@@ -338,6 +444,7 @@
     font-style: italic;
     font-weight: 900;
     font-stretch: normal;
+    font-display: swap;
   }
 
   /* ------------ Retroica ------------ */
@@ -636,7 +743,6 @@
     --chart-5: 340 75% 55%;
   }
 }
-
 
 /* ------------ Search Input Type - Cancel Button ------------ */
 input[type="search"]::-webkit-search-cancel-button {

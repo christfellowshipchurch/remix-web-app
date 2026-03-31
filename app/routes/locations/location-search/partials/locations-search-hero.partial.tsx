@@ -40,7 +40,7 @@ export const Search = ({
         (error) => {
           console.error(error);
           setLocationActive(false);
-        }
+        },
       );
 
       setUseCurrentLocation(false);
@@ -60,6 +60,7 @@ export const Search = ({
           loop
           muted
           className="absolute left-0 top-0 size-full object-cover"
+          aria-label="Locations Search Hero Video"
         />
         <div className="absolute size-full bg-[rgba(0,0,0,0.5)]" />
         <div className="absolute left-1/2 top-1/2 flex w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 md:gap-6 rounded-xl md:bg-black/45 py-12 text-center text-white md:backdrop-blur lg:max-w-[900px]">
@@ -149,12 +150,13 @@ const SearchBar = ({
       onSubmit={handleSubmit}
       className={cn(
         "flex w-full md:max-w-[360px] items-center gap-2 rounded-full p-1 mt-2 md:mt-0",
-        inputValue ? "bg-gray" : "bg-white"
+        inputValue ? "bg-gray" : "bg-white",
       )}
     >
       <button
         type="submit"
         className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy lg:hover:bg-ocean transition-colors duration-300 rounded-full relative cursor-pointer"
+        aria-label="Search"
       >
         <Icon
           name="search"

@@ -253,9 +253,9 @@ export function Navbar() {
                 <a
                   href="/"
                   className="relative flex items-center justify-center gap-2.5"
+                  aria-label="Christ Fellowship Church"
                 >
                   <Icon
-                    aria-label="Christ Fellowship Church"
                     name="logo"
                     className={cn(
                       "size-32 my-[-48px] transition-colors duration-200",
