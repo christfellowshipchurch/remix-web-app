@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Stats, useRefinementList } from "react-instantsearch";
-import { FinderLocationSearch } from "~/components/finders/location-search/location-search.component";
+import { FinderLocationSearch } from "~/components/finders/location-search";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";

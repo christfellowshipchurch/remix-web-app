@@ -11,7 +11,7 @@ import { AllClassFiltersPopup } from "../components/popups/all-filters.component
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
-import { DesktopClassFilters } from "../components/popups/class-filters";
+import { SearchFilters } from "~/components/finders/search-filters";
 import { ClassHitType } from "../../types";
 import {
   parseClassFinderUrlState,
@@ -173,11 +173,15 @@ export const ClassSearch = () => {
               isNavbarOpen ? "top-18 md:top-20" : "top-0",
             )}
           >
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
-                <Icon name="searchAlt" className="text-neutral-default ml-3" />
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 py-4 max-w-screen-content mx-auto h-20">
+              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
+                <Icon
+                  name="searchAlt"
+                  className="text-neutral-default ml-3"
+                  size={16}
+                />
                 <SearchBox
-                  placeholder="Keyword"
+                  placeholder="Search"
                   translations={{
                     submitButtonTitle: "Search",
                     resetButtonTitle: "Reset",
@@ -185,7 +189,8 @@ export const ClassSearch = () => {
                   classNames={{
                     root: "flex-grow",
                     form: "flex",
-                    input: "w-full text-xl px-2 focus:outline-none",
+                    input:
+                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-3 focus:outline-none",
                     resetIcon: "hidden",
                     submit: "hidden",
                     loadingIcon: "hidden",
@@ -194,15 +199,16 @@ export const ClassSearch = () => {
               </div>
 
               <div className="hidden md:flex items-center gap-4">
-                <DesktopClassFilters onClearAllToUrl={clearAllFiltersFromUrl} />
+                <SearchFilters onClearAllToUrl={clearAllFiltersFromUrl} />
                 <AlgoliaFinderClearAllButton
-                  className="hidden lg:block"
+                  className="hidden md:block"
                   onClearAllToUrl={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
           </div>
 
+          {/* MOBILE FILTERS */}
           <div className="md:hidden bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
             <div className="content-padding">
               <Button
@@ -229,6 +235,7 @@ export const ClassSearch = () => {
             </div>
           </div>
 
+          {/* CLASS SEARCH RESULTS */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
               <ClassTypeGroupedResults

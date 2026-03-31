@@ -17,7 +17,7 @@ export const FinderLocationSearch = ({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null
+    } | null,
   ) => void;
   className?: string;
 }) => {
@@ -81,7 +81,7 @@ export const FinderLocationSearch = ({
         });
       },
       (error) => console.error("Error getting current location:", error),
-      { enableHighAccuracy: true, maximumAge: 0 }
+      { enableHighAccuracy: true, maximumAge: 0 },
     );
   };
 
@@ -100,7 +100,7 @@ export const FinderLocationSearch = ({
           "transition-all duration-300",
           {
             "border-ocean": coordinates,
-          }
+          },
         )}
         disabled={isGeocoding}
       />

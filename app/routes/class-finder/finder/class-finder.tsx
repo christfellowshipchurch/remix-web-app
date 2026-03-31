@@ -1,5 +1,5 @@
 import { ClassSearch } from "./partials/class-search.partial";
-import { FinderHero } from "~/components/finders/hero/hero.component";
+import { FinderHero } from "~/components/finders/hero";
 
 export function ClassFinderPage() {
   return (

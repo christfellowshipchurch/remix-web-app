@@ -5,7 +5,7 @@ import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filte
 import { AllClassFiltersPopup } from "~/routes/class-finder/finder/components/popups/all-filters.component";
 import { cn } from "~/lib/utils";
 
-export function DesktopClassFilters({
+export function SearchFilters({
   onClearAllToUrl,
 }: {
   onClearAllToUrl?: () => void;
@@ -50,19 +50,20 @@ export function DesktopClassFilters({
   }, [activeDropdown]);
 
   const dropdownButtonStyles =
-    "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-lg p-3 border border-neutral-default md:w-[900px] text-text-secondary font-semibold cursor-pointer";
+    "relative flex items-center justify-between w-full max-w-[140px] xl:max-w-[148px] rounded-lg p-3 border border-[#DEE0E3] md:w-[900px] text-neutral-default font-semibold cursor-pointer";
 
   return (
     <div
       ref={containerRef}
       className="flex gap-4 w-full bg-white col-span-1 h-full min-w-[300px] items-center"
     >
-      <div className="hidden lg:flex gap-4 w-full">
+      <div className="hidden lg:flex gap-2 w-full">
         {/* Topic */}
         <div
           className={cn(dropdownButtonStyles)}
           onClick={() => toggleDropdown("topic")}
         >
+          <Icon name="bookOpen" className="text-neutral-default" />
           <p>Topic</p>
           <Icon name="chevronDown" />
 
@@ -82,7 +83,6 @@ export function DesktopClassFilters({
         </div>
 
         {/* Language */}
-
         <div
           className={cn(dropdownButtonStyles)}
           onClick={() => toggleDropdown("language")}
@@ -106,7 +106,6 @@ export function DesktopClassFilters({
         </div>
 
         {/* Format */}
-
         <div
           className={cn(dropdownButtonStyles)}
           onClick={() => toggleDropdown("format")}
@@ -151,9 +150,9 @@ export function DesktopClassFilters({
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-              ? "z-1"
-              : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300"
+                ? "z-1"
+                : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300",
           )}
         >
           <AllClassFiltersPopup

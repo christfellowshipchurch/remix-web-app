@@ -1,5 +1,5 @@
 import { GroupSearch } from "./partials/group-search.partial";
-import { FinderHero } from "../../components/finders/hero/hero.component";
+import { FinderHero } from "../../components/finders/hero";
 
 export function GroupFinderPage() {
   return (
