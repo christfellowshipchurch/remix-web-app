@@ -1,7 +1,7 @@
 import { ReactNode, useState, useRef, useEffect } from "react";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
+import { FilterPopup } from "~/components/finders/search-filters/filter-popup.component";
 
 export type SessionFilterCoordinates = {
   lat: number | null;
@@ -42,6 +42,7 @@ export function UpcomingSessionFilters({
         onToggle={() => handleToggle(setShowLocation, showLocation)}
         onHide={onHide}
         data={{
+          showFooter: true,
           content: [
             {
               attribute: "campus",
@@ -53,7 +54,6 @@ export function UpcomingSessionFilters({
               isLocation: true,
               coordinates,
               setCoordinates,
-              showFooter: true,
             },
           ],
         }}
@@ -68,9 +68,8 @@ export function UpcomingSessionFilters({
         onToggle={() => handleToggle(setShowGroupType, showGroupType)}
         onHide={onHide}
         data={{
-          content: [
-            { attribute: "format", isMeetingType: true, showFooter: true },
-          ],
+          showFooter: true,
+          content: [{ attribute: "format", isMeetingType: true }],
         }}
         maxWidth={210}
         refinementClassName="md:-left-[170px] lg:left-auto"
@@ -83,10 +82,10 @@ export function UpcomingSessionFilters({
         onToggle={() => handleToggle(setShowFrequency, showFrequency)}
         onHide={onHide}
         data={{
+          showFooter: true,
           content: [
             {
               attribute: "language",
-              showFooter: true,
             },
           ],
         }}
@@ -113,6 +112,7 @@ interface FilterDropdownProps {
   onToggle: () => void;
   onHide: () => void;
   data: {
+    showFooter?: boolean;
     content: Array<{
       title?: string;
       attribute: string;
@@ -120,7 +120,6 @@ interface FilterDropdownProps {
       isDropdown?: boolean;
       isLocation?: boolean;
       checkbox?: boolean;
-      showFooter?: boolean;
       coordinates?: SessionFilterCoordinates | null;
       setCoordinates?: (next: SessionFilterCoordinates | null) => void;
     }>;
@@ -172,7 +171,7 @@ export function FilterDropdown({
       <p>{title}</p>
       <Icon name="chevronDown" />
 
-      <GroupsFinderDropdwnPopup
+      <FilterPopup
         popupTitle={title}
         data={data}
         onHide={onHide}

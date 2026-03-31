@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsFinderDropdwnPopup } from "./groups-finder-dropdown-popup.component";
+import { FilterPopup } from "../../../../components/finders/search-filters/filter-popup.component";
 import { AllGroupFiltersPopup } from "./all-filters.component";
 import { cn } from "~/lib/utils";
 
@@ -20,7 +20,7 @@ export function DesktopGroupFilters({
     coordinates: {
       lat: number | null;
       lng: number | null;
-    } | null
+    } | null,
   ) => void;
   ageInput: string;
   setAgeInput: (age: string) => void;
@@ -82,7 +82,7 @@ export function DesktopGroupFilters({
           <p>Location</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Location"
             data={{
               content: [
@@ -113,9 +113,10 @@ export function DesktopGroupFilters({
           <p>People</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="People"
             data={{
+              showFooter: true,
               content: [
                 {
                   title: "I want to join a group for...",
@@ -131,7 +132,6 @@ export function DesktopGroupFilters({
                   input: true,
                   inputPlaceholder: "Your Age",
                   isAgeRange: true,
-                  showFooter: true,
                 },
               ],
             }}
@@ -150,9 +150,10 @@ export function DesktopGroupFilters({
           <p>Topics</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Topics"
             data={{
+              showFooter: true,
               content: [
                 {
                   title: "Spiritual Growth",
@@ -165,7 +166,6 @@ export function DesktopGroupFilters({
                 {
                   title: "Community & Fun",
                   attribute: "topics",
-                  showFooter: true,
                 },
               ],
             }}
@@ -183,14 +183,15 @@ export function DesktopGroupFilters({
             <p>Preferences</p>
             <Icon name="chevronDown" />
 
-            <GroupsFinderDropdwnPopup
+            <FilterPopup
               popupTitle="Preferences"
               data={{
+                showFooter: true,
                 content: [
                   {
                     title: "Meeting Days",
                     attribute: "meetingDays",
-                    isMeetingDays: true,
+                    isWeekdays: true,
                   },
                   {
                     title: "Meeting Frequency",
@@ -205,7 +206,6 @@ export function DesktopGroupFilters({
                   {
                     title: "Language",
                     attribute: "language",
-                    showFooter: true,
                   },
                 ],
               }}
@@ -236,9 +236,9 @@ export function DesktopGroupFilters({
                 ? "animate-slide-in z-1"
                 : "animate-slide-out opacity-0 pointer-events-none z-[-1]"
               : activeDropdown === "allFilters"
-              ? "z-1"
-              : "opacity-0 pointer-events-none z-[-1]",
-            "transition-all duration-300"
+                ? "z-1"
+                : "opacity-0 pointer-events-none z-[-1]",
+            "transition-all duration-300",
           )}
         >
           <AllGroupFiltersPopup

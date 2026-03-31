@@ -1,11 +1,69 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Stats, useRefinementList } from "react-instantsearch";
 import { FinderLocationSearch } from "~/components/finders/location-search";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 
-export const GroupsFinderDropdwnPopup = ({
+type FilterCoordinates = { lat: number | null; lng: number | null };
+
+export interface FilterPopupSection {
+  title?: string;
+  attribute: string;
+  input?: boolean;
+  inputPlaceholder?: string;
+  checkbox?: boolean;
+  checkboxLayout?: "vertical" | "horizontal";
+  isAgeRange?: boolean;
+  isWeekdays?: boolean;
+  isDropdown?: boolean;
+  isLocation?: boolean;
+  isMeetingType?: boolean;
+  coordinates?: FilterCoordinates | null;
+  setCoordinates?: (coordinates: FilterCoordinates | null) => void;
+}
+
+export interface FilterPopupData {
+  content: FilterPopupSection[];
+  showFooter?: boolean;
+}
+
+type SectionFooterRegistration = {
+  hasSelection: boolean;
+  reset: () => void;
+};
+
+interface FilterPopupProps {
+  popupTitle: string;
+  className?: string;
+  data: FilterPopupData;
+  showSection: boolean;
+  onHide: () => void;
+  ageInput?: string;
+  setAgeInput?: (age: string) => void;
+  style?: React.CSSProperties;
+}
+
+interface FilterPopupContentProps {
+  sectionKey: string;
+  showPopupFooter: boolean;
+  registerSectionFooter: (
+    key: string,
+    entry: SectionFooterRegistration | null,
+  ) => void;
+  data: FilterPopupSection;
+  ageInput?: string;
+  setAgeInput?: (age: string) => void;
+  popupTitle?: string;
+}
+
+export const FilterPopup = ({
   popupTitle,
   className,
   data,
@@ -14,42 +72,34 @@ export const GroupsFinderDropdwnPopup = ({
   ageInput,
   setAgeInput,
   style,
-}: {
-  popupTitle: string;
-  className?: string;
-  data: {
-    content: {
-      title?: string;
-      attribute: string;
-      input?: boolean;
-      inputPlaceholder?: string;
-      checkbox?: boolean;
-      checkboxLayout?: "vertical" | "horizontal";
-      isAgeRange?: boolean;
-      isDropdown?: boolean;
-      isLocation?: boolean;
-      isMeetingType?: boolean;
-      isMeetingDays?: boolean;
-      showFooter?: boolean;
-      coordinates?: {
-        lat: number | null;
-        lng: number | null;
-      } | null;
-      setCoordinates?: (
-        coordinates: {
-          lat: number | null;
-          lng: number | null;
-        } | null,
-      ) => void;
-    }[];
-  };
-  showSection: boolean;
-  onHide: () => void;
-  ageInput?: string;
-  setAgeInput?: (age: string) => void;
-  style?: React.CSSProperties;
-}) => {
+}: FilterPopupProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [sectionFooterRegistry, setSectionFooterRegistry] = useState<
+    Record<string, SectionFooterRegistration>
+  >({});
+
+  // Clear button in Footer only shows when there is a selection
+  const registerSectionFooter = useCallback(
+    (key: string, entry: SectionFooterRegistration | null) => {
+      setSectionFooterRegistry((prev) => {
+        const next = { ...prev };
+        if (entry === null) {
+          delete next[key];
+        } else {
+          next[key] = entry;
+        }
+        return next;
+      });
+    },
+    [],
+  );
+  const hasAnyPopupSelection = Object.values(sectionFooterRegistry).some(
+    (s) => s.hasSelection,
+  );
+
+  const clearAllPopupSections = () => {
+    Object.values(sectionFooterRegistry).forEach((s) => s.reset());
+  };
 
   return (
     <div
@@ -78,15 +128,20 @@ export const GroupsFinderDropdwnPopup = ({
 
       <div className="flex flex-col gap-6 px-4 pb-4">
         {data.content.map((content, index) => (
-          <div key={index} className="flex flex-col gap-2">
+          <div
+            key={`${index}-${content.attribute}-${content.title ?? ""}`}
+            className="flex flex-col gap-2"
+          >
             {content.title && (
-              <h3 className="font-bold text-base text-black">
+              <h3 className="font-semibold text-xs text-neutral-default tracking-[0.06em]">
                 {content.title}
               </h3>
             )}
-            <GroupsFinderDropdownPopupList
+            <FilterPopupContent
+              sectionKey={`${index}-${content.attribute}-${content.title ?? ""}`}
+              showPopupFooter={Boolean(data.showFooter)}
+              registerSectionFooter={registerSectionFooter}
               data={content}
-              onHide={onHide}
               ageInput={ageInput}
               setAgeInput={setAgeInput}
               popupTitle={popupTitle}
@@ -94,46 +149,60 @@ export const GroupsFinderDropdwnPopup = ({
           </div>
         ))}
       </div>
+
+      {data.showFooter && (
+        <div
+          className={cn(
+            "flex items-center gap-4 px-4 pb-4 pt-2 border-t border-neutral-lighter",
+            hasAnyPopupSelection ? "justify-between" : "justify-start",
+          )}
+        >
+          <button
+            type="button"
+            disabled={!hasAnyPopupSelection}
+            className={cn(
+              "transition-all duration-300",
+              hasAnyPopupSelection
+                ? "cursor-pointer text-ocean opacity-100"
+                : "cursor-not-allowed text-neutral-default opacity-50",
+            )}
+            onClick={() => clearAllPopupSections()}
+          >
+            Clear
+          </button>
+
+          {hasAnyPopupSelection ? (
+            <Button
+              intent="primary"
+              className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
+              onClick={() => onHide()}
+            >
+              <Stats
+                classNames={{
+                  root: "",
+                }}
+                translations={{
+                  rootElementText: ({ nbHits }) =>
+                    `Show ${nbHits.toLocaleString()} Results`,
+                }}
+              />
+            </Button>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };
 
-const GroupsFinderDropdownPopupList = ({
+const FilterPopupContent = ({
+  sectionKey,
+  showPopupFooter,
+  registerSectionFooter,
   data,
-  onHide,
   ageInput,
   setAgeInput,
   popupTitle,
-}: {
-  data: {
-    title?: string;
-    attribute: string;
-    checkbox?: boolean;
-    checkboxLayout?: "vertical" | "horizontal";
-    input?: boolean;
-    inputPlaceholder?: string;
-    isAgeRange?: boolean;
-    isDropdown?: boolean;
-    isLocation?: boolean;
-    isMeetingDays?: boolean;
-    isMeetingType?: boolean;
-    showFooter?: boolean;
-    coordinates?: {
-      lat: number | null;
-      lng: number | null;
-    } | null;
-    setCoordinates?: (
-      coordinates: {
-        lat: number | null;
-        lng: number | null;
-      } | null,
-    ) => void;
-  };
-  onHide: () => void;
-  ageInput?: string;
-  setAgeInput?: (age: string) => void;
-  popupTitle?: string;
-}) => {
+}: FilterPopupContentProps) => {
   const { items, refine } = useRefinementList({ attribute: data.attribute });
   const [localAgeInput, setLocalAgeInput] = useState<string>(ageInput || "");
 
@@ -172,7 +241,7 @@ const GroupsFinderDropdownPopupList = ({
         return items.filter((item) => communityFunTopics.includes(item.label));
       }
     }
-    if (data.attribute === "meetingDays") {
+    if (data.isWeekdays === true) {
       return [...items].sort(
         (a, b) =>
           MEETING_DAYS_ORDER.indexOf(a.label) -
@@ -205,26 +274,63 @@ const GroupsFinderDropdownPopupList = ({
     }
   }, [ageInput]);
 
-  const reset = () => {
+  const hasSectionSelection = useMemo(() => {
+    if (data.isLocation) {
+      const c = data.coordinates;
+      return c != null && (c.lat != null || c.lng != null);
+    }
+    if (data.input) {
+      return localAgeInput.trim() !== "";
+    }
+    if (data.isDropdown) {
+      return dropdownSelectValue !== "";
+    }
+    return filteredItems.some((i) => i.isRefined);
+  }, [
+    data.isLocation,
+    data.coordinates,
+    data.input,
+    data.isDropdown,
+    localAgeInput,
+    dropdownSelectValue,
+    filteredItems,
+  ]);
+
+  const reset = useCallback(() => {
     items.forEach((item) => {
       if (item.isRefined) {
         refine(item.value);
       }
     });
-    setLocalAgeInput(""); // Reset local age input
-    if (setAgeInput) {
-      setAgeInput(""); // Reset parent age input
+    setLocalAgeInput("");
+    setAgeInput?.("");
+    if (data.isLocation) {
+      data.setCoordinates?.(null);
     }
-  };
+  }, [items, refine, setAgeInput, data.isLocation, data.setCoordinates]);
+
+  useEffect(() => {
+    if (!showPopupFooter) return;
+    registerSectionFooter(sectionKey, {
+      hasSelection: hasSectionSelection,
+      reset,
+    });
+    return () => registerSectionFooter(sectionKey, null);
+  }, [
+    showPopupFooter,
+    sectionKey,
+    hasSectionSelection,
+    reset,
+    registerSectionFooter,
+  ]);
 
   const styles = {
     checkbox: "text-text-primary font-regular text-base",
     button:
-      "min-w-0 min-h-0 px-2 py-[6px] text-sm font-semibold text-black border border-neutral-light hover:border-ocean transition-all duration-300 rounded-[5px]",
+      "min-w-0 min-h-0 px-4 py-2 bg-gray text-sm border-none font-semibold text-neutral-darker hover:bg-ocean transition-all duration-300 rounded-[16777200px]",
     meetingTypeButton:
       "flex gap-1 text-text-primary font-normal text-base !pr-3",
-    buttonRefined:
-      "bg-ocean text-white border-ocean hover:!bg-navy hover:!border-navy",
+    buttonRefined: "bg-ocean text-white hover:bg-navy",
     input:
       "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full",
   };
@@ -237,7 +343,7 @@ const GroupsFinderDropdownPopupList = ({
             "flex bg-white",
             data.checkbox && data.checkboxLayout === "vertical"
               ? "gap-4 flex-col"
-              : "flex-wrap gap-y-2 gap-x-2",
+              : "flex-wrap gap-2",
           )}
         >
           {data.isLocation ? (
@@ -321,7 +427,7 @@ const GroupsFinderDropdownPopupList = ({
                                 size={18}
                               />
                             )}
-                            {data.isMeetingDays
+                            {data.isWeekdays
                               ? item.label === "Thursday"
                                 ? "Thur"
                                 : item.label.substring(0, 3)
@@ -373,34 +479,6 @@ const GroupsFinderDropdownPopupList = ({
               <Icon name="chevronDown" size={18} />
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Footer Buttons */}
-      {data.showFooter && (
-        <div className="mt-5 flex justify-end items-center gap-4 p-2 pt-4 border-t border-neutral-lighter">
-          <div
-            className="text-black cursor-pointer! hover:text-text-secondary transition-all duration-300"
-            onClick={() => reset()}
-          >
-            Cancel
-          </div>
-
-          <Button
-            intent="primary"
-            className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
-            onClick={() => onHide()}
-          >
-            <Stats
-              classNames={{
-                root: "",
-              }}
-              translations={{
-                rootElementText: ({ nbHits }) =>
-                  `Show ${nbHits.toLocaleString()} Results`,
-              }}
-            />
-          </Button>
         </div>
       )}
     </>

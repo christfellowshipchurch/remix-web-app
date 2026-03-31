@@ -16,6 +16,7 @@ interface AllFiltersRefinementContentProps {
       isLocation?: boolean;
       isTopics?: boolean;
       isPeopleGroup?: boolean;
+      isWeekdays?: boolean;
       checkboxLayout?: "vertical" | "horizontal";
       showFooter?: boolean;
     };
@@ -101,7 +102,7 @@ export const AllFiltersRefinementContent = ({
   ];
 
   const sortedItems =
-    content.attribute === "meetingDays"
+    content.isWeekdays === true
       ? [...items].sort(
           (a, b) =>
             MEETING_DAYS_ORDER.indexOf(a.label) -
@@ -143,7 +144,7 @@ export const AllFiltersRefinementContent = ({
   ) => (
     <div
       key={index}
-      className="flex items-center gap-2 w-fit !cursor-pointer"
+      className="flex items-center gap-2 w-fit cursor-pointer!"
       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         refine(item.value);

@@ -25,7 +25,7 @@ import {
 } from "../components/group-class-type-hits";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
 
 const INDEX_NAME = "dev_Classes";
 
@@ -151,7 +151,10 @@ export const ClassSearch = () => {
               ? initial.initialUiState
               : undefined
         }
-        onStateChange={({ uiState }) => {
+        onStateChange={({ uiState, setUiState }) => {
+          // Controlled InstantSearch: commit widget/programmatic UI state to the
+          // helper + schedule search. Without this, URL can update while hits stay stale.
+          setUiState(uiState);
           const indexState = uiState[INDEX_NAME];
           if (indexState)
             syncUrlFromUiState(indexState as Record<string, unknown>);
@@ -198,14 +201,9 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              <div className="hidden md:flex items-center gap-4">
-                <SearchFilters onClearAllToUrl={clearAllFiltersFromUrl} />
-                <AlgoliaFinderClearAllButton
-                  className="hidden md:block"
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                />
-              </div>
+              <SearchFilters onClearAllToUrl={clearAllFiltersFromUrl} />
             </div>
+            <ActiveFilters />
           </div>
 
           {/* MOBILE FILTERS */}
