@@ -215,7 +215,7 @@ export function DesktopGroupFilters({
           </div>
         </div>
       </div>
-      <div className="w-full items-center gap-4 h-full hidden md:flex xl:!hidden">
+      <div className="w-full items-center gap-4 h-full hidden md:flex xl:hidden!">
         <div className="w-px h-full bg-text-secondary hidden lg:block" />
         <Button
           intent="secondary"

@@ -30,6 +30,7 @@ import {
 } from "../group-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
+import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 import { AlgoliaFinderClearAllButton } from "../components/clear-all-button.component";
 
 const INDEX_NAME = "dev_daniel_Groups";
@@ -81,12 +82,9 @@ export const GroupSearch = () => {
     initial.selectedLocation
   );
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const stickyTopClass = useStickyTopBelowNavbarClass();
 
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref, key bump). */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref). */
   type CustomState = {
     coordinates: { lat: number | null; lng: number | null } | null;
     ageInput: string;
@@ -111,37 +109,6 @@ export const GroupSearch = () => {
     setSelectedLocationState(urlState.campus ?? null);
   }, [searchParams]);
 
-  // Scroll handling effect for fixed search bar
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
@@ -162,7 +129,6 @@ export const GroupSearch = () => {
       replace: true,
       preventScrollReset: true,
     });
-    setInstantSearchKey((k) => k + 1);
   };
 
   const setCoordinates = (next: typeof coordinates) => {
@@ -218,13 +184,10 @@ export const GroupSearch = () => {
       id="search"
     >
       <InstantSearch
-        key={instantSearchKey}
         indexName={INDEX_NAME}
         searchClient={searchClient}
         initialUiState={
-          instantSearchKey > 0
-            ? { [INDEX_NAME]: {} }
-            : Object.keys(initial.initialUiState).length > 0
+          Object.keys(initial.initialUiState).length > 0
             ? initial.initialUiState
             : undefined
         }
@@ -247,7 +210,7 @@ export const GroupSearch = () => {
           <div
             className={cn(
               "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0"
+              stickyTopClass
             )}
           >
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">

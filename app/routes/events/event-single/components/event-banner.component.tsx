@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 
 import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 
 export const EventBanner = ({
   cta,
@@ -14,8 +15,7 @@ export const EventBanner = ({
   sections: { id: string; label: string }[];
 }) => {
   const [activeSection, setActiveSection] = useState<string>("");
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const stickyTopClass = useStickyTopBelowNavbarClass();
 
   const buttonStyles =
     "bg-navy hover:!bg-ocean text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0";
@@ -25,7 +25,7 @@ export const EventBanner = ({
 
   // Derive active section from scroll position to improve accuracy when scrolling up - this function worked
   //  better than IntersectionObserver alone or other alternatives I tried
-  const updateActiveSectionFromOffsets = () => {
+  const updateActiveSectionFromOffsets = useCallback(() => {
     const offset = ANCHOR_SCROLL_OFFSET;
     const currentY = window.scrollY + offset;
     const candidates = sections
@@ -48,10 +48,10 @@ export const EventBanner = ({
         break;
       }
     }
-    if (chosen && chosen !== activeSection) {
-      setActiveSection(chosen);
+    if (chosen) {
+      setActiveSection((prev) => (chosen !== prev ? chosen : prev));
     }
-  };
+  }, [sections]);
 
   const handleSectionClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
@@ -68,40 +68,14 @@ export const EventBanner = ({
     }
   };
 
-  // Navbar scroll handling effect
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setIsNavbarOpen(false);
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-
-      // Also update active section based on offsets for reliable upward scrolling
       updateActiveSectionFromOffsets();
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [updateActiveSectionFromOffsets]);
 
   // Section detection effect
   useEffect(() => {
@@ -137,8 +111,7 @@ export const EventBanner = ({
     <div
       className={cn(
         "w-full bg-white content-padding py-[15px] shadow-md sticky transition-all duration-300 z-10",
-        // Use consistent, existing spacing tokens for better tablet behavior
-        isNavbarOpen ? "top-16 md:top-20" : "top-0"
+        stickyTopClass
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex items-center">

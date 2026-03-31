@@ -32,7 +32,7 @@ export const FinderHero = ({
   return (
     <section
       className={cn(
-        "py-8 lg:h-[65vh] lg:max-h-[590px] content-padding relative",
+        "pt-8 pb-12 md:pb-8 lg:h-[65vh] lg:max-h-[590px] content-padding relative",
         `bg-${bgColor}`,
       )}
     >
@@ -59,7 +59,7 @@ export const FinderHero = ({
           </div>
           <HTMLRenderer
             html={title}
-            className="text-[40px] md:text-5xl font-extrabold my-6"
+            className="text-[40px] md:text-5xl font-extrabold md:my-6"
           />
           <div className="text-lg text-white">
             <p className="hidden lg:block">{desktopDescription}</p>

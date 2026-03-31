@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
@@ -8,10 +8,10 @@ import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "../loader";
 import { ClassHitComponent } from "../components/class-hit-component.component";
 import { AllClassFiltersPopup } from "../components/popups/all-filters.component";
-import { Button } from "~/primitives/button/button.primitive";
 import { cn } from "~/lib/utils";
 import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
 import { SearchFilters } from "~/components/finders/search-filters";
+import { CLASS_SEARCH_DESKTOP_FILTERS } from "../class-search-filters.data";
 import { ClassHitType } from "../../types";
 import {
   parseClassFinderUrlState,
@@ -26,6 +26,7 @@ import {
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
+import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 
 const INDEX_NAME = "dev_Classes";
 
@@ -50,41 +51,12 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
   return { coordinates: null, initialUiState };
 }
 
-function useNavbarOpenOnScroll() {
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const lastScrollYRef = useRef(0);
-
-  useEffect(() => {
-    const threshold = 10;
-    const handleScroll = () => {
-      const current = window.scrollY;
-      const prev = lastScrollYRef.current;
-      const delta = current - prev;
-
-      if (current < threshold) {
-        lastScrollYRef.current = current;
-        return;
-      }
-
-      if (Math.abs(delta) > threshold) {
-        setIsNavbarOpen(delta < 0);
-      }
-      lastScrollYRef.current = current;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return isNavbarOpen;
-}
-
 export const ClassSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const isNavbarOpen = useNavbarOpenOnScroll();
+  const stickyTopClass = useStickyTopBelowNavbarClass();
 
   const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
     searchParams,
@@ -94,9 +66,6 @@ export const ClassSearch = () => {
   });
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
-
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -110,7 +79,6 @@ export const ClassSearch = () => {
       replace: true,
       preventScrollReset: true,
     });
-    setInstantSearchKey((k) => k + 1);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -137,19 +105,16 @@ export const ClassSearch = () => {
 
   return (
     <div
-      className="flex flex-col gap-4 w-screen pt-12 pagination-scroll-to"
+      className="flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to"
       id="search"
     >
       <InstantSearch
-        key={instantSearchKey}
         indexName={INDEX_NAME}
         searchClient={searchClient}
         initialUiState={
-          instantSearchKey > 0
-            ? { [INDEX_NAME]: {} }
-            : Object.keys(initial.initialUiState).length > 0
-              ? initial.initialUiState
-              : undefined
+          Object.keys(initial.initialUiState).length > 0
+            ? initial.initialUiState
+            : undefined
         }
         onStateChange={({ uiState, setUiState }) => {
           // Controlled InstantSearch: commit widget/programmatic UI state to the
@@ -172,11 +137,11 @@ export const ClassSearch = () => {
         <div className="flex flex-col">
           <div
             className={cn(
-              "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0",
+              "sticky z-20 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
+              stickyTopClass,
             )}
           >
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4 py-4 max-w-screen-content mx-auto h-20">
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 pt-8 pb-4 md:flex-row md:items-center md:gap-4">
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
                 <Icon
                   name="searchAlt"
@@ -193,7 +158,7 @@ export const ClassSearch = () => {
                     root: "flex-grow",
                     form: "flex",
                     input:
-                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-3 focus:outline-none",
+                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none",
                     resetIcon: "hidden",
                     submit: "hidden",
                     loadingIcon: "hidden",
@@ -201,36 +166,22 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              <SearchFilters onClearAllToUrl={clearAllFiltersFromUrl} />
-            </div>
-            <ActiveFilters />
-          </div>
-
-          {/* MOBILE FILTERS */}
-          <div className="md:hidden bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
-            <div className="content-padding">
-              <Button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                intent="secondary"
-                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
-              >
-                <Icon name="sliderAlt" className="text-navy" />
-                All Filters
-              </Button>
-            </div>
-            <div
-              className={cn(
-                "absolute transition-all duration-300",
-                isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(102%)]"
-                  : "-z-1 opacity-0 pointer-events-none",
-              )}
-            >
-              <AllClassFiltersPopup
-                onHide={() => setIsMobileOpen(false)}
+              <SearchFilters
                 onClearAllToUrl={clearAllFiltersFromUrl}
+                desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
+                compactInlineFilterCount={2}
+                renderMorePanel={({ onHide, onClearAllToUrl }) => (
+                  <AllClassFiltersPopup
+                    hideTopic
+                    hideLanguage
+                    showFormat
+                    onHide={onHide}
+                    onClearAllToUrl={onClearAllToUrl}
+                  />
+                )}
               />
             </div>
+            <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
           </div>
 
           {/* CLASS SEARCH RESULTS */}

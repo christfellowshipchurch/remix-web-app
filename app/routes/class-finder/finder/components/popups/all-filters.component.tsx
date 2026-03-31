@@ -8,20 +8,25 @@ import { FiltersFooter } from "~/routes/group-finder/components/filters/filters-
 
 export const AllClassFiltersPopup = ({
   hideTopic = false,
+  hideLanguage = false,
+  showFormat = false,
   onHide,
   onClearAllToUrl,
 }: {
   hideTopic?: boolean;
+  hideLanguage?: boolean;
+  /** Collapsible Format (Algolia `format` facet, meeting-type chips). */
+  showFormat?: boolean;
   onHide: () => void;
   onClearAllToUrl?: () => void;
 }) => {
   const [showTopics, setShowTopics] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
+  const [showFormatSection, setShowFormatSection] = useState(false);
 
   const { setIndexUiState, indexUiState } = useInstantSearch();
 
-  const clearAllDisabled =
-    !hasInstantSearchIndexUiActiveFilters(indexUiState);
+  const clearAllDisabled = !hasInstantSearchIndexUiActiveFilters(indexUiState);
 
   const clearAllRefinements = () => {
     setIndexUiState((state) => ({
@@ -37,7 +42,7 @@ export const AllClassFiltersPopup = ({
 
   return (
     <div className="bg-white flex flex-col shadow-md w-full h-auto min-h-0 max-h-[85vh] md:max-h-none overflow-hidden">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <FiltersHeader onHide={onHide} />
       </div>
 
@@ -49,19 +54,33 @@ export const AllClassFiltersPopup = ({
             showSection={showTopics}
             setShowSection={setShowTopics}
             isTopics={true}
+            hideBorder={hideLanguage && !showFormat}
           />
         )}
 
-        <AllFiltersFilterSection
-          title="Language"
-          attribute="language"
-          showSection={showLanguage}
-          setShowSection={setShowLanguage}
-          hideBorder
-        />
+        {!hideLanguage && (
+          <AllFiltersFilterSection
+            title="Language"
+            attribute="language"
+            showSection={showLanguage}
+            setShowSection={setShowLanguage}
+            hideBorder={!showFormat}
+          />
+        )}
+
+        {showFormat ? (
+          <AllFiltersFilterSection
+            title="Format"
+            attribute="format"
+            showSection={showFormatSection}
+            setShowSection={setShowFormatSection}
+            isMeetingType={true}
+            hideBorder
+          />
+        ) : null}
       </div>
 
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <FiltersFooter
           onHide={onHide}
           onClearAll={clearAllRefinements}

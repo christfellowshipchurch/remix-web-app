@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useInstantSearch } from "react-instantsearch";
 import { Icon } from "~/primitives/icon/icon";
+import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 
 type RefinementChip = {
   key: string;
@@ -9,7 +10,12 @@ type RefinementChip = {
   label: string;
 };
 
-export function ActiveFilters() {
+export function ActiveFilters({
+  onClearAllToUrl,
+}: {
+  /** When set, “Clear All” is shown at the end of the row (all breakpoints). */
+  onClearAllToUrl?: () => void;
+} = {}) {
   const { indexUiState, setIndexUiState } = useInstantSearch();
   const refinementList = (indexUiState.refinementList ?? {}) as Record<
     string,
@@ -49,29 +55,47 @@ export function ActiveFilters() {
   };
 
   const chipClassName =
-    "bg-ocean/10 text-ocean font-semibold text-sm min-h-0 min-w-0 px-3 py-2 rounded-[999px] flex flex-row items-center gap-1.5 cursor-pointer hover:bg-ocean/20 transition-colors";
+    "bg-ocean/10 text-ocean font-semibold text-sm min-h-0 min-w-0 px-3 py-2 rounded-[999px] flex flex-row items-center gap-1.5 transition-colors";
 
   return (
-    <div className="flex flex-row md:flex-wrap items-center gap-2 pt-4 pb-6 max-w-screen-content mx-auto border-t border-neutral-lighter/15">
-      <p className="text-neutral-default font-semibold text-sm shrink-0">
-        Active<span className="inline md:hidden">:</span>{" "}
-        <span className="hidden md:inline">Filters:</span>
-      </p>
-      <div className="flex flex-row flex-wrap gap-2">
-        {refinementChips.map((chip) => (
-          <button
-            key={chip.key}
-            type="button"
-            className={chipClassName}
-            aria-label={`Remove filter ${chip.label}`}
-            onClick={() => removeRefinement(chip.attribute, chip.value)}
-          >
-            <span className="max-w-[220px] truncate" title={chip.label}>
-              {chip.label}
-            </span>
-            <Icon name="x" className="text-ocean shrink-0" size={16} />
-          </button>
-        ))}
+    <div className="border-t border-neutral-lighter/15 pt-4 pb-6 max-w-screen-content mx-auto w-full min-w-0">
+      <div className="flex w-full min-w-0 flex-wrap md:items-center justify-between gap-x-3 gap-y-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          <p className="text-neutral-default font-semibold text-sm shrink-0">
+            Active<span className="inline sm:hidden">:</span>{" "}
+            <span className="hidden sm:inline">Filters:</span>
+          </p>
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            {refinementChips.map((chip) => (
+              <div
+                key={chip.key}
+                className={chipClassName}
+                role="group"
+                aria-label={`Active filter ${chip.label}`}
+              >
+                <span className="max-w-[220px] truncate" title={chip.label}>
+                  {chip.label}
+                </span>
+                <button
+                  type="button"
+                  className="shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1"
+                  aria-label={`Remove filter ${chip.label}`}
+                  onClick={() => removeRefinement(chip.attribute, chip.value)}
+                >
+                  <Icon name="x" className="text-ocean" size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        {onClearAllToUrl ? (
+          <div className="ml-auto shrink-0">
+            <AlgoliaFinderClearAllButton
+              onClearAllToUrl={onClearAllToUrl}
+              className="text-sm sm:text-base"
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

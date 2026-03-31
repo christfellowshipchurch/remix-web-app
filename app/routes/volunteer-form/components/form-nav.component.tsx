@@ -1,7 +1,7 @@
 import { cn } from "~/lib/utils";
 import React from "react";
 import Icon from "~/primitives/icon";
-import { useNavbarVisibility } from "~/providers/navbar-visibility-context";
+import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 
 const stepsData = [
   { id: "about-you", name: "About You" },
@@ -39,7 +39,7 @@ export const StepDotTodo: React.FC = () => (
 export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
   currentStepId,
 }) => {
-  const { isNavbarVisible } = useNavbarVisibility();
+  const stickyTopClass = useStickyTopBelowNavbarClass();
   const currentStepIndex = stepsData.findIndex(
     (step) => step.id === currentStepId
   );
@@ -48,7 +48,7 @@ export const VolunteerFormNav: React.FC<{ currentStepId: string }> = ({
     <div
       className={cn(
         "w-full bg-gray px-4 pt-6 pb-4 sm:px-6 lg:px-8 sticky z-50 transition-[top] duration-300",
-        isNavbarVisible ? "top-[90px]" : "top-0"
+        stickyTopClass
       )}
     >
       <nav aria-label="Progress">

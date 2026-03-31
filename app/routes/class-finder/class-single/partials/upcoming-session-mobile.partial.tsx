@@ -57,7 +57,6 @@ export function UpcomingSessionMobileSection() {
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
     lng: number | null;
@@ -70,7 +69,6 @@ export function UpcomingSessionMobileSection() {
       replace: true,
       preventScrollReset: true,
     });
-    setInstantSearchKey((k) => k + 1);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -92,11 +90,9 @@ export function UpcomingSessionMobileSection() {
   });
 
   const initialUiState =
-    instantSearchKey > 0
-      ? { [INDEX_NAME]: {} }
-      : Object.keys(initial.initialUiState).length > 0
-        ? initial.initialUiState
-        : undefined;
+    Object.keys(initial.initialUiState).length > 0
+      ? initial.initialUiState
+      : undefined;
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -117,7 +113,6 @@ export function UpcomingSessionMobileSection() {
         id="search"
       >
         <InstantSearch
-          key={instantSearchKey}
           indexName={INDEX_NAME}
           searchClient={searchClient}
           initialUiState={initialUiState}

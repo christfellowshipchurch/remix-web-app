@@ -50,7 +50,7 @@ export function Navbar() {
 
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
 
-  const { setIsNavbarVisible } = useNavbarVisibility();
+  const { setIsNavbarVisible, setIsSiteBannerVisible } = useNavbarVisibility();
 
   // Check if navbar should be hidden for current route
   const isNavbarHidden = shouldHideNavbar(pathname);
@@ -173,6 +173,10 @@ export function Navbar() {
   useEffect(() => {
     setIsNavbarVisible(isVisible && !isNavbarHidden);
   }, [isVisible, isNavbarHidden, setIsNavbarVisible]);
+
+  useEffect(() => {
+    setIsSiteBannerVisible(showSiteBanner);
+  }, [showSiteBanner, setIsSiteBannerVisible]);
 
   // Menu data
   const menuLinks: MenuLink[] = [

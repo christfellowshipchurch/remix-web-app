@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import { Stats, useRefinementList } from "react-instantsearch";
 import { FinderLocationSearch } from "~/components/finders/location-search";
 import { cn } from "~/lib/utils";
@@ -48,6 +49,208 @@ interface FilterPopupProps {
   ageInput?: string;
   setAgeInput?: (age: string) => void;
   style?: React.CSSProperties;
+  /**
+   * `popover` — absolute panel under the trigger (default; desktop and tablet compact pills).
+   * `bottomSheet` — fixed bottom sheet with backdrop and drag-to-close (narrow mobile).
+   */
+  layout?: "popover" | "bottomSheet";
+}
+
+function MobileFilterBottomSheet({
+  title,
+  onClose,
+  scrollable,
+  footer,
+}: {
+  title: string;
+  onClose: () => void;
+  scrollable: React.ReactNode;
+  footer: React.ReactNode | null;
+}) {
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragEnabled, setDragEnabled] = useState(false);
+  const [openAnimationDone, setOpenAnimationDone] = useState(false);
+  const startYRef = useRef(0);
+  const dragYRef = useRef(0);
+  const draggingRef = useRef(false);
+  const dragRegionRef = useRef<HTMLDivElement>(null);
+
+  // Mount visible immediately. A deferred translateY(100%) + double rAF was unreliable
+  // (Strict Mode / cancelled frames left the sheet off-screen with only the backdrop).
+  useEffect(() => {
+    const enableDragTimer = window.setTimeout(() => setDragEnabled(true), 380);
+    const openDoneTimer = window.setTimeout(() => setOpenAnimationDone(true), 420);
+    return () => {
+      window.clearTimeout(enableDragTimer);
+      window.clearTimeout(openDoneTimer);
+    };
+  }, []);
+
+  // Lock scroll with `body { position: fixed }` so the overlay stays viewport-fixed on iOS.
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    const prevBody = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    };
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.position = prevBody.position;
+      document.body.style.top = prevBody.top;
+      document.body.style.left = prevBody.left;
+      document.body.style.right = prevBody.right;
+      document.body.style.width = prevBody.width;
+      document.body.style.overflow = prevBody.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: { key: string }) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const finishDrag = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    setIsDragging(false);
+    const region = dragRegionRef.current;
+    if (region?.hasPointerCapture(e.pointerId)) {
+      region.releasePointerCapture(e.pointerId);
+    }
+    const shouldClose = dragYRef.current > 100;
+    dragYRef.current = 0;
+    setDragY(0);
+    if (shouldClose) {
+      onClose();
+    }
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragEnabled) return;
+    draggingRef.current = true;
+    startYRef.current = e.clientY;
+    dragYRef.current = 0;
+    setDragY(0);
+    setIsDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    const y = Math.max(0, e.clientY - startYRef.current);
+    dragYRef.current = y;
+    setDragY(y);
+  };
+
+  if (typeof document === "undefined") return null;
+
+  const sheetTransform = `translateY(${dragY}px)`;
+  const sheetTransition = isDragging
+    ? "none"
+    : openAnimationDone
+      ? "transform 0.22s ease-out"
+      : "transform 0.38s cubic-bezier(0.22, 1, 0.36, 1)";
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[500] box-border flex flex-col justify-end overflow-x-hidden overscroll-contain pointer-events-none"
+      style={{
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: "100%",
+        maxWidth: "100%",
+        height: "100%",
+        maxHeight: "100dvh",
+        overscrollBehavior: "contain",
+      }}
+      role="presentation"
+      data-search-filters-portal
+    >
+      <button
+        type="button"
+        className="absolute inset-0 z-0 cursor-default bg-black/45 pointer-events-auto"
+        onClick={onClose}
+        aria-label="Close filter"
+      />
+      {/* Flex justify-end pins the sheet to the viewport bottom; absolute+bottom mis-anchored when layout was wider than the viewport. */}
+      <div className="relative z-10 flex w-full min-w-0 max-w-full justify-center pointer-events-none">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="filter-sheet-title"
+          className={cn(
+            "pointer-events-auto box-border flex w-full min-w-0 max-w-full max-h-[min(90dvh,820px)] min-h-[min(32vh,280px)] flex-col overflow-x-hidden",
+            "rounded-t-2xl border-t-2 border-neutral-200 bg-white",
+            "pb-[max(1rem,env(safe-area-inset-bottom))]",
+            "will-change-transform",
+          )}
+          style={{
+            transform: sheetTransform,
+            transition: sheetTransition,
+          }}
+        >
+          <div
+            ref={dragRegionRef}
+            className="touch-none shrink-0 select-none"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={finishDrag}
+            onPointerCancel={finishDrag}
+          >
+            <div className="flex justify-center pt-3 pb-2">
+              <div
+                className="h-1.5 w-11 shrink-0 rounded-full bg-neutral-300"
+                aria-hidden
+              />
+            </div>
+            <div className="flex min-w-0 items-center justify-between gap-2 border-b border-neutral-100 px-4 pb-3 pt-3">
+              <h2
+                id="filter-sheet-title"
+                className="min-w-0 flex-1 truncate text-xl font-bold text-black"
+              >
+                {title}
+              </h2>
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={onClose}
+                className="cursor-pointer rounded-lg p-1"
+                aria-label="Close"
+              >
+                <Icon name="x" color="black" />
+              </button>
+            </div>
+          </div>
+          <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
+            {scrollable}
+          </div>
+          {footer}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
 }
 
 interface FilterPopupContentProps {
@@ -72,6 +275,7 @@ export const FilterPopup = ({
   ageInput,
   setAgeInput,
   style,
+  layout = "popover",
 }: FilterPopupProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [sectionFooterRegistry, setSectionFooterRegistry] = useState<
@@ -101,15 +305,110 @@ export const FilterPopup = ({
     Object.values(sectionFooterRegistry).forEach((s) => s.reset());
   };
 
+  const isBottomSheet = layout === "bottomSheet";
+
+  const bodyScrollable = (
+    <div
+      className={cn(
+        "flex flex-col gap-6 px-4 pb-4",
+        isBottomSheet && "min-w-0 max-w-full overflow-x-hidden pt-1",
+      )}
+    >
+      {data.content.map((content, index) => (
+        <div
+          key={`${index}-${content.attribute}-${content.title ?? ""}`}
+          className={cn(
+            "flex flex-col gap-2",
+            isBottomSheet && "min-w-0 max-w-full",
+          )}
+        >
+          {content.title && (
+            <h3 className="font-semibold text-xs text-neutral-default tracking-[0.06em]">
+              {content.title}
+            </h3>
+          )}
+          <FilterPopupContent
+            sectionKey={`${index}-${content.attribute}-${content.title ?? ""}`}
+            showPopupFooter={Boolean(data.showFooter)}
+            registerSectionFooter={registerSectionFooter}
+            data={content}
+            ageInput={ageInput}
+            setAgeInput={setAgeInput}
+            popupTitle={popupTitle}
+          />
+        </div>
+      ))}
+    </div>
+  );
+
+  const footerEl = data.showFooter ? (
+    <div
+      className={cn(
+        "flex items-center gap-4 border-t border-neutral-lighter px-4",
+        hasAnyPopupSelection ? "justify-between" : "justify-start",
+        isBottomSheet
+          ? "mt-8 min-w-0 shrink-0 flex-wrap gap-y-3 bg-white pb-3 pt-8 shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]"
+          : "pb-4 pt-2",
+      )}
+    >
+      <button
+        type="button"
+        disabled={!hasAnyPopupSelection}
+        className={cn(
+          "transition-all duration-300 pt-1",
+          hasAnyPopupSelection
+            ? "cursor-pointer text-ocean opacity-100"
+            : "cursor-not-allowed text-neutral-default opacity-50",
+        )}
+        onClick={() => clearAllPopupSections()}
+      >
+        Clear
+      </button>
+
+      {hasAnyPopupSelection ? (
+        <Button
+          intent="primary"
+          className={cn(
+            "min-h-0 min-w-0 max-w-full shrink rounded-full px-4 py-1 text-base font-semibold",
+            isBottomSheet ? "w-auto whitespace-normal" : "w-fit",
+          )}
+          onClick={() => onHide()}
+        >
+          <Stats
+            classNames={{
+              root: "",
+            }}
+            translations={{
+              rootElementText: ({ nbHits }) =>
+                `Show ${nbHits.toLocaleString()} Results`,
+            }}
+          />
+        </Button>
+      ) : null}
+    </div>
+  ) : null;
+
+  if (isBottomSheet) {
+    if (!showSection) return null;
+    return (
+      <MobileFilterBottomSheet
+        title={popupTitle}
+        onClose={onHide}
+        scrollable={bodyScrollable}
+        footer={footerEl}
+      />
+    );
+  }
+
   return (
     <div
       ref={ref}
       className={cn(
-        "cursor-default absolute top-[65px] right-1/2 translate-x-1/2 z-4",
-        "w-[330px] xl:w-[380px] flex flex-col gap-4 bg-white",
+        "cursor-default z-10 flex flex-col gap-4 bg-white",
         "rounded-2xl border border-neutral-lighter overflow-hidden",
+        "absolute top-[65px] right-1/2 w-[330px] translate-x-1/2 xl:w-[380px]",
         showSection
-          ? "z-4 opacity-100"
+          ? "opacity-100"
           : "-left-[9999px] -z-1 opacity-0 pointer-events-none",
         className,
       )}
@@ -126,70 +425,9 @@ export const FilterPopup = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 px-4 pb-4">
-        {data.content.map((content, index) => (
-          <div
-            key={`${index}-${content.attribute}-${content.title ?? ""}`}
-            className="flex flex-col gap-2"
-          >
-            {content.title && (
-              <h3 className="font-semibold text-xs text-neutral-default tracking-[0.06em]">
-                {content.title}
-              </h3>
-            )}
-            <FilterPopupContent
-              sectionKey={`${index}-${content.attribute}-${content.title ?? ""}`}
-              showPopupFooter={Boolean(data.showFooter)}
-              registerSectionFooter={registerSectionFooter}
-              data={content}
-              ageInput={ageInput}
-              setAgeInput={setAgeInput}
-              popupTitle={popupTitle}
-            />
-          </div>
-        ))}
-      </div>
+      {bodyScrollable}
 
-      {data.showFooter && (
-        <div
-          className={cn(
-            "flex items-center gap-4 px-4 pb-4 pt-2 border-t border-neutral-lighter",
-            hasAnyPopupSelection ? "justify-between" : "justify-start",
-          )}
-        >
-          <button
-            type="button"
-            disabled={!hasAnyPopupSelection}
-            className={cn(
-              "transition-all duration-300",
-              hasAnyPopupSelection
-                ? "cursor-pointer text-ocean opacity-100"
-                : "cursor-not-allowed text-neutral-default opacity-50",
-            )}
-            onClick={() => clearAllPopupSections()}
-          >
-            Clear
-          </button>
-
-          {hasAnyPopupSelection ? (
-            <Button
-              intent="primary"
-              className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
-              onClick={() => onHide()}
-            >
-              <Stats
-                classNames={{
-                  root: "",
-                }}
-                translations={{
-                  rootElementText: ({ nbHits }) =>
-                    `Show ${nbHits.toLocaleString()} Results`,
-                }}
-              />
-            </Button>
-          ) : null}
-        </div>
-      )}
+      {footerEl}
     </div>
   );
 };
@@ -325,11 +563,11 @@ const FilterPopupContent = ({
   ]);
 
   const styles = {
-    checkbox: "text-text-primary font-regular text-base",
+    checkbox: "min-w-0 break-words text-text-primary font-regular text-base",
     button:
-      "min-w-0 min-h-0 px-4 py-2 bg-gray text-sm border-none font-semibold text-neutral-darker hover:bg-ocean transition-all duration-300 rounded-[16777200px]",
+      "max-w-full min-w-0 whitespace-normal px-4 py-2 bg-gray text-sm border-none font-semibold text-neutral-darker hover:bg-ocean transition-all duration-300 rounded-[16777200px]",
     meetingTypeButton:
-      "flex gap-1 text-text-primary font-normal text-base !pr-3",
+      "flex max-w-full min-w-0 flex-wrap items-center gap-1 text-text-primary font-normal text-base !pr-3",
     buttonRefined: "bg-ocean text-white hover:bg-navy",
     input:
       "w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full",
@@ -340,7 +578,7 @@ const FilterPopupContent = ({
       {!data.isDropdown && (
         <div
           className={cn(
-            "flex bg-white",
+            "flex min-w-0 max-w-full bg-white",
             data.checkbox && data.checkboxLayout === "vertical"
               ? "gap-4 flex-col"
               : "flex-wrap gap-2",
@@ -378,12 +616,12 @@ const FilterPopupContent = ({
                         key={index}
                         className={cn(
                           data.checkboxLayout === "horizontal" &&
-                            "flex w-fit gap-x-2 pr-2",
+                            "flex max-w-full min-w-0 flex-wrap gap-x-2 gap-y-2 pr-2",
                         )}
                       >
                         {data.checkbox ? (
                           <div
-                            className="flex items-center gap-2 w-fit cursor-pointer!"
+                            className="flex max-w-full min-w-0 cursor-pointer! items-center gap-2"
                             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                               e.stopPropagation();
                               refine(item.value);
