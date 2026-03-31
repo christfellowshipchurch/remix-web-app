@@ -26,6 +26,7 @@ export const PodcastEpisodeCard = ({
             boxShadow:
               "0px 4px 8px -2px rgba(0, 0, 0, 0.20), 0px 2px 4px -2px rgba(0, 0, 0, 0.09)",
           }}
+          aria-label="Play Episode"
         >
           <Icon name="play" color="black" size={32} className="pl-1" />
         </Link>
