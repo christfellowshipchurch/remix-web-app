@@ -406,8 +406,16 @@ export function Navbar() {
                   <a
                     href="https://legacy-my-groups.vercel.app/login"
                     target="_blank"
+                    rel="noreferrer"
                     aria-label="Login"
-                    className="font-semibold text-sm xl:text-base hover:text-ocean h-full my-auto px-6"
+                    className={cn(
+                      "font-semibold text-sm xl:text-base transition-colors h-full my-auto px-6 hover:text-ocean",
+                      mode === "light" || isSearchOpen
+                        ? "text-neutral-dark"
+                        : openDropdown
+                          ? "text-neutral-dark"
+                          : "text-white group-hover:text-text",
+                    )}
                   >
                     Login
                   </a>
