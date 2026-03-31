@@ -4,7 +4,7 @@ import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { PeopleSubsection } from "./people-subsection.component";
-import { FinderLocationSearch } from "~/components/finders-location-search/location-search.component";
+import { FinderLocationSearch } from "~/components/finders/location-search/location-search.component";
 
 interface AllFiltersRefinementContentProps {
   data: {
