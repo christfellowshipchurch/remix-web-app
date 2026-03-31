@@ -311,6 +311,7 @@
     font-style: normal;
     font-weight: 300;
     font-stretch: normal;
+    font-display: swap;
   }
 
   @font-face {
@@ -320,6 +321,7 @@
     font-style: italic;
     font-weight: 300;
     font-stretch: normal;
+    font-display: swap;
   }
 
   /* Regular */
@@ -372,6 +374,7 @@
     font-style: normal;
     font-weight: 600;
     font-stretch: normal;
+    font-display: swap;
   }
 
   @font-face {

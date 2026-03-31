@@ -53,16 +53,17 @@ export const DynamicHero = ({
         ["--ipad-height" as string]: ipadHeight || mobileHeight || "640px",
         ["--desktop-height" as string]:
           desktopHeight || ipadHeight || mobileHeight || "640px",
-        ...(imagePath && { backgroundImage: `url(${imagePath})` }),
+        ...(wistiaId && imagePath && { backgroundImage: `url(${imagePath})` }),
       }}
       className={cn(
         "relative flex items-center justify-start self-stretch",
         "h-(--mobile-height)",
         "md:h-(--ipad-height)",
         "lg:h-(--desktop-height)",
-        imagePath && "bg-cover bg-center bg-no-repeat",
-        imagePath && "before:absolute before:inset-0 before:bg-black/50",
+        wistiaId && imagePath && "bg-cover bg-center bg-no-repeat",
+        wistiaId && imagePath && "before:absolute before:inset-0 before:bg-black/50",
       )}
+      aria-label={`${pagePath} Hero`}
     >
       {/* Video if passed in */}
       <div className={"absolute size-full overflow-hidden"}>
@@ -79,6 +80,7 @@ export const DynamicHero = ({
           <img
             src={imagePath}
             alt="Hero Background"
+            fetchPriority="high"
             className="absolute inset-0 w-full h-full object-cover"
           />
         )}
