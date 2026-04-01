@@ -15,7 +15,7 @@ import { FindersCustomPagination } from "../components/finders-custom-pagination
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AllGroupFiltersPopup } from "../components/filters/all-filters.component";
+import { GroupFinderOverflowFiltersPanel } from "../components/group-finder-overflow-filters.component";
 import { cn } from "~/lib/utils";
 import { GroupType } from "../types";
 import {
@@ -296,12 +296,13 @@ export const GroupSearch = () => {
                   onClearAllToUrl,
                   mobileBottomSheet,
                 }) => (
-                  <AllGroupFiltersPopup
+                  <GroupFinderOverflowFiltersPanel
                     onHide={onHide}
                     ageInput={ageInput}
                     setAgeInput={setAgeInput}
                     coordinates={coordinates}
                     setCoordinates={setCoordinates}
+                    locationSource={locationSource}
                     onLocationKind={setLocationSource}
                     onClearAllToUrl={onClearAllToUrl}
                     mobileBottomSheet={mobileBottomSheet}

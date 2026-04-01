@@ -1,3 +1,4 @@
+import { finderFilterSectionSubtitleClass } from "~/components/finders/search-filters/filter-section-subtitle";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { AllFiltersRefinementContent } from "./refinement-content.component";
@@ -6,99 +7,70 @@ interface AllFiltersFilterSectionProps {
   title: string;
   attribute: string;
   hideBorder?: boolean;
-  isCheckbox?: boolean;
-  isDropdown?: boolean;
   isMeetingType?: boolean;
-  isLocation?: boolean;
-  isTopics?: boolean;
-  isPeopleGroup?: boolean;
-  checkboxLayout?: "vertical" | "horizontal";
+  isWeekdays?: boolean;
   showSection: boolean;
-  selectedValue?: string;
   setShowSection: (show: boolean) => void;
-  setSelectedValue?: (value: string) => void;
-  ageInput?: string;
-  setAgeInput?: (age: string) => void;
-  coordinates?: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  setCoordinates?: (
-    coordinates: {
-      lat: number | null;
-      lng: number | null;
-    } | null
-  ) => void;
-  onLocationKind?: (kind: "zip" | "gps" | null) => void;
+  /**
+   * Mobile overflow bottom sheet: always show content, no chevron — section titles
+   * match `FilterPopup` subtitles (`uppercase` / `text-xs` / `neutral-default`).
+   */
+  expandAlways?: boolean;
 }
 
 export const AllFiltersFilterSection = ({
   title,
   attribute,
   hideBorder = false,
-  isCheckbox = false,
-  isDropdown = false,
   isMeetingType = false,
-  isLocation = false, // Location Search Box
-  isTopics = false,
-  isPeopleGroup = false,
-  checkboxLayout = "vertical",
+  isWeekdays = false,
   showSection,
-  selectedValue,
-  setSelectedValue,
   setShowSection,
-  ageInput,
-  setAgeInput,
-  coordinates,
-  setCoordinates,
-  onLocationKind,
+  expandAlways = false,
 }: AllFiltersFilterSectionProps) => {
   const titleStyles =
     "font-semibold text-base group-hover:text-ocean transition-all duration-300";
 
+  const contentVisible = expandAlways || showSection;
+
   return (
     <div
       className={cn(
-        "border-b border-black w-full flex flex-col gap-4",
-        showSection && "pb-5",
-        hideBorder && "border-b-0"
+        "flex w-full flex-col",
+        expandAlways
+          ? "gap-2 border-b border-neutral-200 pb-4"
+          : "gap-4 border-b border-black",
+        !expandAlways && showSection && "pb-5",
+        hideBorder && "border-b-0",
+        expandAlways && hideBorder && "pb-0",
       )}
     >
-      <div
-        className="flex items-center justify-between cursor-pointer group"
-        onClick={() => setShowSection(!showSection)}
-      >
-        <p className={titleStyles}>{title}</p>
-        <Icon
-          name="chevronDown"
-          className={cn(
-            "transition-all duration-300 rotate-0 group-hover:text-ocean",
-            showSection && "rotate-180"
-          )}
-        />
-      </div>
-      {/* Content */}
+      {expandAlways ? (
+        <h3 className={finderFilterSectionSubtitleClass}>{title}</h3>
+      ) : (
+        <div
+          className="group flex cursor-pointer items-center justify-between"
+          onClick={() => setShowSection(!showSection)}
+        >
+          <p className={titleStyles}>{title}</p>
+          <Icon
+            name="chevronDown"
+            className={cn(
+              "transition-all duration-300 group-hover:text-ocean",
+              showSection && "rotate-180",
+            )}
+          />
+        </div>
+      )}
       <AllFiltersRefinementContent
         data={{
           content: {
-            attribute: attribute,
-            isCheckbox: isCheckbox,
-            isDropdown: isDropdown,
-            isMeetingType: isMeetingType,
-            isLocation: isLocation,
-            isTopics: isTopics,
-            isPeopleGroup: isPeopleGroup,
-            checkboxLayout: checkboxLayout,
+            attribute,
+            isMeetingType,
+            isWeekdays,
           },
         }}
-        selectedValue={selectedValue}
-        setSelectedValue={setSelectedValue}
-        showSection={showSection}
-        ageInput={ageInput}
-        setAgeInput={setAgeInput}
-        coordinates={coordinates}
-        setCoordinates={setCoordinates}
-        onLocationKind={onLocationKind}
+        showSection={contentVisible}
       />
     </div>
   );

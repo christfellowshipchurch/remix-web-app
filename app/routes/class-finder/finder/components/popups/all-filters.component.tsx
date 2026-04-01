@@ -43,6 +43,7 @@ export const AllClassFiltersPopup = ({
     onClearAllToUrl?.();
     setShowTopics(false);
     setShowLanguage(false);
+    setShowFormatSection(false);
   };
 
   const sections = (
@@ -53,8 +54,8 @@ export const AllClassFiltersPopup = ({
           attribute="topic"
           showSection={showTopics}
           setShowSection={setShowTopics}
-          isTopics={true}
           hideBorder={hideLanguage && !showFormat}
+          expandAlways={mobileBottomSheet}
         />
       )}
 
@@ -65,6 +66,7 @@ export const AllClassFiltersPopup = ({
           showSection={showLanguage}
           setShowSection={setShowLanguage}
           hideBorder={!showFormat}
+          expandAlways={mobileBottomSheet}
         />
       )}
 
@@ -76,6 +78,7 @@ export const AllClassFiltersPopup = ({
           setShowSection={setShowFormatSection}
           isMeetingType={true}
           hideBorder
+          expandAlways={mobileBottomSheet}
         />
       ) : null}
     </>
@@ -95,10 +98,12 @@ export const AllClassFiltersPopup = ({
         title={bottomSheetTitle}
         onClose={onHide}
         scrollable={
-          <div className="flex min-h-0 flex-col gap-4 px-4 pt-1">{sections}</div>
+          <div className="flex min-h-0 flex-col gap-6 px-4 pb-4 pt-1">
+            {sections}
+          </div>
         }
         footer={
-          <div className="min-w-0 shrink-0 border-t border-black/10 bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]">
+          <div className="min-w-0 shrink-0 bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]">
             {footer}
           </div>
         }

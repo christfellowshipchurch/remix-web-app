@@ -1,4 +1,5 @@
 import type { SearchFilterDesktopItem } from "~/components/finders/search-filters";
+import type { FilterPopupData } from "~/components/finders/search-filters/filter-popup.component";
 
 /** Desktop popover + mobile overflow sheet title (pill label remains “More”). */
 export const GROUP_FINDER_MORE_POPUP_TITLE = "More Filters";
@@ -8,13 +9,17 @@ type Coordinates = {
   lng: number | null;
 } | null;
 
-/** Desktop / compact filter definitions (same sections as legacy `DesktopGroupFilters`). */
-export function getGroupSearchDesktopFilters(opts: {
+export type GroupSearchDesktopFilterOpts = {
   coordinates: Coordinates;
   setCoordinates: (coordinates: Coordinates) => void;
   locationSource: "zip" | "gps" | null;
   onLocationKind: (kind: "zip" | "gps" | null) => void;
-}): SearchFilterDesktopItem[] {
+};
+
+/** Desktop / compact filter definitions (same sections as legacy `DesktopGroupFilters`). */
+export function getGroupSearchDesktopFilters(
+  opts: GroupSearchDesktopFilterOpts,
+): SearchFilterDesktopItem[] {
   return [
     {
       id: "location",
@@ -22,6 +27,7 @@ export function getGroupSearchDesktopFilters(opts: {
       popupTitle: "Location",
       icon: "map",
       data: {
+        showFooter: true,
         content: [
           {
             title: "I want to meet...",
@@ -69,7 +75,7 @@ export function getGroupSearchDesktopFilters(opts: {
             title: "Age Range",
             attribute: "minAge",
             input: true,
-            inputPlaceholder: "Your Age",
+            inputPlaceholder: "Enter your Age",
             isAgeRange: true,
           },
         ],
@@ -117,4 +123,40 @@ export function getGroupSearchDesktopFilters(opts: {
       },
     },
   ];
+}
+
+/** Narrow mobile / tablet “More” overflow: topic bands + meeting days, frequency, child care, language. */
+export function getGroupFinderMoreOverflowFilterData(
+  opts: GroupSearchDesktopFilterOpts,
+): FilterPopupData {
+  const desktop = getGroupSearchDesktopFilters(opts);
+  const topics = desktop.find((f) => f.id === "topics")!.data;
+  const more = desktop.find((f) => f.id === "more")!.data;
+  return {
+    showFooter: false,
+    content: [...topics.content, ...more.content],
+  };
+}
+
+/** Tablet/desktop full “all filters” card: location, campus, people, topics, more. */
+export function getGroupFinderTabletFiltersPanelData(
+  opts: GroupSearchDesktopFilterOpts,
+): FilterPopupData {
+  const desktop = getGroupSearchDesktopFilters(opts);
+  const location = desktop.find((f) => f.id === "location")!.data.content;
+  const people = desktop.find((f) => f.id === "people")!.data.content;
+  const tail = getGroupFinderMoreOverflowFilterData(opts).content;
+  return {
+    showFooter: false,
+    content: [
+      ...location,
+      {
+        title: "Christ Fellowship Campus",
+        attribute: "campus",
+        isDropdown: true,
+      },
+      ...people,
+      ...tail,
+    ],
+  };
 }

@@ -7,7 +7,12 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import { Stats, useRefinementList } from "react-instantsearch";
-import { FinderLocationSearch } from "~/components/finders/location-search";
+import { finderFilterSectionSubtitleClass } from "~/components/finders/search-filters/filter-section-subtitle";
+import {
+  FinderLocationSearch,
+  finderApplyZipButtonClass,
+  finderLocationInputBaseClass,
+} from "~/components/finders/location-search";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
@@ -57,8 +62,9 @@ interface FilterPopupProps {
   /**
    * `popover` — absolute panel under the trigger (default; desktop and tablet compact pills).
    * `bottomSheet` — fixed bottom sheet with backdrop and drag-to-close (narrow mobile).
+   * `embedded` — scrollable body only (e.g. group finder overflow panel inside a sheet or card).
    */
-  layout?: "popover" | "bottomSheet";
+  layout?: "popover" | "bottomSheet" | "embedded";
 }
 
 export function MobileFilterBottomSheet({
@@ -208,7 +214,7 @@ export function MobileFilterBottomSheet({
           aria-modal="true"
           aria-labelledby="filter-sheet-title"
           className={cn(
-            "pointer-events-auto box-border flex w-full min-w-0 max-w-full max-h-[min(90dvh,820px)] min-h-[min(32vh,280px)] flex-col overflow-x-hidden",
+            "pointer-events-auto box-border flex w-full min-w-0 max-w-full max-h-[min(85dvh,820px)] min-h-[min(32vh,280px)] flex-col overflow-x-hidden",
             "rounded-t-2xl border-t-2 border-neutral-200 bg-white",
             "pb-[max(1rem,env(safe-area-inset-bottom))]",
             "will-change-transform",
@@ -314,12 +320,15 @@ export const FilterPopup = ({
   };
 
   const isBottomSheet = layout === "bottomSheet";
+  const isEmbedded = layout === "embedded";
 
   const bodyScrollable = (
     <div
       className={cn(
-        "flex flex-col gap-6 px-4 pb-4",
-        isBottomSheet && "min-w-0 max-w-full overflow-x-hidden pt-1",
+        "flex flex-col gap-6",
+        !isEmbedded && "px-4 pb-4",
+        (isBottomSheet || isEmbedded) &&
+          "min-w-0 max-w-full overflow-x-hidden pt-1",
       )}
     >
       {data.content.map((content, index) => (
@@ -327,13 +336,11 @@ export const FilterPopup = ({
           key={`${index}-${content.attribute}-${content.title ?? ""}`}
           className={cn(
             "flex flex-col gap-2",
-            isBottomSheet && "min-w-0 max-w-full",
+            (isBottomSheet || isEmbedded) && "min-w-0 max-w-full",
           )}
         >
           {content.title && (
-            <h3 className="uppercase font-semibold text-xs text-neutral-default tracking-[0.6px]">
-              {content.title}
-            </h3>
+            <h3 className={finderFilterSectionSubtitleClass}>{content.title}</h3>
           )}
           <FilterPopupContent
             sectionKey={`${index}-${content.attribute}-${content.title ?? ""}`}
@@ -405,6 +412,15 @@ export const FilterPopup = ({
         scrollable={bodyScrollable}
         footer={footerEl}
       />
+    );
+  }
+
+  if (isEmbedded) {
+    if (!showSection) return null;
+    return (
+      <div className={cn(className)} style={style}>
+        {bodyScrollable}
+      </div>
     );
   }
 
@@ -481,16 +497,16 @@ const FilterPopupContent = ({
 
   // Filter items based on category and popup title
   const getFilteredItems = () => {
-    if (popupTitle === "Topics" && data.attribute === "topics") {
-      if (data.title === "Spiritual Growth") {
-        return items.filter((item) =>
-          spiritualGrowthTopics.includes(item.label),
-        );
-      } else if (data.title === "Life & Support") {
-        return items.filter((item) => lifeSupportTopics.includes(item.label));
-      } else if (data.title === "Community & Fun") {
-        return items.filter((item) => communityFunTopics.includes(item.label));
-      }
+    if (data.attribute === "topics" && data.title === "Spiritual Growth") {
+      return items.filter((item) =>
+        spiritualGrowthTopics.includes(item.label),
+      );
+    }
+    if (data.attribute === "topics" && data.title === "Life & Support") {
+      return items.filter((item) => lifeSupportTopics.includes(item.label));
+    }
+    if (data.attribute === "topics" && data.title === "Community & Fun") {
+      return items.filter((item) => communityFunTopics.includes(item.label));
     }
     if (data.isWeekdays === true) {
       return [...items].sort(
@@ -549,7 +565,8 @@ const FilterPopupContent = ({
       );
     }
     if (data.input) {
-      return localAgeInput.trim() !== "";
+      const committed = (ageInput ?? "").trim();
+      return committed !== "" || localAgeInput.trim() !== "";
     }
     if (data.isDropdown) {
       return dropdownSelectValue !== "";
@@ -563,6 +580,7 @@ const FilterPopupContent = ({
     data.input,
     data.isDropdown,
     localAgeInput,
+    ageInput,
     dropdownSelectValue,
     filteredItems,
   ]);
@@ -610,8 +628,6 @@ const FilterPopupContent = ({
       "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
     meetingTypeButton: "flex w-fit flex-wrap items-center gap-1.5",
     buttonRefined: "bg-ocean !text-white hover:bg-navy",
-    input:
-      "box-border w-full max-w-[120px] min-w-0 rounded border border-[#444444] px-2 py-1.5 text-sm text-[#222222] placeholder:text-[#222222]/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444]",
   };
 
   return (
@@ -643,22 +659,28 @@ const FilterPopupContent = ({
           ) : (
             <>
               {data.input ? (
-                <input
-                  type="number"
-                  placeholder={data.inputPlaceholder || "Enter your age"}
-                  className={styles.input}
-                  value={localAgeInput}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setLocalAgeInput(value);
-                    if (setAgeInput) {
-                      setAgeInput(value);
-                    }
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  min="13"
-                  max="120"
-                />
+                <div className="flex w-full min-w-0 flex-row items-stretch gap-2">
+                  <input
+                    type="number"
+                    placeholder={data.inputPlaceholder || "Enter your age"}
+                    className={cn(
+                      finderLocationInputBaseClass,
+                      "min-w-0 flex-1 max-w-[160px] py-1.5",
+                    )}
+                    value={localAgeInput}
+                    onChange={(e) => setLocalAgeInput(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    min="13"
+                    max="120"
+                  />
+                  <button
+                    type="button"
+                    className={finderApplyZipButtonClass}
+                    onClick={() => setAgeInput?.(localAgeInput)}
+                  >
+                    Apply
+                  </button>
+                </div>
               ) : (
                 <>
                   {filteredItems.map((item, index) => {
@@ -763,9 +785,11 @@ const FilterPopupContent = ({
                 "focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444]",
               )}
               aria-label={
-                popupTitle
-                  ? `Select ${popupTitle.toLowerCase()}`
-                  : "Select filter"
+                data.title
+                  ? `Select ${data.title}`
+                  : popupTitle
+                    ? `Select ${popupTitle.toLowerCase()}`
+                    : "Select filter"
               }
             >
               <option value="">Select</option>

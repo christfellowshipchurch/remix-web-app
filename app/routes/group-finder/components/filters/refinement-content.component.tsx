@@ -3,8 +3,6 @@ import { useRefinementList } from "react-instantsearch";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { PeopleSubsection } from "./people-subsection.component";
-import { FinderLocationSearch } from "~/components/finders/location-search";
 
 function meetingTypeUsesGlobeIcon(label: string): boolean {
   const t = label.trim().toLowerCase();
@@ -15,87 +13,22 @@ interface AllFiltersRefinementContentProps {
   data: {
     content: {
       attribute: string;
-      isCheckbox?: boolean;
-      isDropdown?: boolean;
       isMeetingType?: boolean;
-      isLocation?: boolean;
-      isTopics?: boolean;
-      isPeopleGroup?: boolean;
       isWeekdays?: boolean;
-      checkboxLayout?: "vertical" | "horizontal";
-      showFooter?: boolean;
     };
   };
-  selectedValue?: string;
-  setSelectedValue?: (value: string) => void;
   showSection: boolean;
-  ageInput?: string;
-  setAgeInput?: (age: string) => void;
-  coordinates?: {
-    lat: number | null;
-    lng: number | null;
-  } | null;
-  setCoordinates?: (
-    coordinates: {
-      lat: number | null;
-      lng: number | null;
-    } | null,
-  ) => void;
-  onLocationKind?: (kind: "zip" | "gps" | null) => void;
 }
 
+/** Class finder (and legacy) accordion body — group finder overflow uses {@link FilterPopup} instead. */
 export const AllFiltersRefinementContent = ({
   data,
-  selectedValue,
-  setSelectedValue,
   showSection,
-  ageInput,
-  setAgeInput,
-  coordinates,
-  setCoordinates,
-  onLocationKind,
 }: AllFiltersRefinementContentProps) => {
   const { items, refine } = useRefinementList({
     attribute: data.content.attribute,
   });
   const content = data.content;
-
-  // Track which subsections have items
-  const [hasPeopleWhoAreItems, setHasPeopleWhoAreItems] = React.useState(false);
-
-  // Topic categories for filtering
-  const spiritualGrowthTopics = ["Bible Study", "Prayer", "Message Discussion"];
-  const lifeSupportTopics = ["Marriage", "Parenting", "Finances"];
-  const communityFunTopics = [
-    "Friendship",
-    "Sports",
-    "Activty/Hobby",
-    "Book Club",
-    "Watch Party",
-    "Podcast",
-  ];
-
-  // Check if topic categories have items
-  const hasSpiritualGrowthItems =
-    content.isTopics &&
-    content.attribute === "topics" &&
-    items.some((item) => spiritualGrowthTopics.includes(item.label));
-  const hasLifeSupportItems =
-    content.isTopics &&
-    content.attribute === "topics" &&
-    items.some((item) => lifeSupportTopics.includes(item.label));
-  const hasCommunityFunItems =
-    content.isTopics &&
-    content.attribute === "topics" &&
-    items.some((item) => communityFunTopics.includes(item.label));
-  const styles = {
-    checkbox: "text-text-primary font-regular text-sm",
-    button:
-      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
-    meetingTypeButton: "flex items-center gap-1.5",
-    buttonRefined:
-      "bg-ocean !text-white hover:!bg-navy hover:!text-white",
-  };
 
   const MEETING_DAYS_ORDER = [
     "Monday",
@@ -115,6 +48,14 @@ export const AllFiltersRefinementContent = ({
             MEETING_DAYS_ORDER.indexOf(b.label),
         )
       : items;
+
+  const styles = {
+    button:
+      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
+    meetingTypeButton: "flex items-center gap-1.5",
+    buttonRefined:
+      "bg-ocean !text-white hover:!bg-navy hover:!text-white",
+  };
 
   const renderButton = (
     item: { label: string; value: string; isRefined: boolean; count: number },
@@ -149,43 +90,6 @@ export const AllFiltersRefinementContent = ({
     </Button>
   );
 
-  const renderCheckbox = (
-    item: { label: string; value: string; isRefined: boolean; count: number },
-    index: number,
-  ) => (
-    <div
-      key={index}
-      className="flex items-center gap-2 w-fit cursor-pointer!"
-      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
-        refine(item.value);
-      }}
-    >
-      <div
-        className={cn(
-          "box-border flex size-4 shrink-0 items-center justify-center rounded border-2 border-[#D1D5DB] bg-transparent",
-          item.isRefined && "border-[#222222]",
-        )}
-        aria-hidden
-      >
-        {item.isRefined ? (
-          <Icon
-            name="check"
-            size={10}
-            className="text-[#222222]"
-          />
-        ) : null}
-      </div>
-      <div className={styles.checkbox}>
-        {content.attribute === "adultOnly"
-          ? item.value === "false"
-            ? "Children Welcome"
-            : "Adult Only"
-          : item.label}
-      </div>
-    </div>
-  );
-
   return (
     <div
       className={cn(
@@ -194,204 +98,14 @@ export const AllFiltersRefinementContent = ({
         showSection ? "h-auto" : "h-0",
       )}
     >
-      <div className="flex flex-col gap-5">
-        {/* Location Search */}
-        {content.isLocation && coordinates !== undefined && setCoordinates ? (
-          <div className="flex flex-col gap-2">
-            {/* Meeting Type */}
-            <h3 className="text-base text-black">Meeting Type</h3>
-            <div
-              className={cn(
-                "flex bg-white pr-4",
-                content.isCheckbox && content.checkboxLayout === "vertical"
-                  ? "gap-4 flex-col"
-                  : "flex-wrap gap-y-1.5 gap-x-1.5",
-              )}
-            >
-              {sortedItems.map((item, index) => renderButton(item, index))}
-            </div>
-
-            <h3 className="text-base text-black mt-4">Filter by zip code</h3>
-            <FinderLocationSearch
-              coordinates={coordinates}
-              setCoordinates={setCoordinates}
-              autoGeocodeZip={false}
-              showCurrentLocationButton={false}
-              onLocationKind={onLocationKind}
-            />
-            <h3 className="text-base text-black mt-4">Filter by distance</h3>
-            <FinderLocationSearch
-              coordinates={coordinates}
-              setCoordinates={setCoordinates}
-              showZipInput={false}
-              onLocationKind={onLocationKind}
-            />
-          </div>
-        ) : content.isPeopleGroup ? (
-          <div className="flex flex-col gap-6">
-            {/* People (groupFor) - no header since main button already says "People" */}
-            <div className="flex flex-col gap-2">
-              <PeopleSubsection attribute="groupFor" />
-            </div>
-
-            {/* Seasons of Life (peopleWhoAre) */}
-            <div className="flex flex-col gap-2">
-              {hasPeopleWhoAreItems && (
-                <h3 className="text-base text-black">Seasons of Life</h3>
-              )}
-              <PeopleSubsection
-                attribute="peopleWhoAre"
-                onItemsChange={setHasPeopleWhoAreItems}
-              />
-            </div>
-
-            {/* Your Age */}
-            <div className="flex flex-col gap-2">
-              <h3 className="text-base text-black">Enter Your Age</h3>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="13"
-                  max="120"
-                  placeholder="Your age"
-                  value={ageInput}
-                  onChange={(e) => setAgeInput?.(e.target.value)}
-                  className="w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-            </div>
-          </div>
-        ) : content.attribute === "ageRange" ? (
-          <div className="flex flex-col gap-2">
-            <h3 className="text-base text-black">Enter Your Age</h3>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                min="13"
-                max="120"
-                placeholder="Your age"
-                value={ageInput}
-                onChange={(e) => setAgeInput?.(e.target.value)}
-                className="w-full max-w-[120px] text-base px-2 focus:outline-none rounded-lg border border-[#AAAAAA] py-2 flex h-full"
-                onClick={(e) => e.stopPropagation()}
-              />
-              <span className="text-sm text-gray-600">years old</span>
-            </div>
-          </div>
-        ) : content.isTopics && content.attribute === "topics" ? (
-          <div className="flex flex-col gap-6">
-            {/* Spiritual Growth */}
-            {hasSpiritualGrowthItems && (
-              <div className="flex flex-col gap-2">
-                <h3 className="text-base text-black">Spiritual Growth</h3>
-                <div className="flex flex-wrap gap-y-1.5 gap-x-1.5">
-                  {items
-                    .filter((item) =>
-                      spiritualGrowthTopics.includes(item.label),
-                    )
-                    .map((item, index) => (
-                      <div key={index}>{renderButton(item, index)}</div>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Life & Support */}
-            {hasLifeSupportItems && (
-              <div className="flex flex-col gap-2">
-                <h3 className="text-base text-black">Life & Support</h3>
-                <div className="flex flex-wrap gap-y-1.5 gap-x-1.5">
-                  {items
-                    .filter((item) => lifeSupportTopics.includes(item.label))
-                    .map((item, index) => (
-                      <div key={index}>{renderButton(item, index)}</div>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Community & Fun */}
-            {hasCommunityFunItems && (
-              <div className="flex flex-col gap-2">
-                <h3 className="text-base text-black">Community & Fun</h3>
-                <div className="flex flex-wrap gap-y-1.5 gap-x-1.5">
-                  {items
-                    .filter((item) => communityFunTopics.includes(item.label))
-                    .map((item, index) => (
-                      <div key={index}>{renderButton(item, index)}</div>
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Regular Checkbox & Buttons Option */
-          !content.isDropdown && (
-            <div
-              className={cn(
-                "flex bg-white pr-4",
-                content.isCheckbox && content.checkboxLayout === "vertical"
-                  ? "gap-4 flex-col"
-                  : "flex-wrap gap-y-1.5 gap-x-1.5",
-              )}
-            >
-              {sortedItems.map((item, index) => (
-                <div key={index}>
-                  {content.isCheckbox
-                    ? renderCheckbox(item, index)
-                    : renderButton(item, index)}
-                </div>
-              ))}
-            </div>
-          )
+      <div
+        className={cn(
+          "flex flex-wrap gap-x-1.5 gap-y-1.5 bg-white pr-4",
         )}
-
-        {/* Dropdown Option */}
-        {content.isDropdown && setSelectedValue && (
-          <div className="flex flex-col gap-2">
-            <div className={cn("relative")}>
-              <select
-                value={selectedValue}
-                onChange={(e) => {
-                  if (e.target.value === "") {
-                    // Clear all refinements for this attribute
-                    items.forEach((item) => {
-                      if (item.isRefined) {
-                        refine(item.value);
-                      }
-                    });
-                    setSelectedValue("");
-                  } else {
-                    refine(e.target.value);
-                    setSelectedValue(e.target.value);
-                  }
-                }}
-                className={cn(
-                  "flex items-center justify-between w-full rounded-lg p-3",
-                  "border border-black text-neutral-default",
-                  "focus:outline-none focus:ring-2 focus:ring-transparent",
-                  "appearance-none",
-                )}
-                aria-label="Select meeting time"
-              >
-                <option value="">Select</option>
-                {sortedItems.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-              <div
-                className={cn(
-                  "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
-                )}
-              >
-                <Icon name="chevronDown" size={18} />
-              </div>
-            </div>
-          </div>
-        )}
+      >
+        {sortedItems.map((item, index) => (
+          <div key={index}>{renderButton(item, index)}</div>
+        ))}
       </div>
     </div>
   );
