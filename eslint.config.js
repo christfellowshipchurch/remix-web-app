@@ -28,6 +28,7 @@ export default [
         setInterval: "readonly",
         clearInterval: "readonly",
         fetch: "readonly",
+        AbortController: "readonly",
         Request: "readonly",
         Response: "readonly",
         URL: "readonly",

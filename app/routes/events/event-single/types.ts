@@ -9,6 +9,7 @@ export type EventSinglePageType = {
   coverImage: string;
   aboutTitle?: string;
   aboutContent?: string;
+  groupType?: string; // Type for the clickthrough registration
   keyInfoCards?: { title: string; description: string; icon: string }[];
   whatToExpect?: { title: string; description: string }[];
   moreInfoTitle?: string;
