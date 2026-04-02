@@ -69,7 +69,8 @@
     "twilio": "^5.12.2",
     "url": "^0.11.4",
     "web-vitals": "^5.1.0",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
