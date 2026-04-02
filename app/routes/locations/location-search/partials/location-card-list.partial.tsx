@@ -19,6 +19,7 @@ export type CampusHit = {
     zip: string;
   };
   serviceTimes: string;
+  campusCardImage?: string;
   campusImage?: string;
   _rankingInfo?: {
     distance?: number;
@@ -29,13 +30,20 @@ export type LocationCardListProps = {
   loading: boolean;
 };
 
+function locationSearchCardImage(hit: {
+  campusCardImage?: string;
+  campusImage?: string;
+}) {
+  return hit.campusCardImage?.trim() || hit.campusImage?.trim() || "";
+}
+
 export const LocationCardList = ({ loading }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
   const onlineCampus = items?.find((item) =>
-    item.campusName?.includes("Online")
+    item.campusName?.includes("Online"),
   );
   const filteredItems = items?.filter(
-    (item) => !item.campusName?.includes("Online")
+    (item) => !item.campusName?.includes("Online"),
   );
 
   if (loading) {
@@ -52,7 +60,7 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
         {onlineCampus && (
           <LocationCard
             name="Online"
-            image={onlineCampus?.campusImage || ""}
+            image={locationSearchCardImage(onlineCampus)}
             distanceFromLocation={0}
             key={onlineCampus?.objectID}
             link="/cf-everywhere"
@@ -73,15 +81,15 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
           return (
             <LocationCard
               name={hit?.campusName}
-              image={hit?.campusImage || ""}
+              image={locationSearchCardImage(hit)}
               distanceFromLocation={distanceFromLocation}
               key={hit.objectID || index}
               link={
                 hit?.campusName?.includes("Online")
                   ? `/${url}`
                   : !hit?.campusName.includes("Español")
-                  ? `/${lodash.kebabCase(hit?.campusName)}`
-                  : `/iglesia-${lodash.kebabCase(url)}`
+                    ? `/${lodash.kebabCase(hit?.campusName)}`
+                    : `/iglesia-${lodash.kebabCase(url)}`
               }
             />
           );
