@@ -51,10 +51,9 @@ export const AllFiltersRefinementContent = ({
 
   const styles = {
     button:
-      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
+      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-text-primary transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
     meetingTypeButton: "flex items-center gap-1.5",
-    buttonRefined:
-      "bg-ocean !text-white hover:!bg-navy hover:!text-white",
+    buttonRefined: "bg-ocean !text-white hover:!bg-navy hover:!text-white",
   };
 
   const renderButton = (
@@ -98,11 +97,7 @@ export const AllFiltersRefinementContent = ({
         showSection ? "h-auto" : "h-0",
       )}
     >
-      <div
-        className={cn(
-          "flex flex-wrap gap-x-1.5 gap-y-1.5 bg-white pr-4",
-        )}
-      >
+      <div className={cn("flex flex-wrap gap-x-1.5 gap-y-1.5 bg-white pr-4")}>
         {sortedItems.map((item, index) => (
           <div key={index}>{renderButton(item, index)}</div>
         ))}

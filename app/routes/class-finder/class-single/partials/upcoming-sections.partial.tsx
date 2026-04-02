@@ -11,6 +11,8 @@ import {
   useClassSingleUpcomingInstantSearch,
 } from "../hooks/use-class-single-upcoming-instant-search";
 import type { ClassHitType } from "../../types";
+import OnDemandCard from "../components/on-demand-card.component";
+import { getImageUrl } from "~/lib/utils";
 
 const LOCATION_FILTERS_HINT = "Location filters are applied.";
 
@@ -174,6 +176,13 @@ export function ClassSingleUpcomingSearch() {
           <div className="mx-auto w-full max-w-screen-content">
             <ClassSingleUpcomingResultsInner
               geoActive={upcoming.geoFiltersActive}
+            />
+          </div>
+          <div className="mx-auto w-full max-w-screen-content flex flex-col items-center py-16 border-y mt-8 border-neutral-lighter">
+            <h2 className="text-2xl font-bold w-full">Take It Anytime</h2>
+            <OnDemandCard
+              title="Template Title"
+              image={getImageUrl("3143917")}
             />
           </div>
         </div>

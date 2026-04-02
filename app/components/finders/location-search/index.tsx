@@ -6,13 +6,13 @@ import { Icon } from "~/primitives/icon/icon";
 export type FinderLocationKind = "zip" | "gps" | null;
 
 export const finderLocationInputBaseClass =
-  "box-border min-w-0 rounded border border-[#444444] px-2 py-1 text-sm text-[#222222] placeholder:text-[#222222]/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444] transition-colors duration-300 disabled:opacity-50";
+  "box-border min-w-0 rounded border border-[#444444] px-2 py-1 text-sm text-text-primary placeholder:text-text-primary/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444] transition-colors duration-300 disabled:opacity-50";
 
 export const finderApplyZipButtonClass =
   "inline-flex min-h-0 shrink-0 items-center justify-center gap-1 border-0 bg-ocean px-5 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-navy disabled:cursor-not-allowed disabled:opacity-50 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1";
 
 const finderCurrentLocationButtonClass =
-  "inline-flex min-h-0 min-w-0 items-center justify-center gap-2 border-0 bg-gray px-4 py-2 text-sm font-semibold text-[#222222] transition-colors duration-300 hover:bg-neutral-200 disabled:opacity-50 rounded";
+  "inline-flex min-h-0 min-w-0 items-center justify-center gap-2 border-0 bg-gray px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-300 hover:bg-neutral-200 disabled:opacity-50 rounded";
 
 export const FinderLocationSearch = ({
   coordinates,
@@ -179,7 +179,11 @@ export const FinderLocationSearch = ({
       disabled={isGeocoding}
       onClick={handleCurrentLocationClick}
     >
-      <Icon name="targetBlank" size={16} className="shrink-0 text-[#222222]" />
+      <Icon
+        name="targetBlank"
+        size={16}
+        className="shrink-0 text-text-primary"
+      />
       <span>Share Your Location</span>
     </button>
   );

@@ -340,7 +340,9 @@ export const FilterPopup = ({
           )}
         >
           {content.title && (
-            <h3 className={finderFilterSectionSubtitleClass}>{content.title}</h3>
+            <h3 className={finderFilterSectionSubtitleClass}>
+              {content.title}
+            </h3>
           )}
           <FilterPopupContent
             sectionKey={`${index}-${content.attribute}-${content.title ?? ""}`}
@@ -498,9 +500,7 @@ const FilterPopupContent = ({
   // Filter items based on category and popup title
   const getFilteredItems = () => {
     if (data.attribute === "topics" && data.title === "Spiritual Growth") {
-      return items.filter((item) =>
-        spiritualGrowthTopics.includes(item.label),
-      );
+      return items.filter((item) => spiritualGrowthTopics.includes(item.label));
     }
     if (data.attribute === "topics" && data.title === "Life & Support") {
       return items.filter((item) => lifeSupportTopics.includes(item.label));
@@ -625,7 +625,7 @@ const FilterPopupContent = ({
   const styles = {
     checkbox: "min-w-0 break-words text-text-primary font-regular text-sm",
     button:
-      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-[#222222] transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
+      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-text-primary transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
     meetingTypeButton: "flex w-fit flex-wrap items-center gap-1.5",
     buttonRefined: "bg-ocean !text-white hover:bg-navy",
   };
@@ -703,7 +703,7 @@ const FilterPopupContent = ({
                             <div
                               className={cn(
                                 "box-border flex size-4 shrink-0 items-center justify-center rounded border-2 border-[#D1D5DB] bg-transparent",
-                                item.isRefined && "border-[#222222]",
+                                item.isRefined && "border-text-primary",
                               )}
                               aria-hidden
                             >
@@ -711,7 +711,7 @@ const FilterPopupContent = ({
                                 <Icon
                                   name="check"
                                   size={10}
-                                  className="text-[#222222]"
+                                  className="text-text-primary"
                                 />
                               ) : null}
                             </div>
@@ -751,7 +751,7 @@ const FilterPopupContent = ({
                                 className={
                                   item.isRefined
                                     ? "text-white"
-                                    : "text-[#222222]"
+                                    : "text-text-primary"
                                 }
                               />
                             )}
@@ -781,7 +781,7 @@ const FilterPopupContent = ({
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               className={cn(
-                "box-border flex h-11 w-full cursor-pointer appearance-none items-center justify-between rounded border border-[#444444] bg-white px-3 text-sm text-[#222222]",
+                "box-border flex h-11 w-full cursor-pointer appearance-none items-center justify-between rounded border border-[#444444] bg-white px-3 text-sm text-text-primary",
                 "focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444]",
               )}
               aria-label={
@@ -807,7 +807,7 @@ const FilterPopupContent = ({
               <Icon
                 name="chevronDown"
                 size={16}
-                className="text-[#222222]"
+                className="text-text-primary"
               />
             </div>
           </div>

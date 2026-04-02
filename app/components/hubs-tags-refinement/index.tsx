@@ -14,7 +14,7 @@ const pillSharedClass =
 
 const unselectedPillClass = cn(
   pillSharedClass,
-  "w-fit max-w-full cursor-pointer justify-center whitespace-nowrap bg-gray px-4 py-2 text-[#222222] hover:bg-neutral-200 md:py-2.5",
+  "w-fit max-w-full cursor-pointer justify-center whitespace-nowrap bg-gray px-4 py-2 text-text-primary hover:bg-neutral-200 md:py-2.5",
 );
 
 const selectedPillClass = cn(
