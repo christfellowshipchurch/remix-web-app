@@ -5,7 +5,6 @@ import { registerToken } from "~/lib/.server/token";
 import {
   AuthenticationError,
   RockAPIError,
-  EncryptionError,
 } from "~/lib/.server/error-types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { User } from "~/providers/auth-provider";
@@ -21,7 +20,7 @@ export const currentUser = async (token: string) => {
     try {
       decryptedToken = decrypt(token);
     } catch {
-      throw new EncryptionError("Failed to decrypt token");
+      throw new AuthenticationError("Invalid or expired token, please log in again");
     }
 
     const { rockCookie } = registerToken(decryptedToken);

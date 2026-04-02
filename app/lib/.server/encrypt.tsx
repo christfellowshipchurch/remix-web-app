@@ -3,13 +3,10 @@ import crypto from "crypto";
 import { EncryptionError } from "./error-types";
 
 export const encrypt = (id: string): string => {
-  const CRYPTO_IV = process.env.CRYPTO_IV;
   const CRYPTO_SECRET = process.env.CRYPTO_SECRET;
 
-  if (!CRYPTO_IV || !CRYPTO_SECRET) {
-    throw new Error(
-      "CRYPTO_IV and CRYPTO_SECRET environment variables must be set"
-    );
+  if (!CRYPTO_SECRET) {
+    throw new Error("CRYPTO_SECRET environment variable must be set");
   }
 
   if (!id) {
@@ -17,14 +14,15 @@ export const encrypt = (id: string): string => {
   }
 
   try {
+    const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(
       "aes-256-cbc",
       Buffer.from(CRYPTO_SECRET),
-      Buffer.from(CRYPTO_IV)
+      iv
     );
     let encrypted = cipher.update(id, "utf8", "hex");
     encrypted += cipher.final("hex");
-    return encrypted;
+    return iv.toString("hex") + ":" + encrypted;
   } catch (error) {
     throw new EncryptionError(
       `Encryption failed: ${

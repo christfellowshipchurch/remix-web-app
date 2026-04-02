@@ -23,10 +23,12 @@ export const registerPerson = async ({
         const { encryptedToken } = await authenticateOrRegisterWithSms(
           registrationData
         );
-        return new Response(JSON.stringify({ encryptedToken }), {
+        const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+        return new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: {
             "Content-Type": "application/json",
+            "Set-Cookie": `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
           },
         });
       } catch (error: unknown) {
@@ -39,10 +41,12 @@ export const registerPerson = async ({
     case "email":
       try {
         const { token } = await registerPersonWithEmail(registrationData);
-        return new Response(JSON.stringify({ encryptedToken: token }), {
+        const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+        return new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: {
             "Content-Type": "application/json",
+            "Set-Cookie": `auth-token=${token}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
           },
         });
       } catch (error: unknown) {
