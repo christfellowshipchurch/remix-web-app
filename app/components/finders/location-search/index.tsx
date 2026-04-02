@@ -6,7 +6,7 @@ import { Icon } from "~/primitives/icon/icon";
 export type FinderLocationKind = "zip" | "gps" | null;
 
 export const finderLocationInputBaseClass =
-  "box-border min-w-0 rounded border border-[#444444] px-2 py-1 text-sm text-text-primary placeholder:text-text-primary/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444] transition-colors duration-300 disabled:opacity-50";
+  "box-border min-h-11 min-w-0 rounded border border-[#909090] px-2 py-2 text-sm leading-snug text-text-secondary placeholder:text-[#909090] [color-scheme:light] focus:outline-none focus-visible:ring-1 focus-visible:ring-[#909090] transition-colors duration-300 disabled:opacity-50";
 
 export const finderApplyZipButtonClass =
   "inline-flex min-h-0 shrink-0 items-center justify-center gap-1 border-0 bg-ocean px-5 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-navy disabled:cursor-not-allowed disabled:opacity-50 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1";

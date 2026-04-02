@@ -781,8 +781,8 @@ const FilterPopupContent = ({
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               className={cn(
-                "box-border flex h-11 w-full cursor-pointer appearance-none items-center justify-between rounded border border-[#444444] bg-white px-3 text-sm text-text-primary",
-                "focus:outline-none focus-visible:ring-1 focus-visible:ring-[#444444]",
+                finderLocationInputBaseClass,
+                "flex w-full cursor-pointer appearance-none items-center bg-white pr-9",
               )}
               aria-label={
                 data.title
@@ -807,7 +807,7 @@ const FilterPopupContent = ({
               <Icon
                 name="chevronDown"
                 size={16}
-                className="text-text-primary"
+                className="text-[#909090]"
               />
             </div>
           </div>

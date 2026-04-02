@@ -8,7 +8,7 @@ export type ClassSingleUpcomingFilterOpts = {
   onLocationKind: (kind: "zip" | "gps" | null) => void;
 };
 
-/** Location (meet format, zip, current location) + language for class-single upcoming. */
+/** Location (meet format, campus, zip, current location) + language for class-single upcoming. */
 export function getClassSingleUpcomingDesktopFilters(
   opts: ClassSingleUpcomingFilterOpts,
 ): SearchFilterDesktopItem[] {
@@ -25,6 +25,11 @@ export function getClassSingleUpcomingDesktopFilters(
             title: "I want to meet...",
             attribute: "format",
             isMeetingType: true,
+          },
+          {
+            title: "Christ Fellowship Campus",
+            attribute: "campus",
+            isDropdown: true,
           },
           {
             title: "Filter by zip code",
