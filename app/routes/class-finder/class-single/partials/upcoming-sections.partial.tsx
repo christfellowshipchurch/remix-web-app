@@ -84,7 +84,10 @@ function ClassSingleUpcomingResultsInner({
   const carouselResetKey = ordered.map((h) => h.objectID).join("|");
 
   return (
-    <div data-upcoming-sessions-results className="scroll-mt-[100px]">
+    <div
+      data-upcoming-sessions-results
+      className="scroll-mt-[100px]w-full max-w-[1296px] mr-auto"
+    >
       <h3 className="pt-2 text-2xl font-extrabold mb-6 md:pt-4">
         Join a Class
       </h3>
@@ -97,12 +100,14 @@ function ClassSingleUpcomingResultsInner({
 
 /**
  * One InstantSearch for class-single upcoming sessions (mobile + desktop share URL, geo, and refinements).
- * Location/language refinements apply only to this index (`dev_Classes`); `ClassSingleGroupsSection` uses a separate Groups InstantSearch and is unaffected unless wired explicitly.
+ * `ClassSingleGroupsSection` is a nested Algolia `Index` (`dev_daniel_Groups`) that mirrors the same refinements + geo via `Configure`.
  */
 export function ClassSingleUpcomingSearch({
   classHeroCoverImageUri,
+  classType,
 }: {
   classHeroCoverImageUri: string;
+  classType: string;
 }) {
   const upcoming = useClassSingleUpcomingInstantSearch();
 
@@ -187,19 +192,24 @@ export function ClassSingleUpcomingSearch({
           </div>
 
           {/* On Demand Section*/}
-          <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center py-16 border-t mt-8 border-neutral-lighter">
-            <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
-              Take It Anytime
-            </h2>
-            <OnDemandCard
-              title="Template Title"
-              image={classHeroCoverImageUri}
-              link="#todo"
-            />
+          <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center mt-8">
+            <div className="w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+              <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
+                Take It Anytime
+              </h2>
+              <OnDemandCard
+                title={classType}
+                image={classHeroCoverImageUri}
+                link="#todo"
+              />
+            </div>
+            <div className="w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+              <ClassSingleGroupsSection
+                coordinates={upcoming.coordinates}
+                classUrl={upcoming.classUrl}
+              />
+            </div>
           </div>
-
-          {/* Groups Section */}
-          <ClassSingleGroupsSection />
         </div>
       </div>
     </InstantSearch>

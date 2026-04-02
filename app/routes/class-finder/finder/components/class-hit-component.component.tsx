@@ -21,23 +21,23 @@ export function ClassHitComponent({
       state={
         fromClassFinderUrl ? { fromClassFinder: fromClassFinderUrl } : undefined
       }
-      className="size-full"
+      className="flex h-full min-h-0 w-full max-w-full flex-col"
     >
       <div
-        className="mb-4 bg-white rounded-lg overflow-hidden w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300 h-full flex flex-col"
+        className="mx-auto flex h-full min-h-0 w-full max-w-[360px] flex-1 cursor-pointer flex-col overflow-hidden rounded-lg bg-white transition-transform duration-300 hover:-translate-y-[2px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
         style={{
           boxShadow:
             "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
         }}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex min-h-0 flex-1 flex-col">
           <img
             src={coverImage}
             alt={hit.title}
-            className="w-full h-[250px] lg:h-[180px] object-cover overflow-hidden shrink-0"
+            className="h-[250px] w-full shrink-0 object-cover lg:h-[180px]"
           />
 
-          <div className="flex flex-col gap-5 px-6 pb-4 pt-5 w-full h-full flex-1">
+          <div className="flex min-h-0 flex-1 flex-col gap-5 px-6 pb-4 pt-5">
             {/* Attributes */}
             <div className="flex flex-wrap gap-[6px]">
               <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">

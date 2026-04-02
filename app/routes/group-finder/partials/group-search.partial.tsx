@@ -307,9 +307,9 @@ export const GroupSearch = () => {
               <div className="min-h-[320px]">
                 <Hits
                   classNames={{
-                    root: "flex items-center justify-center md:items-start md:justify-start w-full",
-                    item: "flex items-center justify-center md:items-start md:justify-start w-full",
-                    list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
+                    root: "flex w-full items-center justify-center md:items-start md:justify-start",
+                    item: "flex h-full min-h-0 w-full flex-col",
+                    list: "grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:!gap-x-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3",
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
                     return (

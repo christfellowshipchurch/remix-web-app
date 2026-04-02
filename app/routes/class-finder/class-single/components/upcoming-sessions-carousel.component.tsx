@@ -1,6 +1,12 @@
 import { useMemo } from "react";
 
 import { cn } from "~/lib/utils";
+import {
+  CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
+  CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS,
+  classSingleCarouselSlideGridColsClass,
+  useMinWidthLg,
+} from "../hooks/use-class-single-carousel-cards-per-slide";
 import { Button } from "~/primitives/shadcn-primitives/button";
 import {
   Carousel,
@@ -12,8 +18,7 @@ import {
 import Icon from "~/primitives/icon";
 import { UpcomingSessionCard } from "./upcoming-session-card.component";
 import { ClassHitType } from "../../types";
-
-export const UPCOMING_SESSIONS_CAROUSEL_CARDS_PER_SLIDE = 4;
+import { Link } from "react-router";
 
 function UpcomingCarouselNavRow() {
   const { api, scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
@@ -64,6 +69,8 @@ function UpcomingCarouselNavRow() {
   );
 }
 
+const DESKTOP_CAROUSEL_CHUNK = 4;
+
 export function UpcomingSessionsCarousel({
   hits,
   resetKey,
@@ -71,11 +78,13 @@ export function UpcomingSessionsCarousel({
   hits: ClassHitType[];
   resetKey: string;
 }) {
+  /** Below `lg`, match Join a Group: one hit per Embla slide with ~1.5-card peek (not 2-up grid). */
+  const isDesktopChunkGrid = useMinWidthLg();
+
   const slides = useMemo(() => {
-    const n = UPCOMING_SESSIONS_CAROUSEL_CARDS_PER_SLIDE;
     const out: ClassHitType[][] = [];
-    for (let i = 0; i < hits.length; i += n) {
-      out.push(hits.slice(i, i + n));
+    for (let i = 0; i < hits.length; i += DESKTOP_CAROUSEL_CHUNK) {
+      out.push(hits.slice(i, i + DESKTOP_CAROUSEL_CHUNK));
     }
     return out;
   }, [hits]);
@@ -86,25 +95,52 @@ export function UpcomingSessionsCarousel({
 
   return (
     <Carousel
-      key={resetKey}
+      key={`${resetKey}-${isDesktopChunkGrid ? "lg" : "peek"}`}
       opts={{ align: "start", containScroll: "trimSnaps" }}
       className="w-full max-w-[1296px]"
     >
-      <CarouselContent className="ml-0">
-        {slides.map((chunk, slideIndex) => (
-          <CarouselItem key={slideIndex} className="basis-full pl-0">
-            <div className="grid w-full grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {chunk.map((hit) => (
-                <div
-                  key={hit.objectID}
-                  className="flex w-full justify-center sm:justify-start"
-                >
-                  <UpcomingSessionCard hit={hit} />
+      <CarouselContent
+        className={cn(
+          "ml-0 py-3",
+          !isDesktopChunkGrid && CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
+        )}
+      >
+        {!isDesktopChunkGrid
+          ? hits.map((hit, idx) => (
+              <CarouselItem
+                key={hit.objectID ?? idx}
+                className={CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS}
+              >
+                <div className="flex h-full min-h-0 w-full justify-center">
+                  <Link
+                    to={`#todo`}
+                    className="flex h-full min-h-0 w-full min-w-0 max-w-full flex-col"
+                  >
+                    <UpcomingSessionCard hit={hit} />
+                  </Link>
                 </div>
-              ))}
-            </div>
-          </CarouselItem>
-        ))}
+              </CarouselItem>
+            ))
+          : slides.map((chunk, slideIndex) => (
+              <CarouselItem key={slideIndex} className="basis-full pl-0">
+                <div
+                  className={cn(
+                    "grid w-full items-stretch gap-x-4 gap-y-6 xl:gap-x-8",
+                    classSingleCarouselSlideGridColsClass(DESKTOP_CAROUSEL_CHUNK),
+                  )}
+                >
+                  {chunk.map((hit, idx) => (
+                    <Link
+                      key={idx}
+                      to={`#todo`}
+                      className="flex h-full min-h-0 w-full justify-center sm:justify-start"
+                    >
+                      <UpcomingSessionCard hit={hit} />
+                    </Link>
+                  ))}
+                </div>
+              </CarouselItem>
+            ))}
       </CarouselContent>
       <UpcomingCarouselNavRow />
     </Carousel>

@@ -11,11 +11,11 @@ const OnDemandCard = ({
   link: string;
 }) => {
   return (
-    <div className="w-full flex rounded-[8px] bg-white shadow-md overflow-hidden min-h-[240px]">
+    <div className="w-full flex rounded-[8px] bg-white shadow-md overflow-hidden min-h-[240px] mt-4 md:mt-0">
       <img
         src={image}
         alt={title}
-        className="w-1/2 max-w-[320px] aspect-video object-cover"
+        className="w-1/2 max-w-[320px] aspect-video object-cover hidden md:block"
       />
       <div className="flex flex-col gap-5 p-6">
         <div className="flex flex-col gap-3">

@@ -83,6 +83,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
 
       <div className="w-full flex flex-col border-t border-[#E8E8E8]">
         <ClassSingleUpcomingSearch
+          classType={classType}
           classHeroCoverImageUri={hit.coverImage.sources[0].uri}
         />
 

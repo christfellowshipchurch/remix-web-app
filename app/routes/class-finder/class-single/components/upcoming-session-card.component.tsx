@@ -1,5 +1,6 @@
 import { Icon } from "~/primitives/icon/icon";
 import { ClassHitType } from "../../types";
+import { cn } from "~/lib/utils";
 
 export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
   const campusLabel = hit.campus?.trim() ?? "";
@@ -36,15 +37,16 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
 
   return (
     <div
-      className="mb-4 bg-white rounded-lg overflow-hidden flex w-full h-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
-      style={{
-        boxShadow:
-          "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-      }}
+      className={cn(
+        "mx-auto flex h-full min-h-0 w-full max-w-[360px] flex-1 flex-col rounded-lg",
+        "md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]",
+        "transition-transform duration-300 ease-out",
+        "hover:-translate-y-1",
+      )}
     >
-      <div className="flex flex-col w-full h-full">
-        <div className="flex flex-col gap-6 px-6 pb-1 pt-5 w-full h-fit flex-1">
-          <div className="flex flex-col w-full h-full gap-5">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-white">
+        <div className="flex min-h-0 flex-1 flex-col gap-6 px-6 pb-1 pt-5">
+          <div className="flex min-h-0 flex-1 flex-col gap-5">
             <div className="flex flex-col gap-2">
               <p className="bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1">
                 {language}
@@ -81,7 +83,7 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
           </div>
         </div>
 
-        <div className="bg-navy py-4.5 text-white flex gap-1.5 items-center justify-center">
+        <div className="mt-auto flex shrink-0 items-center justify-center gap-1.5 bg-navy py-4.5 text-white">
           <Icon
             name={isVirtualFormat ? "globe" : "locationArrow"}
             size={16}

@@ -45,7 +45,8 @@ export const FinderHero = ({
   return (
     <section
       className={cn(
-        "relative content-padding pt-8 pb-12 md:pb-8 lg:h-[65vh] lg:max-h-[590px]",
+        !topic ? "lg:h-[65vh] lg:max-h-[590px]" : "h-full",
+        "relative content-padding pt-8 pb-12 md:pb-8",
         bgColor === "ocean" && "bg-ocean",
         bgColor === "navy" && "bg-navy",
         bgColor === "white" && "bg-white",
