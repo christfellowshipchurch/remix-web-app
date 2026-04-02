@@ -12,7 +12,7 @@ import {
 } from "../hooks/use-class-single-upcoming-instant-search";
 import type { ClassHitType } from "../../types";
 import OnDemandCard from "../components/on-demand-card.component";
-import { getImageUrl } from "~/lib/utils";
+import { ClassSingleGroupsSection } from "./groups.partial";
 
 const LOCATION_FILTERS_HINT = "Location filters are applied.";
 
@@ -97,8 +97,13 @@ function ClassSingleUpcomingResultsInner({
 
 /**
  * One InstantSearch for class-single upcoming sessions (mobile + desktop share URL, geo, and refinements).
+ * Location/language refinements apply only to this index (`dev_Classes`); `ClassSingleGroupsSection` uses a separate Groups InstantSearch and is unaffected unless wired explicitly.
  */
-export function ClassSingleUpcomingSearch() {
+export function ClassSingleUpcomingSearch({
+  classHeroCoverImageUri,
+}: {
+  classHeroCoverImageUri: string;
+}) {
   const upcoming = useClassSingleUpcomingInstantSearch();
 
   return (
@@ -117,6 +122,7 @@ export function ClassSingleUpcomingSearch() {
       />
 
       <div className="flex w-full flex-col pagination-scroll-to" id="search">
+        {/* Mobile Filters */}
         <div className="flex flex-col md:hidden">
           <div className="content-padding mx-auto w-full max-w-screen-content">
             <h2 className="w-full text-[28px] font-extrabold">
@@ -144,9 +150,10 @@ export function ClassSingleUpcomingSearch() {
           </div>
         </div>
 
-        <div className="relative hidden w-full flex-col pt-12 md:flex">
+        {/* Desktop Filters */}
+        <div className="relative hidden w-full flex-col md:flex">
           <FinderStickyBar>
-            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 lg:h-20 lg:flex-row lg:items-center lg:gap-4 pagination-scroll-to">
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 pt-8 py-4 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4 pagination-scroll-to">
               <div className="flex w-fit shrink-0 items-center gap-4">
                 <h2 className="w-fit min-w-[260px] text-[28px] font-extrabold">
                   Filter Sessions
@@ -178,13 +185,21 @@ export function ClassSingleUpcomingSearch() {
               geoActive={upcoming.geoFiltersActive}
             />
           </div>
-          <div className="mx-auto w-full max-w-screen-content flex flex-col items-center py-16 border-y mt-8 border-neutral-lighter">
-            <h2 className="text-2xl font-bold w-full">Take It Anytime</h2>
+
+          {/* On Demand Section*/}
+          <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center py-16 border-t mt-8 border-neutral-lighter">
+            <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
+              Take It Anytime
+            </h2>
             <OnDemandCard
               title="Template Title"
-              image={getImageUrl("3143917")}
+              image={classHeroCoverImageUri}
+              link="#todo"
             />
           </div>
+
+          {/* Groups Section */}
+          <ClassSingleGroupsSection />
         </div>
       </div>
     </InstantSearch>

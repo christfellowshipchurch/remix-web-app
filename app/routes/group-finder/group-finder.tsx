@@ -8,6 +8,8 @@ export function GroupFinderPage() {
         <FinderHero
           bgColor="navy"
           bgImage="/assets/images/groups-hero.webp"
+          sectionTitle="life together"
+          sectionTitleColor="#0092BC"
           title={`Find Your Group <span className="hidden md:inline">Today</span>`}
           mobileDescription=" Find a group today that will help you live the full life God intended for you."
           desktopDescription="No matter where you are in life or your journey with God, Groups connect you with people who encourage you, support you, and help you grow. Find a group today that will help you live the full life God intended for you."

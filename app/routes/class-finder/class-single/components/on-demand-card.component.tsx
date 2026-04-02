@@ -1,9 +1,17 @@
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 
-const OnDemandCard = ({ title, image }: { title: string; image: string }) => {
+const OnDemandCard = ({
+  title,
+  image,
+  link,
+}: {
+  title: string;
+  image: string;
+  link: string;
+}) => {
   return (
-    <div className="w-full flex rounded-[8px] bg-white shadow-md overflow-hidden">
+    <div className="w-full flex rounded-[8px] bg-white shadow-md overflow-hidden min-h-[240px]">
       <img
         src={image}
         alt={title}
@@ -19,7 +27,11 @@ const OnDemandCard = ({ title, image }: { title: string; image: string }) => {
           </p>
         </div>
 
-        <Button intent="primary" className="w-fit gap-2">
+        <Button
+          intent="primary"
+          className="w-fit h-fit min-h-0 min-w-0 gap-2"
+          href={link}
+        >
           <p>Start Class</p> <Icon name="arrowRight" />
         </Button>
       </div>

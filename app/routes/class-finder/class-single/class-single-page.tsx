@@ -1,16 +1,32 @@
-import { Link, useLoaderData, useLocation } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { useMemo } from "react";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";
 
-import { Breadcrumbs } from "~/components";
 import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
+import { FinderHero } from "~/components/finders/hero";
 import { Button } from "~/primitives/button/button.primitive";
-import { Icon } from "~/primitives/icon/icon";
 import { ClassFAQ } from "./components/faq.component";
 import { LoaderReturnType } from "./loader";
 import { ClassSingleUpcomingSearch } from "./partials/upcoming-sections.partial";
 import { createSearchClient } from "~/lib/create-search-client";
 import { ClassHitType } from "../types";
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function buildClassSingleHeroDescriptionHtml(summary: string): string {
+  const safe = escapeHtml(summary);
+  return (
+    '<h2 style="font-size:28px;font-weight:800;margin-bottom:1rem;">What to Expect</h2>' +
+    `<div class="class-single-hero-summary">${safe}</div>`
+  );
+}
 
 const ClassNotFound = () => {
   return (
@@ -28,58 +44,47 @@ const ClassNotFound = () => {
 };
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
-  const location = useLocation();
-  const backToClassFinderUrl =
-    typeof location.state?.fromClassFinder === "string"
-      ? location.state.fromClassFinder
-      : "/class-finder";
+  const { summary, classType, topic } = hit;
 
-  const { subtitle, classType, topic } = hit;
+  const heroDescriptionHtml = useMemo(
+    () => buildClassSingleHeroDescriptionHtml(summary),
+    [summary],
+  );
 
-  if (!hit) {
-    return <ClassNotFound />;
-  }
+  const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ""), [classType]);
 
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
-      <img
-        src={hit.coverImage.sources[0].uri}
-        alt={hit.title}
-        className="w-full h-[250px] lg:h-[500px] object-cover overflow-hidden shrink-0"
-      />
-
-      {/* Content */}
-      <div className="content-padding w-full flex flex-col items-center">
-        <div className="flex flex-col gap-12 pt-10 w-full max-w-screen-content">
-          {/* Breadcrumbs */}
-          <div className="flex gap-6 items-center">
-            <Link
-              className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to={backToClassFinderUrl}
-            >
-              <Icon name="arrowBack" className="size-6" />
-              <span className="hover:underline text-sm line-clamp-2 md:hidden">
-                Back to Finder
-              </span>
-            </Link>
-            <div className="hidden md:block">
-              <Breadcrumbs />
-            </div>
-          </div>
-
-          {/* Basic Content */}
-          <div className="w-full flex flex-col items-center">
-            <ClassSingleBasicContent
-              topic={topic}
-              summary={subtitle}
-              classTitle={classType}
-            />
-          </div>
-        </div>
+      <div className="w-full flex-none">
+        <FinderHero
+          bgColor="white"
+          bgImage={hit.coverImage.sources[0].uri}
+          imageAlt={hit.title}
+          title={heroTitleHtml}
+          topic={topic}
+          mobileDescription={heroDescriptionHtml}
+          desktopDescription={heroDescriptionHtml}
+          ctas={[
+            {
+              href: "#todo",
+              title: "Discussion Guide",
+              intent: "secondary",
+              className: "text-base font-normal",
+            },
+            {
+              href: "#todo",
+              title: "Class Trailer",
+              intent: "primary",
+              className: "text-base font-normal",
+            },
+          ]}
+        />
       </div>
 
-      <div className="w-full flex flex-col">
-        <ClassSingleUpcomingSearch />
+      <div className="w-full flex flex-col border-t border-[#E8E8E8]">
+        <ClassSingleUpcomingSearch
+          classHeroCoverImageUri={hit.coverImage.sources[0].uri}
+        />
 
         {/* FAQs */}
         <div className="content-padding w-full flex flex-col items-center">
@@ -143,49 +148,3 @@ const CustomClassSingleHits = () => {
     </div>
   );
 };
-
-function ClassSingleBasicContent({
-  topic,
-  classTitle,
-  summary,
-}: {
-  topic: string;
-  classTitle?: string;
-  summary: string;
-}) {
-  return (
-    <div className="w-full pb-12 lg:pb-16 xl:pb-20">
-      <div className="flex flex-col gap-12 md:gap-16">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-[40px] lg:text-[52px] font-extrabold leading-tight">
-            {classTitle}
-          </h1>
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm bg-gray-100 px-2 py-1 rounded-sm">
-              {topic}
-            </span>
-          </div>
-        </div>
-
-        {/* What To Expect */}
-        <div className="flex flex-col gap-4 md:gap-9">
-          <h2 className="font-extrabold text-lg md:text-[28px]">
-            What to Expect
-          </h2>
-          <p className="md:text-xl">{summary}</p>
-
-          {/* CTAs */}
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-            <Button intent="secondary" size="md" href="#todo">
-              View Discussion Guide
-            </Button>
-
-            <Button intent="secondary" size="md" href="#todo">
-              Watch Class Trailer
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}

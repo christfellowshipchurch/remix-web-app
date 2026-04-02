@@ -313,10 +313,7 @@ export const GroupSearch = () => {
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
                     return (
-                      <GroupHit
-                        hit={hit}
-                        fromGroupFinderUrl={fromGroupFinderUrl}
-                      />
+                      <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />
                     );
                   }}
                 />

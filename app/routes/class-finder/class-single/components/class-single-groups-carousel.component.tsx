@@ -10,12 +10,12 @@ import {
   useCarousel,
 } from "~/primitives/shadcn-primitives/carousel";
 import Icon from "~/primitives/icon";
-import { UpcomingSessionCard } from "./upcoming-session-card.component";
-import { ClassHitType } from "../../types";
+import { GroupHit } from "~/routes/group-finder/components/group-hit.component";
+import type { GroupType } from "~/routes/group-finder/types";
 
-export const UPCOMING_SESSIONS_CAROUSEL_CARDS_PER_SLIDE = 4;
+import { UPCOMING_SESSIONS_CAROUSEL_CARDS_PER_SLIDE } from "./upcoming-sessions-carousel.component";
 
-function UpcomingCarouselNavRow() {
+function ClassSingleGroupsCarouselNavRow() {
   const { api, scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
     useCarousel();
   const slideCount = api?.scrollSnapList().length ?? 0;
@@ -64,16 +64,18 @@ function UpcomingCarouselNavRow() {
   );
 }
 
-export function UpcomingSessionsCarousel({
+export function ClassSingleGroupsCarousel({
   hits,
   resetKey,
+  backUrl,
 }: {
-  hits: ClassHitType[];
+  hits: GroupType[];
   resetKey: string;
+  backUrl: string;
 }) {
   const slides = useMemo(() => {
     const n = UPCOMING_SESSIONS_CAROUSEL_CARDS_PER_SLIDE;
-    const out: ClassHitType[][] = [];
+    const out: GroupType[][] = [];
     for (let i = 0; i < hits.length; i += n) {
       out.push(hits.slice(i, i + n));
     }
@@ -99,14 +101,14 @@ export function UpcomingSessionsCarousel({
                   key={hit.objectID}
                   className="flex w-full justify-center sm:justify-start"
                 >
-                  <UpcomingSessionCard hit={hit} />
+                  <GroupHit hit={hit} backUrl={backUrl} />
                 </div>
               ))}
             </div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <UpcomingCarouselNavRow />
+      <ClassSingleGroupsCarouselNavRow />
     </Carousel>
   );
 }

@@ -7,10 +7,10 @@ export const defaultLeaderPhoto =
 
 export function GroupHit({
   hit,
-  fromGroupFinderUrl,
+  backUrl,
 }: {
   hit: GroupType;
-  fromGroupFinderUrl?: string;
+  backUrl?: string;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const preference = hit.groupFor;
@@ -77,9 +77,7 @@ export function GroupHit({
     <Link
       prefetch="intent"
       to={`/group-finder/${hit.objectID}`}
-      state={
-        fromGroupFinderUrl ? { fromGroupFinder: fromGroupFinderUrl } : undefined
-      }
+      state={backUrl ? { fromGroupFinder: backUrl } : undefined}
       className="size-full"
     >
       <div
@@ -122,11 +120,11 @@ export function GroupHit({
                     preference === "Women"
                       ? "bg-peach/15 text-[#B33A1B]"
                       : preference === "Men"
-                      ? "bg-cotton-candy/15 text-cotton-candy"
-                      : preference === "Anyone"
-                      ? "bg-ocean/15 text-ocean"
-                      : // Couples
-                        "bg-lemon/35 text-[#937200]"
+                        ? "bg-cotton-candy/15 text-cotton-candy"
+                        : preference === "Anyone"
+                          ? "bg-ocean/15 text-ocean"
+                          : // Couples
+                            "bg-lemon/35 text-[#937200]"
                   } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
                 >
                   {preference}
