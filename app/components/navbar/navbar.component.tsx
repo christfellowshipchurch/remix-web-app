@@ -21,7 +21,7 @@ import {
 import { MenuLink } from "./types";
 import { SiteBanner } from "../site-banner";
 import { RootLoaderData } from "~/routes/navbar/loader";
-import { AuthModal } from "../modals";
+// import { AuthModal } from "../modals";
 import { useNavbarVisibility } from "~/providers/navbar-visibility-context";
 
 export function Navbar() {
@@ -257,6 +257,7 @@ export function Navbar() {
                 <a
                   href="/"
                   className="relative flex items-center justify-center gap-2.5"
+                  aria-label="Christ Fellowship Church"
                 >
                   <Icon
                     name="logo"
@@ -373,11 +374,12 @@ export function Navbar() {
                   <button
                     onClick={handleSearchClick}
                     className="flex items-center"
+                    aria-label="Search"
                   >
                     <Icon
                       name="search"
                       className={cn(
-                        "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5",
+                        "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5 mb-1",
                         mode === "light"
                           ? "text-neutral-dark"
                           : openDropdown
@@ -391,7 +393,8 @@ export function Navbar() {
                 <div
                   className={cn("flex gap-2", isSearchOpen && "hidden xl:flex")}
                 >
-                  <AuthModal
+                  {/* We will plan to redirect to legacy my groups site */}
+                  {/* <AuthModal
                     buttonStyle={cn(
                       "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
                       mode === "dark" &&
@@ -399,10 +402,27 @@ export function Navbar() {
                         "border-white text-white group-hover:text-ocean group-hover:border-ocean",
                     )}
                     buttonText="Login"
-                  />
+                  /> */}
+                  <a
+                    href="https://legacy-my-groups.vercel.app/login"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Login"
+                    className={cn(
+                      "font-semibold text-sm xl:text-base transition-colors h-full my-auto px-6 hover:text-ocean",
+                      mode === "light" || isSearchOpen
+                        ? "text-neutral-dark"
+                        : openDropdown
+                          ? "text-neutral-dark"
+                          : "text-white group-hover:text-text",
+                    )}
+                  >
+                    Login
+                  </a>
                   <Button
                     href="/locations"
-                    className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px] py-2 min-h-0 h-auto px-2 min-w-0"
+                    className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px]"
+                    aria-label="Find a Service"
                   >
                     <Icon
                       name="mapFilled"

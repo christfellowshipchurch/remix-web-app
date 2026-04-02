@@ -81,6 +81,7 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
               <Video
                 wistiaId={wistiaId}
                 className="rounded-md min-h-[400px] lg:min-h-[520px] h-full w-full object-cover lg:max-w-[320px] lg:h-[520px] xl:h-full xl:max-w-[700px]"
+                aria-label="Article Video"
               />
             )}
 
@@ -90,6 +91,8 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
                 className="rounded-md h-full w-full object-cover lg:max-w-[320px] lg:h-[520px] xl:h-full xl:max-w-[700px]"
                 src={coverImage}
                 alt={title || "Cover"}
+                fetchPriority="high"
+                aria-label={`${title || "Cover"} Cover Image`}
               />
             )}
           </div>

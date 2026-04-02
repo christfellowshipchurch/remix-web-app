@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "react-router-dom";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData, TTL } from "~/lib/.server/fetch-rock-data";
 import {
   createImageUrlFromGuid,
   ensureArray,
@@ -49,6 +49,7 @@ export const mapRockDataToMessage = async (
           $filter: `Guid eq guid'${categoryGuid.trim()}'`,
           $select: "Value",
         },
+        ttl: TTL.LONG,
       });
 
       if (sermonPrimaryCategory && sermonPrimaryCategory.length > 0) {
@@ -158,6 +159,7 @@ const fetchSpeakerData = async (guid: string) => {
         $filter: `Guid eq guid'${guid}'`,
         $select: "PersonId",
       },
+      ttl: TTL.LONG,
     });
     authorAlias = ensureArray(authorAlias);
   } catch (error) {
@@ -173,6 +175,7 @@ const fetchSpeakerData = async (guid: string) => {
           $filter: `Id eq ${authorAlias[0].personId}`,
           $expand: "Photo",
         },
+        ttl: TTL.LONG,
       });
 
       author = ensureArray(author);

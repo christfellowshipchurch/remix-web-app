@@ -1,5 +1,9 @@
 import { normalize } from "~/lib/utils";
 import redis from "./redis-config";
+import { buildCacheKey, TTL, type TTLValue } from "./cache-utils";
+
+export { TTL, deleteByPrefix } from "./cache-utils";
+export type { TTLValue } from "./cache-utils";
 interface RockDataRequest {
   endpoint: string;
   body: Record<string, unknown>;
@@ -57,7 +61,10 @@ interface FetchRockDataOptions {
   endpoint: string;
   queryParams?: RockQueryParams;
   customHeaders?: Record<string, string>;
+  /** @deprecated Use `ttl` instead. Pass `ttl: TTL.NONE` to skip caching. */
   cache?: boolean;
+  /** TTL in seconds. Use TTL.NONE to skip, TTL.SHORT/DEFAULT/LONG for presets. Defaults to TTL.DEFAULT (3600). */
+  ttl?: TTLValue;
   /** When true, merge $filter so only items where now is within [StartDateTime, ExpireDateTime] are returned */
   filterByDateRange?: boolean;
   /** When true, merge $filter with Status eq 'Approved' */
@@ -120,6 +127,7 @@ export const fetchRockData = async ({
   queryParams = {},
   customHeaders = {},
   cache = true,
+  ttl,
   filterByDateRange = false,
   filterByStatusApproved = false,
 }: FetchRockDataOptions) => {
@@ -131,19 +139,13 @@ export const fetchRockData = async ({
       filterByStatusApproved
     );
   }
-  const cacheKey = `${endpoint}:${JSON.stringify(mergedQueryParams)}`;
 
-  // Clear cache if cache is disabled
-  if (redis && !cache) {
-    try {
-      await redis.del(cacheKey);
-    } catch {
-      console.error("⚠️ Redis cache deletion failed");
-    }
-  }
+  const cacheKey = buildCacheKey(endpoint, mergedQueryParams as Record<string, string>);
+  const effectiveTtl: number =
+    ttl !== undefined ? ttl : cache === false ? TTL.NONE : TTL.DEFAULT;
 
-  // Try to use Redis cache if available and caching is enabled
-  if (redis && cache) {
+  // Try to use Redis cache if available and TTL > 0
+  if (redis && effectiveTtl > 0) {
     try {
       const cachedData = await redis.get(cacheKey);
       if (cachedData) {
@@ -183,10 +185,10 @@ export const fetchRockData = async ({
         Array.isArray(data) && data?.length === 1 ? data[0] : data
       );
 
-    // Try to cache the response if Redis is available and caching is enabled
-    if (redis && cache) {
+    // Cache the response if Redis is available and TTL > 0
+    if (redis && effectiveTtl > 0) {
       try {
-        await redis.set(cacheKey, JSON.stringify(data), "EX", 3600);
+        await redis.set(cacheKey, JSON.stringify(data), "EX", effectiveTtl);
       } catch {
         console.error("⚠️ Redis cache storage failed");
       }
@@ -304,7 +306,7 @@ export const deleteCacheKey = async ({
   }
 
   try {
-    const cacheKey = `${endpoint}:${JSON.stringify(queryParams)}`;
+    const cacheKey = buildCacheKey(endpoint, queryParams as Record<string, string>);
     await redis.del(cacheKey);
     return true;
   } catch (error) {

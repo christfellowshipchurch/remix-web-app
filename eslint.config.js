@@ -52,6 +52,9 @@ export default [
         MouseEvent: "readonly",
         // React Router globals
         React: "readonly",
+        PerformanceObserver: "readonly",
+        PerformanceEntry: "readonly",
+        Element: "readonly",
         // Intersection Observer
         IntersectionObserver: "readonly",
         IntersectionObserverInit: "readonly",

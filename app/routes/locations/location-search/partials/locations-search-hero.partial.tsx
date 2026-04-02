@@ -58,6 +58,7 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
           loop
           muted
           className="absolute left-0 top-0 size-full object-cover"
+          aria-label="Locations Search Hero Video"
         />
         <div className="absolute size-full bg-[rgba(0,0,0,0.5)]" />
         <div className="absolute left-1/2 top-1/2 flex w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 md:gap-6 rounded-xl md:bg-black/45 py-12 text-center text-white md:backdrop-blur lg:max-w-[900px]">
@@ -153,6 +154,7 @@ const SearchBar = ({
       <button
         type="submit"
         className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy lg:hover:bg-ocean transition-colors duration-300 rounded-full relative cursor-pointer"
+        aria-label="Search"
       >
         <Icon
           name="search"

@@ -14,8 +14,14 @@ import { CookieConsentProvider } from "./providers/cookie-consent-provider";
 import "./styles/tailwind.css";
 import { loader } from "./routes/navbar/loader";
 import { NavbarVisibilityProvider } from "./providers/navbar-visibility-context";
+import { DeferredGtm } from "./components/deferred-gtm";
+import { setupDevWebVitalsLogging } from "~/lib/dev-web-vitals";
 
 export { ErrorBoundary } from "./error";
+
+// Runs only in the browser (setup no-ops without window). Avoid import.meta.env.SSR here—
+// client bundles can still evaluate oddly; window check inside setup is authoritative.
+setupDevWebVitalsLogging();
 
 export { loader }; // root loader currently being used for the navbar data
 
@@ -43,37 +49,13 @@ export function Layout({ children }: { children: ReactNode }) {
             `,
           }}
         />
-        {/* Google Consent Mode v2 - Default to denied */}
-        {gtmId && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent', 'default', {
-                'ad_storage': 'denied',
-                'analytics_storage': 'denied'
-              });`,
-            }}
-          />
-        )}
-        {/* GTM Script */}
-        {gtmId && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','${gtmId}');`,
-            }}
-          />
-        )}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body>
+      {/* suppressHydrationWarning: extensions (e.g. ColorZilla) inject attrs like cz-shortcut-listen on <body> */}
+      <body suppressHydrationWarning>
         {/* GTM Noscript (Fallback) */}
         {gtmId && (
           <noscript>
@@ -85,6 +67,7 @@ export function Layout({ children }: { children: ReactNode }) {
             />
           </noscript>
         )}
+        {gtmId ? <DeferredGtm gtmId={gtmId} /> : null}
         {children}
         <ScrollRestoration />
         <Scripts />

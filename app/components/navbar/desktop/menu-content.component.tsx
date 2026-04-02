@@ -53,7 +53,11 @@ export const MenuContent: React.FC<
                     key={idx}
                     className="hover:text-ocean text-link-primary transition-colors"
                   >
-                    <a className="flex flex-col" href={item.url}>
+                    <a
+                      className="flex flex-col"
+                      href={item.url}
+                      target={item.url.includes("http") ? "_blank" : undefined}
+                    >
                       <h4 className="font-semibold">{item.title}</h4>
                       <p className="font-light text-sm">{item.description}</p>
                     </a>

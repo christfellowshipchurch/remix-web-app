@@ -2,6 +2,9 @@ import { useState } from "react";
 import { LocationSearch } from "../location-search/location-search.component";
 import { DesktopFeaturedItems } from "./desktop-features.component";
 
+const WISTIA_EMBED =
+  "https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover";
+
 export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
 
@@ -13,10 +16,12 @@ export function DesktopHeroSection() {
         <img
           className="absolute inset-0 w-1/2 h-full object-cover object-left z-0"
           src="/assets/images/home/home-hero-bg.webp"
-          alt="Hero Background"
+          alt=""
+          width={1280}
+          height={839}
           loading="eager"
-          // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
-          fetchpriority="high"
+          decoding="async"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
         <div className="flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
@@ -31,15 +36,19 @@ export function DesktopHeroSection() {
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             <img
               src="/assets/images/home/bg-vid.webp"
-              alt="Hero Background"
+              alt=""
+              width={845}
+              height={479}
               className="w-full h-full object-cover absolute inset-0 z-0"
               loading="eager"
-              // @ts-expect-error - fetchpriority is a valid HTML attribute but not in React types
-              fetchpriority="high"
+              decoding="async"
+              fetchPriority="high"
             />
             <iframe
-              src={`https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover`}
-              className="w-full h-full absolute inset-0 z-2 pointer-events-none"
+              title="Welcome video"
+              src={WISTIA_EMBED}
+              className="w-full h-full absolute inset-0 z-2 pointer-events-none border-0"
+              allow="autoplay; fullscreen"
             />
           </div>
         </div>

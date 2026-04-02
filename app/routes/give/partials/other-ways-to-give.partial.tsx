@@ -55,6 +55,7 @@ const OtherWaysToGiveCard = ({
               to={cta.href}
               target="_blank"
               className={`${cta.icon === "appleLogo" ? "md:hidden" : ""}`}
+              aria-label={`${cta.icon} Link`}
             >
               <Icon
                 name={cta.icon}

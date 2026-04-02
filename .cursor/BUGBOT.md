@@ -27,8 +27,8 @@
 
 ---
 
-**Rule:** After a `postRockData`, `patchRockData`, or `deleteRockData` call, any immediate `fetchRockData` for the same endpoint must set `cache: false`.
-**Detection:** Flag any action that calls a write function (`postRockData`, `patchRockData`, `deleteRockData`) followed by a `fetchRockData` call on the same endpoint without `cache: false`.
+**Rule:** After a `postRockData`, `patchRockData`, or `deleteRockData` call, any immediate `fetchRockData` for the same endpoint must set `ttl: TTL.NONE`.
+**Detection:** Flag any action that calls a write function (`postRockData`, `patchRockData`, `deleteRockData`) followed by a `fetchRockData` call on the same endpoint without `ttl: TTL.NONE`.  
 **Why:** The Redis cache TTL is one hour. Reading with `cache: true` after a write returns the pre-mutation state and causes stale data to be shown to the user.
 
 ---
