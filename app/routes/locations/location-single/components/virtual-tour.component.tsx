@@ -1,20 +1,12 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import { useLoaderData } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 import { Video } from "~/primitives/video/video.primitive";
-import { LoaderReturnType } from "../loader";
 
-const GoogleMap = ({
-  address,
-  apiKey,
-}: {
-  address: string;
-  apiKey: string;
-}) => {
-  const encodedAddress = encodeURIComponent(address);
+const GoogleMap = ({ address }: { address: string }) => {
+  const src = `/maps-embed?address=${encodeURIComponent(address)}`;
   return (
     <iframe
-      src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodedAddress}`}
+      src={src}
       width="100%"
       height="400"
       style={{ border: 0 }}
@@ -36,17 +28,14 @@ export const VirtualTourTabs = ({
   isOnline?: boolean;
   isSpanish?: boolean;
 }) => {
-  const { GOOGLE_MAPS_API_KEY } = useLoaderData<LoaderReturnType>();
-
   return (
     <div className="flex flex-col pt-8 rounded-[18px] border border-neutral-lighter">
       <Tabs.Root defaultValue={wistiaId ? "tour" : "map"}>
-        {!isOnline && address && GOOGLE_MAPS_API_KEY && (
+        {!isOnline && address && (
           <TabContent
             value="map"
             isOnline={isOnline}
             address={address}
-            apiKey={GOOGLE_MAPS_API_KEY}
             title={isSpanish ? "Visítanos" : "Visit Us"}
             description={
               isSpanish
@@ -77,7 +66,7 @@ export const VirtualTourTabs = ({
           />
         )}
 
-        {!isOnline && address && GOOGLE_MAPS_API_KEY && (
+        {!isOnline && address && (
           <Tabs.List className="flex justify-center gap-4 p-8">
             <>
               <TourButton value="map">{isSpanish ? "Mapa" : "Map"}</TourButton>
@@ -122,7 +111,6 @@ const TabContent = ({
   description,
   wistiaId,
   value,
-  apiKey,
   isOnline,
 }: {
   address?: string;
@@ -130,7 +118,6 @@ const TabContent = ({
   description: string;
   wistiaId?: string;
   value: string;
-  apiKey?: string;
   isOnline?: boolean;
 }) => {
   return (
@@ -140,8 +127,8 @@ const TabContent = ({
         <p>{description}</p>
       </div>
 
-      {address && value === "map" && apiKey && (
-        <GoogleMap address={address} apiKey={apiKey} />
+      {address && value === "map" && (
+        <GoogleMap address={address} />
       )}
 
       {wistiaId && value === "tour" && (
