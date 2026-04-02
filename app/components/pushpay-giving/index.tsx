@@ -155,7 +155,9 @@ export const PushpayGiving = ({ campusList }: { campusList: string[] }) => {
           </div>
 
           {/* Campus Section */}
-          <h3 className="font-bold leading-tight">Give to</h3>
+          <label htmlFor="campus" className="font-bold leading-tight">
+            Give to
+          </label>
           <div className="relative">
             <select
               className="cursor-pointer w-full p-2 border border-text-secondary/60 rounded-[4px] appearance-none outline-none focus:outline-none focus:ring-0"
@@ -179,7 +181,9 @@ export const PushpayGiving = ({ campusList }: { campusList: string[] }) => {
           </div>
 
           {/* Giving Type Section */}
-          <h3 className="font-bold leading-tight">Giving Type</h3>
+          <label htmlFor="giveType" className="font-bold leading-tight">
+            Giving Type
+          </label>
           <div className="relative">
             <select
               className="cursor-pointer w-full p-2 border border-text-secondary/60 rounded-[4px] appearance-none outline-none focus:outline-none focus:ring-0"

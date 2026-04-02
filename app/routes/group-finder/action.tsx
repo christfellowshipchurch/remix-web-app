@@ -1,5 +1,9 @@
 import { ActionFunction, data } from "react-router-dom";
-import { fetchRockData, postRockData } from "~/lib/.server/fetch-rock-data";
+import {
+  fetchRockData,
+  postRockData,
+  TTL,
+} from "~/lib/.server/fetch-rock-data";
 import { fetchUserLogin } from "~/lib/.server/authentication/rock-authentication";
 import { updatePerson } from "~/lib/.server/rock-person";
 import {
@@ -30,7 +34,7 @@ const findUserByLogin = async (email: string, phoneNumber: string) => {
 const findPersonByEmailAndName = async (
   firstName: string,
   lastName: string,
-  email: string
+  email: string,
 ) => {
   return await fetchRockData({
     endpoint: "People",
@@ -38,14 +42,14 @@ const findPersonByEmailAndName = async (
       $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
       $select: "Id",
     },
-    cache: false,
+    ttl: TTL.NONE,
   });
 };
 
 const findPersonByPhoneAndName = async (
   firstName: string,
   lastName: string,
-  phoneNumber: string
+  phoneNumber: string,
 ) => {
   const { significantNumber } = parsePhoneNumberUtil(phoneNumber);
   const existingPhoneNumbers = await fetchRockData({
@@ -54,15 +58,15 @@ const findPersonByPhoneAndName = async (
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    cache: false,
+    ttl: TTL.NONE,
   });
 
   // Convert to array if single object
   const phoneEntries = Array.isArray(existingPhoneNumbers)
     ? existingPhoneNumbers
     : lodash.isObject(existingPhoneNumbers)
-    ? [existingPhoneNumbers]
-    : [];
+      ? [existingPhoneNumbers]
+      : [];
 
   if (phoneEntries.length === 0) {
     return { found: false };
@@ -78,7 +82,7 @@ const findPersonByPhoneAndName = async (
         $filter: `Id eq ${phoneEntry.personId}`,
         $select: "FirstName, LastName",
       },
-      cache: false,
+      ttl: TTL.NONE,
     });
 
     const namesMatch =
@@ -113,7 +117,7 @@ const getPersonIdFromGroupForm = async ({
   const emailExists = await findPersonByEmailAndName(
     firstName,
     lastName,
-    email
+    email,
   );
   let existingPerson = emailExists;
 
@@ -131,7 +135,7 @@ const getPersonIdFromGroupForm = async ({
   const phoneExists = await findPersonByPhoneAndName(
     firstName,
     lastName,
-    phoneNumber
+    phoneNumber,
   );
 
   if (phoneExists.found) {
@@ -166,7 +170,7 @@ export const action: ActionFunction = async ({ request }) => {
         $filter: `Name eq '${formData.groupName}'`,
         $select: "Id",
       },
-      cache: false,
+      ttl: TTL.NONE,
     });
 
     // Get or create person

@@ -141,6 +141,7 @@ export const Video = (props: VideoProps) => {
         <iframe
           ref={iframeRef}
           src={iframeSrc}
+          aria-label="Wistia Video"
           allow="autoplay; fullscreen"
           allowFullScreen
           className={cn("size-full", props.className)}
@@ -153,6 +154,7 @@ export const Video = (props: VideoProps) => {
           muted={props.muted || false}
           controls={props.controls || undefined}
           className={props.className}
+          aria-label="Video"
         />
       )}
     </>

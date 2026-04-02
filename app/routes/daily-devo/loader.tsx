@@ -2,6 +2,7 @@ import { LoaderFunction } from "react-router";
 import https from "https";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
+import { TTL } from "~/lib/.server/fetch-rock-data";
 
 export type DailyDevo = {
   title: string;
@@ -64,7 +65,7 @@ const fetchDailyDevo = async () => {
       $top: "14", // Fetch 2 weeks of items to ensure we get the most recent one, sometimnes items are made ahead of time
       loadAttributes: "simple",
     },
-    cache: false,
+    ttl: TTL.NONE,
   });
 
   // Filter to get the most recent item that has started (StartDateTime <= current date)
@@ -73,7 +74,7 @@ const fetchDailyDevo = async () => {
     (item: { startDateTime: string }) => {
       const startDate = new Date(item.startDateTime);
       return startDate <= currentDate;
-    }
+    },
   );
 
   return validItems[0]; // Return the most recent valid item
@@ -93,7 +94,7 @@ export const loader: LoaderFunction = async (): Promise<LoaderReturnType> => {
     .map((s: string) => s.trim());
 
   const scriptures = await Promise.all(
-    scripturesRockData.map((scripture: string) => fetchScripture(scripture))
+    scripturesRockData.map((scripture: string) => fetchScripture(scripture)),
   );
 
   const appPromoVideo = "b8qb27ar32";
@@ -104,7 +105,7 @@ export const loader: LoaderFunction = async (): Promise<LoaderReturnType> => {
     startDateTime: dailyDevoRockData.startDateTime,
     wistiaId: dailyDevoRockData.attributeValues.media.value,
     coverImage: await createImageUrlFromGuid(
-      dailyDevoRockData.attributeValues.image.value
+      dailyDevoRockData.attributeValues.image.value,
     ),
     scriptures,
   };

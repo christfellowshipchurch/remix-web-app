@@ -4,11 +4,10 @@ import { cn } from "~/lib/utils";
 import { Author } from "~/routes/author/types";
 import { LeadersModal } from "~/components/modals/leaders";
 import Modal from "~/primitives/Modal";
-import { useLoaderData } from "react-router-dom";
-import { HomeLoaderData } from "~/routes/home/loader";
+import { useLeadersWithArticles } from "../context/leaders-articles-context";
 
 export function LeaderScroll() {
-  const { leadersWithArticles } = useLoaderData<HomeLoaderData>();
+  const { leadersWithArticles } = useLeadersWithArticles();
   const [openModal, setOpenModal] = useState(false);
 
   const seniorLeaderItem = leadersWithArticles[0];
@@ -34,6 +33,9 @@ export function LeaderScroll() {
               <img
                 src={seniorLeaderItem.profilePhoto}
                 alt={seniorLeaderItem.fullName}
+                width={800}
+                height={450}
+                sizes="(max-width: 768px) 90vw, 400px"
                 className="w-full aspect-3/2 sm:aspect-16/9 md:aspect-16/7 object-cover object-top rounded-lg"
               />
               <div
@@ -98,6 +100,9 @@ const MobileLeaderCard = ({
               <img
                 src={leader.profilePhoto}
                 alt={leader.fullName}
+                width={320}
+                height={460}
+                sizes="280px"
                 className={cn(
                   "w-full aspect-32/46 object-cover",
                   "transform transition-transform duration-300 group-hover:scale-105"

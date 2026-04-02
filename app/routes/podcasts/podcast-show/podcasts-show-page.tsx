@@ -6,7 +6,7 @@ import { AllSeasons } from "./partials/all-seasons.partials";
 import { SubscribeSection } from "./partials/subscribe-section.partial";
 import { ContentBlock } from "../../page-builder/components/content-block";
 
-export function PodcastsDetailsPage() {
+export function PodcastsShowPage() {
   const { podcast, featureBlocks } = useLoaderData<LoaderReturnType>();
 
   return (

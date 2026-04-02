@@ -26,6 +26,7 @@ export const FooterSocialLinks = () => {
           className="text-white hover:text-white/50 transition-colors"
           data-gtm="footer-link"
           data-link-name={link.name}
+          aria-label={`${link.name} Link`}
         >
           <Icon name={link?.name} size={36} />
         </a>
