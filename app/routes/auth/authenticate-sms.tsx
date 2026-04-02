@@ -1,5 +1,5 @@
-import { data } from "react-router-dom";
-import { isRouteErrorResponse } from "react-router-dom";
+import { data, isRouteErrorResponse } from "react-router-dom";
+import { RateLimitError } from "~/lib/.server/error-types";
 import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";
 
 type AuthenticateSmsData = {
@@ -43,6 +43,9 @@ export const authenticateSms = async ({
   } catch (error) {
     if (isRouteErrorResponse(error)) {
       return error;
+    }
+    if (error instanceof RateLimitError) {
+      return data({ error: error.message }, { status: 429 });
     }
     console.error("Failed to authenticate with SMS:", error);
     return data({ error: "Failed to authenticate with SMS" }, { status: 500 });
