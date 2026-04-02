@@ -9,6 +9,16 @@
  */
 import { onFCP, onLCP } from "web-vitals";
 
+/**
+ * User-Agent Client Hints (`navigator.userAgentData`). Optional on DOM typings;
+ * structural type for Chromium brand detection without relying on `Navigator` in ESLint scope.
+ */
+type NavigatorUserAgentDataBrands = {
+  readonly userAgentData?: {
+    readonly brands?: ReadonlyArray<{ readonly brand: string }>;
+  };
+};
+
 function formatLcpElement(entry: {
   element: Element | null;
   size: number;
@@ -81,8 +91,8 @@ function logDevWebVitalsDiag(): void {
     ua,
   );
   const brandsChromium = Boolean(
-    navigator.userAgentData?.brands?.some((b) =>
-      /Chromium|Google Chrome|Microsoft Edge|Opera/.test(b.brand),
+    (navigator as NavigatorUserAgentDataBrands).userAgentData?.brands?.some(
+      (b) => /Chromium|Google Chrome|Microsoft Edge|Opera/.test(b.brand),
     ),
   );
   const isChromiumFamily =
