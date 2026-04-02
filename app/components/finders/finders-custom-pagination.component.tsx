@@ -1,7 +1,17 @@
-import { usePagination, UsePaginationProps } from "react-instantsearch";
+import type { ComponentProps, MouseEvent } from "react";
+import { usePagination, type UsePaginationProps } from "react-instantsearch";
+
 import Icon from "~/primitives/icon";
 
-export const FindersCustomPagination = (props: UsePaginationProps) => {
+export type FindersCustomPaginationProps = UsePaginationProps & {
+  /** CSS selector for `scrollIntoView` after page change (default: finder scroll anchor). */
+  scrollTargetSelector?: string;
+};
+
+export const FindersCustomPagination = ({
+  scrollTargetSelector = ".pagination-scroll-to",
+  ...paginationProps
+}: FindersCustomPaginationProps) => {
   const {
     currentRefinement,
     nbPages,
@@ -9,17 +19,17 @@ export const FindersCustomPagination = (props: UsePaginationProps) => {
     isLastPage,
     refine,
     createURL,
-  } = usePagination(props);
+  } = usePagination(paginationProps);
   const previousPageIndex = currentRefinement - 1;
   const nextPageIndex = currentRefinement + 1;
 
-  // Ensure to add "pagination-scroll-to" class to the element you want to scroll to
   const handlePageChange = (newPage: number) => {
     refine(newPage);
-    // Scroll to the pagination-scroll-to element
-    const scrollTarget = document.querySelector(".pagination-scroll-to");
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: "smooth" });
+    if (typeof window !== "undefined") {
+      window.requestAnimationFrame(() => {
+        const scrollTarget = document.querySelector(scrollTargetSelector);
+        scrollTarget?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
     }
   };
 
@@ -54,8 +64,8 @@ export const FindersCustomPagination = (props: UsePaginationProps) => {
   );
 };
 
-type PaginationItemProps = Omit<React.ComponentProps<"a">, "onClick"> & {
-  onClick: NonNullable<React.ComponentProps<"a">["onClick"]>;
+type PaginationItemProps = Omit<ComponentProps<"a">, "onClick"> & {
+  onClick: NonNullable<ComponentProps<"a">["onClick"]>;
   isDisabled: boolean;
 };
 
@@ -92,7 +102,7 @@ function PaginationItem({
   );
 }
 
-function isModifierClick(event: React.MouseEvent) {
+function isModifierClick(event: MouseEvent) {
   const isMiddleClick = event.button === 1;
 
   return Boolean(
@@ -100,6 +110,6 @@ function isModifierClick(event: React.MouseEvent) {
       event.altKey ||
       event.ctrlKey ||
       event.metaKey ||
-      event.shiftKey
+      event.shiftKey,
   );
 }

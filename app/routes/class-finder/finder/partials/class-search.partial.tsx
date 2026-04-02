@@ -7,48 +7,57 @@ import Icon from "~/primitives/icon";
 
 import { LoaderReturnType } from "../loader";
 import { ClassHitComponent } from "../components/class-hit-component.component";
-import { AllClassFiltersPopup } from "../components/popups/all-filters.component";
-import { cn } from "~/lib/utils";
-import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
-import { SearchFilters } from "~/components/finders/search-filters";
-import { CLASS_SEARCH_DESKTOP_FILTERS } from "../class-search-filters.data";
-import { ClassHitType } from "../../types";
+import { AllClassFiltersPopup } from "../components/all-filters.component";
+import { buildIndexInitialUiState } from "~/components/finders/finder-algolia.utils";
+import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
+import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
 import {
-  parseClassFinderUrlState,
-  classFinderUrlStateToParams,
-  classFinderEmptyState,
-  type ClassFinderUrlState,
-} from "../../class-finder-url-state";
+  SearchFilterDesktopItem,
+  SearchFilters,
+} from "~/components/finders/search-filters";
+import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
+import { ClassHitType } from "../../types";
+
 import {
   groupClassTypeHits,
   syntheticHitsFromGrouped,
 } from "../components/group-class-type-hits";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
+import {
+  classFinderEmptyState,
+  ClassFinderUrlState,
+  classFinderUrlStateToParams,
+  parseClassFinderUrlState,
+} from "../components/class-finder-url-state";
 
 const INDEX_NAME = "dev_Classes";
+
+const CLASS_SEARCH_DESKTOP_FILTERS = [
+  {
+    id: "topic",
+    label: "Topic",
+    popupTitle: "Topic",
+    icon: "bookOpen",
+    data: {
+      showFooter: true,
+      content: [
+        {
+          title: "LEARN ABOUT",
+          attribute: "topic",
+        },
+      ],
+    },
+  },
+] satisfies SearchFilterDesktopItem[];
 
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
-  const initialUiState: { [key: string]: Record<string, unknown> } = {};
-  if (
-    urlState.query !== undefined ||
-    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
-  ) {
-    initialUiState[INDEX_NAME] = {};
-    if (urlState.query !== undefined)
-      initialUiState[INDEX_NAME].query = urlState.query;
-    if (
-      urlState.refinementList &&
-      Object.keys(urlState.refinementList).length > 0
-    ) {
-      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
-    }
-  }
-  return { coordinates: null, initialUiState };
+  return {
+    initialUiState: buildIndexInitialUiState(INDEX_NAME, urlState) ?? {},
+  };
 }
 
 export const ClassSearch = () => {
@@ -56,7 +65,6 @@ export const ClassSearch = () => {
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const stickyTopClass = useStickyTopBelowNavbarClass();
 
   const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
     searchParams,
@@ -135,12 +143,7 @@ export const ClassSearch = () => {
           hitsPerPageOverride={1000}
         />
         <div className="flex flex-col bg-white pt-4">
-          <div
-            className={cn(
-              "sticky z-20 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
-              stickyTopClass,
-            )}
-          >
+          <FinderStickyBar>
             <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
                 <Icon
@@ -197,7 +200,7 @@ export const ClassSearch = () => {
                 />
               </div>
             </div>
-          </div>
+          </FinderStickyBar>
 
           {/* CLASS SEARCH RESULTS */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
@@ -239,9 +242,7 @@ function ClassTypeGroupedResults({
   return (
     <>
       <div className="min-h-[320px]">
-        <p className="text-text-secondary mb-6">
-          {mappedHits.length} Results Found
-        </p>
+        <FinderResultsStats hitCount={mappedHits.length} />
 
         <div className="flex w-full items-center justify-center md:items-start md:justify-start">
           <div className="grid w-full max-w-[900px] lg:max-w-[1296px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:gap-x-8! gap-y-6 md:gap-y-8 lg:gap-y-16">

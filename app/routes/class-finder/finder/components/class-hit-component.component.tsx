@@ -34,7 +34,7 @@ export function ClassHitComponent({
           <img
             src={coverImage}
             alt={hit.title}
-            className="w-full h-[250px] lg:h-[180px] object-cover overflow-hidden flex-shrink-0"
+            className="w-full h-[250px] lg:h-[180px] object-cover overflow-hidden shrink-0"
           />
 
           <div className="flex flex-col gap-5 px-6 pb-4 pt-5 w-full h-full flex-1">

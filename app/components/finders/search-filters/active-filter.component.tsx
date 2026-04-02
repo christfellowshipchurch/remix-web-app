@@ -13,11 +13,14 @@ type RefinementChip = {
 export function ActiveFilters({
   onClearAllToUrl,
   additionalFiltersActive,
+  additionalFiltersHint = "Campus, age, or map filters are applied.",
 }: {
   /** When set, “Clear All” is shown at the end of the row (all breakpoints). */
   onClearAllToUrl?: () => void;
   /** True when filters live outside InstantSearch uiState (e.g. group finder campus / age / geo). */
   additionalFiltersActive?: boolean;
+  /** Shown when there are no refinement chips but `additionalFiltersActive` is true. */
+  additionalFiltersHint?: string;
 } = {}) {
   const { indexUiState, setIndexUiState } = useInstantSearch();
   const refinementList = (indexUiState.refinementList ?? {}) as Record<
@@ -97,7 +100,7 @@ export function ActiveFilters({
               ))
             ) : (additionalFiltersActive ?? false) ? (
               <p className="text-neutral-default text-sm">
-                Campus, age, or map filters are applied.
+                {additionalFiltersHint}
               </p>
             ) : null}
           </div>

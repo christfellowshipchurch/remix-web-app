@@ -1,22 +1,21 @@
 import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import {
-  InstantSearch,
-  Hits,
-  SearchBox,
   Configure,
-  Stats,
+  Hits,
+  InstantSearch,
+  SearchBox,
 } from "react-instantsearch";
 
-import Icon from "~/primitives/icon";
+import { FindersCustomPagination } from "~/components/finders/finders-custom-pagination.component";
+import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
+import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
 import { useResponsive } from "~/hooks/use-responsive";
-
-import { FindersCustomPagination } from "../components/finders-custom-pagination.component";
+import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GroupFinderOverflowFiltersPanel } from "../components/group-finder-overflow-filters.component";
-import { cn } from "~/lib/utils";
 import { GroupType } from "../types";
 import {
   parseGroupFinderUrlState,
@@ -26,12 +25,12 @@ import {
   type GroupFinderUrlState,
 } from "../group-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
+import { buildIndexInitialUiState } from "~/components/finders/finder-algolia.utils";
 import {
   SearchFilters,
   type SearchFilterDesktopItem,
 } from "~/components/finders/search-filters";
+import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
 import {
   getGroupSearchDesktopFilters,
@@ -45,21 +44,11 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? "";
   const selectedLocation = urlState.campus ?? null;
-  const initialUiState: { [key: string]: Record<string, unknown> } = {};
-  if (
-    urlState.query !== undefined ||
-    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
-  ) {
-    initialUiState[INDEX_NAME] = {};
-    if (urlState.query !== undefined)
-      initialUiState[INDEX_NAME].query = urlState.query;
-    if (
-      urlState.refinementList &&
-      Object.keys(urlState.refinementList).length > 0
-    ) {
-      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
-    }
-  }
+  const initialUiState =
+    buildIndexInitialUiState(INDEX_NAME, {
+      query: urlState.query,
+      refinementList: urlState.refinementList,
+    }) ?? {};
   return { coordinates: null, ageInput, selectedLocation, initialUiState };
 }
 
@@ -68,7 +57,6 @@ export const GroupSearch = () => {
     useLoaderData<LoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const stickyTopClass = useStickyTopBelowNavbarClass();
 
   const { cancelDebounce, debouncedUpdateUrl, updateUrlIfChanged } =
     useAlgoliaUrlSync({
@@ -251,12 +239,7 @@ export const GroupSearch = () => {
           coordinates={coordinates}
         />
         <div className="flex flex-col">
-          <div
-            className={cn(
-              "sticky z-20 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
-              stickyTopClass,
-            )}
-          >
+          <FinderStickyBar>
             <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
               <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
                 <Icon
@@ -315,20 +298,12 @@ export const GroupSearch = () => {
               onClearAllToUrl={clearAllFiltersFromUrl}
               additionalFiltersActive={additionalClearAllFiltersActive}
             />
-          </div>
+          </FinderStickyBar>
 
           {/* Group Search Hits / Results & Pagination */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
-              <Stats
-                classNames={{
-                  root: "text-text-secondary mb-6",
-                }}
-                translations={{
-                  rootElementText: ({ nbHits }) =>
-                    `${nbHits.toLocaleString()} Results Found`,
-                }}
-              />
+              <FinderResultsStats />
               <div className="min-h-[320px]">
                 <Hits
                   classNames={{
