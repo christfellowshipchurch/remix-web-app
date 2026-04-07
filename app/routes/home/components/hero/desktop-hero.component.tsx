@@ -9,7 +9,7 @@ export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <section className="hidden lg:block h-screen w-full bg-white pb-16 mt-[-26px] relative z-30">
+    <section className="h-screen w-full bg-white pb-16 mt-[-26px] hidden lg:block relative z-30">
       {/* background image and video */}
       <div className="grid grid-cols-2 size-full relative">
         {/* Left Column */}
