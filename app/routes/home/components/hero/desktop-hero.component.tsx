@@ -3,9 +3,6 @@ import { LocationSearch } from "../location-search/location-search.component";
 import { DesktopFeaturedItems } from "./desktop-features.component";
 import { Video } from "~/primitives/video/video.primitive";
 
-const WISTIA_EMBED =
-  "https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover";
-
 export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
 
