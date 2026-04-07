@@ -3,9 +3,7 @@ import { useRouteLoaderData } from "react-router-dom";
 import { LocationSearch } from "../location-search/location-search.component";
 import { MobileFeaturedItems } from "./mobile-features.component";
 import { RootLoaderData } from "~/routes/navbar/loader";
-
-const WISTIA_EMBED =
-  "https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover";
+import { Video } from "~/primitives/video/video.primitive";
 
 export const MobileHeroSection = () => {
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
@@ -23,24 +21,26 @@ export const MobileHeroSection = () => {
     <section className="h-dvh w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
       {/*  Background Video — poster image paints first; iframe loads after idle */}
       <div className="absolute inset-0 w-full h-full z-1">
-        <img
-          src="/assets/images/home/bg-vid.webp"
-          alt=""
-          width={845}
-          height={479}
-          className="w-full h-full object-cover absolute inset-0 z-1"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
         {showVideo ? (
-          <iframe
-            title="Welcome video"
-            src={WISTIA_EMBED}
-            className="w-full h-full absolute inset-0 z-1 border-0"
-            allow="autoplay; fullscreen"
+          <Video
+            wistiaId="ieybr1sv38"
+            autoPlay
+            muted
+            loop
+            className="w-full h-full absolute inset-0 z-1"
           />
-        ) : null}
+        ) : (
+          <img
+            src="/assets/images/home/bg-vid.webp"
+            alt=""
+            width={845}
+            height={479}
+            className="w-full h-full object-cover absolute inset-0 z-1"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        )}
       </div>
       {/*  Background Gradient Overlay */}
       <div className="absolute inset-0 w-full h-full z-2 bg-linear-to-b from-black/20 to-black/80" />
