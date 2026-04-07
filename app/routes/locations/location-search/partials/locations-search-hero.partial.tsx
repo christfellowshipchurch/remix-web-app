@@ -20,7 +20,21 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroVideoFrameLoaded, setHeroVideoFrameLoaded] = useState(false);
+  const heroVideoMountRef = useRef<HTMLDivElement>(null);
   const geolocationFromUserClickRef = useRef(false);
+
+  useEffect(() => {
+    const root = heroVideoMountRef.current;
+    if (!root) return;
+
+    const iframe = root.querySelector("iframe");
+    if (!iframe) return;
+
+    const onLoad = () => setHeroVideoFrameLoaded(true);
+    iframe.addEventListener("load", onLoad);
+    return () => iframe.removeEventListener("load", onLoad);
+  }, []);
 
   // Set the coordinates to the user's current location
   useEffect(() => {
@@ -52,16 +66,31 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
   return (
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
       <div className="relative flex size-full overflow-hidden text-pretty">
-        <Video
-          wistiaId="padj4c4xoh"
-          autoPlay
-          loop
-          muted
-          className="absolute left-0 top-0 size-full object-cover"
-          aria-label="Locations Search Hero Video"
-        />
-        <div className="absolute size-full bg-[rgba(0,0,0,0.5)]" />
-        <div className="absolute left-1/2 top-1/2 flex w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 md:gap-6 rounded-xl md:bg-black/45 py-12 text-center text-white md:backdrop-blur lg:max-w-[900px]">
+        <div
+          ref={heroVideoMountRef}
+          className="pointer-events-none absolute inset-0 z-0 size-full overflow-hidden"
+        >
+          {!heroVideoFrameLoaded ? (
+            <img
+              src="/assets/images/locations/finder-hero-bg.webp"
+              alt="find a location poster"
+              className="pointer-events-none absolute inset-0 z-0 size-full object-cover"
+              draggable={false}
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+            />
+          ) : null}
+          <Video
+            wistiaId="padj4c4xoh"
+            autoPlay
+            loop
+            muted
+            className="absolute inset-0 z-0 size-full object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 z-10 size-full bg-[rgba(0,0,0,0.5)]" />
+        <div className="absolute left-1/2 top-1/2 z-20 flex w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 md:gap-6 rounded-xl md:bg-black/45 py-12 text-center text-white md:backdrop-blur lg:max-w-[900px]">
           <h1 className="text-3xl leading-tight md:text-[36px] font-bold">
             Christ Fellowship Church Locations
           </h1>

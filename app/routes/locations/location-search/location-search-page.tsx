@@ -91,9 +91,7 @@ export function LocationSearchPage() {
       ? ANCHOR_SCROLL_OFFSET
       : 0;
     const offsetTop =
-      campusesSection.getBoundingClientRect().top +
-      window.scrollY -
-      offsetPx;
+      campusesSection.getBoundingClientRect().top + window.scrollY - offsetPx;
     window.scrollTo({
       top: Math.max(0, offsetTop),
       behavior: "smooth",
@@ -128,8 +126,7 @@ export function LocationSearchPage() {
       : emptySearchClient);
 
   return (
-    <div className="flex w-full flex-col">
-      {/* Add Algolia Wrapper */}
+    <div className="flex w-full flex-col min-h-screen">
       <InstantSearch
         indexName="dev_Locations"
         searchClient={searchClient}
