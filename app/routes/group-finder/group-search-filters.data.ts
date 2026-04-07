@@ -35,6 +35,11 @@ export function getGroupSearchDesktopFilters(
             isMeetingType: true,
           },
           {
+            title: "Christ Fellowship Campus",
+            attribute: "campus",
+            isDropdown: true,
+          },
+          {
             title: "Filter by zip code",
             attribute: "campus",
             isLocation: true,
@@ -138,7 +143,7 @@ export function getGroupFinderMoreOverflowFilterData(
   };
 }
 
-/** Tablet/desktop full “all filters” card: location, campus, people, topics, more. */
+/** Tablet/desktop full “all filters” card: location (incl. campus dropdown), people, topics, more. */
 export function getGroupFinderTabletFiltersPanelData(
   opts: GroupSearchDesktopFilterOpts,
 ): FilterPopupData {
@@ -150,11 +155,6 @@ export function getGroupFinderTabletFiltersPanelData(
     showFooter: false,
     content: [
       ...location,
-      {
-        title: "Christ Fellowship Campus",
-        attribute: "campus",
-        isDropdown: true,
-      },
       ...people,
       ...tail,
     ],

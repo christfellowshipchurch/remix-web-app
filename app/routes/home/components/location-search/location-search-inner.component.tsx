@@ -1,7 +1,8 @@
 import { algoliasearch } from "algoliasearch";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Configure, InstantSearch } from "react-instantsearch";
 import { useFetcher, useLoaderData } from "react-router-dom";
+import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
 import { SearchPopup } from "./search-popup";
 import { cn } from "~/lib/utils";
 import { emptySearchClient } from "~/routes/search/route";
@@ -22,7 +23,6 @@ export function LocationSearchInner({
 
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [internalIsSearching, setInternalIsSearching] = useState(false);
-  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
 
   const isSearching = controlledIsSearching ?? internalIsSearching;
   const setIsSearching = controlledSetIsSearching ?? setInternalIsSearching;
@@ -72,18 +72,19 @@ export function LocationSearchInner({
     });
   };
 
-  useEffect(() => {
-    if (useCurrentLocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
+  const handlePreciseLocationRequest = useCallback(() => {
+    getCurrentPositionFromUserGesture(
+      (position) => {
         setCoordinates({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-      });
-
-      setUseCurrentLocation(false);
-    }
-  }, [useCurrentLocation]);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+      },
+    );
+  }, []);
 
   useEffect(() => {
     if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
@@ -135,7 +136,9 @@ export function LocationSearchInner({
             data-gtm="hero-cta"
           />
           {isSearching && (
-            <SearchPopup setUseCurrentLocation={setUseCurrentLocation} />
+            <SearchPopup
+              onRequestPreciseLocation={handlePreciseLocationRequest}
+            />
           )}
         </div>
       </InstantSearch>

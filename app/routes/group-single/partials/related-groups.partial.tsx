@@ -34,7 +34,8 @@ function RelatedGroupsHits({
       resources={filteredItems as unknown as CollectionItem[]}
       mode="light"
       layout="arrowsRight"
-      carouselClassName="overflow-hidden w-screen"
+      /* Avoid clipping carousel chrome; viewport already clips slides via Embla. */
+      carouselClassName="w-full min-w-0 max-w-full"
       carouselItemClassName="w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
     />
   );

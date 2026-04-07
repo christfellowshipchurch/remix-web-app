@@ -354,10 +354,13 @@ export const FilterPopup = ({
   const isBottomSheet = layout === "bottomSheet";
   const isEmbedded = layout === "embedded";
 
+  const multiSection = data.content.length > 1;
+
   const bodyScrollable = (
     <div
       className={cn(
-        "flex flex-col gap-6",
+        "flex flex-col",
+        !multiSection && "gap-6",
         !isEmbedded && "px-4 pb-4",
         (isBottomSheet || isEmbedded) &&
           "min-w-0 max-w-full overflow-x-hidden pt-1",
@@ -369,6 +372,9 @@ export const FilterPopup = ({
           className={cn(
             "flex flex-col gap-2",
             (isBottomSheet || isEmbedded) && "min-w-0 max-w-full",
+            multiSection &&
+              index > 0 &&
+              "mt-6 w-full border-t border-solid border-[#E5E7EB] pt-6",
           )}
         >
           {content.title && (
@@ -550,6 +556,9 @@ const FilterPopupContent = ({
 
   const dropdownSelectValue =
     sortedForDropdown.find((item) => item.isRefined)?.value ?? "";
+
+  const dropdownEmptyLabel =
+    data.attribute === "campus" ? "Select Campus" : "Select";
 
   const applyDropdownSelection = (value: string) => {
     sortedForDropdown.forEach((item) => {
@@ -816,7 +825,7 @@ const FilterPopupContent = ({
                     : "Select filter"
               }
             >
-              <option value="">Select</option>
+              <option value="">{dropdownEmptyLabel}</option>
               {sortedForDropdown.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}

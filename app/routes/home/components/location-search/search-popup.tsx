@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { Icon } from "~/primitives/icon/icon";
 
 export const SearchPopup = ({
-  setUseCurrentLocation,
+  onRequestPreciseLocation,
 }: {
-  setUseCurrentLocation: (useCurrentLocation: boolean) => void;
+  /** Must run geolocation only from this click — not from useEffect (iOS Safari). */
+  onRequestPreciseLocation: () => void;
 }) => {
   return (
     <div className="w-full py-4 z-4 overflow-hidden min-h-[332px]">
@@ -39,7 +40,7 @@ export const SearchPopup = ({
         <div
           className="flex gap-1 cursor-pointer text-ocean hover:text-navy transition-colors duration-300"
           onClick={() => {
-            setUseCurrentLocation(true);
+            onRequestPreciseLocation();
           }}
         >
           <Icon name="currentLocation" size={21} />

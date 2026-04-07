@@ -1,6 +1,7 @@
 import { useFetcher } from "react-router-dom";
 import { cn, isValidZip } from "~/lib/utils";
 import { useEffect, useRef, useState } from "react";
+import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
 import { Icon } from "~/primitives/icon/icon";
 
 export type FinderLocationKind = "zip" | "gps" | null;
@@ -43,6 +44,7 @@ export const FinderLocationSearch = ({
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const [isGpsRequesting, setIsGpsRequesting] = useState(false);
   const geocodeFetcher = useFetcher();
   const lastSubmittedZipRef = useRef<string | null>(null);
 
@@ -142,24 +144,26 @@ export const FinderLocationSearch = ({
   };
 
   const handleCurrentLocationClick = () => {
-    if (!navigator.geolocation) return;
-
     setIsGeocoding(false);
     if (showZipInput) {
       setInputValue("");
       lastSubmittedZipRef.current = null;
     }
 
-    navigator.geolocation.getCurrentPosition(
+    setIsGpsRequesting(true);
+    getCurrentPositionFromUserGesture(
       (position) => {
+        setIsGpsRequesting(false);
         setCoordinates({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
         onLocationKind?.("gps");
       },
-      (error) => console.error("Error getting current location:", error),
-      { enableHighAccuracy: true, maximumAge: 0 },
+      (error) => {
+        setIsGpsRequesting(false);
+        console.error("Error getting current location:", error);
+      },
     );
   };
 
@@ -176,7 +180,7 @@ export const FinderLocationSearch = ({
     <button
       type="button"
       className={finderCurrentLocationButtonClass}
-      disabled={isGeocoding}
+      disabled={isGeocoding || isGpsRequesting}
       onClick={handleCurrentLocationClick}
     >
       <Icon
@@ -201,12 +205,12 @@ export const FinderLocationSearch = ({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className={cn(finderLocationInputBaseClass, "min-w-0 flex-1")}
-            disabled={isGeocoding}
+            disabled={isGeocoding || isGpsRequesting}
           />
           <button
             type="button"
             className={finderApplyZipButtonClass}
-            disabled={isGeocoding}
+            disabled={isGeocoding || isGpsRequesting}
             onClick={handleApplyZip}
           >
             Apply
@@ -225,7 +229,7 @@ export const FinderLocationSearch = ({
               finderLocationInputBaseClass,
               showGpsRow ? "min-w-0 flex-1" : "w-full",
             )}
-            disabled={isGeocoding}
+            disabled={isGeocoding || isGpsRequesting}
           />
           {showGpsRow ? currentLocationButton : null}
         </div>

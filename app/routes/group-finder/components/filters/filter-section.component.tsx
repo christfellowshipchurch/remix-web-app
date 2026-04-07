@@ -38,8 +38,8 @@ export const AllFiltersFilterSection = ({
       className={cn(
         "flex w-full flex-col",
         expandAlways
-          ? "gap-2 border-b border-neutral-200 pb-4"
-          : "gap-4 border-b border-black",
+          ? "gap-2 border-b border-solid border-[#E5E7EB] pb-4"
+          : "gap-4 border-b border-solid border-[#E5E7EB]",
         !expandAlways && showSection && "pb-5",
         hideBorder && "border-b-0",
         expandAlways && hideBorder && "pb-0",

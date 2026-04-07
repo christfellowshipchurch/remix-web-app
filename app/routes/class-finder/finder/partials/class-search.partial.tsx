@@ -138,7 +138,6 @@ export const ClassSearch = () => {
       >
         <ResponsiveConfigure
           ageInput=""
-          selectedLocation={null}
           coordinates={null}
           hitsPerPageOverride={1000}
         />

@@ -1,6 +1,10 @@
 import Icon from "~/primitives/icon";
 import { useEffect, useState, useRef } from "react";
 import { Video } from "~/primitives/video/video.primitive";
+import {
+  getCurrentPositionFromUserGesture,
+  getGeolocationUserMessage,
+} from "~/lib/browser-geolocation";
 import { cn, isValidZip } from "~/lib/utils";
 
 type SetCoordinatesProp = (
@@ -17,37 +21,33 @@ type SearchProps = {
 };
 
 export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
-  const [useCurrentLocation, setUseCurrentLocation] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const geolocationFromUserClickRef = useRef(false);
+  const [isLocating, setIsLocating] = useState(false);
 
-  // Set the coordinates to the user's current location
-  useEffect(() => {
-    if (useCurrentLocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const scrollWithNavbarOffset = geolocationFromUserClickRef.current;
-          geolocationFromUserClickRef.current = false;
-          setCoordinates(
-            {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-            { scrollWithNavbarOffset },
-          );
-          setLocationActive(true);
-        },
-        (error) => {
-          geolocationFromUserClickRef.current = false;
-          console.error(error);
-          setLocationActive(false);
-        },
-      );
-
-      setUseCurrentLocation(false);
-    }
-  }, [useCurrentLocation, setCoordinates]);
+  const handleUseCurrentLocation = () => {
+    setIsLocating(true);
+    setError(null);
+    getCurrentPositionFromUserGesture(
+      (position) => {
+        setIsLocating(false);
+        setCoordinates(
+          {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          { scrollWithNavbarOffset: true },
+        );
+        setLocationActive(true);
+      },
+      (geoError) => {
+        setIsLocating(false);
+        console.error(geoError);
+        setLocationActive(false);
+        setError(getGeolocationUserMessage(geoError));
+      },
+    );
+  };
 
   return (
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
@@ -80,19 +80,18 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
           {error && <div className="text-lg italic text-alert">{error}</div>}
 
           <div className="flex flex-col items-center gap-2">
-            <div className="flex gap-2">
-              <div
-                className="cursor-pointer italic underline"
-                onClick={() => {
-                  geolocationFromUserClickRef.current = true;
-                  setUseCurrentLocation(true);
-                }}
+            <div className="flex gap-2 items-center">
+              <button
+                type="button"
+                disabled={isLocating}
+                className="cursor-pointer italic underline disabled:cursor-wait disabled:opacity-70 bg-transparent border-0 p-0 text-inherit"
+                onClick={handleUseCurrentLocation}
               >
-                Use my current location
-              </div>
+                {isLocating ? "Getting location…" : "Use my current location"}
+              </button>
               <Icon size={16} color="white" name="locationArrow" />
             </div>
-            {!locationActive && (
+            {!locationActive && !isLocating && (
               <div className="text-sm italic text-alert">
                 Enable Location Access & Try Again.
               </div>

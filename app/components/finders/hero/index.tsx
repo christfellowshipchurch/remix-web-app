@@ -46,7 +46,7 @@ export const FinderHero = ({
     <section
       className={cn(
         !topic ? "lg:h-[65vh] lg:max-h-[590px]" : "h-full",
-        "relative content-padding pt-8 pb-12 md:pb-8",
+        "relative content-padding pt-8 lg:pt-0 pb-12 md:pb-8 flex flex-col items-center justify-center",
         bgColor === "ocean" && "bg-ocean",
         bgColor === "navy" && "bg-navy",
         bgColor === "white" && "bg-white",
@@ -94,7 +94,7 @@ export const FinderHero = ({
             <HTMLRenderer
               html={title}
               className={cn(
-                "font-extrabold md:my-6 md:text-[52px]",
+                "font-extrabold md:my-6 md:text-[52px] leading-[1.1]!",
                 onLightBg && "text-text-primary",
                 topic ? "text-[32px]" : "text-[40px]",
               )}

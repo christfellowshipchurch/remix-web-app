@@ -34,11 +34,20 @@ import {
 
 const INDEX_NAME = "dev_daniel_Groups";
 
+function firstCampusRefinement(
+  refinementList: Record<string, string[]> | undefined,
+): string | null {
+  const values = refinementList?.campus;
+  if (!values?.length) return null;
+  const first = values[0]?.trim();
+  return first ? first : null;
+}
+
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? "";
-  const selectedLocation = urlState.campus ?? null;
+  const selectedLocation = firstCampusRefinement(urlState.refinementList) ?? null;
   const initialUiState =
     buildIndexInitialUiState(INDEX_NAME, {
       query: urlState.query,
@@ -97,7 +106,7 @@ export const GroupSearch = () => {
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     setAgeInputState(urlState.age ?? "");
-    setSelectedLocationState(urlState.campus ?? null);
+    setSelectedLocationState(firstCampusRefinement(urlState.refinementList) ?? null);
   }, [searchParams]);
 
   const searchClient = algoliasearch(
@@ -151,7 +160,6 @@ export const GroupSearch = () => {
     return !!(
       (s.query?.trim?.()?.length ?? 0) > 0 ||
       (s.refinementList && Object.keys(s.refinementList ?? {}).length > 0) ||
-      s.campus != null ||
       (s.age?.trim?.()?.length ?? 0) > 0
     );
   });
@@ -199,7 +207,6 @@ export const GroupSearch = () => {
       query: (indexUiState.query as string) ?? undefined,
       refinementList:
         (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
-      campus: customStateRef.current.selectedLocation ?? undefined,
       age: customStateRef.current.ageInput || undefined,
     };
     debouncedUpdateUrl(urlState);
@@ -228,11 +235,7 @@ export const GroupSearch = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure
-          selectedLocation={selectedLocation}
-          ageInput={ageInput}
-          coordinates={coordinates}
-        />
+        <ResponsiveConfigure ageInput={ageInput} coordinates={coordinates} />
         <div className="flex flex-col">
           <FinderStickyBar>
             <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
@@ -304,7 +307,7 @@ export const GroupSearch = () => {
                   classNames={{
                     root: "flex w-full items-center justify-center md:items-start md:justify-start",
                     item: "flex h-full min-h-0 w-full flex-col",
-                    list: "grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:!gap-x-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3",
+                    list: "grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
                     return <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />;
@@ -323,13 +326,11 @@ export const GroupSearch = () => {
 };
 
 export const ResponsiveConfigure = ({
-  selectedLocation,
   ageInput,
   coordinates,
   /** When set, skips responsive 5–12 caps (e.g. class finder groups many hits by `classType` client-side). */
   hitsPerPageOverride,
 }: {
-  selectedLocation: string | null;
   ageInput: string;
   coordinates: {
     lat: number | null;
@@ -354,11 +355,7 @@ export const ResponsiveConfigure = ({
       }
     })();
 
-  // Build filters array
   const filters = [];
-  if (selectedLocation) {
-    filters.push(`campusName:'${selectedLocation}'`);
-  }
   if (ageInput.trim().length >= 2) {
     const userAge = parseInt(ageInput, 10);
     if (!isNaN(userAge) && userAge >= 1) {
@@ -369,7 +366,7 @@ export const ResponsiveConfigure = ({
 
   return (
     <Configure
-      key={`${coordinates?.lat}-${coordinates?.lng}-${selectedLocation}-${ageInput}`}
+      key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
       filters={filters.length > 0 ? filters.join(" AND ") : undefined}
       aroundLatLng={
