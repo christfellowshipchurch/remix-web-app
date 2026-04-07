@@ -48,7 +48,14 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
   );
 
   if (loading) {
-    return <LocationsLoader />;
+    return (
+      <div
+        className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
+        id="campuses"
+      >
+        <LocationsLoader />
+      </div>
+    );
   }
 
   return (

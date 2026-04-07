@@ -7,6 +7,7 @@ import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constant
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { emptySearchClient } from "~/routes/search/route";
 import { LocationCardList } from "./partials/location-card-list.partial";
+import { LocationSearchBootSkeleton } from "./components/location-search-boot-skeleton.partial";
 import { Search } from "./partials/locations-search-hero.partial";
 
 export type LocationSearchCoordinatesType = {
@@ -25,6 +26,45 @@ export type LocationSearchCoordinatesType = {
 };
 
 let globalSearchClient: SearchClient | null = null;
+
+const LOCATION_SEARCH_INDEX_NAME = "dev_Locations";
+
+function LocationSearchIndexBody({
+  coordinates,
+  setSearchCoordinates,
+  handleSearch,
+  geocodeLoading,
+}: {
+  coordinates: { lat: number | null; lng: number | null } | null;
+  setSearchCoordinates: (
+    next: { lat: number | null; lng: number | null } | null,
+    options?: { scrollWithNavbarOffset?: boolean },
+  ) => void;
+  handleSearch: (query: string | null) => void;
+  geocodeLoading: boolean;
+}) {
+  return (
+    <>
+      <Configure
+        hitsPerPage={20}
+        aroundLatLng={
+          coordinates?.lat && coordinates?.lng
+            ? `${coordinates.lat}, ${coordinates.lng}`
+            : undefined
+        }
+        aroundRadius="all"
+        aroundLatLngViaIP={false}
+        getRankingInfo={true}
+      />
+
+      <Search
+        handleSearch={handleSearch}
+        setCoordinates={setSearchCoordinates}
+      />
+      <LocationCardList loading={geocodeLoading} />
+    </>
+  );
+}
 
 export function LocationSearchPage() {
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
@@ -59,18 +99,21 @@ export function LocationSearchPage() {
   const geocodeFetcher = useFetcher();
   const googleFetcher = useFetcher();
 
-  const handleSearch = (query: string | null) => {
-    if (!query) {
-      setSearchCoordinates(null);
-      return;
-    }
-    const formData = new FormData();
-    formData.append("address", query);
-    geocodeFetcher.submit(formData, {
-      method: "post",
-      action: "/google-geocode",
-    });
-  };
+  const handleSearch = useCallback(
+    (query: string | null) => {
+      if (!query) {
+        setSearchCoordinates(null);
+        return;
+      }
+      const formData = new FormData();
+      formData.append("address", query);
+      geocodeFetcher.submit(formData, {
+        method: "post",
+        action: "/google-geocode",
+      });
+    },
+    [setSearchCoordinates, geocodeFetcher],
+  );
 
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
@@ -125,39 +168,73 @@ export function LocationSearchPage() {
       ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
       : emptySearchClient);
 
+  const [algoliaBootstrapped, setAlgoliaBootstrapped] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const client =
+      globalSearchClient ||
+      (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
+        ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
+        : emptySearchClient);
+
+    const finish = () => {
+      if (!cancelled) setAlgoliaBootstrapped(true);
+    };
+
+    void (async () => {
+      try {
+        if (
+          "searchSingleIndex" in client &&
+          typeof (client as SearchClient).searchSingleIndex === "function"
+        ) {
+          await (client as SearchClient).searchSingleIndex({
+            indexName: LOCATION_SEARCH_INDEX_NAME,
+            searchParams: { hitsPerPage: 1, query: "" },
+          });
+        } else if ("search" in client && typeof client.search === "function") {
+          await (
+            client as { search: (params?: unknown) => Promise<unknown> }
+          ).search([]);
+        }
+      } catch {
+        // Network or Algolia errors — still mount finder so the page is usable
+      } finally {
+        finish();
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
+
   return (
     <div className="flex w-full flex-col min-h-screen">
-      <InstantSearch
-        indexName="dev_Locations"
-        searchClient={searchClient}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-        initialUiState={{
-          dev_Locations: {
-            query: "",
-          },
-        }}
-        insights={false}
-      >
-        <Configure
-          hitsPerPage={20}
-          aroundLatLng={
-            coordinates?.lat && coordinates?.lng
-              ? `${coordinates.lat}, ${coordinates.lng}`
-              : undefined
-          }
-          aroundRadius="all"
-          aroundLatLngViaIP={false}
-          getRankingInfo={true}
-        />
-
-        <Search
-          handleSearch={handleSearch}
-          setCoordinates={setSearchCoordinates}
-        />
-        <LocationCardList loading={googleFetcher.state === "loading"} />
-      </InstantSearch>
+      {!algoliaBootstrapped ? (
+        <LocationSearchBootSkeleton />
+      ) : (
+        <InstantSearch
+          indexName={LOCATION_SEARCH_INDEX_NAME}
+          searchClient={searchClient}
+          future={{
+            preserveSharedStateOnUnmount: true,
+          }}
+          initialUiState={{
+            [LOCATION_SEARCH_INDEX_NAME]: {
+              query: "",
+            },
+          }}
+          insights={false}
+        >
+          <LocationSearchIndexBody
+            coordinates={coordinates}
+            setSearchCoordinates={setSearchCoordinates}
+            handleSearch={handleSearch}
+            geocodeLoading={googleFetcher.state === "loading"}
+          />
+        </InstantSearch>
+      )}
     </div>
   );
 }

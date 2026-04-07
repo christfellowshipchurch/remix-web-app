@@ -14,9 +14,17 @@ type SetCoordinatesProp = (
 type SearchProps = {
   handleSearch: (query: string | null) => void;
   setCoordinates: SetCoordinatesProp;
+  /** When false: static hero image only (no video), search UI disabled until InstantSearch is idle. */
+  instantSearchReady?: boolean;
 };
 
-export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
+const LOCATIONS_FINDER_HERO_BG = "/assets/images/locations/finder-hero-bg.webp";
+
+export const Search = ({
+  handleSearch,
+  setCoordinates,
+  instantSearchReady = true,
+}: SearchProps) => {
   const [useCurrentLocation, setUseCurrentLocation] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +33,8 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
   const geolocationFromUserClickRef = useRef(false);
 
   useEffect(() => {
+    if (!instantSearchReady) return;
+
     const root = heroVideoMountRef.current;
     if (!root) return;
 
@@ -34,10 +44,12 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
     const onLoad = () => setHeroVideoFrameLoaded(true);
     iframe.addEventListener("load", onLoad);
     return () => iframe.removeEventListener("load", onLoad);
-  }, []);
+  }, [instantSearchReady]);
 
   // Set the coordinates to the user's current location
   useEffect(() => {
+    if (!instantSearchReady) return;
+
     if (useCurrentLocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -61,7 +73,7 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
 
       setUseCurrentLocation(false);
     }
-  }, [useCurrentLocation, setCoordinates]);
+  }, [useCurrentLocation, setCoordinates, instantSearchReady]);
 
   return (
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
@@ -70,10 +82,10 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
           ref={heroVideoMountRef}
           className="pointer-events-none absolute inset-0 z-0 size-full overflow-hidden"
         >
-          {!heroVideoFrameLoaded ? (
+          {!instantSearchReady || !heroVideoFrameLoaded ? (
             <img
-              src="/assets/images/locations/finder-hero-bg.webp"
-              alt="find a location poster"
+              src={LOCATIONS_FINDER_HERO_BG}
+              alt=""
               className="pointer-events-none absolute inset-0 z-0 size-full object-cover"
               draggable={false}
               fetchPriority="high"
@@ -81,13 +93,15 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
               decoding="async"
             />
           ) : null}
-          <Video
-            wistiaId="padj4c4xoh"
-            autoPlay
-            loop
-            muted
-            className="absolute inset-0 z-0 size-full object-cover"
-          />
+          {instantSearchReady ? (
+            <Video
+              wistiaId="padj4c4xoh"
+              autoPlay
+              loop
+              muted
+              className="absolute inset-0 z-0 size-full object-cover"
+            />
+          ) : null}
         </div>
         <div className="absolute inset-0 z-10 size-full bg-[rgba(0,0,0,0.5)]" />
         <div className="absolute left-1/2 top-1/2 z-20 flex w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 md:gap-6 rounded-xl md:bg-black/45 py-12 text-center text-white md:backdrop-blur lg:max-w-[900px]">
@@ -103,12 +117,17 @@ export const Search = ({ handleSearch, setCoordinates }: SearchProps) => {
             onSearchSubmit={handleSearch}
             setCoordinates={setCoordinates}
             setError={setError}
-            data-gtm="hero-cta"
+            disabled={!instantSearchReady}
           />
 
           {error && <div className="text-lg italic text-alert">{error}</div>}
 
-          <div className="flex flex-col items-center gap-2">
+          <div
+            className={cn(
+              "flex flex-col items-center gap-2",
+              !instantSearchReady && "pointer-events-none opacity-50",
+            )}
+          >
             <div className="flex gap-2">
               <div
                 className="cursor-pointer italic underline"
@@ -137,10 +156,12 @@ const SearchBar = ({
   onSearchSubmit,
   setCoordinates,
   setError,
+  disabled = false,
 }: {
   onSearchSubmit: (query: string | null) => void;
   setCoordinates: SetCoordinatesProp;
   setError: (error: string | null) => void;
+  disabled?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [zipCode, setZipCode] = useState<string | null>(null);
@@ -149,6 +170,8 @@ const SearchBar = ({
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (disabled) return;
+
     const searchValue = inputValue.trim();
 
     if (searchValue.length === 5 && isValidZip(searchValue)) {
@@ -167,22 +190,29 @@ const SearchBar = ({
 
   // When the zip code is set, search for it
   useEffect(() => {
-    if (zipCode) {
-      onSearchSubmit(zipCode);
-    }
-  }, [zipCode]);
+    if (disabled || !zipCode) return;
+    onSearchSubmit(zipCode);
+  }, [zipCode, disabled, onSearchSubmit]);
 
   return (
     <form
+      data-gtm="hero-cta"
       onSubmit={handleSubmit}
       className={cn(
         "flex w-full md:max-w-[360px] items-center gap-2 rounded-full p-1 mt-2 md:mt-0",
         inputValue ? "bg-gray" : "bg-white",
+        disabled && "opacity-80",
       )}
     >
       <button
         type="submit"
-        className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy lg:hover:bg-ocean transition-colors duration-300 rounded-full relative cursor-pointer"
+        disabled={disabled}
+        className={cn(
+          "flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative transition-colors duration-300",
+          disabled
+            ? "cursor-not-allowed opacity-70"
+            : "cursor-pointer lg:hover:bg-ocean",
+        )}
         aria-label="Search"
       >
         <Icon
@@ -197,7 +227,10 @@ const SearchBar = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Search by zip code"
-        className="grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent"
+        disabled={disabled}
+        readOnly={disabled}
+        aria-busy={disabled}
+        className="grow w-full justify-center text-black px-3 outline-none appearance-none bg-transparent disabled:cursor-not-allowed"
         onBlur={() => inputRef.current?.blur()}
         ref={inputRef}
       />
