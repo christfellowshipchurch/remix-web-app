@@ -10,6 +10,24 @@ NPM_FLAGS = "--no-optional"
 [dev]
 command = "pnpm dev"
 
+# Security headers applied to all routes
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
+
+# rock-page is a server-side proxy intentionally served inside an iframe;
+# its loader sets X-Frame-Options: ALLOWALL and CSP frame-ancestors: * in the
+# response, but netlify.toml headers take precedence, so we override here.
+[[headers]]
+  for = "/rock-page"
+  [headers.values]
+    X-Frame-Options = "ALLOWALL"
+
 # Long-lived caching for hashed Vite assets and static marketing images
 [[headers]]
   for = "/assets/*"
