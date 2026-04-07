@@ -1,5 +1,4 @@
 import * as Form from "@radix-ui/react-form";
-import lodash from "lodash";
 import React, { useEffect, useState } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
@@ -30,7 +29,7 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : String(err);
 
-      if (lodash.includes(errorMessage, "Invalid credentials")) {
+      if (errorMessage.includes("Invalid credentials")) {
         setError("Invalid password. Please try again.");
       } else {
         setError(errorMessage);

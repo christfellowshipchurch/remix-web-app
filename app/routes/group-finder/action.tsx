@@ -11,7 +11,6 @@ import {
   parsePhoneNumberUtil,
 } from "~/lib/.server/authentication/sms-authentication";
 import { escapeOData } from "~/lib/.server/rock-utils";
-import lodash from "lodash";
 
 // Types
 interface PersonFormData {
@@ -65,7 +64,7 @@ const findPersonByPhoneAndName = async (
   // Convert to array if single object
   const phoneEntries = Array.isArray(existingPhoneNumbers)
     ? existingPhoneNumbers
-    : lodash.isObject(existingPhoneNumbers)
+    : typeof existingPhoneNumbers === "object" && existingPhoneNumbers !== null
       ? [existingPhoneNumbers]
       : [];
 
