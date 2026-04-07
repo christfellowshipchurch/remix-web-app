@@ -425,7 +425,7 @@ export function Navbar() {
                   </a>
                   <Button
                     href="/locations"
-                    className="font-semibold text-sm xl:text-base w-fit"
+                    className="font-semibold text-sm xl:text-base w-fit min-w-[180px]"
                     aria-label="Find a Service"
                   >
                     <Icon

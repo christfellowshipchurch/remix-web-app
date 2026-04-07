@@ -322,6 +322,9 @@ const CarouselDots = React.forwardRef<
 });
 CarouselDots.displayName = "CarouselDots";
 
+const carouselArrowInFlowClass =
+  "static left-auto right-auto top-auto translate-y-0 cursor-pointer";
+
 const CarouselArrows = ({
   arrowStyles = "border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy",
 }: {
@@ -333,16 +336,16 @@ const CarouselArrows = ({
   return (
     <>
       {slides.length > 1 && (
-        <>
+        <div className="flex w-max max-w-full shrink-0 items-center gap-2">
           <CarouselPrevious
-            className={cn("cursor-pointer left-12", arrowStyles)}
+            className={cn(carouselArrowInFlowClass, arrowStyles)}
             disabledFill="#AAAAAA"
           />
           <CarouselNext
-            className={cn("cursor-pointer left-26", arrowStyles)}
+            className={cn(carouselArrowInFlowClass, arrowStyles)}
             disabledFill="#AAAAAA"
           />
-        </>
+        </div>
       )}
     </>
   );

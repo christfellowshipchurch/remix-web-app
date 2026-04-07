@@ -144,7 +144,7 @@ export const FinderHero = ({
           {ctas && ctas.length > 0 && (
             <div
               className={cn(
-                "mt-8 flex flex-wrap gap-4",
+                "mt-8 flex gap-2 sm:gap-4",
                 topic ? "hidden lg:flex" : "",
               )}
             >

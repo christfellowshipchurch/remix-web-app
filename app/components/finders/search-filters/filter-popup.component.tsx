@@ -727,7 +727,7 @@ const FilterPopupContent = ({
                       >
                         {data.checkbox ? (
                           <div
-                            className="flex max-w-full min-w-0 cursor-pointer! items-center gap-2"
+                            className="flex max-w-full min-w-0 cursor-pointer! items-center gap-1.5"
                             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                               e.stopPropagation();
                               refine(item.value);
@@ -735,16 +735,17 @@ const FilterPopupContent = ({
                           >
                             <div
                               className={cn(
-                                "box-border flex size-4 shrink-0 items-center justify-center rounded border-2 border-[#D1D5DB] bg-transparent",
-                                item.isRefined && "border-text-primary",
+                                "box-border flex size-[18px] shrink-0 items-center justify-center rounded-sm border border-[#D1D5DB] bg-transparent",
+                                item.isRefined &&
+                                  "border-ocean bg-ocean",
                               )}
                               aria-hidden
                             >
                               {item.isRefined ? (
                                 <Icon
                                   name="check"
-                                  size={10}
-                                  className="text-text-primary"
+                                  size={14}
+                                  className="text-white"
                                 />
                               ) : null}
                             </div>

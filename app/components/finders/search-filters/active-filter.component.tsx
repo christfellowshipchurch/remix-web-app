@@ -10,6 +10,14 @@ type RefinementChip = {
   label: string;
 };
 
+function refinementChipDisplayLabel(attribute: string, value: string): string {
+  if (attribute === "adultOnly") {
+    if (value === "true") return "Adults Only";
+    if (value === "false") return "Child Welcome";
+  }
+  return value;
+}
+
 export function ActiveFilters({
   onClearAllToUrl,
   additionalFiltersActive,
@@ -38,7 +46,7 @@ export function ActiveFilters({
           key: `${attribute}:${value}`,
           attribute,
           value,
-          label: value,
+          label: refinementChipDisplayLabel(attribute, value),
         });
       }
     }
