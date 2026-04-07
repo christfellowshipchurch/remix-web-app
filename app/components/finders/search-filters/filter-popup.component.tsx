@@ -6,7 +6,13 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { Stats, useRefinementList } from "react-instantsearch";
+import { Stats, useHits, useRefinementList } from "react-instantsearch";
+
+import {
+  groupClassTypeHits,
+  syntheticHitsFromGrouped,
+} from "~/routes/class-finder/finder/components/group-class-type-hits";
+import type { ClassHitType } from "~/routes/class-finder/types";
 import { finderFilterSectionSubtitleClass } from "~/components/finders/search-filters/filter-section-subtitle";
 import {
   FinderLocationSearch,
@@ -65,6 +71,31 @@ interface FilterPopupProps {
    * `embedded` — scrollable body only (e.g. group finder overflow panel inside a sheet or card).
    */
   layout?: "popover" | "bottomSheet" | "embedded";
+  /** Class finder: footer count = grouped class rows (grid), not raw Algolia nbHits. */
+  groupedFooterCount?: boolean;
+}
+
+function AlgoliaHitsLabel() {
+  return (
+    <Stats
+      classNames={{
+        root: "",
+      }}
+      translations={{
+        rootElementText: ({ nbHits }) =>
+          `Show ${nbHits.toLocaleString()} Results`,
+      }}
+    />
+  );
+}
+
+function GroupedHitsLabel() {
+  const { items } = useHits<ClassHitType>();
+  const n = useMemo(
+    () => syntheticHitsFromGrouped(groupClassTypeHits(items)).length,
+    [items],
+  );
+  return <>Show {n.toLocaleString()} Results</>;
 }
 
 export function MobileFilterBottomSheet({
@@ -290,6 +321,7 @@ export const FilterPopup = ({
   setAgeInput,
   style,
   layout = "popover",
+  groupedFooterCount = false,
 }: FilterPopupProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [sectionFooterRegistry, setSectionFooterRegistry] = useState<
@@ -391,15 +423,7 @@ export const FilterPopup = ({
           )}
           onClick={() => onHide()}
         >
-          <Stats
-            classNames={{
-              root: "",
-            }}
-            translations={{
-              rootElementText: ({ nbHits }) =>
-                `Show ${nbHits.toLocaleString()} Results`,
-            }}
-          />
+          {groupedFooterCount ? <GroupedHitsLabel /> : <AlgoliaHitsLabel />}
         </Button>
       ) : null}
     </div>

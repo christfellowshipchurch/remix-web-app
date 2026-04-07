@@ -28,7 +28,7 @@ const CLASS_SINGLE_GROUPS_MAX_HITS = 1000;
  * `classesIndexClassType` must match `dev_Classes` / `dev_daniel_Groups` attribute `classType`
  * (the class-type value on records), not necessarily the URL segment.
  */
-function buildClassSingleGroupsConfigureFilters(
+function composeGroupsFilters(
   classesIndexClassType: string,
   mirroredFacetFilters: string | undefined,
 ): string | undefined {
@@ -43,13 +43,13 @@ function buildClassSingleGroupsConfigureFilters(
   return mirroredFacetFilters;
 }
 
-function mapClassFormatToGroupMeetingType(format: string): string | null {
+function classFormatToMeetingType(format: string): string | null {
   if (format === "Virtual") return "Online";
   if (format === "In-Person") return "In Person";
   return null;
 }
 
-function mapClassLanguageToGroupLanguage(lang: string): string | null {
+function classLanguageToGroupLanguage(lang: string): string | null {
   if (lang === "English") return "English";
   if (lang === "Español" || lang === "Spanish") return "Spanish";
   return null;
@@ -59,7 +59,7 @@ function mapClassLanguageToGroupLanguage(lang: string): string | null {
  * Maps `dev_Classes` refinement facets (Filter Sessions) to `dev_daniel_Groups` Algolia filter string.
  * `campus` matches RefinementList `attribute: "campus"` (class-single + group finder).
  */
-function buildClassSingleGroupsAlgoliaFilters(
+function mirrorGroupsFacets(
   refinementList: Record<string, string[]>,
 ): string | undefined {
   const parts: string[] = [];
@@ -81,7 +81,7 @@ function buildClassSingleGroupsAlgoliaFilters(
   const meetingTypes = [
     ...new Set(
       formats
-        .map((f) => mapClassFormatToGroupMeetingType(f))
+        .map((f) => classFormatToMeetingType(f))
         .filter((m): m is string => m != null),
     ),
   ];
@@ -99,7 +99,7 @@ function buildClassSingleGroupsAlgoliaFilters(
   const groupLanguages = [
     ...new Set(
       languages
-        .map((l) => mapClassLanguageToGroupLanguage(l))
+        .map((l) => classLanguageToGroupLanguage(l))
         .filter((l): l is string => l != null),
     ),
   ];
@@ -164,7 +164,7 @@ function ClassSingleGroupsAlgolia({
 
   const configureFilters = useMemo(
     () =>
-      buildClassSingleGroupsConfigureFilters(
+      composeGroupsFilters(
         classesIndexClassType,
         mirroredFacetFilters,
       ),
@@ -225,7 +225,7 @@ export function ClassSingleGroupsSection({
   );
 
   const mirroredFacetFilters = useMemo(
-    () => buildClassSingleGroupsAlgoliaFilters(refinementList),
+    () => mirrorGroupsFacets(refinementList),
     [refinementList],
   );
 

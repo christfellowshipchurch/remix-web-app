@@ -174,6 +174,7 @@ export const ClassSearch = () => {
                   onClearAllToUrl={clearAllFiltersFromUrl}
                   desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
                   compactInlineFilterCount={2}
+                  groupedFooterCount
                   renderMorePanel={({
                     onHide,
                     onClearAllToUrl,

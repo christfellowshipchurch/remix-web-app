@@ -80,6 +80,8 @@ export type SearchFiltersProps = {
   isFilterPillSupplementallyActive?: (
     item: SearchFilterDesktopItem,
   ) => boolean;
+  /** Class finder: popup footer uses grouped class count (see FilterPopup `groupedFooterCount`). */
+  groupedFooterCount?: boolean;
 };
 
 export function SearchFilters({
@@ -92,6 +94,7 @@ export function SearchFilters({
   filterPopupAgeInput,
   setFilterPopupAgeInput,
   isFilterPillSupplementallyActive,
+  groupedFooterCount = false,
 }: SearchFiltersProps) {
   const { indexUiState } = useInstantSearch();
   const refinementList = useMemo(
@@ -283,6 +286,7 @@ export function SearchFilters({
             layout="popover"
             ageInput={filterPopupAgeInput}
             setAgeInput={setFilterPopupAgeInput}
+            groupedFooterCount={groupedFooterCount}
           />
         ) : null}
       </div>
@@ -391,6 +395,7 @@ export function SearchFilters({
                 layout="bottomSheet"
                 ageInput={filterPopupAgeInput}
                 setAgeInput={setFilterPopupAgeInput}
+                groupedFooterCount={groupedFooterCount}
               />
             ) : null}
 
