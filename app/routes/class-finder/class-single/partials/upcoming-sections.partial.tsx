@@ -69,35 +69,6 @@ function sortUpcomingSessionHitsForDisplay(
   return [...inPerson, ...virtual];
 }
 
-function ClassSingleUpcomingResultsInner({
-  geoActive,
-}: {
-  geoActive: boolean;
-}) {
-  const { items } = useHits<ClassHitType>();
-
-  const ordered = useMemo(
-    () => sortUpcomingSessionHitsForDisplay(items, geoActive),
-    [items, geoActive],
-  );
-
-  const carouselResetKey = ordered.map((h) => h.objectID).join("|");
-
-  return (
-    <div
-      data-upcoming-sessions-results
-      className="scroll-mt-[100px]w-full max-w-[1296px] mr-auto"
-    >
-      <h3 className="pt-2 text-2xl font-extrabold mb-6 md:pt-4">
-        Join a Class
-      </h3>
-      <div className="flex w-full justify-center md:justify-start">
-        <UpcomingSessionsCarousel hits={ordered} resetKey={carouselResetKey} />
-      </div>
-    </div>
-  );
-}
-
 /**
  * One InstantSearch for class-single upcoming sessions (mobile + desktop share URL, geo, and refinements).
  * `ClassSingleGroupsSection` is a nested Algolia `Index` (`dev_daniel_Groups`) that mirrors the same refinements + geo via `Configure`.
@@ -122,6 +93,7 @@ export function ClassSingleUpcomingSearch({
       }}
     >
       <ResponsiveClassesSingleConfigure
+        classesIndexClassType={classType}
         classUrl={upcoming.classUrl}
         coordinates={upcoming.coordinates}
       />
@@ -186,14 +158,12 @@ export function ClassSingleUpcomingSearch({
 
         <div className="flex w-full flex-col bg-gray py-8 content-padding md:pt-12 md:pb-20">
           <div className="mx-auto w-full max-w-screen-content">
-            <ClassSingleUpcomingResultsInner
-              geoActive={upcoming.geoFiltersActive}
-            />
+            <ClassSingleUpcomingResults geoActive={upcoming.geoFiltersActive} />
           </div>
 
           {/* On Demand Section*/}
           <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center mt-8">
-            <div className="w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+            <div className="flex flex-col gap-4 w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
               <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
                 Take It Anytime
               </h2>
@@ -203,12 +173,12 @@ export function ClassSingleUpcomingSearch({
                 link="#todo"
               />
             </div>
-            <div className="w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+
               <ClassSingleGroupsSection
                 coordinates={upcoming.coordinates}
                 classUrl={upcoming.classUrl}
+                classesIndexClassType={classType}
               />
-            </div>
           </div>
         </div>
       </div>
@@ -217,22 +187,26 @@ export function ClassSingleUpcomingSearch({
 }
 
 export const ResponsiveClassesSingleConfigure = ({
+  classesIndexClassType,
   classUrl,
   coordinates,
 }: {
+  /** `classType` on `dev_Classes` records (not necessarily the URL slug). */
+  classesIndexClassType: string;
   classUrl: string;
   coordinates: {
     lat: number | null;
     lng: number | null;
   } | null;
 }) => {
-  const classTypeFilter = classUrl
-    ? `classType:"${escapeAlgoliaFilterString(classUrl)}"`
+  const trimmed = classesIndexClassType.trim();
+  const classTypeFilter = trimmed
+    ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
     : undefined;
 
   return (
     <Configure
-      key={`${classUrl}-${coordinates?.lat ?? ""}-${coordinates?.lng ?? ""}`}
+      key={`${classUrl}-${trimmed}-${coordinates?.lat ?? ""}-${coordinates?.lng ?? ""}`}
       hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
       filters={classTypeFilter}
       aroundLatLng={
@@ -246,3 +220,28 @@ export const ResponsiveClassesSingleConfigure = ({
     />
   );
 };
+
+function ClassSingleUpcomingResults({ geoActive }: { geoActive: boolean }) {
+  const { items } = useHits<ClassHitType>();
+
+  const ordered = useMemo(
+    () => sortUpcomingSessionHitsForDisplay(items, geoActive),
+    [items, geoActive],
+  );
+
+  const carouselResetKey = ordered.map((h) => h.objectID).join("|");
+
+  return (
+    <div
+      data-upcoming-sessions-results
+      className="scroll-mt-[100px]w-full max-w-[1296px] mr-auto"
+    >
+      <h3 className="pt-2 text-2xl font-extrabold mb-6 md:pt-4">
+        Join a Class
+      </h3>
+      <div className="flex w-full justify-center md:justify-start">
+        <UpcomingSessionsCarousel hits={ordered} resetKey={carouselResetKey} />
+      </div>
+    </div>
+  );
+}

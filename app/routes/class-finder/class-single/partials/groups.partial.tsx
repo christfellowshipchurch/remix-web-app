@@ -24,8 +24,24 @@ const GROUPS_ALGOLIA_INDEX_NAME = "dev_daniel_Groups";
 
 const CLASS_SINGLE_GROUPS_MAX_HITS = 1000;
 
-/** Blank query = all groups (up to hitsPerPage). Swap with class-type search below when ready. */
-const HARDCODED_GROUPS_SEARCH_QUERY = "";
+/**
+ * `classesIndexClassType` must match `dev_Classes` / `dev_daniel_Groups` attribute `classType`
+ * (the class-type value on records), not necessarily the URL segment.
+ */
+function buildClassSingleGroupsConfigureFilters(
+  classesIndexClassType: string,
+  mirroredFacetFilters: string | undefined,
+): string | undefined {
+  const trimmed = classesIndexClassType.trim();
+  const classTypeFilter = trimmed
+    ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
+    : null;
+  if (classTypeFilter && mirroredFacetFilters) {
+    return `${classTypeFilter} AND ${mirroredFacetFilters}`;
+  }
+  if (classTypeFilter) return classTypeFilter;
+  return mirroredFacetFilters;
+}
 
 function mapClassFormatToGroupMeetingType(format: string): string | null {
   if (format === "Virtual") return "Online";
@@ -99,7 +115,7 @@ function buildClassSingleGroupsAlgoliaFilters(
   return parts.join(" AND ");
 }
 
-function ClassSingleGroupsHitsInner({ backUrl }: { backUrl: string }) {
+function ClassSingleGroupsHits({ backUrl }: { backUrl: string }) {
   const { items } = useHits<GroupType>();
   const resetKey = items.map((h) => h.objectID).join("|");
 
@@ -108,27 +124,31 @@ function ClassSingleGroupsHitsInner({ backUrl }: { backUrl: string }) {
   }
 
   return (
-    <div className="flex w-full flex-col items-center gap-4">
-      <h2 className="w-full text-2xl font-extrabold leading-[1.4]">
-        Join a Group
-      </h2>
-      <div className="flex w-full justify-center md:justify-start">
-        <ClassSingleGroupsCarousel
-          hits={items}
-          resetKey={resetKey}
-          backUrl={backUrl}
-        />
+    <div className="w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+      <div className="flex w-full flex-col items-center gap-4">
+        <h2 className="w-full text-2xl font-extrabold leading-[1.4]">
+          Join a Group
+        </h2>
+        <div className="flex w-full justify-center md:justify-start">
+          <ClassSingleGroupsCarousel
+            hits={items}
+            resetKey={resetKey}
+            backUrl={backUrl}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-function ClassSingleGroupsAlgoliaIsland({
+function ClassSingleGroupsAlgolia({
   classUrl,
+  classesIndexClassType,
   mirroredFacetFilters,
   aroundLatLng,
 }: {
   classUrl: string;
+  classesIndexClassType: string;
   mirroredFacetFilters: string | undefined;
   aroundLatLng: string | undefined;
 }) {
@@ -142,16 +162,25 @@ function ClassSingleGroupsAlgoliaIsland({
 
   const backUrl = `/class-finder/${classUrl}`;
 
-  const configureKey = `${mirroredFacetFilters ?? ""}|${aroundLatLng ?? ""}`;
+  const configureFilters = useMemo(
+    () =>
+      buildClassSingleGroupsConfigureFilters(
+        classesIndexClassType,
+        mirroredFacetFilters,
+      ),
+    [classesIndexClassType, mirroredFacetFilters],
+  );
+
+  const configureKey = `${classesIndexClassType}|${configureFilters ?? ""}|${aroundLatLng ?? ""}`;
 
   return (
     <InstantSearch
-      key={classUrl}
+      key={`${classUrl}|${classesIndexClassType}`}
       indexName={GROUPS_ALGOLIA_INDEX_NAME}
       searchClient={searchClient}
       initialUiState={{
         [GROUPS_ALGOLIA_INDEX_NAME]: {
-          query: HARDCODED_GROUPS_SEARCH_QUERY,
+          query: "",
         },
       }}
       future={{
@@ -161,14 +190,14 @@ function ClassSingleGroupsAlgoliaIsland({
       <Configure
         key={configureKey}
         hitsPerPage={CLASS_SINGLE_GROUPS_MAX_HITS}
-        query={HARDCODED_GROUPS_SEARCH_QUERY}
-        filters={mirroredFacetFilters}
+        query=""
+        filters={configureFilters}
         aroundLatLng={aroundLatLng}
         aroundRadius="all"
         aroundLatLngViaIP={false}
         getRankingInfo={aroundLatLng != null}
       />
-      <ClassSingleGroupsHitsInner backUrl={backUrl} />
+      <ClassSingleGroupsHits backUrl={backUrl} />
     </InstantSearch>
   );
 }
@@ -176,6 +205,8 @@ function ClassSingleGroupsAlgoliaIsland({
 export type ClassSingleGroupsSectionProps = {
   coordinates: FinderGeoCoordinates;
   classUrl: string;
+  /** `classType` from the current `dev_Classes` hit — used for Groups `classType` facet filter. */
+  classesIndexClassType: string;
 };
 
 /**
@@ -185,6 +216,7 @@ export type ClassSingleGroupsSectionProps = {
 export function ClassSingleGroupsSection({
   coordinates,
   classUrl,
+  classesIndexClassType,
 }: ClassSingleGroupsSectionProps) {
   const { indexUiState } = useInstantSearch();
   const refinementList = useMemo(
@@ -207,8 +239,9 @@ export function ClassSingleGroupsSection({
       : undefined;
 
   return (
-    <ClassSingleGroupsAlgoliaIsland
+    <ClassSingleGroupsAlgolia
       classUrl={classUrl}
+      classesIndexClassType={classesIndexClassType}
       mirroredFacetFilters={mirroredFacetFilters}
       aroundLatLng={aroundLatLng}
     />

@@ -1,11 +1,6 @@
 import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import {
-  Configure,
-  Hits,
-  InstantSearch,
-  SearchBox,
-} from "react-instantsearch";
+import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
 
 import { FindersCustomPagination } from "~/components/finders/finders-custom-pagination.component";
 import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
@@ -72,9 +67,9 @@ export const GroupSearch = () => {
     lat: number | null;
     lng: number | null;
   } | null>(initial.coordinates);
-  const [locationSource, setLocationSource] = useState<
-    "zip" | "gps" | null
-  >(null);
+  const [locationSource, setLocationSource] = useState<"zip" | "gps" | null>(
+    null,
+  );
   const [ageInput, setAgeInputState] = useState<string>(initial.ageInput);
   const [selectedLocation, setSelectedLocationState] = useState<string | null>(
     initial.selectedLocation,
@@ -312,9 +307,7 @@ export const GroupSearch = () => {
                     list: "grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:!gap-x-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3",
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
-                    return (
-                      <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />
-                    );
+                    return <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />;
                   }}
                 />
               </div>
