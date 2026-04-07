@@ -1,4 +1,5 @@
 import { Breadcrumbs, ShareLinks } from "~/components";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 
 import ArticleAuthor from "../components/article-author.component";
 import heroBgImgStyles from "~/styles/hero-bg-image-styles";
@@ -35,13 +36,13 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
                 {title && (
                   <h1
                     className="text-pretty font-extrabold text-[48px] leading-tight tracking-tight text-text_primary dark:text-white lg:text-5xl xl:text-6xl"
-                    dangerouslySetInnerHTML={{ __html: title }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(title) }}
                   />
                 )}
                 {summary && (
                   <p
                     className="hidden font-light text-neutral-500 lg:block md:text-xl"
-                    dangerouslySetInnerHTML={{ __html: summary }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(summary) }}
                   />
                 )}
               </div>
