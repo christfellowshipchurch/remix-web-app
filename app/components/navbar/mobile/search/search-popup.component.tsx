@@ -15,6 +15,7 @@ import {
 interface LocationHit {
   campusName?: string;
   campusUrl?: string;
+  campusCardImage?: string;
   campusImage?: string;
 }
 
@@ -103,19 +104,19 @@ export const SearchPopup = ({
 
         const transformedHits: MobileContentHitType[] = hits
           .filter((hit) => hit?.campusName)
-          .map((hit) => ({
-            routing: {
-              pathname: `locations/${hit.campusUrl || ""}`,
-            },
-            coverImage: hit.campusImage
-              ? {
-                  sources: [{ uri: hit.campusImage }],
-                }
-              : null,
-            title: hit.campusName || "",
-            contentType: "Location",
-            summary: "",
-          }));
+          .map((hit) => {
+            const uri =
+              hit.campusCardImage?.trim() || hit.campusImage?.trim();
+            return {
+              routing: {
+                pathname: `locations/${hit.campusUrl || ""}`,
+              },
+              coverImage: uri ? { sources: [{ uri }] } : null,
+              title: hit.campusName || "",
+              contentType: "Location",
+              summary: "",
+            };
+          });
 
         setLocationHits(transformedHits);
       } catch (error) {

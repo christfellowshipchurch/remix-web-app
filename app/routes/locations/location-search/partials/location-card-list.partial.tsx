@@ -19,7 +19,7 @@ export type CampusHit = {
     zip: string;
   };
   serviceTimes: string;
-  campusImage?: string;
+  objectID?: string;
   _rankingInfo?: {
     distance?: number;
   };
@@ -29,17 +29,33 @@ export type LocationCardListProps = {
   loading: boolean;
 };
 
+/** Static card art: `public/assets/images/locations/location-card-images/{campusUrl}.webp` */
+const LOCATION_CARD_IMAGES_BASE =
+  "/assets/images/locations/location-card-images";
+
+function locationSearchCardImage(hitUrl: string) {
+  const slug = hitUrl.trim();
+  return slug ? `${LOCATION_CARD_IMAGES_BASE}/${slug}.webp` : "";
+}
+
 export const LocationCardList = ({ loading }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
   const onlineCampus = items?.find((item) =>
-    item.campusName?.includes("Online")
+    item.campusName?.includes("Online"),
   );
   const filteredItems = items?.filter(
-    (item) => !item.campusName?.includes("Online")
+    (item) => !item.campusName?.includes("Online"),
   );
 
   if (loading) {
-    return <LocationsLoader />;
+    return (
+      <div
+        className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
+        id="campuses"
+      >
+        <LocationsLoader />
+      </div>
+    );
   }
 
   return (
@@ -52,7 +68,7 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
         {onlineCampus && (
           <LocationCard
             name="Online"
-            image={onlineCampus?.campusImage || ""}
+            image={locationSearchCardImage(onlineCampus.campusUrl)}
             distanceFromLocation={0}
             key={onlineCampus?.objectID}
             link="/cf-everywhere"
@@ -73,15 +89,15 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
           return (
             <LocationCard
               name={hit?.campusName}
-              image={hit?.campusImage || ""}
+              image={locationSearchCardImage(hit.campusUrl)}
               distanceFromLocation={distanceFromLocation}
               key={hit.objectID || index}
               link={
                 hit?.campusName?.includes("Online")
                   ? `/${url}`
                   : !hit?.campusName.includes("Español")
-                  ? `/${lodash.kebabCase(hit?.campusName)}`
-                  : `/iglesia-${lodash.kebabCase(url)}`
+                    ? `/${lodash.kebabCase(hit?.campusName)}`
+                    : `/iglesia-${lodash.kebabCase(url)}`
               }
             />
           );

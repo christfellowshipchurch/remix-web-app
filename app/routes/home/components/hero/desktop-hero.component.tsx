@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { LocationSearch } from "../location-search/location-search.component";
 import { DesktopFeaturedItems } from "./desktop-features.component";
-
-const WISTIA_EMBED =
-  "https://fast.wistia.net/embed/iframe/ieybr1sv38?fitStrategy=cover";
+import { Video } from "~/primitives/video/video.primitive";
 
 export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
@@ -44,11 +42,12 @@ export function DesktopHeroSection() {
               decoding="async"
               fetchPriority="high"
             />
-            <iframe
-              title="Welcome video"
-              src={WISTIA_EMBED}
-              className="w-full h-full absolute inset-0 z-2 pointer-events-none border-0"
-              allow="autoplay; fullscreen"
+            <Video
+              wistiaId="ieybr1sv38"
+              autoPlay
+              muted
+              loop
+              className="w-full h-full absolute inset-0 z-2 pointer-events-none"
             />
           </div>
         </div>
