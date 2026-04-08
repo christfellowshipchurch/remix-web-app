@@ -116,7 +116,7 @@ export function AllArticles() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <HubsTagsRefinementList tagName="articlePrimaryCategories" />
+            <HubsTagsRefinementList attribute="articlePrimaryCategories" />
           </div>
 
           {allArticlesLoading && <AllArticlesLoadingSkeleton />}

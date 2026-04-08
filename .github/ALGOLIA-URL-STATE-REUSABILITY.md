@@ -58,12 +58,11 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
 
 **3. Pass initialUiState and onStateChange to InstantSearch**
 
-- Compute `initialUiState` for `<InstantSearch>`:
-  - If you use a "Clear All" remount (e.g. `instantSearchKey`), when `instantSearchKey > 0` pass something like `{ [indexName]: {} }` so the remount starts empty; otherwise pass `initial.initialUiState` when the URL had any state (so first load or direct link restores state).
+- Compute `initialUiState` for `<InstantSearch>`: pass `initial.initialUiState` when the URL had any state on first paint (so first load or direct link restores state); otherwise `undefined`. **Do not** remount `<InstantSearch>` on Clear All (e.g. avoid bumping a `key`): remounting refetches hits and reloads images. Clear via `setIndexUiState` (see step 5) plus `setSearchParams(empty)`.
 - Pass `initialUiState={...}` and `onStateChange={({ uiState }) => { ... } }` to `<InstantSearch>`.
 - In `onStateChange`: read `uiState[indexName]`, build a full urlState object (index's query, page, refinementList plus `customStateRef.current`), then call `debouncedUpdateUrl(urlState)`.
 
-**Group Finder example:** `group-search.partial.tsx` — `<InstantSearch key={instantSearchKey} initialUiState={instantSearchKey > 0 ? { [INDEX_NAME]: {} } : initial.initialUiState} onStateChange={...} />`; `syncUrlFromUiState(indexUiState)` merges index uiState with `customStateRef.current` (campus, age, lat/lng) and calls `debouncedUpdateUrl(urlState)`.
+**Group Finder example:** `group-search.partial.tsx` — `<InstantSearch initialUiState={…}` where `…` is `initial.initialUiState` if the first-paint URL had query/refinements, else `undefined`; `onStateChange={...}`; `syncUrlFromUiState(indexUiState)` merges index uiState with `customStateRef.current` (campus, age, lat/lng) and calls `debouncedUpdateUrl(urlState)`.
 
 **4. Keep custom state in sync with the URL**
 
@@ -78,10 +77,10 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
   - Call `cancelDebounce()` first so a pending debounced write does not overwrite the cleared URL.
   - Clear your custom state (setState and ref).
   - Call `setSearchParams(toParams(emptyState), { replace: true, preventScrollReset: true })`.
-  - If you use a key to remount InstantSearch on clear, run `setInstantSearchKey((k) => k + 1)` so the next render remounts `<InstantSearch>` with empty `initialUiState`.
-- Optionally use the shared **`AlgoliaFinderClearAllButton`** (`app/routes/group-finder/components/clear-all-button.component.tsx`): it clears InstantSearch uiState (query, refinementList, page) and calls an `onClearAllToUrl` prop where you do `cancelDebounce`, `setSearchParams(toParams(emptyState))`, and key bump if needed.
+  - Rely on **`setIndexUiState`** (from `AlgoliaFinderClearAllButton` or your All Filters popup) to clear query, `refinementList`, and `page` on the **same** `<InstantSearch>` instance—avoid remounting the tree so hits and images stay stable.
+- Optionally use the shared **`AlgoliaFinderClearAllButton`**: it calls `onClearAllToUrl` then `setIndexUiState` to reset InstantSearch; your `onClearAllToUrl` should only cancel debounce, clear custom state, and `setSearchParams(empty)`—no `key` bump.
 
-**Group Finder example:** `group-search.partial.tsx` — `clearAllFiltersFromUrl()` calls `cancelDebounce()`, clears `customStateRef` and all related `setState`s, `setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), { replace: true, preventScrollReset: true })`, then `setInstantSearchKey((k) => k + 1)`. Passed to `<AlgoliaFinderClearAllButton onClearAllToUrl={clearAllFiltersFromUrl} />` in toolbar (XL) and inside All Filters popup (MD/LG).
+**Group Finder example:** `group-search.partial.tsx` — `clearAllFiltersFromUrl()` calls `cancelDebounce()`, clears `customStateRef` and related `setState`s, `setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), { replace: true, preventScrollReset: true })`. Passed to `<AlgoliaFinderClearAllButton onClearAllToUrl={clearAllFiltersFromUrl} />` in toolbar (XL) and inside All Filters popup (MD/LG).
 
 **6. URL update options**
 
@@ -98,7 +97,7 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
 - [ ] Ref for custom state; `onStateChange` → merge index uiState + ref → `debouncedUpdateUrl`.
 - [ ] Custom filter handlers update state and call `debouncedUpdateUrl(mergedState)`.
 - [ ] `useEffect([searchParams])` to sync custom state from URL (back/forward).
-- [ ] Clear All: `cancelDebounce()`, clear state/ref, `setSearchParams(toParams(emptyState), { replace: true, preventScrollReset: true })`, optional key bump and use of `AlgoliaFinderClearAllButton`.
+- [ ] Clear All: `cancelDebounce()`, clear state/ref, `setSearchParams(toParams(emptyState), { replace: true, preventScrollReset: true })`, plus `setIndexUiState` via `AlgoliaFinderClearAllButton` or your popup (no InstantSearch remount / `key` bump).
 
 ---
 
@@ -150,7 +149,7 @@ Use this when the URL updates but results and/or filter UI do not (e.g. refineme
 
 - **`app/lib/algolia-url-state.ts`** — Use `createAlgoliaUrlStateConfig` for every new finder's url-state module. Defines the contract (query, page, refinementList, optional custom keys) and gives you parse/toParams/emptyState.
 - **`app/hooks/use-algolia-url-sync.ts`** — Use only for **Pattern A**. Not used with Pattern B (the custom router writes to the URL directly).
-- **`app/routes/group-finder/components/clear-all-button.component.tsx`** — Reusable "Clear all" button: clears InstantSearch uiState and calls `onClearAllToUrl`. Use for both patterns; in `onClearAllToUrl`, implement the appropriate Clear All steps (Pattern A: cancelDebounce + setSearchParams + optional key bump; Pattern B: setSearchParams only).
+- **`app/routes/group-finder/components/clear-all-button.component.tsx`** — Reusable "Clear all" button: calls `onClearAllToUrl` then `setIndexUiState` to clear InstantSearch. In `onClearAllToUrl`, implement Pattern A (cancelDebounce + clear custom state + `setSearchParams`) or Pattern B (`setSearchParams` only)—do not remount `<InstantSearch>` for clear.
 
 ---
 

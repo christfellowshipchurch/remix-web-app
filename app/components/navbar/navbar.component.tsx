@@ -50,7 +50,7 @@ export function Navbar() {
 
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
 
-  const { setIsNavbarVisible } = useNavbarVisibility();
+  const { setIsNavbarVisible, setIsSiteBannerVisible } = useNavbarVisibility();
 
   // Check if navbar should be hidden for current route
   const isNavbarHidden = shouldHideNavbar(pathname);
@@ -173,6 +173,10 @@ export function Navbar() {
   useEffect(() => {
     setIsNavbarVisible(isVisible && !isNavbarHidden);
   }, [isVisible, isNavbarHidden, setIsNavbarVisible]);
+
+  useEffect(() => {
+    setIsSiteBannerVisible(showSiteBanner);
+  }, [showSiteBanner, setIsSiteBannerVisible]);
 
   // Menu data
   const menuLinks: MenuLink[] = [
@@ -421,7 +425,7 @@ export function Navbar() {
                   </a>
                   <Button
                     href="/locations"
-                    className="font-semibold text-sm xl:text-base w-[150px] xl:w-[190px]"
+                    className="font-semibold text-sm xl:text-base w-fit min-w-[180px]"
                     aria-label="Find a Service"
                   >
                     <Icon

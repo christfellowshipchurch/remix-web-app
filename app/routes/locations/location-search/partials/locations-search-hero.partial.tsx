@@ -1,6 +1,10 @@
 import Icon from "~/primitives/icon";
 import { useEffect, useState, useRef } from "react";
 import { Video } from "~/primitives/video/video.primitive";
+import {
+  getCurrentPositionFromUserGesture,
+  getGeolocationUserMessage,
+} from "~/lib/browser-geolocation";
 import { cn, isValidZip } from "~/lib/utils";
 
 type SetCoordinatesProp = (
@@ -25,12 +29,11 @@ export const Search = ({
   setCoordinates,
   instantSearchReady = true,
 }: SearchProps) => {
-  const [useCurrentLocation, setUseCurrentLocation] = useState(true);
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [heroVideoFrameLoaded, setHeroVideoFrameLoaded] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const heroVideoMountRef = useRef<HTMLDivElement>(null);
-  const geolocationFromUserClickRef = useRef(false);
 
   useEffect(() => {
     if (!instantSearchReady) return;
@@ -46,34 +49,30 @@ export const Search = ({
     return () => iframe.removeEventListener("load", onLoad);
   }, [instantSearchReady]);
 
-  // Set the coordinates to the user's current location
-  useEffect(() => {
+  const handleUseCurrentLocation = () => {
     if (!instantSearchReady) return;
-
-    if (useCurrentLocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const scrollWithNavbarOffset = geolocationFromUserClickRef.current;
-          geolocationFromUserClickRef.current = false;
-          setCoordinates(
-            {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-            { scrollWithNavbarOffset },
-          );
-          setLocationActive(true);
-        },
-        (error) => {
-          geolocationFromUserClickRef.current = false;
-          console.error(error);
-          setLocationActive(false);
-        },
-      );
-
-      setUseCurrentLocation(false);
-    }
-  }, [useCurrentLocation, setCoordinates, instantSearchReady]);
+    setIsLocating(true);
+    setError(null);
+    getCurrentPositionFromUserGesture(
+      (position) => {
+        setIsLocating(false);
+        setCoordinates(
+          {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          { scrollWithNavbarOffset: true },
+        );
+        setLocationActive(true);
+      },
+      (geoError) => {
+        setIsLocating(false);
+        console.error(geoError);
+        setLocationActive(false);
+        setError(getGeolocationUserMessage(geoError));
+      },
+    );
+  };
 
   return (
     <div className="flex h-[80vh] w-full items-center justify-center md:h-[78vh]">
@@ -122,29 +121,24 @@ export const Search = ({
 
           {error && <div className="text-lg italic text-alert">{error}</div>}
 
-          <div
-            className={cn(
-              "flex flex-col items-center gap-2",
-              !instantSearchReady && "pointer-events-none opacity-50",
-            )}
-          >
-            <div className="flex gap-2">
-              <div
-                className="cursor-pointer italic underline"
-                onClick={() => {
-                  geolocationFromUserClickRef.current = true;
-                  setUseCurrentLocation(true);
-                }}
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={!instantSearchReady || isLocating}
+                className="cursor-pointer italic underline disabled:cursor-wait disabled:opacity-70 bg-transparent border-0 p-0 text-inherit"
+                onClick={handleUseCurrentLocation}
               >
                 Use my current location
-              </div>
+              </button>
               <Icon size={16} color="white" name="locationArrow" />
             </div>
-            {!locationActive && (
+            {!locationActive && !isLocating && !error ? (
               <div className="text-sm italic text-alert">
-                Enable Location Access & Try Again.
+                Location is off for this page. Allow it when prompted, or use a
+                zip code above.
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

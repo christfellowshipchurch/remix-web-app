@@ -4,6 +4,8 @@ import { algoliasearch, SearchClient } from "algoliasearch";
 import { Configure, InstantSearch } from "react-instantsearch";
 
 import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+import { useResponsive } from "~/hooks/use-responsive";
+import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { emptySearchClient } from "~/routes/search/route";
 import { LocationCardList } from "./partials/location-card-list.partial";
@@ -80,6 +82,8 @@ export function LocationSearchPage() {
   } | null>(null);
 
   const campusScrollUsesNavbarOffsetRef = useRef(false);
+  const desktopAutoGeolocationAttemptedRef = useRef(false);
+  const { isLarge } = useResponsive();
 
   const setSearchCoordinates = useCallback(
     (
@@ -124,6 +128,30 @@ export function LocationSearchPage() {
       );
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
+
+  /**
+   * One-time auto geolocation on large viewports only (Tailwind `lg` / 1024px+).
+   * Skips phones and small tablets so iOS Safari is not prompted without a tap; desktop browsers
+   * generally allow the prompt on load.
+   */
+  useEffect(() => {
+    if (!isLarge || desktopAutoGeolocationAttemptedRef.current) return;
+    desktopAutoGeolocationAttemptedRef.current = true;
+    getCurrentPositionFromUserGesture(
+      (position) => {
+        setSearchCoordinates(
+          {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          { scrollWithNavbarOffset: false },
+        );
+      },
+      () => {
+        /* silent — user can still use “Use my current location” */
+      },
+    );
+  }, [isLarge, setSearchCoordinates]);
 
   const scrollCampusesIntoView = useCallback(() => {
     const campusesSection = document.getElementById("campuses");

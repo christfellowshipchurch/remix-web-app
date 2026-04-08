@@ -1,3 +1,4 @@
+import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import { GroupType } from "../types";
 import { Link } from "react-router-dom";
@@ -7,10 +8,10 @@ export const defaultLeaderPhoto =
 
 export function GroupHit({
   hit,
-  fromGroupFinderUrl,
+  backUrl,
 }: {
   hit: GroupType;
-  fromGroupFinderUrl?: string;
+  backUrl?: string;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
   const preference = hit.groupFor;
@@ -77,19 +78,18 @@ export function GroupHit({
     <Link
       prefetch="intent"
       to={`/group-finder/${hit.objectID}`}
-      state={
-        fromGroupFinderUrl ? { fromGroupFinder: fromGroupFinderUrl } : undefined
-      }
-      className="size-full"
+      state={backUrl ? { fromGroupFinder: backUrl } : undefined}
+      className="flex h-full min-h-0 w-full max-w-full flex-col"
     >
       <div
-        className="mb-4 bg-white rounded-lg overflow-hidden h-full w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px] cursor-pointer hover:translate-y-[-2px] transition-all duration-300"
-        style={{
-          boxShadow:
-            "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        }}
+        className={cn(
+          "mx-auto flex h-full min-h-0 w-full max-w-[360px] flex-1 cursor-pointer flex-col rounded-lg",
+          "md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]",
+          "transition-transform duration-300 ease-out",
+          "hover:-translate-y-1",
+        )}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-white">
           <div className="relative flex flex-col gap-2">
             <img
               src={coverImage}
@@ -114,7 +114,7 @@ export function GroupHit({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 pt-[10px] flex-1">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 pt-[10px]">
             <div className="flex flex-col px-6 gap-3">
               <div className="flex flex-col gap-[10px]">
                 <div
@@ -122,11 +122,11 @@ export function GroupHit({
                     preference === "Women"
                       ? "bg-peach/15 text-[#B33A1B]"
                       : preference === "Men"
-                      ? "bg-cotton-candy/15 text-cotton-candy"
-                      : preference === "Anyone"
-                      ? "bg-ocean/15 text-ocean"
-                      : // Couples
-                        "bg-lemon/35 text-[#937200]"
+                        ? "bg-cotton-candy/15 text-cotton-candy"
+                        : preference === "Anyone"
+                          ? "bg-ocean/15 text-ocean"
+                          : // Couples
+                            "bg-lemon/35 text-[#937200]"
                   } w-fit flex rounded-sm text-xs font-semibold px-2 py-1`}
                 >
                   {preference}

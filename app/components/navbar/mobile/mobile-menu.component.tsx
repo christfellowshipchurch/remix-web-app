@@ -73,7 +73,7 @@ export default function MobileMenu({
       {/* Search & Menu Buttons */}
       <div className="flex items-center gap-4">
         <div className="hidden md:block">
-          <Button className="font-semibold text-base">
+          <Button className="font-semibold text-base w-fit min-w-[180px]">
             <Icon name="mapFilled" size={20} className="mr-2" />
             Find a Service
           </Button>
@@ -88,13 +88,13 @@ export default function MobileMenu({
                   ? !isSearchOpen
                     ? "light"
                     : "dark"
-                  : orginalMode
+                  : orginalMode,
               );
             }, 0);
             setIsOpen(false);
             setTimeout(() => {
               const searchInput = document.querySelector(
-                ".ais-SearchBox-input"
+                ".ais-SearchBox-input",
               );
               if (searchInput instanceof HTMLInputElement) {
                 searchInput.focus();
@@ -112,7 +112,7 @@ export default function MobileMenu({
                 ? !isOpen
                   ? "light"
                   : "dark"
-                : orginalMode
+                : orginalMode,
             );
             setIsSearchOpen(false);
           }}

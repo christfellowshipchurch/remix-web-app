@@ -16,7 +16,7 @@ export const FiltersFooter = ({
   clearAllDisabled = false,
 }: FiltersFooterProps) => {
   return (
-    <div className="mt-auto md:mt-0 flex justify-between md:justify-end items-center gap-4 px-4 py-4 border-t border-black w-full">
+    <div className="mt-auto md:mt-0 flex justify-between md:justify-end items-center gap-4 px-4 py-4 w-full">
       <button
         type="button"
         disabled={clearAllDisabled}

@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
+import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 
 const BackBanner = ({
   backText,
@@ -13,10 +14,12 @@ const BackBanner = ({
   link: string;
   bg?: string;
 }) => {
+  const stickyTopClass = useStickyTopBelowNavbarClass();
   return (
     <div
       className={cn(
-        "w-full py-[15px] shadow-sm content-padding sticky top-0",
+        "w-full py-[15px] shadow-sm content-padding sticky transition-[top] duration-300",
+        stickyTopClass,
         `bg-${bg}`
       )}
     >

@@ -18,16 +18,14 @@ export const GROUP_FINDER_PARAMS = {
 } as const;
 
 export type GroupFinderUrlState = AlgoliaUrlStateBase & {
-  campus?: string;
   age?: string;
 };
 
-/** Campus / age URL params and map coordinates — not always mirrored in InstantSearch `refinementList`. */
+/** Age and map coordinates — not mirrored in InstantSearch `refinementList`. Campus uses `refinementList.campus` only. */
 export function hasGroupFinderNonInstantSearchFilters(
   urlState: GroupFinderUrlState,
   coordinates: { lat: number | null; lng: number | null } | null,
 ): boolean {
-  if (urlState.campus != null && urlState.campus.trim() !== "") return true;
   if ((urlState.age?.trim().length ?? 0) > 0) return true;
   if (coordinates?.lat != null && coordinates?.lng != null) return true;
   return false;
@@ -55,16 +53,11 @@ const {
   custom: {
     parse(params) {
       const state: Partial<GroupFinderUrlState> = {};
-      const campus = params.get(GROUP_FINDER_PARAMS.CAMPUS);
-      if (campus) state.campus = campus;
       const age = params.get(GROUP_FINDER_PARAMS.AGE);
       if (age) state.age = age;
       return state;
     },
     toParams(state, params) {
-      if (state.campus?.trim()) {
-        params.set(GROUP_FINDER_PARAMS.CAMPUS, state.campus.trim());
-      }
       if (state.age?.trim()) {
         params.set(GROUP_FINDER_PARAMS.AGE, state.age.trim());
       }
