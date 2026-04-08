@@ -34,6 +34,10 @@ export interface ClassHitType {
     | "Spiritual Growth";
   language: "English" | "Español" | "Multiple Languages";
   format: "In-Person" | "Virtual";
+  /** Meters from search origin when `aroundLatLng` + `getRankingInfo` are set (zip / current location). */
+  _rankingInfo?: {
+    geoDistance?: number;
+  };
   /** Present on search hits when highlighting is enabled; keys vary by query. */
   _highlightResult?: {
     title?: ClassHitHighlightField;

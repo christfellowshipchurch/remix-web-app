@@ -13,8 +13,9 @@ export interface GroupType {
   id: string;
   title: string;
   summary: string;
-  coverImage: ImageSource;
   campus: string; //pick a campus
+  classType?: string;
+  coverImage: ImageSource;
   meetingLocationType: "Home" | "Church" | "Public Place";
   meetingLocation: string;
   meetingDays:

@@ -21,8 +21,7 @@ export const AlgoliaFinderClearAllButton = ({
 }: AlgoliaFinderClearAllButtonProps) => {
   const { setIndexUiState, indexUiState } = useInstantSearch();
 
-  const hasInstantFilters =
-    hasInstantSearchIndexUiActiveFilters(indexUiState);
+  const hasInstantFilters = hasInstantSearchIndexUiActiveFilters(indexUiState);
   const canClear = hasInstantFilters || additionalFiltersActive;
 
   const handleClearAll = () => {
@@ -44,7 +43,7 @@ export const AlgoliaFinderClearAllButton = ({
       className={cn(
         "shrink-0 font-semibold text-base transition-colors duration-300",
         canClear
-          ? "cursor-pointer text-text-secondary hover:text-ocean"
+          ? "cursor-pointer text-ocean hover:text-navy"
           : "cursor-not-allowed text-neutral-400 opacity-60",
         className,
       )}

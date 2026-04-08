@@ -4,6 +4,7 @@ import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
 import { ImageSource } from "~/routes/group-finder/types";
+import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 
 export const GroupSingleBanner = ({
   language,
@@ -16,6 +17,7 @@ export const GroupSingleBanner = ({
   leaderImages: ImageSource[];
   groupName: string;
 }) => {
+  const stickyTopClass = useStickyTopBelowNavbarClass();
   const location = useLocation();
   const backToGroupFinderUrl =
     typeof location.state?.fromGroupFinder === "string"
@@ -34,7 +36,8 @@ export const GroupSingleBanner = ({
   return (
     <div
       className={cn(
-        "w-full bg-white content-padding pt-8 pb-4 sticky top-0 z-10 shadow-sm"
+        "w-full bg-white content-padding pt-8 pb-4 sticky z-10 shadow-sm transition-[top] duration-300",
+        stickyTopClass
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex justify-between gap-8 items-center">

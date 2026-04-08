@@ -6,12 +6,20 @@ import {
 } from "../navbar-visibility-context";
 
 function TestConsumer() {
-  const { isNavbarVisible, setIsNavbarVisible } = useNavbarVisibility();
+  const {
+    isNavbarVisible,
+    setIsNavbarVisible,
+    isSiteBannerVisible,
+    setIsSiteBannerVisible,
+  } = useNavbarVisibility();
   return (
     <div>
       <span data-testid="visibility">{String(isNavbarVisible)}</span>
+      <span data-testid="banner">{String(isSiteBannerVisible)}</span>
       <button onClick={() => setIsNavbarVisible(false)}>hide</button>
       <button onClick={() => setIsNavbarVisible(true)}>show</button>
+      <button onClick={() => setIsSiteBannerVisible(true)}>banner-on</button>
+      <button onClick={() => setIsSiteBannerVisible(false)}>banner-off</button>
     </div>
   );
 }
@@ -24,6 +32,19 @@ describe("NavbarVisibilityProvider", () => {
       </NavbarVisibilityProvider>
     );
     expect(screen.getByTestId("visibility").textContent).toBe("true");
+    expect(screen.getByTestId("banner").textContent).toBe("false");
+  });
+
+  it("updates isSiteBannerVisible", () => {
+    render(
+      <NavbarVisibilityProvider>
+        <TestConsumer />
+      </NavbarVisibilityProvider>
+    );
+    fireEvent.click(screen.getByText("banner-on"));
+    expect(screen.getByTestId("banner").textContent).toBe("true");
+    fireEvent.click(screen.getByText("banner-off"));
+    expect(screen.getByTestId("banner").textContent).toBe("false");
   });
 
   it("updates isNavbarVisible to false", () => {

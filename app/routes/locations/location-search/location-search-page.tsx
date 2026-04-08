@@ -4,9 +4,12 @@ import { algoliasearch, SearchClient } from "algoliasearch";
 import { Configure, InstantSearch } from "react-instantsearch";
 
 import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+import { useResponsive } from "~/hooks/use-responsive";
+import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { emptySearchClient } from "~/routes/search/route";
 import { LocationCardList } from "./partials/location-card-list.partial";
+import { LocationSearchBootSkeleton } from "./components/location-search-boot-skeleton.partial";
 import { Search } from "./partials/locations-search-hero.partial";
 
 export type LocationSearchCoordinatesType = {
@@ -26,6 +29,45 @@ export type LocationSearchCoordinatesType = {
 
 let globalSearchClient: SearchClient | null = null;
 
+const LOCATION_SEARCH_INDEX_NAME = "dev_Locations";
+
+function LocationSearchIndexBody({
+  coordinates,
+  setSearchCoordinates,
+  handleSearch,
+  geocodeLoading,
+}: {
+  coordinates: { lat: number | null; lng: number | null } | null;
+  setSearchCoordinates: (
+    next: { lat: number | null; lng: number | null } | null,
+    options?: { scrollWithNavbarOffset?: boolean },
+  ) => void;
+  handleSearch: (query: string | null) => void;
+  geocodeLoading: boolean;
+}) {
+  return (
+    <>
+      <Configure
+        hitsPerPage={20}
+        aroundLatLng={
+          coordinates?.lat && coordinates?.lng
+            ? `${coordinates.lat}, ${coordinates.lng}`
+            : undefined
+        }
+        aroundRadius="all"
+        aroundLatLngViaIP={false}
+        getRankingInfo={true}
+      />
+
+      <Search
+        handleSearch={handleSearch}
+        setCoordinates={setSearchCoordinates}
+      />
+      <LocationCardList loading={geocodeLoading} />
+    </>
+  );
+}
+
 export function LocationSearchPage() {
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
   const algolia = rootData?.algolia ?? {
@@ -40,6 +82,8 @@ export function LocationSearchPage() {
   } | null>(null);
 
   const campusScrollUsesNavbarOffsetRef = useRef(false);
+  const desktopAutoGeolocationAttemptedRef = useRef(false);
+  const { isLarge } = useResponsive();
 
   const setSearchCoordinates = useCallback(
     (
@@ -59,18 +103,21 @@ export function LocationSearchPage() {
   const geocodeFetcher = useFetcher();
   const googleFetcher = useFetcher();
 
-  const handleSearch = (query: string | null) => {
-    if (!query) {
-      setSearchCoordinates(null);
-      return;
-    }
-    const formData = new FormData();
-    formData.append("address", query);
-    geocodeFetcher.submit(formData, {
-      method: "post",
-      action: "/google-geocode",
-    });
-  };
+  const handleSearch = useCallback(
+    (query: string | null) => {
+      if (!query) {
+        setSearchCoordinates(null);
+        return;
+      }
+      const formData = new FormData();
+      formData.append("address", query);
+      geocodeFetcher.submit(formData, {
+        method: "post",
+        action: "/google-geocode",
+      });
+    },
+    [setSearchCoordinates, geocodeFetcher],
+  );
 
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
@@ -82,6 +129,30 @@ export function LocationSearchPage() {
     }
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
+  /**
+   * One-time auto geolocation on large viewports only (Tailwind `lg` / 1024px+).
+   * Skips phones and small tablets so iOS Safari is not prompted without a tap; desktop browsers
+   * generally allow the prompt on load.
+   */
+  useEffect(() => {
+    if (!isLarge || desktopAutoGeolocationAttemptedRef.current) return;
+    desktopAutoGeolocationAttemptedRef.current = true;
+    getCurrentPositionFromUserGesture(
+      (position) => {
+        setSearchCoordinates(
+          {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          { scrollWithNavbarOffset: false },
+        );
+      },
+      () => {
+        /* silent — user can still use “Use my current location” */
+      },
+    );
+  }, [isLarge, setSearchCoordinates]);
+
   const scrollCampusesIntoView = useCallback(() => {
     const campusesSection = document.getElementById("campuses");
     if (!campusesSection) {
@@ -91,9 +162,7 @@ export function LocationSearchPage() {
       ? ANCHOR_SCROLL_OFFSET
       : 0;
     const offsetTop =
-      campusesSection.getBoundingClientRect().top +
-      window.scrollY -
-      offsetPx;
+      campusesSection.getBoundingClientRect().top + window.scrollY - offsetPx;
     window.scrollTo({
       top: Math.max(0, offsetTop),
       behavior: "smooth",
@@ -127,40 +196,73 @@ export function LocationSearchPage() {
       ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
       : emptySearchClient);
 
-  return (
-    <div className="flex w-full flex-col">
-      {/* Add Algolia Wrapper */}
-      <InstantSearch
-        indexName="dev_Locations"
-        searchClient={searchClient}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-        initialUiState={{
-          dev_Locations: {
-            query: "",
-          },
-        }}
-        insights={false}
-      >
-        <Configure
-          hitsPerPage={20}
-          aroundLatLng={
-            coordinates?.lat && coordinates?.lng
-              ? `${coordinates.lat}, ${coordinates.lng}`
-              : undefined
-          }
-          aroundRadius="all"
-          aroundLatLngViaIP={false}
-          getRankingInfo={true}
-        />
+  const [algoliaBootstrapped, setAlgoliaBootstrapped] = useState(false);
 
-        <Search
-          handleSearch={handleSearch}
-          setCoordinates={setSearchCoordinates}
-        />
-        <LocationCardList loading={googleFetcher.state === "loading"} />
-      </InstantSearch>
+  useEffect(() => {
+    let cancelled = false;
+    const client =
+      globalSearchClient ||
+      (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY
+        ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {})
+        : emptySearchClient);
+
+    const finish = () => {
+      if (!cancelled) setAlgoliaBootstrapped(true);
+    };
+
+    void (async () => {
+      try {
+        if (
+          "searchSingleIndex" in client &&
+          typeof (client as SearchClient).searchSingleIndex === "function"
+        ) {
+          await (client as SearchClient).searchSingleIndex({
+            indexName: LOCATION_SEARCH_INDEX_NAME,
+            searchParams: { hitsPerPage: 1, query: "" },
+          });
+        } else if ("search" in client && typeof client.search === "function") {
+          await (
+            client as { search: (params?: unknown) => Promise<unknown> }
+          ).search([]);
+        }
+      } catch {
+        // Network or Algolia errors — still mount finder so the page is usable
+      } finally {
+        finish();
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
+
+  return (
+    <div className="flex w-full flex-col min-h-screen">
+      {!algoliaBootstrapped ? (
+        <LocationSearchBootSkeleton />
+      ) : (
+        <InstantSearch
+          indexName={LOCATION_SEARCH_INDEX_NAME}
+          searchClient={searchClient}
+          future={{
+            preserveSharedStateOnUnmount: true,
+          }}
+          initialUiState={{
+            [LOCATION_SEARCH_INDEX_NAME]: {
+              query: "",
+            },
+          }}
+          insights={false}
+        >
+          <LocationSearchIndexBody
+            coordinates={coordinates}
+            setSearchCoordinates={setSearchCoordinates}
+            handleSearch={handleSearch}
+            geocodeLoading={googleFetcher.state === "loading"}
+          />
+        </InstantSearch>
+      )}
     </div>
   );
 }

@@ -1,25 +1,16 @@
 import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Hits,
-  SearchBox,
-  Configure,
-  Stats,
-} from "react-instantsearch";
+import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
 
-import { DesktopGroupFilters } from "../components/filters/group-filters";
-
-import Icon from "~/primitives/icon";
+import { FindersCustomPagination } from "~/components/finders/finders-custom-pagination.component";
+import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
+import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
 import { useResponsive } from "~/hooks/use-responsive";
-
-import { FindersCustomPagination } from "../components/finders-custom-pagination.component";
+import Icon from "~/primitives/icon";
 import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
-import { useEffect, useState, useRef, useMemo } from "react";
-import { AllGroupFiltersPopup } from "../components/filters/all-filters.component";
-import { Button } from "~/primitives/button/button.primitive";
-import { cn } from "~/lib/utils";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GroupFinderOverflowFiltersPanel } from "../components/group-finder-overflow-filters.component";
 import { GroupType } from "../types";
 import {
   parseGroupFinderUrlState,
@@ -29,31 +20,39 @@ import {
   type GroupFinderUrlState,
 } from "../group-finder-url-state";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
+import { buildIndexInitialUiState } from "~/components/finders/finder-algolia.utils";
+import {
+  SearchFilters,
+  type SearchFilterDesktopItem,
+} from "~/components/finders/search-filters";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { AlgoliaFinderClearAllButton } from "../components/clear-all-button.component";
+import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
+import {
+  getGroupSearchDesktopFilters,
+  GROUP_FINDER_MORE_POPUP_TITLE,
+} from "../group-search-filters.data";
 
 const INDEX_NAME = "dev_daniel_Groups";
+
+function firstCampusRefinement(
+  refinementList: Record<string, string[]> | undefined,
+): string | null {
+  const values = refinementList?.campus;
+  if (!values?.length) return null;
+  const first = values[0]?.trim();
+  return first ? first : null;
+}
 
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? "";
-  const selectedLocation = urlState.campus ?? null;
-  const initialUiState: { [key: string]: Record<string, unknown> } = {};
-  if (
-    urlState.query !== undefined ||
-    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
-  ) {
-    initialUiState[INDEX_NAME] = {};
-    if (urlState.query !== undefined)
-      initialUiState[INDEX_NAME].query = urlState.query;
-    if (
-      urlState.refinementList &&
-      Object.keys(urlState.refinementList).length > 0
-    ) {
-      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
-    }
-  }
+  const selectedLocation = firstCampusRefinement(urlState.refinementList) ?? null;
+  const initialUiState =
+    buildIndexInitialUiState(INDEX_NAME, {
+      query: urlState.query,
+      refinementList: urlState.refinementList,
+    }) ?? {};
   return { coordinates: null, ageInput, selectedLocation, initialUiState };
 }
 
@@ -63,12 +62,13 @@ export const GroupSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
-  const { cancelDebounce, updateUrlIfChanged } = useAlgoliaUrlSync({
-    searchParams,
-    setSearchParams,
-    toParams: groupFinderUrlStateToParams,
-    debounceMs: 400,
-  });
+  const { cancelDebounce, debouncedUpdateUrl, updateUrlIfChanged } =
+    useAlgoliaUrlSync({
+      searchParams,
+      setSearchParams,
+      toParams: groupFinderUrlStateToParams,
+      debounceMs: 400,
+    });
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
@@ -76,17 +76,15 @@ export const GroupSearch = () => {
     lat: number | null;
     lng: number | null;
   } | null>(initial.coordinates);
+  const [locationSource, setLocationSource] = useState<"zip" | "gps" | null>(
+    null,
+  );
   const [ageInput, setAgeInputState] = useState<string>(initial.ageInput);
   const [selectedLocation, setSelectedLocationState] = useState<string | null>(
-    initial.selectedLocation
+    initial.selectedLocation,
   );
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref, key bump). */
+  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref). */
   type CustomState = {
     coordinates: { lat: number | null; lng: number | null } | null;
     ageInput: string;
@@ -108,44 +106,13 @@ export const GroupSearch = () => {
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     setAgeInputState(urlState.age ?? "");
-    setSelectedLocationState(urlState.campus ?? null);
+    setSelectedLocationState(firstCampusRefinement(urlState.refinementList) ?? null);
   }, [searchParams]);
-
-  // Scroll handling effect for fixed search bar
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   const clearAllFiltersFromUrl = () => {
@@ -156,18 +123,27 @@ export const GroupSearch = () => {
       selectedLocation: null,
     };
     setCoordinatesState(null);
+    setLocationSource(null);
     setAgeInputState("");
     setSelectedLocationState(null);
     setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), {
       replace: true,
       preventScrollReset: true,
     });
-    setInstantSearchKey((k) => k + 1);
   };
 
-  const setCoordinates = (next: typeof coordinates) => {
+  const setCoordinates = useCallback((next: typeof coordinates) => {
     setCoordinatesState(next);
-  };
+    const noCoords =
+      next == null ||
+      next.lat == null ||
+      next.lng == null ||
+      Number.isNaN(next.lat) ||
+      Number.isNaN(next.lng);
+    if (noCoords) {
+      setLocationSource(null);
+    }
+  }, []);
 
   const setAgeInput = (next: string) => {
     setAgeInputState(next);
@@ -184,7 +160,6 @@ export const GroupSearch = () => {
     return !!(
       (s.query?.trim?.()?.length ?? 0) > 0 ||
       (s.refinementList && Object.keys(s.refinementList ?? {}).length > 0) ||
-      s.campus != null ||
       (s.age?.trim?.()?.length ?? 0) > 0
     );
   });
@@ -193,11 +168,37 @@ export const GroupSearch = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
-  const additionalClearAllFiltersActive =
-    hasGroupFinderNonInstantSearchFilters(
-      parseGroupFinderUrlState(searchParams),
-      coordinates,
-    );
+  const additionalClearAllFiltersActive = hasGroupFinderNonInstantSearchFilters(
+    parseGroupFinderUrlState(searchParams),
+    coordinates,
+  );
+
+  const desktopFilters = useMemo(
+    () =>
+      getGroupSearchDesktopFilters({
+        coordinates,
+        setCoordinates,
+        locationSource,
+        onLocationKind: setLocationSource,
+      }),
+    [coordinates, setCoordinates, locationSource],
+  );
+
+  const isFilterPillSupplementallyActive = useCallback(
+    (item: SearchFilterDesktopItem) => {
+      if (item.id === "people") return ageInput.trim().length >= 2;
+      if (item.id === "location")
+        return (
+          selectedLocation != null ||
+          (coordinates?.lat != null &&
+            coordinates?.lng != null &&
+            !Number.isNaN(coordinates.lat) &&
+            !Number.isNaN(coordinates.lng))
+        );
+      return false;
+    },
+    [ageInput, selectedLocation, coordinates],
+  );
 
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -206,29 +207,26 @@ export const GroupSearch = () => {
       query: (indexUiState.query as string) ?? undefined,
       refinementList:
         (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
-      campus: customStateRef.current.selectedLocation ?? undefined,
       age: customStateRef.current.ageInput || undefined,
     };
-    updateUrlIfChanged(urlState);
+    debouncedUpdateUrl(urlState);
   };
 
   return (
     <div
-      className="flex flex-col gap-4 w-full pt-12 pagination-scroll-to"
+      className="flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to"
       id="search"
     >
       <InstantSearch
-        key={instantSearchKey}
         indexName={INDEX_NAME}
         searchClient={searchClient}
         initialUiState={
-          instantSearchKey > 0
-            ? { [INDEX_NAME]: {} }
-            : Object.keys(initial.initialUiState).length > 0
+          Object.keys(initial.initialUiState).length > 0
             ? initial.initialUiState
             : undefined
         }
-        onStateChange={({ uiState }) => {
+        onStateChange={({ uiState, setUiState }) => {
+          setUiState(uiState);
           const indexState = uiState[INDEX_NAME];
           if (indexState)
             syncUrlFromUiState(indexState as Record<string, unknown>);
@@ -237,25 +235,18 @@ export const GroupSearch = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure
-          selectedLocation={selectedLocation}
-          ageInput={ageInput}
-          coordinates={coordinates}
-        />
+        <ResponsiveConfigure ageInput={ageInput} coordinates={coordinates} />
         <div className="flex flex-col">
-          {/* Desktop Filters Section */}
-          <div
-            className={cn(
-              "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0"
-            )}
-          >
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              {/* Group Search Box */}
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
-                <Icon name="searchAlt" className="text-neutral-default ml-3" />
+          <FinderStickyBar>
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
+              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
+                <Icon
+                  name="searchAlt"
+                  className="text-neutral-default ml-3"
+                  size={16}
+                />
                 <SearchBox
-                  placeholder="Keyword"
+                  placeholder="Search"
                   translations={{
                     submitButtonTitle: "Search",
                     resetButtonTitle: "Reset",
@@ -263,7 +254,8 @@ export const GroupSearch = () => {
                   classNames={{
                     root: "flex-grow",
                     form: "flex",
-                    input: "w-full text-xl px-2 focus:outline-none",
+                    input:
+                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none",
                     resetIcon: "hidden",
                     submit: "hidden",
                     loadingIcon: "hidden",
@@ -271,81 +263,54 @@ export const GroupSearch = () => {
                 />
               </div>
 
-              {/* Desktop Filters + Clear All */}
-              <div className="hidden md:flex items-center gap-4">
-                <DesktopGroupFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
-                  ageInput={ageInput}
-                  setAgeInput={setAgeInput}
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                />
-                <AlgoliaFinderClearAllButton
-                  className="hidden xl:block"
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                  additionalFiltersActive={additionalClearAllFiltersActive}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Filters */}
-          <div className="md:hidden bg-white border-b-2 border-black/10 border-solid select-none pb-4">
-            <div className="content-padding">
-              <Button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                intent="secondary"
-                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
-              >
-                <Icon name="sliderAlt" className="text-navy" />
-                All Filters
-              </Button>
-            </div>
-            <div
-              className={cn(
-                "absolute transition-all duration-300 w-full",
-                isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(92%_+_24px)]"
-                  : "-z-1 opacity-0"
-              )}
-            >
-              <AllGroupFiltersPopup
-                onHide={() => setIsMobileOpen(false)}
-                ageInput={ageInput}
-                setAgeInput={setAgeInput}
-                coordinates={coordinates}
-                setCoordinates={setCoordinates}
+              <SearchFilters
                 onClearAllToUrl={clearAllFiltersFromUrl}
+                desktopFilters={desktopFilters}
+                compactInlineFilterCount={2}
+                filterPopupAgeInput={ageInput}
+                setFilterPopupAgeInput={setAgeInput}
+                isFilterPillSupplementallyActive={
+                  isFilterPillSupplementallyActive
+                }
+                renderMorePanel={({
+                  onHide,
+                  onClearAllToUrl,
+                  mobileBottomSheet,
+                }) => (
+                  <GroupFinderOverflowFiltersPanel
+                    onHide={onHide}
+                    ageInput={ageInput}
+                    setAgeInput={setAgeInput}
+                    coordinates={coordinates}
+                    setCoordinates={setCoordinates}
+                    locationSource={locationSource}
+                    onLocationKind={setLocationSource}
+                    onClearAllToUrl={onClearAllToUrl}
+                    mobileBottomSheet={mobileBottomSheet}
+                    bottomSheetTitle={GROUP_FINDER_MORE_POPUP_TITLE}
+                  />
+                )}
               />
             </div>
-          </div>
+            <ActiveFilters
+              onClearAllToUrl={clearAllFiltersFromUrl}
+              additionalFiltersActive={additionalClearAllFiltersActive}
+            />
+          </FinderStickyBar>
 
           {/* Group Search Hits / Results & Pagination */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
-              <Stats
-                classNames={{
-                  root: "text-text-secondary mb-6",
-                }}
-                translations={{
-                  rootElementText: ({ nbHits }) =>
-                    `${nbHits.toLocaleString()} Results Found`,
-                }}
-              />
+              <FinderResultsStats />
               <div className="min-h-[320px]">
                 <Hits
                   classNames={{
-                    root: "flex items-center justify-center md:items-start md:justify-start w-full",
-                    item: "flex items-center justify-center md:items-start md:justify-start w-full",
-                    list: "grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
+                    root: "flex w-full items-center justify-center md:items-start md:justify-start",
+                    item: "flex h-full min-h-0 w-full flex-col",
+                    list: "grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
-                    return (
-                      <GroupHit
-                        hit={hit}
-                        fromGroupFinderUrl={fromGroupFinderUrl}
-                      />
-                    );
+                    return <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />;
                   }}
                 />
               </div>
@@ -361,13 +326,11 @@ export const GroupSearch = () => {
 };
 
 export const ResponsiveConfigure = ({
-  selectedLocation,
   ageInput,
   coordinates,
   /** When set, skips responsive 5–12 caps (e.g. class finder groups many hits by `classType` client-side). */
   hitsPerPageOverride,
 }: {
-  selectedLocation: string | null;
   ageInput: string;
   coordinates: {
     lat: number | null;
@@ -392,11 +355,7 @@ export const ResponsiveConfigure = ({
       }
     })();
 
-  // Build filters array
   const filters = [];
-  if (selectedLocation) {
-    filters.push(`campusName:'${selectedLocation}'`);
-  }
   if (ageInput.trim().length >= 2) {
     const userAge = parseInt(ageInput, 10);
     if (!isNaN(userAge) && userAge >= 1) {
@@ -407,7 +366,7 @@ export const ResponsiveConfigure = ({
 
   return (
     <Configure
-      key={`${coordinates?.lat}-${coordinates?.lng}-${selectedLocation}-${ageInput}`}
+      key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
       filters={filters.length > 0 ? filters.join(" AND ") : undefined}
       aroundLatLng={

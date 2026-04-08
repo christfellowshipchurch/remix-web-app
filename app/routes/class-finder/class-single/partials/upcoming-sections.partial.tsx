@@ -1,235 +1,213 @@
-import { useLoaderData, useSearchParams } from "react-router-dom";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, Hits, Stats, Configure } from "react-instantsearch";
+import { useMemo } from "react";
+import { Configure, InstantSearch, useHits } from "react-instantsearch";
 
-import { cn } from "~/lib/utils";
-import { LoaderReturnType } from "../loader";
-import { useState, useMemo } from "react";
-import { UpcomingSessionCard } from "../components/upcoming-sessions/upcoming-session-card.component";
-import { FindersCustomPagination } from "~/routes/group-finder/components/finders-custom-pagination.component";
-
-import { useResponsive } from "~/hooks/use-responsive";
-import { UpcomingSessionFilters } from "../components/upcoming-sessions/upcoming-session-filters.component";
+import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
+import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
+import { SearchFilters } from "~/components/finders/search-filters";
+import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
+import { UpcomingSessionsCarousel } from "../components/upcoming-sessions-carousel.component";
 import {
-  parseClassSingleUrlState,
-  classSingleUrlStateToParams,
-  classSingleEmptyState,
-  type ClassSingleUrlState,
-} from "../class-single-url-state";
-import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+  CLASS_SINGLE_UPCOMING_INDEX_NAME,
+  useClassSingleUpcomingInstantSearch,
+} from "../hooks/use-class-single-upcoming-instant-search";
+import type { ClassHitType } from "../../types";
+import OnDemandCard from "../components/on-demand-card.component";
+import { ClassSingleGroupsSection } from "./groups.partial";
 
-const INDEX_NAME = "dev_Classes";
+const LOCATION_FILTERS_HINT = "Location filters are applied.";
 
-/** Escape `\` and `"` for Algolia `filters` strings like `campus:"…"`. */
-export function escapeAlgoliaFilterString(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+/**
+ * One Algolia response loads enough hits for carousel slides + geo/virtual ordering (Algolia max per request).
+ */
+const CLASS_SINGLE_UPCOMING_MAX_HITS = 1000;
+
+function parseStartMs(hit: ClassHitType): number {
+  const t = new Date(hit.startDate).getTime();
+  return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t;
 }
 
-function getInitialStateFromUrl(searchParams: URLSearchParams) {
-  const urlState = parseClassSingleUrlState(searchParams);
-  const initialUiState: { [key: string]: Record<string, unknown> } = {};
-  if (
-    urlState.query !== undefined ||
-    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
-  ) {
-    initialUiState[INDEX_NAME] = {};
-    if (urlState.query !== undefined)
-      initialUiState[INDEX_NAME].query = urlState.query;
-    if (
-      urlState.refinementList &&
-      Object.keys(urlState.refinementList).length > 0
-    ) {
-      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
-    }
+function compareStartDateAsc(a: ClassHitType, b: ClassHitType): number {
+  const byDate = parseStartMs(a) - parseStartMs(b);
+  if (byDate !== 0) return byDate;
+  return a.objectID.localeCompare(b.objectID);
+}
+
+function geoDistanceMeters(hit: ClassHitType): number {
+  const d = hit._rankingInfo?.geoDistance;
+  if (d == null || typeof d !== "number" || Number.isNaN(d) || d <= 0) {
+    return Number.POSITIVE_INFINITY;
   }
-  return { coordinates: null, initialUiState };
+  return d;
 }
 
-export const UpcomingSessionsSection = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classUrl } =
-    useLoaderData<LoaderReturnType>();
-  const [searchParams, setSearchParams] = useSearchParams();
+/**
+ * Without geo: soonest `startDate` first only. With geo: in-person by distance then date; Virtual last.
+ */
+function sortUpcomingSessionHitsForDisplay(
+  items: ClassHitType[],
+  geoActive: boolean,
+): ClassHitType[] {
+  if (!geoActive) {
+    return [...items].sort(compareStartDateAsc);
+  }
 
-  const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
-    searchParams,
-    setSearchParams,
-    toParams: classSingleUrlStateToParams,
-    debounceMs: 400,
+  const inPerson: ClassHitType[] = [];
+  const virtual: ClassHitType[] = [];
+  for (const hit of items) {
+    if (hit.format === "Virtual") virtual.push(hit);
+    else inPerson.push(hit);
+  }
+
+  virtual.sort(compareStartDateAsc);
+
+  inPerson.sort((a, b) => {
+    const distDiff = geoDistanceMeters(a) - geoDistanceMeters(b);
+    if (distDiff !== 0) return distDiff;
+    return compareStartDateAsc(a, b);
   });
 
-  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+  return [...inPerson, ...virtual];
+}
 
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
-  const [coordinates, setCoordinates] = useState<{
-    lat: number | null;
-    lng: number | null;
-  } | null>(null);
-
-  const clearAllFiltersFromUrl = () => {
-    cancelDebounce();
-    setCoordinates(null);
-    setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
-      replace: true,
-      preventScrollReset: true,
-    });
-    setInstantSearchKey((k) => k + 1);
-  };
-
-  const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
-    const urlState: ClassSingleUrlState = {
-      ...parseClassSingleUrlState(searchParams),
-      query: (indexUiState.query as string) ?? undefined,
-      refinementList:
-        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
-    };
-    debouncedUpdateUrl(urlState);
-  };
-
-  useScrollToSearchResultsOnLoad(searchParams, (params) => {
-    const s = parseClassSingleUrlState(params);
-    return !!(
-      (s.query?.trim?.()?.length ?? 0) > 0 ||
-      (s.refinementList && Object.keys(s.refinementList).length > 0)
-    );
-  });
-
-  const initialUiState =
-    instantSearchKey > 0
-      ? { [INDEX_NAME]: {} }
-      : Object.keys(initial.initialUiState).length > 0
-        ? initial.initialUiState
-        : undefined;
-
-  const searchClient = algoliasearch(
-    ALGOLIA_APP_ID,
-    ALGOLIA_SEARCH_API_KEY,
-    {},
-  );
+/**
+ * One InstantSearch for class-single upcoming sessions (mobile + desktop share URL, geo, and refinements).
+ * `ClassSingleGroupsSection` is a nested Algolia `Index` (`dev_daniel_Groups`) that mirrors the same refinements + geo via `Configure`.
+ */
+export function ClassSingleUpcomingSearch({
+  classHeroCoverImageUri,
+  classType,
+}: {
+  classHeroCoverImageUri: string;
+  classType: string;
+}) {
+  const upcoming = useClassSingleUpcomingInstantSearch();
 
   return (
-    <div
-      className="hidden md:flex flex-col gap-4 w-full pt-12 relative"
-      id="search"
+    <InstantSearch
+      indexName={CLASS_SINGLE_UPCOMING_INDEX_NAME}
+      searchClient={upcoming.searchClient}
+      initialUiState={upcoming.initialUiState}
+      onStateChange={upcoming.onStateChange}
+      future={{
+        preserveSharedStateOnUnmount: true,
+      }}
     >
-      <InstantSearch
-        key={instantSearchKey}
-        indexName={INDEX_NAME}
-        searchClient={searchClient}
-        initialUiState={initialUiState}
-        onStateChange={({ uiState }) => {
-          const indexState = uiState[INDEX_NAME];
-          if (indexState)
-            syncUrlFromUiState(indexState as Record<string, unknown>);
-        }}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-      >
-        <ResponsiveClassesSingleConfigure
-          classUrl={classUrl}
-          coordinates={coordinates}
-        />
-        <div className="flex flex-col">
-          {/* Filters Section */}
-          <div
-            className={cn(
-              "bg-white content-padding md:shadow-sm select-none transition-all duration-300",
-              "relative z-10",
-            )}
-          >
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 py-4 max-w-screen-content mx-auto lg:h-20 pagination-scroll-to">
-              {/* Title */}
-              <div className="flex items-center gap-4 w-fit">
-                <h2 className="text-[28px] font-extrabold w-fit min-w-[260px]">
-                  Upcoming Sessions
-                </h2>
-                <div className="hidden lg:block h-full w-px bg-text-secondary" />
-              </div>
+      <ResponsiveClassesSingleConfigure
+        classesIndexClassType={classType}
+        classUrl={upcoming.classUrl}
+        coordinates={upcoming.coordinates}
+      />
 
-              <div className="flex flex-row gap-4 w-fit overflow-x-visible scrollbar-hide relative items-center">
-                <UpcomingSessionFilters
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
+      <div className="flex w-full flex-col pagination-scroll-to" id="search">
+        {/* Mobile Filters */}
+        <div className="flex flex-col md:hidden">
+          <div className="content-padding mx-auto w-full max-w-screen-content">
+            <h2 className="w-full text-[28px] font-extrabold">
+              Filter Sessions
+            </h2>
+          </div>
+          <div className="flex w-screen min-w-0 flex-col">
+            <FinderStickyBar>
+              <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4">
+                <SearchFilters
+                  onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
+                  desktopFilters={upcoming.desktopFilters}
+                  compactInlineFilterCount={2}
+                  isFilterPillSupplementallyActive={
+                    upcoming.isFilterPillSupplementallyActive
+                  }
                 />
-                <AlgoliaFinderClearAllButton
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                  additionalFiltersActive={
-                    coordinates?.lat != null && coordinates?.lng != null
+              </div>
+              <ActiveFilters
+                onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
+                additionalFiltersActive={upcoming.geoFiltersActive}
+                additionalFiltersHint={LOCATION_FILTERS_HINT}
+              />
+            </FinderStickyBar>
+          </div>
+        </div>
+
+        {/* Desktop Filters */}
+        <div className="relative hidden w-full flex-col md:flex">
+          <FinderStickyBar>
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 pt-8 py-4 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4 pagination-scroll-to">
+              <div className="flex w-fit shrink-0 items-center gap-4">
+                <h2 className="w-fit min-w-[260px] text-[28px] font-extrabold">
+                  Filter Sessions
+                </h2>
+                <div className="hidden h-full w-px bg-text-secondary lg:block" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <SearchFilters
+                  onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
+                  desktopFilters={upcoming.desktopFilters}
+                  compactInlineFilterCount={2}
+                  isFilterPillSupplementallyActive={
+                    upcoming.isFilterPillSupplementallyActive
                   }
                 />
               </div>
             </div>
+            <ActiveFilters
+              onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
+              additionalFiltersActive={upcoming.geoFiltersActive}
+              additionalFiltersHint={LOCATION_FILTERS_HINT}
+            />
+          </FinderStickyBar>
+        </div>
+
+        <div className="flex w-full flex-col bg-gray py-8 content-padding md:pt-12 md:pb-20">
+          <div className="mx-auto w-full max-w-screen-content">
+            <ClassSingleUpcomingResults geoActive={upcoming.geoFiltersActive} />
           </div>
 
-          {/* Session Results & Pagination */}
-          <div className="flex flex-col bg-gray pt-12 pb-20 w-full content-padding">
-            <div className="max-w-screen-content mx-auto w-full">
-              <Stats
-                classNames={{
-                  root: "text-text-secondary mb-6",
-                }}
-                translations={{
-                  rootElementText: ({ nbHits }) =>
-                    `${nbHits.toLocaleString()} Results Found`,
-                }}
+          {/* On Demand Section*/}
+          <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center mt-8">
+            <div className="flex flex-col gap-4 w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+              <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
+                Take It Anytime
+              </h2>
+              <OnDemandCard
+                title={classType}
+                image={classHeroCoverImageUri}
+                link="#todo"
               />
-
-              <Hits
-                classNames={{
-                  root: "flex items-center items-start justify-start w-full",
-                  item: "flex items-center items-start justify-start w-full",
-                  list: "grid grid-cols-3 lg:grid-cols-4 gap-x-4 xl:!gap-x-8 gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]",
-                }}
-                hitComponent={UpcomingSessionCard}
-              />
-              <div className="mt-6 flex justify-start">
-                <FindersCustomPagination />
-              </div>
             </div>
+
+              <ClassSingleGroupsSection
+                coordinates={upcoming.coordinates}
+                classUrl={upcoming.classUrl}
+                classesIndexClassType={classType}
+              />
           </div>
         </div>
-      </InstantSearch>
-    </div>
+      </div>
+    </InstantSearch>
   );
-};
+}
 
 export const ResponsiveClassesSingleConfigure = ({
+  classesIndexClassType,
   classUrl,
   coordinates,
 }: {
-  /** Route param from loader; same string as Algolia `classType`. */
+  /** `classType` on `dev_Classes` records (not necessarily the URL slug). */
+  classesIndexClassType: string;
   classUrl: string;
-  /** When set, Algolia ranks/filters by distance like group finder (`_geoloc`). */
   coordinates: {
     lat: number | null;
     lng: number | null;
   } | null;
 }) => {
-  const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
-
-  const hitsPerPage = (() => {
-    switch (true) {
-      case isXLarge || isLarge:
-        return 12;
-      case isMedium:
-        return 9;
-      case isSmall:
-        return 5;
-      default:
-        return 5;
-    }
-  })();
-
-  const classTypeFilter = classUrl
-    ? `classType:"${escapeAlgoliaFilterString(classUrl)}"`
+  const trimmed = classesIndexClassType.trim();
+  const classTypeFilter = trimmed
+    ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
     : undefined;
 
   return (
     <Configure
-      key={`${classUrl}-${coordinates?.lat ?? ""}-${coordinates?.lng ?? ""}`}
-      hitsPerPage={hitsPerPage}
+      key={`${classUrl}-${trimmed}-${coordinates?.lat ?? ""}-${coordinates?.lng ?? ""}`}
+      hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
       filters={classTypeFilter}
       aroundLatLng={
         coordinates?.lat != null && coordinates?.lng != null
@@ -242,3 +220,28 @@ export const ResponsiveClassesSingleConfigure = ({
     />
   );
 };
+
+function ClassSingleUpcomingResults({ geoActive }: { geoActive: boolean }) {
+  const { items } = useHits<ClassHitType>();
+
+  const ordered = useMemo(
+    () => sortUpcomingSessionHitsForDisplay(items, geoActive),
+    [items, geoActive],
+  );
+
+  const carouselResetKey = ordered.map((h) => h.objectID).join("|");
+
+  return (
+    <div
+      data-upcoming-sessions-results
+      className="scroll-mt-[100px]w-full max-w-[1296px] mr-auto"
+    >
+      <h3 className="pt-2 text-2xl font-extrabold mb-6 md:pt-4">
+        Join a Class
+      </h3>
+      <div className="flex w-full justify-center md:justify-start">
+        <UpcomingSessionsCarousel hits={ordered} resetKey={carouselResetKey} />
+      </div>
+    </div>
+  );
+}

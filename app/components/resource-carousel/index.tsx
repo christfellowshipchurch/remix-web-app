@@ -143,7 +143,7 @@ export const CardCarousel = ({
       opts={{
         align: "start",
       }}
-      className={carouselClassName}
+      className={cn("min-w-0 max-w-full", carouselClassName)}
     >
       <CarouselContent className="pt-3 gap-6 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
@@ -172,13 +172,22 @@ export const CardCarousel = ({
       </CarouselContent>
 
       <div
-        className={cn("w-full relative mt-12 md:mt-16 pb-4 md:pb-8", {
-          "lg:mt-0 lg:pb-0": resources.length < 4,
-        })}
+        className={cn(
+          "relative w-full mt-8 sm:mt-12 md:mt-16",
+          /* Reserve space for absolutely positioned dots/arrows (parent had ~0 in-flow height on mobile → clipped by overflow-hidden). */
+          "min-h-[4.5rem] pb-14 sm:pb-16 md:min-h-0 md:pb-8",
+          {
+            "lg:mt-0 lg:min-h-0 lg:pb-0": resources.length < 4,
+          },
+        )}
       >
         {layout === "arrowsLeft" ? (
           <>
-            <div className={cn("absolute h-12")}>
+            <div
+              className={cn(
+                "absolute left-4 top-1 flex h-12 max-w-full items-center md:left-0 md:top-7",
+              )}
+            >
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"
@@ -188,7 +197,7 @@ export const CardCarousel = ({
               />
             </div>
 
-            <div className="absolute h-12 top-7 right-44 lg:right-44 2xl:right-36 3xl:right-28">
+            <div className="absolute h-12 top-1 right-44 md:top-7 lg:right-44 2xl:right-36 3xl:right-28">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"
@@ -197,7 +206,7 @@ export const CardCarousel = ({
           </>
         ) : (
           <>
-            <div className="absolute h-12 top-7 left-0">
+            <div className="absolute h-12 top-1 left-0 md:top-7">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"
@@ -206,7 +215,7 @@ export const CardCarousel = ({
 
             <div
               className={cn(
-                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28",
+                "absolute right-4 top-1 flex h-12 w-max max-w-full items-center justify-end sm:right-8 md:top-7 md:right-44 lg:right-44 2xl:right-36 3xl:right-28",
               )}
             >
               <CarouselArrows

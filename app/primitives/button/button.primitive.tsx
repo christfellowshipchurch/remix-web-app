@@ -33,6 +33,13 @@ export const button = cva(
           "hover:enabled:text-white",
         ],
         white: ["bg-white", "text-ocean", "hover:enabled:bg-[#D9D9D9]"],
+        secondaryWhite: [
+          "bg-transparent",
+          "text-white",
+          "border-white",
+          "hover:enabled:bg-white",
+          "hover:enabled:text-ocean",
+        ],
       },
       size: {
         sm: ["min-w-20", "h-full", "min-h-10", "text-sm", "px-4"],
@@ -45,11 +52,12 @@ export const button = cva(
       intent: "primary",
       size: "lg",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof button> {
   underline?: boolean;
   linkClassName?: string;
@@ -73,7 +81,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       underline,
       ...props
     },
-    ref
+    ref,
   ) => {
     if (href) {
       return (
@@ -104,7 +112,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {props.children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";
