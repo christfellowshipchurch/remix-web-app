@@ -18,6 +18,8 @@ import DOMPurify from 'isomorphic-dompurify';
 export function sanitizeCmsHtml(html: string): string {
   return DOMPurify.sanitize(html, {
     USE_PROFILES: { html: true },
-    ADD_ATTR: ['style', 'class'],
+    // `target` is stripped by default unless allowlisted; HTMLRenderer needs it
+    // to set rel="noopener noreferrer" for external links with target="_blank".
+    ADD_ATTR: ['style', 'class', 'target'],
   });
 }
