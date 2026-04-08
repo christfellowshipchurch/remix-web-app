@@ -27,25 +27,25 @@ export { ErrorBoundary } from "./error";
 // client bundles can still evaluate oddly; window check inside setup is authoritative.
 setupDevWebVitalsLogging();
 
-function buildCsp(nonce: string): string {
-  return [
-    "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net`,
-    "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
-    "img-src 'self' data: https: blob:",
-    // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
-    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io",
-    "frame-src https://www.googletagmanager.com https://fast.wistia.com",
-    "frame-ancestors 'none'",
-  ].join("; ");
-}
+// function buildCsp(nonce: string): string {
+//   return [
+//     "default-src 'self'",
+//     `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net`,
+//     "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
+//     "img-src 'self' data: https: blob:",
+//     // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
+//     "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io",
+//     "frame-src https://www.googletagmanager.com https://fast.wistia.com",
+//     "frame-ancestors 'none'",
+//   ].join("; ");
+// }
 
 export async function loader(args: LoaderFunctionArgs) {
   const nonce = randomUUID();
   const navbarData = await navbarLoader(args);
   return data(
     { ...navbarData, nonce },
-    { headers: { "Content-Security-Policy": buildCsp(nonce) } },
+    // { headers: { "Content-Security-Policy": buildCsp(nonce) } },
   );
 }
 
@@ -90,7 +90,7 @@ export function Layout({ children }: { children: ReactNode }) {
               src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
               height="0"
               width="0"
-              style={{ display: 'none', visibility: 'hidden' }}
+              style={{ display: "none", visibility: "hidden" }}
             />
           </noscript>
         )}
