@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { type ReactNode } from "react";
 import { type LoaderFunctionArgs } from "react-router-dom";
+import { randomUUID } from "node:crypto";
 
 import { Navbar, Footer } from "./components";
 import { AuthProvider } from "./providers/auth-provider";
@@ -32,14 +33,15 @@ function buildCsp(nonce: string): string {
     `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net`,
     "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
     "img-src 'self' data: https: blob:",
-    "connect-src 'self' https://*.algolia.net https://*.algolianet.com",
+    // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
+    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io",
     "frame-src https://www.googletagmanager.com https://fast.wistia.com",
     "frame-ancestors 'none'",
   ].join("; ");
 }
 
 export async function loader(args: LoaderFunctionArgs) {
-  const nonce = crypto.randomUUID();
+  const nonce = randomUUID();
   const navbarData = await navbarLoader(args);
   return data(
     { ...navbarData, nonce },
