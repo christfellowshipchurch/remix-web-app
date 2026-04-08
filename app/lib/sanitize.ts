@@ -1,38 +1,19 @@
-import sanitizeHtml from "sanitize-html";
+import DOMPurify from 'isomorphic-dompurify';
 
 /**
  * Allowlist config for Rock CMS HTML content.
  *
- * Allows standard editorial HTML: headings, text formatting, links, lists,
- * blockquotes, and images. iframe support is intentionally omitted — Rock
- * content editors do not currently use embedded iframes. To add iframe support
- * (e.g. YouTube embeds), extend this config with an iframe allowlist and
- * restrict allowedIframeHostnames to trusted origins (youtube.com, vimeo.com).
- */
-const CMS_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
-  allowedTags: [
-    ...sanitizeHtml.defaults.allowedTags,
-    "img",
-    "blockquote",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-  ],
-  allowedAttributes: {
-    ...sanitizeHtml.defaults.allowedAttributes,
-    "*": ["class", "style"],
-    img: ["src", "alt", "width", "height", "class"],
-  },
-};
-
-/**
- * Sanitize CMS HTML from Rock RMS before rendering via dangerouslySetInnerHTML
- * or html-react-parser. Strips script tags, event handlers, and any tags/
- * attributes not in the allowlist.
+ * Uses DOMPurify (via isomorphic-dompurify for SSR + browser). We avoid
+ * `sanitize-html` because it pulls in postcss, which imports Node's `path`;
+ * Vite client builds that externalize `path` then throw in the browser:
+ * "Failed to resolve module specifier path".
+ *
+ * iframe support is omitted — extend DOMPurify hooks if YouTube/Vimeo embeds
+ * are required later.
  */
 export function sanitizeCmsHtml(html: string): string {
-  return sanitizeHtml(html, CMS_SANITIZE_OPTIONS);
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+    ADD_ATTR: ['style', 'class'],
+  });
 }
