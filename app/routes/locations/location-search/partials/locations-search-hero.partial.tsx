@@ -32,8 +32,8 @@ export const Search = ({
   const [locationActive, setLocationActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [heroVideoFrameLoaded, setHeroVideoFrameLoaded] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const heroVideoMountRef = useRef<HTMLDivElement>(null);
-  const geolocationFromUserClickRef = useRef(false);
 
   useEffect(() => {
     if (!instantSearchReady) return;
@@ -49,37 +49,8 @@ export const Search = ({
     return () => iframe.removeEventListener("load", onLoad);
   }, [instantSearchReady]);
 
-  // Set the coordinates to the user's current location
-  useEffect(() => {
-    if (!instantSearchReady) return;
-
-    if (useCurrentLocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const scrollWithNavbarOffset = geolocationFromUserClickRef.current;
-          geolocationFromUserClickRef.current = false;
-          setCoordinates(
-            {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-            { scrollWithNavbarOffset },
-          );
-          setLocationActive(true);
-        },
-        (error) => {
-          geolocationFromUserClickRef.current = false;
-          console.error(error);
-          setLocationActive(false);
-        },
-      );
-
-      setUseCurrentLocation(false);
-    }
-  }, [useCurrentLocation, setCoordinates, instantSearchReady]);
-  const [isLocating, setIsLocating] = useState(false);
-
   const handleUseCurrentLocation = () => {
+    if (!instantSearchReady) return;
     setIsLocating(true);
     setError(null);
     getCurrentPositionFromUserGesture(
@@ -151,23 +122,23 @@ export const Search = ({
           {error && <div className="text-lg italic text-alert">{error}</div>}
 
           <div className="flex flex-col items-center gap-2">
-            <div className="flex gap-2">
-              <div
-                className="cursor-pointer italic underline"
-                onClick={() => {
-                  geolocationFromUserClickRef.current = true;
-                  setUseCurrentLocation(true);
-                }}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={!instantSearchReady || isLocating}
+                className="cursor-pointer italic underline disabled:cursor-wait disabled:opacity-70 bg-transparent border-0 p-0 text-inherit"
+                onClick={handleUseCurrentLocation}
               >
                 Use my current location
-              </div>
+              </button>
               <Icon size={16} color="white" name="locationArrow" />
             </div>
-            {!locationActive && !isLocating && (
+            {!locationActive && !isLocating && !error ? (
               <div className="text-sm italic text-alert">
-                Enable Location Access & Try Again.
+                Location is off for this page. Allow it when prompted, or use a
+                zip code above.
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
