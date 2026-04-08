@@ -114,8 +114,11 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "overrides": {
-    "@babel/runtime": "^7.24.0"
+  "pnpm": {
+    "overrides": {
+      "@babel/runtime": "^7.24.0",
+      "jsdom": "26.1.0"
+    }
   },
   "packageManager": "pnpm@10.33.0"
 }

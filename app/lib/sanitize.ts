@@ -8,6 +8,10 @@ import DOMPurify from 'isomorphic-dompurify';
  * Vite client builds that externalize `path` then throw in the browser:
  * "Failed to resolve module specifier path".
  *
+ * `isomorphic-dompurify` depends on jsdom; jsdom 28+ pulls `html-encoding-sniffer@6`,
+ * which `require()`s ESM-only `@exodus/bytes` and crashes Vercel (ERR_REQUIRE_ESM).
+ * Root `package.json` uses `pnpm.overrides` to pin `jsdom` to 26.1.0.
+ *
  * iframe support is omitted — extend DOMPurify hooks if YouTube/Vimeo embeds
  * are required later.
  */
