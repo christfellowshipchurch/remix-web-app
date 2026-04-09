@@ -43,8 +43,8 @@ export const hasSubGroupTypes = (groupType: string): boolean => {
 // Make sure these IDs match the workflow type GUIDs in Rock
 export const GROUP_TYPE_TO_WORKFLOW_TYPE_GUID: Record<string, string> = {
   // Kids Dedication & Starting Line use the same workflow type GUID
-  "Kids Dedication": "3165147d-80d3-4750-94ca-9a69285755fc",
-  "Kids Starting Line": "3165147d-80d3-4750-94ca-9a69285755fc",
+  "Kids Dedication": "5702ca1e-b940-4fa7-9c33-4929eb36f2d2",
+  "Kids Starting Line": "5702ca1e-b940-4fa7-9c33-4929eb36f2d2",
   Journey: "9bfec348-46a2-48af-b11a-afc074a92ae8",
   Baptism: "3fd2cf95-7b4c-415e-bc9f-6966331f5fcb",
   "Dream Team Kickoff": "98615e2e-d75a-4a44-91fc-dcf4f468e654",
