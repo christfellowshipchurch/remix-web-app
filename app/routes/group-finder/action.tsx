@@ -10,7 +10,7 @@ import {
   createOrFindSmsLoginUserId,
   parsePhoneNumberUtil,
 } from "~/lib/.server/authentication/sms-authentication";
-import lodash from "lodash";
+import { escapeOData } from "~/lib/.server/rock-utils";
 
 // Types
 interface PersonFormData {
@@ -39,7 +39,7 @@ const findPersonByEmailAndName = async (
   return await fetchRockData({
     endpoint: "People",
     queryParams: {
-      $filter: `FirstName eq '${firstName}' and LastName eq '${lastName}' and Email eq '${email}'`,
+      $filter: `FirstName eq '${escapeOData(firstName)}' and LastName eq '${escapeOData(lastName)}' and Email eq '${escapeOData(email)}'`,
       $select: "Id",
     },
     ttl: TTL.NONE,
@@ -64,7 +64,7 @@ const findPersonByPhoneAndName = async (
   // Convert to array if single object
   const phoneEntries = Array.isArray(existingPhoneNumbers)
     ? existingPhoneNumbers
-    : lodash.isObject(existingPhoneNumbers)
+    : typeof existingPhoneNumbers === "object" && existingPhoneNumbers !== null
       ? [existingPhoneNumbers]
       : [];
 
@@ -167,7 +167,7 @@ export const action: ActionFunction = async ({ request }) => {
     const groupId = await fetchRockData({
       endpoint: "Groups",
       queryParams: {
-        $filter: `Name eq '${formData.groupName}'`,
+        $filter: `Name eq '${escapeOData(formData.groupName as string)}'`,
         $select: "Id",
       },
       ttl: TTL.NONE,

@@ -12,6 +12,7 @@ import {
   createPhoneNumberInRock,
   parsePhoneNumberUtil,
 } from "./sms-authentication";
+import { escapeOData } from "../rock-utils";
 
 export const fetchUserCookie = async (
   Username: string,
@@ -197,7 +198,7 @@ export const fetchUserLogin = async (
   const userLogin = await fetchRockData({
     endpoint: "UserLogins",
     queryParams: {
-      $filter: `UserName eq '${identity}'`,
+      $filter: `UserName eq '${escapeOData(identity)}'`,
       $top: "1",
     },
     ttl: TTL.NONE,

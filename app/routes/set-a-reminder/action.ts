@@ -1,6 +1,7 @@
 import { ActionFunction, data } from "react-router-dom";
 import { SetAReminderType } from "./types";
 import { fetchRockData, postRockData } from "~/lib/.server/fetch-rock-data";
+import { escapeOData } from "~/lib/.server/rock-utils";
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -11,7 +12,7 @@ export const action: ActionFunction = async ({ request }) => {
     const getCampusGuid: { guid: string } = await fetchRockData({
       endpoint: "Campuses",
       queryParams: {
-        $filter: `Name eq '${campus}'`,
+        $filter: `Name eq '${escapeOData(campus as string)}'`,
         $select: "Guid",
       },
     });

@@ -1,4 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import { PodcastEpisode } from "../../types";
 
 export function EpisodeNotes({
@@ -18,7 +19,7 @@ export function EpisodeNotes({
           <div className="mt-4 md:mt-8">
             <div
               className="prose max-w-[90vw] md:max-w-none"
-              dangerouslySetInnerHTML={{ __html: content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(content) }}
             />
           </div>
         </div>

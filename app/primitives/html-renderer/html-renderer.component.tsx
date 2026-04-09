@@ -6,6 +6,7 @@ import parse, {
 import { Link } from "react-router";
 import "./html-renderer.styles.css";
 import { cn } from "~/lib/utils";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 
 export const HTMLRenderer = ({
   html,
@@ -94,7 +95,7 @@ export const HTMLRenderer = ({
     },
   };
 
-  const parsedContent = parse(html, options);
+  const parsedContent = parse(sanitizeCmsHtml(html), options);
   const isText = isPlainText(html);
 
   // Use <p> tag for plain text, <div> for HTML content

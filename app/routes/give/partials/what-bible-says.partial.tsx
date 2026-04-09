@@ -1,4 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 
 export const WhatBibleSaysAboutGiving = () => {
   return (
@@ -66,7 +67,7 @@ const Card = ({
 
       <p
         className="leading-tight text-center"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(content) }}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import { Button } from "~/primitives/button/button.primitive";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import { getImageUrl } from "~/lib/utils";
 
 export const DynamicInfo = () => {
@@ -28,7 +29,7 @@ export const DynamicInfo = () => {
               </div>
               <p
                 className="md:text-lg"
-                dangerouslySetInnerHTML={{ __html: content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(content) }}
               />
             </div>
             <div className="flex flex-col lg:flex-row gap-4">

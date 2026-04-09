@@ -1,4 +1,5 @@
 import { IconButton } from "~/primitives/button/icon-button.primitive";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 
@@ -14,7 +15,7 @@ export const HeroMobileContent = () => {
           <div className="flex flex-col gap-1">
             <h1
               className="max-w-2xl font-extrabold text-2xl text-pretty leading-tight tracking-tight"
-              dangerouslySetInnerHTML={{ __html: title }}
+              dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(title) }}
             />
             <p className="text-xs font-medium">
               Season {season} | Episode {episodeNumber}
@@ -24,7 +25,7 @@ export const HeroMobileContent = () => {
           {summary && (
             <p
               className="text-sm max-w-2xl"
-              dangerouslySetInnerHTML={{ __html: summary }}
+              dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(summary) }}
             />
           )}
           {/* TODO: Add share functionality */}

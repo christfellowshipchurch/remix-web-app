@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { parseToken, registerToken, generateToken } from "../token";
 
 const SECRET = "test-secret";
+const JWT_OPTS = { algorithm: "HS256" as const, issuer: "cfc-web", audience: "cfc-web" };
 
 beforeEach(() => {
   process.env.SECRET = SECRET;
@@ -34,7 +35,8 @@ describe("parseToken", () => {
   it("returns cookie and sessionId from a valid token", () => {
     const token = jwt.sign(
       { cookie: "rock-cookie", sessionId: "sess-123" },
-      SECRET
+      SECRET,
+      JWT_OPTS
     );
     const result = parseToken(token);
     expect(result.cookie).toBe("rock-cookie");
@@ -58,7 +60,8 @@ describe("registerToken", () => {
   it("returns userToken, rockCookie, sessionId for a valid token", () => {
     const token = jwt.sign(
       { cookie: "rock-cookie", sessionId: "sess-abc" },
-      SECRET
+      SECRET,
+      JWT_OPTS
     );
     const result = registerToken(token);
     expect(result).toEqual({
@@ -72,7 +75,7 @@ describe("registerToken", () => {
     const token = jwt.sign(
       { cookie: "c", sessionId: "s" },
       SECRET,
-      { expiresIn: -1 }
+      { ...JWT_OPTS, expiresIn: -1 }
     );
     const result = registerToken(token);
     expect(result).toEqual({});

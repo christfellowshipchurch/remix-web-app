@@ -7,6 +7,13 @@ import { createImageUrlFromGuid } from "~/lib/utils";
 import { fetchRockData } from "./fetch-rock-data";
 import { AttributeMatrix } from "../types/rock-types";
 
+/**
+ * Escapes a string value for safe interpolation into an OData $filter expression.
+ * OData encodes a literal single-quote inside a string operand as two single-quotes ('').
+ */
+export const escapeOData = (value: string): string =>
+  value.replace(/'/g, "''");
+
 export const attributeIsImage = ({
   key,
   attributeValues,

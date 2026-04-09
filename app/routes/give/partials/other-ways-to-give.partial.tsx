@@ -1,4 +1,5 @@
 import Icon from "~/primitives/icon";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import { icons } from "~/lib/icons";
 import { Link } from "react-router-dom";
 
@@ -44,7 +45,7 @@ const OtherWaysToGiveCard = ({
       </h3>
       <p
         className="leading-tight text-text-secondary lg:text-lg"
-        dangerouslySetInnerHTML={{ __html: description }}
+        dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(description) }}
       />
 
       {ctas && (

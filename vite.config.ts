@@ -27,11 +27,9 @@ export default defineConfig(async ({ isSsrBuild, command }) => {
 
   return {
     build: {
-      rollupOptions: isSsrBuild
-        ? undefined
-        : {
-            external: ["fs", "path", "url"],
-          },
+      // Never mark Node builtins external on the client: deps that transitively
+      // import `path` (e.g. postcss) would emit bare imports the browser cannot resolve.
+      rollupOptions: {},
     },
     resolve: {
       alias: {

@@ -1,4 +1,5 @@
 import { SectionTitle } from "~/components/section-title";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import HistoryTabs from "../components/history-tabs/history-tabs.component";
 
 export function HistorySection({
@@ -16,7 +17,7 @@ export function HistorySection({
             <SectionTitle sectionTitle={sectionTitle} className="lg:w-2/13" />
             <h3
               className="font-extrabold text-text-primary text-[28px] md:text-5xl leading-tight"
-              dangerouslySetInnerHTML={{ __html: title }}
+              dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(title) }}
             />
           </div>
         </div>

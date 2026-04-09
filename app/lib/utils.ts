@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
-import lodash from "lodash";
+import camelCase from "lodash/camelCase";
+import mapKeys from "lodash/mapKeys";
+import mapValues from "lodash/mapValues";
 import { twMerge } from "tailwind-merge";
 import { ShareMessages } from "./types/messaging";
 import {
@@ -12,7 +14,8 @@ import {
   nextSunday,
 } from "date-fns";
 
-const { camelCase, isString, mapKeys, mapValues, uniqueId } = lodash;
+let _uniqueIdCounter = 0;
+const uniqueId = () => String(++_uniqueIdCounter);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -102,7 +105,7 @@ export const icsLink = (event: EventDetails): string => {
   const { title, description, address, url } = event;
   let { startTime, endTime } = event;
 
-  if (isString(startTime) || isString(endTime)) {
+  if (typeof startTime === "string" || typeof endTime === "string") {
     startTime = parseISO(startTime as string);
     endTime = parseISO(endTime as string);
   }

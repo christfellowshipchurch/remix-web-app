@@ -3,6 +3,7 @@ import { requestSmsLogin } from "~/lib/.server/authentication/sms-authentication
 import {
   AuthenticationError,
   EncryptionError,
+  RateLimitError,
   RockAPIError,
 } from "~/lib/.server/error-types";
 
@@ -19,6 +20,9 @@ export const requestSmsPinLogin = async (phoneNumber: string) => {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
+    if (error instanceof RateLimitError) {
+      return data({ error: error.message }, { status: 429 });
+    }
     if (error instanceof AuthenticationError) {
       console.error("AuthenticationError:", error.message);
       return data({ error: error.message }, { status: 401 });
