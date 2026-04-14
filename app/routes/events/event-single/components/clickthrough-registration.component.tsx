@@ -815,8 +815,8 @@ const TimeStep = ({
 
 // Manual embed height per group type (px). Adjust as needed for each form.
 const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
-  "Kids Dedication": 1000,
-  "Kids Starting Line": 1000,
+  "Kids Dedication": 890,
+  "Kids Starting Line": 890,
   Journey: 700,
   Baptism: 1440,
   "Dream Team Kickoff": 1000,
@@ -824,7 +824,10 @@ const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
 
 const DEFAULT_EMBED_HEIGHT = 1000;
 
-/** Single fixed height for the confirmation page (after form submit). */
+/**
+ * Fixed height for the confirmation page (after form submit) for non-Kids flows.
+ * Kids Dedication / Kids Starting Line keep `formHeight` on confirmation loads.
+ */
 const CONFIRMATION_EMBED_HEIGHT = 600;
 
 function getEmbedHeightForGroupType(groupType: string): number {
@@ -864,8 +867,9 @@ const FormStep = ({
 
   const handleEmbedLoad = () => {
     loadCountRef.current += 1;
+    const isFormLoad = loadCountRef.current % 2 === 1;
     setEmbedHeight(
-      loadCountRef.current % 2 === 1 ? formHeight : CONFIRMATION_EMBED_HEIGHT,
+      isFormLoad || isKidsGroupType ? formHeight : CONFIRMATION_EMBED_HEIGHT,
     );
   };
 
