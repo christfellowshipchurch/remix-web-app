@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useLocation, useRouteLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { createSearchClient } from "~/lib/create-search-client";
 import Icon from "~/primitives/icon";
 import { RockProxyEmbed } from "~/components/rock-embed";
-import { EventFinderHit } from "../types";
+import { EventFinderHit, EventSinglePageType } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { ClickableCard } from "./clickable-card.component";
 import { RockCampuses } from "~/lib/rock-config";
@@ -16,32 +16,19 @@ import {
 
 interface ClickThroughRegistrationProps {
   title: string;
-  groupType?: string;
 }
 
 export const ClickThroughRegistration = ({
   title,
-  groupType,
 }: ClickThroughRegistrationProps) => {
-  const location = useLocation();
+  const { groupType: loaderGroupType } = useLoaderData<EventSinglePageType>();
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
   const algolia = rootData?.algolia ?? {
     ALGOLIA_APP_ID: "",
     ALGOLIA_SEARCH_API_KEY: "",
   };
 
-  // Extract groupType from URL if not provided as prop
-  // URL format: /events/kids-dedication or /events/baptism
-  const pathParts = location.pathname.split("/");
-  const lastPart = pathParts[pathParts.length - 1] || "";
-  const extractedGroupType =
-    groupType ||
-    (lastPart
-      ? lastPart
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ")
-      : "");
+  const extractedGroupType = loaderGroupType ?? "";
 
   // Normalize groupType to handle variations
   const normalizedGroupType = extractedGroupType
@@ -868,7 +855,9 @@ const FormStep = ({
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
     selectedCampus,
   });
-  const rockEmbedUrl = `https://rock.gocf.org/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true`;
+  const isKidsGroupType =
+    groupType === "Kids Dedication" || groupType === "Kids Starting Line";
+  const rockEmbedUrl = `https://rock.gocf.org/${isKidsGroupType && "kids-"}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
   const formHeight = getEmbedHeightForGroupType(groupType);
   const [embedHeight, setEmbedHeight] = useState(formHeight);
   const loadCountRef = useRef(0);
@@ -895,7 +884,7 @@ const FormStep = ({
       <RockProxyEmbed
         url={rockEmbedUrl}
         height={embedHeight}
-        showLoading={true}
+        showLoading={false}
         useAdvancedProxy={false}
         className="w-full"
         onLoad={handleEmbedLoad}

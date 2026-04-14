@@ -29,22 +29,11 @@ export const EventSinglePage: React.FC = () => {
     window.scrollTo({ top: offsetTop, behavior: "smooth" });
   }, [location.hash]);
 
-  // Valid groupTypes for ClickThroughRegistration
-  const validGroupTypes = [
-    "Kids Dedication",
-    "Kids Starting Line",
-    "Journey",
-    "Baptism",
-    "Dream Team Kickoff",
-  ];
-
   // Check if sessionScheduleCards exist
   const hasSessionRegistration =
     data.sessionScheduleCards && data.sessionScheduleCards.length > 0;
 
-  const hasClickThroughRegistration = validGroupTypes.includes(
-    data.groupType || "",
-  );
+  const hasClickThroughRegistration = Boolean(data.groupType);
 
   const showRegistration =
     hasSessionRegistration || hasClickThroughRegistration;
@@ -106,7 +95,7 @@ export const EventSinglePage: React.FC = () => {
           <EventSingleFAQ title={data.title} items={data.faqItems} />
         )}
 
-        <RegistrationSection groupType={data.groupType} />
+        <RegistrationSection />
       </div>
     </>
   );
