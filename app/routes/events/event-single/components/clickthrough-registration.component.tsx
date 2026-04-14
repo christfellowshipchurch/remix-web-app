@@ -857,7 +857,7 @@ const FormStep = ({
   });
   const isKidsGroupType =
     groupType === "Kids Dedication" || groupType === "Kids Starting Line";
-  const rockEmbedUrl = `https://rock.gocf.org/${isKidsGroupType && "kids-"}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
+  const rockEmbedUrl = `https://rock.gocf.org/${isKidsGroupType ? "kids-" : ""}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
   const formHeight = getEmbedHeightForGroupType(groupType);
   const [embedHeight, setEmbedHeight] = useState(formHeight);
   const loadCountRef = useRef(0);
