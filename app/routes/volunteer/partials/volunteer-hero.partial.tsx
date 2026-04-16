@@ -54,19 +54,22 @@ export const VolunteerHero = () => {
 
         {/* IMAGE COLUMN */}
         <div className="relative">
-          {/* Soft blue glow — desktop only */}
+          {/* Soft blue glow — desktop only; no negative z-index so it shows above the section bg */}
           <div
             aria-hidden="true"
-            className="hidden lg:block absolute -inset-6 -z-10 bg-[#0092BC]/15 blur-3xl rounded-full"
+            className="hidden lg:block absolute -inset-6 bg-[#0092BC]/15 blur-3xl rounded-full"
           />
 
-          <img
-            src="/assets/images/volunteer/hero.webp"
-            alt="A volunteer smiling while serving food at a community event"
-            fetchPriority="high"
-            decoding="async"
-            className="w-full h-auto rounded-xl object-cover lg:rotate-[-3deg] lg:shadow-2xl"
-          />
+          {/* Portrait crop wrapper — rotation + shadow live here so the badge isn't clipped */}
+          <div className="relative max-h-[600px] overflow-hidden rounded-xl lg:rotate-[-3deg] lg:shadow-2xl">
+            <img
+              src="/assets/images/volunteer/hero.webp"
+              alt="A volunteer smiling while serving food at a community event"
+              fetchPriority="high"
+              decoding="async"
+              className="w-full h-full object-cover aspect-[3/4]"
+            />
+          </div>
 
           {/* Stat badge — desktop only */}
           <div className="hidden lg:flex absolute bottom-6 -left-6 items-center gap-3 bg-white rounded-xl shadow-lg px-5 py-3">
