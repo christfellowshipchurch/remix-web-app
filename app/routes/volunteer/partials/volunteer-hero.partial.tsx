@@ -3,10 +3,7 @@ import Icon from "~/primitives/icon";
 
 export const VolunteerHero = () => {
   return (
-    <section
-      aria-label="Volunteer Hero"
-      className="bg-[#F1F4F5] w-full"
-    >
+    <section aria-label="Volunteer Hero" className="bg-[#F1F4F5] w-full">
       <div
         className={
           "max-w-screen-content mx-auto " +
@@ -17,7 +14,15 @@ export const VolunteerHero = () => {
       >
         {/* TEXT COLUMN */}
         <div className="flex flex-col gap-6 lg:gap-8">
-          <h1 className="font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[5.5rem] leading-[1.05] text-navy">
+          {/* Custom Breadcrumbes */}
+          <div className="hidden md:flex uppercase text-sm tracking-wider items-center gap-2">
+            <a className="text-navy" href="/">
+              Home
+            </a>
+            <Icon name="chevronRight" size={16} className="text-navy" />
+            <a href="/volunteer">Volunteer</a>
+          </div>
+          <h1 className="font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[4.5rem] leading-[1.05] text-navy">
             Find Your Place
             <br />
             <span className="text-[#0092BC]">to Volunteer</span>
@@ -53,34 +58,34 @@ export const VolunteerHero = () => {
         </div>
 
         {/* IMAGE COLUMN */}
-        <div className="relative">
-          {/* Soft blue glow — desktop only; no negative z-index so it shows above the section bg */}
-          <div
-            aria-hidden="true"
-            className="hidden lg:block absolute -inset-6 bg-[#0092BC]/15 blur-3xl rounded-full"
-          />
-
-          {/* Portrait crop wrapper — rotation + shadow live here so the badge isn't clipped */}
-          <div className="relative max-h-[600px] overflow-hidden rounded-xl lg:rotate-[-3deg] lg:shadow-2xl">
-            <img
-              src="/assets/images/volunteer/hero.webp"
-              alt="A volunteer smiling while serving food at a community event"
-              fetchPriority="high"
-              decoding="async"
-              className="w-full h-full object-cover aspect-[3/4]"
+        <div className="relative overflow-visible">
+          {/* Outer frame: aspect + tilt. Glow is a sibling behind the photo so it can bleed outside the rounded clip. */}
+          <div className="relative mx-auto w-full max-w-[512px] max-h-[640px] aspect-3/4 overflow-visible lg:rotate-3">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute z-0 -right-10 -top-12 size-[min(72vw,17.5rem)] sm:size-72 rounded-full bg-[#0092BC]/35 blur-3xl"
             />
+            <div className="relative z-10 h-full w-full overflow-hidden rounded-[32px] shadow-2xl">
+              <img
+                src="/assets/images/volunteer/hero.webp"
+                alt="A volunteer smiling while serving food at a community event"
+                fetchPriority="high"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            </div>
           </div>
 
-          {/* Stat badge — desktop only */}
-          <div className="hidden lg:flex absolute bottom-6 -left-6 items-center gap-3 bg-white rounded-xl shadow-lg px-5 py-3">
-            <div className="size-10 rounded-full bg-[#0092BC]/10 flex items-center justify-center">
-              <Icon name="heart" size={20} className="text-[#0092BC]" />
+          {/* Stat badge — desktop only; above photo (z-20 vs z-10) */}
+          <div className="hidden lg:flex absolute bottom-6 -left-6 z-20 items-center gap-3 rounded-xl border border-white/60 bg-white/85 p-4 shadow-lg backdrop-blur-md backdrop-saturate-150">
+            <div className="size-10 rounded-lg bg-ocean flex items-center justify-center">
+              <Icon name="heart" size={20} className="text-white" />
             </div>
             <div>
-              <div className="font-bold text-navy text-xl leading-none">
+              <div className="font-bold text-ocean text-xl leading-none">
                 695k+
               </div>
-              <div className="text-xs uppercase tracking-wider text-navy/60 mt-1">
+              <div className="text-xs uppercase tracking-wider text-secondary mt-1">
                 Lives Impacted
               </div>
             </div>
