@@ -56,7 +56,7 @@ export const VolunteerHero = () => {
         <div className="relative">
           {/* Soft blue glow — desktop only */}
           <div
-            aria-hidden
+            aria-hidden="true"
             className="hidden lg:block absolute -inset-6 -z-10 bg-[#0092BC]/15 blur-3xl rounded-full"
           />
 
