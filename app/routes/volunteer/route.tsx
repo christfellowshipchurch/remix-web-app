@@ -1,5 +1,4 @@
-import { DynamicHero } from "~/components";
-
+import { VolunteerHero } from "./partials/volunteer-hero.partial";
 import { VolunteerAtChurch } from "./partials/volunteer-church.partial";
 import { VolunteerWhere } from "./partials/volunteer-where.partial";
 import { VolunteerCommunity } from "./partials/volunteer-community.partial";
@@ -19,11 +18,7 @@ function VolunteerPage() {
 
   return (
     <div>
-      <DynamicHero
-        imagePath="/assets/images/volunteer/hero.webp"
-        customTitle={`<span style='color:#0092BC'>Volunteer</span> Locally<br />& Globally`}
-        ctas={[{ href: "#opportunities", title: "Discover how to serve" }]}
-      />
+      <VolunteerHero />
 
       <VolunteerWhere />
       <VolunteerAtChurch />
