@@ -68,7 +68,7 @@ export const VolunteerHero = () => {
         {/* IMAGE COLUMN */}
         <div className="relative overflow-visible">
           {/* Outer frame: aspect + tilt. Glow is a sibling behind the photo so it can bleed outside the rounded clip. */}
-          <div className="relative lg:mx-auto w-full max-w-[512px] max-h-[400px] md:max-h-[640px] aspect-3/4 overflow-visible rotate-2 md:rotate-3">
+          <div className="relative lg:mx-auto w-full max-w-[512px] max-h-[407px] md:max-h-[640px] aspect-[326/407] overflow-visible rotate-1 md:rotate-3">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute z-0 -right-10 -top-12 size-[min(72vw,17.5rem)] sm:size-72 rounded-full bg-[#0092BC]/35 blur-3xl"
