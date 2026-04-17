@@ -1,80 +1,42 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Icon } from "~/primitives/icon/icon";
-import { CollectionItem } from "~/routes/page-builder/types";
+import { getImageUrl } from "~/lib/utils";
+
+export type VolunteerAtChurchCardProps = {
+  name: string;
+  description: string;
+  tag: string;
+  imageId: number;
+  pathname: string;
+};
 
 export const VolunteerAtChurchCard = ({
   resource,
 }: {
-  resource: CollectionItem;
+  resource: VolunteerAtChurchCardProps;
 }) => {
-  const tempRoles = ["Role 1", "Role 2", "Role 3"];
   return (
-    <div className="flex flex-col rounded-[1rem] overflow-hidden md:shrink-0 md:w-[347px] h-full">
+    <Link
+      to={resource.pathname}
+      prefetch="intent"
+      className="flex flex-col rounded-[36px] overflow-hidden w-full max-w-[405px] h-full hover:translate-y-[-4px] transition-all duration-300"
+    >
       <img
-        className="w-full max-h-[170px] object-cover"
-        src={resource.image}
+        className="w-full max-h-[192px] object-cover"
+        src={getImageUrl(resource.imageId.toString())}
         alt={resource.name}
       />
-      <div className="flex flex-col justify-between gap-8 p-6 bg-white size-full">
+
+      <div className="flex flex-col justify-between gap-8 p-6 pb-8 bg-white size-full">
         <div className="flex flex-col gap-4 w-full">
-          <div>
-            <h2 className="text-navy text-xl font-extrabold leading-none">
-              {resource.name}
-            </h2>
-            <p className="hidden md:block text-ocean text-sm">
-              {resource.description}
-            </p>
+          <div className="flex items-center justify-center bg-ocean-subdued rounded-full w-fit px-3 py-1">
+            <p className="text-xs font-bold text-[#1C697E]">{resource.tag}</p>
           </div>
-
-          <div className="flex flex-col gap-6">
-            <p className="text-sm">{resource.summary}</p>
-            <RolesExpandable roles={tempRoles} />
-          </div>
+          <h2 className="text-navy text-xl font-extrabold leading-none">
+            {resource.name}
+          </h2>
+          <p className="text-[#3F484C] text-sm">{resource.description}</p>
         </div>
-
-        <Link
-          to={resource.pathname}
-          className="flex gap-2 w-full h-fit pt-4 border-t border-[#DFE1E7] hover:text-ocean transition-colors duration-300"
-        >
-          <Icon name="arrowBack" className="text-ocean rotate-135" size={14} />
-          <p className="text-lg font-bold">Sign Up</p>
-        </Link>
       </div>
-    </div>
-  );
-};
-
-const RolesExpandable = ({ roles }: { roles: string[] }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  return (
-    <div className="flex flex-col gap-2">
-      <div
-        className="cursor-pointer flex items-center gap-1"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <p className="text-sm text-semibold text-ocean">
-          {isExpanded ? "Hide" : "View specific"} roles
-        </p>
-        <Icon
-          name={isExpanded ? "chevronUp" : "chevronDown"}
-          size={16}
-          className="text-ocean"
-        />
-      </div>
-      {isExpanded && (
-        <ul className="flex flex-col gap-2">
-          {roles.map((role) => (
-            <li
-              key={role}
-              className="flex items-center gap-2 text-text-secondary"
-            >
-              <span className="w-1 h-1 rounded-full bg-text-secondary" />
-              {role}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    </Link>
   );
 };
