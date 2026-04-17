@@ -48,8 +48,10 @@ export function VolunteerHowItWorks() {
     >
       {/* ── MOBILE HEADER ─────────────────────────────────────────── */}
       <div className="md:hidden content-padding">
-        <SectionTitle sectionTitle="START VOLUNTEERING" />
-        <h2 className="text-[40px] font-extrabold leading-tight text-navy mt-3">
+        <p className="text-[12px] font-semibold tracking-wider text-navy">
+          START VOLUNTEERING
+        </p>
+        <h2 className="text-[30px] font-bold leading-none text-primary">
           How It Works
         </h2>
 
