@@ -1,6 +1,6 @@
 import { VolunteerHero } from "./partials/volunteer-hero.partial";
+import { VolunteerHowItWorks } from "./partials/volunteer-how-it-works.partial";
 import { VolunteerAtChurch } from "./partials/volunteer-church.partial";
-import { VolunteerWhere } from "./partials/volunteer-where.partial";
 import { VolunteerCommunity } from "./partials/volunteer-community.partial";
 import { VolunteerGlobe } from "./partials/volunteer-globe.partial";
 import { VolunteerStats } from "./partials/volunteer-stats.partial";
@@ -13,7 +13,7 @@ function VolunteerPage() {
   return (
     <div>
       <VolunteerHero />
-      <VolunteerWhere />
+      <VolunteerHowItWorks />
       <VolunteerAtChurch />
       <VolunteerCommunity />
       <VolunteerGlobe />
