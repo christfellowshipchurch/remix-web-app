@@ -1,4 +1,3 @@
-import { SectionTitle } from "~/components/section-title";
 import { HowItWorksCard } from "../components/cards/how-it-works-card.component";
 import {
   Carousel,
