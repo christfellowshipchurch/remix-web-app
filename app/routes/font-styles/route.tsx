@@ -244,6 +244,9 @@ export default function FontStylesPage() {
                 <p className="text-navy">Navy - Primary brand color</p>
                 <p className="text-darkNavy">Dark Navy - Dark brand variant</p>
                 <p className="text-ocean">Ocean - Secondary brand color</p>
+                <p className="text-ocean-web">
+                  Ocean Web - Lighter digital / UI accent
+                </p>
                 <p className="text-cottonCandy">Cotton Candy - Accent color</p>
                 <p className="text-apple">Apple - Alert color</p>
                 <p className="text-tangerine">Tangerine - Warning color</p>
