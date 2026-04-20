@@ -24,7 +24,7 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     description:
       "Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.",
     tag: "Front-Facing",
-    imageId: 3160918,
+    imageId: 3162785,
     pathname: "/volunteer/welcome-experience",
   },
   {
@@ -32,7 +32,7 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     description:
       "Lead a group or class and help people grow through conversation and community. You don't have to have it all figured out—we'll guide you.",
     tag: "Lead & Guide",
-    imageId: 3160918,
+    imageId: 3162858,
     pathname: "/volunteer/groups-classes",
   },
   {
@@ -40,7 +40,7 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     description:
       "Help with music, visuals, photo, video, or production during services. No experience needed—we'll help you get started.",
     tag: "Creative & Tech",
-    imageId: 3160918,
+    imageId: 3162876,
     pathname: "/volunteer/creative-production",
   },
   {
@@ -56,7 +56,7 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     description:
       "Help with events, setup, admin, or support roles across the church. Great if you like staying organized and jumping in where needed.",
     tag: "Behind the Scenes",
-    imageId: 3160918,
+    imageId: 3162878,
     pathname: "/volunteer/operations-support",
   },
   {
@@ -64,7 +64,7 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     description:
       "Spend time with kids, students, or young adults and help them grow. Great if you enjoy building relationships and encouraging others.",
     tag: "Mentor & Encourage",
-    imageId: 3160918,
+    imageId: 3162915,
     pathname: "/volunteer/family-ministry-next-gen",
   },
   {
@@ -72,7 +72,7 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     description:
       "Serve in ministries like prison outreach, foster care, or special needs support. Great if you want to build relationships and show up consistently.",
     tag: "Step Into Real Needs",
-    imageId: 3160918,
+    imageId: 3162916,
     pathname: "/volunteer/outreach-missions",
   },
 ];
