@@ -3,7 +3,6 @@ import { CommunityCard, RegionCard, Trip } from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { mockCommunityData, mockRegionData } from "./mock-data";
-import { formatDate } from "date-fns";
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
@@ -20,96 +19,10 @@ const fetchMissionTrips = async () => {
   return trips;
 };
 
-type Event = {
-  id: string;
-  campus?: string;
-  content?: string;
-  title: string;
-  date: string; // Formatted date
-  expireDateTime: string; // Rock date
-  startDate: string; // Formatted date
-  startDateTime: string; // Rock date
-  image: string;
-  attributeValues: {
-    campus?: {
-      value: string;
-    };
-    summary: {
-      value: string;
-    };
-    image: {
-      value: string;
-    };
-    url: {
-      value: string;
-    };
-  };
-};
-
-const fetchFeaturedEvent = async (): Promise<Event | null> => {
-  const response = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
-    queryParams: {
-      attributeKey: "ShowOnVolunteerPage",
-      value: "True",
-      $filter: `ContentChannelId eq 186 and Status eq 'Approved'`,
-      $orderby: "StartDateTime desc",
-      $top: "1",
-      loadAttributes: "simple",
-    },
-  });
-
-  const rawEvents = Array.isArray(response) ? response : [response];
-  const featuredEvent = rawEvents[0];
-
-  if (!featuredEvent) {
-    return null;
-  }
-
-  const attr = featuredEvent.attributeValues ?? {};
-  const eventUrl =
-    attr?.featuredVolunteerEventURL?.value?.trim() || attr.url?.value || "";
-
-  // Transform to match Event type from events loader
-  const event: Event = {
-    id: featuredEvent.id,
-    title: featuredEvent.title,
-    content: featuredEvent.content,
-    date: "", // Will be calculated below
-    expireDateTime: featuredEvent.expireDateTime,
-    startDate: "", // Will be calculated below
-    startDateTime: featuredEvent.startDateTime,
-    image: createImageUrlFromGuid(attr.image?.value || ""),
-    attributeValues: {
-      campus: attr.campus ? { value: attr.campus.value } : undefined,
-      summary: { value: attr.summary?.value || "" },
-      image: {
-        value: createImageUrlFromGuid(attr.image?.value || ""),
-      },
-      url: { value: eventUrl },
-    },
-  };
-
-  // Calculate formatted dates like in the events loader
-  if (event.startDateTime) {
-    event.startDate = formatDate(new Date(event.startDateTime), "MMMM d, yyyy");
-  }
-
-  if (event.expireDateTime) {
-    // To find the date of the event, we need to subtract 1 day from the expired dateTime
-    const expireDate = new Date(event.expireDateTime);
-    expireDate.setDate(expireDate.getDate() - 1);
-    event.date = formatDate(expireDate, "MMMM d, yyyy");
-  }
-
-  return event;
-};
-
 export type LoaderReturnType = {
   missionTrips: Record<string, Trip[]>;
   mockCommunityData: CommunityCard[];
   mockRegionData: RegionCard[];
-  featuredEvent: Event | null;
 };
 
 export async function loader({ request: _request }: LoaderFunctionArgs) {
@@ -150,7 +63,7 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
         lat: Number(item.attributeValues?.latitude?.value) || 0,
         lng: Number(item.attributeValues?.longitude?.value) || 0,
       },
-    })
+    }),
   );
 
   // Group trips by country
@@ -163,13 +76,12 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
       acc[country].push(trip);
       return acc;
     },
-    {} as Record<string, Trip[]>
+    {} as Record<string, Trip[]>,
   );
 
   return Response.json({
     missionTrips: groupedTrips,
     mockCommunityData,
     mockRegionData,
-    featuredEvent: await fetchFeaturedEvent(),
   } as LoaderReturnType);
 }
