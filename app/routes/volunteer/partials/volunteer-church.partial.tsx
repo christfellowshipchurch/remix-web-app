@@ -9,15 +9,15 @@ export function VolunteerAtChurch() {
       className="w-full bg-dark-navy text-white pl-5 md:pl-12 lg:px-18"
     >
       <div className="mx-auto max-w-[1280px] w-full flex flex-col items-center gap-10 py-16 md:gap-14 md:py-24 lg:py-28">
-        <div className="flex w-full flex-col gap-6 pr-5 text-white md:flex-row md:items-end md:justify-between md:pr-12 lg:pr-18 2xl:pr-8! 3xl:pr-0!">
+        <div className="flex w-full flex-col gap-6 pr-5 md:pr-12 lg:pr-0 text-white md:flex-row md:items-end md:justify-between ">
           <div className="flex min-w-0 flex-1 flex-col gap-4">
             <div className="flex items-center gap-4">
               <div className="w-8 h-1 bg-ocean-web" />
-              <h3 className="text-ocean-web text-xl font-extrabold">
+              <h3 className="text-ocean-web text-xl font-extrabold leading-none">
                 Join the Dream Team!
               </h3>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between gap-4">
               <h2 className="text-[40px] font-extrabold leading-tight md:text-[52px]">
                 Volunteer <br className="md:hidden" /> At Church
               </h2>
@@ -25,7 +25,7 @@ export function VolunteerAtChurch() {
                 href="/volunteer-form/welcome"
                 intent="primary"
                 size="lg"
-                className="min-w-[125px] w-full shrink-0 text-start bg-ocean-web text-white transition-all duration-300 text-sm text-bold hover:bg-navy md:w-fit flex md:hidden gap-2"
+                className="min-w-[125px] w-full shrink-0 text-start bg-ocean-web text-white transition-all duration-300 text-sm text-bold hover:bg-navy md:w-fit flex md:hidden gap-2 rounded-[36px]"
               >
                 <p>
                   Help Me <br />

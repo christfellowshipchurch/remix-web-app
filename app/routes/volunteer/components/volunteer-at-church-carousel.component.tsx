@@ -183,7 +183,7 @@ export function VolunteerAtChurchCarousel() {
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={isActive}
                 className={cn(
-                  "h-2 w-2 rounded-full transition-colors",
+                  "h-2 w-2 cursor-pointer rounded-full transition-colors",
                   isActive ? "bg-white" : "bg-white/35 hover:bg-white/60",
                 )}
               />
@@ -191,13 +191,13 @@ export function VolunteerAtChurchCarousel() {
           })}
         </div>
 
-        <div className="absolute top-1 right-4 flex h-12 items-center justify-end gap-3 sm:right-8 md:top-7 md:right-44 lg:right-44 2xl:right-36 3xl:right-28">
+        <div className="absolute top-1 right-4 flex h-12 items-center justify-end gap-3 sm:right-8 md:top-7 lg:right-4 ">
           <button
             type="button"
             onClick={handlePrev}
             disabled={!canPrev}
             aria-label="Previous slide"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white text-white transition-colors hover:text-neutral-light hover:border-neutral-light disabled:border-gray disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white text-white transition-colors hover:text-neutral-light hover:border-neutral-light disabled:cursor-not-allowed disabled:border-gray disabled:opacity-60"
           >
             <Icon name="chevronLeft" size={20} />
           </button>
@@ -206,7 +206,7 @@ export function VolunteerAtChurchCarousel() {
             onClick={handleNext}
             disabled={!canNext}
             aria-label="Next slide"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white text-white transition-colors hover:text-neutral-light hover:border-neutral-light disabled:border-gray disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white text-white transition-colors hover:text-neutral-light hover:border-neutral-light disabled:cursor-not-allowed disabled:border-gray disabled:opacity-60"
           >
             <Icon name="chevronRight" size={20} />
           </button>
