@@ -21,7 +21,7 @@ export const VolunteerAtChurchCard = ({
       className="flex flex-col rounded-[36px] overflow-hidden w-full max-w-[405px] h-full hover:translate-y-[-4px] transition-all duration-300"
     >
       <img
-        className="w-full max-h-[192px] object-cover"
+        className="w-full h-[164px] max-h-[192px] object-cover object-center bg-center"
         src={getImageUrl(resource.imageId.toString())}
         alt={resource.name}
       />
