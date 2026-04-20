@@ -14,6 +14,8 @@ export interface ClassHitType {
   objectID: string;
   title: string;
   classType: string;
+  /** URL slug for the class page (e.g. `rooted`). Used for safe exact-match filtering. */
+  pathname: string;
   campus: string;
   groupId: number;
   subtitle: string;

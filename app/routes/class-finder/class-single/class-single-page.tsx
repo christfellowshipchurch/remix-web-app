@@ -45,6 +45,8 @@ const ClassNotFound = () => {
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   const { summary, classType, topic } = hit;
+  const { discussionGuideUrl, classTrailer } =
+    useLoaderData<LoaderReturnType>();
 
   const heroDescriptionHtml = useMemo(
     () => buildClassSingleHeroDescriptionHtml(summary),
@@ -52,6 +54,27 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   );
 
   const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ""), [classType]);
+
+  const ctas = useMemo(() => {
+    const items = [];
+    if (discussionGuideUrl) {
+      items.push({
+        href: discussionGuideUrl,
+        title: "Discussion Guide",
+        intent: "secondary" as const,
+        className: "text-base font-normal",
+      });
+    }
+    if (classTrailer) {
+      items.push({
+        href: classTrailer,
+        title: "Class Trailer",
+        intent: "primary" as const,
+        className: "text-base font-normal",
+      });
+    }
+    return items;
+  }, [discussionGuideUrl, classTrailer]);
 
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
@@ -64,20 +87,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           topic={topic}
           mobileDescription={heroDescriptionHtml}
           desktopDescription={heroDescriptionHtml}
-          ctas={[
-            {
-              href: "#todo",
-              title: "Discussion Guide",
-              intent: "secondary",
-              className: "text-base font-normal",
-            },
-            {
-              href: "#todo",
-              title: "Class Trailer",
-              intent: "primary",
-              className: "text-base font-normal",
-            },
-          ]}
+          ctas={ctas}
         />
       </div>
 
@@ -111,24 +121,14 @@ export function ClassSinglePage() {
     <InstantSearch
       indexName="dev_Classes"
       searchClient={searchClient}
-      initialUiState={{
-        dev_Classes: {
-          query: `${classUrl}`,
-        },
-      }}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
       key={classUrl}
     >
-      {/* Name of Class */}
       <Configure
         hitsPerPage={1}
-        queryType="prefixNone"
-        removeWordsIfNoResults="none"
-        typoTolerance={false}
-        exactOnSingleWordQuery="word"
-        filters={`classType:"${escapeAlgoliaFilterString(classUrl)}"`}
+        filters={`pathname:"${escapeAlgoliaFilterString(classUrl)}"`}
       />
 
       <CustomClassSingleHits />
