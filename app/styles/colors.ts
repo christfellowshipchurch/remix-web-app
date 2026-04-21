@@ -8,6 +8,7 @@ const NAVY = "#004F71";
 const NAVY_SUBDUED = "#DAEAF1";
 const OCEAN = "#0092BC";
 const OCEAN_SUBDUED = "#E7F9FE";
+const OCEAN_WEB = "#56C6F2";
 const COTTON_CANDY = "#6BCABA";
 const COCONUT = "#D0D0CE";
 const APPLE = "#CB2C30";
@@ -67,6 +68,7 @@ const colors = {
   navySubdued: NAVY_SUBDUED,
   ocean: OCEAN,
   oceanSubdued: OCEAN_SUBDUED,
+  oceanWeb: OCEAN_WEB,
   cottonCandy: COTTON_CANDY,
   coconut: COCONUT,
   apple: APPLE,
