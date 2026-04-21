@@ -2,15 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "~/lib/utils";
 
-/**
- * Webflow-style defaults (`baseDuration`, `cascadeStep`, `+1s` per counter),
- * scaled ~15% faster (0.85×) so the first digit lands sooner and the cascade follows.
- */
 export const DEFAULT_BASE_DURATION_MS = 3400;
 export const DEFAULT_CASCADE_STEP_MS = 340;
 export const DEFAULT_EXTRA_DURATION_PER_COUNTER_MS = 850;
 export const DEFAULT_EM_PER_ROW = 1.2;
-export const DEFAULT_INTERSECTION_THRESHOLD = 0.3;
+export const DEFAULT_INTERSECTION_THRESHOLD = 0.15;
 
 const DIGIT_ROUNDS = 3;
 
@@ -103,22 +99,16 @@ function Digit({
 
 export type AnimatedStatValueProps = {
   value: string;
-  /** Adds length to the roll (same as Webflow’s `counterIndex * 1000`). */
   statCounterIndex?: number;
   className?: string;
   baseDurationMs?: number;
   cascadeStepMs?: number;
   extraDurationPerCounterMs?: number;
   emPerRow?: number;
-  /** IntersectionObserver threshold (Webflow used `0.3`). */
+  /** IntersectionObserver threshold — fraction of the element that must be visible for animation to start (default `0.15`). */
   intersectionThreshold?: number;
 };
 
-/**
- * Port of the Webflow “number counter”: in-view once, each digit is a vertical
- * stack (0–9 × 3 + final), all rolls start together with staggered **durations**
- * so columns land in sequence; `,` `.` and trailing `k`/`+` stay static.
- */
 export function AnimatedStatValue({
   value,
   className,
