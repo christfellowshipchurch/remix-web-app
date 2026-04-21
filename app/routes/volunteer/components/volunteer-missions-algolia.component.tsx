@@ -5,9 +5,9 @@ import {
   useHits,
   useInstantSearch,
   useMenu,
-  useRefinementList,
 } from "react-instantsearch";
 
+import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
 import { cn } from "~/lib/utils";
 import { createSearchClient } from "~/lib/create-search-client";
 import { Icon } from "~/primitives/icon/icon";
@@ -26,6 +26,23 @@ import { VOLUNTEER_MISSIONS_ALGOLIA_INDEX } from "../mission.types";
 /** Algolia facet attribute names — align with `dev_missionsFinder` index settings. */
 const FACET_CATEGORY = "category";
 const FACET_LOCATION_CITY = "location.city";
+
+const missionCategoryPillBase =
+  "inline-flex max-w-full shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors";
+
+const missionCategoryUnselected = cn(
+  missionCategoryPillBase,
+  "cursor-pointer border border-transparent bg-white text-neutral-darker hover:bg-ocean/10 hover:text-ocean",
+);
+
+const missionCategorySelected = cn(
+  missionCategoryPillBase,
+  "cursor-default gap-1 bg-ocean/10 text-ocean hover:bg-ocean/10",
+);
+
+const missionCategoryRemove = cn(
+  "shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1",
+);
 
 /** Notifies parent once when InstantSearch reports `idle` (first response settled). */
 function MissionSearchReadyReporter({ onReady }: { onReady?: () => void }) {
@@ -85,42 +102,6 @@ function MissionHitsCarousel() {
         </div>
       </div>
     </Carousel>
-  );
-}
-
-function CategoryFilterPills() {
-  const { items, refine } = useRefinementList({
-    attribute: FACET_CATEGORY,
-    limit: 24,
-    sortBy: ["name:asc"],
-  });
-
-  if (!items.length) return null;
-
-  return (
-    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-      {items.map((item) => {
-        const active = item.isRefined;
-        return (
-          <button
-            key={item.value}
-            type="button"
-            onClick={() => refine(item.value)}
-            className={cn(
-              "inline-flex max-w-full items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-              active
-                ? "bg-ocean/10 text-ocean"
-                : "bg-white text-neutral-darker hover:bg-ocean/10 hover:text-ocean",
-            )}
-          >
-            <span className="truncate">{item.label}</span>
-            {active ? (
-              <Icon name="x" size={14} className="shrink-0 text-ocean" />
-            ) : null}
-          </button>
-        );
-      })}
-    </div>
   );
 }
 
@@ -213,7 +194,13 @@ export function VolunteerMissionsAlgolia({
 
       <div className="flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-between">
         <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-          <CategoryFilterPills />
+          <HubsTagsRefinementList
+            attribute={FACET_CATEGORY}
+            wrapperClass="flex min-w-0 flex-1 flex-wrap gap-2 md:gap-4 px-1 pb-4 overflow-x-auto scrollbar-hide"
+            unselectedClassName={missionCategoryUnselected}
+            selectedClassName={missionCategorySelected}
+            removeButtonClassName={missionCategoryRemove}
+          />
         </div>
         <LocationFilterSelect />
       </div>

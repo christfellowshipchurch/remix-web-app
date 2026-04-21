@@ -30,7 +30,7 @@ export function VolunteerMissionsSkeleton({
             key={i}
             className="flex h-full w-full min-w-0 shrink-0 basis-[85vw] flex-col overflow-hidden rounded-2xl bg-white shadow-sm sm:basis-[45%] md:basis-[40%] lg:basis-[33.33%]"
           >
-            <div className="aspect-[16/10] w-full max-h-[156px] shrink-0 bg-neutral-light" />
+            <div className="aspect-16/10 w-full max-h-[156px] shrink-0 bg-neutral-light" />
             <div className="flex min-h-[140px] flex-1 flex-col gap-3 p-5">
               <div className="h-6 w-full max-w-[280px] rounded-md bg-neutral-light" />
               <div className="flex gap-2">

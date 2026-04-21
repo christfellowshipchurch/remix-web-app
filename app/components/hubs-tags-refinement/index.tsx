@@ -7,6 +7,12 @@ export type HubsTagsRefinementListProps = {
   /** Algolia facet attribute (e.g. `articlePrimaryCategories`, `sermonPrimaryCategories`, `topic`). */
   attribute?: string;
   wrapperClass?: string;
+  /** Full class string for unselected pills (defaults to hub/article styling). */
+  unselectedClassName?: string;
+  /** Full class string for the selected pill container (defaults to hub/article styling). */
+  selectedClassName?: string;
+  /** Full class string for the remove (×) control (defaults to hub/article styling). */
+  removeButtonClassName?: string;
 };
 
 const pillSharedClass =
@@ -28,9 +34,16 @@ const removeButtonClass =
 export const HubsTagsRefinementList = ({
   attribute = "sermonPrimaryCategories",
   wrapperClass = "flex gap-2 md:gap-4 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide",
+  unselectedClassName,
+  selectedClassName,
+  removeButtonClassName,
 }: HubsTagsRefinementListProps) => {
   const { items } = useRefinementList({ attribute });
   const { setIndexUiState } = useInstantSearch();
+
+  const unselectedClass = unselectedClassName ?? unselectedPillClass;
+  const selectedClass = selectedClassName ?? selectedPillClass;
+  const removeBtnClass = removeButtonClassName ?? removeButtonClass;
 
   const selectOnlyValue = (value: string) => {
     setIndexUiState((prevState) => ({
@@ -65,19 +78,22 @@ export const HubsTagsRefinementList = ({
         item.isRefined ? (
           <div
             key={item.value}
-            className={selectedPillClass}
+            className={cn(
+              selectedClass,
+              "min-w-0 max-w-full shrink",
+            )}
             role="group"
             aria-label={`Active filter ${item.label}`}
           >
             <span
-              className="min-w-0 max-w-[min(100%,11rem)] truncate"
+              className="min-w-0 flex-1 truncate"
               title={item.label}
             >
               {item.label}
             </span>
             <button
               type="button"
-              className={removeButtonClass}
+              className={removeBtnClass}
               aria-label={`Remove filter ${item.label}`}
               onClick={() => removeRefinementValue(item.value)}
             >
@@ -88,7 +104,7 @@ export const HubsTagsRefinementList = ({
           <button
             type="button"
             key={item.value}
-            className={unselectedPillClass}
+            className={unselectedClass}
             onClick={() => selectOnlyValue(item.value)}
           >
             {item.label}
