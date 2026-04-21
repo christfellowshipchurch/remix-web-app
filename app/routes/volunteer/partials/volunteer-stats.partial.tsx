@@ -1,5 +1,7 @@
 import { cn } from "~/lib/utils";
 
+import { AnimatedStatValue } from "../components/animated-stat-value.component";
+
 type ImpactStat = {
   value: string;
   label: string;
@@ -40,14 +42,20 @@ const IMPACT_STATS_ROW2: ImpactStat[] = [
   },
 ];
 
-function StatCell({ value, label }: ImpactStat) {
+function StatCell({
+  stat,
+  statCounterIndex,
+}: {
+  stat: ImpactStat;
+  statCounterIndex: number;
+}) {
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <p className="text-[40px] font-black leading-none tracking-tight text-white md:text-[52px] lg:text-[72px]">
-        {value}
+        <AnimatedStatValue value={stat.value} statCounterIndex={statCounterIndex} />
       </p>
       <p className="text-pretty font-medium leading-snug text-ocean-web lg:text-lg">
-        {label}
+        {stat.label}
       </p>
     </div>
   );
@@ -56,9 +64,11 @@ function StatCell({ value, label }: ImpactStat) {
 function StatRow({
   items,
   className,
+  counterIndexStart,
 }: {
   items: ImpactStat[];
   className?: string;
+  counterIndexStart: number;
 }) {
   return (
     <div
@@ -67,8 +77,12 @@ function StatRow({
         className,
       )}
     >
-      {items.map((stat) => (
-        <StatCell key={stat.label} {...stat} />
+      {items.map((stat, idx) => (
+        <StatCell
+          key={stat.label}
+          stat={stat}
+          statCounterIndex={counterIndexStart + idx}
+        />
       ))}
     </div>
   );
@@ -99,9 +113,12 @@ export function VolunteerStats() {
         />
 
         <div className="flex flex-col gap-10 pr-5 md:pr-12 lg:pr-0 md:gap-12 lg:gap-14">
-          <StatRow items={IMPACT_STATS_ROW1} />
+          <StatRow items={IMPACT_STATS_ROW1} counterIndexStart={0} />
           <div className="h-px w-full bg-white/25" role="presentation" />
-          <StatRow items={IMPACT_STATS_ROW2} />
+          <StatRow
+            items={IMPACT_STATS_ROW2}
+            counterIndexStart={IMPACT_STATS_ROW1.length}
+          />
         </div>
       </div>
     </section>
