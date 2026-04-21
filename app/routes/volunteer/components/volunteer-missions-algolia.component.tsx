@@ -58,18 +58,18 @@ function MissionHitsCarousel() {
   return (
     <Carousel
       opts={{ align: "start" }}
-      className="min-w-0 max-w-full pl-5 md:pl-12 lg:pl-18 2xl:pl-0"
+      className="mt-3 min-w-0 max-w-full pl-5 md:pl-12 lg:pl-18 2xl:pl-0!"
     >
-      <CarouselContent className="gap-6 pt-3">
+      <CarouselContent className="items-stretch gap-6 pt-4">
         {hits.map((hit, index) => (
           <CarouselItem
             key={hit.objectID}
             className={cn(
-              "basis-[85vw] pl-0 sm:basis-[45%] md:basis-[40%] lg:basis-[31%]",
+              "flex min-h-0 w-full min-w-0 basis-[85vw] flex-col pl-0 sm:basis-[45%] md:basis-[40%] lg:basis-[33.33%]",
               index === hits.length - 1 && "mr-5 md:mr-12 lg:mr-18",
             )}
           >
-            <MissionCard mission={hit} showAvatarStack={index === 0} />
+            <MissionCard mission={hit} className="h-full w-full min-w-0" />
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -107,15 +107,15 @@ function CategoryFilterPills() {
             type="button"
             onClick={() => refine(item.value)}
             className={cn(
-              "inline-flex max-w-full items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
+              "inline-flex max-w-full items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
               active
-                ? "border-sky-200 bg-sky-100 text-navy"
-                : "border-transparent bg-neutral-lighter text-neutral-darker hover:bg-neutral-light",
+                ? "bg-ocean/10 text-ocean"
+                : "bg-white text-neutral-darker hover:bg-ocean/10 hover:text-ocean",
             )}
           >
             <span className="truncate">{item.label}</span>
             {active ? (
-              <Icon name="x" size={14} className="shrink-0 text-navy" />
+              <Icon name="x" size={14} className="shrink-0 text-ocean" />
             ) : null}
           </button>
         );
@@ -133,15 +133,15 @@ function LocationFilterSelect() {
   const value = items.find((i) => i.isRefined)?.value ?? "";
 
   return (
-    <div className="relative w-full shrink-0 md:w-72 lg:w-80">
+    <div className="relative w-fit shrink-0">
       <Icon
         name="map"
-        className="pointer-events-none absolute left-3 top-1/2 z-1 -translate-y-1/2 text-navy"
-        size={22}
+        className="pointer-events-none absolute left-3 top-1/2 z-1 -translate-y-1/2 text-neutral-default bottom-[8px]"
+        size={16}
       />
       <select
         aria-label="Filter by location"
-        className="w-full appearance-none rounded-lg border border-neutral-light bg-white py-2.5 pl-11 pr-10 text-lg text-neutral-default focus:outline-none focus:ring-2 focus:ring-ocean/30"
+        className="w-fit appearance-none rounded-[8px] border border-[#DEE0E3] bg-white py-2.5 pl-9 pr-6 text-sm font-semibold text-neutral-default focus:outline-none focus:ring-0 cursor-pointer transition-all duration-300 hover:border-ocean"
         value={value}
         onChange={(e) => {
           const next = e.target.value;
@@ -162,8 +162,8 @@ function LocationFilterSelect() {
       </select>
       <Icon
         name="chevronDown"
-        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-navy"
-        size={24}
+        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-default"
+        size={20}
       />
     </div>
   );
@@ -211,16 +211,14 @@ export function VolunteerMissionsAlgolia({
       <MissionSearchReadyReporter onReady={onMissionsUiReady} />
       <Configure hitsPerPage={12} />
 
-      <div className="flex flex-col gap-4 content-padding 2xl:px-0 md:flex-row md:flex-wrap md:items-center md:justify-between">
+      <div className="flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-between">
         <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
           <CategoryFilterPills />
         </div>
         <LocationFilterSelect />
       </div>
 
-      <div className="mt-8">
-        <MissionHitsCarousel />
-      </div>
+      <MissionHitsCarousel />
     </InstantSearch>
   );
 }

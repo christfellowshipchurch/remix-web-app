@@ -24,14 +24,14 @@ export function VolunteerMissionsSkeleton({
         <div className="h-12 w-full rounded-lg bg-neutral-light md:w-80" />
       </div>
 
-      <div className="mt-8 flex gap-6 overflow-hidden pl-5 md:pl-12 lg:pl-18 2xl:pl-0">
+      <div className="mt-8 flex items-stretch gap-6 overflow-hidden pl-5 md:pl-12 lg:pl-18 2xl:pl-0">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="w-[85vw] max-w-[360px] shrink-0 overflow-hidden rounded-2xl bg-white shadow-sm md:w-[347px]"
+            className="flex h-full w-full min-w-0 shrink-0 basis-[85vw] flex-col overflow-hidden rounded-2xl bg-white shadow-sm sm:basis-[45%] md:basis-[40%] lg:basis-[33.33%]"
           >
-            <div className="aspect-16/10 w-full bg-neutral-light" />
-            <div className="flex flex-col gap-3 p-5">
+            <div className="aspect-[16/10] w-full max-h-[156px] shrink-0 bg-neutral-light" />
+            <div className="flex min-h-[140px] flex-1 flex-col gap-3 p-5">
               <div className="h-6 w-full max-w-[280px] rounded-md bg-neutral-light" />
               <div className="flex gap-2">
                 <div className="h-7 w-24 rounded-full bg-neutral-light" />

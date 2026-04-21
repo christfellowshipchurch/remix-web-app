@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 
 import { SectionTitle } from "~/components/section-title";
@@ -14,10 +14,10 @@ export function VolunteerCommunity() {
   const [missionsUiReady, setMissionsUiReady] = useState(false);
 
   return (
-    <section id="community" className="w-full bg-gray py-28">
-      <div className="max-w-screen-content mx-auto flex flex-col gap-16">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-6 content-padding 2xl:px-0">
+    <section id="community" className="w-full bg-gray py-28 content-padding">
+      <div className="max-w-[1280px] mx-auto flex flex-col gap-16">
+        <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-6">
             <SectionTitle sectionTitle="Needs in our region" />
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <h2 className="text-[40px] font-extrabold leading-tight text-text-primary md:text-[52px]">
@@ -27,7 +27,7 @@ export function VolunteerCommunity() {
           </div>
 
           <div
-            className="relative min-h-[min(520px,85vh)]"
+            className="relative min-h-[min(580px,85vh)]"
             aria-busy={missionsUiReady ? undefined : true}
           >
             <div
@@ -44,7 +44,7 @@ export function VolunteerCommunity() {
             {!missionsUiReady ? <VolunteerMissionsSkeleton /> : null}
           </div>
 
-          <div className="mt-16 flex flex-col md:flex-row items-center justify-center gap-6 content-padding text-center 2xl:px-0">
+          <div className="mt-16 flex flex-col md:flex-row items-center justify-center gap-6 text-center">
             <p className="md:text-lg font-semibold text-neutral-dark">
               Not finding an opportunity? Share your skills with us, and
               we&apos;ll get in touch.
