@@ -52,7 +52,10 @@ function StatCell({
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <p className="text-[40px] font-black leading-none tracking-tight text-white md:text-[52px] lg:text-[72px]">
-        <AnimatedStatValue value={stat.value} statCounterIndex={statCounterIndex} />
+        <AnimatedStatValue
+          value={stat.value}
+          statCounterIndex={statCounterIndex}
+        />
       </p>
       <p className="text-pretty font-medium leading-snug text-ocean-web lg:text-lg">
         {stat.label}
@@ -103,7 +106,8 @@ export function VolunteerStats() {
             </h3>
           </div>
           <h2 className="text-pretty text-[32px] font-extrabold leading-tight text-white md:text-[40px] lg:text-[52px]">
-            Real Change Through Collective Action
+            Real Change{" "}
+            <span className="hidden md:inline">Through Collective Action</span>
           </h2>
         </header>
 
