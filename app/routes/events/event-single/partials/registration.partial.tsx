@@ -3,8 +3,9 @@ import { EventSinglePageType } from "../types";
 import { SessionRegistration } from "../components/session-registration";
 import { ClickThroughRegistration } from "../components/clickthrough-registration.component";
 
-export function RegistrationSection({ groupType }: { groupType?: string }) {
-  const { title, sessionScheduleCards } = useLoaderData<EventSinglePageType>();
+export function RegistrationSection() {
+  const { title, sessionScheduleCards, groupType } =
+    useLoaderData<EventSinglePageType>();
 
   return (
     <section id="register" className="w-full">
@@ -14,9 +15,7 @@ export function RegistrationSection({ groupType }: { groupType?: string }) {
       )}
 
       {/* Click Through Registration — only when there are no session cards */}
-      {groupType && (
-        <ClickThroughRegistration title={title} groupType={groupType} />
-      )}
+      {groupType && <ClickThroughRegistration title={title} />}
     </section>
   );
 }
