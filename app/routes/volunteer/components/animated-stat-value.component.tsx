@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "~/lib/utils";
 
-export const DEFAULT_BASE_DURATION_MS = 3400;
-export const DEFAULT_CASCADE_STEP_MS = 340;
-export const DEFAULT_EXTRA_DURATION_PER_COUNTER_MS = 850;
+export const DEFAULT_BASE_DURATION_MS = 1600;
+export const DEFAULT_CASCADE_STEP_MS = 150;
+export const DEFAULT_EXTRA_DURATION_PER_COUNTER_MS = 350;
 export const DEFAULT_EM_PER_ROW = 1.2;
 export const DEFAULT_INTERSECTION_THRESHOLD = 0.15;
 
