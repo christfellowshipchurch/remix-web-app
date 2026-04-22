@@ -1,6 +1,5 @@
 import Icon from "~/primitives/icon";
 import { VolunteerAtChurchCarousel } from "../components/volunteer-at-church-carousel.component";
-import { Button } from "~/primitives/button/button.primitive";
 
 export function VolunteerAtChurch() {
   return (
@@ -21,27 +20,24 @@ export function VolunteerAtChurch() {
               <h2 className="text-[40px] font-extrabold leading-tight md:text-[52px]">
                 Volunteer <br className="md:hidden" /> At Church
               </h2>
-              <Button
-                href="/volunteer-form/welcome"
-                intent="primary"
-                size="lg"
-                className="min-w-[125px] w-full shrink-0 text-start bg-ocean-web text-white transition-all duration-300 text-sm text-bold hover:bg-navy md:w-fit flex md:hidden gap-2 rounded-[36px]"
-              >
-                <p>
-                  Help Me <br />
-                  <span className="text-dark-navy">Find My Fit</span>
-                </p>
-              </Button>
             </div>
           </div>
-
-          <a
-            href="/volunteer-form/welcome"
-            className="hidden w-full shrink-0 text-white transition-all duration-300 hover:translate-x-1 md:w-fit md:flex gap-2"
-          >
-            <p className="text-lg font-bold">Help Me Find My Fit</p>
-            <Icon name="arrowRight" className="text-white" size={24} />
-          </a>
+          <p className="flex min-w-0 flex-nowrap items-center gap-2 text-white md:text-lg font-bold">
+            <span className="shrink-0">Don&apos;t know?</span>
+            <a
+              href="/volunteer-form/welcome"
+              className="inline-flex shrink-0 items-center gap-2 transition-all duration-300 hover:translate-x-1"
+            >
+              <span className="underline md:no-underline">
+                Help Me Find My Fit
+              </span>
+              <Icon
+                name="arrowRight"
+                className="shrink-0 text-white"
+                size={24}
+              />
+            </a>
+          </p>
         </div>
 
         <VolunteerAtChurchCarousel />
