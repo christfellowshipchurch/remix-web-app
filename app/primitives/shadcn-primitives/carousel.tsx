@@ -308,7 +308,7 @@ const CarouselDots = React.forwardRef<
           <button
             key={index}
             className={cn(
-              "h-2 w-2 rounded-full transition-colors",
+              "cursor-pointer h-2 w-2 rounded-full transition-colors",
               currentSlide === index
                 ? activeClassName || "bg-primary"
                 : inactiveClassName || "bg-muted",

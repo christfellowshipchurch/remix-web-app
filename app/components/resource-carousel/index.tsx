@@ -150,13 +150,11 @@ export const CardCarousel = ({
           <CarouselItem
             key={index}
             className={cn(
-              carouselItemClassName
-                ? carouselItemClassName
-                : `w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] ${
-                    index === resources.length - 1
-                      ? "mr-5 md:mr-12 lg:mr-18"
-                      : "pr-0"
-                  }`,
+              carouselItemClassName ??
+                "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%]",
+              index === resources.length - 1
+                ? "mr-5 md:mr-12 lg:mr-18"
+                : !carouselItemClassName && "pr-0",
             )}
           >
             {CardComponent ? (

@@ -24,13 +24,13 @@ export function MissionTripCard({
             "group",
             "cursor-pointer",
             "hover:shadow-lg",
-            "transition-all duration-300"
+            "transition-all duration-300",
           )}
         >
           <img
             src={trip.coverImage}
             alt={trip.title}
-            className="aspect-video max-w-[165px] rounded object-cover flex-shrink-0"
+            className="aspect-video max-w-[165px] rounded object-cover shrink-0"
           />
           <div className="flex flex-col gap-6 w-full">
             <div className="flex flex-col">
