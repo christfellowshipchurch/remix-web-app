@@ -14,37 +14,38 @@ export function VolunteerCommunity() {
   const [missionsUiReady, setMissionsUiReady] = useState(false);
 
   return (
-    <section id="community" className="w-full bg-gray py-28 content-padding">
-      <div className="max-w-[1280px] mx-auto flex flex-col gap-16">
-        <div className="flex flex-col gap-12">
-          <div className="flex flex-col gap-6">
+    <section id="community" className="w-full bg-gray py-28">
+      <div className="flex flex-col gap-4">
+        <div className="content-padding">
+          <div className="max-w-[1280px] mx-auto flex flex-col gap-6">
             <SectionTitle sectionTitle="Needs in our region" />
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <h2 className="text-[40px] font-extrabold leading-tight text-text-primary md:text-[52px]">
-                Volunteer In Our Community
-              </h2>
-            </div>
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"></div>
+            <h2 className="text-[40px] font-extrabold leading-tight text-text-primary md:text-[52px]">
+              Volunteer In Our Community
+            </h2>
           </div>
+        </div>
 
+        <div
+          className="relative min-h-[min(580px,85vh)]"
+          aria-busy={missionsUiReady ? undefined : true}
+        >
           <div
-            className="relative min-h-[min(580px,85vh)]"
-            aria-busy={missionsUiReady ? undefined : true}
+            className={cn(
+              !missionsUiReady && "pointer-events-none select-none opacity-0",
+            )}
           >
-            <div
-              className={cn(
-                !missionsUiReady && "pointer-events-none select-none opacity-0",
-              )}
-            >
-              <VolunteerMissionsAlgolia
-                appId={ALGOLIA_APP_ID}
-                apiKey={ALGOLIA_SEARCH_API_KEY}
-                onMissionsUiReady={() => setMissionsUiReady(true)}
-              />
-            </div>
-            {!missionsUiReady ? <VolunteerMissionsSkeleton /> : null}
+            <VolunteerMissionsAlgolia
+              appId={ALGOLIA_APP_ID}
+              apiKey={ALGOLIA_SEARCH_API_KEY}
+              onMissionsUiReady={() => setMissionsUiReady(true)}
+            />
           </div>
+          {!missionsUiReady ? <VolunteerMissionsSkeleton /> : null}
+        </div>
 
-          <div className="mt-16 flex flex-col md:flex-row items-center justify-center gap-6 text-center">
+        <div className="content-padding">
+          <div className="max-w-[1280px] mx-auto mt-16 flex flex-col md:flex-row items-center justify-center gap-6 text-center">
             <p className="md:text-lg font-semibold text-neutral-dark">
               Not finding an opportunity? Share your skills with us, and
               we&apos;ll get in touch.

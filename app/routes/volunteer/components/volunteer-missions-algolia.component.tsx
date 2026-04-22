@@ -73,35 +73,37 @@ function MissionHitsCarousel() {
   }
 
   return (
-    <Carousel
-      opts={{ align: "start" }}
-      className="mt-3 min-w-0 max-w-full pl-5 md:pl-12 lg:pl-18 2xl:pl-0!"
-    >
-      <CarouselContent className="items-stretch gap-6 pt-4">
-        {hits.map((hit, index) => (
-          <CarouselItem
-            key={hit.objectID}
-            className={cn(
-              "flex min-h-0 w-full min-w-0 basis-[85vw] flex-col pl-0 sm:basis-[45%] md:basis-[40%] lg:basis-[33.33%]",
-              index === hits.length - 1 && "mr-5 md:mr-12 lg:mr-18",
-            )}
-          >
-            <MissionCard mission={hit} className="h-full w-full min-w-0" />
-          </CarouselItem>
-        ))}
-      </CarouselContent>
+    <div className="pl-5 md:pl-12 lg:pl-18 2xl:pl-0!">
+      <Carousel
+        opts={{ align: "start" }}
+        className="mt-3 min-w-0 max-w-[1280px] mx-auto "
+      >
+        <CarouselContent className="items-stretch gap-6 pt-4 pb-2">
+          {hits.map((hit, index) => (
+            <CarouselItem
+              key={hit.objectID}
+              className={cn(
+                "flex min-h-0 w-full min-w-0 basis-[85vw] flex-col pl-0 sm:basis-[45%] md:basis-[40%] lg:basis-[33.33%]",
+                index === hits.length - 1 && "mr-5 md:mr-12 lg:mr-18",
+              )}
+            >
+              <MissionCard mission={hit} className="h-full w-full min-w-0" />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
-      <div className="relative flex items-center justify-between mt-8 min-h-[4.5rem] pb-14 sm:mt-12 sm:pb-16 md:min-h-0 md:pb-8">
-        <CarouselDots
-          activeClassName="bg-ocean"
-          inactiveClassName="bg-neutral-lighter"
-        />
+        <div className="relative flex items-center justify-between mt-8 min-h-[4.5rem] pb-14 sm:mt-12 sm:pb-16 md:min-h-0 md:pb-8">
+          <CarouselDots
+            activeClassName="bg-ocean"
+            inactiveClassName="bg-neutral-lighter"
+          />
 
-        <div className="pr-5 md:pr-12 lg:pr-18 2xl:pr-0">
-          <CarouselArrows arrowStyles="text-ocean border-ocean hover:text-navy hover:border-navy" />
+          <div className="pr-5 md:pr-12 lg:pr-18 2xl:pr-0">
+            <CarouselArrows arrowStyles="text-ocean border-ocean hover:text-navy hover:border-navy" />
+          </div>
         </div>
-      </div>
-    </Carousel>
+      </Carousel>
+    </div>
   );
 }
 
@@ -192,17 +194,19 @@ export function VolunteerMissionsAlgolia({
       <MissionSearchReadyReporter onReady={onMissionsUiReady} />
       <Configure hitsPerPage={12} />
 
-      <div className="flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-between">
-        <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-          <HubsTagsRefinementList
-            attribute={FACET_CATEGORY}
-            wrapperClass="flex min-w-0 flex-1 flex-wrap gap-2 md:gap-4 px-1 pb-4 overflow-x-auto scrollbar-hide"
-            unselectedClassName={missionCategoryUnselected}
-            selectedClassName={missionCategorySelected}
-            removeButtonClassName={missionCategoryRemove}
-          />
+      <div className="content-padding">
+        <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-between">
+          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+            <HubsTagsRefinementList
+              attribute={FACET_CATEGORY}
+              wrapperClass="flex min-w-0 flex-1 flex-wrap gap-2 md:gap-4 px-1 pb-4 md:pb-0 overflow-x-auto scrollbar-hide"
+              unselectedClassName={missionCategoryUnselected}
+              selectedClassName={missionCategorySelected}
+              removeButtonClassName={missionCategoryRemove}
+            />
+          </div>
+          <LocationFilterSelect />
         </div>
-        <LocationFilterSelect />
       </div>
 
       <MissionHitsCarousel />
