@@ -1,5 +1,8 @@
 import type { LoaderFunction } from "react-router-dom";
-import { EventSinglePageType } from "./types";
+import {
+  EventSinglePageType,
+  isEventRegistrationGroupType,
+} from "./types";
 import { RockContentChannelItem } from "~/lib/types/rock-types";
 import {
   createImageUrlFromGuid,
@@ -36,10 +39,11 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const groupTypeGuid =
     eventData.attributeValues?.groupType?.value?.trim() || "";
-  let groupType: string | undefined = undefined;
+  let groupType: EventSinglePageType["groupType"] = undefined;
   if (groupTypeGuid) {
     try {
-      groupType = (await fetchDefinedValue(groupTypeGuid)) || "";
+      const raw = ((await fetchDefinedValue(groupTypeGuid)) || "").trim();
+      groupType = isEventRegistrationGroupType(raw) ? raw : undefined;
     } catch {
       groupType = undefined;
     }

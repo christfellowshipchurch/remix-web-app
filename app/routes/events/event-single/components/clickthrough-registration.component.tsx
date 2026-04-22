@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useLocation, useRouteLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 import { InstantSearch, Configure, useHits } from "react-instantsearch";
 import { createSearchClient } from "~/lib/create-search-client";
 import Icon from "~/primitives/icon";
 import { RockProxyEmbed } from "~/components/rock-embed";
-import { EventFinderHit } from "../types";
+import { EventFinderHit, EventSinglePageType } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { ClickableCard } from "./clickable-card.component";
 import { RockCampuses, ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
@@ -16,32 +16,19 @@ import {
 
 interface ClickThroughRegistrationProps {
   title: string;
-  groupType?: string;
 }
 
 export const ClickThroughRegistration = ({
   title,
-  groupType,
 }: ClickThroughRegistrationProps) => {
-  const location = useLocation();
+  const { groupType: loaderGroupType } = useLoaderData<EventSinglePageType>();
   const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
   const algolia = rootData?.algolia ?? {
     ALGOLIA_APP_ID: "",
     ALGOLIA_SEARCH_API_KEY: "",
   };
 
-  // Extract groupType from URL if not provided as prop
-  // URL format: /events/kids-dedication or /events/baptism
-  const pathParts = location.pathname.split("/");
-  const lastPart = pathParts[pathParts.length - 1] || "";
-  const extractedGroupType =
-    groupType ||
-    (lastPart
-      ? lastPart
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ")
-      : "");
+  const extractedGroupType = loaderGroupType ?? "";
 
   // Normalize groupType to handle variations
   const normalizedGroupType = extractedGroupType
@@ -828,8 +815,8 @@ const TimeStep = ({
 
 // Manual embed height per group type (px). Adjust as needed for each form.
 const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
-  "Kids Dedication": 1000,
-  "Kids Starting Line": 1000,
+  "Kids Dedication": 890,
+  "Kids Starting Line": 890,
   Journey: 700,
   Baptism: 1440,
   "Dream Team Kickoff": 1000,
@@ -837,7 +824,10 @@ const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
 
 const DEFAULT_EMBED_HEIGHT = 1000;
 
-/** Single fixed height for the confirmation page (after form submit). */
+/**
+ * Fixed height for the confirmation page (after form submit) for non-Kids flows.
+ * Kids Dedication / Kids Starting Line keep `formHeight` on confirmation loads.
+ */
 const CONFIRMATION_EMBED_HEIGHT = 600;
 
 function getEmbedHeightForGroupType(groupType: string): number {
@@ -868,15 +858,21 @@ const FormStep = ({
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
     selectedCampus,
   });
-  const rockEmbedUrl = `${ROCK_PUBLIC_SITE_ORIGIN}/form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true`;
+
+  const isKidsGroupType =
+    groupType === "Kids Dedication" || groupType === "Kids Starting Line";
+
+  const rockEmbedUrl = `${ROCK_PUBLIC_SITE_ORIGIN}/${isKidsGroupType ? "kids-" : ""}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
+
   const formHeight = getEmbedHeightForGroupType(groupType);
   const [embedHeight, setEmbedHeight] = useState(formHeight);
   const loadCountRef = useRef(0);
 
   const handleEmbedLoad = () => {
     loadCountRef.current += 1;
+    const isFormLoad = loadCountRef.current % 2 === 1;
     setEmbedHeight(
-      loadCountRef.current % 2 === 1 ? formHeight : CONFIRMATION_EMBED_HEIGHT,
+      isFormLoad || isKidsGroupType ? formHeight : CONFIRMATION_EMBED_HEIGHT,
     );
   };
 
@@ -895,7 +891,7 @@ const FormStep = ({
       <RockProxyEmbed
         url={rockEmbedUrl}
         height={embedHeight}
-        showLoading={true}
+        showLoading={false}
         useAdvancedProxy={false}
         className="w-full"
         onLoad={handleEmbedLoad}
