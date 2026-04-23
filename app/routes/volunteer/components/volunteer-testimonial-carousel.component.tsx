@@ -1,4 +1,4 @@
-import { cn } from "~/lib/utils";
+import { cn, getImageUrl } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { Video } from "~/primitives/video/video.primitive";
@@ -126,7 +126,7 @@ export function VolunteerTestimonialCarousel() {
       >
         <div
           ref={desktopViewportRef}
-          className="mx-auto hidden w-full max-w-content cursor-grab overflow-hidden py-2 active:cursor-grabbing lg:block"
+          className="mx-auto hidden w-full max-w-content cursor-grab select-none overflow-hidden py-2 active:cursor-grabbing lg:block"
         >
           <div
             className="flex gap-4 transition-transform duration-300 ease-out"
@@ -204,8 +204,8 @@ const TestimonialDesktopCard = ({
 
   if (isPlaying && video) {
     return (
-      <div className="relative w-full min-h-[560px] overflow-hidden rounded-[24px]">
-        <Video wistiaId={video} controls className="size-full min-h-[560px]" />
+      <div className="relative aspect-video w-full overflow-hidden rounded-[24px]">
+        <Video wistiaId={video} controls className="size-full" />
         <button
           type="button"
           className="absolute left-5 top-5 cursor-pointer rounded-full bg-[#3D3D3D]/50 p-2 transition-colors hover:bg-[#3D3D3D]/70"
@@ -219,25 +219,24 @@ const TestimonialDesktopCard = ({
   }
 
   return (
-    <div className="flex w-full min-h-[560px] overflow-hidden rounded-[24px] bg-white p-4 shadow-sm">
-      <div className="relative min-h-[560px] min-w-0 flex-1 basis-1/2">
+    <div className="flex w-full select-none items-stretch overflow-hidden rounded-[24px] bg-white p-4 shadow-sm">
+      <div className="relative w-full max-w-[400px] shrink-0 self-start overflow-hidden rounded-2xl">
         <img
           src={desktopImage}
           alt={heading}
-          className="absolute inset-0 size-full object-cover"
+          draggable={false}
+          className="block h-auto w-full max-w-full align-top"
         />
-        <div className="pointer-events-none absolute left-6 top-6 z-2 max-w-[min(100%-3rem,20rem)]">
-          <div className="flex items-center gap-2 rounded-full bg-ocean px-4 py-2 text-white">
+        <div className="pointer-events-none absolute left-0 top-1 z-2 max-w-[min(100%-3rem,20rem)]">
+          <div className="flex items-center gap-2 rounded-[10px] bg-ocean px-4 py-2 text-white">
             <span
               className="size-2 shrink-0 rounded-full bg-white"
               aria-hidden
             />
-            <p className="line-clamp-2 text-sm font-medium leading-tight">
-              {title}
-            </p>
+            <p className="line-clamp-2 text-lg font-medium">{title}</p>
           </div>
         </div>
-        {video ? (
+        {/* {video ? (
           <button
             type="button"
             className="group absolute inset-0 z-1 cursor-pointer"
@@ -255,10 +254,10 @@ const TestimonialDesktopCard = ({
               </span>
             </span>
           </button>
-        ) : null}
+        ) : null} */}
       </div>
 
-      <div className="flex min-h-[560px] min-w-0 flex-1 basis-1/2 flex-col justify-center gap-8 px-8 py-10 xl:px-12 xl:py-14">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-8 px-8 py-10 xl:px-12 xl:py-14">
         <h3 className="text-2xl font-extrabold leading-tight text-navy xl:text-3xl">
           {heading}
         </h3>
@@ -382,40 +381,99 @@ export type VolunteerTestimonialCardType = {
 
 const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
   {
-    title: "Donnie & Maria",
+    title: "Tad & Ashley",
+    heading: "It’s Not About Buildings, It’s About Belonging.",
     description:
-      "We never imagined serving could feel this natural. The team made it easy to find our place.",
-    longDescription:
-      "We never imagined serving could feel this natural. The team made it easy to find our place. Week after week we get to welcome people the way someone once welcomed us—and that never gets old. If you’re on the fence, take one step. You won’t regret it.",
-    shortContent: "Welcome team",
-    heading: "Sunday mornings changed our whole rhythm",
-    desktopImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-    mobileImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
+      "Tad and Ashley had everything lined up— careers, a home, two kids, and a steady rhythm of life. But they knew something was missing.",
+    shortContent: `\u201cThey\u2019re Growing Up Knowing God Is Always With Them\u201d`,
+    longDescription: `Tad and Ashley had everything lined up\u2014 careers, a home, two kids, and a steady rhythm of life. But they knew something was missing. When they moved to Westlake, a simple invite from their neighbors became the thread God used to draw them to church. Sundays at Christ Fellowship soon became non-negotiable, they started reading the Bible, and joined a small group. With an education and career in Aerospace Engineering, Tad had plenty of questions about faith. \u201cBut everyone gave me permission to go on my own journey at my own pace,\u201d he said. Neither Tad nor Ashley grew up in church, but their kids began praying for family members before bed and asking big questions about God. Even when they didn\u2019t have the answers, the family learned together\u2014discovering forgiveness, peace, and grace. \u201cThey\u2019re growing up knowing God is always with them,\u201d Ashley said, \u201cand they\u2019ll carry a strength we never had.\u201d Eventually, Tad and Ashley couldn\u2019t wait any longer to declare their faith. They invited close friends and neighbors to their home, where Pastor Jonathan baptized them in their backyard pool. Today, Tad serves on the worship team with his brother, Ashley serves in Christ Fellowship Kids, and together they gather friends and family to join them on Sundays. Expansion isn\u2019t about buildings\u2014it\u2019s about creating places where people like Tad and Ashley can encounter Jesus, discover purpose, and finally experience the \u201cmore\u201d to life their souls were searching for.`,
+    desktopImage: "/images/stories/tad-ashley-wiggly.png",
+    mobileImage: "/images/stories/tad-ashley-square.png",
+    video: "umnkjcziny",
   },
   {
-    title: "What is a Sunday Like 1",
-    description: "What is a Sunday Like 1",
+    title: "Addi’s Story",
+    heading: "A Place Of Belonging",
+    description:
+      "After a lonely start to her college experience, Addi’s path began to change when someone suggested Southeastern University at Christ Fellowship (CFSEU).",
+    shortContent:
+      "\u201cI Got To Learn And Grow With Real-life Experience.\u201d",
     longDescription:
-      "What is a Sunday Like 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-    shortContent: "What is a Sunday Like 1",
-    heading: "What is a Sunday Like 1",
-    desktopImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-    mobileImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
+      "After a lonely start to her college experience, Addi’s path began to change when someone suggested Southeastern University at Christ Fellowship (CFSEU). When Addi learned that her brother had visited Christ Fellowship, it was another nudge of confirmation that CFSEU was where she was supposed to be. Addi transferred, and it didn’t take long for her to find a place of belonging. She dove into College Nights, Young Adults, CFStudents, and Celebrate Recovery, building meaningful connections along the way. Surrounded by supportive leaders, professors, and peers, Addi’s faith grew stronger, and her passion for pursuing God through her education deepened. She graduated in 2025 with her degree in pastoral care and counseling—her loneliness replaced with lasting community and lifelong friendships.",
+    desktopImage: "/images/stories/addi-wiggly.png",
+    mobileImage: "/images/stories/addi-square.png",
+    video: "jhu7cckg3i",
   },
   {
-    title: "What is a Sunday Like 1",
-    description: "What is a Sunday Like 1",
+    title: "Markaveus’ Story",
+    heading: "When Jesus Steps In, Freedom Begins",
+    description:
+      "As Markaveus’ mom watched her son fall into a life of violence, gangs, and drugs, she prayed diligently that he would remember the values she tried to instill in him.",
+    shortContent: "\u201cI Walked Out A Free Man In More Ways Than One.\u201d",
     longDescription:
-      "What is a Sunday Like 1. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    shortContent: "What is a Sunday Like 1",
-    heading: "What is a Sunday Like 1",
-    desktopImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-    mobileImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
+      "As Markaveus’ mom watched her son fall into a life of violence, gangs, and drugs, she prayed diligently that he would remember the values she tried to instill in him. But it wasn’t long before Markaveus ended up in jail with felony charges, awaiting trial and the likelihood of a lengthy prison sentence. He was only in his early twenties, yet his future looked bleak. But what looked like a dead end became a U-turn in God’s hands as two men from Christ Fellowship, Ray and Jake, welcomed him into their Bible study. Every week for two years, they met with Markaveus in jail, discipling him and witnessing God transform his life. Before long, he was helping lead the Bible study, praying with others, and sharing his faith boldly with fellow inmates. Markaveus was released in the spring of 2025 and didn’t waste any time hopping on a bus to attend a Christ Fellowship service in person at the Port St. Lucie campus. When he found out baptisms were happening that day, he didn’t hesitate. He turned to Ray and said, \u201cFor the last couple of days, I’ve been praying for an opportunity to be baptized, and Jesus answered my prayer!\u201d God answered Markaveus’ prayer, and his mom’s prayers, too.",
+    desktopImage: "/images/stories/markaveus-wiggly.png",
+    mobileImage: "/images/stories/markaveus-square.png",
+    video: "0flhlj0h1b",
+  },
+  {
+    title: "Gerald’s Story",
+    heading: "New Life",
+    description:
+      "Gerald grew up unsure if his life had value. But through Watoto, his story changed.",
+    shortContent:
+      "\u201cI Don\u2019t Fully Understand How Someone Can Love a Child They\u2019ve Never Met\u2014But Your Generosity Changed My Life.\u201d",
+    longDescription:
+      "Gerald grew up unsure if his life had value. But through Watoto, his story changed. Today, he leads as the President of the Music, Dance & Drama Club, using his voice and creativity to lift others. Gerald’s story is one of thousands. And the next 72 kids we sponsor? Their story starts now.",
+    desktopImage: "/images/stories/gerald-wiggly.png",
+    mobileImage: "/images/stories/gerald-square.png",
+  },
+  {
+    title: "JJ’s Story",
+    heading: "New Life",
+    description:
+      "JJ, a faithful and dedicated group leader in the Studio, has a heart for the next generation that’s unmatched.",
+    shortContent:
+      "\u201cA Heart for the Next Generation That\u2019s Unmatched.\u201d",
+    longDescription:
+      "JJ, a faithful and dedicated group leader in the Studio, has a heart for the next generation that’s unmatched. So much so that when one of the kids he leads wanted to get baptized, JJ returned home early from his family vacation so he could stand alongside the child in their milestone moment—talk about getting there first!",
+    desktopImage: "/images/stories/jj-wiggly.png",
+    mobileImage: "/images/stories/jj-square.png",
+    video: "g360sjfvl0",
+  },
+  {
+    title: "Ruth’s Story",
+    heading: "The Message of Jesus",
+    description:
+      "How the Gospel Reached This 17-Year-Old From Liberia Who Grew Up in a Devout Muslim Home...",
+    shortContent: "\u201cI Believe Jesus Is The Son Of God.\u201d",
+    longDescription:
+      "Ruth is a 17-year-old from Liberia who grew up in a devout Muslim home. When she joined a Beyond Success table, she was drawn to the values being taught, but hesitant about the message of Jesus. During a session called \u201cMy Most Important Relationship,\u201d Ruth quietly prayed to accept Christ. Though nervous to share her decision, she later told her facilitator, \u201cI believe Jesus is the Son of God.\u201d Her faith is now growing, and her heart is open to all God has for her.",
+    desktopImage: "/images/stories/ruth-wiggly.png",
+    mobileImage: "/images/stories/ruth-square.png",
+  },
+  {
+    title: "Donnie & Maria",
+    heading: "When The City Called, The Church Responded",
+    description:
+      "When Palm Beach Gardens Police and city officials discovered a local couple, Maria and Donnie, living in horrific conditions after their home was taken over by drug dealers, they didn’t know where to turn—so they called the church.",
+    shortContent: "\u201cStunned And Grateful Beyond Words\u201d",
+    longDescription:
+      "When Palm Beach Gardens Police and city officials discovered a local couple, Maria and Donnie, living in horrific conditions after their home was taken over by drug dealers, they didn’t know where to turn—so they called the church. Within hours, Christ Fellowship volunteers and contractors rallied to gut the home, remove mold, and rebuild it into a safe, livable space. For the first time in years, Maria and Donnie felt truly loved and cared for. Fighting back tears, Donnie said he was \u201cstunned\u201d and grateful beyond words. This transformation happened because of the generosity of our church family—proving again that when the city calls, the Church shows up.",
+    desktopImage: "/images/stories/donnie-maria-wiggly.png",
+    mobileImage: "/images/stories/donnie-maria-square.png",
+    video: "gxfxfzaviv",
+  },
+  {
+    title: "Jennifer’s Story",
+    heading: "Providing Hope, Safety, and the Love of Jesus",
+    description:
+      "After hearing the vision to Get There First for kids in foster care, Jennifer Huston—a single woman with a full-time job—felt God call her to say yes.",
+    shortContent: "Providing Hope, Safety, and the Love of Jesus",
+    longDescription:
+      "After hearing the vision to Get There First for kids in foster care, Jennifer Huston—a single woman with a full-time job—felt God call her to say yes. Her first placement was a three-year-old boy with nowhere to go, followed by Mariah, a six-month-old in need of a safe, loving home. With support from Christ Fellowship, Jennifer’s yes gave both children hope, safety, and the love of Jesus—forever changing their stories.",
+    desktopImage: getImageUrl("3163934"),
+    mobileImage: getImageUrl("3163933"),
+    video: "n5oc8odhj1",
   },
 ];
