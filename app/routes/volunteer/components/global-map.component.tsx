@@ -24,7 +24,7 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
     <div className="relative w-full max-w-[1030px] mx-auto">
       <img
         ref={ref}
-        src={getImageUrl("3143905")}
+        src={getImageUrl("3164007")}
         alt="World map"
         className="w-full h-auto"
       />

@@ -2,35 +2,44 @@ import { SectionTitle } from "~/components/section-title";
 import { GlobalMap } from "../components/global-map.component";
 import { useLoaderData } from "react-router-dom";
 import { Trip } from "../types";
-import { MissionTripCard } from "../components/cards/mission-trip-card.component";
+import { MissionTripsCarousel } from "../components/mission-trips-carousel.component";
 
 export function VolunteerGlobe() {
   const { missionTrips } = useLoaderData();
 
-  // Create an array of the first trip from each country
-  const topTrips: Trip[] = Object.values(missionTrips as Record<string, Trip[]>)
-    .map((trips) => trips[0])
-    .filter(Boolean);
+  const allTrips: Trip[] = Object.values(
+    missionTrips as Record<string, Trip[]>,
+  ).flat();
 
   return (
-    <section id="globe" className="w-full bg-white py-28 content-padding">
+    <section
+      id="globe"
+      className="w-full bg-dark-navy text-white py-28 content-padding"
+    >
       <div className="max-w-screen-content mx-auto">
-        <SectionTitle sectionTitle="missions" />
-        <div className="flex flex-col gap-4 my-12">
-          <h2 className="heading-h2">Volunteer Around The Globe</h2>
-          <p className="text-neutral-default">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-            quos.
+        <SectionTitle sectionTitle="Go Further" color="#56c6f2" />
+        <div className="flex flex-col gap-4 mt-3 mb-12">
+          <h2 className="heading-h2 text-[40px] md:text-6xl text-white">
+            Volunteer Around The Globe
+          </h2>
+          <p className="text-neutral-lighter text-lg">
+            Check out our current mission trip locations!{" "}
+            <a
+              href="https://cfmissions.managedmissions.com/OurTrips/840"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-ocean"
+            >
+              View all Trips
+            </a>
           </p>
         </div>
         <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-12">
-          <div className="flex flex-col gap-4">
-            {topTrips.map((trip) => (
-              <MissionTripCard key={trip.id} trip={trip} />
-            ))}
+          <div className="w-full lg:max-w-[480px] shrink-0">
+            <MissionTripsCarousel trips={allTrips} />
           </div>
-          <div className="flex items-center justify-center px-2 lg:px-0">
-            <GlobalMap trips={topTrips} />
+          <div className="flex items-center justify-center w-full px-2 lg:px-0">
+            <GlobalMap trips={allTrips} />
           </div>
         </div>
       </div>
