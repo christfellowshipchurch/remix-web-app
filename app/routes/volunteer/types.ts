@@ -4,14 +4,10 @@ export type Trip = {
   id: number;
   title: string;
   description: string;
-  coverImage: string;
-  applyUrl?: string;
-  donateUrl: string;
-  groupType: string;
-  city: string;
+  image: string;
   country: string;
-  dateOfTrip: string;
-  cost: number;
+  tripDate: string;
+  missionsUrl: string;
   coordinates?: Coordinates;
 };
 

@@ -8,6 +8,7 @@ export const ContentChannelIds = {
   studies: [79, 80],
   soGoodSisterhood: 95,
   keepTalking: 96,
+  missionTrips: 195,
 };
 
 export const getContentChannelUrl = (key: number): string => {

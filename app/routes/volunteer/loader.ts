@@ -4,12 +4,15 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { mockCommunityData, mockRegionData } from "./mock-data";
 import { getCoordinatesForCountry } from "./country-coordinates";
+import { ContentChannelIds } from "~/lib/rock-config";
+
+const MISSION_TRIPS_CONTENT_CHANNEL_ID = ContentChannelIds.missionTrips;
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {
-      $filter: "ContentChannelId eq 174",
+      $filter: `ContentChannelId eq ${MISSION_TRIPS_CONTENT_CHANNEL_ID}`,
       loadAttributes: "simple",
     },
   });
@@ -35,14 +38,10 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
       title: string;
       content: string;
       attributeValues?: {
-        coverImage?: { value: string };
-        applyUrl?: { value: string };
-        donateUrl?: { value: string };
-        groupType?: { value: string };
-        city?: { value: string };
+        image?: { value: string };
+        tripDate?: { value: string };
+        missionsUrl?: { value: string };
         country?: { value: string };
-        dateOfTrip?: { value: string };
-        cost?: { value: string };
       };
     }) => {
       const country = item.attributeValues?.country?.value || "";
@@ -51,16 +50,12 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
         id: Number(item.id) || 0,
         title: item.title,
         description: item.content,
-        coverImage: item.attributeValues?.coverImage?.value
-          ? createImageUrlFromGuid(item.attributeValues.coverImage.value)
+        image: item.attributeValues?.image?.value
+          ? createImageUrlFromGuid(item.attributeValues.image.value)
           : "",
-        applyUrl: item.attributeValues?.applyUrl?.value,
-        donateUrl: item.attributeValues?.donateUrl?.value || "",
-        groupType: item.attributeValues?.groupType?.value || "",
-        city: item.attributeValues?.city?.value || "",
         country,
-        dateOfTrip: item.attributeValues?.dateOfTrip?.value || "",
-        cost: Number(item.attributeValues?.cost?.value) || 0,
+        tripDate: item.attributeValues?.tripDate?.value || "",
+        missionsUrl: item.attributeValues?.missionsUrl?.value || "",
         coordinates: resolvedCoordinates ?? undefined,
       };
     },
