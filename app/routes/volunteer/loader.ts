@@ -3,6 +3,7 @@ import { CommunityCard, RegionCard, Trip } from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { mockCommunityData, mockRegionData } from "./mock-data";
+import { getCoordinatesForCountry } from "./country-coordinates";
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
@@ -42,28 +43,27 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
         country?: { value: string };
         dateOfTrip?: { value: string };
         cost?: { value: string };
-        latitude?: { value: string };
-        longitude?: { value: string };
       };
-    }) => ({
-      id: Number(item.id) || 0,
-      title: item.title,
-      description: item.content,
-      coverImage: item.attributeValues?.coverImage?.value
-        ? createImageUrlFromGuid(item.attributeValues.coverImage.value)
-        : "",
-      applyUrl: item.attributeValues?.applyUrl?.value,
-      donateUrl: item.attributeValues?.donateUrl?.value || "",
-      groupType: item.attributeValues?.groupType?.value || "",
-      city: item.attributeValues?.city?.value || "",
-      country: item.attributeValues?.country?.value || "",
-      dateOfTrip: item.attributeValues?.dateOfTrip?.value || "",
-      cost: Number(item.attributeValues?.cost?.value) || 0,
-      coordinates: {
-        lat: Number(item.attributeValues?.latitude?.value) || 0,
-        lng: Number(item.attributeValues?.longitude?.value) || 0,
-      },
-    }),
+    }) => {
+      const country = item.attributeValues?.country?.value || "";
+      const resolvedCoordinates = getCoordinatesForCountry(country);
+      return {
+        id: Number(item.id) || 0,
+        title: item.title,
+        description: item.content,
+        coverImage: item.attributeValues?.coverImage?.value
+          ? createImageUrlFromGuid(item.attributeValues.coverImage.value)
+          : "",
+        applyUrl: item.attributeValues?.applyUrl?.value,
+        donateUrl: item.attributeValues?.donateUrl?.value || "",
+        groupType: item.attributeValues?.groupType?.value || "",
+        city: item.attributeValues?.city?.value || "",
+        country,
+        dateOfTrip: item.attributeValues?.dateOfTrip?.value || "",
+        cost: Number(item.attributeValues?.cost?.value) || 0,
+        coordinates: resolvedCoordinates ?? undefined,
+      };
+    },
   );
 
   // Group trips by country

@@ -30,6 +30,7 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
       />
 
       {trips.map((trip) => {
+        if (!trip.coordinates) return null;
         const { x, y } = projectToMap(
           trip.coordinates.lat,
           trip.coordinates.lng,
