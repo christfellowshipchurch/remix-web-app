@@ -24,11 +24,11 @@ export function VolunteerMissionsSkeleton({
       </div>
 
       <div className="pl-5 md:pl-12 lg:pl-18 2xl:pl-0!">
-        <div className="mt-8 flex items-stretch gap-6 overflow-hidden ">
+        <div className="mt-8 flex py-2 items-stretch gap-6 overflow-hidden max-w-[1280px] mx-auto">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="flex h-full w-full min-w-0 shrink-0 basis-[85vw] flex-col overflow-hidden rounded-2xl bg-white shadow-sm sm:basis-[45%] md:basis-[40%] lg:basis-[33.33%]"
+              className="flex h-full w-full min-w-0 shrink-0 basis-[85vw] flex-col overflow-hidden rounded-2xl bg-white shadow-sm sm:basis-[45%] md:basis-[40%] lg:basis-[31.8%]"
             >
               <div className="aspect-16/10 w-full max-h-[156px] shrink-0 bg-neutral-light" />
               <div className="flex min-h-[140px] flex-1 flex-col gap-3 p-5">

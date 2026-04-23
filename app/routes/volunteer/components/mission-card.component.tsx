@@ -1,9 +1,23 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 
+import { RockCampuses } from "~/lib/rock-config";
 import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 
 import type { Mission } from "../mission.types";
+
+const ROCK_CAMPUS_NAME_SET = new Set<string>(
+  RockCampuses.map((campus) => campus.name),
+);
+
+function firstRockCampusFromList(campusList: string[] | undefined): string {
+  for (const raw of campusList ?? []) {
+    const name = raw?.trim();
+    if (name && ROCK_CAMPUS_NAME_SET.has(name)) return name;
+  }
+  return "—";
+}
 
 /** Category pill styles (Algolia `category` labels). */
 function categoryBadgeClass(label: string): string {
@@ -28,30 +42,75 @@ function categoryBadgeClass(label: string): string {
   return "bg-neutral-lighter text-neutral-darker";
 }
 
-export function MissionCard({
+/** Avoid re-rendering (and img reload) when Algolia returns new hit objects with the same fields. */
+function missionCardPropsEqual(
+  prev: { mission: Mission; className?: string },
+  next: { mission: Mission; className?: string },
+): boolean {
+  if (prev.className !== next.className) return false;
+  const p = prev.mission;
+  const n = next.mission;
+  if (p.objectID !== n.objectID) return false;
+  if (p.title !== n.title) return false;
+  if (p.spotsLeft !== n.spotsLeft) return false;
+  if ((p.category ?? "") !== (n.category ?? "")) return false;
+  if (
+    (p.coverImage?.sources?.[0]?.uri ?? "") !==
+    (n.coverImage?.sources?.[0]?.uri ?? "")
+  ) {
+    return false;
+  }
+  if (
+    JSON.stringify(p.campusList ?? []) !== JSON.stringify(n.campusList ?? [])
+  ) {
+    return false;
+  }
+  if ((p.eventDateStr ?? "") !== (n.eventDateStr ?? "")) return false;
+  if ((p.eventEndDateStr ?? "") !== (n.eventEndDateStr ?? "")) return false;
+  if ((p.eventTimeStr ?? "") !== (n.eventTimeStr ?? "")) return false;
+  if ((p.eventEndTimeStr ?? "") !== (n.eventEndTimeStr ?? "")) return false;
+  if (
+    JSON.stringify(p.opportunityType ?? []) !==
+    JSON.stringify(n.opportunityType ?? [])
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function MissionCardInner({
   mission,
   className,
 }: {
   mission: Mission;
   className?: string;
 }) {
-  const imageUri = mission.coverImage?.sources?.[0]?.uri ?? "";
-  const categoryLabel = mission.category?.trim() ?? "";
-  const detailTo = `/group-finder/${mission.objectID}`;
-
   return (
     <Link
-      to={detailTo}
+      to={`/group-finder/${mission.objectID}`}
       prefetch="intent"
       className={cn(
-        "group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md transition-shadow hover:shadow-lg",
+        "group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-[36px] bg-white shadow-md transition-shadow hover:shadow-lg",
         className,
       )}
     >
       <div className="relative aspect-16/10 w-full max-h-[156px] shrink-0 overflow-hidden rounded-t-2xl bg-neutral-lighter">
-        {imageUri ? (
+        {(mission.coverImage?.sources?.[0]?.uri ?? "").trim() ? (
           <img
-            src={imageUri}
+            src={(() => {
+              const raw = (mission.coverImage?.sources?.[0]?.uri ?? "").trim();
+              if (!/GetImage\.ashx/i.test(raw)) return raw;
+              try {
+                const url = new URL(raw);
+                url.searchParams.set("maxwidth", "800");
+                url.searchParams.set("maxheight", "500");
+                url.searchParams.set("quality", "85");
+                return url.toString();
+              } catch {
+                const joiner = raw.includes("?") ? "&" : "?";
+                return `${raw}${joiner}maxwidth=800&maxheight=500&quality=85`;
+              }
+            })()}
             alt=""
             className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           />
@@ -67,10 +126,10 @@ export function MissionCard({
           <span
             className={cn(
               "rounded-full px-3 py-1 text-xs font-bold",
-              categoryBadgeClass(categoryLabel),
+              categoryBadgeClass(mission.category?.trim() ?? ""),
             )}
           >
-            {categoryLabel}
+            {mission.category?.trim() ?? ""}
           </span>
           <span className="text-sm text-neutral-default">
             {mission.spotsLeft} spots left
@@ -98,7 +157,7 @@ export function MissionCard({
               className="shrink-0 text-neutral-darker"
             />
             <span className="min-w-0 truncate">
-              {mission.location?.city || mission.campus?.name || "—"}
+              {firstRockCampusFromList(mission.campusList)}
             </span>
           </li>
           <li className="flex min-w-0 items-center gap-2">
@@ -107,7 +166,13 @@ export function MissionCard({
               size={20}
               className="shrink-0 text-neutral-darker"
             />
-            <span className="min-w-0 truncate">{mission.day || "—"}</span>
+            <span className="min-w-0 truncate">
+              {mission.eventDateStr?.trim() &&
+              mission.eventEndDateStr?.trim() &&
+              mission.eventDateStr.trim() !== mission.eventEndDateStr.trim()
+                ? `${mission.eventDateStr.trim()} – ${mission.eventEndDateStr.trim()}`
+                : mission.eventDateStr?.trim() || "—"}
+            </span>
           </li>
           <li className="flex min-w-0 items-center gap-2">
             <Icon
@@ -115,10 +180,20 @@ export function MissionCard({
               size={20}
               className="shrink-0 text-neutral-darker"
             />
-            <span className="min-w-0 truncate">{mission.time || "—"}</span>
+            <span className="min-w-0 truncate">
+              {mission.eventTimeStr?.trim() && mission.eventEndTimeStr?.trim()
+                ? `${mission.eventTimeStr.trim()} – ${mission.eventEndTimeStr.trim()}`
+                : mission.eventTimeStr?.trim() ||
+                  mission.eventEndTimeStr?.trim() ||
+                  "—"}
+            </span>
           </li>
         </ul>
       </div>
     </Link>
   );
 }
+
+// Avoid re-rendering (and img reload) when Algolia returns new hit objects with the same fields.
+export const MissionCard = memo(MissionCardInner, missionCardPropsEqual);
+MissionCard.displayName = "MissionCard";

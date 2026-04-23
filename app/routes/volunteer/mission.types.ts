@@ -1,6 +1,7 @@
-export const VOLUNTEER_MISSIONS_ALGOLIA_INDEX = "dev_missionsFinder";
+export const VOLUNTEER_MISSIONS_ALGOLIA_INDEX = "dev_Missions";
 
-export interface MissionImageSource {
+/** `coverImage` shape from Algolia `dev_Missions` records. */
+export interface MissionCoverImage {
   sources: { uri: string }[];
 }
 
@@ -11,22 +12,24 @@ export interface MissionLocation {
   zip: string;
 }
 
+/** One hit from the `dev_Missions` Algolia index. */
 export interface Mission {
   objectID: string;
-  rockItemId: number;
-  title: string;
-  coverImage: MissionImageSource;
-  spotsLeft: number;
-  category: string;
-  opportunityType: string[];
-  campus: {
-    name: string;
-  };
-  location: MissionLocation;
-  day: string;
-  time: string;
-  summary: string;
+  groupId: number;
   groupGuid: string;
+  title: string;
+  coverImage: MissionCoverImage;
+  summary: string;
+  campusList: string[];
+  eventDateStr: string;
+  eventTimeStr: string;
+  eventEndDateStr: string;
+  eventEndTimeStr: string;
+  category: string;
+  checkInLocation: string;
+  location: MissionLocation;
+  opportunityType: string[];
+  spotsLeft: number;
 }
 
 export type MissionsList = Mission[];

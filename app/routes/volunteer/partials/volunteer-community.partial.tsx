@@ -14,7 +14,7 @@ export function VolunteerCommunity() {
   const [missionsUiReady, setMissionsUiReady] = useState(false);
 
   return (
-    <section id="community" className="w-full bg-gray py-28">
+    <section id="community" className="w-full bg-white md:bg-gray py-28">
       <div className="flex flex-col gap-4">
         <div className="content-padding">
           <div className="max-w-[1280px] mx-auto flex flex-col gap-6">
@@ -27,7 +27,7 @@ export function VolunteerCommunity() {
         </div>
 
         <div
-          className="relative min-h-[min(580px,85vh)]"
+          className="relative min-h-[min(580px,85vh)] bg-gray"
           aria-busy={missionsUiReady ? undefined : true}
         >
           <div
