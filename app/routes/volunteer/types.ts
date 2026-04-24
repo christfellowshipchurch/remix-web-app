@@ -1,3 +1,33 @@
+export type VolunteerHitType = {
+  objectID: string;
+  title?: string;
+  name?: string;
+  description?: string;
+  content?: string;
+  about?: string;
+  category?: string;
+  groupType?: string;
+  coverImage?: string;
+  coverImageUrl?: string;
+  campus?: string;
+  location?: string;
+  city?: string;
+  country?: string;
+  dateOfTrip?: string;
+  eventTime?: string;
+  timeRange?: string;
+  whatToKnow?: string;
+  contactName?: string;
+  contactEmail?: string;
+  questionsHtml?: string;
+  applyUrl?: string;
+  signupUrl?: string;
+  spotsLeft?: number | string;
+
+  /** Present when filtering by group GUID in Algolia */
+  groupGuid?: string;
+};
+
 export type Trip = {
   id: number;
   title: string;
