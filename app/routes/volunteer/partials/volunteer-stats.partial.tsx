@@ -22,10 +22,10 @@ const defaultStats: VolunteerStatsProps = {
     { year: "2024", label: "Volunteers served", value: "14,378" },
     {
       year: "2024",
-      label: "People impacted through missions outreach",
+      label: "People impacted through volunteer outreach",
       value: "108k",
     },
-    { year: "2024", label: "International Missions Trips", value: "15" },
+    { year: "2024", label: "International volunteer trips", value: "15" },
   ],
   avatars: [
     { src: "https://picsum.photos/id/1011/70/70", alt: "Avatar 1" },

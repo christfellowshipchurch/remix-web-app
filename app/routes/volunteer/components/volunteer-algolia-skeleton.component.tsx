@@ -1,10 +1,10 @@
 import { cn } from "~/lib/utils";
 
 /**
- * Placeholder UI for the missions block (filters + horizontal cards) while
+ * Placeholder UI for the volunteer opportunities block (filters + horizontal cards) while
  * Algolia is connecting and the first search is in flight.
  */
-export function VolunteerMissionsSkeleton({
+export function VolunteerAlgoliaSkeleton({
   className,
 }: {
   className?: string;

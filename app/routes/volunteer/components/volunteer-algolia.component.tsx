@@ -24,42 +24,42 @@ import {
   CarouselItem,
 } from "~/primitives/shadcn-primitives/carousel";
 
-import { MissionCard } from "./mission-card.component";
-import type { Mission } from "../mission.types";
-import { VOLUNTEER_MISSIONS_ALGOLIA_INDEX } from "../mission.types";
+import { VolunteerCard } from "./volunteer-card.component";
+import type { Volunteer } from "../types";
+import { VOLUNTEER_ALGOLIA_INDEX } from "../types";
 import {
-  parseVolunteerMissionsUrlState,
-  type VolunteerMissionsUrlState,
-} from "../volunteer-missions-url-state";
+  parseVolunteerAlgoliaUrlState,
+  type VolunteerAlgoliaUrlState,
+} from "./finder/volunteer-algolia-url-state";
 import {
-  createVolunteerMissionsInstantSearchRouter,
-  createVolunteerMissionsStateMapping,
-} from "../volunteer-missions-instantsearch-router";
-import { getVolunteerMissionsMobileFilters } from "../volunteer-missions-filters.data";
+  createVolunteerAlgoliaInstantSearchRouter,
+  createVolunteerAlgoliaStateMapping,
+} from "./finder/volunteer-algolia-instantsearch-router";
+import { getVolunteerAlgoliaMobileFilters } from "./finder/volunteer-algolia-filters.data";
 
-/** Algolia facet attribute names — align with `dev_Missions` index settings. */
+/** Algolia facet attribute names — align with volunteer index settings. */
 const FACET_CATEGORY = "category";
 const FACET_CAMPUS = "campusList";
 
-const missionCategoryPillBase =
+const volunteerCategoryPillBase =
   "inline-flex max-w-full shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors";
 
-const missionCategoryUnselected = cn(
-  missionCategoryPillBase,
+const volunteerCategoryUnselected = cn(
+  volunteerCategoryPillBase,
   "cursor-pointer border border-transparent bg-white text-neutral-darker hover:bg-ocean/10 hover:text-ocean",
 );
 
-const missionCategorySelected = cn(
-  missionCategoryPillBase,
+const volunteerCategorySelected = cn(
+  volunteerCategoryPillBase,
   "cursor-default gap-1 bg-ocean/10 text-ocean hover:bg-ocean/10",
 );
 
-const missionCategoryRemove = cn(
+const volunteerCategoryRemove = cn(
   "shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1",
 );
 
 /** Notifies parent once when InstantSearch reports `idle` (first response settled). */
-function MissionSearchReadyReporter({ onReady }: { onReady?: () => void }) {
+function VolunteerSearchReadyReporter({ onReady }: { onReady?: () => void }) {
   const { status } = useInstantSearch();
   const onReadyLatest = useRef(onReady);
   onReadyLatest.current = onReady;
@@ -74,14 +74,14 @@ function MissionSearchReadyReporter({ onReady }: { onReady?: () => void }) {
   return null;
 }
 
-function MissionHitsCarousel() {
-  const { items: hits } = useHits<Mission>();
+function VolunteerHitsCarousel() {
+  const { items: hits } = useHits<Volunteer>();
 
   if (hits.length === 0) {
     return (
       <p className="text-neutral-default content-padding py-8 text-center text-lg 2xl:px-0">
-        No missions match your filters right now. Try clearing a filter or check
-        back soon.
+        No volunteer opportunities match your filters right now. Try clearing a
+        filter or check back soon.
       </p>
     );
   }
@@ -102,7 +102,10 @@ function MissionHitsCarousel() {
                 index === 0 && "ml-5 md:ml-12 lg:ml-18 2xl:ml-0!", // First item
               )}
             >
-              <MissionCard mission={hit} className="h-full w-full min-w-0" />
+              <VolunteerCard
+                volunteer={hit}
+                className="h-full w-full min-w-0"
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -175,15 +178,15 @@ function CampusFilterSelect() {
   );
 }
 
-export function VolunteerMissionsAlgolia({
+export function VolunteerAlgolia({
   appId,
   apiKey,
-  onMissionsUiReady,
+  onVolunteerUiReady,
 }: {
   appId: string;
   apiKey: string;
   /** Called once when credentials are missing, or when the first Algolia search reaches `idle`. */
-  onMissionsUiReady?: () => void;
+  onVolunteerUiReady?: () => void;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -192,7 +195,7 @@ export function VolunteerMissionsAlgolia({
   const setSearchParamsRef = useRef(setSearchParams);
   const pathnameRef = useRef(location.pathname);
   const onUpdateCallbackRef = useRef<
-    ((route: VolunteerMissionsUrlState) => void) | null
+    ((route: VolunteerAlgoliaUrlState) => void) | null
   >(null);
 
   searchParamsRef.current = searchParams;
@@ -201,7 +204,7 @@ export function VolunteerMissionsAlgolia({
 
   const router = useMemo(
     () =>
-      createVolunteerMissionsInstantSearchRouter({
+      createVolunteerAlgoliaInstantSearchRouter({
         searchParamsRef,
         setSearchParamsRef,
         pathnameRef,
@@ -210,11 +213,11 @@ export function VolunteerMissionsAlgolia({
     [],
   );
 
-  const stateMapping = useMemo(() => createVolunteerMissionsStateMapping(), []);
+  const stateMapping = useMemo(() => createVolunteerAlgoliaStateMapping(), []);
 
   useEffect(() => {
     const cb = onUpdateCallbackRef.current;
-    if (cb) cb(parseVolunteerMissionsUrlState(searchParams));
+    if (cb) cb(parseVolunteerAlgoliaUrlState(searchParams));
   }, [searchParams]);
 
   const routing = useMemo(
@@ -231,9 +234,9 @@ export function VolunteerMissionsAlgolia({
   );
 
   const canSearch = Boolean(appId && apiKey);
-  const desktopFilters = useMemo(() => getVolunteerMissionsMobileFilters(), []);
-  const onReadyRef = useRef(onMissionsUiReady);
-  onReadyRef.current = onMissionsUiReady;
+  const desktopFilters = useMemo(() => getVolunteerAlgoliaMobileFilters(), []);
+  const onReadyRef = useRef(onVolunteerUiReady);
+  onReadyRef.current = onVolunteerUiReady;
 
   useEffect(() => {
     if (canSearch) return;
@@ -243,7 +246,7 @@ export function VolunteerMissionsAlgolia({
   if (!canSearch) {
     return (
       <p className="text-neutral-default content-padding text-center 2xl:px-0">
-        Mission search is unavailable. Algolia credentials are not configured
+        Volunteer search is unavailable. Algolia credentials are not configured
         for this environment.
       </p>
     );
@@ -252,11 +255,11 @@ export function VolunteerMissionsAlgolia({
   return (
     <InstantSearch
       searchClient={searchClient}
-      indexName={VOLUNTEER_MISSIONS_ALGOLIA_INDEX}
+      indexName={VOLUNTEER_ALGOLIA_INDEX}
       routing={routing}
       future={{ preserveSharedStateOnUnmount: true }}
     >
-      <MissionSearchReadyReporter onReady={onMissionsUiReady} />
+      <VolunteerSearchReadyReporter onReady={onVolunteerUiReady} />
       <Configure hitsPerPage={12} />
 
       {/* Mobile: sticky strip + bottom-sheet filter popups (parent must be `md:hidden` only here) */}
@@ -276,23 +279,25 @@ export function VolunteerMissionsAlgolia({
       </div>
 
       {/* Desktop: inline category pills + clear + campus */}
-      <div className="mx-auto hidden max-w-[1280px] flex-col gap-3 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between">
-        <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-          <HubsTagsRefinementList
-            attribute={FACET_CATEGORY}
-            wrapperClass="flex min-w-0 flex-1 flex-wrap gap-2 md:gap-4 px-1 pb-4 md:pb-0 overflow-x-auto scrollbar-hide"
-            unselectedClassName={missionCategoryUnselected}
-            selectedClassName={missionCategorySelected}
-            removeButtonClassName={missionCategoryRemove}
-          />
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 md:ml-auto">
-          <AlgoliaFinderClearAllButton />
-          <CampusFilterSelect />
+      <div className="content-padding">
+        <div className="mx-auto hidden max-w-[1280px] flex-col gap-3 md:flex md:flex-row md:flex-wrap md:items-center md:justify-between">
+          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+            <HubsTagsRefinementList
+              attribute={FACET_CATEGORY}
+              wrapperClass="flex min-w-0 flex-1 flex-wrap gap-2 md:gap-4 px-1 pb-4 md:pb-0 overflow-x-auto scrollbar-hide"
+              unselectedClassName={volunteerCategoryUnselected}
+              selectedClassName={volunteerCategorySelected}
+              removeButtonClassName={volunteerCategoryRemove}
+            />
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 md:ml-auto">
+            <AlgoliaFinderClearAllButton />
+            <CampusFilterSelect />
+          </div>
         </div>
       </div>
 
-      <MissionHitsCarousel />
+      <VolunteerHitsCarousel />
     </InstantSearch>
   );
 }

@@ -1,7 +1,7 @@
 import type { SearchFilterDesktopItem } from "~/components/finders/search-filters";
 
 /** Cause + campus pills for mobile `SearchFilters` (bottom sheets) — same index attributes as desktop. */
-export function getVolunteerMissionsMobileFilters(): SearchFilterDesktopItem[] {
+export function getVolunteerAlgoliaMobileFilters(): SearchFilterDesktopItem[] {
   return [
     {
       id: "cause",

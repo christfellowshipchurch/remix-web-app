@@ -4,8 +4,8 @@ import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { mockRegionData } from "./mock-data";
 
-const fetchMissionTrips = async () => {
-  const missionTrips = await fetchRockData({
+const fetchVolunteerTrips = async () => {
+  const rawTrips = await fetchRockData({
     endpoint: "ContentChannelItems",
     queryParams: {
       $filter: "ContentChannelId eq 174",
@@ -13,23 +13,22 @@ const fetchMissionTrips = async () => {
     },
   });
 
-  // ensure contentItems is an array
-  const trips = Array.isArray(missionTrips) ? missionTrips : [missionTrips];
+  const trips = Array.isArray(rawTrips) ? rawTrips : [rawTrips];
 
   return trips;
 };
 
 export type LoaderReturnType = {
-  missionTrips: Record<string, Trip[]>;
+  volunteerTrips: Record<string, Trip[]>;
   mockRegionData: RegionCard[];
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
 };
 
 export async function loader({ request: _request }: LoaderFunctionArgs) {
-  const fetchMissions = await fetchMissionTrips();
+  const fetchedTrips = await fetchVolunteerTrips();
 
-  const missionTrips: Trip[] = fetchMissions.map(
+  const volunteerTripsList: Trip[] = fetchedTrips.map(
     (item: {
       id: string;
       title: string;
@@ -67,8 +66,7 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
     }),
   );
 
-  // Group trips by country
-  const groupedTrips = missionTrips.reduce(
+  const groupedTrips = volunteerTripsList.reduce(
     (acc: Record<string, Trip[]>, trip: Trip) => {
       const country = trip.country;
       if (!acc[country]) {
@@ -81,7 +79,7 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
   );
 
   return Response.json({
-    missionTrips: groupedTrips,
+    volunteerTrips: groupedTrips,
     mockRegionData,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? "",
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? "",

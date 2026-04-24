@@ -69,12 +69,12 @@ const volunteerAtChurchResources: VolunteerAtChurchCardProps[] = [
     pathname: "/volunteer/family-ministry-next-gen",
   },
   {
-    name: "Outreach & Missions",
+    name: "Outreach & Volunteering",
     description:
       "Serve in ministries like prison outreach, foster care, or special needs support. Great if you want to build relationships and show up consistently.",
     tag: "Step Into Real Needs",
     imageId: 3162916,
-    pathname: "/volunteer/outreach-missions",
+    pathname: "/volunteer/outreach-volunteering",
   },
 ];
 

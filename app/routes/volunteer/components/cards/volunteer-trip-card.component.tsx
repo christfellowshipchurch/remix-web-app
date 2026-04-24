@@ -3,7 +3,7 @@ import { Trip } from "../../types";
 import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 
-export function MissionTripCard({
+export function VolunteerTripCard({
   trip,
   isNew,
 }: {

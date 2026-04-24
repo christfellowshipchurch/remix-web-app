@@ -31,8 +31,8 @@ export function MissionsModal({
     initialTrip || null
   );
 
-  const { missionTrips } = useLoaderData<typeof loader>();
-  const filteredTrips: Trip[] = missionTrips[initialTrip?.country || ""] || [];
+  const { volunteerTrips } = useLoaderData<typeof loader>();
+  const filteredTrips: Trip[] = volunteerTrips[initialTrip?.country || ""] || [];
 
   const isControlled =
     controlledOpen !== undefined && controlledOnOpenChange !== undefined;

@@ -3,15 +3,15 @@ import { useLoaderData } from "react-router-dom";
 
 import { SectionTitle } from "~/components/section-title";
 import { cn } from "~/lib/utils";
-import { VolunteerMissionsAlgolia } from "../components/volunteer-missions-algolia.component";
-import { VolunteerMissionsSkeleton } from "../components/volunteer-missions-skeleton.component";
+import { VolunteerAlgolia } from "../components/volunteer-algolia.component";
+import { VolunteerAlgoliaSkeleton } from "../components/volunteer-algolia-skeleton.component";
 import { LoaderReturnType } from "../loader";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 
 export function VolunteerCommunity() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
-  const [missionsUiReady, setMissionsUiReady] = useState(false);
+  const [volunteerUiReady, setVolunteerUiReady] = useState(false);
 
   return (
     <section id="community" className="w-full bg-white md:bg-gray py-28">
@@ -28,20 +28,20 @@ export function VolunteerCommunity() {
 
         <div
           className="relative min-h-[min(580px,85vh)] bg-gray"
-          aria-busy={missionsUiReady ? undefined : true}
+          aria-busy={volunteerUiReady ? undefined : true}
         >
           <div
             className={cn(
-              !missionsUiReady && "pointer-events-none select-none opacity-0",
+              !volunteerUiReady && "pointer-events-none select-none opacity-0",
             )}
           >
-            <VolunteerMissionsAlgolia
+            <VolunteerAlgolia
               appId={ALGOLIA_APP_ID}
               apiKey={ALGOLIA_SEARCH_API_KEY}
-              onMissionsUiReady={() => setMissionsUiReady(true)}
+              onVolunteerUiReady={() => setVolunteerUiReady(true)}
             />
           </div>
-          {!missionsUiReady ? <VolunteerMissionsSkeleton /> : null}
+          {!volunteerUiReady ? <VolunteerAlgoliaSkeleton /> : null}
         </div>
 
         <div className="content-padding">
