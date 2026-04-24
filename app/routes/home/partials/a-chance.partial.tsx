@@ -8,7 +8,7 @@ export function AChanceSection() {
         id="a-chance-title"
         className={cn(
           "w-screen text-2xl md:text-[40px] font-extrabold text-center text-pretty",
-          "fixed top-0 z-10",
+          "fixed top-0 z-20",
           "pt-20 lg:pt-24",
           "px-10 md:px-12",
           "md:w-full",
