@@ -1,8 +1,8 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import { CommunityCard, RegionCard, Trip } from "./types";
+import { RegionCard, Trip } from "./types";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { createImageUrlFromGuid } from "~/lib/utils";
-import { mockCommunityData, mockRegionData } from "./mock-data";
+import { mockRegionData } from "./mock-data";
 
 const fetchMissionTrips = async () => {
   const missionTrips = await fetchRockData({
@@ -21,8 +21,9 @@ const fetchMissionTrips = async () => {
 
 export type LoaderReturnType = {
   missionTrips: Record<string, Trip[]>;
-  mockCommunityData: CommunityCard[];
   mockRegionData: RegionCard[];
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
 };
 
 export async function loader({ request: _request }: LoaderFunctionArgs) {
@@ -81,7 +82,8 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
 
   return Response.json({
     missionTrips: groupedTrips,
-    mockCommunityData,
     mockRegionData,
-  } as LoaderReturnType);
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? "",
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? "",
+  } satisfies LoaderReturnType);
 }

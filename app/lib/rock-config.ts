@@ -26,7 +26,7 @@ export const getContentChannelUrl = (key: number): string => {
       }
       return acc;
     },
-    {} as Record<number, string>
+    {} as Record<number, string>,
   );
 
   return channelMap[key] || "/";
@@ -53,10 +53,6 @@ export const RockCampuses = [
     pathname: "boynton-beach",
   },
   {
-    name: "Downtown West Palm Beach",
-    pathname: "downtown-west-palm-beach",
-  },
-  {
     name: "Jupiter",
     pathname: "jupiter",
   },
@@ -81,10 +77,6 @@ export const RockCampuses = [
     pathname: "boca-raton",
   },
   {
-    name: "Riviera Beach",
-    pathname: "riviera-beach",
-  },
-  {
     name: "Trinity",
     pathname: "trinity",
   },
@@ -99,6 +91,10 @@ export const RockCampuses = [
   {
     name: "Christ Fellowship Español Royal Palm Beach",
     pathname: "iglesia-royal-palm-beach",
+  },
+  {
+    name: "Online",
+    pathname: "cf-everywhere",
   },
 ] as const;
 
