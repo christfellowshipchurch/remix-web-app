@@ -1,5 +1,26 @@
 import { icons } from "~/lib/icons";
 
+/** Defined values for the event `groupType` attribute (Rock defined value list). */
+export const EVENT_REGISTRATION_GROUP_TYPES = [
+  'Baptism',
+  'Journey',
+  'Kids Starting Line',
+  'Kids Dedication',
+  'Dream Team Kickoff',
+] as const;
+
+export type EventRegistrationGroupType =
+  (typeof EVENT_REGISTRATION_GROUP_TYPES)[number];
+
+export function isEventRegistrationGroupType(
+  value: string | undefined | null,
+): value is EventRegistrationGroupType {
+  if (value == null || value === '') {
+    return false;
+  }
+  return (EVENT_REGISTRATION_GROUP_TYPES as readonly string[]).includes(value);
+}
+
 export type EventSinglePageType = {
   title: string;
   titleOverride?: string;
@@ -9,7 +30,7 @@ export type EventSinglePageType = {
   coverImage: string;
   aboutTitle?: string;
   aboutContent?: string;
-  groupType?: string; // Type for the clickthrough registration
+  groupType?: EventRegistrationGroupType;
   keyInfoCards?: { title: string; description: string; icon: string }[];
   whatToExpect?: { title: string; description: string }[];
   moreInfoTitle?: string;

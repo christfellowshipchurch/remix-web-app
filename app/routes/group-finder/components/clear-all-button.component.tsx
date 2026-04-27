@@ -4,8 +4,12 @@ import { cn } from "~/lib/utils";
 import { hasInstantSearchIndexUiActiveFilters } from "~/lib/algolia-active-filters";
 
 interface AlgoliaFinderClearAllButtonProps {
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 5 or Pattern B step 4. */
-  onClearAllToUrl: () => void;
+  /**
+   * Sync cleared state to the URL (e.g. `setSearchParams`).
+   * Omit when `<InstantSearch routing={…}>` already persists UI state to the URL so you avoid a second navigation/search.
+   * See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 5 or Pattern B step 4.
+   */
+  onClearAllToUrl?: () => void;
   className?: string;
   /**
    * True when filters exist outside InstantSearch uiState (e.g. group finder campus/age/geo).
@@ -26,13 +30,13 @@ export const AlgoliaFinderClearAllButton = ({
 
   const handleClearAll = () => {
     if (!canClear) return;
-    onClearAllToUrl();
     setIndexUiState((state) => ({
       ...state,
       query: "",
       refinementList: {},
       page: 0,
     }));
+    onClearAllToUrl?.();
   };
 
   return (

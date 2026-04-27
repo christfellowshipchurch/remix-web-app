@@ -1,3 +1,5 @@
+import { ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
+
 const faqDefaultData = [
   {
     title: "What does Christ Fellowship believe?",
@@ -26,7 +28,7 @@ const faqDefaultData = [
   {
     title: "Is childcare provided?",
     content:
-      'Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="https://rock.gocf.org/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="https://rock.gocf.org/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!',
+      `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
   },
 ];
 
@@ -121,7 +123,7 @@ const faqJupiterData = [
   {
     title: "Is childcare provided?",
     content:
-      'Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="https://rock.gocf.org/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="https://rock.gocf.org/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!',
+      `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
   },
 ];
 
@@ -154,7 +156,7 @@ const faqWestlakeData = [
   {
     title: "Is childcare provided?",
     content:
-      'Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="https://rock.gocf.org/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="https://rock.gocf.org/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!',
+      `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
   },
 ];
 
@@ -185,7 +187,7 @@ const faqTrinityData = [
   {
     title: "Is childcare provided?",
     content:
-      'Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="https://rock.gocf.org/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting this Sunday, <a target="_blank" href="https://rock.gocf.org/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that Christ Fellowship Kids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!',
+      `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that Christ Fellowship Kids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
   },
   {
     title: "Is there anything available for students and young adults?",
@@ -263,7 +265,7 @@ export const faqEspanolData = [
   {
     title: "¿Tienen cuidado de niños?",
     content:
-      '¡Sí! Contamos con un área divertida, segura y limpia para niños y estudiantes (desde recién nacidos hasta quinto grado).<br/> <br/> <b> ¿Nuevo en Christ Fellowship Kids?</b> <br/> ¡Nos encantaría conocerte! Agradecemos que nos hagas saber un poco más sobre tu familia utilizando <a target="_blank" href="https://rock.gocf.org/FamilyRegistration">este breve formulario</a> para que nuestro equipo pueda ayudar a tus hijos a conectarse con Christ Fellowship Kids. <br/> <br/> Si planeas visitar Christ Fellowship Kids este domingo, ¡<a target="_blank" href="https://rock.gocf.org/CFKidsPlanaVisit">déjanos saber</a> ,para que podamos ayudar a tu familia a experimentar todo lo que Christ Fellowship Kids tiene para ofrecerte! <br/> <br/> ¡Puedes aprender más sobre la programación de Christ Fellowship Kids <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">aquí</a>!',
+      `¡Sí! Contamos con un área divertida, segura y limpia para niños y estudiantes (desde recién nacidos hasta quinto grado).<br/> <br/> <b> ¿Nuevo en Christ Fellowship Kids?</b> <br/> ¡Nos encantaría conocerte! Agradecemos que nos hagas saber un poco más sobre tu familia utilizando <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">este breve formulario</a> para que nuestro equipo pueda ayudar a tus hijos a conectarse con Christ Fellowship Kids. <br/> <br/> Si planeas visitar Christ Fellowship Kids este domingo, ¡<a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">déjanos saber</a> ,para que podamos ayudar a tu familia a experimentar todo lo que Christ Fellowship Kids tiene para ofrecerte! <br/> <br/> ¡Puedes aprender más sobre la programación de Christ Fellowship Kids <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">aquí</a>!`,
   },
 ];
 
@@ -299,7 +301,7 @@ export const faqCfEverywhereData = [
   },
   {
     title: "How can I get in contact with a pastor?",
-    content: `One of our pastors would love to connect with you! If you have a question, please reach out <a target="blank" href="https://rock.gocf.org/contactus">here</a>. If you are in need of prayer, let us know on the <a target="blank" href="https://rock.gocf.org/RequestPrayer">prayer form</a> so we can follow up with you.`,
+    content: `One of our pastors would love to connect with you! If you have a question, please reach out <a target="blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/contactus">here</a>. If you are in need of prayer, let us know on the <a target="blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/RequestPrayer">prayer form</a> so we can follow up with you.`,
   },
   {
     title: "How can I get involved?",

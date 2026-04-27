@@ -1,6 +1,7 @@
 import { Icon } from "~/primitives/icon/icon";
 import { Button } from "~/primitives/button/button.primitive";
 import { Link } from "react-router-dom";
+import { ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
 import { MinistryService } from "../../page-builder/types";
 import { formatDaysOfWeek, formattedServiceTimes } from "../utils";
 
@@ -71,7 +72,7 @@ export const ServiceCard = ({ service, onLinkClick }: ServiceCardProps) => {
           <Button
             href={
               service.planAVisit
-                ? "https://rock.gocf.org/CFKidsPlanaVisit" // The Plan a Visit form is not working as an embed. So we will open the Rock RMS form in a new tab for now.
+                ? `${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit` // The Plan a Visit form is not working as an embed. So we will open the Rock RMS form in a new tab for now.
                 : service.learnMoreLink
             }
             intent="primary"
