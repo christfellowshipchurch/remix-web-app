@@ -7,7 +7,7 @@ import { RockProxyEmbed } from "~/components/rock-embed";
 import { EventFinderHit, EventSinglePageType } from "../types";
 import { RootLoaderData } from "~/routes/navbar/loader";
 import { ClickableCard } from "./clickable-card.component";
-import { RockCampuses } from "~/lib/rock-config";
+import { RockCampuses, ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
 import {
   getSubGroupTypeDescription,
   getWorkflowTypeGuidForGroupType,
@@ -858,9 +858,12 @@ const FormStep = ({
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
     selectedCampus,
   });
+
   const isKidsGroupType =
     groupType === "Kids Dedication" || groupType === "Kids Starting Line";
-  const rockEmbedUrl = `https://rock.gocf.org/${isKidsGroupType ? "kids-" : ""}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
+
+  const rockEmbedUrl = `${ROCK_PUBLIC_SITE_ORIGIN}/${isKidsGroupType ? "kids-" : ""}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
+
   const formHeight = getEmbedHeightForGroupType(groupType);
   const [embedHeight, setEmbedHeight] = useState(formHeight);
   const loadCountRef = useRef(0);

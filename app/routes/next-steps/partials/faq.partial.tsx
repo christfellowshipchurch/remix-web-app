@@ -1,4 +1,5 @@
 import { StyledAccordion } from "~/components";
+import { ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
 import { Button } from "~/primitives/button/button.primitive";
 
 const faqs = [
@@ -20,7 +21,7 @@ const faqs = [
   {
     title: "What resources does Christ Fellowship offer?",
     content:
-      "Every week, we create a collection of personalized resources including encouraging messages and practical articles, devotionals, and podcasts. We also offer <a className='underline text-ocean' href='/ministries/care'>care ministries</a> throughout the week for every hurt, habit, or hangup. Have something we can be praying with you for? <a className='underline text-ocean' target='_blank' href='https://rock.gocf.org/RequestPrayer'>Share your prayer request!</a>",
+      `Every week, we create a collection of personalized resources including encouraging messages and practical articles, devotionals, and podcasts. We also offer <a className='underline text-ocean' href='/ministries/care'>care ministries</a> throughout the week for every hurt, habit, or hangup. Have something we can be praying with you for? <a className='underline text-ocean' target='_blank' href='${ROCK_PUBLIC_SITE_ORIGIN}/RequestPrayer'>Share your prayer request!</a>`,
   },
   {
     title: "Where is Christ Fellowship located?",
@@ -51,7 +52,7 @@ export function FAQSection() {
             Reach out to someone on our team for more information.
           </p>
           <Button
-            href="https://rock.gocf.org/contactus"
+            href={`${ROCK_PUBLIC_SITE_ORIGIN}/contactus`}
             target="_blank"
             intent="secondary"
           >
