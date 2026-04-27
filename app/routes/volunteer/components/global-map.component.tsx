@@ -11,7 +11,7 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
     const x = (lng + 180) * (width / 360);
     const clampedLat = Math.max(Math.min(lat, 85), -85);
     const latRad = clampedLat * (Math.PI / 180);
-    const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+    const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2.1));
     const y = height / 2 - (width * mercN) / (2 * Math.PI);
 
     return {
@@ -24,12 +24,13 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
     <div className="relative w-full max-w-[1030px] mx-auto">
       <img
         ref={ref}
-        src={getImageUrl("3143905")}
+        src={getImageUrl("3164007")}
         alt="World map"
         className="w-full h-auto"
       />
 
       {trips.map((trip) => {
+        if (!trip.coordinates) return null;
         const { x, y } = projectToMap(
           trip.coordinates.lat,
           trip.coordinates.lng,

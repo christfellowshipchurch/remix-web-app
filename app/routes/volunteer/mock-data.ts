@@ -1,53 +1,5 @@
-import { CommunityCard, RegionCard } from "./types";
+import { RegionCard } from "./types";
 import type { VolunteerFeaturedEvent } from "./types";
-
-export const mockCommunityData: CommunityCard[] = [
-  {
-    title: "Christ Fellowship Prison Locations",
-    image:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
-    ctas: [
-      {
-        label: "Sign Up",
-        href: "#",
-      },
-      {
-        label: "Learn More",
-        href: "#",
-      },
-    ],
-  },
-  {
-    title: "Special Needs",
-    image:
-      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80",
-    ctas: [
-      {
-        label: "Sign Up",
-        href: "#",
-      },
-      {
-        label: "Learn More",
-        href: "#",
-      },
-    ],
-  },
-  {
-    title: "Foster and Adoptive Care",
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
-    ctas: [
-      {
-        label: "Sign Up",
-        href: "#",
-      },
-      {
-        label: "Learn More",
-        href: "#",
-      },
-    ],
-  },
-];
 
 export const mockRegionData: RegionCard[] = [
   {

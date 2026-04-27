@@ -1,3 +1,4 @@
+import { ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
 import { Button } from "~/primitives/button/button.primitive";
 import { sanitizeCmsHtml } from "~/lib/sanitize";
 
@@ -30,7 +31,7 @@ export const WhatBibleSaysAboutGiving = () => {
           <Card
             title="Tithing"
             description="TRUSTING GOD WITH YOUR FINANCES."
-            content="Tithing is a biblical principle that means the tenth. The first tenth, which belongs to God, is Holy and set apart for Him. When we bring our tithe to God, it means that we trust and acknowledge that He’s the giver of every good thing in our lives. Tithing isn’t as much about finances as it is about faith. It’s not about what God wants from you but what He has for you.<br/><br/>In <span class='font-bold'>Malachi 3:10</span>, the Bible says we can test this promise. When we bring our first and best back to God, He promises to bless the rest of our resources so that we could be a blessing toward others.<br/><br/>Is tithing new for you? <a class='text-ocean font-bold underline' href='https://rock.gocf.org/310challenge' target='_blank'>Take the Malachi 3:10 Challenge</a> today!"
+            content={`Tithing is a biblical principle that means the tenth. The first tenth, which belongs to God, is Holy and set apart for Him. When we bring our tithe to God, it means that we trust and acknowledge that He’s the giver of every good thing in our lives. Tithing isn’t as much about finances as it is about faith. It’s not about what God wants from you but what He has for you.<br/><br/>In <span class='font-bold'>Malachi 3:10</span>, the Bible says we can test this promise. When we bring our first and best back to God, He promises to bless the rest of our resources so that we could be a blessing toward others.<br/><br/>Is tithing new for you? <a class='text-ocean font-bold underline' href='${ROCK_PUBLIC_SITE_ORIGIN}/310challenge' target='_blank'>Take the Malachi 3:10 Challenge</a> today!`}
           />
           <Card
             title="Offerings"

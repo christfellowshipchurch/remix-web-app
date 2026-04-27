@@ -35,7 +35,7 @@ const cards = [
     href: "#globe",
     iconName: "world" as const,
     image: "https://rock.christfellowship.church/GetImage.ashx?id=3160920",
-    alt: "A scenic view representing international mission trips",
+    alt: "A scenic view representing international volunteer trips",
   },
 ];
 
