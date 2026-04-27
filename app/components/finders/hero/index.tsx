@@ -1,12 +1,19 @@
+import { Link } from "react-router-dom";
 import { Fragment, type ReactNode } from "react";
 
 import { SectionTitle } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
+import { Icon } from "~/primitives/icon/icon";
 
 export type FinderHeroBgColor = "ocean" | "navy" | "white";
 type FinderHeroCtaPlacement = "mobile" | "desktop";
+
+type FinderHeroBackLink = {
+  href: string;
+  label: string;
+};
 
 type FinderHeroLinkCta = {
   href: string;
@@ -28,9 +35,7 @@ function renderFinderHeroCta(
   placement: FinderHeroCtaPlacement,
 ) {
   if ("render" in cta) {
-    return (
-      <Fragment key={cta.key ?? index}>{cta.render(placement)}</Fragment>
-    );
+    return <Fragment key={cta.key ?? index}>{cta.render(placement)}</Fragment>;
   }
 
   return (
@@ -57,6 +62,7 @@ export const FinderHero = ({
   desktopDescription,
   ctas,
   bgColor,
+  backLink,
 }: {
   bgColor: FinderHeroBgColor;
   bgImage: string;
@@ -72,6 +78,7 @@ export const FinderHero = ({
   mobileDescription: string;
   desktopDescription: string;
   ctas?: FinderHeroCta[];
+  backLink?: FinderHeroBackLink;
 }) => {
   const trimmedSectionTitle = sectionTitle?.trim() ?? "";
   const showSectionTitle = trimmedSectionTitle.length > 0;
@@ -114,6 +121,15 @@ export const FinderHero = ({
             </div>
           ) : null}
           <div className="flex flex-col gap-2">
+            {backLink ? (
+              <Link
+                to={backLink.href}
+                className="flex items-center gap-2 hover:text-ocean transition-colors mb-10"
+              >
+                <Icon size={16} name="arrowBack" />
+                <span className="text-sm font-medium">{backLink.label}</span>
+              </Link>
+            ) : null}
             {topic ? (
               <span
                 className={cn(

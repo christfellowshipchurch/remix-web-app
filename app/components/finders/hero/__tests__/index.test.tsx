@@ -21,6 +21,27 @@ function renderFinderHero(props: Partial<React.ComponentProps<typeof FinderHero>
 }
 
 describe('FinderHero', () => {
+  it('does not render a back link by default', () => {
+    renderFinderHero();
+
+    expect(
+      screen.queryByRole('link', { name: 'Back to All Classes' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the configured back link', () => {
+    renderFinderHero({
+      backLink: {
+        href: '/class-finder',
+        label: 'Back to All Classes',
+      },
+    });
+
+    expect(
+      screen.getByRole('link', { name: 'Back to All Classes' }),
+    ).toHaveAttribute('href', '/class-finder');
+  });
+
   it('renders custom CTAs in the class topic CTA placements', () => {
     renderFinderHero({
       topic: 'Bible Study',

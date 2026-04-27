@@ -91,7 +91,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   }, [discussionGuideUrl, classTrailer]);
 
   return (
-    <section className="flex flex-col items-center dark:bg-gray-900">
+    <section className="flex flex-col items-center dark:bg-gray-900 pt-6">
       <div className="w-full flex-none">
         <FinderHero
           bgColor="white"
@@ -102,6 +102,10 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           mobileDescription={heroDescriptionHtml}
           desktopDescription={heroDescriptionHtml}
           ctas={ctas}
+          backLink={{
+            href: "/class-finder",
+            label: "Back to All Classes",
+          }}
         />
       </div>
 
