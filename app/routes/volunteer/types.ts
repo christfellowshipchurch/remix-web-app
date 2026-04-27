@@ -1,35 +1,3 @@
-export type VolunteerHitType = {
-  objectID: string;
-  title?: string;
-  name?: string;
-  description?: string;
-  content?: string;
-  about?: string;
-  category?: string;
-  groupType?: string;
-  coverImage?: {
-    sources: {
-      uri: string;
-    }[];
-  };
-  campus?: string;
-  location?: string;
-  city?: string;
-  country?: string;
-  dateOfTrip?: string;
-  eventTime?: string;
-  timeRange?: string;
-  whatToKnow?: string;
-  contactName?: string;
-  contactEmail?: string;
-  questionsHtml?: string;
-  applyUrl?: string;
-  signupUrl?: string;
-  spotsLeft?: number | string;
-
-  /** Present when filtering by group GUID in Algolia */
-  groupGuid?: string;
-};
 import type { Coordinates } from "./country-coordinates";
 
 /** Algolia index id (configured in Algolia dashboard). */
@@ -65,6 +33,11 @@ export interface Volunteer {
   location: VolunteerLocation;
   opportunityType: string[];
   spotsLeft: number;
+
+  // Missing in Algolia index
+  missionsUrl: string;
+  contactName: string;
+  contactEmail: string;
 }
 
 export type VolunteerList = Volunteer[];

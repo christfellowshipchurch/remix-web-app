@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 
 import type { Volunteer } from "../types";
+import { volunteerCategoryPillClassName } from "../volunteer-category-pill";
 
 const ROCK_CAMPUS_NAME_SET = new Set<string>(
   RockCampuses.map((campus) => campus.name),
@@ -17,29 +18,6 @@ function firstRockCampusFromList(campusList: string[] | undefined): string {
     if (name && ROCK_CAMPUS_NAME_SET.has(name)) return name;
   }
   return "—";
-}
-
-/** Category pill styles (Algolia `category` labels). */
-function categoryBadgeClass(label: string): string {
-  const key = label.toLowerCase().trim();
-
-  if (key.includes("crisis")) {
-    return "bg-[#F3E4E5] text-alert";
-  }
-  if (key.includes("hospitality")) {
-    return "bg-ocean/12 text-ocean";
-  }
-  if (key.includes("outreach") || key.includes("community partnerships")) {
-    return "bg-[#DCE5EB] text-navy";
-  }
-  if (key.includes("support") && key.includes("team")) {
-    return "bg-[#E5F3F2] text-cotton-candy";
-  }
-  if (key.includes("work project")) {
-    return "bg-[#E8E8EA] text-neutral-dark";
-  }
-
-  return "bg-neutral-lighter text-neutral-darker";
 }
 
 /** Avoid re-rendering (and img reload) when Algolia returns new hit objects with the same fields. */
@@ -87,7 +65,7 @@ function VolunteerCardInner({
 }) {
   return (
     <Link
-      to={`/group-finder/${volunteer.groupGuid}`}
+      to={`/volunteer/${volunteer.groupGuid}`}
       prefetch="intent"
       className={cn(
         "group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-[36px] bg-white shadow-md transition-shadow hover:shadow-lg",
@@ -126,9 +104,8 @@ function VolunteerCardInner({
 
         <div className="flex flex-wrap items-center gap-2">
           <span
-            className={cn(
-              "rounded-full px-3 py-1 text-xs font-bold",
-              categoryBadgeClass(volunteer.category?.trim() ?? ""),
+            className={volunteerCategoryPillClassName(
+              volunteer.category?.trim() ?? "",
             )}
           >
             {volunteer.category?.trim() ?? ""}
