@@ -1,3 +1,9 @@
+/**
+ * Public Rock RMS web origin for browser links and iframe embeds.
+ * Prefer this over `rock.gocf.org`, which may resolve to RFC1918 addresses and trigger Chrome PNA for embedded content.
+ */
+export const ROCK_PUBLIC_SITE_ORIGIN = "https://rock.christfellowship.church";
+
 export const ContentChannelIds = {
   articles: 43,
   default: 85,
