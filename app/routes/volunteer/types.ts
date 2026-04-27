@@ -1,19 +1,14 @@
+import type { Coordinates } from "./country-coordinates";
+
 export type Trip = {
   id: number;
   title: string;
   description: string;
-  coverImage: string;
-  applyUrl?: string;
-  donateUrl: string;
-  groupType: string;
-  city: string;
+  image: string;
   country: string;
-  dateOfTrip: string;
-  cost: number;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
+  tripDate: string;
+  missionsUrl: string;
+  coordinates?: Coordinates;
 };
 
 export type CommunityCard = {
