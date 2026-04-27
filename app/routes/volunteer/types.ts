@@ -1,3 +1,5 @@
+import type { Coordinates } from "./country-coordinates";
+
 /** Algolia index id (configured in Algolia dashboard). */
 export const VOLUNTEER_ALGOLIA_INDEX = "dev_Missions";
 
@@ -39,18 +41,11 @@ export type Trip = {
   id: number;
   title: string;
   description: string;
-  coverImage: string;
-  applyUrl?: string;
-  donateUrl: string;
-  groupType: string;
-  city: string;
+  image: string;
   country: string;
-  dateOfTrip: string;
-  cost: number;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
+  tripDate: string;
+  missionsUrl: string;
+  coordinates?: Coordinates;
 };
 
 export type CommunityCard = {
