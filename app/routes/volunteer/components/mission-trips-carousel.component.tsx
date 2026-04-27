@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, useCallback } from "react";
 
 import { Trip } from "../types";
-import { MissionTripCard } from "./cards/mission-trip-card.component";
+import { VolunteerTripCard } from "./cards/volunteer-trip-card.component";
 import {
   Carousel,
   CarouselArrows,
@@ -111,7 +111,7 @@ function MobileMultiTripsCarousel({ trips }: { trips: Trip[] }) {
               className="flex w-[60vw] max-w-[258px] min-w-0 min-h-0 basis-[60vw] flex-col pl-5 self-stretch"
               style={minSlideH ? { minHeight: minSlideH } : undefined}
             >
-              <MissionTripCard
+              <VolunteerTripCard
                 trip={trip}
                 className="h-full w-full min-h-0 min-w-0 max-w-full"
               />
@@ -131,7 +131,7 @@ function MobileMultiTripsCarousel({ trips }: { trips: Trip[] }) {
   );
 }
 
-export function MissionTripsCarousel({ trips }: { trips: Trip[] }) {
+export function VolunteerTripsCarousel({ trips }: { trips: Trip[] }) {
   if (trips.length === 0) {
     return null;
   }
@@ -142,7 +142,7 @@ export function MissionTripsCarousel({ trips }: { trips: Trip[] }) {
       <div className="w-[calc(100%+2.5rem)] -mx-5 md:hidden">
         {trips.length === 1 ? (
           <div className="px-5">
-            <MissionTripCard trip={trips[0]!} />
+            <VolunteerTripCard trip={trips[0]!} />
           </div>
         ) : (
           <MobileMultiTripsCarousel trips={trips} />
@@ -154,7 +154,7 @@ export function MissionTripsCarousel({ trips }: { trips: Trip[] }) {
         {trips.length <= CARDS_PER_SLIDE ? (
           <div className="flex flex-col gap-4">
             {trips.map((trip) => (
-              <MissionTripCard key={trip.id} trip={trip} />
+              <VolunteerTripCard key={trip.id} trip={trip} />
             ))}
           </div>
         ) : (
@@ -175,7 +175,7 @@ function ChunkCarousel({ trips }: { trips: Trip[] }) {
           <CarouselItem key={i} className="basis-full">
             <div className="flex flex-col gap-4">
               {chunk.map((trip) => (
-                <MissionTripCard key={trip.id} trip={trip} />
+                <VolunteerTripCard key={trip.id} trip={trip} />
               ))}
             </div>
           </CarouselItem>

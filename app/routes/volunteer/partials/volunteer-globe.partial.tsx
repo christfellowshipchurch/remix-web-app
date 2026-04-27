@@ -2,13 +2,12 @@ import { SectionTitle } from "~/components/section-title";
 import { GlobalMap } from "../components/global-map.component";
 import { useLoaderData } from "react-router-dom";
 import { Trip } from "../types";
-import { MissionTripsCarousel } from "../components/mission-trips-carousel.component";
+import { VolunteerTripsCarousel } from "../components/mission-trips-carousel.component";
 
 export function VolunteerGlobe() {
-  const { missionTrips } = useLoaderData();
-
+  const { volunteerTrips } = useLoaderData();
   const allTrips: Trip[] = Object.values(
-    missionTrips as Record<string, Trip[]>,
+    volunteerTrips as Record<string, Trip[]>,
   ).flat();
 
   return (
@@ -36,7 +35,7 @@ export function VolunteerGlobe() {
         </div>
         <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-12">
           <div className="w-full lg:max-w-[480px] shrink-0">
-            <MissionTripsCarousel trips={allTrips} />
+            <VolunteerTripsCarousel trips={allTrips} />
           </div>
           <div className="flex items-center justify-center w-full px-2 lg:px-0">
             <GlobalMap trips={allTrips} />

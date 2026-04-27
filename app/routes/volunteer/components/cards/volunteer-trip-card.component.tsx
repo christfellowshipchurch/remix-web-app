@@ -3,7 +3,7 @@ import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 
-export function MissionTripCard({
+export function VolunteerTripCard({
   trip,
   className,
 }: {
