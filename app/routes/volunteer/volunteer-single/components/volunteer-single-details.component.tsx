@@ -1,25 +1,25 @@
 import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 
-import type { Volunteer } from "../../types";
+import type { VolunteerMissionDetail } from "../types";
 
 export function str(v: unknown): string | undefined {
   return typeof v === "string" && v.trim() ? v.trim() : undefined;
 }
 
-function formatEventTimeRange(hit: Volunteer): string {
-  const start = str(hit.eventTimeStr);
-  const end = str(hit.eventEndTimeStr);
+function formatEventTimeRange(mission: VolunteerMissionDetail): string {
+  const start = str(mission.eventTimeStr);
+  const end = str(mission.eventEndTimeStr);
   if (start && end && start !== end) {
     return `${start} – ${end}`;
   }
   return start || end || "—";
 }
 
-export function MissionDetailRows({ hit }: { hit: Volunteer }) {
-  const locationLabel = str(hit?.checkInLocation) || "—";
-  const dateLabel = str(hit?.eventDateStr) || "—";
-  const timeLabel = formatEventTimeRange(hit);
+export function MissionDetailRows({ mission }: { mission: VolunteerMissionDetail }) {
+  const locationLabel = str(mission.checkInLocation) || "—";
+  const dateLabel = str(mission.eventDateStr) || "—";
+  const timeLabel = formatEventTimeRange(mission);
 
   const rows = [
     { icon: "map" as const, label: locationLabel },

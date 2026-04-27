@@ -7,11 +7,10 @@ import { Button } from "~/primitives/button/button.primitive";
 import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 
-import type { Volunteer } from "../../types";
+import type { VolunteerMissionDetail } from "../types";
 import { volunteerCategoryPillClassName } from "../../volunteer-category-pill";
 import {
   MissionDetailRows,
-  str,
   WhatToKnowBody,
 } from "../components/volunteer-single-details.component";
 
@@ -21,7 +20,7 @@ function getLocationPathForClipboard(): string {
   return `${pathname}${search}${hash}`;
 }
 
-function useCopyPagePath() {
+export function useCopyPagePath() {
   const [copied, setCopied] = useState(false);
 
   const copyPath = useCallback(async () => {
@@ -39,7 +38,7 @@ function useCopyPagePath() {
   return { copyPath, copied };
 }
 
-function VolunteerNav({
+export function VolunteerNav({
   copied,
   onCopyPath,
 }: {
@@ -71,7 +70,7 @@ function VolunteerNav({
   );
 }
 
-function Hero({
+export function Hero({
   title,
   coverImage,
 }: {
@@ -105,7 +104,7 @@ function Hero({
   );
 }
 
-function Intro({
+export function Intro({
   category,
   title,
   spotsLabel,
@@ -143,7 +142,7 @@ function Intro({
   );
 }
 
-function About({ aboutBody }: { aboutBody: string }) {
+export function About({ aboutBody }: { aboutBody: string }) {
   const trimmed = aboutBody.trim();
   if (!trimmed) return null;
 
@@ -159,7 +158,7 @@ function About({ aboutBody }: { aboutBody: string }) {
   );
 }
 
-function WhatToKnow({ raw }: { raw: string }) {
+export function WhatToKnow({ raw }: { raw: string }) {
   if (!raw.trim()) return null;
 
   return (
@@ -170,7 +169,7 @@ function WhatToKnow({ raw }: { raw: string }) {
   );
 }
 
-function Questions({
+export function Questions({
   summary,
   contactName,
   contactEmail,
@@ -228,21 +227,21 @@ function Questions({
   );
 }
 
-function Sidebar({
-  hit,
+export function Sidebar({
+  mission,
   signupHref,
   copied,
   onCopyPath,
 }: {
-  hit: Volunteer;
+  mission: VolunteerMissionDetail;
   signupHref: string;
   copied: boolean;
   onCopyPath: () => void;
 }) {
   return (
-    <aside className="hidden lg:block">
+    <aside className="hidden md:block">
       <div className="sticky top-24 space-y-6 rounded-2xl border border-neutral-lighter bg-white p-6 shadow-sm">
-        <MissionDetailRows hit={hit} />
+        <MissionDetailRows mission={mission} />
         <div className="h-px w-full bg-[#E5E7EB]" />
         <div className="flex flex-col gap-3">
           <Button
@@ -269,7 +268,7 @@ function Sidebar({
   );
 }
 
-function MobileBottomBar({
+export function MobileBottomBar({
   copied,
   onCopyPath,
   signupHref,
@@ -278,7 +277,7 @@ function MobileBottomBar({
   onCopyPath: () => void;
   signupHref: string;
 }) {
-  /** Portals to `body` so `position: fixed` is not trapped by InstantSearch / transform ancestors. */
+  /** Portals to `body` so `position: fixed` is not trapped by transform ancestors. */
   const [mountToBody, setMountToBody] = useState(false);
 
   useLayoutEffect(() => {
@@ -325,77 +324,4 @@ function MobileBottomBar({
   }
 
   return mountToBody ? createPortal(bar, document.body) : bar;
-}
-
-export function VolunteerSingle({ hit }: { hit: Volunteer }) {
-  const title = str(hit.title) || "Volunteer opportunity";
-  const category = str(hit.category) || "Volunteer opportunity";
-  const coverImage = str(hit.coverImage?.sources[0]?.uri) || undefined;
-  const aboutBody = str(hit.summary) || "";
-  const signupHref = str(hit.missionsUrl) || "/volunteer-form/welcome";
-  const contactName = str(hit.contactName);
-  const contactEmail = str(hit.contactEmail);
-
-  const spotsRaw = hit.spotsLeft;
-  const spotsLabel =
-    spotsRaw !== undefined && spotsRaw !== null && String(spotsRaw).length > 0
-      ? `${String(spotsRaw)} spots left`
-      : null;
-
-  const { copyPath, copied } = useCopyPagePath();
-
-  return (
-    <article className="min-h-screen bg-white md:pb-24 flex flex-col">
-      <VolunteerNav copied={copied} onCopyPath={copyPath} />
-      <Hero title={title} coverImage={coverImage} />
-
-      <div className="shrink-0 content-padding mx-auto w-full max-w-screen-content py-8 pb-0 md:py-12">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_min(380px,100%)] lg:items-start lg:gap-14">
-          <div className="min-w-0 space-y-8">
-            <Intro category={category} title={title} spotsLabel={spotsLabel} />
-
-            {/* Mobile-only mission details */}
-            <div className="md:hidden pb-4">
-              <MissionDetailRows hit={hit} />
-            </div>
-
-            <div className="hidden lg:block">
-              <About aboutBody={aboutBody} />
-              <WhatToKnow raw={hit.summary} />
-              <Questions
-                summary={hit.summary}
-                contactName={contactName}
-                contactEmail={contactEmail}
-              />
-            </div>
-          </div>
-
-          <Sidebar
-            hit={hit}
-            signupHref={signupHref}
-            copied={copied}
-            onCopyPath={copyPath}
-          />
-        </div>
-      </div>
-
-      <div className="flex min-h-0 w-full flex-1 flex-col bg-gray py-8 content-padding md:hidden">
-        <div className="mx-auto w-full max-w-screen-content">
-          <About aboutBody={aboutBody} />
-          <WhatToKnow raw={hit.summary} />
-          <Questions
-            summary={hit.summary}
-            contactName={contactName}
-            contactEmail={contactEmail}
-          />
-        </div>
-      </div>
-
-      <MobileBottomBar
-        copied={copied}
-        onCopyPath={copyPath}
-        signupHref={signupHref}
-      />
-    </article>
-  );
 }
