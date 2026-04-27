@@ -1,6 +1,8 @@
-import { cn, getImageUrl } from "~/lib/utils";
-import { Icon } from "~/primitives/icon/icon";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import type { PointerEvent } from "react";
+
+import { cn } from "~/lib/utils";
+import { Icon } from "~/primitives/icon/icon";
 
 import {
   volunteerTestimonialsData,
@@ -42,7 +44,7 @@ export function VolunteerTestimonialCarousel() {
   );
 
   const handlePointerDown = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
+    (e: PointerEvent<HTMLDivElement>) => {
       if (e.pointerType === "mouse" && e.button !== 0) return;
       const target = e.target as HTMLElement;
       if (target.closest("button, a")) return;
@@ -62,7 +64,7 @@ export function VolunteerTestimonialCarousel() {
   );
 
   const handlePointerUp = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
+    (e: PointerEvent<HTMLDivElement>) => {
       const start = swipeStartRef.current;
       if (!start || start.pointerId !== e.pointerId) return;
 
@@ -84,7 +86,7 @@ export function VolunteerTestimonialCarousel() {
   );
 
   const handlePointerCancel = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
+    (e: PointerEvent<HTMLDivElement>) => {
       if (swipeStartRef.current?.pointerId !== e.pointerId) return;
       clearSwipeTracking(e.currentTarget, e.pointerId);
     },
@@ -133,7 +135,6 @@ export function VolunteerTestimonialCarousel() {
         <div
           ref={desktopViewportRef}
           className="mx-auto hidden w-full max-w-content cursor-grab select-none overflow-hidden py-2 active:cursor-grabbing lg:block"
-          className="mx-auto hidden w-full max-w-content cursor-grab select-none overflow-hidden py-2 active:cursor-grabbing lg:block"
         >
           <div
             className="flex gap-4 transition-transform duration-300 ease-out"
@@ -147,7 +148,7 @@ export function VolunteerTestimonialCarousel() {
                 className="min-w-0 shrink-0"
                 style={{ width: desktopSlideWidthPx }}
                 aria-hidden={index !== activeIndex}
-                inert={index !== activeIndex}
+                inert={index !== activeIndex ? true : undefined}
               >
                 <TestimonialDesktopCard data={item} />
               </div>
@@ -198,36 +199,9 @@ const TestimonialDesktopCard = ({
 }: {
   data: VolunteerTestimonialCardType;
 }) => {
-  const { heading, title, description, desktopImage, video } = data;
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handlePlayClick = () => {
-    setIsPlaying(true);
-  };
-
-  const handlePauseClick = () => {
-    setIsPlaying(false);
-  };
-
-  if (isPlaying && video) {
-    return (
-      <div className="relative w-full min-h-[560px] overflow-hidden rounded-[24px]">
-        <Video wistiaId={video} controls className="size-full min-h-[560px]" />
-        <button
-          type="button"
-          className="absolute left-5 top-5 cursor-pointer rounded-full bg-[#3D3D3D]/50 p-2 transition-colors hover:bg-[#3D3D3D]/70"
-          onClick={handlePauseClick}
-          aria-label="Close video"
-        >
-          <Icon name="arrowBack" color="white" />
-        </button>
-      </div>
-    );
-  }
+  const { heading, title, description, desktopImage } = data;
 
   return (
-    <div className="flex w-full select-none items-stretch overflow-hidden rounded-[24px] bg-white p-4 shadow-sm">
-      <div className="relative w-full max-w-[400px] shrink-0 self-start overflow-hidden rounded-2xl">
     <div className="flex w-full select-none items-stretch overflow-hidden rounded-[24px] bg-white p-4 shadow-sm">
       <div className="relative w-full max-w-[400px] shrink-0 self-start overflow-hidden rounded-2xl">
         <img
@@ -243,28 +217,8 @@ const TestimonialDesktopCard = ({
               aria-hidden
             />
             <p className="line-clamp-2 text-lg font-medium">{title}</p>
-            <p className="line-clamp-2 text-lg font-medium">{title}</p>
           </div>
         </div>
-        {/* {video ? (
-          <button
-            type="button"
-            className="group absolute inset-0 z-1 cursor-pointer"
-            onClick={handlePlayClick}
-            aria-label="Play video"
-          >
-            <span className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
-            <span className="absolute bottom-5 right-5 rounded-full bg-[#3D3D3D]/50 p-3 transition-colors hover:bg-[#3D3D3D]/70">
-              <span className="relative -right-[2px] block size-10 xl:size-16">
-                <Icon
-                  name="play"
-                  color="white"
-                  className="size-10 xl:size-16"
-                />
-              </span>
-            </span>
-          </button>
-        ) : null} */}
       </div>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-8 px-8 py-10 xl:px-12 xl:py-14">
@@ -375,56 +329,3 @@ const TestimonialMobileCard = ({
     </article>
   );
 };
-
-export type VolunteerTestimonialCardType = {
-  heading: string;
-  title: string;
-  description: string;
-  /** Shown on desktop body; can differ from mobile story */
-  shortContent: string;
-  desktopImage: string;
-  mobileImage: string;
-  /** Full copy for mobile “Read full story”; falls back to `description` if omitted */
-  longDescription?: string;
-  video?: string;
-};
-
-const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
-  {
-    title: "Donnie & Maria",
-    description:
-      "We never imagined serving could feel this natural. The team made it easy to find our place.",
-    longDescription:
-      "We never imagined serving could feel this natural. The team made it easy to find our place. Week after week we get to welcome people the way someone once welcomed us—and that never gets old. If you’re on the fence, take one step. You won’t regret it.",
-    shortContent: "Welcome team",
-    heading: "Sunday mornings changed our whole rhythm",
-    desktopImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-    mobileImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-  },
-  {
-    title: "What is a Sunday Like 1",
-    description: "What is a Sunday Like 1",
-    longDescription:
-      "What is a Sunday Like 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-    shortContent: "What is a Sunday Like 1",
-    heading: "What is a Sunday Like 1",
-    desktopImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-    mobileImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-  },
-  {
-    title: "What is a Sunday Like 1",
-    description: "What is a Sunday Like 1",
-    longDescription:
-      "What is a Sunday Like 1. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    shortContent: "What is a Sunday Like 1",
-    heading: "What is a Sunday Like 1",
-    desktopImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-    mobileImage:
-      "https://embed-ssl.wistia.com/deliveries/04190bbd5f3883a9946334abe492f059.webp?image_crop_resized=1280x674",
-  },
-];
