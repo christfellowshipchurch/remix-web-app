@@ -76,9 +76,11 @@ function sortUpcomingSessionHitsForDisplay(
 export function ClassSingleUpcomingSearch({
   classHeroCoverImageUri,
   classType,
+  onDemandUrl,
 }: {
   classHeroCoverImageUri: string;
   classType: string;
+  onDemandUrl: string;
 }) {
   const upcoming = useClassSingleUpcomingInstantSearch();
 
@@ -163,16 +165,18 @@ export function ClassSingleUpcomingSearch({
 
           {/* On Demand Section*/}
           <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center mt-8">
-            <div className="flex flex-col gap-4 w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
-              <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
-                Take It Anytime
-              </h2>
-              <OnDemandCard
-                title={classType}
-                image={classHeroCoverImageUri}
-                link="#todo"
-              />
-            </div>
+            {onDemandUrl && (
+              <div className="flex flex-col gap-4 w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
+                <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
+                  Take It Anytime
+                </h2>
+                <OnDemandCard
+                  title={classType}
+                  image={classHeroCoverImageUri}
+                  link={onDemandUrl}
+                />
+              </div>
+            )}
 
               <ClassSingleGroupsSection
                 coordinates={upcoming.coordinates}

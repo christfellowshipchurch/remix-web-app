@@ -46,7 +46,7 @@ const ClassNotFound = () => {
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   const { summary, classType, topic } = hit;
-  const { discussionGuideUrl, classTrailer } =
+  const { discussionGuideUrl, classTrailer, onDemandUrl } =
     useLoaderData<LoaderReturnType>();
 
   const heroDescriptionHtml = useMemo(
@@ -113,6 +113,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
         <ClassSingleUpcomingSearch
           classType={classType}
           classHeroCoverImageUri={hit.coverImage.sources[0].uri}
+          onDemandUrl={onDemandUrl}
         />
 
         {/* FAQs */}

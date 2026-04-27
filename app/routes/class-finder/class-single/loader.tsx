@@ -9,6 +9,7 @@ export type LoaderReturnType = {
   classUrl: string;
   discussionGuideUrl: string;
   classTrailer: string;
+  onDemandUrl: string;
 };
 
 function rockStringAttr(
@@ -35,6 +36,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   let discussionGuideUrl = "";
   let classTrailer = "";
+  let onDemandUrl = "";
 
   try {
     const classData = (await fetchRockData({
@@ -50,6 +52,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     if (classData) {
       discussionGuideUrl = rockStringAttr(classData, "discussionGuide");
       classTrailer = rockStringAttr(classData, "classTrailer");
+      onDemandUrl = rockStringAttr(classData, "onDemandSignUpLink");
     }
   } catch (error) {
     console.warn("Failed to load class data from Rock:", error);
@@ -61,5 +64,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
     classUrl: url,
     discussionGuideUrl,
     classTrailer,
+    onDemandUrl,
   };
 }
