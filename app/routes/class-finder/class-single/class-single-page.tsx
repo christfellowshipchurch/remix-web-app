@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";
 
 import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
-import { FinderHero } from "~/components/finders/hero";
+import { FinderHero, type FinderHeroCta } from "~/components/finders/hero";
+import { VideoModal } from "~/components/modals/video-modal";
 import { Button } from "~/primitives/button/button.primitive";
 import { ClassFAQ } from "./components/faq.component";
 import { LoaderReturnType } from "./loader";
@@ -55,8 +56,8 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
 
   const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ""), [classType]);
 
-  const ctas = useMemo(() => {
-    const items = [];
+  const ctas = useMemo<FinderHeroCta[]>(() => {
+    const items: FinderHeroCta[] = [];
     if (discussionGuideUrl) {
       items.push({
         href: discussionGuideUrl,
@@ -67,10 +68,23 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
     }
     if (classTrailer) {
       items.push({
-        href: classTrailer,
-        title: "Class Trailer",
-        intent: "primary" as const,
-        className: "text-base font-normal",
+        key: "class-trailer",
+        render: () => (
+          <VideoModal
+            wistiaId={classTrailer}
+            intent="primary"
+            ModalButton={({ onClick, ...props }) => (
+              <Button
+                {...props}
+                onClick={onClick}
+                className="text-base font-normal"
+              >
+                Class Trailer
+              </Button>
+            )}
+            videoClassName="w-full h-full rounded-lg"
+          />
+        ),
       });
     }
     return items;
@@ -128,7 +142,7 @@ export function ClassSinglePage() {
     >
       <Configure
         hitsPerPage={1}
-        filters={`pathname:"${escapeAlgoliaFilterString(classUrl)}"`}
+        filters={`pathName:"${escapeAlgoliaFilterString(classUrl)}"`}
       />
 
       <CustomClassSingleHits />
