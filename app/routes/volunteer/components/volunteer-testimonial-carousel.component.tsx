@@ -284,7 +284,7 @@ const TestimonialMobileCard = ({
             className="flex min-w-0 items-center gap-2 text-left font-bold text-navy transition-opacity hover:opacity-80"
             aria-expanded={isExpanded}
           >
-            <span className="shrink-0">Read Full Story</span>
+            <span className="shrink-0">{isExpanded ? "Close Story" : "Read Full Story"}</span>
             <Icon
               name="chevronDown"
               size={20}
