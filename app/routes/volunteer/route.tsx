@@ -5,6 +5,7 @@ import { VolunteerCommunity } from "./partials/volunteer-community.partial";
 import { VolunteerGlobe } from "./partials/volunteer-globe.partial";
 import { VolunteerStats } from "./partials/volunteer-stats.partial";
 import { VolunteerTestimonials } from "./partials/volunteer-testimonials.partial";
+import { VolunteerReadyToMakeADifference } from "./partials/volunteer-ready-to-make-a-difference.partial";
 
 export { loader } from "./loader";
 export { meta } from "./meta";
@@ -19,7 +20,7 @@ function VolunteerPage() {
       <VolunteerGlobe />
       <VolunteerStats />
       <VolunteerTestimonials />
-      {/* Add ready to make a difference component here */}
+      <VolunteerReadyToMakeADifference />
     </div>
   );
 }
