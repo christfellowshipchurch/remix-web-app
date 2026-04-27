@@ -28,6 +28,8 @@ type FilterCoordinates = { lat: number | null; lng: number | null };
 export interface FilterPopupSection {
   title?: string;
   attribute: string;
+  /** Refinement pills: only one value refined at a time (matches hub-style single category). */
+  singleSelectRefinement?: boolean;
   input?: boolean;
   inputPlaceholder?: string;
   checkbox?: boolean;
@@ -558,7 +560,11 @@ const FilterPopupContent = ({
     sortedForDropdown.find((item) => item.isRefined)?.value ?? "";
 
   const dropdownEmptyLabel =
-    data.attribute === "campus" ? "Select Campus" : "Select";
+    data.attribute === "campus"
+      ? "Select Campus"
+      : data.attribute === "campusList"
+        ? "Select City"
+        : "Select";
 
   const applyDropdownSelection = (value: string) => {
     sortedForDropdown.forEach((item) => {
@@ -771,6 +777,17 @@ const FilterPopupContent = ({
                               e: React.MouseEvent<HTMLButtonElement>,
                             ) => {
                               e.stopPropagation();
+                              if (data.singleSelectRefinement) {
+                                if (item.isRefined) {
+                                  refine(item.value);
+                                  return;
+                                }
+                                items.forEach((i) => {
+                                  if (i.isRefined) refine(i.value);
+                                });
+                                refine(item.value);
+                                return;
+                              }
                               refine(item.value);
                             }}
                           >
