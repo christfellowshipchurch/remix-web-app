@@ -48,12 +48,12 @@ function Digit({
   useEffect(() => {
     if (collapsed) return;
     let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setRun(true));
+    const raf1 = window.requestAnimationFrame(() => {
+      raf2 = window.requestAnimationFrame(() => setRun(true));
     });
     return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
+      window.cancelAnimationFrame(raf1);
+      window.cancelAnimationFrame(raf2);
     };
   }, [collapsed]);
 

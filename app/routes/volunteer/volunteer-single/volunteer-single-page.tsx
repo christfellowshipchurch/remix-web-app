@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState, useCallback } from "react";
 import { Link, useLoaderData } from "react-router-dom";
-import { Configure, Hits, InstantSearch, useHits } from "react-instantsearch";
+import { Configure, InstantSearch, useHits } from "react-instantsearch";
 
 import { createSearchClient } from "~/lib/create-search-client";
 import { Button } from "~/primitives/button/button.primitive";
@@ -12,11 +12,12 @@ import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { cn } from "~/lib/utils";
 
-/** Algolia index for volunteer / mission trips (GUID = `objectID`). */
+/** Algolia index for volunteer / mission trips (GUID = `groupGuid`). */
 export const DEV_MISSIONS_INDEX_NAME = "dev_Missions";
 
-function escapeAlgoliaFilterValue(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+/** Uppercase match — Algolia query + exact `groupGuid` on hits (facets often omit `groupGuid`). */
+function normalizeGroupGuid(value: string): string {
+  return value.trim().toUpperCase();
 }
 
 export const MissionNotFound = () => (
@@ -32,14 +33,16 @@ export const MissionNotFound = () => (
   </div>
 );
 
-function MissionHits() {
+function MissionHits({ groupGuid }: { groupGuid: string }) {
   const { items } = useHits<VolunteerHitType>();
+  const want = normalizeGroupGuid(groupGuid);
+  const hit = items.find((h) => normalizeGroupGuid(h.groupGuid ?? "") === want);
 
-  if (!items.length) {
+  if (!hit) {
     return <MissionNotFound />;
   }
 
-  return <Hits hitComponent={VolunteerSingle} />;
+  return <VolunteerSingle hit={hit} />;
 }
 
 export function VolunteerSinglePage() {
@@ -57,8 +60,6 @@ export function VolunteerSinglePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const objectIdFilter = `groupGuid:"${escapeAlgoliaFilterValue(groupGuid)}"`;
-
   return (
     <div
       className={`min-h-screen ${
@@ -70,8 +71,8 @@ export function VolunteerSinglePage() {
         searchClient={searchClient}
         key={groupGuid}
       >
-        <Configure filters={objectIdFilter} />
-        <MissionHits />
+        <Configure query={groupGuid} hitsPerPage={50} />
+        <MissionHits groupGuid={groupGuid} />
       </InstantSearch>
     </div>
   );
@@ -81,25 +82,28 @@ function str(v: unknown): string | undefined {
   return typeof v === "string" && v.trim() ? v.trim() : undefined;
 }
 
-function useSharePage(title: string) {
+function getLocationPathForClipboard(): string {
+  if (typeof window === "undefined") return "";
+  const { pathname, search, hash } = window.location;
+  return `${pathname}${search}${hash}`;
+}
+
+function useCopyPagePath() {
   const [copied, setCopied] = useState(false);
 
-  const share = useCallback(async () => {
-    const url = typeof window !== "undefined" ? window.location.href : "";
+  const copyPath = useCallback(async () => {
+    const text = getLocationPathForClipboard();
+    if (!text) return;
     try {
-      if (navigator.share) {
-        await navigator.share({ title, url });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(text);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      window.setTimeout(() => setCopied(false), 2200);
     } catch {
-      /* user cancelled share or clipboard denied */
+      /* clipboard denied */
     }
-  }, [title]);
+  }, []);
 
-  return { share, copied };
+  return { copyPath, copied };
 }
 
 function MissionDetailRows({ hit }: { hit: VolunteerHitType }) {
@@ -164,7 +168,7 @@ export function VolunteerSingle({ hit }: { hit: VolunteerHitType }) {
   const title = str(hit.title) || str(hit.name) || "Volunteer opportunity";
   const category =
     str(hit.category) || str(hit.groupType) || "Volunteer opportunity";
-  const coverImage = str(hit.coverImage) || str(hit.coverImageUrl) || undefined;
+  const coverImage = str(hit.coverImage?.sources[0]?.uri) || undefined;
   const aboutBody =
     str(hit.about) || str(hit.description) || str(hit.content) || "";
   const whatToKnowRaw = str(hit.whatToKnow) || "";
@@ -180,37 +184,36 @@ export function VolunteerSingle({ hit }: { hit: VolunteerHitType }) {
       ? `${String(spotsRaw)} spots left`
       : null;
 
-  const { share, copied } = useSharePage(title);
+  const { copyPath, copied } = useCopyPagePath();
 
   return (
     <article className="min-h-screen bg-white pb-28 lg:pb-0">
       {/* Top bar — desktop & mobile (no overlay on nav) */}
-      <header className="border-b border-neutral-lighter bg-white">
+      <header className="hidden md:block border-b border-neutral-lighter bg-white">
         <div className="content-padding mx-auto flex max-w-screen-content items-center justify-end gap-4 py-4 sm:justify-between">
           <Link
             to="/volunteer"
-            className="hidden items-center gap-2 text-sm font-semibold text-text-primary transition-colors hover:text-ocean sm:inline-flex"
+            className="hidden items-center gap-2 text-sm font-semibold text-neutral-darker duration-300 transition-all hover:text-ocean sm:inline-flex"
           >
             <Icon name="chevronLeft" size={20} className="shrink-0" />
             Back to opportunities
           </Link>
           <button
             type="button"
-            onClick={() => void share()}
-            className="inline-flex items-center gap-2 rounded-lg border border-neutral-lighter bg-white px-4 py-2 text-sm font-semibold text-text-primary transition-colors hover:border-ocean hover:text-ocean"
+            onClick={() => void copyPath()}
+            className="inline-flex items-center gap-2 shadow-sm rounded-full border border-black/12 bg-white px-4 py-2 text-sm font-semibold text-neutral-darker transition-all duration-300 hover:border-ocean hover:text-ocean"
           >
-            <Icon name="share" size={18} className="shrink-0" />
-            Share
-            {copied ? (
-              <span className="text-xs font-normal text-ocean">Copied</span>
-            ) : null}
+            <Icon name="shareAlt" size={18} className="shrink-0" />
+            <span className={cn(copied && "text-ocean")}>
+              {copied ? "Path copied" : "Share"}
+            </span>
           </button>
         </div>
       </header>
 
       {/* Hero */}
-      <div className="content-padding mx-auto w-full max-w-screen-content pt-6 lg:pt-8">
-        <div className="relative overflow-hidden rounded-2xl bg-neutral-lighter">
+      <div className="w-full">
+        <div className="relative overflow-hidden bg-neutral-lighter">
           {coverImage ? (
             <img
               src={coverImage}
@@ -222,10 +225,11 @@ export function VolunteerSingle({ hit }: { hit: VolunteerHitType }) {
               No image
             </div>
           )}
-          {/* Mobile-only back affordance on hero */}
+
+          {/* Mobile-only back button on hero image */}
           <Link
             to="/volunteer"
-            className="absolute left-4 top-4 flex size-11 items-center justify-center rounded-full bg-white text-text-primary shadow-md transition-colors hover:bg-soft-white lg:hidden"
+            className="absolute left-4 top-4 flex size-11 items-center justify-center rounded-full bg-white text-text-primary shadow-md transition-colors hover:bg-soft-white md:hidden"
             aria-label="Back to opportunities"
           >
             <Icon name="chevronLeft" size={22} />
@@ -343,11 +347,11 @@ export function VolunteerSingle({ hit }: { hit: VolunteerHitType }) {
                   intent="secondary"
                   className="w-full"
                   type="button"
-                  onClick={() => void share()}
+                  onClick={() => void copyPath()}
                 >
                   <span className="inline-flex items-center justify-center gap-2">
-                    <Icon name="share" size={18} />
-                    Share Link
+                    <Icon name="shareAlt" size={18} />
+                    {copied ? "Link copied" : "Share"}
                   </span>
                 </Button>
               </div>
@@ -360,17 +364,26 @@ export function VolunteerSingle({ hit }: { hit: VolunteerHitType }) {
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 flex items-stretch gap-3 border-t border-neutral-lighter bg-white p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]",
-          "lg:hidden",
+          "md:hidden",
           "pb-[max(1rem,env(safe-area-inset-bottom,0px))]",
         )}
       >
+        {copied ? (
+          <p
+            className="pointer-events-none fixed bottom-22 left-1/2 z-60 -translate-x-1/2 rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-white shadow-md"
+            role="status"
+            aria-live="polite"
+          >
+            Link Cpied
+          </p>
+        ) : null}
         <button
           type="button"
-          onClick={() => void share()}
+          onClick={() => void copyPath()}
           className="flex size-12 shrink-0 items-center justify-center rounded-xl border-2 border-ocean text-ocean transition-colors hover:bg-ocean/10"
-          aria-label="Share"
+          aria-label={copied ? "Path copied" : "Copy page path"}
         >
-          <Icon name="share" size={22} />
+          <Icon name="shareAlt" size={22} />
         </button>
         <Button
           intent="primary"

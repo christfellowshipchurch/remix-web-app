@@ -3,7 +3,7 @@ import type { LoaderFunction } from "react-router-dom";
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
-  /** Rock GUID from the URL — matches Algolia `objectID` on `dev_Missions`. */
+  /** Rock GUID from the URL — matches Algolia `groupGuid` on `dev_Missions`. */
   groupGuid: string;
 };
 
@@ -24,8 +24,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     throw new Response("Search not configured", { status: 503 });
   }
 
-  // Algolia `objectID` for Rock GUIDs is almost always lowercase; URLs may be mixed case.
-  const groupGuid = raw.toLowerCase();
+  // Algolia stores mission groupGuid values in uppercase.
+  const groupGuid = raw.toUpperCase();
 
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: appId,
@@ -33,5 +33,5 @@ export const loader: LoaderFunction = async ({ params }) => {
     groupGuid,
   };
 
-  return pageData;
+  return Response.json(pageData);
 };

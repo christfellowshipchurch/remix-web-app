@@ -7,8 +7,11 @@ export type VolunteerHitType = {
   about?: string;
   category?: string;
   groupType?: string;
-  coverImage?: string;
-  coverImageUrl?: string;
+  coverImage?: {
+    sources: {
+      uri: string;
+    }[];
+  };
   campus?: string;
   location?: string;
   city?: string;
