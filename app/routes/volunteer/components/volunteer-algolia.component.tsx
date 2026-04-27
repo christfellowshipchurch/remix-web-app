@@ -58,6 +58,9 @@ const volunteerCategoryRemove = cn(
   "shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1",
 );
 
+const VOLUNTEER_SLIDE_CLASS =
+  "flex min-h-0 w-full min-w-0 flex-col pl-0 basis-[82%] sm:basis-[calc((100%-36px)/2)] lg:basis-[calc((100%-64px)/3)] max-w-[405px]";
+
 /** Notifies parent once when InstantSearch reports `idle` (first response settled). */
 function VolunteerSearchReadyReporter({ onReady }: { onReady?: () => void }) {
   const { status } = useInstantSearch();
@@ -87,20 +90,21 @@ function VolunteerHitsCarousel() {
   }
 
   return (
-    <div className="pr-0! md:pr-12 lg:pr-18 2xl:pr-0!">
+    <div className="pl-5 md:pl-12 lg:px-18">
       <Carousel
-        opts={{ align: "start" }}
-        className="mt-3 min-w-0 max-w-[1280px] mx-auto"
+        opts={{
+          align: "start",
+          slidesToScroll: 1,
+          containScroll: "trimSnaps",
+        }}
+        className="mx-auto mt-3 w-full max-w-[1280px]"
       >
-        <CarouselContent className="items-stretch gap-6 py-6">
+        <CarouselContent className="items-stretch gap-8 py-6">
           {hits.map((hit, index) => (
             <CarouselItem
               key={hit.objectID}
-              className={cn(
-                "flex min-h-0 w-full min-w-0 basis-[85vw] flex-col pl-0 sm:basis-[45%] md:basis-[40%] lg:basis-[32%]",
-                index === hits.length - 1 && "mr-5 md:mr-12 lg:mr-18 2xl:mr-0!", // Last item
-                index === 0 && "ml-5 md:ml-12 lg:ml-18 2xl:ml-0!", // First item
-              )}
+              aria-label={`${index + 1} of ${hits.length}`}
+              className={VOLUNTEER_SLIDE_CLASS}
             >
               <VolunteerCard
                 volunteer={hit}
@@ -110,7 +114,7 @@ function VolunteerHitsCarousel() {
           ))}
         </CarouselContent>
 
-        <div className="relative flex items-center justify-between mt-4 md:mt-8 min-h-[4.5rem] pb-14 sm:pb-16 md:min-h-0 md:pb-8 pl-5 md:pl-12 lg:pl-18 2xl:pl-0!">
+        <div className="relative mt-4 flex min-h-[4.5rem] items-center justify-between pb-14 pr-5 sm:pb-16 md:mt-8 md:min-h-0 md:pb-8 md:pr-0">
           <div className="hidden md:block">
             <CarouselDots
               activeClassName="bg-ocean"
