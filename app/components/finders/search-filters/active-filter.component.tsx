@@ -113,7 +113,7 @@ export function ActiveFilters({
             ) : null}
           </div>
         </div>
-        {onClearAllToUrl ? (
+        {refinementChips.length > 0 || onClearAllToUrl ? (
           <div className="ml-auto shrink-0">
             <AlgoliaFinderClearAllButton
               onClearAllToUrl={onClearAllToUrl}
