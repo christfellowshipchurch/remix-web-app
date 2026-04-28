@@ -68,7 +68,7 @@ function VolunteerCardInner({
       to={`/volunteer/${volunteer.groupGuid}`}
       prefetch="intent"
       className={cn(
-        "group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-[36px] bg-white shadow-md transition-shadow hover:shadow-lg",
+        "group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-[36px] bg-white shadow-xs transition-shadow hover:shadow-md",
         className,
       )}
     >

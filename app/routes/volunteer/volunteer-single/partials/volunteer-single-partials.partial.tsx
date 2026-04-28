@@ -14,6 +14,9 @@ import {
   WhatToKnowBody,
 } from "../components/volunteer-single-details.component";
 
+/** Volunteer listing + scroll to Community section. */
+const VOLUNTEER_BACK_TO = '/volunteer#community';
+
 function getLocationPathForClipboard(): string {
   if (typeof window === "undefined") return "";
   const { pathname, search, hash } = window.location;
@@ -49,7 +52,7 @@ export function VolunteerNav({
     <header className="hidden shrink-0 border-b border-neutral-lighter bg-white md:block">
       <div className="content-padding mx-auto flex max-w-screen-content items-center justify-end gap-4 py-4 sm:justify-between">
         <Link
-          to="/volunteer"
+          to={VOLUNTEER_BACK_TO}
           className="hidden items-center gap-2 text-sm font-semibold text-neutral-darker transition-all duration-300 hover:text-ocean sm:inline-flex"
         >
           <Icon name="chevronLeft" size={20} className="shrink-0" />
@@ -93,7 +96,7 @@ export function Hero({
         )}
 
         <Link
-          to="/volunteer"
+          to={VOLUNTEER_BACK_TO}
           className="absolute left-4 top-4 flex size-11 items-center justify-center rounded-full bg-white text-text-primary shadow-md transition-colors hover:bg-soft-white md:hidden"
           aria-label="Back to opportunities"
         >
@@ -287,17 +290,18 @@ export function MobileBottomBar({
     setMountToBody(true);
   }, []);
 
+  /** Keep below site cookie banner (`CookieConsent` uses `z-50`). */
   const bar = (
     <div
       className={cn(
-        "w-full fixed inset-x-0 bottom-0 z-200 flex items-stretch gap-3 border-t border-neutral-lighter bg-white p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]",
+        "w-full fixed inset-x-0 bottom-0 z-30 flex items-stretch gap-3 border-t border-neutral-lighter bg-white p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]",
         "md:hidden",
         "pb-[max(1rem,env(safe-area-inset-bottom,0px))]",
       )}
     >
       {copied ? (
         <p
-          className="pointer-events-none fixed bottom-24 left-1/2 z-210 -translate-x-1/2 rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-white shadow-md"
+          className="pointer-events-none fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-white shadow-md"
           role="status"
           aria-live="polite"
         >
