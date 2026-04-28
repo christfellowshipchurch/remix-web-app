@@ -21,7 +21,7 @@ export const findOrCreateRockPersonForSignup = async (
   input: SignupPersonInput,
 ): Promise<string> => {
   const { firstName, lastName, email, phoneNumber } = input;
-  const { significantNumber } = parsePhoneNumberUtil(phoneNumber);
+  const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
 
   // Step 1: Check by email login
   const emailLogin = await fetchUserLogin(email);
@@ -84,9 +84,11 @@ export const findOrCreateRockPersonForSignup = async (
       ttl: TTL.NONE,
     });
 
+    const person = Array.isArray(personDetails) ? personDetails[0] : personDetails;
+
     const namesMatch =
-      personDetails?.firstName?.toLowerCase() === firstName.toLowerCase() &&
-      personDetails?.lastName?.toLowerCase() === lastName.toLowerCase();
+      person?.firstName?.toLowerCase() === firstName.toLowerCase() &&
+      person?.lastName?.toLowerCase() === lastName.toLowerCase();
 
     if (namesMatch) {
       await updatePerson(entry.personId.toString(), { email, phoneNumber });
@@ -100,7 +102,6 @@ export const findOrCreateRockPersonForSignup = async (
     FirstName: firstName,
     LastName: lastName,
   });
-  const { countryCode } = parsePhoneNumberUtil(phoneNumber);
   if (countryCode) {
     await createPhoneNumberInRock({ personId: newPersonId, phoneNumber, countryCode });
   }

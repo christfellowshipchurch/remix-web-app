@@ -51,6 +51,10 @@ beforeEach(() => {
 });
 
 describe('findOrCreateRockPersonForSignup', () => {
+  // updatePerson only patches email when the Rock person has none, and only creates
+  // a phone entry when none exists for the number — see rock-person.ts for implementation.
+  // These tests verify that updatePerson is invoked after each successful lookup step.
+
   it('Step 1 — returns personId when email login matches', async () => {
     mockFetchUserLogin.mockResolvedValueOnce({ personId: 42 });
 
@@ -99,6 +103,23 @@ describe('findOrCreateRockPersonForSignup', () => {
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([{ personId: 55 }])
       .mockResolvedValueOnce({ firstName: 'Jane', lastName: 'Doe' });
+
+    const result = await findOrCreateRockPersonForSignup(defaultInput);
+
+    expect(result).toBe('55');
+    expect(mockUpdatePerson).toHaveBeenCalledOnce();
+    expect(mockUpdatePerson).toHaveBeenCalledWith('55', {
+      email: defaultInput.email,
+      phoneNumber: defaultInput.phoneNumber,
+    });
+  });
+
+  it('Step 4 — returns personId when People lookup returns array response', async () => {
+    mockFetchUserLogin.mockResolvedValue(null);
+    mockFetchRockData
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([{ personId: 55 }])
+      .mockResolvedValueOnce([{ firstName: 'Jane', lastName: 'Doe' }]);
 
     const result = await findOrCreateRockPersonForSignup(defaultInput);
 
