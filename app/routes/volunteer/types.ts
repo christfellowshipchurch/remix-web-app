@@ -33,6 +33,11 @@ export interface Volunteer {
   location: VolunteerLocation;
   opportunityType: string[];
   spotsLeft: number;
+
+  // Missing in Algolia index
+  missionsUrl: string;
+  contactName: string;
+  contactEmail: string;
 }
 
 export type VolunteerList = Volunteer[];

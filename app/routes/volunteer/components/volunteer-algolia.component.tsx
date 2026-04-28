@@ -79,6 +79,7 @@ function VolunteerSearchReadyReporter({ onReady }: { onReady?: () => void }) {
 
 function VolunteerHitsCarousel() {
   const { items: hits } = useHits<Volunteer>();
+  const location = useLocation();
 
   if (hits.length === 0) {
     return (
@@ -108,6 +109,7 @@ function VolunteerHitsCarousel() {
             >
               <VolunteerCard
                 volunteer={hit}
+                listingSearch={location.search}
                 className="h-full w-full min-w-0"
               />
             </CarouselItem>

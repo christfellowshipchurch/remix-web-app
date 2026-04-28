@@ -2,7 +2,10 @@ import { VolunteerTestimonialCarousel } from "../components/volunteer-testimonia
 
 export function VolunteerTestimonials() {
   return (
-    <section className="w-full bg-white lg:bg-gray py-24 content-padding">
+    <section
+      id="testimonials"
+      className="w-full bg-white lg:bg-gray py-24 content-padding"
+    >
       <div className="max-w-screen-content mx-auto w-full">
         <div className="flex flex-col items-center justify-center gap-8 md:gap-14">
           <div className="flex flex-col items-center justify-center gap-4">
