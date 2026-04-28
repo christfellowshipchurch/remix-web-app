@@ -18,7 +18,6 @@ import {
 import Icon from "~/primitives/icon";
 import { UpcomingSessionCard } from "./upcoming-session-card.component";
 import { ClassHitType } from "../../types";
-import { Link } from "react-router";
 
 function UpcomingCarouselNavRow() {
   const { api, scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
@@ -111,13 +110,8 @@ export function UpcomingSessionsCarousel({
                 key={hit.objectID ?? idx}
                 className={CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS}
               >
-                <div className="flex h-full min-h-0 w-full justify-center">
-                  <Link
-                    to={`#todo`}
-                    className="flex h-full min-h-0 w-full min-w-0 max-w-full flex-col"
-                  >
-                    <UpcomingSessionCard hit={hit} />
-                  </Link>
+                <div className="flex h-full min-h-0 w-full min-w-0 max-w-full justify-center">
+                  <UpcomingSessionCard hit={hit} />
                 </div>
               </CarouselItem>
             ))
@@ -130,13 +124,12 @@ export function UpcomingSessionsCarousel({
                   )}
                 >
                   {chunk.map((hit, idx) => (
-                    <Link
+                    <div
                       key={idx}
-                      to={`#todo`}
                       className="flex h-full min-h-0 w-full justify-center sm:justify-start"
                     >
                       <UpcomingSessionCard hit={hit} />
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </CarouselItem>

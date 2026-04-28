@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import Modal from '~/primitives/Modal';
 import GroupContactFlow from './group-connect-flow.component';
 import { Button, ButtonProps } from '~/primitives/button/button.primitive';
@@ -7,6 +7,8 @@ import { pushFormEvent } from '~/lib/gtm';
 interface GroupConnectModalProps {
   ModalButton?: React.ComponentType<ButtonProps>;
   buttonText?: string;
+  /** When set, renders inside the trigger instead of `buttonText` (e.g. a full card). */
+  triggerChildren?: ReactNode;
   groupId: string;
   campus?: string;
 }
@@ -14,6 +16,7 @@ interface GroupConnectModalProps {
 export function GroupConnectModal({
   ModalButton = Button,
   buttonText = 'Join Group',
+  triggerChildren,
   groupId,
   campus,
 }: GroupConnectModalProps) {
@@ -30,7 +33,7 @@ export function GroupConnectModal({
     <Modal open={openModal} onOpenChange={handleOpenChange}>
       <Modal.Button asChild>
         <ModalButton onClick={() => setOpenModal(true)}>
-          {buttonText}
+          {triggerChildren ?? buttonText}
         </ModalButton>
       </Modal.Button>
       <Modal.Content>
