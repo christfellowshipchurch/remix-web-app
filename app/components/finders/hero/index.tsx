@@ -1,9 +1,56 @@
+import { Link } from "react-router-dom";
+import { Fragment, type MouseEvent, type ReactNode } from "react";
+
 import { SectionTitle } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
+import { Icon } from "~/primitives/icon/icon";
 
 export type FinderHeroBgColor = "ocean" | "navy" | "white";
+type FinderHeroCtaPlacement = "mobile" | "desktop";
+
+type FinderHeroBackLink = {
+  href: string;
+  label: string;
+  /** When set, invoked on link click. Call `e.preventDefault()` if you handle navigation. */
+  onNavigate?: (e: MouseEvent<Element>) => void;
+};
+
+type FinderHeroLinkCta = {
+  href: string;
+  title: string;
+  className?: string;
+  intent: "primary" | "secondary" | "white" | "secondaryWhite";
+};
+
+type FinderHeroCustomCta = {
+  key?: string;
+  render: (placement: FinderHeroCtaPlacement) => ReactNode;
+};
+
+export type FinderHeroCta = FinderHeroLinkCta | FinderHeroCustomCta;
+
+function renderFinderHeroCta(
+  cta: FinderHeroCta,
+  index: number,
+  placement: FinderHeroCtaPlacement,
+) {
+  if ("render" in cta) {
+    return <Fragment key={cta.key ?? index}>{cta.render(placement)}</Fragment>;
+  }
+
+  return (
+    <Button
+      key={index}
+      intent={cta.intent}
+      className={cta.className}
+      href={cta.href}
+    >
+      {cta.title}
+    </Button>
+  );
+}
 
 export const FinderHero = ({
   bgImage,
@@ -17,6 +64,7 @@ export const FinderHero = ({
   desktopDescription,
   ctas,
   bgColor,
+  backLink,
 }: {
   bgColor: FinderHeroBgColor;
   bgImage: string;
@@ -31,12 +79,8 @@ export const FinderHero = ({
   sectionTitleColor?: string;
   mobileDescription: string;
   desktopDescription: string;
-  ctas?: {
-    href: string;
-    title: string;
-    className?: string;
-    intent: "primary" | "secondary" | "white" | "secondaryWhite";
-  }[];
+  ctas?: FinderHeroCta[];
+  backLink?: FinderHeroBackLink;
 }) => {
   const trimmedSectionTitle = sectionTitle?.trim() ?? "";
   const showSectionTitle = trimmedSectionTitle.length > 0;
@@ -79,6 +123,16 @@ export const FinderHero = ({
             </div>
           ) : null}
           <div className="flex flex-col gap-2">
+            {backLink ? (
+              <Link
+                to={backLink.href}
+                onClick={backLink.onNavigate}
+                className="flex items-center gap-2 hover:text-ocean transition-colors mb-10"
+              >
+                <Icon size={16} name="arrowBack" />
+                <span className="text-sm font-medium">{backLink.label}</span>
+              </Link>
+            ) : null}
             {topic ? (
               <span
                 className={cn(
@@ -101,16 +155,9 @@ export const FinderHero = ({
             />
             {topic && ctas && ctas.length > 0 && (
               <div className="md:hidden mt-1 flex flex-wrap gap-4">
-                {ctas.map((cta, index) => (
-                  <Button
-                    key={index}
-                    intent={cta.intent}
-                    className={cta.className}
-                    href={cta.href}
-                  >
-                    {cta.title}
-                  </Button>
-                ))}
+                {ctas.map((cta, index) =>
+                  renderFinderHeroCta(cta, index, "mobile"),
+                )}
               </div>
             )}
           </div>
@@ -148,16 +195,9 @@ export const FinderHero = ({
                 topic ? "hidden lg:flex" : "",
               )}
             >
-              {ctas.map((cta, index) => (
-                <Button
-                  key={index}
-                  intent={cta.intent}
-                  className={cta.className}
-                  href={cta.href}
-                >
-                  {cta.title}
-                </Button>
-              ))}
+              {ctas.map((cta, index) =>
+                renderFinderHeroCta(cta, index, "desktop"),
+              )}
             </div>
           )}
         </div>

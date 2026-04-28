@@ -1,33 +1,40 @@
 import type { ClassHitType } from "../../types";
 
-/** One row per distinct `classType` after aggregating Algolia hits. */
+/** One row per distinct `pathName` (URL slug) after aggregating Algolia hits. */
 export type GroupedClassTypeRow = {
+  pathName: string;
+  classType: string;
   coverImage: string;
   title: string;
   summary: string;
   subtitle: string;
   topic: ClassHitType["topic"];
-  urlSegment: string;
   locations: string;
   format: ClassHitType["format"];
   language: ClassHitType["language"];
 };
 
 type Accumulator = {
+  pathName: string;
+  classType: string;
   coverImage: string;
   title: string;
   summary: string;
   subtitle: string;
   topic: ClassHitType["topic"];
-  urlSegment: string;
   format: ClassHitType["format"];
   campusLabels: Set<string>;
   languagesSeen: Set<ClassHitType["language"]>;
   hitCount: number;
 };
 
-function classTypeGroupKey(hit: ClassHitType): string {
-  return hit.classType?.trim() || hit.title?.trim() || hit.objectID;
+function publicPathSlug(hit: ClassHitType): string {
+  return (hit.pathName || "").trim();
+}
+
+/** Groups hits that share the same public class URL; falls back to `objectID` if no slug. */
+function pathNameGroupKey(hit: ClassHitType): string {
+  return publicPathSlug(hit) || hit.objectID;
 }
 
 function locationLabel(campusLabels: Set<string>, hitCount: number): string {
@@ -51,7 +58,7 @@ export function groupClassTypeHits(
   const byKey = new Map<string, Accumulator>();
 
   for (const hit of items) {
-    const key = classTypeGroupKey(hit);
+    const key = pathNameGroupKey(hit);
     const campusLabel = hit.campus?.trim() ?? "";
     const existing = byKey.get(key);
 
@@ -60,10 +67,12 @@ export function groupClassTypeHits(
       if (campusLabel) existing.campusLabels.add(campusLabel);
       existing.languagesSeen.add(hit.language);
     } else {
+      const pathName = publicPathSlug(hit);
       byKey.set(key, {
+        pathName,
+        classType: hit.classType,
         coverImage: hit.coverImage.sources[0]?.uri || "",
         title: hit.classType?.trim() || hit.title,
-        urlSegment: hit.classType?.trim() || key,
         summary: hit.summary,
         subtitle: hit.subtitle,
         topic: hit.topic,
@@ -76,9 +85,10 @@ export function groupClassTypeHits(
   }
 
   return [...byKey.values()].map((g) => ({
+    pathName: g.pathName,
+    classType: g.classType,
     coverImage: g.coverImage,
     title: g.title,
-    urlSegment: g.urlSegment,
     summary: g.summary,
     subtitle: g.subtitle,
     topic: g.topic,
@@ -93,8 +103,9 @@ export function syntheticHitsFromGrouped(
 ): ClassHitType[] {
   return groups.map((group, index) => ({
     objectID: `grouped-${index}`,
+    pathName: group.pathName,
     title: group.title,
-    classType: group.urlSegment,
+    classType: group.classType,
     subtitle: group.title,
     summary: group.subtitle,
     coverImage: { sources: [{ uri: group.coverImage }] },

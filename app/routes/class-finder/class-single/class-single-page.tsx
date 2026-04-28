@@ -1,9 +1,10 @@
-import { useLoaderData } from "react-router-dom";
-import { useMemo } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";
 
 import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
-import { FinderHero } from "~/components/finders/hero";
+import { FinderHero, type FinderHeroCta } from "~/components/finders/hero";
+import { VideoModal } from "~/components/modals/video-modal";
 import { Button } from "~/primitives/button/button.primitive";
 import { ClassFAQ } from "./components/faq.component";
 import { LoaderReturnType } from "./loader";
@@ -45,6 +46,9 @@ const ClassNotFound = () => {
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   const { summary, classType, topic } = hit;
+  const navigate = useNavigate();
+  const { discussionGuideUrl, classTrailer, onDemandUrl } =
+    useLoaderData<LoaderReturnType>();
 
   const heroDescriptionHtml = useMemo(
     () => buildClassSingleHeroDescriptionHtml(summary),
@@ -53,8 +57,58 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
 
   const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ""), [classType]);
 
+  const ctas = useMemo<FinderHeroCta[]>(() => {
+    const items: FinderHeroCta[] = [];
+    if (discussionGuideUrl) {
+      items.push({
+        href: discussionGuideUrl,
+        title: "Discussion Guide",
+        intent: "secondary" as const,
+        className: "text-base font-normal",
+      });
+    }
+    if (classTrailer) {
+      items.push({
+        key: "class-trailer",
+        render: () => (
+          <VideoModal
+            wistiaId={classTrailer}
+            intent="primary"
+            ModalButton={({ onClick, ...props }) => (
+              <Button
+                {...props}
+                onClick={onClick}
+                className="text-base font-normal"
+              >
+                Class Trailer
+              </Button>
+            )}
+            videoClassName="w-full h-full rounded-lg"
+          />
+        ),
+      });
+    }
+    return items;
+  }, [discussionGuideUrl, classTrailer]);
+
+  const backLink = useMemo(
+    () => ({
+      href: "/class-finder",
+      label: "Back to All Classes" as const,
+      onNavigate: (e: ReactMouseEvent<Element>) => {
+        e.preventDefault();
+        if (typeof window !== "undefined" && window.history.length > 1) {
+          navigate(-1);
+        } else {
+          navigate("/class-finder");
+        }
+      },
+    }),
+    [navigate],
+  );
+
   return (
-    <section className="flex flex-col items-center dark:bg-gray-900">
+    <section className="flex flex-col items-center dark:bg-gray-900 pt-6">
       <div className="w-full flex-none">
         <FinderHero
           bgColor="white"
@@ -64,20 +118,8 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           topic={topic}
           mobileDescription={heroDescriptionHtml}
           desktopDescription={heroDescriptionHtml}
-          ctas={[
-            {
-              href: "#todo",
-              title: "Discussion Guide",
-              intent: "secondary",
-              className: "text-base font-normal",
-            },
-            {
-              href: "#todo",
-              title: "Class Trailer",
-              intent: "primary",
-              className: "text-base font-normal",
-            },
-          ]}
+          ctas={ctas}
+          backLink={backLink}
         />
       </div>
 
@@ -85,6 +127,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
         <ClassSingleUpcomingSearch
           classType={classType}
           classHeroCoverImageUri={hit.coverImage.sources[0].uri}
+          onDemandUrl={onDemandUrl}
         />
 
         {/* FAQs */}
@@ -111,24 +154,14 @@ export function ClassSinglePage() {
     <InstantSearch
       indexName="dev_Classes"
       searchClient={searchClient}
-      initialUiState={{
-        dev_Classes: {
-          query: `${classUrl}`,
-        },
-      }}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
       key={classUrl}
     >
-      {/* Name of Class */}
       <Configure
         hitsPerPage={1}
-        queryType="prefixNone"
-        removeWordsIfNoResults="none"
-        typoTolerance={false}
-        exactOnSingleWordQuery="word"
-        filters={`classType:"${escapeAlgoliaFilterString(classUrl)}"`}
+        filters={`pathName:"${escapeAlgoliaFilterString(classUrl)}"`}
       />
 
       <CustomClassSingleHits />
