@@ -1,10 +1,37 @@
 import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 
+import {
+  collapseHtmlToVisibleText,
+  trimRemovingInvisibleUnicode,
+} from "~/lib/text-content";
+
 import type { VolunteerMissionDetail } from "../types";
 
 export function str(v: unknown): string | undefined {
   return typeof v === "string" && v.trim() ? v.trim() : undefined;
+}
+
+/**
+ * Returns trimmed content suitable to render, or `null` when the value is
+ * only whitespace, empty HTML (`<p></p>`, `<br>`, `&nbsp;`), or list lines
+ * that are all blank after stripping bullets.
+ */
+export function normalizeWhatToKnowContent(raw: string): string | null {
+  if (typeof raw !== "string") return null;
+  const trimmed = trimRemovingInvisibleUnicode(raw);
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("<")) {
+    return collapseHtmlToVisibleText(trimmed).length > 0 ? trimmed : null;
+  }
+
+  const lines = trimmed
+    .split(/\n+/)
+    .map((line) => line.replace(/^[-•*]\s*/, "").trim())
+    .filter(Boolean);
+  if (!lines.length) return null;
+  return trimmed;
 }
 
 function formatEventTimeRange(mission: VolunteerMissionDetail): string {
@@ -21,7 +48,7 @@ export function MissionDetailRows({
 }: {
   mission: VolunteerMissionDetail;
 }) {
-  const locationLabel = str(mission.checkInLocation) || "—";
+  const locationLabel = str(mission.campusName) || "—";
   const dateLabel = str(mission.eventDateStr) || "—";
   const timeLabel = formatEventTimeRange(mission);
 
@@ -47,24 +74,19 @@ export function MissionDetailRows({
   );
 }
 
-export function WhatToKnowBody({ data }: { data: string }) {
-  const trimmed = data.trim();
-  if (!trimmed) return null;
-
-  if (trimmed.startsWith("<")) {
+export function WhatToKnowBody({ content }: { content: string }) {
+  if (content.startsWith("<")) {
     return (
       <div className="prose prose-neutral prose-ul:my-2 max-w-none text-text-secondary">
-        <HTMLRenderer html={trimmed} />
+        <HTMLRenderer html={content} />
       </div>
     );
   }
 
-  const lines = trimmed
+  const lines = content
     .split(/\n+/)
-    .map((l) => l.replace(/^[-•*]\s*/, "").trim())
+    .map((line) => line.replace(/^[-•*]\s*/, "").trim())
     .filter(Boolean);
-
-  if (!lines.length) return null;
 
   return (
     <ul className="list-disc space-y-2 pl-5 text-base leading-relaxed text-text-secondary">
