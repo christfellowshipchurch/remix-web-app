@@ -1,20 +1,20 @@
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B (routing). */
 
-import type { MutableRefObject } from "react";
-import type { AllArticlesUrlState } from "./all-articles-url-state";
+import type { MutableRefObject } from 'react';
+import type { AllArticlesUrlState } from './all-articles-url-state';
 import {
   parseAllArticlesUrlState,
   allArticlesUrlStateToParams,
-} from "./all-articles-url-state";
+} from './all-articles-url-state';
 
-const INDEX_NAME = "dev_contentItems";
+const INDEX_NAME = 'dev_contentItems';
 
 export type AllArticlesRouterRefs = {
   searchParamsRef: MutableRefObject<URLSearchParams>;
   setSearchParamsRef: MutableRefObject<
     (
       params: URLSearchParams,
-      options?: { replace?: boolean; preventScrollReset?: boolean }
+      options?: { replace?: boolean; preventScrollReset?: boolean },
     ) => void
   >;
   pathnameRef: MutableRefObject<string>;
@@ -24,7 +24,7 @@ export type AllArticlesRouterRefs = {
 };
 
 export function createAllArticlesInstantSearchRouter(
-  refs: AllArticlesRouterRefs
+  refs: AllArticlesRouterRefs,
 ) {
   const {
     searchParamsRef,

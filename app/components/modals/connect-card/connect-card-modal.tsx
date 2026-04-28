@@ -1,10 +1,10 @@
-import { useState } from "react";
-import Modal from "~/primitives/Modal";
-import ConnectCardFlow from "./connect-card-flow.component";
-import { Button } from "~/primitives/button/button.primitive";
-import { ButtonProps } from "~/primitives/button/button.primitive";
-import { pushFormEvent } from "~/lib/gtm";
-import type { ReactNode } from "react";
+import { useState } from 'react';
+import Modal from '~/primitives/Modal';
+import ConnectCardFlow from './connect-card-flow.component';
+import { Button } from '~/primitives/button/button.primitive';
+import { ButtonProps } from '~/primitives/button/button.primitive';
+import { pushFormEvent } from '~/lib/gtm';
+import type { ReactNode } from 'react';
 
 interface ConnectCardModalProps {
   buttonTitle?: string;
@@ -26,7 +26,7 @@ export function ConnectCardModal({
   const handleOpenChange = (open: boolean) => {
     setOpenModal(open);
     if (open) {
-      pushFormEvent("form_start", "connect_card", "Connect Card");
+      pushFormEvent('form_start', 'connect_card', 'Connect Card');
     }
   };
 
@@ -35,13 +35,13 @@ export function ConnectCardModal({
       {children ? (
         <Modal.Button asChild>{children}</Modal.Button>
       ) : (
-        <Modal.Button asChild className="mr-2">
-          <TriggerButton intent="white" className={triggerStyles}>
+        <Modal.Button asChild className='mr-2'>
+          <TriggerButton intent='white' className={triggerStyles}>
             {buttonTitle
               ? buttonTitle
               : isEspanol
-                ? "Conéctate"
-                : "Get Connected"}
+                ? 'Conéctate'
+                : 'Get Connected'}
           </TriggerButton>
         </Modal.Button>
       )}

@@ -1,3 +1,3 @@
-import { SetAReminderModal } from "./reminder-modal.component";
+import { SetAReminderModal } from './reminder-modal.component';
 
 export { SetAReminderModal };

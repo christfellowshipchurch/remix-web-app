@@ -7,7 +7,7 @@
  * emits LCP at all — `onLCP` can stay silent if supportedEntryTypes omits LCP or
  * if web-vitals filters every entry.
  */
-import { onFCP, onLCP } from "web-vitals";
+import { onFCP, onLCP } from 'web-vitals';
 
 /**
  * User-Agent Client Hints (`navigator.userAgentData`). Optional on DOM typings;
@@ -35,7 +35,7 @@ function formatLcpElement(entry: {
           tag: el.tagName,
           id: el.id || undefined,
           className:
-            typeof el.className === "string"
+            typeof el.className === 'string'
               ? el.className.slice(0, 120)
               : undefined,
           textPreview: el.textContent?.trim().slice(0, 80) || undefined,
@@ -46,8 +46,8 @@ function formatLcpElement(entry: {
 
 function logDevWebVitalsDiag(): void {
   const types = PerformanceObserver.supportedEntryTypes ?? [];
-  const lcpSupported = types.includes("largest-contentful-paint");
-  console.warn("[web-vitals diag]", {
+  const lcpSupported = types.includes('largest-contentful-paint');
+  console.warn('[web-vitals diag]', {
     lcpInSupportedEntryTypes: lcpSupported,
     supportedEntryTypesSample: types.slice(0, 12),
     visibilityState: document.visibilityState,
@@ -59,11 +59,11 @@ function logDevWebVitalsDiag(): void {
 
   try {
     const vis = globalThis.performance.getEntriesByType(
-      "visibility-state",
+      'visibility-state',
     ) as Array<PerformanceEntry & { readonly name?: string }>;
     if (vis.length > 0) {
       console.warn(
-        "[web-vitals diag] visibility-state entries (name + startTime ms)",
+        '[web-vitals diag] visibility-state entries (name + startTime ms)',
         vis.map((e) => ({
           name: e.name,
           startTime: Math.round(e.startTime),
@@ -75,7 +75,7 @@ function logDevWebVitalsDiag(): void {
   }
   if (!lcpSupported) {
     console.warn(
-      "[web-vitals diag] This engine does not expose largest-contentful-paint to PerformanceObserver. Use Chromium (Chrome/Edge) for LCP; Safari/Firefox support differs.",
+      '[web-vitals diag] This engine does not expose largest-contentful-paint to PerformanceObserver. Use Chromium (Chrome/Edge) for LCP; Safari/Firefox support differs.',
     );
   }
 
@@ -86,7 +86,7 @@ function logDevWebVitalsDiag(): void {
   // (no "Chrome/" in UA) while the engine is still Blink — detect Chromium without UA.
   const ua = navigator.userAgent;
   const hasChromiumChromeGlobal =
-    typeof (globalThis as { chrome?: unknown }).chrome !== "undefined";
+    typeof (globalThis as { chrome?: unknown }).chrome !== 'undefined';
   const uaChromiumToken = /Chrome|Chromium|CriOS|EdgA|EdgiOS|Edg\/|OPR\//.test(
     ua,
   );
@@ -112,15 +112,15 @@ function logDevWebVitalsDiag(): void {
 
   if (lcpSupported && isWebKitEngine && !isChromiumFamily) {
     console.warn(
-      "[web-vitals diag] WebKit (e.g. Safari or any iOS browser): you may see FCP but never [LCP]/[LCP-raw] — WebKit does not populate LCP the same way as Chrome. Lighthouse scores are Chromium-based; validate LCP in Chrome desktop or Android Chrome.",
+      '[web-vitals diag] WebKit (e.g. Safari or any iOS browser): you may see FCP but never [LCP]/[LCP-raw] — WebKit does not populate LCP the same way as Chrome. Lighthouse scores are Chromium-based; validate LCP in Chrome desktop or Android Chrome.',
     );
   }
 
   console.warn(
-    "[web-vitals diag] Tip: LCP is tied to this navigation. Enable device emulation (or narrow the window), then hard-reload so the first paint uses that viewport — resizing after load can leave no new LCP for the same document.",
+    '[web-vitals diag] Tip: LCP is tied to this navigation. Enable device emulation (or narrow the window), then hard-reload so the first paint uses that viewport — resizing after load can leave no new LCP for the same document.',
   );
   console.warn(
-    "[web-vitals diag] Chromium no longer exposes largest-contentful-paint via getEntriesByType() (deprecated, always empty + console warning) — rely on [LCP-raw] / Performance panel.",
+    '[web-vitals diag] Chromium no longer exposes largest-contentful-paint via getEntriesByType() (deprecated, always empty + console warning) — rely on [LCP-raw] / Performance panel.',
   );
 }
 
@@ -128,7 +128,7 @@ function registerRawLcpObserver(): void {
   try {
     if (
       !PerformanceObserver.supportedEntryTypes?.includes(
-        "largest-contentful-paint",
+        'largest-contentful-paint',
       )
     ) {
       return;
@@ -141,7 +141,7 @@ function registerRawLcpObserver(): void {
           url?: string;
         };
         console.warn(
-          "[LCP-raw]",
+          '[LCP-raw]',
           formatLcpElement({
             startTime: e.startTime,
             size: e.size ?? 0,
@@ -151,7 +151,7 @@ function registerRawLcpObserver(): void {
         );
       }
     });
-    po.observe({ type: "largest-contentful-paint", buffered: true });
+    po.observe({ type: 'largest-contentful-paint', buffered: true });
 
     const flushTakeRecords = (label: string) => {
       try {
@@ -168,7 +168,7 @@ function registerRawLcpObserver(): void {
               url?: string;
             };
             console.warn(
-              "[LCP-raw]",
+              '[LCP-raw]',
               formatLcpElement({
                 startTime: e.startTime,
                 size: e.size ?? 0,
@@ -179,25 +179,25 @@ function registerRawLcpObserver(): void {
           }
         }
       } catch (err) {
-        console.warn("[LCP-raw] takeRecords failed", err);
+        console.warn('[LCP-raw] takeRecords failed', err);
       }
     };
 
-    window.setTimeout(() => flushTakeRecords("~2s"), 2000);
-    window.setTimeout(() => flushTakeRecords("~6s"), 6000);
+    window.setTimeout(() => flushTakeRecords('~2s'), 2000);
+    window.setTimeout(() => flushTakeRecords('~6s'), 6000);
   } catch (err) {
-    console.warn("[LCP-raw] observer failed", err);
+    console.warn('[LCP-raw] observer failed', err);
   }
 }
 
 export function setupDevWebVitalsLogging(): void {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return;
   }
 
   const enabled =
     import.meta.env.DEV ||
-    new URLSearchParams(window.location.search).get("debugWebVitals") === "1";
+    new URLSearchParams(window.location.search).get('debugWebVitals') === '1';
 
   if (!enabled) {
     return;
@@ -213,7 +213,7 @@ export function setupDevWebVitalsLogging(): void {
   registerRawLcpObserver();
 
   onFCP((metric) => {
-    console.warn("[FCP]", {
+    console.warn('[FCP]', {
       startTimeMs: Math.round(metric.value),
       rating: metric.rating,
     });
@@ -222,7 +222,7 @@ export function setupDevWebVitalsLogging(): void {
   onLCP(
     (metric) => {
       const entry = metric.entries.at(-1);
-      console.warn("[LCP]", {
+      console.warn('[LCP]', {
         valueMs: Math.round(metric.value),
         rating: metric.rating,
         delta: metric.delta,
@@ -236,13 +236,13 @@ export function setupDevWebVitalsLogging(): void {
                 startTime: number;
               },
             )
-          : { note: "no entry on metric yet" }),
+          : { note: 'no entry on metric yet' }),
       });
     },
     { reportAllChanges: true },
   );
 
   console.warn(
-    "[web-vitals] onLCP + [LCP-raw] observers. If you see [LCP-raw] but never [LCP], web-vitals is filtering (e.g. firstHiddenTime). Production: ?debugWebVitals=1",
+    '[web-vitals] onLCP + [LCP-raw] observers. If you see [LCP-raw] but never [LCP], web-vitals is filtering (e.g. firstHiddenTime). Production: ?debugWebVitals=1',
   );
 }

@@ -1,8 +1,8 @@
-import kebabCase from "lodash/kebabCase";
-import LocationCard from "../components/locations-search-card.component";
-import { LocationsLoader } from "../components/locations-search-skeleton.component";
-import { Link } from "react-router-dom";
-import { useHits } from "react-instantsearch";
+import kebabCase from 'lodash/kebabCase';
+import LocationCard from '../components/locations-search-card.component';
+import { LocationsLoader } from '../components/locations-search-skeleton.component';
+import { Link } from 'react-router-dom';
+import { useHits } from 'react-instantsearch';
 
 export type CampusHit = {
   campusUrl: string;
@@ -31,27 +31,27 @@ export type LocationCardListProps = {
 
 /** Static card art: `public/assets/images/locations/location-card-images/{campusUrl}.webp` */
 const LOCATION_CARD_IMAGES_BASE =
-  "/assets/images/locations/location-card-images";
+  '/assets/images/locations/location-card-images';
 
 function locationSearchCardImage(hitUrl: string) {
   const slug = hitUrl.trim();
-  return slug ? `${LOCATION_CARD_IMAGES_BASE}/${slug}.webp` : "";
+  return slug ? `${LOCATION_CARD_IMAGES_BASE}/${slug}.webp` : '';
 }
 
 export const LocationCardList = ({ loading }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
   const onlineCampus = items?.find((item) =>
-    item.campusName?.includes("Online"),
+    item.campusName?.includes('Online'),
   );
   const filteredItems = items?.filter(
-    (item) => !item.campusName?.includes("Online"),
+    (item) => !item.campusName?.includes('Online'),
   );
 
   if (loading) {
     return (
       <div
-        className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
-        id="campuses"
+        className='flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2'
+        id='campuses'
       >
         <LocationsLoader />
       </div>
@@ -60,24 +60,24 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
 
   return (
     <div
-      className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
-      id="campuses"
+      className='flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2'
+      id='campuses'
     >
       {/* Hits */}
-      <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
+      <div className='grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10'>
         {onlineCampus && (
           <LocationCard
-            name="Online"
+            name='Online'
             image={locationSearchCardImage(onlineCampus.campusUrl)}
             distanceFromLocation={0}
             key={onlineCampus?.objectID}
-            link="/cf-everywhere"
+            link='/cf-everywhere'
           />
         )}
 
         {filteredItems?.map((hit, index) => {
-          let url = "";
-          if (hit?.campusName?.includes("Español")) {
+          let url = '';
+          if (hit?.campusName?.includes('Español')) {
             url = hit?.campusName.substring(25, hit?.campusName.length);
           }
 
@@ -93,9 +93,9 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
               distanceFromLocation={distanceFromLocation}
               key={hit.objectID || index}
               link={
-                hit?.campusName?.includes("Online")
+                hit?.campusName?.includes('Online')
                   ? `/${url}`
-                  : !hit?.campusName.includes("Español")
+                  : !hit?.campusName.includes('Español')
                     ? `/${kebabCase(hit?.campusName)}`
                     : `/iglesia-${kebabCase(url)}`
               }
@@ -105,17 +105,17 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
       </div>
 
       {/* Prison Location */}
-      <div className="mt-24">
-        <Link to="/ministries/prison" prefetch="intent">
+      <div className='mt-24'>
+        <Link to='/ministries/prison' prefetch='intent'>
           <div className="relative h-[150px] w-[90vw] overflow-hidden rounded-md transition-transform duration-300 md:h-[250px] md:w-[600px] lg:hover:-translate-y-3 bg-cover bg-center bg-no-repeat bg-[url('https://cloudfront.christfellowship.church/Content/Digital%20Platform/Location/prison-location.jpeg')]">
             <div
-              className="absolute size-full opacity-80"
+              className='absolute size-full opacity-80'
               style={{
                 background:
-                  "linear-gradient(to bottom, rgba(0, 0, 0, 0), #353535)",
+                  'linear-gradient(to bottom, rgba(0, 0, 0, 0), #353535)',
               }}
             />
-            <h3 className="absolute bottom-0 left-0 pb-6 pl-6 text-2xl font-bold text-white">
+            <h3 className='absolute bottom-0 left-0 pb-6 pl-6 text-2xl font-bold text-white'>
               Prison Locations
             </h3>
           </div>

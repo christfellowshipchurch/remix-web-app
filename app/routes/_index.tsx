@@ -15,7 +15,7 @@ export { loader } from './home/loader';
 
 export const links: LinksFunction = () => [
   {
-    rel: "preload",
+    rel: 'preload',
     href: '/assets/images/home/bg-vid.webp',
     as: 'image',
     fetchPriority: 'high',

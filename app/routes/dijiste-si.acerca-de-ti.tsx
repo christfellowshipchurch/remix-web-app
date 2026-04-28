@@ -1,15 +1,15 @@
-import React from "react";
-import { useLoaderData } from "react-router-dom";
-import YesAboutYou from "./yes/partials/yes-about-you.partial";
-import { YesFormPersonalInfo } from "./yes/types";
+import React from 'react';
+import { useLoaderData } from 'react-router-dom';
+import YesAboutYou from './yes/partials/yes-about-you.partial';
+import { YesFormPersonalInfo } from './yes/types';
 
 export const loader = async () => {
   const defaultValues: YesFormPersonalInfo = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    dateOfBirth: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
   };
 
   return Response.json({ defaultValues });

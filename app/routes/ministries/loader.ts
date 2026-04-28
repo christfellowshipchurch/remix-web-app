@@ -1,7 +1,7 @@
-import { LoaderFunction } from "react-router-dom";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { RockContentChannelItem } from "~/lib/types/rock-types";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { LoaderFunction } from 'react-router-dom';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { RockContentChannelItem } from '~/lib/types/rock-types';
+import { createImageUrlFromGuid } from '~/lib/utils';
 
 export type Ministry = {
   title: string;
@@ -16,11 +16,11 @@ const mapMinistryChannelItems = async (
   return ministriesData.map((ministry: RockContentChannelItem): Ministry => {
     return {
       title: ministry.title,
-      description: ministry.attributeValues?.summary?.value || "",
+      description: ministry.attributeValues?.summary?.value || '',
       image: ministry.attributeValues?.image?.value
         ? createImageUrlFromGuid(ministry.attributeValues?.image?.value)
-        : "",
-      url: ministry.attributeValues?.pathname?.value || "",
+        : '',
+      url: ministry.attributeValues?.pathname?.value || '',
     };
   });
 };
@@ -30,18 +30,18 @@ export const loader: LoaderFunction = async (): Promise<{
 }> => {
   try {
     const ministriesData = await fetchRockData({
-      endpoint: "ContentChannelItems",
+      endpoint: 'ContentChannelItems',
       queryParams: {
         $filter: "ContentChannelId eq 171 and Status eq '2'", // Approved Ministries Content Channel Items
-        $orderby: "Order",
-        loadAttributes: "simple",
+        $orderby: 'Order',
+        loadAttributes: 'simple',
       },
     });
 
     if (!ministriesData) {
-      throw new Response("Ministries page not found", {
+      throw new Response('Ministries page not found', {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
@@ -57,10 +57,10 @@ export const loader: LoaderFunction = async (): Promise<{
 
     return { ministries };
   } catch (error) {
-    console.error("Error in ministries loader:", error);
-    throw new Response("Failed to load ministries content", {
+    console.error('Error in ministries loader:', error);
+    throw new Response('Failed to load ministries content', {
       status: 500,
-      statusText: "Internal Server Error",
+      statusText: 'Internal Server Error',
     });
   }
 };

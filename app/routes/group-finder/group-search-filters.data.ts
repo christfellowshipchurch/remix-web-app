@@ -1,8 +1,8 @@
-import type { SearchFilterDesktopItem } from "~/components/finders/search-filters";
-import type { FilterPopupData } from "~/components/finders/search-filters/filter-popup.component";
+import type { SearchFilterDesktopItem } from '~/components/finders/search-filters';
+import type { FilterPopupData } from '~/components/finders/search-filters/filter-popup.component';
 
 /** Desktop popover + mobile overflow sheet title (pill label remains “More”). */
-export const GROUP_FINDER_MORE_POPUP_TITLE = "More Filters";
+export const GROUP_FINDER_MORE_POPUP_TITLE = 'More Filters';
 
 type Coordinates = {
   lat: number | null;
@@ -12,8 +12,8 @@ type Coordinates = {
 export type GroupSearchDesktopFilterOpts = {
   coordinates: Coordinates;
   setCoordinates: (coordinates: Coordinates) => void;
-  locationSource: "zip" | "gps" | null;
-  onLocationKind: (kind: "zip" | "gps" | null) => void;
+  locationSource: 'zip' | 'gps' | null;
+  onLocationKind: (kind: 'zip' | 'gps' | null) => void;
 };
 
 /** Desktop / compact filter definitions (same sections as legacy `DesktopGroupFilters`). */
@@ -22,26 +22,26 @@ export function getGroupSearchDesktopFilters(
 ): SearchFilterDesktopItem[] {
   return [
     {
-      id: "location",
-      label: "Location",
-      popupTitle: "Location",
-      icon: "map",
+      id: 'location',
+      label: 'Location',
+      popupTitle: 'Location',
+      icon: 'map',
       data: {
         showFooter: true,
         content: [
           {
-            title: "I want to meet...",
-            attribute: "meetingType",
+            title: 'I want to meet...',
+            attribute: 'meetingType',
             isMeetingType: true,
           },
           {
-            title: "Christ Fellowship Campus",
-            attribute: "campus",
+            title: 'Christ Fellowship Campus',
+            attribute: 'campus',
             isDropdown: true,
           },
           {
-            title: "Filter by zip code",
-            attribute: "campus",
+            title: 'Filter by zip code',
+            attribute: 'campus',
             isLocation: true,
             coordinates: opts.coordinates,
             setCoordinates: opts.setCoordinates,
@@ -49,8 +49,8 @@ export function getGroupSearchDesktopFilters(
             onLocationKind: opts.onLocationKind,
           },
           {
-            title: "Filter by distance",
-            attribute: "campus",
+            title: 'Filter by distance',
+            attribute: 'campus',
             isCurrentLocation: true,
             coordinates: opts.coordinates,
             setCoordinates: opts.setCoordinates,
@@ -61,69 +61,69 @@ export function getGroupSearchDesktopFilters(
       },
     },
     {
-      id: "people",
-      label: "People",
-      popupTitle: "People",
-      icon: "user",
+      id: 'people',
+      label: 'People',
+      popupTitle: 'People',
+      icon: 'user',
       data: {
         showFooter: true,
         content: [
           {
-            title: "I want to join a group for...",
-            attribute: "groupFor",
+            title: 'I want to join a group for...',
+            attribute: 'groupFor',
           },
           {
-            title: "I want to meet people who are...",
-            attribute: "peopleWhoAre",
+            title: 'I want to meet people who are...',
+            attribute: 'peopleWhoAre',
           },
           {
-            title: "Age Range",
-            attribute: "minAge",
+            title: 'Age Range',
+            attribute: 'minAge',
             input: true,
-            inputPlaceholder: "Enter your Age",
+            inputPlaceholder: 'Enter your Age',
             isAgeRange: true,
           },
         ],
       },
     },
     {
-      id: "topics",
-      label: "Topics",
-      popupTitle: "Topics",
-      icon: "bookOpen",
+      id: 'topics',
+      label: 'Topics',
+      popupTitle: 'Topics',
+      icon: 'bookOpen',
       data: {
         showFooter: true,
         content: [
-          { title: "Spiritual Growth", attribute: "topics" },
-          { title: "Life & Support", attribute: "topics" },
-          { title: "Community & Fun", attribute: "topics" },
+          { title: 'Spiritual Growth', attribute: 'topics' },
+          { title: 'Life & Support', attribute: 'topics' },
+          { title: 'Community & Fun', attribute: 'topics' },
         ],
       },
     },
     {
-      id: "more",
-      label: "More",
+      id: 'more',
+      label: 'More',
       popupTitle: GROUP_FINDER_MORE_POPUP_TITLE,
-      icon: "sliderAlt",
+      icon: 'sliderAlt',
       data: {
         showFooter: true,
         content: [
           {
-            title: "Meeting Days",
-            attribute: "meetingDays",
+            title: 'Meeting Days',
+            attribute: 'meetingDays',
             isWeekdays: true,
           },
           {
-            title: "Meeting Frequency",
-            attribute: "meetingFrequency",
+            title: 'Meeting Frequency',
+            attribute: 'meetingFrequency',
           },
           {
-            title: "Child Care",
-            attribute: "adultOnly",
-            checkboxLayout: "horizontal",
+            title: 'Child Care',
+            attribute: 'adultOnly',
+            checkboxLayout: 'horizontal',
             checkbox: true,
           },
-          { title: "Language", attribute: "language" },
+          { title: 'Language', attribute: 'language' },
         ],
       },
     },
@@ -135,8 +135,8 @@ export function getGroupFinderMoreOverflowFilterData(
   opts: GroupSearchDesktopFilterOpts,
 ): FilterPopupData {
   const desktop = getGroupSearchDesktopFilters(opts);
-  const topics = desktop.find((f) => f.id === "topics")!.data;
-  const more = desktop.find((f) => f.id === "more")!.data;
+  const topics = desktop.find((f) => f.id === 'topics')!.data;
+  const more = desktop.find((f) => f.id === 'more')!.data;
   return {
     showFooter: false,
     content: [...topics.content, ...more.content],
@@ -148,15 +148,11 @@ export function getGroupFinderTabletFiltersPanelData(
   opts: GroupSearchDesktopFilterOpts,
 ): FilterPopupData {
   const desktop = getGroupSearchDesktopFilters(opts);
-  const location = desktop.find((f) => f.id === "location")!.data.content;
-  const people = desktop.find((f) => f.id === "people")!.data.content;
+  const location = desktop.find((f) => f.id === 'location')!.data.content;
+  const people = desktop.find((f) => f.id === 'people')!.data.content;
   const tail = getGroupFinderMoreOverflowFilterData(opts).content;
   return {
     showFooter: false,
-    content: [
-      ...location,
-      ...people,
-      ...tail,
-    ],
+    content: [...location, ...people, ...tail],
   };
 }

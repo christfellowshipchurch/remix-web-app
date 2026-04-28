@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useInstantSearch } from "react-instantsearch";
+import { useState } from 'react';
+import { useInstantSearch } from 'react-instantsearch';
 
-import { MobileFilterBottomSheet } from "~/components/finders/search-filters/filter-popup.component";
-import { hasInstantSearchIndexUiActiveFilters } from "~/lib/algolia-active-filters";
-import { AllFiltersFilterSection } from "~/routes/group-finder/components/filters/filter-section.component";
-import { FiltersHeader } from "~/routes/group-finder/components/filters/filters-header.component";
-import { FiltersFooter } from "~/routes/group-finder/components/filters/filters-footer.component";
+import { MobileFilterBottomSheet } from '~/components/finders/search-filters/filter-popup.component';
+import { hasInstantSearchIndexUiActiveFilters } from '~/lib/algolia-active-filters';
+import { AllFiltersFilterSection } from '~/routes/group-finder/components/filters/filter-section.component';
+import { FiltersHeader } from '~/routes/group-finder/components/filters/filters-header.component';
+import { FiltersFooter } from '~/routes/group-finder/components/filters/filters-footer.component';
 
 export const AllClassFiltersPopup = ({
   hideTopic = false,
@@ -14,7 +14,7 @@ export const AllClassFiltersPopup = ({
   onHide,
   onClearAllToUrl,
   mobileBottomSheet = false,
-  bottomSheetTitle = "More",
+  bottomSheetTitle = 'More',
 }: {
   hideTopic?: boolean;
   hideLanguage?: boolean;
@@ -36,7 +36,7 @@ export const AllClassFiltersPopup = ({
   const clearAllRefinements = () => {
     setIndexUiState((state) => ({
       ...state,
-      query: "",
+      query: '',
       refinementList: {},
       page: 0,
     }));
@@ -50,8 +50,8 @@ export const AllClassFiltersPopup = ({
     <>
       {!hideTopic && (
         <AllFiltersFilterSection
-          title="Topic"
-          attribute="topic"
+          title='Topic'
+          attribute='topic'
           showSection={showTopics}
           setShowSection={setShowTopics}
           hideBorder={hideLanguage && !showFormat}
@@ -61,8 +61,8 @@ export const AllClassFiltersPopup = ({
 
       {!hideLanguage && (
         <AllFiltersFilterSection
-          title="Language"
-          attribute="language"
+          title='Language'
+          attribute='language'
           showSection={showLanguage}
           setShowSection={setShowLanguage}
           hideBorder={!showFormat}
@@ -72,8 +72,8 @@ export const AllClassFiltersPopup = ({
 
       {showFormat ? (
         <AllFiltersFilterSection
-          title="Format"
-          attribute="format"
+          title='Format'
+          attribute='format'
           showSection={showFormatSection}
           setShowSection={setShowFormatSection}
           isMeetingType={true}
@@ -98,12 +98,12 @@ export const AllClassFiltersPopup = ({
         title={bottomSheetTitle}
         onClose={onHide}
         scrollable={
-          <div className="flex min-h-0 flex-col gap-6 px-4 pb-4 pt-1">
+          <div className='flex min-h-0 flex-col gap-6 px-4 pb-4 pt-1'>
             {sections}
           </div>
         }
         footer={
-          <div className="min-w-0 shrink-0 bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]">
+          <div className='min-w-0 shrink-0 bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]'>
             {footer}
           </div>
         }
@@ -112,16 +112,16 @@ export const AllClassFiltersPopup = ({
   }
 
   return (
-    <div className="flex h-auto min-h-0 w-full max-h-[85vh] flex-col overflow-hidden bg-white shadow-md md:max-h-none">
-      <div className="shrink-0">
+    <div className='flex h-auto min-h-0 w-full max-h-[85vh] flex-col overflow-hidden bg-white shadow-md md:max-h-none'>
+      <div className='shrink-0'>
         <FiltersHeader onHide={onHide} />
       </div>
 
-      <div className="min-h-0 flex-1 flex flex-col gap-4 overflow-y-auto px-4">
+      <div className='min-h-0 flex-1 flex flex-col gap-4 overflow-y-auto px-4'>
         {sections}
       </div>
 
-      <div className="shrink-0">{footer}</div>
+      <div className='shrink-0'>{footer}</div>
     </div>
   );
 };

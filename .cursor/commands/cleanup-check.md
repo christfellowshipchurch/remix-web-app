@@ -1,6 +1,7 @@
 Run `pnpm check` to identify linter and type errors, then fix all issues found.
 
 **Process:**
+
 1. Execute `pnpm check` command (runs both `pnpm lint` and `pnpm typecheck`)
 2. Analyze the output for:
    - ESLint errors and warnings
@@ -14,6 +15,7 @@ Run `pnpm check` to identify linter and type errors, then fix all issues found.
 5. Continue iterating until `pnpm check` passes with no errors
 
 **Error Handling:**
+
 - Fix errors systematically, starting with type errors (they often cause cascading issues)
 - Then address linter errors
 - Ensure code follows project conventions (kebab-case, single quotes, 2-space indentation)

@@ -1,38 +1,38 @@
-import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { Configure, Hits, InstantSearch, SearchBox } from "react-instantsearch";
+import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { Configure, Hits, InstantSearch, SearchBox } from 'react-instantsearch';
 
-import { FindersCustomPagination } from "~/components/finders/finders-custom-pagination.component";
-import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
-import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
-import { useResponsive } from "~/hooks/use-responsive";
-import Icon from "~/primitives/icon";
-import { LoaderReturnType } from "../loader";
-import { GroupHit } from "../components/group-hit.component";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { GroupFinderOverflowFiltersPanel } from "../components/group-finder-overflow-filters.component";
-import { GroupType } from "../types";
+import { FindersCustomPagination } from '~/components/finders/finders-custom-pagination.component';
+import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
+import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
+import { useResponsive } from '~/hooks/use-responsive';
+import Icon from '~/primitives/icon';
+import { LoaderReturnType } from '../loader';
+import { GroupHit } from '../components/group-hit.component';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { GroupFinderOverflowFiltersPanel } from '../components/group-finder-overflow-filters.component';
+import { GroupType } from '../types';
 import {
   parseGroupFinderUrlState,
   groupFinderUrlStateToParams,
   groupFinderEmptyState,
   hasGroupFinderNonInstantSearchFilters,
   type GroupFinderUrlState,
-} from "../group-finder-url-state";
-import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { buildIndexInitialUiState } from "~/components/finders/finder-algolia.utils";
+} from '../group-finder-url-state';
+import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
+import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
 import {
   SearchFilters,
   type SearchFilterDesktopItem,
-} from "~/components/finders/search-filters";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
+} from '~/components/finders/search-filters';
+import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
 import {
   getGroupSearchDesktopFilters,
   GROUP_FINDER_MORE_POPUP_TITLE,
-} from "../group-search-filters.data";
+} from '../group-search-filters.data';
 
-const INDEX_NAME = "dev_daniel_Groups";
+const INDEX_NAME = 'dev_daniel_Groups';
 
 function firstCampusRefinement(
   refinementList: Record<string, string[]> | undefined,
@@ -46,8 +46,9 @@ function firstCampusRefinement(
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
-  const ageInput = urlState.age ?? "";
-  const selectedLocation = firstCampusRefinement(urlState.refinementList) ?? null;
+  const ageInput = urlState.age ?? '';
+  const selectedLocation =
+    firstCampusRefinement(urlState.refinementList) ?? null;
   const initialUiState =
     buildIndexInitialUiState(INDEX_NAME, {
       query: urlState.query,
@@ -76,7 +77,7 @@ export const GroupSearch = () => {
     lat: number | null;
     lng: number | null;
   } | null>(initial.coordinates);
-  const [locationSource, setLocationSource] = useState<"zip" | "gps" | null>(
+  const [locationSource, setLocationSource] = useState<'zip' | 'gps' | null>(
     null,
   );
   const [ageInput, setAgeInputState] = useState<string>(initial.ageInput);
@@ -105,8 +106,10 @@ export const GroupSearch = () => {
   /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 4 (sync custom state from URL). */
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
-    setAgeInputState(urlState.age ?? "");
-    setSelectedLocationState(firstCampusRefinement(urlState.refinementList) ?? null);
+    setAgeInputState(urlState.age ?? '');
+    setSelectedLocationState(
+      firstCampusRefinement(urlState.refinementList) ?? null,
+    );
   }, [searchParams]);
 
   const searchClient = algoliasearch(
@@ -119,12 +122,12 @@ export const GroupSearch = () => {
     cancelDebounce();
     customStateRef.current = {
       coordinates: null,
-      ageInput: "",
+      ageInput: '',
       selectedLocation: null,
     };
     setCoordinatesState(null);
     setLocationSource(null);
-    setAgeInputState("");
+    setAgeInputState('');
     setSelectedLocationState(null);
     setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), {
       replace: true,
@@ -166,7 +169,7 @@ export const GroupSearch = () => {
 
   const fromGroupFinderUrl =
     location.pathname +
-    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+    (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
   const additionalClearAllFiltersActive = hasGroupFinderNonInstantSearchFilters(
     parseGroupFinderUrlState(searchParams),
@@ -186,8 +189,8 @@ export const GroupSearch = () => {
 
   const isFilterPillSupplementallyActive = useCallback(
     (item: SearchFilterDesktopItem) => {
-      if (item.id === "people") return ageInput.trim().length >= 2;
-      if (item.id === "location")
+      if (item.id === 'people') return ageInput.trim().length >= 2;
+      if (item.id === 'location')
         return (
           selectedLocation != null ||
           (coordinates?.lat != null &&
@@ -214,8 +217,8 @@ export const GroupSearch = () => {
 
   return (
     <div
-      className="flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to"
-      id="search"
+      className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
+      id='search'
     >
       <InstantSearch
         indexName={INDEX_NAME}
@@ -236,29 +239,29 @@ export const GroupSearch = () => {
         }}
       >
         <ResponsiveConfigure ageInput={ageInput} coordinates={coordinates} />
-        <div className="flex flex-col">
+        <div className='flex flex-col'>
           <FinderStickyBar>
-            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
+            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+              <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
                 <Icon
-                  name="searchAlt"
-                  className="text-neutral-default ml-3"
+                  name='searchAlt'
+                  className='text-neutral-default ml-3'
                   size={16}
                 />
                 <SearchBox
-                  placeholder="Search"
+                  placeholder='Search'
                   translations={{
-                    submitButtonTitle: "Search",
-                    resetButtonTitle: "Reset",
+                    submitButtonTitle: 'Search',
+                    resetButtonTitle: 'Reset',
                   }}
                   classNames={{
-                    root: "flex-grow",
-                    form: "flex",
+                    root: 'flex-grow',
+                    form: 'flex',
                     input:
-                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none",
-                    resetIcon: "hidden",
-                    submit: "hidden",
-                    loadingIcon: "hidden",
+                      'w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none',
+                    resetIcon: 'hidden',
+                    submit: 'hidden',
+                    loadingIcon: 'hidden',
                   }}
                 />
               </div>
@@ -299,22 +302,22 @@ export const GroupSearch = () => {
           </FinderStickyBar>
 
           {/* Group Search Hits / Results & Pagination */}
-          <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
-            <div className="max-w-screen-content mx-auto md:w-full">
+          <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+            <div className='max-w-screen-content mx-auto md:w-full'>
               <FinderResultsStats />
-              <div className="min-h-[320px]">
+              <div className='min-h-[320px]'>
                 <Hits
                   classNames={{
-                    root: "flex w-full items-center justify-center md:items-start md:justify-start",
-                    item: "flex h-full min-h-0 w-full flex-col",
-                    list: "grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+                    root: 'flex w-full items-center justify-center md:items-start md:justify-start',
+                    item: 'flex h-full min-h-0 w-full flex-col',
+                    list: 'grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
                   }}
                   hitComponent={({ hit }: { hit: GroupType }) => {
                     return <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />;
                   }}
                 />
               </div>
-              <div className="mt-6 flex justify-center md:justify-start">
+              <div className='mt-6 flex justify-center md:justify-start'>
                 <FindersCustomPagination />
               </div>
             </div>
@@ -368,13 +371,13 @@ export const ResponsiveConfigure = ({
     <Configure
       key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
-      filters={filters.length > 0 ? filters.join(" AND ") : undefined}
+      filters={filters.length > 0 ? filters.join(' AND ') : undefined}
       aroundLatLng={
         coordinates?.lat && coordinates?.lng
           ? `${coordinates.lat}, ${coordinates.lng}`
           : undefined
       }
-      aroundRadius="all"
+      aroundRadius='all'
       aroundLatLngViaIP={false}
       getRankingInfo={true}
     />

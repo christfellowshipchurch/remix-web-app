@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 interface NavbarVisibilityContextType {
   isNavbarVisible: boolean;
@@ -35,7 +35,7 @@ export const useNavbarVisibility = () => {
   const context = useContext(NavbarVisibilityContext);
   if (!context) {
     throw new Error(
-      "useNavbarVisibility must be used within a NavbarVisibilityProvider"
+      'useNavbarVisibility must be used within a NavbarVisibilityProvider',
     );
   }
   return context;

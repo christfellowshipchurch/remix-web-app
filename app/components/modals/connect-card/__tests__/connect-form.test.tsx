@@ -1,21 +1,27 @@
-import * as Form from "@radix-ui/react-form";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { MemoryRouter } from "react-router-dom";
+import * as Form from '@radix-ui/react-form';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import ConnectCardForm, {
   renderInputField,
   renderCheckboxField,
-} from "../connect-form.component";
+} from '../connect-form.component';
 
-vi.mock("~/lib/gtm", () => ({ pushFormEvent: vi.fn() }));
+vi.mock('~/lib/gtm', () => ({ pushFormEvent: vi.fn() }));
 
 // Configurable fetcher state
-let mockFetcherState = { state: "idle" as "idle" | "submitting" | "loading", data: undefined as unknown };
+let mockFetcherState = {
+  state: 'idle' as 'idle' | 'submitting' | 'loading',
+  data: undefined as unknown,
+};
 const mockLoad = vi.fn();
 const mockSubmit = vi.fn();
 
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom',
+    );
   return {
     ...actual,
     useFetcher: () => ({
@@ -31,165 +37,181 @@ function renderForm(onSuccess = vi.fn()) {
   return render(
     <MemoryRouter>
       <ConnectCardForm onSuccess={onSuccess} />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
-describe("renderInputField", () => {
-  it("renders label text", () => {
+describe('renderInputField', () => {
+  it('renders label text', () => {
     render(
       <MemoryRouter>
-        <Form.Root>{renderInputField("email", "Email", "text", "Required")}</Form.Root>
-      </MemoryRouter>
+        <Form.Root>
+          {renderInputField('email', 'Email', 'text', 'Required')}
+        </Form.Root>
+      </MemoryRouter>,
     );
-    expect(screen.getByText("Email")).toBeInTheDocument();
+    expect(screen.getByText('Email')).toBeInTheDocument();
   });
 
-  it("renders input with correct type", () => {
+  it('renders input with correct type', () => {
     render(
       <MemoryRouter>
-        <Form.Root>{renderInputField("phone", "Phone", "number", "Required")}</Form.Root>
-      </MemoryRouter>
+        <Form.Root>
+          {renderInputField('phone', 'Phone', 'number', 'Required')}
+        </Form.Root>
+      </MemoryRouter>,
     );
     expect(document.querySelector("input[type='number']")).toBeInTheDocument();
   });
 
-  it("applies defaultValue", () => {
+  it('applies defaultValue', () => {
     render(
       <MemoryRouter>
-        <Form.Root>{renderInputField("name", "Name", "text", "Required", "John")}</Form.Root>
-      </MemoryRouter>
+        <Form.Root>
+          {renderInputField('name', 'Name', 'text', 'Required', 'John')}
+        </Form.Root>
+      </MemoryRouter>,
     );
-    expect(screen.getByDisplayValue("John")).toBeInTheDocument();
+    expect(screen.getByDisplayValue('John')).toBeInTheDocument();
   });
 });
 
-describe("renderCheckboxField", () => {
-  it("renders checkbox input", () => {
-    const option = { guid: "guid-1", value: "Join a Group" };
+describe('renderCheckboxField', () => {
+  it('renders checkbox input', () => {
+    const option = { guid: 'guid-1', value: 'Join a Group' };
     render(
       <MemoryRouter>
         <Form.Root>{renderCheckboxField(option, 0)}</Form.Root>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
-    expect(document.querySelector("input[type='checkbox']")).toBeInTheDocument();
+    expect(
+      document.querySelector("input[type='checkbox']"),
+    ).toBeInTheDocument();
   });
 
-  it("renders checkbox label", () => {
-    const option = { guid: "guid-1", value: "Join a Group" };
+  it('renders checkbox label', () => {
+    const option = { guid: 'guid-1', value: 'Join a Group' };
     render(
       <MemoryRouter>
         <Form.Root>{renderCheckboxField(option, 0)}</Form.Root>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
-    expect(screen.getByText("Join a Group")).toBeInTheDocument();
+    expect(screen.getByText('Join a Group')).toBeInTheDocument();
   });
 });
 
-describe("ConnectCardForm", () => {
+describe('ConnectCardForm', () => {
   beforeEach(() => {
-    mockFetcherState = { state: "idle", data: undefined };
+    mockFetcherState = { state: 'idle', data: undefined };
     vi.clearAllMocks();
   });
 
   it("renders the 'Get Connected' heading", () => {
     renderForm();
-    expect(screen.getByText("Get Connected")).toBeInTheDocument();
+    expect(screen.getByText('Get Connected')).toBeInTheDocument();
   });
 
-  it("renders First Name, Last Name, Phone, Email fields", () => {
+  it('renders First Name, Last Name, Phone, Email fields', () => {
     renderForm();
-    expect(screen.getByText("First Name")).toBeInTheDocument();
-    expect(screen.getByText("Last Name")).toBeInTheDocument();
-    expect(screen.getByText("Phone")).toBeInTheDocument();
-    expect(screen.getByText("Email")).toBeInTheDocument();
+    expect(screen.getByText('First Name')).toBeInTheDocument();
+    expect(screen.getByText('Last Name')).toBeInTheDocument();
+    expect(screen.getByText('Phone')).toBeInTheDocument();
+    expect(screen.getByText('Email')).toBeInTheDocument();
   });
 
-  it("renders Campus select with placeholder option", () => {
+  it('renders Campus select with placeholder option', () => {
     renderForm();
-    expect(screen.getByText("Select a Campus")).toBeInTheDocument();
+    expect(screen.getByText('Select a Campus')).toBeInTheDocument();
   });
 
-  it("renders decision checkbox", () => {
+  it('renders decision checkbox', () => {
     renderForm();
     expect(
-      screen.getByText("I made a decision to follow Christ today")
+      screen.getByText('I made a decision to follow Christ today'),
     ).toBeInTheDocument();
   });
 
-  it("renders Submit button", () => {
+  it('renders Submit button', () => {
     renderForm();
-    expect(screen.getByRole("button", { name: /submit/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
   });
 
-  it("shows campuses in select when fetcher data loads", () => {
+  it('shows campuses in select when fetcher data loads', () => {
     mockFetcherState = {
-      state: "idle",
+      state: 'idle',
       data: {
         campuses: [
-          { guid: "guid-1", name: "Palm Beach Gardens" },
-          { guid: "guid-2", name: "Stuart" },
+          { guid: 'guid-1', name: 'Palm Beach Gardens' },
+          { guid: 'guid-2', name: 'Stuart' },
         ],
         allThatApplies: [],
       },
     };
     renderForm();
-    expect(screen.getByText("Palm Beach Gardens")).toBeInTheDocument();
-    expect(screen.getByText("Stuart")).toBeInTheDocument();
+    expect(screen.getByText('Palm Beach Gardens')).toBeInTheDocument();
+    expect(screen.getByText('Stuart')).toBeInTheDocument();
   });
 
   it("shows 'I am looking to:' section with checkboxes from fetcher data", () => {
     mockFetcherState = {
-      state: "idle",
+      state: 'idle',
       data: {
         campuses: [],
         allThatApplies: [
-          { guid: "g1", value: "Join a Group" },
-          { guid: "g2", value: "Get Baptized" },
+          { guid: 'g1', value: 'Join a Group' },
+          { guid: 'g2', value: 'Get Baptized' },
         ],
       },
     };
     renderForm();
-    expect(screen.getByText("I am looking to:")).toBeInTheDocument();
-    expect(screen.getByText("Join a Group")).toBeInTheDocument();
-    expect(screen.getByText("Get Baptized")).toBeInTheDocument();
+    expect(screen.getByText('I am looking to:')).toBeInTheDocument();
+    expect(screen.getByText('Join a Group')).toBeInTheDocument();
+    expect(screen.getByText('Get Baptized')).toBeInTheDocument();
   });
 
-  it("shows Loading... on submit button when submitting", () => {
-    mockFetcherState = { state: "submitting", data: undefined };
+  it('shows Loading... on submit button when submitting', () => {
+    mockFetcherState = { state: 'submitting', data: undefined };
     renderForm();
-    expect(screen.getByRole("button", { name: /loading/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /loading/i }),
+    ).toBeInTheDocument();
   });
 
-  it("shows error message from fetcher data", () => {
+  it('shows error message from fetcher data', () => {
     mockFetcherState = {
-      state: "idle",
-      data: { error: "Something went wrong" },
+      state: 'idle',
+      data: { error: 'Something went wrong' },
     };
     renderForm();
-    expect(screen.getByText("Something went wrong")).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
   });
 
   it("reveals 'Other' text input when Other checkbox is toggled", () => {
     mockFetcherState = {
-      state: "idle",
+      state: 'idle',
       data: {
         campuses: [],
-        allThatApplies: [{ guid: "guid-other", value: "Other" }],
+        allThatApplies: [{ guid: 'guid-other', value: 'Other' }],
       },
     };
     renderForm();
-    const checkbox = document.querySelector("input[type='checkbox'][value='guid-other']") as HTMLInputElement;
+    const checkbox = document.querySelector(
+      "input[type='checkbox'][value='guid-other']",
+    ) as HTMLInputElement;
     expect(checkbox).toBeInTheDocument();
     // otherContent field is not present before toggling
-    expect(document.querySelector("input[name='otherContent']")).not.toBeInTheDocument();
+    expect(
+      document.querySelector("input[name='otherContent']"),
+    ).not.toBeInTheDocument();
     fireEvent.click(checkbox);
     // After click, otherContent text input appears
-    expect(document.querySelector("input[name='otherContent']")).toBeInTheDocument();
+    expect(
+      document.querySelector("input[name='otherContent']"),
+    ).toBeInTheDocument();
   });
 
   it("calls fetcher.load('/connect-card') on mount", () => {
     renderForm();
-    expect(mockLoad).toHaveBeenCalledWith("/connect-card");
+    expect(mockLoad).toHaveBeenCalledWith('/connect-card');
   });
 });

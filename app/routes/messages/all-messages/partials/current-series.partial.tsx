@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useLoaderData } from "react-router-dom";
-import { IconButton } from "~/primitives/button/icon-button.primitive";
+import React, { useEffect, useMemo, useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import { IconButton } from '~/primitives/button/icon-button.primitive';
 
-import type { AllMessagesLoaderReturnType } from "../loader";
-import { getFirstParagraph } from "~/lib/utils";
-import { SectionTitle } from "~/components";
-import { ContentItemHit } from "~/routes/search/types";
-import { Configure, InstantSearch, useHits } from "react-instantsearch";
-import { createSearchClient } from "~/lib/create-search-client";
+import type { AllMessagesLoaderReturnType } from '../loader';
+import { getFirstParagraph } from '~/lib/utils';
+import { SectionTitle } from '~/components';
+import { ContentItemHit } from '~/routes/search/types';
+import { Configure, InstantSearch, useHits } from 'react-instantsearch';
+import { createSearchClient } from '~/lib/create-search-client';
 
 const CurrentSeries: React.FC = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -15,17 +15,17 @@ const CurrentSeries: React.FC = () => {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const [currentSeriesLoading, setCurrentSeriesLoading] = useState(true);
 
   return (
-    <div className="bg-gray w-full content-padding py-28">
-      <div className="flex flex-col gap-12 max-w-screen-content mx-auto">
+    <div className='bg-gray w-full content-padding py-28'>
+      <div className='flex flex-col gap-12 max-w-screen-content mx-auto'>
         {currentSeriesLoading && <CurrentSeriesLoadingSkeleton />}
         <InstantSearch
-          indexName="dev_contentItems"
+          indexName='dev_contentItems'
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -55,39 +55,39 @@ const CurrentSeriesHit = ({
   if (items.length === 0) return null;
 
   const hit = items[0];
-  const currentSeriesTitle = hit?.sermonSeriesName || "Current Series";
+  const currentSeriesTitle = hit?.sermonSeriesName || 'Current Series';
 
   const iconButtonClass =
-    "text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean lg:text-base xl:!text-lg";
+    'text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean lg:text-base xl:!text-lg';
 
   return (
     <>
-      <SectionTitle title={currentSeriesTitle} sectionTitle="current series" />
+      <SectionTitle title={currentSeriesTitle} sectionTitle='current series' />
 
       {/* Latest Message Card */}
-      <div className="flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] lg:h-[620px]">
-        <div className="flex flex-col h-full lg:w-1/2 justify-between lg:justify-center lg:gap-16 bg-white w-full p-8 md:p-16 lg:px-10 lg:py-12 xl:p-16">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <h3 className="text-xl font-extrabold text-ocean leading-none">
+      <div className='flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] lg:h-[620px]'>
+        <div className='flex flex-col h-full lg:w-1/2 justify-between lg:justify-center lg:gap-16 bg-white w-full p-8 md:p-16 lg:px-10 lg:py-12 xl:p-16'>
+          <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-2'>
+              <h3 className='text-xl font-extrabold text-ocean leading-none'>
                 Latest Message
               </h3>
 
-              <h2 className="text-2xl md:text-3xl lg:text-[40px] font-bold text-pretty">
+              <h2 className='text-2xl md:text-3xl lg:text-[40px] font-bold text-pretty'>
                 {hit.title}
               </h2>
-              <p className="-mt-1 font-semibold">
+              <p className='-mt-1 font-semibold'>
                 {hit.author.firstName} {hit.author.lastName}
               </p>
             </div>
 
-            <div className="text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-0">
-              {hit.summary || getFirstParagraph(hit.htmlContent || "")}
+            <div className='text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-0'>
+              {hit.summary || getFirstParagraph(hit.htmlContent || '')}
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8">
+          <div className='mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8'>
             {hit.sermonSeriesGuid && (
               <IconButton
                 to={`/series-resources/${hit.sermonSeriesGuid}`}
@@ -98,7 +98,7 @@ const CurrentSeriesHit = ({
             )}
             <IconButton
               to={`/messages/${hit.url}`}
-              prefetch="viewport"
+              prefetch='viewport'
               withRotatingArrow
               className={iconButtonClass}
             >
@@ -110,7 +110,7 @@ const CurrentSeriesHit = ({
         <img
           src={hit.coverImage.sources[0].uri}
           alt={currentSeriesTitle}
-          className="w-full lg:w-1/2 lg:h-[620px] object-cover"
+          className='w-full lg:w-1/2 lg:h-[620px] object-cover'
         />
       </div>
     </>
@@ -120,8 +120,8 @@ const CurrentSeriesHit = ({
 const CurrentSeriesLoadingSkeleton = () => {
   return (
     <>
-      <SectionTitle title="Current Series" sectionTitle="current series" />
-      <div className="size-full rounded-[1rem] lg:h-[620px] xl:h-[540px] 2xl:h-[500px] bg-white animate-pulse" />
+      <SectionTitle title='Current Series' sectionTitle='current series' />
+      <div className='size-full rounded-[1rem] lg:h-[620px] xl:h-[540px] 2xl:h-[500px] bg-white animate-pulse' />
     </>
   );
 };

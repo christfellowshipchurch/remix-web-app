@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 const SCROLL_DELAY_MS = 400;
-const SCROLL_TARGET_SELECTOR = ".pagination-scroll-to";
+const SCROLL_TARGET_SELECTOR = '.pagination-scroll-to';
 
 /**
  * On initial load, if the URL has any active filters (query or refinements),
@@ -9,7 +9,7 @@ const SCROLL_TARGET_SELECTOR = ".pagination-scroll-to";
  */
 export function useScrollToSearchResultsOnLoad(
   searchParams: URLSearchParams,
-  hasActiveFilters: (params: URLSearchParams) => boolean
+  hasActiveFilters: (params: URLSearchParams) => boolean,
 ) {
   const hasScrolledRef = useRef(false);
 
@@ -26,7 +26,7 @@ export function useScrollToSearchResultsOnLoad(
       const target = document.querySelector(SCROLL_TARGET_SELECTOR);
       if (target) {
         window.requestAnimationFrame(() => {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       }
     }, SCROLL_DELAY_MS);

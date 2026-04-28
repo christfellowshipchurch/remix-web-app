@@ -4,34 +4,34 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "~/primitives/shadcn-primitives/carousel";
-import { useHits } from "react-instantsearch";
-import { ContentItemHit } from "~/routes/search/types";
-import { SeriesCard } from "./this-series-card.component";
-import { cn } from "~/lib/utils";
+} from '~/primitives/shadcn-primitives/carousel';
+import { useHits } from 'react-instantsearch';
+import { ContentItemHit } from '~/routes/search/types';
+import { SeriesCard } from './this-series-card.component';
+import { cn } from '~/lib/utils';
 
 export function RelatedMessagesCarousel() {
   const { items } = useHits<ContentItemHit>();
 
   const arrowBaseStyles =
-    "border-navy disabled:border-[#AAAAAA] hover:bg-navy/10 cursor-pointer";
+    'border-navy disabled:border-[#AAAAAA] hover:bg-navy/10 cursor-pointer';
 
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: 'start',
       }}
-      className="w-full mt-6 relative mb-12"
+      className='w-full mt-6 relative mb-12'
     >
-      <CarouselContent className="gap-6">
+      <CarouselContent className='gap-6'>
         {items.map((hit, index) => (
           <CarouselItem
             key={index}
-            className="min-w-[318px] md:min-w-[460px] max-w-[460px] w-full pt-2"
+            className='min-w-[318px] md:min-w-[460px] max-w-[460px] w-full pt-2'
           >
             <SeriesCard
-              headingClass="text-text-primary"
-              pClass="text-text-primary"
+              headingClass='text-text-primary'
+              pClass='text-text-primary'
               message={{
                 title: hit.title,
                 summary: hit.summary,
@@ -42,16 +42,16 @@ export function RelatedMessagesCarousel() {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="absolute -bottom-10">
+      <div className='absolute -bottom-10'>
         <CarouselPrevious
-          className={cn("left-0", arrowBaseStyles)}
-          fill="#004f71"
-          disabledFill="#AAAAAA"
+          className={cn('left-0', arrowBaseStyles)}
+          fill='#004f71'
+          disabledFill='#AAAAAA'
         />
         <CarouselNext
-          className={cn("left-14", arrowBaseStyles)}
-          fill="#004f71"
-          disabledFill="#AAAAAA"
+          className={cn('left-14', arrowBaseStyles)}
+          fill='#004f71'
+          disabledFill='#AAAAAA'
         />
       </div>
     </Carousel>

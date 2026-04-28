@@ -1,12 +1,12 @@
 // due to CSS rendering issues, we needed to move these styles to a separate function to show correctly...
 const heroBgImgStyles = (image?: string) => {
   return {
-    backgroundImage: image?.includes("https")
+    backgroundImage: image?.includes('https')
       ? `url(${image})`
       : `url(${image})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
   };
 };
 

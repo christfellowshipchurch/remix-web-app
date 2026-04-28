@@ -1,13 +1,13 @@
 // This loader is used to fetch the feature cards for the navbar and is stored in the root loader to be used across the app
 
-import type { LoaderFunctionArgs } from "react-router-dom";
-import { fetchRockData, TTL } from "~/lib/.server/fetch-rock-data";
+import type { LoaderFunctionArgs } from 'react-router-dom';
+import { fetchRockData, TTL } from '~/lib/.server/fetch-rock-data';
 // import { fetchTopSearches } from "~/lib/.server/fetch-top-searches";
-import type { FeatureCard } from "~/components/navbar/types";
-import { createImageUrlFromGuid } from "~/lib/utils";
-import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
-import type { User } from "~/providers/auth-provider";
-import { IconName } from "~/primitives/button/types";
+import type { FeatureCard } from '~/components/navbar/types';
+import { createImageUrlFromGuid } from '~/lib/utils';
+import { getUserFromRequest } from '~/lib/.server/authentication/get-user-from-request';
+import type { User } from '~/providers/auth-provider';
+import { IconName } from '~/primitives/button/types';
 
 export interface HeroAction {
   iconName: IconName;
@@ -46,40 +46,40 @@ export interface RootLoaderData {
 const fetchFeatureCards = async () => {
   try {
     const latestArticleData = await fetchRockData({
-      endpoint: "ContentChannelItems",
+      endpoint: 'ContentChannelItems',
       queryParams: {
         $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
-        $orderby: "StartDateTime desc",
-        $top: "1",
-        loadAttributes: "simple",
+        $orderby: 'StartDateTime desc',
+        $top: '1',
+        loadAttributes: 'simple',
       },
     });
 
     const latestSermonData = await fetchRockData({
-      endpoint: "ContentChannelItems",
+      endpoint: 'ContentChannelItems',
       queryParams: {
         $filter: `ContentChannelId eq 63 and Status eq 'Approved'`,
-        $orderby: "StartDateTime desc",
-        $top: "1",
-        loadAttributes: "simple",
+        $orderby: 'StartDateTime desc',
+        $top: '1',
+        loadAttributes: 'simple',
       },
     });
 
     // TODO: remove this once we have the real data for the get involved card(s)
     const mockGetInvolvedData = {
-      title: "Take the Journey",
-      subtitle: "New Classes",
+      title: 'Take the Journey',
+      subtitle: 'New Classes',
       callToAction: {
-        title: "Sign Up Now",
-        url: "/journey",
+        title: 'Sign Up Now',
+        url: '/journey',
       },
-      image: "https://rock.christfellowship.church/GetImage.ashx?id=2966369",
-      navMenu: "get involved",
+      image: 'https://rock.christfellowship.church/GetImage.ashx?id=2966369',
+      navMenu: 'get involved',
     };
 
     return [latestSermonData, latestArticleData, mockGetInvolvedData];
   } catch (error) {
-    console.error("Error fetching feature cards:", error);
+    console.error('Error fetching feature cards:', error);
     return [];
   }
 };
@@ -87,14 +87,14 @@ const fetchFeatureCards = async () => {
 const fetchSiteBanner = async () => {
   const now = new Date();
   // Format date to ISO 8601 to remove milliseconds and timezone
-  const formattedDate = now.toISOString().split(".")[0] + "Z";
+  const formattedDate = now.toISOString().split('.')[0] + 'Z';
 
   try {
     const siteBanner = await fetchRockData({
-      endpoint: "ContentChannelItems",
+      endpoint: 'ContentChannelItems',
       queryParams: {
         $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${formattedDate}'`,
-        loadAttributes: "simple",
+        loadAttributes: 'simple',
       },
     });
 
@@ -104,14 +104,14 @@ const fetchSiteBanner = async () => {
       return siteBanner;
     }
   } catch (error) {
-    console.error("Error fetching site banner:", error);
+    console.error('Error fetching site banner:', error);
     return [];
   }
 };
 
 const sanitizeIconName = (raw: string | undefined): IconName | undefined => {
-  if (raw == null || typeof raw !== "string") return undefined;
-  const cleaned = raw.replace(/\|/g, "").replace(/\s/g, "").trim();
+  if (raw == null || typeof raw !== 'string') return undefined;
+  const cleaned = raw.replace(/\|/g, '').replace(/\s/g, '').trim();
   return cleaned.length > 0 ? (cleaned as IconName) : undefined;
 };
 
@@ -127,26 +127,26 @@ const fetchHeroActions = async () => {
 
   try {
     const heroActions = await fetchRockData({
-      endpoint: "DefinedValues",
+      endpoint: 'DefinedValues',
       queryParams: {
         $filter: `DefinedTypeId eq ${definedTypeId} and IsActive eq true`,
-        $orderby: "Order desc",
-        $top: "2",
-        loadAttributes: "simple",
+        $orderby: 'Order desc',
+        $top: '2',
+        loadAttributes: 'simple',
       },
       ttl: TTL.LONG,
     });
 
     return heroActions.map((action: HeroActionRaw) => ({
       iconName: (sanitizeIconName(action.attributeValues?.icon?.value) ??
-        "bell") as IconName,
+        'bell') as IconName,
       heading: action.description as string,
       title: action.value as string,
       url: action.attributeValues?.url?.value as string,
       position: action.order,
     }));
   } catch (error) {
-    console.error("Error fetching hero actions:", error);
+    console.error('Error fetching hero actions:', error);
     return [];
   }
 };
@@ -163,30 +163,30 @@ export async function loader({
     if (userData instanceof Response) {
       const data = await userData.json();
       if (
-        typeof data === "object" &&
+        typeof data === 'object' &&
         data !== null &&
-        "id" in data &&
-        "fullName" in data &&
-        "email" in data &&
-        "phoneNumber" in data &&
-        "guid" in data &&
-        "gender" in data &&
-        "birthDate" in data &&
-        "photo" in data
+        'id' in data &&
+        'fullName' in data &&
+        'email' in data &&
+        'phoneNumber' in data &&
+        'guid' in data &&
+        'gender' in data &&
+        'birthDate' in data &&
+        'photo' in data
       ) {
         parsedUserData = data as User;
       }
     } else if (
       userData &&
-      typeof userData === "object" &&
-      "id" in userData &&
-      "fullName" in userData &&
-      "email" in userData &&
-      "phoneNumber" in userData &&
-      "guid" in userData &&
-      "gender" in userData &&
-      "birthDate" in userData &&
-      "photo" in userData
+      typeof userData === 'object' &&
+      'id' in userData &&
+      'fullName' in userData &&
+      'email' in userData &&
+      'phoneNumber' in userData &&
+      'guid' in userData &&
+      'gender' in userData &&
+      'birthDate' in userData &&
+      'photo' in userData
     ) {
       parsedUserData = userData as User;
     }
@@ -218,8 +218,8 @@ export async function loader({
         popularResults: [],
         // Site Banner Data
         siteBanner: {
-          content: "",
-          link: "",
+          content: '',
+          link: '',
         },
       };
     }
@@ -227,7 +227,7 @@ export async function loader({
     // Transform the raw data into FeatureCard type
     const mappedFeatureCards: FeatureCard[] = rawFeatureCards.map((card) => {
       // Hardcoding the get involved card for now
-      if (card.navMenu && card.navMenu.toLowerCase() === "get involved") {
+      if (card.navMenu && card.navMenu.toLowerCase() === 'get involved') {
         return card;
       }
 
@@ -235,41 +235,41 @@ export async function loader({
       const isArticle = card.contentChannelId === 43;
 
       return {
-        title: card.title || "",
-        subtitle: isArticle ? "New Article" : "Latest Message",
+        title: card.title || '',
+        subtitle: isArticle ? 'New Article' : 'Latest Message',
         callToAction: {
-          title: isArticle ? "Read Now" : "Watch Now",
-          url: `/${isArticle ? "articles" : "messages"}/${
+          title: isArticle ? 'Read Now' : 'Watch Now',
+          url: `/${isArticle ? 'articles' : 'messages'}/${
             attributes.url?.value
           }`,
         },
-        image: createImageUrlFromGuid(attributes.image?.value || ""),
-        navMenu: "media",
+        image: createImageUrlFromGuid(attributes.image?.value || ''),
+        navMenu: 'media',
       };
     });
 
     // Sort cards into their respective menus based on the navMenu attribute
     const ministryCards = mappedFeatureCards.filter(
-      (card) => card.navMenu.toLowerCase() === "get involved",
+      (card) => card.navMenu.toLowerCase() === 'get involved',
     );
     const mediaCards = mappedFeatureCards.filter(
-      (card) => card.navMenu.toLowerCase() === "media",
+      (card) => card.navMenu.toLowerCase() === 'media',
     );
 
     // Site Banner Data
     const rawSiteBanner = await fetchSiteBanner();
     const siteBannerContent =
-      typeof rawSiteBanner?.content === "string" ? rawSiteBanner.content : "";
+      typeof rawSiteBanner?.content === 'string' ? rawSiteBanner.content : '';
     const callsToActionValue =
       rawSiteBanner?.attributeValues?.callsToAction?.value;
     const siteBannerLink =
-      typeof callsToActionValue === "string" && callsToActionValue.includes("^")
-        ? (callsToActionValue.split("^").pop()?.trim() ?? "")
-        : "";
+      typeof callsToActionValue === 'string' && callsToActionValue.includes('^')
+        ? (callsToActionValue.split('^').pop()?.trim() ?? '')
+        : '';
 
     const siteBanner = {
       content: siteBannerContent,
-      link: typeof siteBannerLink === "string" ? siteBannerLink : "",
+      link: typeof siteBannerLink === 'string' ? siteBannerLink : '',
     };
 
     // TODO: uncomment this once we have the real data for the popular searches
@@ -301,7 +301,7 @@ export async function loader({
       siteBanner: siteBanner,
     };
   } catch (error) {
-    console.error("Error in navbar loader:", error);
+    console.error('Error in navbar loader:', error);
     // Return empty arrays instead of throwing to prevent UI from breaking
     return {
       // Navbar Data
@@ -316,8 +316,8 @@ export async function loader({
       popularResults: [],
       // Site Banner Data
       siteBanner: {
-        content: "",
-        link: "",
+        content: '',
+        link: '',
       },
     };
   }

@@ -1,18 +1,18 @@
-import { useLoaderData } from "react-router-dom";
-import { Configure, InstantSearch, useHits } from "react-instantsearch";
-import { EventReturnType } from "../loader";
-import { ResourceCard } from "~/primitives/cards/resource-card";
-import { useMemo } from "react";
-import { ContentItemHit } from "~/routes/search/types";
-import { FeaturedEventCard } from "../components/featured-card.component";
-import { createSearchClient } from "~/lib/create-search-client";
+import { useLoaderData } from 'react-router-dom';
+import { Configure, InstantSearch, useHits } from 'react-instantsearch';
+import { EventReturnType } from '../loader';
+import { ResourceCard } from '~/primitives/cards/resource-card';
+import { useMemo } from 'react';
+import { ContentItemHit } from '~/routes/search/types';
+import { FeaturedEventCard } from '../components/featured-card.component';
+import { createSearchClient } from '~/lib/create-search-client';
 import {
   Carousel,
   CarouselArrows,
   CarouselContent,
   CarouselDots,
   CarouselItem,
-} from "~/primitives/shadcn-primitives/carousel";
+} from '~/primitives/shadcn-primitives/carousel';
 
 export function FeaturedEvents() {
   const loaderData = useLoaderData<EventReturnType>();
@@ -24,10 +24,10 @@ export function FeaturedEvents() {
   );
 
   return (
-    <div className="w-full py-28 content-padding bg-gray">
-      <div className="flex flex-col max-w-screen-content mx-auto">
+    <div className='w-full py-28 content-padding bg-gray'>
+      <div className='flex flex-col max-w-screen-content mx-auto'>
         <InstantSearch
-          indexName="dev_daniel_contentItems"
+          indexName='dev_daniel_contentItems'
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
@@ -57,7 +57,7 @@ const FeaturedEventsHits = () => {
       <FeaturedEventCard card={firstHit} />
 
       {/* Desktop Layout */}
-      <div className="hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start">
+      <div className='hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start'>
         {remainingHits?.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
@@ -65,22 +65,22 @@ const FeaturedEventsHits = () => {
 
       {/* Mobile Layout - Carousel */}
       {remainingHits.length > 0 && (
-        <div className="-ml-5 md:ml-0 mt-12 md:hidden">
+        <div className='-ml-5 md:ml-0 mt-12 md:hidden'>
           <Carousel
             opts={{
-              align: "start",
+              align: 'start',
             }}
-            className="w-full"
+            className='w-full'
           >
-            <CarouselContent className="py-2 gap-4">
+            <CarouselContent className='py-2 gap-4'>
               {remainingHits.map((hit, index) => (
                 <CarouselItem
                   key={hit.objectID}
-                  className="w-full basis-[360px] pl-0"
+                  className='w-full basis-[360px] pl-0'
                   style={{
-                    marginLeft: index === 0 ? "20px" : "0px",
+                    marginLeft: index === 0 ? '20px' : '0px',
                     marginRight:
-                      index === remainingHits.length - 1 ? "20px" : "0px",
+                      index === remainingHits.length - 1 ? '20px' : '0px',
                   }}
                 >
                   <OtherFeatureEventCardHit hit={hit} />
@@ -88,15 +88,15 @@ const FeaturedEventsHits = () => {
               ))}
             </CarouselContent>
 
-            <div className="w-full relative mt-4 pb-4">
-              <div className="absolute h-12 top-7 left-5">
+            <div className='w-full relative mt-4 pb-4'>
+              <div className='absolute h-12 top-7 left-5'>
                 <CarouselDots
-                  activeClassName="bg-ocean"
-                  inactiveClassName="bg-neutral-lighter"
+                  activeClassName='bg-ocean'
+                  inactiveClassName='bg-neutral-lighter'
                 />
               </div>
 
-              <div className="absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28">
+              <div className='absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28'>
                 <CarouselArrows />
               </div>
             </div>
@@ -109,30 +109,30 @@ const FeaturedEventsHits = () => {
 
 const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
   const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
-    "en-US",
+    'en-US',
     {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     },
   );
 
   return (
     <ResourceCard
-      className="min-w-[360px] w-[360px] md:w-full md:min-w-0"
+      className='min-w-[360px] w-[360px] md:w-full md:min-w-0'
       resource={{
         id: hit.objectID,
-        contentChannelId: "78", // EVENT type from builder-utils.ts
-        contentType: "EVENTS",
+        contentChannelId: '78', // EVENT type from builder-utils.ts
+        contentType: 'EVENTS',
         name: hit.title,
-        summary: hit.summary || "",
+        summary: hit.summary || '',
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
         startDate: formattedDate,
         location:
           hit.locations && hit.locations.length > 1
-            ? "Multiple Locations"
-            : hit.locations?.[0]?.name || "Christ Fellowship Church",
+            ? 'Multiple Locations'
+            : hit.locations?.[0]?.name || 'Christ Fellowship Church',
       }}
     />
   );

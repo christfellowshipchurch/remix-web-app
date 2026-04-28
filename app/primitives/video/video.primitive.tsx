@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { cn } from "~/lib/utils";
+import { useEffect, useRef } from 'react';
+import { cn } from '~/lib/utils';
 
 // Declare Wistia types
 declare global {
@@ -44,8 +44,8 @@ export const Video = (props: VideoProps) => {
           return;
         }
 
-        const script = document.createElement("script");
-        script.src = "https://fast.wistia.com/assets/external/E-v1.js";
+        const script = document.createElement('script');
+        script.src = 'https://fast.wistia.com/assets/external/E-v1.js';
         script.async = true;
         script.onload = () => resolve();
         script.onerror = () => resolve(); // Resolve anyway to continue
@@ -69,9 +69,9 @@ export const Video = (props: VideoProps) => {
           // Set loop if needed
           if (
             props.loop &&
-            "loop" in video &&
+            'loop' in video &&
             typeof (video as { loop?: (value: boolean) => void }).loop ===
-              "function"
+              'function'
           ) {
             (video as { loop: (value: boolean) => void }).loop(true);
           }
@@ -105,14 +105,14 @@ export const Video = (props: VideoProps) => {
 
         // Check if iframe is already loaded
         try {
-          if (iframe.contentDocument?.readyState === "complete") {
+          if (iframe.contentDocument?.readyState === 'complete') {
             iframeLoadHandler();
           } else {
-            iframe.addEventListener("load", iframeLoadHandler);
+            iframe.addEventListener('load', iframeLoadHandler);
           }
         } catch {
           // Cross-origin iframe, can't access contentDocument
-          iframe.addEventListener("load", iframeLoadHandler);
+          iframe.addEventListener('load', iframeLoadHandler);
         }
       }
     });
@@ -121,7 +121,7 @@ export const Video = (props: VideoProps) => {
     return () => {
       // Remove event listener
       if (iframeRef.current && iframeLoadHandler) {
-        iframeRef.current.removeEventListener("load", iframeLoadHandler);
+        iframeRef.current.removeEventListener('load', iframeLoadHandler);
       }
       // Remove this video from the queue on unmount
       if (window._wq && props.wistiaId) {
@@ -141,10 +141,10 @@ export const Video = (props: VideoProps) => {
         <iframe
           ref={iframeRef}
           src={iframeSrc}
-          aria-label="Wistia Video"
-          allow="autoplay; fullscreen"
+          aria-label='Wistia Video'
+          allow='autoplay; fullscreen'
           allowFullScreen
-          className={cn("size-full", props.className)}
+          className={cn('size-full', props.className)}
         />
       ) : (
         <video
@@ -154,7 +154,7 @@ export const Video = (props: VideoProps) => {
           muted={props.muted || false}
           controls={props.controls || undefined}
           className={props.className}
-          aria-label="Video"
+          aria-label='Video'
         />
       )}
     </>

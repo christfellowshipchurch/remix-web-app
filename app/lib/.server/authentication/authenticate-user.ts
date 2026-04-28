@@ -2,10 +2,10 @@ import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/error-types";
-import { generateToken } from "~/lib/.server/token";
-import { encrypt } from "~/lib/.server/encrypt";
-import { createRockSession, fetchUserCookie } from "./rock-authentication";
+} from '~/lib/.server/error-types';
+import { generateToken } from '~/lib/.server/token';
+import { encrypt } from '~/lib/.server/encrypt';
+import { createRockSession, fetchUserCookie } from './rock-authentication';
 
 export type AuthenticationReturnType = {
   encryptedToken: string;
@@ -13,7 +13,7 @@ export type AuthenticationReturnType = {
 
 export const authenticateUser = async (
   identity: string,
-  password: string
+  password: string,
 ): Promise<AuthenticationReturnType> => {
   try {
     const cookie = await fetchUserCookie(identity, password);
@@ -27,7 +27,9 @@ export const authenticateUser = async (
       if (error instanceof EncryptionError) {
         throw new EncryptionError(error.message, { cause: error });
       }
-      throw new Error("Failed to encrypt authentication token", { cause: error });
+      throw new Error('Failed to encrypt authentication token', {
+        cause: error,
+      });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -36,8 +38,8 @@ export const authenticateUser = async (
     if (error instanceof RockAPIError) {
       throw new RockAPIError(error.message, error.statusCode, { cause: error });
     }
-    console.error("Unhandled authentication error:", error);
-    throw new Error("An unexpected error occurred during authentication", {
+    console.error('Unhandled authentication error:', error);
+    throw new Error('An unexpected error occurred during authentication', {
       cause: error,
     });
   }

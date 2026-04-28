@@ -1,33 +1,33 @@
-import { useLocation } from "react-router-dom";
-import { useRouteLoaderData } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
-import { useResponsive } from "~/hooks/use-responsive";
-import lowerCase from "lodash/lowerCase";
+import { useLocation } from 'react-router-dom';
+import { useRouteLoaderData } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useResponsive } from '~/hooks/use-responsive';
+import lowerCase from 'lodash/lowerCase';
 
-import { Button } from "~/primitives/button/button.primitive";
-import Icon from "~/primitives/icon";
-import { MenuContent } from "./desktop/menu-content.component";
-import MobileMenu from "./mobile/mobile-menu.component";
-import { SearchBar } from "./desktop/search/search.component";
+import { Button } from '~/primitives/button/button.primitive';
+import Icon from '~/primitives/icon';
+import { MenuContent } from './desktop/menu-content.component';
+import MobileMenu from './mobile/mobile-menu.component';
+import { SearchBar } from './desktop/search/search.component';
 
-import { cn } from "~/lib/utils";
-import { shouldUseDarkMode, shouldHideNavbar } from "./navbar-routes";
+import { cn } from '~/lib/utils';
+import { shouldUseDarkMode, shouldHideNavbar } from './navbar-routes';
 // Data
 import {
   mainNavLinks,
   ministriesData,
   watchReadListenData,
-} from "./navbar.data";
-import { MenuLink } from "./types";
-import { SiteBanner } from "../site-banner";
-import { RootLoaderData } from "~/routes/navbar/loader";
+} from './navbar.data';
+import { MenuLink } from './types';
+import { SiteBanner } from '../site-banner';
+import { RootLoaderData } from '~/routes/navbar/loader';
 // import { AuthModal } from "../modals";
-import { useNavbarVisibility } from "~/providers/navbar-visibility-context";
+import { useNavbarVisibility } from '~/providers/navbar-visibility-context';
 
 export function Navbar() {
   // Hooks and state
   const { pathname } = useLocation();
-  const rootData = useRouteLoaderData("root") as RootLoaderData;
+  const rootData = useRouteLoaderData('root') as RootLoaderData;
   const { siteBanner, ministries, watchReadListen } = rootData || {};
   const { isSmall } = useResponsive();
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -39,14 +39,14 @@ export function Navbar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   // Theme mode state
-  let initialMode: "light" | "dark";
-  if (pathname === "/") {
-    initialMode = isSmall ? "dark" : "light";
+  let initialMode: 'light' | 'dark';
+  if (pathname === '/') {
+    initialMode = isSmall ? 'dark' : 'light';
   } else {
-    initialMode = shouldUseDarkMode(pathname) ? "dark" : "light";
+    initialMode = shouldUseDarkMode(pathname) ? 'dark' : 'light';
   }
-  const [defaultMode, setDefaultMode] = useState<"light" | "dark">(initialMode);
-  const [mode, setMode] = useState<"light" | "dark">(defaultMode);
+  const [defaultMode, setDefaultMode] = useState<'light' | 'dark'>(initialMode);
+  const [mode, setMode] = useState<'light' | 'dark'>(defaultMode);
 
   const [showSiteBanner, setShowSiteBanner] = useState<boolean>(false);
 
@@ -67,8 +67,8 @@ export function Navbar() {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openDropdown]);
 
   useEffect(() => {
@@ -80,13 +80,13 @@ export function Navbar() {
   // Prevent background scrolling when search is open
   useEffect(() => {
     if (isSearchOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     }
 
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     };
   }, [isSearchOpen]);
 
@@ -119,17 +119,17 @@ export function Navbar() {
       if (Math.abs(scrollDelta) > scrollThreshold) {
         setIsVisible(scrollDelta < 0);
         if (currentScrollY > scrollThreshold) {
-          setMode(scrollDelta < 0 ? "light" : "dark");
+          setMode(scrollDelta < 0 ? 'light' : 'dark');
         }
       }
 
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [
     lastScrollY,
@@ -142,21 +142,21 @@ export function Navbar() {
 
   // Initial mode setup
   useEffect(() => {
-    if (pathname === "/") {
-      setDefaultMode(isSmall ? "dark" : "light");
+    if (pathname === '/') {
+      setDefaultMode(isSmall ? 'dark' : 'light');
     } else {
-      setDefaultMode(shouldUseDarkMode(pathname) ? "dark" : "light");
+      setDefaultMode(shouldUseDarkMode(pathname) ? 'dark' : 'light');
     }
   }, [pathname, isSmall]);
 
   // Route change handling
   useEffect(() => {
-    let newMode: "light" | "dark";
+    let newMode: 'light' | 'dark';
     // If on home page, set mode based on screen size
-    if (pathname === "/") {
-      newMode = isSmall ? "dark" : "light";
+    if (pathname === '/') {
+      newMode = isSmall ? 'dark' : 'light';
     } else {
-      newMode = shouldUseDarkMode(pathname) ? "dark" : "light";
+      newMode = shouldUseDarkMode(pathname) ? 'dark' : 'light';
     }
     setDefaultMode(newMode);
     setMode(newMode);
@@ -181,14 +181,14 @@ export function Navbar() {
   // Menu data
   const menuLinks: MenuLink[] = [
     {
-      title: "Get Involved",
+      title: 'Get Involved',
       content: {
         mainContent: ministriesData.content?.mainContent ?? [],
         featureCards: ministries?.featureCards ?? [],
       },
     },
     {
-      title: "Media",
+      title: 'Media',
       content: {
         mainContent: watchReadListenData.content?.mainContent ?? [],
         featureCards: watchReadListen?.featureCards ?? [],
@@ -197,7 +197,7 @@ export function Navbar() {
   ];
 
   const latestMessageFeaturedUrl = watchReadListen?.featureCards?.find(
-    (card) => card.subtitle === "Latest Message",
+    (card) => card.subtitle === 'Latest Message',
   )?.callToAction?.url;
 
   // Search handling
@@ -205,7 +205,7 @@ export function Navbar() {
     setIsSearchOpen(true);
     setOpenDropdown(null); // Close any open dropdown
     setTimeout(() => {
-      const searchInput = document.querySelector(".ais-SearchBox-input");
+      const searchInput = document.querySelector('.ais-SearchBox-input');
       if (searchInput instanceof HTMLInputElement) {
         searchInput.focus();
       }
@@ -227,103 +227,103 @@ export function Navbar() {
       {!isNavbarHidden && (
         <nav
           className={cn(
-            "group w-full sticky top-0 z-400 transition-transform duration-300",
-            !isVisible && "-translate-y-full absolute",
-            mode === "dark" && isVisible && "absolute",
+            'group w-full sticky top-0 z-400 transition-transform duration-300',
+            !isVisible && '-translate-y-full absolute',
+            mode === 'dark' && isVisible && 'absolute',
           )}
           ref={navbarRef}
         >
-          <div className={cn(showSiteBanner ? "block" : "hidden")}>
+          <div className={cn(showSiteBanner ? 'block' : 'hidden')}>
             <SiteBanner
-              content={siteBanner?.content ?? ""}
-              link={siteBanner?.link ?? ""}
+              content={siteBanner?.content ?? ''}
+              link={siteBanner?.link ?? ''}
               onClose={() => setShowSiteBanner(false)}
             />
           </div>
           <div
             className={cn(
-              "w-full content-padding transition-colors duration-200",
-              mode === "light" || isSearchOpen
-                ? "bg-white shadow-sm"
+              'w-full content-padding transition-colors duration-200',
+              mode === 'light' || isSearchOpen
+                ? 'bg-white shadow-sm'
                 : openDropdown
-                  ? "bg-white shadow-sm"
-                  : "bg-transparent group-hover:bg-white",
+                  ? 'bg-white shadow-sm'
+                  : 'bg-transparent group-hover:bg-white',
             )}
           >
             <div
               className={cn(
-                "max-w-screen-content mx-auto flex justify-between items-center font-bold py-5 min-h-[82px]",
+                'max-w-screen-content mx-auto flex justify-between items-center font-bold py-5 min-h-[82px]',
               )}
-              style={{ gap: isSearchOpen ? "32px" : "0px" }}
+              style={{ gap: isSearchOpen ? '32px' : '0px' }}
             >
               {/* Logo and Desktop Navigation */}
-              <div className="flex items-center gap-8">
+              <div className='flex items-center gap-8'>
                 <a
-                  href="/"
-                  className="relative flex items-center justify-center gap-2.5"
-                  aria-label="Christ Fellowship Church"
+                  href='/'
+                  className='relative flex items-center justify-center gap-2.5'
+                  aria-label='Christ Fellowship Church'
                 >
                   <Icon
-                    name="logo"
+                    name='logo'
                     className={cn(
-                      "size-32 my-[-48px] transition-colors duration-200",
-                      mode === "light" || isSearchOpen
-                        ? "text-ocean"
+                      'size-32 my-[-48px] transition-colors duration-200',
+                      mode === 'light' || isSearchOpen
+                        ? 'text-ocean'
                         : openDropdown
-                          ? "text-ocean"
-                          : "text-white group-hover:text-ocean",
+                          ? 'text-ocean'
+                          : 'text-white group-hover:text-ocean',
                     )}
                   />
                 </a>
 
                 {/* Desktop Navigation Menu */}
                 <div
-                  className={cn("hidden lg:inline", isSearchOpen && "hidden!")}
+                  className={cn('hidden lg:inline', isSearchOpen && 'hidden!')}
                 >
-                  <nav className="flex items-center space-x-6 xl:space-x-10">
+                  <nav className='flex items-center space-x-6 xl:space-x-10'>
                     {mainNavLinks.map((link) => (
                       <a
                         key={link.title}
                         href={link.url}
                         className={cn(
-                          "transition-colors xl:text-lg",
-                          mode === "light"
-                            ? "text-neutral-dark"
+                          'transition-colors xl:text-lg',
+                          mode === 'light'
+                            ? 'text-neutral-dark'
                             : openDropdown
-                              ? "text-neutral-dark"
-                              : "text-white group-hover:text-text",
+                              ? 'text-neutral-dark'
+                              : 'text-white group-hover:text-text',
                         )}
                       >
-                        <span className="hover:text-ocean">{link.title}</span>
+                        <span className='hover:text-ocean'>{link.title}</span>
                       </a>
                     ))}
 
                     {menuLinks.map((menuLink) =>
                       menuLink.content ? (
-                        <div key={menuLink.title} className="relative">
+                        <div key={menuLink.title} className='relative'>
                           <button
                             onClick={() => handleDropdownToggle(menuLink.title)}
                             className={cn(
-                              "transition-colors xl:text-lg cursor-pointer",
+                              'transition-colors xl:text-lg cursor-pointer',
                               openDropdown === menuLink.title &&
-                                "border-b-3 border-ocean",
-                              mode === "light"
-                                ? "text-neutral-dark"
+                                'border-b-3 border-ocean',
+                              mode === 'light'
+                                ? 'text-neutral-dark'
                                 : openDropdown
-                                  ? "text-neutral-dark"
-                                  : "text-white group-hover:text-text",
+                                  ? 'text-neutral-dark'
+                                  : 'text-white group-hover:text-text',
                             )}
                           >
-                            <span className="hover:text-ocean flex items-center gap-1">
+                            <span className='hover:text-ocean flex items-center gap-1'>
                               {menuLink.title}
                               <Icon
-                                name="chevronDown"
+                                name='chevronDown'
                                 className={cn(
-                                  "relative top-px size-4 lg:size-6 transition duration-200",
+                                  'relative top-px size-4 lg:size-6 transition duration-200',
                                   openDropdown === menuLink.title &&
-                                    "rotate-180",
+                                    'rotate-180',
                                 )}
-                                aria-hidden="true"
+                                aria-hidden='true'
                               />
                             </span>
                           </button>
@@ -331,9 +331,9 @@ export function Navbar() {
                           {openDropdown === menuLink.title && (
                             <div
                               className={cn(
-                                "fixed left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50",
-                                "animate-in slide-in-from-top-2 duration-200",
-                                showSiteBanner ? "top-[130px]" : "top-[82px]",
+                                'fixed left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50',
+                                'animate-in slide-in-from-top-2 duration-200',
+                                showSiteBanner ? 'top-[130px]' : 'top-[82px]',
                               )}
                             >
                               <MenuContent
@@ -353,18 +353,18 @@ export function Navbar() {
 
               {/* Desktop Actions */}
               <div
-                className="hidden lg:flex items-center gap-1 ml-2 xl:ml-0"
+                className='hidden lg:flex items-center gap-1 ml-2 xl:ml-0'
                 style={{
-                  width: isSearchOpen ? "100%" : "auto",
-                  alignItems: isSearchOpen ? "end" : "center",
-                  justifyContent: isSearchOpen ? "space-between" : "start",
-                  height: isSearchOpen ? "52px" : "auto",
+                  width: isSearchOpen ? '100%' : 'auto',
+                  alignItems: isSearchOpen ? 'end' : 'center',
+                  justifyContent: isSearchOpen ? 'space-between' : 'start',
+                  height: isSearchOpen ? '52px' : 'auto',
                 }}
               >
                 <div
                   style={{
-                    display: isSearchOpen ? "block" : "none",
-                    width: "100%",
+                    display: isSearchOpen ? 'block' : 'none',
+                    width: '100%',
                   }}
                 >
                   <SearchBar
@@ -377,25 +377,25 @@ export function Navbar() {
                 {!isSearchOpen && (
                   <button
                     onClick={handleSearchClick}
-                    className="flex items-center"
-                    aria-label="Search"
+                    className='flex items-center'
+                    aria-label='Search'
                   >
                     <Icon
-                      name="search"
+                      name='search'
                       className={cn(
-                        "hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5 mb-1",
-                        mode === "light"
-                          ? "text-neutral-dark"
+                        'hover:text-ocean transition-colors cursor-pointer size-4 xl:size-5 mb-1',
+                        mode === 'light'
+                          ? 'text-neutral-dark'
                           : openDropdown
-                            ? "text-neutral-dark"
-                            : "text-white group-hover:text-text",
+                            ? 'text-neutral-dark'
+                            : 'text-white group-hover:text-text',
                       )}
                     />
                   </button>
                 )}
 
                 <div
-                  className={cn("flex gap-2", isSearchOpen && "hidden xl:flex")}
+                  className={cn('flex gap-2', isSearchOpen && 'hidden xl:flex')}
                 >
                   {/* We will plan to redirect to legacy my groups site */}
                   {/* <AuthModal
@@ -408,29 +408,29 @@ export function Navbar() {
                     buttonText="Login"
                   /> */}
                   <a
-                    href="https://legacy-my-groups.vercel.app/login"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Login"
+                    href='https://legacy-my-groups.vercel.app/login'
+                    target='_blank'
+                    rel='noreferrer'
+                    aria-label='Login'
                     className={cn(
-                      "font-semibold text-sm xl:text-base transition-colors h-full my-auto px-6 hover:text-ocean",
-                      mode === "light" || isSearchOpen
-                        ? "text-neutral-dark"
+                      'font-semibold text-sm xl:text-base transition-colors h-full my-auto px-6 hover:text-ocean',
+                      mode === 'light' || isSearchOpen
+                        ? 'text-neutral-dark'
                         : openDropdown
-                          ? "text-neutral-dark"
-                          : "text-white group-hover:text-text",
+                          ? 'text-neutral-dark'
+                          : 'text-white group-hover:text-text',
                     )}
                   >
                     Login
                   </a>
                   <Button
-                    href="/locations"
-                    className="font-semibold text-sm xl:text-base w-fit min-w-[180px]"
-                    aria-label="Find a Service"
+                    href='/locations'
+                    className='font-semibold text-sm xl:text-base w-fit min-w-[180px]'
+                    aria-label='Find a Service'
                   >
                     <Icon
-                      name="mapFilled"
-                      className="mr-1 xl:mr-2 size-4 xl:size-5"
+                      name='mapFilled'
+                      className='mr-1 xl:mr-2 size-4 xl:size-5'
                     />
                     Find a Service
                   </Button>

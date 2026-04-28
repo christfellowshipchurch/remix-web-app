@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export const breakpoints = {
   xs: 480,
@@ -6,7 +6,7 @@ export const breakpoints = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  "2xl": 1536,
+  '2xl': 1536,
 } as const;
 
 export function useResponsive() {
@@ -18,8 +18,8 @@ export function useResponsive() {
     }
 
     handleResize(); // set initial width
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (width === null) {
@@ -40,7 +40,7 @@ export function useResponsive() {
     isMedium: width >= breakpoints.md && width < breakpoints.lg,
     isLarge: width >= breakpoints.lg,
     isXLarge: width >= breakpoints.xl,
-    isXXLarge: width >= breakpoints["2xl"],
+    isXXLarge: width >= breakpoints['2xl'],
     breakpoints,
   };
 }

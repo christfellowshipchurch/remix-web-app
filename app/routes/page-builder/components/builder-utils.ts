@@ -1,40 +1,40 @@
-import { cn } from "~/lib/utils";
-import { parseRockKeyValueList } from "~/lib/utils";
-import { ContentBlockData, ContentType, SectionType } from "../types";
+import { cn } from '~/lib/utils';
+import { parseRockKeyValueList } from '~/lib/utils';
+import { ContentBlockData, ContentType, SectionType } from '../types';
 
 /**
  * Maps content channel IDs to their corresponding content types
  */
 const CONTENT_TYPE_MAP: Record<string, ContentType> = {
-  "186": "EVENTS", // New Events Content Channel ID
-  "63": "MESSAGES",
-  "90": "REDIRECT_CARD",
-  "43": "ARTICLES",
-  "83": "DEVOTIONALS",
-  "55": "PODCASTS",
-  "171": "MINISTRY_PAGE",
-  "176": "PAGE_BUILDER",
+  '186': 'EVENTS', // New Events Content Channel ID
+  '63': 'MESSAGES',
+  '90': 'REDIRECT_CARD',
+  '43': 'ARTICLES',
+  '83': 'DEVOTIONALS',
+  '55': 'PODCASTS',
+  '171': 'MINISTRY_PAGE',
+  '176': 'PAGE_BUILDER',
 } as const;
 
 /**
  * Maps content channel IDs to their corresponding section types
  */
 const SECTION_TYPE_MAP: Record<string, SectionType> = {
-  "167": "EVENT_COLLECTION",
-  "168": "RESOURCE_COLLECTION",
-  "169": "CTA_COLLECTION",
-  "170": "CONTENT_BLOCK",
-  "178": "FAQs",
-  "177": "IMAGE_GALLERY",
+  '167': 'EVENT_COLLECTION',
+  '168': 'RESOURCE_COLLECTION',
+  '169': 'CTA_COLLECTION',
+  '170': 'CONTENT_BLOCK',
+  '178': 'FAQs',
+  '177': 'IMAGE_GALLERY',
 } as const;
 
 /**
  * Collection section types that can contain child items
  */
 const COLLECTION_TYPES_MAP = [
-  "EVENT_COLLECTION",
-  "RESOURCE_COLLECTION",
-  "CTA_COLLECTION",
+  'EVENT_COLLECTION',
+  'RESOURCE_COLLECTION',
+  'CTA_COLLECTION',
 ] as const;
 
 type CollectionTypes = (typeof COLLECTION_TYPES_MAP)[number];
@@ -72,11 +72,11 @@ export const getPathname = (
   contentType: ContentType,
   pathname: string,
 ): string => {
-  if (contentType && pathname && pathname !== "") {
-    if (contentType === "MINISTRY_PAGE") {
+  if (contentType && pathname && pathname !== '') {
+    if (contentType === 'MINISTRY_PAGE') {
       return `/ministries/${pathname}`;
     }
-    if (contentType === "PAGE_BUILDER") {
+    if (contentType === 'PAGE_BUILDER') {
       return `/${pathname}`;
     }
     return `/${contentType.toLowerCase()}/${pathname}`;
@@ -97,9 +97,9 @@ export const isGuid = (value: string): boolean => {
  * Gets the styles for a CTA buttons for CTA Card and CTA Fullscreen layouts
  */
 export const getCtaStyles = (data: ContentBlockData, buttonLimit: number) => {
-  const isDark = data.backgroundColor !== "WHITE";
-  const isOcean = data.backgroundColor === "OCEAN";
-  const buttonCount = parseRockKeyValueList(data.callsToAction ?? "").length;
+  const isDark = data.backgroundColor !== 'WHITE';
+  const isOcean = data.backgroundColor === 'OCEAN';
+  const buttonCount = parseRockKeyValueList(data.callsToAction ?? '').length;
   // If the button count is less than the button limit, then use the button count - 1
   // Otherwise, use the button limit - 1
   const isNotLastButton = (index: number) =>
@@ -108,19 +108,19 @@ export const getCtaStyles = (data: ContentBlockData, buttonLimit: number) => {
       : index !== buttonLimit - 1;
 
   const getButtonIntent = (index: number) => {
-    if (isNotLastButton(index)) return "secondary";
-    return isOcean ? "white" : "primary";
+    if (isNotLastButton(index)) return 'secondary';
+    return isOcean ? 'white' : 'primary';
   };
 
   const getButtonClassName = (index: number) => {
     return cn(
-      "w-full sm:w-auto hover:enabled:bg-white/10 transition-colors duration-300",
+      'w-full sm:w-auto hover:enabled:bg-white/10 transition-colors duration-300',
       {
-        "text-soft-white border-soft-white": isDark && isNotLastButton(index),
-        "hover:enabled:bg-white/10": isOcean && isNotLastButton(index),
-        "hover:enabled:bg-ocean": !isDark,
-        "hover:enabled:bg-white/80": isOcean && !isNotLastButton(index),
-        "hover:enabled:bg-navy hover:enabled:text-white":
+        'text-soft-white border-soft-white': isDark && isNotLastButton(index),
+        'hover:enabled:bg-white/10': isOcean && isNotLastButton(index),
+        'hover:enabled:bg-ocean': !isDark,
+        'hover:enabled:bg-white/80': isOcean && !isNotLastButton(index),
+        'hover:enabled:bg-navy hover:enabled:text-white':
           !isDark && !isNotLastButton(index),
       },
     );

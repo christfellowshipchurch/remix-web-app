@@ -1,14 +1,14 @@
-import { cn } from "~/lib/utils";
-import { Icon } from "~/primitives/icon/icon";
-import { useRef, useEffect, useState } from "react";
-import * as Tabs from "@radix-ui/react-tabs";
-import { Video } from "~/primitives/video/video.primitive";
+import { cn } from '~/lib/utils';
+import { Icon } from '~/primitives/icon/icon';
+import { useRef, useEffect, useState } from 'react';
+import * as Tabs from '@radix-ui/react-tabs';
+import { Video } from '~/primitives/video/video.primitive';
 
 export const WhatToExpectDesktopTabs = () => {
   return (
     <Tabs.Root
       defaultValue={WhatToExpectData[0].title}
-      className="flex flex-col gap-16 xl:gap-32"
+      className='flex flex-col gap-16 xl:gap-32'
     >
       {WhatToExpectData.map((tab, index) => (
         <Tabs.Content value={tab.title} key={index}>
@@ -52,7 +52,7 @@ export const WhatToExpectDesktopTabs = () => {
 const WhatToExpectDesktopCard = ({
   data,
 }: {
-  data: WhatToExpectCardType["data"];
+  data: WhatToExpectCardType['data'];
 }) => {
   const { content, name, role, video } = data;
   const [isPlaying, setIsPlaying] = useState(false);
@@ -66,52 +66,52 @@ const WhatToExpectDesktopCard = ({
   };
 
   return (
-    <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
-      <div className="flex flex-col gap-12">
-        <p className="text-xl xl:text-[26px] font-semibold max-w-[600px]">
+    <div className='w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative'>
+      <div className='flex flex-col gap-12'>
+        <p className='text-xl xl:text-[26px] font-semibold max-w-[600px]'>
           {content}
         </p>
 
-        <div className="flex flex-col">
-          <h3 className="text-[21px] font-extrabold leading-none">{name}</h3>
-          <p className="text-lg font-bold text-border-secondary">{role}</p>
+        <div className='flex flex-col'>
+          <h3 className='text-[21px] font-extrabold leading-none'>{name}</h3>
+          <p className='text-lg font-bold text-border-secondary'>{role}</p>
         </div>
       </div>
 
-      <div className="absolute right-8 xl:right-10 -top-10 xl:-top-30">
+      <div className='absolute right-8 xl:right-10 -top-10 xl:-top-30'>
         {isPlaying ? (
-          <div className="relative overflow-hidden rounded-[12px] transition-opacity duration-200">
+          <div className='relative overflow-hidden rounded-[12px] transition-opacity duration-200'>
             <Video
               wistiaId={video}
               controls
-              className="w-[340px] xl:w-[520px] aspect-520/650 rounded-[12px]"
+              className='w-[340px] xl:w-[520px] aspect-520/650 rounded-[12px]'
             />
             <div
-              className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors"
+              className='absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-2 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors'
               onClick={handlePauseClick}
             >
-              <div className="relative">
-                <Icon name="arrowBack" color="white" />
+              <div className='relative'>
+                <Icon name='arrowBack' color='white' />
               </div>
             </div>
           </div>
         ) : (
           <div
-            className="w-[340px] xl:w-[520px] aspect-520/650 rounded-[12px] bg-black relative cursor-pointer group overflow-hidden transition-opacity duration-300"
+            className='w-[340px] xl:w-[520px] aspect-520/650 rounded-[12px] bg-black relative cursor-pointer group overflow-hidden transition-opacity duration-300'
             onClick={handlePlayClick}
           >
             <img
               src={data.thumbnail}
               alt={name}
-              className="w-full h-full object-cover rounded-[12px]"
+              className='w-full h-full object-cover rounded-[12px]'
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-[12px]" />
-            <div className="absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-3 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors">
-              <div className="relative -right-[2px] size-10 xl:size-16">
+            <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-[12px]' />
+            <div className='absolute top-5 left-5 rounded-full bg-[#3D3D3D]/50 p-3 cursor-pointer hover:bg-[#3D3D3D]/70 transition-colors'>
+              <div className='relative -right-[2px] size-10 xl:size-16'>
                 <Icon
-                  name="play"
-                  color="white"
-                  className="size-10 xl:size-16"
+                  name='play'
+                  color='white'
+                  className='size-10 xl:size-16'
                 />
               </div>
             </div>
@@ -132,7 +132,7 @@ export const WhatToExpectMobileScroll = () => {
     if (!containerRef.current || window.innerWidth >= 1024) return;
 
     const container = containerRef.current;
-    const cards = container.querySelectorAll("[data-card]");
+    const cards = container.querySelectorAll('[data-card]');
     if (cards.length === 0) return;
 
     // Find the middle card
@@ -149,7 +149,7 @@ export const WhatToExpectMobileScroll = () => {
     // Scroll to center
     container.scrollTo({
       left: scrollPosition,
-      behavior: "auto",
+      behavior: 'auto',
     });
   }, []);
 
@@ -164,13 +164,13 @@ export const WhatToExpectMobileScroll = () => {
   };
 
   return (
-    <div className="lg:hidden w-full">
-      <div className="flex flex-col gap-4 w-full overflow-x-auto pb-2">
+    <div className='lg:hidden w-full'>
+      <div className='flex flex-col gap-4 w-full overflow-x-auto pb-2'>
         <div
           ref={containerRef}
           className={cn(
-            "flex gap-4 flex-nowrap overflow-x-auto pt-2",
-            "items-center justify-center w-full",
+            'flex gap-4 flex-nowrap overflow-x-auto pt-2',
+            'items-center justify-center w-full',
           )}
         >
           {WhatToExpectData.map((item, index) => {
@@ -181,42 +181,42 @@ export const WhatToExpectMobileScroll = () => {
               <div
                 key={index}
                 data-card
-                className="w-[300px] h-[400px] rounded-lg mx-auto"
+                className='w-[300px] h-[400px] rounded-lg mx-auto'
                 style={{
-                  marginLeft: index === 0 ? "8px" : "0",
+                  marginLeft: index === 0 ? '8px' : '0',
                   marginRight:
-                    index === WhatToExpectData.length - 1 ? "8px" : "0",
+                    index === WhatToExpectData.length - 1 ? '8px' : '0',
                 }}
               >
                 {isPlaying ? (
-                  <div className="relative overflow-hidden rounded-lg transition-opacity duration-200">
+                  <div className='relative overflow-hidden rounded-lg transition-opacity duration-200'>
                     <iframe
                       src={`https://fast.wistia.net/embed/iframe/${video}?fitStrategy=cover`}
-                      className="w-full h-full object-cover aspect-300/400"
+                      className='w-full h-full object-cover aspect-300/400'
                       title={`What to Expect Video - ${name}`}
                     />
                     <div
-                      className="absolute top-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"
+                      className='absolute top-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10'
                       onClick={() => handleVideoClick(index)}
                     >
-                      <Icon name="x" color="white" className="size-6" />
+                      <Icon name='x' color='white' className='size-6' />
                     </div>
                   </div>
                 ) : (
-                  <div ref={cardRef} className="relative h-full">
+                  <div ref={cardRef} className='relative h-full'>
                     <img
                       src={thumbnail}
                       alt={name}
-                      className="w-full h-full object-cover rounded-lg"
+                      className='w-full h-full object-cover rounded-lg'
                     />
                     <div
-                      className="absolute bottom-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10"
+                      className='absolute bottom-2 right-2 rounded-full bg-neutral-400/60 p-1 cursor-pointer transition-colors z-10'
                       onClick={() => handleVideoClick(index)}
                     >
                       <Icon
-                        name="play"
-                        color="white"
-                        className="ml-[2px] size-6"
+                        name='play'
+                        color='white'
+                        className='ml-[2px] size-6'
                       />
                     </div>
                   </div>
@@ -244,13 +244,13 @@ type WhatToExpectCardType = {
 
 const WhatToExpectData: WhatToExpectCardType[] = [
   {
-    title: "What is a Sunday Like 1",
+    title: 'What is a Sunday Like 1',
     data: {
-      role: "church members",
-      name: "Kim & Sebastian Castillo",
-      video: "1xbxw63g50",
+      role: 'church members',
+      name: 'Kim & Sebastian Castillo',
+      video: '1xbxw63g50',
       thumbnail:
-        "https://embed-ssl.wistia.com/deliveries/91963465eb82ccfb612d9d4113ab73d2",
+        'https://embed-ssl.wistia.com/deliveries/91963465eb82ccfb612d9d4113ab73d2',
       // Short content for mobile
       mobileContent:
         "“If you're walking through a season of waiting, this is the place to be.”",

@@ -1,3 +1,3 @@
-import TextFieldInput from "./text-field.primitive";
+import TextFieldInput from './text-field.primitive';
 
 export default TextFieldInput;

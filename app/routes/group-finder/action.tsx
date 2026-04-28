@@ -163,6 +163,7 @@ export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
 
+<<<<<<< Updated upstream
     // Get group ID
     const groupId = await fetchRockData({
       endpoint: "Groups",
@@ -171,6 +172,28 @@ export const action: ActionFunction = async ({ request }) => {
         $select: "Id",
       },
       ttl: TTL.NONE,
+=======
+    const firstName = formData.firstName?.toString() ?? '';
+    const lastName = formData.lastName?.toString() ?? '';
+    const phoneNumber = formData.phoneNumber?.toString() ?? '';
+    const email = formData.email?.toString() ?? '';
+    const groupId = formData.groupId?.toString() ?? '';
+    // TODO: write campus to Rock person (PrimaryCampusId) once campus ID lookup is available
+    const _campus = formData.campus?.toString();
+
+    if (!firstName || !lastName || !phoneNumber || !email || !groupId) {
+      return Response.json(
+        { error: 'Missing required fields' },
+        { status: 400 },
+      );
+    }
+
+    const personId = await findOrCreateRockPersonForSignup({
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+>>>>>>> Stashed changes
     });
 
     // Get or create person
@@ -194,9 +217,21 @@ export const action: ActionFunction = async ({ request }) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
+<<<<<<< Updated upstream
     if (error instanceof Error) {
       return data({ error: error.message }, { status: 400 });
     }
     return data({ error: "Network error please try again" }, { status: 400 });
+=======
+    return Response.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Network error please try again',
+      },
+      { status: 400 },
+    );
+>>>>>>> Stashed changes
   }
 };

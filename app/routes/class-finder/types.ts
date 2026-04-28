@@ -1,4 +1,4 @@
-import { ImageSource } from "../group-finder/types";
+import { ImageSource } from '../group-finder/types';
 
 /** Single highlighted field from Algolia search responses. */
 export type ClassHitHighlightField = {
@@ -29,13 +29,13 @@ export interface ClassHitType {
   endDate: string;
   schedule: string; // Sunday at 8:00 AM
   topic:
-    | "Care & Recovery"
-    | "Finances"
-    | "Relationships"
-    | "Parenting"
-    | "Spiritual Growth";
-  language: "English" | "Español" | "Multiple Languages";
-  format: "In-Person" | "Virtual";
+    | 'Care & Recovery'
+    | 'Finances'
+    | 'Relationships'
+    | 'Parenting'
+    | 'Spiritual Growth';
+  language: 'English' | 'Español' | 'Multiple Languages';
+  format: 'In-Person' | 'Virtual';
   /** Meters from search origin when `aroundLatLng` + `getRankingInfo` are set (zip / current location). */
   _rankingInfo?: {
     geoDistance?: number;

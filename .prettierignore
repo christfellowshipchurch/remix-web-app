@@ -1,0 +1,21 @@
+# Dependencies
+node_modules
+
+# Build and generated output
+build
+dist
+.react-router
+.cache
+.vite
+coverage
+*.tsbuildinfo
+
+# Lockfiles (no need to format)
+pnpm-lock.yaml
+
+# Env and local
+.env
+.env.*
+
+# OS / tooling
+.DS_Store

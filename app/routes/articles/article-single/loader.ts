@@ -1,12 +1,12 @@
-import { type LoaderFunction } from "react-router-dom";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { AuthorProps } from "./partials/hero.partial";
-import { format } from "date-fns";
-import { CallToAction, CollectionItem } from "~/routes/page-builder/types";
-import { getBasicAuthorInfoFlexible } from "~/lib/.server/author-utils";
-import { getImages } from "~/lib/.server/rock-utils";
-import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
-import { parseRockKeyValueList } from "~/lib/utils";
+import { type LoaderFunction } from 'react-router-dom';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { AuthorProps } from './partials/hero.partial';
+import { format } from 'date-fns';
+import { CallToAction, CollectionItem } from '~/routes/page-builder/types';
+import { getBasicAuthorInfoFlexible } from '~/lib/.server/author-utils';
+import { getImages } from '~/lib/.server/rock-utils';
+import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
+import { parseRockKeyValueList } from '~/lib/utils';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -35,12 +35,12 @@ export type LoaderReturnType = {
 const fetchArticleData = async (articlePath: string) => {
   try {
     const rockData = await fetchRockData({
-      endpoint: "ContentChannelItems/GetByAttributeValue",
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
       queryParams: {
-        attributeKey: "Url",
+        attributeKey: 'Url',
         $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
         value: articlePath,
-        loadAttributes: "simple",
+        loadAttributes: 'simple',
       },
     });
 
@@ -57,25 +57,25 @@ const fetchArticleData = async (articlePath: string) => {
 
     return rockData;
   } catch (error) {
-    console.error("Error fetching article data:", error);
+    console.error('Error fetching article data:', error);
     throw new Response(
       `Failed to fetch article data for path: ${articlePath}`,
       {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       },
     );
   }
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const articlePath = params?.path || "";
+  const articlePath = params?.path || '';
 
   const articleData = await fetchArticleData(articlePath);
   if (!articleData) {
-    throw new Response("Article not found at: /articles/" + articlePath, {
+    throw new Response('Article not found at: /articles/' + articlePath, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 
@@ -83,18 +83,18 @@ export const loader: LoaderFunction = async ({ params }) => {
     articleData;
 
   const callToActionSectionTitle =
-    attributeValues?.callToActionSectionTitle?.value || "";
+    attributeValues?.callToActionSectionTitle?.value || '';
   const callToActionSectionSubtitle =
-    attributeValues?.callToActionSectionSubtitle?.value || "";
+    attributeValues?.callToActionSectionSubtitle?.value || '';
   const callsToAction = parseRockKeyValueList(
-    attributeValues?.callsToAction?.value || "",
+    attributeValues?.callsToAction?.value || '',
   ).map(({ key, value }) => ({
     title: key,
     url: value,
   }));
 
   const articlePrimaryCategories =
-    attributeValues.primaryCategory?.valueFormatted.split(",");
+    attributeValues.primaryCategory?.valueFormatted.split(',');
   const coverImage = getImages({ attributeValues, attributes });
   const { summary, author } = attributeValues;
 
@@ -112,15 +112,15 @@ export const loader: LoaderFunction = async ({ params }) => {
       const mediaElement = await fetchWistiaDataFromRock(mediaGuid);
       wistiaId = mediaElement?.sourceKey || undefined;
     } catch (error) {
-      console.error("Error fetching Wistia data:", error);
+      console.error('Error fetching Wistia data:', error);
       wistiaId = undefined;
     }
   }
 
   const pageData: LoaderReturnType = {
-    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || "",
-    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY || "",
-    hostUrl: process.env.HOST_URL || "host-url-not-found",
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || '',
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY || '',
+    hostUrl: process.env.HOST_URL || 'host-url-not-found',
     title,
     id: articleData.id,
     content,
@@ -128,14 +128,14 @@ export const loader: LoaderFunction = async ({ params }) => {
     coverImage: coverImage[0],
     wistiaId,
     author: {
-      fullName: authorDetails?.fullName || "",
+      fullName: authorDetails?.fullName || '',
       photo: {
-        uri: authorDetails?.photo?.uri || "",
+        uri: authorDetails?.photo?.uri || '',
       },
       authorAttributes: authorDetails?.authorAttributes || undefined,
     },
-    publishDate: format(new Date(startDateTime), "d MMM yyyy"),
-    readTime: Math.max(1, Math.round(content.split(" ").length / 200)),
+    publishDate: format(new Date(startDateTime), 'd MMM yyyy'),
+    readTime: Math.max(1, Math.round(content.split(' ').length / 200)),
     articlePrimaryCategories,
     callToActionSectionTitle,
     callToActionSectionSubtitle,

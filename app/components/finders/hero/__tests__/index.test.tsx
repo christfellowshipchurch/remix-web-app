@@ -12,7 +12,9 @@ const defaultProps = {
   desktopDescription: '<p>Desktop description</p>',
 };
 
-function renderFinderHero(props: Partial<React.ComponentProps<typeof FinderHero>> = {}) {
+function renderFinderHero(
+  props: Partial<React.ComponentProps<typeof FinderHero>> = {},
+) {
   return render(
     <MemoryRouter>
       <FinderHero {...defaultProps} {...props} />
@@ -47,7 +49,7 @@ describe('FinderHero', () => {
       topic: 'Bible Study',
       ctas: [
         {
-          render: () => <button type="button">Class Trailer</button>,
+          render: () => <button type='button'>Class Trailer</button>,
         },
       ],
     });

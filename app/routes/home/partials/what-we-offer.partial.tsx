@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { WhatWeOfferMobile } from "../components/we-offer-tabs/mobile.component";
-import { WhatWeOfferDesktop } from "../components/we-offer-tabs/desktop.component";
-import { getImageUrl } from "~/lib/utils";
+import { useState } from 'react';
+import { WhatWeOfferMobile } from '../components/we-offer-tabs/mobile.component';
+import { WhatWeOfferDesktop } from '../components/we-offer-tabs/desktop.component';
+import { getImageUrl } from '~/lib/utils';
 
 const backgroundImages = {
-  family: getImageUrl("3143922"),
-  "young-adults": getImageUrl("3143923"),
-  everyone: getImageUrl("3143927"),
+  family: getImageUrl('3143922'),
+  'young-adults': getImageUrl('3143923'),
+  everyone: getImageUrl('3143927'),
 };
 
 export function WhatWeOfferSection() {
   const [activeTab, setActiveTab] =
-    useState<keyof typeof backgroundImages>("family");
+    useState<keyof typeof backgroundImages>('family');
 
   const handleTabChange = (tabValue: string) => {
     if (tabValue in backgroundImages) {
@@ -21,20 +21,20 @@ export function WhatWeOfferSection() {
 
   return (
     <section
-      className="md:px-12 lg:px-18 w-full py-24 md:pt-38 md:pb-23 bg-navy relative z-30"
+      className='md:px-12 lg:px-18 w-full py-24 md:pt-38 md:pb-23 bg-navy relative z-30'
       style={{
         backgroundImage: `url('${backgroundImages[activeTab]}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        transition: "background-image 0.3s ease-in-out",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        transition: 'background-image 0.3s ease-in-out',
       }}
     >
-      <div className="max-w-screen-content mx-auto flex flex-col items-center gap-12">
-        <div className="md:hidden">
+      <div className='max-w-screen-content mx-auto flex flex-col items-center gap-12'>
+        <div className='md:hidden'>
           <WhatWeOfferMobile onTabChange={handleTabChange} />
         </div>
-        <div className="hidden md:block">
+        <div className='hidden md:block'>
           <WhatWeOfferDesktop onTabChange={handleTabChange} />
         </div>
       </div>

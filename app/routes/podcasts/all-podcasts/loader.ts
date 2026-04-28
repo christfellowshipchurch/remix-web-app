@@ -1,17 +1,17 @@
 // import type { LoaderFunctionArgs } from "react-router-dom";
-import type { PodcastShow } from "../types";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import type { PodcastShow } from '../types';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { createImageUrlFromGuid } from '~/lib/utils';
 
 export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
   let podcastShowsData;
   try {
     podcastShowsData = await fetchRockData({
-      endpoint: "ContentChannelItems",
+      endpoint: 'ContentChannelItems',
       queryParams: {
-        $filter: "ContentChannelId eq 179",
-        $orderby: "Order asc",
-        loadAttributes: "simple",
+        $filter: 'ContentChannelId eq 179',
+        $orderby: 'Order asc',
+        loadAttributes: 'simple',
       },
     });
   } catch (error) {
@@ -41,25 +41,25 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
         url?: { value: string };
       };
     }) => ({
-      id: podcastShow.id || "",
-      title: podcastShow.title || "",
-      description: podcastShow.content || "",
+      id: podcastShow.id || '',
+      title: podcastShow.title || '',
+      description: podcastShow.content || '',
       coverImage: podcastShow.attributeValues?.coverImage?.value
         ? createImageUrlFromGuid(podcastShow.attributeValues.coverImage.value)
-        : "",
+        : '',
       apple:
         podcastShow.attributeValues?.applePodcast?.value ||
         podcastShow.attributeValues?.apple?.value ||
-        "",
-      spotify: podcastShow.attributeValues?.spotify?.value || "",
+        '',
+      spotify: podcastShow.attributeValues?.spotify?.value || '',
       amazon:
         podcastShow.attributeValues?.amazonMusic?.value ||
         podcastShow.attributeValues?.amazon?.value ||
-        "",
-      youtube: podcastShow.attributeValues?.youtube?.value || "",
+        '',
+      youtube: podcastShow.attributeValues?.youtube?.value || '',
       episodesChannelGuid:
-        podcastShow.attributeValues?.showChannel?.value || "",
-      url: podcastShow.attributeValues?.url?.value || "",
+        podcastShow.attributeValues?.showChannel?.value || '',
+      url: podcastShow.attributeValues?.url?.value || '',
     }),
   );
 

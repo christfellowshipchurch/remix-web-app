@@ -1,16 +1,16 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from 'react';
 import {
   InstantSearch,
   Hits,
   Configure,
   useInstantSearch,
   useRefinementList,
-} from "react-instantsearch";
-import { Icon } from "~/primitives/icon/icon";
-import { Link, useLoaderData } from "react-router-dom";
-import { ContentItemHit } from "~/routes/search/types";
-import { createSearchClient } from "~/lib/create-search-client";
-import { LoaderReturnType } from "../loader";
+} from 'react-instantsearch';
+import { Icon } from '~/primitives/icon/icon';
+import { Link, useLoaderData } from 'react-router-dom';
+import { ContentItemHit } from '~/routes/search/types';
+import { createSearchClient } from '~/lib/create-search-client';
+import { LoaderReturnType } from '../loader';
 
 interface PodcastEpisodeListProps {
   ALGOLIA_APP_ID: string;
@@ -19,7 +19,7 @@ interface PodcastEpisodeListProps {
 }
 
 const SeasonRefinementList = () => {
-  const { items } = useRefinementList({ attribute: "podcastSeasonNumber" });
+  const { items } = useRefinementList({ attribute: 'podcastSeasonNumber' });
   const { setIndexUiState } = useInstantSearch();
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
 
@@ -62,7 +62,7 @@ const SeasonRefinementList = () => {
   };
 
   return (
-    <div className="flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto">
+    <div className='flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto'>
       {/* Dynamic Season Tags */}
       {sortedItems.map((item) => (
         <button
@@ -70,8 +70,8 @@ const SeasonRefinementList = () => {
           onClick={() => handleSeasonClick(item.value)}
           className={`px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap text-neutral-500 hover:bg-neutral-200 transition-colors duration-300 bg-white ${
             selectedSeason === item.value
-              ? "!bg-ocean text-white rounded-full"
-              : ""
+              ? '!bg-ocean text-white rounded-full'
+              : ''
           }`}
         >
           {item.label}
@@ -86,33 +86,33 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   const cardUrl = `/podcasts/${podcast.url}/${hit.url}`;
 
   return (
-    <div className="flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full">
-      <div className="relative md:w-[340px] lg:w-full">
+    <div className='flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full'>
+      <div className='relative md:w-[340px] lg:w-full'>
         <img
           src={
             hit.coverImage?.sources?.[0]?.uri ||
-            "/assets/images/podcasts/hero.jpg"
+            '/assets/images/podcasts/hero.jpg'
           }
           alt={hit.title}
-          className="w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]"
+          className='w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]'
         />
         <Link
-          to={cardUrl || "/podcasts"}
-          className="absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 transition-colors duration-300"
+          to={cardUrl || '/podcasts'}
+          className='absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 transition-colors duration-300'
           style={{
             boxShadow:
-              "0px 4px 8px -2px rgba(0, 0, 0, 0.20), 0px 2px 4px -2px rgba(0, 0, 0, 0.09)",
+              '0px 4px 8px -2px rgba(0, 0, 0, 0.20), 0px 2px 4px -2px rgba(0, 0, 0, 0.09)',
           }}
         >
-          <Icon name="play" color="black" size={32} className="pl-1" />
+          <Icon name='play' color='black' size={32} className='pl-1' />
         </Link>
       </div>
-      <div className="flex flex-col gap-2">
-        <p className="text-sm text-text-secondary">
+      <div className='flex flex-col gap-2'>
+        <p className='text-sm text-text-secondary'>
           {hit.podcastSeasonNumber && `Season ${hit.podcastSeasonNumber}`} |
-          Episode {hit.podcastEpisodeNumber || "1"}
+          Episode {hit.podcastEpisodeNumber || '1'}
         </p>
-        <h3 className="text-lg font-bold">{hit.title}</h3>
+        <h3 className='text-lg font-bold'>{hit.title}</h3>
       </div>
     </div>
   );
@@ -132,7 +132,7 @@ export const PodcastEpisodeList = ({
 
   return (
     <InstantSearch
-      indexName="dev_contentItems"
+      indexName='dev_contentItems'
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
@@ -162,7 +162,7 @@ export const PodcastEpisodeList = ({
             );
         }}
         classNames={{
-          list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+          list: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8',
         }}
       />
     </InstantSearch>

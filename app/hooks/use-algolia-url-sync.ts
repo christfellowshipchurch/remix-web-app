@@ -1,5 +1,5 @@
-import { useRef, useEffect } from "react";
-import type { SetURLSearchParams } from "react-router-dom";
+import { useRef, useEffect } from 'react';
+import type { SetURLSearchParams } from 'react-router-dom';
 
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 2, 5. */
 export type UseAlgoliaUrlSyncOptions<T> = {

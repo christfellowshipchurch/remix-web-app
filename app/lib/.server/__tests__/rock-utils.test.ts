@@ -1,75 +1,82 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { attributeIsImage, getImages, getAttributeMatrixItems } from "../rock-utils";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import {
+  attributeIsImage,
+  getImages,
+  getAttributeMatrixItems,
+} from '../rock-utils';
 
-vi.mock("../fetch-rock-data", () => ({
+vi.mock('../fetch-rock-data', () => ({
   fetchRockData: vi.fn(),
 }));
 
-vi.mock("~/lib/utils", () => ({
+vi.mock('~/lib/utils', () => ({
   createImageUrlFromGuid: (guid: string) => `https://cdn.example.com/${guid}`,
 }));
 
-import { fetchRockData } from "../fetch-rock-data";
+import { fetchRockData } from '../fetch-rock-data';
 
 const mockFetch = fetchRockData as ReturnType<typeof vi.fn>;
 
-describe("attributeIsImage", () => {
+describe('attributeIsImage', () => {
   const attributeValues = {
-    coverImage: { value: "some-guid", valueFormatted: "some-guid" },
-    title: { value: "Some Title", valueFormatted: "Some Title" },
-    backgroundImageUrl: { value: "another-guid", valueFormatted: "another-guid" },
-    count: { value: 5 as unknown as string, valueFormatted: "5" },
+    coverImage: { value: 'some-guid', valueFormatted: 'some-guid' },
+    title: { value: 'Some Title', valueFormatted: 'Some Title' },
+    backgroundImageUrl: {
+      value: 'another-guid',
+      valueFormatted: 'another-guid',
+    },
+    count: { value: 5 as unknown as string, valueFormatted: '5' },
   };
 
   it("returns true when key contains 'image' and value is a string", () => {
-    expect(attributeIsImage({ key: "coverImage", attributeValues })).toBe(true);
+    expect(attributeIsImage({ key: 'coverImage', attributeValues })).toBe(true);
   });
 
   it("returns true for keys like 'backgroundImageUrl'", () => {
     expect(
-      attributeIsImage({ key: "backgroundImageUrl", attributeValues })
+      attributeIsImage({ key: 'backgroundImageUrl', attributeValues }),
     ).toBe(true);
   });
 
   it("returns false when key does not contain 'image'", () => {
-    expect(attributeIsImage({ key: "title", attributeValues })).toBe(false);
+    expect(attributeIsImage({ key: 'title', attributeValues })).toBe(false);
   });
 
-  it("returns false when value is not a string", () => {
-    expect(attributeIsImage({ key: "count", attributeValues })).toBe(false);
+  it('returns false when value is not a string', () => {
+    expect(attributeIsImage({ key: 'count', attributeValues })).toBe(false);
   });
 
-  it("is case-insensitive on the key", () => {
-    const av = { Image: { value: "guid-x", valueFormatted: "guid-x" } };
-    expect(attributeIsImage({ key: "Image", attributeValues: av })).toBe(true);
+  it('is case-insensitive on the key', () => {
+    const av = { Image: { value: 'guid-x', valueFormatted: 'guid-x' } };
+    expect(attributeIsImage({ key: 'Image', attributeValues: av })).toBe(true);
   });
 });
 
-describe("getImages", () => {
-  it("returns transformed image URLs for image keys", () => {
+describe('getImages', () => {
+  it('returns transformed image URLs for image keys', () => {
     const attributes = {
-      coverImage: { key: "coverImage", name: "Cover Image", fieldTypeId: 1 },
-      title: { key: "title", name: "Title", fieldTypeId: 2 },
+      coverImage: { key: 'coverImage', name: 'Cover Image', fieldTypeId: 1 },
+      title: { key: 'title', name: 'Title', fieldTypeId: 2 },
     };
     const attributeValues = {
-      coverImage: { value: "guid-123", valueFormatted: "guid-123" },
-      title: { value: "Hello", valueFormatted: "Hello" },
+      coverImage: { value: 'guid-123', valueFormatted: 'guid-123' },
+      title: { value: 'Hello', valueFormatted: 'Hello' },
     };
     const result = getImages({
       attributeValues,
       attributes,
     });
-    expect(result).toEqual(["https://cdn.example.com/guid-123"]);
+    expect(result).toEqual(['https://cdn.example.com/guid-123']);
   });
 
-  it("returns empty array when no image keys exist", () => {
+  it('returns empty array when no image keys exist', () => {
     const attributes = {
-      title: { key: "title", name: "Title", fieldTypeId: 1 },
-      count: { key: "count", name: "Count", fieldTypeId: 2 },
+      title: { key: 'title', name: 'Title', fieldTypeId: 1 },
+      count: { key: 'count', name: 'Count', fieldTypeId: 2 },
     };
     const attributeValues = {
-      title: { value: "Hello", valueFormatted: "Hello" },
-      count: { value: "5", valueFormatted: "5" },
+      title: { value: 'Hello', valueFormatted: 'Hello' },
+      count: { value: '5', valueFormatted: '5' },
     };
     const result = getImages({
       attributeValues,
@@ -79,28 +86,28 @@ describe("getImages", () => {
   });
 });
 
-describe("getAttributeMatrixItems", () => {
+describe('getAttributeMatrixItems', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("returns [] when attributeMatrix is null/undefined", async () => {
+  it('returns [] when attributeMatrix is null/undefined', async () => {
     mockFetch.mockResolvedValueOnce(null);
     const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-1",
+      attributeMatrixGuid: 'guid-1',
     });
     expect(result).toEqual([]);
   });
 
-  it("returns [] when matrixItems is empty", async () => {
+  it('returns [] when matrixItems is empty', async () => {
     mockFetch.mockResolvedValueOnce({ attributeMatrixItems: [] });
     const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-1",
+      attributeMatrixGuid: 'guid-1',
     });
     expect(result).toEqual([]);
   });
 
-  it("returns expanded items as array when fetchRockData returns array", async () => {
+  it('returns expanded items as array when fetchRockData returns array', async () => {
     const matrixItems = [{ id: 1 }, { id: 2 }];
     const expandedItems = [
       { id: 1, attributeValues: {} },
@@ -111,38 +118,38 @@ describe("getAttributeMatrixItems", () => {
       .mockResolvedValueOnce(expandedItems);
 
     const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-2",
+      attributeMatrixGuid: 'guid-2',
     });
     expect(result).toEqual(expandedItems);
   });
 
-  it("wraps a single expanded item in an array", async () => {
+  it('wraps a single expanded item in an array', async () => {
     const singleItem = { id: 1, attributeValues: {} };
     mockFetch
       .mockResolvedValueOnce({ attributeMatrixItems: [{ id: 1 }] })
       .mockResolvedValueOnce(singleItem);
 
     const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-3",
+      attributeMatrixGuid: 'guid-3',
     });
     expect(result).toEqual([singleItem]);
   });
 
-  it("returns [] when expanded items is null", async () => {
+  it('returns [] when expanded items is null', async () => {
     mockFetch
       .mockResolvedValueOnce({ attributeMatrixItems: [{ id: 1 }] })
       .mockResolvedValueOnce(null);
 
     const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-4",
+      attributeMatrixGuid: 'guid-4',
     });
     expect(result).toEqual([]);
   });
 
-  it("returns [] when fetchRockData throws", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("network error"));
+  it('returns [] when fetchRockData throws', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('network error'));
     const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-5",
+      attributeMatrixGuid: 'guid-5',
     });
     expect(result).toEqual([]);
   });

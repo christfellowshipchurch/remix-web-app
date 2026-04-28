@@ -1,6 +1,6 @@
-import { data, isRouteErrorResponse } from "react-router-dom";
-import { RateLimitError } from "~/lib/.server/error-types";
-import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";
+import { data, isRouteErrorResponse } from 'react-router-dom';
+import { RateLimitError } from '~/lib/.server/error-types';
+import { authenticateOrRegisterWithSms } from '~/lib/.server/authentication/authenticate-or-register-with-sms';
 
 type AuthenticateSmsData = {
   pin: string;
@@ -13,15 +13,15 @@ export const authenticateSms = async ({
   phoneNumber,
 }: AuthenticateSmsData) => {
   if (!pin || !phoneNumber) {
-    console.error("Missing required fields:", {
+    console.error('Missing required fields:', {
       pin,
       phoneNumber,
     });
     throw new Error(
       JSON.stringify({
-        message: "Pin and phone number are required",
+        message: 'Pin and phone number are required',
         status: 400,
-      })
+      }),
     );
   }
 
@@ -32,12 +32,12 @@ export const authenticateSms = async ({
       userProfile: [], //not creating new profile, just authenticating
     });
 
-    const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
-        "Set-Cookie": `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
+        'Content-Type': 'application/json',
+        'Set-Cookie': `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
       },
     });
   } catch (error) {
@@ -47,7 +47,7 @@ export const authenticateSms = async ({
     if (error instanceof RateLimitError) {
       return data({ error: error.message }, { status: 429 });
     }
-    console.error("Failed to authenticate with SMS:", error);
-    return data({ error: "Failed to authenticate with SMS" }, { status: 500 });
+    console.error('Failed to authenticate with SMS:', error);
+    return data({ error: 'Failed to authenticate with SMS' }, { status: 500 });
   }
 };

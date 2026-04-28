@@ -1,7 +1,7 @@
-import { useInstantSearch } from "react-instantsearch";
+import { useInstantSearch } from 'react-instantsearch';
 
-import { cn } from "~/lib/utils";
-import { hasInstantSearchIndexUiActiveFilters } from "~/lib/algolia-active-filters";
+import { cn } from '~/lib/utils';
+import { hasInstantSearchIndexUiActiveFilters } from '~/lib/algolia-active-filters';
 
 interface AlgoliaFinderClearAllButtonProps {
   /**
@@ -32,7 +32,7 @@ export const AlgoliaFinderClearAllButton = ({
     if (!canClear) return;
     setIndexUiState((state) => ({
       ...state,
-      query: "",
+      query: '',
       refinementList: {},
       page: 0,
     }));
@@ -41,14 +41,14 @@ export const AlgoliaFinderClearAllButton = ({
 
   return (
     <button
-      type="button"
+      type='button'
       disabled={!canClear}
       onClick={handleClearAll}
       className={cn(
-        "shrink-0 font-semibold text-base transition-colors duration-300",
+        'shrink-0 font-semibold text-base transition-colors duration-300',
         canClear
-          ? "cursor-pointer text-ocean hover:text-navy"
-          : "cursor-not-allowed text-neutral-400 opacity-60",
+          ? 'cursor-pointer text-ocean hover:text-navy'
+          : 'cursor-not-allowed text-neutral-400 opacity-60',
         className,
       )}
     >

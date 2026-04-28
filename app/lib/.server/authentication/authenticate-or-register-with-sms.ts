@@ -2,16 +2,16 @@ import {
   createOrFindSmsLoginUserId,
   hashPassword,
   parsePhoneNumberUtil,
-} from "./sms-authentication";
-import { AuthenticationError, RateLimitError } from "../error-types";
-import redis from "../redis-config";
+} from './sms-authentication';
+import { AuthenticationError, RateLimitError } from '../error-types';
+import redis from '../redis-config';
 
 const SMS_ATTEMPT_LIMIT = 10;
 const SMS_RATE_WINDOW_SECONDS = 3600;
-import { patchRockData } from "../fetch-rock-data";
-import { authenticateUser } from "./authenticate-user";
-import { SmsAuthParams } from "./authentication.types";
-import { fetchUserLogin } from "./rock-authentication";
+import { patchRockData } from '../fetch-rock-data';
+import { authenticateUser } from './authenticate-user';
+import { SmsAuthParams } from './authentication.types';
+import { fetchUserLogin } from './rock-authentication';
 
 export const authenticateOrRegisterWithSms = async ({
   pin,
@@ -29,17 +29,19 @@ export const authenticateOrRegisterWithSms = async ({
     }
     if (count > SMS_ATTEMPT_LIMIT) {
       throw new RateLimitError(
-        "Too many login attempts. Please request a new PIN and try again.",
+        'Too many login attempts. Please request a new PIN and try again.',
       );
     }
   } else {
-    console.warn("⚠️ Redis unavailable — SMS login attempt rate limiting is disabled");
+    console.warn(
+      '⚠️ Redis unavailable — SMS login attempt rate limiting is disabled',
+    );
   }
 
   const userLogin = await fetchUserLogin(significantNumber);
 
   if (!userLogin) {
-    throw new AuthenticationError("Invalid input");
+    throw new AuthenticationError('Invalid input');
   }
 
   if (userLogin && userLogin.personId === null) {
@@ -62,7 +64,7 @@ export const authenticateOrRegisterWithSms = async ({
 
   const { encryptedToken } = await authenticateUser(
     identity as string,
-    password as string
+    password as string,
   );
 
   // TODO: Consider calling redis.del(`sms:login_attempt:${significantNumber}`) here

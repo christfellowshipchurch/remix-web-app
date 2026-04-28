@@ -1,20 +1,20 @@
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B (routing). */
 
-import type { MutableRefObject } from "react";
-import type { AllMessagesUrlState } from "./all-messages-url-state";
+import type { MutableRefObject } from 'react';
+import type { AllMessagesUrlState } from './all-messages-url-state';
 import {
   parseAllMessagesUrlState,
   allMessagesUrlStateToParams,
-} from "./all-messages-url-state";
+} from './all-messages-url-state';
 
-const INDEX_NAME = "dev_contentItems";
+const INDEX_NAME = 'dev_contentItems';
 
 export type AllMessagesRouterRefs = {
   searchParamsRef: MutableRefObject<URLSearchParams>;
   setSearchParamsRef: MutableRefObject<
     (
       params: URLSearchParams,
-      options?: { replace?: boolean; preventScrollReset?: boolean }
+      options?: { replace?: boolean; preventScrollReset?: boolean },
     ) => void
   >;
   pathnameRef: MutableRefObject<string>;
@@ -24,7 +24,7 @@ export type AllMessagesRouterRefs = {
 };
 
 export function createAllMessagesInstantSearchRouter(
-  refs: AllMessagesRouterRefs
+  refs: AllMessagesRouterRefs,
 ) {
   const {
     searchParamsRef,

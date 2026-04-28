@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from "react-router-dom";
+import { LoaderFunctionArgs } from 'react-router-dom';
 
 export async function loader({ params: _params }: LoaderFunctionArgs) {
   return {};

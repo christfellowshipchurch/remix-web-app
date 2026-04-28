@@ -23,7 +23,7 @@ export type Author = {
 export type AuthorBioProps = {
   author: Author;
   homeUrl?: string;
-  variant?: "default" | "leaders";
+  variant?: 'default' | 'leaders';
   hideSocialLinks?: boolean;
 };
 

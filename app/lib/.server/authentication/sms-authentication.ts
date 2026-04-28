@@ -1,31 +1,31 @@
 /**
  * This file contains our SMS authentication functions.
  */
-import crypto from "crypto";
-import { parsePhoneNumber } from "awesome-phonenumber";
+import crypto from 'crypto';
+import { parsePhoneNumber } from 'awesome-phonenumber';
 
-import { AuthenticationError, RateLimitError } from "~/lib/.server/error-types";
-import redis from "~/lib/.server/redis-config";
+import { AuthenticationError, RateLimitError } from '~/lib/.server/error-types';
+import redis from '~/lib/.server/redis-config';
 
 const SMS_REQUEST_LIMIT = 5;
 const SMS_RATE_WINDOW_SECONDS = 3600;
-import { User_Auth_Status } from "~/providers/auth-provider";
+import { User_Auth_Status } from '~/providers/auth-provider';
 import {
   deleteRockData,
   fetchRockData,
   postRockData,
   TTL,
-} from "~/lib/.server/fetch-rock-data";
-import { fieldsAsObject } from "~/lib/utils";
+} from '~/lib/.server/fetch-rock-data';
+import { fieldsAsObject } from '~/lib/utils';
 
 interface FieldObject {
   field: string;
   value: unknown;
 }
-import { sendSms } from "~/lib/.server/twilio";
-import { createUserProfile, fetchUserLogin } from "./rock-authentication";
-import { SmsPinResult } from "./authentication.types";
-import { checkUserExists } from "~/routes/auth/userExists";
+import { sendSms } from '~/lib/.server/twilio';
+import { createUserProfile, fetchUserLogin } from './rock-authentication';
+import { SmsPinResult } from './authentication.types';
+import { checkUserExists } from '~/routes/auth/userExists';
 
 export const parsePhoneNumberUtil = (
   phoneNumber: string,
@@ -35,26 +35,26 @@ export const parsePhoneNumberUtil = (
   countryCode: number | undefined;
   e164: string;
 } => {
-  const parsedNumber = parsePhoneNumber(phoneNumber, { regionCode: "US" });
+  const parsedNumber = parsePhoneNumber(phoneNumber, { regionCode: 'US' });
 
   return {
     valid: parsedNumber.valid,
-    significantNumber: parsedNumber.number?.significant || "",
+    significantNumber: parsedNumber.number?.significant || '',
     countryCode: parsedNumber.countryCode,
-    e164: parsedNumber.number?.e164 || "",
+    e164: parsedNumber.number?.e164 || '',
   };
 };
 
 export const hashPassword = (pin: string): string => {
   const secret = process.env.SECRET;
   if (!secret) {
-    throw new Error("Missing SECRET environment variable");
+    throw new Error('Missing SECRET environment variable');
   }
   // HMAC-SHA256 is the correct construction for keyed hashing.
   // Note: bcrypt/argon2 cannot be used here because Rock's /Auth/Login API
   // verifies passwords via an internal equality check — it cannot use bcrypt.compare().
   // Rate limiting on PIN attempts is the primary brute-force mitigation.
-  return crypto.createHmac("sha256", secret).update(pin).digest("hex");
+  return crypto.createHmac('sha256', secret).update(pin).digest('hex');
 };
 
 export const generateSmsPinAndPassword = (): {
@@ -62,7 +62,7 @@ export const generateSmsPinAndPassword = (): {
   password: string;
 } => {
   // crypto.randomInt is cryptographically secure; Math.random() is not.
-  const pin = crypto.randomInt(0, 1_000_000).toString().padStart(6, "0");
+  const pin = crypto.randomInt(0, 1_000_000).toString().padStart(6, '0');
   const password = hashPassword(pin);
 
   return { pin, password };
@@ -79,7 +79,7 @@ export const createPhoneNumberInRock = async ({
 }): Promise<boolean> => {
   try {
     await postRockData({
-      endpoint: "PhoneNumbers",
+      endpoint: 'PhoneNumbers',
       body: {
         PersonId: personId,
         Number: phoneNumber,
@@ -91,7 +91,7 @@ export const createPhoneNumberInRock = async ({
     });
     return true;
   } catch (error) {
-    console.error("Failed to create phone number in Rock:", error);
+    console.error('Failed to create phone number in Rock:', error);
     return false;
   }
 };
@@ -108,9 +108,9 @@ export const createOrFindSmsLoginUserId = async ({
   const { significantNumber, countryCode } = parsePhoneNumberUtil(phoneNumber);
 
   const existingPhoneNumbers = await fetchRockData({
-    endpoint: "PhoneNumbers",
+    endpoint: 'PhoneNumbers',
     queryParams: {
-      $select: "PersonId",
+      $select: 'PersonId',
       $filter: `Number eq '${significantNumber}'`,
     },
     ttl: TTL.NONE,
@@ -128,7 +128,7 @@ export const createOrFindSmsLoginUserId = async ({
   });
 
   if (!countryCode) {
-    throw new AuthenticationError("Country code is required for phone number");
+    throw new AuthenticationError('Country code is required for phone number');
   }
   await createPhoneNumberInRock({ personId, phoneNumber, countryCode });
 
@@ -155,11 +155,13 @@ export const requestSmsLogin = async (
     }
     if (count > SMS_REQUEST_LIMIT) {
       throw new RateLimitError(
-        "Too many PIN requests. Please try again later.",
+        'Too many PIN requests. Please try again later.',
       );
     }
   } else {
-    console.warn("⚠️ Redis unavailable — SMS PIN request rate limiting is disabled");
+    console.warn(
+      '⚠️ Redis unavailable — SMS PIN request rate limiting is disabled',
+    );
   }
 
   const { pin, password } = generateSmsPinAndPassword();
@@ -184,7 +186,7 @@ export const requestSmsLogin = async (
   }
 
   const createNewLogin = await postRockData({
-    endpoint: "UserLogins",
+    endpoint: 'UserLogins',
     body: {
       UserName: significantNumber,
       PlainTextPassword: password,
@@ -195,8 +197,8 @@ export const requestSmsLogin = async (
   });
 
   // Create new login should return an ID
-  if (typeof createNewLogin !== "number") {
-    console.error("Failed to create new login for", phoneNumber);
+  if (typeof createNewLogin !== 'number') {
+    console.error('Failed to create new login for', phoneNumber);
     throw new AuthenticationError(
       `Failed to create new login for ${phoneNumber}`,
     );
@@ -209,12 +211,12 @@ export const requestSmsLogin = async (
     });
   } catch (error) {
     console.error(
-      "Failed to send SMS:",
-      error instanceof Error ? error.message : "Unknown error",
+      'Failed to send SMS:',
+      error instanceof Error ? error.message : 'Unknown error',
     );
     throw new AuthenticationError(
       `Failed to send SMS: ${
-        error instanceof Error ? error.message : "Unknown error"
+        error instanceof Error ? error.message : 'Unknown error'
       }`,
     );
   }

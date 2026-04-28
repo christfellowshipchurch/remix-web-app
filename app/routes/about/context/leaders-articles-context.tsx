@@ -5,10 +5,10 @@ import {
   useRef,
   type RefObject,
   type ReactNode,
-} from "react";
-import { useFetcher, useLoaderData } from "react-router-dom";
-import type { Author } from "~/routes/author/types";
-import type { HomeLoaderData } from "~/routes/home/loader";
+} from 'react';
+import { useFetcher, useLoaderData } from 'react-router-dom';
+import type { Author } from '~/routes/author/types';
+import type { HomeLoaderData } from '~/routes/home/loader';
 
 type LeadersArticlesContextValue = {
   leadersWithArticles: Author[];
@@ -43,9 +43,9 @@ export function LeadersArticlesProvider({
           return;
         }
         hasRequestedRef.current = true;
-        loadRef.current("/home-leaders-articles");
+        loadRef.current('/home-leaders-articles');
       },
-      { rootMargin: "400px" }
+      { rootMargin: '400px' },
     );
 
     observer.observe(el);
@@ -55,7 +55,7 @@ export function LeadersArticlesProvider({
   const leadersWithArticles =
     fetcher.data?.leadersWithArticles ?? initial.leadersWithArticles;
   const isArticlesLoading =
-    fetcher.state === "loading" && fetcher.data === undefined;
+    fetcher.state === 'loading' && fetcher.data === undefined;
 
   const value: LeadersArticlesContextValue = {
     leadersWithArticles,

@@ -1,4 +1,4 @@
-import { User_Auth_Status } from "~/providers/auth-provider";
+import { User_Auth_Status } from '~/providers/auth-provider';
 
 export interface SmsAuthParams {
   pin: string;

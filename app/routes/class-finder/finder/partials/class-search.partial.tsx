@@ -1,51 +1,51 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { InstantSearch, SearchBox, useHits } from 'react-instantsearch';
 
-import Icon from "~/primitives/icon";
+import Icon from '~/primitives/icon';
 
-import { LoaderReturnType } from "../loader";
-import { ClassHitComponent } from "../components/class-hit-component.component";
-import { AllClassFiltersPopup } from "../components/all-filters.component";
-import { buildIndexInitialUiState } from "~/components/finders/finder-algolia.utils";
-import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
-import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
+import { LoaderReturnType } from '../loader';
+import { ClassHitComponent } from '../components/class-hit-component.component';
+import { AllClassFiltersPopup } from '../components/all-filters.component';
+import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
+import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
+import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
 import {
   SearchFilterDesktopItem,
   SearchFilters,
-} from "~/components/finders/search-filters";
-import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
-import { ClassHitType } from "../../types";
+} from '~/components/finders/search-filters';
+import { ResponsiveConfigure } from '~/routes/group-finder/partials/group-search.partial';
+import { ClassHitType } from '../../types';
 
 import {
   groupClassTypeHits,
   syntheticHitsFromGrouped,
-} from "../components/group-class-type-hits";
-import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
+} from '../components/group-class-type-hits';
+import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
+import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import { HubsTagsRefinementList } from '~/components/hubs-tags-refinement';
 import {
   classFinderEmptyState,
   ClassFinderUrlState,
   classFinderUrlStateToParams,
   parseClassFinderUrlState,
-} from "../components/class-finder-url-state";
+} from '../components/class-finder-url-state';
 
-const INDEX_NAME = "dev_Classes";
+const INDEX_NAME = 'dev_Classes';
 
 const CLASS_SEARCH_DESKTOP_FILTERS = [
   {
-    id: "topic",
-    label: "Topic",
-    popupTitle: "Topic",
-    icon: "bookOpen",
+    id: 'topic',
+    label: 'Topic',
+    popupTitle: 'Topic',
+    icon: 'bookOpen',
     data: {
       showFooter: true,
       content: [
         {
-          title: "LEARN ABOUT",
-          attribute: "topic",
+          title: 'LEARN ABOUT',
+          attribute: 'topic',
         },
       ],
     },
@@ -109,12 +109,12 @@ export const ClassSearch = () => {
 
   const fromClassFinderUrl =
     location.pathname +
-    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+    (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
   return (
     <div
-      className="flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to"
-      id="search"
+      className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
+      id='search'
     >
       <InstantSearch
         indexName={INDEX_NAME}
@@ -137,38 +137,38 @@ export const ClassSearch = () => {
         }}
       >
         <ResponsiveConfigure
-          ageInput=""
+          ageInput=''
           coordinates={null}
           hitsPerPageOverride={1000}
         />
-        <div className="flex flex-col bg-white pt-4">
+        <div className='flex flex-col bg-white pt-4'>
           <FinderStickyBar>
-            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
+            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+              <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
                 <Icon
-                  name="searchAlt"
-                  className="text-neutral-default ml-3"
+                  name='searchAlt'
+                  className='text-neutral-default ml-3'
                   size={16}
                 />
                 <SearchBox
-                  placeholder="Search"
+                  placeholder='Search'
                   translations={{
-                    submitButtonTitle: "Search",
-                    resetButtonTitle: "Reset",
+                    submitButtonTitle: 'Search',
+                    resetButtonTitle: 'Reset',
                   }}
                   classNames={{
-                    root: "flex-grow",
-                    form: "flex",
+                    root: 'flex-grow',
+                    form: 'flex',
                     input:
-                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none",
-                    resetIcon: "hidden",
-                    submit: "hidden",
-                    loadingIcon: "hidden",
+                      'w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none',
+                    resetIcon: 'hidden',
+                    submit: 'hidden',
+                    loadingIcon: 'hidden',
                   }}
                 />
               </div>
 
-              <div className="lg:hidden w-full">
+              <div className='lg:hidden w-full'>
                 <SearchFilters
                   onClearAllToUrl={clearAllFiltersFromUrl}
                   desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
@@ -193,18 +193,18 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              <div className="hidden min-w-0 flex-1 lg:block">
+              <div className='hidden min-w-0 flex-1 lg:block'>
                 <HubsTagsRefinementList
-                  attribute="topic"
-                  wrapperClass="flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3"
+                  attribute='topic'
+                  wrapperClass='flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3'
                 />
               </div>
             </div>
           </FinderStickyBar>
 
           {/* CLASS SEARCH RESULTS */}
-          <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
-            <div className="max-w-screen-content mx-auto md:w-full">
+          <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+            <div className='max-w-screen-content mx-auto md:w-full'>
               <ClassTypeGroupedResults
                 fromClassFinderUrl={fromClassFinderUrl}
               />
@@ -241,11 +241,11 @@ function ClassTypeGroupedResults({
 
   return (
     <>
-      <div className="min-h-[320px]">
+      <div className='min-h-[320px]'>
         <FinderResultsStats hitCount={mappedHits.length} />
 
-        <div className="flex w-full items-center justify-center md:items-start md:justify-start">
-          <div className="grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className='flex w-full items-center justify-center md:items-start md:justify-start'>
+          <div className='grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
             {pageHits.map((hit) => (
               <ClassHitComponent
                 key={hit.objectID}
@@ -285,23 +285,23 @@ function ClassSearchPagination({
   const goToPage = (newPage: number) => {
     onPageChange(newPage);
     document
-      .querySelector(".pagination-scroll-to")
-      ?.scrollIntoView({ behavior: "smooth" });
+      .querySelector('.pagination-scroll-to')
+      ?.scrollIntoView({ behavior: 'smooth' });
   };
 
   if (totalPages <= 1) return null;
 
   return (
-    <div className="mt-6 flex justify-center md:justify-start">
-      <div className="flex items-center justify-center gap-2">
+    <div className='mt-6 flex justify-center md:justify-start'>
+      <div className='flex items-center justify-center gap-2'>
         <PaginationControl
           disabled={isFirstPage}
           onClick={() => goToPage(currentPage - 1)}
         >
           <Icon
-            name="chevronLeft"
+            name='chevronLeft'
             size={32}
-            color={isFirstPage ? "#CECECE" : "#0092BC"}
+            color={isFirstPage ? '#CECECE' : '#0092BC'}
           />
         </PaginationControl>
         <p>
@@ -312,9 +312,9 @@ function ClassSearchPagination({
           onClick={() => goToPage(currentPage + 1)}
         >
           <Icon
-            name="chevronRight"
+            name='chevronRight'
             size={32}
-            color={isLastPage ? "#CECECE" : "#0092BC"}
+            color={isLastPage ? '#CECECE' : '#0092BC'}
           />
         </PaginationControl>
       </div>
@@ -341,7 +341,7 @@ function PaginationControl({
 
   return (
     <div>
-      <button type="button" onClick={onClick} className="cursor-pointer">
+      <button type='button' onClick={onClick} className='cursor-pointer'>
         {children}
       </button>
     </div>

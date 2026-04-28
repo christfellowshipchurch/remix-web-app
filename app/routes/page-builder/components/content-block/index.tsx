@@ -1,20 +1,20 @@
-import { FC } from "react";
-import { ContentBlockData } from "../../types";
-import { FeatureSection } from "./feature-section";
-import { BannerSection } from "./banner-section";
-import { CtaCardSection } from "./cta-card-section";
-import { CtaFullscreenSection } from "./cta-fullscreen-section";
+import { FC } from 'react';
+import { ContentBlockData } from '../../types';
+import { FeatureSection } from './feature-section';
+import { BannerSection } from './banner-section';
+import { CtaCardSection } from './cta-card-section';
+import { CtaFullscreenSection } from './cta-fullscreen-section';
 
 // Main ContentBlock Component
 export const ContentBlock: FC<{ data: ContentBlockData }> = ({ data }) => {
   switch (data.layoutType) {
-    case "FEATURE":
+    case 'FEATURE':
       return <FeatureSection data={data} />;
-    case "BANNER":
+    case 'BANNER':
       return <BannerSection data={data} />;
-    case "CARD":
+    case 'CARD':
       return <CtaCardSection data={data} />;
-    case "FULLSCREEN":
+    case 'FULLSCREEN':
       return <CtaFullscreenSection data={data} />;
     default:
       return null;

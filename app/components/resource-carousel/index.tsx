@@ -1,14 +1,14 @@
-import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/button/button.primitive";
+import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
 import {
   Carousel,
   CarouselArrows,
   CarouselContent,
   CarouselDots,
   CarouselItem,
-} from "~/primitives/shadcn-primitives/carousel";
-import { ResourceCard } from "~/primitives/cards/resource-card";
-import { CollectionItem } from "~/routes/page-builder/types";
+} from '~/primitives/shadcn-primitives/carousel';
+import { ResourceCard } from '~/primitives/cards/resource-card';
+import { CollectionItem } from '~/routes/page-builder/types';
 
 interface CardCarouselSectionProps {
   viewMoreStyles?: string;
@@ -17,7 +17,7 @@ interface CardCarouselSectionProps {
   title: string;
   description?: string;
   resources: CollectionItem[];
-  mode?: "dark" | "light";
+  mode?: 'dark' | 'light';
   carouselItemClassName?: string;
   CardComponent?: React.ComponentType<{
     resource: CollectionItem;
@@ -37,59 +37,59 @@ export const CardCarouselSection = ({
   resources,
   viewMoreStyles,
   viewMoreLink,
-  viewMoreText = "View More",
-  mode = "light",
+  viewMoreText = 'View More',
+  mode = 'light',
 }: CardCarouselSectionProps) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}
+      className={cn('w-full pl-5 md:pl-12 lg:pl-18', className)}
       style={
         backgroundImage
           ? {
               backgroundImage: `url(${backgroundImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }
           : undefined
       }
     >
-      <div className="flex flex-col max-w-screen-content mx-auto">
-        <div className="w-full flex justify-center">
-          <div className="w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28">
+      <div className='flex flex-col max-w-screen-content mx-auto'>
+        <div className='w-full flex justify-center'>
+          <div className='w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28'>
             {/* Header */}
-            <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
+            <div className='w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0'>
               <div
                 className={cn(
-                  "flex flex-col w-full gap-2",
-                  mode === "dark" && "text-white",
+                  'flex flex-col w-full gap-2',
+                  mode === 'dark' && 'text-white',
                 )}
               >
-                <h2 className="heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight">
+                <h2 className='heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight'>
                   {title}
                 </h2>
                 {description && (
-                  <p className="md:text-lg leading-none">{description}</p>
+                  <p className='md:text-lg leading-none'>{description}</p>
                 )}
               </div>
 
               {viewMoreLink && (
                 <Button
                   href={viewMoreLink}
-                  size="md"
+                  size='md'
                   className={cn(
-                    "hidden md:block min-w-32 w-fit",
-                    mode === "dark" &&
-                      "text-white border-white hover:!bg-white/10",
+                    'hidden md:block min-w-32 w-fit',
+                    mode === 'dark' &&
+                      'text-white border-white hover:!bg-white/10',
                     viewMoreStyles,
                   )}
-                  intent="secondary"
+                  intent='secondary'
                 >
                   {viewMoreText}
                 </Button>
               )}
             </div>
 
-            <div className="w-full max-w-full text-text-primary">
+            <div className='w-full max-w-full text-text-primary'>
               <CardCarousel
                 resources={resources}
                 mode={mode}
@@ -100,15 +100,15 @@ export const CardCarouselSection = ({
 
             {/* Mobile View All */}
             {viewMoreLink && (
-              <div className="w-full flex justify-start mt-8 md:hidden">
+              <div className='w-full flex justify-start mt-8 md:hidden'>
                 <Button
                   href={viewMoreLink}
-                  size="md"
+                  size='md'
                   className={cn(
-                    mode === "dark" && "text-white border-white",
+                    mode === 'dark' && 'text-white border-white',
                     viewMoreStyles,
                   )}
-                  intent="secondary"
+                  intent='secondary'
                 >
                   {viewMoreText}
                 </Button>
@@ -125,7 +125,7 @@ export const CardCarousel = ({
   CardComponent,
   resources,
   mode,
-  layout = "arrowsRight",
+  layout = 'arrowsRight',
   carouselItemClassName,
   carouselClassName,
 }: {
@@ -133,28 +133,28 @@ export const CardCarousel = ({
     resource: CollectionItem;
   }>;
   resources: CollectionItem[];
-  mode?: "dark" | "light";
-  layout?: "arrowsRight" | "arrowsLeft";
+  mode?: 'dark' | 'light';
+  layout?: 'arrowsRight' | 'arrowsLeft';
   carouselItemClassName?: string;
   carouselClassName?: string;
 }) => {
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: 'start',
       }}
-      className={cn("min-w-0 max-w-full", carouselClassName)}
+      className={cn('min-w-0 max-w-full', carouselClassName)}
     >
-      <CarouselContent className="pt-3 gap-6 xl:gap-8 2xl:pr-18">
+      <CarouselContent className='pt-3 gap-6 xl:gap-8 2xl:pr-18'>
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
             className={cn(
               carouselItemClassName ??
-                "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%]",
+                'w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%]',
               index === resources.length - 1
-                ? "mr-5 md:mr-12 lg:mr-18"
-                : !carouselItemClassName && "pr-0",
+                ? 'mr-5 md:mr-12 lg:mr-18'
+                : !carouselItemClassName && 'pr-0',
             )}
           >
             {CardComponent ? (
@@ -162,7 +162,7 @@ export const CardCarousel = ({
             ) : (
               <ResourceCard
                 resource={resource}
-                className={mode === "dark" ? "border-none" : undefined}
+                className={mode === 'dark' ? 'border-none' : undefined}
               />
             )}
           </CarouselItem>
@@ -171,55 +171,55 @@ export const CardCarousel = ({
 
       <div
         className={cn(
-          "relative w-full mt-8 sm:mt-12 md:mt-16",
+          'relative w-full mt-8 sm:mt-12 md:mt-16',
           /* Reserve space for absolutely positioned dots/arrows (parent had ~0 in-flow height on mobile → clipped by overflow-hidden). */
-          "min-h-[4.5rem] pb-14 sm:pb-16 md:min-h-0 md:pb-8",
+          'min-h-[4.5rem] pb-14 sm:pb-16 md:min-h-0 md:pb-8',
           {
-            "lg:mt-0 lg:min-h-0 lg:pb-0": resources.length < 4,
+            'lg:mt-0 lg:min-h-0 lg:pb-0': resources.length < 4,
           },
         )}
       >
-        {layout === "arrowsLeft" ? (
+        {layout === 'arrowsLeft' ? (
           <>
             <div
               className={cn(
-                "absolute left-4 top-1 flex h-12 max-w-full items-center md:left-0 md:top-7",
+                'absolute left-4 top-1 flex h-12 max-w-full items-center md:left-0 md:top-7',
               )}
             >
               <CarouselArrows
                 arrowStyles={
-                  mode === "dark"
-                    ? "text-white border-white hover:text-neutral-light hover:border-neutral-light"
+                  mode === 'dark'
+                    ? 'text-white border-white hover:text-neutral-light hover:border-neutral-light'
                     : undefined
                 }
               />
             </div>
 
-            <div className="absolute h-12 top-1 right-44 md:top-7 lg:right-44 2xl:right-36 3xl:right-28">
+            <div className='absolute h-12 top-1 right-44 md:top-7 lg:right-44 2xl:right-36 3xl:right-28'>
               <CarouselDots
-                activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
-                inactiveClassName="bg-neutral-lighter"
+                activeClassName={mode === 'dark' ? 'bg-white' : 'bg-ocean'}
+                inactiveClassName='bg-neutral-lighter'
               />
             </div>
           </>
         ) : (
           <>
-            <div className="absolute h-12 top-1 left-0 md:top-7">
+            <div className='absolute h-12 top-1 left-0 md:top-7'>
               <CarouselDots
-                activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
-                inactiveClassName="bg-neutral-lighter"
+                activeClassName={mode === 'dark' ? 'bg-white' : 'bg-ocean'}
+                inactiveClassName='bg-neutral-lighter'
               />
             </div>
 
             <div
               className={cn(
-                "absolute right-4 top-1 flex h-12 w-max max-w-full items-center justify-end sm:right-8 md:top-7 md:right-44 lg:right-44 2xl:right-36 3xl:right-28",
+                'absolute right-4 top-1 flex h-12 w-max max-w-full items-center justify-end sm:right-8 md:top-7 md:right-44 lg:right-44 2xl:right-36 3xl:right-28',
               )}
             >
               <CarouselArrows
                 arrowStyles={
-                  mode === "dark"
-                    ? "text-white border-white hover:text-neutral-light hover:border-neutral-light"
+                  mode === 'dark'
+                    ? 'text-white border-white hover:text-neutral-light hover:border-neutral-light'
                     : undefined
                 }
               />

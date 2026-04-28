@@ -1,8 +1,8 @@
-import { LoaderFunctionArgs } from "react-router-dom";
-import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { dayTimes, formattedServiceTimes } from "~/lib/utils";
-import { escapeOData } from "~/lib/.server/rock-utils";
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { getUserFromRequest } from '~/lib/.server/authentication/get-user-from-request';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { dayTimes, formattedServiceTimes } from '~/lib/utils';
+import { escapeOData } from '~/lib/.server/rock-utils';
 
 export type LoaderReturnType = {
   serviceTimes: dayTimes[];
@@ -19,23 +19,23 @@ export type LoaderReturnType = {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
-  const campusUrl = url.searchParams.get("location") as string;
+  const campusUrl = url.searchParams.get('location') as string;
 
   const user = (await getUserFromRequest(request)) || null;
 
   const data = await fetchRockData({
-    endpoint: "Campuses",
+    endpoint: 'Campuses',
     queryParams: {
       $filter: `Url eq '${escapeOData(campusUrl)}'`,
-      $expand: "Location",
-      loadAttributes: "simple",
+      $expand: 'Location',
+      loadAttributes: 'simple',
     },
   });
 
   if (!data || data.length === 0) {
-    throw new Response("Campus not found at: /locations/" + campusUrl, {
+    throw new Response('Campus not found at: /locations/' + campusUrl, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 
@@ -45,7 +45,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     location.city,
     location.state,
     location.postalCode,
-  ].join(", ");
+  ].join(', ');
 
   return {
     serviceTimes: formattedServiceTimes(serviceTimes),

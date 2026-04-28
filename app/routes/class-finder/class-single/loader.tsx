@@ -1,7 +1,7 @@
-import { LoaderFunctionArgs } from "react-router-dom";
-import { AuthenticationError } from "~/lib/.server/error-types";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import type { RockContentChannelItem } from "~/lib/types/rock-types";
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { AuthenticationError } from '~/lib/.server/error-types';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import type { RockContentChannelItem } from '~/lib/types/rock-types';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -17,45 +17,45 @@ function rockStringAttr(
   key: string,
 ): string {
   const v = item?.attributeValues?.[key]?.value;
-  return typeof v === "string" ? v.trim() : "";
+  return typeof v === 'string' ? v.trim() : '';
 }
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const url = params.path || "";
+  const url = params.path || '';
 
   if (!url) {
-    throw new Error("Class not found");
+    throw new Error('Class not found');
   }
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
   if (!appId || !searchApiKey) {
-    throw new AuthenticationError("Algolia credentials not found");
+    throw new AuthenticationError('Algolia credentials not found');
   }
 
-  let discussionGuideUrl = "";
-  let classTrailer = "";
-  let onDemandUrl = "";
+  let discussionGuideUrl = '';
+  let classTrailer = '';
+  let onDemandUrl = '';
 
   try {
     const classData = (await fetchRockData({
-      endpoint: "DefinedValues/GetByAttributeValue",
+      endpoint: 'DefinedValues/GetByAttributeValue',
       queryParams: {
-        attributeKey: "Url",
+        attributeKey: 'Url',
         value: url,
-        loadAttributes: "simple",
-        $top: "1",
+        loadAttributes: 'simple',
+        $top: '1',
       },
     })) as RockContentChannelItem | undefined;
 
     if (classData) {
-      discussionGuideUrl = rockStringAttr(classData, "discussionGuide");
-      classTrailer = rockStringAttr(classData, "classTrailer");
-      onDemandUrl = rockStringAttr(classData, "onDemandSignUpLink");
+      discussionGuideUrl = rockStringAttr(classData, 'discussionGuide');
+      classTrailer = rockStringAttr(classData, 'classTrailer');
+      onDemandUrl = rockStringAttr(classData, 'onDemandSignUpLink');
     }
   } catch (error) {
-    console.warn("Failed to load class data from Rock:", error);
+    console.warn('Failed to load class data from Rock:', error);
   }
 
   return {

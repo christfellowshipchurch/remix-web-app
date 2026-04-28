@@ -1,6 +1,6 @@
-import { render, type RenderOptions } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import type { ReactElement } from "react";
+import { render, type RenderOptions } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import type { ReactElement } from 'react';
 
 type CustomRenderOptions = RenderOptions & {
   route?: string;
@@ -8,13 +8,20 @@ type CustomRenderOptions = RenderOptions & {
 
 export function renderWithRouter(
   ui: ReactElement,
-  { route = "/", ...options }: CustomRenderOptions = {}
+  { route = '/', ...options }: CustomRenderOptions = {},
 ) {
   return render(
     <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>,
-    options
+    options,
   );
 }
 
-export { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
-export { default as userEvent } from "@testing-library/user-event";
+export {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+  act,
+} from '@testing-library/react';
+export { default as userEvent } from '@testing-library/user-event';

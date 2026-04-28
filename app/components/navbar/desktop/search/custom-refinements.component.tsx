@@ -1,4 +1,4 @@
-import { useRefinementList, useInstantSearch } from "react-instantsearch";
+import { useRefinementList, useInstantSearch } from 'react-instantsearch';
 
 export const SearchCustomRefinementList = ({
   attribute,
@@ -14,16 +14,16 @@ export const SearchCustomRefinementList = ({
 
   // Check if "Ministry Page", "Page Builder", or "Redirect Card" is selected
   const isPagesSelected =
-    selectedItems.includes("Ministry Page") ||
-    selectedItems.includes("Page Builder") ||
-    selectedItems.includes("Redirect Card");
+    selectedItems.includes('Ministry Page') ||
+    selectedItems.includes('Page Builder') ||
+    selectedItems.includes('Redirect Card');
 
   // Filter out "Ministry Page", "Page Builder", and "Redirect Card" from regular items
   const filteredItems = items.filter(
     (item) =>
-      item.value !== "Ministry Page" &&
-      item.value !== "Page Builder" &&
-      item.value !== "Redirect Card",
+      item.value !== 'Ministry Page' &&
+      item.value !== 'Page Builder' &&
+      item.value !== 'Redirect Card',
   );
 
   const handleItemClick = (value: string) => {
@@ -33,9 +33,9 @@ export const SearchCustomRefinementList = ({
   const handlePagesClick = () => {
     const currentSelected = selectedItems.filter(
       (item) =>
-        item !== "Ministry Page" &&
-        item !== "Page Builder" &&
-        item !== "Redirect Card",
+        item !== 'Ministry Page' &&
+        item !== 'Page Builder' &&
+        item !== 'Redirect Card',
     );
 
     if (isPagesSelected) {
@@ -55,9 +55,9 @@ export const SearchCustomRefinementList = ({
           ...prevState.refinementList,
           [attribute]: [
             ...currentSelected,
-            "Ministry Page",
-            "Page Builder",
-            "Redirect Card",
+            'Ministry Page',
+            'Page Builder',
+            'Redirect Card',
           ],
         },
       }));
@@ -65,16 +65,16 @@ export const SearchCustomRefinementList = ({
   };
 
   const buttonClass =
-    "flex items-center justify-center text-center text-xs border-[0.7px] px-4 py-2 max-h-[36px] whitespace-nowrap rounded-md transition-all duration-300";
+    'flex items-center justify-center text-center text-xs border-[0.7px] px-4 py-2 max-h-[36px] whitespace-nowrap rounded-md transition-all duration-300';
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className='flex flex-wrap gap-2'>
       {/* Custom "Pages" button combining Ministry Page and Page Builder */}
       <div
         className={`${buttonClass} ${
           isPagesSelected
-            ? "text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1"
-            : "border-neutral-light text-neutral-dark hover:text-ocean hover:border-ocean"
+            ? 'text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1'
+            : 'border-neutral-light text-neutral-dark hover:text-ocean hover:border-ocean'
         }`}
       >
         <button
@@ -82,7 +82,7 @@ export const SearchCustomRefinementList = ({
           className={`flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer ${
             isPagesSelected
               ? "pr-5 bg-[url('/assets/icons/xmark-solid.svg')] bg-[length:16px_16px] bg-[center_right_0px] bg-no-repeat"
-              : ""
+              : ''
           }`}
         >
           Pages
@@ -98,8 +98,8 @@ export const SearchCustomRefinementList = ({
             key={item.value}
             className={`${buttonClass} ${
               isSelected
-                ? "text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1"
-                : "border-neutral-light text-neutral-dark hover:text-ocean hover:border-ocean"
+                ? 'text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1'
+                : 'border-neutral-light text-neutral-dark hover:text-ocean hover:border-ocean'
             }`}
           >
             <button
@@ -107,7 +107,7 @@ export const SearchCustomRefinementList = ({
               className={`flex items-center justify-center w-full max-w-80 gap-2 py-2 cursor-pointer ${
                 isSelected
                   ? "pr-5 bg-[url('/assets/icons/xmark-solid.svg')] bg-[length:16px_16px] bg-[center_right_0px] bg-no-repeat"
-                  : ""
+                  : ''
               }`}
             >
               {item.label}

@@ -1,22 +1,22 @@
-import type { MetaFunction } from "react-router-dom";
-import type { LoaderReturnType } from "./loader";
-import { loader } from "./loader";
-import { createMeta } from "~/lib/meta-utils";
-import { generateMetaKeywords } from "~/lib/generate-meta-keywords";
-import { getFirstParagraph } from "~/lib/utils";
+import type { MetaFunction } from 'react-router-dom';
+import type { LoaderReturnType } from './loader';
+import { loader } from './loader';
+import { createMeta } from '~/lib/meta-utils';
+import { generateMetaKeywords } from '~/lib/generate-meta-keywords';
+import { getFirstParagraph } from '~/lib/utils';
 
 export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   if (!data) {
     return createMeta({
-      title: "404 – Message Not Found",
-      description: "The message you are looking for does not exist.",
+      title: '404 – Message Not Found',
+      description: 'The message you are looking for does not exist.',
     });
   }
   const { message: msg } = data as LoaderReturnType;
-  const title = msg?.title ?? "Message";
+  const title = msg?.title ?? 'Message';
   const description =
-    getFirstParagraph(msg?.content || "") ??
-    "Watch this message from Christ Fellowship Church.";
+    getFirstParagraph(msg?.content || '') ??
+    'Watch this message from Christ Fellowship Church.';
   const categories = [
     ...(msg?.primaryCategories?.map((c: { value: string }) => c.value) ?? []),
     ...(msg?.secondaryCategories?.map((c: { value: string }) => c.value) ?? []),
@@ -26,7 +26,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
     categories,
     authorOrSpeaker: msg?.speaker?.fullName,
     seriesTitle: msg?.seriesTitle,
-    type: "message",
+    type: 'message',
   });
 
   return createMeta({

@@ -1,25 +1,25 @@
-import { fetchRockData } from "./fetch-rock-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { fetchRockData } from './fetch-rock-data';
+import { createImageUrlFromGuid } from '~/lib/utils';
 
 export const fetchAuthorData = async ({ authorId }: { authorId: string }) => {
   return fetchRockData({
-    endpoint: "People",
+    endpoint: 'People',
     queryParams: {
       $filter: `Id eq ${authorId}`,
-      $expand: "Photo",
-      loadAttributes: "simple",
+      $expand: 'Photo',
+      loadAttributes: 'simple',
     },
   });
 };
 
 export const fetchAuthorByPathname = async (pathname: string) => {
   return fetchRockData({
-    endpoint: "People/GetByAttributeValue",
+    endpoint: 'People/GetByAttributeValue',
     queryParams: {
-      attributeKey: "Pathname",
+      attributeKey: 'Pathname',
       value: pathname,
-      $expand: "Photo",
-      loadAttributes: "simple",
+      $expand: 'Photo',
+      loadAttributes: 'simple',
     },
   });
 };
@@ -30,7 +30,7 @@ interface PersonAlias {
 
 export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
   const personAlias: PersonAlias = await fetchRockData({
-    endpoint: "PersonAlias",
+    endpoint: 'PersonAlias',
     queryParams: {
       $filter: `Id eq ${primaryAliasId}`,
     },
@@ -41,24 +41,24 @@ export const fetchPersonAliasGuid = async (primaryAliasId: string) => {
 
 export const fetchAuthorId = async (authorId: string) => {
   return fetchRockData({
-    endpoint: "PersonAlias",
+    endpoint: 'PersonAlias',
     queryParams: {
       $filter: `Guid eq guid'${authorId}'`,
-      $select: "PersonId",
+      $select: 'PersonId',
     },
   });
 };
 
 export const fetchAuthorArticles = async (personAliasGuid: string) => {
   const articles = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
+    endpoint: 'ContentChannelItems/GetByAttributeValue',
     queryParams: {
-      attributeKey: "Author",
+      attributeKey: 'Author',
       value: personAliasGuid,
       $filter: "Status eq 'Approved' and ContentChannelId eq 43",
-      $orderby: "StartDateTime desc",
-      $top: "6",
-      loadAttributes: "simple",
+      $orderby: 'StartDateTime desc',
+      $top: '6',
+      loadAttributes: 'simple',
     },
   });
 
@@ -67,7 +67,7 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
 
 export const getBasicAuthorInfo = async (
   authorId: string,
-  pathname: string
+  pathname: string,
 ) => {
   const { personId } = await fetchAuthorId(authorId);
   const authorData = await fetchAuthorData({ authorId: personId });
@@ -115,7 +115,7 @@ export const getBasicAuthorInfoFlexible = async (authorValue: string) => {
     // If it's a GUID, fetch the author data to get the pathname
     const { personId } = await fetchAuthorId(authorValue);
     const authorData = await fetchAuthorData({ authorId: personId });
-    const pathname = authorData?.attributeValues?.pathname?.value || "";
+    const pathname = authorData?.attributeValues?.pathname?.value || '';
     return await getBasicAuthorInfo(authorValue, pathname);
   } else {
     // If it's a pathname, use the new method

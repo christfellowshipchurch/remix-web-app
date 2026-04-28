@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useFetcher, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useFetcher, useNavigate } from 'react-router-dom';
 
-import { Button } from "~/primitives/button/button.primitive";
-import TextFieldInput from "~/primitives/inputs/text-field";
-import DateInput from "~/primitives/inputs/date-input/date-input.primitive";
-import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { YesFormPersonalInfo } from "../types";
-import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
+import { Button } from '~/primitives/button/button.primitive';
+import TextFieldInput from '~/primitives/inputs/text-field';
+import DateInput from '~/primitives/inputs/date-input/date-input.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { YesFormPersonalInfo } from '../types';
+import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
 
 interface Props {
   data: YesFormPersonalInfo;
@@ -27,36 +27,36 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
 
   // Effect for initial data loading
   useEffect(() => {
-    fetcher.load("/connect-card");
+    fetcher.load('/connect-card');
   }, []);
 
   // Effect for handling form data and submissions
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
-      if ("campuses" in fetcher.data && "allThatApplies" in fetcher.data) {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      if ('campuses' in fetcher.data && 'allThatApplies' in fetcher.data) {
         // This was the initial data load
         setFormFieldData(fetcher.data as ConnectCardLoaderReturnType);
-      } else if ("error" in fetcher.data) {
+      } else if ('error' in fetcher.data) {
         // This was a failed form submission
         setError(
           fetcher.data.error ||
             (isSpanish
-              ? "Ocurrió un error inesperado"
-              : "An unexpected error occurred")
+              ? 'Ocurrió un error inesperado'
+              : 'An unexpected error occurred'),
         );
       } else {
         // This was a successful form submission (not initial load, not error)
         setError(null);
-        navigate(isSpanish ? "/dijiste-si/devocional" : "/yes/devotional");
+        navigate(isSpanish ? '/dijiste-si/devocional' : '/yes/devotional');
       }
     }
 
-    if (fetcher.state === "submitting") {
+    if (fetcher.state === 'submitting') {
       setError(null);
     }
   }, [fetcher.state, fetcher.data, navigate]);
 
-  const loading = fetcher.state === "submitting" || fetcher.state === "loading";
+  const loading = fetcher.state === 'submitting' || fetcher.state === 'loading';
 
   const handleChange = (field: keyof YesFormPersonalInfo, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -68,14 +68,14 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
 
     try {
       fetcher.submit(formDataObj, {
-        method: "post",
-        action: "/connect-card",
+        method: 'post',
+        action: '/connect-card',
       });
     } catch {
       setError(
         isSpanish
-          ? "Ocurrió un error al enviar el formulario. Por favor, inténtalo de nuevo."
-          : "An error occurred while submitting the form. Please try again."
+          ? 'Ocurrió un error al enviar el formulario. Por favor, inténtalo de nuevo.'
+          : 'An error occurred while submitting the form. Please try again.',
       );
     }
   };
@@ -83,48 +83,48 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
   const { campuses } = formFieldData;
 
   const copy = {
-    heading: isSpanish ? "¡Cuéntanos sobre ti!" : "Tell us about yourself!",
-    nameLabel: isSpanish ? "Nombre" : "Name",
-    firstNamePlaceholder: isSpanish ? "Nombre" : "First Name",
-    lastNamePlaceholder: isSpanish ? "Apellido" : "Last Name",
-    emailLabel: isSpanish ? "Correo electrónico" : "Email",
-    emailPlaceholder: isSpanish ? "ejemplo@gmail.com" : "Example@gmail.com",
-    phoneLabel: isSpanish ? "Número de teléfono" : "Phone Number",
-    phonePlaceholder: "xxx-xxx-xxxx",
-    dateOfBirthLabel: isSpanish ? "Fecha de nacimiento" : "Date of Birth",
-    campusLabel: "Campus",
-    required: isSpanish ? "(requerido)" : "(required)",
-    selectCampus: isSpanish ? "Selecciona un campus" : "Select a Campus",
-    loading: isSpanish ? "Cargando..." : "Loading...",
-    submit: isSpanish ? "Enviar" : "Submit",
+    heading: isSpanish ? '¡Cuéntanos sobre ti!' : 'Tell us about yourself!',
+    nameLabel: isSpanish ? 'Nombre' : 'Name',
+    firstNamePlaceholder: isSpanish ? 'Nombre' : 'First Name',
+    lastNamePlaceholder: isSpanish ? 'Apellido' : 'Last Name',
+    emailLabel: isSpanish ? 'Correo electrónico' : 'Email',
+    emailPlaceholder: isSpanish ? 'ejemplo@gmail.com' : 'Example@gmail.com',
+    phoneLabel: isSpanish ? 'Número de teléfono' : 'Phone Number',
+    phonePlaceholder: 'xxx-xxx-xxxx',
+    dateOfBirthLabel: isSpanish ? 'Fecha de nacimiento' : 'Date of Birth',
+    campusLabel: 'Campus',
+    required: isSpanish ? '(requerido)' : '(required)',
+    selectCampus: isSpanish ? 'Selecciona un campus' : 'Select a Campus',
+    loading: isSpanish ? 'Cargando...' : 'Loading...',
+    submit: isSpanish ? 'Enviar' : 'Submit',
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full content-padding">
-      <div className="mx-auto flex flex-col gap-4 p-8 w-full max-w-lg bg-white rounded-2xl shadow-md mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82">
-        <h2 className="heading-h4 mb-2 text-pretty">{copy.heading}</h2>
-        <div className="flex flex-col gap-4">
-          <div className="flex items-end gap-4 w-full">
-            <div className="flex-1">
+    <form onSubmit={handleSubmit} className='w-full content-padding'>
+      <div className='mx-auto flex flex-col gap-4 p-8 w-full max-w-lg bg-white rounded-2xl shadow-md mt-16 mb-28 lg:mt-32 lg:mb-50 xl:mt-48 xl:mb-82'>
+        <h2 className='heading-h4 mb-2 text-pretty'>{copy.heading}</h2>
+        <div className='flex flex-col gap-4'>
+          <div className='flex items-end gap-4 w-full'>
+            <div className='flex-1'>
               <TextFieldInput
-                name="firstName"
-                className=""
+                name='firstName'
+                className=''
                 value={formData.firstName}
                 error={null}
-                setValue={(val) => handleChange("firstName", val)}
+                setValue={(val) => handleChange('firstName', val)}
                 setError={() => {}}
                 label={copy.nameLabel}
                 placeholder={copy.firstNamePlaceholder}
                 isRequired
               />
             </div>
-            <div className="flex-1">
+            <div className='flex-1'>
               <TextFieldInput
-                name="lastName"
-                className=""
+                name='lastName'
+                className=''
                 value={formData.lastName}
                 error={null}
-                setValue={(val) => handleChange("lastName", val)}
+                setValue={(val) => handleChange('lastName', val)}
                 setError={() => {}}
                 placeholder={copy.lastNamePlaceholder}
                 isRequired
@@ -133,61 +133,61 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
           </div>
         </div>
         <TextFieldInput
-          name="email"
-          className=""
+          name='email'
+          className=''
           value={formData.email}
           error={null}
-          setValue={(val) => handleChange("email", val)}
+          setValue={(val) => handleChange('email', val)}
           setError={() => {}}
-          type="email"
+          type='email'
           label={copy.emailLabel}
           placeholder={copy.emailPlaceholder}
           isRequired
         />
         <TextFieldInput
-          name="phone"
-          className=""
-          value={formData.phone ?? ""}
+          name='phone'
+          className=''
+          value={formData.phone ?? ''}
           error={null}
-          setValue={(val) => handleChange("phone", val)}
+          setValue={(val) => handleChange('phone', val)}
           setError={() => {}}
-          type="tel"
+          type='tel'
           label={copy.phoneLabel}
           placeholder={copy.phonePlaceholder}
           isRequired
         />
         <DateInput
-          name="dateOfBirth"
-          className=""
-          value={formData.dateOfBirth ?? ""}
+          name='dateOfBirth'
+          className=''
+          value={formData.dateOfBirth ?? ''}
           error={null}
-          setValue={(val) => handleChange("dateOfBirth", val)}
+          setValue={(val) => handleChange('dateOfBirth', val)}
           setError={() => {}}
           label={copy.dateOfBirthLabel}
           isRequired
-          max={new Date().toISOString().split("T")[0]}
+          max={new Date().toISOString().split('T')[0]}
         />
-        <div className="flex flex-col gap-1 w-full">
-          <label className="font-bold text-text-primary mb-1">
-            <span className="text-ocean mr-1">{"*"}</span>
+        <div className='flex flex-col gap-1 w-full'>
+          <label className='font-bold text-text-primary mb-1'>
+            <span className='text-ocean mr-1'>{'*'}</span>
             {copy.campusLabel}
-            <span className="font-normal text-text-secondary ml-1 italic">
+            <span className='font-normal text-text-secondary ml-1 italic'>
               {copy.required}
             </span>
           </label>
           {campuses && campuses.length > 0 && (
             <select
-              name="campus"
+              name='campus'
               className={`appearance-none ${defaultTextInputStyles}`}
               required
               style={{
                 backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                backgroundSize: "24px",
-                backgroundPosition: "calc(100% - 2%) center",
-                backgroundRepeat: "no-repeat",
+                backgroundSize: '24px',
+                backgroundPosition: 'calc(100% - 2%) center',
+                backgroundRepeat: 'no-repeat',
               }}
             >
-              <option value={""}>{copy.selectCampus}</option>
+              <option value={''}>{copy.selectCampus}</option>
               {campuses.map(({ guid, name }, index) => (
                 <option key={index} value={guid}>
                   {name}
@@ -199,19 +199,19 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
 
         {/* Hidden decision checkbox - marked as checked (same value for backend) */}
         <input
-          type="checkbox"
-          name="decision"
-          value="I made a decision to follow Christ today."
+          type='checkbox'
+          name='decision'
+          value='I made a decision to follow Christ today.'
           defaultChecked
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
         />
-        {error && <p className="text-alert text-center">{error}</p>}
-        <div className="flex justify-between mt-4 w-full">
+        {error && <p className='text-alert text-center'>{error}</p>}
+        <div className='flex justify-between mt-4 w-full'>
           <Button
-            type="submit"
-            size="md"
-            intent="primary"
-            className="w-full font-normal"
+            type='submit'
+            size='md'
+            intent='primary'
+            className='w-full font-normal'
             disabled={loading}
           >
             {loading ? copy.loading : copy.submit}

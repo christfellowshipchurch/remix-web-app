@@ -1,7 +1,7 @@
-import { ActionFunction, data } from "react-router-dom";
-import { SetAReminderType } from "./types";
-import { fetchRockData, postRockData } from "~/lib/.server/fetch-rock-data";
-import { escapeOData } from "~/lib/.server/rock-utils";
+import { ActionFunction, data } from 'react-router-dom';
+import { SetAReminderType } from './types';
+import { fetchRockData, postRockData } from '~/lib/.server/fetch-rock-data';
+import { escapeOData } from '~/lib/.server/rock-utils';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -10,10 +10,10 @@ export const action: ActionFunction = async ({ request }) => {
     const { email, firstName, lastName, phone, campus, serviceTime } = formData;
 
     const getCampusGuid: { guid: string } = await fetchRockData({
-      endpoint: "Campuses",
+      endpoint: 'Campuses',
       queryParams: {
         $filter: `Name eq '${escapeOData(campus as string)}'`,
-        $select: "Guid",
+        $select: 'Guid',
       },
     });
 
@@ -37,6 +37,6 @@ export const action: ActionFunction = async ({ request }) => {
     if (error instanceof Error) {
       return data({ error: error.message }, { status: 400 });
     }
-    return data({ error: "Network error please try again" }, { status: 400 });
+    return data({ error: 'Network error please try again' }, { status: 400 });
   }
 };

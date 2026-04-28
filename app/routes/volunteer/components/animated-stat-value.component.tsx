@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { cn } from "~/lib/utils";
+import { cn } from '~/lib/utils';
 
 export const DEFAULT_BASE_DURATION_MS = 1600;
 export const DEFAULT_CASCADE_STEP_MS = 150;
@@ -11,11 +11,11 @@ export const DEFAULT_INTERSECTION_THRESHOLD = 0.15;
 const DIGIT_ROUNDS = 3;
 
 function isStaticChar(digit: string, i: number, target: string): boolean {
-  const isFirstDollar = i === 0 && digit === "$";
+  const isFirstDollar = i === 0 && digit === '$';
   const isLastSpecial =
     i === target.length - 1 &&
-    (digit === "k" || digit === "+" || digit === "K");
-  const isSeparator = digit === "," || digit === ".";
+    (digit === 'k' || digit === '+' || digit === 'K');
+  const isSeparator = digit === ',' || digit === '.';
   return isFirstDollar || isLastSpecial || isSeparator;
 }
 
@@ -23,11 +23,11 @@ function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReduced(mq.matches);
     const onChange = () => setReduced(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   return reduced;
@@ -62,34 +62,34 @@ function Digit({
 
   if (collapsed) {
     return (
-      <span className="inline-flex h-[1.2em] min-w-[1ch] shrink-0 items-center justify-center font-black tabular-nums leading-none text-white">
+      <span className='inline-flex h-[1.2em] min-w-[1ch] shrink-0 items-center justify-center font-black tabular-nums leading-none text-white'>
         {digit}
       </span>
     );
   }
 
   return (
-    <span className="inline-flex h-[1.2em] min-w-[1ch] shrink-0 overflow-hidden align-middle font-black tabular-nums leading-none text-white">
+    <span className='inline-flex h-[1.2em] min-w-[1ch] shrink-0 overflow-hidden align-middle font-black tabular-nums leading-none text-white'>
       <span
-        className="flex flex-col will-change-transform"
+        className='flex flex-col will-change-transform'
         style={{
-          transform: run ? `translateY(-${translateEm}em)` : "translateY(0)",
+          transform: run ? `translateY(-${translateEm}em)` : 'translateY(0)',
           transition: run ? `transform ${durationMs}ms ease-out` : undefined,
         }}
         onTransitionEnd={(e) => {
-          if (e.propertyName !== "transform") return;
+          if (e.propertyName !== 'transform') return;
           setCollapsed(true);
         }}
       >
         {Array.from({ length: DIGIT_ROUNDS * 10 }, (_, idx) => (
           <span
             key={`d-${idx}`}
-            className="flex h-[1.2em] shrink-0 items-center justify-center leading-none"
+            className='flex h-[1.2em] shrink-0 items-center justify-center leading-none'
           >
             {idx % 10}
           </span>
         ))}
-        <span className="flex h-[1.2em] shrink-0 items-center justify-center leading-none">
+        <span className='flex h-[1.2em] shrink-0 items-center justify-center leading-none'>
           {digit}
         </span>
       </span>
@@ -153,7 +153,7 @@ export function AnimatedStatValue({
       <span
         ref={containerRef}
         className={cn(
-          "inline-flex flex-wrap items-center font-black text-white",
+          'inline-flex flex-wrap items-center font-black text-white',
           className,
         )}
         aria-label={target}
@@ -167,18 +167,18 @@ export function AnimatedStatValue({
     <span
       ref={containerRef}
       className={cn(
-        "inline-flex flex-wrap items-center font-black text-white",
+        'inline-flex flex-wrap items-center font-black text-white',
         className,
       )}
       aria-label={target}
     >
-      <span className="inline-flex items-center" aria-hidden>
+      <span className='inline-flex items-center' aria-hidden>
         {[...target].map((ch, i) => {
           if (isStaticChar(ch, i, target)) {
             return (
               <span
                 key={`${i}-${ch}`}
-                className="inline-flex h-[1.2em] shrink-0 items-center justify-center px-0.5 leading-none"
+                className='inline-flex h-[1.2em] shrink-0 items-center justify-center px-0.5 leading-none'
               >
                 {ch}
               </span>

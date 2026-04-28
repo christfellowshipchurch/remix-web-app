@@ -1,5 +1,5 @@
-import type { ContentType } from "../page-builder/types";
-import type { MessageType } from "../messages/types";
+import type { ContentType } from '../page-builder/types';
+import type { MessageType } from '../messages/types';
 
 export type Series = {
   value: string;

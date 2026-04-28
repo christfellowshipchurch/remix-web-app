@@ -1,4 +1,4 @@
-import { Button } from "~/primitives/button/button.primitive";
+import { Button } from '~/primitives/button/button.primitive';
 
 export const HeroScrollCard = ({
   image,

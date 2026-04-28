@@ -1,3 +1,3 @@
-import { HTMLRenderer } from "./html-renderer.component";
+import { HTMLRenderer } from './html-renderer.component';
 
 export default HTMLRenderer;

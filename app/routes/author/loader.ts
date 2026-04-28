@@ -1,7 +1,7 @@
-import { LoaderFunction } from "react-router-dom";
-import { createImageUrlFromGuid } from "~/lib/utils";
-import { format } from "date-fns";
-import { Author } from "./types";
+import { LoaderFunction } from 'react-router-dom';
+import { createImageUrlFromGuid } from '~/lib/utils';
+import { format } from 'date-fns';
+import { Author } from './types';
 
 interface ArticleData {
   title: string;
@@ -19,7 +19,7 @@ import {
   fetchAuthorArticles,
   fetchAuthorId,
   fetchAuthorByPathname,
-} from "~/lib/.server/author-utils";
+} from '~/lib/.server/author-utils';
 
 // Utility function to check if a string is a GUID
 const isGuid = (str: string): boolean => {
@@ -36,19 +36,19 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
     if (!authorData) {
       throw new Response(`Author not found for pathname: ${pathname}`, {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
     // Get the author's GUID for fetching articles
     const personAliasGuid = await fetchPersonAliasGuid(
-      authorData?.primaryAliasId
+      authorData?.primaryAliasId,
     );
 
     if (!personAliasGuid) {
       throw new Response(`Person alias GUID not found`, {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
@@ -59,19 +59,19 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
     const socialLinks = [
       {
         url: authorData?.attributeValues?.twitter?.value || null,
-        type: "twitter",
+        type: 'twitter',
       },
       {
         url: authorData?.attributeValues?.facebook?.value || null,
-        type: "facebook",
+        type: 'facebook',
       },
       {
         url: authorData?.attributeValues?.instagram?.value || null,
-        type: "instagram",
+        type: 'instagram',
       },
       {
         url: authorData?.attributeValues?.linkedIn?.value || null,
-        type: "linkedIn",
+        type: 'linkedIn',
       },
     ].filter((link) => link.url !== null);
 
@@ -83,9 +83,9 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
         uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
       },
       authorAttributes: {
-        bio: authorData?.attributeValues?.authorBio?.value || "",
+        bio: authorData?.attributeValues?.authorBio?.value || '',
         authorId: authorData.id,
-        jobTitle: authorData?.attributeValues?.jobTitle?.value || "",
+        jobTitle: authorData?.attributeValues?.jobTitle?.value || '',
         socialLinks,
         publications: {
           articles: authorArticles
@@ -94,24 +94,26 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
 
               try {
                 return {
-                  title: article.title || "",
+                  title: article.title || '',
                   readTime: Math.max(
                     1,
-                    Math.round((article.content?.split(" ") || []).length / 200)
+                    Math.round(
+                      (article.content?.split(' ') || []).length / 200,
+                    ),
                   ),
                   publishDate: format(
                     new Date(article?.startDateTime),
-                    "d MMM yyyy"
+                    'd MMM yyyy',
                   ),
                   coverImage:
                     createImageUrlFromGuid(
-                      article.attributeValues?.image?.value || ""
+                      article.attributeValues?.image?.value || '',
                     ) || null,
-                  summary: article.attributeValues?.summary?.value || "",
-                  url: article.attributeValues?.url?.value || "",
+                  summary: article.attributeValues?.summary?.value || '',
+                  url: article.attributeValues?.url?.value || '',
                 };
               } catch (error) {
-                console.error("Error processing article:", error);
+                console.error('Error processing article:', error);
                 return null;
               }
             })
@@ -119,14 +121,14 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
           books: [],
           podcasts: [],
         },
-        pathname: authorData?.attributeValues?.pathname?.value || "",
+        pathname: authorData?.attributeValues?.pathname?.value || '',
       },
     };
   } catch (error) {
-    console.error("Error in getAuthorDetailsByPathname:", error);
+    console.error('Error in getAuthorDetailsByPathname:', error);
     throw new Response(`Failed to fetch author details`, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 };
@@ -143,7 +145,7 @@ export const getAuthorDetails = async (personId: string) => {
       if (!authorIdResult?.personId) {
         throw new Response(`Author ID not found for GUID`, {
           status: 404,
-          statusText: "Not Found",
+          statusText: 'Not Found',
         });
       }
 
@@ -162,7 +164,7 @@ export const getAuthorDetails = async (personId: string) => {
       if (!authorData) {
         throw new Response(`Author data not found`, {
           status: 404,
-          statusText: "Not Found",
+          statusText: 'Not Found',
         });
       }
 
@@ -172,7 +174,7 @@ export const getAuthorDetails = async (personId: string) => {
       if (!personAliasGuid) {
         throw new Response(`Person alias GUID not found`, {
           status: 404,
-          statusText: "Not Found",
+          statusText: 'Not Found',
         });
       }
     }
@@ -180,7 +182,7 @@ export const getAuthorDetails = async (personId: string) => {
     if (!authorData) {
       throw new Response(`Author data not found`, {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
@@ -191,19 +193,19 @@ export const getAuthorDetails = async (personId: string) => {
     const socialLinks = [
       {
         url: authorData?.attributeValues?.twitter?.value || null,
-        type: "twitter",
+        type: 'twitter',
       },
       {
         url: authorData?.attributeValues?.facebook?.value || null,
-        type: "facebook",
+        type: 'facebook',
       },
       {
         url: authorData?.attributeValues?.instagram?.value || null,
-        type: "instagram",
+        type: 'instagram',
       },
       {
         url: authorData?.attributeValues?.linkedIn?.value || null,
-        type: "linkedIn",
+        type: 'linkedIn',
       },
     ].filter((link) => link.url !== null);
 
@@ -215,9 +217,9 @@ export const getAuthorDetails = async (personId: string) => {
         uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
       },
       authorAttributes: {
-        bio: authorData?.attributeValues?.authorBio?.value || "",
+        bio: authorData?.attributeValues?.authorBio?.value || '',
         authorId: personId,
-        jobTitle: authorData?.attributeValues?.jobTitle?.value || "",
+        jobTitle: authorData?.attributeValues?.jobTitle?.value || '',
         socialLinks,
         publications: {
           articles: authorArticles
@@ -226,24 +228,26 @@ export const getAuthorDetails = async (personId: string) => {
 
               try {
                 return {
-                  title: article.title || "",
+                  title: article.title || '',
                   readTime: Math.max(
                     1,
-                    Math.round((article.content?.split(" ") || []).length / 200)
+                    Math.round(
+                      (article.content?.split(' ') || []).length / 200,
+                    ),
                   ),
                   publishDate: format(
                     new Date(article?.startDateTime),
-                    "d MMM yyyy"
+                    'd MMM yyyy',
                   ),
                   coverImage:
                     createImageUrlFromGuid(
-                      article.attributeValues?.image?.value || ""
+                      article.attributeValues?.image?.value || '',
                     ) || null,
-                  summary: article.attributeValues?.summary?.value || "",
-                  url: article.attributeValues?.url?.value || "",
+                  summary: article.attributeValues?.summary?.value || '',
+                  url: article.attributeValues?.url?.value || '',
                 };
               } catch (error) {
-                console.error("Error processing article:", error);
+                console.error('Error processing article:', error);
                 return null;
               }
             })
@@ -251,36 +255,36 @@ export const getAuthorDetails = async (personId: string) => {
           books: [],
           podcasts: [],
         },
-        pathname: authorData?.attributeValues?.pathname?.value || "",
+        pathname: authorData?.attributeValues?.pathname?.value || '',
       },
     };
   } catch (error) {
-    console.error("Error in getAuthorDetails:", error);
+    console.error('Error in getAuthorDetails:', error);
     throw new Response(`Failed to fetch author details`, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const authorPathname = params?.authorId || "";
+  const authorPathname = params?.authorId || '';
 
   // Use the new pathname-based approach
   const data = await getAuthorDetailsByPathname(authorPathname);
 
   if (!data) {
     // This should stop execution and propagate the error to Remix's error boundary
-    throw new Response("Author not found at: /author/" + authorPathname, {
+    throw new Response('Author not found at: /author/' + authorPathname, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 
   const authorData: Author = {
     id: data.id,
     fullName: data.fullName,
-    profilePhoto: data.photo.uri ?? "",
+    profilePhoto: data.photo.uri ?? '',
     authorAttributes: data.authorAttributes,
   };
 

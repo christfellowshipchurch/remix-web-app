@@ -1,7 +1,7 @@
-import { LoaderFunctionArgs } from "react-router-dom";
-import { AuthenticationError } from "~/lib/.server/error-types";
-import { algoliasearch } from "algoliasearch";
-import { GroupType } from "../group-finder/types";
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { AuthenticationError } from '~/lib/.server/error-types';
+import { algoliasearch } from 'algoliasearch';
+import { GroupType } from '../group-finder/types';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -13,7 +13,7 @@ export type LoaderReturnType = {
 async function fetchGroupById(
   groupId: string,
   appId: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<GroupType | null> {
   try {
     const searchClient = algoliasearch(appId, apiKey);
@@ -21,7 +21,7 @@ async function fetchGroupById(
     // Search for the specific group by objectID
     const response = await searchClient.searchForHits<GroupType>([
       {
-        indexName: "dev_daniel_Groups",
+        indexName: 'dev_daniel_Groups',
         params: {
           filters: `objectID:"${groupId}"`,
           hitsPerPage: 1,
@@ -35,23 +35,23 @@ async function fetchGroupById(
 
     return null;
   } catch (error) {
-    console.error("Failed to fetch group from Algolia:", error);
+    console.error('Failed to fetch group from Algolia:', error);
     return null;
   }
 }
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const groupId = params.path || "";
+  const groupId = params.path || '';
 
   if (!groupId) {
-    throw new Error("Group not found");
+    throw new Error('Group not found');
   }
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
   if (!appId || !searchApiKey) {
-    throw new AuthenticationError("Algolia credentials not found");
+    throw new AuthenticationError('Algolia credentials not found');
   }
 
   // Fetch the group data from Algolia

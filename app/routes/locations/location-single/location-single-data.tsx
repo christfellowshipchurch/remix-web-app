@@ -1,131 +1,131 @@
-import { icons } from "~/lib/icons";
-import { CollectionItem } from "~/routes/page-builder/types";
+import { icons } from '~/lib/icons';
+import { CollectionItem } from '~/routes/page-builder/types';
 
 export const englishGetInvolvedResources: CollectionItem[] = [
   {
-    name: "Kids",
+    name: 'Kids',
     summary:
-      "For Newborns Through Elementary School - Christ Fellowship Kids is designed to partner with parents as together, we lead our kids to love Jesus, love others, and love life.",
-    image: "/assets/images/locations/get-involved/kids.webp",
-    pathname: "/ministries/kids",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "1",
+      'For Newborns Through Elementary School - Christ Fellowship Kids is designed to partner with parents as together, we lead our kids to love Jesus, love others, and love life.',
+    image: '/assets/images/locations/get-involved/kids.webp',
+    pathname: '/ministries/kids',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '1',
   },
   {
-    name: "Students",
+    name: 'Students',
     summary:
-      "For Middle School & High School Students - A place where your student can grow in their relationship with Jesus and their relationships with others.",
-    image: "/assets/images/locations/get-involved/students.webp",
-    pathname: "/ministries/students",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "3",
+      'For Middle School & High School Students - A place where your student can grow in their relationship with Jesus and their relationships with others.',
+    image: '/assets/images/locations/get-involved/students.webp',
+    pathname: '/ministries/students',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '3',
   },
   {
-    name: "Young Adults",
+    name: 'Young Adults',
     summary:
-      "For College Students & Young Adults - The perfect place for those who are looking to grow their relationship with Jesus as well as connect with other young adults throughout South Florida.",
-    image: "/assets/images/locations/get-involved/ya.webp",
-    pathname: "/ministries/young-adults",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "2",
+      'For College Students & Young Adults - The perfect place for those who are looking to grow their relationship with Jesus as well as connect with other young adults throughout South Florida.',
+    image: '/assets/images/locations/get-involved/ya.webp',
+    pathname: '/ministries/young-adults',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '2',
   },
   {
-    name: "Groups & Classes",
+    name: 'Groups & Classes',
     summary:
-      "For Everyone - Everything you need to get connected and grow in your faith.",
-    image: "/assets/images/groups-bg.webp",
-    pathname: "/group-finder",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "4",
+      'For Everyone - Everything you need to get connected and grow in your faith.',
+    image: '/assets/images/groups-bg.webp',
+    pathname: '/group-finder',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '4',
   },
 ];
 
 export const onlineGetInvolvedResources: CollectionItem[] = [
   {
-    name: "Journey",
-    summary: "Your first step to getting connected!",
+    name: 'Journey',
+    summary: 'Your first step to getting connected!',
     image:
-      "https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=5cbd4b27-2ff1-4e5c-ae77-45b51399be94&quality=20",
-    pathname: "/events/journey",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "1",
+      'https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=5cbd4b27-2ff1-4e5c-ae77-45b51399be94&quality=20',
+    pathname: '/events/journey',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '1',
   },
   {
-    name: "Volunteer",
+    name: 'Volunteer',
     summary:
-      "Volunteer with others to help make a difference in the lives of others.",
+      'Volunteer with others to help make a difference in the lives of others.',
 
-    image: "/assets/images/volunteer/hero.webp",
-    pathname: "/volunteer",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "2",
+    image: '/assets/images/volunteer/hero.webp',
+    pathname: '/volunteer',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '2',
   },
   {
-    name: "Classes",
-    summary: "Take a class to grow in your faith and connect with others.",
-    image: "/assets/images/volunteer/interested-in.webp", // TODO: This image needs to be updated
-    pathname: "/class-finder",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "3",
+    name: 'Classes',
+    summary: 'Take a class to grow in your faith and connect with others.',
+    image: '/assets/images/volunteer/interested-in.webp', // TODO: This image needs to be updated
+    pathname: '/class-finder',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '3',
   },
   {
-    name: "Groups",
-    summary: "Join a group to grow in your faith and connect with others.",
-    image: "/assets/images/groups-bg.webp",
-    pathname: "/group-finder",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "4",
+    name: 'Groups',
+    summary: 'Join a group to grow in your faith and connect with others.',
+    image: '/assets/images/groups-bg.webp',
+    pathname: '/group-finder',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '4',
   },
 ];
 
 export const spanishGetInvolvedResources: CollectionItem[] = [
   {
-    name: "Niños",
+    name: 'Niños',
     summary:
-      "Para recién nacidos hasta primaria - Christ Fellowship Kids está diseñado para asociarse con los padres para que, juntos, guiemos a nuestros niños a amar a Jesús, amar a los demás y amar la vida.",
-    image: "/assets/images/locations/get-involved/kids.webp",
-    pathname: "/ministries/kids",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "1",
+      'Para recién nacidos hasta primaria - Christ Fellowship Kids está diseñado para asociarse con los padres para que, juntos, guiemos a nuestros niños a amar a Jesús, amar a los demás y amar la vida.',
+    image: '/assets/images/locations/get-involved/kids.webp',
+    pathname: '/ministries/kids',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '1',
   },
   {
-    name: "Estudiantes",
+    name: 'Estudiantes',
     summary:
-      "Para estudiantes de Middle School  y High School - Un lugar donde tu estudiante puede crecer en su relación con Jesús y en sus relaciones con los demás.",
-    image: "/assets/images/locations/get-involved/students.webp",
-    pathname: "/ministries/students",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "3",
+      'Para estudiantes de Middle School  y High School - Un lugar donde tu estudiante puede crecer en su relación con Jesús y en sus relaciones con los demás.',
+    image: '/assets/images/locations/get-involved/students.webp',
+    pathname: '/ministries/students',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '3',
   },
   {
-    name: "Jóvenes Adultos",
+    name: 'Jóvenes Adultos',
     summary:
-      "Para estudiantes universitarios y jóvenes adultos - El lugar perfecto para quienes desean crecer en su relación con Jesús y conectarse con otros jóvenes adultos en todo el sur de Florida.",
-    image: "/assets/images/locations/get-involved/ya.webp",
-    pathname: "/ministries/young-adults",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "2",
+      'Para estudiantes universitarios y jóvenes adultos - El lugar perfecto para quienes desean crecer en su relación con Jesús y conectarse con otros jóvenes adultos en todo el sur de Florida.',
+    image: '/assets/images/locations/get-involved/ya.webp',
+    pathname: '/ministries/young-adults',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '2',
   },
   {
-    name: "Grupos y Clases",
+    name: 'Grupos y Clases',
     summary:
-      "Para todos - Todo lo que necesitas para conectarte y crecer en tu fe.",
-    image: "/assets/images/groups-bg.webp",
-    pathname: "/group-finder",
-    contentType: "REDIRECT_CARD",
-    contentChannelId: "1234",
-    id: "4",
+      'Para todos - Todo lo que necesitas para conectarte y crecer en tu fe.',
+    image: '/assets/images/groups-bg.webp',
+    pathname: '/group-finder',
+    contentType: 'REDIRECT_CARD',
+    contentChannelId: '1234',
+    id: '4',
   },
 ];
 
@@ -136,71 +136,71 @@ type CampusAmenity = {
 
 export const englishCampusAmenities: CampusAmenity[] = [
   {
-    title: "Free Parking",
-    icon: "car",
+    title: 'Free Parking',
+    icon: 'car',
   },
   {
-    title: "Clean Restrooms",
-    icon: "maleFemale",
+    title: 'Clean Restrooms',
+    icon: 'maleFemale',
   },
   {
-    title: "Accessible Entrances & Seating",
-    icon: "handicap",
+    title: 'Accessible Entrances & Seating',
+    icon: 'handicap',
   },
   {
-    title: "Helpful Greeters & Ushers",
-    icon: "happy",
+    title: 'Helpful Greeters & Ushers',
+    icon: 'happy',
   },
   {
-    title: "Kids Ministry",
-    icon: "face",
+    title: 'Kids Ministry',
+    icon: 'face',
   },
   {
-    title: "Family/Nursing Room",
-    icon: "universalAccess",
+    title: 'Family/Nursing Room',
+    icon: 'universalAccess',
   },
   {
-    title: "Free Wifi",
-    icon: "wifi",
+    title: 'Free Wifi',
+    icon: 'wifi',
   },
   {
-    title: "Security & First Aid",
-    icon: "shield",
+    title: 'Security & First Aid',
+    icon: 'shield',
   },
 ];
 
 export const spanishCampusAmenities: CampusAmenity[] = [
   {
-    title: "Estacionamiento Gratuito",
-    icon: "car",
+    title: 'Estacionamiento Gratuito',
+    icon: 'car',
   },
   {
-    title: "Baños Limpios",
-    icon: "maleFemale",
+    title: 'Baños Limpios',
+    icon: 'maleFemale',
   },
   {
-    title: "Entradas y Asientos Accesibles",
-    icon: "handicap",
+    title: 'Entradas y Asientos Accesibles',
+    icon: 'handicap',
   },
   {
-    title: "Anfitriones y Acomodadores Serviciales",
-    icon: "happy",
+    title: 'Anfitriones y Acomodadores Serviciales',
+    icon: 'happy',
   },
   {
-    title: "Ministerio de Niños",
-    icon: "face",
+    title: 'Ministerio de Niños',
+    icon: 'face',
   },
   {
-    title: "Sala Familiar / Lactancia",
-    icon: "universalAccess",
+    title: 'Sala Familiar / Lactancia',
+    icon: 'universalAccess',
   },
   {
-    title: "Wifi Gratis",
-    icon: "wifi",
+    title: 'Wifi Gratis',
+    icon: 'wifi',
   },
   {
-    title: "Seguridad y Primeros Auxilios",
-    icon: "shield",
+    title: 'Seguridad y Primeros Auxilios',
+    icon: 'shield',
   },
 ];
 
@@ -212,110 +212,110 @@ type TabData = {
 
 export const englishTabData: TabData[] = [
   {
-    label: "Sunday Details",
-    mobileLabel: "Sunday",
-    value: "sunday-details",
+    label: 'Sunday Details',
+    mobileLabel: 'Sunday',
+    value: 'sunday-details',
   },
   {
-    label: "About Us",
-    mobileLabel: "About",
-    value: "about-us",
+    label: 'About Us',
+    mobileLabel: 'About',
+    value: 'about-us',
   },
   {
-    label: "For Families",
-    mobileLabel: "Families",
-    value: "for-families",
+    label: 'For Families',
+    mobileLabel: 'Families',
+    value: 'for-families',
   },
   {
-    label: "Upcoming Events",
-    mobileLabel: "Events",
-    value: "upcoming-events",
+    label: 'Upcoming Events',
+    mobileLabel: 'Events',
+    value: 'upcoming-events',
   },
 ];
 
 export const spanishTabData: TabData[] = [
   {
-    label: "Detalles del Domingo",
-    mobileLabel: "Domingos",
-    value: "sunday-details",
+    label: 'Detalles del Domingo',
+    mobileLabel: 'Domingos',
+    value: 'sunday-details',
   },
   {
-    label: "Quienes Somos",
-    mobileLabel: "Conócenos",
-    value: "about-us",
+    label: 'Quienes Somos',
+    mobileLabel: 'Conócenos',
+    value: 'about-us',
   },
   {
-    label: "Para las Familias",
-    mobileLabel: "Familias",
-    value: "for-families",
+    label: 'Para las Familias',
+    mobileLabel: 'Familias',
+    value: 'for-families',
   },
   {
-    label: "Próximos Eventos",
-    mobileLabel: "Eventos",
-    value: "upcoming-events",
+    label: 'Próximos Eventos',
+    mobileLabel: 'Eventos',
+    value: 'upcoming-events',
   },
 ];
 
 export const onlineTabsData: TabData[] = [
   {
-    label: "Sunday Details",
-    mobileLabel: "Sunday",
-    value: "sunday-details",
+    label: 'Sunday Details',
+    mobileLabel: 'Sunday',
+    value: 'sunday-details',
   },
   {
-    label: "About Us",
-    mobileLabel: "About",
-    value: "about-us",
+    label: 'About Us',
+    mobileLabel: 'About',
+    value: 'about-us',
   },
   {
-    label: "Upcoming Events",
-    mobileLabel: "Events",
-    value: "upcoming-events",
+    label: 'Upcoming Events',
+    mobileLabel: 'Events',
+    value: 'upcoming-events',
   },
 ];
 
 export const expectSpanishItems = [
   {
-    title: "Ven Como Eres (en serio)",
+    title: 'Ven Como Eres (en serio)',
     description:
-      "La ropa cómoda es lo normal.  No necesitas arreglarte de más para visitar un servicio.",
+      'La ropa cómoda es lo normal.  No necesitas arreglarte de más para visitar un servicio.',
   },
   {
-    title: "Mensajes Relevantes Que Hablan a la Vida Real (aprox. 1 hora)",
+    title: 'Mensajes Relevantes Que Hablan a la Vida Real (aprox. 1 hora)',
     description:
-      "Mensajes bíblicos, dinámicos e inspiradores que se relacionan con los desafíos y las preguntas del día a día.",
+      'Mensajes bíblicos, dinámicos e inspiradores que se relacionan con los desafíos y las preguntas del día a día.',
   },
   {
-    title: "Rostros Amigables y Personas Dispuestas a Ayudar",
+    title: 'Rostros Amigables y Personas Dispuestas a Ayudar',
     description:
-      "Estamos aquí para ayudarte a sentirte cómodo desde el momento en que llegas.",
+      'Estamos aquí para ayudarte a sentirte cómodo desde el momento en que llegas.',
   },
   {
-    title: "Los Niños También Se Divierten!",
+    title: 'Los Niños También Se Divierten!',
     description:
-      "Programas seguros y atractivos están disponibles para niños desde recién nacidos hasta 5.º grado(los rangos de edad se ajustan según cada campus) durante el servicio.",
+      'Programas seguros y atractivos están disponibles para niños desde recién nacidos hasta 5.º grado(los rangos de edad se ajustan según cada campus) durante el servicio.',
   },
 ];
 
 export const expectEnglishItems = [
   {
-    title: "Come As You Are, Seriously!",
+    title: 'Come As You Are, Seriously!',
     description:
-      "Comfortable clothes are the norm—no need to dress up to check out a service.",
+      'Comfortable clothes are the norm—no need to dress up to check out a service.',
   },
   {
-    title: "Messages That Speak to Real Life (in about 1 hour)",
+    title: 'Messages That Speak to Real Life (in about 1 hour)',
     description:
-      "Engaging and inspiring, Bible-based messages that connect with everyday challenges and questions.",
+      'Engaging and inspiring, Bible-based messages that connect with everyday challenges and questions.',
   },
   {
-    title: "Friendly Faces and Helpful People",
+    title: 'Friendly Faces and Helpful People',
     description:
-      "We’re here to help you feel comfortable from the moment you arrive.",
+      'We’re here to help you feel comfortable from the moment you arrive.',
   },
   {
-    title: "Kids Have Fun Too! ",
+    title: 'Kids Have Fun Too! ',
     description:
-      "Safe and engaging programs are available for newborns through 5th grade (adjust the age ranges based on each campus) during the service.",
+      'Safe and engaging programs are available for newborns through 5th grade (adjust the age ranges based on each campus) during the service.',
   },
 ];

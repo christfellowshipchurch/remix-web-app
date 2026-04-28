@@ -1,4 +1,4 @@
-import { icons } from "~/lib/icons";
+import { icons } from '~/lib/icons';
 
 /** Defined values for the event `groupType` attribute (Rock defined value list). */
 export const EVENT_REGISTRATION_GROUP_TYPES = [

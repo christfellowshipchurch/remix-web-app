@@ -16,19 +16,19 @@ export interface GroupType {
   campus: string; //pick a campus
   classType?: string;
   coverImage: ImageSource;
-  meetingLocationType: "Home" | "Church" | "Public Place";
+  meetingLocationType: 'Home' | 'Church' | 'Public Place';
   meetingLocation: string;
   meetingDays:
-    | "Monday"
-    | "Tuesday"
-    | "Wednesday"
-    | "Thursday"
-    | "Friday"
-    | "Saturday"
-    | "Sunday";
+    | 'Monday'
+    | 'Tuesday'
+    | 'Wednesday'
+    | 'Thursday'
+    | 'Friday'
+    | 'Saturday'
+    | 'Sunday';
   meetingTime: string;
-  meetingType: "In Person" | "Online";
-  meetingFrequency: "Weekly" | "Bi-Weekly" | "Monthly";
+  meetingType: 'In Person' | 'Online';
+  meetingFrequency: 'Weekly' | 'Bi-Weekly' | 'Monthly';
   adultOnly: boolean;
   childCareDescription?: string; // 100 characters max
   leaders: Array<{
@@ -37,30 +37,30 @@ export interface GroupType {
     lastName: string;
     photo: ImageSource;
   }>;
-  groupFor: "Men" | "Women" | "Anyone" | "Couples"; // required to select one
+  groupFor: 'Men' | 'Women' | 'Anyone' | 'Couples'; // required to select one
   peopleWhoAre?:
-    | "Single"
-    | "Married"
-    | "Divorced"
-    | "Engaged"
-    | "New Believer"
-    | "Parent"
-    | "Professional"; // can select up to 2
+    | 'Single'
+    | 'Married'
+    | 'Divorced'
+    | 'Engaged'
+    | 'New Believer'
+    | 'Parent'
+    | 'Professional'; // can select up to 2
   minAge: number;
   maxAge: number;
-  language: "English" | "Spanish";
+  language: 'English' | 'Spanish';
   topics: (
-    | "Bible Study"
-    | "Prayer"
-    | "Message Discussion"
-    | "Marriage"
-    | "Parenting"
-    | "Finances"
-    | "Friendship"
-    | "Activty/Hobby"
-    | "Book Club"
-    | "Sports"
-    | "Podcast"
-    | "Watch Party"
+    | 'Bible Study'
+    | 'Prayer'
+    | 'Message Discussion'
+    | 'Marriage'
+    | 'Parenting'
+    | 'Finances'
+    | 'Friendship'
+    | 'Activty/Hobby'
+    | 'Book Club'
+    | 'Sports'
+    | 'Podcast'
+    | 'Watch Party'
   )[]; // must select one or more, can select up to 3
 }

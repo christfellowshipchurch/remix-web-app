@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import Icon from "~/primitives/icon";
-import { SubMenuItem } from "./types";
-import { useRef, useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+import Icon from '~/primitives/icon';
+import { SubMenuItem } from './types';
+import { useRef, useState, useEffect } from 'react';
 
 interface AccordionSectionProps {
   id: string;
@@ -10,7 +10,7 @@ interface AccordionSectionProps {
   items: SubMenuItem[];
   isOpen: boolean;
   onToggle: (id: string) => void;
-  layout?: "list" | "grid";
+  layout?: 'list' | 'grid';
   showViewMore?: boolean;
   viewMoreLink?: string;
   closeMenu: () => void;
@@ -23,9 +23,9 @@ export function AccordionSection({
   items,
   isOpen,
   onToggle,
-  layout = "list",
+  layout = 'list',
   showViewMore = false,
-  viewMoreLink = "",
+  viewMoreLink = '',
   closeMenu,
 }: AccordionSectionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -44,49 +44,49 @@ export function AccordionSection({
     <>
       <button
         onClick={() => onToggle(id)}
-        className="w-full flex items-center justify-between py-4 px-8 mb-0 border-t border-gray-200"
+        className='w-full flex items-center justify-between py-4 px-8 mb-0 border-t border-gray-200'
       >
-        <div className="flex flex-col items-start gap-2">
-          <h3 className="text-lg font-bold text-navy">{title}</h3>
-          <p className="text-gray-600 text-sm">{description}</p>
+        <div className='flex flex-col items-start gap-2'>
+          <h3 className='text-lg font-bold text-navy'>{title}</h3>
+          <p className='text-gray-600 text-sm'>{description}</p>
         </div>
         <Icon
-          name="chevronDown"
+          name='chevronDown'
           className={`size-6 text-text-primary transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
+            isOpen ? 'rotate-180' : ''
           }`}
         />
       </button>
 
       <div
-        className="overflow-hidden transition-[height] duration-300 ease-in-out"
+        className='overflow-hidden transition-[height] duration-300 ease-in-out'
         style={{ height: height !== undefined ? `${height}px` : undefined }}
       >
         <div ref={contentRef}>
-          <div className="py-4 px-8">
-            {layout === "list" ? (
-              <div className="space-y-6">
+          <div className='py-4 px-8'>
+            {layout === 'list' ? (
+              <div className='space-y-6'>
                 {items.map((item) => (
                   <Link
                     key={item.id}
                     to={item.to}
                     onClick={closeMenu}
-                    className="flex justify-start items-center gap-6"
+                    className='flex justify-start items-center gap-6'
                   >
-                    <div className="mt-1">
+                    <div className='mt-1'>
                       {item.icon && (
                         <Icon
                           name={item.icon}
-                          className="size-6 text-text-primary mb-1"
+                          className='size-6 text-text-primary mb-1'
                         />
                       )}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-text-primary">
+                      <h3 className='font-semibold text-text-primary'>
                         {item.title}
                       </h3>
                       {item.description && (
-                        <p className="text-text-secondary text-sm">
+                        <p className='text-text-secondary text-sm'>
                           {item.description}
                         </p>
                       )}
@@ -95,19 +95,19 @@ export function AccordionSection({
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-6">
+              <div className='grid grid-cols-2 gap-6'>
                 {items.map((item) => (
                   <Link
                     key={item.id}
                     to={item.to}
                     onClick={closeMenu}
-                    className="flex flex-col"
+                    className='flex flex-col'
                   >
-                    <h3 className="font-semibold text-text-primary">
+                    <h3 className='font-semibold text-text-primary'>
                       {item.title}
                     </h3>
                     {item.description && (
-                      <p className="text-text-secondary text-sm">
+                      <p className='text-text-secondary text-sm'>
                         {item.description}
                       </p>
                     )}
@@ -118,12 +118,12 @@ export function AccordionSection({
 
             {showViewMore && (
               <Link
-                to={viewMoreLink || ""}
+                to={viewMoreLink || ''}
                 onClick={closeMenu}
-                className="mt-6 flex items-center text-navy font-semibold"
+                className='mt-6 flex items-center text-navy font-semibold'
               >
                 View More
-                <Icon name="arrowRight" className="ml-2 size-5" />
+                <Icon name='arrowRight' className='ml-2 size-5' />
               </Link>
             )}
           </div>

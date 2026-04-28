@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from "clsx";
-import camelCase from "lodash/camelCase";
-import mapKeys from "lodash/mapKeys";
-import mapValues from "lodash/mapValues";
-import { twMerge } from "tailwind-merge";
-import { ShareMessages } from "./types/messaging";
+import { clsx, type ClassValue } from 'clsx';
+import camelCase from 'lodash/camelCase';
+import mapKeys from 'lodash/mapKeys';
+import mapValues from 'lodash/mapValues';
+import { twMerge } from 'tailwind-merge';
+import { ShareMessages } from './types/messaging';
 import {
   addMinutes,
   setMinutes,
@@ -12,7 +12,7 @@ import {
   parseISO,
   format,
   nextSunday,
-} from "date-fns";
+} from 'date-fns';
 
 let _uniqueIdCounter = 0;
 const uniqueId = () => String(++_uniqueIdCounter);
@@ -24,7 +24,7 @@ export function cn(...inputs: ClassValue[]) {
 /** Server Utils */
 export function normalize(data: object): object {
   if (Array.isArray(data)) return data.map((n) => normalize(n));
-  if (typeof data !== "object" || data === null) return data;
+  if (typeof data !== 'object' || data === null) return data;
   const normalizedValues = mapValues(data, (n) => normalize(n));
   return mapKeys(normalizedValues, (value, key: string) => camelCase(key));
 }
@@ -38,16 +38,16 @@ export const fieldsAsObject = (fields: FieldObject[]) =>
   fields.reduce(
     (accum, { field, value }) => ({
       ...accum,
-      [field]: typeof value === "string" ? value.trim() : value,
+      [field]: typeof value === 'string' ? value.trim() : value,
     }),
     {} as Record<string, unknown>,
   );
 
 export const enforceProtocol = (uri: string) =>
-  uri?.startsWith("//") ? `https:${uri}` : uri;
+  uri?.startsWith('//') ? `https:${uri}` : uri;
 
 export const createImageUrlFromGuid = (uri: string) =>
-  uri?.split("-")?.length === 5
+  uri?.split('-')?.length === 5
     ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
     : enforceProtocol(uri);
 
@@ -59,16 +59,16 @@ export const getIdentifierType = (identifier: string | number) => {
 
   if (stringId?.match(guidRegex)) {
     return {
-      type: "guid",
+      type: 'guid',
       value: identifier,
       query: `Guid eq (guid'${identifier}')`,
     };
   }
   if (!stringId?.match(intRegex)) {
-    return { type: "int", value: identifier, query: `Id eq ${identifier}` };
+    return { type: 'int', value: identifier, query: `Id eq ${identifier}` };
   }
 
-  return { type: "custom", value: identifier, query: null };
+  return { type: 'custom', value: identifier, query: null };
 };
 
 export const shareMessaging = ({
@@ -105,7 +105,7 @@ export const icsLink = (event: EventDetails): string => {
   const { title, description, address, url } = event;
   let { startTime, endTime } = event;
 
-  if (typeof startTime === "string" || typeof endTime === "string") {
+  if (typeof startTime === 'string' || typeof endTime === 'string') {
     startTime = parseISO(startTime as string);
     endTime = parseISO(endTime as string);
   }
@@ -116,25 +116,25 @@ export const icsLink = (event: EventDetails): string => {
   };
 
   const icsString = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//www.cf.church//Christ Fellowship Church",
-    "CALSCALE:GREGORIAN",
-    "BEGIN:VEVENT",
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//www.cf.church//Christ Fellowship Church',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
     `DTSTAMP:${format(new Date(), "yyyyMMdd'T'HHmmss'Z'")}`,
     `UID:${uniqueId()}-@christfellowship.church`,
     `DTSTART;TZID=America/New_York:${formatDateInTimezone(startTime)}`,
     `DTEND;TZID=America/New_York:${formatDateInTimezone(endTime)}`,
     `SUMMARY:${title}`,
-    `URL:${url ?? document?.URL ?? "https://www.christfellowship.church"}`,
+    `URL:${url ?? document?.URL ?? 'https://www.christfellowship.church'}`,
     `DESCRIPTION:${description}`,
     `LOCATION:${address}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\n");
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\n');
 
   // We use blob method and removed `charset=utf8` in order to be compatible with Safari IOS
-  const blob = new Blob([icsString], { type: "text/calendar" });
+  const blob = new Blob([icsString], { type: 'text/calendar' });
   const calendarLink = window.URL.createObjectURL(blob);
 
   return calendarLink;
@@ -144,11 +144,11 @@ function parseTimeAsInt(_time: string) {
   const time = _time?.toString().trim().toUpperCase();
   const a = time.match(/(AM)|(PM)/g)?.join();
   const [hour, minute] = time
-    .replace(/(AM)|(PM)/g, "")
+    .replace(/(AM)|(PM)/g, '')
     .trim()
-    .split(":")
+    .split(':')
     .map((n) => parseInt(n));
-  const hour24 = a === "PM" ? hour + 12 : hour;
+  const hour24 = a === 'PM' ? hour + 12 : hour;
 
   return [hour24, minute];
 }
@@ -181,27 +181,27 @@ export function icsLinkEvents({
       label: `${time}`,
       event: {
         title:
-          campusName !== "Trinity"
+          campusName !== 'Trinity'
             ? `Sunday service at Christ Fellowship Church in ${campusName}`
-            : "Sunday service at Trinity Church by Christ Fellowship",
+            : 'Sunday service at Trinity Church by Christ Fellowship',
         description: `Join us this Sunday!`,
         address,
         startTime: sunday,
         endTime: addMinutes(sunday, 90),
-        url: url ? url : "https://www.christfellowship.church",
+        url: url ? url : 'https://www.christfellowship.church',
       },
     };
   });
 }
 
 export const googleLink =
-  "https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share";
+  'https://play.google.com/store/apps/details?id=com.subsplash.thechurchapp.s_BSVMPR&pcampaignid=web_share';
 export const appleLink =
-  "https://apps.apple.com/us/app/christ-fellowship-app/id785979426";
+  'https://apps.apple.com/us/app/christ-fellowship-app/id785979426';
 
 // Utility function to detect Apple devices
 export const isAppleDevice = (): boolean => {
-  if (typeof window === "undefined") return false;
+  if (typeof window === 'undefined') return false;
 
   const userAgent = window.navigator.userAgent.toLowerCase();
   return /iphone|ipad|ipod|macintosh/.test(userAgent);
@@ -240,17 +240,17 @@ export const latLonDistance = (
  * @returns The first paragraph of the HTML string
  */
 export const getFirstParagraph = (html: string): string => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     // Server-side: Use a simple regex to extract text between <p> tags
     const match = html.match(/<p[^>]*>(.*?)<\/p>/i);
-    return match ? match[1].replace(/<[^>]+>/g, "") : "";
+    return match ? match[1].replace(/<[^>]+>/g, '') : '';
   }
 
   // Client-side: Use DOMParser
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-  const firstParagraph = doc.querySelector("p");
-  return firstParagraph?.textContent || "";
+  const doc = parser.parseFromString(html, 'text/html');
+  const firstParagraph = doc.querySelector('p');
+  return firstParagraph?.textContent || '';
 };
 
 export const parseRockKeyValueList = (
@@ -259,10 +259,10 @@ export const parseRockKeyValueList = (
   key: string;
   value: string;
 }[] => {
-  if (!input || input === "") return [];
+  if (!input || input === '') return [];
 
-  return input.split("|").map((item) => {
-    const [key, value] = item.split("^");
+  return input.split('|').map((item) => {
+    const [key, value] = item.split('^');
     return {
       key: decodeURIComponent(key.trim()), // decode the key to handle special characters like %20 for CTAs
       value: value.trim(),
@@ -274,7 +274,7 @@ export const parseRockValueList = (input: string): string[] => {
   if (!input?.trim()) return [];
   // Remove a trailing pipe and filter out any empty results
   return input
-    .split("|")
+    .split('|')
     .map((item) => item.trim())
     .filter((item) => item.length > 0);
 };
@@ -285,8 +285,8 @@ export type dayTimes = {
 };
 
 export const formattedServiceTimes = (serviceTimes: string) =>
-  serviceTimes.split("|").reduce((acc: dayTimes[], time: string) => {
-    const [day, hour] = time.split("^");
+  serviceTimes.split('|').reduce((acc: dayTimes[], time: string) => {
+    const [day, hour] = time.split('^');
     const existingDay = acc.find((item) => item.day === day.trim());
 
     if (existingDay) {
@@ -307,7 +307,7 @@ export const getImageUrl = (id: string) => {
 };
 
 export const calculateReadTime = (content: string): number => {
-  const words = content?.split(" ")?.length ?? 0;
+  const words = content?.split(' ')?.length ?? 0;
   const readTime = Math.round(words / 200);
   return readTime === 0 ? 1 : readTime;
 };

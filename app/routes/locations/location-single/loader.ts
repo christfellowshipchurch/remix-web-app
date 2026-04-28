@@ -1,8 +1,8 @@
-import { LoaderFunction } from "react-router-dom";
-import { mapPageBuilderChildItems } from "~/routes/page-builder/loader";
-import { PageBuilderSection } from "~/routes/page-builder/types";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { LoaderFunction } from 'react-router-dom';
+import { mapPageBuilderChildItems } from '~/routes/page-builder/loader';
+import { PageBuilderSection } from '~/routes/page-builder/types';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { createImageUrlFromGuid } from '~/lib/utils';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -10,50 +10,50 @@ export type LoaderReturnType = {
   campusUrl: string;
   campusName: string;
   campusImage: string;
-  upcomingEvents: PageBuilderSection & { type: "EVENT_COLLECTION" };
+  upcomingEvents: PageBuilderSection & { type: 'EVENT_COLLECTION' };
 };
 
 // TODO: We might want to find a better way to handle this and remove this, but for now we will keep it
 const allCampuses = [
-  "palm-beach-gardens",
-  "iglesia-palm-beach-gardens",
-  "iglesia-royal-palm-beach",
-  "royal-palm-beach",
-  "cf-everywhere",
-  "vero-beach",
-  "boynton-beach",
-  "jupiter",
-  "port-st-lucie",
-  "stuart",
-  "okeechobee",
-  "belle-glade",
-  "boca-raton",
-  "westlake",
-  "trinity",
+  'palm-beach-gardens',
+  'iglesia-palm-beach-gardens',
+  'iglesia-royal-palm-beach',
+  'royal-palm-beach',
+  'cf-everywhere',
+  'vero-beach',
+  'boynton-beach',
+  'jupiter',
+  'port-st-lucie',
+  'stuart',
+  'okeechobee',
+  'belle-glade',
+  'boca-raton',
+  'westlake',
+  'trinity',
 ];
 
 export const loader: LoaderFunction = async ({ params }) => {
   const campusUrl = params.location;
 
   if (!campusUrl) {
-    throw new Response("Campus not found", {
+    throw new Response('Campus not found', {
       status: 404,
     });
   }
 
   // Check if the current campus URL is in the list of valid campuses
   if (!allCampuses.includes(campusUrl)) {
-    throw new Response("Campus not found", {
+    throw new Response('Campus not found', {
       status: 404,
     });
   }
 
-  const campusName = decodeURIComponent(campusUrl || "")
-    .replace(/-/g, " ")
+  const campusName = decodeURIComponent(campusUrl || '')
+    .replace(/-/g, ' ')
     .replace(/\b\w/g, (l) => l.toUpperCase());
 
   if (!campusUrl) {
-    throw new Response("Campus not found", {
+    throw new Response('Campus not found', {
       status: 404,
     });
   }
@@ -62,17 +62,17 @@ export const loader: LoaderFunction = async ({ params }) => {
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
   if (!appId || !searchApiKey) {
-    throw new Response("Keys not found", {
+    throw new Response('Keys not found', {
       status: 404,
     });
   }
 
   const campus = await fetchRockData({
-    endpoint: "Campuses",
+    endpoint: 'Campuses',
     queryParams: {
       $filter: `Url eq '${campusUrl}'`,
-      loadAttributes: "simple",
-      $top: "1",
+      loadAttributes: 'simple',
+      $top: '1',
     },
   });
 
@@ -80,21 +80,21 @@ export const loader: LoaderFunction = async ({ params }) => {
     campus?.attributeValues?.upcomingEventsCollection?.value,
   ).trim();
 
-  let upcomingEvents: PageBuilderSection & { type: "EVENT_COLLECTION" } = {
-    id: "",
-    type: "EVENT_COLLECTION",
-    name: "",
-    content: "",
+  let upcomingEvents: PageBuilderSection & { type: 'EVENT_COLLECTION' } = {
+    id: '',
+    type: 'EVENT_COLLECTION',
+    name: '',
+    content: '',
     collection: [],
   };
 
   if (upcomingEventsCollectionGuid) {
     try {
       const upcomingEventsCollection = await fetchRockData({
-        endpoint: "ContentChannelItems",
+        endpoint: 'ContentChannelItems',
         queryParams: {
           $filter: `Guid eq guid'${upcomingEventsCollectionGuid}'`,
-          loadAttributes: "simple",
+          loadAttributes: 'simple',
         },
       });
 
@@ -108,19 +108,19 @@ export const loader: LoaderFunction = async ({ params }) => {
         ]);
 
         const mappedSection = mappedCollections.find(
-          (section) => section.type === "EVENT_COLLECTION",
+          (section) => section.type === 'EVENT_COLLECTION',
         );
         if (mappedSection) {
-          upcomingEvents = mappedSection as LoaderReturnType["upcomingEvents"];
+          upcomingEvents = mappedSection as LoaderReturnType['upcomingEvents'];
         }
       }
     } catch (error) {
-      console.warn("Failed to load upcoming events from Rock:", error);
+      console.warn('Failed to load upcoming events from Rock:', error);
     }
   }
 
   const campusImage = createImageUrlFromGuid(
-    campus?.attributeValues?.campusImage?.value || "",
+    campus?.attributeValues?.campusImage?.value || '',
   );
 
   const pageData: LoaderReturnType = {

@@ -1,4 +1,4 @@
-import { fetchRockData } from "./fetch-rock-data";
+import { fetchRockData } from './fetch-rock-data';
 
 type FetchWistiaProps = {
   id: string;
@@ -10,9 +10,9 @@ export async function fetchWistiaData({
   size = 960,
 }: FetchWistiaProps): Promise<string> {
   const options = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
       authorization: `Bearer ${process.env.WISTIA_API_KEY}`,
     },
   };
@@ -20,26 +20,26 @@ export async function fetchWistiaData({
   try {
     const response = await fetch(
       `https://api.wistia.com/v1/medias/${id}.json`,
-      options
+      options,
     );
     const data = await response.json();
     const { assets } = data;
 
     const videoUrl = assets
       .find((asset: { width: number }) => asset.width === size)
-      .url.replace("http", "https")
-      .replace("bin", "mp4");
+      .url.replace('http', 'https')
+      .replace('bin', 'mp4');
 
     return videoUrl;
   } catch (err) {
     console.error(err);
-    throw new Error("Failed to fetch Wistia data", { cause: err });
+    throw new Error('Failed to fetch Wistia data', { cause: err });
   }
 }
 
 export async function fetchWistiaDataFromRock(guid: string) {
   const mediaElement = await fetchRockData({
-    endpoint: "MediaElements",
+    endpoint: 'MediaElements',
     queryParams: {
       $filter: `Guid eq guid'${guid}'`,
     },
@@ -68,9 +68,9 @@ export async function fetchWistiaDataFromRock(guid: string) {
  * @returns true if the video exists and is accessible (HTTP 200), false otherwise
  */
 export async function isValidWistiaId(
-  wistiaId: string | null | undefined
+  wistiaId: string | null | undefined,
 ): Promise<boolean> {
-  if (!wistiaId || typeof wistiaId !== "string") {
+  if (!wistiaId || typeof wistiaId !== 'string') {
     return false;
   }
 
@@ -89,7 +89,7 @@ export async function isValidWistiaId(
     // Use Wistia's oEmbed endpoint to validate the video
     const oEmbedUrl = `https://fast.wistia.com/oembed?url=https://fast.wistia.com/embed/medias/${trimmedId}`;
     const response = await fetch(oEmbedUrl, {
-      method: "GET",
+      method: 'GET',
     });
 
     // If the request is successful (HTTP 200), the video exists and is accessible
@@ -113,12 +113,12 @@ export async function isValidWistiaId(
     const cause = error instanceof Error ? error.cause : null;
     const isTls =
       cause &&
-      typeof cause === "object" &&
-      "code" in cause &&
-      cause.code === "UNABLE_TO_GET_ISSUER_CERT_LOCALLY";
+      typeof cause === 'object' &&
+      'code' in cause &&
+      cause.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY';
     if (isTls) {
       console.warn(
-        "Wistia validation failed due to TLS certificate verification. If you're behind a corporate proxy/VPN, install the CA or use NODE_TLS_REJECT_UNAUTHORIZED=0 for local dev only."
+        "Wistia validation failed due to TLS certificate verification. If you're behind a corporate proxy/VPN, install the CA or use NODE_TLS_REJECT_UNAUTHORIZED=0 for local dev only.",
       );
     }
     return false;

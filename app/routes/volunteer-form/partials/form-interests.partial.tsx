@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { INTERESTS, STRENGTHS, VolunteerFormInterests } from "../types";
-import { Button } from "~/primitives/button/button.primitive";
-import Slider from "~/primitives/inputs/slider/slider.primitive";
-import { Checkbox } from "~/primitives/inputs/checkbox/checkbox.primitive";
-import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import SecureTextField from "~/primitives/inputs/text-field/secure-text-field.primitive";
-import { Form, useActionData } from "react-router-dom";
+import React, { useState } from 'react';
+import { INTERESTS, STRENGTHS, VolunteerFormInterests } from '../types';
+import { Button } from '~/primitives/button/button.primitive';
+import Slider from '~/primitives/inputs/slider/slider.primitive';
+import { Checkbox } from '~/primitives/inputs/checkbox/checkbox.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import SecureTextField from '~/primitives/inputs/text-field/secure-text-field.primitive';
+import { Form, useActionData } from 'react-router-dom';
 
 interface Props {
   data: VolunteerFormInterests;
@@ -28,7 +28,7 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
       ...d,
       personality: Number(d.personality),
       taskOriented: Number(d.taskOriented),
-      backgroundCheck: String(d.backgroundCheck) === "true",
+      backgroundCheck: String(d.backgroundCheck) === 'true',
     };
   });
 
@@ -36,14 +36,14 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
 
   const handleChange = (
     field: keyof VolunteerFormInterests,
-    value: string | boolean | number
+    value: string | boolean | number,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleToggle = <K extends "strengths" | "interests">(
+  const handleToggle = <K extends 'strengths' | 'interests'>(
     field: K,
-    value: VolunteerFormInterests[K][number]
+    value: VolunteerFormInterests[K][number],
   ) => {
     const arr = (formData[field] ?? []) as VolunteerFormInterests[K];
     let newArr;
@@ -57,106 +57,106 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
 
   return (
     <Form
-      method="post"
-      className="flex flex-col gap-10 p-12 pt-10 mb-20 w-full max-w-[750px] mx-auto"
+      method='post'
+      className='flex flex-col gap-10 p-12 pt-10 mb-20 w-full max-w-[750px] mx-auto'
     >
       {/* Hidden Fields */}
-      <input type="hidden" name="personality" value={formData.personality} />
-      <input type="hidden" name="taskOriented" value={formData.taskOriented} />
+      <input type='hidden' name='personality' value={formData.personality} />
+      <input type='hidden' name='taskOriented' value={formData.taskOriented} />
       {formData.strengths.map((s) => (
-        <input type="hidden" name="strengths" value={s} key={s} />
+        <input type='hidden' name='strengths' value={s} key={s} />
       ))}
       {formData.interests.map((i) => (
-        <input type="hidden" name="interests" value={i} key={i} />
+        <input type='hidden' name='interests' value={i} key={i} />
       ))}
       <input
-        type="hidden"
-        name="backgroundCheck"
+        type='hidden'
+        name='backgroundCheck'
         value={String(formData.backgroundCheck)}
       />
 
-      <h2 className="heading-h4 mb-6">
+      <h2 className='heading-h4 mb-6'>
         Let&apos;s explore your talents and passions to find the right fit.
       </h2>
-      <div className="flex flex-col gap-8">
-        <span className="text-text-primary font-bold">
-          How would you describe your personality?{" "}
+      <div className='flex flex-col gap-8'>
+        <span className='text-text-primary font-bold'>
+          How would you describe your personality?{' '}
         </span>
         <Slider
-          leftLabel="Outgoing"
-          rightLabel="Reserved"
+          leftLabel='Outgoing'
+          rightLabel='Reserved'
           value={formData.personality ?? 50}
           min={0}
           max={100}
-          onValueChange={(value: number) => handleChange("personality", value)}
+          onValueChange={(value: number) => handleChange('personality', value)}
         />
       </div>
-      <div className="flex flex-col gap-8">
-        <span className="text-text-primary font-bold">
-          How would you describe your personality?{" "}
+      <div className='flex flex-col gap-8'>
+        <span className='text-text-primary font-bold'>
+          How would you describe your personality?{' '}
         </span>
         <Slider
-          leftLabel="People-Oriented"
-          rightLabel="Task-Oriented"
+          leftLabel='People-Oriented'
+          rightLabel='Task-Oriented'
           value={formData.taskOriented ?? 50}
           min={0}
           max={100}
-          onValueChange={(value: number) => handleChange("taskOriented", value)}
+          onValueChange={(value: number) => handleChange('taskOriented', value)}
         />
       </div>
-      <div className="flex flex-col gap-3">
-        <span className="text-text-primary font-bold">
-          Are you comfortable:{" "}
+      <div className='flex flex-col gap-3'>
+        <span className='text-text-primary font-bold'>
+          Are you comfortable:{' '}
         </span>
         {STRENGTHS.map((strength) => (
           <Checkbox
             key={strength}
             label={strength}
             checked={formData.strengths?.includes(strength) ?? false}
-            onChange={() => handleToggle("strengths", strength)}
+            onChange={() => handleToggle('strengths', strength)}
           />
         ))}
       </div>
-      <div className="flex flex-col gap-3">
-        <label className="font-bold">What are you passionate about?</label>
+      <div className='flex flex-col gap-3'>
+        <label className='font-bold'>What are you passionate about?</label>
         <textarea
-          name="comments"
+          name='comments'
           className={defaultTextInputStyles}
           value={formData.comments}
           rows={5}
-          onChange={(e) => handleChange("comments", e.target.value)}
+          onChange={(e) => handleChange('comments', e.target.value)}
         />
       </div>
-      <div className="flex flex-col gap-3">
-        <label className="font-bold">
-          <span className="text-ocean">*</span> Which areas are you most
-          interested in?{" "}
-          <span className="text-text-secondary font-normal italic">
+      <div className='flex flex-col gap-3'>
+        <label className='font-bold'>
+          <span className='text-ocean'>*</span> Which areas are you most
+          interested in?{' '}
+          <span className='text-text-secondary font-normal italic'>
             (required)
-          </span>{" "}
+          </span>{' '}
         </label>
         {errors.interests && (
-          <p className="text-sm text-red-500">{errors.interests}</p>
+          <p className='text-sm text-red-500'>{errors.interests}</p>
         )}
-        <div className="grid grid-cols-2 gap-3">
+        <div className='grid grid-cols-2 gap-3'>
           {INTERESTS.map((interest) => (
             <Checkbox
               key={interest}
               label={interest}
               checked={formData.interests?.includes(interest) ?? false}
-              onChange={() => handleToggle("interests", interest)}
+              onChange={() => handleToggle('interests', interest)}
             />
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-3">
-        <label className="font-bold">
-          <span className="text-ocean">*</span> Background Check{" "}
-          <span className="text-text-secondary font-normal italic">
+      <div className='flex flex-col gap-3'>
+        <label className='font-bold'>
+          <span className='text-ocean'>*</span> Background Check{' '}
+          <span className='text-text-secondary font-normal italic'>
             (required)
-          </span>{" "}
+          </span>{' '}
         </label>
-        <div className="flex flex-col gap-3 text-text-secondary">
+        <div className='flex flex-col gap-3 text-text-secondary'>
           <p>
             To ensure the safety of children and vulnerable individuals in our
             care, we are required to conduct a background check. This process
@@ -166,41 +166,41 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
           </p>
           <Checkbox
             label={
-              "I consent to a confidential background check, and I understand that the results will be used solely for volunteer screening purposes."
+              'I consent to a confidential background check, and I understand that the results will be used solely for volunteer screening purposes.'
             }
             checked={formData.backgroundCheck ?? false}
-            onChange={(checked) => handleChange("backgroundCheck", !!checked)}
+            onChange={(checked) => handleChange('backgroundCheck', !!checked)}
             required
           />
         </div>
       </div>
-      <div className="flex flex-col gap-3 text-text-secondary w-64">
+      <div className='flex flex-col gap-3 text-text-secondary w-64'>
         <SecureTextField
-          name="ssn"
-          value={formData.ssn ?? ""}
+          name='ssn'
+          value={formData.ssn ?? ''}
           error={errors.ssn ?? null}
-          setValue={(val: string) => handleChange("ssn", val)}
+          setValue={(val: string) => handleChange('ssn', val)}
           setError={() => {}}
-          label="Social Security Number"
+          label='Social Security Number'
           isRequired={formData.backgroundCheck}
-          placeholder="###-##-0000"
+          placeholder='###-##-0000'
         />
       </div>
-      <div className="flex justify-center gap-4 py-18">
+      <div className='flex justify-center gap-4 py-18'>
         <Button
-          type="button"
-          intent="secondary"
-          className="font-normal"
+          type='button'
+          intent='secondary'
+          className='font-normal'
           onClick={onBack}
         >
           Previous: Availability
         </Button>
         <Button
-          type="submit"
-          intent="primary"
-          href="/volunteer-form/confirmation"
-          prefetch="viewport"
-          className="font-normal"
+          type='submit'
+          intent='primary'
+          href='/volunteer-form/confirmation'
+          prefetch='viewport'
+          className='font-normal'
         >
           Submit
         </Button>

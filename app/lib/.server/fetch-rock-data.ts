@@ -1,9 +1,9 @@
-import { normalize } from "~/lib/utils";
-import redis from "./redis-config";
-import { buildCacheKey, TTL, type TTLValue } from "./cache-utils";
+import { normalize } from '~/lib/utils';
+import redis from './redis-config';
+import { buildCacheKey, TTL, type TTLValue } from './cache-utils';
 
-export { TTL, deleteByPrefix } from "./cache-utils";
-export type { TTLValue } from "./cache-utils";
+export { TTL, deleteByPrefix } from './cache-utils';
+export type { TTLValue } from './cache-utils';
 interface RockDataRequest {
   endpoint: string;
   body: Record<string, unknown>;
@@ -11,8 +11,8 @@ interface RockDataRequest {
 
 const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {
-  "Content-Type": "application/json",
-  "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+  'Content-Type': 'application/json',
+  'Authorization-Token': `${process.env.ROCK_TOKEN}`,
 };
 
 /**
@@ -47,7 +47,7 @@ interface RockQueryParams {
   $skip?: string;
 
   /** Specify 'simple' or 'expanded' to load attributes */
-  loadAttributes?: "simple" | "expanded";
+  loadAttributes?: 'simple' | 'expanded';
 
   /** Comma-delimited list of attribute keys to limit specific attributes */
   attributeKey?: string;
@@ -84,7 +84,7 @@ export type ItemWithDateRange = {
 
 export const isItemInDateRange = (
   item: ItemWithDateRange,
-  now: Date
+  now: Date,
 ): boolean => {
   const start = item.startDateTime ?? item.StartDateTime;
   const expire = item.expireDateTime ?? item.ExpireDateTime;
@@ -102,14 +102,14 @@ export const isItemInDateRange = (
 const buildMergedFilter = (
   existingFilter: string | undefined,
   filterByDateRange: boolean,
-  filterByStatusApproved: boolean
+  filterByStatusApproved: boolean,
 ): string | undefined => {
   const clauses: string[] = [];
 
   if (filterByDateRange) {
     const isoNow = new Date().toISOString();
     clauses.push(
-      `StartDateTime le datetime'${isoNow}' and (ExpireDateTime eq null or ExpireDateTime ge datetime'${isoNow}')`
+      `StartDateTime le datetime'${isoNow}' and (ExpireDateTime eq null or ExpireDateTime ge datetime'${isoNow}')`,
     );
   }
   if (filterByStatusApproved) {
@@ -118,7 +118,7 @@ const buildMergedFilter = (
   if (clauses.length === 0) {
     return existingFilter;
   }
-  const newClause = clauses.join(" and ");
+  const newClause = clauses.join(' and ');
   return existingFilter ? `(${existingFilter}) and (${newClause})` : newClause;
 };
 
@@ -136,11 +136,14 @@ export const fetchRockData = async ({
     mergedQueryParams.$filter = buildMergedFilter(
       queryParams.$filter,
       filterByDateRange,
-      filterByStatusApproved
+      filterByStatusApproved,
     );
   }
 
-  const cacheKey = buildCacheKey(endpoint, mergedQueryParams as Record<string, string>);
+  const cacheKey = buildCacheKey(
+    endpoint,
+    mergedQueryParams as Record<string, string>,
+  );
   const effectiveTtl: number =
     ttl !== undefined ? ttl : cache === false ? TTL.NONE : TTL.DEFAULT;
 
@@ -153,14 +156,14 @@ export const fetchRockData = async ({
       }
     } catch {
       console.error(
-        "⚠️ Redis cache retrieval failed, falling back to API call"
+        '⚠️ Redis cache retrieval failed, falling back to API call',
       );
     }
   }
 
   try {
     const queryString = new URLSearchParams(
-      mergedQueryParams as Record<string, string>
+      mergedQueryParams as Record<string, string>,
     ).toString();
     const url = `${baseUrl}${endpoint}?${queryString}`;
 
@@ -174,7 +177,7 @@ export const fetchRockData = async ({
     if (!res.ok) {
       const errorDetails = await res.text();
       throw new Error(
-        `⚠️ Error Fetching Rock Data status: ${res.status}, details: ${errorDetails}, path: ${url}`
+        `⚠️ Error Fetching Rock Data status: ${res.status}, details: ${errorDetails}, path: ${url}`,
       );
     }
 
@@ -182,21 +185,21 @@ export const fetchRockData = async ({
       .json()
       .then((data) => normalize(data))
       .then((data: unknown) =>
-        Array.isArray(data) && data?.length === 1 ? data[0] : data
+        Array.isArray(data) && data?.length === 1 ? data[0] : data,
       );
 
     // Cache the response if Redis is available and TTL > 0
     if (redis && effectiveTtl > 0) {
       try {
-        await redis.set(cacheKey, JSON.stringify(data), "EX", effectiveTtl);
+        await redis.set(cacheKey, JSON.stringify(data), 'EX', effectiveTtl);
       } catch {
-        console.error("⚠️ Redis cache storage failed");
+        console.error('⚠️ Redis cache storage failed');
       }
     }
 
     return data;
   } catch (error) {
-    console.error("Error fetching rock data:", error);
+    console.error('Error fetching rock data:', error);
     throw error;
   }
 };
@@ -209,24 +212,24 @@ export const fetchRockData = async ({
 export const deleteRockData = async (endpoint: string) => {
   try {
     const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Authorization-Token": `${process.env.ROCK_TOKEN}`,
-        "Content-Type": "application/json",
+        'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+        'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
       const errorDetails = await response.text();
-      console.error("Error details:", errorDetails);
+      console.error('Error details:', errorDetails);
       throw new Error(
-        `Failed to delete resource: ${response.status}, details: ${errorDetails}`
+        `Failed to delete resource: ${response.status}, details: ${errorDetails}`,
       );
     }
 
     return response.status;
   } catch (error) {
-    console.error("Error in deleteRockData:", error);
+    console.error('Error in deleteRockData:', error);
     throw error;
   }
 };
@@ -239,10 +242,10 @@ export const deleteRockData = async (endpoint: string) => {
  */
 export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "Authorization-Token": `${process.env.ROCK_TOKEN}`,
+      'Content-Type': 'application/json',
+      'Authorization-Token': `${process.env.ROCK_TOKEN}`,
     },
     body: JSON.stringify(body),
   });
@@ -250,7 +253,7 @@ export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
   if (!response.ok) {
     const errorDetails = await response.text();
     throw new Error(
-      `Failed to post data: ${response.status}, details: ${errorDetails}`
+      `Failed to post data: ${response.status}, details: ${errorDetails}`,
     );
   }
 
@@ -270,7 +273,7 @@ export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
  */
 export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
       ...defaultHeaders,
     },
@@ -280,7 +283,7 @@ export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
   if (!response.ok) {
     const errorDetails = await response.text();
     throw new Error(
-      `Failed to patch data: ${response.status}, details: ${errorDetails}`
+      `Failed to patch data: ${response.status}, details: ${errorDetails}`,
     );
   }
 
@@ -301,16 +304,19 @@ export const deleteCacheKey = async ({
   queryParams?: RockQueryParams;
 }): Promise<boolean> => {
   if (!redis) {
-    console.error("⚠️ Redis not available for cache deletion");
+    console.error('⚠️ Redis not available for cache deletion');
     return false;
   }
 
   try {
-    const cacheKey = buildCacheKey(endpoint, queryParams as Record<string, string>);
+    const cacheKey = buildCacheKey(
+      endpoint,
+      queryParams as Record<string, string>,
+    );
     await redis.del(cacheKey);
     return true;
   } catch (error) {
-    console.error("Error deleting cache key:", error);
+    console.error('Error deleting cache key:', error);
     return false;
   }
 };

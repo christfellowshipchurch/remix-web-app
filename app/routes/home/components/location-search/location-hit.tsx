@@ -1,7 +1,7 @@
-import { Hit } from "algoliasearch";
-import { Link } from "react-router-dom";
-import { formattedServiceTimes } from "~/lib/utils";
-import Icon from "~/primitives/icon";
+import { Hit } from 'algoliasearch';
+import { Link } from 'react-router-dom';
+import { formattedServiceTimes } from '~/lib/utils';
+import Icon from '~/primitives/icon';
 
 export type CampusHitType = {
   campusUrl: string;
@@ -32,8 +32,8 @@ export function CampusHit({
     return (
       <Link
         to={`/locations/${hit.campusUrl}`}
-        prefetch="intent"
-        className="flex gap-2 w-full p-2"
+        prefetch='intent'
+        className='flex gap-2 w-full p-2'
       >
         <HitContent hit={hit} />
       </Link>
@@ -41,7 +41,7 @@ export function CampusHit({
   }
   return (
     <div
-      className="flex gap-2 w-full p-2"
+      className='flex gap-2 w-full p-2'
       onClick={() => setSelectedLocation?.(hit.campusName)}
     >
       <HitContent hit={hit} />
@@ -51,28 +51,28 @@ export function CampusHit({
 
 const HitContent = ({ hit }: { hit: Hit<CampusHitType> | CampusHitType }) => {
   const { street1, street2, city } = hit?.campusLocation || {};
-  const serviceTimes = formattedServiceTimes(hit?.serviceTimes || "");
-  const isOnline = hit?.campusUrl === "cf-everywhere";
+  const serviceTimes = formattedServiceTimes(hit?.serviceTimes || '');
+  const isOnline = hit?.campusUrl === 'cf-everywhere';
 
   return (
     <>
       <Icon
-        name={isOnline ? "globe" : "map"}
-        color="neutral-default"
+        name={isOnline ? 'globe' : 'map'}
+        color='neutral-default'
         size={20}
       />
-      <div className="flex flex-col">
-        <h3 className="text-xs text-black font-bold">{hit.campusName}</h3>
+      <div className='flex flex-col'>
+        <h3 className='text-xs text-black font-bold'>{hit.campusName}</h3>
         {hit?.campusLocation && (
-          <p className="text-xs font-medium text-text-secondary">
+          <p className='text-xs font-medium text-text-secondary'>
             {street1}
             {street2 && ` ${street2}`}, {city}
           </p>
         )}
-        <p className="text-xs text-black font-semibold">
+        <p className='text-xs text-black font-semibold'>
           {serviceTimes.map((service, index) => (
             <span key={index}>
-              {service.day} at {service.hour.join(", ")}
+              {service.day} at {service.hour.join(', ')}
             </span>
           ))}
         </p>

@@ -1,24 +1,31 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { cn } from "~/lib/utils";
+import { cn } from '~/lib/utils';
 import {
   CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
   CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS,
   classSingleCarouselSlideGridColsClass,
   useMinWidthLg,
-} from "../hooks/use-class-single-carousel-cards-per-slide";
-import { Button } from "~/primitives/shadcn-primitives/button";
+} from '../hooks/use-class-single-carousel-cards-per-slide';
+import { Button } from '~/primitives/shadcn-primitives/button';
 import {
   Carousel,
   CarouselContent,
   CarouselDots,
   CarouselItem,
   useCarousel,
+<<<<<<< Updated upstream
 } from "~/primitives/shadcn-primitives/carousel";
 import Icon from "~/primitives/icon";
 import { UpcomingSessionCard } from "./upcoming-session-card.component";
 import { ClassHitType } from "../../types";
 import { Link } from "react-router";
+=======
+} from '~/primitives/shadcn-primitives/carousel';
+import Icon from '~/primitives/icon';
+import { UpcomingSessionCard } from './upcoming-session-card.component';
+import { ClassHitType } from '../../types';
+>>>>>>> Stashed changes
 
 function UpcomingCarouselNavRow() {
   const { api, scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
@@ -27,42 +34,42 @@ function UpcomingCarouselNavRow() {
   if (slideCount <= 1) return null;
 
   return (
-    <div className="mt-6 flex w-full flex-row items-center justify-between gap-4 px-1">
+    <div className='mt-6 flex w-full flex-row items-center justify-between gap-4 px-1'>
       <CarouselDots
-        className="justify-start gap-2"
-        activeClassName="h-2 w-2 bg-ocean"
-        inactiveClassName="h-2 w-2 bg-neutral-lighter"
+        className='justify-start gap-2'
+        activeClassName='h-2 w-2 bg-ocean'
+        inactiveClassName='h-2 w-2 bg-neutral-lighter'
       />
-      <div className="flex shrink-0 items-center gap-2">
+      <div className='flex shrink-0 items-center gap-2'>
         <Button
-          type="button"
-          variant="outline"
-          size="icon"
+          type='button'
+          variant='outline'
+          size='icon'
           disabled={!canScrollPrev}
           className={cn(
-            "size-12 rounded-full border-ocean text-ocean",
-            "hover:border-navy hover:text-navy",
-            "disabled:border-[#AAAAAA] disabled:text-[#AAAAAA]",
+            'size-12 rounded-full border-ocean text-ocean',
+            'hover:border-navy hover:text-navy',
+            'disabled:border-[#AAAAAA] disabled:text-[#AAAAAA]',
           )}
-          aria-label="Previous slide"
+          aria-label='Previous slide'
           onClick={scrollPrev}
         >
-          <Icon name="arrowBack" className="size-6" />
+          <Icon name='arrowBack' className='size-6' />
         </Button>
         <Button
-          type="button"
-          variant="outline"
-          size="icon"
+          type='button'
+          variant='outline'
+          size='icon'
           disabled={!canScrollNext}
           className={cn(
-            "size-12 rounded-full border-ocean text-ocean",
-            "hover:border-navy hover:text-navy",
-            "disabled:border-[#AAAAAA] disabled:text-[#AAAAAA]",
+            'size-12 rounded-full border-ocean text-ocean',
+            'hover:border-navy hover:text-navy',
+            'disabled:border-[#AAAAAA] disabled:text-[#AAAAAA]',
           )}
-          aria-label="Next slide"
+          aria-label='Next slide'
           onClick={scrollNext}
         >
-          <Icon name="arrowRight" className="size-6" />
+          <Icon name='arrowRight' className='size-6' />
         </Button>
       </div>
     </div>
@@ -95,14 +102,15 @@ export function UpcomingSessionsCarousel({
 
   return (
     <Carousel
-      key={`${resetKey}-${isDesktopChunkGrid ? "lg" : "peek"}`}
-      opts={{ align: "start", containScroll: "trimSnaps" }}
-      className="w-full max-w-[1296px]"
+      key={`${resetKey}-${isDesktopChunkGrid ? 'lg' : 'peek'}`}
+      opts={{ align: 'start', containScroll: 'trimSnaps' }}
+      className='w-full max-w-[1296px]'
     >
       <CarouselContent
         className={cn(
-          "ml-0 py-3",
-          !isDesktopChunkGrid && CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
+          'ml-0 py-3',
+          !isDesktopChunkGrid &&
+            CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
         )}
       >
         {!isDesktopChunkGrid
@@ -111,6 +119,7 @@ export function UpcomingSessionsCarousel({
                 key={hit.objectID ?? idx}
                 className={CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS}
               >
+<<<<<<< Updated upstream
                 <div className="flex h-full min-h-0 w-full justify-center">
                   <Link
                     to={`#todo`}
@@ -118,22 +127,32 @@ export function UpcomingSessionsCarousel({
                   >
                     <UpcomingSessionCard hit={hit} />
                   </Link>
+=======
+                <div className='flex h-full min-h-0 w-full min-w-0 max-w-full justify-center'>
+                  <UpcomingSessionCard hit={hit} />
+>>>>>>> Stashed changes
                 </div>
               </CarouselItem>
             ))
           : slides.map((chunk, slideIndex) => (
-              <CarouselItem key={slideIndex} className="basis-full pl-0">
+              <CarouselItem key={slideIndex} className='basis-full pl-0'>
                 <div
                   className={cn(
-                    "grid w-full items-stretch gap-x-4 gap-y-6 xl:gap-x-8",
-                    classSingleCarouselSlideGridColsClass(DESKTOP_CAROUSEL_CHUNK),
+                    'grid w-full items-stretch gap-x-4 gap-y-6 xl:gap-x-8',
+                    classSingleCarouselSlideGridColsClass(
+                      DESKTOP_CAROUSEL_CHUNK,
+                    ),
                   )}
                 >
                   {chunk.map((hit, idx) => (
                     <Link
                       key={idx}
+<<<<<<< Updated upstream
                       to={`#todo`}
                       className="flex h-full min-h-0 w-full justify-center sm:justify-start"
+=======
+                      className='flex h-full min-h-0 w-full justify-center sm:justify-start'
+>>>>>>> Stashed changes
                     >
                       <UpcomingSessionCard hit={hit} />
                     </Link>

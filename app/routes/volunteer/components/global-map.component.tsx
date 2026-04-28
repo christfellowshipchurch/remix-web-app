@@ -1,6 +1,6 @@
-import { useMapDimensions } from "~/hooks/use-map-dimensions";
-import { Trip } from "../types";
-import { getImageUrl } from "~/lib/utils";
+import { useMapDimensions } from '~/hooks/use-map-dimensions';
+import { Trip } from '../types';
+import { getImageUrl } from '~/lib/utils';
 
 export function GlobalMap({ trips }: { trips: Trip[] }) {
   const { ref, dimensions, offset } = useMapDimensions();
@@ -21,12 +21,12 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
   };
 
   return (
-    <div className="relative w-full max-w-[1030px] mx-auto">
+    <div className='relative w-full max-w-[1030px] mx-auto'>
       <img
         ref={ref}
-        src={getImageUrl("3164007")}
-        alt="World map"
-        className="w-full h-auto"
+        src={getImageUrl('3164007')}
+        alt='World map'
+        className='w-full h-auto'
       />
 
       {trips.map((trip) => {
@@ -38,17 +38,17 @@ export function GlobalMap({ trips }: { trips: Trip[] }) {
         return (
           <div
             key={trip.id}
-            className="absolute"
+            className='absolute'
             style={{
               left: `${x}px`,
               top: `${y}px`,
-              transform: "translate(-50%, -50%)",
+              transform: 'translate(-50%, -50%)',
             }}
             title={trip.title}
           >
-            <span className="relative flex size-3">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ocean opacity-75"></span>
-              <span className="relative inline-flex size-3 rounded-full bg-ocean"></span>
+            <span className='relative flex size-3'>
+              <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-ocean opacity-75'></span>
+              <span className='relative inline-flex size-3 rounded-full bg-ocean'></span>
             </span>
           </div>
         );

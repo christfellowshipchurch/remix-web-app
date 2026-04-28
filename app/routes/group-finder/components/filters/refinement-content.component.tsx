@@ -1,12 +1,12 @@
-import React from "react";
-import { useRefinementList } from "react-instantsearch";
-import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/button/button.primitive";
-import { Icon } from "~/primitives/icon/icon";
+import React from 'react';
+import { useRefinementList } from 'react-instantsearch';
+import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
+import { Icon } from '~/primitives/icon/icon';
 
 function meetingTypeUsesGlobeIcon(label: string): boolean {
   const t = label.trim().toLowerCase();
-  return t === "virtual" || t === "online";
+  return t === 'virtual' || t === 'online';
 }
 
 interface AllFiltersRefinementContentProps {
@@ -31,13 +31,13 @@ export const AllFiltersRefinementContent = ({
   const content = data.content;
 
   const MEETING_DAYS_ORDER = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
   ];
 
   const sortedItems =
@@ -51,9 +51,9 @@ export const AllFiltersRefinementContent = ({
 
   const styles = {
     button:
-      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-text-primary transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
-    meetingTypeButton: "flex items-center gap-1.5",
-    buttonRefined: "bg-ocean !text-white hover:!bg-navy hover:!text-white",
+      'h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-text-primary transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]',
+    meetingTypeButton: 'flex items-center gap-1.5',
+    buttonRefined: 'bg-ocean !text-white hover:!bg-navy hover:!text-white',
   };
 
   const renderButton = (
@@ -62,8 +62,8 @@ export const AllFiltersRefinementContent = ({
   ) => (
     <Button
       key={index}
-      intent="secondary"
-      size="sm"
+      intent='secondary'
+      size='sm'
       className={cn(
         styles.button,
         content.isMeetingType && styles.meetingTypeButton,
@@ -76,14 +76,14 @@ export const AllFiltersRefinementContent = ({
     >
       {content.isMeetingType && (
         <Icon
-          name={meetingTypeUsesGlobeIcon(item.label) ? "globe" : "map"}
+          name={meetingTypeUsesGlobeIcon(item.label) ? 'globe' : 'map'}
           size={16}
-          className={item.isRefined ? "text-white" : "text-[#222222]"}
+          className={item.isRefined ? 'text-white' : 'text-[#222222]'}
         />
       )}
-      {content.attribute === "meetingDays"
-        ? item.label === "Thursday"
-          ? "Thur"
+      {content.attribute === 'meetingDays'
+        ? item.label === 'Thursday'
+          ? 'Thur'
           : item.label.substring(0, 3)
         : item.label}
     </Button>
@@ -92,12 +92,12 @@ export const AllFiltersRefinementContent = ({
   return (
     <div
       className={cn(
-        "cursor-default",
-        "flex flex-col gap-4 overflow-hidden",
-        showSection ? "h-auto" : "h-0",
+        'cursor-default',
+        'flex flex-col gap-4 overflow-hidden',
+        showSection ? 'h-auto' : 'h-0',
       )}
     >
-      <div className={cn("flex flex-wrap gap-x-1.5 gap-y-1.5 bg-white pr-4")}>
+      <div className={cn('flex flex-wrap gap-x-1.5 gap-y-1.5 bg-white pr-4')}>
         {sortedItems.map((item, index) => (
           <div key={index}>{renderButton(item, index)}</div>
         ))}

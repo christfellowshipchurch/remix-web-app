@@ -1,1 +1,1 @@
-export { SiteBanner } from "./site-banner.component";
+export { SiteBanner } from './site-banner.component';

@@ -1,16 +1,16 @@
-import { LoaderFunctionArgs } from "react-router-dom";
-import { PodcastEpisode, RockPodcastEpisode, WistiaElement } from "../types";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { PodcastEpisode, RockPodcastEpisode, WistiaElement } from '../types';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { createImageUrlFromGuid, parseRockKeyValueList } from '~/lib/utils';
 
 // Error messages
 const ERROR_MESSAGES = {
-  EPISODE_NOT_FOUND: "Episode not found",
-  SHOW_NOT_FOUND: "Show not found",
-  CHANNEL_NOT_FOUND: "Show Channel not found",
-  CHANNEL_FETCH_ERROR: "Error fetching channel from Rock",
-  EPISODE_FETCH_ERROR: "Error fetching episode from Rock",
-  WISTIA_FETCH_ERROR: "Error fetching Wistia element",
+  EPISODE_NOT_FOUND: 'Episode not found',
+  SHOW_NOT_FOUND: 'Show not found',
+  CHANNEL_NOT_FOUND: 'Show Channel not found',
+  CHANNEL_FETCH_ERROR: 'Error fetching channel from Rock',
+  EPISODE_FETCH_ERROR: 'Error fetching episode from Rock',
+  WISTIA_FETCH_ERROR: 'Error fetching Wistia element',
 } as const;
 
 export type LoaderReturnType = {
@@ -59,8 +59,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   return {
     episode,
-    ALGOLIA_APP_ID: appId || "",
-    ALGOLIA_SEARCH_API_KEY: apiKey || "",
+    ALGOLIA_APP_ID: appId || '',
+    ALGOLIA_SEARCH_API_KEY: apiKey || '',
   };
 };
 
@@ -72,12 +72,12 @@ async function getPodcastChannel(
 ): Promise<{ id: string; title: string }> {
   try {
     const channel = await fetchRockData({
-      endpoint: "ContentChannelItems/GetByAttributeValue",
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
       queryParams: {
-        attributeKey: "Url",
+        attributeKey: 'Url',
         value: path,
-        $filter: "ContentChannelId eq 179",
-        loadAttributes: "simple",
+        $filter: 'ContentChannelId eq 179',
+        loadAttributes: 'simple',
       },
     });
 
@@ -85,10 +85,10 @@ async function getPodcastChannel(
 
     // The showChannel Guid references the ContentChannel that contains the episodes
     const showChannel = await fetchRockData({
-      endpoint: "ContentChannels",
+      endpoint: 'ContentChannels',
       queryParams: {
         $filter: `Guid eq guid'${channelData.attributeValues?.showChannel?.value}'`,
-        $select: "Name,Id",
+        $select: 'Name,Id',
       },
     });
 
@@ -113,12 +113,12 @@ async function getPodcastEpisode({
 }): Promise<RockPodcastEpisode> {
   try {
     const episode = await fetchRockData({
-      endpoint: "ContentChannelItems/GetByAttributeValue",
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
       queryParams: {
         $filter: `ContentChannelId eq ${channelId} and StartDateTime le datetime'${new Date().toISOString()}'`,
-        attributeKey: "Url",
+        attributeKey: 'Url',
         value: path,
-        loadAttributes: "simple",
+        loadAttributes: 'simple',
       },
     });
 
@@ -134,7 +134,7 @@ async function getPodcastEpisode({
 async function getWistiaElement(guid: string): Promise<WistiaElement | null> {
   try {
     const wistiaElement = await fetchRockData({
-      endpoint: "MediaElements",
+      endpoint: 'MediaElements',
       queryParams: {
         $filter: `Guid eq guid'${guid}'`,
       },
@@ -159,37 +159,37 @@ async function mapRockEpisodeToPodcastEpisode(
   showName: string,
 ): Promise<PodcastEpisode> {
   const wistiaElement = await getWistiaElement(
-    rockEpisode?.attributeValues?.media?.value || "",
+    rockEpisode?.attributeValues?.media?.value || '',
   );
 
   const authorFormatted =
     rockEpisode?.attributeValues?.author?.valueFormatted ||
     rockEpisode?.attributeValues?.author?.value ||
-    "";
+    '';
 
   return {
-    id: rockEpisode?.id || "",
+    id: rockEpisode?.id || '',
     show: showName,
-    title: rockEpisode?.title || "",
+    title: rockEpisode?.title || '',
     publishDate:
-      rockEpisode?.attributeValues?.releaseDate?.valueFormatted || "",
-    season: rockEpisode?.attributeValues?.seasonNumber?.value || "",
-    episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value || "",
-    audio: wistiaElement?.sourceKey || "",
+      rockEpisode?.attributeValues?.releaseDate?.valueFormatted || '',
+    season: rockEpisode?.attributeValues?.seasonNumber?.value || '',
+    episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value || '',
+    audio: wistiaElement?.sourceKey || '',
     coverImage: createImageUrlFromGuid(
-      rockEpisode?.attributeValues?.image?.value || "",
+      rockEpisode?.attributeValues?.image?.value || '',
     ),
-    summary: rockEpisode?.attributeValues?.summary?.value || "",
-    content: rockEpisode?.content || "",
+    summary: rockEpisode?.attributeValues?.summary?.value || '',
+    content: rockEpisode?.content || '',
     author: authorFormatted.trim() || undefined,
-    showGuests: rockEpisode?.attributeValues?.showGuests?.value || "",
-    url: rockEpisode?.attributeValues?.pathname?.value || "",
-    apple: rockEpisode?.attributeValues?.applePodcast?.value || "",
-    spotify: rockEpisode?.attributeValues?.spotify?.value || "",
-    amazon: rockEpisode?.attributeValues?.amazonMusic?.value || "",
-    youtube: rockEpisode?.attributeValues?.ytLink?.value || "",
+    showGuests: rockEpisode?.attributeValues?.showGuests?.value || '',
+    url: rockEpisode?.attributeValues?.pathname?.value || '',
+    apple: rockEpisode?.attributeValues?.applePodcast?.value || '',
+    spotify: rockEpisode?.attributeValues?.spotify?.value || '',
+    amazon: rockEpisode?.attributeValues?.amazonMusic?.value || '',
+    youtube: rockEpisode?.attributeValues?.ytLink?.value || '',
     resources: parseRockKeyValueList(
-      rockEpisode?.attributeValues?.additionalResources?.value || "",
+      rockEpisode?.attributeValues?.additionalResources?.value || '',
     ).map((resource) => ({
       title: resource.key,
       url: resource.value,

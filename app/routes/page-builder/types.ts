@@ -1,25 +1,25 @@
-import { RockCampus } from "~/lib/rock-config";
+import { RockCampus } from '~/lib/rock-config';
 
 /**
  * Represents a section type in the page builder
  */
 export type SectionType =
-  | "EVENT_COLLECTION"
-  | "RESOURCE_COLLECTION"
-  | "CTA_COLLECTION"
-  | "CONTENT_BLOCK"
-  | "FAQs"
-  | "IMAGE_GALLERY";
+  | 'EVENT_COLLECTION'
+  | 'RESOURCE_COLLECTION'
+  | 'CTA_COLLECTION'
+  | 'CONTENT_BLOCK'
+  | 'FAQs'
+  | 'IMAGE_GALLERY';
 
 export type ContentType =
-  | "EVENTS"
-  | "MESSAGES"
-  | "ARTICLES"
-  | "DEVOTIONALS"
-  | "MINISTRY_PAGE"
-  | "PODCASTS"
-  | "REDIRECT_CARD"
-  | "PAGE_BUILDER";
+  | 'EVENTS'
+  | 'MESSAGES'
+  | 'ARTICLES'
+  | 'DEVOTIONALS'
+  | 'MINISTRY_PAGE'
+  | 'PODCASTS'
+  | 'REDIRECT_CARD'
+  | 'PAGE_BUILDER';
 
 /**
  * Represents a call-to-action item with title and URL
@@ -90,7 +90,7 @@ export type PageBuilderSection = {
   titleOverride?: string;
   content: string;
   type: SectionType;
-  linkTreeLayout?: "GRID" | "LIST"; // only used for resource collections
+  linkTreeLayout?: 'GRID' | 'LIST'; // only used for resource collections
   collection?: CollectionItem[];
   faqs?: FAQItem[];
   stillHaveQuestionsLink?: string; // only in FAQs component
@@ -115,13 +115,13 @@ export type PageBuilderLoader = {
  * Ministry Types
  */
 export type MinistryType =
-  | "cf-kids"
-  | "kids-university"
-  | "students"
-  | "the-mix"
-  | "young-adults"
-  | "college-nights"
-  | "celebrate-recovery";
+  | 'cf-kids'
+  | 'kids-university'
+  | 'students'
+  | 'the-mix'
+  | 'young-adults'
+  | 'college-nights'
+  | 'celebrate-recovery';
 
 /**
  * Represents a ministry service in the page builder
@@ -140,29 +140,29 @@ export type MinistryService = {
  * Layout types for ContentBlock
  */
 export type ContentBlockLayoutType =
-  | "FEATURE"
-  | "BANNER"
-  | "CARD"
-  | "FULLSCREEN";
+  | 'FEATURE'
+  | 'BANNER'
+  | 'CARD'
+  | 'FULLSCREEN';
 
 /**
  * Aspect ratios for images
  */
-export type ContentBlockAspectRatio = "16by9" | "4by5" | "1by1";
+export type ContentBlockAspectRatio = '16by9' | '4by5' | '1by1';
 
 /**
  * Image layout options
  */
-export type ContentBlockImageLayout = "LEFT" | "RIGHT";
+export type ContentBlockImageLayout = 'LEFT' | 'RIGHT';
 
 /**
  * Background color options
  */
 export type ContentBlockBackgroundColor =
-  | "WHITE"
-  | "OCEAN"
-  | "NAVY"
-  | "GRAY"
+  | 'WHITE'
+  | 'OCEAN'
+  | 'NAVY'
+  | 'GRAY'
   | string;
 
 /**
@@ -170,7 +170,7 @@ export type ContentBlockBackgroundColor =
  */
 export interface ContentBlockData {
   id: string;
-  type: "CONTENT_BLOCK";
+  type: 'CONTENT_BLOCK';
   name: string;
   content: string;
   layoutType: ContentBlockLayoutType;

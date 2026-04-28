@@ -1,26 +1,26 @@
-import { useMemo } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useMemo } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import {
   Configure,
   InstantSearch,
   useHits,
   useInstantSearch,
-} from "react-instantsearch";
+} from 'react-instantsearch';
 
 import {
   escapeAlgoliaFilterString,
   type FinderGeoCoordinates,
-} from "~/components/finders/finder-algolia.utils";
-import { createSearchClient } from "~/lib/create-search-client";
-import type { GroupType } from "~/routes/group-finder/types";
+} from '~/components/finders/finder-algolia.utils';
+import { createSearchClient } from '~/lib/create-search-client';
+import type { GroupType } from '~/routes/group-finder/types';
 
-import { ClassSingleGroupsCarousel } from "../components/class-single-groups-carousel.component";
-import type { LoaderReturnType } from "../loader";
+import { ClassSingleGroupsCarousel } from '../components/class-single-groups-carousel.component';
+import type { LoaderReturnType } from '../loader';
 
 /**
  * Keep in sync with `app/routes/group-finder/partials/group-search.partial.tsx`.
  */
-const GROUPS_ALGOLIA_INDEX_NAME = "dev_daniel_Groups";
+const GROUPS_ALGOLIA_INDEX_NAME = 'dev_daniel_Groups';
 
 const CLASS_SINGLE_GROUPS_MAX_HITS = 1000;
 
@@ -44,14 +44,14 @@ function composeGroupsFilters(
 }
 
 function classFormatToMeetingType(format: string): string | null {
-  if (format === "Virtual") return "Online";
-  if (format === "In-Person") return "In Person";
+  if (format === 'Virtual') return 'Online';
+  if (format === 'In-Person') return 'In Person';
   return null;
 }
 
 function classLanguageToGroupLanguage(lang: string): string | null {
-  if (lang === "English") return "English";
-  if (lang === "Español" || lang === "Spanish") return "Spanish";
+  if (lang === 'English') return 'English';
+  if (lang === 'Español' || lang === 'Spanish') return 'Spanish';
   return null;
 }
 
@@ -65,18 +65,18 @@ function mirrorGroupsFacets(
   const parts: string[] = [];
 
   const campuses = (refinementList.campus ?? []).filter(
-    (v) => v != null && String(v).trim() !== "",
+    (v) => v != null && String(v).trim() !== '',
   );
   if (campuses.length === 1) {
     parts.push(`campus:"${escapeAlgoliaFilterString(campuses[0])}"`);
   } else if (campuses.length > 1) {
     parts.push(
-      `(${campuses.map((c) => `campus:"${escapeAlgoliaFilterString(c)}"`).join(" OR ")})`,
+      `(${campuses.map((c) => `campus:"${escapeAlgoliaFilterString(c)}"`).join(' OR ')})`,
     );
   }
 
   const formats = (refinementList.format ?? []).filter(
-    (v) => v != null && String(v).trim() !== "",
+    (v) => v != null && String(v).trim() !== '',
   );
   const meetingTypes = [
     ...new Set(
@@ -89,12 +89,12 @@ function mirrorGroupsFacets(
     parts.push(`meetingType:"${escapeAlgoliaFilterString(meetingTypes[0])}"`);
   } else if (meetingTypes.length > 1) {
     parts.push(
-      `(${meetingTypes.map((m) => `meetingType:"${escapeAlgoliaFilterString(m)}"`).join(" OR ")})`,
+      `(${meetingTypes.map((m) => `meetingType:"${escapeAlgoliaFilterString(m)}"`).join(' OR ')})`,
     );
   }
 
   const languages = (refinementList.language ?? []).filter(
-    (v) => v != null && String(v).trim() !== "",
+    (v) => v != null && String(v).trim() !== '',
   );
   const groupLanguages = [
     ...new Set(
@@ -107,29 +107,29 @@ function mirrorGroupsFacets(
     parts.push(`language:"${escapeAlgoliaFilterString(groupLanguages[0])}"`);
   } else if (groupLanguages.length > 1) {
     parts.push(
-      `(${groupLanguages.map((l) => `language:"${escapeAlgoliaFilterString(l)}"`).join(" OR ")})`,
+      `(${groupLanguages.map((l) => `language:"${escapeAlgoliaFilterString(l)}"`).join(' OR ')})`,
     );
   }
 
   if (parts.length === 0) return undefined;
-  return parts.join(" AND ");
+  return parts.join(' AND ');
 }
 
 function ClassSingleGroupsHits({ backUrl }: { backUrl: string }) {
   const { items } = useHits<GroupType>();
-  const resetKey = items.map((h) => h.objectID).join("|");
+  const resetKey = items.map((h) => h.objectID).join('|');
 
   if (items.length === 0) {
     return null;
   }
 
   return (
-    <div className="w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
-      <div className="flex w-full flex-col items-center gap-4">
-        <h2 className="w-full text-2xl font-extrabold leading-[1.4]">
+    <div className='w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter'>
+      <div className='flex w-full flex-col items-center gap-4'>
+        <h2 className='w-full text-2xl font-extrabold leading-[1.4]'>
           Join a Group
         </h2>
-        <div className="flex w-full justify-center md:justify-start">
+        <div className='flex w-full justify-center md:justify-start'>
           <ClassSingleGroupsCarousel
             hits={items}
             resetKey={resetKey}
@@ -163,15 +163,11 @@ function ClassSingleGroupsAlgolia({
   const backUrl = `/class-finder/${classUrl}`;
 
   const configureFilters = useMemo(
-    () =>
-      composeGroupsFilters(
-        classesIndexClassType,
-        mirroredFacetFilters,
-      ),
+    () => composeGroupsFilters(classesIndexClassType, mirroredFacetFilters),
     [classesIndexClassType, mirroredFacetFilters],
   );
 
-  const configureKey = `${classesIndexClassType}|${configureFilters ?? ""}|${aroundLatLng ?? ""}`;
+  const configureKey = `${classesIndexClassType}|${configureFilters ?? ''}|${aroundLatLng ?? ''}`;
 
   return (
     <InstantSearch
@@ -180,7 +176,7 @@ function ClassSingleGroupsAlgolia({
       searchClient={searchClient}
       initialUiState={{
         [GROUPS_ALGOLIA_INDEX_NAME]: {
-          query: "",
+          query: '',
         },
       }}
       future={{
@@ -190,10 +186,10 @@ function ClassSingleGroupsAlgolia({
       <Configure
         key={configureKey}
         hitsPerPage={CLASS_SINGLE_GROUPS_MAX_HITS}
-        query=""
+        query=''
         filters={configureFilters}
         aroundLatLng={aroundLatLng}
-        aroundRadius="all"
+        aroundRadius='all'
         aroundLatLngViaIP={false}
         getRankingInfo={aroundLatLng != null}
       />

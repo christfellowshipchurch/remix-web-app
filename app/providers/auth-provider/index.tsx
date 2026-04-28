@@ -1,29 +1,29 @@
-import { useNavigate, useRevalidator } from "react-router-dom";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate, useRevalidator } from 'react-router-dom';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
-export const AUTH_TOKEN_KEY = "auth-token";
+export const AUTH_TOKEN_KEY = 'auth-token';
 
 export enum User_Auth_Status {
-  ExistingAppUser = "EXISTING_APP_USER",
-  NewAppUser = "NEW_APP_USER",
-  None = "NONE",
+  ExistingAppUser = 'EXISTING_APP_USER',
+  NewAppUser = 'NEW_APP_USER',
+  None = 'NONE',
 }
 
 export enum RegistrationTypes {
-  EMAIL = "email",
-  SMS = "sms",
+  EMAIL = 'email',
+  SMS = 'sms',
 }
 
 export type User = {
@@ -58,26 +58,26 @@ export interface AuthContextType {
   checkUserExists: (identity: string) => Promise<boolean>;
   registerUser: (
     userInputData: UserInputData,
-    registrationType: RegistrationTypes
+    registrationType: RegistrationTypes,
   ) => Promise<void>;
   requestSmsPin: (phoneNumber: string) => Promise<void>;
   loginWithSms: (phoneNumber: string, pin: string) => Promise<void>;
 }
 
 const handleError = (error: unknown, message: string) => {
-  if (typeof window === "undefined") return; // Guard for server-side
+  if (typeof window === 'undefined') return; // Guard for server-side
 
   console.error(message, error);
   // Clear HttpOnly auth cookie server-side (fire-and-forget)
   const fd = new FormData();
-  fd.append("formType", "logout");
-  fetch("/auth", { method: "POST", body: fd });
+  fd.append('formType', 'logout');
+  fetch('/auth', { method: 'POST', body: fd });
   throw error;
 };
 
 const ROUTES = {
-  LOGIN: "/",
-  LOGOUT: "/",
+  LOGIN: '/',
+  LOGOUT: '/',
 } as const;
 
 interface AuthProviderProps {
@@ -94,9 +94,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const loadToken = async () => {
       try {
         const formData = new FormData();
-        formData.append("formType", "currentUser");
-        const response = await fetch("/auth", {
-          method: "POST",
+        formData.append('formType', 'currentUser');
+        const response = await fetch('/auth', {
+          method: 'POST',
           body: formData,
         });
 
@@ -112,9 +112,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoading(false);
       } catch (error) {
         if (error instanceof Error) {
-          handleError(error.message, "Error loading token:");
+          handleError(error.message, 'Error loading token:');
         } else {
-          handleError("Unknown error occurred", "Error loading token:");
+          handleError('Unknown error occurred', 'Error loading token:');
         }
         setIsLoading(false);
       }
@@ -127,14 +127,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Just fetch the current user — the browser sends the HttpOnly cookie automatically.
     try {
       const formData = new FormData();
-      formData.append("formType", "currentUser");
-      const response = await fetch("/auth", {
-        method: "POST",
+      formData.append('formType', 'currentUser');
+      const response = await fetch('/auth', {
+        method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch user data after login");
+        throw new Error('Failed to fetch user data after login');
       }
 
       const currentUser = await response.json();
@@ -142,38 +142,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       revalidate();
       navigate(ROUTES.LOGIN);
     } catch (error) {
-      handleError(error, "Error fetching user data after login:");
+      handleError(error, 'Error fetching user data after login:');
     }
   };
 
   const loginWithEmail = async (identity: string, password: string) => {
     try {
       const formData = new FormData();
-      formData.append("formType", "authenticate");
-      formData.append("identity", identity);
-      formData.append("password", password);
+      formData.append('formType', 'authenticate');
+      formData.append('identity', identity);
+      formData.append('password', password);
 
-      const response = await fetch("/auth", {
-        method: "POST",
+      const response = await fetch('/auth', {
+        method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Unknown error occurred");
+        throw new Error(errorData.error || 'Unknown error occurred');
       }
 
       handleLogin();
     } catch (error) {
-      handleError(error, "Login error:");
+      handleError(error, 'Login error:');
       throw error; // Re-throw the error to be caught by the caller
     }
   };
 
   const logout = async () => {
     const formData = new FormData();
-    formData.append("formType", "logout");
-    await fetch("/auth", { method: "POST", body: formData });
+    formData.append('formType', 'logout');
+    await fetch('/auth', { method: 'POST', body: formData });
     setUser(null);
     revalidate(); // revalidate the loader data to update page
   };
@@ -181,11 +181,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const checkUserExists = async (identity: string): Promise<boolean> => {
     try {
       const formData = new FormData();
-      formData.append("formType", "checkUserExists");
-      formData.append("identity", identity);
+      formData.append('formType', 'checkUserExists');
+      formData.append('identity', identity);
 
-      const response = await fetch("/auth", {
-        method: "POST",
+      const response = await fetch('/auth', {
+        method: 'POST',
         body: formData,
       });
 
@@ -193,74 +193,74 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return result.userExists;
     } catch (error) {
-      handleError(error, "Error checking user existence:");
+      handleError(error, 'Error checking user existence:');
       return false;
     }
   };
 
   const registerUser = async (
     userInputData: UserInputData,
-    registrationType: RegistrationTypes
+    registrationType: RegistrationTypes,
   ) => {
     try {
       const formData = new FormData();
-      formData.append("formType", "registerPerson");
-      formData.append("registrationType", registrationType);
-      formData.append("userInputData", JSON.stringify(userInputData));
+      formData.append('formType', 'registerPerson');
+      formData.append('registrationType', registrationType);
+      formData.append('userInputData', JSON.stringify(userInputData));
 
-      const response = await fetch("/auth", {
-        method: "POST",
+      const response = await fetch('/auth', {
+        method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Registration failed");
+        throw new Error(errorData.error || 'Registration failed');
       }
 
       handleLogin();
     } catch (error) {
-      handleError(error, "Person registration error:");
+      handleError(error, 'Person registration error:');
     }
   };
 
   const requestSmsPin = async (phoneNumber: string) => {
     try {
       const formData = new FormData();
-      formData.append("formType", "requestSmsPin");
-      formData.append("phoneNumber", phoneNumber);
+      formData.append('formType', 'requestSmsPin');
+      formData.append('phoneNumber', phoneNumber);
 
       //trigger SMS pin request action
-      await fetch("/auth", {
-        method: "POST",
+      await fetch('/auth', {
+        method: 'POST',
         body: formData,
       });
     } catch (error) {
-      handleError(error, "SMS PIN request error:");
+      handleError(error, 'SMS PIN request error:');
     }
   };
 
   const loginWithSms = async (phoneNumber: string, pin: string) => {
     try {
       const formData = new FormData();
-      formData.append("formType", "loginWithSms");
-      formData.append("phoneNumber", phoneNumber);
-      formData.append("pin", pin);
+      formData.append('formType', 'loginWithSms');
+      formData.append('phoneNumber', phoneNumber);
+      formData.append('pin', pin);
 
       // trigger SMS authentication action
-      const response = await fetch("/auth", {
-        method: "POST",
+      const response = await fetch('/auth', {
+        method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Unknown error occurred");
+        throw new Error(errorData.error || 'Unknown error occurred');
       }
 
       handleLogin();
     } catch (error) {
-      console.error("SMS login error:", error);
+      console.error('SMS login error:', error);
     }
   };
 

@@ -1,28 +1,28 @@
-import { useLoaderData, useSearchParams, useLocation } from "react-router-dom";
-import { EventReturnType } from "../loader";
-import { SectionTitle } from "~/components";
-import { ResourceCard } from "~/primitives/cards/resource-card";
-import { Configure, Hits, InstantSearch } from "react-instantsearch";
-import { useEffect, useMemo, useRef } from "react";
-import { ContentItemHit } from "~/routes/search/types";
+import { useLoaderData, useSearchParams, useLocation } from 'react-router-dom';
+import { EventReturnType } from '../loader';
+import { SectionTitle } from '~/components';
+import { ResourceCard } from '~/primitives/cards/resource-card';
+import { Configure, Hits, InstantSearch } from 'react-instantsearch';
+import { useEffect, useMemo, useRef } from 'react';
+import { ContentItemHit } from '~/routes/search/types';
 import {
   EVENTS_INDEX,
   EventsTagsRefinementList,
-} from "../components/events-tags-refinement.component";
-import { CustomPagination } from "~/components/custom-pagination";
-import { createSearchClient } from "~/lib/create-search-client";
-import { EventsHubLocationSearch } from "../components/events-hub-location-search.component";
+} from '../components/events-tags-refinement.component';
+import { CustomPagination } from '~/components/custom-pagination';
+import { createSearchClient } from '~/lib/create-search-client';
+import { EventsHubLocationSearch } from '../components/events-hub-location-search.component';
 import {
   parseEventsFinderUrlState,
   eventsFinderUrlStateToParams,
   eventsFinderEmptyState,
-} from "../../events-url-state";
+} from '../../events-url-state';
 import {
   createEventsInstantSearchRouter,
   createEventsStateMapping,
-} from "../../events-instantsearch-router";
-import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
+} from '../../events-instantsearch-router';
+import { AlgoliaFinderClearAllButton } from '~/routes/group-finder/components/clear-all-button.component';
+import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
 
 export const AllEvents = () => {
   const loaderData = useLoaderData<EventReturnType>();
@@ -49,7 +49,7 @@ export const AllEvents = () => {
         pathnameRef,
         onUpdateCallbackRef,
       }),
-    []
+    [],
   );
 
   const stateMapping = useMemo(() => createEventsStateMapping(), []);
@@ -68,7 +68,7 @@ export const AllEvents = () => {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const routing = useMemo(
@@ -76,7 +76,7 @@ export const AllEvents = () => {
       router,
       stateMapping,
     }),
-    [router, stateMapping]
+    [router, stateMapping],
   );
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
@@ -89,11 +89,11 @@ export const AllEvents = () => {
 
   const fromEventsUrl =
     location.pathname +
-    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+    (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
   return (
-    <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
-      <div className="flex flex-col max-w-screen-content mx-auto">
+    <div className='w-full pt-16 pb-28 content-padding pagination-scroll-to'>
+      <div className='flex flex-col max-w-screen-content mx-auto'>
         <InstantSearch
           indexName={EVENTS_INDEX}
           searchClient={searchClient}
@@ -102,10 +102,10 @@ export const AllEvents = () => {
             preserveSharedStateOnUnmount: true,
           }}
         >
-          <div className="flex items-end justify-between gap-4">
+          <div className='flex items-end justify-between gap-4'>
             <SectionTitle
-              title="Discover Events For You"
-              sectionTitle="all events."
+              title='Discover Events For You'
+              sectionTitle='all events.'
             />
 
             <AlgoliaFinderClearAllButton
@@ -116,7 +116,7 @@ export const AllEvents = () => {
           <Configure filters='contentType:"Event"' hitsPerPage={9} />
 
           {/* Filters */}
-          <div className="flex gap-6 flex-col md:flex-row md:flex-nowrap px-1 pb-4 overflow-y-visible mt-10 mb-12 md:mt-14 lg:mb-24 xl:mb-28">
+          <div className='flex gap-6 flex-col md:flex-row md:flex-nowrap px-1 pb-4 overflow-y-visible mt-10 mb-12 md:mt-14 lg:mb-24 xl:mb-28'>
             {/* Location Search */}
             <EventsHubLocationSearch />
 
@@ -131,12 +131,12 @@ export const AllEvents = () => {
               [...items].sort(
                 (a, b) =>
                   new Date(b.startDateTime).getTime() -
-                  new Date(a.startDateTime).getTime()
+                  new Date(a.startDateTime).getTime(),
               )
             }
             classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
-              item: "w-full",
+              list: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center',
+              item: 'w-full',
             }}
           />
 
@@ -155,20 +155,20 @@ const EventHit = ({
   fromEventsUrl: string;
 }) => {
   const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
-    "en-US",
+    'en-US',
     {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    },
   );
 
   return (
     <ResourceCard
       resource={{
         id: hit.objectID,
-        contentChannelId: "78", // EVENT type from builder-utils.ts
-        contentType: "EVENTS",
+        contentChannelId: '78', // EVENT type from builder-utils.ts
+        contentType: 'EVENTS',
         name: hit.title,
         summary: hit.summary,
         image: hit.coverImage.sources[0].uri,
@@ -176,10 +176,10 @@ const EventHit = ({
         startDate: formattedDate,
         location:
           hit.eventLocations && hit.eventLocations.length > 1
-            ? "Multiple Locations"
+            ? 'Multiple Locations'
             : hit.eventLocations?.[0] ||
               hit.locations?.[0]?.name ||
-              "Christ Fellowship Church",
+              'Christ Fellowship Church',
       }}
       linkState={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
     />

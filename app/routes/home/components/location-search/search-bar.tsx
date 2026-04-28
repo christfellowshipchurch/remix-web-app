@@ -1,9 +1,9 @@
-import { SearchBox } from "react-instantsearch";
+import { SearchBox } from 'react-instantsearch';
 
-import { useEffect, useState } from "react";
-import { useSearchBox } from "react-instantsearch";
-import { cn, isValidZip } from "~/lib/utils";
-import Icon from "~/primitives/icon";
+import { useEffect, useState } from 'react';
+import { useSearchBox } from 'react-instantsearch';
+import { cn, isValidZip } from '~/lib/utils';
+import Icon from '~/primitives/icon';
 
 export const SearchBar = ({
   onSearchStateChange,
@@ -30,39 +30,39 @@ export const SearchBar = ({
   useEffect(() => {
     if (zipCode) {
       onSearchSubmit(zipCode);
-      refine("");
+      refine('');
     }
   }, [zipCode]);
 
   return (
     <div
       className={cn(
-        "flex w-full items-center gap-4 rounded-full p-1",
-        query ? "bg-gray" : "bg-white",
+        'flex w-full items-center gap-4 rounded-full p-1',
+        query ? 'bg-gray' : 'bg-white',
       )}
     >
       <button
-        type="submit"
-        className="flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative"
-        aria-label="Search by zip code"
+        type='submit'
+        className='flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative'
+        aria-label='Search by zip code'
       >
         <Icon
-          name="search"
+          name='search'
           size={20}
           className={`text-white cursor-pointer relative right-px bottom-px`}
         />
       </button>
 
       <SearchBox
-        placeholder="Search by zip code"
+        placeholder='Search by zip code'
         classNames={{
-          root: "flex-grow w-full",
-          form: "flex",
+          root: 'flex-grow w-full',
+          form: 'flex',
           input: `w-full justify-center text-black px-3 outline-none appearance-none`,
-          reset: "hidden",
-          loadingIndicator: "hidden",
-          resetIcon: "hidden",
-          submit: "hidden",
+          reset: 'hidden',
+          loadingIndicator: 'hidden',
+          resetIcon: 'hidden',
+          submit: 'hidden',
         }}
       />
     </div>

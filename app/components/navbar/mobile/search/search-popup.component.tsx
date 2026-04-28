@@ -1,16 +1,16 @@
-import { SearchClient } from "algoliasearch";
-import { useState, useEffect, useCallback } from "react";
+import { SearchClient } from 'algoliasearch';
+import { useState, useEffect, useCallback } from 'react';
 import {
   useCurrentRefinements,
   useHits,
   useInstantSearch,
   useSearchBox,
-} from "react-instantsearch";
-import { PopularSearches } from "./popular-searches.component";
+} from 'react-instantsearch';
+import { PopularSearches } from './popular-searches.component';
 import {
   MobileContentHit,
   MobileContentHitType,
-} from "./mobile-content-hit.component";
+} from './mobile-content-hit.component';
 
 interface LocationHit {
   campusName?: string;
@@ -32,13 +32,13 @@ const ContentItemsHitsCollector = ({
         pathname:
           (hit.routing as { pathname?: string })?.pathname ||
           (hit.url as string) ||
-          "",
+          '',
       },
       coverImage:
-        (hit.coverImage as MobileContentHitType["coverImage"]) || null,
-      title: (hit.title as string) || "",
-      contentType: (hit.contentType as string) || "",
-      summary: (hit.summary as string) || "",
+        (hit.coverImage as MobileContentHitType['coverImage']) || null,
+      title: (hit.title as string) || '',
+      contentType: (hit.contentType as string) || '',
+      summary: (hit.summary as string) || '',
     }));
 
     onHitsChange(contentHits);
@@ -63,9 +63,9 @@ export const SearchPopup = ({
   const selectedItems =
     (indexUiState?.refinementList?.contentType as string[]) || [];
   const isPagesSelected =
-    selectedItems.includes("Ministry Page") ||
-    selectedItems.includes("Page Builder") ||
-    selectedItems.includes("Redirect Card");
+    selectedItems.includes('Ministry Page') ||
+    selectedItems.includes('Page Builder') ||
+    selectedItems.includes('Redirect Card');
 
   const isSearching =
     query.trim().length > 0 || items.length > 0 || isPagesSelected;
@@ -78,7 +78,7 @@ export const SearchPopup = ({
     async (searchQuery: string) => {
       try {
         // Check if this is the real Algolia client (has transporter property)
-        if (!("transporter" in searchClient)) {
+        if (!('transporter' in searchClient)) {
           // Using the empty search client, return empty results
           setLocationHits([]);
           return;
@@ -90,7 +90,7 @@ export const SearchPopup = ({
         ).search<LocationHit>({
           requests: [
             {
-              indexName: "dev_Locations",
+              indexName: 'dev_Locations',
               query: searchQuery,
               hitsPerPage: 9,
             },
@@ -100,31 +100,30 @@ export const SearchPopup = ({
         // Extract hits from the first result
         const firstResult = response.results[0];
         const hits =
-          "hits" in firstResult ? (firstResult.hits as LocationHit[]) : [];
+          'hits' in firstResult ? (firstResult.hits as LocationHit[]) : [];
 
         const transformedHits: MobileContentHitType[] = hits
           .filter((hit) => hit?.campusName)
           .map((hit) => {
-            const uri =
-              hit.campusCardImage?.trim() || hit.campusImage?.trim();
+            const uri = hit.campusCardImage?.trim() || hit.campusImage?.trim();
             return {
               routing: {
-                pathname: `locations/${hit.campusUrl || ""}`,
+                pathname: `locations/${hit.campusUrl || ''}`,
               },
               coverImage: uri ? { sources: [{ uri }] } : null,
-              title: hit.campusName || "",
-              contentType: "Location",
-              summary: "",
+              title: hit.campusName || '',
+              contentType: 'Location',
+              summary: '',
             };
           });
 
         setLocationHits(transformedHits);
       } catch (error) {
-        console.error("Error searching locations:", error);
+        console.error('Error searching locations:', error);
         setLocationHits([]);
       }
     },
-    [searchClient]
+    [searchClient],
   );
 
   // Search locations when query changes or when Pages is selected
@@ -141,17 +140,17 @@ export const SearchPopup = ({
     : contentHits;
 
   return (
-    <div className="size-full p-4 !pt-0 md:p-6 md:!pt-6">
+    <div className='size-full p-4 !pt-0 md:p-6 md:!pt-6'>
       {/* Always render content collector to receive search updates */}
       <ContentItemsHitsCollector onHitsChange={setContentHits} />
 
-      <div className="border-t border-[#E0E0E0] pt-6 space-y-4">
+      <div className='border-t border-[#E0E0E0] pt-6 space-y-4'>
         {isSearching ? (
-          <div className="grid md:grid-cols-1 gap-4">
+          <div className='grid md:grid-cols-1 gap-4'>
             {combinedHits.map((hit, index) => (
               <div
                 key={`${hit.routing.pathname}-${index}`}
-                className="flex"
+                className='flex'
                 onClick={() => setIsSearchOpen(false)}
               >
                 <MobileContentHit hit={hit} />

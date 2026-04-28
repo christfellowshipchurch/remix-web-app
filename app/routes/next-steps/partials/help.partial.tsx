@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/button/button.primitive";
-import { getImageUrl } from "~/lib/utils";
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
+import { getImageUrl } from '~/lib/utils';
 
 export function HelpSection() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -27,11 +27,11 @@ export function HelpSection() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
     handleScroll(); // Initial calculation
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -40,72 +40,72 @@ export function HelpSection() {
   const opacity = Math.min(1, scrollProgress * 2); // Fade in as it grows
 
   // BG Images
-  const mobileBgImage = getImageUrl("3064840");
-  const desktopBgImage = getImageUrl("3063943");
-  const helpTextImage = getImageUrl("3143910");
+  const mobileBgImage = getImageUrl('3064840');
+  const desktopBgImage = getImageUrl('3063943');
+  const helpTextImage = getImageUrl('3143910');
 
   return (
-    <section ref={sectionRef} className="w-full py-16 lg:py-24 bg-gray-50 px-6">
+    <section ref={sectionRef} className='w-full py-16 lg:py-24 bg-gray-50 px-6'>
       <div
         className={cn([
-          "max-w-sm",
-          "sm:max-w-4xl",
-          "mx-auto",
-          "text-center",
-          "bg-cover",
-          "bg-center",
-          "bg-(image:--bg-mobile)",
-          "sm:bg-(image:--bg-desktop)",
-          "rounded-xl",
-          "overflow-hidden",
-          "relative",
-          "aspect-3/6",
-          "sm:aspect-16/10",
-          "md:aspect-video",
+          'max-w-sm',
+          'sm:max-w-4xl',
+          'mx-auto',
+          'text-center',
+          'bg-cover',
+          'bg-center',
+          'bg-(image:--bg-mobile)',
+          'sm:bg-(image:--bg-desktop)',
+          'rounded-xl',
+          'overflow-hidden',
+          'relative',
+          'aspect-3/6',
+          'sm:aspect-16/10',
+          'md:aspect-video',
         ])}
         style={
           {
-            "--bg-mobile": `url(${mobileBgImage})`,
-            "--bg-desktop": `url(${desktopBgImage})`,
-            "--help-text-image": `url(${helpTextImage})`,
+            '--bg-mobile': `url(${mobileBgImage})`,
+            '--bg-desktop': `url(${desktopBgImage})`,
+            '--help-text-image': `url(${helpTextImage})`,
           } as React.CSSProperties
         }
       >
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+        <div className='absolute inset-0 flex flex-col items-center justify-center p-8'>
           <div
             className={cn([
-              "w-[280px]",
-              "md:w-[350px]",
-              "h-[200px]",
-              "mx-auto",
-              "bg-(image:--help-text-image)",
-              "py-10",
-              "bg-contain",
-              "bg-no-repeat",
-              "bg-center",
-              "flex",
-              "items-center",
-              "justify-center",
-              "transition-all",
-              "duration-300",
-              "ease-out",
+              'w-[280px]',
+              'md:w-[350px]',
+              'h-[200px]',
+              'mx-auto',
+              'bg-(image:--help-text-image)',
+              'py-10',
+              'bg-contain',
+              'bg-no-repeat',
+              'bg-center',
+              'flex',
+              'items-center',
+              'justify-center',
+              'transition-all',
+              'duration-300',
+              'ease-out',
             ])}
             style={{
               transform: `scale(${scale})`,
               opacity: opacity,
             }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold font-serif mb-6">
+            <h2 className='text-2xl md:text-3xl font-bold font-serif mb-6'>
               We're here
               <br />
               to help
             </h2>
           </div>
-          <p className="text-lg lg:text-xl mb-8 max-w-2xl mx-auto">
+          <p className='text-lg lg:text-xl mb-8 max-w-2xl mx-auto'>
             Not sure where to start? Answer a few simple questions and we'll get
             you connected!
           </p>
-          <Button href="/connect-card">Get Connected</Button>
+          <Button href='/connect-card'>Get Connected</Button>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
-import { useLoaderData } from "react-router-dom";
-import { LoaderReturnType } from "../loader";
-import { MoreEpisodesSearch } from "../components/more-episodes-search";
+import { useLoaderData } from 'react-router-dom';
+import { LoaderReturnType } from '../loader';
+import { MoreEpisodesSearch } from '../components/more-episodes-search';
 
 export function MoreEpisodes() {
   const { episode, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =

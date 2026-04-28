@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import { useLoaderData, useLocation } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { useLoaderData, useLocation } from 'react-router-dom';
 
-import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
+import { ANCHOR_SCROLL_OFFSET } from '~/components/navbar/scroll-offset.constants';
 
-import { EventSinglePageType } from "./types";
-import { EventsSingleHero } from "./partials/hero.partial";
-import { EventSingleFAQ } from "./partials/event-faq.partial";
-import { AboutPartial } from "./partials/about.partial";
-import { EventBanner } from "./components/event-banner.component";
-import { RegistrationSection } from "./partials/registration.partial";
-import BackBanner from "~/components/back-banner";
+import { EventSinglePageType } from './types';
+import { EventsSingleHero } from './partials/hero.partial';
+import { EventSingleFAQ } from './partials/event-faq.partial';
+import { AboutPartial } from './partials/about.partial';
+import { EventBanner } from './components/event-banner.component';
+import { RegistrationSection } from './partials/registration.partial';
+import BackBanner from '~/components/back-banner';
 
-const SECTION_IDS = ["about", "faq", "register"] as const;
+const SECTION_IDS = ['about', 'faq', 'register'] as const;
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
@@ -26,7 +26,7 @@ export const EventSinglePage: React.FC = () => {
     if (!el) return;
     const offsetTop =
       el.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
-    window.scrollTo({ top: offsetTop, behavior: "smooth" });
+    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
   }, [location.hash]);
 
   // Check if sessionScheduleCards exist
@@ -39,20 +39,20 @@ export const EventSinglePage: React.FC = () => {
     hasSessionRegistration || hasClickThroughRegistration;
 
   const aboutInformationExists =
-    (data.aboutTitle && data.aboutTitle !== "") ||
-    (data.aboutContent && data.aboutContent !== "") ||
+    (data.aboutTitle && data.aboutTitle !== '') ||
+    (data.aboutContent && data.aboutContent !== '') ||
     (data.keyInfoCards && data.keyInfoCards.length > 0) ||
     (data.whatToExpect && data.whatToExpect.length > 0) ||
-    (data.moreInfoTitle && data.moreInfoTitle !== "") ||
+    (data.moreInfoTitle && data.moreInfoTitle !== '') ||
     (data.optionalBlurb && data.optionalBlurb.length > 0);
 
   return (
     <>
-      <div className="flex flex-col items-center bg-white">
+      <div className='flex flex-col items-center bg-white'>
         <BackBanner
-          backText="Back to Events"
+          backText='Back to Events'
           pageTitle={data.title}
-          link="/events"
+          link='/events'
         />
 
         <EventsSingleHero
@@ -68,13 +68,13 @@ export const EventSinglePage: React.FC = () => {
           cta={data.heroCtas[0]}
           sections={[
             ...(aboutInformationExists
-              ? [{ id: "about", label: "About" }]
+              ? [{ id: 'about', label: 'About' }]
               : []),
             ...(data.faqItems && data.faqItems.length > 0
-              ? [{ id: "faq", label: "FAQ" }]
+              ? [{ id: 'faq', label: 'FAQ' }]
               : []),
             ...(showRegistration
-              ? [{ id: "register", label: "Register" }]
+              ? [{ id: 'register', label: 'Register' }]
               : []),
           ]}
         />

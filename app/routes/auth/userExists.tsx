@@ -1,5 +1,5 @@
-import { data } from "react-router-dom";
-import { fetchUserLogin } from "~/lib/.server/authentication/rock-authentication";
+import { data } from 'react-router-dom';
+import { fetchUserLogin } from '~/lib/.server/authentication/rock-authentication';
 
 export const checkUserExists = async (identity: string): Promise<boolean> => {
   const login = await fetchUserLogin(identity);
@@ -8,7 +8,7 @@ export const checkUserExists = async (identity: string): Promise<boolean> => {
     return true;
   } else if (
     login &&
-    typeof login === "object" &&
+    typeof login === 'object' &&
     Object.keys(login).length > 0
   ) {
     return true;
@@ -22,13 +22,13 @@ export const userExists = async (identity: string) => {
     return new Response(JSON.stringify({ userExists }), {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
   } catch (error) {
     if (error instanceof Error) {
       return data({ error: error.message }, { status: 400 });
     }
-    return data({ error: "An unknown error occurred" }, { status: 400 });
+    return data({ error: 'An unknown error occurred' }, { status: 400 });
   }
 };

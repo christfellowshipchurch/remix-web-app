@@ -1,14 +1,14 @@
-import type { AlgoliaUrlStateBase } from "~/lib/algolia-url-state";
-import { createAlgoliaUrlStateConfig } from "~/lib/algolia-url-state";
+import type { AlgoliaUrlStateBase } from '~/lib/algolia-url-state';
+import { createAlgoliaUrlStateConfig } from '~/lib/algolia-url-state';
 
 export const CLASS_SINGLE_PARAMS = {
-  QUERY: "q",
+  QUERY: 'q',
 } as const;
 
 export type ClassSingleUrlState = AlgoliaUrlStateBase;
 
 /** Repeated `campus` query params ↔ InstantSearch `refinementList.campus`. */
-const REFINEMENT_LIST_ATTRIBUTES = ["campus", "format", "language"] as const;
+const REFINEMENT_LIST_ATTRIBUTES = ['campus', 'format', 'language'] as const;
 
 const {
   parse: parseClassSingleUrlState,

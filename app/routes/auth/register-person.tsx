@@ -1,8 +1,8 @@
-import { data } from "react-router-dom";
-import { z } from "zod";
-import { registerPersonWithEmail } from "~/lib/.server/authentication/rock-authentication";
-import { RegistrationTypes } from "~/providers/auth-provider";
-import { authenticateOrRegisterWithSms } from "~/lib/.server/authentication/authenticate-or-register-with-sms";
+import { data } from 'react-router-dom';
+import { z } from 'zod';
+import { registerPersonWithEmail } from '~/lib/.server/authentication/rock-authentication';
+import { RegistrationTypes } from '~/providers/auth-provider';
+import { authenticateOrRegisterWithSms } from '~/lib/.server/authentication/authenticate-or-register-with-sms';
 
 const UserProfileFieldSchema = z.object({
   field: z.string(),
@@ -27,7 +27,7 @@ export const registerPerson = async ({
   userInputData,
 }: RegisterPersonType) => {
   if (!userInputData) {
-    return data({ error: "User input data is required" }, { status: 400 });
+    return data({ error: 'User input data is required' }, { status: 400 });
   }
 
   let registrationData;
@@ -35,15 +35,15 @@ export const registerPerson = async ({
     const parsed = JSON.parse(userInputData as string);
     registrationData = UserInputDataSchema.parse(parsed);
   } catch {
-    return data({ error: "Invalid registration data" }, { status: 400 });
+    return data({ error: 'Invalid registration data' }, { status: 400 });
   }
 
   switch (registrationType) {
-    case "sms": {
+    case 'sms': {
       if (!registrationData.phoneNumber || !registrationData.pin) {
         return data(
-          { error: "Phone number and PIN are required for SMS registration" },
-          { status: 400 }
+          { error: 'Phone number and PIN are required for SMS registration' },
+          { status: 400 },
         );
       }
       try {
@@ -53,27 +53,27 @@ export const registerPerson = async ({
           email: registrationData.email,
           userProfile: registrationData.userProfile,
         });
-        const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+        const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
         return new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: {
-            "Content-Type": "application/json",
-            "Set-Cookie": `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
+            'Content-Type': 'application/json',
+            'Set-Cookie': `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
           },
         });
       } catch (error: unknown) {
         const errorMessage =
-          error instanceof Error ? error.message : "Unknown error";
+          error instanceof Error ? error.message : 'Unknown error';
         const statusCode =
           (error as { statusCode?: number })?.statusCode || 500;
         return data({ error: errorMessage }, { status: statusCode });
       }
     }
-    case "email": {
+    case 'email': {
       if (!registrationData.email || !registrationData.password) {
         return data(
-          { error: "Email and password are required for email registration" },
-          { status: 400 }
+          { error: 'Email and password are required for email registration' },
+          { status: 400 },
         );
       }
       try {
@@ -83,23 +83,23 @@ export const registerPerson = async ({
           phoneNumber: registrationData.phoneNumber ?? undefined,
           userProfile: registrationData.userProfile,
         });
-        const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+        const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
         return new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: {
-            "Content-Type": "application/json",
-            "Set-Cookie": `auth-token=${token}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
+            'Content-Type': 'application/json',
+            'Set-Cookie': `auth-token=${token}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
           },
         });
       } catch (error: unknown) {
         const errorMessage =
-          error instanceof Error ? error.message : "Unknown error";
+          error instanceof Error ? error.message : 'Unknown error';
         const statusCode =
           (error as { statusCode?: number })?.statusCode || 500;
         return data({ error: errorMessage }, { status: statusCode });
       }
     }
     default:
-      return data({ error: "Invalid registration type" }, { status: 400 });
+      return data({ error: 'Invalid registration type' }, { status: 400 });
   }
 };

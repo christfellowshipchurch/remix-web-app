@@ -1,11 +1,11 @@
-import { CardFeed } from "./partials/card-feed.partial";
-import { HeroCardScroll } from "./partials/hero-scroll.partial";
+import { CardFeed } from './partials/card-feed.partial';
+import { HeroCardScroll } from './partials/hero-scroll.partial';
 
-export { meta } from "./meta";
+export { meta } from './meta';
 
 export default function InfoPage() {
   return (
-    <div className="flex flex-col w-full">
+    <div className='flex flex-col w-full'>
       <HeroCardScroll />
       <CardFeed />
     </div>

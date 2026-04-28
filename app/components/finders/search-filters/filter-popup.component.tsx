@@ -4,24 +4,24 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { createPortal } from "react-dom";
-import { Stats, useHits, useRefinementList } from "react-instantsearch";
+} from 'react';
+import { createPortal } from 'react-dom';
+import { Stats, useHits, useRefinementList } from 'react-instantsearch';
 
 import {
   groupClassTypeHits,
   syntheticHitsFromGrouped,
-} from "~/routes/class-finder/finder/components/group-class-type-hits";
-import type { ClassHitType } from "~/routes/class-finder/types";
-import { finderFilterSectionSubtitleClass } from "~/components/finders/search-filters/filter-section-subtitle";
+} from '~/routes/class-finder/finder/components/group-class-type-hits';
+import type { ClassHitType } from '~/routes/class-finder/types';
+import { finderFilterSectionSubtitleClass } from '~/components/finders/search-filters/filter-section-subtitle';
 import {
   FinderLocationSearch,
   finderApplyZipButtonClass,
   finderLocationInputBaseClass,
-} from "~/components/finders/location-search";
-import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/button/button.primitive";
-import { Icon } from "~/primitives/icon/icon";
+} from '~/components/finders/location-search';
+import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
+import { Icon } from '~/primitives/icon/icon';
 
 type FilterCoordinates = { lat: number | null; lng: number | null };
 
@@ -33,7 +33,7 @@ export interface FilterPopupSection {
   input?: boolean;
   inputPlaceholder?: string;
   checkbox?: boolean;
-  checkboxLayout?: "vertical" | "horizontal";
+  checkboxLayout?: 'vertical' | 'horizontal';
   isAgeRange?: boolean;
   isWeekdays?: boolean;
   isDropdown?: boolean;
@@ -44,8 +44,8 @@ export interface FilterPopupSection {
   coordinates?: FilterCoordinates | null;
   setCoordinates?: (coordinates: FilterCoordinates | null) => void;
   /** Which control last set `coordinates` (group finder split: zip vs GPS). */
-  locationSource?: "zip" | "gps" | null;
-  onLocationKind?: (kind: "zip" | "gps" | null) => void;
+  locationSource?: 'zip' | 'gps' | null;
+  onLocationKind?: (kind: 'zip' | 'gps' | null) => void;
 }
 
 export interface FilterPopupData {
@@ -72,7 +72,7 @@ interface FilterPopupProps {
    * `bottomSheet` — fixed bottom sheet with backdrop and drag-to-close (narrow mobile).
    * `embedded` — scrollable body only (e.g. group finder overflow panel inside a sheet or card).
    */
-  layout?: "popover" | "bottomSheet" | "embedded";
+  layout?: 'popover' | 'bottomSheet' | 'embedded';
   /** Class finder: footer count = grouped class rows (grid), not raw Algolia nbHits. */
   groupedFooterCount?: boolean;
 }
@@ -81,7 +81,7 @@ function AlgoliaHitsLabel() {
   return (
     <Stats
       classNames={{
-        root: "",
+        root: '',
       }}
       translations={{
         rootElementText: ({ nbHits }) =>
@@ -147,13 +147,13 @@ export function MobileFilterBottomSheet({
     };
     const prevHtmlOverflow = document.documentElement.style.overflow;
 
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.position = "fixed";
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.width = "100%";
-    document.body.style.overflow = "hidden";
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
 
     return () => {
       document.documentElement.style.overflow = prevHtmlOverflow;
@@ -169,10 +169,10 @@ export function MobileFilterBottomSheet({
 
   useEffect(() => {
     const onKey = (e: { key: string }) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === 'Escape') onClose();
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
   const finishDrag = (e: React.PointerEvent) => {
@@ -208,49 +208,49 @@ export function MobileFilterBottomSheet({
     setDragY(y);
   };
 
-  if (typeof document === "undefined") return null;
+  if (typeof document === 'undefined') return null;
 
   const sheetTransform = `translateY(${dragY}px)`;
   const sheetTransition = isDragging
-    ? "none"
+    ? 'none'
     : openAnimationDone
-      ? "transform 0.22s ease-out"
-      : "transform 0.38s cubic-bezier(0.22, 1, 0.36, 1)";
+      ? 'transform 0.22s ease-out'
+      : 'transform 0.38s cubic-bezier(0.22, 1, 0.36, 1)';
 
   return createPortal(
     <div
-      className="fixed inset-0 z-500 box-border flex flex-col justify-end overflow-x-hidden overscroll-contain pointer-events-none"
+      className='fixed inset-0 z-500 box-border flex flex-col justify-end overflow-x-hidden overscroll-contain pointer-events-none'
       style={{
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        width: "100%",
-        maxWidth: "100%",
-        height: "100%",
-        maxHeight: "100dvh",
-        overscrollBehavior: "contain",
+        width: '100%',
+        maxWidth: '100%',
+        height: '100%',
+        maxHeight: '100dvh',
+        overscrollBehavior: 'contain',
       }}
-      role="presentation"
+      role='presentation'
       data-search-filters-portal
     >
       <button
-        type="button"
-        className="absolute inset-0 z-0 cursor-default bg-black/45 pointer-events-auto"
+        type='button'
+        className='absolute inset-0 z-0 cursor-default bg-black/45 pointer-events-auto'
         onClick={onClose}
-        aria-label="Close filter"
+        aria-label='Close filter'
       />
       {/* Flex justify-end pins the sheet to the viewport bottom; absolute+bottom mis-anchored when layout was wider than the viewport. */}
-      <div className="relative z-10 flex w-full min-w-0 max-w-full justify-center pointer-events-none">
+      <div className='relative z-10 flex w-full min-w-0 max-w-full justify-center pointer-events-none'>
         <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="filter-sheet-title"
+          role='dialog'
+          aria-modal='true'
+          aria-labelledby='filter-sheet-title'
           className={cn(
-            "pointer-events-auto box-border flex w-full min-w-0 max-w-full max-h-[min(85dvh,820px)] min-h-[min(32vh,280px)] flex-col overflow-x-hidden",
-            "rounded-t-2xl border-t-2 border-neutral-200 bg-white",
-            "pb-[max(1rem,env(safe-area-inset-bottom))]",
-            "will-change-transform",
+            'pointer-events-auto box-border flex w-full min-w-0 max-w-full max-h-[min(85dvh,820px)] min-h-[min(32vh,280px)] flex-col overflow-x-hidden',
+            'rounded-t-2xl border-t-2 border-neutral-200 bg-white',
+            'pb-[max(1rem,env(safe-area-inset-bottom))]',
+            'will-change-transform',
           )}
           style={{
             transform: sheetTransform,
@@ -259,37 +259,37 @@ export function MobileFilterBottomSheet({
         >
           <div
             ref={dragRegionRef}
-            className="touch-none shrink-0 select-none"
+            className='touch-none shrink-0 select-none'
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={finishDrag}
             onPointerCancel={finishDrag}
           >
-            <div className="flex justify-center pt-2 pb-1.5">
+            <div className='flex justify-center pt-2 pb-1.5'>
               <div
-                className="h-1.5 w-11 shrink-0 rounded-full bg-neutral-300"
+                className='h-1.5 w-11 shrink-0 rounded-full bg-neutral-300'
                 aria-hidden
               />
             </div>
-            <div className="flex min-w-0 items-center justify-between gap-2 border-b border-neutral-100 px-4 pb-3 pt-2">
+            <div className='flex min-w-0 items-center justify-between gap-2 border-b border-neutral-100 px-4 pb-3 pt-2'>
               <h2
-                id="filter-sheet-title"
-                className="min-w-0 flex-1 truncate text-xl font-bold text-black"
+                id='filter-sheet-title'
+                className='min-w-0 flex-1 truncate text-xl font-bold text-black'
               >
                 {title}
               </h2>
               <button
-                type="button"
+                type='button'
                 onPointerDown={(e) => e.stopPropagation()}
                 onClick={onClose}
-                className="cursor-pointer rounded-lg p-1"
-                aria-label="Close"
+                className='cursor-pointer rounded-lg p-1'
+                aria-label='Close'
               >
-                <Icon name="x" color="black" />
+                <Icon name='x' color='black' />
               </button>
             </div>
           </div>
-          <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pt-2">
+          <div className='min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pt-2'>
             {scrollable}
           </div>
           {footer}
@@ -322,7 +322,7 @@ export const FilterPopup = ({
   ageInput,
   setAgeInput,
   style,
-  layout = "popover",
+  layout = 'popover',
   groupedFooterCount = false,
 }: FilterPopupProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -353,30 +353,30 @@ export const FilterPopup = ({
     Object.values(sectionFooterRegistry).forEach((s) => s.reset());
   };
 
-  const isBottomSheet = layout === "bottomSheet";
-  const isEmbedded = layout === "embedded";
+  const isBottomSheet = layout === 'bottomSheet';
+  const isEmbedded = layout === 'embedded';
 
   const multiSection = data.content.length > 1;
 
   const bodyScrollable = (
     <div
       className={cn(
-        "flex flex-col",
-        !multiSection && "gap-6",
-        !isEmbedded && "px-4 pb-4",
+        'flex flex-col',
+        !multiSection && 'gap-6',
+        !isEmbedded && 'px-4 pb-4',
         (isBottomSheet || isEmbedded) &&
-          "min-w-0 max-w-full overflow-x-hidden pt-1",
+          'min-w-0 max-w-full overflow-x-hidden pt-1',
       )}
     >
       {data.content.map((content, index) => (
         <div
-          key={`${index}-${content.attribute}-${content.title ?? ""}`}
+          key={`${index}-${content.attribute}-${content.title ?? ''}`}
           className={cn(
-            "flex flex-col gap-2",
-            (isBottomSheet || isEmbedded) && "min-w-0 max-w-full",
+            'flex flex-col gap-2',
+            (isBottomSheet || isEmbedded) && 'min-w-0 max-w-full',
             multiSection &&
               index > 0 &&
-              "mt-6 w-full border-t border-solid border-[#E5E7EB] pt-6",
+              'mt-6 w-full border-t border-solid border-[#E5E7EB] pt-6',
           )}
         >
           {content.title && (
@@ -385,7 +385,7 @@ export const FilterPopup = ({
             </h3>
           )}
           <FilterPopupContent
-            sectionKey={`${index}-${content.attribute}-${content.title ?? ""}`}
+            sectionKey={`${index}-${content.attribute}-${content.title ?? ''}`}
             showPopupFooter={Boolean(data.showFooter)}
             registerSectionFooter={registerSectionFooter}
             data={content}
@@ -401,21 +401,21 @@ export const FilterPopup = ({
   const footerEl = data.showFooter ? (
     <div
       className={cn(
-        "flex items-center gap-4 border-t border-neutral-lighter px-4",
-        hasAnyPopupSelection ? "justify-between" : "justify-start",
+        'flex items-center gap-4 border-t border-neutral-lighter px-4',
+        hasAnyPopupSelection ? 'justify-between' : 'justify-start',
         isBottomSheet
-          ? "mt-8 min-w-0 shrink-0 flex-wrap gap-y-3 bg-white pb-3 pt-8 shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]"
-          : "pb-4 pt-2",
+          ? 'mt-8 min-w-0 shrink-0 flex-wrap gap-y-3 bg-white pb-3 pt-8 shadow-[0_-10px_36px_-12px_rgba(15,23,42,0.14)]'
+          : 'pb-4 pt-2',
       )}
     >
       <button
-        type="button"
+        type='button'
         disabled={!hasAnyPopupSelection}
         className={cn(
-          "transition-all duration-300 pt-1",
+          'transition-all duration-300 pt-1',
           hasAnyPopupSelection
-            ? "cursor-pointer text-ocean opacity-100"
-            : "cursor-not-allowed text-neutral-default opacity-50",
+            ? 'cursor-pointer text-ocean opacity-100'
+            : 'cursor-not-allowed text-neutral-default opacity-50',
         )}
         onClick={() => clearAllPopupSections()}
       >
@@ -424,10 +424,10 @@ export const FilterPopup = ({
 
       {hasAnyPopupSelection ? (
         <Button
-          intent="primary"
+          intent='primary'
           className={cn(
-            "min-h-0 w-fit shrink-0 rounded-full px-4 py-1 text-base font-semibold",
-            isBottomSheet && "whitespace-normal",
+            'min-h-0 w-fit shrink-0 rounded-full px-4 py-1 text-base font-semibold',
+            isBottomSheet && 'whitespace-normal',
           )}
           onClick={() => onHide()}
         >
@@ -462,24 +462,24 @@ export const FilterPopup = ({
     <div
       ref={ref}
       className={cn(
-        "cursor-default z-10 flex flex-col gap-4 bg-white",
-        "rounded-2xl border border-neutral-lighter overflow-hidden",
-        "absolute top-[65px] right-1/2 w-[280px] translate-x-1/2 xl:w-[320px]",
+        'cursor-default z-10 flex flex-col gap-4 bg-white',
+        'rounded-2xl border border-neutral-lighter overflow-hidden',
+        'absolute top-[65px] right-1/2 w-[280px] translate-x-1/2 xl:w-[320px]',
         showSection
-          ? "opacity-100"
-          : "-left-[9999px] -z-1 opacity-0 pointer-events-none",
+          ? 'opacity-100'
+          : '-left-[9999px] -z-1 opacity-0 pointer-events-none',
         className,
       )}
       style={
         showSection
           ? style
-          : { ...style, left: "-9999px", pointerEvents: "none" }
+          : { ...style, left: '-9999px', pointerEvents: 'none' }
       }
     >
-      <div className="flex items-center justify-between p-4 pb-1">
-        <h3 className="text-xl font-bold text-black">{popupTitle}</h3>
-        <div className="cursor-pointer!" onClick={() => onHide()}>
-          <Icon name="x" color="black" />
+      <div className='flex items-center justify-between p-4 pb-1'>
+        <h3 className='text-xl font-bold text-black'>{popupTitle}</h3>
+        <div className='cursor-pointer!' onClick={() => onHide()}>
+          <Icon name='x' color='black' />
         </div>
       </div>
 
@@ -492,7 +492,7 @@ export const FilterPopup = ({
 
 function meetingTypeUsesGlobeIcon(label: string): boolean {
   const t = label.trim().toLowerCase();
-  return t === "virtual" || t === "online";
+  return t === 'virtual' || t === 'online';
 }
 
 const FilterPopupContent = ({
@@ -505,39 +505,39 @@ const FilterPopupContent = ({
   popupTitle,
 }: FilterPopupContentProps) => {
   const { items, refine } = useRefinementList({ attribute: data.attribute });
-  const [localAgeInput, setLocalAgeInput] = useState<string>(ageInput || "");
+  const [localAgeInput, setLocalAgeInput] = useState<string>(ageInput || '');
 
   // Topic categories for filtering
-  const spiritualGrowthTopics = ["Bible Study", "Prayer", "Message Discussion"];
-  const lifeSupportTopics = ["Marriage", "Parenting", "Finances"];
+  const spiritualGrowthTopics = ['Bible Study', 'Prayer', 'Message Discussion'];
+  const lifeSupportTopics = ['Marriage', 'Parenting', 'Finances'];
   const communityFunTopics = [
-    "Friendship",
-    "Sports",
-    "Activty/Hobby",
-    "Book Club",
-    "Watch Party",
-    "Podcast",
+    'Friendship',
+    'Sports',
+    'Activty/Hobby',
+    'Book Club',
+    'Watch Party',
+    'Podcast',
   ];
 
   const MEETING_DAYS_ORDER = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
   ];
 
   // Filter items based on category and popup title
   const getFilteredItems = () => {
-    if (data.attribute === "topics" && data.title === "Spiritual Growth") {
+    if (data.attribute === 'topics' && data.title === 'Spiritual Growth') {
       return items.filter((item) => spiritualGrowthTopics.includes(item.label));
     }
-    if (data.attribute === "topics" && data.title === "Life & Support") {
+    if (data.attribute === 'topics' && data.title === 'Life & Support') {
       return items.filter((item) => lifeSupportTopics.includes(item.label));
     }
-    if (data.attribute === "topics" && data.title === "Community & Fun") {
+    if (data.attribute === 'topics' && data.title === 'Community & Fun') {
       return items.filter((item) => communityFunTopics.includes(item.label));
     }
     if (data.isWeekdays === true) {
@@ -557,14 +557,14 @@ const FilterPopupContent = ({
     : filteredItems;
 
   const dropdownSelectValue =
-    sortedForDropdown.find((item) => item.isRefined)?.value ?? "";
+    sortedForDropdown.find((item) => item.isRefined)?.value ?? '';
 
   const dropdownEmptyLabel =
-    data.attribute === "campus"
-      ? "Select Campus"
-      : data.attribute === "campusList"
-        ? "Select City"
-        : "Select";
+    data.attribute === 'campus'
+      ? 'Select Campus'
+      : data.attribute === 'campusList'
+        ? 'Select City'
+        : 'Select';
 
   const applyDropdownSelection = (value: string) => {
     sortedForDropdown.forEach((item) => {
@@ -593,22 +593,22 @@ const FilterPopupContent = ({
         data.onLocationKind != null || data.isCurrentLocation === true;
       if (zipRowUsesSource) {
         return (
-          data.locationSource === "zip" && coordsMeaningful(data.coordinates)
+          data.locationSource === 'zip' && coordsMeaningful(data.coordinates)
         );
       }
       return coordsMeaningful(data.coordinates);
     }
     if (data.isCurrentLocation) {
       return (
-        data.locationSource === "gps" && coordsMeaningful(data.coordinates)
+        data.locationSource === 'gps' && coordsMeaningful(data.coordinates)
       );
     }
     if (data.input) {
-      const committed = (ageInput ?? "").trim();
-      return committed !== "" || localAgeInput.trim() !== "";
+      const committed = (ageInput ?? '').trim();
+      return committed !== '' || localAgeInput.trim() !== '';
     }
     if (data.isDropdown) {
-      return dropdownSelectValue !== "";
+      return dropdownSelectValue !== '';
     }
     return filteredItems.some((i) => i.isRefined);
   }, [
@@ -630,8 +630,8 @@ const FilterPopupContent = ({
         refine(item.value);
       }
     });
-    setLocalAgeInput("");
-    setAgeInput?.("");
+    setLocalAgeInput('');
+    setAgeInput?.('');
     if (data.isLocation || data.isCurrentLocation) {
       data.setCoordinates?.(null);
       data.onLocationKind?.(null);
@@ -662,11 +662,11 @@ const FilterPopupContent = ({
   ]);
 
   const styles = {
-    checkbox: "min-w-0 break-words text-text-primary font-regular text-sm",
+    checkbox: 'min-w-0 break-words text-text-primary font-regular text-sm',
     button:
-      "h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-text-primary transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]",
-    meetingTypeButton: "flex w-fit flex-wrap items-center gap-1.5",
-    buttonRefined: "bg-ocean !text-white hover:bg-navy",
+      'h-auto min-h-0 min-w-0 w-fit whitespace-normal border-0 bg-gray px-3 py-1.5 text-sm font-semibold leading-tight text-text-primary transition-colors duration-300 hover:bg-neutral-200 rounded-[16777200px]',
+    meetingTypeButton: 'flex w-fit flex-wrap items-center gap-1.5',
+    buttonRefined: 'bg-ocean !text-white hover:bg-navy',
   };
 
   return (
@@ -674,10 +674,10 @@ const FilterPopupContent = ({
       {!data.isDropdown && (
         <div
           className={cn(
-            "flex min-w-0 max-w-full bg-white",
-            data.checkbox && data.checkboxLayout === "vertical"
-              ? "gap-4 flex-col"
-              : "flex-wrap gap-1.5",
+            'flex min-w-0 max-w-full bg-white',
+            data.checkbox && data.checkboxLayout === 'vertical'
+              ? 'gap-4 flex-col'
+              : 'flex-wrap gap-1.5',
           )}
         >
           {data.isLocation ? (
@@ -698,22 +698,22 @@ const FilterPopupContent = ({
           ) : (
             <>
               {data.input ? (
-                <div className="flex w-full min-w-0 flex-row items-stretch gap-2">
+                <div className='flex w-full min-w-0 flex-row items-stretch gap-2'>
                   <input
-                    type="number"
-                    placeholder={data.inputPlaceholder || "Enter your age"}
+                    type='number'
+                    placeholder={data.inputPlaceholder || 'Enter your age'}
                     className={cn(
                       finderLocationInputBaseClass,
-                      "min-w-0 flex-1 max-w-[160px] py-1.5",
+                      'min-w-0 flex-1 max-w-[160px] py-1.5',
                     )}
                     value={localAgeInput}
                     onChange={(e) => setLocalAgeInput(e.target.value)}
                     onClick={(e) => e.stopPropagation()}
-                    min="13"
-                    max="120"
+                    min='13'
+                    max='120'
                   />
                   <button
-                    type="button"
+                    type='button'
                     className={finderApplyZipButtonClass}
                     onClick={() => setAgeInput?.(localAgeInput)}
                   >
@@ -727,13 +727,13 @@ const FilterPopupContent = ({
                       <div
                         key={index}
                         className={cn(
-                          data.checkboxLayout === "horizontal" &&
-                            "flex max-w-full min-w-0 flex-wrap gap-x-2 gap-y-2 pr-2",
+                          data.checkboxLayout === 'horizontal' &&
+                            'flex max-w-full min-w-0 flex-wrap gap-x-2 gap-y-2 pr-2',
                         )}
                       >
                         {data.checkbox ? (
                           <div
-                            className="flex max-w-full min-w-0 cursor-pointer! items-center gap-1.5"
+                            className='flex max-w-full min-w-0 cursor-pointer! items-center gap-1.5'
                             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                               e.stopPropagation();
                               refine(item.value);
@@ -741,33 +741,32 @@ const FilterPopupContent = ({
                           >
                             <div
                               className={cn(
-                                "box-border flex size-[18px] shrink-0 items-center justify-center rounded-sm border border-[#D1D5DB] bg-transparent",
-                                item.isRefined &&
-                                  "border-ocean bg-ocean",
+                                'box-border flex size-[18px] shrink-0 items-center justify-center rounded-sm border border-[#D1D5DB] bg-transparent',
+                                item.isRefined && 'border-ocean bg-ocean',
                               )}
                               aria-hidden
                             >
                               {item.isRefined ? (
                                 <Icon
-                                  name="check"
+                                  name='check'
                                   size={14}
-                                  className="text-white"
+                                  className='text-white'
                                 />
                               ) : null}
                             </div>
                             <div className={styles.checkbox}>
-                              {data.attribute === "adultOnly"
-                                ? item.value === "false"
-                                  ? "Children Welcome"
-                                  : "Adult Only"
+                              {data.attribute === 'adultOnly'
+                                ? item.value === 'false'
+                                  ? 'Children Welcome'
+                                  : 'Adult Only'
                                 : item.label}
                             </div>
                           </div>
                         ) : (
                           <Button
                             key={index}
-                            intent="secondary"
-                            size="sm"
+                            intent='secondary'
+                            size='sm'
                             className={cn(
                               styles.button,
                               data.isMeetingType && styles.meetingTypeButton,
@@ -795,20 +794,20 @@ const FilterPopupContent = ({
                               <Icon
                                 name={
                                   meetingTypeUsesGlobeIcon(item.label)
-                                    ? "globe"
-                                    : "map"
+                                    ? 'globe'
+                                    : 'map'
                                 }
                                 size={16}
                                 className={
                                   item.isRefined
-                                    ? "text-white"
-                                    : "text-text-primary"
+                                    ? 'text-white'
+                                    : 'text-text-primary'
                                 }
                               />
                             )}
                             {data.isWeekdays
-                              ? item.label === "Thursday"
-                                ? "Thur"
+                              ? item.label === 'Thursday'
+                                ? 'Thur'
                                 : item.label.substring(0, 3)
                               : item.label}
                           </Button>
@@ -824,8 +823,8 @@ const FilterPopupContent = ({
       )}
 
       {data.isDropdown && (
-        <div className="flex flex-col gap-2 w-full">
-          <div className="relative w-full">
+        <div className='flex flex-col gap-2 w-full'>
+          <div className='relative w-full'>
             <select
               value={dropdownSelectValue}
               onChange={(e) => applyDropdownSelection(e.target.value)}
@@ -833,17 +832,17 @@ const FilterPopupContent = ({
               onMouseDown={(e) => e.stopPropagation()}
               className={cn(
                 finderLocationInputBaseClass,
-                "flex w-full cursor-pointer appearance-none items-center bg-white pr-9",
+                'flex w-full cursor-pointer appearance-none items-center bg-white pr-9',
               )}
               aria-label={
                 data.title
                   ? `Select ${data.title}`
                   : popupTitle
                     ? `Select ${popupTitle.toLowerCase()}`
-                    : "Select filter"
+                    : 'Select filter'
               }
             >
-              <option value="">{dropdownEmptyLabel}</option>
+              <option value=''>{dropdownEmptyLabel}</option>
               {sortedForDropdown.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
@@ -852,14 +851,10 @@ const FilterPopupContent = ({
             </select>
             <div
               className={cn(
-                "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
+                'absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none',
               )}
             >
-              <Icon
-                name="chevronDown"
-                size={16}
-                className="text-[#909090]"
-              />
+              <Icon name='chevronDown' size={16} className='text-[#909090]' />
             </div>
           </div>
         </div>

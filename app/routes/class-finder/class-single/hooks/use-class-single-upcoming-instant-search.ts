@@ -1,33 +1,33 @@
-import { useLoaderData, useSearchParams } from "react-router-dom";
+import { useLoaderData, useSearchParams } from 'react-router-dom';
 import {
   type ComponentProps,
   useCallback,
   useMemo,
   useRef,
   useState,
-} from "react";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch } from "react-instantsearch";
+} from 'react';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { InstantSearch } from 'react-instantsearch';
 
 import {
   buildIndexInitialUiState,
   hasActiveFinderGeoCoordinates,
   isLocationPillSupplementallyActiveFromGeo,
   type FinderGeoCoordinates,
-} from "~/components/finders/finder-algolia.utils";
-import type { SearchFilterDesktopItem } from "~/components/finders/search-filters";
-import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { getClassSingleUpcomingDesktopFilters } from "../class-single-upcoming-filters.data";
+} from '~/components/finders/finder-algolia.utils';
+import type { SearchFilterDesktopItem } from '~/components/finders/search-filters';
+import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
+import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import { getClassSingleUpcomingDesktopFilters } from '../class-single-upcoming-filters.data';
 import {
   classSingleEmptyState,
   classSingleUrlStateToParams,
   parseClassSingleUrlState,
   type ClassSingleUrlState,
-} from "../class-single-url-state";
-import type { LoaderReturnType } from "../loader";
+} from '../class-single-url-state';
+import type { LoaderReturnType } from '../loader';
 
-export const CLASS_SINGLE_UPCOMING_INDEX_NAME = "dev_Classes";
+export const CLASS_SINGLE_UPCOMING_INDEX_NAME = 'dev_Classes';
 
 export function useClassSingleUpcomingInstantSearch() {
   const { classUrl, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
@@ -51,10 +51,9 @@ export function useClassSingleUpcomingInstantSearch() {
     [],
   );
 
-  const [coordinates, setCoordinatesState] = useState<FinderGeoCoordinates>(
-    null,
-  );
-  const [locationSource, setLocationKind] = useState<"zip" | "gps" | null>(
+  const [coordinates, setCoordinatesState] =
+    useState<FinderGeoCoordinates>(null);
+  const [locationSource, setLocationKind] = useState<'zip' | 'gps' | null>(
     null,
   );
 
@@ -128,13 +127,12 @@ export function useClassSingleUpcomingInstantSearch() {
   const geoFiltersActive = hasActiveFinderGeoCoordinates(coordinates);
 
   const onStateChange = useCallback<
-    NonNullable<ComponentProps<typeof InstantSearch>["onStateChange"]>
+    NonNullable<ComponentProps<typeof InstantSearch>['onStateChange']>
   >(
     ({ uiState, setUiState }) => {
       setUiState(uiState);
       const indexState = uiState[CLASS_SINGLE_UPCOMING_INDEX_NAME];
-      if (indexState)
-        syncUrlFromUiState(indexState as Record<string, unknown>);
+      if (indexState) syncUrlFromUiState(indexState as Record<string, unknown>);
     },
     [syncUrlFromUiState],
   );

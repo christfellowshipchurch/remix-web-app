@@ -1,7 +1,7 @@
-import * as Form from "@radix-ui/react-form";
-import React, { useEffect, useRef, useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
-import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
+import * as Form from '@radix-ui/react-form';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '~/primitives/button/button.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
 
 interface PinScreenProps {
   onSubmit: (pin: string) => Promise<void>;
@@ -14,13 +14,13 @@ const PinScreen: React.FC<PinScreenProps> = ({
   phoneNumber,
   onResend,
 }) => {
-  const [pin, setPin] = useState(["", "", "", "", "", ""]);
+  const [pin, setPin] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const formatPhoneNumber = (phoneNumber: string) => {
-    const cleaned = ("" + phoneNumber).replace(/\D/g, "");
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
       return `+1 ${match[1]} ${match[2]} ${match[3]}`;
@@ -46,25 +46,25 @@ const PinScreen: React.FC<PinScreenProps> = ({
 
   const handleKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === "Backspace" && !pin[index] && index > 0) {
+    if (e.key === 'Backspace' && !pin[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handleClick = () => {
     if (error) {
-      setPin(["", "", "", "", "", ""]);
+      setPin(['', '', '', '', '', '']);
       setError(null);
       inputRefs.current[0]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pasteData = e.clipboardData.getData("Text");
+    const pasteData = e.clipboardData.getData('Text');
     if (/^\d{6}$/.test(pasteData)) {
-      const newPin = pasteData.split("");
+      const newPin = pasteData.split('');
       setPin(newPin);
       inputRefs.current[5]?.focus();
     }
@@ -76,9 +76,9 @@ const PinScreen: React.FC<PinScreenProps> = ({
     setLoading(true);
     setError(null);
 
-    const fullPin = pin.join("");
+    const fullPin = pin.join('');
     if (fullPin.length !== 6) {
-      setError("Please enter a 6-digit verification code");
+      setError('Please enter a 6-digit verification code');
       setLoading(false);
       return;
     }
@@ -86,7 +86,7 @@ const PinScreen: React.FC<PinScreenProps> = ({
     try {
       await onSubmit(fullPin);
     } catch {
-      setError("Wrong code, please try again");
+      setError('Wrong code, please try again');
     } finally {
       setLoading(false);
     }
@@ -96,25 +96,25 @@ const PinScreen: React.FC<PinScreenProps> = ({
     try {
       await onResend();
     } catch {
-      setError("Failed to resend code. Please try again.");
+      setError('Failed to resend code. Please try again.');
     }
   };
 
   return (
-    <div className="flex flex-col items-center text-text_primary">
-      <div className="max-w-[340px]">
-        <h2 className="mb-2 text-2xl font-bold">Enter verification code</h2>
-        <p className="mb-6 text-gray-600">{`We've sent an SMS with an verification code to your phone ${formatPhoneNumber(
-          phoneNumber
+    <div className='flex flex-col items-center text-text_primary'>
+      <div className='max-w-[340px]'>
+        <h2 className='mb-2 text-2xl font-bold'>Enter verification code</h2>
+        <p className='mb-6 text-gray-600'>{`We've sent an SMS with an verification code to your phone ${formatPhoneNumber(
+          phoneNumber,
         )}`}</p>
       </div>
-      <Form.Root onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex justify-between gap-2">
+      <Form.Root onSubmit={handleSubmit} className='flex flex-col gap-4'>
+        <div className='flex justify-between gap-2'>
           {pin.map((digit, index) => (
             <input
               key={index}
-              type="text"
-              inputMode="numeric"
+              type='text'
+              inputMode='numeric'
               maxLength={1}
               value={digit}
               onChange={(e) => handlePinChange(index, e.target.value)}
@@ -125,28 +125,28 @@ const PinScreen: React.FC<PinScreenProps> = ({
                 inputRefs.current[index] = el;
               }}
               className={`${defaultTextInputStyles} w-15 h-16 rounded-xl text-center ${
-                error ? "border-[#f76052]" : ""
+                error ? 'border-[#f76052]' : ''
               }`}
             />
           ))}
         </div>
         {error ? (
-          <p className="text-center text-sm text-[#EB4335]">{error}</p>
+          <p className='text-center text-sm text-[#EB4335]'>{error}</p>
         ) : (
-          <div className="mb-4 text-center">
-            <span className="text-gray-600">{"I didn't receive a code?"}</span>
+          <div className='mb-4 text-center'>
+            <span className='text-gray-600'>{"I didn't receive a code?"}</span>
             <button
-              type="button"
+              type='button'
               onClick={handleResend}
-              className="pl-1 font-semibold hover:text-ocean"
+              className='pl-1 font-semibold hover:text-ocean'
             >
               Resend
             </button>
           </div>
         )}
         <Form.Submit asChild>
-          <Button size="lg" type="submit" disabled={loading}>
-            {loading ? "Verifying..." : "Verify"}
+          <Button size='lg' type='submit' disabled={loading}>
+            {loading ? 'Verifying...' : 'Verify'}
           </Button>
         </Form.Submit>
       </Form.Root>

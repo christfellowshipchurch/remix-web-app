@@ -1,11 +1,11 @@
-import * as React from "react";
+import * as React from 'react';
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
-} from "embla-carousel-react";
+} from 'embla-carousel-react';
 
-import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/shadcn-primitives/button";
-import Icon from "../icon";
+import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/shadcn-primitives/button';
+import Icon from '../icon';
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -15,7 +15,7 @@ type CarouselPlugin = UseCarouselParameters[1];
 type CarouselProps = {
   opts?: CarouselOptions;
   plugins?: CarouselPlugin;
-  orientation?: "horizontal" | "vertical";
+  orientation?: 'horizontal' | 'vertical';
   setApi?: (api: CarouselApi) => void;
 };
 
@@ -35,7 +35,7 @@ function useCarousel() {
   const context = React.useContext(CarouselContext);
 
   if (!context) {
-    throw new Error("useCarousel must be used within a <Carousel />");
+    throw new Error('useCarousel must be used within a <Carousel />');
   }
 
   return context;
@@ -47,7 +47,7 @@ const Carousel = React.forwardRef<
 >(
   (
     {
-      orientation = "horizontal",
+      orientation = 'horizontal',
       opts,
       setApi,
       plugins,
@@ -60,7 +60,7 @@ const Carousel = React.forwardRef<
     const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
-        axis: orientation === "horizontal" ? "x" : "y",
+        axis: orientation === 'horizontal' ? 'x' : 'y',
       },
       plugins,
     );
@@ -88,10 +88,10 @@ const Carousel = React.forwardRef<
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "ArrowLeft") {
+        if (event.key === 'ArrowLeft') {
           event.preventDefault();
           scrollPrev();
-        } else if (event.key === "ArrowRight") {
+        } else if (event.key === 'ArrowRight') {
           event.preventDefault();
           scrollNext();
         }
@@ -113,11 +113,11 @@ const Carousel = React.forwardRef<
       }
 
       onSelect(api);
-      api.on("reInit", onSelect);
-      api.on("select", onSelect);
+      api.on('reInit', onSelect);
+      api.on('select', onSelect);
 
       return () => {
-        api?.off("select", onSelect);
+        api?.off('select', onSelect);
       };
     }, [api, onSelect]);
 
@@ -128,7 +128,7 @@ const Carousel = React.forwardRef<
           api: api,
           opts,
           orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+            orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
           scrollPrev,
           scrollNext,
           canScrollPrev,
@@ -139,9 +139,9 @@ const Carousel = React.forwardRef<
         <div
           ref={ref}
           onKeyDownCapture={handleKeyDown}
-          className={cn("relative", className)}
-          role="region"
-          aria-roledescription="carousel"
+          className={cn('relative', className)}
+          role='region'
+          aria-roledescription='carousel'
           {...props}
         >
           {children}
@@ -150,7 +150,7 @@ const Carousel = React.forwardRef<
     );
   },
 );
-Carousel.displayName = "Carousel";
+Carousel.displayName = 'Carousel';
 
 const CarouselContent = React.forwardRef<
   HTMLDivElement,
@@ -159,12 +159,12 @@ const CarouselContent = React.forwardRef<
   const { carouselRef, orientation } = useCarousel();
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div ref={carouselRef} className='overflow-hidden'>
       <div
         ref={ref}
         className={cn(
-          "flex",
-          orientation === "horizontal" ? "" : "flex-col",
+          'flex',
+          orientation === 'horizontal' ? '' : 'flex-col',
           className,
         )}
         {...props}
@@ -172,7 +172,7 @@ const CarouselContent = React.forwardRef<
     </div>
   );
 });
-CarouselContent.displayName = "CarouselContent";
+CarouselContent.displayName = 'CarouselContent';
 
 const CarouselItem = React.forwardRef<
   HTMLDivElement,
@@ -183,18 +183,18 @@ const CarouselItem = React.forwardRef<
   return (
     <div
       ref={ref}
-      role="group"
-      aria-roledescription="slide"
+      role='group'
+      aria-roledescription='slide'
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        orientation !== "horizontal" && "pt-4",
+        'min-w-0 shrink-0 grow-0 basis-full',
+        orientation !== 'horizontal' && 'pt-4',
         className,
       )}
       {...props}
     />
   );
 });
-CarouselItem.displayName = "CarouselItem";
+CarouselItem.displayName = 'CarouselItem';
 
 const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
@@ -203,10 +203,10 @@ const CarouselPrevious = React.forwardRef<
   (
     {
       className,
-      variant = "outline",
+      variant = 'outline',
       fill,
       disabledFill,
-      size = "icon",
+      size = 'icon',
       ...props
     },
     ref,
@@ -219,10 +219,10 @@ const CarouselPrevious = React.forwardRef<
         variant={variant}
         size={size}
         className={cn(
-          "absolute size-12 rounded-full",
-          orientation === "horizontal"
-            ? "-left-12 top-1/2 -translate-y-1/2"
-            : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+          'absolute size-12 rounded-full',
+          orientation === 'horizontal'
+            ? '-left-12 top-1/2 -translate-y-1/2'
+            : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
           className,
         )}
         disabled={!canScrollPrev}
@@ -230,16 +230,16 @@ const CarouselPrevious = React.forwardRef<
         {...props}
       >
         <Icon
-          name="arrowBack" // TODO: change to arrowLeft
-          className="size-6"
+          name='arrowBack' // TODO: change to arrowLeft
+          className='size-6'
           color={canScrollPrev ? fill : disabledFill || fill}
         />
-        <span className="sr-only">Previous slide</span>
+        <span className='sr-only'>Previous slide</span>
       </Button>
     );
   },
 );
-CarouselPrevious.displayName = "CarouselPrevious";
+CarouselPrevious.displayName = 'CarouselPrevious';
 
 const CarouselNext = React.forwardRef<
   HTMLButtonElement,
@@ -248,10 +248,10 @@ const CarouselNext = React.forwardRef<
   (
     {
       className,
-      variant = "outline",
+      variant = 'outline',
       fill,
       disabledFill,
-      size = "icon",
+      size = 'icon',
       ...props
     },
     ref,
@@ -264,10 +264,10 @@ const CarouselNext = React.forwardRef<
         variant={variant}
         size={size}
         className={cn(
-          "absolute size-12 rounded-full",
-          orientation === "horizontal"
-            ? "-right-12 top-1/2 -translate-y-1/2"
-            : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+          'absolute size-12 rounded-full',
+          orientation === 'horizontal'
+            ? '-right-12 top-1/2 -translate-y-1/2'
+            : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
           className,
         )}
         disabled={!canScrollNext}
@@ -275,16 +275,16 @@ const CarouselNext = React.forwardRef<
         {...props}
       >
         <Icon
-          name="arrowBack"
-          className="size-6 rotate-180 overflow-visible"
+          name='arrowBack'
+          className='size-6 rotate-180 overflow-visible'
           color={canScrollNext ? fill : disabledFill || fill}
         />
-        <span className="sr-only">Next slide</span>
+        <span className='sr-only'>Next slide</span>
       </Button>
     );
   },
 );
-CarouselNext.displayName = "CarouselNext";
+CarouselNext.displayName = 'CarouselNext';
 
 const CarouselDots = React.forwardRef<
   HTMLDivElement,
@@ -300,7 +300,7 @@ const CarouselDots = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("flex items-center justify-center gap-2", className)}
+      className={cn('flex items-center justify-center gap-2', className)}
       {...props}
     >
       {slides.length > 1 &&
@@ -308,10 +308,10 @@ const CarouselDots = React.forwardRef<
           <button
             key={index}
             className={cn(
-              "cursor-pointer h-2 w-2 rounded-full transition-colors",
+              'cursor-pointer h-2 w-2 rounded-full transition-colors',
               currentSlide === index
-                ? activeClassName || "bg-primary"
-                : inactiveClassName || "bg-muted",
+                ? activeClassName || 'bg-primary'
+                : inactiveClassName || 'bg-muted',
             )}
             onClick={() => api?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
@@ -320,16 +320,16 @@ const CarouselDots = React.forwardRef<
     </div>
   );
 });
-CarouselDots.displayName = "CarouselDots";
+CarouselDots.displayName = 'CarouselDots';
 
 const carouselArrowInFlowClass =
-  "static left-auto right-auto top-auto translate-y-0 cursor-pointer";
+  'static left-auto right-auto top-auto translate-y-0 cursor-pointer';
 
 const carouselArrowDisabledClass =
-  "disabled:border-neutral-lighter disabled:text-neutral-lighter disabled:hover:border-neutral-lighter disabled:hover:text-neutral-lighter";
+  'disabled:border-neutral-lighter disabled:text-neutral-lighter disabled:hover:border-neutral-lighter disabled:hover:text-neutral-lighter';
 
 const CarouselArrows = ({
-  arrowStyles = "border-ocean text-ocean hover:border-navy hover:text-navy",
+  arrowStyles = 'border-ocean text-ocean hover:border-navy hover:text-navy',
 }: {
   arrowStyles?: string;
 }) => {
@@ -341,21 +341,21 @@ const CarouselArrows = ({
   return (
     <>
       {slides.length > 1 && (
-        <div className="flex w-max max-w-full shrink-0 items-center gap-2">
+        <div className='flex w-max max-w-full shrink-0 items-center gap-2'>
           <CarouselPrevious
             className={cn(carouselArrowInFlowClass, mergedArrowStyles)}
-            disabledFill="#AAAAAA"
+            disabledFill='#AAAAAA'
           />
           <CarouselNext
             className={cn(carouselArrowInFlowClass, mergedArrowStyles)}
-            disabledFill="#AAAAAA"
+            disabledFill='#AAAAAA'
           />
         </div>
       )}
     </>
   );
 };
-CarouselArrows.displayName = "CarouselArrows";
+CarouselArrows.displayName = 'CarouselArrows';
 
 export {
   type CarouselApi,

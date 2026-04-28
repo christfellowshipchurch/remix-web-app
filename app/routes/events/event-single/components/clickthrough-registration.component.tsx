@@ -1,18 +1,18 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-import { useLoaderData, useRouteLoaderData } from "react-router-dom";
-import { InstantSearch, Configure, useHits } from "react-instantsearch";
-import { createSearchClient } from "~/lib/create-search-client";
-import Icon from "~/primitives/icon";
-import { RockProxyEmbed } from "~/components/rock-embed";
-import { EventFinderHit, EventSinglePageType } from "../types";
-import { RootLoaderData } from "~/routes/navbar/loader";
-import { ClickableCard } from "./clickable-card.component";
-import { RockCampuses, ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { useLoaderData, useRouteLoaderData } from 'react-router-dom';
+import { InstantSearch, Configure, useHits } from 'react-instantsearch';
+import { createSearchClient } from '~/lib/create-search-client';
+import Icon from '~/primitives/icon';
+import { RockProxyEmbed } from '~/components/rock-embed';
+import { EventFinderHit, EventSinglePageType } from '../types';
+import { RootLoaderData } from '~/routes/navbar/loader';
+import { ClickableCard } from './clickable-card.component';
+import { RockCampuses, ROCK_PUBLIC_SITE_ORIGIN } from '~/lib/rock-config';
 import {
   getSubGroupTypeDescription,
   getWorkflowTypeGuidForGroupType,
   hasSubGroupTypes,
-} from "../registration.data";
+} from '../registration.data';
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -22,20 +22,20 @@ export const ClickThroughRegistration = ({
   title,
 }: ClickThroughRegistrationProps) => {
   const { groupType: loaderGroupType } = useLoaderData<EventSinglePageType>();
-  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const algolia = rootData?.algolia ?? {
-    ALGOLIA_APP_ID: "",
-    ALGOLIA_SEARCH_API_KEY: "",
+    ALGOLIA_APP_ID: '',
+    ALGOLIA_SEARCH_API_KEY: '',
   };
 
-  const extractedGroupType = loaderGroupType ?? "";
+  const extractedGroupType = loaderGroupType ?? '';
 
   // Normalize groupType to handle variations
   const normalizedGroupType = extractedGroupType
-    .replace(/-/g, " ")
-    .split(" ")
+    .replace(/-/g, ' ')
+    .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    .join(' ');
 
   const hasSubGroups = hasSubGroupTypes(normalizedGroupType);
   const totalSteps = hasSubGroups ? 5 : 4;
@@ -57,19 +57,19 @@ export const ClickThroughRegistration = ({
   };
 
   const [step, setStep] = useState(1);
-  const [selectedCampus, setSelectedCampus] = useState<string>("");
-  const [selectedSubGroupType, setSelectedSubGroupType] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
-  const [campusSearchQuery, setCampusSearchQuery] = useState<string>("");
+  const [selectedCampus, setSelectedCampus] = useState<string>('');
+  const [selectedSubGroupType, setSelectedSubGroupType] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
   const [isGoingBack, setIsGoingBack] = useState(false);
   const previousStepRef = useRef<number>(1);
 
   const searchClient = useMemo(
     () =>
       createSearchClient(
-        algolia.ALGOLIA_APP_ID || "",
-        algolia.ALGOLIA_SEARCH_API_KEY || "",
+        algolia.ALGOLIA_APP_ID || '',
+        algolia.ALGOLIA_SEARCH_API_KEY || '',
       ),
     [algolia.ALGOLIA_APP_ID, algolia.ALGOLIA_SEARCH_API_KEY],
   );
@@ -81,20 +81,20 @@ export const ClickThroughRegistration = ({
       previousStepRef.current = step;
       // Clear selections when going back based on current step
       if (step === 5) {
-        setSelectedTime("");
+        setSelectedTime('');
       } else if (step === 4) {
-        setSelectedDate("");
+        setSelectedDate('');
       } else if (step === 3) {
         if (hasSubGroups) {
-          setSelectedSubGroupType("");
+          setSelectedSubGroupType('');
         } else {
-          setSelectedDate("");
+          setSelectedDate('');
         }
       } else if (step === 2) {
         if (hasSubGroups) {
-          setSelectedCampus("");
+          setSelectedCampus('');
         } else {
-          setSelectedCampus("");
+          setSelectedCampus('');
         }
       }
       setStep(step - 1);
@@ -108,16 +108,16 @@ export const ClickThroughRegistration = ({
     const targetActualStep = getActualStep(targetDisplayStep);
     // Clear selections for steps after the target step
     if (targetActualStep < 5) {
-      setSelectedTime("");
+      setSelectedTime('');
     }
     if (targetActualStep < 4) {
-      setSelectedDate("");
+      setSelectedDate('');
     }
     if (targetActualStep < 3) {
-      setSelectedSubGroupType("");
+      setSelectedSubGroupType('');
     }
     if (targetActualStep < 2) {
-      setSelectedCampus("");
+      setSelectedCampus('');
     }
     setStep(targetActualStep);
   };
@@ -125,18 +125,18 @@ export const ClickThroughRegistration = ({
   const getStepsData = () => {
     if (hasSubGroups) {
       return [
-        { step: 1, title: "Choose Your Campus" },
-        { step: 2, title: "Select the Event Type" },
-        { step: 3, title: "Select the Date" },
-        { step: 4, title: "Pick Your Time" },
-        { step: 5, title: "Personal Information" },
+        { step: 1, title: 'Choose Your Campus' },
+        { step: 2, title: 'Select the Event Type' },
+        { step: 3, title: 'Select the Date' },
+        { step: 4, title: 'Pick Your Time' },
+        { step: 5, title: 'Personal Information' },
       ];
     }
     return [
-      { step: 1, title: "Choose Your Campus" },
-      { step: 2, title: "Select the Date" },
-      { step: 3, title: "Pick Your Time" },
-      { step: 4, title: "Personal Information" },
+      { step: 1, title: 'Choose Your Campus' },
+      { step: 2, title: 'Select the Date' },
+      { step: 3, title: 'Pick Your Time' },
+      { step: 4, title: 'Personal Information' },
     ];
   };
 
@@ -147,7 +147,7 @@ export const ClickThroughRegistration = ({
   };
 
   const buildFilter = () => {
-    if (!normalizedGroupType) return "";
+    if (!normalizedGroupType) return '';
     let filter = `groupType:"${normalizedGroupType}"`;
     if (selectedCampus) {
       filter += ` AND campus.name:"${selectedCampus.trim()}"`;
@@ -165,7 +165,7 @@ export const ClickThroughRegistration = ({
 
   return (
     <InstantSearch
-      indexName="dev_EventFinderItems"
+      indexName='dev_EventFinderItems'
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
@@ -174,48 +174,48 @@ export const ClickThroughRegistration = ({
       <Configure
         filters={buildFilter()}
         hitsPerPage={1000}
-        query={step === 1 && campusSearchQuery ? campusSearchQuery : ""}
+        query={step === 1 && campusSearchQuery ? campusSearchQuery : ''}
         restrictSearchableAttributes={
           step === 1 && campusSearchQuery
-            ? ["campus.name", "campus.city"]
+            ? ['campus.name', 'campus.city']
             : undefined
         }
       />
 
       <section
-        className="flex items-center w-full py-8 md:py-16 content-padding bg-gray"
-        id="register"
+        className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'
+        id='register'
       >
-        <div className="w-full max-w-3xl flex flex-col gap-13 mx-auto">
-          <div className="flex flex-col gap-4">
-            <h2 className="font-extrabold text-center text-black text-[32px]">
+        <div className='w-full max-w-3xl flex flex-col gap-13 mx-auto'>
+          <div className='flex flex-col gap-4'>
+            <h2 className='font-extrabold text-center text-black text-[32px]'>
               Register for {title}
             </h2>
-            <p className="text-center text-[#717182] text-lg font-medium md:mx-4">
+            <p className='text-center text-[#717182] text-lg font-medium md:mx-4'>
               Ready to take the next step? Complete our {totalSteps}-step
               registration process to secure your spot.
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className='flex flex-col gap-3'>
             {/* Top */}
-            <div className="flex flex-col gap-2 items-center">
-              <div className="flex gap-4 items-center">
+            <div className='flex flex-col gap-2 items-center'>
+              <div className='flex gap-4 items-center'>
                 {step > 1 && (
                   <div
-                    className="flex items-center cursor-pointer"
+                    className='flex items-center cursor-pointer'
                     onClick={handleBack}
                   >
-                    <Icon name="chevronLeft" size={16} className="text-black" />
-                    <p className="text-xs font-semibold text-[#616161]">Back</p>
+                    <Icon name='chevronLeft' size={16} className='text-black' />
+                    <p className='text-xs font-semibold text-[#616161]'>Back</p>
                   </div>
                 )}
-                <h3 className="text-xl font-bold text-black">
+                <h3 className='text-xl font-bold text-black'>
                   {getCurrentStepData().title}
                 </h3>
               </div>
 
-              <div className="flex gap-2 items-center">
+              <div className='flex gap-2 items-center'>
                 {Array.from({ length: totalSteps }, (_, i) => i + 1).map(
                   (dotStep) => {
                     const displayStep = getDisplayStep(step);
@@ -223,7 +223,7 @@ export const ClickThroughRegistration = ({
                       <div
                         key={dotStep}
                         className={`${
-                          dotStep <= displayStep ? "bg-ocean" : "bg-[#AEAEAE]"
+                          dotStep <= displayStep ? 'bg-ocean' : 'bg-[#AEAEAE]'
                         } size-[10px] rounded-full`}
                       />
                     );
@@ -231,7 +231,7 @@ export const ClickThroughRegistration = ({
                 )}
               </div>
 
-              <p className="text-black font-semibold text-sm mb-4">
+              <p className='text-black font-semibold text-sm mb-4'>
                 Step {getDisplayStep(step)} of {totalSteps}
               </p>
             </div>
@@ -241,31 +241,31 @@ export const ClickThroughRegistration = ({
               selectedSubGroupType ||
               selectedDate ||
               selectedTime) && (
-              <div className="flex gap-4 items-center justify-center flex-wrap mb-4">
+              <div className='flex gap-4 items-center justify-center flex-wrap mb-4'>
                 {selectedCampus && (
                   <SelectedBar
-                    icon="map"
+                    icon='map'
                     text={selectedCampus}
                     onClick={() => navigateToStep(1)}
                   />
                 )}
                 {selectedSubGroupType && hasSubGroups && (
                   <SelectedBar
-                    icon="group"
+                    icon='group'
                     text={selectedSubGroupType}
                     onClick={() => navigateToStep(2)}
                   />
                 )}
                 {selectedDate && (
                   <SelectedBar
-                    icon="calendarAlt"
+                    icon='calendarAlt'
                     text={formatDateDisplay(selectedDate)}
                     onClick={() => navigateToStep(hasSubGroups ? 3 : 2)}
                   />
                 )}
                 {selectedTime && (
                   <SelectedBar
-                    icon="timeFive"
+                    icon='timeFive'
                     text={`${selectedTime} ET`}
                     onClick={() => navigateToStep(hasSubGroups ? 4 : 3)}
                   />
@@ -323,7 +323,7 @@ const SelectedBar = ({
   text,
   onClick,
 }: {
-  icon: "map" | "group" | "calendarAlt" | "timeFive";
+  icon: 'map' | 'group' | 'calendarAlt' | 'timeFive';
   text: string;
   onClick?: () => void;
 }) => {
@@ -331,11 +331,11 @@ const SelectedBar = ({
     <div
       onClick={onClick}
       className={`flex gap-2 items-center bg-white rounded-lg border border-neutral-lighter px-3 py-1 ${
-        onClick ? "cursor-pointer hover:border-ocean transition-colors" : ""
+        onClick ? 'cursor-pointer hover:border-ocean transition-colors' : ''
       }`}
     >
-      <Icon name={icon} size={16} className="text-black" />
-      <p className="text-sm text-black font-medium">{text}</p>
+      <Icon name={icon} size={16} className='text-black' />
+      <p className='text-sm text-black font-medium'>{text}</p>
     </div>
   );
 };
@@ -393,8 +393,8 @@ const StepContent = ({
   // Handle case where no hits are available
   if (items.length === 0 && step !== 5) {
     return (
-      <div className="w-full p-8 text-center">
-        <p className="text-gray-600">
+      <div className='w-full p-8 text-center'>
+        <p className='text-gray-600'>
           No events found. Please check your selections and try again.
         </p>
       </div>
@@ -467,7 +467,7 @@ const StepContent = ({
     });
     return (
       <FormStep
-        groupGuid={matchingHit?.groupGuid || ""}
+        groupGuid={matchingHit?.groupGuid || ''}
         groupType={groupType}
         selectedCampus={selectedCampus}
         selectedDate={selectedDate}
@@ -546,32 +546,32 @@ const CampusStep = ({
   }, [filteredCampuses, searchQuery, onSelect, isGoingBack]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       {/* Search Input */}
-      <div className="relative w-full max-w-[400px] mx-auto mb-4">
+      <div className='relative w-full max-w-[400px] mx-auto mb-4'>
         <Icon
-          name="search"
+          name='search'
           size={18}
-          className="absolute left-3 top-[45%] -translate-y-1/2 text-black"
+          className='absolute left-3 top-[45%] -translate-y-1/2 text-black'
         />
         <input
-          type="text"
-          placeholder="Search campuses by name or city..."
+          type='text'
+          placeholder='Search campuses by name or city...'
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-ocean"
+          className='w-full pl-10 pr-4 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-ocean'
         />
       </div>
 
       {/* Campus Cards */}
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className='flex flex-wrap justify-center gap-4'>
         {filteredCampuses.map((campus) => (
           <ClickableCard
             key={campus.name}
-            variant="campus"
-            icon="map"
+            variant='campus'
+            icon='map'
             title={campus.name}
-            subtitle={campus.location || ""}
+            subtitle={campus.location || ''}
             onClick={() => onSelect(campus.name)}
           />
         ))}
@@ -623,8 +623,8 @@ const SubGroupTypeStep = ({
 
   if (uniqueSubGroupTypes.length === 0) {
     return (
-      <div className="w-full p-8 text-center">
-        <p className="text-gray-600">
+      <div className='w-full p-8 text-center'>
+        <p className='text-gray-600'>
           No event types available for the selected campus. Please go back and
           select a different campus.
         </p>
@@ -633,13 +633,13 @@ const SubGroupTypeStep = ({
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-4">
+    <div className='flex flex-wrap justify-center gap-4'>
       {uniqueSubGroupTypes.map((subGroupType) => {
         return (
           <ClickableCard
             key={subGroupType}
-            variant="eventType"
-            icon={"group"}
+            variant='eventType'
+            icon={'group'}
             title={subGroupType}
             subtitle={groupType}
             description={getSubGroupTypeDescription(subGroupType)}
@@ -709,12 +709,12 @@ const DateStep = ({
   }, [uniqueDates, onSelect, isGoingBack]);
 
   return (
-    <div className="flex flex-wrap justify-center gap-4">
+    <div className='flex flex-wrap justify-center gap-4'>
       {uniqueDates.map((dateInfo) => (
         <ClickableCard
           key={dateInfo.date}
-          variant="date"
-          icon="calendarAlt"
+          variant='date'
+          icon='calendarAlt'
           title={formatDateDisplay(dateInfo.date, dateInfo.day)}
           subtitle={dateInfo.day}
           onClick={() => onSelect(dateInfo.date)}
@@ -788,8 +788,8 @@ const TimeStep = ({
 
   if (uniqueTimes.length === 0) {
     return (
-      <div className="w-full p-8 text-center">
-        <p className="text-gray-600">
+      <div className='w-full p-8 text-center'>
+        <p className='text-gray-600'>
           No times available for the selected date. Please go back and select a
           different date.
         </p>
@@ -798,14 +798,14 @@ const TimeStep = ({
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-4">
+    <div className='flex flex-wrap justify-center gap-4'>
       {uniqueTimes.map((timeInfo) => (
         <ClickableCard
           key={timeInfo.time}
-          variant="time"
-          icon="timeFive"
+          variant='time'
+          icon='timeFive'
           title={timeInfo.time}
-          subtitle="Eastern Time"
+          subtitle='Eastern Time'
           onClick={() => onSelect(timeInfo.time)}
         />
       ))}
@@ -815,11 +815,11 @@ const TimeStep = ({
 
 // Manual embed height per group type (px). Adjust as needed for each form.
 const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
-  "Kids Dedication": 890,
-  "Kids Starting Line": 890,
+  'Kids Dedication': 890,
+  'Kids Starting Line': 890,
   Journey: 700,
   Baptism: 1440,
-  "Dream Team Kickoff": 1000,
+  'Dream Team Kickoff': 1000,
 };
 
 const DEFAULT_EMBED_HEIGHT = 1000;
@@ -832,10 +832,10 @@ const CONFIRMATION_EMBED_HEIGHT = 600;
 
 function getEmbedHeightForGroupType(groupType: string): number {
   const normalized = groupType
-    .replace(/-/g, " ")
-    .split(" ")
+    .replace(/-/g, ' ')
+    .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    .join(' ');
   return EMBED_HEIGHT_BY_GROUP_TYPE[normalized] ?? DEFAULT_EMBED_HEIGHT;
 }
 
@@ -860,9 +860,9 @@ const FormStep = ({
   });
 
   const isKidsGroupType =
-    groupType === "Kids Dedication" || groupType === "Kids Starting Line";
+    groupType === 'Kids Dedication' || groupType === 'Kids Starting Line';
 
-  const rockEmbedUrl = `${ROCK_PUBLIC_SITE_ORIGIN}/${isKidsGroupType ? "kids-" : ""}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
+  const rockEmbedUrl = `${ROCK_PUBLIC_SITE_ORIGIN}/${isKidsGroupType ? 'kids-' : ''}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
 
   const formHeight = getEmbedHeightForGroupType(groupType);
   const [embedHeight, setEmbedHeight] = useState(formHeight);
@@ -878,8 +878,8 @@ const FormStep = ({
 
   if (!groupGuid) {
     return (
-      <div className="w-full p-8 text-center">
-        <p className="text-gray-600">
+      <div className='w-full p-8 text-center'>
+        <p className='text-gray-600'>
           Unable to load registration form. Please go back and try again.
         </p>
       </div>
@@ -887,13 +887,13 @@ const FormStep = ({
   }
 
   return (
-    <div className="w-full max-w-[600px] mx-auto rounded-xl overflow-hidden">
+    <div className='w-full max-w-[600px] mx-auto rounded-xl overflow-hidden'>
       <RockProxyEmbed
         url={rockEmbedUrl}
         height={embedHeight}
         showLoading={false}
         useAdvancedProxy={false}
-        className="w-full"
+        className='w-full'
         onLoad={handleEmbedLoad}
       />
     </div>
@@ -904,30 +904,30 @@ const FormStep = ({
 const formatDateDisplay = (dateString: string, dayName?: string): string => {
   // Parse date string manually to avoid timezone issues
   // Date format is YYYY-MM-DD
-  const [year, month, day] = dateString.split("-").map(Number);
+  const [year, month, day] = dateString.split('-').map(Number);
   const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
 
-  const monthName = date.toLocaleDateString("en-US", { month: "short" });
+  const monthName = date.toLocaleDateString('en-US', { month: 'short' });
   const dayNum = date.getDate();
   const suffix = getDaySuffix(dayNum);
 
   // Use provided dayName if available, otherwise calculate it
   const weekday =
-    dayName || date.toLocaleDateString("en-US", { weekday: "short" });
+    dayName || date.toLocaleDateString('en-US', { weekday: 'short' });
 
   return `${weekday} ${monthName} ${dayNum}${suffix}`;
 };
 
 const getDaySuffix = (day: number): string => {
-  if (day > 3 && day < 21) return "th";
+  if (day > 3 && day < 21) return 'th';
   switch (day % 10) {
     case 1:
-      return "st";
+      return 'st';
     case 2:
-      return "nd";
+      return 'nd';
     case 3:
-      return "rd";
+      return 'rd';
     default:
-      return "th";
+      return 'th';
   }
 };

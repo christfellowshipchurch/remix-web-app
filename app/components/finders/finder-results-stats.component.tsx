@@ -1,6 +1,6 @@
-import { Stats } from "react-instantsearch";
+import { Stats } from 'react-instantsearch';
 
-import { cn } from "~/lib/utils";
+import { cn } from '~/lib/utils';
 
 type FinderResultsStatsProps = {
   rootClassName?: string;
@@ -17,7 +17,7 @@ export function FinderResultsStats({
 }: FinderResultsStatsProps) {
   if (hitCount !== undefined) {
     return (
-      <p className={cn("text-text-secondary mb-6", rootClassName)}>
+      <p className={cn('text-text-secondary mb-6', rootClassName)}>
         {hitCount.toLocaleString()} Results Found
       </p>
     );
@@ -26,7 +26,7 @@ export function FinderResultsStats({
   return (
     <Stats
       classNames={{
-        root: cn("text-text-secondary mb-6", rootClassName),
+        root: cn('text-text-secondary mb-6', rootClassName),
       }}
       translations={{
         rootElementText: ({ nbHits }) =>

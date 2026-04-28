@@ -1,8 +1,8 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { ReactNode } from "react";
-import { cn } from "~/lib/utils";
+import * as Dialog from '@radix-ui/react-dialog';
+import { Cross2Icon } from '@radix-ui/react-icons';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import { ReactNode } from 'react';
+import { cn } from '~/lib/utils';
 
 export function Modal({
   open,
@@ -33,7 +33,7 @@ function ModalContent({
 }) {
   return (
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=closed]:animate-dialogOverlayHide data-[state=open]:animate-dialogOverlayShow z-499" />
+      <Dialog.Overlay className='fixed inset-0 bg-black/50 data-[state=closed]:animate-dialogOverlayHide data-[state=open]:animate-dialogOverlayShow z-499' />
       <Dialog.Content
         style={{
           position: 'fixed',
@@ -42,23 +42,23 @@ function ModalContent({
           transform: 'translate(-50%, -50%)',
         }}
         className={cn(
-          "sm:h-auto max-h-[90vh] data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding"
+          'sm:h-auto max-h-[90vh] data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding',
         )}
       >
         <div
           className={cn(
-            "rounded-xl md:rounded-2xl text-text-primary shadow relative flex justify-center items-center",
-            background || "bg-white"
+            'rounded-xl md:rounded-2xl text-text-primary shadow relative flex justify-center items-center',
+            background || 'bg-white',
           )}
         >
           <div
             className={`flex items-center ${
-              title ? "justify-between" : "justify-end"
+              title ? 'justify-between' : 'justify-end'
             }`}
           >
             {/* Note: Radix Requires we have a title and description, so we need to use the VisuallyHidden component  */}
             {title ? (
-              <Dialog.Title className="text-3xl font-bold">
+              <Dialog.Title className='text-3xl font-bold'>
                 {title}
               </Dialog.Title>
             ) : (
@@ -66,13 +66,13 @@ function ModalContent({
                 <Dialog.Title />
               </VisuallyHidden.Root>
             )}
-            <Dialog.Close className="absolute top-2 right-2 md:top-4 md:right-4 cursor-pointer">
-              <Cross2Icon width={24} height={24} color="black" />
+            <Dialog.Close className='absolute top-2 right-2 md:top-4 md:right-4 cursor-pointer'>
+              <Cross2Icon width={24} height={24} color='black' />
             </Dialog.Close>
           </div>
 
           {description ? (
-            <Dialog.Description className="mb-4 text-lg text-text_primary">
+            <Dialog.Description className='mb-4 text-lg text-text_primary'>
               {description}
             </Dialog.Description>
           ) : (

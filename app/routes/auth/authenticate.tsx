@@ -1,11 +1,11 @@
-import { data } from "react-router-dom";
-import { authenticateUser } from "~/lib/.server/authentication/authenticate-user";
+import { data } from 'react-router-dom';
+import { authenticateUser } from '~/lib/.server/authentication/authenticate-user';
 
 import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/error-types";
+} from '~/lib/.server/error-types';
 
 type AuthenticateData = {
   identity: string;
@@ -19,22 +19,22 @@ export const authenticate = async ({
   try {
     if (!identity || !password) {
       return data(
-        { error: "Identity and password are required" },
-        { status: 400 }
+        { error: 'Identity and password are required' },
+        { status: 400 },
       );
     }
 
     const { encryptedToken } = await authenticateUser(
       identity as string,
-      password as string
+      password as string,
     );
 
-    const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
-        "Set-Cookie": `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
+        'Content-Type': 'application/json',
+        'Set-Cookie': `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
       },
     });
   } catch (error) {
@@ -47,10 +47,10 @@ export const authenticate = async ({
     if (error instanceof EncryptionError) {
       return data({ error: error.message }, { status: 400 });
     }
-    console.error("Unhandled authentication error:", error);
+    console.error('Unhandled authentication error:', error);
     return data(
-      { error: "An unexpected error occurred during authentication" },
-      { status: 500 }
+      { error: 'An unexpected error occurred during authentication' },
+      { status: 500 },
     );
   }
 };

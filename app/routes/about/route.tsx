@@ -1,45 +1,45 @@
-import { type MetaFunction } from "react-router-dom";
-import { createMeta } from "~/lib/meta-utils";
-import { DynamicHero } from "~/components/dynamic-hero";
-import { OurMissionSection } from "./partials/mission.partial";
-import { HistorySection } from "./partials/history.partial";
-import { BeliefsSection } from "./partials/beliefs.partial";
-import { LeadershipSection } from "./partials/leadership.partial";
-import { ImpactSection } from "./partials/impact.partial";
+import { type MetaFunction } from 'react-router-dom';
+import { createMeta } from '~/lib/meta-utils';
+import { DynamicHero } from '~/components/dynamic-hero';
+import { OurMissionSection } from './partials/mission.partial';
+import { HistorySection } from './partials/history.partial';
+import { BeliefsSection } from './partials/beliefs.partial';
+import { LeadershipSection } from './partials/leadership.partial';
+import { ImpactSection } from './partials/impact.partial';
 
 export const meta: MetaFunction = () => {
   return createMeta({
-    title: "About Us",
+    title: 'About Us',
     description:
-      "Learn about Christ Fellowship Church: our mission, history, beliefs, and leadership team.",
-    path: "/about",
+      'Learn about Christ Fellowship Church: our mission, history, beliefs, and leadership team.',
+    path: '/about',
   });
 };
 
-export { loader } from "../home/loader"; // Using the home loader for the about page to grab author data for the leaders grid and scroll components
+export { loader } from '../home/loader'; // Using the home loader for the about page to grab author data for the leaders grid and scroll components
 
 export default function AboutPage() {
   return (
-    <main className="flex flex-col min-h-screen bg-white">
+    <main className='flex flex-col min-h-screen bg-white'>
       <DynamicHero
-        customTitle="About Us"
-        wistiaId="wcs977y9ac"
+        customTitle='About Us'
+        wistiaId='wcs977y9ac'
         fullOverlay
         ctas={[
           {
-            title: "Beliefs",
-            href: "#beliefs",
+            title: 'Beliefs',
+            href: '#beliefs',
           },
           {
-            title: "Leadership",
-            href: "#leadership",
+            title: 'Leadership',
+            href: '#leadership',
           },
         ]}
       />
       <OurMissionSection />
       <HistorySection />
-      <BeliefsSection background="inverted" />
-      <LeadershipSection layout="vertical" />
+      <BeliefsSection background='inverted' />
+      <LeadershipSection layout='vertical' />
       <ImpactSection />
     </main>
   );

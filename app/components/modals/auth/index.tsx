@@ -1,13 +1,13 @@
-import { useState } from "react";
-import LoginFlow from "./login-flow.component";
-import Modal from "~/primitives/Modal";
+import { useState } from 'react';
+import LoginFlow from './login-flow.component';
+import Modal from '~/primitives/Modal';
 
 const defaultButtonStyle =
-  "mr-2 font-semibold text-neutral-dark cursor-pointer hover:text-ocean transition-colors";
+  'mr-2 font-semibold text-neutral-dark cursor-pointer hover:text-ocean transition-colors';
 
 export function AuthModal({
   buttonStyle = defaultButtonStyle,
-  buttonText = "Login",
+  buttonText = 'Login',
   onClick = () => {},
 }: {
   buttonStyle?: string;

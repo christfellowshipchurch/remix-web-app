@@ -1,9 +1,9 @@
-import { ActionFunction } from "react-router-dom";
+import { ActionFunction } from 'react-router-dom';
 import {
   AuthenticationError,
   EncryptionError,
   RockAPIError,
-} from "~/lib/.server/error-types";
+} from '~/lib/.server/error-types';
 
 export type LocationSearchCoordinatesType = {
   results: [
@@ -14,7 +14,7 @@ export type LocationSearchCoordinatesType = {
           lng: number;
         };
       };
-    }
+    },
   ];
   status: string;
   error: string | undefined | null;
@@ -27,20 +27,20 @@ export const action: ActionFunction = async ({ request }) => {
 
     const response = await fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-        address
-      )}&key=${apiKey}`
+        address,
+      )}&key=${apiKey}`,
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch geocode data");
+      throw new Error('Failed to fetch geocode data');
     }
 
     const data: LocationSearchCoordinatesType = await response.json();
 
-    if (data.status === "ZERO_RESULTS") {
+    if (data.status === 'ZERO_RESULTS') {
       return Response.json(
-        { data, error: "Zipcode does not exist, please try again" },
-        { status: 400 }
+        { data, error: 'Zipcode does not exist, please try again' },
+        { status: 400 },
       );
     }
 
@@ -54,8 +54,8 @@ export const action: ActionFunction = async ({ request }) => {
       return Response.json({ error: error.message }, { status: 400 });
     }
     return Response.json(
-      { error: "An unexpected error occurred" },
-      { status: 500 }
+      { error: 'An unexpected error occurred' },
+      { status: 500 },
     );
   }
 };

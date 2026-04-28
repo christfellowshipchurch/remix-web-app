@@ -1,15 +1,15 @@
-import type { LoaderFunction } from "react-router-dom";
-import { fetchRockData, TTL } from "~/lib/.server/fetch-rock-data";
+import type { LoaderFunction } from 'react-router-dom';
+import { fetchRockData, TTL } from '~/lib/.server/fetch-rock-data';
 import {
   createImageUrlFromGuid,
   ensureArray,
   parseRockKeyValueList,
-} from "~/lib/utils";
-import { MessageType } from "../types";
-import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
-import { attributeProps, attributeValuesProps } from "~/lib/types/rock-types";
-import { RockContentChannelItem } from "~/lib/types/rock-types";
-import { getImages } from "~/lib/.server/rock-utils";
+} from '~/lib/utils';
+import { MessageType } from '../types';
+import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
+import { attributeProps, attributeValuesProps } from '~/lib/types/rock-types';
+import { RockContentChannelItem } from '~/lib/types/rock-types';
+import { getImages } from '~/lib/.server/rock-utils';
 
 export type LoaderReturnType = {
   message: MessageType;
@@ -29,16 +29,16 @@ export const mapRockDataToMessage = async (
   });
 
   const speaker = await fetchSpeakerData(
-    rockItem.attributeValues?.author?.value || "",
+    rockItem.attributeValues?.author?.value || '',
   );
 
-  let primaryCategories: { value: string }[] = [{ value: "" }];
-  let secondaryCategories: { value: string }[] = [{ value: "" }];
+  let primaryCategories: { value: string }[] = [{ value: '' }];
+  let secondaryCategories: { value: string }[] = [{ value: '' }];
 
   if (rockItem.attributeValues.primaryCategory?.value) {
     // Separate the primary category into an array of values
     const categoryValues =
-      rockItem.attributeValues.primaryCategory?.value.split(",");
+      rockItem.attributeValues.primaryCategory?.value.split(',');
 
     // Loop through all category values and fetch their details
     const sermonPrimaryCategories: { value: string }[] = [];
@@ -47,7 +47,7 @@ export const mapRockDataToMessage = async (
         endpoint: `DefinedValues/`,
         queryParams: {
           $filter: `Guid eq guid'${categoryGuid.trim()}'`,
-          $select: "Value",
+          $select: 'Value',
         },
         ttl: TTL.LONG,
       });
@@ -64,7 +64,7 @@ export const mapRockDataToMessage = async (
 
   if (rockItem.attributeValues.secondaryCategory?.value) {
     const categoryValues =
-      rockItem.attributeValues.secondaryCategory?.value.split(",");
+      rockItem.attributeValues.secondaryCategory?.value.split(',');
 
     const sermonSecondaryCategories: { value: string }[] = [];
     for (const categoryGuid of categoryValues) {
@@ -72,7 +72,7 @@ export const mapRockDataToMessage = async (
         endpoint: `DefinedValues/`,
         queryParams: {
           $filter: `Guid eq guid'${categoryGuid.trim()}'`,
-          $select: "Value",
+          $select: 'Value',
         },
       });
 
@@ -86,35 +86,35 @@ export const mapRockDataToMessage = async (
     secondaryCategories = sermonSecondaryCategories;
   }
 
-  let video = "";
+  let video = '';
   const mediaValue = attributeValues?.media?.value;
   if (mediaValue?.trim()) {
     try {
       const wistiaData = await fetchWistiaDataFromRock(mediaValue);
-      video = wistiaData?.sourceKey || "";
+      video = wistiaData?.sourceKey || '';
     } catch (error) {
-      console.error("Error fetching Wistia data for message:", error);
+      console.error('Error fetching Wistia data for message:', error);
     }
   }
 
   return {
     id: rockItem.id,
     title: rockItem.title,
-    content: rockItem.content || "",
-    summary: attributeValues?.summary?.value || "",
-    image: createImageUrlFromGuid(attributeValues?.image?.value || "") || "",
+    content: rockItem.content || '',
+    summary: attributeValues?.summary?.value || '',
+    image: createImageUrlFromGuid(attributeValues?.image?.value || '') || '',
     video,
-    coverImage: (coverImage && coverImage[0]) || "",
+    coverImage: (coverImage && coverImage[0]) || '',
     primaryCategories,
     secondaryCategories,
-    startDateTime: startDateTime || "",
-    expireDateTime: expireDateTime || "",
-    seriesId: rockItem.attributeValues?.messageSeries?.value || "",
-    seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || "",
+    startDateTime: startDateTime || '',
+    expireDateTime: expireDateTime || '',
+    seriesId: rockItem.attributeValues?.messageSeries?.value || '',
+    seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || '',
     speaker,
-    url: rockItem.attributeValues?.url?.value || "",
+    url: rockItem.attributeValues?.url?.value || '',
     additionalResources: parseRockKeyValueList(
-      rockItem.attributeValues?.callsToAction?.value || "",
+      rockItem.attributeValues?.callsToAction?.value || '',
     ).map((resource) => ({
       title: resource.key,
       url: resource.value,
@@ -124,12 +124,12 @@ export const mapRockDataToMessage = async (
 
 const fetchMessageByPath = async (path: string) => {
   const rockData = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
+    endpoint: 'ContentChannelItems/GetByAttributeValue',
     queryParams: {
-      attributeKey: "Url",
+      attributeKey: 'Url',
       $filter: "Status eq 'Approved' and ContentChannelId eq 63",
       value: path,
-      loadAttributes: "simple",
+      loadAttributes: 'simple',
     },
   });
 
@@ -154,26 +154,26 @@ const fetchSpeakerData = async (guid: string) => {
 
   try {
     authorAlias = await fetchRockData({
-      endpoint: "PersonAlias",
+      endpoint: 'PersonAlias',
       queryParams: {
         $filter: `Guid eq guid'${guid}'`,
-        $select: "PersonId",
+        $select: 'PersonId',
       },
       ttl: TTL.LONG,
     });
     authorAlias = ensureArray(authorAlias);
   } catch (error) {
-    console.error("Error fetching author id", error);
+    console.error('Error fetching author id', error);
   }
 
   if (authorAlias && authorAlias.length > 0) {
     let author = null;
     try {
       author = await fetchRockData({
-        endpoint: "People",
+        endpoint: 'People',
         queryParams: {
           $filter: `Id eq ${authorAlias[0].personId}`,
-          $expand: "Photo",
+          $expand: 'Photo',
         },
         ttl: TTL.LONG,
       });
@@ -182,13 +182,13 @@ const fetchSpeakerData = async (guid: string) => {
 
       if (author && author.length > 0) {
         return {
-          fullName: author[0].firstName + " " + author[0].lastName,
+          fullName: author[0].firstName + ' ' + author[0].lastName,
           profilePhoto: author[0].photo.path,
           guid: author[0].guid,
         };
       }
     } catch (error) {
-      console.error("Error fetching author data", error);
+      console.error('Error fetching author data', error);
     }
 
     return author;
@@ -200,14 +200,14 @@ const fetchSpeakerData = async (guid: string) => {
 export const loader: LoaderFunction = async ({
   params,
 }): Promise<LoaderReturnType> => {
-  const path = params?.path || "";
+  const path = params?.path || '';
 
   const messageData = await fetchMessageByPath(path);
 
   if (!messageData) {
     throw new Response(`Message not found at: /messages/${path}`, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
-import { cn } from "~/lib/utils";
+import { useCallback, useEffect, useState } from 'react';
+import { Button } from '~/primitives/button/button.primitive';
+import { cn } from '~/lib/utils';
 
-import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
-import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
+import { ANCHOR_SCROLL_OFFSET } from '~/components/navbar/scroll-offset.constants';
+import { useStickyTopBelowNavbarClass } from '~/hooks/use-sticky-top-below-navbar';
 
 export const EventBanner = ({
   cta,
@@ -14,14 +14,14 @@ export const EventBanner = ({
   title: string;
   sections: { id: string; label: string }[];
 }) => {
-  const [activeSection, setActiveSection] = useState<string>("");
+  const [activeSection, setActiveSection] = useState<string>('');
   const stickyTopClass = useStickyTopBelowNavbarClass();
 
   const buttonStyles =
-    "bg-navy hover:!bg-ocean text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0";
+    'bg-navy hover:!bg-ocean text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0';
 
   const unselectedStyles =
-    "bg-white hover:!bg-navy text-[#585858] hover:text-white text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0";
+    'bg-white hover:!bg-navy text-[#585858] hover:text-white text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0';
 
   // Derive active section from scroll position to improve accuracy when scrolling up - this function worked
   //  better than IntersectionObserver alone or other alternatives I tried
@@ -40,7 +40,7 @@ export const EventBanner = ({
       .sort((a, b) => a.top - b.top);
 
     // Find the last section whose top is above or equal to the currentY
-    let chosen = candidates[0]?.id || "";
+    let chosen = candidates[0]?.id || '';
     for (const c of candidates) {
       if (c.top <= currentY) {
         chosen = c.id;
@@ -63,7 +63,7 @@ export const EventBanner = ({
 
       window.scrollTo({
         top: offsetTop,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     }
   };
@@ -73,8 +73,8 @@ export const EventBanner = ({
       updateActiveSectionFromOffsets();
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [updateActiveSectionFromOffsets]);
 
   // Section detection effect
@@ -91,7 +91,7 @@ export const EventBanner = ({
       {
         threshold: [0.1, 0.25, 0.5, 0.75, 1],
         rootMargin: `-${ANCHOR_SCROLL_OFFSET}px 0px -35% 0px`,
-      }
+      },
     );
 
     // Observe all sections
@@ -110,23 +110,23 @@ export const EventBanner = ({
   return (
     <div
       className={cn(
-        "w-full bg-white content-padding py-[15px] shadow-md sticky transition-all duration-300 z-10",
-        stickyTopClass
+        'w-full bg-white content-padding py-[15px] shadow-md sticky transition-all duration-300 z-10',
+        stickyTopClass,
       )}
     >
-      <div className="max-w-screen-content mx-auto w-full flex items-center">
-        <div className="flex-1 flex justify-start">
-          <p className="font-medium">{title} Event</p>
+      <div className='max-w-screen-content mx-auto w-full flex items-center'>
+        <div className='flex-1 flex justify-start'>
+          <p className='font-medium'>{title} Event</p>
         </div>
 
-        <div className="hidden md:flex gap-2">
+        <div className='hidden md:flex gap-2'>
           {sections.map(({ id, label }) => (
             <Button
               key={id}
-              intent="primary"
+              intent='primary'
               onClick={(e) => handleSectionClick(e, id)}
               className={
-                activeSection === id || (activeSection === "" && id === "about")
+                activeSection === id || (activeSection === '' && id === 'about')
                   ? buttonStyles
                   : unselectedStyles
               }
@@ -136,11 +136,11 @@ export const EventBanner = ({
           ))}
         </div>
 
-        <div className="flex-1 flex justify-end">
+        <div className='flex-1 flex justify-end'>
           {cta && (
             <Button
               href={cta.url}
-              intent="primary"
+              intent='primary'
               className={`${buttonStyles}`}
             >
               {cta.title}
