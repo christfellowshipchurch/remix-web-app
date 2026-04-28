@@ -14,9 +14,6 @@ import {
   WhatToKnowBody,
 } from "../components/volunteer-single-details.component";
 
-/** Volunteer listing + scroll to Community section. */
-const VOLUNTEER_BACK_TO = '/volunteer#community';
-
 function getLocationPathForClipboard(): string {
   if (typeof window === "undefined") return "";
   const { pathname, search, hash } = window.location;
@@ -44,20 +41,23 @@ export function useCopyPagePath() {
 export function VolunteerNav({
   copied,
   onCopyPath,
+  onBackToOpportunities,
 }: {
   copied: boolean;
   onCopyPath: () => void;
+  onBackToOpportunities: () => void;
 }) {
   return (
     <header className="hidden shrink-0 border-b border-neutral-lighter bg-white md:block">
       <div className="content-padding mx-auto flex max-w-screen-content items-center justify-end gap-4 py-4 sm:justify-between">
-        <Link
-          to={VOLUNTEER_BACK_TO}
-          className="hidden items-center gap-2 text-sm font-semibold text-neutral-darker transition-all duration-300 hover:text-ocean sm:inline-flex"
+        <button
+          type="button"
+          onClick={onBackToOpportunities}
+          className="hidden cursor-pointer items-center gap-2 text-sm font-semibold text-neutral-darker transition-all duration-300 hover:text-ocean sm:inline-flex"
         >
           <Icon name="chevronLeft" size={20} className="shrink-0" />
           Back to opportunities
-        </Link>
+        </button>
         <button
           type="button"
           onClick={() => void onCopyPath()}
@@ -76,9 +76,11 @@ export function VolunteerNav({
 export function Hero({
   title,
   coverImage,
+  onBackToOpportunities,
 }: {
   title: string;
   coverImage: string | undefined;
+  onBackToOpportunities: () => void;
 }) {
   return (
     <div className="w-full shrink-0">
@@ -95,13 +97,14 @@ export function Hero({
           </div>
         )}
 
-        <Link
-          to={VOLUNTEER_BACK_TO}
-          className="absolute left-4 top-4 flex size-11 items-center justify-center rounded-full bg-white text-text-primary shadow-md transition-colors hover:bg-soft-white md:hidden"
+        <button
+          type="button"
+          onClick={onBackToOpportunities}
+          className="absolute left-4 top-4 flex size-11 cursor-pointer items-center justify-center rounded-full bg-white text-text-primary shadow-md transition-colors hover:bg-soft-white md:hidden"
           aria-label="Back to opportunities"
         >
           <Icon name="chevronLeft" size={22} />
-        </Link>
+        </button>
       </div>
     </div>
   );
@@ -221,7 +224,7 @@ export function Questions({
         <p className="text-base text-text-secondary">
           For questions, visit{" "}
           <Link
-            to="/volunteer"
+            to="/volunteer#community"
             className="font-semibold text-ocean hover:underline"
           >
             Volunteer

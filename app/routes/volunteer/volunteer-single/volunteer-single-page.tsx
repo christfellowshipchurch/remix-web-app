@@ -1,7 +1,11 @@
-import { useLoaderData } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
 
 import type { LoaderReturnType } from "./loader";
+import {
+  clearVolunteerFinderBackPayload,
+  readVolunteerFinderBackPayload,
+} from "./volunteer-finder-return-href";
 
 import {
   About,
@@ -23,7 +27,26 @@ import { VolunteerMissionSpotsAlgoliaProvider } from "./components/volunteer-spo
 export function VolunteerSinglePage() {
   const { mission, groupGuid, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
+
+  /** Session payload from finder card click; `navigate(-1)` restores `/volunteer?…` when filters exist. */
+  const onBackToOpportunities = useCallback(() => {
+    const payload = readVolunteerFinderBackPayload(groupGuid);
+    try {
+      if (!payload) {
+        navigate("/volunteer#community");
+        return;
+      }
+      if (payload.volunteerListSearch.trim().length > 1) {
+        navigate(-1);
+        return;
+      }
+      navigate("/volunteer#community");
+    } finally {
+      clearVolunteerFinderBackPayload();
+    }
+  }, [navigate, groupGuid]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -53,8 +76,16 @@ export function VolunteerSinglePage() {
       }`}
     >
       <article className="min-h-screen bg-white md:pb-24 flex flex-col">
-        <VolunteerNav copied={copied} onCopyPath={copyPath} />
-        <Hero title={title} coverImage={coverImage} />
+        <VolunteerNav
+          copied={copied}
+          onCopyPath={copyPath}
+          onBackToOpportunities={onBackToOpportunities}
+        />
+        <Hero
+          title={title}
+          coverImage={coverImage}
+          onBackToOpportunities={onBackToOpportunities}
+        />
 
         <div className="shrink-0 content-padding mx-auto w-full max-w-screen-content py-8 pb-0 md:py-12">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1fr)_min(380px,100%)] md:items-start md:gap-14">

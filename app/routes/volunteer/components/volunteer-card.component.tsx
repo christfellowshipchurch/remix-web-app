@@ -7,6 +7,10 @@ import { Icon } from "~/primitives/icon/icon";
 
 import type { Volunteer } from "../types";
 import { volunteerCategoryPillClassName } from "../volunteer-category-pill";
+import {
+  persistVolunteerFinderBackFromCard,
+  type VolunteerFinderBackPayload,
+} from "../volunteer-single/volunteer-finder-return-href";
 
 const ROCK_CAMPUS_NAME_SET = new Set<string>(
   RockCampuses.map((campus) => campus.name),
@@ -22,9 +26,18 @@ function firstRockCampusFromList(campusList: string[] | undefined): string {
 
 /** Avoid re-rendering (and img reload) when Algolia returns new hit objects with the same fields. */
 function volunteerCardPropsEqual(
-  prev: { volunteer: Volunteer; className?: string },
-  next: { volunteer: Volunteer; className?: string },
+  prev: {
+    volunteer: Volunteer;
+    listingSearch: string;
+    className?: string;
+  },
+  next: {
+    volunteer: Volunteer;
+    listingSearch: string;
+    className?: string;
+  },
 ): boolean {
+  if (prev.listingSearch !== next.listingSearch) return false;
   if (prev.className !== next.className) return false;
   const p = prev.volunteer;
   const n = next.volunteer;
@@ -58,15 +71,23 @@ function volunteerCardPropsEqual(
 
 function VolunteerCardInner({
   volunteer,
+  listingSearch,
   className,
 }: {
   volunteer: Volunteer;
+  listingSearch: string;
   className?: string;
 }) {
+  const finderBackPayload: VolunteerFinderBackPayload = {
+    missionGroupGuid: volunteer.groupGuid,
+    volunteerListSearch: listingSearch,
+  };
+
   return (
     <Link
       to={`/volunteer/${volunteer.groupGuid}`}
       prefetch="intent"
+      onClick={() => persistVolunteerFinderBackFromCard(finderBackPayload)}
       className={cn(
         "group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-[36px] bg-white shadow-xs transition-shadow hover:shadow-md",
         className,
