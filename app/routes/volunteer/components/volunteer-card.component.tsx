@@ -10,7 +10,7 @@ import { volunteerCategoryPillClassName } from "../volunteer-category-pill";
 import {
   persistVolunteerFinderBackFromCard,
   type VolunteerFinderBackPayload,
-} from "../volunteer-single/volunteer-finder-return-href";
+} from "../volunteer-single/components/volunteer-finder-return-href";
 
 const ROCK_CAMPUS_NAME_SET = new Set<string>(
   RockCampuses.map((campus) => campus.name),
