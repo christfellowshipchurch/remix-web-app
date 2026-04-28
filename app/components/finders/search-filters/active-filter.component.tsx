@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useInstantSearch } from "react-instantsearch";
+import startCase from "lodash/startCase";
 import { Icon } from "~/primitives/icon/icon";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 
@@ -14,6 +15,12 @@ function refinementChipDisplayLabel(attribute: string, value: string): string {
   if (attribute === "adultOnly") {
     if (value === "true") return "Adults Only";
     if (value === "false") return "Child Welcome";
+  }
+  if (attribute === "eventCategories") {
+    return startCase(value);
+  }
+  if (attribute === "eventLocations") {
+    return value;
   }
   return value;
 }
@@ -77,8 +84,8 @@ export function ActiveFilters({
     "bg-ocean/10 text-ocean font-semibold text-sm min-h-0 min-w-0 px-3 py-2 rounded-[999px] flex flex-row items-center gap-1.5 transition-colors";
 
   return (
-    <div className="border-t border-neutral-lighter/15 pt-4 pb-6 max-w-screen-content mx-auto w-full min-w-0">
-      <div className="flex w-full min-w-0 flex-wrap md:items-center justify-between gap-x-3 gap-y-2">
+    <div className="border-t border-neutral-default/15 pt-4 pb-3 max-w-screen-content mx-auto w-full min-w-0">
+      <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <p className="text-neutral-default font-semibold text-sm shrink-0">
             Active<span className="inline sm:hidden">:</span>{" "}

@@ -119,7 +119,7 @@ export const mediaItems: SubMenuItem[] = [
     id: "worship",
     title: "Worship",
     icon: "music",
-    to: "https://www.youtube.com/@mvmntmsc",
+    to: "link-tree/worship",
   },
   {
     id: "devotional",

@@ -132,7 +132,7 @@ export const watchReadListenData: MenuLink = {
           },
           {
             title: "Worship",
-            url: "https://www.youtube.com/@mvmntmsc",
+            url: "link-tree/worship",
           },
         ],
       },
