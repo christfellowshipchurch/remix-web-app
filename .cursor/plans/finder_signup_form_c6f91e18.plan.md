@@ -4,19 +4,19 @@ overview: Update the Class and Group finder signup flow so unauthenticated visit
 todos:
   - id: extract-rock-signup-helper
     content: Plan a shared server helper for person lookup/creation and workflow 654 launch.
-    status: pending
+    status: completed
   - id: refactor-form-fields
     content: Plan form/modal prop changes for requested fields and hidden group ID.
-    status: pending
+    status: completed
   - id: wire-group-detail
     content: Plan group detail CTA to pass Algolia/Rock group ID directly.
-    status: pending
+    status: completed
   - id: wire-class-session
     content: Plan class session CTA to use the same modal with class group ID.
-    status: pending
+    status: completed
   - id: add-tests
     content: Plan tests for helper, action, and form behavior.
-    status: pending
+    status: completed
 isProject: false
 ---
 
