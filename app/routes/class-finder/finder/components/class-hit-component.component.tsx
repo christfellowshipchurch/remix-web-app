@@ -14,10 +14,14 @@ export function ClassHitComponent({
 }) {
   const campusLabel = hit.campus?.trim() ?? "";
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
+  const slug = hit.pathName;
+  const pathSegment = slug
+    ? encodeURIComponent(slug)
+    : encodeURIComponent(hit.classType || hit.title);
 
   return (
     <Link
-      to={`/class-finder/${encodeURIComponent(hit.classType || hit.title)}`}
+      to={`/class-finder/${pathSegment}`}
       state={
         fromClassFinderUrl ? { fromClassFinder: fromClassFinderUrl } : undefined
       }

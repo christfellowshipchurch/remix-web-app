@@ -14,6 +14,8 @@ export interface ClassHitType {
   objectID: string;
   title: string;
   classType: string;
+  /** URL slug for the class page; matches Algolia `pathName` and `/class-finder/:path`. */
+  pathName: string;
   campus: string;
   groupId: number;
   subtitle: string;
