@@ -1,35 +1,40 @@
-import * as Form from "@radix-ui/react-form";
-import { useEffect, useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
-import { useFetcher } from "react-router-dom";
-import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import RadioButtons from "~/primitives/inputs/radio-buttons";
-import { pushFormEvent } from "~/lib/gtm";
+import * as Form from '@radix-ui/react-form';
+import { useEffect, useState } from 'react';
+import { useFetcher } from 'react-router';
+import { Button } from '~/primitives/button/button.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import SelectInput from '~/primitives/inputs/select-input/select-input.primitive';
+import { pushFormEvent } from '~/lib/gtm';
+import { RockCampuses } from '~/lib/rock-config';
 
 interface GroupConnectFormProps {
-  groupName: string;
+  groupId: string;
+  campus?: string;
   onSuccess: () => void;
 }
 
+const campusOptions = RockCampuses.map((c) => ({ value: c.name, label: c.name }));
+
 const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
-  groupName,
+  groupId,
+  campus,
   onSuccess,
 }) => {
-  const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedGender, setSelectedGender] = useState("");
+  const [selectedCampus, setSelectedCampus] = useState(campus ?? '');
+  const [campusError, setCampusError] = useState<string | null>(null);
 
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
+    if (fetcher.state === 'idle' && fetcher.data) {
       setLoading(false);
       const data = fetcher.data as { error?: string };
       if (data.error) {
         setError(data.error);
       } else {
-        pushFormEvent("form_complete", "group_connect", "Group Connect");
+        pushFormEvent('form_complete', 'group_signup', 'Group/Class Signup');
         onSuccess();
       }
     }
@@ -38,40 +43,17 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setBirthDateError(null);
     setLoading(true);
 
     const formData = new FormData(event.currentTarget);
-    formData.append("groupName", groupName);
-    formData.append("gender", selectedGender);
-
-    // Validate birth date
-    const birthDate = new Date(formData.get("birthDate") as string);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDifference < 0 ||
-      (monthDifference === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-
-    if (age < 13) {
-      setBirthDateError(
-        "You must be at least 13 years old to create an account.",
-      );
-      setLoading(false);
-      return;
-    }
 
     try {
       fetcher.submit(formData, {
-        method: "post",
-        action: "/group-finder",
+        method: 'post',
+        action: '/group-finder',
       });
     } catch {
-      setError("An error occurred. Please try again.");
+      setError('An error occurred. Please try again.');
       setLoading(false);
     }
   };
@@ -89,6 +71,8 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         onSubmit={handleSubmit}
         className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"
       >
+        <input type="hidden" name="groupId" value={groupId} />
+
         {/* First Name */}
         <Form.Field name="firstName" className="flex flex-col">
           <Form.Label>First Name*</Form.Label>
@@ -129,31 +113,22 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
             Please enter your email
           </Form.Message>
         </Form.Field>
-        {/* Birthdate */}
-        <Form.Field name="birthDate" className="flex flex-col">
-          <Form.Label>Birth Date*</Form.Label>
-          <Form.Control asChild>
-            <input type="date" required className={defaultTextInputStyles} />
-          </Form.Control>
-          <Form.Message className="text-alert" match="valueMissing">
-            Please enter your birth date
-          </Form.Message>
-          {birthDateError && <p className="text-alert">{birthDateError}</p>}
-        </Form.Field>
-        {/* Gender */}
-        <Form.Field name="gender" className="flex flex-col">
-          <Form.Label>Gender</Form.Label>
-          <div className="flex gap-4 pt-3">
-            <RadioButtons
-              options={[
-                { value: "male", label: "Male" },
-                { value: "female", label: "Female" },
-              ]}
-              selectedOption={selectedGender}
-              onChange={setSelectedGender}
+
+        {/* Campus (optional — only shown when campus prop is provided) */}
+        {campus !== undefined && (
+          <Form.Field name="campus" className="flex flex-col md:col-span-2">
+            <SelectInput
+              name="campus"
+              label="Campus"
+              value={selectedCampus}
+              error={campusError}
+              setValue={setSelectedCampus}
+              setError={setCampusError}
+              options={campusOptions}
+              placeholder="Select a campus"
             />
-          </div>
-        </Form.Field>
+          </Form.Field>
+        )}
 
         {error && <p className="text-alert col-span-2 text-center">{error}</p>}
 
@@ -164,7 +139,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
             type="submit"
             disabled={loading}
           >
-            {loading ? "Loading..." : "Submit"}
+            {loading ? 'Loading...' : 'Submit'}
           </Button>
         </Form.Submit>
       </Form.Root>

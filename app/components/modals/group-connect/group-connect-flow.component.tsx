@@ -1,6 +1,6 @@
-import { useState } from "react";
-import GroupConnectConfirmation from "./group-connect-confirmation.component";
-import GroupConnectForm from "./group-connect-form.component";
+import { useState } from 'react';
+import GroupConnectConfirmation from './group-connect-confirmation.component';
+import GroupConnectForm from './group-connect-form.component';
 
 enum GroupConnectStep {
   GROUP_CONNECT_FORM,
@@ -9,12 +9,14 @@ enum GroupConnectStep {
 
 interface GroupConnectFlowProps {
   setOpenModal: (open: boolean) => void;
-  groupName: string;
+  groupId: string;
+  campus?: string;
 }
 
 const GroupConnectFlow = ({
   setOpenModal,
-  groupName,
+  groupId,
+  campus,
 }: GroupConnectFlowProps) => {
   const [step, setStep] = useState<GroupConnectStep>(
     GroupConnectStep.GROUP_CONNECT_FORM,
@@ -28,7 +30,8 @@ const GroupConnectFlow = ({
             onSuccess={() =>
               setStep(GroupConnectStep.GROUP_CONNECT_CONFIRMATION)
             }
-            groupName={groupName}
+            groupId={groupId}
+            campus={campus}
           />
         );
       case GroupConnectStep.GROUP_CONNECT_CONFIRMATION:
