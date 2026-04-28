@@ -33,24 +33,24 @@ export function HeroNavCard({
     <a
       href={callToAction?.url}
       className={cn(
-        "bg-white p-4 rounded-lg shadow-medium hover:text-ocean transition-colors max-w-[420px]",
-        variant === "mobile" && "p-3"
+        "bg-white p-4 rounded-[8px] shadow-md hover:text-ocean transition-colors max-w-[420px]",
+        variant === "mobile" && "p-3",
       )}
     >
       {!loaded && <ImageLoader height={280} />}
       <img
         src={image}
         alt={title}
-        className={`w-80 2xl:!w-[420px] rounded-lg bg-center bg-cover ${
+        className={`w-80 2xl:w-[420px]! rounded-[8px] bg-center bg-cover ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
         onLoad={() => setLoaded(true)}
       />
-      <h5 className="font-medium uppercase text-text-secondary text-xs mt-2">
-        {subtitle}
-      </h5>
-      <h3 className="heading-h5 text-text-primary">{title}</h3>
-      <div className="mt-3 font-semibold flex w-full justify-between">
+      <div className="flex flex-col gap-2 mt-4">
+        <h3 className="text-lg font-extrabold text-neutral-darker">{title}</h3>
+        <p className="font-medium text-sm text-neutral-default">{subtitle}</p>
+      </div>
+      <div className="mt-6 font-semibold flex w-full text-ocean hover:text-navy transition-colors duration-300 justify-between">
         <span>{callToAction?.title}</span>
         <Icon name="arrowRight" />
       </div>

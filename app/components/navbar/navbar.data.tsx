@@ -62,7 +62,7 @@ export const ministriesData: MenuLink = {
         ],
       },
       {
-        title: "GROUPS & CLASSES",
+        title: "COMMUNITY",
         items: [
           {
             title: "Group Finder",
@@ -75,14 +75,14 @@ export const ministriesData: MenuLink = {
             url: "/class-finder",
           },
           {
-            title: "My Groups & Classes",
-            description: "Stay connected & up to date",
-            url: "https://legacy-my-groups.vercel.app/login",
-          },
-          {
             title: "Volunteer",
             description: "Local & Global Opportunities",
             url: "/volunteer",
+          },
+          {
+            title: "My Groups & Classes",
+            description: "Stay connected & up to date",
+            url: "https://legacy-my-groups.vercel.app/login",
           },
         ],
       },

@@ -46,7 +46,7 @@ export const MenuContent: React.FC<
               <h4 className="font-medium text-link-secondary">
                 {section.title}
               </h4>
-              <hr className="my-4 border-t border-gray-200" />
+              <hr className="mb-4 mt-1 border-t border-gray-200" />
               <ul className="mt-4 space-y-6">
                 {section.items.map((item, idx) => (
                   <li
@@ -67,7 +67,7 @@ export const MenuContent: React.FC<
               {section.link && (
                 <a
                   href="/ministries"
-                  className="mt-4 flex hover:text-ocean transition-colors"
+                  className="mt-4 flex text-navy hover:text-ocean transition-colors"
                 >
                   <span>{section.link}</span>
                   <Icon name="arrowRight" />
