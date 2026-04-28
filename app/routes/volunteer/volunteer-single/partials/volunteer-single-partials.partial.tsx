@@ -11,6 +11,7 @@ import type { VolunteerMissionDetail } from "../types";
 import { volunteerCategoryPillClassName } from "../../volunteer-category-pill";
 import {
   MissionDetailRows,
+  normalizeWhatToKnowContent,
   WhatToKnowBody,
 } from "../components/volunteer-single-details.component";
 
@@ -165,12 +166,13 @@ export function About({ aboutBody }: { aboutBody: string }) {
 }
 
 export function WhatToKnow({ data }: { data: string }) {
-  if (!data.trim()) return null;
+  const content = normalizeWhatToKnowContent(data);
+  if (!content) return null;
 
   return (
     <section className="space-y-3">
       <h2 className="text-xl font-extrabold text-text-primary">What to know</h2>
-      <WhatToKnowBody data={data} />
+      <WhatToKnowBody content={content} />
     </section>
   );
 }
