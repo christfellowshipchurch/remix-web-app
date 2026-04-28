@@ -1,7 +1,10 @@
 import { fetchRockData, postRockData, TTL } from './fetch-rock-data';
-import { fetchUserLogin } from './authentication/rock-authentication';
 import {
-  createOrFindSmsLoginUserId,
+  createUserProfile,
+  fetchUserLogin,
+} from './authentication/rock-authentication';
+import {
+  createPhoneNumberInRock,
   parsePhoneNumberUtil,
 } from './authentication/sms-authentication';
 import { updatePerson } from './rock-person';
@@ -28,7 +31,7 @@ export const findOrCreateRockPersonForSignup = async (
   }
 
   // Step 2: Check by phone login
-  const phoneLogin = await fetchUserLogin(phoneNumber);
+  const phoneLogin = await fetchUserLogin(significantNumber);
   if (phoneLogin) {
     await updatePerson(phoneLogin.personId.toString(), { email, phoneNumber });
     return phoneLogin.personId.toString();
@@ -58,7 +61,7 @@ export const findOrCreateRockPersonForSignup = async (
     endpoint: 'PhoneNumbers',
     queryParams: {
       $select: 'PersonId',
-      $filter: `Number eq '${significantNumber}'`,
+      $filter: `Number eq '${escapeOData(significantNumber)}'`,
     },
     ttl: TTL.NONE,
   });
@@ -91,17 +94,17 @@ export const findOrCreateRockPersonForSignup = async (
     }
   }
 
-  // Step 5: No match found — create a new person via SMS login flow
-  return (
-    await createOrFindSmsLoginUserId({
-      phoneNumber,
-      email,
-      userProfile: [
-        { field: 'FirstName', value: firstName },
-        { field: 'LastName', value: lastName },
-      ],
-    })
-  ).toString();
+  // Step 5: No match found — create a new person directly
+  const newPersonId = await createUserProfile({
+    email,
+    FirstName: firstName,
+    LastName: lastName,
+  });
+  const { countryCode } = parsePhoneNumberUtil(phoneNumber);
+  if (countryCode) {
+    await createPhoneNumberInRock({ personId: newPersonId, phoneNumber, countryCode });
+  }
+  return newPersonId.toString();
 };
 
 export const launchGroupClassSignupWorkflow = async (
