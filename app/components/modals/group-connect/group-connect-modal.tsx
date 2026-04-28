@@ -28,7 +28,7 @@ export function GroupConnectModal({
 
   return (
     <Modal open={openModal} onOpenChange={handleOpenChange}>
-      <Modal.Button asChild className="mr-2">
+      <Modal.Button asChild>
         <ModalButton onClick={() => setOpenModal(true)}>
           {buttonText}
         </ModalButton>
