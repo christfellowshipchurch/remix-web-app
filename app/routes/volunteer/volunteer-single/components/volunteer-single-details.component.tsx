@@ -1,26 +1,15 @@
 import Icon from "~/primitives/icon";
 import HTMLRenderer from "~/primitives/html-renderer";
 
+import {
+  collapseHtmlToVisibleText,
+  trimRemovingInvisibleUnicode,
+} from "~/lib/text-content";
+
 import type { VolunteerMissionDetail } from "../types";
 
 export function str(v: unknown): string | undefined {
   return typeof v === "string" && v.trim() ? v.trim() : undefined;
-}
-
-/** BOM / ZWSP / word joiner — often sneak in from CMS or paste. */
-const INVISIBLE_CHARS = /[\uFEFF\u200B-\u200D\u2060]/g;
-
-function stripHtmlToVisibleText(html: string): string {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<br\s*\/?>/gi, " ")
-    .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th)\s*>/gi, " ")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&#(?:160|x0*A0);/gi, " ")
-    .replace(/\s+/g, "")
-    .trim();
 }
 
 /**
@@ -30,11 +19,11 @@ function stripHtmlToVisibleText(html: string): string {
  */
 export function normalizeWhatToKnowContent(raw: string): string | null {
   if (typeof raw !== "string") return null;
-  const trimmed = raw.replace(INVISIBLE_CHARS, "").trim();
+  const trimmed = trimRemovingInvisibleUnicode(raw);
   if (!trimmed) return null;
 
   if (trimmed.startsWith("<")) {
-    return stripHtmlToVisibleText(trimmed).length > 0 ? trimmed : null;
+    return collapseHtmlToVisibleText(trimmed).length > 0 ? trimmed : null;
   }
 
   const lines = trimmed
