@@ -57,7 +57,7 @@ export function VolunteerSinglePage() {
   const category = str(mission.category) || "Volunteer opportunity";
   const coverImage = str(mission.coverImageUrl) || undefined;
   const aboutBody = str(mission.summary) || "";
-  const signupHref = str(mission.missionsUrl) || "/volunteer-form/welcome";
+  const signupHref = str(mission.missionsUrl) || "";
   const contactName = str(mission.contactName);
   const contactEmail = str(mission.contactEmail);
 
@@ -115,7 +115,6 @@ export function VolunteerSinglePage() {
                 <About aboutBody={aboutBody} />
                 <WhatToKnow data={mission.whatToKnow} />
                 <Questions
-                  summary={mission.summary}
                   contactName={contactName}
                   contactEmail={contactEmail}
                 />
@@ -136,11 +135,7 @@ export function VolunteerSinglePage() {
           <div className="mx-auto flex w-full max-w-screen-content flex-col gap-10">
             <About aboutBody={aboutBody} />
             <WhatToKnow data={mission.whatToKnow} />
-            <Questions
-              summary={mission.summary}
-              contactName={contactName}
-              contactEmail={contactEmail}
-            />
+            <Questions contactName={contactName} contactEmail={contactEmail} />
           </div>
         </div>
 

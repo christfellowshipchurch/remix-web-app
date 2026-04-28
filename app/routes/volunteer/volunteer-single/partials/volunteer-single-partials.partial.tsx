@@ -176,15 +176,12 @@ export function WhatToKnow({ data }: { data: string }) {
 }
 
 export function Questions({
-  summary,
   contactName,
   contactEmail,
 }: {
-  summary: string;
   contactName: string | undefined;
   contactEmail: string | undefined;
 }) {
-  const summaryHtml = summary.trim();
   const name = contactName?.trim();
   const email = contactEmail?.trim();
   const hasContact = Boolean(name || email);
@@ -192,12 +189,6 @@ export function Questions({
   return (
     <section className="space-y-3">
       <h2 className="text-xl font-extrabold text-text-primary">Questions?</h2>
-      {summaryHtml ? (
-        <div className="prose prose-neutral prose-a:text-ocean max-w-none text-base leading-relaxed text-text-secondary">
-          <HTMLRenderer html={summaryHtml} />
-        </div>
-      ) : null}
-
       {hasContact ? (
         <p className="text-base leading-relaxed text-text-secondary">
           Reach out to{" "}
@@ -220,7 +211,7 @@ export function Questions({
           ) : null}
           .
         </p>
-      ) : !summaryHtml ? (
+      ) : (
         <p className="text-base text-text-secondary">
           For questions, visit{" "}
           <Link
@@ -231,7 +222,7 @@ export function Questions({
           </Link>{" "}
           or contact your campus.
         </p>
-      ) : null}
+      )}
     </section>
   );
 }

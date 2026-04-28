@@ -21,7 +21,7 @@ export function MissionDetailRows({
 }: {
   mission: VolunteerMissionDetail;
 }) {
-  const locationLabel = str(mission.checkInLocation) || "—";
+  const locationLabel = str(mission.campusName) || "—";
   const dateLabel = str(mission.eventDateStr) || "—";
   const timeLabel = formatEventTimeRange(mission);
 

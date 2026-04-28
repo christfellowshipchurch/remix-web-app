@@ -24,8 +24,6 @@ type RockMissionGroup = {
   attributeValues?: AttrBag;
 };
 
-const DEFAULT_SIGNUP = "/volunteer-form/welcome";
-
 function attrKeysRock(keys: string[]): string[] {
   const out: string[] = [];
   for (const key of keys) {
@@ -50,7 +48,10 @@ function readAttrEntry(
   return undefined;
 }
 
-function readAttr(attrs: AttrBag | undefined, keys: string[]): string | undefined {
+function readAttr(
+  attrs: AttrBag | undefined,
+  keys: string[],
+): string | undefined {
   const e = readAttrEntry(attrs, keys);
   const v = e?.value;
   if (v != null && String(v).trim() !== "") return String(v).trim();
@@ -91,10 +92,7 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
   eventTimeStr: string;
   eventEndTimeStr: string | undefined;
 } {
-  const startRaw = readAttr(attrs, [
-    "EventStartDateTime",
-    "DisplayStartDateTime",
-  ]);
+  const startRaw = readAttr(attrs, ["EventStartDateTime"]);
   const startFormatted = readAttrFormatted(attrs, ["EventStartDateTime"]);
 
   let eventDateStr = "—";
@@ -107,9 +105,7 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
     eventDateStr = format(startDate, "M/d/yyyy");
     eventTimeStr = format(startDate, "h:mm a");
   } else if (startFormatted) {
-    const m = startFormatted.match(
-      /^(.+?)\s+(\d{1,2}:\d{2}\s*(?:AM|PM))$/i,
-    );
+    const m = startFormatted.match(/^(.+?)\s+(\d{1,2}:\d{2}\s*(?:AM|PM))$/i);
     if (m) {
       eventDateStr = m[1].trim();
       eventTimeStr = m[2].trim();
@@ -188,28 +184,9 @@ async function resolveContact(attrs: AttrBag | undefined): Promise<{
 }> {
   if (!attrs) return {};
 
-  const formattedName = readAttrFormatted(attrs, [
-    "ContactPerson",
-    "contactPerson",
-  ]);
-
-  const personIdRaw =
-    readAttr(attrs, [
-      "ContactPersonId",
-      "contactPersonId",
-      "LeaderPersonId",
-      "leaderPersonId",
-    ]) ?? "";
-
-  const aliasGuid =
-    readAttr(attrs, [
-      "ContactPerson",
-      "contactPerson",
-      "ContactPersonAliasGuid",
-      "contactPersonAliasGuid",
-      "ContactPersonAlias",
-      "contactPersonAlias",
-    ]) ?? "";
+  const formattedName = readAttrFormatted(attrs, ["ContactPerson"]);
+  const personIdRaw = readAttr(attrs, ["ContactPersonId"]) ?? "";
+  const aliasGuid = readAttr(attrs, ["ContactPerson"]) ?? "";
 
   let personId = /^\d+$/.test(personIdRaw) ? personIdRaw : "";
   const guidRe =
@@ -268,12 +245,12 @@ export async function fetchVolunteerMissionDetailFromRock(
 
   const attrs = row.attributeValues;
   const title =
-    readAttr(attrs, ["Title", "MissionTitle", "OpportunityTitle"]) ||
+    readAttr(attrs, ["Title"]) ||
     (typeof row.name === "string" ? row.name.trim() : "") ||
     "Volunteer opportunity";
 
   const category =
-    readAttr(attrs, ["Category", "MissionCategory", "OpportunityCategory"]) ||
+    readAttr(attrs, ["Category"]) ||
     (typeof row.groupType?.name === "string"
       ? row.groupType.name.trim()
       : "") ||
@@ -283,51 +260,24 @@ export async function fetchVolunteerMissionDetailFromRock(
     (typeof row.campus?.name === "string" && row.campus.name.trim()) ||
     (typeof row.campus?.shortCode === "string" &&
       row.campus.shortCode.trim()) ||
-    readAttrFormatted(attrs, ["CampusLocation", "campusLocation"]) ||
-    readAttr(attrs, ["Campus", "CampusName"]) ||
+    readAttrFormatted(attrs, ["CampusLocation"]) ||
+    readAttr(attrs, ["CampusName"]) ||
     undefined;
 
-  const coverRaw =
-    readAttr(attrs, [
-      "CoverImage",
-      "Image",
-      "FeaturedImage",
-      "MissionImage",
-      "Photo",
-    ]) ?? "";
+  const coverRaw = readAttr(attrs, ["Photo"]) ?? "";
   const coverImageUrl = resolveImageUrl(coverRaw);
 
   const summary =
-    readAttr(attrs, [
-      "PublicDescription",
-      "HtmlDescription",
-      "Description",
-      "Summary",
-      "About",
-      "Details",
-    ]) ||
+    readAttr(attrs, ["PublicDescription"]) ||
     (typeof row.description === "string" ? row.description.trim() : "") ||
     "";
 
-  const whatToKnow =
-    readAttr(attrs, [
-      "WhatToKnow",
-      "WhatToKnowHtml",
-      "AdditionalInfo",
-      "NeedToKnow",
-      /** Group type “Additional Confirmation Email Information” — logistics / expectations. */
-      "EmailInfo",
-    ]) || "";
+  const whatToKnow = readAttr(attrs, ["EmailInfo"]) || "";
 
   const questionsHtml =
     readAttr(attrs, ["QuestionsHtml", "ContactIntro", "Questions"]) || "";
 
-  const spotsRaw = readAttr(attrs, [
-    "SpotsLeft",
-    "AvailableSpots",
-    "Openings",
-    "CapacityRemaining",
-  ]);
+  const spotsRaw = readAttr(attrs, ["SpotsLeft"]);
   let spotsLeftDisplay: string | number | undefined;
   if (spotsRaw !== undefined) {
     const n = Number(spotsRaw);
@@ -336,28 +286,12 @@ export async function fetchVolunteerMissionDetailFromRock(
   }
 
   const checkInLocation =
-    readAttr(attrs, [
-      "CheckInLocation",
-      "CheckinLocation",
-      "Location",
-      "MeetingLocation",
-    ]) ||
-    campusName ||
-    "—";
+    readAttr(attrs, ["CheckInLocation"]) || campusName || "—";
 
   const { eventDateStr, eventTimeStr, eventEndTimeStr } =
     buildEventSchedule(attrs);
 
-  const missionsUrl =
-    readAttr(attrs, [
-      "MinistryPartnerURL",
-      "ministryPartnerUrl",
-      "SignUpUrl",
-      "MissionsUrl",
-      "RegistrationUrl",
-      "Link",
-      "Url",
-    ]) || DEFAULT_SIGNUP;
+  const missionsUrl = `https://rock.gocf.org/page/1038?Group=${encodeURIComponent(guid)}`;
 
   const contact = await resolveContact(attrs);
 

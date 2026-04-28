@@ -28,7 +28,7 @@ export interface VolunteerMissionDetail {
   eventTimeStr: string;
   eventEndTimeStr?: string;
   /** External or internal sign-up URL. */
-  missionsUrl: string;
+  missionsUrl?: string;
   contactName?: string;
   contactEmail?: string;
 }
