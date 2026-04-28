@@ -5,7 +5,10 @@ export function VolunteerReadyToMakeADifference() {
   const backgroundImageUrl = getImageUrl("3163916");
 
   return (
-    <section className="relative w-full overflow-hidden content-padding py-20 md:py-28">
+    <section
+      id="ready"
+      className="relative w-full overflow-hidden content-padding py-20 md:py-28"
+    >
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${backgroundImageUrl})` }}

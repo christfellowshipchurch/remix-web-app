@@ -47,7 +47,7 @@ export const VolunteerHero = () => {
           <div className="flex flex-col xl:flex-row gap-3 pt-2">
             <Button
               intent="primary"
-              href="#TBD"
+              href="/volunteer-form/welcome"
               className="w-full md:w-auto min-w-[250px] gap-2"
             >
               Find Your Fit
@@ -56,7 +56,7 @@ export const VolunteerHero = () => {
 
             <Button
               intent="secondary"
-              href="#volunteer-at-church"
+              href="#church"
               className="w-full md:w-auto min-w-[240px]"
             >
               <span className="lg:hidden">Browse All</span>

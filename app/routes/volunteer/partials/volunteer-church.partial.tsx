@@ -4,7 +4,7 @@ import { VolunteerAtChurchCarousel } from "../components/volunteer-at-church-car
 export function VolunteerAtChurch() {
   return (
     <section
-      id="volunteer-at-church"
+      id="church"
       className="w-full bg-dark-navy text-white pl-5 md:pl-12 lg:px-18"
     >
       <div className="mx-auto max-w-[1280px] w-full flex flex-col items-center gap-10 py-16 md:gap-14 md:py-24 lg:py-28">
