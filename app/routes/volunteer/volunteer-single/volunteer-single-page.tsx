@@ -79,9 +79,10 @@ export function VolunteerSinglePage() {
                 <MissionDetailRows mission={mission} />
               </div>
 
+              {/* Desktop-only content */}
               <div className="hidden flex-col gap-10 md:flex">
                 <About aboutBody={aboutBody} />
-                <WhatToKnow raw={mission.summary} />
+                <WhatToKnow data={mission.whatToKnow} />
                 <Questions
                   summary={mission.summary}
                   contactName={contactName}
@@ -99,10 +100,11 @@ export function VolunteerSinglePage() {
           </div>
         </div>
 
-        <div className="flex min-h-0 w-full flex-1 flex-col bg-gray py-8 content-padding md:hidden">
+        {/* Mobile-only content */}
+        <div className="flex min-h-0 w-full flex-1 flex-col bg-gray pt-12 pb-24 content-padding md:hidden">
           <div className="mx-auto flex w-full max-w-screen-content flex-col gap-10">
             <About aboutBody={aboutBody} />
-            <WhatToKnow raw={mission.summary} />
+            <WhatToKnow data={mission.whatToKnow} />
             <Questions
               summary={mission.summary}
               contactName={contactName}

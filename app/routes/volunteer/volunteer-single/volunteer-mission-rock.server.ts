@@ -315,6 +315,8 @@ export async function fetchVolunteerMissionDetailFromRock(
       "WhatToKnowHtml",
       "AdditionalInfo",
       "NeedToKnow",
+      /** Group type “Additional Confirmation Email Information” — logistics / expectations. */
+      "EmailInfo",
     ]) || "";
 
   const questionsHtml =

@@ -16,7 +16,11 @@ function formatEventTimeRange(mission: VolunteerMissionDetail): string {
   return start || end || "—";
 }
 
-export function MissionDetailRows({ mission }: { mission: VolunteerMissionDetail }) {
+export function MissionDetailRows({
+  mission,
+}: {
+  mission: VolunteerMissionDetail;
+}) {
   const locationLabel = str(mission.checkInLocation) || "—";
   const dateLabel = str(mission.eventDateStr) || "—";
   const timeLabel = formatEventTimeRange(mission);
@@ -30,7 +34,7 @@ export function MissionDetailRows({ mission }: { mission: VolunteerMissionDetail
   return (
     <ul className="flex flex-col gap-4">
       {rows.map((row) => (
-        <li key={row.icon} className="flex items-start gap-3">
+        <li key={row.icon} className="flex items-center gap-3">
           <span className="mt-0.5 shrink-0 text-neutral-darker">
             <Icon name={row.icon} size={22} className="text-neutral-darker" />
           </span>
@@ -43,8 +47,8 @@ export function MissionDetailRows({ mission }: { mission: VolunteerMissionDetail
   );
 }
 
-export function WhatToKnowBody({ raw }: { raw: string }) {
-  const trimmed = raw.trim();
+export function WhatToKnowBody({ data }: { data: string }) {
+  const trimmed = data.trim();
   if (!trimmed) return null;
 
   if (trimmed.startsWith("<")) {

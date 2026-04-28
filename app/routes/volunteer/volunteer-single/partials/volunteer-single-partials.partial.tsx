@@ -158,13 +158,13 @@ export function About({ aboutBody }: { aboutBody: string }) {
   );
 }
 
-export function WhatToKnow({ raw }: { raw: string }) {
-  if (!raw.trim()) return null;
+export function WhatToKnow({ data }: { data: string }) {
+  if (!data.trim()) return null;
 
   return (
     <section className="space-y-3">
       <h2 className="text-xl font-extrabold text-text-primary">What to know</h2>
-      <WhatToKnowBody raw={raw} />
+      <WhatToKnowBody data={data} />
     </section>
   );
 }
@@ -178,40 +178,43 @@ export function Questions({
   contactName: string | undefined;
   contactEmail: string | undefined;
 }) {
+  const summaryHtml = summary.trim();
+  const name = contactName?.trim();
+  const email = contactEmail?.trim();
+  const hasContact = Boolean(name || email);
+
   return (
     <section className="space-y-3">
       <h2 className="text-xl font-extrabold text-text-primary">Questions?</h2>
-      {summary ? (
+      {summaryHtml ? (
         <div className="prose prose-neutral prose-a:text-ocean max-w-none text-base leading-relaxed text-text-secondary">
-          <HTMLRenderer html={summary} />
+          <HTMLRenderer html={summaryHtml} />
         </div>
-      ) : contactName || contactEmail ? (
+      ) : null}
+
+      {hasContact ? (
         <p className="text-base leading-relaxed text-text-secondary">
-          {contactName ? (
-            <>
-              Reach out to{" "}
-              <span className="font-semibold text-text-primary">
-                {contactName}
-              </span>
-            </>
+          Reach out to{" "}
+          {name ? (
+            <span className="font-semibold text-text-primary">{name}</span>
           ) : (
-            <>Reach out to us</>
+            <span className="text-text-primary">us</span>
           )}
-          {contactEmail ? (
+          {email ? (
             <>
               {" "}
               at{" "}
               <a
-                href={`mailto:${contactEmail}`}
+                href={`mailto:${email}`}
                 className="font-semibold text-ocean underline-offset-2 hover:underline"
               >
-                {contactEmail}
+                {email}
               </a>
             </>
           ) : null}
           .
         </p>
-      ) : (
+      ) : !summaryHtml ? (
         <p className="text-base text-text-secondary">
           For questions, visit{" "}
           <Link
@@ -222,7 +225,7 @@ export function Questions({
           </Link>{" "}
           or contact your campus.
         </p>
-      )}
+      ) : null}
     </section>
   );
 }
@@ -240,7 +243,7 @@ export function Sidebar({
 }) {
   return (
     <aside className="hidden md:block">
-      <div className="sticky top-24 space-y-6 rounded-2xl border border-neutral-lighter bg-white p-6 shadow-sm">
+      <div className="sticky top-24 space-y-6 rounded-2xl border border-black/6 bg-white p-6 shadow-xs">
         <MissionDetailRows mission={mission} />
         <div className="h-px w-full bg-[#E5E7EB]" />
         <div className="flex flex-col gap-3">
@@ -287,7 +290,7 @@ export function MobileBottomBar({
   const bar = (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-0 z-200 flex items-stretch gap-3 border-t border-neutral-lighter bg-white p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]",
+        "w-full fixed inset-x-0 bottom-0 z-200 flex items-stretch gap-3 border-t border-neutral-lighter bg-white p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]",
         "md:hidden",
         "pb-[max(1rem,env(safe-area-inset-bottom,0px))]",
       )}
@@ -304,7 +307,7 @@ export function MobileBottomBar({
       <button
         type="button"
         onClick={() => void onCopyPath()}
-        className="flex size-12 shrink-0 items-center justify-center rounded-xl border-2 border-ocean text-ocean transition-colors hover:bg-ocean/10"
+        className="flex size-12 shrink-0 items-center justify-center rounded-full border-[0.5px] border-black/12 text-neutral-darker"
         aria-label={copied ? "Link copied" : "Share Button"}
       >
         <Icon name="shareAlt" size={22} />
@@ -312,7 +315,8 @@ export function MobileBottomBar({
       <Button
         intent="primary"
         href={signupHref}
-        className="min-h-12 flex-1 rounded-xl text-base font-bold"
+        linkClassName="flex-1 min-w-0"
+        className="min-h-12 w-full rounded-full text-base font-bold"
       >
         Sign Up
       </Button>
