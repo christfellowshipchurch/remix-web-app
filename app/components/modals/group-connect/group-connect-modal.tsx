@@ -22,7 +22,7 @@ export function GroupConnectModal({
   const handleOpenChange = (open: boolean) => {
     setOpenModal(open);
     if (open) {
-      pushFormEvent('form_start', 'group_connect', 'Group Connect');
+      pushFormEvent('form_start', 'group_signup', 'Group/Class Signup');
     }
   };
 

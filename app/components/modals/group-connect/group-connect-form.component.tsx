@@ -117,16 +117,18 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
           <Form.Field name="campus" className="flex flex-col md:col-span-2">
-            <SelectInput
-              name="campus"
-              label="Campus"
-              value={selectedCampus}
-              error={campusError}
-              setValue={setSelectedCampus}
-              setError={setCampusError}
-              options={campusOptions}
-              placeholder="Select a campus"
-            />
+            <Form.Label>Campus</Form.Label>
+            <Form.Control asChild>
+              <SelectInput
+                name="campus"
+                value={selectedCampus}
+                error={campusError}
+                setValue={setSelectedCampus}
+                setError={setCampusError}
+                options={campusOptions}
+                placeholder="Select a campus"
+              />
+            </Form.Control>
           </Form.Field>
         )}
 

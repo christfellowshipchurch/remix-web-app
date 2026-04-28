@@ -13,6 +13,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const phoneNumber = formData.phoneNumber?.toString() ?? '';
     const email = formData.email?.toString() ?? '';
     const groupId = formData.groupId?.toString() ?? '';
+    // TODO: write campus to Rock person (PrimaryCampusId) once campus ID lookup is available
+    const _campus = formData.campus?.toString();
 
     if (!firstName || !lastName || !phoneNumber || !email || !groupId) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
