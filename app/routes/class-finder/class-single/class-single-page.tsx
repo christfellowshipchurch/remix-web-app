@@ -1,5 +1,5 @@
-import { useLoaderData } from "react-router-dom";
-import { useMemo } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";
 
 import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
@@ -46,6 +46,7 @@ const ClassNotFound = () => {
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   const { summary, classType, topic } = hit;
+  const navigate = useNavigate();
   const { discussionGuideUrl, classTrailer, onDemandUrl } =
     useLoaderData<LoaderReturnType>();
 
@@ -90,6 +91,22 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
     return items;
   }, [discussionGuideUrl, classTrailer]);
 
+  const backLink = useMemo(
+    () => ({
+      href: "/class-finder",
+      label: "Back to All Classes" as const,
+      onNavigate: (e: ReactMouseEvent<Element>) => {
+        e.preventDefault();
+        if (typeof window !== "undefined" && window.history.length > 1) {
+          navigate(-1);
+        } else {
+          navigate("/class-finder");
+        }
+      },
+    }),
+    [navigate],
+  );
+
   return (
     <section className="flex flex-col items-center dark:bg-gray-900 pt-6">
       <div className="w-full flex-none">
@@ -102,10 +119,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           mobileDescription={heroDescriptionHtml}
           desktopDescription={heroDescriptionHtml}
           ctas={ctas}
-          backLink={{
-            href: "/class-finder",
-            label: "Back to All Classes",
-          }}
+          backLink={backLink}
         />
       </div>
 

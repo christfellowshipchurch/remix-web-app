@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type MouseEvent, type ReactNode } from "react";
 
 import { SectionTitle } from "~/components";
 import { cn } from "~/lib/utils";
@@ -13,6 +13,8 @@ type FinderHeroCtaPlacement = "mobile" | "desktop";
 type FinderHeroBackLink = {
   href: string;
   label: string;
+  /** When set, invoked on link click. Call `e.preventDefault()` if you handle navigation. */
+  onNavigate?: (e: MouseEvent<Element>) => void;
 };
 
 type FinderHeroLinkCta = {
@@ -124,6 +126,7 @@ export const FinderHero = ({
             {backLink ? (
               <Link
                 to={backLink.href}
+                onClick={backLink.onNavigate}
                 className="flex items-center gap-2 hover:text-ocean transition-colors mb-10"
               >
                 <Icon size={16} name="arrowBack" />
