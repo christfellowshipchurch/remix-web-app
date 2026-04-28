@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import GroupConnectForm from '../group-connect-form.component';
@@ -88,12 +88,9 @@ describe('GroupConnectForm', () => {
     expect(screen.getByText('Stuart')).toBeInTheDocument();
   });
 
-  it("shows 'Loading...' button text when form is submitted", () => {
+  it("shows 'Loading...' button text when form is submitting", () => {
+    mockFetcherState = { state: 'submitting', data: undefined };
     renderForm();
-    const form = document.querySelector('form')!;
-    act(() => {
-      fireEvent.submit(form);
-    });
     expect(screen.getByRole('button', { name: /loading/i })).toBeInTheDocument();
   });
 
@@ -122,5 +119,9 @@ describe('GroupConnectForm', () => {
 
     expect(pushFormEvent).toHaveBeenCalledWith('form_complete', 'group_signup', 'Group/Class Signup');
     expect(onSuccess).toHaveBeenCalled();
+
+    const gtmOrder = (pushFormEvent as ReturnType<typeof vi.fn>).mock.invocationCallOrder[0];
+    const successOrder = (onSuccess as ReturnType<typeof vi.fn>).mock.invocationCallOrder[0];
+    expect(gtmOrder).toBeLessThan(successOrder);
   });
 });

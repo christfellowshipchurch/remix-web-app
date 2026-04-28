@@ -21,15 +21,14 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
   onSuccess,
 }) => {
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [selectedCampus, setSelectedCampus] = useState(campus ?? '');
   const [campusError, setCampusError] = useState<string | null>(null);
 
   const fetcher = useFetcher();
+  const isSubmitting = fetcher.state === 'submitting';
 
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data) {
-      setLoading(false);
       const data = fetcher.data as { error?: string };
       if (data.error) {
         setError(data.error);
@@ -43,7 +42,6 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setLoading(true);
 
     const formData = new FormData(event.currentTarget);
 
@@ -54,7 +52,6 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
       });
     } catch {
       setError('An error occurred. Please try again.');
-      setLoading(false);
     }
   };
 
@@ -139,9 +136,9 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
             className="w-40 h-12"
             size="md"
             type="submit"
-            disabled={loading}
+            disabled={isSubmitting}
           >
-            {loading ? 'Loading...' : 'Submit'}
+            {isSubmitting ? 'Loading...' : 'Submit'}
           </Button>
         </Form.Submit>
       </Form.Root>
