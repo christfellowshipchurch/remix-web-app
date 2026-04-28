@@ -1,6 +1,8 @@
 import { Icon } from "~/primitives/icon/icon";
 import { ClassHitType } from "../../types";
 import { cn } from "~/lib/utils";
+import { GroupConnectModal } from "~/components/modals/group-connect/group-connect-modal";
+import { Button } from "~/primitives/button/button.primitive";
 
 export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
   const campusLabel = hit.campus?.trim() ?? "";
@@ -83,13 +85,29 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
           </div>
         </div>
 
-        <div className="mt-auto flex shrink-0 items-center justify-center gap-1.5 bg-navy py-4.5 text-white">
-          <Icon
-            name={isVirtualFormat ? "globe" : "locationArrow"}
-            size={16}
-            className="text-gray"
-          />
-          <p className="text-sm font-semibold text-gray">{footerLabel}</p>
+        <div className="mt-auto shrink-0">
+          <div className="flex items-center justify-center gap-1.5 bg-navy py-4.5 text-white">
+            <Icon
+              name={isVirtualFormat ? "globe" : "locationArrow"}
+              size={16}
+              className="text-gray"
+            />
+            <p className="text-sm font-semibold text-gray">{footerLabel}</p>
+          </div>
+          {hit.groupId ? (
+            <GroupConnectModal
+              groupId={String(hit.groupId)}
+              campus={hit.campus}
+              buttonText="Sign Up"
+              ModalButton={(props) => (
+                <Button
+                  intent="primary"
+                  className="w-full rounded-none rounded-b-lg py-3 text-sm font-semibold"
+                  {...props}
+                />
+              )}
+            />
+          ) : null}
         </div>
       </div>
     </div>
