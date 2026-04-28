@@ -4,12 +4,6 @@ import { MemoryRouter } from 'react-router';
 import GroupConnectForm from '../group-connect-form.component';
 
 vi.mock('~/lib/gtm', () => ({ pushFormEvent: vi.fn() }));
-vi.mock('~/lib/rock-config', () => ({
-  RockCampuses: [
-    { name: 'Palm Beach Gardens', pathname: 'palm-beach-gardens' },
-    { name: 'Stuart', pathname: 'stuart' },
-  ],
-}));
 
 let mockFetcherState = {
   state: 'idle' as 'idle' | 'submitting' | 'loading',
@@ -77,15 +71,18 @@ describe('GroupConnectForm', () => {
   it('does not render campus select when campus prop is undefined', () => {
     renderForm();
     expect(screen.queryByText('Campus')).not.toBeInTheDocument();
-    expect(document.querySelector('select[name="campus"]')).not.toBeInTheDocument();
+    expect(document.querySelector('input[name="campus"]')).not.toBeInTheDocument();
   });
 
-  it('renders campus select when campus prop is provided', () => {
+  it('renders disabled campus field and hidden value when campus prop is provided', () => {
     renderForm({ campus: 'Palm Beach Gardens' });
     expect(screen.getByText('Campus')).toBeInTheDocument();
-    expect(document.querySelector('select[name="campus"]')).toBeInTheDocument();
+    const hiddenCampus = document.querySelector('input[name="campus"]') as HTMLInputElement;
+    expect(hiddenCampus).toBeInTheDocument();
+    expect(hiddenCampus.value).toBe('Palm Beach Gardens');
+    const campusSelect = screen.getByRole('combobox', { name: 'Campus' });
+    expect(campusSelect).toBeDisabled();
     expect(screen.getByText('Palm Beach Gardens')).toBeInTheDocument();
-    expect(screen.getByText('Stuart')).toBeInTheDocument();
   });
 
   it("shows 'Loading...' button text when form is submitting", () => {

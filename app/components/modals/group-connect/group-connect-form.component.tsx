@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 import { Button } from '~/primitives/button/button.primitive';
 import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
-import SelectInput from '~/primitives/inputs/select-input/select-input.primitive';
 import { pushFormEvent } from '~/lib/gtm';
-import { RockCampuses } from '~/lib/rock-config';
 
 interface GroupConnectFormProps {
   groupId: string;
@@ -13,16 +11,12 @@ interface GroupConnectFormProps {
   onSuccess: () => void;
 }
 
-const campusOptions = RockCampuses.map((c) => ({ value: c.name, label: c.name }));
-
 const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
   groupId,
   campus,
   onSuccess,
 }) => {
   const [error, setError] = useState<string | null>(null);
-  const [selectedCampus, setSelectedCampus] = useState(campus ?? '');
-  const [campusError, setCampusError] = useState<string | null>(null);
 
   const fetcher = useFetcher();
   const isSubmitting = fetcher.state === 'submitting';
@@ -114,17 +108,22 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
           <Form.Field name="campus" className="flex flex-col md:col-span-2">
-            <Form.Label>Campus</Form.Label>
+            <Form.Label className="font-bold text-sm mb-2">Campus</Form.Label>
+            <input type="hidden" name="campus" value={campus} />
             <Form.Control asChild>
-              <SelectInput
-                name="campus"
-                value={selectedCampus}
-                error={campusError}
-                setValue={setSelectedCampus}
-                setError={setCampusError}
-                options={campusOptions}
-                placeholder="Select a campus"
-              />
+              <select
+                className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
+                required
+                disabled
+                style={{
+                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
+                  backgroundSize: '24px',
+                  backgroundPosition: 'calc(100% - 2%) center',
+                  backgroundRepeat: 'no-repeat',
+                }}
+              >
+                <option>{campus}</option>
+              </select>
             </Form.Control>
           </Form.Field>
         )}
