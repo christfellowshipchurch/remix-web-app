@@ -90,7 +90,7 @@ export const DynamicHero = ({
         {/* Above poster + video: outer ::before sat behind the absolute media layer */}
         {wistiaId && (
           <div
-            className="pointer-events-none absolute inset-0 z-[15] bg-black/50"
+            className="pointer-events-none absolute inset-0 z-15 bg-black/50"
             aria-hidden
           />
         )}
@@ -108,7 +108,7 @@ export const DynamicHero = ({
       {/* Bottom Background Gradient Overlay or full overlay */}
       <div
         className={cn(
-          "absolute bottom-0 left-0 right-0 h-full z-[1]",
+          "absolute bottom-0 left-0 right-0 h-full z-1",
           fullOverlay
             ? "bg-black/60"
             : "bg-linear-to-t from-black to-transparent opacity-70",

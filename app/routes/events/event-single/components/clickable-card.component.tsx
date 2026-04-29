@@ -1,9 +1,11 @@
+import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 
 interface ClickableCardProps {
   variant: "campus" | "eventType" | "date" | "time";
   icon: "map" | "group" | "calendarAlt" | "timeFive";
   title: string;
+  step?: number;
   subtitle?: string; // For campus, date, time, eventType
   description?: string; // For eventType
   buttonText?: string; // For eventType (dynamic)
@@ -14,6 +16,7 @@ export const ClickableCard = ({
   variant,
   icon,
   title,
+  step,
   subtitle,
   description,
   buttonText,
@@ -28,19 +31,23 @@ export const ClickableCard = ({
     return (
       <div
         onClick={onClick}
-        className={`${baseCardClasses} px-6 pt-6 pb-3 gap-1 w-full md:w-[calc(33.333%-0.67rem)] max-w-[300px]`}
+        className={cn(
+          baseCardClasses,
+          "px-6 pt-6 pb-3 gap-1 w-full md:w-[calc(33.333%-0.67rem)] md:max-w-[300px]",
+          step === 1 ? "flex-row gap-3" : "",
+        )}
       >
         <div className="bg-navy-subdued rounded-lg p-3">
           <Icon name={icon} size={24} />
         </div>
-        <h4 className="font-bold text-black text-center leading-tight">
-          {title}
-        </h4>
-        {subtitle && (
-          <p className="text-sm text-[#717182] text-center">
-            {subtitle}, <br /> Florida
-          </p>
-        )}
+        <div className="flex flex-col gap-1 w-full">
+          <h4 className="font-semibold text-black leading-tight">{title}</h4>
+          {subtitle && (
+            <p className="text-xs font-semibold text-[#989898]">
+              {subtitle}, <br className="hidden md:block" /> Florida
+            </p>
+          )}
+        </div>
       </div>
     );
   }
