@@ -7,7 +7,7 @@ export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <section className="h-screen w-full bg-white pb-16 mt-[-26px] hidden lg:block relative z-30">
+    <section className="h-[94vh] max-h-[1200px] w-full bg-white mt-[-26px] hidden lg:block relative z-30">
       {/* background image and video */}
       <div className="grid grid-cols-2 size-full relative">
         {/* Left Column */}
@@ -22,12 +22,8 @@ export function DesktopHeroSection() {
           fetchPriority="high"
         />
         <div className="absolute inset-0 w-1/2 h-full bg-ocean opacity-90 z-1" />
-        <div className="flex flex-col items-center justify-between xl:items-start gap-10 h-full pt-12 xl:pt-0">
-          {/* Bottom Bar */}
-          <div className="z-11 w-full mt-auto">
-            <DesktopFeaturedItems />
-          </div>
-        </div>
+        <div className="absolute bottom-0 left-0 z-2 h-[104px] w-1/2 bg-white" />
+        <div className="relative h-full" />
 
         {/* Right Column - Background Video */}
         <div className="relative h-full">
@@ -56,28 +52,34 @@ export function DesktopHeroSection() {
       {/* Content Overlay */}
       <div className="absolute inset-0 w-full h-full z-10 content-padding pointer-events-none">
         <div className="max-w-screen-content h-full mx-auto w-full pointer-events-auto">
-          <div className="flex flex-col gap-8 h-full justify-center items-start w-full">
-            <h1 className="text-[64px] xl:text-[86px] text-white font-extrabold leading-none max-w-[600px] z-2">
-              Find Your <br />
-              People.{" "}
-              <span className="text-dark-navy">
-                Find <br />
-                Your Purpose.
-              </span>
-            </h1>
-            {!isSearching && (
-              <p className="text-white max-w-[470px] xl:max-w-[529px] text-xl z-2">
-                From inspiring messages to genuine community, Christ Fellowship
-                is a place where you and your family can grow in your faith and
-                make lifelong friendships.
-              </p>
-            )}
-            <div className="flex w-fit relative pb-10 z-3">
-              {/* Location Search */}
-              <LocationSearch
-                isSearching={isSearching}
-                setIsSearching={setIsSearching}
-              />
+          <div className="flex h-full w-full flex-col">
+            <div className="flex flex-1 flex-col gap-8 justify-center items-start w-full">
+              <h1 className="text-[64px] xl:text-[86px] text-white font-extrabold leading-none max-w-[600px] z-2">
+                Find Your <br />
+                People.{" "}
+                <span className="text-dark-navy">
+                  Find <br />
+                  Your Purpose.
+                </span>
+              </h1>
+              {!isSearching && (
+                <p className="text-white max-w-[470px] xl:max-w-[529px] text-xl z-2">
+                  From inspiring messages to genuine community, Christ
+                  Fellowship is a place where you and your family can grow in
+                  your faith and make lifelong friendships.
+                </p>
+              )}
+              <div className="flex w-fit relative pb-10 z-3">
+                {/* Location Search */}
+                <LocationSearch
+                  isSearching={isSearching}
+                  setIsSearching={setIsSearching}
+                />
+              </div>
+            </div>
+            {/* Bottom Bar */}
+            <div className="z-11 w-full max-w-[600px]">
+              <DesktopFeaturedItems />
             </div>
           </div>
         </div>
