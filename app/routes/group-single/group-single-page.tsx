@@ -32,6 +32,7 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
         leaderImages={hit.leaders.map((leader) => leader.photo)}
         topics={hit.topics}
         groupName={hit.title}
+        groupId={hit.objectID}
       />
 
       {/* Hero */}
