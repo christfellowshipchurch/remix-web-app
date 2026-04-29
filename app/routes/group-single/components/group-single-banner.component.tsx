@@ -11,11 +11,13 @@ export const GroupSingleBanner = ({
   topics,
   leaderImages,
   groupName,
+  groupId,
 }: {
   language: "English" | "Spanish" | "Español";
   topics: string[];
   leaderImages: ImageSource[];
   groupName: string;
+  groupId: string;
 }) => {
   const stickyTopClass = useStickyTopBelowNavbarClass();
   const location = useLocation();
@@ -90,7 +92,7 @@ export const GroupSingleBanner = ({
 
         {/* Right Side - Button */}
         <GroupConnectModal
-          groupName={groupName}
+          groupId={groupId}
           buttonText="I'm Interested"
           ModalButton={(props) => (
             <Button
