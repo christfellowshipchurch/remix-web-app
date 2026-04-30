@@ -1,7 +1,6 @@
 import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
-import { useAuth } from "~/providers/auth-provider";
 import { Button } from "~/primitives/button/button.primitive";
 import { MobileSearch } from "./search/mobile-search.component";
 import { useResponsive } from "~/hooks/use-responsive";
@@ -22,7 +21,6 @@ export default function MobileMenu({
   const [isOpen, setIsOpen] = useState(false);
   const [orginalMode] = useState(mode);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { user, isLoading: authLoading, logout } = useAuth();
   const { isMedium } = useResponsive();
 
   // Prevent background scroll when menu is open
@@ -144,11 +142,6 @@ export default function MobileMenu({
           <MobileMenuContent
             closeMenu={() => setIsOpen(false)}
             latestMessageTo={latestMessageTo}
-            auth={{
-              authLoading,
-              logout,
-              user,
-            }}
           />
         </div>
       </div>

@@ -2,6 +2,13 @@ import { MenuItem, SubMenuItem } from "./types";
 
 export const welcomeMenuItems: MenuItem[] = [
   {
+    id: "locations",
+    title: "Times & Locations",
+    description: "Find and plan a visit",
+    icon: "map",
+    to: "/locations",
+  },
+  {
     id: "about",
     title: "About Us",
     description: "Our beliefs and history",
@@ -9,25 +16,25 @@ export const welcomeMenuItems: MenuItem[] = [
     to: "/about",
   },
   {
-    id: "locations",
-    title: "Plan a Visit",
-    description: "Find a location near you",
-    icon: "map",
-    to: "/locations",
-  },
-  {
-    id: "watch-live",
-    title: "Watch Live",
-    description: "Join us from anywhere",
-    icon: "broadcast",
-    to: "https://www.youtube.com/@ChristFellowship.Church/streams",
-  },
-  {
     id: "latest-message",
     title: "Latest Message",
     description: "See what a service is like",
     icon: "circlePlayFilled",
     to: "/messages",
+  },
+  {
+    id: "give",
+    title: "Giving",
+    description: "Impact your world",
+    icon: "heartHand",
+    to: "/give",
+  },
+  {
+    id: "live",
+    title: "Live Broadcast",
+    description: "Join us from anywhere",
+    icon: "youtube",
+    to: "https://www.youtube.com/@ChristFellowship.Church/streams",
   },
 ];
 
@@ -107,6 +114,12 @@ export const mediaItems: SubMenuItem[] = [
     title: "Podcasts",
     icon: "microphone",
     to: "/podcasts",
+  },
+  {
+    id: "worship",
+    title: "Worship",
+    icon: "music",
+    to: "link-tree/worship",
   },
   {
     id: "devotional",
