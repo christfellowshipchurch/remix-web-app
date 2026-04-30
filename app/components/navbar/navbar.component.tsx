@@ -19,6 +19,7 @@ import {
   watchReadListenData,
 } from "./navbar.data";
 import { MenuLink } from "./types";
+import { getLatestMessageFeaturedUrl } from "./get-latest-message-featured-url";
 import { SiteBanner } from "../site-banner";
 import { RootLoaderData } from "~/routes/navbar/loader";
 // import { AuthModal } from "../modals";
@@ -196,9 +197,9 @@ export function Navbar() {
     },
   ];
 
-  const latestMessageFeaturedUrl = watchReadListen?.featureCards?.find(
-    (card) => card.subtitle === "Latest Message",
-  )?.callToAction?.url;
+  const latestMessageFeaturedUrl = getLatestMessageFeaturedUrl(
+    watchReadListen?.featureCards,
+  );
 
   // Search handling
   const handleSearchClick = () => {

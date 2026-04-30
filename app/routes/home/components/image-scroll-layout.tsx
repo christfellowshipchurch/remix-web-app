@@ -1,11 +1,18 @@
+import { useRouteLoaderData } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { getLatestMessageFeaturedUrl } from "~/components/navbar/get-latest-message-featured-url";
+import type { RootLoaderData } from "~/routes/navbar/loader";
 import HTMLRenderer from "~/primitives/html-renderer";
 import { chanceContent } from "./a-chance.data";
 import { IconButton } from "~/primitives/button/icon-button.primitive";
 import { cn } from "~/lib/utils";
-import { ConnectCardModal } from "~/components";
 
 export function ImageScrollLayout() {
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const latestMessageUrl = getLatestMessageFeaturedUrl(
+    rootData?.watchReadListen?.featureCards,
+  );
+
   const [activeSection, setActiveSection] = useState<number>(0);
   const [visibleSections, setVisibleSections] = useState<Set<number>>(
     new Set(),
@@ -140,15 +147,18 @@ export function ImageScrollLayout() {
                     {section.description}
                   </p>
                 </div>
-                <ConnectCardModal key={index}>
-                  <IconButton
-                    className="rounded-[400px] hover:text-ocean!"
-                    withRotatingArrow
-                    iconClasses="!bg-navy"
-                  >
-                    {section.buttonTitle}
-                  </IconButton>
-                </ConnectCardModal>
+                <IconButton
+                  to={
+                    section.buttonLinkFromLatestMessage
+                      ? (latestMessageUrl ?? section.buttonLink)
+                      : section.buttonLink
+                  }
+                  className="rounded-[400px] hover:text-ocean!"
+                  withRotatingArrow
+                  iconClasses="!bg-navy"
+                >
+                  {section.buttonTitle}
+                </IconButton>
               </div>
             </div>
           </section>

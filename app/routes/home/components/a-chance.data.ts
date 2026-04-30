@@ -5,6 +5,9 @@ export const chanceContent: {
   imageHeight: number;
   description: string;
   buttonTitle: string;
+  buttonLink: string;
+  /** When true, `ImageScrollLayout` uses the root loader latest-message URL (same as Media nav cards). */
+  buttonLinkFromLatestMessage?: boolean;
   aspectRatio?: string;
 }[] = [
   {
@@ -15,6 +18,7 @@ export const chanceContent: {
     description:
       " Looking for community? A place where you can find genuine connection with other people. A place where you're not just a face in the crowd, but someone who belongs. ",
     buttonTitle: "Get Connected",
+    buttonLink: "/group-finder",
   },
   {
     title: `<span className="font-bold">To hit pause</span> on the chaos of everyday life`,
@@ -24,6 +28,8 @@ export const chanceContent: {
     description:
       "Searching for some kind of peace or purpose? Life can throw some curveballs, and sometimes you need a place to reflect, recharge, and find some perspective. ",
     buttonTitle: "Find Your Purpose",
+    buttonLink: "/messages",
+    buttonLinkFromLatestMessage: true,
     aspectRatio: "600 / 400",
   },
   {
@@ -34,5 +40,6 @@ export const chanceContent: {
     description:
       "Sing some songs, hear a good story, and be reminded that there is still good in the world. ",
     buttonTitle: "Find Your Hope",
+    buttonLink: "/locations",
   },
 ];
