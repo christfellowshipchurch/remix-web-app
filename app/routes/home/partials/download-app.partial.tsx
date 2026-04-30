@@ -17,7 +17,7 @@ const DesktopVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
   return (
     <section
       className={cn(
-        'bg-linear-to-b from-[#222323] via-dark-navy to-navy content-padding w-full py-28 hidden md:block relative z-30',
+        'bg-linear-to-b from-dark-navy via-50% via-dark-navy to-navy content-padding w-full py-28 hidden md:block relative z-30',
       )}
     >
       <div
@@ -59,7 +59,7 @@ const MobileVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
   return (
     <section
       className={cn(
-        'bg-linear-to-b from-[#222323] via-dark-navy to-navy content-padding w-full py-16 md:hidden relative z-30',
+        'bg-linear-to-b from-dark-navy via-50% via-dark-navy to-navy content-padding w-full py-16 md:hidden relative z-30',
       )}
     >
       <div className='max-w-screen-content mx-auto flex flex-col gap-8 items-center'>
@@ -93,7 +93,7 @@ const MobileVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
 
 const DownloadAppButtons = () => {
   return (
-    <div className='flex flex-row gap-3 flex-wrap'>
+    <div className='flex flex-row gap-3 flex-wrap justify-center md:justify-start'>
       <StoreButton
         href={appleLink}
         eyebrow='Download on the'
@@ -153,14 +153,14 @@ const StoreButton = ({
 };
 
 const spanishCopy = {
-  title: `Crece en <span className="font-extrabold">tu fe. <br/> Cada día</span> de la semana.`,
+  title: `Crece en <strong>tu fe. <br/> Cada día</strong> de la semana.`,
   summary:
     'La experiencia de la app de la Christ Fellowship fue diseñada para ayudarte a crecer en tu fe cada día de la semana. A través de sus características, puedes mantenerte consistente en tu tiempo con Dios.',
   subtitle: 'Descarga la app de la Christ Fellowship',
 };
 
 const englishCopy = {
-  title: `Grow in your <span className="font-extrabold">faith. <br /> Every day</span> of the week.`,
+  title: `Grow in your <strong>faith. <br /> Every day</strong> of the week.`,
   summary:
     'The Christ Fellowship App experience was designed to help you grow in your faith every day of the week. Through its features, you can stay consistent in your time with God.',
   subtitle: 'Download the Christ Fellowship Church App',
