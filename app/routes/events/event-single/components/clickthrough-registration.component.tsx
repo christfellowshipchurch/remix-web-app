@@ -567,6 +567,7 @@ const CampusStep = ({
       <div className="flex flex-wrap justify-center gap-4">
         {filteredCampuses.map((campus) => (
           <ClickableCard
+            step={1}
             key={campus.name}
             variant="campus"
             icon="map"
