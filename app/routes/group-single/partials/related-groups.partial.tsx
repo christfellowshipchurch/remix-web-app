@@ -90,14 +90,6 @@ export function RelatedGroupsPartial({
                 <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
                   Related Groups
                 </h2>
-                <div className="hidden md:block">
-                  <Button
-                    intent="secondary"
-                    href={`/group-finder/topics/${topicTags[0]}`}
-                  >
-                    View All
-                  </Button>
-                </div>
               </div>
             </div>
 
@@ -108,18 +100,6 @@ export function RelatedGroupsPartial({
                   hits={hits}
                   currentGroupName={currentGroupName}
                 />
-              </div>
-            </div>
-
-            {/* Mobile Button */}
-            <div className="md:hidden content-padding w-full">
-              <div className="w-full flex max-w-screen-content mx-auto">
-                <Button
-                  intent="secondary"
-                  href={`/group-finder/topics/${topicTags[0]}`}
-                >
-                  View All
-                </Button>
               </div>
             </div>
           </div>
