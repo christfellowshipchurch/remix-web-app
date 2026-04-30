@@ -13,7 +13,7 @@ import Icon from "~/primitives/icon";
 import colors from "~/styles/colors";
 
 export const defaultTextInputStyles =
-  "rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
+  "overflow-x-hidden rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full";
 
 interface TextFieldInputProps {
   name?: string;
@@ -44,7 +44,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       isRequired = false,
       customIcon,
     },
-    ref
+    ref,
   ) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -124,7 +124,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 TextFieldInput.displayName = "TextFieldInput";
