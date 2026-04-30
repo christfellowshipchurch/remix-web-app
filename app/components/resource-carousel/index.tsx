@@ -42,7 +42,7 @@ export const CardCarouselSection = ({
 }: CardCarouselSectionProps) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:content-padding", className)}
+      className={cn("w-full pl-5 md:pl-12 lg:pl-18 lg:pr-18", className)}
       style={
         backgroundImage
           ? {
@@ -79,7 +79,7 @@ export const CardCarouselSection = ({
                   className={cn(
                     "hidden md:block min-w-32 w-fit",
                     mode === "dark" &&
-                      "text-white border-white hover:!bg-white/10",
+                      "text-white border-white hover:bg-white/10!",
                     viewMoreStyles,
                   )}
                   intent="secondary"

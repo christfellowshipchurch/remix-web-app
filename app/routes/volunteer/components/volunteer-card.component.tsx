@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 
 import { RockCampuses } from "~/lib/rock-config";
-import { cn } from "~/lib/utils";
+import { cn, withRockGetImageSizing } from "~/lib/utils";
 import { Icon } from "~/primitives/icon/icon";
 
 import type { Volunteer } from "../types";
@@ -96,22 +96,10 @@ function VolunteerCardInner({
       <div className="relative aspect-16/10 w-full max-h-[156px] shrink-0 overflow-hidden rounded-t-2xl bg-neutral-lighter">
         {(volunteer.coverImage?.sources?.[0]?.uri ?? "").trim() ? (
           <img
-            src={(() => {
-              const raw = (
-                volunteer.coverImage?.sources?.[0]?.uri ?? ""
-              ).trim();
-              if (!/GetImage\.ashx/i.test(raw)) return raw;
-              try {
-                const url = new URL(raw);
-                url.searchParams.set("maxwidth", "800");
-                url.searchParams.set("maxheight", "500");
-                url.searchParams.set("quality", "85");
-                return url.toString();
-              } catch {
-                const joiner = raw.includes("?") ? "&" : "?";
-                return `${raw}${joiner}maxwidth=800&maxheight=500&quality=85`;
-              }
-            })()}
+            src={withRockGetImageSizing(
+              volunteer.coverImage?.sources?.[0]?.uri ?? "",
+              { maxwidth: 800, maxheight: 500, quality: 85 },
+            )}
             alt=""
             className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           />

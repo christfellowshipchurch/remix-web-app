@@ -51,6 +51,31 @@ export const createImageUrlFromGuid = (uri: string) =>
     ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
     : enforceProtocol(uri);
 
+/**
+ * Appends Rock `GetImage.ashx` resize params. Other URLs (e.g. `GetAvatar.ashx`) are returned unchanged.
+ */
+export function withRockGetImageSizing(
+  raw: string,
+  sizing: { maxwidth: number; maxheight: number; quality?: number },
+): string {
+  const trimmed = raw.trim();
+  if (!trimmed || !/GetImage\.ashx/i.test(trimmed)) return raw;
+  try {
+    const url = new URL(trimmed);
+    url.searchParams.set("maxwidth", String(sizing.maxwidth));
+    url.searchParams.set("maxheight", String(sizing.maxheight));
+    if (sizing.quality !== undefined) {
+      url.searchParams.set("quality", String(sizing.quality));
+    }
+    return url.toString();
+  } catch {
+    const joiner = trimmed.includes("?") ? "&" : "?";
+    const q =
+      sizing.quality !== undefined ? `&quality=${sizing.quality}` : "";
+    return `${trimmed}${joiner}maxwidth=${sizing.maxwidth}&maxheight=${sizing.maxheight}${q}`;
+  }
+}
+
 export const getIdentifierType = (identifier: string | number) => {
   const guidRegex =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

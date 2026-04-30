@@ -3,45 +3,92 @@ import { TopicBadge } from "../components/group-single-banner.component";
 import { GroupType, splitGroupTopics } from "~/routes/group-finder/types";
 import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
+import { Link } from "react-router-dom";
 
 export function GroupSingleHero({ hit }: { hit: GroupType }) {
   const imagePath = hit.coverImage?.sources?.[0]?.uri ?? "";
 
   return (
-    <div
-      className={cn(
-        "w-full bg-gray relative content-padding pt-10 pb-16 md:pt-16 lg:py-24",
-      )}
-    >
-      <div className="w-full flex flex-col md:flex-row gap-10 lg:gap-8 md:justify-between items-center max-w-screen-content mx-auto">
-        {/* Left Side - Desktop, Mobile - EVERYTHING  */}
-        <div className="flex flex-col gap-8">
-          <div className="flex md:hidden flex-col gap-2">
-            <h1 className="text-4xl font-bold">{hit.title}</h1>
-            <div className="flex flex-wrap gap-1 w-full">
-              {splitGroupTopics(hit.topics).map((topic, index) => (
-                <TopicBadge key={index} label={topic} isPrimary={index === 0} />
-              ))}
-            </div>
-          </div>
-
-          <img
-            src={imagePath}
-            alt="Group Finder Hero"
-            className="w-full lg:hidden max-w-screen aspect-video object-cover rounded-lg"
-          />
-
-          <GroupInfo hit={hit} />
-        </div>
-
-        {/* Right Side */}
+    <>
+      <div className="w-full lg:hidden relative">
         <img
           src={imagePath}
           alt="Group Finder Hero"
-          className="hidden lg:block w-full max-w-[735px] xl:max-w-[935px] aspect-video object-cover rounded-lg"
+          className="w-full max-w-screen aspect-video object-cover"
         />
+        {/* Back Button */}
+        <Link
+          to="/group-finder"
+          className="absolute top-4 left-4 flex items-center gap-2 bg-white shadow-sm border border-[#DEE0E3] rounded-full p-2"
+        >
+          <Icon name="arrowBack" className="text-neutral-darker" />
+        </Link>
       </div>
-    </div>
+      <div
+        className={cn(
+          "w-full bg-gray relative content-padding pt-10 pb-16 md:pt-16 lg:py-24",
+        )}
+      >
+        <div className="w-full flex flex-col md:flex-row gap-10 lg:gap-8 md:justify-between items-center max-w-screen-content mx-auto">
+          {/* Left Side - Desktop, Mobile - EVERYTHING  */}
+          <div className="flex flex-col gap-8">
+            <div className="flex md:hidden flex-col gap-2">
+              {hit.topics && (
+                <div className="flex flex-wrap gap-1 w-full">
+                  {splitGroupTopics(hit.topics).map((topic, index) => (
+                    <TopicBadge
+                      key={index}
+                      label={topic}
+                      isPrimary={index === 0}
+                    />
+                  ))}
+                </div>
+              )}
+              <h1 className="text-4xl font-bold">{hit.title}</h1>
+            </div>
+
+            {/* Mobile Only Leaders Section */}
+            <div className="md:hidden flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                {hit.leaders?.map(
+                  (leader, index) =>
+                    leader?.photo?.sources?.[0]?.uri && (
+                      <img
+                        key={index}
+                        src={leader.photo.sources[0].uri}
+                        alt="Leader"
+                        className="w-10 h-10 rounded-[8px] object-cover"
+                      />
+                    ),
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <h2 className="text-neutral-default leading-none">Led By:</h2>
+                <div className="flex flex-wrap gap-1 w-full">
+                  {hit.leaders?.map((leader, index) => (
+                    <h3
+                      key={index}
+                      className="text-neutral-darker font-semibold text-lg leading-none"
+                    >
+                      {index > 0 ? " & " : ""} {leader.firstName}
+                    </h3>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <GroupInfo hit={hit} />
+          </div>
+
+          {/* Right Side */}
+          <img
+            src={imagePath}
+            alt="Group Finder Hero"
+            className="hidden lg:block w-full max-w-[735px] xl:max-w-[935px] aspect-video object-cover rounded-lg"
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -126,7 +173,7 @@ const InfoItem = ({
   isLayoutReversed?: boolean;
 }) => {
   return (
-    <div className="flex items-center gap-[10px] pb-6 border-b border-[#6E6E6E]/10 w-full md:max-w-[42vw]">
+    <div className="flex items-center gap-[10px] pt-6 lg:pt-0 lg:pb-6 border-t lg:border-b lg:border-t-0 border-[#6E6E6E]/10 w-full md:max-w-[42vw]">
       <Icon name={icon} className="text-ocean" />
 
       <div

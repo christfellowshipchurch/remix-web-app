@@ -83,13 +83,37 @@ export function RelatedGroupsPartial({
       />
       <GetHits setHits={setHits} />
       {hits.length > 1 ? (
-        <div className="content-padding mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24">
-          <div className="w-full flex flex-col gap-6 md:gap-12 max-w-screen-content">
-            <div className="w-full flex justify-between items-center">
-              <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
-                Related Groups
-              </h2>
-              <div className="hidden md:block">
+        <div className="mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24">
+          <div className="w-full flex flex-col gap-6 md:gap-12">
+            <div className="content-padding w-full">
+              <div className="w-full flex justify-between items-center max-w-screen-content mx-auto">
+                <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
+                  Related Groups
+                </h2>
+                <div className="hidden md:block">
+                  <Button
+                    intent="secondary"
+                    href={`/group-finder/topics/${topicTags[0]}`}
+                  >
+                    View All
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="pl-5 md:pl-12 lg:pl-18 lg:pr-18 w-full">
+              <div className="flex w-full min-w-0 gap-4 overflow-x-hidden mx-auto max-w-screen-content">
+                {/* Results using ResourceCarousel */}
+                <RelatedGroupsHits
+                  hits={hits}
+                  currentGroupName={currentGroupName}
+                />
+              </div>
+            </div>
+
+            {/* Mobile Button */}
+            <div className="md:hidden content-padding w-full">
+              <div className="w-full flex max-w-screen-content mx-auto">
                 <Button
                   intent="secondary"
                   href={`/group-finder/topics/${topicTags[0]}`}
@@ -97,24 +121,6 @@ export function RelatedGroupsPartial({
                   View All
                 </Button>
               </div>
-            </div>
-
-            <div className="flex w-full min-w-0 max-w-full gap-4 overflow-x-hidden">
-              {/* Results using ResourceCarousel */}
-              <RelatedGroupsHits
-                hits={hits}
-                currentGroupName={currentGroupName}
-              />
-            </div>
-
-            {/* Mobile Button */}
-            <div className="md:hidden w-full flex">
-              <Button
-                intent="secondary"
-                href={`/group-finder/topics/${topicTags[0]}`}
-              >
-                View All
-              </Button>
             </div>
           </div>
         </div>
