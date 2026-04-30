@@ -70,8 +70,7 @@ export function withRockGetImageSizing(
     return url.toString();
   } catch {
     const joiner = trimmed.includes("?") ? "&" : "?";
-    const q =
-      sizing.quality !== undefined ? `&quality=${sizing.quality}` : "";
+    const q = sizing.quality !== undefined ? `&quality=${sizing.quality}` : "";
     return `${trimmed}${joiner}maxwidth=${sizing.maxwidth}&maxheight=${sizing.maxheight}${q}`;
   }
 }
