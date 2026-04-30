@@ -1,15 +1,21 @@
+export type WhatWeOfferContentItem = {
+  image?: string;
+  label?: string;
+  imageAspectRatio?: string;
+  description1: string;
+  description2?: string;
+  url: string;
+  /** Defaults to "Learn More" in the UI */
+  ctaLabel?: string;
+};
+
 export type WhatWeOfferTab = {
   value: string;
   label: string;
   mobileLabel: string;
-  content: {
-    image?: string;
-    label?: string;
-    imageAspectRatio?: string;
-    description1: string;
-    description2?: string;
-    url: string;
-  }[];
+  /** Shown below the tab cards; updates with the active tab */
+  footerSummary: string;
+  content: WhatWeOfferContentItem[];
 };
 
 export const whatWeOfferData: WhatWeOfferTab[] = [
@@ -17,25 +23,27 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
     value: "family",
     label: "For My Family",
     mobileLabel: "Families",
+    footerSummary:
+      "Empowering your children and strengthening your family through engaging, faith-centered experiences.",
     content: [
       {
         image: "/assets/images/home/kids.png",
         description1: "Babies-Elementary",
         description2: "Every Sunday & Resources Throughout the Week",
-        url: "/kids",
+        url: "/ministries/kids",
       },
       {
         image: "/assets/images/home/kids-u.png",
         imageAspectRatio: "144/190",
         description1: "Discipleship Programming for Preschool-Elementary",
         description2: "Midweek at Select Locations",
-        url: "/kids-university",
+        url: "/christ-fellowship-kids-university",
       },
       {
         image: "/assets/images/home/students.png",
         description1: "Middle & High School Students",
         description2: "Every Wednesday",
-        url: "/students",
+        url: "/ministries/students",
       },
     ],
   },
@@ -43,6 +51,8 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
     value: "young-adults",
     label: "For Young Adults",
     mobileLabel: "Young Adults",
+    footerSummary:
+      "Vibrant community and resources designed for young adults and working professionals.",
     content: [
       {
         image: "/assets/images/home/ya.png",
@@ -50,7 +60,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         description1: `For Young Adults in
 Their 20s & 30s`,
         description2: "Every Tuesday (hosted regionally & online)",
-        url: "/family",
+        url: "/ministries/young-adults",
       },
       {
         image: "/assets/images/home/college-nights.png",
@@ -58,7 +68,7 @@ Their 20s & 30s`,
         description1: "For College Students",
         description2:
           "Every Thursday (hosted at Trinity in Palm Beach Gardens)",
-        url: "/family",
+        url: "/college-nights",
       },
     ],
   },
@@ -66,6 +76,8 @@ Their 20s & 30s`,
     value: "everyone",
     label: "For Everyone",
     mobileLabel: "Everyone",
+    footerSummary:
+      "Cultivate deep connections and meaningful growth with community support.",
     content: [
       {
         label: "Groups",
@@ -82,7 +94,7 @@ Their 20s & 30s`,
         label: "Freedom & Care",
         description1:
           "Resources to help you find freedom from hurts, habits, and hangups.",
-        url: "/freedom-and-care",
+        url: "/ministries/freedom-and-care",
       },
     ],
   },
