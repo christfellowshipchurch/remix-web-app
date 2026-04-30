@@ -1,6 +1,7 @@
 import Icon from "~/primitives/icon";
 import { HeroNavCard, NavCard } from "./nav-cards.component";
 import { MenuLink } from "../types";
+import { cn } from "~/lib/utils";
 
 function FeatureCardSkeleton({ type }: { type: "default" | "hero" }) {
   return type === "default"
@@ -35,14 +36,14 @@ export const MenuContent: React.FC<
     <div
       style={{
         background:
-          "linear-gradient(to right, white 0%, white 60%, #F3F5FA 60%, #F3F5FA 100%)",
+          "linear-gradient(to right, white 0%, white 80%, #F3F5FA 80%, #F3F5FA 100%)",
       }}
       className="w-screen shadow-sm flex items-center justify-center content-padding"
     >
       <div className="max-w-screen-content mx-auto w-full flex flex-col lg:flex-row">
-        <div className="bg-white grid grid-cols-3 xl:gap-8 w-full min-w-[640px] max-w-[720px] xl:min-w-[745px] xl:max-w-[760px] 2xl:max-w-[875px]! ml-auto 2xl:mr-56! 3xl:mr-70! xl:mr-28">
+        <div className="bg-white grid grid-cols-3 xl:gap-8 w-full ml-auto ">
           {mainContent.map((section, index) => (
-            <div className="w-full max-w-70 xl:max-w-92 px-4 py-8" key={index}>
+            <div className="w-full px-4 py-8" key={index}>
               <h4 className="font-medium text-link-secondary">
                 {section.title}
               </h4>
@@ -78,9 +79,11 @@ export const MenuContent: React.FC<
         </div>
 
         <div
-          className={`pl-4 py-6 3xl:pl-6! w-full bg-gray flex flex-col gap-4 items-end ${
-            featureCards.length > 1 && "pb-14"
-          }`}
+          className={cn(
+            "py-6 w-1/2 min-w-[340px] max-w-[400px] bg-gray flex flex-col gap-4 items-end",
+            featureCards.length > 1 ? "pl-4 3xl:pl-6!" : "pl-0",
+            featureCards.length > 1 && "pb-14",
+          )}
         >
           {isLoading ? (
             <FeatureCardSkeleton

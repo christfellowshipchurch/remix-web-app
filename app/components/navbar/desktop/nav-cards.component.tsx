@@ -33,7 +33,7 @@ export function HeroNavCard({
     <a
       href={callToAction?.url}
       className={cn(
-        "bg-white p-4 rounded-[8px] shadow-md hover:text-ocean transition-colors max-w-[420px]",
+        "bg-white p-4 rounded-[8px] shadow-md hover:text-ocean transition-colors max-w-[320px]",
         variant === "mobile" && "p-3",
       )}
     >
@@ -41,7 +41,7 @@ export function HeroNavCard({
       <img
         src={image}
         alt={title}
-        className={`w-80 2xl:w-[420px]! rounded-[8px] bg-center bg-cover ${
+        className={`w-80 2xl:w-[320px]! rounded-[8px] bg-center bg-cover ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
         onLoad={() => setLoaded(true)}

@@ -33,14 +33,14 @@ export const ClickableCard = ({
         onClick={onClick}
         className={cn(
           baseCardClasses,
-          "px-6 pt-6 pb-3 gap-1 w-full md:w-[calc(33.333%-0.67rem)] md:max-w-[300px]",
-          step === 1 ? "flex-row gap-3" : "",
+          "px-6 py-3 md:py-4 gap-1 items-center w-full md:w-[calc(33.333%-0.67rem)] md:max-w-[300px]",
+          step === 1 ? "flex-row gap-3 md:flex-col md:gap-1" : "",
         )}
       >
         <div className="bg-navy-subdued rounded-lg p-3">
           <Icon name={icon} size={24} />
         </div>
-        <div className="flex flex-col gap-1 w-full">
+        <div className="flex flex-col gap-1 w-full md:text-center ">
           <h4 className="font-semibold text-black leading-tight">{title}</h4>
           {subtitle && (
             <p className="text-xs font-semibold text-[#989898]">
@@ -56,14 +56,14 @@ export const ClickableCard = ({
     return (
       <div
         onClick={onClick}
-        className={`${baseCardClasses} px-6 py-6 gap-3 w-full md:w-[calc(33.333%-0.67rem)] min-w-[320px]`}
+        className={`${baseCardClasses} px-6 py-3 md:py-4 gap-3 w-full md:w-[calc(33.333%-0.67rem)] min-w-[320px]`}
       >
         {/* {icon && (
           <div className="bg-navy-subdued rounded-lg p-3">
             <Icon name={icon} size={24} />
           </div>
         )} */}
-        <h4 className="font-semibold text-center leading-tight mb-0 mt-8">
+        <h4 className="font-semibold text-center leading-tight pt-5">
           {subtitle && subtitle + " "} {title}
         </h4>
         {description && (
@@ -90,7 +90,7 @@ export const ClickableCard = ({
     return (
       <div
         onClick={onClick}
-        className={`${baseCardClasses} px-6 pt-6 pb-3 gap-1 w-full md:w-[calc(33.333%-0.67rem)] max-w-[300px]`}
+        className={`${baseCardClasses} px-6 py-3 md:py-4 gap-1 w-full md:w-[calc(33.333%-0.67rem)] max-w-[300px]`}
       >
         <Icon name={icon} size={24} className="text-black" />
         <h4 className="font-bold text-black text-center leading-tight">
@@ -107,7 +107,7 @@ export const ClickableCard = ({
     return (
       <div
         onClick={onClick}
-        className={`${baseCardClasses} px-6 pt-6 pb-3 gap-1 w-full md:w-[calc(50%-0.5rem)] max-w-[300px]`}
+        className={`${baseCardClasses} px-6 py-3 md:py-4 gap-1 w-full md:w-[calc(50%-0.5rem)] max-w-[300px]`}
       >
         <Icon name={icon} size={24} className="text-black" />
         <h4 className="font-bold text-black text-center leading-tight">
