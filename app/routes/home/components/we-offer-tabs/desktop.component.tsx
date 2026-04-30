@@ -1,14 +1,18 @@
-import { SectionTitle } from "~/components";
+import { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
+import { SectionTitle } from "~/components";
 import { cn } from "~/lib/utils";
 import { Button, button } from "~/primitives/button/button.primitive";
-import { whatWeOfferData, WhatWeOfferTab } from "./what-we-offer.data";
+import {
+  whatWeOfferData,
+  type WhatWeOfferContentItem,
+} from "./what-we-offer.data";
 
 export const WhatWeOfferCard = ({
   content,
   middleCard,
 }: {
-  content: WhatWeOfferTab["content"][number];
+  content: WhatWeOfferContentItem;
   middleCard: boolean;
 }) => {
   return (
@@ -17,7 +21,7 @@ export const WhatWeOfferCard = ({
         "flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6",
         "lg:px-5 lg:py-8",
         "w-[300px] md:w-[230px] lg:w-[300px] xl:w-[340px] h-full",
-        middleCard && ["min-h-[340px]", "md:min-h-[340px]", "lg:min-h-[420px]"]
+        middleCard && ["min-h-[340px]", "md:min-h-[340px]", "lg:min-h-[420px]"],
       )}
     >
       <div className="flex flex-col items-center gap-9 flex-1">
@@ -30,7 +34,7 @@ export const WhatWeOfferCard = ({
                 "max-h-[190px] w-auto",
                 content.imageAspectRatio
                   ? `aspect-[${content.imageAspectRatio}]`
-                  : "aspect-200/125"
+                  : "aspect-200/125",
               )}
             />
           </div>
@@ -43,7 +47,7 @@ export const WhatWeOfferCard = ({
               "leading-none",
               content.label === "Freedom & Care"
                 ? "text-[32px] lg:text-[40px] leading-10"
-                : "text-[52px]"
+                : "text-[52px]",
             )}
           >
             {content.label}
@@ -55,8 +59,12 @@ export const WhatWeOfferCard = ({
           {content.description2 && <p>{content.description2}</p>}
         </div>
       </div>
-      <Button intent="primary" className="w-full h-[fit-content]">
-        Learn More
+      <Button
+        intent="primary"
+        className="w-full h-[fit-content]"
+        href={content.url}
+      >
+        {content.ctaLabel ?? "Learn More"}
       </Button>
     </div>
   );
@@ -67,9 +75,16 @@ export const WhatWeOfferDesktop = ({
 }: {
   onTabChange?: (tabValue: string) => void;
 }) => {
+  const [activeTab, setActiveTab] = useState(
+    () => whatWeOfferData[0]?.value ?? "family",
+  );
+
   const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
     onTabChange?.(tabValue);
   };
+
+  const activeTabData = whatWeOfferData.find((tab) => tab.value === activeTab);
 
   return (
     <div className="flex flex-col gap-8 lg:gap-12">
@@ -85,7 +100,7 @@ export const WhatWeOfferDesktop = ({
 
       <div className="w-full">
         <Tabs.Root
-          defaultValue="family"
+          value={activeTab}
           className="w-full flex flex-col gap-12"
           onValueChange={handleTabChange}
         >
@@ -97,7 +112,7 @@ export const WhatWeOfferDesktop = ({
                 className={cn(
                   button({ intent: "secondary" }),
                   "rounded-full border-transparent text-white hover:border-ocean py-3 px-6",
-                  "data-[state=active]:text-white data-[state=active]:bg-ocean border-white data-[state=active]:border-ocean"
+                  "data-[state=active]:text-white data-[state=active]:bg-ocean border-white data-[state=active]:border-ocean",
                 )}
                 data-tab={tab.value}
               >
@@ -113,13 +128,13 @@ export const WhatWeOfferDesktop = ({
               className={cn(
                 "flex flex-col gap-4 w-full",
                 "overflow-x-visible pb-2",
-                "data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300"
+                "data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300",
               )}
             >
               <div
                 className={cn(
                   "flex gap-4 lg:gap-8 flex-nowrap overflow-x-visible mx-auto md:min-h-[520px] lg:min-h-[600px]",
-                  tab.content.length === 2 ? "items-center" : "items-center"
+                  tab.content.length === 2 ? "items-center" : "items-center",
                 )}
               >
                 {tab.content.map((content, index) => (
@@ -135,14 +150,14 @@ export const WhatWeOfferDesktop = ({
                         "lg:-rotate-3": index === 0,
                         "lg:rotate-3": index === 2,
                         "lg:rotate-0": index === 1,
-                      }
+                      },
                     )}
+                    data-card-title={content.label}
+                    data-tab-context={tab.value}
                   >
                     <WhatWeOfferCard
                       content={content}
                       middleCard={index === 1 && tab.content.length === 3}
-                      data-card-title={content.label}
-                      data-tab-context={tab.value}
                     />
                   </div>
                 ))}
@@ -153,9 +168,8 @@ export const WhatWeOfferDesktop = ({
       </div>
 
       <div>
-        <p className="text-white text-center max-w-[510px] mx-auto">
-          Empowering your children and strengthening your family through
-          engaging, faith-centered experiences.
+        <p className="text-white text-center max-w-[630px] mx-auto">
+          {activeTabData?.footerSummary}
         </p>
       </div>
     </div>
