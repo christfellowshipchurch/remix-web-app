@@ -59,11 +59,7 @@ export const WhatWeOfferCard = ({
           {content.description2 && <p>{content.description2}</p>}
         </div>
       </div>
-      <Button
-        intent="primary"
-        className="w-full h-[fit-content]"
-        href={content.url}
-      >
+      <Button intent="primary" className="w-full h-fit" href={content.url}>
         {content.ctaLabel ?? "Learn More"}
       </Button>
     </div>
