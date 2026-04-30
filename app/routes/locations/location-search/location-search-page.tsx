@@ -101,7 +101,8 @@ export function LocationSearchPage() {
   );
 
   const geocodeFetcher = useFetcher();
-  const googleFetcher = useFetcher();
+  const geocodeFetcherRef = useRef(geocodeFetcher);
+  geocodeFetcherRef.current = geocodeFetcher;
 
   const handleSearch = useCallback(
     (query: string | null) => {
@@ -111,12 +112,12 @@ export function LocationSearchPage() {
       }
       const formData = new FormData();
       formData.append("address", query);
-      geocodeFetcher.submit(formData, {
+      geocodeFetcherRef.current.submit(formData, {
         method: "post",
         action: "/google-geocode",
       });
     },
-    [setSearchCoordinates, geocodeFetcher],
+    [setSearchCoordinates],
   );
 
   useEffect(() => {
@@ -169,13 +170,19 @@ export function LocationSearchPage() {
     });
   }, []);
 
+  const geocodeLat =
+    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lat ?? null;
+  const geocodeLng =
+    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lng ?? null;
+
   useEffect(() => {
-    if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
-      campusScrollUsesNavbarOffsetRef.current = true;
-      const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
-      setCoordinates({ lat, lng });
-    }
-  }, [geocodeFetcher.data]);
+    if (geocodeLat == null || geocodeLng == null) return;
+    campusScrollUsesNavbarOffsetRef.current = true;
+    setCoordinates((prev) => {
+      if (prev?.lat === geocodeLat && prev?.lng === geocodeLng) return prev;
+      return { lat: geocodeLat, lng: geocodeLng };
+    });
+  }, [geocodeLat, geocodeLng]);
 
   useEffect(() => {
     if (
@@ -259,7 +266,7 @@ export function LocationSearchPage() {
             coordinates={coordinates}
             setSearchCoordinates={setSearchCoordinates}
             handleSearch={handleSearch}
-            geocodeLoading={googleFetcher.state === "loading"}
+            geocodeLoading={geocodeFetcher.state === "loading"}
           />
         </InstantSearch>
       )}
