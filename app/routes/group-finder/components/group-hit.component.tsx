@@ -153,7 +153,7 @@ export function GroupHit({
                 <h3 className="text-lg font-bold leading-6 line-clamp-2">
                   {hit.title}
                 </h3>
-                <p className="text-sm text-black">{meetingInfo}</p>
+                <p className="text-sm text-neutral-default">{meetingInfo}</p>
               </div>
             </div>
           </div>
