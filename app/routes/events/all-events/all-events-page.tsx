@@ -10,7 +10,7 @@ export function AllEventsPage() {
       <DynamicHero
         customTitle="Events"
         fullOverlay
-        imagePath={getImageUrl("3143899")}
+        imagePath={getImageUrl("3166604")}
       />
       <FeaturedEvents />
       <AllEvents />

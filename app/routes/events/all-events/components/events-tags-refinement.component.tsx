@@ -11,7 +11,6 @@ export const EventsTagsRefinementList = () => {
   const { setIndexUiState, indexUiState } = useInstantSearch();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Sync local state with Algolia search state
   useEffect(() => {
     const eventCategories = indexUiState?.refinementList?.eventCategories || [];
     if (eventCategories.length === 0) {
@@ -34,57 +33,64 @@ export const EventsTagsRefinementList = () => {
   };
 
   return (
-    <div className="-ml-5 md:ml-0 w-screen md:w-full flex gap-6 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide">
-      {/* Recent */}
+    <div className="-ml-5 flex w-screen flex-nowrap gap-6 overflow-x-auto scrollbar-hide px-1 pb-4 md:ml-0 md:w-full">
       <button
+        type="button"
         onClick={() => handleCategoryClick(null)}
-        className={`ml-4 md:ml-0 text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
+        className={`ml-4 flex shrink-0 cursor-pointer items-center justify-center rounded-full px-6 py-3 text-sm whitespace-nowrap transition-colors duration-300 md:ml-0 ${
           selectedCategory === null
-            ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
-            : "bg-gray text-neutral-500 hover:bg-neutral-200"
+            ? "bg-ocean/10 text-ocean hover:bg-gray"
+            : "bg-gray font-semibold text-neutral-darker hover:bg-ocean/10 hover:text-ocean"
         }`}
       >
-        Recent
+        Upcoming
       </button>
 
-      {/* Event categories */}
-      {items.map((item) => (
-        <button
-          key={item.value}
-          onClick={() => handleCategoryClick(item.value)}
-          className={`text-lg shrink-0 px-6 py-3 rounded-full justify-center items-center flex whitespace-nowrap cursor-pointer transition-colors duration-300 ${
-            selectedCategory === item.value
-              ? "border border-neutral-600 text-neutral-600 bg-white font-semibold"
-              : "bg-gray text-neutral-500 hover:bg-neutral-200"
-          }`}
-        >
-          {startCase(item.label)}
-        </button>
-      ))}
-    </div>
-  );
-};
+      {items.map((item) => {
+        const isSelected = selectedCategory === item.value;
+        const pillBase =
+          "inline-flex shrink-0 items-center rounded-full text-sm whitespace-nowrap transition-colors duration-300";
+        const selectedStyles = "bg-ocean/10 text-ocean hover:bg-gray";
+        const idleStyles =
+          "bg-gray font-semibold text-neutral-darker hover:bg-ocean/10 hover:text-ocean";
 
-export const EventsClearFiltersText = () => {
-  const { setIndexUiState } = useInstantSearch();
+        if (isSelected) {
+          const label = startCase(item.label);
+          return (
+            <div
+              key={item.value}
+              className={`${pillBase} cursor-default ${selectedStyles}`}
+            >
+              <button
+                type="button"
+                onClick={() => handleCategoryClick(item.value)}
+                className="cursor-pointer py-3 pl-6 pr-2 text-sm"
+              >
+                {label}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCategoryClick(null)}
+                aria-label={`Clear ${label} filter`}
+                className="flex cursor-pointer items-center py-3 pr-5 pl-1"
+              >
+                <Icon name="x" size={18} className="shrink-0" />
+              </button>
+            </div>
+          );
+        }
 
-  return (
-    <div
-      className="flex items-center gap-1 group cursor-pointer"
-      onClick={() => {
-        setIndexUiState((state) => ({
-          ...state,
-          refinementList: {},
-        }));
-      }}
-    >
-      <p className="w-fit text-ocean underline group-hover:text-navy transition-colors duration-300">
-        Clear <span className="hidden md:inline">All Filters</span>
-      </p>
-      <Icon
-        name="x"
-        className="text-ocean group-hover:text-navy transition-colors duration-300"
-      />
+        return (
+          <button
+            key={item.value}
+            type="button"
+            onClick={() => handleCategoryClick(item.value)}
+            className={`${pillBase} cursor-pointer px-6 py-3 ${idleStyles}`}
+          >
+            {startCase(item.label)}
+          </button>
+        );
+      })}
     </div>
   );
 };

@@ -67,13 +67,13 @@ const fetchFeatureCards = async () => {
 
     // TODO: remove this once we have the real data for the get involved card(s)
     const mockGetInvolvedData = {
-      title: "Take the Journey",
-      subtitle: "New Classes",
+      title: "New to our Church?",
+      subtitle: "Learn who we are, what we believe, and how to get connected.",
       callToAction: {
-        title: "Sign Up Now",
+        title: "Join the Next Class",
         url: "/journey",
       },
-      image: "https://rock.christfellowship.church/GetImage.ashx?id=2966369",
+      image: "https://rock.christfellowship.church/GetImage.ashx?id=3166460",
       navMenu: "get involved",
     };
 

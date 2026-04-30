@@ -18,7 +18,7 @@ export const EventsSingleHero = ({
 }) => {
   return (
     <div className="w-full" style={heroBgImgStyles(imagePath)}>
-      <div className="bg-white/85 backdrop-blur-xl w-full">
+      <div className="bg-white md:bg-white/85 md:backdrop-blur-xl w-full">
         <div className="w-full flex items-center content-padding py-8 md:py-12 lg:py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 w-full mx-auto gap-2 md:gap-8 lg:gap-16 place-items-center md:items-start self-stretch max-w-screen-content md:mb-12">
             {/* Left / Bottom Side (Desktop) */}
