@@ -6,8 +6,13 @@
  * dispatched entry (no firstHiddenTime filter) so you can see whether the browser
  * emits LCP at all — `onLCP` can stay silent if supportedEntryTypes omits LCP or
  * if web-vitals filters every entry.
+ *
+ * Master switch: `DEV_WEB_VITALS_ENABLED` below — set false to disable all logging.
  */
 import { onFCP, onLCP } from "web-vitals";
+
+/** Set to `true` to turn dev / `?debugWebVitals=1` logging back on. */
+const DEV_WEB_VITALS_ENABLED = false;
 
 /**
  * User-Agent Client Hints (`navigator.userAgentData`). Optional on DOM typings;
@@ -191,6 +196,10 @@ function registerRawLcpObserver(): void {
 }
 
 export function setupDevWebVitalsLogging(): void {
+  if (!DEV_WEB_VITALS_ENABLED) {
+    return;
+  }
+
   if (typeof window === "undefined") {
     return;
   }
