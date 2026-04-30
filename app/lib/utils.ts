@@ -310,13 +310,19 @@ export type dayTimes = {
 
 export const formattedServiceTimes = (serviceTimes: string) =>
   serviceTimes.split("|").reduce((acc: dayTimes[], time: string) => {
-    const [day, hour] = time.split("^");
-    const existingDay = acc.find((item) => item.day === day.trim());
+    const trimmed = time.trim();
+    if (!trimmed) return acc;
+
+    const [day, hour] = trimmed.split("^");
+    const dayTrimmed = day?.trim() ?? "";
+    if (dayTrimmed.toLowerCase() === "ondemand") return acc;
+
+    const existingDay = acc.find((item) => item.day === dayTrimmed);
 
     if (existingDay) {
       existingDay.hour.push(hour);
     } else {
-      acc.push({ day, hour: [hour] });
+      acc.push({ day: dayTrimmed, hour: [hour] });
     }
 
     return acc;

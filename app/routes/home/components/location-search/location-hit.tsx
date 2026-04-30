@@ -63,12 +63,16 @@ const HitContent = ({ hit }: { hit: Hit<CampusHitType> | CampusHitType }) => {
       />
       <div className="flex flex-col">
         <h3 className="text-xs text-black font-bold">{hit.campusName}</h3>
-        {hit?.campusLocation && (
+        {isOnline ? (
+          <p className="text-xs font-medium text-text-secondary">
+            On Demand on
+          </p>
+        ) : hit?.campusLocation ? (
           <p className="text-xs font-medium text-text-secondary">
             {street1}
             {street2 && ` ${street2}`}, {city}
           </p>
-        )}
+        ) : null}
         <p className="text-xs text-black font-semibold">
           {serviceTimes.map((service, index) => (
             <span key={index}>
