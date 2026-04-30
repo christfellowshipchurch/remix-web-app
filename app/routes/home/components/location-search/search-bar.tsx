@@ -1,45 +1,72 @@
-import { SearchBox } from "react-instantsearch";
-
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import { useSearchBox } from "react-instantsearch";
+
 import { cn, isValidZip } from "~/lib/utils";
 import Icon from "~/primitives/icon";
 
 export const SearchBar = ({
   onSearchStateChange,
   onSearchSubmit,
+  "data-gtm": dataGtm,
 }: {
   onSearchStateChange: (isSearching: boolean) => void;
   onSearchSubmit: (query: string | null) => void;
+  "data-gtm"?: string;
 }) => {
-  const { query, refine } = useSearchBox();
-  const [zipCode, setZipCode] = useState<string | null>(null);
+  const { refine } = useSearchBox();
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (query.length === 5 && isValidZip(query)) {
+    refine("");
+  }, [refine]);
+
+  const syncFromInput = (raw: string) => {
+    setInputValue(raw);
+    refine("");
+
+    const trimmed = raw.trim();
+    if (trimmed.length === 5 && isValidZip(trimmed)) {
       onSearchStateChange(true);
-      setZipCode(query);
-    } else if (zipCode) {
-      onSearchStateChange(true);
+      onSearchSubmit(trimmed);
     } else {
-      onSearchStateChange(!!query);
+      onSearchSubmit(null);
+      onSearchStateChange(!!raw.trim());
     }
-  }, [query, onSearchStateChange]);
+  };
 
-  // When the zip code is set, search for it and clear the query so the query doesn't interfere with the geo search
-  useEffect(() => {
-    if (zipCode) {
-      onSearchSubmit(zipCode);
-      refine("");
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    syncFromInput(e.target.value);
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const trimmed = inputValue.trim();
+    refine("");
+    if (trimmed.length === 5 && isValidZip(trimmed)) {
+      onSearchStateChange(true);
+      onSearchSubmit(trimmed);
+    } else {
+      onSearchSubmit(null);
+      onSearchStateChange(!!trimmed);
     }
-  }, [zipCode]);
+    inputRef.current?.blur();
+  };
 
   return (
-    <div
+    <form
       className={cn(
         "flex w-full items-center gap-4 rounded-full p-1",
-        query ? "bg-gray" : "bg-white",
+        inputValue ? "bg-gray" : "bg-white",
       )}
+      data-gtm={dataGtm}
+      onSubmit={handleSubmit}
     >
       <button
         type="submit"
@@ -53,18 +80,17 @@ export const SearchBar = ({
         />
       </button>
 
-      <SearchBox
+      <input
+        ref={inputRef}
+        type="text"
+        inputMode="numeric"
+        autoComplete="postal-code"
+        value={inputValue}
+        onChange={handleChange}
         placeholder="Search by zip code"
-        classNames={{
-          root: "flex-grow w-full",
-          form: "flex",
-          input: `w-full justify-center text-black px-3 outline-none appearance-none`,
-          reset: "hidden",
-          loadingIndicator: "hidden",
-          resetIcon: "hidden",
-          submit: "hidden",
-        }}
+        className="w-full grow justify-center text-black px-3 outline-none appearance-none bg-transparent"
+        aria-label="Zip code"
       />
-    </div>
+    </form>
   );
 };

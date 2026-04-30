@@ -4,7 +4,7 @@ import { Configure, InstantSearch } from "react-instantsearch";
 import { useFetcher, useLoaderData } from "react-router-dom";
 import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
 import { SearchPopup } from "./search-popup";
-import { cn } from "~/lib/utils";
+import { cn, isValidZip } from "~/lib/utils";
 import { emptySearchClient } from "~/routes/search/route";
 import { globalSearchClient } from "~/routes/search/route";
 import { SearchBar } from "./search-bar";
@@ -20,6 +20,8 @@ export function LocationSearchInner({
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<typeof loader>();
   const geocodeFetcher = useFetcher();
+  const geocodeFetcherRef = useRef(geocodeFetcher);
+  geocodeFetcherRef.current = geocodeFetcher;
 
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [internalIsSearching, setInternalIsSearching] = useState(false);
@@ -57,20 +59,20 @@ export function LocationSearchInner({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setIsSearching]);
 
-  const handleSearch = (query: string | null) => {
-    if (!query) {
+  const handleSearch = useCallback((query: string | null) => {
+    if (!query || query.length !== 5 || !isValidZip(query)) {
       setCoordinates(null);
       return;
     }
     const formData = new FormData();
     formData.append("address", query);
-    geocodeFetcher.submit(formData, {
+    geocodeFetcherRef.current.submit(formData, {
       method: "post",
       action: "/google-geocode",
     });
-  };
+  }, []);
 
   const handlePreciseLocationRequest = useCallback(() => {
     getCurrentPositionFromUserGesture(
@@ -86,12 +88,18 @@ export function LocationSearchInner({
     );
   }, []);
 
+  const geocodeLat =
+    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lat ?? null;
+  const geocodeLng =
+    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lng ?? null;
+
   useEffect(() => {
-    if (geocodeFetcher.data?.results?.[0]?.geometry?.location) {
-      const { lat, lng } = geocodeFetcher.data.results[0].geometry.location;
-      setCoordinates({ lat, lng });
-    }
-  }, [geocodeFetcher.data]);
+    if (geocodeLat == null || geocodeLng == null) return;
+    setCoordinates((prev) => {
+      if (prev?.lat === geocodeLat && prev?.lng === geocodeLng) return prev;
+      return { lat: geocodeLat, lng: geocodeLng };
+    });
+  }, [geocodeLat, geocodeLng]);
 
   return (
     <div className={cn(isSearching && "mt-32")} ref={locationSearchBarRef}>
