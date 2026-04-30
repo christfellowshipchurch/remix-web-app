@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import Icon from "~/primitives/icon";
-import { GroupType } from "../types";
+import { GroupType, splitGroupTopics } from "../types";
 import { Link } from "react-router-dom";
 
 export const defaultLeaderPhoto =
@@ -14,7 +14,8 @@ export function GroupHit({
   backUrl?: string;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
-  const preference = hit.groupFor;
+  const preference = hit.groupFor?.trim() || "Anyone";
+  const topicTags = splitGroupTopics(hit.topics);
 
   // Format the time string to show time with AM/PM and timezone
   const formatTime = (timeString: string) => {
@@ -67,13 +68,20 @@ export function GroupHit({
       "Saturday",
       "Sunday",
     ];
-    const isDayOfWeek = daysOfWeek.some((day) => hit.meetingDays.includes(day));
-    return isDayOfWeek ? hit.meetingDays.slice(0, 3) : hit.meetingDays;
+    const day = hit.meetingDay || "";
+    const isDayOfWeek = daysOfWeek.some((d) => day.includes(d));
+    return isDayOfWeek ? day.slice(0, 3) : day;
   })();
   const formattedMeetingTime = formatTime(hit.meetingTime);
 
   const meetingInfo = formattedMeetingDay + " " + formattedMeetingTime;
 
+  const leaders = Array.isArray(hit.leaders) ? hit.leaders : [];
+  const firstLeader = leaders[0];
+  const leaderPhotoUri =
+    firstLeader?.photo?.sources?.[0]?.uri ?? defaultLeaderPhoto;
+
+  // TODO: Replace ObjectID with groupGUID later once in Algolia
   return (
     <Link
       prefetch="intent"
@@ -98,19 +106,17 @@ export function GroupHit({
             />
 
             <div className="flex gap-1 absolute -bottom-4 lg:-bottom-10 xl:-bottom-4 right-4">
-              {hit?.leaders[0] && (
+              {firstLeader ? (
                 <img
                   className="rounded-lg border-[1.534px] border-[#EBEBEF] size-[77px] object-cover"
                   style={{
                     boxShadow:
                       "0px 5.114px 10.228px -2.557px rgba(0, 0, 0, 0.10), 0px 2.557px 5.114px -2.557px rgba(0, 0, 0, 0.06)",
                   }}
-                  src={
-                    hit.leaders[0].photo.sources[0].uri || defaultLeaderPhoto
-                  }
-                  alt={hit.leaders[0].firstName}
+                  src={leaderPhotoUri}
+                  alt={firstLeader.firstName}
                 />
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -143,14 +149,14 @@ export function GroupHit({
 
             {/* Display topics as tags */}
             <div className="flex flex-wrap px-6 gap-x-2">
-              {hit.topics.map((topic: string, index: number) => (
+              {topicTags.map((topic, index) => (
                 <TagButton key={index} label={topic} />
               ))}
             </div>
           </div>
           <div className="w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white mt-auto">
             <Icon name="map" size={20} color="white" />
-            <p className="text-sm font-semibold">{hit.campus}</p>
+            <p className="text-sm font-semibold">{hit.campusName}</p>
           </div>
         </div>
       </div>

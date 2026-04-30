@@ -5,8 +5,13 @@ import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { CardCarousel } from "~/components/resource-carousel";
-import { GroupType } from "~/routes/group-finder/types";
+import {
+  GroupType,
+  GROUPS_ALGOLIA_INDEX_NAME,
+  splitGroupTopics,
+} from "~/routes/group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
 import { CollectionItem } from "~/routes/page-builder/types";
 import { GetHits } from "~/components/get-hits";
 
@@ -20,7 +25,7 @@ function RelatedGroupsHits({
 }) {
   // Filter out the current group from the results
   const filteredItems = hits.filter(
-    (item) => !currentGroupName || item.title !== currentGroupName
+    (item) => !currentGroupName || item.title !== currentGroupName,
   );
 
   // Wrapper component to adapt resource prop to hit prop
@@ -45,32 +50,41 @@ export function RelatedGroupsPartial({
   topics,
   currentGroupName,
 }: {
-  topics: string[];
+  /** Raw `topics` field from the group Algolia record (comma-separated or empty). */
+  topics: string;
   currentGroupName?: string;
 }) {
   const [hits, setHits] = useState<GroupType[]>([]);
+  const topicTags = splitGroupTopics(topics);
 
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   return (
     <InstantSearch
-      indexName="dev_daniel_Groups"
+      indexName={GROUPS_ALGOLIA_INDEX_NAME}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
     >
-      <Configure filters={`topics:"${topics[0]}"`} hitsPerPage={6} />
+      <Configure
+        filters={
+          topicTags[0]
+            ? `topics:"${escapeAlgoliaFilterString(topicTags[0])}"`
+            : undefined
+        }
+        hitsPerPage={6}
+      />
       <GetHits setHits={setHits} />
       {hits.length > 1 ? (
-        <div className="content-padding mt-20 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
-          <div className="w-full flex flex-col gap-6 md:gap-16 max-w-screen-content">
+        <div className="content-padding mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24">
+          <div className="w-full flex flex-col gap-6 md:gap-12 max-w-screen-content">
             <div className="w-full flex justify-between items-center">
               <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
                 Related Groups
@@ -78,14 +92,14 @@ export function RelatedGroupsPartial({
               <div className="hidden md:block">
                 <Button
                   intent="secondary"
-                  href={`/group-finder/topics/${topics[0]}`}
+                  href={`/group-finder/topics/${topicTags[0]}`}
                 >
                   View All
                 </Button>
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 max-w-full gap-4 overflow-x-hidden md:-mt-12">
+            <div className="flex w-full min-w-0 max-w-full gap-4 overflow-x-hidden">
               {/* Results using ResourceCarousel */}
               <RelatedGroupsHits
                 hits={hits}
@@ -94,10 +108,10 @@ export function RelatedGroupsPartial({
             </div>
 
             {/* Mobile Button */}
-            <div className="md:hidden w-full flex mt-6">
+            <div className="md:hidden w-full flex">
               <Button
                 intent="secondary"
-                href={`/group-finder/topics/${topics[0]}`}
+                href={`/group-finder/topics/${topicTags[0]}`}
               >
                 View All
               </Button>

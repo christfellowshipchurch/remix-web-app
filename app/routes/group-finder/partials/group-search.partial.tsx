@@ -11,7 +11,7 @@ import { LoaderReturnType } from "../loader";
 import { GroupHit } from "../components/group-hit.component";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GroupFinderOverflowFiltersPanel } from "../components/group-finder-overflow-filters.component";
-import { GroupType } from "../types";
+import { GroupType, GROUPS_ALGOLIA_INDEX_NAME } from "../types";
 import {
   parseGroupFinderUrlState,
   groupFinderUrlStateToParams,
@@ -32,12 +32,12 @@ import {
   GROUP_FINDER_MORE_POPUP_TITLE,
 } from "../group-search-filters.data";
 
-const INDEX_NAME = "dev_daniel_Groups";
+const INDEX_NAME = GROUPS_ALGOLIA_INDEX_NAME;
 
 function firstCampusRefinement(
   refinementList: Record<string, string[]> | undefined,
 ): string | null {
-  const values = refinementList?.campus;
+  const values = refinementList?.campusName;
   if (!values?.length) return null;
   const first = values[0]?.trim();
   return first ? first : null;
@@ -47,7 +47,8 @@ function firstCampusRefinement(
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? "";
-  const selectedLocation = firstCampusRefinement(urlState.refinementList) ?? null;
+  const selectedLocation =
+    firstCampusRefinement(urlState.refinementList) ?? null;
   const initialUiState =
     buildIndexInitialUiState(INDEX_NAME, {
       query: urlState.query,
@@ -106,7 +107,9 @@ export const GroupSearch = () => {
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     setAgeInputState(urlState.age ?? "");
-    setSelectedLocationState(firstCampusRefinement(urlState.refinementList) ?? null);
+    setSelectedLocationState(
+      firstCampusRefinement(urlState.refinementList) ?? null,
+    );
   }, [searchParams]);
 
   const searchClient = algoliasearch(

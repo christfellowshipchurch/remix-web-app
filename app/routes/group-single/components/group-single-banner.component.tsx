@@ -3,7 +3,7 @@ import { GroupConnectModal } from "~/components/modals/group-connect/group-conne
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { ImageSource } from "~/routes/group-finder/types";
+import { ImageSource, type GroupType } from "~/routes/group-finder/types";
 import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
 
 export const GroupSingleBanner = ({
@@ -13,7 +13,7 @@ export const GroupSingleBanner = ({
   groupName,
   groupId,
 }: {
-  language: "English" | "Spanish" | "Español";
+  language: GroupType["language"];
   topics: string[];
   leaderImages: ImageSource[];
   groupName: string;
@@ -30,16 +30,13 @@ export const GroupSingleBanner = ({
     "size-16 md:size-20 rounded-lg md:rounded-[10px] object-cover ";
 
   //  If language is Spanish, add "Español" to the list of Tags displayed
-  const tags =
-    language === "Spanish" || language === "Español"
-      ? ["Español", ...topics]
-      : topics;
+  const tags = language === "Spanish" ? ["Español", ...topics] : topics;
 
   return (
     <div
       className={cn(
         "w-full bg-white content-padding pt-8 pb-4 sticky z-10 shadow-sm transition-[top] duration-300",
-        stickyTopClass
+        stickyTopClass,
       )}
     >
       <div className="max-w-screen-content mx-auto w-full flex justify-between gap-8 items-center">
@@ -120,7 +117,7 @@ export const TopicBadge = ({
         "w-fit flex rounded-sm text-sm font-semibold p-[6px]",
         isPrimary
           ? "bg-dark-navy text-navy-subdued"
-          : "bg-navy-subdued text-dark-navy"
+          : "bg-navy-subdued text-dark-navy",
       )}
     >
       {label}

@@ -1,16 +1,16 @@
 import { cn } from "~/lib/utils";
 import { TopicBadge } from "../components/group-single-banner.component";
-import { GroupType } from "~/routes/group-finder/types";
+import { GroupType, splitGroupTopics } from "~/routes/group-finder/types";
 import { icons } from "~/lib/icons";
 import { Icon } from "~/primitives/icon/icon";
 
 export function GroupSingleHero({ hit }: { hit: GroupType }) {
-  const imagePath = hit.coverImage.sources[0].uri;
+  const imagePath = hit.coverImage?.sources?.[0]?.uri ?? "";
 
   return (
     <div
       className={cn(
-        "w-full bg-gray relative content-padding pt-10 pb-16 md:pt-16 lg:py-24"
+        "w-full bg-gray relative content-padding pt-10 pb-16 md:pt-16 lg:py-24",
       )}
     >
       <div className="w-full flex flex-col md:flex-row gap-10 lg:gap-8 md:justify-between items-center max-w-screen-content mx-auto">
@@ -19,7 +19,7 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
           <div className="flex md:hidden flex-col gap-2">
             <h1 className="text-4xl font-bold">{hit.title}</h1>
             <div className="flex flex-wrap gap-1 w-full">
-              {hit.topics.map((topic: string, index: number) => (
+              {splitGroupTopics(hit.topics).map((topic, index) => (
                 <TopicBadge key={index} label={topic} isPrimary={index === 0} />
               ))}
             </div>
@@ -47,28 +47,36 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
 
 const GroupInfo = ({ hit }: { hit: GroupType }) => {
   const {
-    meetingDays,
+    meetingDay,
     meetingFrequency,
     meetingLocationType,
     meetingLocation,
     meetingTime,
-    campus,
+    campusName,
     groupFor,
     peopleWhoAre,
-    minAge,
-    maxAge,
-    adultOnly,
+    minMaxAge,
+    adultsOnly,
     childCareDescription,
   } = hit;
+  const adultsOnlyBool = adultsOnly === "True";
 
   const formattedMeetingTime = meetingTime.replace(" ", "");
-  const meetingLocationLabel = `Group Meets at ${
-    meetingLocationType.toLowerCase() === "church"
-      ? campus
-      : meetingLocationType.toLowerCase()
-  }`;
-  const groupItemTitle = `${groupFor}${
-    peopleWhoAre ? `, ${peopleWhoAre}` : ""
+  const campus = (campusName || "").trim();
+  const rawLocationType = (meetingLocationType || "").trim();
+  const locationType = rawLocationType.toLowerCase();
+
+  const meetingLocationLabel = (() => {
+    if (locationType === "church" && campus) {
+      return `Group Meets at ${campus}`;
+    }
+    if (rawLocationType && locationType !== "church") {
+      return `Group Meets at ${rawLocationType}`;
+    }
+    return "TBD";
+  })();
+  const groupItemTitle = `${groupFor || "Anyone"}${
+    peopleWhoAre && peopleWhoAre.length > 0 ? `, ${peopleWhoAre[0]}` : ""
   }`;
 
   return (
@@ -80,23 +88,25 @@ const GroupInfo = ({ hit }: { hit: GroupType }) => {
       />
       <InfoItem
         title={groupItemTitle}
-        description={`${minAge} - ${maxAge} years old`}
+        description={`${minMaxAge} years old`}
         icon="group"
         isLayoutReversed={true}
       />
+      {meetingDay && meetingTime && (
+        <InfoItem
+          title={`${meetingFrequency}, ${meetingDay || "TBD"}`}
+          description={`${formattedMeetingTime} ET`}
+          icon="calendarAlt"
+          isLayoutReversed={true}
+        />
+      )}
       <InfoItem
-        title={`${meetingFrequency}, ${meetingDays}s`}
-        description={`${formattedMeetingTime} ET`}
-        icon="calendarAlt"
-        isLayoutReversed={true}
-      />
-      <InfoItem
-        title={adultOnly ? "Adults Only" : "Children Welcome"}
+        title={adultsOnlyBool ? "Adults Only" : "Children Welcome"}
         description={childCareDescription ?? ""}
-        icon={adultOnly ? "male" : "child"}
+        icon={adultsOnlyBool ? "male" : "child"}
       />
       <InfoItem
-        title={campus}
+        title={campusName}
         description="Affiliated Campus Location"
         icon="cfLogo"
       />

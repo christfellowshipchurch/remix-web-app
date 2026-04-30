@@ -7,7 +7,7 @@ import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";
 import { Button } from "~/primitives/button/button.primitive";
 
-import { GroupType } from "../group-finder/types";
+import { GroupType, splitGroupTopics } from "../group-finder/types";
 import { GroupSingleBanner } from "./components/group-single-banner.component";
 
 export const GroupNotFound = () => (
@@ -24,15 +24,19 @@ export const GroupNotFound = () => (
 );
 
 export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
+  const topicTags = splitGroupTopics(hit.topics);
+
   return (
     <section className="flex flex-col items-center dark:bg-gray-900">
       {/* Banner */}
       <GroupSingleBanner
         language={hit.language}
-        leaderImages={hit.leaders.map((leader) => leader.photo)}
-        topics={hit.topics}
+        leaderImages={(hit.leaders ?? []).map(
+          (leader) => leader.photo ?? { sources: [{ uri: "" }] },
+        )}
+        topics={topicTags}
         groupName={hit.title}
-        groupId={hit.objectID}
+        groupId={String(hit.groupId ?? hit.objectID)}
       />
 
       {/* Hero */}
