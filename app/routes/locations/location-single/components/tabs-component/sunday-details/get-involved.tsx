@@ -23,7 +23,7 @@ export const GetInvolved = ({
       backgroundImage={!isOnline ? getImageUrl("3143911") : undefined}
       className={cn(isOnline ? "bg-linear-to-br from-[#1C3647] to-ocean" : "")}
       title={title}
-      carouselItemClassName="w-full basis-[75%] sm:basis-[40%] lg:basis-[22%] xl:basis-[21.8%] 2xl:!basis-[24%] 3xl:!basis-[24.59%]"
+      carouselItemClassName="w-full basis-[75%] sm:basis-[40%] lg:basis-[22%] xl:basis-[23%] 2xl:!basis-[24.5%]"
       CardComponent={GetInvolvedCard}
       resources={
         isOnline

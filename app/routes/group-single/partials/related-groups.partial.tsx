@@ -1,12 +1,16 @@
 import { Configure, InstantSearch } from "react-instantsearch";
-import { Button } from "~/primitives/button/button.primitive";
 import { useMemo, useState } from "react";
 import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";
 import { LoaderReturnType } from "../loader";
 import { CardCarousel } from "~/components/resource-carousel";
-import { GroupType } from "~/routes/group-finder/types";
+import {
+  GroupType,
+  GROUPS_ALGOLIA_INDEX_NAME,
+  splitGroupTopics,
+} from "~/routes/group-finder/types";
 import { createSearchClient } from "~/lib/create-search-client";
+import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
 import { CollectionItem } from "~/routes/page-builder/types";
 import { GetHits } from "~/components/get-hits";
 
@@ -20,7 +24,7 @@ function RelatedGroupsHits({
 }) {
   // Filter out the current group from the results
   const filteredItems = hits.filter(
-    (item) => !currentGroupName || item.title !== currentGroupName
+    (item) => !currentGroupName || item.title !== currentGroupName,
   );
 
   // Wrapper component to adapt resource prop to hit prop
@@ -45,62 +49,57 @@ export function RelatedGroupsPartial({
   topics,
   currentGroupName,
 }: {
-  topics: string[];
+  /** Raw `topics` field from the group Algolia record (comma-separated or empty). */
+  topics: string;
   currentGroupName?: string;
 }) {
   const [hits, setHits] = useState<GroupType[]>([]);
+  const topicTags = splitGroupTopics(topics);
 
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   return (
     <InstantSearch
-      indexName="dev_daniel_Groups"
+      indexName={GROUPS_ALGOLIA_INDEX_NAME}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
     >
-      <Configure filters={`topics:"${topics[0]}"`} hitsPerPage={6} />
+      <Configure
+        filters={
+          topicTags[0]
+            ? `topics:"${escapeAlgoliaFilterString(topicTags[0])}"`
+            : undefined
+        }
+        hitsPerPage={6}
+      />
       <GetHits setHits={setHits} />
       {hits.length > 1 ? (
-        <div className="content-padding mt-20 w-full flex flex-col items-center bg-gradient-to-b from-white to-[#EEE] pb-24">
-          <div className="w-full flex flex-col gap-6 md:gap-16 max-w-screen-content">
-            <div className="w-full flex justify-between items-center">
-              <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
-                Related Groups
-              </h2>
-              <div className="hidden md:block">
-                <Button
-                  intent="secondary"
-                  href={`/group-finder/topics/${topics[0]}`}
-                >
-                  View All
-                </Button>
+        <div className="mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24">
+          <div className="w-full flex flex-col gap-6 md:gap-12">
+            <div className="content-padding w-full">
+              <div className="w-full flex justify-between items-center max-w-screen-content mx-auto">
+                <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
+                  Related Groups
+                </h2>
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 max-w-full gap-4 overflow-x-hidden md:-mt-12">
-              {/* Results using ResourceCarousel */}
-              <RelatedGroupsHits
-                hits={hits}
-                currentGroupName={currentGroupName}
-              />
-            </div>
-
-            {/* Mobile Button */}
-            <div className="md:hidden w-full flex mt-6">
-              <Button
-                intent="secondary"
-                href={`/group-finder/topics/${topics[0]}`}
-              >
-                View All
-              </Button>
+            <div className="pl-5 md:pl-12 lg:pl-18 lg:pr-18 w-full">
+              <div className="flex w-full min-w-0 gap-4 overflow-x-hidden mx-auto max-w-screen-content">
+                {/* Results using ResourceCarousel */}
+                <RelatedGroupsHits
+                  hits={hits}
+                  currentGroupName={currentGroupName}
+                />
+              </div>
             </div>
           </div>
         </div>

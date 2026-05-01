@@ -39,7 +39,7 @@ export const SeriesResourceCarousel = (data: {
 
   return (
     <div
-      className={`pl-6 md:pl-12 lg:pl-18 3xl:pl-0 pb-28 pt-16 lg:pt-28 bg-${
+      className={`pl-6 md:pl-12 lg:pl-18 lg:pr-18 pb-28 pt-16 lg:pt-28 bg-${
         data.bg || "white"
       }`}
     >
@@ -142,7 +142,7 @@ const CarouselArrows = ({
           setCurrentSlide(
             currentSlide !== itemsLength - 1
               ? currentSlide + 1
-              : itemsLength - 1
+              : itemsLength - 1,
           )
         }
       >

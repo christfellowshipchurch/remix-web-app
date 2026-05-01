@@ -3,6 +3,7 @@ import { useRefinementList } from "react-instantsearch";
 import { cn } from "~/lib/utils";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
+import { GroupType } from "../../types";
 
 function meetingTypeUsesGlobeIcon(label: string): boolean {
   const t = label.trim().toLowerCase();
@@ -81,7 +82,7 @@ export const AllFiltersRefinementContent = ({
           className={item.isRefined ? "text-white" : "text-[#222222]"}
         />
       )}
-      {content.attribute === "meetingDays"
+      {content.attribute === ("meetingDay" as const satisfies keyof GroupType)
         ? item.label === "Thursday"
           ? "Thur"
           : item.label.substring(0, 3)

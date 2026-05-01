@@ -7,8 +7,10 @@ import { GroupSingleBasicContent } from "./components/basic-content.component";
 import { RelatedGroupsPartial } from "./partials/related-groups.partial";
 import { Button } from "~/primitives/button/button.primitive";
 
-import { GroupType } from "../group-finder/types";
+import { useCopyPagePath } from "~/hooks/use-copy-page-path";
+import { GroupType, splitGroupTopics } from "../group-finder/types";
 import { GroupSingleBanner } from "./components/group-single-banner.component";
+import { GroupSingleMobileBottomBar } from "./components/group-single-mobile-bottom-bar.component";
 
 export const GroupNotFound = () => (
   <div className="flex flex-col items-center justify-center gap-6 h-[70vh] w-screen">
@@ -24,15 +26,21 @@ export const GroupNotFound = () => (
 );
 
 export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
+  const topicTags = splitGroupTopics(hit.topics);
+  const { copyPath, copied } = useCopyPagePath();
+  const groupId = String(hit.groupId ?? hit.objectID);
+
   return (
-    <section className="flex flex-col items-center dark:bg-gray-900">
-      {/* Banner */}
+    <section className="flex flex-col items-center dark:bg-gray-900 pb-24 md:pb-0">
+      {/* Desktop Only Banner */}
       <GroupSingleBanner
         language={hit.language}
-        leaderImages={hit.leaders.map((leader) => leader.photo)}
-        topics={hit.topics}
+        leaderImages={(hit.leaders ?? []).map(
+          (leader) => leader.photo ?? { sources: [{ uri: "" }] },
+        )}
+        topics={topicTags}
         groupName={hit.title}
-        groupId={hit.objectID}
+        groupId={String(hit.groupId ?? hit.objectID)}
       />
 
       {/* Hero */}
@@ -44,6 +52,12 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
         </div>
       </div>
       <RelatedGroupsPartial topics={hit.topics} currentGroupName={hit.title} />
+
+      <GroupSingleMobileBottomBar
+        copied={copied}
+        onCopyPath={copyPath}
+        groupId={groupId}
+      />
     </section>
   );
 };

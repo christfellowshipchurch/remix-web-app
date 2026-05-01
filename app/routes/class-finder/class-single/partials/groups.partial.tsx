@@ -12,20 +12,18 @@ import {
   type FinderGeoCoordinates,
 } from "~/components/finders/finder-algolia.utils";
 import { createSearchClient } from "~/lib/create-search-client";
-import type { GroupType } from "~/routes/group-finder/types";
+import {
+  GROUPS_ALGOLIA_INDEX_NAME,
+  type GroupType,
+} from "~/routes/group-finder/types";
 
 import { ClassSingleGroupsCarousel } from "../components/class-single-groups-carousel.component";
 import type { LoaderReturnType } from "../loader";
 
-/**
- * Keep in sync with `app/routes/group-finder/partials/group-search.partial.tsx`.
- */
-const GROUPS_ALGOLIA_INDEX_NAME = "dev_daniel_Groups";
-
 const CLASS_SINGLE_GROUPS_MAX_HITS = 1000;
 
 /**
- * `classesIndexClassType` must match `dev_Classes` / `dev_daniel_Groups` attribute `classType`
+ * `classesIndexClassType` must match `dev_Classes` / `dev_Groups` attribute `classType`
  * (the class-type value on records), not necessarily the URL segment.
  */
 function composeGroupsFilters(
@@ -43,8 +41,9 @@ function composeGroupsFilters(
   return mirroredFacetFilters;
 }
 
-function classFormatToMeetingType(format: string): string | null {
-  if (format === "Virtual") return "Online";
+/** Maps class session format to `dev_Groups` `meetingType` facet values. */
+function classFormatToGroupMeetingType(format: string): string | null {
+  if (format === "Virtual") return "Virtual";
   if (format === "In-Person") return "In Person";
   return null;
 }
@@ -56,8 +55,8 @@ function classLanguageToGroupLanguage(lang: string): string | null {
 }
 
 /**
- * Maps `dev_Classes` refinement facets (Filter Sessions) to `dev_daniel_Groups` Algolia filter string.
- * `campus` matches RefinementList `attribute: "campus"` (class-single + group finder).
+ * Maps `dev_Classes` refinement facets (Filter Sessions) to `dev_Groups` Algolia filter string.
+ * `campus` on classes maps to `campusName` on groups.
  */
 function mirrorGroupsFacets(
   refinementList: Record<string, string[]>,
@@ -68,10 +67,10 @@ function mirrorGroupsFacets(
     (v) => v != null && String(v).trim() !== "",
   );
   if (campuses.length === 1) {
-    parts.push(`campus:"${escapeAlgoliaFilterString(campuses[0])}"`);
+    parts.push(`campusName:"${escapeAlgoliaFilterString(campuses[0])}"`);
   } else if (campuses.length > 1) {
     parts.push(
-      `(${campuses.map((c) => `campus:"${escapeAlgoliaFilterString(c)}"`).join(" OR ")})`,
+      `(${campuses.map((c) => `campusName:"${escapeAlgoliaFilterString(c)}"`).join(" OR ")})`,
     );
   }
 
@@ -81,7 +80,7 @@ function mirrorGroupsFacets(
   const meetingTypes = [
     ...new Set(
       formats
-        .map((f) => classFormatToMeetingType(f))
+        .map((f) => classFormatToGroupMeetingType(f))
         .filter((m): m is string => m != null),
     ),
   ];
@@ -163,11 +162,7 @@ function ClassSingleGroupsAlgolia({
   const backUrl = `/class-finder/${classUrl}`;
 
   const configureFilters = useMemo(
-    () =>
-      composeGroupsFilters(
-        classesIndexClassType,
-        mirroredFacetFilters,
-      ),
+    () => composeGroupsFilters(classesIndexClassType, mirroredFacetFilters),
     [classesIndexClassType, mirroredFacetFilters],
   );
 
