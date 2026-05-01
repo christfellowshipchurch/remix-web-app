@@ -49,7 +49,7 @@ export function AllArticles() {
         pathnameRef,
         onUpdateCallbackRef,
       }),
-    []
+    [],
   );
 
   const stateMapping = useMemo(() => createAllArticlesStateMapping(), []);
@@ -62,7 +62,7 @@ export function AllArticles() {
   const searchClient = useMemo(
     () =>
       createSearchClient(ALGOLIA_APP_ID || "", ALGOLIA_SEARCH_API_KEY || ""),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const routing = useMemo(
@@ -70,7 +70,7 @@ export function AllArticles() {
       router,
       stateMapping,
     }),
-    [router, stateMapping]
+    [router, stateMapping],
   );
 
   const [allArticlesLoading, setAllArticlesLoading] = useState(true);
@@ -98,7 +98,7 @@ export function AllArticles() {
   })();
 
   return (
-    <section className="relative pb-28 pt-18 min-h-screen bg-white content-padding pagination-scroll-to">
+    <section className="relative pb-28 pt-8 md:pt-16 min-h-screen bg-white content-padding pagination-scroll-to">
       <div className="relative max-w-screen-content mx-auto">
         <InstantSearch
           indexName={INDEX_NAME}
@@ -115,7 +115,7 @@ export function AllArticles() {
           />
 
           {/* Filter Section */}
-          <div className="mt-10 mb-12">
+          <div className="mb-4">
             <HubsTagsRefinementList attribute="articlePrimaryCategories" />
           </div>
 
