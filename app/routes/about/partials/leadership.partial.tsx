@@ -32,7 +32,7 @@ export function LeadershipSection({
                 layout === "vertical" ? "flex-col gap-8" : "gap-24 items-center"
               )}
             >
-              <SectionTitle sectionTitle="our team." />
+              <SectionTitle sectionTitle="meet our team." />
               <h3 className="text-5xl font-extrabold leading-none max-w-3xl">
                 Meet The Passionate Leaders <br />
                 Of Christ Fellowship Church.
