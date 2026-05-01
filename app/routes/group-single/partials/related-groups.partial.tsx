@@ -1,5 +1,4 @@
 import { Configure, InstantSearch } from "react-instantsearch";
-import { Button } from "~/primitives/button/button.primitive";
 import { useMemo, useState } from "react";
 import { GroupHit } from "../../group-finder/components/group-hit.component";
 import { useLoaderData } from "react-router-dom";

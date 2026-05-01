@@ -258,7 +258,7 @@ export const GroupSearch = () => {
                     root: "flex-grow",
                     form: "flex",
                     input:
-                      "w-full text-sm text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none",
+                      "w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm",
                     resetIcon: "hidden",
                     submit: "hidden",
                     loadingIcon: "hidden",
