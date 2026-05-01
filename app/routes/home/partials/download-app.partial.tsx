@@ -142,11 +142,11 @@ const StoreButton = ({
       )}
     >
       <Icon name={iconName} size={40} className='flex-shrink-0' />
-      <div className='flex flex-col leading-tight'>
-        <span className='text-[10px] uppercase tracking-widest opacity-80'>
+      <div className='flex flex-col leading-tight font-bold'>
+        <span className='text-[10px] uppercase opacity-60 tracking-wide'>
           {eyebrow}
         </span>
-        <span className='text-[20px] font-semibold'>{storeName}</span>
+        <span className='text-[20px]'>{storeName}</span>
       </div>
     </a>
   );
