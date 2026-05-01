@@ -1,28 +1,28 @@
-import { LoaderFunction } from "react-router-dom";
+import { LoaderFunction } from 'react-router-dom';
 import {
   fetchRockData,
   isItemInDateRange,
-} from "~/lib/.server/fetch-rock-data";
+} from '~/lib/.server/fetch-rock-data';
 import {
   createImageUrlFromGuid,
   getIdentifierType,
   parseRockKeyValueList,
-} from "~/lib/utils";
+} from '~/lib/utils';
 import {
   getContentType,
   getPathname,
   getSectionType,
   isCollectionType,
   isGuid,
-} from "./components/builder-utils";
+} from './components/builder-utils';
 import {
   CollectionItem,
   PageBuilderSection,
   PageBuilderLoader,
   SectionType,
-} from "./types";
-import { format, parseISO } from "date-fns";
-import { fetchWistiaDataFromRock } from "~/lib/.server/fetch-wistia-data";
+} from './types';
+import { format, parseISO } from 'date-fns';
+import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
 
 // Type definitions for Rock API responses
 interface ChildReference {
@@ -44,6 +44,7 @@ interface RockAttributeValues {
 
 interface RockContentItem {
   id: string;
+  status: number;
   title: string;
   titleOverride?: string;
   content: string;
@@ -66,14 +67,14 @@ export const fetchChildItems = async (id: string) => {
   const childReferences = await fetchRockData({
     endpoint: `ContentChannelItemAssociations`,
     queryParams: {
-      loadAttributes: "simple",
+      loadAttributes: 'simple',
       $filter: `ContentChannelItemId eq ${id}`,
-      $orderby: "Order",
+      $orderby: 'Order',
     },
   });
 
   if (!childReferences) {
-    console.warn("No valid child references found");
+    console.warn('No valid child references found');
     return [];
   }
 
@@ -87,19 +88,27 @@ export const fetchChildItems = async (id: string) => {
       return await fetchRockData({
         endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
         queryParams: {
-          loadAttributes: "simple",
+          loadAttributes: 'simple',
         },
       });
     }),
   );
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
-    console.warn("fetchChildItems: No valid children data found");
+    console.warn('fetchChildItems: No valid children data found');
     return [];
   }
 
-  // Ensure children is an array
-  const childrenArray = Array.isArray(children) ? children : [children];
+  // Ensure children is an array; drop resource collection items that are not approved (status 2)
+  const rawChildren = Array.isArray(children) ? children : [children];
+  const childrenArray = rawChildren.filter((child) => {
+    const item = child as RockContentItem;
+    const sectionType = getSectionType(item.contentChannelId);
+    if (sectionType === 'RESOURCE_COLLECTION' && item.status !== 2) {
+      return false;
+    }
+    return true;
+  });
 
   return childrenArray;
 };
@@ -124,7 +133,7 @@ export const fetchDefinedValue = async (guid: string) => {
   if (definedValueArray.length > 0) {
     return definedValueArray[0].value;
   } else {
-    return "";
+    return '';
   }
 };
 
@@ -146,6 +155,7 @@ export const mapPageBuilderChildItems = async (
       const typeId = child.contentChannelId;
       const isCollection = isCollectionType(typeId);
       const sectionType = getSectionType(typeId) as SectionType;
+
       // Map the attribute values to a key-value object for easier access
       const attributeValues = Object.fromEntries(
         Object.entries(child.attributeValues || {}).map(
@@ -165,7 +175,7 @@ export const mapPageBuilderChildItems = async (
         type: sectionType,
         name: child.title,
         titleOverride: getStringValue(
-          child.attributeValues?.titleOverride?.value ?? "",
+          child.attributeValues?.titleOverride?.value ?? '',
         ),
         content: child.content,
         linkTreeLayout: await getLinkTreeLayout(child.attributeValues || {}),
@@ -179,7 +189,7 @@ export const mapPageBuilderChildItems = async (
         const collection = await fetchChildItems(child.id);
         const now = new Date();
         const visibleItems = collection.filter((item: RockContentItem) =>
-          isItemInDateRange(item, now)
+          isItemInDateRange(item, now),
         );
         return {
           ...baseChild,
@@ -204,7 +214,7 @@ export const mapPageBuilderChildItems = async (
 
               // Generate the summary for the item
               const summary = getStringValue(
-                itemAttributeValues?.summary || "",
+                itemAttributeValues?.summary || '',
               );
               if (!summary) {
                 itemAttributeValues.summary = item.content;
@@ -213,32 +223,32 @@ export const mapPageBuilderChildItems = async (
               // Generate the pathname for the item
               let pathname: string;
               switch (contentType) {
-                case "REDIRECT_CARD":
+                case 'REDIRECT_CARD':
                   pathname = getStringValue(
-                    itemAttributeValues?.redirectUrl || "",
+                    itemAttributeValues?.redirectUrl || '',
                   );
                   break;
-                case "EVENTS":
+                case 'EVENTS':
                   pathname = getPathname(
                     contentType,
-                    getStringValue(itemAttributeValues?.url || ""),
+                    getStringValue(itemAttributeValues?.url || ''),
                   );
                   break;
                 default:
                   pathname = getPathname(
                     contentType,
-                    getStringValue(itemAttributeValues?.pathname || ""),
+                    getStringValue(itemAttributeValues?.pathname || ''),
                   );
               }
 
               // Generate the start date for the item
-              let startDate = "";
-              if (contentType !== "REDIRECT_CARD") {
-                const startDateTime = item.startDateTime || "";
+              let startDate = '';
+              if (contentType !== 'REDIRECT_CARD') {
+                const startDateTime = item.startDateTime || '';
                 if (startDateTime) {
                   startDate = format(
                     parseISO(startDateTime),
-                    "EEE dd MMM yyyy",
+                    'EEE dd MMM yyyy',
                   );
                 }
               }
@@ -251,8 +261,8 @@ export const mapPageBuilderChildItems = async (
                 summary,
                 image:
                   createImageUrlFromGuid(
-                    getStringValue(itemAttributeValues?.image || ""),
-                  ) || "",
+                    getStringValue(itemAttributeValues?.image || ''),
+                  ) || '',
                 startDate,
                 pathname,
                 // attributeValues,
@@ -263,14 +273,14 @@ export const mapPageBuilderChildItems = async (
       }
 
       // If the section is a content block, fetch the defined values for any GUIDs that are not the cover image or video
-      if (sectionType === "CONTENT_BLOCK") {
+      if (sectionType === 'CONTENT_BLOCK') {
         const updatedValues = await Promise.all(
           Object.entries(attributeValues || {}).map(async ([key, value]) => {
             const processedValue =
-              typeof value === "string" &&
+              typeof value === 'string' &&
               isGuid(value) &&
-              key !== "coverImage" &&
-              key !== "video"
+              key !== 'coverImage' &&
+              key !== 'video'
                 ? await fetchDefinedValue(value)
                 : getStringValue(value);
             return [key, processedValue];
@@ -291,20 +301,20 @@ export const mapPageBuilderChildItems = async (
           ...baseChild,
           ...processedValues,
           coverImage: createImageUrlFromGuid(
-            getStringValue(attributeValues?.coverImage || ""),
+            getStringValue(attributeValues?.coverImage || ''),
           ),
           featureVideo: fetchVideo,
         };
       }
 
-      if (sectionType === "FAQs") {
+      if (sectionType === 'FAQs') {
         const { id: matrixId } = await fetchRockData({
           endpoint: `AttributeMatrices`,
           queryParams: {
             $filter: `Guid eq guid'${getStringValue(
-              attributeValues?.faqs || "",
+              attributeValues?.faqs || '',
             )}'`,
-            $select: "Id",
+            $select: 'Id',
           },
         });
 
@@ -312,14 +322,14 @@ export const mapPageBuilderChildItems = async (
           endpoint: `AttributeMatrixItems`,
           queryParams: {
             $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
-            loadAttributes: "simple",
+            loadAttributes: 'simple',
           },
         });
 
         return {
           ...baseChild,
           stillHaveQuestionsLink: getStringValue(
-            attributeValues?.stillHaveQuestionsLink || "",
+            attributeValues?.stillHaveQuestionsLink || '',
           ),
           faqs: faqs.map((faq: RockAttributeMatrixItem) => ({
             id: faq.id,
@@ -329,14 +339,14 @@ export const mapPageBuilderChildItems = async (
         };
       }
 
-      if (sectionType === "IMAGE_GALLERY") {
+      if (sectionType === 'IMAGE_GALLERY') {
         const { id: matrixId } = await fetchRockData({
           endpoint: `AttributeMatrices`,
           queryParams: {
             $filter: `Guid eq guid'${getStringValue(
-              attributeValues?.images || "",
+              attributeValues?.images || '',
             )}'`,
-            $select: "Id",
+            $select: 'Id',
           },
         });
 
@@ -344,7 +354,7 @@ export const mapPageBuilderChildItems = async (
           endpoint: `AttributeMatrixItems`,
           queryParams: {
             $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
-            loadAttributes: "simple",
+            loadAttributes: 'simple',
           },
         });
 
@@ -368,19 +378,19 @@ export const loader: LoaderFunction = async ({ params }) => {
     const pathname = params?.path;
 
     if (!pathname) {
-      throw new Response("Pathname is required", {
+      throw new Response('Pathname is required', {
         status: 400,
-        statusText: "Bad Request",
+        statusText: 'Bad Request',
       });
     }
 
     const pageData = await fetchRockData({
-      endpoint: "ContentChannelItems/GetByAttributeValue",
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
       queryParams: {
-        attributeKey: "Pathname",
+        attributeKey: 'Pathname',
         value: pathname,
-        loadAttributes: "simple",
-        $filter: "ContentChannelId eq 176",
+        loadAttributes: 'simple',
+        $filter: 'ContentChannelId eq 176',
       },
     });
 
@@ -388,7 +398,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     if (!pageData) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
@@ -398,7 +408,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     if (!page || !page.id) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
@@ -409,12 +419,12 @@ export const loader: LoaderFunction = async ({ params }) => {
       title: page.title,
       heroImage:
         createImageUrlFromGuid(
-          getStringValue(page.attributeValues?.image?.value || ""),
-        ) || "",
+          getStringValue(page.attributeValues?.image?.value || ''),
+        ) || '',
       content: page.content,
       callsToAction:
         parseRockKeyValueList(
-          getStringValue(page.attributeValues?.callsToAction?.value || ""),
+          getStringValue(page.attributeValues?.callsToAction?.value || ''),
         ).map((cta) => ({
           title: cta.key,
           url: cta.value,
@@ -424,16 +434,16 @@ export const loader: LoaderFunction = async ({ params }) => {
 
     return pageBuilder;
   } catch (error) {
-    console.warn("Error in page builder loader:", error);
+    console.warn('Error in page builder loader:', error);
 
     // If it's already a Response, re-throw it
     if (error instanceof Response) {
       throw error;
     }
 
-    throw new Response("Failed to load page content", {
+    throw new Response('Failed to load page content', {
       status: 500,
-      statusText: "Internal Server Error",
+      statusText: 'Internal Server Error',
     });
   }
 };
