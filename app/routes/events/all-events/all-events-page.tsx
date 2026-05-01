@@ -9,7 +9,7 @@ export function AllEventsPage() {
     <div className="flex flex-col items-center">
       <DynamicHero
         customTitle="Events"
-        fullOverlay
+        overlay='full'
         imagePath={getImageUrl("3166604")}
       />
       <FeaturedEvents />

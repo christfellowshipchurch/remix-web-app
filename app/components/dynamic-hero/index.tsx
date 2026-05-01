@@ -7,6 +7,8 @@ import { cn } from "~/lib/utils";
 import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";
 import { Video } from "~/primitives/video/video.primitive";
 
+export type DynamicHeroOverlay = 'gradient' | 'full' | 'none';
+
 export type DynamicHeroTypes = {
   wistiaId?: string;
   imagePath?: string;
@@ -20,7 +22,7 @@ export type DynamicHeroTypes = {
   mobileHeight?: string;
   ipadHeight?: string;
   desktopHeight?: string;
-  fullOverlay?: boolean;
+  overlay?: DynamicHeroOverlay;
   isSpanish?: boolean;
 };
 
@@ -32,7 +34,7 @@ export const DynamicHero = ({
   mobileHeight,
   ipadHeight,
   desktopHeight,
-  fullOverlay = false,
+  overlay = 'gradient',
 }: DynamicHeroTypes) => {
   const location = useLocation();
 
@@ -106,14 +108,17 @@ export const DynamicHero = ({
       </div>
 
       {/* Bottom Background Gradient Overlay or full overlay */}
-      <div
-        className={cn(
-          "absolute bottom-0 left-0 right-0 h-full z-1",
-          fullOverlay
-            ? "bg-black/60"
-            : "bg-linear-to-t from-black to-transparent opacity-70",
-        )}
-      />
+      {overlay !== 'none' && (
+        <div
+          className={cn(
+            'absolute bottom-0 left-0 right-0 h-full z-1',
+            overlay === 'full'
+              ? 'bg-black/60'
+              : 'bg-linear-to-t from-black to-transparent opacity-70',
+          )}
+          aria-hidden
+        />
+      )}
 
       {/* Content */}
       <div
