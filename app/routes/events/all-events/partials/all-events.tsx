@@ -87,6 +87,8 @@ export const AllEvents = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
+  const eventsMobilePinEndRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="flex w-full min-w-0 max-w-full flex-col pagination-scroll-to pt-8 pb-24 md:pt-16 md:pb-28">
       <InstantSearch
@@ -116,7 +118,10 @@ export const AllEvents = () => {
           </div>
         </div>
 
-        <EventsFiltersViewport onClearAllToUrl={clearAllFiltersFromUrl} />
+        <EventsFiltersViewport
+          onClearAllToUrl={clearAllFiltersFromUrl}
+          eventsMobilePinEndRef={eventsMobilePinEndRef}
+        />
 
         <div className="content-padding pt-16 md:pt-0">
           <div className="mx-auto w-full max-w-screen-content">
@@ -138,6 +143,12 @@ export const AllEvents = () => {
             />
 
             <CustomPagination />
+
+            <div
+              ref={eventsMobilePinEndRef}
+              className="pointer-events-none h-0 w-full shrink-0"
+              aria-hidden
+            />
           </div>
         </div>
       </InstantSearch>

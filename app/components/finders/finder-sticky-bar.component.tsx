@@ -16,7 +16,7 @@ export function FinderStickyBar({ children, className }: FinderStickyBarProps) {
   return (
     <div
       className={cn(
-        "sticky z-20 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
+        "sticky z-20 w-full min-w-0 border-b border-black/5 bg-white shadow-sm content-padding select-none transition-all duration-300",
         stickyTopClass,
         className,
       )}
