@@ -1,41 +1,40 @@
-import { useState } from "react";
-import { cn } from "~/lib/utils";
-
-import { LeadersModal } from "~/components/modals/leaders";
-
-import { Icon } from "~/primitives/icon/icon";
-import Modal from "~/primitives/Modal";
-import { Author } from "~/routes/author/types";
-import { useLeadersWithArticles } from "../context/leaders-articles-context";
+import { useState } from 'react';
+import { useLoaderData } from 'react-router';
+import { cn } from '~/lib/utils';
+import { LeadersModal } from '~/components/modals/leaders';
+import { Icon } from '~/primitives/icon/icon';
+import Modal from '~/primitives/Modal';
+import type { LeaderProfile } from './leaders-data';
+import type { HomeLoaderData } from '~/routes/home/loader';
 
 export function LeaderGrid() {
-  const { leadersWithArticles } = useLeadersWithArticles();
+  const { leaders } = useLoaderData<HomeLoaderData>();
 
   return (
     <div className="flex items-start lg:items-end gap-3">
-      {leadersWithArticles.map((leader, index) => (
+      {leaders.map((leader, index) => (
         <LeaderCard key={leader.id} index={index} leader={leader} />
       ))}
     </div>
   );
 }
 
-const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
+const LeaderCard = ({ leader, index }: { leader: LeaderProfile; index: number }) => {
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <Modal
       open={openModal}
       onOpenChange={setOpenModal}
-      key={leader.authorAttributes.pathname}
+      key={leader.pathname}
     >
       <Modal.Button
         className={cn(
-          "group w-full",
-          "md:w-[50%]",
-          "lg:w-[25%]",
-          index === 0 && "lg:w-[28%]",
-          "cursor-pointer",
+          'group w-full',
+          'md:w-[50%]',
+          'lg:w-[25%]',
+          index === 0 && 'lg:w-[28%]',
+          'cursor-pointer',
         )}
         onClick={() => setOpenModal(true)}
         data-leader-name={leader.fullName}
@@ -49,8 +48,8 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
               height={460}
               sizes="(min-width: 1024px) 25vw, 50vw"
               className={cn(
-                "w-full aspect-32/46 object-cover",
-                "transform transition-transform duration-300 group-hover:scale-105",
+                'w-full aspect-32/46 object-cover',
+                'transform transition-transform duration-300 group-hover:scale-105',
               )}
             />
             <div className="absolute size-[212px]">
@@ -71,7 +70,7 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
 
         <div>
           <p className="text-gray-600 uppercase tracking-wider text-sm mb-1 text-start">
-            {leader.authorAttributes.jobTitle}
+            {leader.jobTitle}
           </p>
           <h4 className="text-2xl font-bold text-gray-900 text-start">
             {leader.fullName}
@@ -79,7 +78,7 @@ const LeaderCard = ({ leader, index }: { leader: Author; index: number }) => {
         </div>
       </Modal.Button>
       <Modal.Content background="bg-gray">
-        <LeadersModal author={leader} />
+        <LeadersModal leader={leader} />
       </Modal.Content>
     </Modal>
   );

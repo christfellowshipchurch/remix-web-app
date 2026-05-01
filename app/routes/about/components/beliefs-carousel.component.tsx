@@ -37,7 +37,7 @@ export function BeliefsCarousel({
                 key={belief.title}
                 className={cn(
                   "pl-0",
-                  "basis-[100%]",
+                  "basis-full",
                   "md:basis-[50%]",
                   "lg:basis-[33.333%]",
                 )}
@@ -69,18 +69,14 @@ export function BeliefsCarousel({
               tabBgClass ? tabBgClass : "bg-dark-navy",
             )}
           >
-            <div className="absolute h-12 top-7 left-4">
+            <div className="absolute h-12 top-8 left-10">
               <CarouselDots
                 activeClassName="bg-ocean"
                 inactiveClassName="bg-neutral-lighter"
               />
             </div>
 
-            <div
-              className={cn(
-                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28",
-              )}
-            >
+            <div className={cn("absolute h-12 right-10")}>
               <CarouselArrows arrowStyles="text-white border-white hover:text-neutral-light hover:border-neutral-light bg-transparent transition-colors duration-300" />
             </div>
           </div>
