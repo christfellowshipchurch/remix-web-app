@@ -55,7 +55,7 @@ export const MobileHeroSection = () => {
         <div className="flex flex-col gap-8 justify-end">
           {/*  Title */}
           <h1 className="text-5xl text-white font-extrabold leading-none md:px-4">
-            Find your <br className="hidden md:block " />
+            Find Your <br className="hidden md:block " />
             People.
             <span className="text-ocean">
               {" "}
