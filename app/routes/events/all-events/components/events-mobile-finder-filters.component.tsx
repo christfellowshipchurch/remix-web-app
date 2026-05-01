@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useInstantSearch, useRefinementList } from "react-instantsearch";
 import startCase from "lodash/startCase";
 
+import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
 import { MobileFilterBottomSheet } from "~/components/finders/search-filters/filter-popup.component";
 import { finderFilterSectionSubtitleClass } from "~/components/finders/search-filters/filter-section-subtitle";
 import { finderLocationInputBaseClass } from "~/components/finders/location-search";
@@ -94,77 +95,83 @@ export function EventsMobileFinderFilters({
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-screen-content min-w-0 flex-col gap-3 py-4">
-        <div className="flex min-w-0 items-stretch gap-2">
-          <button
-            type="button"
-            onClick={() => setOpenSheet("location")}
-            className={cn(
-              PILL_BASE,
-              locationPillHighlighted ? pillActive : pillIdle,
-            )}
-          >
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+      <FinderStickyBar>
+        <div className="mx-auto flex w-full max-w-screen-content min-w-0 flex-col gap-3 py-4">
+          <div className="flex min-w-0 items-stretch gap-2">
+            <button
+              type="button"
+              onClick={() => setOpenSheet("location")}
+              className={cn(
+                PILL_BASE,
+                locationPillHighlighted ? pillActive : pillIdle,
+              )}
+            >
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                <Icon
+                  name="map"
+                  size={16}
+                  className={cn(
+                    "shrink-0 transition-colors duration-300",
+                    locationPillHighlighted
+                      ? "text-ocean"
+                      : "text-neutral-default",
+                  )}
+                  aria-hidden
+                />
+                <span className="min-w-0 truncate text-left">Location</span>
+              </div>
               <Icon
-                name="map"
+                name="chevronDown"
                 size={16}
                 className={cn(
-                  "shrink-0 transition-colors duration-300",
+                  "shrink-0 transition-transform duration-300",
+                  openSheet === "location" && "rotate-180",
                   locationPillHighlighted
                     ? "text-ocean"
                     : "text-neutral-default",
                 )}
                 aria-hidden
               />
-              <span className="min-w-0 truncate text-left">Location</span>
-            </div>
-            <Icon
-              name="chevronDown"
-              size={16}
-              className={cn(
-                "shrink-0 transition-transform duration-300",
-                openSheet === "location" && "rotate-180",
-                locationPillHighlighted ? "text-ocean" : "text-neutral-default",
-              )}
-              aria-hidden
-            />
-          </button>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setOpenSheet("type")}
-            className={cn(
-              PILL_BASE,
-              typePillHighlighted ? pillActive : pillIdle,
-            )}
-          >
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setOpenSheet("type")}
+              className={cn(
+                PILL_BASE,
+                typePillHighlighted ? pillActive : pillIdle,
+              )}
+            >
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                <Icon
+                  name="bookOpen"
+                  size={16}
+                  className={cn(
+                    "shrink-0 transition-colors duration-300",
+                    typePillHighlighted ? "text-ocean" : "text-neutral-default",
+                  )}
+                  aria-hidden
+                />
+                <span className="min-w-0 truncate text-left">Type</span>
+              </div>
               <Icon
-                name="bookOpen"
+                name="chevronDown"
                 size={16}
                 className={cn(
-                  "shrink-0 transition-colors duration-300",
+                  "shrink-0 transition-transform duration-300",
+                  openSheet === "type" && "rotate-180",
                   typePillHighlighted ? "text-ocean" : "text-neutral-default",
                 )}
                 aria-hidden
               />
-              <span className="min-w-0 truncate text-left">Type</span>
-            </div>
-            <Icon
-              name="chevronDown"
-              size={16}
-              className={cn(
-                "shrink-0 transition-transform duration-300",
-                openSheet === "type" && "rotate-180",
-                typePillHighlighted ? "text-ocean" : "text-neutral-default",
-              )}
-              aria-hidden
-            />
-          </button>
+            </button>
+          </div>
         </div>
-      </div>
+      </FinderStickyBar>
 
-      <ActiveFilters onClearAllToUrl={onClearAllToUrl} />
+      <div className="bg-white content-padding">
+        <ActiveFilters onClearAllToUrl={onClearAllToUrl} />
+      </div>
 
       {openSheet === "location" ? (
         <MobileFilterBottomSheet

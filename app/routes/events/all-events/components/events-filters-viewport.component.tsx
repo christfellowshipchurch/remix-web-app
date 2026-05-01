@@ -71,10 +71,8 @@ export function EventsFiltersViewport({
   }
 
   return (
-    <div className="mt-2 md:hidden">
-      <FinderStickyBar>
-        <EventsMobileFinderFilters onClearAllToUrl={onClearAllToUrl} />
-      </FinderStickyBar>
+    <div className="mt-2 w-full min-w-0 md:hidden">
+      <EventsMobileFinderFilters onClearAllToUrl={onClearAllToUrl} />
     </div>
   );
 }
