@@ -10,7 +10,6 @@ export function AllArticlesPage() {
           customTitle="Articles"
           fullOverlay
           imagePath={getImageUrl("3143898")}
-          ctas={[{ href: "/class-finder", title: "Take a Class" }]}
         />
       </div>
       <AllArticles />
