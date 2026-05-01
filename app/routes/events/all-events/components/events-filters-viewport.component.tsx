@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 
 import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
@@ -16,8 +17,11 @@ const MD_UP_MQ = "(min-width: 768px)";
  */
 export function EventsFiltersViewport({
   onClearAllToUrl,
+  eventsMobilePinEndRef,
 }: {
   onClearAllToUrl: () => void;
+  /** Bottom sentinel for mobile scroll-pinned filters (see `EventsMobileFinderFilters`). */
+  eventsMobilePinEndRef?: RefObject<HTMLDivElement | null>;
 }) {
   const [mounted, setMounted] = useState(false);
   const [isMdUp, setIsMdUp] = useState(true);
@@ -37,7 +41,7 @@ export function EventsFiltersViewport({
         <div className="md:hidden">
           <FinderStickyBar>
             <div className="mx-auto w-full max-w-screen-content">
-              <div className="min-h-[72px]" />
+              <div className="min-h-[5.5rem]" />
             </div>
           </FinderStickyBar>
         </div>
@@ -72,7 +76,10 @@ export function EventsFiltersViewport({
 
   return (
     <div className="mt-2 w-full min-w-0 md:hidden">
-      <EventsMobileFinderFilters onClearAllToUrl={onClearAllToUrl} />
+      <EventsMobileFinderFilters
+        onClearAllToUrl={onClearAllToUrl}
+        pinEndRef={eventsMobilePinEndRef}
+      />
     </div>
   );
 }
