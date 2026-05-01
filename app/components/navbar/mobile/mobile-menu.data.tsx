@@ -42,7 +42,7 @@ export const getInvolvedItems: MenuItem[] = [
   {
     id: "journey",
     title: "The Journey",
-    description: "Lifes better together",
+    description: "Life's better together",
     icon: "arrowTopRight",
     to: "/journey",
   },
@@ -163,7 +163,7 @@ export const ministriesItems: SubMenuItem[] = [
   {
     id: "women",
     title: "Women",
-    description: "Girls of all ages",
+    description: "Women of all ages",
     to: "/ministries/women",
   },
   {
