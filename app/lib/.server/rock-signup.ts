@@ -17,6 +17,31 @@ export interface SignupPersonInput {
   phoneNumber: string;
 }
 
+const normalizeName = (name: string | undefined) =>
+  name?.trim().toLowerCase() ?? '';
+
+const personNameMatches = async (
+  personId: string | number,
+  firstName: string,
+  lastName: string,
+): Promise<boolean> => {
+  const personDetails = await fetchRockData({
+    endpoint: 'People',
+    queryParams: {
+      $filter: `Id eq ${personId}`,
+      $select: 'FirstName, LastName',
+    },
+    ttl: TTL.NONE,
+  });
+
+  const person = Array.isArray(personDetails) ? personDetails[0] : personDetails;
+
+  return (
+    normalizeName(person?.firstName) === normalizeName(firstName) &&
+    normalizeName(person?.lastName) === normalizeName(lastName)
+  );
+};
+
 export const findOrCreateRockPersonForSignup = async (
   input: SignupPersonInput,
 ): Promise<string> => {
@@ -25,14 +50,20 @@ export const findOrCreateRockPersonForSignup = async (
 
   // Step 1: Check by email login
   const emailLogin = await fetchUserLogin(email);
-  if (emailLogin) {
+  if (
+    emailLogin &&
+    (await personNameMatches(emailLogin.personId, firstName, lastName))
+  ) {
     await updatePerson(emailLogin.personId.toString(), { email, phoneNumber });
     return emailLogin.personId.toString();
   }
 
   // Step 2: Check by phone login
   const phoneLogin = await fetchUserLogin(significantNumber);
-  if (phoneLogin) {
+  if (
+    phoneLogin &&
+    (await personNameMatches(phoneLogin.personId, firstName, lastName))
+  ) {
     await updatePerson(phoneLogin.personId.toString(), { email, phoneNumber });
     return phoneLogin.personId.toString();
   }
@@ -75,22 +106,7 @@ export const findOrCreateRockPersonForSignup = async (
   for (const entry of phoneEntriesArr) {
     if (!entry.personId) continue;
 
-    const personDetails = await fetchRockData({
-      endpoint: 'People',
-      queryParams: {
-        $filter: `Id eq ${entry.personId}`,
-        $select: 'FirstName, LastName',
-      },
-      ttl: TTL.NONE,
-    });
-
-    const person = Array.isArray(personDetails) ? personDetails[0] : personDetails;
-
-    const namesMatch =
-      person?.firstName?.toLowerCase() === firstName.toLowerCase() &&
-      person?.lastName?.toLowerCase() === lastName.toLowerCase();
-
-    if (namesMatch) {
+    if (await personNameMatches(entry.personId, firstName, lastName)) {
       await updatePerson(entry.personId.toString(), { email, phoneNumber });
       return entry.personId.toString();
     }
