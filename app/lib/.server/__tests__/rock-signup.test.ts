@@ -55,8 +55,9 @@ describe('findOrCreateRockPersonForSignup', () => {
   // a phone entry when none exists for the number — see rock-person.ts for implementation.
   // These tests verify that updatePerson is invoked after each successful lookup step.
 
-  it('Step 1 — returns personId when email login matches', async () => {
+  it('Step 1 — returns personId when email login matches the submitted name', async () => {
     mockFetchUserLogin.mockResolvedValueOnce({ personId: 42 });
+    mockFetchRockData.mockResolvedValueOnce({ firstName: 'Jane', lastName: 'Doe' });
 
     const result = await findOrCreateRockPersonForSignup(defaultInput);
 
@@ -68,7 +69,29 @@ describe('findOrCreateRockPersonForSignup', () => {
     });
   });
 
-  it('Step 2 — returns personId when phone login matches', async () => {
+  it('Step 1 — ignores email login when the Rock person name does not match', async () => {
+    mockFetchUserLogin
+      .mockResolvedValueOnce({ personId: 42 })
+      .mockResolvedValueOnce(null);
+    mockFetchRockData
+      .mockResolvedValueOnce({ firstName: 'John', lastName: 'Smith' })
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
+    mockCreateUserProfile.mockResolvedValue(123);
+
+    const result = await findOrCreateRockPersonForSignup(defaultInput);
+
+    expect(result).toBe('123');
+    expect(mockUpdatePerson).not.toHaveBeenCalled();
+    expect(mockCreatePhoneNumberInRock).toHaveBeenCalledOnce();
+    expect(mockCreatePhoneNumberInRock).toHaveBeenCalledWith({
+      personId: 123,
+      phoneNumber: defaultInput.phoneNumber,
+      countryCode: 1,
+    });
+  });
+
+  it('Step 2 — returns personId when phone login matches the submitted name', async () => {
     mockFetchUserLogin
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce({ personId: 99 });

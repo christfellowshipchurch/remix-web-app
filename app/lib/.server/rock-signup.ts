@@ -50,14 +50,20 @@ export const findOrCreateRockPersonForSignup = async (
 
   // Step 1: Check by email login
   const emailLogin = await fetchUserLogin(email);
-  if (emailLogin) {
+  if (
+    emailLogin &&
+    (await personNameMatches(emailLogin.personId, firstName, lastName))
+  ) {
     await updatePerson(emailLogin.personId.toString(), { email, phoneNumber });
     return emailLogin.personId.toString();
   }
 
   // Step 2: Check by phone login
   const phoneLogin = await fetchUserLogin(significantNumber);
-  if (phoneLogin && await personNameMatches(phoneLogin.personId, firstName, lastName)) {
+  if (
+    phoneLogin &&
+    (await personNameMatches(phoneLogin.personId, firstName, lastName))
+  ) {
     await updatePerson(phoneLogin.personId.toString(), { email, phoneNumber });
     return phoneLogin.personId.toString();
   }
