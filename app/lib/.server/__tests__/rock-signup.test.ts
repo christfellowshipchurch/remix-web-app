@@ -72,6 +72,7 @@ describe('findOrCreateRockPersonForSignup', () => {
     mockFetchUserLogin
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce({ personId: 99 });
+    mockFetchRockData.mockResolvedValueOnce({ firstName: 'Jane', lastName: 'Doe' });
 
     const result = await findOrCreateRockPersonForSignup(defaultInput);
 
@@ -80,6 +81,28 @@ describe('findOrCreateRockPersonForSignup', () => {
     expect(mockUpdatePerson).toHaveBeenCalledWith('99', {
       email: defaultInput.email,
       phoneNumber: defaultInput.phoneNumber,
+    });
+  });
+
+  it('Step 2 — ignores phone login when the Rock person name does not match', async () => {
+    mockFetchUserLogin
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ personId: 99 });
+    mockFetchRockData
+      .mockResolvedValueOnce({ firstName: 'John', lastName: 'Smith' })
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
+    mockCreateUserProfile.mockResolvedValue(123);
+
+    const result = await findOrCreateRockPersonForSignup(defaultInput);
+
+    expect(result).toBe('123');
+    expect(mockUpdatePerson).not.toHaveBeenCalled();
+    expect(mockCreatePhoneNumberInRock).toHaveBeenCalledOnce();
+    expect(mockCreatePhoneNumberInRock).toHaveBeenCalledWith({
+      personId: 123,
+      phoneNumber: defaultInput.phoneNumber,
+      countryCode: 1,
     });
   });
 
