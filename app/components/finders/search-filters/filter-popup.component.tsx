@@ -560,7 +560,7 @@ const FilterPopupContent = ({
     sortedForDropdown.find((item) => item.isRefined)?.value ?? "";
 
   const dropdownEmptyLabel =
-    data.attribute === "campus"
+    data.attribute === "campusName" || data.attribute === "campus"
       ? "Select Campus"
       : data.attribute === "campusList"
         ? "Select City"
@@ -742,8 +742,7 @@ const FilterPopupContent = ({
                             <div
                               className={cn(
                                 "box-border flex size-[18px] shrink-0 items-center justify-center rounded-sm border border-[#D1D5DB] bg-transparent",
-                                item.isRefined &&
-                                  "border-ocean bg-ocean",
+                                item.isRefined && "border-ocean bg-ocean",
                               )}
                               aria-hidden
                             >
@@ -756,8 +755,9 @@ const FilterPopupContent = ({
                               ) : null}
                             </div>
                             <div className={styles.checkbox}>
-                              {data.attribute === "adultOnly"
-                                ? item.value === "false"
+                              {data.attribute === "adultsOnly"
+                                ? item.value === "false" ||
+                                  item.value === "False"
                                   ? "Children Welcome"
                                   : "Adult Only"
                                 : item.label}
@@ -855,11 +855,7 @@ const FilterPopupContent = ({
                 "absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none",
               )}
             >
-              <Icon
-                name="chevronDown"
-                size={16}
-                className="text-[#909090]"
-              />
+              <Icon name="chevronDown" size={16} className="text-[#909090]" />
             </div>
           </div>
         </div>

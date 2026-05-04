@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import GroupConnectConfirmation from './group-connect-confirmation.component';
-import GroupConnectForm from './group-connect-form.component';
+import { useState } from "react";
+import GroupConnectConfirmation from "./group-connect-confirmation.component";
+import GroupConnectForm from "./group-connect-form.component";
 
 enum GroupConnectStep {
   GROUP_CONNECT_FORM,
@@ -44,7 +44,7 @@ const GroupConnectFlow = ({
   };
 
   return (
-    <div className="text-center text-text_primary p-6 md:p-10 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
+    <div className="text-center text-text_primary p-6 md:p-10 overflow-auto overflow-x-hidden w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
       {renderStep()}
     </div>
   );
