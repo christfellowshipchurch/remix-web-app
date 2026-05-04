@@ -1,49 +1,69 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import { AuthenticationError } from "~/lib/.server/error-types";
 import { algoliasearch } from "algoliasearch";
-import { GroupType } from "../group-finder/types";
+import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
+import { GroupType, GROUPS_ALGOLIA_INDEX_NAME } from "../group-finder/types";
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
-  groupId: string;
+  groupGUID: string;
   group: GroupType | null;
 };
 
-async function fetchGroupById(
-  groupId: string,
+async function fetchGroupWithFilter(
+  filters: string,
   appId: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<GroupType | null> {
   try {
     const searchClient = algoliasearch(appId, apiKey);
 
-    // Search for the specific group by objectID
-    const response = await searchClient.searchForHits<GroupType>([
+    const response = await searchClient.searchForHits<Record<string, unknown>>([
       {
-        indexName: "dev_daniel_Groups",
+        indexName: GROUPS_ALGOLIA_INDEX_NAME,
         params: {
-          filters: `objectID:"${groupId}"`,
+          filters,
           hitsPerPage: 1,
         },
       },
     ]);
 
-    if (response.results[0]?.hits && response.results[0]?.hits.length > 0) {
-      return response.results[0].hits[0] as GroupType;
+    const hit = response.results[0]?.hits?.[0];
+    if (!hit) {
+      return null;
     }
 
-    return null;
+    return hit as unknown as GroupType;
   } catch (error) {
     console.error("Failed to fetch group from Algolia:", error);
     return null;
   }
 }
 
-export async function loader({ params }: LoaderFunctionArgs) {
-  const groupId = params.path || "";
+// TOOD: Replace ObjectID with groupGUID later once in Algolia
+async function fetchGroupByPathSegment(
+  segment: string,
+  appId: string,
+  apiKey: string,
+): Promise<GroupType | null> {
+  const escaped = escapeAlgoliaFilterString(segment);
+  const byGuid = await fetchGroupWithFilter(
+    `objectID:"${escaped}"`,
+    appId,
+    apiKey,
+  );
+  if (byGuid) {
+    return byGuid;
+  }
+  /** Legacy URLs used Algolia `objectID` in the path. */
+  return fetchGroupWithFilter(`objectID:"${escaped}"`, appId, apiKey);
+}
 
-  if (!groupId) {
+export async function loader({ params }: LoaderFunctionArgs) {
+  const groupGUID = params.path || "";
+
+  if (!groupGUID) {
     throw new Error("Group not found");
   }
 
@@ -54,13 +74,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new AuthenticationError("Algolia credentials not found");
   }
 
-  // Fetch the group data from Algolia
-  const group = await fetchGroupById(groupId, appId, searchApiKey);
+  const group = await fetchGroupByPathSegment(groupGUID, appId, searchApiKey);
 
   return Response.json({
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
-    groupId,
+    groupGUID,
     group,
   });
 }

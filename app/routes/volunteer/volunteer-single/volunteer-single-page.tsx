@@ -14,10 +14,10 @@ import {
   MobileBottomBar,
   Questions,
   Sidebar,
-  useCopyPagePath,
   VolunteerNav,
   WhatToKnow,
 } from "./partials/volunteer-single-partials.partial";
+import { useCopyPagePath } from "~/hooks/use-copy-page-path";
 import {
   MissionDetailRows,
   str,

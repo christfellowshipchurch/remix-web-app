@@ -1,10 +1,19 @@
-import { cn } from "~/lib/utils";
+import { cn, withRockGetImageSizing } from "~/lib/utils";
 import Icon from "~/primitives/icon";
-import { GroupType } from "../types";
+import { GroupType, splitGroupTopics } from "../types";
 import { Link } from "react-router-dom";
 
 export const defaultLeaderPhoto =
   "https://cloudfront.christfellowship.church/GetAvatar.ashx?PhotoId=&AgeClassification=Adult&Gender=Unknown&RecordTypeId=1&Text=JC&Size=180&Style=icon&BackgroundColor=E4E4E7&ForegroundColor=A1A1AA";
+
+/** Spanish campuses use a long "Christ Fellowship Español …" label; shorten to "CFE …" on cards. */
+function formatGroupHitCampusName(campusName: string): string {
+  const marker = "Español";
+  const i = campusName.indexOf(marker);
+  if (i === -1) return campusName;
+  const afterMarker = campusName.slice(i + marker.length).trim();
+  return afterMarker ? `CFE ${afterMarker}` : "CFE";
+}
 
 export function GroupHit({
   hit,
@@ -14,7 +23,8 @@ export function GroupHit({
   backUrl?: string;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
-  const preference = hit.groupFor;
+  const preference = hit.groupFor?.trim() || "Anyone";
+  const topicTags = splitGroupTopics(hit.topics);
 
   // Format the time string to show time with AM/PM and timezone
   const formatTime = (timeString: string) => {
@@ -67,13 +77,17 @@ export function GroupHit({
       "Saturday",
       "Sunday",
     ];
-    const isDayOfWeek = daysOfWeek.some((day) => hit.meetingDays.includes(day));
-    return isDayOfWeek ? hit.meetingDays.slice(0, 3) : hit.meetingDays;
+    const day = hit.meetingDay || "";
+    const isDayOfWeek = daysOfWeek.some((d) => day.includes(d));
+    return isDayOfWeek ? day.slice(0, 3) : day;
   })();
   const formattedMeetingTime = formatTime(hit.meetingTime);
 
   const meetingInfo = formattedMeetingDay + " " + formattedMeetingTime;
 
+  const leaders = Array.isArray(hit.leaders) ? hit.leaders : [];
+
+  // TODO: Replace ObjectID with groupGUID later once in Algolia
   return (
     <Link
       prefetch="intent"
@@ -98,19 +112,21 @@ export function GroupHit({
             />
 
             <div className="flex gap-1 absolute -bottom-4 lg:-bottom-10 xl:-bottom-4 right-4">
-              {hit?.leaders[0] && (
+              {leaders.map((leader, idx) => (
                 <img
+                  key={leader.id || idx}
                   className="rounded-lg border-[1.534px] border-[#EBEBEF] size-[77px] object-cover"
                   style={{
                     boxShadow:
                       "0px 5.114px 10.228px -2.557px rgba(0, 0, 0, 0.10), 0px 2.557px 5.114px -2.557px rgba(0, 0, 0, 0.06)",
                   }}
-                  src={
-                    hit.leaders[0].photo.sources[0].uri || defaultLeaderPhoto
-                  }
-                  alt={hit.leaders[0].firstName}
+                  src={withRockGetImageSizing(
+                    leader.photo?.sources?.[0]?.uri ?? defaultLeaderPhoto,
+                    { maxwidth: 200, maxheight: 200, quality: 80 },
+                  )}
+                  alt={leader.firstName}
                 />
-              )}
+              ))}
             </div>
           </div>
 
@@ -137,20 +153,23 @@ export function GroupHit({
                 <h3 className="text-lg font-bold leading-6 line-clamp-2">
                   {hit.title}
                 </h3>
-                <p className="text-sm text-black">{meetingInfo}</p>
+                <p className="text-sm text-neutral-default">{meetingInfo}</p>
               </div>
             </div>
+          </div>
 
-            {/* Display topics as tags */}
-            <div className="flex flex-wrap px-6 gap-x-2">
-              {hit.topics.map((topic: string, index: number) => (
+          <div className="flex flex-col mt-auto pt-3.5">
+            <div className="flex flex-wrap px-6 gap-x-2 pb-2">
+              {topicTags.map((topic, index) => (
                 <TagButton key={index} label={topic} />
               ))}
             </div>
-          </div>
-          <div className="w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white mt-auto">
-            <Icon name="map" size={20} color="white" />
-            <p className="text-sm font-semibold">{hit.campus}</p>
+            <div className="w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white ">
+              <Icon name="map" size={20} color="white" />
+              <p className="text-sm font-semibold">
+                {formatGroupHitCampusName(hit.campusName)}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -160,7 +179,7 @@ export function GroupHit({
 
 const TagButton = ({ label }: { label: string }) => {
   return (
-    <div className="bg-navy-subdued text-dark-navy flex-shrink-0 h-6 rounded-sm text-xs font-semibold p-1 mb-2">
+    <div className="bg-navy-subdued text-dark-navy shrink-0 h-6 rounded-sm text-xs font-semibold p-1 mb-2">
       {label}
     </div>
   );
