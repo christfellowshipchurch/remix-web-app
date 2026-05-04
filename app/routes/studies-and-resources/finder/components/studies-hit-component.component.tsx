@@ -2,7 +2,6 @@
  * Displays a single study/resource hit (card) in the studies and resources finder.
  */
 
-import { Icon } from "~/primitives/icon/icon";
 import { StudyHitType } from "../../types";
 import { Link } from "react-router-dom";
 import { StudiesTagItem } from "../../studies-single/partials/basic-content.partial";

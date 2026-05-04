@@ -159,11 +159,7 @@ export const StudiesSearch = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure
-          ageInput=""
-          selectedLocation={null}
-          coordinates={null}
-        />
+        <ResponsiveConfigure ageInput="" coordinates={null} />
         <div className="flex flex-col">
           <div
             className={cn(
@@ -298,6 +294,7 @@ const CustomStudyTypeFacets = ({
         id: `grouped-${index}`,
         title: group.title,
         studyType: group.title as StudyHitType["studyType"],
+        subtitle: "",
         url: group.url as StudyHitType["url"],
         summary: group.summary,
         description: group.summary,

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "~/primitives/button/button.primitive";
 import { Icon } from "~/primitives/icon/icon";
-import { GroupsFinderDropdwnPopup } from "~/routes/group-finder/components/filters/groups-finder-dropdown-popup.component";
+import { FilterPopup } from "~/components/finders/search-filters/filter-popup.component";
 import { AllStudiesFiltersPopup } from "./all-filters.component";
 import { cn } from "~/lib/utils";
 
@@ -66,15 +66,11 @@ export function DesktopStudyFilters({
           <p>Duration</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Duration"
             data={{
-              content: [
-                {
-                  attribute: "duration",
-                  showFooter: true,
-                },
-              ],
+              showFooter: true,
+              content: [{ attribute: "duration" }],
             }}
             onHide={closeAllDropdowns}
             showSection={activeDropdown === "duration"}
@@ -89,15 +85,11 @@ export function DesktopStudyFilters({
           <p>Audience</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Audience"
             data={{
-              content: [
-                {
-                  attribute: "audience",
-                  showFooter: true,
-                },
-              ],
+              showFooter: true,
+              content: [{ attribute: "audience" }],
             }}
             onHide={closeAllDropdowns}
             showSection={activeDropdown === "audience"}
@@ -112,15 +104,11 @@ export function DesktopStudyFilters({
           <p>Source</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Source"
             data={{
-              content: [
-                {
-                  attribute: "source",
-                  showFooter: true,
-                },
-              ],
+              showFooter: true,
+              content: [{ attribute: "source" }],
             }}
             onHide={closeAllDropdowns}
             showSection={activeDropdown === "source"}
@@ -135,15 +123,11 @@ export function DesktopStudyFilters({
           <p>Topic</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Topic"
             data={{
-              content: [
-                {
-                  attribute: "topic",
-                  showFooter: true,
-                },
-              ],
+              showFooter: true,
+              content: [{ attribute: "topic" }],
             }}
             onHide={closeAllDropdowns}
             showSection={activeDropdown === "topic"}
@@ -158,15 +142,11 @@ export function DesktopStudyFilters({
           <p>Format</p>
           <Icon name="chevronDown" />
 
-          <GroupsFinderDropdwnPopup
+          <FilterPopup
             popupTitle="Format"
             data={{
-              content: [
-                {
-                  attribute: "format",
-                  showFooter: true,
-                },
-              ],
+              showFooter: true,
+              content: [{ attribute: "format" }],
             }}
             onHide={closeAllDropdowns}
             showSection={activeDropdown === "format"}

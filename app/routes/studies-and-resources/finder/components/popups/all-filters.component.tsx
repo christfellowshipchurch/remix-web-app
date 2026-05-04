@@ -70,7 +70,6 @@ export const AllStudiesFiltersPopup = ({
             attribute="topic"
             showSection={showTopic}
             setShowSection={setShowTopic}
-            isTopics={true}
             hideBorder={false}
           />
         )}
