@@ -6,8 +6,9 @@ import { Icon } from "~/primitives/icon/icon";
 
 export type FinderLocationKind = "zip" | "gps" | null;
 
+/** `text-base` below `md` avoids iOS Safari auto-zoom on focus (16px minimum). */
 export const finderLocationInputBaseClass =
-  "box-border min-h-11 min-w-0 rounded border border-[#909090] px-2 py-2 text-sm leading-snug text-text-secondary placeholder:text-[#909090] [color-scheme:light] focus:outline-none focus-visible:ring-1 focus-visible:ring-[#909090] transition-colors duration-300 disabled:opacity-50";
+  "box-border min-h-11 min-w-0 rounded border border-[#909090] px-2 py-2 text-base leading-snug text-text-secondary placeholder:text-[#909090] [color-scheme:light] focus:outline-none focus-visible:ring-1 focus-visible:ring-[#909090] transition-colors duration-300 disabled:opacity-50 md:text-sm";
 
 export const finderApplyZipButtonClass =
   "inline-flex min-h-0 shrink-0 items-center justify-center gap-1 border-0 bg-ocean px-5 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-navy disabled:cursor-not-allowed disabled:opacity-50 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1";
