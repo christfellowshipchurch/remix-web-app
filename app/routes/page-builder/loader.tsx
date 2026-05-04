@@ -38,6 +38,14 @@ const getStringValue = (value: string | number | boolean): string => {
   return String(value);
 };
 
+const toArray = <T,>(value: T | T[] | null | undefined): T[] => {
+  if (!value) {
+    return [];
+  }
+
+  return Array.isArray(value) ? value : [value];
+};
+
 interface RockAttributeValues {
   [key: string]: RockAttributeValue;
 }
@@ -63,54 +71,38 @@ interface RockAttributeMatrixItem {
   };
 }
 
-export const fetchChildItems = async (id: string) => {
-  const childReferences = await fetchRockData({
-    endpoint: `ContentChannelItemAssociations`,
-    queryParams: {
-      loadAttributes: 'simple',
-      $filter: `ContentChannelItemId eq ${id}`,
-      $orderby: 'Order',
-    },
-  });
-
-  if (!childReferences) {
-    console.warn('No valid child references found');
-    return [];
-  }
-
-  //ensure childReferences is an array
-  const childReferencesArray = Array.isArray(childReferences)
-    ? childReferences
-    : [childReferences];
-
-  const children = await Promise.all(
-    childReferencesArray.map(async (childReference: ChildReference) => {
-      return await fetchRockData({
-        endpoint: `ContentChannelItems/${childReference.childContentChannelItemId}`,
-        queryParams: {
-          loadAttributes: 'simple',
-        },
-      });
+export const fetchChildItems = async (
+  id: string,
+): Promise<RockContentItem[]> => {
+  const childReferences = toArray<ChildReference>(
+    await fetchRockData({
+      endpoint: 'ContentChannelItemAssociations',
+      queryParams: {
+        loadAttributes: 'simple',
+        $filter: `ContentChannelItemId eq ${id}`,
+        $orderby: 'Order',
+      },
     }),
   );
 
-  if (!children || (Array.isArray(children) && children.length === 0)) {
-    console.warn('fetchChildItems: No valid children data found');
+  if (childReferences.length === 0) {
     return [];
   }
 
-  // Ensure children is an array; drop resource collection items that are not approved (status 2)
-  const rawChildren = Array.isArray(children) ? children : [children];
-  const childrenArray = rawChildren.filter((child) => {
-    const item = child as RockContentItem;
-    const sectionType = getSectionType(item.contentChannelId);
-    if (sectionType === 'RESOURCE_COLLECTION' && item.status !== 2) {
-      return false;
-    }
-    return true;
-  });
+  const children = await Promise.all(
+    childReferences.map(({ childContentChannelItemId }) =>
+      fetchRockData({
+        endpoint: 'ContentChannelItems',
+        queryParams: {
+          $filter: `Id eq ${childContentChannelItemId}`,
+          loadAttributes: 'simple',
+        },
+        filterByStatusApproved: true,
+      }),
+    ),
+  );
 
-  return childrenArray;
+  return children.flatMap((child) => toArray<RockContentItem>(child));
 };
 
 export const fetchDefinedValue = async (guid: string) => {
