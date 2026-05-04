@@ -71,7 +71,7 @@ function sortUpcomingSessionHitsForDisplay(
 
 /**
  * One InstantSearch for class-single upcoming sessions (mobile + desktop share URL, geo, and refinements).
- * `ClassSingleGroupsSection` is a nested Algolia `Index` (`dev_daniel_Groups`) that mirrors the same refinements + geo via `Configure`.
+ * `ClassSingleGroupsSection` is a nested Algolia `Index` (`dev_Groups`) that mirrors the same refinements + geo via `Configure`.
  */
 export function ClassSingleUpcomingSearch({
   classHeroCoverImageUri,
@@ -178,11 +178,11 @@ export function ClassSingleUpcomingSearch({
               </div>
             )}
 
-              <ClassSingleGroupsSection
-                coordinates={upcoming.coordinates}
-                classUrl={upcoming.classUrl}
-                classesIndexClassType={classType}
-              />
+            <ClassSingleGroupsSection
+              coordinates={upcoming.coordinates}
+              classUrl={upcoming.classUrl}
+              classesIndexClassType={classType}
+            />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "~/lib/utils";
@@ -14,30 +14,6 @@ import {
   normalizeWhatToKnowContent,
   WhatToKnowBody,
 } from "../components/volunteer-single-details.component";
-
-function getLocationPathForClipboard(): string {
-  if (typeof window === "undefined") return "";
-  const { pathname, search, hash } = window.location;
-  return `${pathname}${search}${hash}`;
-}
-
-export function useCopyPagePath() {
-  const [copied, setCopied] = useState(false);
-
-  const copyPath = useCallback(async () => {
-    const text = getLocationPathForClipboard();
-    if (!text) return;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2200);
-    } catch {
-      /* clipboard denied */
-    }
-  }, []);
-
-  return { copyPath, copied };
-}
 
 export function VolunteerNav({
   copied,

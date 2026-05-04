@@ -3,6 +3,7 @@ import { useInstantSearch } from "react-instantsearch";
 import startCase from "lodash/startCase";
 import { Icon } from "~/primitives/icon/icon";
 import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+import { GroupType } from "~/routes/group-finder/types";
 
 type RefinementChip = {
   key: string;
@@ -12,9 +13,10 @@ type RefinementChip = {
 };
 
 function refinementChipDisplayLabel(attribute: string, value: string): string {
-  if (attribute === "adultOnly") {
-    if (value === "true") return "Adults Only";
-    if (value === "false") return "Child Welcome";
+  if (attribute === ("adultsOnly" as const satisfies keyof GroupType)) {
+    const v = value.toLowerCase();
+    if (v === "true") return "Adults Only";
+    if (v === "false") return "Child Welcome";
   }
   if (attribute === "eventCategories") {
     return startCase(value);

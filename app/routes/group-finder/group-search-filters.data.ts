@@ -36,12 +36,12 @@ export function getGroupSearchDesktopFilters(
           },
           {
             title: "Christ Fellowship Campus",
-            attribute: "campus",
+            attribute: "campusName",
             isDropdown: true,
           },
           {
             title: "Filter by zip code",
-            attribute: "campus",
+            attribute: "campusName",
             isLocation: true,
             coordinates: opts.coordinates,
             setCoordinates: opts.setCoordinates,
@@ -50,7 +50,7 @@ export function getGroupSearchDesktopFilters(
           },
           {
             title: "Filter by distance",
-            attribute: "campus",
+            attribute: "campusName",
             isCurrentLocation: true,
             coordinates: opts.coordinates,
             setCoordinates: opts.setCoordinates,
@@ -110,7 +110,7 @@ export function getGroupSearchDesktopFilters(
         content: [
           {
             title: "Meeting Days",
-            attribute: "meetingDays",
+            attribute: "meetingDay",
             isWeekdays: true,
           },
           {
@@ -119,7 +119,7 @@ export function getGroupSearchDesktopFilters(
           },
           {
             title: "Child Care",
-            attribute: "adultOnly",
+            attribute: "adultsOnly",
             checkboxLayout: "horizontal",
             checkbox: true,
           },
@@ -153,10 +153,6 @@ export function getGroupFinderTabletFiltersPanelData(
   const tail = getGroupFinderMoreOverflowFilterData(opts).content;
   return {
     showFooter: false,
-    content: [
-      ...location,
-      ...people,
-      ...tail,
-    ],
+    content: [...location, ...people, ...tail],
   };
 }
