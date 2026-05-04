@@ -1,24 +1,24 @@
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid, parseRockKeyValueList } from "~/lib/utils";
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { createImageUrlFromGuid, parseRockKeyValueList } from '~/lib/utils';
 import {
   fetchChildItems,
   fetchDefinedValue,
   mapPageBuilderChildItems,
-} from "../page-builder/loader";
-import { MinistryService, PageBuilderLoader } from "../page-builder/types";
-import { RockCampus, RockCampuses } from "~/lib/rock-config";
-import { getAttributeMatrixItems } from "~/lib/.server/rock-utils";
+} from '../page-builder/loader';
+import { MinistryService, PageBuilderLoader } from '../page-builder/types';
+import { RockCampus, RockCampuses } from '~/lib/rock-config';
+import { getAttributeMatrixItems } from '~/lib/.server/rock-utils';
 import {
   AttributeMatrixItem,
   RockContentChannelItem,
-} from "~/lib/types/rock-types";
+} from '~/lib/types/rock-types';
 
 export const fetchMinistryServices = async () => {
   const allCampuses = await fetchRockData({
-    endpoint: "Campuses",
+    endpoint: 'Campuses',
     queryParams: {
-      $filter: "IsActive eq true",
-      loadAttributes: "simple",
+      $filter: 'IsActive eq true',
+      loadAttributes: 'simple',
     },
   });
 
@@ -27,12 +27,12 @@ export const fetchMinistryServices = async () => {
       return {
         name: campus.name,
         servicesGuid:
-          campus.attributeValues?.weeklyMinistryServices?.value ?? "",
+          campus.attributeValues?.weeklyMinistryServices?.value ?? '',
       };
     })
     .filter(
       (campus: { servicesGuid: string }) =>
-        !!campus.servicesGuid && campus.servicesGuid !== "",
+        !!campus.servicesGuid && campus.servicesGuid !== '',
     );
 
   const campusMinistryServices = await Promise.all(
@@ -50,8 +50,8 @@ export const fetchMinistryServices = async () => {
             const ministryType = ministryTypeGuid
               ? ((await fetchDefinedValue(
                   ministryTypeGuid,
-                )) as MinistryService["ministryType"])
-              : ("" as MinistryService["ministryType"]);
+                )) as MinistryService['ministryType'])
+              : ('' as MinistryService['ministryType']);
 
             const ministryService: MinistryService = {
               id: matrixItem.guid,
@@ -59,13 +59,13 @@ export const fetchMinistryServices = async () => {
               location: RockCampuses.find(
                 (campus: RockCampus) => campus.name === currentCampus,
               ) as RockCampus,
-              daysOfWeek: attributeValues?.dayOfTheWeek?.valueFormatted ?? "",
-              times: attributeValues?.serviceTimes?.value ?? "",
+              daysOfWeek: attributeValues?.dayOfTheWeek?.valueFormatted ?? '',
+              times: attributeValues?.serviceTimes?.value ?? '',
               learnMoreLink: attributeValues?.learnMoreUrl?.value || undefined,
               planAVisit:
                 attributeValues?.planMyVisit?.valueFormatted?.toLowerCase() ===
-                  "on" ||
-                attributeValues?.planMyVisit?.value?.toLowerCase() === "true" ||
+                  'on' ||
+                attributeValues?.planMyVisit?.value?.toLowerCase() === 'true' ||
                 false,
             };
 
@@ -90,18 +90,18 @@ export const loader = async ({
     const pathname = params?.path;
 
     if (!pathname) {
-      throw new Response("Pathname is required", {
+      throw new Response('Pathname is required', {
         status: 400,
-        statusText: "Bad Request",
+        statusText: 'Bad Request',
       });
     }
 
     const pageData = await fetchRockData({
-      endpoint: "ContentChannelItems/GetByAttributeValue",
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
       queryParams: {
-        attributeKey: "Pathname",
+        attributeKey: 'Pathname',
         value: pathname,
-        loadAttributes: "simple",
+        loadAttributes: 'simple',
         $filter: "ContentChannelId eq 171 and Status eq 'Approved'",
       },
     });
@@ -109,7 +109,7 @@ export const loader = async ({
     if (!pageData) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
         status: 404,
-        statusText: "Not Found",
+        statusText: 'Not Found',
       });
     }
 
@@ -121,7 +121,7 @@ export const loader = async ({
     const pageBuilder: PageBuilderLoader = {
       title: pageData.title,
       heroImage:
-        createImageUrlFromGuid(pageData.attributeValues?.image?.value) || "",
+        createImageUrlFromGuid(pageData.attributeValues?.image?.value) || '',
       content: pageData.content,
       callsToAction:
         parseRockKeyValueList(
@@ -136,10 +136,10 @@ export const loader = async ({
 
     return pageBuilder;
   } catch (error) {
-    console.error("Error in page builder loader:", error);
-    throw new Response("Failed to load page content", {
+    console.error('Error in page builder loader:', error);
+    throw new Response('Failed to load page content', {
       status: 500,
-      statusText: "Internal Server Error",
+      statusText: 'Internal Server Error',
     });
   }
 };
