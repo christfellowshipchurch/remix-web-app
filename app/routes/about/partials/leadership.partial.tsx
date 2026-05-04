@@ -39,7 +39,7 @@ export function LeadershipSection({
 
           {/* Mobile title */}
           <div className='lg:hidden'>
-            <SectionTitle className='mb-6' sectionTitle='meet our team.' />
+            <SectionTitle className='mb-6' sectionTitle='our team.' />
             <h3 className='text-2xl md:text-4xl font-extrabold leading-tight mb-4 md:mb-8 max-w-3xl'>
               Meet The Passionate Leaders <br />
               Of Christ Fellowship Church.
