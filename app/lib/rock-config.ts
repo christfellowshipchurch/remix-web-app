@@ -1,3 +1,9 @@
+/**
+ * Public Rock RMS web origin for browser links and iframe embeds.
+ * Prefer this over `rock.gocf.org`, which may resolve to RFC1918 addresses and trigger Chrome PNA for embedded content.
+ */
+export const ROCK_PUBLIC_SITE_ORIGIN = "https://rock.christfellowship.church";
+
 export const ContentChannelIds = {
   articles: 43,
   default: 85,
@@ -8,6 +14,7 @@ export const ContentChannelIds = {
   studies: [79, 80],
   soGoodSisterhood: 95,
   keepTalking: 96,
+  missionTrips: 195,
 };
 
 export const getContentChannelUrl = (key: number): string => {
@@ -20,7 +27,7 @@ export const getContentChannelUrl = (key: number): string => {
       }
       return acc;
     },
-    {} as Record<number, string>
+    {} as Record<number, string>,
   );
 
   return channelMap[key] || "/";
@@ -47,10 +54,6 @@ export const RockCampuses = [
     pathname: "boynton-beach",
   },
   {
-    name: "Downtown West Palm Beach",
-    pathname: "downtown-west-palm-beach",
-  },
-  {
     name: "Jupiter",
     pathname: "jupiter",
   },
@@ -75,10 +78,6 @@ export const RockCampuses = [
     pathname: "boca-raton",
   },
   {
-    name: "Riviera Beach",
-    pathname: "riviera-beach",
-  },
-  {
     name: "Trinity",
     pathname: "trinity",
   },
@@ -93,6 +92,10 @@ export const RockCampuses = [
   {
     name: "Christ Fellowship Español Royal Palm Beach",
     pathname: "iglesia-royal-palm-beach",
+  },
+  {
+    name: "Online",
+    pathname: "cf-everywhere",
   },
 ] as const;
 

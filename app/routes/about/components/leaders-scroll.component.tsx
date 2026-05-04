@@ -1,21 +1,17 @@
-import { useState } from "react";
-import { cn } from "~/lib/utils";
-
-import { Author } from "~/routes/author/types";
-import { LeadersModal } from "~/components/modals/leaders";
-import Modal from "~/primitives/Modal";
-import { useLoaderData } from "react-router-dom";
-import { HomeLoaderData } from "~/routes/home/loader";
+import { useState } from 'react';
+import { useLoaderData } from 'react-router';
+import { cn } from '~/lib/utils';
+import { LeadersModal } from '~/components/modals/leaders';
+import Modal from '~/primitives/Modal';
+import type { LeaderProfile } from './leaders-data';
+import type { HomeLoaderData } from '~/routes/home/loader';
 
 export function LeaderScroll() {
-  const { leadersWithArticles } = useLoaderData<HomeLoaderData>();
+  const { leaders } = useLoaderData<HomeLoaderData>();
   const [openModal, setOpenModal] = useState(false);
 
-  const seniorLeaderItem = leadersWithArticles[0];
-  const otherLeaderItems = leadersWithArticles.slice(
-    1,
-    leadersWithArticles.length
-  );
+  const seniorLeaderItem = leaders[0];
+  const otherLeaderItems = leaders.slice(1);
 
   return (
     <div className="md:ml-8">
@@ -23,7 +19,7 @@ export function LeaderScroll() {
       <Modal
         open={openModal}
         onOpenChange={setOpenModal}
-        key={seniorLeaderItem.authorAttributes.pathname}
+        key={seniorLeaderItem.pathname}
       >
         <Modal.Button onClick={() => setOpenModal(true)}>
           <div
@@ -34,6 +30,9 @@ export function LeaderScroll() {
               <img
                 src={seniorLeaderItem.profilePhoto}
                 alt={seniorLeaderItem.fullName}
+                width={800}
+                height={450}
+                sizes="(max-width: 768px) 90vw, 400px"
                 className="w-full aspect-3/2 sm:aspect-16/9 md:aspect-16/7 object-cover object-top rounded-lg"
               />
               <div
@@ -45,7 +44,7 @@ export function LeaderScroll() {
             </div>
             <div className="ml-4">
               <p className="text-gray-600 uppercase tracking-wider text-sm mb-1 text-start">
-                {seniorLeaderItem.authorAttributes.jobTitle}
+                {seniorLeaderItem.jobTitle}
               </p>
               <h4 className="text-2xl font-bold text-gray-900 text-start">
                 {seniorLeaderItem.fullName}
@@ -55,7 +54,7 @@ export function LeaderScroll() {
         </Modal.Button>
 
         <Modal.Content background="bg-gray">
-          <LeadersModal author={seniorLeaderItem} />
+          <LeadersModal leader={seniorLeaderItem} />
         </Modal.Content>
       </Modal>
 
@@ -73,7 +72,7 @@ const MobileLeaderCard = ({
   leader,
   index,
 }: {
-  leader: Author;
+  leader: LeaderProfile;
   index: number;
 }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -82,15 +81,15 @@ const MobileLeaderCard = ({
     <Modal
       open={openModal}
       onOpenChange={setOpenModal}
-      key={leader.authorAttributes.pathname}
+      key={leader.pathname}
     >
       <Modal.Button onClick={() => setOpenModal(true)}>
         <div
           key={leader.fullName}
           className={cn(
-            "group min-w-[220px]",
-            index === 0 && "ml-4",
-            "sm:min-w-none"
+            'group min-w-[220px]',
+            index === 0 && 'ml-4',
+            'sm:min-w-none'
           )}
         >
           <div className="relative mb-6">
@@ -98,9 +97,12 @@ const MobileLeaderCard = ({
               <img
                 src={leader.profilePhoto}
                 alt={leader.fullName}
+                width={320}
+                height={460}
+                sizes="280px"
                 className={cn(
-                  "w-full aspect-32/46 object-cover",
-                  "transform transition-transform duration-300 group-hover:scale-105"
+                  'w-full aspect-32/46 object-cover',
+                  'transform transition-transform duration-300 group-hover:scale-105'
                 )}
               />
             </div>
@@ -113,7 +115,7 @@ const MobileLeaderCard = ({
           </div>
           <div>
             <p className="text-gray-600 uppercase tracking-wider text-sm mb-1 text-start">
-              {leader.authorAttributes.jobTitle}
+              {leader.jobTitle}
             </p>
             <h4 className="text-2xl font-bold text-gray-900 text-start">
               {leader.fullName}
@@ -122,7 +124,7 @@ const MobileLeaderCard = ({
         </div>
       </Modal.Button>
       <Modal.Content background="bg-gray">
-        <LeadersModal author={leader} />
+        <LeadersModal leader={leader} />
       </Modal.Content>
     </Modal>
   );

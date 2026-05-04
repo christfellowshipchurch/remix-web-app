@@ -5,11 +5,10 @@ import { registerToken } from "~/lib/.server/token";
 import {
   AuthenticationError,
   RockAPIError,
-  EncryptionError,
 } from "~/lib/.server/error-types";
 import { createImageUrlFromGuid } from "~/lib/utils";
 import { User } from "~/providers/auth-provider";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData, TTL } from "~/lib/.server/fetch-rock-data";
 
 export const currentUser = async (token: string) => {
   try {
@@ -21,7 +20,7 @@ export const currentUser = async (token: string) => {
     try {
       decryptedToken = decrypt(token);
     } catch {
-      throw new EncryptionError("Failed to decrypt token");
+      throw new AuthenticationError("Invalid or expired token, please log in again");
     }
 
     const { rockCookie } = registerToken(decryptedToken);
@@ -42,7 +41,7 @@ export const currentUser = async (token: string) => {
       customHeaders: {
         Cookie: rockCookie,
       },
-      cache: false,
+      ttl: TTL.NONE,
     });
 
     // Fetch photo separately
@@ -55,7 +54,7 @@ export const currentUser = async (token: string) => {
       customHeaders: {
         Cookie: rockCookie,
       },
-      cache: false,
+      ttl: TTL.NONE,
     });
 
     const fullName = [firstName, lastName].filter(Boolean).join(" ") || "";

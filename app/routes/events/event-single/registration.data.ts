@@ -42,14 +42,41 @@ export const hasSubGroupTypes = (groupType: string): boolean => {
 
 // Make sure these IDs match the workflow type GUIDs in Rock
 export const GROUP_TYPE_TO_WORKFLOW_TYPE_GUID: Record<string, string> = {
+  // Kids Dedication & Starting Line use the same workflow type GUID
   "Kids Dedication": "3165147d-80d3-4750-94ca-9a69285755fc",
   "Kids Starting Line": "3165147d-80d3-4750-94ca-9a69285755fc",
   Journey: "9bfec348-46a2-48af-b11a-afc074a92ae8",
   Baptism: "3fd2cf95-7b4c-415e-bc9f-6966331f5fcb",
   "Dream Team Kickoff": "98615e2e-d75a-4a44-91fc-dcf4f468e654",
+  /** Rock WorkflowTypeGuids for Spanish Journey & Baptism - no new type needed in Algolia
+   * code checks if is spanishCampus and returns this instead of the English type
+   */
+  "Spanish Journey": "74d0f005-5713-4ef4-bfc7-fdca1bfdeba6",
+  "Spanish Baptism": "e2a3b7c0-812d-40e7-85c9-3e59a46340b2",
 };
 
-export const getWorkflowTypeGuidForGroupType = (groupType: string): string => {
+/** Aligns with location pages: Spanish/Español campuses use Spanish registration workflows. */
+export function isSpanishCampusLabel(campusName: string): boolean {
+  if (!campusName) {
+    return false;
+  }
+  const lower = campusName.toLowerCase();
+  return (
+    campusName.includes("Español") ||
+    lower.includes("espanol") ||
+    lower.includes("spanish")
+  );
+}
+
+export type WorkflowGuidOptions = {
+  /** Campus chosen in step 1 — used to pick Spanish vs English Journey/Baptism embeds */
+  selectedCampus?: string;
+};
+
+export const getWorkflowTypeGuidForGroupType = (
+  groupType: string,
+  options?: WorkflowGuidOptions,
+): string => {
   if (!groupType) {
     return GROUP_TYPE_TO_WORKFLOW_TYPE_GUID["Kids Dedication"]; // Default fallback
   }
@@ -61,6 +88,16 @@ export const getWorkflowTypeGuidForGroupType = (groupType: string): string => {
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
+
+  const spanishCampus =
+    options?.selectedCampus && isSpanishCampusLabel(options.selectedCampus);
+
+  if (spanishCampus && normalized === "Journey") {
+    return GROUP_TYPE_TO_WORKFLOW_TYPE_GUID["Spanish Journey"];
+  }
+  if (spanishCampus && normalized === "Baptism") {
+    return GROUP_TYPE_TO_WORKFLOW_TYPE_GUID["Spanish Baptism"];
+  }
 
   return (
     GROUP_TYPE_TO_WORKFLOW_TYPE_GUID[normalized] ||

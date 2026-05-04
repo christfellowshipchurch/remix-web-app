@@ -8,7 +8,7 @@ export const familiesMappedChildren: ContentBlockData[] = [
     type: "CONTENT_BLOCK",
     name: "A Place for Every Kid",
     content:
-      '<div style="color: #222222">Kids enjoy worship, group time lead by caring leaders, and a teaching designed to help your child love Jesus, love others, and love life.\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cb\u003EBabies &amp; Preschool: God\'s Big Backyard\u003C/b\u003E\u003C/div\u003E\u003Cdiv\u003EOur prayer is that every preschool child would understand that God made them, He loves them, and Jesus wants to be their friend forever.\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cb\u003EKindergarten - 5th Grade: The Studio&nbsp;\u003C/b\u003E\u003C/div\u003E\u003Cdiv\u003EWhere kids discover how God\'s Word relates to their lives, how to pray, and how to build lasting friendships.\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cb\u003ESpecial Needs\u003C/b\u003E\u003C/div\u003E\u003Cdiv\u003EWe offer families the opportunity to pair their child with a volunteer "Buddy" while their child participates in the Christ Fellowship Kids environment.&nbsp;\u003C/div\u003E\u003Cdiv\u003E\u003Ca href="https://rock.gocf.org/page/2207" target="_blank"\u003ELEARN MORE HERE\u003C/a\u003E\u003C/div\u003E</div>',
+      '<div style="color: #222222">Kids enjoy worship, group time lead by caring leaders, and a teaching designed to help your child love Jesus, love others, and love life.\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cb\u003EBabies &amp; Preschool: God\'s Big Backyard\u003C/b\u003E\u003C/div\u003E\u003Cdiv\u003EOur prayer is that every preschool child would understand that God made them, He loves them, and Jesus wants to be their friend forever.\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cb\u003EKindergarten - 5th Grade: The Studio&nbsp;\u003C/b\u003E\u003C/div\u003E\u003Cdiv\u003EWhere kids discover how God\'s Word relates to their lives, how to pray, and how to build lasting friendships.\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cb\u003ESpecial Needs\u003C/b\u003E\u003C/div\u003E\u003Cdiv\u003EWe offer families the opportunity to pair their child with a volunteer "Buddy" while their child participates in the Christ Fellowship Kids environment.&nbsp;\u003C/div\u003E\u003Cdiv\u003E\u003Ca href="https://rock.christfellowship.church/page/2207" target="_blank"\u003ELEARN MORE HERE\u003C/a\u003E\u003C/div\u003E</div>',
     layoutType: "FEATURE",
     subtitle: "During ALL Sunday Services",
     callsToAction: "",
@@ -68,7 +68,7 @@ export const familiesMappedChildren: ContentBlockData[] = [
     type: "CONTENT_BLOCK",
     name: "For Students",
     content:
-      '<div style="color: #222222">If you\'re a middle or high school student, we\'d love to see you on <b>Wednesday nights at 6:30PM</b>. Our worship services, caring group leaders, and biblical teachings exist to help you know God personally as you make your faith your own. If you can\'t join us in person, we\'d love for you to join online.<div><br></div><div><b>CFStudents En Español meet on Thursdays.</b></div><div><br></div><div><b>Special Needs</b> </div><div>We offer families the opportunity to pair their student with a volunteer "Buddy" while they participate in the CFStudents environment.</div><div><a href="https://rock.gocf.org/page/2207" target="_blank" style="color: #0092BC; text-decoration: underline;">LEARN MORE HERE</a></div><div><br></div></div>',
+      '<div style="color: #222222">If you\'re a middle or high school student, we\'d love to see you on <b>Wednesday nights at 6:30PM</b>. Our worship services, caring group leaders, and biblical teachings exist to help you know God personally as you make your faith your own. If you can\'t join us in person, we\'d love for you to join online.<div><br></div><div><b>CFStudents En Español meet on Thursdays.</b></div><div><br></div><div><b>Special Needs</b> </div><div>We offer families the opportunity to pair their student with a volunteer "Buddy" while they participate in the CFStudents environment.</div><div><a href="https://rock.christfellowship.church/page/2207" target="_blank" style="color: #0092BC; text-decoration: underline;">LEARN MORE HERE</a></div><div><br></div></div>',
     layoutType: "FEATURE",
     subtitle: "",
     callsToAction: "",
@@ -127,7 +127,7 @@ export const spanishFamiliesMappedChildren: ContentBlockData[] = [
           Ofrecemos a las familias la oportunidad de asignar a su hijo un voluntario <b>“Buddy”</b> mientras participa en el ambiente de <i>Christ Fellowship Kids</i>.
         </p>
 
-        <a href="https://rock.gocf.org/page/2207" target="_blank" class="text-primary underline">APRENDE MÁS AQUÍ</a>
+        <a href="https://rock.christfellowship.church/page/2207" target="_blank" class="text-primary underline">APRENDE MÁS AQUÍ</a>
       </div>`,
     layoutType: "FEATURE",
     subtitle: "Durante TODOS los Servicios Dominicales",
@@ -188,7 +188,7 @@ export const spanishFamiliesMappedChildren: ContentBlockData[] = [
     type: "CONTENT_BLOCK",
     name: "Para Estudiantes",
     content:
-      '<div style="color: #222222">Si eres un estudiante de escuela media o secundaria, nos encantaría verte los <b>jueves a las 6:30 P.M.</b>. Nuestros servicios de adoración, líderes de grupos de apoyo y enseñanzas bíblicas existen para ayudarte a conocer a Dios personalmente mientras construyes tu propia fe. Si no puedes unirte en persona, nos encantaría que te unieras en línea.<div></div><div><br></div><div><b>Necesidades Especiales</b> </div><div>Ofrecemos a las familias la oportunidad de asignar a su estudiante un voluntario <b>“Buddy”</b> mientras participa en el ambiente de <i>CFStudents</i>.</div><div><a href="https://rock.gocf.org/page/2207" target="_blank" style="color: #0092BC; text-decoration: underline;">APRENDE MÁS AQUÍ</a></div><div><br></div></div>',
+      '<div style="color: #222222">Si eres un estudiante de escuela media o secundaria, nos encantaría verte los <b>jueves a las 6:30 P.M.</b>. Nuestros servicios de adoración, líderes de grupos de apoyo y enseñanzas bíblicas existen para ayudarte a conocer a Dios personalmente mientras construyes tu propia fe. Si no puedes unirte en persona, nos encantaría que te unieras en línea.<div></div><div><br></div><div><b>Necesidades Especiales</b> </div><div>Ofrecemos a las familias la oportunidad de asignar a su estudiante un voluntario <b>“Buddy”</b> mientras participa en el ambiente de <i>CFStudents</i>.</div><div><a href="https://rock.christfellowship.church/page/2207" target="_blank" style="color: #0092BC; text-decoration: underline;">APRENDE MÁS AQUÍ</a></div><div><br></div></div>',
     layoutType: "FEATURE",
     subtitle: "",
     callsToAction: "",

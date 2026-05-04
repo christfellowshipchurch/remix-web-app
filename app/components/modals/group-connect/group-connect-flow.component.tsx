@@ -9,12 +9,14 @@ enum GroupConnectStep {
 
 interface GroupConnectFlowProps {
   setOpenModal: (open: boolean) => void;
-  groupName: string;
+  groupId: string;
+  campus?: string;
 }
 
 const GroupConnectFlow = ({
   setOpenModal,
-  groupName,
+  groupId,
+  campus,
 }: GroupConnectFlowProps) => {
   const [step, setStep] = useState<GroupConnectStep>(
     GroupConnectStep.GROUP_CONNECT_FORM,
@@ -28,7 +30,8 @@ const GroupConnectFlow = ({
             onSuccess={() =>
               setStep(GroupConnectStep.GROUP_CONNECT_CONFIRMATION)
             }
-            groupName={groupName}
+            groupId={groupId}
+            campus={campus}
           />
         );
       case GroupConnectStep.GROUP_CONNECT_CONFIRMATION:
@@ -41,7 +44,7 @@ const GroupConnectFlow = ({
   };
 
   return (
-    <div className="text-center text-text_primary p-6 md:p-10 overflow-auto w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
+    <div className="text-center text-text_primary p-6 md:p-10 overflow-auto overflow-x-hidden w-[80vw] max-h-[85vh] md:max-h-[90vh] md:w-full">
       {renderStep()}
     </div>
   );

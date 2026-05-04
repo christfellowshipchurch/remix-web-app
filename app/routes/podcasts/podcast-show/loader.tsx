@@ -46,7 +46,7 @@ export async function getLatestEpisodes(channelGuid: string) {
     episodes = await fetchRockData({
       endpoint: "ContentChannelItems",
       queryParams: {
-        $filter: `ContentChannelId eq ${channelId} and Status eq 'Approved'`,
+        $filter: `ContentChannelId eq ${channelId} and Status eq 'Approved' and StartDateTime le datetime'${new Date().toISOString()}'`,
         $orderby: "StartDateTime desc",
         $top: "6",
         loadAttributes: "simple",
@@ -95,7 +95,7 @@ export async function getPodcast(path: string) {
       queryParams: {
         attributeKey: "Url",
         value: path,
-        $filter: `ContentChannelId eq ${contentChannelId} and Status eq 'Approved'`,
+        $filter: `ContentChannelId eq ${contentChannelId} and Status eq 'Approved' and StartDateTime le datetime'${new Date().toISOString()}'`,
         loadAttributes: "simple",
       },
     });
@@ -112,7 +112,7 @@ export async function getPodcast(path: string) {
     title: podcastData.title,
     description: podcastData.content,
     coverImage: createImageUrlFromGuid(
-      podcastData.attributeValues?.coverImage?.value
+      podcastData.attributeValues?.coverImage?.value,
     ),
     apple: podcastData.attributeValues?.applePodcast?.value,
     spotify: podcastData.attributeValues?.spotify?.value,

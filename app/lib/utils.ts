@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
-import lodash from "lodash";
+import camelCase from "lodash/camelCase";
+import mapKeys from "lodash/mapKeys";
+import mapValues from "lodash/mapValues";
 import { twMerge } from "tailwind-merge";
 import { ShareMessages } from "./types/messaging";
 import {
@@ -12,7 +14,8 @@ import {
   nextSunday,
 } from "date-fns";
 
-const { camelCase, isString, mapKeys, mapValues, uniqueId } = lodash;
+let _uniqueIdCounter = 0;
+const uniqueId = () => String(++_uniqueIdCounter);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -47,6 +50,30 @@ export const createImageUrlFromGuid = (uri: string) =>
   uri?.split("-")?.length === 5
     ? `${process.env.CLOUDFRONT}/GetImage.ashx?guid=${uri}`
     : enforceProtocol(uri);
+
+/**
+ * Appends Rock `GetImage.ashx` resize params. Other URLs (e.g. `GetAvatar.ashx`) are returned unchanged.
+ */
+export function withRockGetImageSizing(
+  raw: string,
+  sizing: { maxwidth: number; maxheight: number; quality?: number },
+): string {
+  const trimmed = raw.trim();
+  if (!trimmed || !/GetImage\.ashx/i.test(trimmed)) return raw;
+  try {
+    const url = new URL(trimmed);
+    url.searchParams.set("maxwidth", String(sizing.maxwidth));
+    url.searchParams.set("maxheight", String(sizing.maxheight));
+    if (sizing.quality !== undefined) {
+      url.searchParams.set("quality", String(sizing.quality));
+    }
+    return url.toString();
+  } catch {
+    const joiner = trimmed.includes("?") ? "&" : "?";
+    const q = sizing.quality !== undefined ? `&quality=${sizing.quality}` : "";
+    return `${trimmed}${joiner}maxwidth=${sizing.maxwidth}&maxheight=${sizing.maxheight}${q}`;
+  }
+}
 
 export const getIdentifierType = (identifier: string | number) => {
   const guidRegex =
@@ -102,7 +129,7 @@ export const icsLink = (event: EventDetails): string => {
   const { title, description, address, url } = event;
   let { startTime, endTime } = event;
 
-  if (isString(startTime) || isString(endTime)) {
+  if (typeof startTime === "string" || typeof endTime === "string") {
     startTime = parseISO(startTime as string);
     endTime = parseISO(endTime as string);
   }
@@ -283,13 +310,19 @@ export type dayTimes = {
 
 export const formattedServiceTimes = (serviceTimes: string) =>
   serviceTimes.split("|").reduce((acc: dayTimes[], time: string) => {
-    const [day, hour] = time.split("^");
-    const existingDay = acc.find((item) => item.day === day.trim());
+    const trimmed = time.trim();
+    if (!trimmed) return acc;
+
+    const [day, hour] = trimmed.split("^");
+    const dayTrimmed = day?.trim() ?? "";
+    if (dayTrimmed.toLowerCase() === "ondemand") return acc;
+
+    const existingDay = acc.find((item) => item.day === dayTrimmed);
 
     if (existingDay) {
       existingDay.hour.push(hour);
     } else {
-      acc.push({ day, hour: [hour] });
+      acc.push({ day: dayTrimmed, hour: [hour] });
     }
 
     return acc;

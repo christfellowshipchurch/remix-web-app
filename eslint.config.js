@@ -27,7 +27,10 @@ export default [
         clearTimeout: "readonly",
         setInterval: "readonly",
         clearInterval: "readonly",
+        requestAnimationFrame: "readonly",
+        cancelAnimationFrame: "readonly",
         fetch: "readonly",
+        AbortController: "readonly",
         Request: "readonly",
         Response: "readonly",
         URL: "readonly",
@@ -51,6 +54,9 @@ export default [
         MouseEvent: "readonly",
         // React Router globals
         React: "readonly",
+        PerformanceObserver: "readonly",
+        PerformanceEntry: "readonly",
+        Element: "readonly",
         // Intersection Observer
         IntersectionObserver: "readonly",
         IntersectionObserverInit: "readonly",
@@ -69,7 +75,7 @@ export default [
       ...typescript.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
       "no-console": ["warn", { allow: ["error", "warn"] }],

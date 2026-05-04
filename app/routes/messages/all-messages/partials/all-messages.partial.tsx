@@ -106,7 +106,7 @@ export function AllMessages() {
 
           {/* Filter Section */}
           <div className="mt-10 mb-12">
-            <HubsTagsRefinementList tagName="sermonPrimaryCategories" />
+            <HubsTagsRefinementList attribute="sermonPrimaryCategories" />
           </div>
 
           {/* Results Grid */}

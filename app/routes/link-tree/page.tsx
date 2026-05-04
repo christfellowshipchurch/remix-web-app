@@ -10,7 +10,7 @@ import { ResourceList } from "./components/resource-list.component";
 const linkTreeButtonClass = cn(
   "w-full",
   "hover:enabled:bg-white",
-  "hover:enabled:text-navy"
+  "hover:enabled:text-navy",
 );
 
 export function LinkTreePage() {
@@ -23,10 +23,11 @@ export function LinkTreePage() {
     resourceCollections,
   } = useLoaderData<LinkTreeLoaderData>();
 
-
   return (
     <div className=" bg-navy py-30 content-padding text-white text-center">
-      <h1 className="text-[72px] font-extrabold my-16 ">{title}</h1>
+      <h1 className="text-[48px] md:text-[52px] font-extrabold my-16 leading-tight">
+        {title}
+      </h1>
 
       <div
         className={cn(
@@ -38,7 +39,7 @@ export function LinkTreePage() {
           "max-w-[560px]",
           "w-full",
           "mx-auto",
-          "font-light"
+          "font-light",
         )}
       >
         {subtitle && <h2 className="heading-h5 font-bold">{subtitle}</h2>}

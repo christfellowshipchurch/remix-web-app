@@ -10,8 +10,16 @@ type PodcastCardProps = {
 };
 
 export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
-  const { title, description, apple, spotify, amazon, youtube, url, coverImage } =
-    podcast;
+  const {
+    title,
+    description,
+    apple,
+    spotify,
+    amazon,
+    youtube,
+    url,
+    coverImage,
+  } = podcast;
 
   const links = [
     {
@@ -71,7 +79,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                     key={index}
                     to={link.href}
                     target="_blank"
-                    className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[54px]"
+                    className="flex flex-col items-center justify-center gap-1 bg-ocean rounded-lg size-[54px]"
                   >
                     <Icon
                       name={
@@ -129,7 +137,7 @@ export function PodcastHubCard({ podcast, className = "" }: PodcastCardProps) {
                   key={index}
                   to={link.href}
                   target="_blank"
-                  className="flex flex-col items-center justify-center gap-1 bg-[#0092BC] rounded-lg size-[72px]"
+                  className="flex flex-col items-center justify-center gap-1 bg-ocean rounded-lg size-[72px]"
                 >
                   <Icon
                     name={link.icon as keyof typeof import("~/lib/icons").icons}

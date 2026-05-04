@@ -1,7 +1,6 @@
 import Icon from "~/primitives/icon";
 import { useState, useEffect } from "react";
 import MobileMenuContent from "./mobile-menu-content";
-import { useAuth } from "~/providers/auth-provider";
 import { Button } from "~/primitives/button/button.primitive";
 import { MobileSearch } from "./search/mobile-search.component";
 import { useResponsive } from "~/hooks/use-responsive";
@@ -12,15 +11,16 @@ export default function MobileMenu({
   mode,
   setMode,
   showSiteBanner,
+  latestMessageTo,
 }: {
   mode: "light" | "dark";
   setMode: (mode: "light" | "dark") => void;
   showSiteBanner?: boolean;
+  latestMessageTo?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [orginalMode] = useState(mode);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { user, isLoading: authLoading, logout } = useAuth();
   const { isMedium } = useResponsive();
 
   // Prevent background scroll when menu is open
@@ -71,7 +71,7 @@ export default function MobileMenu({
       {/* Search & Menu Buttons */}
       <div className="flex items-center gap-4">
         <div className="hidden md:block">
-          <Button className="font-semibold text-base">
+          <Button className="font-semibold text-base w-fit min-w-[180px]">
             <Icon name="mapFilled" size={20} className="mr-2" />
             Find a Service
           </Button>
@@ -86,13 +86,13 @@ export default function MobileMenu({
                   ? !isSearchOpen
                     ? "light"
                     : "dark"
-                  : orginalMode
+                  : orginalMode,
               );
             }, 0);
             setIsOpen(false);
             setTimeout(() => {
               const searchInput = document.querySelector(
-                ".ais-SearchBox-input"
+                ".ais-SearchBox-input",
               );
               if (searchInput instanceof HTMLInputElement) {
                 searchInput.focus();
@@ -110,7 +110,7 @@ export default function MobileMenu({
                 ? !isOpen
                   ? "light"
                   : "dark"
-                : orginalMode
+                : orginalMode,
             );
             setIsSearchOpen(false);
           }}
@@ -141,11 +141,7 @@ export default function MobileMenu({
         >
           <MobileMenuContent
             closeMenu={() => setIsOpen(false)}
-            auth={{
-              authLoading,
-              logout,
-              user,
-            }}
+            latestMessageTo={latestMessageTo}
           />
         </div>
       </div>

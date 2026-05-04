@@ -1,4 +1,5 @@
 import { icons } from "~/lib/icons";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import Icon from "~/primitives/icon";
 import { Video } from "~/primitives/video/video.primitive";
 
@@ -69,11 +70,11 @@ const IconCard = ({
       <Icon name={icon} className="size-16 md:size-[81px] text-ocean" />
       <h3
         className="text-xl md:text-[24px] font-bold leading-tight text-ocean"
-        dangerouslySetInnerHTML={{ __html: title }}
+        dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(title) }}
       />
       <p
         className="leading-tight"
-        dangerouslySetInnerHTML={{ __html: description }}
+        dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(description) }}
       />
     </div>
   );

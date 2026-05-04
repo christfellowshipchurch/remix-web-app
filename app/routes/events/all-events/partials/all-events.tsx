@@ -5,13 +5,10 @@ import { ResourceCard } from "~/primitives/cards/resource-card";
 import { Configure, Hits, InstantSearch } from "react-instantsearch";
 import { useEffect, useMemo, useRef } from "react";
 import { ContentItemHit } from "~/routes/search/types";
-import {
-  EVENTS_INDEX,
-  EventsTagsRefinementList,
-} from "../components/events-tags-refinement.component";
+import { EVENTS_INDEX } from "../components/events-tags-refinement.component";
 import { CustomPagination } from "~/components/custom-pagination";
 import { createSearchClient } from "~/lib/create-search-client";
-import { EventsHubLocationSearch } from "../components/events-hub-location-search.component";
+import { EventsFiltersViewport } from "../components/events-filters-viewport.component";
 import {
   parseEventsFinderUrlState,
   eventsFinderUrlStateToParams,
@@ -21,7 +18,6 @@ import {
   createEventsInstantSearchRouter,
   createEventsStateMapping,
 } from "../../events-instantsearch-router";
-import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
 
 export const AllEvents = () => {
@@ -49,7 +45,7 @@ export const AllEvents = () => {
         pathnameRef,
         onUpdateCallbackRef,
       }),
-    []
+    [],
   );
 
   const stateMapping = useMemo(() => createEventsStateMapping(), []);
@@ -68,7 +64,7 @@ export const AllEvents = () => {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const routing = useMemo(
@@ -76,7 +72,7 @@ export const AllEvents = () => {
       router,
       stateMapping,
     }),
-    [router, stateMapping]
+    [router, stateMapping],
   );
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
@@ -92,57 +88,59 @@ export const AllEvents = () => {
     (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
-    <div className="w-full pt-16 pb-28 content-padding pagination-scroll-to">
-      <div className="flex flex-col max-w-screen-content mx-auto">
-        <InstantSearch
-          indexName={EVENTS_INDEX}
-          searchClient={searchClient}
-          routing={routing}
-          future={{
-            preserveSharedStateOnUnmount: true,
-          }}
-        >
-          <div className="flex items-end justify-between gap-4">
-            <SectionTitle
-              title="Discover Events For You"
-              sectionTitle="all events."
+    <div className="flex w-full min-w-0 max-w-full flex-col pagination-scroll-to pt-8 pb-24 md:pt-16 md:pb-28">
+      <InstantSearch
+        indexName={EVENTS_INDEX}
+        searchClient={searchClient}
+        routing={routing}
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
+      >
+        <Configure filters='contentType:"Event"' hitsPerPage={9} />
+
+        <div className="content-padding">
+          <div className="mx-auto w-full max-w-screen-content">
+            {/* Desktop */}
+            <div className="hidden md:block">
+              <SectionTitle
+                title="Discover Events For You"
+                sectionTitle="all events."
+              />
+            </div>
+
+            {/* Mobile */}
+            <div className="md:hidden">
+              <SectionTitle title="Search All Events" />
+            </div>
+          </div>
+        </div>
+
+        <EventsFiltersViewport onClearAllToUrl={clearAllFiltersFromUrl} />
+
+        <div className="content-padding pt-16 md:pt-0">
+          <div className="mx-auto w-full max-w-screen-content">
+            <Hits
+              hitComponent={({ hit }: { hit: ContentItemHit }) => {
+                return <EventHit hit={hit} fromEventsUrl={fromEventsUrl} />;
+              }}
+              transformItems={(items) =>
+                [...items].sort(
+                  (a, b) =>
+                    new Date(b.startDateTime).getTime() -
+                    new Date(a.startDateTime).getTime(),
+                )
+              }
+              classNames={{
+                list: "grid w-full grid-cols-1 justify-items-center gap-10 md:grid-cols-2 lg:grid-cols-3",
+                item: "w-full",
+              }}
             />
 
-            <AlgoliaFinderClearAllButton
-              onClearAllToUrl={clearAllFiltersFromUrl}
-            />
+            <CustomPagination />
           </div>
-
-          <Configure filters='contentType:"Event"' hitsPerPage={9} />
-
-          {/* Filters */}
-          <div className="flex gap-6 flex-col md:flex-row md:flex-nowrap px-1 pb-4 overflow-y-visible mt-10 mb-12 md:mt-14 lg:mb-24 xl:mb-28">
-            {/* Location Search */}
-            <EventsHubLocationSearch />
-
-            <EventsTagsRefinementList />
-          </div>
-
-          <Hits
-            hitComponent={({ hit }: { hit: ContentItemHit }) => {
-              return <EventHit hit={hit} fromEventsUrl={fromEventsUrl} />;
-            }}
-            transformItems={(items) =>
-              [...items].sort(
-                (a, b) =>
-                  new Date(b.startDateTime).getTime() -
-                  new Date(a.startDateTime).getTime()
-              )
-            }
-            classNames={{
-              list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center",
-              item: "w-full",
-            }}
-          />
-
-          <CustomPagination />
-        </InstantSearch>
-      </div>
+        </div>
+      </InstantSearch>
     </div>
   );
 };
@@ -160,7 +158,7 @@ const EventHit = ({
       year: "numeric",
       month: "long",
       day: "numeric",
-    }
+    },
   );
 
   return (

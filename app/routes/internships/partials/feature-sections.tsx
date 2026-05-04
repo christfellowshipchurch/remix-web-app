@@ -1,36 +1,35 @@
+import { getImageUrl } from "~/lib/utils";
 import InternshipFeatureSection from "../components/internship-feature-section";
 
-const FeatureSections = () => {
+const IntenrshipFeatureSections = () => {
   return (
-    <div className="content-padding w-full">
-      <div className="flex flex-col items-center max-w-screen-content mx-auto w-full">
-        <InternshipFeatureSection
-          title="Leadership Development"
-          description="Gain hands-on experience in leadership and team management through real-world projects."
-          image="/assets/images/internships/leadership.webp"
-        />
+    <div className="content-padding w-full py-16 md:py-24">
+      <div className="flex flex-col gap-10 md:gap-24 items-center max-w-[1120px] mx-auto w-full">
         <InternshipFeatureSection
           title="Mentorship"
           description="Work closely with experienced leaders who will guide and invest in your personal growth."
-          image="/assets/images/internships/mentorship.webp"
-          imageRight={true}
-          alignRight={true}
+          images={[getImageUrl("3149958")]}
         />
         <InternshipFeatureSection
           title="Community"
           description="Build lasting relationships with other interns and become part of a supportive community."
-          image="/assets/images/internships/community.webp"
+          images={[getImageUrl("3149953"), getImageUrl("3149952")]}
+          imageRight={true}
         />
         <InternshipFeatureSection
           title="Practical Experience"
           description="Apply your skills in a dynamic environment and make a real impact from day one."
-          image="/assets/images/internships/practical.webp"
+          images={[getImageUrl("3149950"), getImageUrl("3141725")]}
+        />
+        <InternshipFeatureSection
+          title="Leadership Development"
+          description="Gain hands-on experience in leadership and team management through real-world projects."
+          images={[getImageUrl("3149957")]}
           imageRight={true}
-          alignRight={true}
         />
       </div>
     </div>
   );
 };
 
-export default FeatureSections;
+export default IntenrshipFeatureSections;

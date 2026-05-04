@@ -4,7 +4,7 @@ import { requestSmsPinLogin } from "./request-sms-pin-login";
 import { authenticateSms } from "./authenticate-sms";
 import { currentUser } from "./current-user";
 import { userExists } from "./userExists";
-import { RegistrationTypes, UserInputData } from "~/providers/auth-provider";
+import { RegistrationTypes, UserInputData, AUTH_TOKEN_KEY } from "~/providers/auth-provider";
 import { registerPerson } from "./register-person";
 
 /**
@@ -39,8 +39,20 @@ export const action: ActionFunction = async ({ request }) => {
       });
     }
     case "currentUser": {
-      const token = formData.get("token");
-      return await currentUser(token as string);
+      const cookieHeader = request.headers.get("Cookie") || "";
+      const token = cookieHeader.match(new RegExp(`(?:^|;\\s*)${AUTH_TOKEN_KEY}=([^;]+)`))?.[1];
+      if (!token) return data({ error: "Not authenticated" }, { status: 401 });
+      return await currentUser(token);
+    }
+    case "logout": {
+      const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Set-Cookie": `auth-token=; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=0`,
+        },
+      });
     }
     case "checkUserExists": {
       const checkIdentity = formData.get("identity");

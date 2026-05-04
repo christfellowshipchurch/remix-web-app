@@ -44,13 +44,43 @@ export const Icon = ({
         style={style}
         id={id || `icon-${name}`}
       >
-        {path.map((d, i) => {
+        {path.map((entry, i) => {
+          if (typeof entry !== "object" || entry == null || !("d" in entry)) {
+            return null;
+          }
+          const strokePath =
+            "stroke" in entry &&
+            entry.stroke != null &&
+            String(entry.stroke).length > 0;
+          const fill = strokePath
+            ? ("fill" in entry && entry.fill !== undefined
+                ? entry.fill
+                : "none")
+            : color ||
+              ("fill" in entry && entry.fill !== undefined
+                ? entry.fill
+                : "currentColor");
           return (
             <path
-              d={d?.d}
+              d={entry.d}
               key={i}
-              fill={color || ("fill" in d ? d.fill : "currentColor")}
-              fillOpacity={"fillOpacity" in d ? d.fillOpacity : 1}
+              fill={fill}
+              fillOpacity={"fillOpacity" in entry ? entry.fillOpacity : 1}
+              stroke={strokePath ? color || entry.stroke : undefined}
+              strokeWidth={
+                strokePath && "strokeWidth" in entry
+                  ? entry.strokeWidth
+                  : undefined
+              }
+              strokeLinecap={
+                strokePath && "strokeLinecap" in entry
+                  ? (entry.strokeLinecap as
+                      | "round"
+                      | "butt"
+                      | "square"
+                      | undefined)
+                  : undefined
+              }
             />
           );
         })}

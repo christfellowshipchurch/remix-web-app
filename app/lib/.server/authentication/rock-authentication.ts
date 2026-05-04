@@ -3,7 +3,7 @@
  */
 import { checkUserExists } from "~/routes/auth/userExists";
 import { AuthenticationError, RockAPIError } from "../error-types";
-import { fetchRockData, postRockData } from "../fetch-rock-data";
+import { fetchRockData, postRockData, TTL } from "../fetch-rock-data";
 import { createPerson } from "../rock-person";
 import { RockUserLogin } from "./authentication.types";
 import { fieldsAsObject } from "~/lib/utils";
@@ -12,10 +12,11 @@ import {
   createPhoneNumberInRock,
   parsePhoneNumberUtil,
 } from "./sms-authentication";
+import { escapeOData } from "../rock-utils";
 
 export const fetchUserCookie = async (
   Username: string,
-  Password: string
+  Password: string,
 ): Promise<string> => {
   if (!Username || !Password) {
     throw new AuthenticationError("Username and password are required");
@@ -33,7 +34,7 @@ export const fetchUserCookie = async (
         headers: {
           "Content-Type": "Application/Json",
         },
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -43,7 +44,7 @@ export const fetchUserCookie = async (
       }
       throw new RockAPIError(
         `Authentication failed with status ${statusCode}`,
-        statusCode
+        statusCode,
       );
     }
 
@@ -61,7 +62,7 @@ export const fetchUserCookie = async (
       `Authentication failed: ${
         err instanceof Error ? err.message : "Unknown error"
       }`,
-      500
+      500,
     );
   }
 };
@@ -88,7 +89,7 @@ export const getCurrentPerson = async (cookie: string): Promise<Person> => {
         "Authorization-Token": "",
         Cookie: cookie,
       },
-      cache: false,
+      ttl: TTL.NONE,
     });
 
     if (!person) {
@@ -104,7 +105,7 @@ export const getCurrentPerson = async (cookie: string): Promise<Person> => {
       `Failed to get current person: ${
         err instanceof Error ? err.message : "Unknown error"
       }`,
-      500
+      500,
     );
   }
 };
@@ -117,7 +118,7 @@ interface RockSessionResponse {
 }
 
 export const createRockSession = async (
-  cookie: string
+  cookie: string,
 ): Promise<RockSessionResponse> => {
   if (!cookie) {
     throw new AuthenticationError("No authentication cookie provided");
@@ -145,7 +146,7 @@ export const createRockSession = async (
       const errorDetails = await response.text();
       throw new RockAPIError(
         `Failed to create Rock Session: ${errorDetails}`,
-        response.status
+        response.status,
       );
     }
 
@@ -164,7 +165,7 @@ export const createRockSession = async (
       `Session creation failed: ${
         err instanceof Error ? err.message : "Unknown error"
       }`,
-      500
+      500,
     );
   }
 };
@@ -192,15 +193,15 @@ export const createUserProfile = async ({
 };
 
 export const fetchUserLogin = async (
-  identity: string
+  identity: string,
 ): Promise<RockUserLogin | null> => {
   const userLogin = await fetchRockData({
     endpoint: "UserLogins",
     queryParams: {
-      $filter: `UserName eq '${identity}'`,
+      $filter: `UserName eq '${escapeOData(identity)}'`,
       $top: "1",
     },
-    cache: false,
+    ttl: TTL.NONE,
   });
 
   // If no login exists for the identity, return null
@@ -215,7 +216,7 @@ export const fetchUserLogin = async (
 export const createUserLogin = async (
   identity: string,
   password: string,
-  personId: number
+  personId: number,
 ) => {
   try {
     return await postRockData({
@@ -266,7 +267,7 @@ export const registerPersonWithEmail = async ({
         $select: "PersonId",
         $filter: `Number eq '${significantNumber}'`,
       },
-      cache: false,
+      ttl: TTL.NONE,
     });
 
     if (existingPhoneNumbers) {

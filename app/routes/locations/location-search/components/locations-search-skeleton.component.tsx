@@ -21,14 +21,14 @@ export function LocationsLoader() {
   // Create an array of 15 (number of campuses) empty objects to map over and create skeleton cards
   const data = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
   return (
-    <div className="flex flex-col items-center py-12">
+    <div className="flex w-full flex-col items-center">
       <div className="grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10">
         {data?.map((_campus: unknown, index: number) => {
           return <LocationSkeletonCard key={index} />;
         })}
       </div>
       {/* Prison Location */}
-      <div className="mt-12">
+      <div className="mt-24">
         <Link to="/ministries/prison">
           <div className="relative h-[150px] w-[90vw] rounded-md md:h-[250px] md:w-[600px]">
             <div

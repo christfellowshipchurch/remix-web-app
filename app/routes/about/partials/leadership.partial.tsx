@@ -1,29 +1,29 @@
-import { cn } from "~/lib/utils";
-import { LeaderGrid } from "../components/leaders-grid.component";
-import { LeaderScroll } from "../components/leaders-scroll.component";
-import { SectionTitle } from "~/components/section-title";
+import { cn } from '~/lib/utils';
+import { LeaderGrid } from '../components/leaders-grid.component';
+import { LeaderScroll } from '../components/leaders-scroll.component';
+import { SectionTitle } from '~/components/section-title';
 
 export function LeadershipSection({
   bg,
   className,
-  layout = "horizontal",
+  layout = 'horizontal',
 }: {
   bg?: string;
   className?: string;
-  layout?: "horizontal" | "vertical";
+  layout?: 'horizontal' | 'vertical';
 }) {
   return (
     <section
       id="leadership"
-      className={cn("pt-16 pb-24 lg:px-18 w-full relative z-30", bg || "bg-gray", className)}
+      className={cn('pt-16 pb-24 lg:px-18 w-full relative z-30', bg || 'bg-gray', className)}
     >
       <div className="max-w-screen-content mx-auto">
         <div className="content-padding lg:px-0 lg:flex flex-col lg:gap-28">
           {/* Desktop title */}
           <div
             className={cn(
-              "hidden lg:flex",
-              layout === "vertical" ? "flex-col gap-8" : "gap-24 items-center"
+              'hidden lg:flex',
+              layout === 'vertical' ? 'flex-col gap-8' : 'gap-24 items-center'
             )}
           >
             <SectionTitle sectionTitle="our team." />

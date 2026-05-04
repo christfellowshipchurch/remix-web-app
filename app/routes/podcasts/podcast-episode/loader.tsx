@@ -50,7 +50,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   // Map episode data
   const episode = await mapRockEpisodeToPodcastEpisode(
     rockEpisode,
-    showChannel.title
+    showChannel.title,
   );
 
   // Get Algolia configuration
@@ -68,7 +68,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
  * Fetches the PodcastShow ContentChannelItem and returns the show ContentChannel containing the episodes
  */
 async function getPodcastChannel(
-  path: string
+  path: string,
 ): Promise<{ id: string; title: string }> {
   try {
     const channel = await fetchRockData({
@@ -88,13 +88,13 @@ async function getPodcastChannel(
       endpoint: "ContentChannels",
       queryParams: {
         $filter: `Guid eq guid'${channelData.attributeValues?.showChannel?.value}'`,
-        $select: "Id",
+        $select: "Name,Id",
       },
     });
 
     return {
       id: showChannel.id,
-      title: showChannel.title,
+      title: showChannel.name,
     };
   } catch {
     throw new Error(ERROR_MESSAGES.CHANNEL_FETCH_ERROR);
@@ -146,7 +146,7 @@ async function getWistiaElement(guid: string): Promise<WistiaElement | null> {
       `${ERROR_MESSAGES.WISTIA_FETCH_ERROR} for guid ${guid}: ${
         error instanceof Error ? error.message : String(error)
       }`,
-      { cause: error }
+      { cause: error },
     );
   }
 }
@@ -156,10 +156,10 @@ async function getWistiaElement(guid: string): Promise<WistiaElement | null> {
  */
 async function mapRockEpisodeToPodcastEpisode(
   rockEpisode: RockPodcastEpisode,
-  showName: string
+  showName: string,
 ): Promise<PodcastEpisode> {
   const wistiaElement = await getWistiaElement(
-    rockEpisode?.attributeValues?.media?.value || ""
+    rockEpisode?.attributeValues?.media?.value || "",
   );
 
   const authorFormatted =
@@ -177,7 +177,7 @@ async function mapRockEpisodeToPodcastEpisode(
     episodeNumber: rockEpisode?.attributeValues?.episodeNumber?.value || "",
     audio: wistiaElement?.sourceKey || "",
     coverImage: createImageUrlFromGuid(
-      rockEpisode?.attributeValues?.image?.value || ""
+      rockEpisode?.attributeValues?.image?.value || "",
     ),
     summary: rockEpisode?.attributeValues?.summary?.value || "",
     content: rockEpisode?.content || "",
@@ -189,7 +189,7 @@ async function mapRockEpisodeToPodcastEpisode(
     amazon: rockEpisode?.attributeValues?.amazonMusic?.value || "",
     youtube: rockEpisode?.attributeValues?.ytLink?.value || "",
     resources: parseRockKeyValueList(
-      rockEpisode?.attributeValues?.additionalResources?.value || ""
+      rockEpisode?.attributeValues?.additionalResources?.value || "",
     ).map((resource) => ({
       title: resource.key,
       url: resource.value,

@@ -1,7 +1,7 @@
 // This loader is used to fetch the feature cards for the navbar and is stored in the root loader to be used across the app
 
 import type { LoaderFunctionArgs } from "react-router-dom";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData, TTL } from "~/lib/.server/fetch-rock-data";
 // import { fetchTopSearches } from "~/lib/.server/fetch-top-searches";
 import type { FeatureCard } from "~/components/navbar/types";
 import { createImageUrlFromGuid } from "~/lib/utils";
@@ -67,13 +67,13 @@ const fetchFeatureCards = async () => {
 
     // TODO: remove this once we have the real data for the get involved card(s)
     const mockGetInvolvedData = {
-      title: "Take the Journey",
-      subtitle: "New Classes",
+      title: "New to our Church?",
+      subtitle: "Learn who we are, what we believe, and how to get connected.",
       callToAction: {
-        title: "Sign Up Now",
+        title: "Join the Next Class",
         url: "/journey",
       },
-      image: "https://rock.christfellowship.church/GetImage.ashx?id=2966369",
+      image: "https://rock.christfellowship.church/GetImage.ashx?id=3166460",
       navMenu: "get involved",
     };
 
@@ -134,6 +134,7 @@ const fetchHeroActions = async () => {
         $top: "2",
         loadAttributes: "simple",
       },
+      ttl: TTL.LONG,
     });
 
     return heroActions.map((action: HeroActionRaw) => ({

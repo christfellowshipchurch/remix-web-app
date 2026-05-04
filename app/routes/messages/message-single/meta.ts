@@ -3,6 +3,7 @@ import type { LoaderReturnType } from "./loader";
 import { loader } from "./loader";
 import { createMeta } from "~/lib/meta-utils";
 import { generateMetaKeywords } from "~/lib/generate-meta-keywords";
+import { getFirstParagraph } from "~/lib/utils";
 
 export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   if (!data) {
@@ -14,7 +15,8 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   const { message: msg } = data as LoaderReturnType;
   const title = msg?.title ?? "Message";
   const description =
-    msg?.summary ?? "Watch this message from Christ Fellowship Church.";
+    getFirstParagraph(msg?.content || "") ??
+    "Watch this message from Christ Fellowship Church.";
   const categories = [
     ...(msg?.primaryCategories?.map((c: { value: string }) => c.value) ?? []),
     ...(msg?.secondaryCategories?.map((c: { value: string }) => c.value) ?? []),
@@ -26,6 +28,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
     seriesTitle: msg?.seriesTitle,
     type: "message",
   });
+
   return createMeta({
     title,
     description,

@@ -8,7 +8,7 @@ import { RockCampuses } from "~/lib/rock-config";
 import { ServiceCard } from "./service-card.component";
 import { cn } from "~/lib/utils";
 import { useLocation } from "react-router-dom";
-import lodash from "lodash";
+import capitalize from "lodash/capitalize";
 import { ministryTypeRules } from "../utils";
 
 interface MinistryServiceTimesProps {
@@ -25,8 +25,6 @@ export const MinistryServiceTimes = ({
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const panelRef = useRef<HTMLDivElement>(null);
-
-  const { capitalize } = lodash;
 
   const pathnameTitle = pathname
     .split("/")[2]

@@ -42,7 +42,7 @@ export const CardCarouselSection = ({
 }: CardCarouselSectionProps) => {
   return (
     <div
-      className={cn("w-full pl-5 md:pl-12 lg:pl-18", className)}
+      className={cn("w-full pl-5 md:pl-12 lg:pl-18 lg:pr-18", className)}
       style={
         backgroundImage
           ? {
@@ -57,7 +57,7 @@ export const CardCarouselSection = ({
         <div className="w-full flex justify-center">
           <div className="w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28">
             {/* Header */}
-            <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:!pr-8 3xl:!pr-0">
+            <div className="w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:pr-8! 3xl:pr-0!">
               <div
                 className={cn(
                   "flex flex-col w-full gap-2",
@@ -79,7 +79,7 @@ export const CardCarouselSection = ({
                   className={cn(
                     "hidden md:block min-w-32 w-fit",
                     mode === "dark" &&
-                      "text-white border-white hover:!bg-white/10",
+                      "text-white border-white hover:bg-white/10!",
                     viewMoreStyles,
                   )}
                   intent="secondary"
@@ -100,7 +100,7 @@ export const CardCarouselSection = ({
 
             {/* Mobile View All */}
             {viewMoreLink && (
-              <div className="w-full flex justify-start mt-8 md:hidden">
+              <div className="w-full flex justify-start -mt-8 md:hidden">
                 <Button
                   href={viewMoreLink}
                   size="md"
@@ -143,20 +143,18 @@ export const CardCarousel = ({
       opts={{
         align: "start",
       }}
-      className={carouselClassName}
+      className={cn("min-w-0 max-w-full", carouselClassName)}
     >
       <CarouselContent className="pt-3 gap-6 xl:gap-8 2xl:pr-18">
         {resources.map((resource, index) => (
           <CarouselItem
             key={index}
             className={cn(
-              carouselItemClassName
-                ? carouselItemClassName
-                : `w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%] ${
-                    index === resources.length - 1
-                      ? "mr-5 md:mr-12 lg:mr-18"
-                      : "pr-0"
-                  }`,
+              carouselItemClassName ??
+                "w-full basis-[75%] sm:basis-[45%] lg:basis-[31.33%] xl:basis-[30%]",
+              index === resources.length - 1
+                ? "mr-5 lg:mr-0"
+                : !carouselItemClassName && "pr-0",
             )}
           >
             {CardComponent ? (
@@ -172,13 +170,18 @@ export const CardCarousel = ({
       </CarouselContent>
 
       <div
-        className={cn("w-full relative mt-12 md:mt-16 pb-4 md:pb-8", {
-          "lg:mt-0 lg:pb-0": resources.length < 4,
-        })}
+        className={cn(
+          "relative w-full flex justify-between items-center mt-8 sm:mt-12 md:mt-16",
+          /* Reserve space for absolutely positioned dots/arrows (parent had ~0 in-flow height on mobile → clipped by overflow-hidden). */
+          "min-h-[4.5rem]",
+          {
+            "lg:mt-0 lg:min-h-0 lg:pb-0": resources.length < 4,
+          },
+        )}
       >
         {layout === "arrowsLeft" ? (
           <>
-            <div className={cn("absolute h-12")}>
+            <div className={cn("flex h-12 max-w-full items-center")}>
               <CarouselArrows
                 arrowStyles={
                   mode === "dark"
@@ -188,7 +191,7 @@ export const CardCarousel = ({
               />
             </div>
 
-            <div className="absolute h-12 top-7 right-44 lg:right-44 2xl:right-36 3xl:right-28">
+            <div className="h-12 flex items-center">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"
@@ -197,7 +200,7 @@ export const CardCarousel = ({
           </>
         ) : (
           <>
-            <div className="absolute h-12 top-7 left-0">
+            <div className="h-12 flex items-center">
               <CarouselDots
                 activeClassName={mode === "dark" ? "bg-white" : "bg-ocean"}
                 inactiveClassName="bg-neutral-lighter"
@@ -206,7 +209,7 @@ export const CardCarousel = ({
 
             <div
               className={cn(
-                "absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28",
+                "flex h-12 w-max max-w-full items-center justify-end",
               )}
             >
               <CarouselArrows

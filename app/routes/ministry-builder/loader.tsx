@@ -48,7 +48,9 @@ export const fetchMinistryServices = async () => {
             const attributeValues = matrixItem.attributeValues;
             const ministryTypeGuid = attributeValues?.ministryType?.value;
             const ministryType = ministryTypeGuid
-              ? ((await fetchDefinedValue(ministryTypeGuid)) as MinistryService["ministryType"])
+              ? ((await fetchDefinedValue(
+                  ministryTypeGuid,
+                )) as MinistryService["ministryType"])
               : ("" as MinistryService["ministryType"]);
 
             const ministryService: MinistryService = {
@@ -68,7 +70,7 @@ export const fetchMinistryServices = async () => {
             };
 
             return ministryService;
-          })
+          }),
         );
 
         return ministryServices;
@@ -119,8 +121,7 @@ export const loader = async ({
     const pageBuilder: PageBuilderLoader = {
       title: pageData.title,
       heroImage:
-        createImageUrlFromGuid(pageData.attributeValues?.heroImage?.value) ||
-        "",
+        createImageUrlFromGuid(pageData.attributeValues?.image?.value) || "",
       content: pageData.content,
       callsToAction:
         parseRockKeyValueList(

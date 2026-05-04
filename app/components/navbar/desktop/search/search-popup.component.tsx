@@ -8,6 +8,7 @@ import { ContentItemHit } from "~/routes/search/types";
 interface LocationHit {
   campusName?: string;
   campusUrl?: string;
+  campusCardImage?: string;
   campusImage?: string;
   objectID?: string;
 }
@@ -85,7 +86,10 @@ export const SearchPopup = ({
 
         const transformedHits: ContentItemHit[] = hits
           .filter((hit) => hit?.campusName)
-          .map((hit) => ({
+          .map((hit) => {
+            const uri =
+              hit.campusCardImage?.trim() || hit.campusImage?.trim();
+            return {
             title: hit.campusName || "",
             contentType: "Location",
             url: hit.campusUrl || "",
@@ -109,7 +113,7 @@ export const SearchPopup = ({
             articleReadTime: 0,
             startDateTime: "",
             coverImage: {
-              sources: hit.campusImage ? [{ uri: hit.campusImage }] : [],
+              sources: uri ? [{ uri }] : [],
             },
             _typename: "",
             objectID: hit.objectID || "",
@@ -146,7 +150,8 @@ export const SearchPopup = ({
               htmlContent: [],
             },
             __position: 0,
-          }));
+          };
+          });
 
         setLocationHits(transformedHits);
       } catch (error) {

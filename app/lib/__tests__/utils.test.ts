@@ -363,6 +363,24 @@ describe("formattedServiceTimes", () => {
     const result = formattedServiceTimes("Sunday^10:00 AM");
     expect(result).toEqual([{ day: "Sunday", hour: ["10:00 AM"] }]);
   });
+
+  it("drops OnDemand segments (e.g. online campus trailing OnDemand^)", () => {
+    const result = formattedServiceTimes(
+      "Sunday^8:15AM|Sunday^9:45AM|Sunday^11:30AM|OnDemand^",
+    );
+    expect(result).toEqual([
+      { day: "Sunday", hour: ["8:15AM", "9:45AM", "11:30AM"] },
+    ]);
+  });
+
+  it("drops OnDemand case-insensitively", () => {
+    expect(
+      formattedServiceTimes("Sunday^9:00 AM|ONDEMAND^|Saturday^5:00 PM"),
+    ).toEqual([
+      { day: "Sunday", hour: ["9:00 AM"] },
+      { day: "Saturday", hour: ["5:00 PM"] },
+    ]);
+  });
 });
 
 describe("ensureArray", () => {

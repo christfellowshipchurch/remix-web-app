@@ -24,7 +24,7 @@ export const RegionCard = ({
 
   return (
     <div
-      className={`flex flex-col rounded-[1rem] overflow-hidden transition-all duration-300 md:shrink-0 md:w-[347px] ${
+      className={`flex flex-col rounded-2xl overflow-hidden transition-all duration-300 md:shrink-0 md:w-[347px] ${
         isExpanded ? "h-full" : "h-[555px]"
       }`}
     >

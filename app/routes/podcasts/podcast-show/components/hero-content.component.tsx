@@ -1,4 +1,5 @@
 import { Icon } from "~/primitives/icon/icon";
+import { sanitizeCmsHtml } from "~/lib/sanitize";
 import { PodcastEpisode } from "../../types";
 import { Link } from "react-router-dom";
 
@@ -20,13 +21,13 @@ export const HeroContent = ({
           {title && (
             <h1
               className="mb-2 md:mb-4 max-w-2xl font-extrabold text-2xl text-pretty md:text-4xl leading-tight tracking-tight text-white md:leading-tight lg:text-6xl"
-              dangerouslySetInnerHTML={{ __html: title }}
+              dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(title) }}
             />
           )}
           {description && (
             <p
               className="mb-6 max-w-2xl font-medium text-white text-lg lg:mb-8"
-              dangerouslySetInnerHTML={{ __html: description }}
+              dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(description) }}
             />
           )}
 

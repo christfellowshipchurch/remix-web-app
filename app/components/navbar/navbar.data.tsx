@@ -62,7 +62,7 @@ export const ministriesData: MenuLink = {
         ],
       },
       {
-        title: "GROUPS & CLASSES",
+        title: "COMMUNITY",
         items: [
           {
             title: "Group Finder",
@@ -75,14 +75,14 @@ export const ministriesData: MenuLink = {
             url: "/class-finder",
           },
           {
-            title: "My Groups & Classes",
-            description: "Stay connected & up to date",
-            url: "/connect",
-          },
-          {
             title: "Volunteer",
             description: "Local & Global Opportunities",
             url: "/volunteer",
+          },
+          {
+            title: "My Groups & Classes",
+            description: "Stay connected & up to date",
+            url: "https://legacy-my-groups.vercel.app/login",
           },
         ],
       },
@@ -120,24 +120,19 @@ export const watchReadListenData: MenuLink = {
         title: "READ",
         items: [
           { title: "Articles", url: "/articles" },
-          { title: "Devotionals", url: "/devotionals" },
+          { title: "Devotionals", url: "/daily-devo" },
         ],
       },
       {
         title: "LISTEN",
         items: [
           {
-            title: "So Good Sisterhood Podcast",
-            url: "/podcasts/so-good-sisterhood",
-          },
-          { title: "Crew Cast Podcast", url: "/podcasts/crewcast" },
-          {
-            title: "Young + Adulting Podcast",
-            url: "/podcasts/young-and-adulting",
+            title: "Podcasts",
+            url: "/podcasts",
           },
           {
-            title: "MVMT Music",
-            url: "https://www.youtube.com/@mvmntmsc",
+            title: "Worship",
+            url: "link-tree/worship",
           },
         ],
       },

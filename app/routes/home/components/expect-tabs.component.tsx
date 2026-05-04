@@ -16,7 +16,7 @@ export const WhatToExpectDesktopTabs = () => {
         </Tabs.Content>
       ))}
 
-      {/* Only displaying first tab for now */}
+      {/* Since we are only displaying one tab for now, we don't need the tabs list */}
 
       {/* <Tabs.List className="flex gap-8 xl:gap-16 w-full">
         {WhatToExpectData.map((item, index) => (
@@ -65,7 +65,6 @@ const WhatToExpectDesktopCard = ({
     setIsPlaying(false);
   };
 
-  // TODO: Once the videos are ready in Wistia they should be set to autoplay and hide controls on load, so that when the user clicks our play button, the video renders and it starts playing.
   return (
     <div className="w-full bg-navy rounded-l-[16px] 2xl:rounded-r-[16px] text-white pl-12 py-16 xl:py-24 flex justify-between pr-9 2xl:pr-0 relative">
       <div className="flex flex-col gap-12">
@@ -74,7 +73,7 @@ const WhatToExpectDesktopCard = ({
         </p>
 
         <div className="flex flex-col">
-          <h4 className="text-[21px] font-extrabold leading-none">{name}</h4>
+          <h3 className="text-[21px] font-extrabold leading-none">{name}</h3>
           <p className="text-lg font-bold text-border-secondary">{role}</p>
         </div>
       </div>
@@ -222,15 +221,6 @@ export const WhatToExpectMobileScroll = () => {
                     </div>
                   </div>
                 )}
-
-                {/* <div className="absolute bottom-0 left-0 flex flex-col justify-end w-full h-full bg-gradient-to-t from-black/60 via-black/0 to-transparent from-[-30%] via-[25%]">
-                  <div className="flex flex-col gap-4 p-2">
-                    <p className="text-white font-bold">{mobileContent}</p>
-                    <p className="text-[#C1C7D1] text-xs">
-                      {name} / {role}
-                    </p>
-                  </div>
-                </div> */}
               </div>
             );
           })}
@@ -269,32 +259,4 @@ const WhatToExpectData: WhatToExpectCardType[] = [
         "“When we first started coming to Christ Fellowship Church, we were just looking for a place to belong. But what we found was a community that didn't just pray for us—they believed with us. If you're walking through a season of waiting, this is the place to be.”",
     },
   },
-  // {
-  //   title: "What is a Sunday Like 2",
-  //   data: {
-  //     role: "church member",
-  //     name: "John Doe 2",
-  //     video: "7yhe4p60vn",
-  //     thumbnail:
-  //       "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
-  //     mobileContent:
-  //       "“It's given me a lot of peace and clarity around my church.”",
-  //     content:
-  //       "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
-  //   },
-  // },
-  // {
-  //   title: "What is a Sunday Like 3",
-  //   data: {
-  //     role: "church member",
-  //     name: "John Doe 3",
-  //     video: "7yhe4p60vn",
-  //     thumbnail:
-  //       "https://embed-ssl.wistia.com/deliveries/142ed1790443bd9226f6b1010aa957d57ba002bc.jpg?image_resize=960",
-  //     mobileContent:
-  //       "“It's given me a lot of peace and clarity around my church.”",
-  //     content:
-  //       "“As a devoted member of the community, I have witnessed countless blessings through our church. The support and love from fellow members have uplifted my spirit during challenging times. I am grateful”",
-  //   },
-  // },
 ];

@@ -7,6 +7,8 @@ import { cn } from "~/lib/utils";
 import { SetAReminderModal } from "../modals/set-a-reminder/reminder-modal.component";
 import { Video } from "~/primitives/video/video.primitive";
 
+export type DynamicHeroOverlay = 'gradient' | 'full' | 'none';
+
 export type DynamicHeroTypes = {
   wistiaId?: string;
   imagePath?: string;
@@ -20,7 +22,7 @@ export type DynamicHeroTypes = {
   mobileHeight?: string;
   ipadHeight?: string;
   desktopHeight?: string;
-  fullOverlay?: boolean;
+  overlay?: DynamicHeroOverlay;
   isSpanish?: boolean;
 };
 
@@ -32,9 +34,10 @@ export const DynamicHero = ({
   mobileHeight,
   ipadHeight,
   desktopHeight,
-  fullOverlay = false,
+  overlay = 'gradient',
 }: DynamicHeroTypes) => {
   const location = useLocation();
+
   const pagePath =
     location.pathname
       .split("/")
@@ -53,19 +56,29 @@ export const DynamicHero = ({
         ["--ipad-height" as string]: ipadHeight || mobileHeight || "640px",
         ["--desktop-height" as string]:
           desktopHeight || ipadHeight || mobileHeight || "640px",
-        ...(imagePath && { backgroundImage: `url(${imagePath})` }),
       }}
       className={cn(
         "relative flex items-center justify-start self-stretch",
         "h-(--mobile-height)",
         "md:h-(--ipad-height)",
         "lg:h-(--desktop-height)",
-        imagePath && "bg-cover bg-center bg-no-repeat",
-        imagePath && "before:absolute before:inset-0 before:bg-black/50",
       )}
+      aria-label={`${pagePath} Hero`}
     >
       {/* Video if passed in */}
-      <div className={"absolute size-full overflow-hidden"}>
+      {/* z-0 traps poster/video/dim layer below gradient + content (inner z-[15] stays inside this context) */}
+      <div className="absolute inset-0 z-0 size-full overflow-hidden">
+        {/* Use <img> (not CSS background) so fetchPriority applies when Wistia + poster */}
+        {wistiaId && imagePath && (
+          <img
+            src={imagePath}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 z-0 w-full h-full object-cover"
+            aria-hidden
+          />
+        )}
         {wistiaId && (
           <Video
             key={`${location.pathname}-${wistiaId}`}
@@ -73,31 +86,44 @@ export const DynamicHero = ({
             autoPlay
             muted
             loop
+            className="relative z-10"
           />
         )}
-        {!wistiaId && imagePath && (
+        {/* Above poster + video: outer ::before sat behind the absolute media layer */}
+        {wistiaId && (
+          <div
+            className="pointer-events-none absolute inset-0 z-15 bg-black/50"
+            aria-hidden
+          />
+        )}
+
+        {imagePath && !wistiaId && (
           <img
             src={imagePath}
             alt="Hero Background"
+            fetchPriority="high"
             className="absolute inset-0 w-full h-full object-cover"
           />
         )}
       </div>
 
       {/* Bottom Background Gradient Overlay or full overlay */}
-      <div
-        className={cn(
-          "absolute bottom-0 left-0 right-0 h-full z-0",
-          fullOverlay
-            ? "bg-black/60"
-            : "bg-linear-to-t from-black to-transparent opacity-70",
-        )}
-      />
+      {overlay !== 'none' && (
+        <div
+          className={cn(
+            'absolute bottom-0 left-0 right-0 h-full z-1',
+            overlay === 'full'
+              ? 'bg-black/60'
+              : 'bg-linear-to-t from-black to-transparent opacity-70',
+          )}
+          aria-hidden
+        />
+      )}
 
       {/* Content */}
       <div
         className={cn(
-          "flex flex-col w-full items-start justify-end self-stretch z-10",
+          "relative z-10 flex flex-col w-full items-start justify-end self-stretch",
           "px-5 md:px-12 lg:px-18",
         )}
       >
@@ -134,7 +160,7 @@ export const DynamicHero = ({
                       <SetAReminderModal
                         key={i}
                         intent="secondary"
-                        className="text-white border-[#FAFAFC] rounded-none border hover:!bg-white/10"
+                        className="text-white border-[#FAFAFC] rounded-none border hover:bg-white/10!"
                       />
                     );
                   } else {

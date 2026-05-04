@@ -2,6 +2,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { getUserFromRequest } from "~/lib/.server/authentication/get-user-from-request";
 import { fetchRockData } from "~/lib/.server/fetch-rock-data";
 import { dayTimes, formattedServiceTimes } from "~/lib/utils";
+import { escapeOData } from "~/lib/.server/rock-utils";
 
 export type LoaderReturnType = {
   serviceTimes: dayTimes[];
@@ -25,7 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const data = await fetchRockData({
     endpoint: "Campuses",
     queryParams: {
-      $filter: `Url eq '${campusUrl}'`,
+      $filter: `Url eq '${escapeOData(campusUrl)}'`,
       $expand: "Location",
       loadAttributes: "simple",
     },

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
@@ -7,43 +7,57 @@ import Icon from "~/primitives/icon";
 
 import { LoaderReturnType } from "../loader";
 import { ClassHitComponent } from "../components/class-hit-component.component";
-import { AllClassFiltersPopup } from "../components/popups/all-filters.component";
-import { Button } from "~/primitives/button/button.primitive";
-import { cn } from "~/lib/utils";
-import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
-import { DesktopClassFilters } from "../components/popups/class-filters";
-import { ClassHitType } from "../../types";
+import { AllClassFiltersPopup } from "../components/all-filters.component";
+import { buildIndexInitialUiState } from "~/components/finders/finder-algolia.utils";
+import { FinderResultsStats } from "~/components/finders/finder-results-stats.component";
+import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
 import {
-  parseClassFinderUrlState,
-  classFinderUrlStateToParams,
-  classFinderEmptyState,
-  type ClassFinderUrlState,
-} from "../../class-finder-url-state";
+  SearchFilterDesktopItem,
+  SearchFilters,
+} from "~/components/finders/search-filters";
+import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
+import { ClassHitType } from "../../types";
+
+import {
+  groupClassTypeHits,
+  syntheticHitsFromGrouped,
+} from "../components/group-class-type-hits";
 import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
 import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
+import { HubsTagsRefinementList } from "~/components/hubs-tags-refinement";
+import {
+  classFinderEmptyState,
+  ClassFinderUrlState,
+  classFinderUrlStateToParams,
+  parseClassFinderUrlState,
+} from "../components/class-finder-url-state";
 
 const INDEX_NAME = "dev_Classes";
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2. */
+const CLASS_SEARCH_DESKTOP_FILTERS = [
+  {
+    id: "topic",
+    label: "Topic",
+    popupTitle: "Topic",
+    icon: "bookOpen",
+    data: {
+      showFooter: true,
+      content: [
+        {
+          title: "LEARN ABOUT",
+          attribute: "topic",
+        },
+      ],
+    },
+  },
+] satisfies SearchFilterDesktopItem[];
+
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
-  const initialUiState: { [key: string]: Record<string, unknown> } = {};
-  if (
-    urlState.query !== undefined ||
-    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
-  ) {
-    initialUiState[INDEX_NAME] = {};
-    if (urlState.query !== undefined)
-      initialUiState[INDEX_NAME].query = urlState.query;
-    if (
-      urlState.refinementList &&
-      Object.keys(urlState.refinementList).length > 0
-    ) {
-      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
-    }
-  }
-  return { coordinates: null, initialUiState };
+  return {
+    initialUiState: buildIndexInitialUiState(INDEX_NAME, urlState) ?? {},
+  };
 }
 
 export const ClassSearch = () => {
@@ -61,46 +75,10 @@ export const ClassSearch = () => {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  // Scroll handling effect
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
-    {}
+    {},
   );
 
   const clearAllFiltersFromUrl = () => {
@@ -109,7 +87,6 @@ export const ClassSearch = () => {
       replace: true,
       preventScrollReset: true,
     });
-    setInstantSearchKey((k) => k + 1);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -136,21 +113,21 @@ export const ClassSearch = () => {
 
   return (
     <div
-      className="flex flex-col gap-4 w-screen pt-12 pagination-scroll-to"
+      className="flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to"
       id="search"
     >
       <InstantSearch
-        key={instantSearchKey}
         indexName={INDEX_NAME}
         searchClient={searchClient}
         initialUiState={
-          instantSearchKey > 0
-            ? { [INDEX_NAME]: {} }
-            : Object.keys(initial.initialUiState).length > 0
+          Object.keys(initial.initialUiState).length > 0
             ? initial.initialUiState
             : undefined
         }
-        onStateChange={({ uiState }) => {
+        onStateChange={({ uiState, setUiState }) => {
+          // Controlled InstantSearch: commit widget/programmatic UI state to the
+          // helper + schedule search. Without this, URL can update while hits stay stale.
+          setUiState(uiState);
           const indexState = uiState[INDEX_NAME];
           if (indexState)
             syncUrlFromUiState(indexState as Record<string, unknown>);
@@ -161,21 +138,20 @@ export const ClassSearch = () => {
       >
         <ResponsiveConfigure
           ageInput=""
-          selectedLocation={null}
           coordinates={null}
+          hitsPerPageOverride={1000}
         />
-        <div className="flex flex-col">
-          <div
-            className={cn(
-              "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0"
-            )}
-          >
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
-                <Icon name="searchAlt" className="text-neutral-default ml-3" />
+        <div className="flex flex-col bg-white pt-4">
+          <FinderStickyBar>
+            <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4">
+              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2">
+                <Icon
+                  name="searchAlt"
+                  className="text-neutral-default ml-3"
+                  size={16}
+                />
                 <SearchBox
-                  placeholder="Keyword"
+                  placeholder="Search"
                   translations={{
                     submitButtonTitle: "Search",
                     resetButtonTitle: "Reset",
@@ -183,7 +159,8 @@ export const ClassSearch = () => {
                   classNames={{
                     root: "flex-grow",
                     form: "flex",
-                    input: "w-full text-xl px-2 focus:outline-none",
+                    input:
+                      "w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm",
                     resetIcon: "hidden",
                     submit: "hidden",
                     loadingIcon: "hidden",
@@ -191,46 +168,46 @@ export const ClassSearch = () => {
                 />
               </div>
 
-              <div className="hidden md:flex items-center gap-4">
-                <DesktopClassFilters onClearAllToUrl={clearAllFiltersFromUrl} />
-                <AlgoliaFinderClearAllButton
-                  className="hidden lg:block"
+              <div className="lg:hidden w-full">
+                <SearchFilters
                   onClearAllToUrl={clearAllFiltersFromUrl}
+                  desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
+                  compactInlineFilterCount={2}
+                  groupedFooterCount
+                  renderMorePanel={({
+                    onHide,
+                    onClearAllToUrl,
+                    mobileBottomSheet,
+                    morePanelTitle,
+                  }) => (
+                    <AllClassFiltersPopup
+                      hideTopic
+                      hideLanguage
+                      showFormat
+                      onHide={onHide}
+                      onClearAllToUrl={onClearAllToUrl}
+                      mobileBottomSheet={mobileBottomSheet}
+                      bottomSheetTitle={morePanelTitle}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="hidden min-w-0 flex-1 lg:block">
+                <HubsTagsRefinementList
+                  attribute="topic"
+                  wrapperClass="flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3"
                 />
               </div>
             </div>
-          </div>
+          </FinderStickyBar>
 
-          <div className="md:hidden bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
-            <div className="content-padding">
-              <Button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                intent="secondary"
-                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
-              >
-                <Icon name="sliderAlt" className="text-navy" />
-                All Filters
-              </Button>
-            </div>
-            <div
-              className={cn(
-                "absolute transition-all duration-300",
-                isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(102%)]"
-                  : "-z-1 opacity-0 pointer-events-none"
-              )}
-            >
-              <AllClassFiltersPopup
-                onHide={() => setIsMobileOpen(false)}
-                onClearAllToUrl={clearAllFiltersFromUrl}
-              />
-            </div>
-          </div>
-
-          {/* Class Search Results / Class Type Filters */}
+          {/* CLASS SEARCH RESULTS */}
           <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
             <div className="max-w-screen-content mx-auto md:w-full">
-              <CustomClassTypeFacets fromClassFinderUrl={fromClassFinderUrl} />
+              <ClassTypeGroupedResults
+                fromClassFinderUrl={fromClassFinderUrl}
+              />
             </div>
           </div>
         </div>
@@ -239,169 +216,77 @@ export const ClassSearch = () => {
   );
 };
 
-interface GroupedClassType {
-  coverImage: string;
-  title: string;
-  summary: string;
-  subtitle: string;
-  topic: string;
-  classTypeUrl: string;
-  locations: string | "Multiple Locations";
-  format: "In-Person" | "Online" | "Multiple Formats";
-  language: "English" | "Español" | "Multiple Languages";
-}
+const ITEMS_PER_PAGE = 12;
 
-const CustomClassTypeFacets = ({
+function ClassTypeGroupedResults({
   fromClassFinderUrl,
 }: {
   fromClassFinderUrl?: string;
-}) => {
+}) {
   const { items } = useHits<ClassHitType>();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
 
-  const groupedClassTypes: GroupedClassType[] = useMemo(() => {
-    const grouped = items.reduce((acc, hit) => {
-      const classType = hit.classType;
-      const existingGroup = acc.find((group) => group.title === classType);
+  const grouped = useMemo(() => groupClassTypeHits(items), [items]);
+  const mappedHits = useMemo(
+    () => syntheticHitsFromGrouped(grouped),
+    [grouped],
+  );
 
-      if (existingGroup) {
-        // If classType already exists, update locations / language to "Multiple Locations" / "Multiple Languages"
-        existingGroup.locations = "Multiple Locations";
-        existingGroup.language = "Multiple Languages";
-      } else {
-        // Create new group for this classType
-        acc.push({
-          coverImage: hit.coverImage.sources[0]?.uri || "",
-          title: classType,
-          classTypeUrl: hit.classTypeUrl,
-          summary: hit.summary,
-          subtitle: hit.subtitle,
-          topic: hit.topic,
-          locations: hit.campus.name,
-          format: hit.format,
-          language: hit.language,
-        });
-      }
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
 
-      return acc;
-    }, [] as GroupedClassType[]);
-
-    return grouped;
-  }, [items]);
-
-  const mappedClassTypes: ClassHitType[] = useMemo(() => {
-    return groupedClassTypes.map((group, index) => {
-      return {
-        objectID: `grouped-${index}`,
-        id: `grouped-${index}`,
-        title: group.title,
-        classType: group.title as ClassHitType["classType"],
-        classTypeUrl: group.classTypeUrl as ClassHitType["classTypeUrl"],
-        subtitle: group.title,
-        summary: group.subtitle,
-        coverImage: {
-          sources: [{ uri: group.coverImage }],
-        },
-        campus: {
-          name: group.locations,
-        },
-        _geoloc: {
-          lat: 0,
-          lng: 0,
-        },
-        startDate: "",
-        endDate: "",
-        schedule: "",
-        topic: group.topic as ClassHitType["topic"],
-        language: group.language as ClassHitType["language"],
-        format: group.format as ClassHitType["format"],
-        _highlightResult: {
-          title: { value: group.title, matchLevel: "none", matchedWords: [] },
-          summary: {
-            value: group.summary,
-            matchLevel: "none",
-            matchedWords: [],
-          },
-          author: {
-            firstName: { value: "", matchLevel: "none", matchedWords: [] },
-            lastName: { value: "", matchLevel: "none", matchedWords: [] },
-          },
-          routing: {
-            pathname: { value: "", matchLevel: "none", matchedWords: [] },
-          },
-          htmlContent: [],
-        },
-        __position: index,
-      };
-    });
-  }, [groupedClassTypes]);
-
-  // Pagination logic
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedItems = mappedClassTypes.slice(startIndex, endIndex);
-
-  // Reset to page 1 when items change
   useEffect(() => {
     setCurrentPage(1);
-  }, [mappedClassTypes.length]);
+  }, [mappedHits.length]);
 
   return (
     <>
       <div className="min-h-[320px]">
-        <p className="text-text-secondary mb-6">
-          {mappedClassTypes.length} Results Found
-        </p>
+        <FinderResultsStats hitCount={mappedHits.length} />
 
-        <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-          <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:!gap-x-8 gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
-              {paginatedItems.map((hit) => (
-                <ClassHitComponent
-                  key={hit.objectID}
-                  hit={hit}
-                  fromClassFinderUrl={fromClassFinderUrl}
-                />
-              ))}
-            </div>
+        <div className="flex w-full items-center justify-center md:items-start md:justify-start">
+          <div className="grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {pageHits.map((hit) => (
+              <ClassHitComponent
+                key={hit.objectID}
+                hit={hit}
+                fromClassFinderUrl={fromClassFinderUrl}
+              />
+            ))}
           </div>
         </div>
       </div>
 
-      <ClassSearchCustomPagination
-        mappedClassTypes={mappedClassTypes}
-        itemsPerPage={itemsPerPage}
+      <ClassSearchPagination
+        totalItems={mappedHits.length}
+        itemsPerPage={ITEMS_PER_PAGE}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
     </>
   );
-};
+}
 
-const ClassSearchCustomPagination = ({
-  mappedClassTypes,
-  itemsPerPage = 12,
+function ClassSearchPagination({
+  totalItems,
+  itemsPerPage,
   currentPage,
   onPageChange,
 }: {
-  mappedClassTypes: ClassHitType[];
-  itemsPerPage?: number;
+  totalItems: number;
+  itemsPerPage: number;
   currentPage: number;
   onPageChange: (page: number) => void;
-}) => {
-  const totalPages = Math.ceil(mappedClassTypes.length / itemsPerPage);
-
+}) {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
 
-  const handlePageChange = (newPage: number) => {
+  const goToPage = (newPage: number) => {
     onPageChange(newPage);
-    // Scroll to the pagination-scroll-to element
-    const scrollTarget = document.querySelector(".pagination-scroll-to");
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: "smooth" });
-    }
+    document
+      .querySelector(".pagination-scroll-to")
+      ?.scrollIntoView({ behavior: "smooth" });
   };
 
   if (totalPages <= 1) return null;
@@ -409,46 +294,44 @@ const ClassSearchCustomPagination = ({
   return (
     <div className="mt-6 flex justify-center md:justify-start">
       <div className="flex items-center justify-center gap-2">
-        <ClassPaginationItem
-          isDisabled={isFirstPage}
-          onClick={() => handlePageChange(currentPage - 1)}
+        <PaginationControl
+          disabled={isFirstPage}
+          onClick={() => goToPage(currentPage - 1)}
         >
           <Icon
             name="chevronLeft"
             size={32}
             color={isFirstPage ? "#CECECE" : "#0092BC"}
           />
-        </ClassPaginationItem>
+        </PaginationControl>
         <p>
           {currentPage} of {totalPages}
         </p>
-        <ClassPaginationItem
-          isDisabled={isLastPage}
-          onClick={() => handlePageChange(currentPage + 1)}
+        <PaginationControl
+          disabled={isLastPage}
+          onClick={() => goToPage(currentPage + 1)}
         >
           <Icon
             name="chevronRight"
             size={32}
             color={isLastPage ? "#CECECE" : "#0092BC"}
           />
-        </ClassPaginationItem>
+        </PaginationControl>
       </div>
     </div>
   );
-};
+}
 
-type ClassPaginationItemProps = {
-  onClick: () => void;
-  isDisabled: boolean;
-  children: React.ReactNode;
-};
-
-function ClassPaginationItem({
-  isDisabled,
+function PaginationControl({
+  disabled,
   onClick,
   children,
-}: ClassPaginationItemProps) {
-  if (isDisabled) {
+}: {
+  disabled: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  if (disabled) {
     return (
       <div>
         <span>{children}</span>
@@ -458,7 +341,7 @@ function ClassPaginationItem({
 
   return (
     <div>
-      <button onClick={onClick} className="cursor-pointer">
+      <button type="button" onClick={onClick} className="cursor-pointer">
         {children}
       </button>
     </div>

@@ -23,7 +23,7 @@ export const SearchCustomRefinementList = ({
     (item) =>
       item.value !== "Ministry Page" &&
       item.value !== "Page Builder" &&
-      item.value !== "Redirect Card"
+      item.value !== "Redirect Card",
   );
 
   const handleItemClick = (value: string) => {
@@ -35,7 +35,7 @@ export const SearchCustomRefinementList = ({
       (item) =>
         item !== "Ministry Page" &&
         item !== "Page Builder" &&
-        item !== "Redirect Card"
+        item !== "Redirect Card",
     );
 
     if (isPagesSelected) {
@@ -74,7 +74,7 @@ export const SearchCustomRefinementList = ({
         className={`${buttonClass} ${
           isPagesSelected
             ? "text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1"
-            : "border-[#AAAAAA] text-[#444444] hover:text-ocean hover:border-ocean"
+            : "border-neutral-light text-neutral-dark hover:text-ocean hover:border-ocean"
         }`}
       >
         <button
@@ -99,7 +99,7 @@ export const SearchCustomRefinementList = ({
             className={`${buttonClass} ${
               isSelected
                 ? "text-ocean border-ocean overflow-hidden group pr-3 hover:-translate-y-1"
-                : "border-[#AAAAAA] text-[#444444] hover:text-ocean hover:border-ocean"
+                : "border-neutral-light text-neutral-dark hover:text-ocean hover:border-ocean"
             }`}
           >
             <button

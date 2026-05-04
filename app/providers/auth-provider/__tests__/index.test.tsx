@@ -51,7 +51,6 @@ const mockUser = {
 
 describe("AuthProvider", () => {
   beforeEach(() => {
-    localStorage.clear();
     vi.clearAllMocks();
     global.fetch = vi.fn();
   });
@@ -60,7 +59,12 @@ describe("AuthProvider", () => {
     vi.restoreAllMocks();
   });
 
-  it("starts with isLoading=true then sets false when no token", async () => {
+  it("starts with isLoading=true then sets false when server returns 401", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: false,
+      status: 401,
+    });
+
     await act(async () => {
       renderWithRouter(
         <AuthProvider>
@@ -72,8 +76,7 @@ describe("AuthProvider", () => {
     expect(screen.getByTestId("user").textContent).toBe("null");
   });
 
-  it("loads user from token in localStorage on mount", async () => {
-    localStorage.setItem(AUTH_TOKEN_KEY, "valid-token");
+  it("loads user from cookie on mount", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
       json: async () => mockUser,
@@ -93,8 +96,12 @@ describe("AuthProvider", () => {
     expect(screen.getByTestId("loading").textContent).toBe("false");
   });
 
-  it("does not set user when no token in localStorage", async () => {
-    // No token — loadToken exits early, no fetch call
+  it("sets no user when server returns 401 on mount", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: false,
+      status: 401,
+    });
+
     await act(async () => {
       renderWithRouter(
         <AuthProvider>
@@ -102,7 +109,6 @@ describe("AuthProvider", () => {
         </AuthProvider>
       );
     });
-    expect(global.fetch as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
     expect(screen.getByTestId("user").textContent).toBe("null");
   });
 
@@ -116,6 +122,11 @@ describe("AuthProvider", () => {
   });
 
   it("renders children", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: false,
+      status: 401,
+    });
+
     await act(async () => {
       renderWithRouter(
         <AuthProvider>
@@ -129,7 +140,6 @@ describe("AuthProvider", () => {
 
 describe("useAuth - loginWithEmail", () => {
   beforeEach(() => {
-    localStorage.clear();
     vi.clearAllMocks();
     global.fetch = vi.fn();
   });
@@ -148,13 +158,15 @@ describe("useAuth - loginWithEmail", () => {
     );
   }
 
-  it("loginWithEmail fetches token and then sets user", async () => {
-    // First call: authenticate → encryptedToken
-    // Second call: currentUser
+  it("loginWithEmail sets cookie server-side and then sets user", async () => {
+    // 1: mount currentUser check → no cookie yet
+    // 2: authenticate → success (server sets cookie via Set-Cookie header)
+    // 3: currentUser after login → user data
     (global.fetch as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({ ok: false, status: 401 })
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ encryptedToken: "my-token" }),
+        json: async () => ({ success: true }),
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -176,7 +188,6 @@ describe("useAuth - loginWithEmail", () => {
     await waitFor(() =>
       expect(screen.getByTestId("user").textContent).toBe("Test User")
     );
-    expect(localStorage.getItem(AUTH_TOKEN_KEY)).toBe("my-token");
     expect(mockRevalidate).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
@@ -184,7 +195,6 @@ describe("useAuth - loginWithEmail", () => {
 
 describe("useAuth - logout", () => {
   beforeEach(() => {
-    localStorage.clear();
     vi.clearAllMocks();
     global.fetch = vi.fn();
   });
@@ -199,12 +209,12 @@ describe("useAuth - logout", () => {
     );
   }
 
-  it("logout clears user and token", async () => {
-    localStorage.setItem(AUTH_TOKEN_KEY, "valid-token");
-    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockUser,
-    });
+  it("logout clears user and calls server to clear cookie", async () => {
+    // 1: mount currentUser → user found via cookie
+    // 2: logout → server clears cookie
+    (global.fetch as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({ ok: true, json: async () => mockUser })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ success: true }) });
 
     await act(async () => {
       renderWithRouter(
@@ -218,19 +228,19 @@ describe("useAuth - logout", () => {
       expect(screen.getByTestId("user").textContent).toBe("Test User")
     );
 
-    act(() => {
+    await act(async () => {
       screen.getByText("logout").click();
     });
 
-    expect(screen.getByTestId("user").textContent).toBe("null");
-    expect(localStorage.getItem(AUTH_TOKEN_KEY)).toBeNull();
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("null")
+    );
     expect(mockRevalidate).toHaveBeenCalled();
   });
 });
 
 describe("useAuth - checkUserExists", () => {
   beforeEach(() => {
-    localStorage.clear();
     vi.clearAllMocks();
     global.fetch = vi.fn();
   });
@@ -254,10 +264,12 @@ describe("useAuth - checkUserExists", () => {
   }
 
   it("checkUserExists returns true when userExists is true", async () => {
-    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ userExists: true }),
-    });
+    (global.fetch as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({ ok: false, status: 401 }) // mount
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ userExists: true }),
+      });
 
     await act(async () => {
       renderWithRouter(

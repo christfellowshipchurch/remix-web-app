@@ -1,6 +1,9 @@
 import Icon from "~/primitives/icon";
 import { VirtualTourTabs } from "../components/virtual-tour.component";
-import { DuringTheWeek } from "../components/during-the-week.component";
+import {
+  DuringTheWeek,
+  type WeeklyMinistryService,
+} from "../components/during-the-week.component";
 import { CTAs } from "../components/ctas.component";
 import { icons } from "~/lib/icons";
 import { dayTimes, formattedServiceTimes } from "~/lib/utils";
@@ -17,14 +20,7 @@ interface CampusInfoProps {
     postalCode: string;
   };
   serviceTimes: string;
-  weekdaySchedule?: {
-    day: string;
-    events: {
-      event: string;
-      time: string;
-      url: string;
-    }[];
-  }[];
+  weeklyMinistryServices?: WeeklyMinistryService[];
   phoneNumber: string;
   additionalInfo: string[];
 }
@@ -73,7 +69,7 @@ export const CampusInfo = ({
   campusName,
   digitalTourVideo,
   campusLocation,
-  weekdaySchedule,
+  weeklyMinistryServices,
   phoneNumber,
   additionalInfo,
   serviceTimes,
@@ -157,9 +153,9 @@ export const CampusInfo = ({
             {/* Desktop CTAs */}
             <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
               <CTAs isSpanish={isSpanish} />
-              {weekdaySchedule && weekdaySchedule.length > 0 && (
+              {weeklyMinistryServices && weeklyMinistryServices.length > 0 && (
                 <DuringTheWeek
-                  weekdaySchedule={weekdaySchedule}
+                  weeklyMinistryServices={weeklyMinistryServices}
                   isSpanish={isSpanish}
                 />
               )}
@@ -179,9 +175,9 @@ export const CampusInfo = ({
         {/* Mobile CTAs */}
         <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
           <CTAs isSpanish={isSpanish} />
-          {weekdaySchedule && weekdaySchedule.length > 0 && (
+          {weeklyMinistryServices && weeklyMinistryServices.length > 0 && (
             <DuringTheWeek
-              weekdaySchedule={weekdaySchedule}
+              weeklyMinistryServices={weeklyMinistryServices}
               isSpanish={isSpanish}
             />
           )}

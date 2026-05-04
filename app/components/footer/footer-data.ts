@@ -1,3 +1,5 @@
+import { ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
+
 export interface FooterLink {
   title: string;
   url: string;
@@ -24,7 +26,7 @@ export const footerColumns: FooterColumn[] = [
     title: "Connect",
     links: [
       { title: "Connect Card", url: "#connect-card" },
-      { title: "Request Prayer", url: "https://rock.gocf.org/RequestPrayer" },
+      { title: "Request Prayer", url: `${ROCK_PUBLIC_SITE_ORIGIN}/RequestPrayer` },
       {
         title: "Subscribe to Updates",
         url: "https://church.us11.list-manage.com/subscribe?u=76848e191018191e2e2d01d77&id=3265404466",

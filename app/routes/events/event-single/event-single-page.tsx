@@ -29,37 +29,11 @@ export const EventSinglePage: React.FC = () => {
     window.scrollTo({ top: offsetTop, behavior: "smooth" });
   }, [location.hash]);
 
-  // Valid groupTypes for ClickThroughRegistration
-  const validGroupTypes = [
-    "Kids Dedication",
-    "Kids Starting Line",
-    "Journey",
-    "Baptism",
-    "Dream Team Kickoff",
-  ];
-
   // Check if sessionScheduleCards exist
   const hasSessionRegistration =
     data.sessionScheduleCards && data.sessionScheduleCards.length > 0;
 
-  // Check if ClickThroughRegistration would be useful
-  // It extracts groupType from the URL path (last part of path)
-  // URL format: /events/kids or /events/baptism
-  const pathParts = location.pathname.split("/");
-  const lastPart = pathParts[pathParts.length - 1] || "";
-  const extractedGroupType = lastPart
-    ? lastPart.charAt(0).toUpperCase() + lastPart.slice(1)
-    : "";
-
-  // Handle "dream-team-kickoff" or "dream team kickoff" variations
-  const normalizedGroupType = extractedGroupType
-    .replace(/-/g, " ")
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-
-  const hasClickThroughRegistration =
-    validGroupTypes.includes(normalizedGroupType);
+  const hasClickThroughRegistration = Boolean(data.groupType);
 
   const showRegistration =
     hasSessionRegistration || hasClickThroughRegistration;
@@ -78,11 +52,7 @@ export const EventSinglePage: React.FC = () => {
         <BackBanner
           backText="Back to Events"
           pageTitle={data.title}
-          link={
-            typeof location.state?.fromEvents === "string"
-              ? location.state.fromEvents
-              : "/events"
-          }
+          link="/events"
         />
 
         <EventsSingleHero

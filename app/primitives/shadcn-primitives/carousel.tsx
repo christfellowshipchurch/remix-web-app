@@ -275,8 +275,8 @@ const CarouselNext = React.forwardRef<
         {...props}
       >
         <Icon
-          name="arrowRight"
-          className="size-6"
+          name="arrowBack"
+          className="size-6 rotate-180 overflow-visible"
           color={canScrollNext ? fill : disabledFill || fill}
         />
         <span className="sr-only">Next slide</span>
@@ -308,7 +308,7 @@ const CarouselDots = React.forwardRef<
           <button
             key={index}
             className={cn(
-              "h-2 w-2 rounded-full transition-colors",
+              "cursor-pointer h-2 w-2 rounded-full transition-colors",
               currentSlide === index
                 ? activeClassName || "bg-primary"
                 : inactiveClassName || "bg-muted",
@@ -322,27 +322,35 @@ const CarouselDots = React.forwardRef<
 });
 CarouselDots.displayName = "CarouselDots";
 
+const carouselArrowInFlowClass =
+  "static left-auto right-auto top-auto translate-y-0 cursor-pointer";
+
+const carouselArrowDisabledClass =
+  "disabled:border-neutral-lighter disabled:text-neutral-lighter disabled:hover:border-neutral-lighter disabled:hover:text-neutral-lighter";
+
 const CarouselArrows = ({
-  arrowStyles = "border-ocean text-ocean disabled:border-[#AAAAAA] hover:border-navy hover:text-navy",
+  arrowStyles = "border-ocean text-ocean hover:border-navy hover:text-navy",
 }: {
   arrowStyles?: string;
 }) => {
   const { api } = useCarousel();
   const slides = api?.scrollSnapList() || [];
 
+  const mergedArrowStyles = cn(carouselArrowDisabledClass, arrowStyles);
+
   return (
     <>
       {slides.length > 1 && (
-        <>
+        <div className="flex w-max max-w-full shrink-0 items-center gap-2">
           <CarouselPrevious
-            className={cn("cursor-pointer left-12", arrowStyles)}
+            className={cn(carouselArrowInFlowClass, mergedArrowStyles)}
             disabledFill="#AAAAAA"
           />
           <CarouselNext
-            className={cn("cursor-pointer left-26", arrowStyles)}
+            className={cn(carouselArrowInFlowClass, mergedArrowStyles)}
             disabledFill="#AAAAAA"
           />
-        </>
+        </div>
       )}
     </>
   );

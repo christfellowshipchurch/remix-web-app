@@ -1,5 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ComponentProps } from "react";
 import Icon from "~/primitives/icon";
+import { cn } from "~/lib/utils";
+
+type IconName = ComponentProps<typeof Icon>["name"];
 
 export interface DropdownOption {
   value: string;
@@ -18,6 +21,12 @@ interface DropdownProps {
   label?: string;
   required?: boolean;
   chevronColor?: string;
+  triggerClassName?: string;
+  menuClassName?: string;
+  chevronReflectsOpenState?: boolean;
+  openTriggerClassName?: string;
+  triggerIcon?: IconName;
+  triggerIconClassName?: string;
 }
 
 const Dropdown = ({
@@ -31,6 +40,12 @@ const Dropdown = ({
   label,
   required = false,
   chevronColor = "text-neutral-500",
+  triggerClassName,
+  menuClassName,
+  chevronReflectsOpenState = false,
+  openTriggerClassName,
+  triggerIcon,
+  triggerIconClassName,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -71,7 +86,6 @@ const Dropdown = ({
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -91,8 +105,8 @@ const Dropdown = ({
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block font-bold text-text-primary text-sm mb-2">
-          {required && <span className="text-ocean mr-1">*</span>}
+        <label className="mb-2 block text-sm font-bold text-text-primary">
+          {required && <span className="mr-1 text-ocean">*</span>}
           {label}
         </label>
       )}
@@ -102,45 +116,75 @@ const Dropdown = ({
         disabled={disabled}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
-        className={`
-          flex items-center justify-between w-full px-4 py-3 text-left bg-white border rounded-lg shadow-sm transition-colors duration-200
-          ${
-            error
-              ? "border-alert"
-              : "border-neutral-300 hover:border-neutral-400"
-          }
-          ${
-            disabled
-              ? "bg-neutral-100 text-neutral-400 cursor-not-allowed"
-              : "cursor-pointer"
-          }
-          focus:outline-none focus:ring-0 focus:border-neutral-300
-        `}
+        className={cn(
+          "flex w-full items-center justify-between rounded-lg border bg-white px-4 py-3 text-left text-text-primary shadow-sm transition-colors duration-200",
+          error
+            ? "border-alert"
+            : "border-neutral-300 hover:border-neutral-400",
+          disabled
+            ? "cursor-not-allowed bg-neutral-100 text-neutral-400"
+            : "cursor-pointer",
+          "focus:border-neutral-300 focus:outline-none focus:ring-0",
+          triggerClassName,
+          isOpen && !disabled && !error && openTriggerClassName,
+        )}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label={label || placeholder}
       >
-        <span
-          className={`truncate ${
-            disabled ? "text-neutral-400" : "text-text-primary"
-          }`}
-        >
-          {selectedOption?.label || placeholder}
-        </span>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          {triggerIcon ? (
+            <Icon
+              name={triggerIcon}
+              size={16}
+              className={cn(
+                "shrink-0 transition-colors duration-300",
+                triggerIconClassName,
+                chevronReflectsOpenState &&
+                  isOpen &&
+                  !disabled &&
+                  !error &&
+                  "text-ocean",
+              )}
+              aria-hidden
+            />
+          ) : null}
+          <span
+            className={cn(
+              "min-w-0 flex-1 truncate text-left",
+              disabled ? "text-neutral-400" : "text-inherit",
+            )}
+          >
+            {selectedOption?.label || placeholder}
+          </span>
+        </div>
         <Icon
           name="chevronDown"
-          className={`${chevronColor} transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          } ${disabled ? "text-neutral-400" : ""}`}
+          className={cn(
+            chevronColor,
+            "shrink-0 transition-transform duration-200",
+            isOpen && "rotate-180",
+            disabled && "text-neutral-400",
+            chevronReflectsOpenState &&
+              isOpen &&
+              !disabled &&
+              !error &&
+              "text-ocean",
+          )}
         />
       </button>
 
       {error && <p className="mt-1 text-sm text-alert">{error}</p>}
 
       {isOpen && !disabled && (
-        <div className="absolute top-full left-0 right-0 mt-3 md:mt-0 z-[9999] bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto flex flex-col">
+        <div
+          className={cn(
+            "absolute left-0 right-0 top-full z-[9999] mt-3 flex max-h-60 flex-col overflow-y-auto rounded-lg border border-neutral-300 bg-white shadow-lg md:mt-0",
+            menuClassName,
+          )}
+        >
           {options.length === 0 ? (
-            <div className="px-4 py-3 text-neutral-500 text-sm">
+            <div className="px-4 py-3 text-sm text-neutral-500">
               No options available
             </div>
           ) : (
@@ -154,10 +198,10 @@ const Dropdown = ({
                   w-full px-4 py-3 text-left transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg
                   ${
                     option.disabled
-                      ? "text-neutral-400 cursor-not-allowed bg-neutral-50"
+                      ? "cursor-not-allowed bg-neutral-50 text-neutral-400"
                       : value === option.value
-                      ? "bg-ocean/10 text-ocean font-medium"
-                      : "text-text-primary hover:bg-neutral-50"
+                        ? "bg-ocean/10 font-medium text-ocean"
+                        : "text-text-primary hover:bg-neutral-50"
                   }
                 `}
                 role="option"

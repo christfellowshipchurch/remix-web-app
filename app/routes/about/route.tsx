@@ -24,7 +24,7 @@ export default function AboutPage() {
       <DynamicHero
         customTitle="About Us"
         wistiaId="wcs977y9ac"
-        fullOverlay
+        overlay='none'
         ctas={[
           {
             title: "Beliefs",

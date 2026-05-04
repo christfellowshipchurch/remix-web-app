@@ -1,44 +1,110 @@
 import { StyledAccordion } from "~/components";
 
-const faqs = [
+export const summerFaqs = [
   {
-    title: "What does Christ Fellowship believe as a church?",
+    title: "Do I have to be enrolled in college to be a Summer Intern?",
     content:
-      "At Christ Fellowship, our goal and our vision is that, together, we would lead a radical transformation for Jesus Christ in this region and beyond—everyone, everyday, everywhere. To do this, we rally around this shared vision and some shared biblically-based beliefs and values. Learn more about <a className='underline text-ocean' href='/about#beliefs'>what we believe</a> and our core values of what we do as a church.",
+      "No, however you must have a high school diploma and be at least one year removed from high school.",
   },
   {
-    title: "What does Christ Fellowship have for families?",
+    title: "Is the Summer Internship paid?",
     content:
-      "No matter what age or stage of life, there's something here for the whole family! We have environments designed specifically for your <a className='underline text-ocean' href='/ministries/kids'>kids</a>, <a className='underline text-ocean' href='/ministries/students'>students</a>, and <a className='underline text-ocean' href='/ministries/young-adults'>young adults</a>—and in fact, we're doing more for the next generation than ever before. Learn more about our Get There First initiative and how your family can be a part of it.",
+      "Our interns receive a stipend for their summer with us. All interns receive the stipend in the form of two payments during the summer.",
   },
   {
-    title: "What events does Christ Fellowship have coming up?",
+    title: "Do I need a certain major to be considered for an internship?",
     content:
-      "We have ministries for everyone throughout the week and can't-miss special events you'll want on your calendar! See what's <a className='underline text-ocean' href='/events'>coming up at Christ Fellowship</a>.",
+      "No, we are just as concerned with your skills, interests, and curiosity as we are with your major. Students are encouraged to select their internship with respect to their major(s) and career/ministry goals.",
   },
   {
-    title: "What resources does Christ Fellowship offer?",
+    title: "Once I complete an internship, is it possible to do another?",
     content:
-      "Every week, we create a collection of personalized resources including encouraging messages and practical articles, devotionals, and podcasts. We also offer <a className='underline text-ocean' href='/ministries/care'>care ministries</a> throughout the week for every hurt, habit, or hangup. Have something we can be praying with you for? <a className='underline text-ocean' target='_blank' href='https://rock.gocf.org/RequestPrayer'>Share your prayer request!</a>",
+      "Absolutely! You are welcome to reapply for internships in the future, including another Summer Internship or a year-long College Internship, as long as you meet the required qualifications.",
   },
   {
-    title: "Where is Christ Fellowship located?",
+    title: "What if I need housing?",
     content:
-      "Christ Fellowship is one church with many <a className='underline text-ocean' href='/locations'>locations across South Florida</a>, and <a className='underline text-ocean' href='/locations/cf-everywhere'>online</a>—wherever you are!",
+      "Housing may be available for interns based on individual need and availability.",
+  },
+  {
+    title: "Do you provide transportation or travel costs?",
+    content:
+      "No, you will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
   },
 ];
 
-const InternshipsFAQs = () => {
+export const yearLongFaqs = [
+  {
+    title: "Do I have to be enrolled in college to be a College Intern?",
+    content:
+      "Yes, you must be enrolled as a full-time college student and have at least 60 credit hours completed along with a 3.0 GPA. ",
+  },
+  {
+    title: "Are college interns paid?",
+    content: "Yes, our interns receive an hourly wage.",
+  },
+  {
+    title: "What ministries are interns able to apply for?",
+    content:
+      "We want you to get hands-on training in the area God is calling you to! We have internships available, in Kids, Students, Young Adults, Production, Worship, Missions, Freedom and Care, Groups, Connections, Communications/Marketing, Films, and Graphic Design.",
+  },
+  {
+    title: "What if I need housing?",
+    content:
+      "Housing may be available for interns based on individual need and availability.",
+  },
+  {
+    title: "What is the application process?",
+    content:
+      "Once you have completed the online application, you will then have the following steps: video interview, phone interview with Intern Pastor, zoom interview with ministry leader in your ministry area and an in-person recruit event. ",
+  },
+  {
+    title: "Once I complete an internship, is it possible to do another?",
+    content:
+      "Absolutely! You are welcome to reapply for internships in the future, including another Summer Internship or a year-long College Internship, as long as you meet the required qualifications.",
+  },
+  {
+    title: "Do I receive paid vacation benefits during my internship?",
+    content:
+      "No, each Intern is allowed one week of vacation each semester during their time here with us. This must be approved by your supervisor and the Intern Pastor.",
+  },
+  {
+    title: "Do you provide transportation or travel costs?",
+    content:
+      "No, you will be responsible for any costs associated with getting here or returning to your current location. You are also responsible for transportation to and from work each day.",
+  },
+];
+
+const InternshipsFAQs = ({
+  faqs = [],
+  sectionSubheading,
+  sectionTitle,
+}: {
+  faqs?: { title: string; content: string }[];
+  sectionSubheading?: string;
+  sectionTitle?: string;
+}) => {
+  if (faqs.length === 0) return null;
+
   return (
-    <section className="w-full content-padding py-16">
-      <div className="max-w-screen-content mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
-        <h2 className="text-[52px] font-bold text-dark-navy">FAQs</h2>
+    <section className="w-full content-padding py-16" id="faq">
+      <div className="max-w-[1120px] mx-auto w-full flex flex-col gap-4 md:gap-8 lg:gap-12">
+        <div className="flex flex-col items-center justify-center gap-4">
+          {sectionSubheading && (
+            <p className="text-sm font-medium uppercase tracking-[2px] text-ocean text-center">
+              {sectionSubheading}
+            </p>
+          )}
+          <h2 className="text-[28px] md:text-[40px] font-bold text-dark-navy text-center">
+            {sectionTitle ?? "FAQs"}
+          </h2>
+        </div>
         <StyledAccordion
           data={faqs}
-          itemsStyle="bg-navy-subdued border border-navy-subdued"
+          itemsStyle="bg-transparent border-b border-[#E0E0E0] rounded-none"
           rootStyle="items-center"
-          headerStyle="font-semibold text-lg md:text-xl lg:text-2xl"
-          contentStyle="text-black/55"
+          headerStyle="font-semibold text-[17px] lg:text-lg text-dark-navy"
+          contentStyle="text-neutral-default"
         />
       </div>
     </section>

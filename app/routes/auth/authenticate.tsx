@@ -29,10 +29,12 @@ export const authenticate = async ({
       password as string
     );
 
-    return new Response(JSON.stringify({ encryptedToken }), {
+    const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
+        "Set-Cookie": `auth-token=${encryptedToken}; HttpOnly${secure}; SameSite=Strict; Path=/; Max-Age=34560000`,
       },
     });
   } catch (error) {

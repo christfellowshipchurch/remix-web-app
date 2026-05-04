@@ -246,3 +246,57 @@
     font-style: italic;
   }
 }
+
+/* Class single finder hero: “What to Expect” + summary (HTMLRenderer on dark hero) */
+.html-renderer.html-renderer--finder-hero-desc h2 {
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media (min-width: 1024px) {
+  .html-renderer.html-renderer--finder-hero-desc h2 {
+    font-size: 1.75rem;
+  }
+}
+
+.html-renderer.html-renderer--finder-hero-desc .class-single-hero-summary {
+  color: #fff;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .html-renderer.html-renderer--finder-hero-desc .class-single-hero-summary {
+    font-size: 1.25rem;
+  }
+}
+
+/* Finder hero description on white / light background */
+.html-renderer.html-renderer--finder-hero-desc-light h2 {
+  color: #222222;
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media (min-width: 1024px) {
+  .html-renderer.html-renderer--finder-hero-desc-light h2 {
+    font-size: 1.75rem;
+  }
+}
+
+.html-renderer.html-renderer--finder-hero-desc-light .class-single-hero-summary {
+  color: #222222;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .html-renderer.html-renderer--finder-hero-desc-light .class-single-hero-summary {
+    font-size: 1.25rem;
+  }
+}

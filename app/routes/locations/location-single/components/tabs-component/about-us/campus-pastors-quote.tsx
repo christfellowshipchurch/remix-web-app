@@ -1,3 +1,5 @@
+import { sanitizeCmsHtml } from "~/lib/sanitize";
+
 export const CampusPastorsQuote = ({
   campusPastor,
   isSpanish = false,
@@ -22,7 +24,7 @@ export const CampusPastorsQuote = ({
             {title}
           </h2>
           <p className="lg:text-xl max-w-[520px] text-pretty lg:max-w-[620px]">
-            <span dangerouslySetInnerHTML={{ __html: quote }} />
+            <span dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(quote) }} />
           </p>
         </div>
 

@@ -28,7 +28,7 @@ const SeasonRefinementList = () => {
       items
         .map((item) => ({ ...item, label: `Season ${item.label}` }))
         .sort((a, b) => Number(b.value) - Number(a.value)),
-    [items]
+    [items],
   );
 
   // Auto-select latest season when items first become available
@@ -125,7 +125,7 @@ export const PodcastEpisodeList = ({
 }: PodcastEpisodeListProps) => {
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const filter = `contentType:"Podcast" AND podcastShow:"${podcastTitle}"`;
@@ -146,13 +146,21 @@ export const PodcastEpisodeList = ({
       {/* Episodes Grid - newest first via client-side sort */}
       <Hits
         hitComponent={PodcastEpisodeHitComponent}
-        transformItems={(hits) =>
-          [...hits].sort(
-            (a, b) =>
-              new Date((b as ContentItemHit).startDateTime).getTime() -
-              new Date((a as ContentItemHit).startDateTime).getTime()
-          )
-        }
+        transformItems={(hits) => {
+          const now = new Date();
+          // Filter out items with startDateTime > now, then sort newest-first
+          return [...hits]
+            .filter(
+              (hit) =>
+                new Date((hit as ContentItemHit).startDateTime).getTime() <=
+                now.getTime(),
+            )
+            .sort(
+              (a, b) =>
+                new Date((b as ContentItemHit).startDateTime).getTime() -
+                new Date((a as ContentItemHit).startDateTime).getTime(),
+            );
+        }}
         classNames={{
           list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
         }}

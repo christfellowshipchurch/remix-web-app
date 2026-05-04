@@ -1,17 +1,33 @@
-import { Link, useLoaderData, useLocation } from "react-router-dom";
-import { LoaderReturnType } from "./loader";
-import { Breadcrumbs } from "~/components";
-
-import { ClassSingleBasicContent } from "./components/basic-content.component";
-import { ClassFAQ } from "./components/faq.component";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
 import { Configure, InstantSearch, useHits } from "react-instantsearch";
-import { useMemo } from "react";
+
+import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
+import { FinderHero, type FinderHeroCta } from "~/components/finders/hero";
+import { VideoModal } from "~/components/modals/video-modal";
 import { Button } from "~/primitives/button/button.primitive";
-import { Icon } from "~/primitives/icon/icon";
-import { UpcomingSessionsSection } from "./partials/upcoming-sections.partial";
-import { UpcomingSessionMobileSection } from "./partials/upcoming-session-mobile.partial";
+import { ClassFAQ } from "./components/faq.component";
+import { LoaderReturnType } from "./loader";
+import { ClassSingleUpcomingSearch } from "./partials/upcoming-sections.partial";
 import { createSearchClient } from "~/lib/create-search-client";
 import { ClassHitType } from "../types";
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function buildClassSingleHeroDescriptionHtml(summary: string): string {
+  const safe = escapeHtml(summary);
+  return (
+    '<h2 style="font-size:28px;font-weight:800;margin-bottom:1rem;">What to Expect</h2>' +
+    `<div class="class-single-hero-summary">${safe}</div>`
+  );
+}
 
 const ClassNotFound = () => {
   return (
@@ -29,62 +45,90 @@ const ClassNotFound = () => {
 };
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
-  const location = useLocation();
-  const backToClassFinderUrl =
-    typeof location.state?.fromClassFinder === "string"
-      ? location.state.fromClassFinder
-      : "/class-finder";
+  const { summary, classType, topic } = hit;
+  const navigate = useNavigate();
+  const { discussionGuideUrl, classTrailer, onDemandUrl } =
+    useLoaderData<LoaderReturnType>();
 
-  const { subtitle, classType, topic } = hit;
+  const heroDescriptionHtml = useMemo(
+    () => buildClassSingleHeroDescriptionHtml(summary),
+    [summary],
+  );
 
-  if (!hit) {
-    return <ClassNotFound />;
-  }
+  const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ""), [classType]);
+
+  const ctas = useMemo<FinderHeroCta[]>(() => {
+    const items: FinderHeroCta[] = [];
+    if (discussionGuideUrl) {
+      items.push({
+        href: discussionGuideUrl,
+        title: "Discussion Guide",
+        intent: "secondary" as const,
+        className: "text-base font-normal",
+      });
+    }
+    if (classTrailer) {
+      items.push({
+        key: "class-trailer",
+        render: () => (
+          <VideoModal
+            wistiaId={classTrailer}
+            intent="primary"
+            ModalButton={({ onClick, ...props }) => (
+              <Button
+                {...props}
+                onClick={onClick}
+                className="text-base font-normal"
+              >
+                Class Trailer
+              </Button>
+            )}
+            videoClassName="w-full h-full rounded-lg"
+          />
+        ),
+      });
+    }
+    return items;
+  }, [discussionGuideUrl, classTrailer]);
+
+  const backLink = useMemo(
+    () => ({
+      href: "/class-finder",
+      label: "Back to All Classes" as const,
+      onNavigate: (e: ReactMouseEvent<Element>) => {
+        e.preventDefault();
+        if (typeof window !== "undefined" && window.history.length > 1) {
+          navigate(-1);
+        } else {
+          navigate("/class-finder");
+        }
+      },
+    }),
+    [navigate],
+  );
 
   return (
-    <section className="flex flex-col items-center dark:bg-gray-900">
-      <img
-        src={hit.coverImage.sources[0].uri}
-        alt={hit.title}
-        className="w-full h-[250px] lg:h-[500px] object-cover overflow-hidden flex-shrink-0"
-      />
-
-      {/* Content */}
-      <div className="content-padding w-full flex flex-col items-center">
-        <div className="flex flex-col gap-12 pt-10 w-full max-w-screen-content">
-          {/* Breadcrumbs */}
-          <div className="flex gap-6 items-center">
-            <Link
-              className="cursor-pointer text-text-secondary hover:text-ocean flex items-center gap-2"
-              to={backToClassFinderUrl}
-            >
-              <Icon name="arrowBack" className="size-6" />
-              <span className="hover:underline text-sm line-clamp-2 md:hidden">
-                Back to Finder
-              </span>
-            </Link>
-            <div className="hidden md:block">
-              <Breadcrumbs />
-            </div>
-          </div>
-
-          {/* Basic Content */}
-          <div className="w-full flex flex-col items-center">
-            <ClassSingleBasicContent
-              topic={topic}
-              summary={subtitle}
-              classTitle={classType}
-            />
-          </div>
-        </div>
+    <section className="flex flex-col items-center dark:bg-gray-900 pt-6">
+      <div className="w-full flex-none">
+        <FinderHero
+          bgColor="white"
+          bgImage={hit.coverImage.sources[0].uri}
+          imageAlt={hit.title}
+          title={heroTitleHtml}
+          topic={topic}
+          mobileDescription={heroDescriptionHtml}
+          desktopDescription={heroDescriptionHtml}
+          ctas={ctas}
+          backLink={backLink}
+        />
       </div>
 
-      <div className="w-full flex flex-col">
-        {/* Desktop Upcoming Sessions Section */}
-        <UpcomingSessionsSection />
-
-        {/* Mobile Upcoming Sessions Section */}
-        <UpcomingSessionMobileSection />
+      <div className="w-full flex flex-col border-t border-[#E8E8E8]">
+        <ClassSingleUpcomingSearch
+          classType={classType}
+          classHeroCoverImageUri={hit.coverImage.sources[0].uri}
+          onDemandUrl={onDemandUrl}
+        />
 
         {/* FAQs */}
         <div className="content-padding w-full flex flex-col items-center">
@@ -103,31 +147,21 @@ export function ClassSinglePage() {
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   return (
     <InstantSearch
       indexName="dev_Classes"
       searchClient={searchClient}
-      initialUiState={{
-        dev_Classes: {
-          query: `${classUrl}`,
-        },
-      }}
       future={{
         preserveSharedStateOnUnmount: true,
       }}
       key={classUrl}
     >
-      {/* Name of Class */}
       <Configure
         hitsPerPage={1}
-        queryType="prefixNone"
-        removeWordsIfNoResults="none"
-        typoTolerance={false}
-        exactOnSingleWordQuery="word"
-        filters={`classTypeUrl:"${classUrl}"`}
+        filters={`pathName:"${escapeAlgoliaFilterString(classUrl)}"`}
       />
 
       <CustomClassSingleHits />

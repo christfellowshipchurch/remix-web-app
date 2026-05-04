@@ -23,3 +23,10 @@ export class EncryptionError extends Error {
     this.name = "EncryptionError";
   }
 }
+
+export class RateLimitError extends Error {
+  constructor(message: string, options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = "RateLimitError";
+  }
+}

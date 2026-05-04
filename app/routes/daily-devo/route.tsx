@@ -1,4 +1,4 @@
-import { AppSection } from "../home/partials/app.partial";
+import { DownloadAppSection } from "../home/partials/download-app.partial";
 import { DailyContent } from "./partials/daily-content";
 import { DailyHero } from "./partials/daily-hero";
 import { NeverMissADaily } from "./partials/never-miss-a-daily";
@@ -13,7 +13,7 @@ export default function DailyDevoPage() {
       <DailyContent />
       <NeverMissADaily />
 
-      <AppSection />
+      <DownloadAppSection />
     </div>
   );
 }

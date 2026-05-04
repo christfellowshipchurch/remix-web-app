@@ -4,12 +4,17 @@
 import crypto from "crypto";
 import { parsePhoneNumber } from "awesome-phonenumber";
 
-import { AuthenticationError } from "~/lib/.server/error-types";
+import { AuthenticationError, RateLimitError } from "~/lib/.server/error-types";
+import redis from "~/lib/.server/redis-config";
+
+const SMS_REQUEST_LIMIT = 5;
+const SMS_RATE_WINDOW_SECONDS = 3600;
 import { User_Auth_Status } from "~/providers/auth-provider";
 import {
   deleteRockData,
   fetchRockData,
   postRockData,
+  TTL,
 } from "~/lib/.server/fetch-rock-data";
 import { fieldsAsObject } from "~/lib/utils";
 
@@ -23,7 +28,7 @@ import { SmsPinResult } from "./authentication.types";
 import { checkUserExists } from "~/routes/auth/userExists";
 
 export const parsePhoneNumberUtil = (
-  phoneNumber: string
+  phoneNumber: string,
 ): {
   valid: boolean;
   significantNumber: string;
@@ -40,17 +45,24 @@ export const parsePhoneNumberUtil = (
   };
 };
 
-export const hashPassword = (pin: string): string =>
-  crypto
-    .createHash("sha256")
-    .update(`${pin}${process.env.SECRET || ""}`)
-    .digest("hex");
+export const hashPassword = (pin: string): string => {
+  const secret = process.env.SECRET;
+  if (!secret) {
+    throw new Error("Missing SECRET environment variable");
+  }
+  // HMAC-SHA256 is the correct construction for keyed hashing.
+  // Note: bcrypt/argon2 cannot be used here because Rock's /Auth/Login API
+  // verifies passwords via an internal equality check — it cannot use bcrypt.compare().
+  // Rate limiting on PIN attempts is the primary brute-force mitigation.
+  return crypto.createHmac("sha256", secret).update(pin).digest("hex");
+};
 
 export const generateSmsPinAndPassword = (): {
   pin: string;
   password: string;
 } => {
-  const pin = `${Math.floor(Math.random() * 1000000)}`.padStart(6, "0");
+  // crypto.randomInt is cryptographically secure; Math.random() is not.
+  const pin = crypto.randomInt(0, 1_000_000).toString().padStart(6, "0");
   const password = hashPassword(pin);
 
   return { pin, password };
@@ -101,7 +113,7 @@ export const createOrFindSmsLoginUserId = async ({
       $select: "PersonId",
       $filter: `Number eq '${significantNumber}'`,
     },
-    cache: false,
+    ttl: TTL.NONE,
   });
 
   /** if the phone number in Rock already is attached to a person we will just return that person instead */
@@ -124,15 +136,30 @@ export const createOrFindSmsLoginUserId = async ({
 };
 
 export const requestSmsLogin = async (
-  phoneNumber: string
+  phoneNumber: string,
 ): Promise<SmsPinResult> => {
   const { ExistingAppUser, None } = User_Auth_Status;
   const { valid, significantNumber, e164 } = parsePhoneNumberUtil(phoneNumber);
 
   if (!valid) {
     throw new AuthenticationError(
-      `${significantNumber} is not a valid phone number`
+      `${significantNumber} is not a valid phone number`,
     );
+  }
+
+  if (redis) {
+    const key = `sms:pin_request:${significantNumber}`;
+    const count = await redis.incr(key);
+    if (count === 1) {
+      await redis.expire(key, SMS_RATE_WINDOW_SECONDS);
+    }
+    if (count > SMS_REQUEST_LIMIT) {
+      throw new RateLimitError(
+        "Too many PIN requests. Please try again later.",
+      );
+    }
+  } else {
+    console.warn("⚠️ Redis unavailable — SMS PIN request rate limiting is disabled");
   }
 
   const { pin, password } = generateSmsPinAndPassword();
@@ -171,7 +198,7 @@ export const requestSmsLogin = async (
   if (typeof createNewLogin !== "number") {
     console.error("Failed to create new login for", phoneNumber);
     throw new AuthenticationError(
-      `Failed to create new login for ${phoneNumber}`
+      `Failed to create new login for ${phoneNumber}`,
     );
   }
 
@@ -183,12 +210,12 @@ export const requestSmsLogin = async (
   } catch (error) {
     console.error(
       "Failed to send SMS:",
-      error instanceof Error ? error.message : "Unknown error"
+      error instanceof Error ? error.message : "Unknown error",
     );
     throw new AuthenticationError(
       `Failed to send SMS: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`
+      }`,
     );
   }
 
@@ -199,7 +226,7 @@ export const requestSmsLogin = async (
 };
 
 export const userExists = async (
-  identity: string
+  identity: string,
 ): Promise<User_Auth_Status> => {
   const { significantNumber, valid } = parsePhoneNumberUtil(identity);
 
