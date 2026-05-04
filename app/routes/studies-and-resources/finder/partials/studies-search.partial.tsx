@@ -1,49 +1,42 @@
-import { useMemo, useState, useEffect } from "react";
-import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
-import { InstantSearch, SearchBox, useHits } from "react-instantsearch";
+import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { InstantSearch, SearchBox, useHits } from 'react-instantsearch';
 
-import Icon from "~/primitives/icon";
+import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
+import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
+import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
+import { SearchFilters } from '~/components/finders/search-filters';
+import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
+import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
+import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import Icon from '~/primitives/icon';
+import { ResponsiveConfigure } from '~/routes/group-finder/partials/group-search.partial';
 
-import { LoaderReturnType } from "../loader";
-import { AllStudiesFiltersPopup } from "../components/popups/all-filters.component";
-import { Button } from "~/primitives/button/button.primitive";
-import { cn } from "~/lib/utils";
-import { ResponsiveConfigure } from "~/routes/group-finder/partials/group-search.partial";
-import { StudyHitType } from "../../types";
+import { AllStudiesFiltersPopup } from '../components/popups/all-filters.component';
+import { StudyHitComponent } from '../components/studies-hit-component.component';
+import { LoaderReturnType } from '../loader';
+import {
+  STUDIES_FINDER_DESKTOP_FILTERS,
+  STUDIES_FINDER_MORE_POPUP_TITLE,
+} from '../studies-search-filters.data';
+import { StudyHitType } from '../../types';
 import {
   parseStudiesFinderUrlState,
-  studiesFinderUrlStateToParams,
   studiesFinderEmptyState,
+  studiesFinderUrlStateToParams,
   type StudiesFinderUrlState,
-} from "../../studies-finder-url-state";
-import { useAlgoliaUrlSync } from "~/hooks/use-algolia-url-sync";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
-import { AlgoliaFinderClearAllButton } from "~/routes/group-finder/components/clear-all-button.component";
-import { DesktopStudyFilters } from "../components/popups/studies-filters";
-import { StudyHitComponent } from "../components/studies-hit-component.component";
+} from '../../studies-finder-url-state';
 
-const INDEX_NAME = "dev_StudiesAndResourcesItems";
+const INDEX_NAME = 'dev_StudiesAndResources';
+const ITEMS_PER_PAGE = 12;
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2. */
+/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseStudiesFinderUrlState(searchParams);
-  const initialUiState: { [key: string]: Record<string, unknown> } = {};
-  if (
-    urlState.query !== undefined ||
-    (urlState.refinementList && Object.keys(urlState.refinementList).length > 0)
-  ) {
-    initialUiState[INDEX_NAME] = {};
-    if (urlState.query !== undefined)
-      initialUiState[INDEX_NAME].query = urlState.query;
-    if (
-      urlState.refinementList &&
-      Object.keys(urlState.refinementList).length > 0
-    ) {
-      initialUiState[INDEX_NAME].refinementList = urlState.refinementList;
-    }
-  }
-  return { coordinates: null, initialUiState };
+  return {
+    initialUiState: buildIndexInitialUiState(INDEX_NAME, urlState) ?? {},
+  };
 }
 
 export const StudiesSearch = () => {
@@ -61,42 +54,6 @@ export const StudiesSearch = () => {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [instantSearchKey, setInstantSearchKey] = useState(0);
-
-  // Scroll handling effect
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Reset at top of page
-      if (currentScrollY < scrollThreshold) {
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Handle scroll direction
-      if (Math.abs(scrollDelta) > scrollThreshold) {
-        // When scrolling up (negative delta), navbar is showing
-        if (scrollDelta < 0) {
-          setIsNavbarOpen(true);
-        } else {
-          // When scrolling down, navbar is hidden
-          setIsNavbarOpen(false);
-        }
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
@@ -109,7 +66,6 @@ export const StudiesSearch = () => {
       replace: true,
       preventScrollReset: true,
     });
-    setInstantSearchKey((k) => k + 1);
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
@@ -132,25 +88,23 @@ export const StudiesSearch = () => {
 
   const fromStudiesFinderUrl =
     location.pathname +
-    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+    (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
   return (
     <div
-      className="flex flex-col gap-4 w-screen pt-12 pagination-scroll-to"
-      id="search"
+      className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
+      id='search'
     >
       <InstantSearch
-        key={instantSearchKey}
         indexName={INDEX_NAME}
         searchClient={searchClient}
         initialUiState={
-          instantSearchKey > 0
-            ? { [INDEX_NAME]: {} }
-            : Object.keys(initial.initialUiState).length > 0
-              ? initial.initialUiState
-              : undefined
+          Object.keys(initial.initialUiState).length > 0
+            ? initial.initialUiState
+            : undefined
         }
-        onStateChange={({ uiState }) => {
+        onStateChange={({ uiState, setUiState }) => {
+          setUiState(uiState);
           const indexState = uiState[INDEX_NAME];
           if (indexState)
             syncUrlFromUiState(indexState as Record<string, unknown>);
@@ -159,74 +113,62 @@ export const StudiesSearch = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure ageInput="" coordinates={null} />
-        <div className="flex flex-col">
-          <div
-            className={cn(
-              "sticky bg-white z-2 content-padding md:shadow-sm select-none transition-all duration-300",
-              isNavbarOpen ? "top-18 md:top-20" : "top-0",
-            )}
-          >
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 lg:gap-4 xl:gap-8 py-4 max-w-screen-content mx-auto h-20">
-              <div className="w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg bg-[#EDF3F8] focus-within:border-ocean py-2">
-                <Icon name="searchAlt" className="text-neutral-default ml-3" />
+        <ResponsiveConfigure ageInput='' coordinates={null} />
+        <div className='flex flex-col bg-white pt-4'>
+          <FinderStickyBar>
+            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+              <div className='flex w-full items-center rounded-lg border border-[#DEE0E3] py-2 focus-within:border-ocean md:w-[240px] lg:w-[250px] xl:w-[266px]'>
+                <Icon
+                  name='searchAlt'
+                  className='ml-3 text-neutral-default'
+                  size={16}
+                />
                 <SearchBox
-                  placeholder="Keyword"
+                  placeholder='Keyword'
                   translations={{
-                    submitButtonTitle: "Search",
-                    resetButtonTitle: "Reset",
+                    submitButtonTitle: 'Search',
+                    resetButtonTitle: 'Reset',
                   }}
                   classNames={{
-                    root: "flex-grow",
-                    form: "flex",
-                    input: "w-full text-xl px-2 focus:outline-none",
-                    resetIcon: "hidden",
-                    submit: "hidden",
-                    loadingIcon: "hidden",
+                    root: 'flex-grow',
+                    form: 'flex',
+                    input:
+                      'w-full px-2 py-1 text-base text-neutral-default placeholder:text-neutral-default focus:outline-none md:text-sm',
+                    resetIcon: 'hidden',
+                    submit: 'hidden',
+                    loadingIcon: 'hidden',
                   }}
                 />
               </div>
 
-              <div className="hidden md:flex items-center gap-4">
-                <DesktopStudyFilters onClearAllToUrl={clearAllFiltersFromUrl} />
-                <AlgoliaFinderClearAllButton
-                  className="hidden lg:block"
+              <div className='min-w-0 flex-1'>
+                <SearchFilters
                   onClearAllToUrl={clearAllFiltersFromUrl}
+                  desktopFilters={STUDIES_FINDER_DESKTOP_FILTERS}
+                  compactInlineFilterCount={2}
+                  moreButtonLabel={STUDIES_FINDER_MORE_POPUP_TITLE}
+                  renderMorePanel={({
+                    onHide,
+                    onClearAllToUrl: onClearAll,
+                    mobileBottomSheet,
+                    morePanelTitle,
+                  }) => (
+                    <AllStudiesFiltersPopup
+                      onHide={onHide}
+                      onClearAllToUrl={onClearAll}
+                      mobileBottomSheet={mobileBottomSheet}
+                      bottomSheetTitle={morePanelTitle}
+                    />
+                  )}
                 />
               </div>
             </div>
-          </div>
+            <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
+          </FinderStickyBar>
 
-          <div className="md:hidden bg-white pb-5 border-b-2 border-black/10 border-solid select-none">
-            <div className="content-padding">
-              <Button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                intent="secondary"
-                className="flex items-center gap-2 border-2 px-8 w-full text-text-primary rounded-lg"
-              >
-                <Icon name="sliderAlt" className="text-navy" />
-                All Filters
-              </Button>
-            </div>
-            <div
-              className={cn(
-                "absolute transition-all duration-300",
-                isMobileOpen
-                  ? "z-4 opacity-100 top-[calc(102%)]"
-                  : "-z-1 opacity-0 pointer-events-none",
-              )}
-            >
-              <AllStudiesFiltersPopup
-                onHide={() => setIsMobileOpen(false)}
-                onClearAllToUrl={clearAllFiltersFromUrl}
-              />
-            </div>
-          </div>
-
-          {/* Studies Search Results / Studies Type Filters */}
-          <div className="flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding">
-            <div className="max-w-screen-content mx-auto md:w-full">
-              <CustomStudyTypeFacets
+          <div className='flex w-full flex-col bg-gray py-8 content-padding md:pb-20 md:pt-12'>
+            <div className='mx-auto max-w-screen-content md:w-full'>
+              <StudyTypeGroupedResults
                 fromStudiesFinderUrl={fromStudiesFinderUrl}
               />
             </div>
@@ -242,204 +184,186 @@ interface GroupedStudyType {
   title: string;
   url: string;
   summary: string;
-  topic: StudyHitType["topic"];
-  format: StudyHitType["format"] | "Multiple Formats";
-  duration: StudyHitType["duration"];
-  audience: StudyHitType["audience"] | "Multiple";
-  source: StudyHitType["source"] | "Multiple";
+  topic: StudyHitType['topic'];
+  format: StudyHitType['format'] | 'Multiple Formats';
+  duration: StudyHitType['duration'];
+  audience: StudyHitType['audience'] | 'Multiple';
+  source: StudyHitType['source'] | 'Multiple';
 }
 
-const CustomStudyTypeFacets = ({
+function StudyTypeGroupedResults({
   fromStudiesFinderUrl,
 }: {
   fromStudiesFinderUrl?: string;
-}) => {
+}) {
   const { items } = useHits<StudyHitType>();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
 
   const groupedStudyTypes: GroupedStudyType[] = useMemo(() => {
-    const grouped = items.reduce((acc, hit) => {
+    return items.reduce((acc, hit) => {
       const studyType = hit.studyType;
       const existingGroup = acc.find((group) => group.title === studyType);
 
       if (existingGroup) {
-        existingGroup.format = "Multiple Formats";
-        existingGroup.audience = "Multiple";
-        existingGroup.source = "Multiple";
+        existingGroup.format = 'Multiple Formats';
+        existingGroup.audience = 'Multiple';
+        existingGroup.source = 'Multiple';
       } else {
         acc.push({
-          coverImage: hit.coverImage?.sources?.[0]?.uri ?? "",
+          coverImage: hit.coverImage?.sources?.[0]?.uri ?? '',
           title: hit.title,
           url: hit.url,
-          summary: hit.description ?? hit.summary ?? "",
-          topic: hit.topic ?? "Spiritual Growth",
-          format: hit.format ?? "Video",
-          duration: hit.duration ?? "Short",
-          audience: hit.audience ?? "Everyone",
-          source: hit.source ?? "Christ Fellowship",
+          summary: hit.description ?? hit.summary ?? '',
+          topic: hit.topic ?? 'Spiritual Growth',
+          format: hit.format ?? 'Video',
+          duration: hit.duration ?? 'Short',
+          audience: hit.audience ?? 'Everyone',
+          source: hit.source ?? 'Christ Fellowship',
         });
       }
 
       return acc;
     }, [] as GroupedStudyType[]);
-
-    return grouped;
   }, [items]);
 
   const mappedStudyTypes: StudyHitType[] = useMemo(() => {
-    return groupedStudyTypes.map((group, index) => {
-      return {
-        objectID: `grouped-${index}`,
-        id: `grouped-${index}`,
-        title: group.title,
-        studyType: group.title as StudyHitType["studyType"],
-        subtitle: "",
-        url: group.url as StudyHitType["url"],
-        summary: group.summary,
-        description: group.summary,
-        coverImage: {
-          sources: [{ uri: group.coverImage }],
+    return groupedStudyTypes.map((group, index) => ({
+      objectID: `grouped-${index}`,
+      id: `grouped-${index}`,
+      title: group.title,
+      studyType: group.title as StudyHitType['studyType'],
+      subtitle: '',
+      url: group.url as StudyHitType['url'],
+      summary: group.summary,
+      description: group.summary,
+      coverImage: {
+        sources: [{ uri: group.coverImage }],
+      },
+      duration: group.duration,
+      topic: group.topic,
+      format: group.format === 'Multiple Formats' ? 'Video' : group.format,
+      audience: group.audience === 'Multiple' ? 'Everyone' : group.audience,
+      source: group.source === 'Multiple' ? 'Christ Fellowship' : group.source,
+      _highlightResult: {
+        title: { value: group.title, matchLevel: 'none', matchedWords: [] },
+        summary: {
+          value: group.summary,
+          matchLevel: 'none',
+          matchedWords: [],
         },
-        duration: group.duration,
-        topic: group.topic,
-        format: group.format === "Multiple Formats" ? "Video" : group.format,
-        audience: group.audience === "Multiple" ? "Everyone" : group.audience,
-        source:
-          group.source === "Multiple" ? "Christ Fellowship" : group.source,
-        _highlightResult: {
-          title: { value: group.title, matchLevel: "none", matchedWords: [] },
-          summary: {
-            value: group.summary,
-            matchLevel: "none",
-            matchedWords: [],
-          },
-          author: {
-            firstName: { value: "", matchLevel: "none", matchedWords: [] },
-            lastName: { value: "", matchLevel: "none", matchedWords: [] },
-          },
-          routing: {
-            pathname: { value: "", matchLevel: "none", matchedWords: [] },
-          },
-          htmlContent: [],
+        author: {
+          firstName: { value: '', matchLevel: 'none', matchedWords: [] },
+          lastName: { value: '', matchLevel: 'none', matchedWords: [] },
         },
-        __position: index,
-      };
-    });
+        routing: {
+          pathname: { value: '', matchLevel: 'none', matchedWords: [] },
+        },
+        htmlContent: [],
+      },
+      __position: index,
+    }));
   }, [groupedStudyTypes]);
 
-  // Pagination logic
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedItems = mappedStudyTypes.slice(startIndex, endIndex);
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageHits = mappedStudyTypes.slice(start, start + ITEMS_PER_PAGE);
 
-  // Reset to page 1 when items change
   useEffect(() => {
     setCurrentPage(1);
   }, [mappedStudyTypes.length]);
 
   return (
     <>
-      <div className="min-h-[320px]">
-        <p className="text-text-secondary mb-6">
-          {mappedStudyTypes.length} Results Found
-        </p>
+      <div className='min-h-[320px]'>
+        <FinderResultsStats hitCount={mappedStudyTypes.length} />
 
-        <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-          <div className="flex items-center justify-center md:items-start md:justify-start w-full">
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-8 lg:gap-x-4 xl:gap-x-8! gap-y-6 md:gap-y-8 lg:gap-y-16 w-full max-w-[900px] lg:max-w-[1296px]">
-              {paginatedItems.map((hit) => (
-                <StudyHitComponent
-                  key={hit.objectID}
-                  hit={hit}
-                  fromStudiesFinderUrl={fromStudiesFinderUrl}
-                />
-              ))}
-            </div>
+        <div className='flex w-full items-center justify-center md:items-start md:justify-start'>
+          <div className='grid w-full max-w-[900px] grid-cols-1 items-stretch gap-y-6 sm:grid-cols-2 sm:gap-x-8 md:grid-cols-3 md:gap-y-8 lg:max-w-[1296px] lg:grid-cols-4 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8!'>
+            {pageHits.map((hit) => (
+              <StudyHitComponent
+                key={hit.objectID}
+                hit={hit}
+                fromStudiesFinderUrl={fromStudiesFinderUrl}
+              />
+            ))}
           </div>
         </div>
       </div>
 
-      <StudySearchCustomPagination
-        mappedStudyTypes={mappedStudyTypes}
-        itemsPerPage={itemsPerPage}
+      <StudySearchPagination
+        totalItems={mappedStudyTypes.length}
+        itemsPerPage={ITEMS_PER_PAGE}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
     </>
   );
-};
+}
 
-const StudySearchCustomPagination = ({
-  mappedStudyTypes,
-  itemsPerPage = 12,
+function StudySearchPagination({
+  totalItems,
+  itemsPerPage,
   currentPage,
   onPageChange,
 }: {
-  mappedStudyTypes: StudyHitType[];
-  itemsPerPage?: number;
+  totalItems: number;
+  itemsPerPage: number;
   currentPage: number;
   onPageChange: (page: number) => void;
-}) => {
-  const totalPages = Math.ceil(mappedStudyTypes.length / itemsPerPage);
-
+}) {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
 
-  const handlePageChange = (newPage: number) => {
+  const goToPage = (newPage: number) => {
     onPageChange(newPage);
-    // Scroll to the pagination-scroll-to element
-    const scrollTarget = document.querySelector(".pagination-scroll-to");
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: "smooth" });
-    }
+    document
+      .querySelector('.pagination-scroll-to')
+      ?.scrollIntoView({ behavior: 'smooth' });
   };
 
   if (totalPages <= 1) return null;
 
   return (
-    <div className="mt-6 flex justify-center md:justify-start">
-      <div className="flex items-center justify-center gap-2">
-        <StudyPaginationItem
-          isDisabled={isFirstPage}
-          onClick={() => handlePageChange(currentPage - 1)}
+    <div className='mt-6 flex justify-center md:justify-start'>
+      <div className='flex items-center justify-center gap-2'>
+        <PaginationControl
+          disabled={isFirstPage}
+          onClick={() => goToPage(currentPage - 1)}
         >
           <Icon
-            name="chevronLeft"
+            name='chevronLeft'
             size={32}
-            color={isFirstPage ? "#CECECE" : "#0092BC"}
+            color={isFirstPage ? '#CECECE' : '#0092BC'}
           />
-        </StudyPaginationItem>
+        </PaginationControl>
         <p>
           {currentPage} of {totalPages}
         </p>
-        <StudyPaginationItem
-          isDisabled={isLastPage}
-          onClick={() => handlePageChange(currentPage + 1)}
+        <PaginationControl
+          disabled={isLastPage}
+          onClick={() => goToPage(currentPage + 1)}
         >
           <Icon
-            name="chevronRight"
+            name='chevronRight'
             size={32}
-            color={isLastPage ? "#CECECE" : "#0092BC"}
+            color={isLastPage ? '#CECECE' : '#0092BC'}
           />
-        </StudyPaginationItem>
+        </PaginationControl>
       </div>
     </div>
   );
-};
+}
 
-type StudyPaginationItemProps = {
-  onClick: () => void;
-  isDisabled: boolean;
-  children: React.ReactNode;
-};
-
-function StudyPaginationItem({
-  isDisabled,
+function PaginationControl({
+  disabled,
   onClick,
   children,
-}: StudyPaginationItemProps) {
-  if (isDisabled) {
+}: {
+  disabled: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  if (disabled) {
     return (
       <div>
         <span>{children}</span>
@@ -449,7 +373,7 @@ function StudyPaginationItem({
 
   return (
     <div>
-      <button onClick={onClick} className="cursor-pointer">
+      <button type='button' onClick={onClick} className='cursor-pointer'>
         {children}
       </button>
     </div>
