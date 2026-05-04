@@ -53,7 +53,7 @@ export const WhatWeOfferMobile = ({
           <SectionTitle sectionTitle="what we offer." color="#56CAEB" />
         </div>
         <h2 className="text-white font-extrabold text-[32px] leading-tight">
-          Something For Everyones
+          Something For Everyone
         </h2>
       </div>
 
