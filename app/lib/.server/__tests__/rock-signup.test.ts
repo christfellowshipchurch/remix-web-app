@@ -85,7 +85,7 @@ describe('findOrCreateRockPersonForSignup', () => {
     expect(mockUpdatePerson).not.toHaveBeenCalled();
     expect(mockCreatePhoneNumberInRock).toHaveBeenCalledOnce();
     expect(mockCreatePhoneNumberInRock).toHaveBeenCalledWith({
-      personId: 123,
+      personId: '123',
       phoneNumber: defaultInput.phoneNumber,
       countryCode: 1,
     });
@@ -123,7 +123,7 @@ describe('findOrCreateRockPersonForSignup', () => {
     expect(mockUpdatePerson).not.toHaveBeenCalled();
     expect(mockCreatePhoneNumberInRock).toHaveBeenCalledOnce();
     expect(mockCreatePhoneNumberInRock).toHaveBeenCalledWith({
-      personId: 123,
+      personId: '123',
       phoneNumber: defaultInput.phoneNumber,
       countryCode: 1,
     });
@@ -182,7 +182,7 @@ describe('findOrCreateRockPersonForSignup', () => {
     mockFetchRockData
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([]);
-    mockCreateUserProfile.mockResolvedValue(123);
+    mockCreateUserProfile.mockResolvedValue({ id: 123 });
 
     const result = await findOrCreateRockPersonForSignup(defaultInput);
 
@@ -190,7 +190,24 @@ describe('findOrCreateRockPersonForSignup', () => {
     expect(mockUpdatePerson).not.toHaveBeenCalled();
     expect(mockCreatePhoneNumberInRock).toHaveBeenCalledOnce();
     expect(mockCreatePhoneNumberInRock).toHaveBeenCalledWith({
-      personId: 123,
+      personId: '123',
+      phoneNumber: defaultInput.phoneNumber,
+      countryCode: 1,
+    });
+  });
+
+  it('Step 5 — supports legacy numeric create profile responses', async () => {
+    mockFetchUserLogin.mockResolvedValue(null);
+    mockFetchRockData
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
+    mockCreateUserProfile.mockResolvedValue(456);
+
+    const result = await findOrCreateRockPersonForSignup(defaultInput);
+
+    expect(result).toBe('456');
+    expect(mockCreatePhoneNumberInRock).toHaveBeenCalledWith({
+      personId: '456',
       phoneNumber: defaultInput.phoneNumber,
       countryCode: 1,
     });

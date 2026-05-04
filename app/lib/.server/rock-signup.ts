@@ -42,6 +42,24 @@ const personNameMatches = async (
   );
 };
 
+const getCreatedPersonId = (createdPerson: unknown): string => {
+  if (typeof createdPerson === 'string' || typeof createdPerson === 'number') {
+    return createdPerson.toString();
+  }
+
+  if (
+    createdPerson &&
+    typeof createdPerson === 'object' &&
+    'id' in createdPerson &&
+    (typeof createdPerson.id === 'string' ||
+      typeof createdPerson.id === 'number')
+  ) {
+    return createdPerson.id.toString();
+  }
+
+  throw new Error('Unable to create profile!');
+};
+
 export const findOrCreateRockPersonForSignup = async (
   input: SignupPersonInput,
 ): Promise<string> => {
@@ -118,10 +136,15 @@ export const findOrCreateRockPersonForSignup = async (
     FirstName: firstName,
     LastName: lastName,
   });
+  const newPersonIdString = getCreatedPersonId(newPersonId);
   if (countryCode) {
-    await createPhoneNumberInRock({ personId: newPersonId, phoneNumber, countryCode });
+    await createPhoneNumberInRock({
+      personId: newPersonIdString,
+      phoneNumber,
+      countryCode,
+    });
   }
-  return newPersonId.toString();
+  return newPersonIdString;
 };
 
 export const launchGroupClassSignupWorkflow = async (
