@@ -102,45 +102,69 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
 const RightSide = ({ title, source }: { title: string; source: string }) => {
   return (
     <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
-      <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-gray'>
-        <div className='size-[82px] flex items-center justify-center bg-white p-2 rounded-[12px]'>
+      <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
+        <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
           <img
-            src='/cf-logo.png' // TODO: Update to Source Image
+            src='/cf-logo.png'
             alt={title}
             className='w-full h-full object-cover'
           />
         </div>
         <div className='w-fit flex flex-col gap-0.5 text-sm font-semibold text-neutral-default'>
-          <p>Created by:</p>
-          <h3 className='font-bold text-text-primary'>{source}</h3>
+          <p className='text-[#D0D0CE] md:text-neutral-default uppercase md:normal-case'>
+            Created by<span className='hidden md:inline'>:</span>
+          </p>
+          <h3 className='font-extrabold text-sm md:text-base text-white md:text-text-primary'>
+            {source}
+          </h3>
         </div>
       </div>
 
       <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white'>
-        <Button intent='secondaryWhite' size='md' className='w-full'>
-          Video Preview
+        <Button
+          intent='secondaryWhite'
+          size='md'
+          className='w-full border-[#417890] md:border-[#FAFAFC]'
+        >
+          Study Trailer
         </Button>
-        <Button intent='secondaryWhite' size='md' className='w-full'>
-          Discussion Guide Preview
+        <Button
+          intent='secondaryWhite'
+          size='md'
+          className='w-full border-[#417890] md:border-[#FAFAFC]'
+        >
+          Discussion Guide
         </Button>
-        <Button intent='primary' size='md' className='w-full'>
-          Start Study
+        <Button
+          intent='secondaryWhite'
+          size='md'
+          className='w-full border-[#417890] md:border-[#FAFAFC]'
+        >
+          Facilitator Guide
         </Button>
 
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 border-t border-[#417890] pt-4 md:border-none md:pt-0'>
           <h3 className='text-lg font-extrabold leading-tight'>
-            More Information
+            <span className='hidden md:inline'>More Information</span>
+            <span className='md:hidden'>Need help?</span>
           </h3>
-          <p className='text-neutral-lighter leading-tight'>
+          <p className='text-neutral-lighter leading-tight hidden md:block'>
             This curriculum is designed to help you learn more about the Bible
             and how to apply it to your life.
           </p>
-          <Link
-            to={'mailto:groups@christfellowship.church'}
-            className='underline mt-1'
-          >
-            groups@christfellowship.church
-          </Link>
+          <div className='flex items-center gap-2'>
+            <Icon
+              name='envelope'
+              size={14}
+              className='text-[#D0D0CE] md:hidden'
+            />
+            <Link
+              to={'mailto:groups@christfellowship.church'}
+              className='underline mt-1'
+            >
+              groups@christfellowship.church
+            </Link>
+          </div>
         </div>
       </div>
     </div>
