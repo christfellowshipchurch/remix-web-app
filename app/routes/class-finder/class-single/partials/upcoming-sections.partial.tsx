@@ -1,20 +1,20 @@
-import { useMemo } from "react";
-import { Configure, InstantSearch, useHits } from "react-instantsearch";
+import { useMemo } from 'react';
+import { Configure, InstantSearch, useHits } from 'react-instantsearch';
 
-import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
-import { FinderStickyBar } from "~/components/finders/finder-sticky-bar.component";
-import { SearchFilters } from "~/components/finders/search-filters";
-import { ActiveFilters } from "~/components/finders/search-filters/active-filter.component";
-import { UpcomingSessionsCarousel } from "../components/upcoming-sessions-carousel.component";
+import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
+import { SearchFilters } from '~/components/finders/search-filters';
+import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
+import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
 import {
   CLASS_SINGLE_UPCOMING_INDEX_NAME,
   useClassSingleUpcomingInstantSearch,
-} from "../hooks/use-class-single-upcoming-instant-search";
-import type { ClassHitType } from "../../types";
-import OnDemandCard from "../components/on-demand-card.component";
-import { ClassSingleGroupsSection } from "./groups.partial";
+} from '../hooks/use-class-single-upcoming-instant-search';
+import type { ClassHitType } from '../../types';
+import OnDemandCard from '../components/on-demand-card.component';
+import { ClassSingleGroupsSection } from './groups.partial';
 
-const LOCATION_FILTERS_HINT = "Location filters are applied.";
+const LOCATION_FILTERS_HINT = 'Location filters are applied.';
 
 /**
  * One Algolia response loads enough hits for carousel slides + geo/virtual ordering (Algolia max per request).
@@ -34,7 +34,7 @@ function compareStartDateAsc(a: ClassHitType, b: ClassHitType): number {
 
 function geoDistanceMeters(hit: ClassHitType): number {
   const d = hit._rankingInfo?.geoDistance;
-  if (d == null || typeof d !== "number" || Number.isNaN(d) || d <= 0) {
+  if (d == null || typeof d !== 'number' || Number.isNaN(d) || d <= 0) {
     return Number.POSITIVE_INFINITY;
   }
   return d;
@@ -54,7 +54,7 @@ function sortUpcomingSessionHitsForDisplay(
   const inPerson: ClassHitType[] = [];
   const virtual: ClassHitType[] = [];
   for (const hit of items) {
-    if (hit.format === "Virtual") virtual.push(hit);
+    if (hit.format === 'Virtual') virtual.push(hit);
     else inPerson.push(hit);
   }
 
@@ -100,46 +100,27 @@ export function ClassSingleUpcomingSearch({
         coordinates={upcoming.coordinates}
       />
 
-      <div className="flex w-full flex-col pagination-scroll-to" id="search">
-        {/* Mobile Filters */}
-        <div className="flex flex-col md:hidden">
-          <div className="content-padding mx-auto w-full max-w-screen-content">
-            <h2 className="w-full text-[28px] font-extrabold">
-              Filter Sessions
-            </h2>
+      <div className='flex w-full flex-col pagination-scroll-to' id='search'>
+        {/*
+          One column wraps heading + sticky filters + results so `position: sticky`
+          on FinderStickyBar is constrained by a tall ancestor (see MDN: sticky is
+          limited to the parent box). Splitting filters and results into siblings
+          made each filter parent too short, so the bar scrolled away on both breakpoints.
+        */}
+        <div className='flex min-w-0 w-full flex-col'>
+          <div className='content-padding mx-auto w-full max-w-screen-content md:hidden'>
+            <h2 className='w-full text-[28px] font-extrabold'>Filter Sessions</h2>
           </div>
-          <div className="flex w-screen min-w-0 flex-col">
-            <FinderStickyBar>
-              <div className="mx-auto flex max-w-screen-content flex-col gap-3 py-4">
-                <SearchFilters
-                  onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
-                  desktopFilters={upcoming.desktopFilters}
-                  compactInlineFilterCount={2}
-                  isFilterPillSupplementallyActive={
-                    upcoming.isFilterPillSupplementallyActive
-                  }
-                />
-              </div>
-              <ActiveFilters
-                onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
-                additionalFiltersActive={upcoming.geoFiltersActive}
-                additionalFiltersHint={LOCATION_FILTERS_HINT}
-              />
-            </FinderStickyBar>
-          </div>
-        </div>
 
-        {/* Desktop Filters */}
-        <div className="relative hidden w-full flex-col md:flex">
           <FinderStickyBar>
-            <div className="mx-auto flex max-w-screen-content flex-col gap-3 pt-8 py-4 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4 pagination-scroll-to">
-              <div className="flex w-fit shrink-0 items-center gap-4">
-                <h2 className="w-fit min-w-[260px] text-[28px] font-extrabold">
+            <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
+              <div className='hidden w-fit shrink-0 items-center gap-4 md:flex'>
+                <h2 className='w-fit min-w-[260px] text-[28px] font-extrabold'>
                   Filter Sessions
                 </h2>
-                <div className="hidden h-full w-px bg-text-secondary lg:block" />
+                <div className='hidden h-full w-px bg-text-secondary lg:block' />
               </div>
-              <div className="min-w-0 flex-1">
+              <div className='min-w-0 flex-1'>
                 <SearchFilters
                   onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
                   desktopFilters={upcoming.desktopFilters}
@@ -156,33 +137,33 @@ export function ClassSingleUpcomingSearch({
               additionalFiltersHint={LOCATION_FILTERS_HINT}
             />
           </FinderStickyBar>
-        </div>
 
-        <div className="flex w-full flex-col bg-gray py-8 content-padding md:pt-12 md:pb-20">
-          <div className="mx-auto w-full max-w-screen-content">
-            <ClassSingleUpcomingResults geoActive={upcoming.geoFiltersActive} />
-          </div>
+          <div className='flex w-full flex-col bg-gray py-8 pl-5 md:pl-12 lg:pl-18 lg:pr-18 md:pt-12 md:pb-20'>
+            <div className='mx-auto w-full max-w-screen-content'>
+              <ClassSingleUpcomingResults geoActive={upcoming.geoFiltersActive} />
+            </div>
 
-          {/* On Demand Section*/}
-          <div className="mx-auto w-full max-w-screen-content flex flex-col gap-4 items-center mt-8">
-            {onDemandUrl && (
-              <div className="flex flex-col gap-4 w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter">
-                <h2 className="text-2xl font-extrabold w-full leading-[1.4]">
-                  Take It Anytime
-                </h2>
-                <OnDemandCard
-                  title={classType}
-                  image={classHeroCoverImageUri}
-                  link={onDemandUrl}
-                />
-              </div>
-            )}
+            {/* On Demand Section*/}
+            <div className='mx-auto mt-8 flex w-full max-w-screen-content flex-col items-center gap-4'>
+              {onDemandUrl && (
+                <div className='mr-auto flex w-full max-w-[1296px] flex-col gap-4 border-t border-neutral-lighter py-16'>
+                  <h2 className='w-full text-2xl leading-[1.4] font-extrabold'>
+                    Take It Anytime
+                  </h2>
+                  <OnDemandCard
+                    title={classType}
+                    image={classHeroCoverImageUri}
+                    link={onDemandUrl}
+                  />
+                </div>
+              )}
 
-            <ClassSingleGroupsSection
-              coordinates={upcoming.coordinates}
-              classUrl={upcoming.classUrl}
-              classesIndexClassType={classType}
-            />
+              <ClassSingleGroupsSection
+                coordinates={upcoming.coordinates}
+                classUrl={upcoming.classUrl}
+                classesIndexClassType={classType}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -210,7 +191,7 @@ export const ResponsiveClassesSingleConfigure = ({
 
   return (
     <Configure
-      key={`${classUrl}-${trimmed}-${coordinates?.lat ?? ""}-${coordinates?.lng ?? ""}`}
+      key={`${classUrl}-${trimmed}-${coordinates?.lat ?? ''}-${coordinates?.lng ?? ''}`}
       hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
       filters={classTypeFilter}
       aroundLatLng={
@@ -218,7 +199,7 @@ export const ResponsiveClassesSingleConfigure = ({
           ? `${coordinates.lat}, ${coordinates.lng}`
           : undefined
       }
-      aroundRadius="all"
+      aroundRadius='all'
       aroundLatLngViaIP={false}
       getRankingInfo={true}
     />
@@ -233,17 +214,17 @@ function ClassSingleUpcomingResults({ geoActive }: { geoActive: boolean }) {
     [items, geoActive],
   );
 
-  const carouselResetKey = ordered.map((h) => h.objectID).join("|");
+  const carouselResetKey = ordered.map((h) => h.objectID).join('|');
 
   return (
     <div
       data-upcoming-sessions-results
-      className="scroll-mt-[100px]w-full max-w-[1296px] mr-auto"
+      className='scroll-mt-[100px] w-full max-w-[1296px] mr-auto'
     >
-      <h3 className="pt-2 text-2xl font-extrabold mb-6 md:pt-4">
+      <h3 className='pt-2 text-2xl font-extrabold mb-6 md:pt-4'>
         Join a Class
       </h3>
-      <div className="flex w-full justify-center md:justify-start">
+      <div className='flex w-full justify-center md:justify-start'>
         <UpcomingSessionsCarousel hits={ordered} resetKey={carouselResetKey} />
       </div>
     </div>
