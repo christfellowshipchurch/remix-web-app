@@ -8,7 +8,7 @@ import { CurriculumItem } from '../components/curriculum-item.component';
 import { Breadcrumbs } from '~/components';
 
 export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
-  const { title, description, audience, source, duration, format } = hit;
+  const { title, content, audience, source, duration, format } = hit;
   const location = useLocation();
   const backToStudiesFinderUrl =
     typeof location.state?.fromStudiesFinder === 'string'
@@ -53,7 +53,7 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
           <div className='flex flex-col gap-4 mt-8 md:mt-12'>
             <h2 className='text-lg font-extrabold md:hidden'>About</h2>
             <HTMLRenderer
-              html={description}
+              html={content}
               className='text-text-primary md:text-lg md:font-medium '
             />
           </div>

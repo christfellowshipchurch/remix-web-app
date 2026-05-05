@@ -181,6 +181,7 @@ export const StudiesSearch = () => {
 
 interface GroupedStudyType {
   coverImage: string;
+  content: string;
   title: string;
   url: string;
   summary: string;
@@ -213,7 +214,11 @@ function StudyTypeGroupedResults({
           coverImage: hit.coverImage?.sources?.[0]?.uri ?? '',
           title: hit.title,
           url: hit.url,
-          summary: hit.description ?? hit.summary ?? '',
+          content: hit.content ?? '',
+          summary:
+            (hit.summary ?? '').trim() ||
+            (hit.description ?? '').trim() ||
+            '',
           topic: hit.topic ?? 'Spiritual Growth',
           format: hit.format ?? 'Video',
           duration: hit.duration ?? 'Short',
@@ -234,6 +239,7 @@ function StudyTypeGroupedResults({
       studyType: group.title as StudyHitType['studyType'],
       subtitle: '',
       url: group.url as StudyHitType['url'],
+      content: group.content,
       summary: group.summary,
       description: group.summary,
       coverImage: {

@@ -6,6 +6,15 @@ import { StudyHitType } from "../../types";
 import { Link } from "react-router-dom";
 import { StudiesTagItem } from "../../studies-single/partials/basic-content.partial";
 
+/** Finder cards are plain text; strip tags when falling back from `content`. */
+function studyFinderCardExcerpt(hit: StudyHitType): string {
+  const fromSummary = (hit.summary ?? '').trim();
+  if (fromSummary) return fromSummary;
+  const raw = (hit.content ?? '').trim();
+  if (!raw) return '';
+  return raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 export function StudyHitComponent({
   hit,
   fromStudiesFinderUrl,
@@ -13,7 +22,8 @@ export function StudyHitComponent({
   hit: StudyHitType;
   fromStudiesFinderUrl?: string;
 }) {
-  const coverImage = hit.coverImage?.sources?.[0]?.uri || "";
+  const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
+  const cardExcerpt = studyFinderCardExcerpt(hit);
 
   return (
     <Link
@@ -47,8 +57,9 @@ export function StudyHitComponent({
                   {hit.title}
                 </h3>
 
-                {/* Description */}
-                <p className="text-sm text-black line-clamp-3">{hit.summary}</p>
+                {cardExcerpt ? (
+                  <p className="text-sm text-black line-clamp-3">{cardExcerpt}</p>
+                ) : null}
               </div>
             </div>
 

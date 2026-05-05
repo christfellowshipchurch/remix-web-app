@@ -1,4 +1,4 @@
-import { ImageSource } from "../group-finder/types";
+import { ImageSource } from '../group-finder/types';
 
 export interface StudyHitType {
   objectID: string;
@@ -6,36 +6,38 @@ export interface StudyHitType {
   title: string; // this will either be Rock Class Title
   studyType: string;
   url: string;
-  subtitle: string; // this will be the subtitle of the class inside Class Preference Define Type
-  summary: string; // this will be the summary of the class inside the individual Classes
-  description: string; // this will be the description of the study
+  /** Rich text / HTML for the study body (HTMLRenderer on single; finder card uses plain excerpt when summary is empty). */
+  content: string;
   coverImage: ImageSource;
-  duration: "Short" | "Medium" | "Long" | "Ongoing/Daily" | "Self Paced";
+  subtitle: string; // this will be the subtitle of the class inside Class Preference Define Type - TODO: Add to Algolia? NOT IN ALGOLIA CURRENTLY
+  summary: string; // this will be the summary of the class inside the individual Classes - TODO: Add to Algolia? NOT IN ALGOLIA CURRENTLY
+  description: string; // this will be the description of the study TODO: Add to Algolia? NOT IN ALGOLIA CURRENTLY
+  duration: 'Short' | 'Medium' | 'Long' | 'Ongoing/Daily' | 'Self Paced';
   topic:
-    | "Bible Books"
-    | "Spiritual Growth"
-    | "Relationships"
-    | "Parenting"
-    | "Finances"
-    | "Apologetics"
-    | "Outreach"
-    | "Discipleship"
-    | "Prayer";
+    | 'Bible Books'
+    | 'Spiritual Growth'
+    | 'Relationships'
+    | 'Parenting'
+    | 'Finances'
+    | 'Apologetics'
+    | 'Outreach'
+    | 'Discipleship'
+    | 'Prayer';
   format:
-    | "Video"
-    | "Discussion Guide"
-    | "Book Study"
-    | "Devotional"
-    | "Podcast";
+    | 'Video'
+    | 'Discussion Guide'
+    | 'Book Study'
+    | 'Devotional'
+    | 'Podcast';
   audience:
-    | "Everyone"
-    | "Men"
-    | "Women"
-    | "Couples"
-    | "Youth"
-    | "Parents"
-    | "New Believers";
-  source: "Christ Fellowship" | "Recommended External";
+    | 'Everyone'
+    | 'Men'
+    | 'Women'
+    | 'Couples'
+    | 'Youth'
+    | 'Parents'
+    | 'New Believers';
+  source: 'Christ Fellowship' | 'Recommended External';
   _highlightResult: {
     title: {
       value: string;
