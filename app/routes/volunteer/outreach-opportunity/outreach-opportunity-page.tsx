@@ -1,30 +1,31 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
 
-import type { LoaderReturnType } from "./loader";
+import { useCopyPagePath } from '~/hooks/use-copy-page-path';
+
+import { VolunteerDetailNav } from '../components/volunteer-detail/volunteer-detail-nav.component';
+import { VolunteerDetailHero } from '../components/volunteer-detail/volunteer-detail-hero.component';
+
+import type { LoaderReturnType } from './loader';
 import {
   clearVolunteerFinderBackPayload,
   readVolunteerFinderBackPayload,
-} from "./components/volunteer-finder-return-href";
-
-import {
-  About,
-  Hero,
-  Intro,
-  MobileBottomBar,
-  Questions,
-  Sidebar,
-  VolunteerNav,
-  WhatToKnow,
-} from "./partials/volunteer-single-partials.partial";
-import { useCopyPagePath } from "~/hooks/use-copy-page-path";
+} from './components/outreach-finder-return-href';
 import {
   MissionDetailRows,
   str,
-} from "./components/volunteer-single-details.component";
-import { VolunteerMissionSpotsAlgoliaProvider } from "./components/volunteer-spots-algolia.component";
+} from './components/outreach-details.component';
+import { OutreachIntro } from './components/outreach-intro.component';
+import { VolunteerMissionSpotsAlgoliaProvider } from './components/outreach-spots-algolia.component';
+import {
+  About,
+  MobileBottomBar,
+  Questions,
+  Sidebar,
+  WhatToKnow,
+} from './partials/outreach-partials.partial';
 
-export function VolunteerSinglePage() {
+export function OutreachOpportunityPage() {
   const { mission, groupGuid, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
   const navigate = useNavigate();
@@ -35,14 +36,14 @@ export function VolunteerSinglePage() {
     const payload = readVolunteerFinderBackPayload(groupGuid);
     try {
       if (!payload) {
-        navigate("/volunteer#community");
+        navigate('/volunteer#community');
         return;
       }
       if (payload.volunteerListSearch.trim().length > 1) {
         navigate(-1);
         return;
       }
-      navigate("/volunteer#community");
+      navigate('/volunteer#community');
     } finally {
       clearVolunteerFinderBackPayload();
     }
@@ -53,11 +54,11 @@ export function VolunteerSinglePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const title = str(mission.title) || "Volunteer opportunity";
-  const category = str(mission.category) || "Volunteer opportunity";
+  const title = str(mission.title) || 'Volunteer opportunity';
+  const category = str(mission.category) || 'Volunteer opportunity';
   const coverImage = str(mission.coverImageUrl) || undefined;
-  const aboutBody = str(mission.summary) || "";
-  const signupHref = str(mission.missionsUrl) || "";
+  const aboutBody = str(mission.summary) || '';
+  const signupHref = str(mission.missionsUrl) || '';
   const contactName = str(mission.contactName);
   const contactEmail = str(mission.contactEmail);
 
@@ -72,24 +73,24 @@ export function VolunteerSinglePage() {
   return (
     <div
       className={`min-h-screen ${
-        isVisible ? "animate-fadeIn duration-400" : "opacity-0"
+        isVisible ? 'animate-fadeIn duration-400' : 'opacity-0'
       }`}
     >
-      <article className="min-h-screen bg-white md:pb-24 flex flex-col">
-        <VolunteerNav
+      <article className='min-h-screen bg-white md:pb-24 flex flex-col'>
+        <VolunteerDetailNav
           copied={copied}
           onCopyPath={copyPath}
-          onBackToOpportunities={onBackToOpportunities}
+          onBack={onBackToOpportunities}
         />
-        <Hero
+        <VolunteerDetailHero
           title={title}
           coverImage={coverImage}
-          onBackToOpportunities={onBackToOpportunities}
+          onBack={onBackToOpportunities}
         />
 
-        <div className="shrink-0 content-padding mx-auto w-full max-w-screen-content py-8 pb-0 md:py-12">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1fr)_min(380px,100%)] md:items-start md:gap-14">
-            <div className="min-w-0 space-y-8">
+        <div className='shrink-0 content-padding mx-auto w-full max-w-screen-content py-8 pb-0 md:py-12'>
+          <div className='grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1fr)_min(380px,100%)] md:items-start md:gap-14'>
+            <div className='min-w-0 space-y-8'>
               <VolunteerMissionSpotsAlgoliaProvider
                 appId={ALGOLIA_APP_ID}
                 searchApiKey={ALGOLIA_SEARCH_API_KEY}
@@ -97,7 +98,7 @@ export function VolunteerSinglePage() {
                 rockFallback={spotsLabel}
               >
                 {(resolvedSpots) => (
-                  <Intro
+                  <OutreachIntro
                     category={category}
                     title={title}
                     spotsLabel={resolvedSpots}
@@ -106,12 +107,12 @@ export function VolunteerSinglePage() {
               </VolunteerMissionSpotsAlgoliaProvider>
 
               {/* Mobile-only mission details */}
-              <div className="md:hidden pb-4">
+              <div className='md:hidden pb-4'>
                 <MissionDetailRows mission={mission} />
               </div>
 
               {/* Desktop-only content */}
-              <div className="hidden flex-col gap-10 md:flex">
+              <div className='hidden flex-col gap-10 md:flex'>
                 <About aboutBody={aboutBody} />
                 <WhatToKnow data={mission.whatToKnow} />
                 <Questions
@@ -131,8 +132,8 @@ export function VolunteerSinglePage() {
         </div>
 
         {/* Mobile-only content */}
-        <div className="flex min-h-0 w-full flex-1 flex-col bg-gray pt-12 pb-24 content-padding md:hidden">
-          <div className="mx-auto flex w-full max-w-screen-content flex-col gap-10">
+        <div className='flex min-h-0 w-full flex-1 flex-col bg-gray pt-12 pb-24 content-padding md:hidden'>
+          <div className='mx-auto flex w-full max-w-screen-content flex-col gap-10'>
             <About aboutBody={aboutBody} />
             <WhatToKnow data={mission.whatToKnow} />
             <Questions contactName={contactName} contactEmail={contactEmail} />

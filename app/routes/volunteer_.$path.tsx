@@ -1,6 +1,12 @@
-import { VolunteerSinglePage } from "./volunteer/volunteer-single/volunteer-single-page";
+import { redirect } from 'react-router';
+import type { LoaderFunctionArgs } from 'react-router';
 
-export { loader } from "./volunteer/volunteer-single/loader";
-export { meta } from "./volunteer/volunteer-single/meta";
+/** Legacy route: `/volunteer/:path` → redirect to `/volunteer/outreach/:path`. */
+export async function loader({ params }: LoaderFunctionArgs) {
+  const path = params.path ?? '';
+  throw redirect(`/volunteer/outreach/${path}`, 301);
+}
 
-export default VolunteerSinglePage;
+export default function LegacyVolunteerRedirect() {
+  return null;
+}

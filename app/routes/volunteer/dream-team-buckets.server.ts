@@ -33,9 +33,34 @@ function mapDefinedValueToResource(
   // Hide buckets that don't have a description, tag, or image(e.g. "Not Sure Yet?" bucket)
   if (!description || !tag || !image) return null;
 
-  const pathname = `/volunteer/${guid}`;
+  const pathname = `/volunteer/church/${guid}`;
 
   return { name, description, tag, image, pathname };
+}
+
+export async function fetchDreamTeamBucketByGuid(
+  guid: string,
+): Promise<VolunteerAtChurchResource | null> {
+  try {
+    const raw = await fetchRockData({
+      endpoint: 'DefinedValues',
+      queryParams: {
+        $filter: `DefinedTypeId eq ${DREAM_TEAM_BUCKETS_DEFINED_TYPE_ID} and IsActive eq true and Guid eq guid'${guid}'`,
+        loadAttributes: 'simple',
+        $top: '1',
+      },
+      ttl: TTL.NONE,
+    });
+
+    const item: RawDefinedValue | undefined = Array.isArray(raw)
+      ? raw[0]
+      : raw ?? undefined;
+    if (!item) return null;
+    return mapDefinedValueToResource(item);
+  } catch (error) {
+    console.error('Error fetching Dream Team Bucket by guid:', error);
+    return null;
+  }
 }
 
 export async function fetchDreamTeamBuckets(): Promise<

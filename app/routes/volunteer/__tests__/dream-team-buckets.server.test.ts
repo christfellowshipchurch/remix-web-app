@@ -43,7 +43,7 @@ describe('fetchDreamTeamBuckets', () => {
       tag: 'Front-Facing',
       image:
         'https://cdn.example.com/GetImage.ashx?guid=cccc-dddd-eeee-ffff-000000000000',
-      pathname: '/volunteer/aaaa-1111-2222-3333-bbbbbbbbbbbb',
+      pathname: '/volunteer/church/aaaa-1111-2222-3333-bbbbbbbbbbbb',
     });
   });
 
@@ -65,7 +65,7 @@ describe('fetchDreamTeamBuckets', () => {
     expect(item.description).toBe('fallback description text');
   });
 
-  it('generates pathname as /volunteer/{guid}', async () => {
+  it('generates pathname as /volunteer/church/{guid}', async () => {
     mockFetch.mockResolvedValueOnce([
       {
         guid: '12345678-abcd-efef-1234-abcdef012345',
@@ -81,7 +81,7 @@ describe('fetchDreamTeamBuckets', () => {
     const [item] = await fetchDreamTeamBuckets();
 
     expect(item.pathname).toBe(
-      '/volunteer/12345678-abcd-efef-1234-abcdef012345',
+      '/volunteer/church/12345678-abcd-efef-1234-abcdef012345',
     );
   });
 
