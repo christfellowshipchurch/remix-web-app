@@ -107,13 +107,12 @@ export function ClassSingleUpcomingSearch({
           limited to the parent box). Splitting filters and results into siblings
           made each filter parent too short, so the bar scrolled away on both breakpoints.
         */}
-        <div className='flex min-w-0 w-full flex-col'>
-          <div className='content-padding mx-auto w-full max-w-screen-content md:hidden'>
-            <h2 className='w-full text-[28px] font-extrabold'>Filter Sessions</h2>
-          </div>
-
-          <FinderStickyBar>
-            <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
+        <div className='flex min-w-0 w-full flex-col max-md:pt-6'>
+          <FinderStickyBar className='max-md:shadow-none'>
+            <h2 className='w-full pb-2 text-[28px] font-extrabold md:hidden'>
+              Filter Sessions
+            </h2>
+            <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-3 md:py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
               <div className='hidden w-fit shrink-0 items-center gap-4 md:flex'>
                 <h2 className='w-fit min-w-[260px] text-[28px] font-extrabold'>
                   Filter Sessions
@@ -140,7 +139,9 @@ export function ClassSingleUpcomingSearch({
 
           <div className='flex w-full flex-col bg-gray py-8 pl-5 md:pl-12 lg:pl-18 lg:pr-18 md:pt-12 md:pb-20'>
             <div className='mx-auto w-full max-w-screen-content'>
-              <ClassSingleUpcomingResults geoActive={upcoming.geoFiltersActive} />
+              <ClassSingleUpcomingResults
+                geoActive={upcoming.geoFiltersActive}
+              />
             </div>
 
             {/* On Demand Section*/}
