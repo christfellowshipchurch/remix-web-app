@@ -1,7 +1,12 @@
-import Icon from "~/primitives/icon";
-import { VolunteerAtChurchCarousel } from "../components/volunteer-at-church-carousel.component";
+import { useLoaderData } from 'react-router-dom';
+
+import Icon from '~/primitives/icon';
+import { VolunteerAtChurchCarousel } from '../components/volunteer-at-church-carousel.component';
+import type { LoaderReturnType } from '../loader';
 
 export function VolunteerAtChurch() {
+  const { dreamTeamBuckets } = useLoaderData<LoaderReturnType>();
+
   return (
     <section
       id="church"
@@ -40,7 +45,7 @@ export function VolunteerAtChurch() {
           </p>
         </div>
 
-        <VolunteerAtChurchCarousel />
+        <VolunteerAtChurchCarousel resources={dreamTeamBuckets} />
       </div>
     </section>
   );

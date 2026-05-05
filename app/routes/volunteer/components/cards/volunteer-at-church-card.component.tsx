@@ -1,13 +1,7 @@
-import { Link } from "react-router-dom";
-import { getImageUrl } from "~/lib/utils";
+import { Link } from 'react-router-dom';
+import type { VolunteerAtChurchResource } from '../../types';
 
-export type VolunteerAtChurchCardProps = {
-  name: string;
-  description: string;
-  tag: string;
-  imageId: number;
-  pathname: string;
-};
+export type VolunteerAtChurchCardProps = VolunteerAtChurchResource;
 
 export const VolunteerAtChurchCard = ({
   resource,
@@ -22,7 +16,7 @@ export const VolunteerAtChurchCard = ({
     >
       <img
         className="w-full h-[164px] max-h-[192px] object-cover object-center bg-center"
-        src={getImageUrl(resource.imageId.toString())}
+        src={resource.image}
         alt={resource.name}
       />
 
