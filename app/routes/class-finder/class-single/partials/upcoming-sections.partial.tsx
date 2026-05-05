@@ -101,12 +101,6 @@ export function ClassSingleUpcomingSearch({
       />
 
       <div className='flex w-full flex-col pagination-scroll-to' id='search'>
-        {/*
-          One column wraps heading + sticky filters + results so `position: sticky`
-          on FinderStickyBar is constrained by a tall ancestor (see MDN: sticky is
-          limited to the parent box). Splitting filters and results into siblings
-          made each filter parent too short, so the bar scrolled away on both breakpoints.
-        */}
         <div className='flex min-w-0 w-full flex-col max-md:pt-6'>
           <FinderStickyBar className='max-md:shadow-none'>
             <h2 className='w-full pb-2 text-[28px] font-extrabold md:hidden'>
