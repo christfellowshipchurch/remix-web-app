@@ -29,6 +29,10 @@ function mapDefinedValueToResource(
   const tag = item.attributeValues?.label?.value?.trim() ?? '';
   const imageGuid = item.attributeValues?.image?.value?.trim() ?? '';
   const image = imageGuid ? createImageUrlFromGuid(imageGuid) : '';
+
+  // Hide buckets that don't have a description, tag, or image(e.g. "Not Sure Yet?" bucket)
+  if (!description || !tag || !image) return null;
+
   const pathname = `/volunteer/${guid}`;
 
   return { name, description, tag, image, pathname };

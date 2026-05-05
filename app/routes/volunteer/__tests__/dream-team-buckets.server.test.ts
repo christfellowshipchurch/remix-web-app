@@ -55,7 +55,7 @@ describe('fetchDreamTeamBuckets', () => {
         description: 'fallback description text',
         attributeValues: {
           label: { value: 'Listen & Support' },
-          image: { value: '' },
+          image: { value: 'img-guid-1111-2222-333333333333' },
         },
       },
     ]);
@@ -70,7 +70,11 @@ describe('fetchDreamTeamBuckets', () => {
       {
         guid: '12345678-abcd-efef-1234-abcdef012345',
         value: 'Operations',
-        attributeValues: {},
+        attributeValues: {
+          publicDescription: { value: 'Some description' },
+          label: { value: 'A Tag' },
+          image: { value: 'img-guid-1111-2222-333333333333' },
+        },
       },
     ]);
 
@@ -104,7 +108,11 @@ describe('fetchDreamTeamBuckets', () => {
       {
         guid: 'valid-guid-1111-2222-333333333333',
         value: 'Valid item',
-        attributeValues: {},
+        attributeValues: {
+          publicDescription: { value: 'A description' },
+          label: { value: 'A Tag' },
+          image: { value: 'img-guid-1111-2222-333333333333' },
+        },
       },
     ]);
 
@@ -131,22 +139,15 @@ describe('fetchDreamTeamBuckets', () => {
   });
 
   it('maps multiple items preserving order from Rock', async () => {
+    const fullAttrs = {
+      publicDescription: { value: 'A description' },
+      label: { value: 'A Tag' },
+      image: { value: 'img-guid-1111-2222-333333333333' },
+    };
     mockFetch.mockResolvedValueOnce([
-      {
-        guid: 'aaaa-0000-0000-0000-000000000001',
-        value: 'First',
-        attributeValues: {},
-      },
-      {
-        guid: 'aaaa-0000-0000-0000-000000000002',
-        value: 'Second',
-        attributeValues: {},
-      },
-      {
-        guid: 'aaaa-0000-0000-0000-000000000003',
-        value: 'Third',
-        attributeValues: {},
-      },
+      { guid: 'aaaa-0000-0000-0000-000000000001', value: 'First', attributeValues: fullAttrs },
+      { guid: 'aaaa-0000-0000-0000-000000000002', value: 'Second', attributeValues: fullAttrs },
+      { guid: 'aaaa-0000-0000-0000-000000000003', value: 'Third', attributeValues: fullAttrs },
     ]);
 
     const result = await fetchDreamTeamBuckets();
@@ -154,19 +155,81 @@ describe('fetchDreamTeamBuckets', () => {
     expect(result.map((r) => r.name)).toEqual(['First', 'Second', 'Third']);
   });
 
-  it('sets image to empty string when image attribute value is absent', async () => {
+  it('filters out items missing image', async () => {
     mockFetch.mockResolvedValueOnce([
       {
         guid: 'aaaa-0000-0000-0000-000000000001',
         value: 'No Image Bucket',
         attributeValues: {
+          publicDescription: { value: 'A description' },
           label: { value: 'A Tag' },
         },
       },
     ]);
 
-    const [item] = await fetchDreamTeamBuckets();
+    const result = await fetchDreamTeamBuckets();
 
-    expect(item.image).toBe('');
+    expect(result).toHaveLength(0);
+  });
+
+  it('filters out items missing tag', async () => {
+    mockFetch.mockResolvedValueOnce([
+      {
+        guid: 'aaaa-0000-0000-0000-000000000001',
+        value: 'No Tag Bucket',
+        attributeValues: {
+          publicDescription: { value: 'A description' },
+          image: { value: 'img-guid-1111-2222-333333333333' },
+        },
+      },
+    ]);
+
+    const result = await fetchDreamTeamBuckets();
+
+    expect(result).toHaveLength(0);
+  });
+
+  it('filters out items missing description', async () => {
+    mockFetch.mockResolvedValueOnce([
+      {
+        guid: 'aaaa-0000-0000-0000-000000000001',
+        value: 'No Description Bucket',
+        attributeValues: {
+          label: { value: 'A Tag' },
+          image: { value: 'img-guid-1111-2222-333333333333' },
+        },
+      },
+    ]);
+
+    const result = await fetchDreamTeamBuckets();
+
+    expect(result).toHaveLength(0);
+  });
+
+  it('filters incomplete items while keeping complete ones', async () => {
+    mockFetch.mockResolvedValueOnce([
+      {
+        guid: 'aaaa-0000-0000-0000-000000000001',
+        value: 'Incomplete — no image',
+        attributeValues: {
+          publicDescription: { value: 'A description' },
+          label: { value: 'A Tag' },
+        },
+      },
+      {
+        guid: 'aaaa-0000-0000-0000-000000000002',
+        value: 'Complete Bucket',
+        attributeValues: {
+          publicDescription: { value: 'Full description' },
+          label: { value: 'Full Tag' },
+          image: { value: 'img-guid-1111-2222-333333333333' },
+        },
+      },
+    ]);
+
+    const result = await fetchDreamTeamBuckets();
+
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe('Complete Bucket');
   });
 });
