@@ -9,6 +9,9 @@ import { ButtonProps } from '~/primitives/button/button.primitive';
 const cardShellClassName = cn(
   'mx-auto flex h-full min-h-0 w-full max-w-[360px] flex-1 flex-col rounded-lg',
   'md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]',
+  // In the upcoming sessions carousel, cards should align to a consistent height per slide.
+  // Content can vary (campus label, class type, etc.), so we enforce a desktop min height.
+  'lg:min-h-[270px]',
   'transition-transform duration-300 ease-out',
   'hover:-translate-y-1',
 );

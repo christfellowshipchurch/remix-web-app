@@ -101,8 +101,10 @@ export function UpcomingSessionsCarousel({
       <CarouselContent
         className={cn(
           'ml-0 py-3',
-          !isDesktopChunkGrid &&
-            CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
+          isDesktopChunkGrid ? 'gap-6 xl:gap-8' : null,
+          !isDesktopChunkGrid
+            ? CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS
+            : null,
         )}
       >
         {!isDesktopChunkGrid
@@ -120,7 +122,7 @@ export function UpcomingSessionsCarousel({
               <CarouselItem key={slideIndex} className='basis-full pl-0'>
                 <div
                   className={cn(
-                    'grid w-full items-stretch gap-x-4 gap-y-6 xl:gap-x-8',
+                    'grid w-full auto-rows-fr items-stretch gap-x-4 gap-y-6 xl:gap-x-8',
                     classSingleCarouselSlideGridColsClass(
                       DESKTOP_CAROUSEL_CHUNK,
                     ),
