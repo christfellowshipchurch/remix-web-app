@@ -34,7 +34,7 @@ export const meta: MetaFunction = () => {
 export default function HomePage() {
   return (
     <>
-      <div className='w-screen h-screen absolute top-0 left-0 bg-white -z-100' />
+      <div className='w-screen h-dvh-fallback absolute top-0 left-0 bg-white -z-100' />
       <HeroSection />
       <AChanceSection />
       <WhatWeOfferSection />

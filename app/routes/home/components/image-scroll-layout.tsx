@@ -88,7 +88,7 @@ export function ImageScrollLayout() {
       <div className="fixed top-0 left-0 w-screen h-48 md:h-64 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none" />
 
       {/* Fixed Image Container (md+) — viewport-anchored to avoid layout shifts from hiding navbar */}
-      <div className="hidden md:block fixed left-0 top-0 w-1/2 h-screen z-0 pointer-events-none pl-5 md:pl-12 lg:pl-18">
+      <div className="hidden md:block fixed left-0 top-0 w-1/2 h-dvh-fallback z-0 pointer-events-none pl-5 md:pl-12 lg:pl-18">
         <div className="w-full h-full flex max-w-[716px] ml-auto">
           <div className="relative w-full max-w-md xl:max-w-lg aspect-square">
             {chanceContent.map((section, index) => (
@@ -118,7 +118,7 @@ export function ImageScrollLayout() {
               sectionRefs.current[index] = el;
             }}
             className={cn(
-              "relative flex items-center p-12 min-h-screen w-full",
+              "relative flex items-center p-12 min-h-dvh-fallback w-full",
               index === 2 && "pb-24 md:pb-0", // Add padding to the last section on mobile to prevent content from grayed out from gradient
             )}
             data-card-index={index}

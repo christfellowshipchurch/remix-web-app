@@ -18,7 +18,7 @@ export const MobileHeroSection = () => {
   }, []);
 
   return (
-    <section className="h-dvh w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
+    <section className="h-dvh-fallback w-full bg-white pb-8 relative max-h-[700px] block lg:hidden z-30">
       {/*  Background Video — poster image paints first; iframe loads after idle */}
       <div className="absolute inset-0 w-full h-full z-1">
         {showVideo ? (

@@ -62,7 +62,7 @@ export const MobileSearch = ({
       : emptySearchClient);
 
   return (
-    <div className="h-full overflow-y-auto bg-white">
+    <div className="h-full overflow-y-auto overscroll-contain bg-white">
       <InstantSearch
         indexName="dev_contentItems"
         searchClient={searchClient}

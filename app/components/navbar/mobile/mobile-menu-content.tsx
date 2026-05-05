@@ -38,7 +38,7 @@ export default function MobileMenuContent({
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-white">
+    <div className="h-full overflow-y-auto overscroll-contain bg-white">
       <div className="pb-24">
         <MenuSection
           title="Welcome to Church"

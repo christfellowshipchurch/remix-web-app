@@ -5,7 +5,7 @@ import { Button } from "~/primitives/button/button.primitive";
 import { MobileSearch } from "./search/mobile-search.component";
 import { useResponsive } from "~/hooks/use-responsive";
 const mobileMenuButtonStyle =
-  "cursor-pointer transition-colors duration-300 active:scale-95 active:opacity-80";
+  "cursor-pointer touch-manipulation transition-colors duration-300 active:scale-95 active:opacity-80";
 
 export default function MobileMenu({
   mode,
@@ -35,6 +35,9 @@ export default function MobileMenu({
     };
   }, [isOpen, isSearchOpen]);
 
+  // TODO(scroll-audit): This fixed drawer/search UI is rendered inside the navbar, which can receive `-translate-y-full`; hoist it to a portal if fixed-position anchoring still jitters in Blink.
+  // TODO(scroll-audit): Nested scroll container: the fixed drawer panel and MobileMenuContent both scroll; flatten after confirming drawer header/footer sizing.
+  // TODO(scroll-audit): Nested scroll container: the fixed search panel and MobileSearch both scroll; flatten after confirming sticky search header behavior.
   return (
     <div
       className={`lg:hidden ${
@@ -128,7 +131,7 @@ export default function MobileMenu({
       <div
         className={`fixed ${
           showSiteBanner ? "top-[48px]" : "top-[0px]"
-        } right-0 w-4/5 max-w-[400px] h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        } right-0 bottom-0 w-4/5 max-w-[400px] bg-white z-50 transform transition-all duration-300 overflow-y-auto overscroll-contain
           ${
             !isOpen
               ? "translate-x-full invisible opacity-0"
@@ -150,7 +153,7 @@ export default function MobileMenu({
       <div
         className={`fixed ${
           showSiteBanner ? "top-[48px]" : "top-[0px]"
-        } right-0 w-full h-full bg-white z-50 transform transition-all duration-300 overflow-y-auto
+        } right-0 bottom-0 w-full bg-white z-50 transform transition-all duration-300 overflow-y-auto overscroll-contain
           ${
             !isSearchOpen
               ? "translate-x-full invisible opacity-0"

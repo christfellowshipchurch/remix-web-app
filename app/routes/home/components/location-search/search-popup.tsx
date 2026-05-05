@@ -15,7 +15,7 @@ export const SearchPopup = ({
       <div className="space-y-4">
         <Hits
           classNames={{
-            root: "flex flex-col overflow-y-auto max-h-[300px]",
+            root: "flex flex-col overflow-y-auto overscroll-contain max-h-[300px]",
             item: "flex w-full rounded-xl transition-transform duration-300 border-[1px] border-[#E8E8E8] [&:first-child]:!border-navy hover:border-navy",
             list: "flex flex-col gap-3",
           }}

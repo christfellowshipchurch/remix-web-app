@@ -59,7 +59,7 @@ export function LeaderScroll() {
       </Modal>
 
       {/* Other Leaders */}
-      <div className="flex items-start lg:items-end gap-3 overflow-scroll sm:mr-4 md:mr-12 pr-4">
+      <div className="flex items-start lg:items-end gap-3 overflow-scroll overscroll-x-contain sm:mr-4 md:mr-12 pr-4">
         {otherLeaderItems.map((leader, index) => (
           <MobileLeaderCard key={leader.id} leader={leader} index={index} />
         ))}

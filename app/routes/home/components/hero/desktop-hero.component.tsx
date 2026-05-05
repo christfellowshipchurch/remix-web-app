@@ -7,7 +7,7 @@ export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <section className='h-[110vh] max-h-[1200px] w-full bg-white mt-[-26px] hidden lg:block relative z-30'>
+    <section className='h-home-hero-desktop max-h-[1200px] w-full bg-white mt-[-26px] hidden lg:block relative z-30'>
       {/* background image and video */}
       <div className='grid grid-cols-2 size-full relative'>
         {/* Left Column */}

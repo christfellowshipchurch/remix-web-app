@@ -14,6 +14,7 @@ export const button = cva(
     "delay-50",
     "rounded-md",
     "cursor-pointer",
+    "touch-manipulation",
     "font-semibold",
   ],
   {

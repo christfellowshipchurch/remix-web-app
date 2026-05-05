@@ -42,7 +42,7 @@ function ModalContent({
           transform: 'translate(-50%, -50%)',
         }}
         className={cn(
-          "sm:h-auto max-h-[90vh] data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding"
+          "sm:h-auto max-h-modal-dynamic overflow-y-auto overscroll-contain data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding"
         )}
       >
         <div

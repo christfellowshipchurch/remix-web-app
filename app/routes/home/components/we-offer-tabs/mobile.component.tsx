@@ -104,6 +104,7 @@ export const WhatWeOfferMobile = ({
                 style={{
                   paddingLeft: "calc(50vw - 36vw)",
                   paddingRight: "calc(50vw - 36vw)",
+                  scrollPaddingInline: "calc(50vw - 36vw)",
                 }}
               >
                 {tab.content.map((content, index) => (

@@ -108,7 +108,7 @@ export default function App() {
     <AuthProvider>
       <CookieConsentProvider>
         <NavbarVisibilityProvider>
-          <div className="min-h-screen flex flex-col text-pretty">
+          <div className="min-h-dvh-fallback flex flex-col text-pretty">
             <Navbar />
             <main>
               <Outlet />

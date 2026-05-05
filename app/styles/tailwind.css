@@ -14,6 +14,26 @@
   }
 }
 
+@utility h-dvh-fallback {
+  height: 100vh;
+  height: 100dvh;
+}
+
+@utility min-h-dvh-fallback {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+@utility h-home-hero-desktop {
+  height: 110vh;
+  height: 110dvh;
+}
+
+@utility max-h-modal-dynamic {
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+
 /* ------------ Custom Animation Tokens ------------ */
 @theme {
   /* Navbar */
@@ -113,6 +133,18 @@
   --color-link-primary: var(--color-black);
   --color-link-secondary: var(--color-neutral-default);
   --color-link-alternate: var(--color-white);
+}
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  :where(a, button, [role="button"]) {
+    touch-action: manipulation;
+  }
+
+  /* TODO(scroll-audit): Validate whether Chrome Android pull-to-refresh conflicts with the home hero search and fixed navbar before adding `overscroll-behavior-y: contain` to html/body. */
 }
 
 /* ------------ Custom Keyframes ------------ */
