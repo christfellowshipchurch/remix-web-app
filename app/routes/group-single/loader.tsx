@@ -94,17 +94,22 @@ async function fetchGroupByPathSegment(
 ): Promise<GroupType | null> {
   const escaped = escapeAlgoliaFilterString(segment);
 
-  /** Legacy URLs used Algolia `objectID` in the path (`objectID` is always filterable). */
-  const byObjectId = await fetchGroupWithFilter(
-    `groupGuid:${escaped}`,
+  const byGuidFilter = await fetchGroupWithFilter(
+    `groupGuid:"${escaped}"`,
     appId,
     apiKey,
   );
-  if (byObjectId) {
-    return byObjectId;
+  if (byGuidFilter) {
+    return byGuidFilter;
   }
 
-  return fetchGroupByGuidSearch(segment, appId, apiKey);
+  const byGuidSearch = await fetchGroupByGuidSearch(segment, appId, apiKey);
+  if (byGuidSearch) {
+    return byGuidSearch;
+  }
+
+  /** Legacy URLs used Algolia `objectID` in the path (`objectID` is always filterable). */
+  return fetchGroupWithFilter(`objectID:"${escaped}"`, appId, apiKey);
 }
 
 export async function loader({ params }: LoaderFunctionArgs) {
