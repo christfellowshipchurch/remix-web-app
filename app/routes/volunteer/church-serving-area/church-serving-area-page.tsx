@@ -20,6 +20,7 @@ export function ChurchServingAreaPage() {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const hasSelectedRole = Boolean(selectedRoleId?.trim());
 
   const { copyPath, copied } = useCopyPagePath();
 
@@ -28,8 +29,9 @@ export function ChurchServingAreaPage() {
   }, [navigate]);
 
   const onContinue = useCallback(() => {
+    if (!selectedRoleId?.trim()) return;
     navigate('/volunteer#community');
-  }, [navigate]);
+  }, [navigate, selectedRoleId]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -42,7 +44,7 @@ export function ChurchServingAreaPage() {
         isVisible ? 'animate-fadeIn duration-400' : 'opacity-0'
       }`}
     >
-      <article className='min-h-screen bg-white md:pb-24 flex flex-col'>
+      <article className='flex min-h-screen flex-col bg-white'>
         <VolunteerDetailNav
           copied={copied}
           onCopyPath={copyPath}
@@ -55,8 +57,8 @@ export function ChurchServingAreaPage() {
           onBack={onBack}
         />
 
-        <div className='shrink-0 content-padding w-full  py-8 pb-0 md:py-12'>
-          <div className='grid grid-cols-1 gap-10 md:grid-cols-7 md:items-start md:gap-14 mx-auto max-w-content x-5 md:px-10'>
+        <div className='min-h-0 flex-1 content-padding w-full py-8 pb-0 md:py-12 mt-6'>
+          <div className='grid grid-cols-1 gap-10 md:grid-cols-7 md:items-start md:gap-14 mx-auto max-w-content x-5 lg:px-10 mb-10'>
             <div className='min-w-0 space-y-6 space-x-10 col-span-3'>
               <ChurchIntro
                 name={bucket.name}
@@ -68,7 +70,7 @@ export function ChurchServingAreaPage() {
               <ChurchNotSureLink />
 
               {/* Role selector — visible below intro on mobile */}
-              <div className='md:hidden pb-24'>
+              <div className='md:hidden'>
                 <ChurchRoleSelector
                   roles={roles}
                   selectedRoleId={selectedRoleId}
@@ -90,14 +92,14 @@ export function ChurchServingAreaPage() {
           </div>
         </div>
 
-        <div className='w-full py-8 pb-0 md:py-12 border-t border-neutral-lighter content-padding'>
+        <div className='w-full hidden md:block border-t border-neutral-lighter/50 content-padding pt-6 pb-8'>
           <div className='mx-auto w-full max-w-content flex justify-end px-5 md:px-10'>
             <Button
               intent='primary'
               type='button'
               onClick={onContinue}
-              disabled={!selectedRoleId}
-              className='w-[280px] text-white hover:bg-ocean/80'
+              disabled={!hasSelectedRole}
+              className='w-[280px] text-white hover:bg-ocean/80 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40'
             >
               Continue
             </Button>
@@ -105,7 +107,7 @@ export function ChurchServingAreaPage() {
         </div>
 
         <ChurchMobileContinueBar
-          selectedRoleId={selectedRoleId}
+          hasSelectedRole={hasSelectedRole}
           onContinue={onContinue}
         />
       </article>
