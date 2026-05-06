@@ -57,7 +57,7 @@ export function ChurchServingAreaPage() {
           onBack={onBack}
         />
 
-        <div className='min-h-0 flex-1 content-padding w-full py-8 pb-0 md:py-12 mt-6'>
+        <div className='min-h-0 flex-1 content-padding w-full pb-0 py-4 md:py-12 lg:mt-6'>
           <div className='grid grid-cols-1 gap-10 md:grid-cols-7 md:items-start md:gap-14 mx-auto max-w-content x-5 lg:px-10 mb-10'>
             <div className='min-w-0 space-y-6 space-x-10 col-span-3'>
               <ChurchIntro
@@ -67,7 +67,9 @@ export function ChurchServingAreaPage() {
                   "Take a look at the options below, pick the one that excites you the most, and then hit 'Continue' to complete your application."
                 }
               />
-              <ChurchNotSureLink />
+              <div className='hidden md:block'>
+                <ChurchNotSureLink />
+              </div>
 
               {/* Role selector — visible below intro on mobile */}
               <div className='md:hidden'>
@@ -76,6 +78,7 @@ export function ChurchServingAreaPage() {
                   selectedRoleId={selectedRoleId}
                   onSelect={setSelectedRoleId}
                 />
+                <ChurchNotSureLink />
               </div>
             </div>
 

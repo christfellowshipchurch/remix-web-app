@@ -37,7 +37,7 @@ export function ChurchIntro({
 
 export function ChurchNotSureLink() {
   return (
-    <p className='flex flex-col text-text-secondary pt-12'>
+    <p className='flex flex-col justify-center items-center md:items-start text-text-secondary pt-12'>
       Not sure which one to choose?{' '}
       <Link
         to='/volunteer#community'
