@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from 'react-router';
 
 import { fetchDreamTeamBucketByGuid } from '../dream-team-buckets.server';
-import { STATIC_CHURCH_ROLES } from './church-serving-area.data';
+import { fetchChurchRolesByPreferenceAreaGuid } from './church-roles.server';
 import type { VolunteerAtChurchResource } from '../types';
 import type { ChurchRole } from './types';
 
@@ -28,9 +28,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new Response('Serving area not found', { status: 404 });
   }
 
+  const roles = await fetchChurchRolesByPreferenceAreaGuid(bucketGuid);
+
   return Response.json({
     bucketGuid,
     bucket,
-    roles: STATIC_CHURCH_ROLES,
+    roles,
   } satisfies LoaderReturnType);
 }

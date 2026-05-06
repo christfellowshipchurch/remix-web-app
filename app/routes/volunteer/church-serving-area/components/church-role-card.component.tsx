@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { cn } from '~/lib/utils';
 import Icon from '~/primitives/icon';
+import { HTMLRenderer } from '~/primitives/html-renderer/html-renderer.component';
 
 import type { ChurchRole } from '../types';
 
@@ -46,9 +47,11 @@ export function ChurchRoleCard({
           >
             {role.title}
           </p>
-          <p className='mt-1 text-sm text-text-secondary leading-relaxed'>
-            {role.description}
-          </p>
+          <HTMLRenderer
+            html={role.description}
+            className='mt-1 text-sm text-text-secondary leading-relaxed'
+            stripFormattingTags
+          />
         </div>
 
         <div
@@ -67,9 +70,10 @@ export function ChurchRoleCard({
       {hasExpanded && (
         <>
           {expanded && role.expandedDescription && (
-            <p className='mt-3 text-sm text-text-secondary leading-relaxed border-t border-neutral-lighter pt-3'>
-              {role.expandedDescription}
-            </p>
+            <HTMLRenderer
+              html={role.expandedDescription}
+              className='mt-3 text-sm text-text-secondary leading-relaxed border-t border-neutral-lighter pt-3'
+            />
           )}
           <button
             type='button'

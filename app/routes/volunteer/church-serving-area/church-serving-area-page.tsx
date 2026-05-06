@@ -19,8 +19,8 @@ export function ChurchServingAreaPage() {
   const { bucket, roles } = useLoaderData<LoaderReturnType>();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
-  const hasSelectedRole = Boolean(selectedRoleId?.trim());
+  const [selectedRoleGuid, setSelectedRoleGuid] = useState<string | null>(null);
+  const hasSelectedRole = Boolean(selectedRoleGuid?.trim());
 
   const { copyPath, copied } = useCopyPagePath();
 
@@ -29,9 +29,9 @@ export function ChurchServingAreaPage() {
   }, [navigate]);
 
   const onContinue = useCallback(() => {
-    if (!selectedRoleId?.trim()) return;
-    navigate('/volunteer#community');
-  }, [navigate, selectedRoleId]);
+    if (!selectedRoleGuid?.trim()) return;
+    navigate(`/volunteer-form/welcome?role=${encodeURIComponent(selectedRoleGuid)}`);
+  }, [navigate, selectedRoleGuid]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -75,8 +75,8 @@ export function ChurchServingAreaPage() {
               <div className='md:hidden'>
                 <ChurchRoleSelector
                   roles={roles}
-                  selectedRoleId={selectedRoleId}
-                  onSelect={setSelectedRoleId}
+                  selectedRoleId={selectedRoleGuid}
+                  onSelect={setSelectedRoleGuid}
                 />
                 <ChurchNotSureLink />
               </div>
@@ -87,8 +87,8 @@ export function ChurchServingAreaPage() {
               <ChurchSidebarShell>
                 <ChurchRoleSelector
                   roles={roles}
-                  selectedRoleId={selectedRoleId}
-                  onSelect={setSelectedRoleId}
+                  selectedRoleId={selectedRoleGuid}
+                  onSelect={setSelectedRoleGuid}
                 />
               </ChurchSidebarShell>
             </div>
