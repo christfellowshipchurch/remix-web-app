@@ -10,8 +10,8 @@ export function VolunteerDetailHero({
   onBack: () => void;
 }) {
   return (
-    <div className='w-full shrink-0'>
-      <div className='relative overflow-hidden content-padding max-w-screen-content mx-auto'>
+    <div className='w-full shrink-0 content-padding'>
+      <div className='relative overflow-hidden max-w-content mx-auto'>
         {coverImage ? (
           <img
             src={coverImage}

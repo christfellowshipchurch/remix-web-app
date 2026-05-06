@@ -55,9 +55,9 @@ export function ChurchServingAreaPage() {
           onBack={onBack}
         />
 
-        <div className='shrink-0 content-padding mx-auto w-full max-w-screen-content py-8 pb-0 md:py-12'>
-          <div className='grid grid-cols-1 gap-10 md:grid-cols-2 md:items-start md:gap-14 px-5 md:px-10'>
-            <div className='min-w-0 space-y-6'>
+        <div className='shrink-0 content-padding w-full  py-8 pb-0 md:py-12'>
+          <div className='grid grid-cols-1 gap-10 md:grid-cols-7 md:items-start md:gap-14 mx-auto max-w-content x-5 md:px-10'>
+            <div className='min-w-0 space-y-6 space-x-10 col-span-3'>
               <ChurchIntro
                 name={bucket.name}
                 tag={bucket.tag}
@@ -78,24 +78,29 @@ export function ChurchServingAreaPage() {
             </div>
 
             {/* Desktop role selector + Continue in sidebar */}
-            <div className='hidden md:block'>
+            <div className='hidden md:block col-span-4 pl-3'>
               <ChurchSidebarShell>
                 <ChurchRoleSelector
                   roles={roles}
                   selectedRoleId={selectedRoleId}
                   onSelect={setSelectedRoleId}
                 />
-                <Button
-                  intent='primary'
-                  type='button'
-                  onClick={onContinue}
-                  disabled={!selectedRoleId}
-                  className='w-full rounded-full min-h-12 text-base font-bold'
-                >
-                  Continue
-                </Button>
               </ChurchSidebarShell>
             </div>
+          </div>
+        </div>
+
+        <div className='w-full py-8 pb-0 md:py-12 border-t border-neutral-lighter content-padding'>
+          <div className='mx-auto w-full max-w-content flex justify-end px-5 md:px-10'>
+            <Button
+              intent='primary'
+              type='button'
+              onClick={onContinue}
+              disabled={!selectedRoleId}
+              className='w-[280px] text-white hover:bg-ocean/80'
+            >
+              Continue
+            </Button>
           </div>
         </div>
 

@@ -19,10 +19,11 @@ export function VolunteerDetailNav({
     <header
       className={cn(
         'hidden shrink-0 border-b border-neutral-lighter bg-white md:block sticky z-30 shadow-sm',
+        'content-padding w-full',
         stickyTopClass,
       )}
     >
-      <div className='content-padding mx-auto flex max-w-screen-content items-center justify-end gap-4 py-4 sm:justify-between'>
+      <div className='mx-auto flex max-w-content items-center justify-end gap-4 py-4 sm:justify-between'>
         <button
           type='button'
           onClick={onBack}

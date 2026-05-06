@@ -20,7 +20,7 @@ export function ChurchRoleCard({
   return (
     <div
       className={cn(
-        'rounded-2xl border bg-white p-5 transition-all duration-200 cursor-pointer',
+        'rounded-2xl border bg-white p-8 transition-all duration-200 cursor-pointer',
         selected
           ? 'border-ocean bg-ocean/5 shadow-lg ring-1 ring-ocean'
           : 'border-neutral-lighter hover:border-neutral-default',

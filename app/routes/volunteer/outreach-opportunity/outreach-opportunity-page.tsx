@@ -88,8 +88,8 @@ export function OutreachOpportunityPage() {
           onBack={onBackToOpportunities}
         />
 
-        <div className='shrink-0 content-padding mx-auto w-full max-w-screen-content py-8 pb-0 md:py-12'>
-          <div className='grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1fr)_min(380px,100%)] md:items-start md:gap-14'>
+        <div className='shrink-0 content-padding w-full py-8 pb-0 md:py-12'>
+          <div className='grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1fr)_min(380px,100%)] md:items-start md:gap-14 mx-auto max-w-content'>
             <div className='min-w-0 space-y-8'>
               <VolunteerMissionSpotsAlgoliaProvider
                 appId={ALGOLIA_APP_ID}
