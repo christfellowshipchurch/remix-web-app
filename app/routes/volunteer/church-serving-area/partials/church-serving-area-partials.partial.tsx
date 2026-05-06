@@ -4,8 +4,6 @@ import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 
-import { volunteerCategoryPillClassName } from '../../volunteer-category-pill';
-
 export function ChurchIntro({
   name,
   tag,
@@ -19,8 +17,9 @@ export function ChurchIntro({
     <div className='space-y-4'>
       <span
         className={cn(
-          volunteerCategoryPillClassName(tag),
           'lg:text-[14px] font-semibold',
+          'rounded-full px-3 py-1 text-sm',
+          'bg-ocean/12 text-ocean',
         )}
       >
         {tag}
