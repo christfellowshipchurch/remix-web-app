@@ -16,13 +16,19 @@ import {
 } from '../location-single-data';
 import { useResponsive } from '~/hooks/use-responsive';
 import { ConnectWithUs } from '../components/tabs-component/about-us/connect-with-us';
-import { WhatToExpect } from '../components/tabs-component/sunday-details/what-to-expect';
+import {
+  LocationSingleReminderModalButton,
+  WhatToExpect,
+} from '../components/tabs-component/sunday-details/what-to-expect';
 import { LoaderReturnType } from '../loader';
 import {
   buildWistiaOEmbedRequestUrl,
   buildWistiaSwatchImageUrl,
   type WistiaOEmbedPayload,
 } from '~/lib/wistia-oembed';
+import { cn } from '~/lib/utils';
+import { SetAReminderModal } from '~/components';
+import { GetInvolved } from '../components/tabs-component/sunday-details/get-involved';
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -354,6 +360,21 @@ const CampusTabsWrapper = ({
         tabData={tabData}
         isOnline={isOnline}
       />
+
+      {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
+      {!isOnline && activeTabValue === 'sunday-details' && (
+        <div
+          className={cn(
+            'w-full bg-gray content-padding flex pt-6 pb-16 md:hidden',
+          )}
+        >
+          <SetAReminderModal ModalButton={LocationSingleReminderModalButton} />
+        </div>
+      )}
+      {/* Had to be moved out because of Radix conflicts */}
+      {activeTabValue === 'sunday-details' && (
+        <GetInvolved isOnline={isOnline || false} isSpanish={isSpanish} />
+      )}
 
       {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
       {activeTabValue === 'about-us' && (

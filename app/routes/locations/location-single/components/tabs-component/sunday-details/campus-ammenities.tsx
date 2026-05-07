@@ -3,9 +3,6 @@ import {
   englishCampusAmenities,
   spanishCampusAmenities,
 } from '../../../location-single-data';
-import { cn } from '~/lib/utils';
-import { SetAReminderModal } from '~/components';
-import { LocationSingleReminderModalButton } from './what-to-expect';
 
 export const CampusAmenities = ({ isSpanish }: { isSpanish?: boolean }) => {
   const title = isSpanish ? 'Amenidades del Campus' : 'Campus Amenities';
@@ -14,7 +11,7 @@ export const CampusAmenities = ({ isSpanish }: { isSpanish?: boolean }) => {
     : englishCampusAmenities;
 
   return (
-    <div className='w-full bg-gray pb-28 content-padding flex'>
+    <div className='w-full bg-gray lg:pb-28 content-padding flex'>
       <div className='w-ful flex flex-col gap-6 md:items-center md:justify-center max-w-screen-content md:mx-auto'>
         <h2 className='font-extrabold text-2xl'>{title}</h2>
         <div className='flex flex-col md:flex-row md:items-center md:justify-center gap-12 md:max-w-[1100px] md:flex-wrap gap-y-3 md:gap-y-6'>
@@ -27,10 +24,6 @@ export const CampusAmenities = ({ isSpanish }: { isSpanish?: boolean }) => {
               <h3>{amenity.title}</h3>
             </div>
           ))}
-        </div>
-
-        <div className={cn('flex md:hidden')}>
-          <SetAReminderModal ModalButton={LocationSingleReminderModalButton} />
         </div>
       </div>
     </div>
