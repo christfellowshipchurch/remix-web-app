@@ -2,10 +2,13 @@ import { OurMissionSection } from '~/routes/about/partials/mission.partial';
 import { BeliefsSection } from '~/routes/about/partials/beliefs.partial';
 import { ImpactSection } from '~/routes/about/partials/impact.partial';
 import { CampusPastorsQuote } from '../../components/tabs-component/about-us/campus-pastors-quote';
+import { ConnectWithUs } from '../../components/tabs-component/about-us/connect-with-us';
 
 export const AboutUs = ({
   campusPastor,
   isSpanish,
+  campusName,
+  campusInstagram,
 }: {
   campusPastor: {
     email: string;
@@ -14,6 +17,8 @@ export const AboutUs = ({
     photo: string;
   };
   isSpanish?: boolean;
+  campusName: string;
+  campusInstagram: string;
 }) => {
   const pastorTitle = isSpanish
     ? 'Orgullosos de ser tu campus de Christ Fellowship más cercano'
@@ -37,6 +42,11 @@ export const AboutUs = ({
         background='inverted'
       />
       <ImpactSection isSpanish={isSpanish} />
+      <ConnectWithUs
+        isSpanish={isSpanish}
+        campusName={campusName}
+        campusInstagram={campusInstagram}
+      />
     </div>
   );
 };

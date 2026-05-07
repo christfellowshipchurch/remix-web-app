@@ -4,6 +4,7 @@ import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import { ButtonProps } from '~/primitives/button/button.primitive';
 import { Video } from '~/primitives/video/video.primitive';
+import { useResponsive } from '~/hooks/use-responsive';
 import {
   expectEnglishItems,
   expectSpanishItems,
@@ -20,10 +21,11 @@ export const WhatToExpect = ({
 }) => {
   const title = isSpanish ? '¿Qué esperar?' : 'What to Expect';
   const expectItems = isSpanish ? expectSpanishItems : expectEnglishItems;
+  const { isSmall } = useResponsive();
 
   return (
     <div className='w-full rounded-t-[24px] md:rounded-none bg-gray pt-36 md:pt-40 pb-8 lg:pb-28 content-padding flex justify-center'>
-      <div className='w-ful flex flex-col lg:flex-row gap-12 xl:gap-20 items-center justify-center max-w-screen-content mx-auto'>
+      <div className='w-full flex flex-col lg:flex-row gap-12 xl:gap-20 items-center justify-center max-w-screen-content mx-auto'>
         {/* Left Side */}
         {!isOnline && setReminderVideo && (
           <div className='flex-1 w-full lg:flex-auto lg:w-5/7 xl:w-4/7'>
@@ -76,17 +78,19 @@ export const WhatToExpect = ({
             </div>
           </div>
 
-          {/* Button */}
-          <div className={cn('hidden md:flex', isOnline && 'mt-4 lg:t-8')}>
-            <SetAReminderModal
-              ModalButton={LocationSingleReminderModalButton}
-              className={`${
-                isOnline
-                  ? 'bg-ocean text-white border-ocean hover:bg-navy!hover:border-navy! rounded-lg'
-                  : ''
-              }`}
-            />
-          </div>
+          {/* md+: reminder here; mobile reminder lives under Campus Amenities (one dialog at a time). */}
+          {!isSmall && (
+            <div className={cn('flex', isOnline && 'mt-4 lg:mt-8')}>
+              <SetAReminderModal
+                ModalButton={LocationSingleReminderModalButton}
+                className={
+                  isOnline
+                    ? 'bg-ocean text-white border-ocean hover:bg-navy! hover:border-navy! rounded-lg'
+                    : undefined
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

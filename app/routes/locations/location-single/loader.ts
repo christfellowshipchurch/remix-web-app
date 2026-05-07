@@ -67,17 +67,30 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const campus = await fetchRockData({
-    endpoint: "Campuses",
-    queryParams: {
-      $filter: `Url eq '${campusUrl}'`,
-      loadAttributes: "simple",
-      $top: "1",
-    },
-  });
+  type CampusRock = {
+    attributeValues?: {
+      upcomingEventsCollection?: { value?: string };
+      campusImage?: { value?: string };
+    };
+  };
+
+  let campus: CampusRock | null = null;
+
+  try {
+    campus = (await fetchRockData({
+      endpoint: "Campuses",
+      queryParams: {
+        $filter: `Url eq '${campusUrl}'`,
+        loadAttributes: "simple",
+        $top: "1",
+      },
+    })) as CampusRock;
+  } catch (error) {
+    console.warn("Rock Campuses unavailable; continuing with fallbacks:", error);
+  }
 
   const upcomingEventsCollectionGuid = String(
-    campus?.attributeValues?.upcomingEventsCollection?.value,
+    campus?.attributeValues?.upcomingEventsCollection?.value ?? "",
   ).trim();
 
   let upcomingEvents: PageBuilderSection & { type: "EVENT_COLLECTION" } = {

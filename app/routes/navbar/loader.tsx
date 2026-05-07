@@ -207,7 +207,7 @@ export async function loader({
       //   12,
       // );
       return {
-        userData: null,
+        userData: parsedUserData,
         actions: [],
         ministries: { featureCards: [] },
         watchReadListen: { featureCards: [] },
