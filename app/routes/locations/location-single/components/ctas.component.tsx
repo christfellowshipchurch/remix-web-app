@@ -16,7 +16,7 @@ const CTAButtonContent = ({
   title: string;
 }) => (
   <div
-    className='flex h-full min-h-0 w-[118px] md:w-[140px] flex-col items-center justify-center gap-1 rounded-3xl border border-neutral-lighter px-4 py-3 text-center text-ocean transition-colors duration-300 hover:bg-neutral-lightest lg:rounded-2xl cursor-pointer'
+    className='flex h-full min-h-0 w-full min-w-0 max-w-[118px] flex-col items-center justify-center gap-1 rounded-3xl border border-neutral-lighter px-4 py-3 text-center text-ocean transition-colors duration-300 hover:bg-neutral-lightest md:max-w-[140px] lg:rounded-2xl cursor-pointer'
     {...props}
   >
     <Icon name={icon} size={36} className='shrink-0' />
