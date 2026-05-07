@@ -164,7 +164,7 @@ export const CampusInfo = ({
         </div>
 
         {/* Tour */}
-        <div className='max-w-[670px] flex-1 lg:pt-16'>
+        <div className='max-w-[670px] flex-1 lg:pt-16 mx-auto'>
           <VirtualTourTabs
             wistiaId={digitalTourVideo || ''}
             address={address}
@@ -242,7 +242,7 @@ const OnlineCampusInfo = ({
           </div>
         </div>
 
-        <div className='max-w-[670px] flex-1 lg:pt-16'>
+        <div className='max-w-[670px] flex-1 lg:pt-16 mx-auto'>
           {/* Hardcoded wistiaId for now */}
           <VirtualTourTabs wistiaId='beicrozg21' isOnline />
           {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> TODO: Uncomment this when the video gets added to the Online Campus in Rock*/}
