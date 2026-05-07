@@ -39,7 +39,7 @@ export function ChurchNotSureLink() {
     <p className='flex flex-col justify-center items-center md:items-start text-text-secondary pt-12'>
       Not sure which one to choose?{' '}
       <Link
-        to='/volunteer#community'
+        to='/volunteer-form/welcome'
         className='font-semibold text-ocean hover:underline inline-flex items-center gap-1'
       >
         We'll help you find a spot

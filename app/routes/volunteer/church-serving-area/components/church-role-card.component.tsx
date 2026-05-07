@@ -49,7 +49,14 @@ export function ChurchRoleCard({
           </p>
           <HTMLRenderer
             html={role.description}
-            className='mt-1 text-sm text-text-secondary leading-relaxed'
+            className={cn(
+              'mt-1 min-w-0 text-sm text-text-secondary leading-relaxed',
+              'line-clamp-1',
+              // line-clamp applies per block; CMS <p> tags must flow inline for one-line ellipsis
+              '[&_p]:m-0',
+              '[&_p]:inline',
+              '[&_p+_p]:pl-1',
+            )}
             stripFormattingTags
           />
         </div>
