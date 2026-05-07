@@ -122,7 +122,7 @@ const TabContent = ({
 }) => {
   return (
     <Tabs.Content value={value}>
-      <div className='flex flex-col p-5 !pt-0 md:p-8'>
+      <div className='flex flex-col p-5 pt-0! md:p-8'>
         <h3 className='text-lg font-bold'>{title}</h3>
         <p>{description}</p>
       </div>
