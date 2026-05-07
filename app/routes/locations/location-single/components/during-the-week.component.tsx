@@ -30,11 +30,11 @@ export const DuringTheWeek = ({
   const orderedDays = dayOrder.filter((day) => byDay[day]?.length);
 
   return (
-    <div className='flex flex-col gap-3 rounded-2xl px-6 md:px-8 py-4 border border-neutral-lighter w-full'>
-      <h3 className='text-lg lg:text-[16px] font-semibold'>
+    <div className='flex w-full flex-col gap-3 rounded-2xl border border-neutral-lighter px-6 py-4 md:mx-auto md:max-w-xl md:px-8 lg:mx-0 lg:max-w-full'>
+      <h3 className='text-lg font-semibold lg:text-[16px]'>
         {isSpanish ? 'Durante la semana' : 'During the Week'}
       </h3>
-      <div className='flex flex-col md:flex-row gap-4 md:gap-1 lg:gap-2 md:justify-between'>
+      <div className='flex flex-col gap-4 md:flex-row md:gap-1 md:justify-between lg:gap-2'>
         {orderedDays.map((day) => (
           <div key={day} className='flex flex-col gap-2'>
             <h4 className='font-semibold lg:text-xs'>
@@ -44,7 +44,7 @@ export const DuringTheWeek = ({
               {byDay[day].map((ministry, i) => (
                 <p
                   key={i}
-                  className='text-neutral-default lg:text-xs font-medium md:max-w-[260px] lg:max-w-[180px]'
+                  className='font-medium text-neutral-default md:max-w-[260px] lg:max-w-[180px] lg:text-xs'
                 >
                   {ministry.serviceTimes} | {ministry.minstryType}{' '}
                   {ministry.learnMoreUrl ? (
@@ -56,7 +56,7 @@ export const DuringTheWeek = ({
                       <Icon
                         name='linkExternal'
                         size={16}
-                        className='text-ocean inline-block align-middle mb-[3px]'
+                        className='mb-[3px] inline-block align-middle text-ocean'
                       />
                     </Link>
                   ) : null}

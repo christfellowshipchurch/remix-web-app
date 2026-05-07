@@ -26,34 +26,36 @@ const CTAButtonContent = ({
   </div>
 );
 
-/** Column + flex-1 on direct child so side CTAs match the tallest slot (row cross-size). */
+/** Grid cell: stretch trigger to row height. */
 const ctaSlotClassName =
-  'flex min-h-0 flex-1 flex-col items-stretch min-w-0 lg:flex-none [&>*]:flex [&>*]:min-h-0 [&>*]:flex-1 [&>*]:flex-col [&>*]:items-center [&>*]:justify-stretch';
+  'flex min-h-0 min-w-0 flex-col items-stretch [&>*]:flex [&>*]:min-h-0 [&>*]:w-full [&>*]:flex-1 [&>*]:flex-col [&>*]:items-center [&>*]:justify-stretch';
 
 export const CTAs = ({ isSpanish }: { isSpanish?: boolean }) => {
   return (
-    <div className='flex w-full flex-1 items-stretch justify-center gap-4 md:justify-start lg:justify-between lg:gap-0'>
-      <div className={ctaSlotClassName}>
-        <CTAButton
-          icon='calendarAlt'
-          title={isSpanish ? 'Recuérdame' : 'Set a Reminder'}
-          isSetAReminder
-        />
-      </div>
-      <div className={ctaSlotClassName}>
-        <CTAButton
-          icon='paperPlane'
-          title={isSpanish ? 'Invita a un amigo' : 'Invite a Friend'}
-          isShareButton
-        />
-      </div>
-      <div className={ctaSlotClassName}>
-        <CTAButton
-          icon='mobileAlt'
-          title={isSpanish ? 'Contáctanos' : 'Contact Us'}
-          target='_blank'
-          href='mailto:hello@christfellowship.church'
-        />
+    <div className='w-full md:mx-auto md:max-w-md lg:mx-0 lg:max-w-full'>
+      <div className='grid w-full grid-cols-3 items-stretch gap-4 lg:gap-6'>
+        <div className={ctaSlotClassName}>
+          <CTAButton
+            icon='calendarAlt'
+            title={isSpanish ? 'Recuérdame' : 'Set a Reminder'}
+            isSetAReminder
+          />
+        </div>
+        <div className={ctaSlotClassName}>
+          <CTAButton
+            icon='paperPlane'
+            title={isSpanish ? 'Invita a un amigo' : 'Invite a Friend'}
+            isShareButton
+          />
+        </div>
+        <div className={ctaSlotClassName}>
+          <CTAButton
+            icon='mobileAlt'
+            title={isSpanish ? 'Contáctanos' : 'Contact Us'}
+            target='_blank'
+            href='mailto:hello@christfellowship.church'
+          />
+        </div>
       </div>
     </div>
   );

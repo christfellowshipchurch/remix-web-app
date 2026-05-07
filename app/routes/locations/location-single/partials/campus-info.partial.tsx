@@ -112,9 +112,9 @@ export const CampusInfo = ({
 
   return (
     <div className='w-full content-padding'>
-      <div className='w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32'>
+      <div className='mx-auto flex w-full max-w-screen-content flex-col gap-8 pt-16 pb-20 lg:flex-row lg:gap-12 lg:justify-between lg:pb-32'>
         {/* Location Info */}
-        <div className='flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]'>
+        <div className='flex max-w-[646px] flex-1 flex-col gap-8 lg:pb-16'>
           {/* Campus Name Section*/}
           <div className='flex flex-col gap-3'>
             <div className='flex items-end gap-2 text-ocean'>
@@ -123,7 +123,7 @@ export const CampusInfo = ({
                 {isSpanish ? 'Ubicación del Campus' : 'Campus Location'}
               </p>
             </div>
-            <h1 className='text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight'>
+            <h1 className='text-[24px] font-extrabold leading-tight text-[#2E2C2D] md:text-[36px] lg:text-[52px]'>
               {campusHeadingLine}
             </h1>
           </div>
@@ -151,7 +151,7 @@ export const CampusInfo = ({
           {/* Content */}
           <div className='flex flex-col gap-16'>
             {/* Desktop CTAs */}
-            <div className='hidden lg:flex max-w-[450px] gap-8 flex-col'>
+            <div className='hidden max-w-[450px] flex-col gap-8 lg:flex lg:items-start'>
               <CTAs isSpanish={isSpanish} />
               {weeklyMinistryServices && weeklyMinistryServices.length > 0 && (
                 <DuringTheWeek
@@ -164,7 +164,7 @@ export const CampusInfo = ({
         </div>
 
         {/* Tour */}
-        <div className='flex-1 lg:pt-16 max-w-[670px]'>
+        <div className='max-w-[670px] flex-1 lg:pt-16'>
           <VirtualTourTabs
             wistiaId={digitalTourVideo || ''}
             address={address}
@@ -173,7 +173,7 @@ export const CampusInfo = ({
         </div>
 
         {/* Mobile CTAs */}
-        <div className='flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16'>
+        <div className='flex flex-col gap-8 lg:gap-16 md:items-center lg:hidden'>
           <CTAs isSpanish={isSpanish} />
           {weeklyMinistryServices && weeklyMinistryServices.length > 0 && (
             <DuringTheWeek
@@ -196,16 +196,16 @@ const OnlineCampusInfo = ({
 }: CampusInfoProps) => {
   return (
     <div className='w-full content-padding'>
-      <div className='w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32'>
+      <div className='mx-auto flex w-full max-w-screen-content flex-col gap-8 pt-16 pb-20 lg:flex-row lg:justify-between lg:pb-32'>
         {/* Location Info */}
-        <div className='flex-1 flex flex-col gap-8 lg:pb-16 max-w-[900px]'>
+        <div className='flex max-w-[900px] flex-1 flex-col gap-8 lg:pb-16'>
           {/* Campus Name Section*/}
           <div className='flex flex-col gap-3'>
             <div className='flex items-center gap-2 text-ocean'>
               <Icon name='world' className='lg:size-[36px] size-[24px]' />
               <p className='font-medium'>Online Community</p>
             </div>
-            <h1 className='text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight'>
+            <h1 className='text-[24px] font-extrabold leading-tight text-[#2E2C2D] md:text-[36px] lg:text-[52px]'>
               Christ Fellowship Church Online
             </h1>
           </div>
@@ -236,20 +236,20 @@ const OnlineCampusInfo = ({
           {/* Content */}
           <div className='flex flex-col gap-16'>
             {/* Desktop CTAs */}
-            <div className='hidden lg:flex max-w-[450px] gap-8 flex-col'>
+            <div className='hidden max-w-[450px] flex-col gap-8 lg:flex'>
               <CTAs />
             </div>
           </div>
         </div>
 
-        <div className='flex-1 lg:pt-16 max-w-[670px]'>
+        <div className='max-w-[670px] flex-1 lg:pt-16'>
           {/* Hardcoded wistiaId for now */}
           <VirtualTourTabs wistiaId='beicrozg21' isOnline />
           {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> TODO: Uncomment this when the video gets added to the Online Campus in Rock*/}
         </div>
 
         {/* Mobile CTAs */}
-        <div className='flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16'>
+        <div className='flex flex-col gap-16 md:items-center lg:hidden'>
           <CTAs />
         </div>
       </div>
