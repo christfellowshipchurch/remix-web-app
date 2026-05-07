@@ -1,12 +1,12 @@
-import Icon from "~/primitives/icon";
-import { VirtualTourTabs } from "../components/virtual-tour.component";
+import Icon from '~/primitives/icon';
+import { VirtualTourTabs } from '../components/virtual-tour.component';
 import {
   DuringTheWeek,
   type WeeklyMinistryService,
-} from "../components/during-the-week.component";
-import { CTAs } from "../components/ctas.component";
-import { icons } from "~/lib/icons";
-import { dayTimes, formattedServiceTimes } from "~/lib/utils";
+} from '../components/during-the-week.component';
+import { CTAs } from '../components/ctas.component';
+import { icons } from '~/lib/icons';
+import { dayTimes, formattedServiceTimes } from '~/lib/utils';
 
 interface CampusInfoProps {
   isOnline?: boolean;
@@ -38,24 +38,24 @@ const IconText = ({
     return {
       day: time.day,
       hour:
-        time.day?.toLowerCase() === "ondemand"
+        time.day?.toLowerCase() === 'ondemand'
           ? undefined
           : time.hour
-            ? time.hour.join(", ")
-            : time.hour || "",
+            ? time.hour.join(', ')
+            : time.hour || '',
     };
   });
 
   return (
-    <div className="flex items-start gap-2">
-      <Icon name={icon} className="text-ocean mb-auto mt-[3px] md:m-0" />
+    <div className='flex items-start gap-2'>
+      <Icon name={icon} className='text-ocean mb-auto mt-[3px] md:m-0' />
       {text ? (
-        <p className="text-lg font-semibold">{text}</p>
+        <p className='text-lg font-semibold'>{text}</p>
       ) : (
-        <div className="flex flex-col md:flex-row md:gap-2">
+        <div className='flex flex-col md:flex-row md:gap-2'>
           {formattedTimes?.map((time, index) => (
-            <p key={index} className="text-lg font-semibold">
-              {index > 0 && "| "} {time.day} {time.hour ? `| ${time.hour}` : ""}
+            <p key={index} className='text-lg font-semibold'>
+              {index > 0 && '| '} {time.day} {time.hour ? `| ${time.hour}` : ''}
             </p>
           ))}
         </div>
@@ -74,10 +74,10 @@ export const CampusInfo = ({
   additionalInfo,
   serviceTimes,
 }: CampusInfoProps) => {
-  const isSpanish = campusName?.includes("Español");
+  const isSpanish = campusName?.includes('Español');
 
   const address = `${campusLocation?.street1}${
-    campusLocation?.street2 ? ` ${campusLocation?.street2}` : ""
+    campusLocation?.street2 ? ` ${campusLocation?.street2}` : ''
   }, ${campusLocation?.city}, ${campusLocation?.state} ${
     campusLocation?.postalCode
   }`;
@@ -95,15 +95,15 @@ export const CampusInfo = ({
   }
 
   let campusHeadingLine: string;
-  if (campusName === "CF Everywhere") {
-    campusHeadingLine = "Christ Fellowship Church Online";
-  } else if (campusName === "Trinity") {
+  if (campusName === 'CF Everywhere') {
+    campusHeadingLine = 'Christ Fellowship Church Online';
+  } else if (campusName === 'Trinity') {
     campusHeadingLine = `Christ Fellowship Church Trinity in Palm Beach Gardens`;
-  } else if (campusName.includes("Español") || campusName.includes("Espanol")) {
+  } else if (campusName.includes('Español') || campusName.includes('Espanol')) {
     const espanolCampusLocation = campusName
-      .replace("Español", "")
-      .replace("Espanol", "")
-      .replace("Christ Fellowship", "")
+      .replace('Español', '')
+      .replace('Espanol', '')
+      .replace('Christ Fellowship', '')
       .trim();
     campusHeadingLine = `Christ Fellowship Español en ${espanolCampusLocation}, FL`;
   } else {
@@ -111,37 +111,37 @@ export const CampusInfo = ({
   }
 
   return (
-    <div className="w-full content-padding">
-      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
+    <div className='w-full content-padding'>
+      <div className='w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32'>
         {/* Location Info */}
-        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]">
+        <div className='flex-1 flex flex-col gap-8 lg:pb-16 max-w-[646px]'>
           {/* Campus Name Section*/}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-end gap-2 text-ocean">
-              <Icon name="church" className="lg:size-[40px] size-[24px]" />
-              <p className="font-medium">
-                {isSpanish ? "Ubicación del Campus" : "Campus Location"}
+          <div className='flex flex-col gap-3'>
+            <div className='flex items-end gap-2 text-ocean'>
+              <Icon name='church' className='lg:size-[40px] size-[24px]' />
+              <p className='font-medium'>
+                {isSpanish ? 'Ubicación del Campus' : 'Campus Location'}
               </p>
             </div>
-            <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
+            <h1 className='text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight'>
               {campusHeadingLine}
             </h1>
           </div>
 
           {/* Important Info Section */}
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
+          <div className='flex flex-col gap-3'>
+            <div className='flex flex-col gap-2'>
               <IconText
-                icon="timeFive"
+                icon='timeFive'
                 serviceTimes={formattedServiceTimes(serviceTimes)}
               />
-              <IconText icon="map" text={address} />
-              <IconText icon="mobileAlt" text={phoneNumber} />
+              <IconText icon='map' text={address} />
+              <IconText icon='mobileAlt' text={phoneNumber} />
             </div>
 
-            <div className="flex flex-col">
+            <div className='flex flex-col'>
               {additionalInfo.map((info, index) => (
-                <p key={index} className="text-xs text-neutral-default">
+                <p key={index} className='text-xs text-neutral-default'>
                   *{info}
                 </p>
               ))}
@@ -149,9 +149,9 @@ export const CampusInfo = ({
           </div>
 
           {/* Content */}
-          <div className="flex flex-col gap-16">
+          <div className='flex flex-col gap-16'>
             {/* Desktop CTAs */}
-            <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
+            <div className='hidden lg:flex max-w-[450px] gap-8 flex-col'>
               <CTAs isSpanish={isSpanish} />
               {weeklyMinistryServices && weeklyMinistryServices.length > 0 && (
                 <DuringTheWeek
@@ -164,16 +164,16 @@ export const CampusInfo = ({
         </div>
 
         {/* Tour */}
-        <div className="flex-1 lg:pt-16 max-w-[670px]">
+        <div className='flex-1 lg:pt-16 max-w-[670px]'>
           <VirtualTourTabs
-            wistiaId={digitalTourVideo || ""}
+            wistiaId={digitalTourVideo || ''}
             address={address}
             isSpanish={isSpanish}
           />
         </div>
 
         {/* Mobile CTAs */}
-        <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
+        <div className='flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16'>
           <CTAs isSpanish={isSpanish} />
           {weeklyMinistryServices && weeklyMinistryServices.length > 0 && (
             <DuringTheWeek
@@ -195,38 +195,38 @@ const OnlineCampusInfo = ({
   serviceTimes,
 }: CampusInfoProps) => {
   return (
-    <div className="w-full content-padding">
-      <div className="w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32">
+    <div className='w-full content-padding'>
+      <div className='w-full mx-auto max-w-screen-content flex flex-col lg:flex-row gap-8 lg:justify-between pt-16 pb-20 lg:pb-32'>
         {/* Location Info */}
-        <div className="flex-1 flex flex-col gap-8 lg:pb-16 max-w-[900px]">
+        <div className='flex-1 flex flex-col gap-8 lg:pb-16 max-w-[900px]'>
           {/* Campus Name Section*/}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-ocean">
-              <Icon name="world" className="lg:size-[36px] size-[24px]" />
-              <p className="font-medium">Online Community</p>
+          <div className='flex flex-col gap-3'>
+            <div className='flex items-center gap-2 text-ocean'>
+              <Icon name='world' className='lg:size-[36px] size-[24px]' />
+              <p className='font-medium'>Online Community</p>
             </div>
-            <h1 className="text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight">
+            <h1 className='text-[#2E2C2D] text-[24px] md:text-[36px] lg:text-[52px] font-extrabold leading-tight'>
               Christ Fellowship Church Online
             </h1>
           </div>
 
           {/* Important Info Section */}
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
+          <div className='flex flex-col gap-3'>
+            <div className='flex flex-col gap-2'>
               <IconText
-                icon="timeFive"
+                icon='timeFive'
                 serviceTimes={formattedServiceTimes(serviceTimes)}
               />
               <IconText
-                icon="station"
-                text="Online Livestream Broadcasting from Palm Beach Gardens "
+                icon='station'
+                text='Online Livestream Broadcasting from Palm Beach Gardens '
               />
-              <IconText icon="mobileAlt" text={phoneNumber} />
+              <IconText icon='mobileAlt' text={phoneNumber} />
             </div>
 
-            <div className="flex flex-col">
+            <div className='flex flex-col'>
               {additionalInfo.map((info, index) => (
-                <p key={index} className="text-xs text-neutral-default">
+                <p key={index} className='text-xs text-neutral-default'>
                   *{info}
                 </p>
               ))}
@@ -234,22 +234,22 @@ const OnlineCampusInfo = ({
           </div>
 
           {/* Content */}
-          <div className="flex flex-col gap-16">
+          <div className='flex flex-col gap-16'>
             {/* Desktop CTAs */}
-            <div className="hidden lg:flex max-w-[450px] gap-8 flex-col">
+            <div className='hidden lg:flex max-w-[450px] gap-8 flex-col'>
               <CTAs />
             </div>
           </div>
         </div>
 
-        <div className="flex-1 lg:pt-16 max-w-[670px]">
+        <div className='flex-1 lg:pt-16 max-w-[670px]'>
           {/* Hardcoded wistiaId for now */}
-          <VirtualTourTabs wistiaId="beicrozg21" isOnline />
+          <VirtualTourTabs wistiaId='beicrozg21' isOnline />
           {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> TODO: Uncomment this when the video gets added to the Online Campus in Rock*/}
         </div>
 
         {/* Mobile CTAs */}
-        <div className="flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16">
+        <div className='flex lg:hidden flex-col max-w-[570px] lg:max-w-[460px] gap-16'>
           <CTAs />
         </div>
       </div>

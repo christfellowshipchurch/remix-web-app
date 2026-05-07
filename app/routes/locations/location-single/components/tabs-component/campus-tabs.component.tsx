@@ -51,11 +51,13 @@ export const CampusTabs = ({
     return index >= 0 ? index : 0;
   }, [activeTab, data]);
 
-  const activeTabValue = data[activeIndex]?.value ?? data[0]?.value ?? activeTab;
+  const activeTabValue =
+    data[activeIndex]?.value ?? data[0]?.value ?? activeTab;
   const ActiveTabComponent = tabs[activeIndex];
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    const isHorizontal = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
+    const isHorizontal =
+      event.key === 'ArrowLeft' || event.key === 'ArrowRight';
     const isHomeEnd = event.key === 'Home' || event.key === 'End';
     if (!isHorizontal && !isHomeEnd) return;
 
@@ -80,7 +82,6 @@ export const CampusTabs = ({
 
   return (
     <div className={cn('w-full flex flex-col justify-center items-center')}>
-      {/* Desktop Tabs */}
       <div
         role='tablist'
         aria-orientation='horizontal'
@@ -102,35 +103,35 @@ export const CampusTabs = ({
 
               return (
                 <>
-            {/* Desktop Tabs */}
-            <button
-              id={desktopTabId}
-              role='tab'
-              type='button'
-              aria-selected={isActive}
-              aria-controls={panelId}
-              data-state={isActive ? 'active' : 'inactive'}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => setActiveTab(tab.value)}
-              className='hidden lg:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer'
-            >
-              {tab.label}
-            </button>
+                  {/* Desktop Tabs */}
+                  <button
+                    id={desktopTabId}
+                    role='tab'
+                    type='button'
+                    aria-selected={isActive}
+                    aria-controls={panelId}
+                    data-state={isActive ? 'active' : 'inactive'}
+                    tabIndex={isActive ? 0 : -1}
+                    onClick={() => setActiveTab(tab.value)}
+                    className='hidden lg:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer'
+                  >
+                    {tab.label}
+                  </button>
 
-            {/* Mobile Tabs */}
-            <button
-              id={mobileTabId}
-              role='tab'
-              type='button'
-              aria-selected={isActive}
-              aria-controls={panelId}
-              data-state={isActive ? 'active' : 'inactive'}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => setActiveTab(tab.value)}
-              className='lg:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer'
-            >
-              {tab.mobileLabel}
-            </button>
+                  {/* Mobile Tabs */}
+                  <button
+                    id={mobileTabId}
+                    role='tab'
+                    type='button'
+                    aria-selected={isActive}
+                    aria-controls={panelId}
+                    data-state={isActive ? 'active' : 'inactive'}
+                    tabIndex={isActive ? 0 : -1}
+                    onClick={() => setActiveTab(tab.value)}
+                    className='lg:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer'
+                  >
+                    {tab.mobileLabel}
+                  </button>
                 </>
               );
             })()}

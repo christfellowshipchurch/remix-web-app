@@ -1,18 +1,18 @@
-import * as Tabs from "@radix-ui/react-tabs";
-import { Icon } from "~/primitives/icon/icon";
-import { Video } from "~/primitives/video/video.primitive";
+import * as Tabs from '@radix-ui/react-tabs';
+import { Icon } from '~/primitives/icon/icon';
+import { Video } from '~/primitives/video/video.primitive';
 
 const GoogleMap = ({ address }: { address: string }) => {
   const src = `/maps-embed?address=${encodeURIComponent(address)}`;
   return (
     <iframe
       src={src}
-      width="100%"
-      height="400"
+      width='100%'
+      height='400'
       style={{ border: 0 }}
       allowFullScreen
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
+      loading='lazy'
+      referrerPolicy='no-referrer-when-downgrade'
     />
   );
 };
@@ -29,50 +29,50 @@ export const VirtualTourTabs = ({
   isSpanish?: boolean;
 }) => {
   return (
-    <div className="flex flex-col pt-8 rounded-[18px] border border-neutral-lighter">
-      <Tabs.Root defaultValue={wistiaId ? "tour" : "map"}>
+    <div className='flex flex-col pt-8 rounded-[18px] border border-neutral-lighter'>
+      <Tabs.Root defaultValue={wistiaId ? 'tour' : 'map'}>
         {!isOnline && address && (
           <TabContent
-            value="map"
+            value='map'
             isOnline={isOnline}
             address={address}
-            title={isSpanish ? "Visítanos" : "Visit Us"}
+            title={isSpanish ? 'Visítanos' : 'Visit Us'}
             description={
               isSpanish
-                ? "Ven a conocer nuestro campus en persona! Nuestro personal amable está listo para darte un tour y responder cualquier pregunta que tengas sobre nuestros programas y instalaciones."
-                : "Come experience our campus in person! Our friendly staff is ready to give you a tour and answer any questions you have about our programs and facilities."
+                ? 'Ven a conocer nuestro campus en persona! Nuestro personal amable está listo para darte un tour y responder cualquier pregunta que tengas sobre nuestros programas y instalaciones.'
+                : 'Come experience our campus in person! Our friendly staff is ready to give you a tour and answer any questions you have about our programs and facilities.'
             }
           />
         )}
         {wistiaId && (
           <TabContent
             isOnline={isOnline}
-            value="tour"
+            value='tour'
             title={
               isOnline
-                ? "Join Us Online!"
+                ? 'Join Us Online!'
                 : isSpanish
-                  ? "Haz Un Recorrido Virtual"
-                  : "Take a Virtual Tour"
+                  ? 'Haz Un Recorrido Virtual'
+                  : 'Take a Virtual Tour'
             }
             description={
               isOnline
-                ? "Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream."
+                ? 'Experience what it’s like to attend Christ Fellowship before your visit, or watch our live stream.'
                 : isSpanish
-                  ? "Descubre cómo es asistir a Christ Fellowship antes de visitarnos."
-                  : "Experience what it’s like to attend Christ Fellowship before your visit."
+                  ? 'Descubre cómo es asistir a Christ Fellowship antes de visitarnos.'
+                  : 'Experience what it’s like to attend Christ Fellowship before your visit.'
             }
             wistiaId={wistiaId}
           />
         )}
 
         {!isOnline && address && (
-          <Tabs.List className="flex justify-center gap-4 p-8">
+          <Tabs.List className='flex justify-center gap-4 p-8'>
             <>
-              <TourButton value="map">{isSpanish ? "Mapa" : "Map"}</TourButton>
+              <TourButton value='map'>{isSpanish ? 'Mapa' : 'Map'}</TourButton>
               {wistiaId && (
-                <TourButton value="tour">
-                  {isSpanish ? "Recorrido Virtual" : "Virtual Tour"}
+                <TourButton value='tour'>
+                  {isSpanish ? 'Recorrido Virtual' : 'Virtual Tour'}
                 </TourButton>
               )}
             </>
@@ -92,13 +92,13 @@ const TourButton = ({
 }) => {
   return (
     <Tabs.Trigger
-      className="flex-1 w-full max-w-[300px] py-2 flex gap-2 items-center justify-center text-sm font-semibold rounded-[200px] md:rounded-[400px] border border-[#D6D6D6] text-black data-[state=active]:bg-gray cursor-pointer"
+      className='flex-1 w-full max-w-[300px] py-2 flex gap-2 items-center justify-center text-sm font-semibold rounded-[200px] md:rounded-[400px] border border-[#D6D6D6] text-black data-[state=active]:bg-gray cursor-pointer'
       value={value}
     >
       <Icon
-        name={value === "map" ? "mapAlt" : "video"}
+        name={value === 'map' ? 'mapAlt' : 'video'}
         size={20}
-        color="black"
+        color='black'
       />
       {children}
     </Tabs.Trigger>
@@ -122,20 +122,18 @@ const TabContent = ({
 }) => {
   return (
     <Tabs.Content value={value}>
-      <div className="flex flex-col p-5 md:p-8 !pt-0">
-        <h3 className="text-lg font-bold">{title}</h3>
+      <div className='flex flex-col p-5 md:p-8 !pt-0'>
+        <h3 className='text-lg font-bold'>{title}</h3>
         <p>{description}</p>
       </div>
 
-      {address && value === "map" && (
-        <GoogleMap address={address} />
-      )}
+      {address && value === 'map' && <GoogleMap address={address} />}
 
-      {wistiaId && value === "tour" && (
+      {wistiaId && value === 'tour' && (
         <Video
           wistiaId={wistiaId}
           className={`aspect-67/35 relative z-3 ${
-            isOnline ? "rounded-b-[18px]" : ""
+            isOnline ? 'rounded-b-[18px]' : ''
           }`}
           controls={false}
         />
