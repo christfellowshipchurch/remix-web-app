@@ -1,29 +1,26 @@
-import { useFetcher, useLoaderData } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useFetcher, useLoaderData } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 
-import { CampusInfo } from "./campus-info.partial";
-import { LocationFAQ } from "./faq.partial";
-import { DynamicHero } from "~/components/dynamic-hero";
-import { LocationHitType } from "../types";
-import { CampusTabs } from "../components/tabs-component/campus-tabs.component";
-import { AboutUs } from "./tabs/about-us";
-import { SundayDetails } from "./tabs/sunday-details";
-import { UpcomingEvents } from "./tabs/upcoming-events";
-import { ForFamilies } from "./tabs/families";
+import { CampusInfo } from './campus-info.partial';
+import { LocationFAQ } from './faq.partial';
+import { DynamicHero } from '~/components/dynamic-hero';
+import { LocationHitType } from '../types';
+import { CampusTabs } from '../components/tabs-component/campus-tabs.component';
+import { AboutUs } from './tabs/about-us';
+import { SundayDetails } from './tabs/sunday-details';
+import { ForFamilies } from './tabs/families';
 import {
   englishTabData,
   onlineTabsData,
   spanishTabData,
-} from "../location-single-data";
-import { useResponsive } from "~/hooks/use-responsive";
-import { ConnectWithUs } from "../components/tabs-component/about-us/connect-with-us";
-import { WhatToExpect } from "../components/tabs-component/sunday-details/what-to-expect";
-import { LoaderReturnType } from "../loader";
+} from '../location-single-data';
+import { useResponsive } from '~/hooks/use-responsive';
+import { LoaderReturnType } from '../loader';
 import {
   buildWistiaOEmbedRequestUrl,
   buildWistiaSwatchImageUrl,
   type WistiaOEmbedPayload,
-} from "~/lib/wistia-oembed";
+} from '~/lib/wistia-oembed';
 
 function useResponsiveVideo(
   backgroundVideoMobile?: string,
@@ -47,7 +44,7 @@ function useLocationHeroBackgroundImage(
   const [wistiaPosterUrl, setWistiaPosterUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const trimmed = wistiaId?.trim() ?? "";
+    const trimmed = wistiaId?.trim() ?? '';
     if (!trimmed) {
       setWistiaPosterUrl(null);
       return;
@@ -70,7 +67,7 @@ function useLocationHeroBackgroundImage(
           setWistiaPosterUrl(data.thumbnail_url);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
+        if (err instanceof Error && err.name === 'AbortError') {
           return;
         }
       }
@@ -80,7 +77,7 @@ function useLocationHeroBackgroundImage(
     return () => controller.abort();
   }, [wistiaId]);
 
-  const trimmed = wistiaId?.trim() ?? "";
+  const trimmed = wistiaId?.trim() ?? '';
   if (!trimmed) {
     return campusImage;
   }
@@ -92,7 +89,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     return <></>;
   }
 
-  const [activeTab, setActiveTab] = useState("sunday-details");
+  const [activeTab, setActiveTab] = useState('sunday-details');
   const fetcher = useFetcher<{ isValid: boolean }>();
 
   const {
@@ -101,10 +98,10 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     campusImage,
     campusInstagram,
     campusPastor,
-    digitalTourVideo = "",
+    digitalTourVideo = '',
     phoneNumber,
     serviceTimes,
-    setReminderVideo: originalSetReminderVideo = "",
+    setReminderVideo: originalSetReminderVideo = '',
     weeklyMinistryServices = [],
     additionalInfo,
     backgroundVideoMobile,
@@ -126,7 +123,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   // Don't render video while validation is in progress or if validation failed
   const setReminderVideo =
     originalSetReminderVideo &&
-    fetcher.state === "idle" &&
+    fetcher.state === 'idle' &&
     fetcher.data?.isValid === true
       ? originalSetReminderVideo
       : undefined;
@@ -141,36 +138,36 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     campusImage,
   );
 
-  const isOnline = campusName?.includes("Online");
-  const isSpanish = campusName?.includes("Español");
+  const isOnline = campusName?.includes('Online');
+  const isSpanish = campusName?.includes('Español');
 
   if (isOnline) {
     return <OnlineCampus hit={hit} />;
   }
 
   // Dynamic Hero Hardcoded Content / Data
-  const heading1 = isSpanish ? "Este es un" : "You're";
-  const heading2 = isSpanish ? "lugar para ti" : "welcome here";
+  const heading1 = isSpanish ? 'Este es un' : "You're";
+  const heading2 = isSpanish ? 'lugar para ti' : 'welcome here';
   const ctas = [
     {
-      title: isSpanish ? "Recuérdame" : "Set a Reminder",
-      href: "#",
+      title: isSpanish ? 'Recuérdame' : 'Set a Reminder',
+      href: '#',
       isSetAReminder: true,
     },
     {
-      title: isSpanish ? "Mapa y direcciones" : "Map & Directions",
-      href: hit.mapLink || "#",
-      target: "_blank",
+      title: isSpanish ? 'Mapa y direcciones' : 'Map & Directions',
+      href: hit.mapLink || '#',
+      target: '_blank',
     },
   ];
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className='w-full overflow-hidden'>
       <DynamicHero
         isSpanish={isSpanish}
         wistiaId={wistiaId}
         imagePath={heroBackgroundImage}
-        desktopHeight="800px"
+        desktopHeight='800px'
         customTitle={`<h1 style='font-weight: 800;'><span style='color: #0092BC;'>${heading1}</span> <br/>${heading2}</h1>`}
         ctas={ctas}
       />
@@ -209,8 +206,8 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
     campusImage,
     campusInstagram,
     campusPastor,
-    digitalTourVideo = "",
-    setReminderVideo: originalSetReminderVideo = "",
+    digitalTourVideo = '',
+    setReminderVideo: originalSetReminderVideo = '',
     phoneNumber,
     serviceTimes,
     additionalInfo,
@@ -233,12 +230,12 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
   // Don't render video while validation is in progress or if validation failed
   const setReminderVideo =
     originalSetReminderVideo &&
-    fetcher.state === "idle" &&
+    fetcher.state === 'idle' &&
     fetcher.data?.isValid === true
       ? originalSetReminderVideo
       : undefined;
 
-  const [activeTab, setActiveTab] = useState("sunday-details");
+  const [activeTab, setActiveTab] = useState('sunday-details');
 
   const wistiaId = useResponsiveVideo(
     backgroundVideoMobile,
@@ -251,17 +248,17 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
   );
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className='w-full overflow-hidden'>
       <DynamicHero
         wistiaId={wistiaId}
         imagePath={heroBackgroundImage}
-        desktopHeight="800px"
+        desktopHeight='800px'
         customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
         ctas={[
-          { title: "Set a Reminder", href: "#", isSetAReminder: true },
+          { title: 'Set a Reminder', href: '#', isSetAReminder: true },
           {
-            title: "Watch Live",
-            href: "https://www.youtube.com/user/christfellowship",
+            title: 'Watch Live',
+            href: 'https://www.youtube.com/user/christfellowship',
           },
         ]}
       />
@@ -323,30 +320,56 @@ const CampusTabsWrapper = ({
       : englishTabData;
   const tabData = hasUpcomingEvents
     ? defaultTabData
-    : defaultTabData.filter((tab) => tab.value !== "upcoming-events");
+    : defaultTabData.filter((tab) => tab.value !== 'upcoming-events');
 
   const activeTabValue = tabData.some((tab) => tab.value === activeTab)
     ? activeTab
-    : "sunday-details";
+    : 'sunday-details';
 
-  const tabs = [
-    () => <SundayDetails isOnline={isOnline} isSpanish={isSpanish} />,
-    () => <AboutUs campusPastor={campusPastor} isSpanish={isSpanish} />,
-    ...(!isOnline ? [() => <ForFamilies isSpanish={isSpanish} />] : []),
-    ...(hasUpcomingEvents ? [() => <UpcomingEvents />] : []),
-  ];
-
-  return (
-    <div className="relative h-full w-full">
-      {/* The SetAReminder buttons(inside WhatToExpect) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
-      {activeTabValue === "sunday-details" && (
-        <WhatToExpect
+  const SundayTabPanel = useMemo(() => {
+    function SundayTabPanel() {
+      return (
+        <SundayDetails
           setReminderVideo={setReminderVideo}
           isOnline={isOnline}
           isSpanish={isSpanish}
         />
-      )}
+      );
+    }
+    return SundayTabPanel;
+  }, [setReminderVideo, isOnline, isSpanish]);
 
+  const AboutTabPanel = useMemo(() => {
+    function AboutTabPanel() {
+      return (
+        <AboutUs
+          campusPastor={campusPastor}
+          isSpanish={isSpanish}
+          campusName={campusName}
+          campusInstagram={campusInstagram}
+        />
+      );
+    }
+    return AboutTabPanel;
+  }, [campusPastor, isSpanish, campusName, campusInstagram]);
+
+  const FamiliesTabPanel = useMemo(() => {
+    function FamiliesTabPanel() {
+      return <ForFamilies isSpanish={isSpanish} />;
+    }
+    return FamiliesTabPanel;
+  }, [isSpanish]);
+
+  const tabs = useMemo(
+    () =>
+      !isOnline
+        ? [SundayTabPanel, AboutTabPanel, FamiliesTabPanel]
+        : [SundayTabPanel, AboutTabPanel],
+    [SundayTabPanel, AboutTabPanel, FamiliesTabPanel, isOnline],
+  );
+
+  return (
+    <div className='relative h-full w-full'>
       <CampusTabs
         activeTab={activeTabValue}
         isSpanish={isSpanish}
@@ -354,16 +377,8 @@ const CampusTabsWrapper = ({
         tabs={tabs}
         tabData={tabData}
         isOnline={isOnline}
+        setReminderVideo={setReminderVideo}
       />
-
-      {/* The SetAReminder buttons(inside ConnectWithUs) conflict with the Radix tabs component, so we need to render them outside of the Tabs component*/}
-      {activeTabValue === "about-us" && (
-        <ConnectWithUs
-          isSpanish={isSpanish}
-          campusName={campusName || ""}
-          campusInstagram={campusInstagram || ""}
-        />
-      )}
     </div>
   );
 };
