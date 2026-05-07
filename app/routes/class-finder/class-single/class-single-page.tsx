@@ -1,24 +1,25 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
-import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
-import { Configure, InstantSearch, useHits } from "react-instantsearch";
+import { useCallback, useMemo, type MouseEvent as ReactMouseEvent } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Configure, InstantSearch, useHits } from 'react-instantsearch';
 
-import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
-import { FinderHero, type FinderHeroCta } from "~/components/finders/hero";
-import { VideoModal } from "~/components/modals/video-modal";
-import { Button } from "~/primitives/button/button.primitive";
-import { ClassFAQ } from "./components/faq.component";
-import { LoaderReturnType } from "./loader";
-import { ClassSingleUpcomingSearch } from "./partials/upcoming-sections.partial";
-import { createSearchClient } from "~/lib/create-search-client";
-import { ClassHitType } from "../types";
+import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { FinderHero, type FinderHeroCta } from '~/components/finders/hero';
+import { VideoModal } from '~/components/modals/video-modal';
+import { Button } from '~/primitives/button/button.primitive';
+import { Icon } from '~/primitives/icon/icon';
+import { ClassFAQ } from './components/faq.component';
+import { LoaderReturnType } from './loader';
+import { ClassSingleUpcomingSearch } from './partials/upcoming-sections.partial';
+import { createSearchClient } from '~/lib/create-search-client';
+import { ClassHitType } from '../types';
 
 function escapeHtml(text: string): string {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function buildClassSingleHeroDescriptionHtml(summary: string): string {
@@ -31,13 +32,13 @@ function buildClassSingleHeroDescriptionHtml(summary: string): string {
 
 const ClassNotFound = () => {
   return (
-    <div className="flex flex-col items-center gap-6 py-20">
-      <h2 className="text-2xl font-bold text-center">Class Not Found</h2>
-      <p className="text-neutral-500 text-center max-w-md">
+    <div className='flex flex-col items-center gap-6 py-20'>
+      <h2 className='text-2xl font-bold text-center'>Class Not Found</h2>
+      <p className='text-neutral-500 text-center max-w-md'>
         We couldn't find the class you're looking for. It may have been removed
         or renamed.
       </p>
-      <Button intent="primary" href="/class-finder">
+      <Button intent='primary' href='/class-finder'>
         Browse All Classes
       </Button>
     </div>
@@ -55,35 +56,35 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
     [summary],
   );
 
-  const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ""), [classType]);
+  const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ''), [classType]);
 
   const ctas = useMemo<FinderHeroCta[]>(() => {
     const items: FinderHeroCta[] = [];
     if (discussionGuideUrl) {
       items.push({
         href: discussionGuideUrl,
-        title: "Discussion Guide",
-        intent: "secondary" as const,
-        className: "text-base font-normal",
+        title: 'Discussion Guide',
+        intent: 'secondary' as const,
+        className: 'text-base font-normal',
       });
     }
     if (classTrailer) {
       items.push({
-        key: "class-trailer",
+        key: 'class-trailer',
         render: () => (
           <VideoModal
             wistiaId={classTrailer}
-            intent="primary"
+            intent='primary'
             ModalButton={({ onClick, ...props }) => (
               <Button
                 {...props}
                 onClick={onClick}
-                className="text-base font-normal"
+                className='text-base font-normal'
               >
                 Class Trailer
               </Button>
             )}
-            videoClassName="w-full h-full rounded-lg"
+            videoClassName='w-full h-full rounded-lg'
           />
         ),
       });
@@ -91,28 +92,51 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
     return items;
   }, [discussionGuideUrl, classTrailer]);
 
-  const backLink = useMemo(
-    () => ({
-      href: "/class-finder",
-      label: "Back to All Classes" as const,
-      onNavigate: (e: ReactMouseEvent<Element>) => {
-        e.preventDefault();
-        if (typeof window !== "undefined" && window.history.length > 1) {
-          navigate(-1);
-        } else {
-          navigate("/class-finder");
-        }
-      },
-    }),
+  const handleBack = useCallback(
+    (e: ReactMouseEvent<Element>) => {
+      e.preventDefault();
+      if (typeof window !== 'undefined' && window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate('/class-finder');
+      }
+    },
     [navigate],
   );
 
+  const backLink = useMemo(
+    () => ({
+      href: '/class-finder',
+      label: 'Back to All Classes' as const,
+      onNavigate: handleBack,
+    }),
+    [handleBack],
+  );
+
+  const coverUri = hit.coverImage.sources[0].uri;
+
   return (
-    <section className="flex flex-col items-center dark:bg-gray-900 pt-6">
-      <div className="w-full flex-none">
+    <section className='flex w-full flex-col items-center dark:bg-gray-900 md:pt-6'>
+      <div className='flex w-full flex-none flex-col'>
+        <div className='relative w-full shrink-0 md:hidden'>
+          <img
+            src={coverUri}
+            alt={hit.title}
+            className='aspect-video w-full max-w-screen object-cover'
+          />
+          <button
+            type='button'
+            onClick={handleBack}
+            className='absolute left-4 top-4 flex items-center justify-center rounded-full border border-[#DEE0E3] bg-white p-2 shadow-sm'
+            aria-label='Back to All Classes'
+          >
+            <Icon name='arrowBack' className='text-neutral-darker' />
+          </button>
+        </div>
+
         <FinderHero
-          bgColor="white"
-          bgImage={hit.coverImage.sources[0].uri}
+          bgColor='white'
+          bgImage={coverUri}
           imageAlt={hit.title}
           title={heroTitleHtml}
           topic={topic}
@@ -120,19 +144,21 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           desktopDescription={heroDescriptionHtml}
           ctas={ctas}
           backLink={backLink}
+          backLinkMdUpOnly
+          heroImageMdUpOnly
         />
       </div>
 
-      <div className="w-full flex flex-col border-t border-[#E8E8E8]">
+      <div className='flex w-full flex-col border-t border-[#E8E8E8]'>
         <ClassSingleUpcomingSearch
           classType={classType}
-          classHeroCoverImageUri={hit.coverImage.sources[0].uri}
+          classHeroCoverImageUri={coverUri}
           onDemandUrl={onDemandUrl}
         />
 
         {/* FAQs */}
-        <div className="content-padding w-full flex flex-col items-center">
-          <div className="w-full max-w-screen-content mx-auto flex flex-col items-center">
+        <div className='content-padding flex w-full flex-col items-center'>
+          <div className='mx-auto flex w-full max-w-screen-content flex-col items-center'>
             <ClassFAQ />
           </div>
         </div>
@@ -152,7 +178,7 @@ export function ClassSinglePage() {
 
   return (
     <InstantSearch
-      indexName="dev_Classes"
+      indexName='dev_Classes'
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,
@@ -173,7 +199,7 @@ const CustomClassSingleHits = () => {
   const { items } = useHits<ClassHitType>();
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       {items.length > 0 ? (
         items.map((hit) => <ClassSingleContent key={hit.objectID} hit={hit} />)
       ) : (
