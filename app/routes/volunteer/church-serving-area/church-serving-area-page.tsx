@@ -2,7 +2,6 @@ import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useCopyPagePath } from '~/hooks/use-copy-page-path';
-import { Button } from '~/primitives/button/button.primitive';
 
 import { VolunteerDetailNav } from '../components/volunteer-detail/volunteer-detail-nav.component';
 import { VolunteerDetailHero } from '../components/volunteer-detail/volunteer-detail-hero.component';
@@ -11,7 +10,7 @@ import { ChurchRoleSelector } from './components/church-role-selector.component'
 import {
   ChurchIntro,
   ChurchNotSureLink,
-  ChurchMobileContinueBar,
+  ChurchContinueBar,
 } from './partials/church-serving-area-partials.partial';
 import type { LoaderReturnType } from './loader';
 
@@ -95,21 +94,7 @@ export function ChurchServingAreaPage() {
           </div>
         </div>
 
-        <div className='w-full hidden md:block border-t border-neutral-lighter/50 content-padding pt-6 pb-8'>
-          <div className='mx-auto w-full max-w-content flex justify-end px-5 md:px-10'>
-            <Button
-              intent='primary'
-              type='button'
-              onClick={onContinue}
-              disabled={!hasSelectedRole}
-              className='w-[280px] text-white hover:bg-ocean/80 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40'
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
-
-        <ChurchMobileContinueBar
+        <ChurchContinueBar
           hasSelectedRole={hasSelectedRole}
           onContinue={onContinue}
         />

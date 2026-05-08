@@ -33,20 +33,18 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
     );
   });
 
-  it('maps summary first sentence to description and description HTML to expandedDescription', async () => {
+  it('maps Rock description HTML to description', async () => {
     mockFetch.mockResolvedValueOnce([
       {
         guid: 'role-guid-1111-2222-3333-444444444444',
         name: 'First Impressions',
-        summary: '<p>Welcome guests as they arrive. More detail here.</p>',
         description: '<p>Extended <strong>info</strong> about the role.</p>',
       },
     ]);
 
     const [role] = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
 
-    expect(role.description).toBe('Welcome guests as they arrive.');
-    expect(role.expandedDescription).toBe(
+    expect(role.description).toBe(
       '<p>Extended <strong>info</strong> about the role.</p>',
     );
   });
@@ -56,13 +54,11 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
       {
         guid: 'role-guid-1111-2222-3333-444444444444',
         name: 'First Impressions',
-        summary: 'Welcome guests as they arrive.',
         description: '<p>Extended info about the role.</p>',
       },
       {
         guid: 'role-guid-2222-3333-4444-555555555555',
         name: 'Usher',
-        summary: 'Help people find seats.',
         description: '<p>More details on ushering.</p>',
       },
     ]);
@@ -73,52 +69,20 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
     expect(result[0]).toEqual({
       id: 'role-guid-1111-2222-3333-444444444444',
       title: 'First Impressions',
-      description: 'Welcome guests as they arrive.',
-      expandedDescription: '<p>Extended info about the role.</p>',
+      description: '<p>Extended info about the role.</p>',
     });
     expect(result[1]).toEqual({
       id: 'role-guid-2222-3333-4444-555555555555',
       title: 'Usher',
-      description: 'Help people find seats.',
-      expandedDescription: '<p>More details on ushering.</p>',
+      description: '<p>More details on ushering.</p>',
     });
   });
 
-  it('strips HTML tags from summary before extracting first sentence', async () => {
+  it('sets description to empty string when description field is absent', async () => {
     mockFetch.mockResolvedValueOnce([
       {
         guid: 'role-guid-1111-2222-3333-444444444444',
         name: 'Host Team',
-        summary: '<p>Serve <strong>coffee</strong> and welcome guests. Then do more things.</p>',
-      },
-    ]);
-
-    const [role] = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
-
-    expect(role.description).toBe('Serve coffee and welcome guests.');
-    expect(role.description).not.toContain('<');
-  });
-
-  it('returns the full text when summary has no sentence-ending punctuation', async () => {
-    mockFetch.mockResolvedValueOnce([
-      {
-        guid: 'role-guid-1111-2222-3333-444444444444',
-        name: 'Host Team',
-        summary: 'A role with no period',
-      },
-    ]);
-
-    const [role] = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
-
-    expect(role.description).toBe('A role with no period');
-  });
-
-  it('sets description to empty string when summary is absent', async () => {
-    mockFetch.mockResolvedValueOnce([
-      {
-        guid: 'role-guid-1111-2222-3333-444444444444',
-        name: 'Host Team',
-        description: '<p>Full HTML description.</p>',
       },
     ]);
 
@@ -127,25 +91,24 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
     expect(role.description).toBe('');
   });
 
-  it('omits expandedDescription when description field is absent', async () => {
+  it('sets description to empty string when description field is blank whitespace', async () => {
     mockFetch.mockResolvedValueOnce([
       {
         guid: 'role-guid-1111-2222-3333-444444444444',
         name: 'Host Team',
-        summary: 'Serve coffee and welcome guests.',
+        description: '   ',
       },
     ]);
 
     const [role] = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
 
-    expect(role.expandedDescription).toBeUndefined();
+    expect(role.description).toBe('');
   });
 
   it('handles a single Rock object (not an array)', async () => {
     mockFetch.mockResolvedValueOnce({
       guid: 'role-guid-solo-2222-3333-444444444444',
       name: 'Parking Team',
-      summary: 'Guide cars in the lot.',
       description: '<p>Details about parking.</p>',
     });
 
@@ -157,11 +120,11 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
 
   it('skips items missing a guid', async () => {
     mockFetch.mockResolvedValueOnce([
-      { name: 'No GUID role', summary: 'Some summary.' },
+      { name: 'No GUID role', description: '<p>Some description.</p>' },
       {
         guid: 'role-guid-valid-2222-3333-444444444444',
         name: 'Valid Role',
-        summary: 'Valid summary.',
+        description: '<p>Valid description.</p>',
       },
     ]);
 
@@ -173,7 +136,7 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
 
   it('skips items missing a name', async () => {
     mockFetch.mockResolvedValueOnce([
-      { guid: 'role-guid-1111-2222-3333-444444444444', summary: 'No name.' },
+      { guid: 'role-guid-1111-2222-3333-444444444444', description: '<p>No name.</p>' },
     ]);
 
     const result = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
@@ -209,7 +172,7 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
     const makeItem = (n: number) => ({
       guid: `role-guid-${n}000-0000-0000-000000000000`,
       name: `Role ${n}`,
-      summary: `Summary ${n}.`,
+      description: `<p>Description ${n}.</p>`,
     });
 
     mockFetch.mockResolvedValueOnce([makeItem(1), makeItem(2), makeItem(3)]);

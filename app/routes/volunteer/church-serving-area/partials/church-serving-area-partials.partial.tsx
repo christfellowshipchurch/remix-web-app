@@ -49,7 +49,7 @@ export function ChurchNotSureLink() {
   );
 }
 
-export function ChurchMobileContinueBar({
+export function ChurchContinueBar({
   hasSelectedRole,
   onContinue,
 }: {
@@ -57,22 +57,40 @@ export function ChurchMobileContinueBar({
   onContinue: () => void;
 }) {
   return (
-    <div
-      className={cn(
-        'sticky bottom-0 z-30 w-full flex shrink-0 items-stretch border-t border-neutral-lighter bg-white p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]',
-        'md:hidden',
-        'pb-[max(1rem,env(safe-area-inset-bottom,0px))]',
-      )}
-    >
-      <Button
-        intent='primary'
-        type='button'
-        onClick={onContinue}
-        disabled={!hasSelectedRole}
-        className='min-h-12 w-full rounded-full text-base font-bold disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40'
+    <div className='sticky bottom-0 z-30 w-full shrink-0 bg-white pb-[max(0px,env(safe-area-inset-bottom,0px))]'>
+      {/* Mobile */}
+      <div
+        className={cn(
+          'flex items-stretch border-t border-neutral-lighter p-4 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]',
+          'md:hidden',
+          'pb-[max(1rem,env(safe-area-inset-bottom,0px))]',
+        )}
       >
-        Continue
-      </Button>
+        <Button
+          intent='primary'
+          type='button'
+          onClick={onContinue}
+          disabled={!hasSelectedRole}
+          className='min-h-12 w-full rounded-full text-base font-bold disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40'
+        >
+          Continue
+        </Button>
+      </div>
+
+      {/* Desktop */}
+      <div className='hidden md:block border-t border-neutral-lighter/50 content-padding pt-6 pb-8'>
+        <div className='mx-auto w-full max-w-content flex justify-end px-5 md:px-10'>
+          <Button
+            intent='primary'
+            type='button'
+            onClick={onContinue}
+            disabled={!hasSelectedRole}
+            className='w-[280px] text-white hover:bg-ocean/80 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40'
+          >
+            Continue
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

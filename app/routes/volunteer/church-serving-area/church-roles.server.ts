@@ -5,19 +5,8 @@ import type { ChurchRole } from './types';
 type RawConnectionOpportunity = {
   guid?: string;
   name?: string;
-  summary?: string;
   description?: string;
 };
-
-/** Strips HTML tags and returns the first sentence of the resulting plain text. */
-function firstSentenceFromHtml(html: string): string {
-  const text = html
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-  const match = text.match(/^.+?[.!?](?:\s|$)/);
-  return match ? match[0].trim() : text;
-}
 
 function mapOpportunityToRole(
   item: RawConnectionOpportunity,
@@ -28,12 +17,9 @@ function mapOpportunityToRole(
   const title = item.name?.trim();
   if (!title) return null;
 
-  const description = item.summary?.trim()
-    ? firstSentenceFromHtml(item.summary.trim())
-    : '';
-  const expandedDescription = item.description?.trim() || undefined;
+  const description = item.description?.trim() ?? '';
 
-  return { id, title, description, expandedDescription };
+  return { id, title, description };
 }
 
 export async function fetchChurchRolesByPreferenceAreaGuid(

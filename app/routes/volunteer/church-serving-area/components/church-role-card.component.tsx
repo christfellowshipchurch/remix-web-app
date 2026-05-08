@@ -16,7 +16,7 @@ export function ChurchRoleCard({
   onSelect: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const hasExpanded = Boolean(role.expandedDescription);
+  const hasDescription = Boolean(role.description.trim());
 
   return (
     <div
@@ -47,18 +47,22 @@ export function ChurchRoleCard({
           >
             {role.title}
           </p>
-          <HTMLRenderer
-            html={role.description}
-            className={cn(
-              'mt-1 min-w-0 text-sm text-text-secondary leading-relaxed',
-              'line-clamp-1',
-              // line-clamp applies per block; CMS <p> tags must flow inline for one-line ellipsis
-              '[&_p]:m-0',
-              '[&_p]:inline',
-              '[&_p+_p]:pl-1',
-            )}
-            stripFormattingTags
-          />
+          {hasDescription && (
+            <HTMLRenderer
+              html={role.description}
+              className={cn(
+                'mt-1 min-w-0 text-sm text-text-secondary leading-relaxed',
+                !expanded && [
+                  'line-clamp-1',
+                  // line-clamp applies per block; CMS <p> tags must flow inline for one-line ellipsis
+                  '[&_p]:m-0',
+                  '[&_p]:inline',
+                  '[&_p+_p]:pl-1',
+                ],
+              )}
+              stripFormattingTags={!expanded}
+            />
+          )}
         </div>
 
         <div
@@ -74,30 +78,22 @@ export function ChurchRoleCard({
         </div>
       </div>
 
-      {hasExpanded && (
-        <>
-          {expanded && role.expandedDescription && (
-            <HTMLRenderer
-              html={role.expandedDescription}
-              className='mt-3 text-sm text-text-secondary leading-relaxed border-t border-neutral-lighter pt-3'
-            />
-          )}
-          <button
-            type='button'
-            onClick={(e) => {
-              e.stopPropagation();
-              setExpanded((v) => !v);
-            }}
-            className='mt-3 inline-flex items-center gap-1 text-sm font-semibold text-ocean hover:underline'
-          >
-            {expanded ? 'Read less' : 'Read more'}
-            <Icon
-              name={expanded ? 'chevronUp' : 'chevronDown'}
-              size={14}
-              className='shrink-0'
-            />
-          </button>
-        </>
+      {hasDescription && (
+        <button
+          type='button'
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded((v) => !v);
+          }}
+          className='mt-3 inline-flex items-center gap-1 text-sm font-semibold text-ocean hover:underline'
+        >
+          {expanded ? 'Read less' : 'Read more'}
+          <Icon
+            name={expanded ? 'chevronUp' : 'chevronDown'}
+            size={14}
+            className='shrink-0'
+          />
+        </button>
       )}
     </div>
   );
