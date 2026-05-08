@@ -24,11 +24,14 @@ const unselectedPillClass = cn(
   'w-fit max-w-full cursor-pointer justify-center whitespace-nowrap bg-gray px-4 py-2 text-text-primary hover:bg-neutral-200 md:py-2.5',
 );
 
-/** Grid (not flex + justify-center) so the label column gets minmax(0,1fr), truncates on narrow widths, and the × stays visible. */
+/**
+ * Selected pill: grid so label + × share a row; shrink-0 so the chip is not squashed in the
+ * horizontal scroll row; max-width + wrap so the full label is readable (no truncate ellipsis).
+ */
 const selectedPillClass = cn(
-  'grid shrink items-center gap-1',
+  'grid w-max max-w-[min(100%,calc(100vw-2.5rem))] shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-0.5',
   pillVisualClass,
-  'min-h-0 min-w-0 max-w-full cursor-default grid-cols-[minmax(0,1fr)_auto] bg-ocean/10 px-4 py-2 text-ocean hover:bg-ocean/10 md:py-2.5',
+  'cursor-default bg-ocean/10 px-4 py-2 text-left text-ocean hover:bg-ocean/10 md:py-2.5',
 );
 
 const removeButtonClass =
@@ -81,16 +84,16 @@ export const HubsTagsRefinementList = ({
         item.isRefined ? (
           <div
             key={item.value}
-            className={cn(selectedClass, 'min-w-0 max-w-full shrink')}
+            className={selectedClass}
             role='group'
             aria-label={`Active filter ${item.label}`}
           >
-            <span className='min-w-0 truncate' title={item.label}>
+            <span className='min-w-0 break-words leading-snug'>
               {item.label}
             </span>
             <button
               type='button'
-              className={removeBtnClass}
+              className={cn(removeBtnClass, 'self-start pt-0.5')}
               aria-label={`Remove filter ${item.label}`}
               onClick={() => removeRefinementValue(item.value)}
             >
