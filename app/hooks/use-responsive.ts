@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 export const breakpoints = {
   xs: 480,
@@ -9,18 +9,25 @@ export const breakpoints = {
   "2xl": 1536,
 } as const;
 
+function subscribe(onStoreChange: () => void) {
+  window.addEventListener("resize", onStoreChange);
+  return () => window.removeEventListener("resize", onStoreChange);
+}
+
+function getSnapshot() {
+  return window.innerWidth;
+}
+
+function getServerSnapshot() {
+  return null;
+}
+
 export function useResponsive() {
-  const [width, setWidth] = useState<number | null>(null);
-
-  useEffect(() => {
-    function handleResize() {
-      setWidth(window.innerWidth);
-    }
-
-    handleResize(); // set initial width
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const width = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   if (width === null) {
     return {

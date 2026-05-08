@@ -124,15 +124,20 @@ describe("fetchRockData", () => {
   });
 
   it("throws when response is not ok", async () => {
-    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      ok: false,
-      status: 404,
-      text: async () => "Not Found",
-    });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        text: async () => "Not Found",
+      });
 
-    await expect(fetchRockData({ endpoint: "People" })).rejects.toThrow(
-      "⚠️ Error Fetching Rock Data",
-    );
+      await expect(fetchRockData({ endpoint: "People" })).rejects.toThrow(
+        "⚠️ Error Fetching Rock Data",
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 
   it("includes Content-Type application/json header", async () => {
@@ -179,15 +184,20 @@ describe("deleteRockData", () => {
   });
 
   it("throws when response is not ok", async () => {
-    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      ok: false,
-      status: 404,
-      text: async () => "Not Found",
-    });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        text: async () => "Not Found",
+      });
 
-    await expect(deleteRockData("People/99")).rejects.toThrow(
-      "Failed to delete resource",
-    );
+      await expect(deleteRockData("People/99")).rejects.toThrow(
+        "Failed to delete resource",
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 });
 
@@ -263,11 +273,16 @@ describe("patchRockData", () => {
 
 describe("deleteCacheKey", () => {
   it("returns false when redis is null (no redis configured)", async () => {
-    const result = await deleteCacheKey({
-      endpoint: "People",
-      queryParams: { $top: "10" },
-    });
-    expect(result).toBe(false);
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const result = await deleteCacheKey({
+        endpoint: "People",
+        queryParams: { $top: "10" },
+      });
+      expect(result).toBe(false);
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 });
 

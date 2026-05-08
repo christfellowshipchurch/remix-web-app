@@ -131,11 +131,16 @@ describe('fetchDreamTeamBuckets', () => {
   });
 
   it('returns empty array when Rock throws', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('network error'));
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      mockFetch.mockRejectedValueOnce(new Error('network error'));
 
-    const result = await fetchDreamTeamBuckets();
+      const result = await fetchDreamTeamBuckets();
 
-    expect(result).toEqual([]);
+      expect(result).toEqual([]);
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 
   it('maps multiple items preserving order from Rock', async () => {

@@ -161,11 +161,16 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
   });
 
   it('returns empty array when Rock throws', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('network error'));
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      mockFetch.mockRejectedValueOnce(new Error('network error'));
 
-    const result = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
+      const result = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);
 
-    expect(result).toEqual([]);
+      expect(result).toEqual([]);
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 
   it('preserves Rock ordering', async () => {
