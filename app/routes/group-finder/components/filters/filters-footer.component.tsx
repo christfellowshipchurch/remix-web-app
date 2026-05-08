@@ -35,32 +35,24 @@ export const FiltersFooter = ({
         <span className="hidden md:block">Cancel</span>
         <span className="md:hidden">Clear All</span>
       </button>
-      <div className="hidden md:block">
-        <Button
-          intent="primary"
-          className="w-fit px-4 py-1 min-w-0 min-h-0 rounded-full font-semibold text-base"
-          onClick={() => onHide()}
-        >
-          <Stats
-            classNames={{
-              root: "",
-            }}
-            translations={{
-              rootElementText: ({ nbHits }) =>
-                `Show ${nbHits.toLocaleString()} Results`,
-            }}
-          />
-        </Button>
-      </div>
-      <div className="md:hidden">
-        <Button
-          intent="primary"
-          className="w-fit font-normal text-base"
-          onClick={onHide}
-        >
-          Apply
-        </Button>
-      </div>
+      <Button
+        intent="primary"
+        className={cn(
+          "min-h-0 w-fit min-w-0 shrink-0 rounded-full px-4 py-1 text-base font-semibold",
+          "max-md:whitespace-normal",
+        )}
+        onClick={() => onHide()}
+      >
+        <Stats
+          classNames={{
+            root: "",
+          }}
+          translations={{
+            rootElementText: ({ nbHits }) =>
+              `Show ${nbHits.toLocaleString()} Results`,
+          }}
+        />
+      </Button>
     </div>
   );
 };
