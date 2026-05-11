@@ -26,7 +26,7 @@ export function MessageSinglePage() {
 
       <div className='w-full content-padding'>
         <div className='mx-auto max-w-screen-content'>
-          <div className='mt-24 pb-24 flex justify-start'>
+          <div className='mt-16 pb-8 md:mt-24 md:pb-24 flex justify-start'>
             {message.additionalResources.length > 0 && (
               <AdditionalResources
                 type='button'

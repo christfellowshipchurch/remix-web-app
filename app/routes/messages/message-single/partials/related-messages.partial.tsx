@@ -54,18 +54,18 @@ export const RelatedMessages = () => {
         <div className='bg-white w-full flex justify-center content-padding'>
           <div className='flex w-full  flex-col items-center py-12 md:py-24 max-w-screen-content'>
             {/* Header */}
-            <div className='flex w-full flex-col gap-4 lg:flex-row lg:items-end lg:justify-between'>
+            <div className='flex w-full flex-row items-end justify-between gap-4'>
               <div className='flex min-w-0 flex-1 flex-col gap-6 md:gap-8'>
                 <SectionTitle sectionTitle='related messages.' />
                 <h2 className='text-text font-extrabold text-[28px] lg:text-[32px] leading-tight'>
                   Other Messages On This Topic
                 </h2>
               </div>
-              <div className='flex shrink-0 text-lg font-semibold lg:items-end'>
+              <div className='flex shrink-0 items-end text-lg font-semibold'>
                 <Button
                   href={viewAllMessagesHref}
                   size='md'
-                  className='w-full lg:w-auto'
+                  className='rounded-none'
                   intent='primary'
                 >
                   View All
