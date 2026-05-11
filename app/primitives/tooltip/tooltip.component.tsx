@@ -6,6 +6,8 @@ interface TooltipProps {
   content: string;
   position?: "top" | "bottom" | "left" | "right";
   className?: string;
+  /** Classes for the anchor wrapper around `children` (default: `relative inline-block`). */
+  rootClassName?: string;
   show?: boolean;
   onShowChange?: (show: boolean) => void;
 }
@@ -15,6 +17,7 @@ export function Tooltip({
   content,
   position = "top",
   className,
+  rootClassName,
   show = false,
   onShowChange,
 }: TooltipProps) {
@@ -44,7 +47,7 @@ export function Tooltip({
   };
 
   return (
-    <div className="relative inline-block">
+    <div className={cn("relative inline-block", rootClassName)}>
       {children}
       {isVisible && (
         <div

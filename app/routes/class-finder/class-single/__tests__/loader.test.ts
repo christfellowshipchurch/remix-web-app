@@ -78,10 +78,15 @@ describe("class-single loader — onDemandUrl", () => {
   });
 
   it("returns empty string when Rock fetch throws", async () => {
-    mockFetchRockData.mockRejectedValueOnce(new Error("network error"));
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      mockFetchRockData.mockRejectedValueOnce(new Error("network error"));
 
-    const result = await loader(makeParams("some-class"));
+      const result = await loader(makeParams("some-class"));
 
-    expect(result.onDemandUrl).toBe("");
+      expect(result.onDemandUrl).toBe("");
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 });

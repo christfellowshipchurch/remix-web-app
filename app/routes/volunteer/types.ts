@@ -70,6 +70,14 @@ export type RegionCard = {
   href: string;
 };
 
+export interface VolunteerAtChurchResource {
+  name: string;
+  description: string;
+  tag: string;
+  image: string;
+  pathname: string;
+}
+
 export interface VolunteerFeaturedEvent {
   title: string;
   subtitle: string;

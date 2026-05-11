@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "react-router-dom";
 
-import { fetchVolunteerMissionDetailFromRock } from "./volunteer-mission-rock.server";
+import { fetchVolunteerMissionDetailFromRock } from "./outreach-mission-rock.server";
 import type { VolunteerMissionDetail } from "./types";
 
 export type LoaderReturnType = {
@@ -17,7 +17,7 @@ const ROCK_GUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const raw = decodeURIComponent(params.path ?? "").trim();
+  const raw = decodeURIComponent(params.groupGuid ?? "").trim();
   if (!raw || !ROCK_GUID_RE.test(raw)) {
     throw new Response("Mission not found", { status: 404 });
   }

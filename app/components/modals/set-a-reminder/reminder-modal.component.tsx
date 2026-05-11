@@ -11,12 +11,15 @@ interface SetAReminderModalProps {
   className?: string;
   intent?: ButtonProps["intent"];
   ModalButton?: React.ComponentType<ButtonProps>;
+  /** Merged onto `Modal.Button` (e.g. `w-full mr-0` for full-width triggers). */
+  triggerClassName?: string;
 }
 
 export function SetAReminderModal({
   className,
   intent = "secondary",
   ModalButton = Button,
+  triggerClassName,
 }: SetAReminderModalProps) {
   const [openModal, setOpenModal] = useState(false);
   const { campusUrl } = useLoaderData<LoaderReturnType>();
@@ -30,10 +33,10 @@ export function SetAReminderModal({
 
   return (
     <Modal open={openModal} onOpenChange={handleOpenChange}>
-      <Modal.Button asChild className="mr-2">
+      <Modal.Button asChild className={cn("mr-2", triggerClassName)}>
         <ModalButton
           intent={intent}
-          onClick={() => setOpenModal(true)}
+          type="button"
           className={cn(
             "text-white border-[#FAFAFC] rounded-md md:rounded-none border hover:bg-white/10",
             className
