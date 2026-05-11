@@ -53,7 +53,14 @@ const CurrentSeriesHit = ({
   }, [items]);
 
   const hit = items[0];
-  const currentSeriesTitle = hit?.seriesName || 'Current Series';
+
+  // This is a fallback for when the current series is not found or when loading the current series is still in progress.
+  if (!hit) {
+    return null;
+  }
+
+  const currentSeriesTitle = hit.seriesName || 'Current Series';
+  const coverImageUri = hit.coverImage?.sources?.[0]?.uri;
 
   const iconButtonClass =
     'text-text-primary border-text-primary hover:enabled:text-ocean hover:enabled:border-ocean lg:text-base xl:!text-lg';
@@ -74,9 +81,11 @@ const CurrentSeriesHit = ({
               <h2 className='text-2xl md:text-3xl lg:text-[40px] font-bold text-pretty'>
                 {hit.title}
               </h2>
-              <p className='-mt-1 font-semibold'>
-                {hit.author.firstName} {hit.author.lastName}
-              </p>
+              {hit.author && (
+                <p className='-mt-1 font-semibold'>
+                  {hit.author.firstName} {hit.author.lastName}
+                </p>
+              )}
             </div>
 
             <div className='text-text-secondary line-clamp-4 xl:line-clamp-3 mb-6 lg:mb-0'>
@@ -105,11 +114,13 @@ const CurrentSeriesHit = ({
           </div>
         </div>
 
-        <img
-          src={hit.coverImage.sources[0].uri}
-          alt={currentSeriesTitle}
-          className='w-full lg:w-1/2 lg:h-[620px] object-cover'
-        />
+        {coverImageUri && (
+          <img
+            src={coverImageUri}
+            alt={currentSeriesTitle}
+            className='w-full lg:w-1/2 lg:h-[620px] object-cover'
+          />
+        )}
       </div>
     </>
   );
