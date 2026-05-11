@@ -25,6 +25,8 @@ export const darkModeRoutes: RoutePattern[] = [
 // Include both static and dynamic routes
 export const hideNavbarRoutes: RoutePattern[] = [
   { path: "/group-finder/", isDynamic: true }, // This will match /groups/[slug]
+  { path: "/volunteer/outreach/", isDynamic: true }, // Matches /volunteer/outreach/:groupGuid
+  { path: "/volunteer/church/", isDynamic: true }, // Matches /volunteer/church/:bucketGuid
 ];
 
 export function shouldUseDarkMode(pathname: string): boolean {

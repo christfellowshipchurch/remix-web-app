@@ -12,8 +12,8 @@ function setWindowWidth(width: number) {
 }
 
 afterEach(() => {
-  // Reset to a known desktop width
-  setWindowWidth(1024);
+  // Reset to a known desktop width (act keeps resize-driven updates inside React's batching)
+  act(() => setWindowWidth(1024));
 });
 
 describe("useResponsive", () => {
@@ -84,7 +84,7 @@ describe("useResponsive", () => {
     unmount();
     expect(removeListenerSpy).toHaveBeenCalledWith(
       "resize",
-      expect.any(Function)
+      expect.any(Function),
     );
     removeListenerSpy.mockRestore();
   });
