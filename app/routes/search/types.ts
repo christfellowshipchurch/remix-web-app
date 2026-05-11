@@ -15,7 +15,7 @@ export interface ContentItemHit {
   contentType: string;
   imageLabel: string;
   htmlContent?: string; // TODO: This is an array of strings in Algolia, how do we handle this?
-  sermonSeriesName?: string;
+  seriesName?: string;
   sermonSeriesGuid?: string;
   sermonPrimaryCategories: string[];
   sermonSecondaryCategories: string[];

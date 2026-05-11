@@ -37,8 +37,8 @@ export const RelatedMessages = () => {
   // Create filter for the primary category and sermon type
   // If primary category exists, filter by it; otherwise show all sermons (Recent)
   const categoryFilter = message.primaryCategories[0]?.value
-    ? `contentType:"Sermon" AND sermonPrimaryCategories:"${message.primaryCategories[0]?.value}" AND NOT title:"${message.title}" AND NOT sermonSeriesName:"${message.seriesTitle}"`
-    : `contentType:"Sermon" AND NOT title:"${message.title}" AND NOT sermonSeriesName:"${message.seriesTitle}"`;
+    ? `contentType:"Sermon" AND sermonPrimaryCategories:"${message.primaryCategories[0]?.value}" AND NOT title:"${message.title}" AND NOT seriesName:"${message.seriesTitle}"`
+    : `contentType:"Sermon" AND NOT title:"${message.title}" AND NOT seriesName:"${message.seriesTitle}"`;
 
   return (
     <InstantSearch
