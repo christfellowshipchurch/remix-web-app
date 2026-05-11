@@ -97,12 +97,12 @@ export function Questions({
 
 export function Sidebar({
   mission,
-  signupHref,
+  onSignUpClick,
   copied,
   onCopyPath,
 }: {
   mission: VolunteerMissionDetail;
-  signupHref: string;
+  onSignUpClick: () => void;
   copied: boolean;
   onCopyPath: () => void;
 }) {
@@ -113,7 +113,8 @@ export function Sidebar({
       <div className="flex flex-col gap-3">
         <Button
           intent="primary"
-          href={signupHref}
+          type="button"
+          onClick={onSignUpClick}
           className="w-full rounded-full"
         >
           Sign Up
@@ -137,11 +138,11 @@ export function Sidebar({
 export function MobileBottomBar({
   copied,
   onCopyPath,
-  signupHref,
+  onSignUpClick,
 }: {
   copied: boolean;
   onCopyPath: () => void;
-  signupHref: string;
+  onSignUpClick: () => void;
 }) {
   const [mountToBody, setMountToBody] = useState(false);
 
@@ -176,9 +177,9 @@ export function MobileBottomBar({
       </button>
       <Button
         intent="primary"
-        href={signupHref}
-        linkClassName="flex-1 min-w-0"
-        className="min-h-12 w-full rounded-full text-base font-bold"
+        type="button"
+        onClick={onSignUpClick}
+        className="flex-1 min-w-0 min-h-12 rounded-full text-base font-bold"
       >
         Sign Up
       </Button>

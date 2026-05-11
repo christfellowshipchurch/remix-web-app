@@ -1,12 +1,17 @@
 import type { LoaderFunction } from "react-router-dom";
 
-import { fetchVolunteerMissionDetailFromRock } from "./outreach-mission-rock.server";
+import {
+  fetchCommunityServingWaiverLinkText,
+  fetchVolunteerMissionDetailFromRock,
+} from "./outreach-mission-rock.server";
 import type { VolunteerMissionDetail } from "./types";
 
 export type LoaderReturnType = {
   /** Rock GUID from the URL (uppercase) — canonical for links and meta. */
   groupGuid: string;
   mission: VolunteerMissionDetail;
+  /** HTML for the waiver link (with three-language links), from workflow type 164. */
+  waiverLinkText: string;
   /** Optional — used only for Algolia `spotsLeft` on the mission intro. */
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
@@ -28,7 +33,11 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const groupGuid = raw.toUpperCase();
 
-  const mission = await fetchVolunteerMissionDetailFromRock(groupGuid);
+  const [mission, waiverLinkText] = await Promise.all([
+    fetchVolunteerMissionDetailFromRock(groupGuid),
+    fetchCommunityServingWaiverLinkText(),
+  ]);
+
   if (!mission) {
     throw new Response("Mission not found", { status: 404 });
   }
@@ -36,6 +45,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   return Response.json({
     groupGuid,
     mission,
+    waiverLinkText,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? "",
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? "",
   } satisfies LoaderReturnType);

@@ -156,3 +156,30 @@ export const launchGroupClassSignupWorkflow = async (
     body: { GroupId: groupId, PersonId: personId },
   });
 };
+
+export interface CommunityServingSignupInput {
+  groupGuid: string;
+  personId: string;
+  /** ISO yyyy-mm-dd from <input type="date">. */
+  birthdate: string;
+  /** Campus name string (matches CAMPUS const). */
+  campus: string;
+  waiverAccepted: boolean;
+}
+
+export const launchCommunityServingSignupWorkflow = async (
+  input: CommunityServingSignupInput,
+): Promise<void> => {
+  await postRockData({
+    endpoint:
+      'Workflows/LaunchWorkflow/0?workflowTypeId=164&workflowName=Community%20Serving%20Opportunity%20Sign%20Up',
+    body: {
+      Group: input.groupGuid,
+      PersonId: input.personId,
+      Birthdate: input.birthdate,
+      Campus: input.campus,
+      'IacceptthetermsoftheChristFellowshipwaiver.':
+        input.waiverAccepted ? 'Yes' : '',
+    },
+  });
+};

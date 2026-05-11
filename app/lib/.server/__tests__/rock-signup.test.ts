@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   findOrCreateRockPersonForSignup,
+  launchCommunityServingSignupWorkflow,
   launchGroupClassSignupWorkflow,
 } from '../rock-signup';
 
@@ -224,5 +225,48 @@ describe('launchGroupClassSignupWorkflow', () => {
     const [call] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
     expect(call.endpoint).toContain('workflowTypeId=654');
     expect(call.body).toEqual({ GroupId: 'group-1', PersonId: 'person-2' });
+  });
+});
+
+describe('launchCommunityServingSignupWorkflow', () => {
+  // Verifies the body shape required by the Community Serving Opportunity
+  // Sign Up workflow (id 164) on the Rock side: GroupGuid via `Group`, plus
+  // Birthdate / Campus / waiver-key (note the trailing period in the key).
+  it('posts to workflowTypeId=164 with the expected body when waiver is accepted', async () => {
+    mockPostRockData.mockResolvedValue({});
+
+    await launchCommunityServingSignupWorkflow({
+      groupGuid: 'AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE',
+      personId: 'person-42',
+      birthdate: '1990-05-15',
+      campus: 'Palm Beach Gardens',
+      waiverAccepted: true,
+    });
+
+    expect(mockPostRockData).toHaveBeenCalledOnce();
+    const [call] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
+    expect(call.endpoint).toContain('workflowTypeId=164');
+    expect(call.body).toEqual({
+      Group: 'AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE',
+      PersonId: 'person-42',
+      Birthdate: '1990-05-15',
+      Campus: 'Palm Beach Gardens',
+      'IacceptthetermsoftheChristFellowshipwaiver.': 'Yes',
+    });
+  });
+
+  it('sends an empty waiver value when waiver is not accepted', async () => {
+    mockPostRockData.mockResolvedValue({});
+
+    await launchCommunityServingSignupWorkflow({
+      groupGuid: 'AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE',
+      personId: 'person-42',
+      birthdate: '1990-05-15',
+      campus: 'Palm Beach Gardens',
+      waiverAccepted: false,
+    });
+
+    const [call] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
+    expect(call.body['IacceptthetermsoftheChristFellowshipwaiver.']).toBe('');
   });
 });
