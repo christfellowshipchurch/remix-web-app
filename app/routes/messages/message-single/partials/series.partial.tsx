@@ -66,7 +66,7 @@ export const InThisSeries = () => {
     return null;
   }
 
-  const filter = `contentType:"Sermon" AND seriesName:"${message.seriesTitle}"`;
+  const filter = `contentType:"Sermon" AND seriesName:"${message.seriesTitle}" AND rockItemId != ${message.id}`;
 
   return (
     <InstantSearch
