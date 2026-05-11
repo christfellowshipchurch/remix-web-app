@@ -85,19 +85,29 @@ describe("getAttributeMatrixItems", () => {
   });
 
   it("returns [] when attributeMatrix is null/undefined", async () => {
-    mockFetch.mockResolvedValueOnce(null);
-    const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-1",
-    });
-    expect(result).toEqual([]);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      mockFetch.mockResolvedValueOnce(null);
+      const result = await getAttributeMatrixItems({
+        attributeMatrixGuid: "guid-1",
+      });
+      expect(result).toEqual([]);
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("returns [] when matrixItems is empty", async () => {
-    mockFetch.mockResolvedValueOnce({ attributeMatrixItems: [] });
-    const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-1",
-    });
-    expect(result).toEqual([]);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      mockFetch.mockResolvedValueOnce({ attributeMatrixItems: [] });
+      const result = await getAttributeMatrixItems({
+        attributeMatrixGuid: "guid-1",
+      });
+      expect(result).toEqual([]);
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("returns expanded items as array when fetchRockData returns array", async () => {
@@ -129,21 +139,31 @@ describe("getAttributeMatrixItems", () => {
   });
 
   it("returns [] when expanded items is null", async () => {
-    mockFetch
-      .mockResolvedValueOnce({ attributeMatrixItems: [{ id: 1 }] })
-      .mockResolvedValueOnce(null);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      mockFetch
+        .mockResolvedValueOnce({ attributeMatrixItems: [{ id: 1 }] })
+        .mockResolvedValueOnce(null);
 
-    const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-4",
-    });
-    expect(result).toEqual([]);
+      const result = await getAttributeMatrixItems({
+        attributeMatrixGuid: "guid-4",
+      });
+      expect(result).toEqual([]);
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("returns [] when fetchRockData throws", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("network error"));
-    const result = await getAttributeMatrixItems({
-      attributeMatrixGuid: "guid-5",
-    });
-    expect(result).toEqual([]);
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      mockFetch.mockRejectedValueOnce(new Error("network error"));
+      const result = await getAttributeMatrixItems({
+        attributeMatrixGuid: "guid-5",
+      });
+      expect(result).toEqual([]);
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 });

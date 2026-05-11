@@ -10,7 +10,7 @@ import { volunteerCategoryPillClassName } from "../volunteer-category-pill";
 import {
   persistVolunteerFinderBackFromCard,
   type VolunteerFinderBackPayload,
-} from "../volunteer-single/components/volunteer-finder-return-href";
+} from "../outreach-opportunity/components/outreach-finder-return-href";
 
 const ROCK_CAMPUS_NAME_SET = new Set<string>(
   RockCampuses.map((campus) => campus.name),
@@ -85,7 +85,7 @@ function VolunteerCardInner({
 
   return (
     <Link
-      to={`/volunteer/${volunteer.groupGuid}`}
+      to={`/volunteer/outreach/${volunteer.groupGuid}`}
       prefetch="intent"
       onClick={() => persistVolunteerFinderBackFromCard(finderBackPayload)}
       className={cn(
