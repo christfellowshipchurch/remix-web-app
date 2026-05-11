@@ -61,7 +61,7 @@ export const RelatedMessages = () => {
                   Other Messages On This Topic
                 </h2>
               </div>
-              <div className='flex shrink-0 items-end text-lg font-semibold'>
+              <div className='hidden md:flex shrink-0 items-end text-lg font-semibold'>
                 <Button
                   href={viewAllMessagesHref}
                   size='md'
@@ -74,6 +74,17 @@ export const RelatedMessages = () => {
             </div>
 
             <RelatedMessagesCarousel />
+
+            <div className='flex md:hidden pt-16 shrink-0 w-full text-lg font-semibold'>
+              <Button
+                href={viewAllMessagesHref}
+                size='md'
+                className='rounded-sm'
+                intent='secondary'
+              >
+                View All
+              </Button>
+            </div>
           </div>
         </div>
       </HitsWrapper>
