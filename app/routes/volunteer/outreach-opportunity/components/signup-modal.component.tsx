@@ -9,7 +9,7 @@ interface SignupModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   groupGuid: string;
-  waiverLinkText: string;
+  waiverPdfUrl: string;
   /** Path the form posts to — the outreach-opportunity route's own action. */
   actionPath: string;
 }
@@ -18,7 +18,7 @@ export function SignupModal({
   open,
   onOpenChange,
   groupGuid,
-  waiverLinkText,
+  waiverPdfUrl,
   actionPath,
 }: SignupModalProps) {
   const [succeeded, setSucceeded] = useState(false);
@@ -55,7 +55,7 @@ export function SignupModal({
               </h2>
               <SignupForm
                 groupGuid={groupGuid}
-                waiverLinkText={waiverLinkText}
+                waiverPdfUrl={waiverPdfUrl}
                 actionPath={actionPath}
                 onSuccess={() => setSucceeded(true)}
               />

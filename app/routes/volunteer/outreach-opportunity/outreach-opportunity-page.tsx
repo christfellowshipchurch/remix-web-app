@@ -31,7 +31,7 @@ export function OutreachOpportunityPage() {
   const {
     mission,
     groupGuid,
-    waiverLinkText,
+    waiverPdfUrl,
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
   } = useLoaderData<LoaderReturnType>();
@@ -172,7 +172,7 @@ export function OutreachOpportunityPage() {
           open={signupOpen}
           onOpenChange={setSignupOpen}
           groupGuid={groupGuid}
-          waiverLinkText={waiverLinkText}
+          waiverPdfUrl={waiverPdfUrl}
           actionPath={actionPath}
         />
       </article>

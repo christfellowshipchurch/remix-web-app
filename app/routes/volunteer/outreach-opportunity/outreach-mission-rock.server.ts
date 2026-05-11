@@ -210,36 +210,6 @@ async function resolveContact(attrs: AttrBag | undefined): Promise<{
   };
 }
 
-type RockWorkflowTypeAttribute = {
-  key?: string;
-  defaultValue?: string;
-};
-
-/**
- * Fetches the `WaiverLinkText` default value from workflow type 164
- * ("Community Serving Opportunity Sign Up"). HTML — admin-controlled in Rock.
- */
-export async function fetchCommunityServingWaiverLinkText(): Promise<string> {
-  try {
-    const result = await fetchRockData({
-      endpoint: "WorkflowTypes/164",
-      queryParams: { $expand: "Attributes" },
-      ttl: TTL.LONG,
-    });
-
-    const attrs = (
-      Array.isArray((result as { attributes?: unknown })?.attributes)
-        ? (result as { attributes: RockWorkflowTypeAttribute[] }).attributes
-        : []
-    ) as RockWorkflowTypeAttribute[];
-
-    const waiver = attrs.find((a) => a?.key === "WaiverLinkText");
-    return waiver?.defaultValue?.trim() ?? "";
-  } catch {
-    return "";
-  }
-}
-
 /**
  * Loads one volunteer / mission opportunity from Rock by GUID (default: `Groups.Guid`).
  */
