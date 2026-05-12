@@ -209,7 +209,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
                 value='false'
                 className='h-4 w-4 accent-ocean shrink-0'
               />
-              No, it's my first time
+              No, {isEspanol ? 'es mi primera vez' : "it's my first time"}
             </label>
           </div>
           <Form.Message className='text-sm text-alert' match='valueMissing'>
