@@ -105,6 +105,41 @@ export const MinistryServiceTimes = ({
       document.removeEventListener('mousedown', handleMouseDownOutside);
   }, [isExpanded]);
 
+  // Lock page scroll while the sheet is open (keeps sticky bar stable; restores on close).
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const scrollY = window.scrollY;
+    const prevBody = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    };
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.position = prevBody.position;
+      document.body.style.top = prevBody.top;
+      document.body.style.left = prevBody.left;
+      document.body.style.right = prevBody.right;
+      document.body.style.width = prevBody.width;
+      document.body.style.overflow = prevBody.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isExpanded]);
+
   if (relevantServices.length === 0) {
     return null;
   }
@@ -192,6 +227,7 @@ export const MinistryServiceTimes = ({
               'animate-in fade-in flex flex-col gap-5 duration-300',
               'bg-[#f7f9fc]',
               'px-5 pt-4 pb-6 md:px-5 md:pt-6 md:pb-8',
+              'min-h-0 max-h-[min(75dvh,calc(100dvh-11rem))] overflow-y-auto overscroll-contain',
             )}
           >
             <div
