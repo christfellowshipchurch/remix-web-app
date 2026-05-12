@@ -180,7 +180,10 @@ const resolveRockCampusGuidByName = async (
 
 export interface CommunityServingSignupInput {
   groupGuid: string;
-  personId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
   /** ISO yyyy-mm-dd from <input type="date">. */
   birthdate: string;
   /** Rock canonical campus name (matches RockCampuses[].name in rock-config.ts). Resolved to a Guid before posting. */
@@ -195,10 +198,13 @@ export const launchCommunityServingSignupWorkflow = async (
 
   await postRockData({
     endpoint:
-      'Workflows/LaunchWorkflow/0?workflowTypeId=164&workflowName=Community%20Serving%20Opportunity%20Sign%20Up',
+      'Workflows/LaunchWorkflow/0?workflowTypeId=1840&workflowName=Community%20Serving%20Opportunity%20Sign%20Up',
     body: {
       Group: input.groupGuid,
-      PersonId: input.personId,
+      FirstName: input.firstName,
+      LastName: input.lastName,
+      Email: input.email,
+      CellPhone: input.phoneNumber,
       Birthdate: input.birthdate,
       Campus: campusGuid,
       'IacceptthetermsoftheChristFellowshipwaiver.': input.waiverAccepted

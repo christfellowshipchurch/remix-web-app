@@ -114,7 +114,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
       </Form.Field>
 
       <Form.Field name='campus' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Home Campus*</Form.Label>
+        <Form.Label className='font-bold text-sm mb-1'>Campus*</Form.Label>
         <Form.Control asChild>
           <select
             required

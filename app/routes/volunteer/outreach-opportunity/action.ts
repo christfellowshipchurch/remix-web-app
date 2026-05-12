@@ -1,9 +1,6 @@
 import type { ActionFunctionArgs } from 'react-router';
 
-import {
-  findOrCreateRockPersonForSignup,
-  launchCommunityServingSignupWorkflow,
-} from '~/lib/.server/rock-signup';
+import { launchCommunityServingSignupWorkflow } from '~/lib/.server/rock-signup';
 import { RockCampuses } from '~/lib/rock-config';
 
 const ROCK_GUID_RE =
@@ -84,16 +81,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       );
     }
 
-    const personId = await findOrCreateRockPersonForSignup({
+    await launchCommunityServingSignupWorkflow({
+      groupGuid,
       firstName,
       lastName,
       email,
       phoneNumber,
-    });
-
-    await launchCommunityServingSignupWorkflow({
-      groupGuid,
-      personId,
       birthdate,
       campus,
       waiverAccepted: true,
