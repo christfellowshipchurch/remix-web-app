@@ -2,10 +2,7 @@ import { useLoaderData } from 'react-router-dom';
 import { LoaderReturnType } from './loader';
 
 import { StudySingleBasicContent } from './partials/basic-content.partial';
-import { Configure, InstantSearch, useHits } from 'react-instantsearch';
-import { useMemo } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { createSearchClient } from '~/lib/create-search-client';
 import { StudyHitType } from '../types';
 import { CurriculumItem } from './components/curriculum-item.component';
 
@@ -81,51 +78,15 @@ const StudySingleContent = ({ hit }: { hit: StudyHitType }) => {
 };
 
 export function StudiesSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, studyUrl } =
-    useLoaderData<LoaderReturnType>();
-
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
-  );
-
-  return (
-    <InstantSearch
-      indexName='dev_StudiesAndResources'
-      searchClient={searchClient}
-      initialUiState={{
-        dev_StudiesAndResources: {
-          query: `${studyUrl}`,
-        },
-      }}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-      key={studyUrl}
-    >
-      <Configure
-        hitsPerPage={1}
-        queryType='prefixNone'
-        removeWordsIfNoResults='none'
-        typoTolerance={false}
-        exactOnSingleWordQuery='word'
-      />
-
-      <CustomStudySingleHits />
-    </InstantSearch>
-  );
-}
-
-const CustomStudySingleHits = () => {
-  const { items } = useHits<StudyHitType>();
+  const { studyHit } = useLoaderData<LoaderReturnType>();
 
   return (
     <div className='w-full'>
-      {items.length > 0 ? (
-        items.map((hit) => <StudySingleContent key={hit.objectID} hit={hit} />)
+      {studyHit ? (
+        <StudySingleContent key={studyHit.objectID} hit={studyHit} />
       ) : (
         <StudyNotFound />
       )}
     </div>
   );
-};
+}
