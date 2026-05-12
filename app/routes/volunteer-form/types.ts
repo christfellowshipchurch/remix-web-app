@@ -1,3 +1,5 @@
+import { RockCampuses, type RockCampusName } from '~/lib/rock-config';
+
 // Types for Volunteer Form multi-step process
 export const INTERESTS = [
   "Children & Youth",
@@ -23,31 +25,14 @@ export interface VolunteerFormWelcome {
   // No fields needed, just a welcome step
 }
 
-export const CAMPUS = [
-  "Palm Beach Gardens",
-  "Port St. Lucie",
-  "Royal Palm Beach",
-  "Boynton Beach",
-  "Downtown West Palm Beach",
-  "Jupiter",
-  "Stuart",
-  "Okeechobee",
-  "Belle Glade",
-  "Vero Beach",
-  "Boca Raton",
-  "Riviera Beach",
-  "Trinity Church",
-  "Westlake",
-  "En Español Palm Beach Gardens",
-  "En Español Royal Palm Beach",
-];
+export const CAMPUS = RockCampuses.map((c) => c.name);
 
 export interface VolunteerFormPersonalInfo {
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
-  campus?: (typeof CAMPUS)[number];
+  campus?: RockCampusName;
   dateOfBirth?: string;
 }
 
