@@ -1,19 +1,27 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-import { Icon } from "~/primitives/icon/icon";
+import { useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import capitalize from 'lodash/capitalize';
+
+import {
+  DraggableMobileSheet,
+  DraggableMobileSheetHandle,
+} from '~/components/draggable-mobile-sheet';
 import Dropdown, {
   type DropdownOption,
-} from "~/primitives/inputs/dropdown/dropdown.primitive";
-import { MinistryService } from "../../page-builder/types";
-import { RockCampuses } from "~/lib/rock-config";
-import { ServiceCard } from "./service-card.component";
-import { cn } from "~/lib/utils";
-import { useLocation } from "react-router-dom";
-import capitalize from "lodash/capitalize";
-import { ministryTypeRules } from "../utils";
+} from '~/primitives/inputs/dropdown/dropdown.primitive';
+import { Icon } from '~/primitives/icon/icon';
+import { RockCampuses } from '~/lib/rock-config';
+import { cn } from '~/lib/utils';
+import { MinistryService } from '../../page-builder/types';
+import { ministryTypeRules } from '../utils';
+import { ServiceCard } from './service-card.component';
 
 interface MinistryServiceTimesProps {
   services?: MinistryService[];
 }
+
+/** Matches Tailwind `md` breakpoint — drag sheet only on narrow viewports. */
+const MOBILE_DRAG_MEDIA = '(max-width: 767px)';
 
 /**
  * Main Ministry Service Times Component
@@ -22,46 +30,38 @@ export const MinistryServiceTimes = ({
   services = [],
 }: MinistryServiceTimesProps) => {
   const { pathname } = useLocation();
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [mobileNarrow, setMobileNarrow] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const pathnameTitle = pathname
-    .split("/")[2]
-    .split("-")
-    .map((word: string) => (word !== "and" ? capitalize(word) : word))
-    .join(" ");
+    .split('/')[2]
+    .split('-')
+    .map((word: string) => (word !== 'and' ? capitalize(word) : word))
+    .join(' ');
 
-  // Filter services to only show those relevant to the current page
   const relevantServices = useMemo(() => {
-    const pathSegment = pathname.split("/")[2]?.toLowerCase() || "";
-
-    // Find the rule whose key matches the current path segment
+    const pathSegment = pathname.split('/')[2]?.toLowerCase() || '';
     const relatedMinistryTypes = ministryTypeRules[pathSegment];
-
     if (!relatedMinistryTypes) {
       return [];
     }
-
-    // Filter services to only include those whose ministryType matches
     return services.filter((service) =>
-      relatedMinistryTypes.includes(service.ministryType)
+      relatedMinistryTypes.includes(service.ministryType),
     );
   }, [services, pathname]);
 
-  // Extract unique locations from relevant services
   const uniqueLocations = useMemo(() => {
     const locationSet = new Set<string>();
     relevantServices.forEach((service) => {
-      locationSet.add(service?.location?.name ?? "");
+      locationSet.add(service?.location?.name ?? '');
     });
     return Array.from(locationSet).sort();
   }, [relevantServices]);
 
-  // Create dropdown options from RockCampuses that exist in services
   const locationOptions: DropdownOption[] = useMemo(() => {
     const options: DropdownOption[] = [];
-
     RockCampuses.forEach((campus) => {
       if (uniqueLocations.includes(campus.name)) {
         options.push({
@@ -70,34 +70,27 @@ export const MinistryServiceTimes = ({
         });
       }
     });
-
     return options;
   }, [uniqueLocations]);
 
-  // Use first location as effective default so we filter immediately when data is ready
-  const effectiveLocation = selectedLocation || locationOptions[0]?.value || '';
-
-  // Filter services based on selected location (or first option when none selected yet)
   const filteredServices = useMemo(() => {
-    if (!effectiveLocation) {
-      return relevantServices;
+    if (!selectedLocation) {
+      return [];
     }
     return relevantServices.filter(
-      (service) => service?.location?.name === effectiveLocation
+      (service) => service?.location?.name === selectedLocation,
     );
-  }, [relevantServices, effectiveLocation]);
+  }, [relevantServices, selectedLocation]);
 
-  // Default to first location in dropdown when data is ready (so we filter immediately)
   useEffect(() => {
-    const firstOption = locationOptions[0]?.value;
-    if (firstOption && !selectedLocation) {
-      setSelectedLocation(firstOption);
-    }
-  }, [locationOptions, selectedLocation]);
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia(MOBILE_DRAG_MEDIA);
+    const sync = () => setMobileNarrow(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
-  // Close panel when clicking outside (mousedown so we run before dropdown
-  // unmounts its options on select — otherwise the clicked node is no longer
-  // in the panel and we incorrectly treat it as an outside click)
   useEffect(() => {
     if (!isExpanded) return;
 
@@ -108,66 +101,155 @@ export const MinistryServiceTimes = ({
     };
 
     document.addEventListener('mousedown', handleMouseDownOutside);
-    return () => document.removeEventListener('mousedown', handleMouseDownOutside);
+    return () =>
+      document.removeEventListener('mousedown', handleMouseDownOutside);
   }, [isExpanded]);
 
-  // Don't render if no relevant services
   if (relevantServices.length === 0) {
     return null;
   }
 
+  const barSubtitleDefault = 'Choose a location and see times';
+
   return (
-    <div ref={panelRef} className="bg-navy md:bg-gray sticky bottom-0 z-10">
-      {/* Title Section with Accordion Toggle */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between md:justify-center gap-2 w-full bg-dark-navy md:bg-white px-6 py-4 hover:bg-ocean/10 transition-colors cursor-pointer"
-        aria-expanded={isExpanded}
-        aria-label="Toggle Service Times section"
+    <div ref={panelRef} className='sticky bottom-0 z-10 bg-transparent'>
+      <DraggableMobileSheet
+        enabled={mobileNarrow && isExpanded}
+        onDismiss={() => setIsExpanded(false)}
+        className={cn(
+          'overflow-hidden rounded-t-2xl border-t-2 border-[#e1e6ec] bg-white',
+          'shadow-[0_-12px_32px_-8px_rgba(0,80,120,0.18),0_-4px_12px_-4px_rgba(0,0,0,0.08)]',
+          'md:shadow-[0_-20px_40px_-10px_rgba(0,80,120,0.25),0_-6px_16px_-6px_rgba(0,0,0,0.1)]',
+        )}
       >
-        <div className="flex items-center gap-2">
-          <Icon name="calendarAlt" className="text-white md:hidden" size={20} />
-          <h2 className="font-medium md:font-extrabold text-white md:text-text-primary mt-[2px]">
-            {pathnameTitle} Service Times
-          </h2>
-        </div>
-        <div className="flex items-center justify-center w-6 h-6 bg-ocean rounded-md">
-          <Icon
-            name="chevronUp"
-            className={`text-white transition-transform duration-300 ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-            size={20}
+        <DraggableMobileSheetHandle
+          className={cn(
+            'flex items-center justify-center py-2.5 md:hidden',
+            mobileNarrow && isExpanded
+              ? 'touch-none cursor-grab select-none active:cursor-grabbing'
+              : 'pointer-events-none',
+          )}
+          aria-label='Drag down to close service times'
+        >
+          <span
+            className='h-1 w-10 shrink-0 rounded-full bg-[#cfd4dc]'
+            aria-hidden
           />
-        </div>
-      </button>
-      <div className="max-w-screen-content mx-auto content-padding">
-        {/* Collapsible Content */}
-        {isExpanded && (
-          <div className="flex flex-col gap-6 animate-in fade-in duration-300 py-8">
-            {/* Location Filter */}
-            <div className="w-full max-w-[300px] mx-auto">
-              <Dropdown
-                options={locationOptions}
-                value={effectiveLocation}
-                onChange={setSelectedLocation}
-                placeholder="Select Location"
-              />
+        </DraggableMobileSheetHandle>
+
+        <button
+          type='button'
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={cn(
+            'flex w-full cursor-pointer items-center gap-4 px-5 transition-colors',
+            'md:justify-between pt-2 md:pt-5 pb-5',
+            'md:min-h-[72px] md:items-center md:justify-center',
+            'hover:bg-neutral-50/80',
+            isExpanded ? 'border-b border-[#E1E6EC]' : '',
+          )}
+          aria-expanded={isExpanded}
+          aria-label='Toggle Service Times section'
+        >
+          <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-[#e6f4f9]'>
+            <Icon name='calendarAlt' className='text-navy' size={18} />
+          </div>
+          <div className='min-w-0 flex-1 text-left md:flex-initial'>
+            <p className='text-base font-extrabold leading-tight text-[#1a2733]'>
+              {pathnameTitle} Service Times
+            </p>
+            {selectedLocation ? (
+              <p className='mt-0.5 w-full min-w-0 truncate text-[13px] font-medium leading-snug text-[#6b7480]'>
+                <span>{selectedLocation}</span>
+                <span className='inline-flex items-center gap-1 align-middle ml-1'>
+                  <span
+                    className='size-[3px] shrink-0 rounded-full bg-[#6b7480]'
+                    aria-hidden
+                  />
+                  Tap to view times
+                </span>
+              </p>
+            ) : (
+              <p className='mt-0.5 text-[13px] font-medium leading-snug text-[#6b7480]'>
+                {barSubtitleDefault}
+              </p>
+            )}
+          </div>
+          <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-ocean'>
+            <Icon
+              name='chevronUp'
+              className={cn(
+                'text-white transition-transform duration-300',
+                isExpanded && 'rotate-180',
+              )}
+              size={20}
+            />
+          </div>
+        </button>
+
+        {isExpanded ? (
+          <div
+            className={cn(
+              'animate-in fade-in flex flex-col gap-5 duration-300',
+              'bg-[#f7f9fc]',
+              'px-5 pt-4 pb-6 md:px-5 md:pt-6 md:pb-8',
+            )}
+          >
+            <div
+              className={cn(
+                'mx-auto flex w-full md:max-w-[298px] flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-center md:gap-4',
+              )}
+            >
+              <span className='shrink-0 text-[13px] font-semibold text-[#1a2733]'>
+                Location
+              </span>
+              <div
+                className={cn(
+                  'w-full min-w-0',
+                  selectedLocation &&
+                    'md:w-[231px] md:max-w-[231px] md:shrink-0',
+                )}
+              >
+                <Dropdown
+                  className='w-full'
+                  options={locationOptions}
+                  value={selectedLocation}
+                  onChange={setSelectedLocation}
+                  placeholder='Choose a location'
+                  triggerIcon='mapFilled'
+                  triggerIconClassName='text-ocean'
+                  triggerClassName={cn(
+                    'h-[43px] rounded-[10px] border-[#dfe4eb] py-[11px] pl-[13px] pr-[13px] shadow-none',
+                    'text-sm hover:border-[#dfe4eb]',
+                    selectedLocation
+                      ? 'font-semibold text-[#1a2733]'
+                      : 'font-normal text-[#9aa3ad]',
+                  )}
+                  chevronColor='text-neutral-500'
+                  menuClassName='z-[10000]'
+                />
+              </div>
             </div>
-            <hr className="border-neutral-200 w-full max-w-[500px] mx-auto" />
-            {/* Service Cards Grid */}
-            {filteredServices.length > 0 && (
-              <div className="flex gap-4 md:justify-center overflow-x-auto pb-2 md:flex-wrap md:overflow-x-visible -mx-6">
+
+            {!selectedLocation ? (
+              <div className='mx-auto w-full md:max-w-[298px]'>
+                <div className='mx-auto flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-[#cdd6df] bg-white px-6 pb-8 pt-7'>
+                  <div className='flex size-12 items-center justify-center rounded-full bg-[#e6f4f9]'>
+                    <Icon name='mapFilled' className='text-ocean' size={20} />
+                  </div>
+                  <p className='text-center text-[15px] font-semibold leading-snug text-[#1a2733]'>
+                    Pick a location to get started
+                  </p>
+                  <p className='text-center text-[13px] font-normal leading-normal text-[#6b7480]'>
+                    {`Service times, info, and signups vary by campus. Choose yours above to see what's coming up.`}
+                  </p>
+                </div>
+              </div>
+            ) : filteredServices.length > 0 ? (
+              <div className='mx-auto grid w-full max-w-[680px] grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:justify-items-center md:gap-5'>
                 {filteredServices.map((service, i) => (
                   <div
-                    key={i}
-                    className={cn(
-                      "flex-shrink-0",
-                      "md:flex-shrink",
-                      "md:w-auto",
-                      i === 0 && "ml-6 md:ml-0",
-                      i === filteredServices.length - 1 && "mr-6 md:mr-0"
-                    )}
+                    key={service.id ?? i}
+                    className='flex h-full min-h-0 w-full flex-col'
                   >
                     <ServiceCard
                       service={service}
@@ -176,11 +258,10 @@ export const MinistryServiceTimes = ({
                   </div>
                 ))}
               </div>
-            )}
-            <hr className="border-neutral-200 w-full max-w-[500px] mx-auto" />
+            ) : null}
           </div>
-        )}
-      </div>
+        ) : null}
+      </DraggableMobileSheet>
     </div>
   );
 };
