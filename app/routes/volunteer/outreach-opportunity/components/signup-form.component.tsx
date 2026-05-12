@@ -5,7 +5,7 @@ import { useFetcher } from 'react-router';
 import { Button } from '~/primitives/button/button.primitive';
 import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
 import { pushFormEvent } from '~/lib/gtm';
-import { CAMPUS } from '~/routes/volunteer-form/types';
+import { RockCampuses } from '~/lib/rock-config';
 
 interface SignupFormProps {
   groupGuid: string;
@@ -124,9 +124,9 @@ const SignupForm: React.FC<SignupFormProps> = ({
             <option value='' disabled>
               Select campus
             </option>
-            {CAMPUS.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {RockCampuses.filter((c) => c.name !== 'Online').map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
               </option>
             ))}
           </select>

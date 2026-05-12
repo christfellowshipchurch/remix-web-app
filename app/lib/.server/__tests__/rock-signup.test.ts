@@ -229,10 +229,13 @@ describe('launchGroupClassSignupWorkflow', () => {
 });
 
 describe('launchCommunityServingSignupWorkflow', () => {
+  const CAMPUS_GUID = 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890';
+
   // Verifies the body shape required by the Community Serving Opportunity
   // Sign Up workflow (id 164) on the Rock side: GroupGuid via `Group`, plus
-  // Birthdate / Campus / waiver-key (note the trailing period in the key).
-  it('posts to workflowTypeId=164 with the expected body when waiver is accepted', async () => {
+  // Birthdate / Campus Guid / waiver-key (note the trailing period in the key).
+  it('posts to workflowTypeId=164 with the campus Guid (not name) when waiver is accepted', async () => {
+    mockFetchRockData.mockResolvedValueOnce({ guid: CAMPUS_GUID });
     mockPostRockData.mockResolvedValue({});
 
     await launchCommunityServingSignupWorkflow({
@@ -243,19 +246,25 @@ describe('launchCommunityServingSignupWorkflow', () => {
       waiverAccepted: true,
     });
 
+    expect(mockFetchRockData).toHaveBeenCalledOnce();
+    const [fetchCall] = mockFetchRockData.mock.calls[0] as [{ endpoint: string; queryParams: Record<string, string> }];
+    expect(fetchCall.endpoint).toBe('Campuses');
+    expect(fetchCall.queryParams.$filter).toContain('Palm Beach Gardens');
+
     expect(mockPostRockData).toHaveBeenCalledOnce();
-    const [call] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
-    expect(call.endpoint).toContain('workflowTypeId=164');
-    expect(call.body).toEqual({
+    const [postCall] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
+    expect(postCall.endpoint).toContain('workflowTypeId=164');
+    expect(postCall.body).toEqual({
       Group: 'AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE',
       PersonId: 'person-42',
       Birthdate: '1990-05-15',
-      Campus: 'Palm Beach Gardens',
+      Campus: CAMPUS_GUID,
       'IacceptthetermsoftheChristFellowshipwaiver.': 'Yes',
     });
   });
 
   it('sends an empty waiver value when waiver is not accepted', async () => {
+    mockFetchRockData.mockResolvedValueOnce({ guid: CAMPUS_GUID });
     mockPostRockData.mockResolvedValue({});
 
     await launchCommunityServingSignupWorkflow({
@@ -266,7 +275,21 @@ describe('launchCommunityServingSignupWorkflow', () => {
       waiverAccepted: false,
     });
 
-    const [call] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
-    expect(call.body['IacceptthetermsoftheChristFellowshipwaiver.']).toBe('');
+    const [postCall] = mockPostRockData.mock.calls[0] as [{ endpoint: string; body: Record<string, string> }];
+    expect(postCall.body['IacceptthetermsoftheChristFellowshipwaiver.']).toBe('');
+  });
+
+  it('throws when Rock returns no campus for the given name', async () => {
+    mockFetchRockData.mockResolvedValueOnce(null);
+
+    await expect(
+      launchCommunityServingSignupWorkflow({
+        groupGuid: 'AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE',
+        personId: 'person-42',
+        birthdate: '1990-05-15',
+        campus: 'Unknown Campus',
+        waiverAccepted: true,
+      }),
+    ).rejects.toThrow('Campus not found in Rock: "Unknown Campus"');
   });
 });

@@ -4,12 +4,14 @@ import {
   findOrCreateRockPersonForSignup,
   launchCommunityServingSignupWorkflow,
 } from '~/lib/.server/rock-signup';
-import { CAMPUS } from '~/routes/volunteer-form/types';
+import { RockCampuses } from '~/lib/rock-config';
 
 const ROCK_GUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const CAMPUSES = new Set<string>(CAMPUS);
+const CAMPUSES = new Set<string>(
+  RockCampuses.filter((c) => c.name !== 'Online').map((c) => c.name),
+);
 
 const isTruthyCheckbox = (value: string): boolean =>
   value === 'true' || value === 'on' || value === 'yes' || value === 'Yes';
