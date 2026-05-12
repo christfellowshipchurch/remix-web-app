@@ -1,11 +1,11 @@
-import * as Form from "@radix-ui/react-form";
-import { useEffect, useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
-import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher } from "react-router-dom";
-import { renderInputField } from "../connect-card/connect-form.component";
-import { LoaderReturnType } from "~/routes/set-a-reminder/loader";
-import { pushFormEvent } from "~/lib/gtm";
+import * as Form from '@radix-ui/react-form';
+import { useEffect, useState } from 'react';
+import { Button } from '~/primitives/button/button.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { useFetcher } from 'react-router-dom';
+import { renderInputField } from '../connect-card/connect-form.component';
+import { LoaderReturnType } from '~/routes/set-a-reminder/loader';
+import { pushFormEvent } from '~/lib/gtm';
 
 interface ReminderProps {
   setServiceTime: (time: string) => void;
@@ -30,14 +30,14 @@ const ReminderForm: React.FC<ReminderProps> = ({
   }, [url]);
 
   useEffect(() => {
-    if (loadFetcher.state === "idle" && loadFetcher.data) {
+    if (loadFetcher.state === 'idle' && loadFetcher.data) {
       const data = loadFetcher.data as LoaderReturnType;
       setFormData(data);
     }
   }, [loadFetcher.state, loadFetcher.data]);
 
   useEffect(() => {
-    if (submitFetcher.state === "idle" && submitFetcher.data) {
+    if (submitFetcher.state === 'idle' && submitFetcher.data) {
       setLoading(false);
       const data = submitFetcher.data as { error?: string };
       if (data.error) {
@@ -53,16 +53,16 @@ const ReminderForm: React.FC<ReminderProps> = ({
     event.preventDefault();
     setError(null);
     setLoading(true);
-    const formData = new FormData(event.currentTarget);
-    formData.append("campus", campusName || ""); //ensure campus is included in the form data
+    const submission = new FormData(event.currentTarget);
+    submission.append('campus', formData?.campusName || '');
 
     try {
-      submitFetcher.submit(formData, {
-        method: "post",
-        action: "/set-a-reminder",
+      submitFetcher.submit(submission, {
+        method: 'post',
+        action: '/set-a-reminder',
       });
     } catch {
-      setError("An error occurred. Please try again.");
+      setError('An error occurred. Please try again.');
       setLoading(false);
     }
   };
@@ -72,7 +72,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
   }
 
   const { serviceTimes, campusName, user } = formData || {};
-  const isEspanol = campusName?.includes("Español");
+  const isEspanol = campusName?.includes('Español');
   const firstName = user?.firstName || null;
   const lastName = user?.lastName || null;
   const phoneNumber = null;
@@ -80,52 +80,52 @@ const ReminderForm: React.FC<ReminderProps> = ({
 
   return (
     <>
-      <h2 className="mb-6 text-3xl text-navy font-bold">
-        {isEspanol ? "Recuérdame" : "Set A Reminder!"}
+      <h2 className='mb-6 text-3xl text-navy font-bold'>
+        {isEspanol ? 'Recuérdame' : 'Set A Reminder!'}
       </h2>
       <Form.Root
         onSubmit={handleSubmit}
-        className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"
+        className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
         {renderInputField(
-          "firstName",
-          isEspanol ? "Primer nombre" : "First Name",
-          "text",
+          'firstName',
+          isEspanol ? 'Primer nombre' : 'First Name',
+          'text',
           isEspanol
-            ? "Profavor ingrese su primer nombre"
-            : "Please enter your first name",
-          firstName || undefined
+            ? 'Profavor ingrese su primer nombre'
+            : 'Please enter your first name',
+          firstName || undefined,
         )}
         {renderInputField(
-          "lastName",
-          isEspanol ? "Apellido" : "Last Name",
-          "text",
+          'lastName',
+          isEspanol ? 'Apellido' : 'Last Name',
+          'text',
           isEspanol
-            ? "Porfavor ingrese su apellido"
-            : "Please enter your last name",
-          lastName || undefined
+            ? 'Porfavor ingrese su apellido'
+            : 'Please enter your last name',
+          lastName || undefined,
         )}
         {renderInputField(
-          "phone",
-          isEspanol ? "Númbero de teléfono" : "Phone",
-          "number",
+          'phone',
+          isEspanol ? 'Númbero de teléfono' : 'Phone',
+          'number',
           isEspanol
-            ? "Porfavor ingrese un número de teléfono válido"
-            : "Please enter a valid number",
-          phoneNumber || undefined
+            ? 'Porfavor ingrese un número de teléfono válido'
+            : 'Please enter a valid number',
+          phoneNumber || undefined,
         )}
         {renderInputField(
-          "email",
-          isEspanol ? "Correo electrónico" : "Email",
-          "text",
+          'email',
+          isEspanol ? 'Correo electrónico' : 'Email',
+          'text',
           isEspanol
-            ? "Porfavor ingrese un correo electrónico válido"
-            : "Please enter a valid email",
-          email || undefined
+            ? 'Porfavor ingrese un correo electrónico válido'
+            : 'Please enter a valid email',
+          email || undefined,
         )}
 
-        <Form.Field name="campus" className="flex flex-col">
-          <Form.Label className="font-bold text-sm mb-2">Campus</Form.Label>
+        <Form.Field name='campus' className='flex flex-col'>
+          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
           <Form.Control asChild>
             <select
               className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
@@ -133,9 +133,9 @@ const ReminderForm: React.FC<ReminderProps> = ({
               disabled
               style={{
                 backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                backgroundSize: "24px",
-                backgroundPosition: "calc(100% - 2%) center",
-                backgroundRepeat: "no-repeat",
+                backgroundSize: '24px',
+                backgroundPosition: 'calc(100% - 2%) center',
+                backgroundRepeat: 'no-repeat',
               }}
             >
               <option>{campusName}</option>
@@ -143,9 +143,9 @@ const ReminderForm: React.FC<ReminderProps> = ({
           </Form.Control>
         </Form.Field>
 
-        <Form.Field name="serviceTime" className="flex flex-col">
-          <Form.Label className="font-bold text-sm mb-2">
-            {isEspanol ? "Horarios de Servicios" : "Service Time"}
+        <Form.Field name='serviceTime' className='flex flex-col'>
+          <Form.Label className='font-bold text-sm mb-2'>
+            {isEspanol ? 'Horarios de Servicios' : 'Service Time'}
           </Form.Label>
           <Form.Control asChild>
             {serviceTimes && (
@@ -155,43 +155,80 @@ const ReminderForm: React.FC<ReminderProps> = ({
                 onChange={(e) => setServiceTime(e.target.value)}
                 style={{
                   backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: "24px",
-                  backgroundPosition: "calc(100% - 2%) center",
-                  backgroundRepeat: "no-repeat",
+                  backgroundSize: '24px',
+                  backgroundPosition: 'calc(100% - 2%) center',
+                  backgroundRepeat: 'no-repeat',
                 }}
               >
-                <option value={""}>
+                <option value={''}>
                   {isEspanol
-                    ? "Seleccione un horario de servicio"
-                    : "Select a Service Time"}
+                    ? 'Seleccione un horario de servicio'
+                    : 'Select a Service Time'}
                 </option>
                 {serviceTimes?.map(({ hour }) =>
                   hour.map((time: string, index: number) => (
                     <option key={index} value={time}>
                       {time}
                     </option>
-                  ))
+                  )),
                 )}
               </select>
             )}
           </Form.Control>
-          <Form.Message className="text-sm text-alert" match="valueMissing">
+          <Form.Message className='text-sm text-alert' match='valueMissing'>
             {isEspanol
-              ? "Porfavor seleccione un horario de servicio"
-              : "Please select a service time"}
+              ? 'Porfavor seleccione un horario de servicio'
+              : 'Please select a service time'}
           </Form.Message>
         </Form.Field>
 
-        {error && <p className="text-alert col-span-2 text-center">{error}</p>}
+        <Form.Field
+          name='beenToCF'
+          className='flex flex-col col-span-1 md:col-span-2 mt-4'
+        >
+          <Form.Label className='font-bold text-sm mb-2'>
+            {isEspanol
+              ? '¿Ha estado en Christ Fellowship antes?'
+              : 'Have you been to Christ Fellowship before?'}
+          </Form.Label>
+          <div className='flex flex-wrap gap-x-6 gap-y-2' role='radiogroup'>
+            <label className='inline-flex items-center gap-2 text-sm cursor-pointer'>
+              <input
+                type='radio'
+                name='beenToCF'
+                value='true'
+                required
+                className='h-4 w-4 accent-ocean shrink-0'
+              />
+              {isEspanol ? 'Sí' : 'Yes'}
+            </label>
+            <label className='inline-flex items-center gap-2 text-sm cursor-pointer'>
+              <input
+                type='radio'
+                name='beenToCF'
+                value='false'
+                className='h-4 w-4 accent-ocean shrink-0'
+              />
+              No, it's my first time
+            </label>
+          </div>
+          <Form.Message className='text-sm text-alert' match='valueMissing'>
+            {isEspanol
+              ? 'Porfavor indique si ha estado en Christ Fellowship antes.'
+              : 'Please let us know if you have been to Christ Fellowship before.'}
+          </Form.Message>
+        </Form.Field>
 
-        <Form.Submit className="mt-6 mx-auto col-span-1 md:col-span-2" asChild>
+        {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
+
+        <Form.Submit className='mt-6 mx-auto col-span-1 md:col-span-2' asChild>
           <Button
-            className="w-40 h-12"
-            size="md"
-            type="submit"
+            className='w-40 h-12'
+            size='md'
+            type='submit'
             disabled={loading}
           >
-            {loading ? "Loading..." : isEspanol ? "Enviar" : "Submit"}
+            {loading ? 'Loading...' : isEspanol ? 'Enviar' : 'Submit'}
           </Button>
         </Form.Submit>
       </Form.Root>
