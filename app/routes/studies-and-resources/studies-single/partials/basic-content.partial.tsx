@@ -11,7 +11,7 @@ import type { IconName } from '~/primitives/button/types';
 export function iconForStudyFormat(format: string): IconName {
   switch (format.toLowerCase().trim()) {
     case 'book study':
-      return 'bible';
+      return 'book';
     case 'video':
       return 'video';
     case 'discussion guide':

@@ -78,8 +78,15 @@ export function StudyHitComponent({
               />
               <StudiesTagItem label={hit.topic} />
               <StudiesTagItem icon='alarm' label={hit.duration} />
-              <StudiesTagItem icon='user' label={hit.audience} />
-              <StudiesTagItem icon='church' label={hit.source} />
+              <StudiesTagItem icon='group' label={hit.audience} />
+              <StudiesTagItem
+                icon={
+                  hit.source.toLowerCase().includes('christ fellowship')
+                    ? 'cfLogo'
+                    : 'church'
+                }
+                label={hit.source}
+              />
             </div>
           </div>
         </div>
