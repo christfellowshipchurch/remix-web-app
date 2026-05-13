@@ -17,7 +17,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const _campus = formData.campus?.toString();
 
     if (!firstName || !lastName || !phoneNumber || !email || !groupId) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 });
+      return Response.json(
+        { error: 'Missing required fields' },
+        { status: 400 },
+      );
     }
 
     const personId = await findOrCreateRockPersonForSignup({
@@ -32,7 +35,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return Response.json({ success: true });
   } catch (error) {
     return Response.json(
-      { error: error instanceof Error ? error.message : 'Network error please try again' },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Network error please try again',
+      },
       { status: 400 },
     );
   }

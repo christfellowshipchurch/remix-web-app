@@ -1,4 +1,4 @@
-import { RockContentChannelItem } from "~/lib/types/rock-types";
+import { RockContentChannelItem } from '~/lib/types/rock-types';
 
 export interface RockCampusItem extends RockContentChannelItem {
   location: {

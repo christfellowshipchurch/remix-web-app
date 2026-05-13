@@ -1,24 +1,24 @@
-import { useLoaderData, useSearchParams, useLocation } from "react-router-dom";
-import { EventReturnType } from "../loader";
-import { SectionTitle } from "~/components";
-import { ResourceCard } from "~/primitives/cards/resource-card";
-import { Configure, Hits, InstantSearch } from "react-instantsearch";
-import { useEffect, useMemo, useRef } from "react";
-import { ContentItemHit } from "~/routes/search/types";
-import { EVENTS_INDEX } from "../components/events-tags-refinement.component";
-import { CustomPagination } from "~/components/custom-pagination";
-import { createSearchClient } from "~/lib/create-search-client";
-import { EventsFiltersViewport } from "../components/events-filters-viewport.component";
+import { useLoaderData, useSearchParams, useLocation } from 'react-router-dom';
+import { EventReturnType } from '../loader';
+import { SectionTitle } from '~/components';
+import { ResourceCard } from '~/primitives/cards/resource-card';
+import { Configure, Hits, InstantSearch } from 'react-instantsearch';
+import { useEffect, useMemo, useRef } from 'react';
+import { ContentItemHit } from '~/routes/search/types';
+import { EVENTS_INDEX } from '../components/events-tags-refinement.component';
+import { CustomPagination } from '~/components/custom-pagination';
+import { createSearchClient } from '~/lib/create-search-client';
+import { EventsFiltersViewport } from '../components/events-filters-viewport.component';
 import {
   parseEventsFinderUrlState,
   eventsFinderUrlStateToParams,
   eventsFinderEmptyState,
-} from "../../events-url-state";
+} from '../../events-url-state';
 import {
   createEventsInstantSearchRouter,
   createEventsStateMapping,
-} from "../../events-instantsearch-router";
-import { useScrollToSearchResultsOnLoad } from "~/hooks/use-scroll-to-search-results-on-load";
+} from '../../events-instantsearch-router';
+import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
 
 export const AllEvents = () => {
   const loaderData = useLoaderData<EventReturnType>();
@@ -85,12 +85,12 @@ export const AllEvents = () => {
 
   const fromEventsUrl =
     location.pathname +
-    (searchParams.toString() ? `?${searchParams.toString()}` : "");
+    (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
   const eventsMobilePinEndRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="flex w-full min-w-0 max-w-full flex-col pagination-scroll-to pt-8 pb-24 md:pt-16 md:pb-28">
+    <div className='flex w-full min-w-0 max-w-full flex-col pagination-scroll-to pt-8 pb-24 md:pt-16 md:pb-28'>
       <InstantSearch
         indexName={EVENTS_INDEX}
         searchClient={searchClient}
@@ -101,19 +101,19 @@ export const AllEvents = () => {
       >
         <Configure filters='contentType:"Event"' hitsPerPage={9} />
 
-        <div className="content-padding">
-          <div className="mx-auto w-full max-w-screen-content">
+        <div className='content-padding'>
+          <div className='mx-auto w-full max-w-screen-content'>
             {/* Desktop */}
-            <div className="hidden md:block">
+            <div className='hidden md:block'>
               <SectionTitle
-                title="Discover Events For You"
-                sectionTitle="all events."
+                title='Discover Events For You'
+                sectionTitle='all events.'
               />
             </div>
 
             {/* Mobile */}
-            <div className="md:hidden">
-              <SectionTitle title="Search All Events" />
+            <div className='md:hidden'>
+              <SectionTitle title='Search All Events' />
             </div>
           </div>
         </div>
@@ -123,8 +123,8 @@ export const AllEvents = () => {
           eventsMobilePinEndRef={eventsMobilePinEndRef}
         />
 
-        <div className="content-padding pt-16 md:pt-0">
-          <div className="mx-auto w-full max-w-screen-content">
+        <div className='content-padding pt-16 md:pt-0'>
+          <div className='mx-auto w-full max-w-screen-content'>
             <Hits
               hitComponent={({ hit }: { hit: ContentItemHit }) => {
                 return <EventHit hit={hit} fromEventsUrl={fromEventsUrl} />;
@@ -137,8 +137,8 @@ export const AllEvents = () => {
                 )
               }
               classNames={{
-                list: "grid w-full grid-cols-1 justify-items-center gap-10 md:grid-cols-2 lg:grid-cols-3",
-                item: "w-full",
+                list: 'grid w-full grid-cols-1 justify-items-center gap-10 md:grid-cols-2 lg:grid-cols-3',
+                item: 'w-full',
               }}
             />
 
@@ -146,7 +146,7 @@ export const AllEvents = () => {
 
             <div
               ref={eventsMobilePinEndRef}
-              className="pointer-events-none h-0 w-full shrink-0"
+              className='pointer-events-none h-0 w-full shrink-0'
               aria-hidden
             />
           </div>
@@ -164,11 +164,11 @@ const EventHit = ({
   fromEventsUrl: string;
 }) => {
   const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
-    "en-US",
+    'en-US',
     {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     },
   );
 
@@ -176,8 +176,8 @@ const EventHit = ({
     <ResourceCard
       resource={{
         id: hit.objectID,
-        contentChannelId: "78", // EVENT type from builder-utils.ts
-        contentType: "EVENTS",
+        contentChannelId: '78', // EVENT type from builder-utils.ts
+        contentType: 'EVENTS',
         name: hit.title,
         summary: hit.summary,
         image: hit.coverImage.sources[0].uri,
@@ -185,10 +185,10 @@ const EventHit = ({
         startDate: formattedDate,
         location:
           hit.eventLocations && hit.eventLocations.length > 1
-            ? "Multiple Locations"
+            ? 'Multiple Locations'
             : hit.eventLocations?.[0] ||
               hit.locations?.[0]?.name ||
-              "Christ Fellowship Church",
+              'Christ Fellowship Church',
       }}
       linkState={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
     />

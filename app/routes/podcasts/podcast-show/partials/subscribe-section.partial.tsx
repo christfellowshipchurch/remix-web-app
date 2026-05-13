@@ -1,8 +1,8 @@
-import { icons } from "~/lib/icons";
-import Icon from "~/primitives/icon";
+import { icons } from '~/lib/icons';
+import Icon from '~/primitives/icon';
 
 export const SubscribeSection = ({
-  title = "Subscribe and follow",
+  title = 'Subscribe and follow',
   apple,
   spotify,
   amazon,
@@ -16,55 +16,55 @@ export const SubscribeSection = ({
 }) => {
   const links = [
     {
-      label: "Apple Music",
-      icon: "appleLogo",
+      label: 'Apple Music',
+      icon: 'appleLogo',
       href: apple,
     },
     {
-      label: "YouTube",
-      icon: "youtube",
+      label: 'YouTube',
+      icon: 'youtube',
       href: youtube,
     },
     {
-      label: "Spotify",
-      icon: "spotify",
+      label: 'Spotify',
+      icon: 'spotify',
       href: spotify,
     },
     {
-      label: "Amazon Music",
-      icon: "amazonMusic",
+      label: 'Amazon Music',
+      icon: 'amazonMusic',
       href: amazon,
     },
   ];
 
   return (
-    <div className="w-full bg-linear-to-br from-[#1C3647] to-navy content-padding">
-      <div className="max-w-screen-content mx-auto py-16">
-        <div className="flex flex-col items-center gap-8 text-white">
-          <h2 className="text-[24px] md:text-[28px] font-extrabold leading-none">
+    <div className='w-full bg-linear-to-br from-[#1C3647] to-navy content-padding'>
+      <div className='max-w-screen-content mx-auto py-16'>
+        <div className='flex flex-col items-center gap-8 text-white'>
+          <h2 className='text-[24px] md:text-[28px] font-extrabold leading-none'>
             {title}
           </h2>
-          <div className="flex flex-wrap sm:flex-nowrap justify-center items-center gap-4 md:gap-12">
+          <div className='flex flex-wrap sm:flex-nowrap justify-center items-center gap-4 md:gap-12'>
             {links
-              .filter((link) => link.href && link.href !== "")
+              .filter((link) => link.href && link.href !== '')
               .map((link, index) => (
                 <div
-                  className="flex flex-col items-center justify-center gap-2 basis-1/3 md:basis-auto bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer"
+                  className='flex flex-col items-center justify-center gap-2 basis-1/3 md:basis-auto bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer'
                   key={index}
                 >
                   <a
                     href={link.href}
-                    target="_blank"
+                    target='_blank'
                     aria-label={`${link.label} Link`}
                   >
                     <Icon
                       name={link.icon as keyof typeof icons}
-                      size={link.icon === "amazonMusic" ? 62 : 52}
+                      size={link.icon === 'amazonMusic' ? 62 : 52}
                     />
                   </a>
                   <p
                     className={`text-[10px] md:text-xs text-center font-extrabold ${
-                      link.icon === "amazonMusic" ? "-mt-3" : ""
+                      link.icon === 'amazonMusic' ? '-mt-3' : ''
                     }`}
                   >
                     {link.label}

@@ -1,0 +1,15 @@
+# Generated / build output
+node_modules/
+build/
+dist/
+.cache/
+.react-router/
+coverage/
+
+# Lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Static public assets
+public/

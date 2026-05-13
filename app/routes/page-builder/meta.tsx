@@ -1,12 +1,12 @@
-import { MetaFunction } from "react-router";
-import { PageBuilderLoader } from "./types";
+import { MetaFunction } from 'react-router';
+import { PageBuilderLoader } from './types';
 
 export const meta: MetaFunction<PageBuilderLoader> = ({ data }) => {
   if (!data) {
     return [
-      { title: "Page Not Found" },
+      { title: 'Page Not Found' },
       {
-        name: "description",
+        name: 'description',
         content: "The page you're looking for could not be found.",
       },
     ];
@@ -17,57 +17,57 @@ export const meta: MetaFunction<PageBuilderLoader> = ({ data }) => {
   // Create a description from content, truncating if too long
   const description = content
     ? content
-        .replace(/<[^>]*>/g, "")
+        .replace(/<[^>]*>/g, '')
         .substring(0, 160)
-        .trim() + (content.length > 160 ? "..." : "")
+        .trim() + (content.length > 160 ? '...' : '')
     : `Explore ${title} at Christ Fellowship Church`;
 
   return [
     { title: `${title} | Christ Fellowship Church` },
     {
-      name: "description",
+      name: 'description',
       content: description,
     },
     {
-      property: "og:title",
+      property: 'og:title',
       content: title,
     },
     {
-      property: "og:description",
+      property: 'og:description',
       content: description,
     },
     {
-      property: "og:type",
-      content: "website",
+      property: 'og:type',
+      content: 'website',
     },
     ...(heroImage
       ? [
           {
-            property: "og:image",
+            property: 'og:image',
             content: heroImage,
           },
           {
-            property: "og:image:alt",
+            property: 'og:image:alt',
             content: `${title} - Christ Fellowship Church`,
           },
         ]
       : []),
     {
-      name: "twitter:card",
-      content: "summary_large_image",
+      name: 'twitter:card',
+      content: 'summary_large_image',
     },
     {
-      name: "twitter:title",
+      name: 'twitter:title',
       content: title,
     },
     {
-      name: "twitter:description",
+      name: 'twitter:description',
       content: description,
     },
     ...(heroImage
       ? [
           {
-            name: "twitter:image",
+            name: 'twitter:image',
             content: heroImage,
           },
         ]

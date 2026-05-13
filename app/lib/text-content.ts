@@ -5,7 +5,7 @@ const COMMON_INVISIBLE_UNICODE = /[\uFEFF\u200B-\u200D\u2060]/g;
  * Removes common invisible Unicode characters, then trims whitespace.
  */
 export function trimRemovingInvisibleUnicode(value: string): string {
-  return value.replace(COMMON_INVISIBLE_UNICODE, "").trim();
+  return value.replace(COMMON_INVISIBLE_UNICODE, '').trim();
 }
 
 /**
@@ -18,13 +18,13 @@ export function trimRemovingInvisibleUnicode(value: string): string {
  */
 export function collapseHtmlToVisibleText(html: string): string {
   return html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<br\s*\/?>/gi, " ")
-    .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th)\s*>/gi, " ")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&#(?:160|x0*A0);/gi, " ")
-    .replace(/\s+/g, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th)\s*>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#(?:160|x0*A0);/gi, ' ')
+    .replace(/\s+/g, '')
     .trim();
 }

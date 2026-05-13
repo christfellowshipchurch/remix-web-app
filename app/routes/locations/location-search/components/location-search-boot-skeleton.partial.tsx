@@ -1,5 +1,5 @@
-import { LocationsLoader } from "./locations-search-skeleton.component";
-import { Search } from "../partials/locations-search-hero.partial";
+import { LocationsLoader } from './locations-search-skeleton.component';
+import { Search } from '../partials/locations-search-hero.partial';
 
 const noopSearch = () => {};
 const noopSetCoordinates = () => {};
@@ -17,8 +17,8 @@ export function LocationSearchBootSkeleton() {
         instantSearchReady={false}
       />
       <div
-        className="flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2"
-        id="campuses"
+        className='flex w-full flex-col items-center justify-center py-12 md:px-5 lg:px-2'
+        id='campuses'
       >
         <LocationsLoader />
       </div>

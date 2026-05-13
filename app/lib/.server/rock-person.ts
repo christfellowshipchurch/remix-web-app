@@ -1,20 +1,20 @@
-import { createImageUrlFromGuid } from "~/lib/utils";
-import { parseISO, isValid, getMonth, getDate, getYear } from "date-fns";
+import { createImageUrlFromGuid } from '~/lib/utils';
+import { parseISO, isValid, getMonth, getDate, getYear } from 'date-fns';
 import {
   fetchRockData,
   patchRockData,
   postRockData,
   TTL,
-} from "./fetch-rock-data";
+} from './fetch-rock-data';
 import {
   createPhoneNumberInRock,
   parsePhoneNumberUtil,
-} from "./authentication/sms-authentication";
+} from './authentication/sms-authentication';
 
 export enum Gender {
-  Female = "Female",
-  Male = "Male",
-  Unknown = "Unknown",
+  Female = 'Female',
+  Male = 'Male',
+  Unknown = 'Unknown',
 }
 
 const RockGenderMap: { [key in Gender]: number } = {
@@ -35,7 +35,7 @@ interface PersonProfile {
 export const createPerson = async (profile: PersonProfile) => {
   const inputProfileFields = await mapInputFieldsToRock(profile);
   return await postRockData({
-    endpoint: "People",
+    endpoint: 'People',
     body: {
       Gender: 0,
       ...inputProfileFields,
@@ -52,7 +52,7 @@ export const updatePerson = async (
   const emailInRock = await fetchRockData({
     endpoint: `People/${id}`,
     queryParams: {
-      $select: "Email",
+      $select: 'Email',
     },
     ttl: TTL.NONE, // no cache
   });
@@ -71,9 +71,9 @@ export const updatePerson = async (
   );
 
   const existingPhoneNumbers = await fetchRockData({
-    endpoint: "PhoneNumbers",
+    endpoint: 'PhoneNumbers',
     queryParams: {
-      $select: "PersonId",
+      $select: 'PersonId',
       $filter: `Number eq '${significantNumber}'`,
     },
     ttl: TTL.NONE, // no cache
@@ -81,7 +81,7 @@ export const updatePerson = async (
 
   if (!existingPhoneNumbers || existingPhoneNumbers.length === 0) {
     if (!countryCode) {
-      throw new Error("Country code is required for creating phone number");
+      throw new Error('Country code is required for creating phone number');
     }
     await createPhoneNumberInRock({
       personId: id,
@@ -110,7 +110,7 @@ export const getPersonByAliasGuid = async (
 ): Promise<PersonData | null> => {
   const getPersonId = async () => {
     const person = await fetchRockData({
-      endpoint: "PersonAlias",
+      endpoint: 'PersonAlias',
       queryParams: {
         $filter: `Guid eq guid'${guid}'`,
       },
@@ -158,10 +158,10 @@ export const getFromId = async (
   loadAttributes?: boolean,
 ): Promise<PersonData> => {
   const person = await fetchRockData({
-    endpoint: "People",
+    endpoint: 'People',
     queryParams: {
-      $expand: "Photo",
-      $filter: `Id eq ${id}${loadAttributes ? "&loadAttributes=simple" : ""}`,
+      $expand: 'Photo',
+      $filter: `Id eq ${id}${loadAttributes ? '&loadAttributes=simple' : ''}`,
     },
     ttl: TTL.NONE, //no cache
   });
@@ -196,7 +196,7 @@ export const mapInputFieldsToRock = (fields: PersonProfile) => {
     const birthDate = parseISO(profileFields.BirthDate);
 
     if (!isValid(birthDate)) {
-      throw new Error("BirthDate must be a valid date");
+      throw new Error('BirthDate must be a valid date');
     }
 
     rockUpdateFields = {

@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { useInstantSearch, useRefinementList } from "react-instantsearch";
-import startCase from "lodash/startCase";
-import Icon from "~/primitives/icon";
+import { useState, useEffect } from 'react';
+import { useInstantSearch, useRefinementList } from 'react-instantsearch';
+import startCase from 'lodash/startCase';
+import Icon from '~/primitives/icon';
 
 /** Main events index. No replica; "Recent" order is done via client-side sort. */
-export const EVENTS_INDEX = "dev_contentItems";
+export const EVENTS_INDEX = 'dev_contentItems';
 
 export const EventsTagsRefinementList = () => {
-  const { items } = useRefinementList({ attribute: "eventCategories" });
+  const { items } = useRefinementList({ attribute: 'eventCategories' });
   const { setIndexUiState, indexUiState } = useInstantSearch();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -33,14 +33,14 @@ export const EventsTagsRefinementList = () => {
   };
 
   return (
-    <div className="-ml-5 flex w-screen flex-nowrap gap-6 overflow-x-auto scrollbar-hide px-1 pb-4 md:ml-0 md:w-full">
+    <div className='-ml-5 flex w-screen flex-nowrap gap-6 overflow-x-auto scrollbar-hide px-1 pb-4 md:ml-0 md:w-full'>
       <button
-        type="button"
+        type='button'
         onClick={() => handleCategoryClick(null)}
         className={`ml-4 flex shrink-0 cursor-pointer items-center justify-center rounded-full px-6 py-3 text-sm whitespace-nowrap transition-colors duration-300 md:ml-0 ${
           selectedCategory === null
-            ? "bg-ocean/10 text-ocean hover:bg-gray"
-            : "bg-gray font-semibold text-neutral-darker hover:bg-ocean/10 hover:text-ocean"
+            ? 'bg-ocean/10 text-ocean hover:bg-gray'
+            : 'bg-gray font-semibold text-neutral-darker hover:bg-ocean/10 hover:text-ocean'
         }`}
       >
         Upcoming
@@ -49,10 +49,10 @@ export const EventsTagsRefinementList = () => {
       {items.map((item) => {
         const isSelected = selectedCategory === item.value;
         const pillBase =
-          "inline-flex shrink-0 items-center rounded-full text-sm whitespace-nowrap transition-colors duration-300";
-        const selectedStyles = "bg-ocean/10 text-ocean hover:bg-gray";
+          'inline-flex shrink-0 items-center rounded-full text-sm whitespace-nowrap transition-colors duration-300';
+        const selectedStyles = 'bg-ocean/10 text-ocean hover:bg-gray';
         const idleStyles =
-          "bg-gray font-semibold text-neutral-darker hover:bg-ocean/10 hover:text-ocean";
+          'bg-gray font-semibold text-neutral-darker hover:bg-ocean/10 hover:text-ocean';
 
         if (isSelected) {
           const label = startCase(item.label);
@@ -62,19 +62,19 @@ export const EventsTagsRefinementList = () => {
               className={`${pillBase} cursor-default ${selectedStyles}`}
             >
               <button
-                type="button"
+                type='button'
                 onClick={() => handleCategoryClick(item.value)}
-                className="cursor-pointer py-3 pl-6 pr-2 text-sm"
+                className='cursor-pointer py-3 pl-6 pr-2 text-sm'
               >
                 {label}
               </button>
               <button
-                type="button"
+                type='button'
                 onClick={() => handleCategoryClick(null)}
                 aria-label={`Clear ${label} filter`}
-                className="flex cursor-pointer items-center py-3 pr-5 pl-1"
+                className='flex cursor-pointer items-center py-3 pr-5 pl-1'
               >
-                <Icon name="x" size={18} className="shrink-0" />
+                <Icon name='x' size={18} className='shrink-0' />
               </button>
             </div>
           );
@@ -83,7 +83,7 @@ export const EventsTagsRefinementList = () => {
         return (
           <button
             key={item.value}
-            type="button"
+            type='button'
             onClick={() => handleCategoryClick(item.value)}
             className={`${pillBase} cursor-pointer px-6 py-3 ${idleStyles}`}
           >

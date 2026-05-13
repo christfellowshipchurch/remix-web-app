@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 @config "../../tailwind.config.ts";
 
 /* ------------ Custom Variant for shorter viewport ------------ */
@@ -288,8 +288,8 @@
 
   /* Thin */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/thin.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/thin.woff2');
 
     font-style: normal;
     font-weight: 100;
@@ -297,8 +297,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/thin-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/thin-it.woff2');
 
     font-style: italic;
     font-weight: 100;
@@ -307,8 +307,8 @@
 
   /* Light */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/light.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/light.woff2');
 
     font-style: normal;
     font-weight: 300;
@@ -317,8 +317,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/light-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/light-it.woff2');
 
     font-style: italic;
     font-weight: 300;
@@ -328,8 +328,8 @@
 
   /* Regular */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/regular.woff2") format("woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-stretch: normal;
@@ -338,8 +338,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/medium-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/medium-it.woff2');
 
     font-style: italic;
     font-weight: 400;
@@ -349,8 +349,8 @@
 
   /* Medium */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/medium.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/medium.woff2');
 
     font-style: normal;
     font-weight: 500;
@@ -359,8 +359,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/medium-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/medium-it.woff2');
 
     font-style: italic;
     font-weight: 500;
@@ -370,8 +370,8 @@
 
   /* Semibold */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/semibold.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/semibold.woff2');
 
     font-style: normal;
     font-weight: 600;
@@ -380,8 +380,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/semibold-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/semibold-it.woff2');
 
     font-style: italic;
     font-weight: 600;
@@ -391,8 +391,8 @@
 
   /* Bold */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/bold.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/bold.woff2');
 
     font-style: normal;
     font-weight: 700;
@@ -401,8 +401,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/bold-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/bold-it.woff2');
 
     font-style: italic;
     font-weight: 700;
@@ -412,8 +412,8 @@
 
   /* Extrabold */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/extrabold.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/extrabold.woff2');
 
     font-style: normal;
     font-weight: 800;
@@ -422,8 +422,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/extrabold-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/extrabold-it.woff2');
 
     font-style: italic;
     font-weight: 800;
@@ -433,8 +433,8 @@
 
   /* Black */
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/black.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/black.woff2');
 
     font-style: normal;
     font-weight: 900;
@@ -443,8 +443,8 @@
   }
 
   @font-face {
-    font-family: "Proxima-Nova";
-    src: url("/fonts/proxima-nova/black-it.woff2");
+    font-family: 'Proxima-Nova';
+    src: url('/fonts/proxima-nova/black-it.woff2');
 
     font-style: italic;
     font-weight: 900;
@@ -456,8 +456,8 @@
 
   /* Regular */
   @font-face {
-    font-family: "Retroica";
-    src: url("/fonts/retroica/Retroica.ttf");
+    font-family: 'Retroica';
+    src: url('/fonts/retroica/Retroica.ttf');
 
     font-style: normal;
     font-weight: 300;
@@ -468,8 +468,8 @@
 
   /* Thin */
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/thin.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/thin.otf');
 
     font-style: normal;
     font-weight: 100;
@@ -477,8 +477,8 @@
   }
 
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/thin-it.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/thin-it.otf');
 
     font-style: italic;
     font-weight: 100;
@@ -487,8 +487,8 @@
 
   /* Light */
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/light.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/light.otf');
 
     font-style: normal;
     font-weight: 200;
@@ -496,8 +496,8 @@
   }
 
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/light-it.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/light-it.otf');
 
     font-style: italic;
     font-weight: 200;
@@ -506,8 +506,8 @@
 
   /* Regular */
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/regular.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/regular.otf');
 
     font-style: normal;
     font-weight: 300;
@@ -515,8 +515,8 @@
   }
 
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/regular-it.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/regular-it.otf');
 
     font-style: italic;
     font-weight: 300;
@@ -525,8 +525,8 @@
 
   /* Bold */
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/bold.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/bold.otf');
 
     font-style: normal;
     font-weight: 600;
@@ -534,8 +534,8 @@
   }
 
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/bold-it.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/bold-it.otf');
 
     font-style: italic;
     font-weight: 600;
@@ -544,8 +544,8 @@
 
   /* Black */
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/black.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/black.otf');
 
     font-style: normal;
     font-weight: 800;
@@ -553,8 +553,8 @@
   }
 
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/black-it.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/black-it.otf');
 
     font-style: italic;
     font-weight: 800;
@@ -563,8 +563,8 @@
 
   /* Heavy */
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/heavy.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/heavy.otf');
 
     font-style: normal;
     font-weight: 900;
@@ -572,8 +572,8 @@
   }
 
   @font-face {
-    font-family: "Vision";
-    src: url("/fonts/vision/heavy-it.otf");
+    font-family: 'Vision';
+    src: url('/fonts/vision/heavy-it.otf');
 
     font-style: italic;
     font-weight: 900;
@@ -583,8 +583,8 @@
   /* ------------ Merriweather ------------ */
   /* Light */
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/light.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/light.woff2');
 
     font-style: normal;
     font-weight: 300;
@@ -592,8 +592,8 @@
   }
 
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/light-it.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/light-it.woff2');
 
     font-style: italic;
     font-weight: 300;
@@ -602,8 +602,8 @@
 
   /* Regular */
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/regular.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/regular.woff2');
 
     font-style: normal;
     font-weight: 400;
@@ -611,8 +611,8 @@
   }
 
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/regular-it.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/regular-it.woff2');
 
     font-style: italic;
     font-weight: 400;
@@ -621,8 +621,8 @@
 
   /* Bold */
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/bold.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/bold.woff2');
 
     font-style: normal;
     font-weight: 700;
@@ -630,8 +630,8 @@
   }
 
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/bold-it.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/bold-it.woff2');
 
     font-style: italic;
     font-weight: 700;
@@ -640,8 +640,8 @@
 
   /* Semibold - mapped to bold since no separate semibold file */
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/bold.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/bold.woff2');
 
     font-style: normal;
     font-weight: 600;
@@ -649,8 +649,8 @@
   }
 
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/bold-it.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/bold-it.woff2');
 
     font-style: italic;
     font-weight: 600;
@@ -659,8 +659,8 @@
 
   /* Ultrabold */
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/ultrabold.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/ultrabold.woff2');
 
     font-style: normal;
     font-weight: 800;
@@ -668,8 +668,8 @@
   }
 
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/ultrabold-it.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/ultrabold-it.woff2');
 
     font-style: italic;
     font-weight: 800;
@@ -678,8 +678,8 @@
 
   /* Extrabold - mapped to ultrabold since no separate extrabold file */
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/ultrabold.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/ultrabold.woff2');
 
     font-style: normal;
     font-weight: 900;
@@ -687,8 +687,8 @@
   }
 
   @font-face {
-    font-family: "Merriweather";
-    src: url("/fonts/merriweather/ultrabold-it.woff2");
+    font-family: 'Merriweather';
+    src: url('/fonts/merriweather/ultrabold-it.woff2');
 
     font-style: italic;
     font-weight: 900;
@@ -750,7 +750,7 @@
 }
 
 /* ------------ Search Input Type - Cancel Button ------------ */
-input[type="search"]::-webkit-search-cancel-button {
+input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none;
   height: 18px;
   width: 18px;
@@ -773,7 +773,7 @@ input[type="search"]::-webkit-search-cancel-button {
   }
 }
 
-input[type="search"]:focus::-webkit-search-cancel-button {
+input[type='search']:focus::-webkit-search-cancel-button {
   opacity: 0.4;
   pointer-events: all;
 }

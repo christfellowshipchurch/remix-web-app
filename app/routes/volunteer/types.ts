@@ -1,7 +1,7 @@
-import type { Coordinates } from "./country-coordinates";
+import type { Coordinates } from './country-coordinates';
 
 /** Algolia index id (configured in Algolia dashboard). */
-export const VOLUNTEER_ALGOLIA_INDEX = "dev_Missions";
+export const VOLUNTEER_ALGOLIA_INDEX = 'dev_Missions';
 
 /** `coverImage` shape from Algolia volunteer index records. */
 export interface VolunteerCoverImage {

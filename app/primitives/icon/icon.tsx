@@ -1,10 +1,10 @@
-import { icons } from "~/lib/icons";
+import { icons } from '~/lib/icons';
 
 interface IconProps {
   className?: string;
   clipRule?: string;
   color?: string;
-  fillRule?: "evenodd" | "nonzero" | "inherit";
+  fillRule?: 'evenodd' | 'nonzero' | 'inherit';
   height?: number;
   id?: string;
   name: keyof typeof icons;
@@ -15,15 +15,15 @@ interface IconProps {
 }
 
 export const Icon = ({
-  className = "",
-  clipRule = "evenodd",
-  fillRule = "evenodd",
+  className = '',
+  clipRule = 'evenodd',
+  fillRule = 'evenodd',
   color,
   height,
   id,
   name,
   size = 24,
-  stroke = "none",
+  stroke = 'none',
   width,
   style,
 }: IconProps) => {
@@ -32,8 +32,8 @@ export const Icon = ({
   if (Array.isArray(path)) {
     return (
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
+        xmlns='http://www.w3.org/2000/svg'
+        fill='none'
         fillRule={fillRule}
         clipRule={clipRule}
         viewBox={`0 0 24 24`}
@@ -45,39 +45,39 @@ export const Icon = ({
         id={id || `icon-${name}`}
       >
         {path.map((entry, i) => {
-          if (typeof entry !== "object" || entry == null || !("d" in entry)) {
+          if (typeof entry !== 'object' || entry == null || !('d' in entry)) {
             return null;
           }
           const strokePath =
-            "stroke" in entry &&
+            'stroke' in entry &&
             entry.stroke != null &&
             String(entry.stroke).length > 0;
           const fill = strokePath
-            ? ("fill" in entry && entry.fill !== undefined
-                ? entry.fill
-                : "none")
+            ? 'fill' in entry && entry.fill !== undefined
+              ? entry.fill
+              : 'none'
             : color ||
-              ("fill" in entry && entry.fill !== undefined
+              ('fill' in entry && entry.fill !== undefined
                 ? entry.fill
-                : "currentColor");
+                : 'currentColor');
           return (
             <path
               d={entry.d}
               key={i}
               fill={fill}
-              fillOpacity={"fillOpacity" in entry ? entry.fillOpacity : 1}
+              fillOpacity={'fillOpacity' in entry ? entry.fillOpacity : 1}
               stroke={strokePath ? color || entry.stroke : undefined}
               strokeWidth={
-                strokePath && "strokeWidth" in entry
+                strokePath && 'strokeWidth' in entry
                   ? entry.strokeWidth
                   : undefined
               }
               strokeLinecap={
-                strokePath && "strokeLinecap" in entry
+                strokePath && 'strokeLinecap' in entry
                   ? (entry.strokeLinecap as
-                      | "round"
-                      | "butt"
-                      | "square"
+                      | 'round'
+                      | 'butt'
+                      | 'square'
                       | undefined)
                   : undefined
               }
@@ -90,8 +90,8 @@ export const Icon = ({
 
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
       fillRule={fillRule}
       clipRule={clipRule}
       viewBox={`0 0 24 24`}
@@ -102,7 +102,7 @@ export const Icon = ({
       style={style}
       id={id}
     >
-      <path d={path} fill={color || "currentColor"} />
+      <path d={path} fill={color || 'currentColor'} />
     </svg>
   );
 };

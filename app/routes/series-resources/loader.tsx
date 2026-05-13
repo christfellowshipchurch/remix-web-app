@@ -1,17 +1,17 @@
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { LoaderFunctionArgs } from "react-router-dom";
-import { createImageUrlFromGuid, ensureArray } from "~/lib/utils";
-import { mapRockDataToMessage } from "../messages/message-single/loader";
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { createImageUrlFromGuid, ensureArray } from '~/lib/utils';
+import { mapRockDataToMessage } from '../messages/message-single/loader';
 import {
   getContentType,
   getPathname,
-} from "../page-builder/components/builder-utils";
-import type { SeriesResource, SeriesEvent } from "./types";
+} from '../page-builder/components/builder-utils';
+import type { SeriesResource, SeriesEvent } from './types';
 
 const getStringValue = (
   val: string | number | boolean | undefined | null,
 ): string => {
-  if (val == null) return "";
+  if (val == null) return '';
   return String(val);
 };
 
@@ -21,7 +21,7 @@ const getAttrValue = (
 ): string => {
   const raw = attrs[key];
   const val =
-    raw != null && typeof raw === "object" && "value" in raw
+    raw != null && typeof raw === 'object' && 'value' in raw
       ? (raw as { value?: string | number | boolean }).value
       : (raw as string | number | boolean | undefined);
   return getStringValue(val);
@@ -29,10 +29,10 @@ const getAttrValue = (
 
 const getSeries = async (guid: string) => {
   const fetchSeries = await fetchRockData({
-    endpoint: "DefinedValues",
+    endpoint: 'DefinedValues',
     queryParams: {
       $filter: `Guid eq guid'${guid}'`,
-      loadAttributes: "simple",
+      loadAttributes: 'simple',
     },
   });
 
@@ -59,13 +59,13 @@ const getSeriesResources = async (
   seriesGuid: string,
 ): Promise<SeriesResource[]> => {
   const seriesResources = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
+    endpoint: 'ContentChannelItems/GetByAttributeValue',
     queryParams: {
-      attributeKey: "MessageSeries",
+      attributeKey: 'MessageSeries',
       $filter:
         "ContentChannelId ne 63 and ContentChannelId ne 186 and Status eq 'Approved'",
       value: `${seriesGuid}`,
-      loadAttributes: "simple",
+      loadAttributes: 'simple',
     },
   });
 
@@ -89,21 +89,21 @@ const getSeriesResources = async (
     if (!contentType) continue;
 
     const attrs = resource.attributeValues ?? {};
-    const summary = getAttrValue(attrs, "summary") || resource.content || "";
-    const imageGuid = getAttrValue(attrs, "image");
+    const summary = getAttrValue(attrs, 'summary') || resource.content || '';
+    const imageGuid = getAttrValue(attrs, 'image');
 
     let url: string;
     switch (contentType) {
-      case "REDIRECT_CARD":
-        url = getAttrValue(attrs, "redirectUrl") || "";
+      case 'REDIRECT_CARD':
+        url = getAttrValue(attrs, 'redirectUrl') || '';
         break;
-      case "EVENTS":
-        url = getPathname(contentType, getAttrValue(attrs, "url"));
+      case 'EVENTS':
+        url = getPathname(contentType, getAttrValue(attrs, 'url'));
         break;
       default:
         url = getPathname(
           contentType,
-          getAttrValue(attrs, "pathname") || getAttrValue(attrs, "url"),
+          getAttrValue(attrs, 'pathname') || getAttrValue(attrs, 'url'),
         );
     }
 
@@ -130,12 +130,12 @@ interface RockEventItem {
 
 const getSeriesEvents = async (seriesGuid: string): Promise<SeriesEvent[]> => {
   const seriesEvents = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
+    endpoint: 'ContentChannelItems/GetByAttributeValue',
     queryParams: {
-      attributeKey: "MessageSeries",
+      attributeKey: 'MessageSeries',
       $filter: "ContentChannelId eq 186 and Status eq 'Approved'",
       value: `${seriesGuid}`,
-      loadAttributes: "simple",
+      loadAttributes: 'simple',
     },
   });
 
@@ -150,10 +150,10 @@ const getSeriesEvents = async (seriesGuid: string): Promise<SeriesEvent[]> => {
     return {
       id: event.id,
       title: event.title,
-      summary: getAttrValue(attrs, "summary") || event.content || "",
-      coverImage: createImageUrlFromGuid(getAttrValue(attrs, "image")),
-      url: getPathname("EVENTS", getAttrValue(attrs, "url")),
-      eventStartDate: getAttrValue(attrs, "eventStartDate") || undefined,
+      summary: getAttrValue(attrs, 'summary') || event.content || '',
+      coverImage: createImageUrlFromGuid(getAttrValue(attrs, 'image')),
+      url: getPathname('EVENTS', getAttrValue(attrs, 'url')),
+      eventStartDate: getAttrValue(attrs, 'eventStartDate') || undefined,
     };
   });
 
@@ -168,12 +168,12 @@ const getSeriesEvents = async (seriesGuid: string): Promise<SeriesEvent[]> => {
 
 const getSeriesMessages = async (seriesGuid: string) => {
   const seriesMessages = await fetchRockData({
-    endpoint: "ContentChannelItems/GetByAttributeValue",
+    endpoint: 'ContentChannelItems/GetByAttributeValue',
     queryParams: {
-      attributeKey: "MessageSeries",
+      attributeKey: 'MessageSeries',
       $filter: "ContentChannelId eq 63 and Status eq 'Approved'",
       value: `${seriesGuid}`,
-      loadAttributes: "simple",
+      loadAttributes: 'simple',
     },
   });
 
@@ -185,25 +185,25 @@ const getSeriesMessages = async (seriesGuid: string) => {
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const seriesPath = params.path || "";
+  const seriesPath = params.path || '';
 
   const series = await getSeries(seriesPath);
 
   if (!series) {
-    throw new Response("Series not found", {
+    throw new Response('Series not found', {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 
   // Modify the series.attributeValues.coverImage to be a full url -> using createImageUrlFromGuid
   const coverImageRaw = series.attributeValues.coverImage;
   const coverImageGuid =
-    typeof coverImageRaw === "object" &&
+    typeof coverImageRaw === 'object' &&
     coverImageRaw !== null &&
-    "value" in coverImageRaw
+    'value' in coverImageRaw
       ? String((coverImageRaw as { value: string }).value)
-      : String(coverImageRaw ?? "");
+      : String(coverImageRaw ?? '');
   series.attributeValues.coverImage = createImageUrlFromGuid(coverImageGuid);
 
   const seriesMessageData = await getSeriesMessages(series.guid);

@@ -1,14 +1,14 @@
-import { useRouteLoaderData } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { getLatestMessageFeaturedUrl } from "~/components/navbar/get-latest-message-featured-url";
-import type { RootLoaderData } from "~/routes/navbar/loader";
-import HTMLRenderer from "~/primitives/html-renderer";
-import { chanceContent } from "./a-chance.data";
-import { IconButton } from "~/primitives/button/icon-button.primitive";
-import { cn } from "~/lib/utils";
+import { useRouteLoaderData } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { getLatestMessageFeaturedUrl } from '~/components/navbar/get-latest-message-featured-url';
+import type { RootLoaderData } from '~/routes/navbar/loader';
+import HTMLRenderer from '~/primitives/html-renderer';
+import { chanceContent } from './a-chance.data';
+import { IconButton } from '~/primitives/button/icon-button.primitive';
+import { cn } from '~/lib/utils';
 
 export function ImageScrollLayout() {
-  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const latestMessageUrl = getLatestMessageFeaturedUrl(
     rootData?.watchReadListen?.featureCards,
   );
@@ -26,7 +26,7 @@ export function ImageScrollLayout() {
       (entries) => {
         entries.forEach((entry) => {
           const index = parseInt(
-            entry.target.getAttribute("data-card-index") || "0",
+            entry.target.getAttribute('data-card-index') || '0',
           );
           const intersectionRatio = entry.intersectionRatio;
 
@@ -67,7 +67,7 @@ export function ImageScrollLayout() {
       },
       {
         threshold: [0, 0.25, 0.5, 0.75, 1],
-        rootMargin: "0px",
+        rootMargin: '0px',
       },
     );
 
@@ -84,24 +84,24 @@ export function ImageScrollLayout() {
   }, []);
 
   return (
-    <div className="relative pt-32 md:pt-0">
-      <div className="fixed top-0 left-0 w-screen h-48 md:h-64 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none" />
+    <div className='relative pt-32 md:pt-0'>
+      <div className='fixed top-0 left-0 w-screen h-48 md:h-64 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none' />
 
       {/* Fixed Image Container (md+) — viewport-anchored to avoid layout shifts from hiding navbar */}
-      <div className="hidden md:block fixed left-0 top-0 w-1/2 h-screen z-0 pointer-events-none pl-5 md:pl-12 lg:pl-18">
-        <div className="w-full h-full flex max-w-[716px] ml-auto">
-          <div className="relative w-full max-w-md xl:max-w-lg aspect-square">
+      <div className='hidden md:block fixed left-0 top-0 w-1/2 h-screen z-0 pointer-events-none pl-5 md:pl-12 lg:pl-18'>
+        <div className='w-full h-full flex max-w-[716px] ml-auto'>
+          <div className='relative w-full max-w-md xl:max-w-lg aspect-square'>
             {chanceContent.map((section, index) => (
               <img
                 key={section.image}
                 src={section.image}
-                alt=""
+                alt=''
                 width={section.imageWidth}
                 height={section.imageHeight}
                 className={`absolute inset-0 w-full h-full object-contain transition-all duration-700 ${
                   index === activeSection
-                    ? "opacity-100 translate-x-0 z-10"
-                    : "opacity-0 -translate-x-8 z-0"
+                    ? 'opacity-100 translate-x-0 z-10'
+                    : 'opacity-0 -translate-x-8 z-0'
                 }`}
               />
             ))}
@@ -110,7 +110,7 @@ export function ImageScrollLayout() {
       </div>
 
       {/* Scrollable Content Sections */}
-      <div className="md:ml-[50%] relative z-10 max-w-[716px] ml-auto">
+      <div className='md:ml-[50%] relative z-10 max-w-[716px] ml-auto'>
         {chanceContent.map((section, index) => (
           <section
             key={section.title}
@@ -118,32 +118,32 @@ export function ImageScrollLayout() {
               sectionRefs.current[index] = el;
             }}
             className={cn(
-              "relative flex items-center p-12 min-h-screen w-full",
-              index === 2 && "pb-24 md:pb-0", // Add padding to the last section on mobile to prevent content from grayed out from gradient
+              'relative flex items-center p-12 min-h-screen w-full',
+              index === 2 && 'pb-24 md:pb-0', // Add padding to the last section on mobile to prevent content from grayed out from gradient
             )}
             data-card-index={index}
           >
-            <div className="flex flex-col justify-center items-center gap-12 max-w-2xl mx-auto w-full">
+            <div className='flex flex-col justify-center items-center gap-12 max-w-2xl mx-auto w-full'>
               {/* Mobile Image */}
               <img
                 src={section.image}
-                alt=""
+                alt=''
                 width={section.imageWidth}
                 height={section.imageHeight}
-                className="md:hidden w-full max-w-sm"
+                className='md:hidden w-full max-w-sm'
               />
               <div
                 className={`w-full flex flex-col gap-9 transition-all duration-1000 ease-out delay-300 ${
                   visibleSections.has(index)
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-8'
                 }`}
               >
-                <div className="flex flex-col">
-                  <h2 className="text-3xl font-normal text-pretty">
+                <div className='flex flex-col'>
+                  <h2 className='text-3xl font-normal text-pretty'>
                     <HTMLRenderer html={section.title} />
                   </h2>
-                  <p className="text-gray-600 leading-relaxed text-pretty">
+                  <p className='text-gray-600 leading-relaxed text-pretty'>
                     {section.description}
                   </p>
                 </div>
@@ -153,9 +153,9 @@ export function ImageScrollLayout() {
                       ? (latestMessageUrl ?? section.buttonLink)
                       : section.buttonLink
                   }
-                  className="rounded-[400px] hover:text-ocean!"
+                  className='rounded-[400px] hover:text-ocean!'
                   withRotatingArrow
-                  iconClasses="!bg-navy"
+                  iconClasses='!bg-navy'
                 >
                   {section.buttonTitle}
                 </IconButton>
@@ -165,7 +165,7 @@ export function ImageScrollLayout() {
         ))}
       </div>
 
-      <div className="absolute bottom-0 left-0 w-screen h-32 md:h-1/8 bg-linear-to-t from-white to-transparent z-30" />
+      <div className='absolute bottom-0 left-0 w-screen h-32 md:h-1/8 bg-linear-to-t from-white to-transparent z-30' />
     </div>
   );
 }

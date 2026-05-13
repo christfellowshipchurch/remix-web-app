@@ -35,15 +35,15 @@ function syntheticGeolocationError(
 
 export function getGeolocationUserMessage(error: GeolocationErrorInfo): string {
   if (error.code === error.PERMISSION_DENIED) {
-    return "Location access was denied. Enable it in Settings and try again.";
+    return 'Location access was denied. Enable it in Settings and try again.';
   }
   if (error.code === error.POSITION_UNAVAILABLE) {
-    return "Your location could not be determined.";
+    return 'Your location could not be determined.';
   }
   if (error.code === error.TIMEOUT) {
-    return "Finding your location timed out. Try again.";
+    return 'Finding your location timed out. Try again.';
   }
-  return "Could not get your location.";
+  return 'Could not get your location.';
 }
 
 function scheduleAsync(fn: () => void): void {
@@ -60,12 +60,12 @@ export function getCurrentPositionFromUserGesture(
   }) => void,
   onError: (error: GeolocationErrorInfo) => void,
 ): void {
-  if (typeof window === "undefined" || !navigator?.geolocation) {
+  if (typeof window === 'undefined' || !navigator?.geolocation) {
     scheduleAsync(() =>
       onError(
         syntheticGeolocationError(
           2,
-          "Geolocation is not supported in this browser.",
+          'Geolocation is not supported in this browser.',
         ),
       ),
     );

@@ -1,5 +1,5 @@
-import { createHash } from "crypto";
-import type Redis from "ioredis";
+import { createHash } from 'crypto';
+import type Redis from 'ioredis';
 
 /** TTL presets in seconds */
 export const TTL = {
@@ -25,18 +25,18 @@ export type TTLValue = (typeof TTL)[keyof typeof TTL] | number;
  */
 export function buildCacheKey(
   endpoint: string,
-  queryParams: Record<string, string | undefined>
+  queryParams: Record<string, string | undefined>,
 ): string {
-  const normalizedEndpoint = endpoint.replace(/^\/+|\/+$/g, "");
+  const normalizedEndpoint = endpoint.replace(/^\/+|\/+$/g, '');
 
   const sortedEntries = Object.entries(queryParams)
     .filter(([, v]) => v !== undefined)
     .sort(([a], [b]) => a.localeCompare(b));
 
   const paramString = JSON.stringify(sortedEntries);
-  const hash = createHash("sha256")
+  const hash = createHash('sha256')
     .update(paramString)
-    .digest("hex")
+    .digest('hex')
     .slice(0, 12);
 
   return `rock:${normalizedEndpoint}:${hash}`;
@@ -50,11 +50,11 @@ export function buildCacheKey(
  */
 export async function deleteByPrefix(
   redis: Redis | null,
-  endpointPrefix: string
+  endpointPrefix: string,
 ): Promise<number> {
   if (!redis) return 0;
 
-  const normalizedPrefix = endpointPrefix.replace(/^\/+|\/+$/g, "");
+  const normalizedPrefix = endpointPrefix.replace(/^\/+|\/+$/g, '');
   const pattern = `rock:${normalizedPrefix}:*`;
   const keys = await redis.keys(pattern);
 

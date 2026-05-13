@@ -1,7 +1,7 @@
-import type { ComponentProps, MouseEvent } from "react";
-import { usePagination, type UsePaginationProps } from "react-instantsearch";
+import type { ComponentProps, MouseEvent } from 'react';
+import { usePagination, type UsePaginationProps } from 'react-instantsearch';
 
-import Icon from "~/primitives/icon";
+import Icon from '~/primitives/icon';
 
 export type FindersCustomPaginationProps = UsePaginationProps & {
   /** CSS selector for `scrollIntoView` after page change (default: finder scroll anchor). */
@@ -9,7 +9,7 @@ export type FindersCustomPaginationProps = UsePaginationProps & {
 };
 
 export const FindersCustomPagination = ({
-  scrollTargetSelector = ".pagination-scroll-to",
+  scrollTargetSelector = '.pagination-scroll-to',
   ...paginationProps
 }: FindersCustomPaginationProps) => {
   const {
@@ -25,25 +25,25 @@ export const FindersCustomPagination = ({
 
   const handlePageChange = (newPage: number) => {
     refine(newPage);
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       window.requestAnimationFrame(() => {
         const scrollTarget = document.querySelector(scrollTargetSelector);
-        scrollTarget?.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     }
   };
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className='flex items-center justify-center gap-2'>
       <PaginationItem
         isDisabled={isFirstPage}
         href={createURL(previousPageIndex)}
         onClick={() => handlePageChange(previousPageIndex)}
       >
         <Icon
-          name="chevronLeft"
+          name='chevronLeft'
           size={32}
-          color={isFirstPage ? "#CECECE" : "#0092BC"}
+          color={isFirstPage ? '#CECECE' : '#0092BC'}
         />
       </PaginationItem>
       <p>
@@ -55,17 +55,17 @@ export const FindersCustomPagination = ({
         onClick={() => handlePageChange(nextPageIndex)}
       >
         <Icon
-          name="chevronRight"
+          name='chevronRight'
           size={32}
-          color={isLastPage ? "#CECECE" : "#0092BC"}
+          color={isLastPage ? '#CECECE' : '#0092BC'}
         />
       </PaginationItem>
     </div>
   );
 };
 
-type PaginationItemProps = Omit<ComponentProps<"a">, "onClick"> & {
-  onClick: NonNullable<ComponentProps<"a">["onClick"]>;
+type PaginationItemProps = Omit<ComponentProps<'a'>, 'onClick'> & {
+  onClick: NonNullable<ComponentProps<'a'>['onClick']>;
   isDisabled: boolean;
 };
 
@@ -107,9 +107,9 @@ function isModifierClick(event: MouseEvent) {
 
   return Boolean(
     isMiddleClick ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey,
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey,
   );
 }

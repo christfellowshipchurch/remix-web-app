@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from 'react';
 
 export const breakpoints = {
   xs: 480,
@@ -6,12 +6,12 @@ export const breakpoints = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  "2xl": 1536,
+  '2xl': 1536,
 } as const;
 
 function subscribe(onStoreChange: () => void) {
-  window.addEventListener("resize", onStoreChange);
-  return () => window.removeEventListener("resize", onStoreChange);
+  window.addEventListener('resize', onStoreChange);
+  return () => window.removeEventListener('resize', onStoreChange);
 }
 
 function getSnapshot() {
@@ -23,11 +23,7 @@ function getServerSnapshot() {
 }
 
 export function useResponsive() {
-  const width = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  const width = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   if (width === null) {
     return {
@@ -47,7 +43,7 @@ export function useResponsive() {
     isMedium: width >= breakpoints.md && width < breakpoints.lg,
     isLarge: width >= breakpoints.lg,
     isXLarge: width >= breakpoints.xl,
-    isXXLarge: width >= breakpoints["2xl"],
+    isXXLarge: width >= breakpoints['2xl'],
     breakpoints,
   };
 }

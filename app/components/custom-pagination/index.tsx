@@ -1,5 +1,5 @@
-import { usePagination, UsePaginationProps } from "react-instantsearch";
-import { Icon } from "~/primitives/icon/icon";
+import { usePagination, UsePaginationProps } from 'react-instantsearch';
+import { Icon } from '~/primitives/icon/icon';
 
 export const CustomPagination = (props: UsePaginationProps) => {
   const { currentRefinement, isFirstPage, isLastPage, refine } =
@@ -7,9 +7,9 @@ export const CustomPagination = (props: UsePaginationProps) => {
 
   const handlePageChange = (newPageIndex: number) => {
     refine(newPageIndex);
-    const scrollTarget = document.querySelector(".pagination-scroll-to");
+    const scrollTarget = document.querySelector('.pagination-scroll-to');
     if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: "smooth" });
+      scrollTarget.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -17,21 +17,21 @@ export const CustomPagination = (props: UsePaginationProps) => {
   const nextIndex = currentRefinement + 1;
 
   return (
-    <div className="flex items-center justify-start gap-4 mt-16">
+    <div className='flex items-center justify-start gap-4 mt-16'>
       <PaginationButton
         isDisabled={isFirstPage}
         onClick={() => handlePageChange(prevIndex)}
-        href="#"
-        className="w-12 h-12"
+        href='#'
+        className='w-12 h-12'
       >
-        <Icon name="chevronLeft" size={24} />
+        <Icon name='chevronLeft' size={24} />
       </PaginationButton>
 
       <PaginationButton
         isActive={true}
         onClick={() => {}}
-        href="#"
-        className="w-12 h-12 bg-navy text-white"
+        href='#'
+        className='w-12 h-12 bg-navy text-white'
       >
         {currentRefinement + 1}
       </PaginationButton>
@@ -39,10 +39,10 @@ export const CustomPagination = (props: UsePaginationProps) => {
       <PaginationButton
         isDisabled={isLastPage}
         onClick={() => handlePageChange(nextIndex)}
-        href="#"
-        className="w-12 h-12"
+        href='#'
+        className='w-12 h-12'
       >
-        <Icon name="chevronRight" size={24} />
+        <Icon name='chevronRight' size={24} />
       </PaginationButton>
     </div>
   );
@@ -63,7 +63,7 @@ const PaginationButton = ({
   isActive = false,
   href,
   onClick,
-  className = "",
+  className = '',
 }: PaginationButtonProps) => {
   if (isDisabled) {
     return (
@@ -84,8 +84,8 @@ const PaginationButton = ({
       }}
       className={`${className} inline-flex items-center justify-center border-2 ${
         isActive
-          ? "border-navy bg-navy text-white"
-          : "border-navy text-navy hover:bg-navy hover:text-white"
+          ? 'border-navy bg-navy text-white'
+          : 'border-navy text-navy hover:bg-navy hover:text-white'
       } transition-colors duration-200 cursor-pointer`}
     >
       {children}

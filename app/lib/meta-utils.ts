@@ -2,17 +2,17 @@
  * Shared metadata for the site. Use createMeta() for consistent title, description, and OG tags.
  */
 
-export const SITE_NAME = "Christ Fellowship Church";
+export const SITE_NAME = 'Christ Fellowship Church';
 
 /** Default image for SEO/OG if none is provided. Located at @public/assets/images/metadata_image.jpg. */
-export const DEFAULT_META_IMAGE = "/assets/images/metadata_image.jpg";
+export const DEFAULT_META_IMAGE = '/assets/images/metadata_image.jpg';
 
 /** Default keywords used site-wide when not overridden per route. */
 export const DEFAULT_KEYWORDS =
-  "Christ Fellowship Church, church South Florida, multisite church, church online, services, groups, ministries, grow in faith, Palm Beach, Broward, Miami";
+  'Christ Fellowship Church, church South Florida, multisite church, church online, services, groups, ministries, grow in faith, Palm Beach, Broward, Miami';
 
 /** Default generator used site-wide when not overridden per route. */
-export const DEFAULT_GENERATOR = "React Router";
+export const DEFAULT_GENERATOR = 'React Router';
 
 /**
  * Origin for absolute OG/twitter image and og:url. On the client uses window.location.origin.
@@ -20,12 +20,12 @@ export const DEFAULT_GENERATOR = "React Router";
  * Set VITE_PUBLIC_ORIGIN in .env (e.g. https://yoursite.com or http://localhost:5173 for local checks).
  */
 function getOrigin(): string {
-  if (typeof window !== "undefined" && window.location?.origin) {
+  if (typeof window !== 'undefined' && window.location?.origin) {
     return window.location.origin;
   }
   const env = (import.meta as { env?: Record<string, unknown> }).env;
   const envOrigin = env?.VITE_PUBLIC_ORIGIN;
-  return typeof envOrigin === "string" ? envOrigin : "";
+  return typeof envOrigin === 'string' ? envOrigin : '';
 }
 
 export type CreateMetaOptions = {
@@ -49,7 +49,7 @@ export type CreateMetaOptions = {
 
 type MetaDescriptor =
   | { title?: string; name?: string; property?: string; content?: string }
-  | { tagName: "link"; rel: string; href: string };
+  | { tagName: 'link'; rel: string; href: string };
 
 /**
  * Returns a meta array for React Router meta export. Use for static or dynamic routes.
@@ -73,53 +73,53 @@ export function createMeta({
   const origin = getOrigin();
   const imagePath = image ?? DEFAULT_META_IMAGE;
   const ogImage =
-    imagePath.startsWith("http") || !origin
+    imagePath.startsWith('http') || !origin
       ? imagePath
-      : `${origin}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
+      : `${origin}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
   const base: MetaDescriptor[] = [
     { title: fullTitle },
-    { name: "description", content: description },
-    { name: "application-name", content: SITE_NAME },
-    { property: "og:title", content: fullTitle },
-    { property: "og:description", content: description },
-    { property: "og:type", content: "website" },
-    { property: "og:site_name", content: SITE_NAME },
-    { property: "og:image", content: ogImage },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: fullTitle },
-    { name: "twitter:description", content: description },
-    { name: "twitter:image", content: ogImage },
+    { name: 'description', content: description },
+    { name: 'application-name', content: SITE_NAME },
+    { property: 'og:title', content: fullTitle },
+    { property: 'og:description', content: description },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:site_name', content: SITE_NAME },
+    { property: 'og:image', content: ogImage },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: fullTitle },
+    { name: 'twitter:description', content: description },
+    { name: 'twitter:image', content: ogImage },
   ];
   if (author?.trim()) {
-    base.push({ name: "author", content: author.trim() });
-    base.push({ property: "article:author", content: author.trim() });
-    base.push({ name: "twitter:creator", content: author.trim() });
+    base.push({ name: 'author', content: author.trim() });
+    base.push({ property: 'article:author', content: author.trim() });
+    base.push({ name: 'twitter:creator', content: author.trim() });
   }
   if (path) {
     const fullUrl = origin
-      ? `${origin}${path.startsWith("/") ? "" : "/"}${path}`
-      : path.startsWith("/")
-      ? path
-      : `/${path}`;
+      ? `${origin}${path.startsWith('/') ? '' : '/'}${path}`
+      : path.startsWith('/')
+        ? path
+        : `/${path}`;
     if (origin) {
-      base.push({ property: "og:url", content: fullUrl });
+      base.push({ property: 'og:url', content: fullUrl });
     }
-    base.push({ tagName: "link", rel: "canonical", href: fullUrl });
+    base.push({ tagName: 'link', rel: 'canonical', href: fullUrl });
   }
   base.push({
-    name: "robots",
-    content: noIndex ? "noindex, nofollow" : "index, follow",
+    name: 'robots',
+    content: noIndex ? 'noindex, nofollow' : 'index, follow',
   });
   base.push({
-    name: "keywords",
+    name: 'keywords',
     content: keywords ?? DEFAULT_KEYWORDS,
   });
   base.push({
-    name: "generator",
+    name: 'generator',
     content: generator ?? DEFAULT_GENERATOR,
   });
   if (license) {
-    base.push({ name: "license", content: license });
+    base.push({ name: 'license', content: license });
   }
   return base;
 }

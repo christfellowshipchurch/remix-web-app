@@ -1,15 +1,15 @@
-import type { AlgoliaUrlStateBase } from "~/lib/algolia-url-state";
-import { createAlgoliaUrlStateConfig } from "~/lib/algolia-url-state";
+import type { AlgoliaUrlStateBase } from '~/lib/algolia-url-state';
+import { createAlgoliaUrlStateConfig } from '~/lib/algolia-url-state';
 
 export const EVENTS_FINDER_PARAMS = {
-  QUERY: "q",
+  QUERY: 'q',
 } as const;
 
 export type EventsFinderUrlState = AlgoliaUrlStateBase;
 
 const REFINEMENT_LIST_ATTRIBUTES = [
-  "eventCategories",
-  "eventLocations",
+  'eventCategories',
+  'eventLocations',
 ] as const;
 
 const {

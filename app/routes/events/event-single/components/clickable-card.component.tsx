@@ -1,9 +1,9 @@
-import { cn } from "~/lib/utils";
-import Icon from "~/primitives/icon";
+import { cn } from '~/lib/utils';
+import Icon from '~/primitives/icon';
 
 interface ClickableCardProps {
-  variant: "campus" | "eventType" | "date" | "time";
-  icon: "map" | "group" | "calendarAlt" | "timeFive";
+  variant: 'campus' | 'eventType' | 'date' | 'time';
+  icon: 'map' | 'group' | 'calendarAlt' | 'timeFive';
   title: string;
   step?: number;
   subtitle?: string; // For campus, date, time, eventType
@@ -24,27 +24,27 @@ export const ClickableCard = ({
 }: ClickableCardProps) => {
   // Base card styles
   const baseCardClasses =
-    "bg-white rounded-lg border border-neutral-lighter cursor-pointer hover:border-ocean transition-all duration-300 flex flex-col items-center";
+    'bg-white rounded-lg border border-neutral-lighter cursor-pointer hover:border-ocean transition-all duration-300 flex flex-col items-center';
 
   // Variant-specific styling
-  if (variant === "campus") {
+  if (variant === 'campus') {
     return (
       <div
         onClick={onClick}
         className={cn(
           baseCardClasses,
-          "px-6 py-3 md:py-4 gap-1 items-center w-full md:w-[calc(33.333%-0.67rem)] md:max-w-[300px]",
-          step === 1 ? "flex-row gap-3 md:flex-col md:gap-1" : "",
+          'px-6 py-3 md:py-4 gap-1 items-center w-full md:w-[calc(33.333%-0.67rem)] md:max-w-[300px]',
+          step === 1 ? 'flex-row gap-3 md:flex-col md:gap-1' : '',
         )}
       >
-        <div className="bg-navy-subdued rounded-lg p-3">
+        <div className='bg-navy-subdued rounded-lg p-3'>
           <Icon name={icon} size={24} />
         </div>
-        <div className="flex flex-col gap-1 w-full md:text-center ">
-          <h4 className="font-semibold text-black leading-tight">{title}</h4>
+        <div className='flex flex-col gap-1 w-full md:text-center '>
+          <h4 className='font-semibold text-black leading-tight'>{title}</h4>
           {subtitle && (
-            <p className="text-xs font-semibold text-[#989898]">
-              {subtitle}, <br className="hidden md:block" /> Florida
+            <p className='text-xs font-semibold text-[#989898]'>
+              {subtitle}, <br className='hidden md:block' /> Florida
             </p>
           )}
         </div>
@@ -52,7 +52,7 @@ export const ClickableCard = ({
     );
   }
 
-  if (variant === "eventType") {
+  if (variant === 'eventType') {
     return (
       <div
         onClick={onClick}
@@ -63,11 +63,11 @@ export const ClickableCard = ({
             <Icon name={icon} size={24} />
           </div>
         )} */}
-        <h4 className="font-semibold text-center leading-tight pt-5">
-          {subtitle && subtitle + " "} {title}
+        <h4 className='font-semibold text-center leading-tight pt-5'>
+          {subtitle && subtitle + ' '} {title}
         </h4>
         {description && (
-          <p className="text-sm text-[#717182] text-center leading-relaxed mb-8">
+          <p className='text-sm text-[#717182] text-center leading-relaxed mb-8'>
             {description}
           </p>
         )}
@@ -77,7 +77,7 @@ export const ClickableCard = ({
               e.stopPropagation();
               onClick();
             }}
-            className="mt-auto w-full bg-ocean text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-ocean-dark transition-colors"
+            className='mt-auto w-full bg-ocean text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-ocean-dark transition-colors'
           >
             {buttonText}
           </button>
@@ -86,35 +86,35 @@ export const ClickableCard = ({
     );
   }
 
-  if (variant === "date") {
+  if (variant === 'date') {
     return (
       <div
         onClick={onClick}
         className={`${baseCardClasses} px-6 py-3 md:py-4 gap-1 w-full md:w-[calc(33.333%-0.67rem)] max-w-[300px]`}
       >
-        <Icon name={icon} size={24} className="text-black" />
-        <h4 className="font-bold text-black text-center leading-tight">
+        <Icon name={icon} size={24} className='text-black' />
+        <h4 className='font-bold text-black text-center leading-tight'>
           {title}
         </h4>
         {subtitle && (
-          <p className="text-sm text-[#717182] text-center">{subtitle}</p>
+          <p className='text-sm text-[#717182] text-center'>{subtitle}</p>
         )}
       </div>
     );
   }
 
-  if (variant === "time") {
+  if (variant === 'time') {
     return (
       <div
         onClick={onClick}
         className={`${baseCardClasses} px-6 py-3 md:py-4 gap-1 w-full md:w-[calc(50%-0.5rem)] max-w-[300px]`}
       >
-        <Icon name={icon} size={24} className="text-black" />
-        <h4 className="font-bold text-black text-center leading-tight">
+        <Icon name={icon} size={24} className='text-black' />
+        <h4 className='font-bold text-black text-center leading-tight'>
           {title}
         </h4>
         {subtitle && (
-          <p className="text-sm text-[#717182] text-center">{subtitle}</p>
+          <p className='text-sm text-[#717182] text-center'>{subtitle}</p>
         )}
       </div>
     );

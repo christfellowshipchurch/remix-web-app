@@ -7,19 +7,20 @@ export type VolunteerFinderBackPayload = {
   volunteerListSearch: string;
 };
 
-export const VOLUNTEER_FINDER_BACK_STORAGE_KEY = "volunteerFinderMissionBack_v1";
+export const VOLUNTEER_FINDER_BACK_STORAGE_KEY =
+  'volunteerFinderMissionBack_v1';
 
 function parseFinderBackPayload(
   v: unknown,
   missionGroupGuid: string,
 ): VolunteerFinderBackPayload | null {
-  if (!v || typeof v !== "object") return null;
+  if (!v || typeof v !== 'object') return null;
   const o = v as Record<string, unknown>;
-  if (typeof o.missionGroupGuid !== "string") return null;
+  if (typeof o.missionGroupGuid !== 'string') return null;
   if (o.missionGroupGuid.toUpperCase() !== missionGroupGuid.toUpperCase()) {
     return null;
   }
-  if (typeof o.volunteerListSearch !== "string") return null;
+  if (typeof o.volunteerListSearch !== 'string') return null;
   return {
     missionGroupGuid: o.missionGroupGuid,
     volunteerListSearch: o.volunteerListSearch,
@@ -29,9 +30,11 @@ function parseFinderBackPayload(
 export function readVolunteerFinderBackPayload(
   missionGroupGuid: string,
 ): VolunteerFinderBackPayload | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === 'undefined') return null;
   try {
-    const raw = window.sessionStorage.getItem(VOLUNTEER_FINDER_BACK_STORAGE_KEY);
+    const raw = window.sessionStorage.getItem(
+      VOLUNTEER_FINDER_BACK_STORAGE_KEY,
+    );
     if (!raw) return null;
     return parseFinderBackPayload(JSON.parse(raw), missionGroupGuid);
   } catch {
@@ -42,7 +45,7 @@ export function readVolunteerFinderBackPayload(
 export function persistVolunteerFinderBackFromCard(
   payload: VolunteerFinderBackPayload,
 ): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   try {
     window.sessionStorage.setItem(
       VOLUNTEER_FINDER_BACK_STORAGE_KEY,
@@ -54,6 +57,6 @@ export function persistVolunteerFinderBackFromCard(
 }
 
 export function clearVolunteerFinderBackPayload(): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   window.sessionStorage.removeItem(VOLUNTEER_FINDER_BACK_STORAGE_KEY);
 }

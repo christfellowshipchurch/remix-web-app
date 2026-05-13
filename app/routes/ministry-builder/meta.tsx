@@ -1,22 +1,22 @@
-import type { MetaFunction } from "react-router-dom";
-import type { loader } from "./loader";
-import { createMeta } from "~/lib/meta-utils";
+import type { MetaFunction } from 'react-router-dom';
+import type { loader } from './loader';
+import { createMeta } from '~/lib/meta-utils';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) {
     return createMeta({
-      title: "Ministry",
-      description: "Explore this ministry at Christ Fellowship Church.",
+      title: 'Ministry',
+      description: 'Explore this ministry at Christ Fellowship Church.',
     });
   }
   const { title, content } = data;
   const description = content
     ? content
-        .replace(/<[^>]*>/g, "")
+        .replace(/<[^>]*>/g, '')
         .substring(0, 160)
-        .trim() + (content.length > 160 ? "..." : "")
+        .trim() + (content.length > 160 ? '...' : '')
     : `Learn more about ${title}'s Ministry at Christ Fellowship Church`;
-  const metaTitle = title ? `${title}'s Ministry` : "Ministry";
+  const metaTitle = title ? `${title}'s Ministry` : 'Ministry';
   return createMeta({
     title: metaTitle,
     description,

@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { ContentBlockData } from "../../types";
+import { FC } from 'react';
+import { ContentBlockData } from '../../types';
 
 // Banner Layout
 export const BannerSection: FC<{ data: ContentBlockData }> = ({ data }) => (
@@ -8,7 +8,7 @@ export const BannerSection: FC<{ data: ContentBlockData }> = ({ data }) => (
       <img
         src={data.coverImage}
         alt={data.name}
-        className="w-full aspect-video lg:aspect-16/7 xl:aspect-16/6 object-cover"
+        className='w-full aspect-video lg:aspect-16/7 xl:aspect-16/6 object-cover'
       />
     )}
   </section>

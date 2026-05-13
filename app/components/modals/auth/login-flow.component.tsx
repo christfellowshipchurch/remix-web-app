@@ -2,15 +2,15 @@
  * This component is a flow for the user to login or sign up and determines which step/screen to render based on the user's input.
  * It interacts with the AuthProvider to handle user registration, login, and pin verification.
  */
-import React, { useEffect, useState } from "react";
-import { RegistrationTypes, useAuth } from "~/providers/auth-provider";
-import AccountCreation from "./account-creation.component";
-import CreatePassword from "./create-password.component";
-import InitialSignUp from "./initial-signup.component";
+import React, { useEffect, useState } from 'react';
+import { RegistrationTypes, useAuth } from '~/providers/auth-provider';
+import AccountCreation from './account-creation.component';
+import CreatePassword from './create-password.component';
+import InitialSignUp from './initial-signup.component';
 
-import PasswordScreen from "./password-screen.component";
-import PinScreen from "./pin-screen.component";
-import Login from "./login.component";
+import PasswordScreen from './password-screen.component';
+import PinScreen from './pin-screen.component';
+import Login from './login.component';
 
 enum LoginStep {
   INITIAL_SIGNUP,
@@ -35,22 +35,22 @@ interface LoginFlowProps {
 }
 
 const determineIdentityType = (
-  identity: string
-): "email" | "phone" | "unknown" => {
+  identity: string,
+): 'email' | 'phone' | 'unknown' => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\d{10}$/;
 
-  if (emailRegex.test(identity)) return "email";
-  if (phoneRegex.test(identity)) return "phone";
-  return "unknown";
+  if (emailRegex.test(identity)) return 'email';
+  if (phoneRegex.test(identity)) return 'phone';
+  return 'unknown';
 };
 
 const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   const [step, setStep] = useState<LoginStep>(LoginStep.INITIAL_SIGNUP);
-  const [identity, setIdentity] = useState("");
+  const [identity, setIdentity] = useState('');
   const [identityType, setIdentityType] = useState<
-    "email" | "phone" | "unknown"
-  >("unknown");
+    'email' | 'phone' | 'unknown'
+  >('unknown');
   const [newUser, setNewUser] = useState<NewUser | null>(null);
   const { loginWithEmail, registerUser, requestSmsPin, loginWithSms } =
     useAuth();
@@ -60,7 +60,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   }, [identity]);
 
   const handleInitialSignUp = async (identityInput: string) => {
-    if (identityInput && identityInput !== "") {
+    if (identityInput && identityInput !== '') {
       setIdentity(identityInput);
       setStep(LoginStep.ACCOUNT_CREATION);
     } else {
@@ -72,11 +72,11 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
     if (userData) {
       setNewUser(userData);
       switch (true) {
-        case identityType === "email":
+        case identityType === 'email':
           setStep(LoginStep.CREATE_PASSWORD);
           break;
         // If using a phone number, we'll request a pin and register the user with it
-        case identityType === "phone":
+        case identityType === 'phone':
           await requestSmsPin(identity);
           setStep(LoginStep.PIN_SCREEN);
           break;
@@ -94,10 +94,10 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
         email: identity as string,
         password,
         userProfile: [
-          { field: "FirstName", value: newUser?.firstName || "" },
-          { field: "LastName", value: newUser?.lastName || "" },
-          { field: "BirthDate", value: newUser?.birthDate || "" },
-          { field: "Gender", value: newUser?.gender || "" },
+          { field: 'FirstName', value: newUser?.firstName || '' },
+          { field: 'LastName', value: newUser?.lastName || '' },
+          { field: 'BirthDate', value: newUser?.birthDate || '' },
+          { field: 'Gender', value: newUser?.gender || '' },
         ],
       };
       await registerUser(userInputDataEmail, RegistrationTypes.EMAIL);
@@ -106,17 +106,17 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   };
 
   const handleLogin = async (identityInput: string) => {
-    if (identityInput && identityInput !== "") {
+    if (identityInput && identityInput !== '') {
       setIdentity(identityInput);
 
       switch (true) {
-        case identityInput === "sign-up":
+        case identityInput === 'sign-up':
           setStep(LoginStep.INITIAL_SIGNUP);
           break;
-        case determineIdentityType(identityInput) === "email":
+        case determineIdentityType(identityInput) === 'email':
           setStep(LoginStep.PASSWORD_SCREEN);
           break;
-        case determineIdentityType(identityInput) === "phone":
+        case determineIdentityType(identityInput) === 'phone':
           await requestSmsPin(identityInput);
           setStep(LoginStep.PIN_SCREEN);
           break;
@@ -141,10 +141,10 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
         email: newUser.email || null,
         pin,
         userProfile: [
-          { field: "FirstName", value: newUser?.firstName || "" },
-          { field: "LastName", value: newUser?.lastName || "" },
-          { field: "BirthDate", value: newUser?.birthDate || "" },
-          { field: "Gender", value: newUser?.gender || "" },
+          { field: 'FirstName', value: newUser?.firstName || '' },
+          { field: 'LastName', value: newUser?.lastName || '' },
+          { field: 'BirthDate', value: newUser?.birthDate || '' },
+          { field: 'Gender', value: newUser?.gender || '' },
         ],
       };
       await registerUser(userInputDataSms, RegistrationTypes.SMS);
@@ -187,7 +187,7 @@ const LoginFlow: React.FC<LoginFlowProps> = ({ setOpenModal }) => {
   };
 
   return (
-    <div className="p-8 min-w-72 max-w-md sm:min-w-96 md:w-96">
+    <div className='p-8 min-w-72 max-w-md sm:min-w-96 md:w-96'>
       {renderStep()}
     </div>
   );

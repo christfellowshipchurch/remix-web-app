@@ -1,1 +1,1 @@
-export { VideoModal } from "./video-modal";
+export { VideoModal } from './video-modal';

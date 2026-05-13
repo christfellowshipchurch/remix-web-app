@@ -1,8 +1,8 @@
-import { LoaderFunction } from "react-router";
-import https from "https";
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
-import { createImageUrlFromGuid } from "~/lib/utils";
-import { TTL } from "~/lib/.server/fetch-rock-data";
+import { LoaderFunction } from 'react-router';
+import https from 'https';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { createImageUrlFromGuid } from '~/lib/utils';
+import { TTL } from '~/lib/.server/fetch-rock-data';
 
 export type DailyDevo = {
   title: string;
@@ -24,7 +24,7 @@ export type LoaderReturnType = {
 };
 
 const httpsAgent = new https.Agent({
-  rejectUnauthorized: process.env.NODE_ENV === "production",
+  rejectUnauthorized: process.env.NODE_ENV === 'production',
 });
 
 const fetchScripture = async (scripture: string) => {
@@ -33,11 +33,11 @@ const fetchScripture = async (scripture: string) => {
     const data = await new Promise<string>((resolve, reject) => {
       https
         .get(url, { agent: httpsAgent }, (res) => {
-          let body = "";
-          res.on("data", (chunk) => (body += chunk));
-          res.on("end", () => resolve(body));
+          let body = '';
+          res.on('data', (chunk) => (body += chunk));
+          res.on('end', () => resolve(body));
         })
-        .on("error", reject);
+        .on('error', reject);
     });
 
     return JSON.parse(data) as {
@@ -48,8 +48,8 @@ const fetchScripture = async (scripture: string) => {
   } catch {
     return {
       reference: scripture,
-      text: "Scripture text unavailable",
-      translation_id: "unknown",
+      text: 'Scripture text unavailable',
+      translation_id: 'unknown',
     };
   }
 };
@@ -58,12 +58,12 @@ const fetchDailyDevo = async () => {
   const contentChannelId = 136;
 
   const dailyDevoItems = await fetchRockData({
-    endpoint: "ContentChannelItems",
+    endpoint: 'ContentChannelItems',
     queryParams: {
       $filter: `ContentChannelId eq ${contentChannelId}`,
-      $orderby: "StartDateTime desc",
-      $top: "14", // Fetch 2 weeks of items to ensure we get the most recent one, sometimnes items are made ahead of time
-      loadAttributes: "simple",
+      $orderby: 'StartDateTime desc',
+      $top: '14', // Fetch 2 weeks of items to ensure we get the most recent one, sometimnes items are made ahead of time
+      loadAttributes: 'simple',
     },
     ttl: TTL.NONE,
   });
@@ -81,23 +81,23 @@ const fetchDailyDevo = async () => {
 };
 
 const avatars = [
-  { src: "https://picsum.photos/id/1011/70/70", alt: "Avatar 1" },
-  { src: "https://picsum.photos/id/1012/70/70", alt: "Avatar 2" },
-  { src: "https://picsum.photos/id/1015/70/70", alt: "Avatar 3" },
-  { src: "https://picsum.photos/id/1015/70/70", alt: "Avatar 4" },
+  { src: 'https://picsum.photos/id/1011/70/70', alt: 'Avatar 1' },
+  { src: 'https://picsum.photos/id/1012/70/70', alt: 'Avatar 2' },
+  { src: 'https://picsum.photos/id/1015/70/70', alt: 'Avatar 3' },
+  { src: 'https://picsum.photos/id/1015/70/70', alt: 'Avatar 4' },
 ];
 
 export const loader: LoaderFunction = async (): Promise<LoaderReturnType> => {
   const dailyDevoRockData = await fetchDailyDevo();
   const scripturesRockData = dailyDevoRockData.attributeValues.scriptures.value
-    .split(",")
+    .split(',')
     .map((s: string) => s.trim());
 
   const scriptures = await Promise.all(
     scripturesRockData.map((scripture: string) => fetchScripture(scripture)),
   );
 
-  const appPromoVideo = "b8qb27ar32";
+  const appPromoVideo = 'b8qb27ar32';
 
   const dailyDevo = {
     title: dailyDevoRockData.title,

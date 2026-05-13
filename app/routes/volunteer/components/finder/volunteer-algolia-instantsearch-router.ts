@@ -1,12 +1,12 @@
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B (routing). */
 
-import type { RefObject } from "react";
-import type { VolunteerAlgoliaUrlState } from "./volunteer-algolia-url-state";
+import type { RefObject } from 'react';
+import type { VolunteerAlgoliaUrlState } from './volunteer-algolia-url-state';
 import {
   parseVolunteerAlgoliaUrlState,
   volunteerAlgoliaUrlStateToParams,
-} from "./volunteer-algolia-url-state";
-import { VOLUNTEER_ALGOLIA_INDEX } from "../../types";
+} from './volunteer-algolia-url-state';
+import { VOLUNTEER_ALGOLIA_INDEX } from '../../types';
 
 export type VolunteerAlgoliaRouterRefs = {
   searchParamsRef: RefObject<URLSearchParams>;
@@ -43,13 +43,10 @@ export function createVolunteerAlgoliaInstantSearchRouter(
       return parseVolunteerAlgoliaUrlState(searchParamsRef.current);
     },
     write(routeState: VolunteerAlgoliaUrlState): void {
-      setSearchParamsRef.current(
-        volunteerAlgoliaUrlStateToParams(routeState),
-        {
-          replace: true,
-          preventScrollReset: true,
-        },
-      );
+      setSearchParamsRef.current(volunteerAlgoliaUrlStateToParams(routeState), {
+        replace: true,
+        preventScrollReset: true,
+      });
     },
     onUpdate(callback: (route: VolunteerAlgoliaUrlState) => void): void {
       onUpdateCallbackRef.current = callback;

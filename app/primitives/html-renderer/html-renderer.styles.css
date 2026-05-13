@@ -289,14 +289,16 @@
   }
 }
 
-.html-renderer.html-renderer--finder-hero-desc-light .class-single-hero-summary {
+.html-renderer.html-renderer--finder-hero-desc-light
+  .class-single-hero-summary {
   color: #222222;
   margin: 0;
   line-height: 1.5;
 }
 
 @media (min-width: 768px) {
-  .html-renderer.html-renderer--finder-hero-desc-light .class-single-hero-summary {
+  .html-renderer.html-renderer--finder-hero-desc-light
+    .class-single-hero-summary {
     font-size: 1.25rem;
   }
 }

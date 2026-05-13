@@ -1,13 +1,13 @@
-import { Link } from "react-router";
-import { cn } from "~/lib/utils";
-import Icon from "~/primitives/icon";
-import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
+import { Link } from 'react-router';
+import { cn } from '~/lib/utils';
+import Icon from '~/primitives/icon';
+import { useStickyTopBelowNavbarClass } from '~/hooks/use-sticky-top-below-navbar';
 
 const BackBanner = ({
   backText,
   pageTitle,
   link,
-  bg = "white",
+  bg = 'white',
 }: {
   backText: string;
   pageTitle: string;
@@ -18,22 +18,22 @@ const BackBanner = ({
   return (
     <div
       className={cn(
-        "w-full py-[15px] shadow-sm content-padding sticky transition-[top] duration-300",
+        'w-full py-[15px] shadow-sm content-padding sticky transition-[top] duration-300',
         stickyTopClass,
-        `bg-${bg}`
+        `bg-${bg}`,
       )}
     >
-      <div className="max-w-screen-content mx-auto w-full flex gap-4 items-center md:gap-6">
+      <div className='max-w-screen-content mx-auto w-full flex gap-4 items-center md:gap-6'>
         <Link
           to={link}
-          prefetch="intent"
-          className="flex gap-4 text-black hover:text-ocean"
+          prefetch='intent'
+          className='flex gap-4 text-black hover:text-ocean'
         >
-          <Icon name="arrowBack" size={16} />
-          <p className="text-xs font-bold">{backText}</p>
+          <Icon name='arrowBack' size={16} />
+          <p className='text-xs font-bold'>{backText}</p>
         </Link>
 
-        <p className="text-xs text-black font-medium">{pageTitle}</p>
+        <p className='text-xs text-black font-medium'>{pageTitle}</p>
       </div>
     </div>
   );

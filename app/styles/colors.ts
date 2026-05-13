@@ -1,40 +1,40 @@
 // Primitive Colors
-const BLACK = "#000000";
-const WHITE = "#FFFFFF";
-const GRAY = "#F3F5FA";
-const SOFT_WHITE = "#FAFAFC";
-const DARK_NAVY = "#00354D";
-const NAVY = "#004F71";
-const NAVY_SUBDUED = "#DAEAF1";
-const OCEAN = "#0092BC";
-const OCEAN_SUBDUED = "#E7F9FE";
-const OCEAN_WEB = "#56C6F2";
-const COTTON_CANDY = "#6BCABA";
-const COCONUT = "#D0D0CE";
-const APPLE = "#CB2C30";
-const TANGERINE = "#FF8F1C";
-const PEACH = "#E8927C";
-const LEMON = "#FCD757";
+const BLACK = '#000000';
+const WHITE = '#FFFFFF';
+const GRAY = '#F3F5FA';
+const SOFT_WHITE = '#FAFAFC';
+const DARK_NAVY = '#00354D';
+const NAVY = '#004F71';
+const NAVY_SUBDUED = '#DAEAF1';
+const OCEAN = '#0092BC';
+const OCEAN_SUBDUED = '#E7F9FE';
+const OCEAN_WEB = '#56C6F2';
+const COTTON_CANDY = '#6BCABA';
+const COCONUT = '#D0D0CE';
+const APPLE = '#CB2C30';
+const TANGERINE = '#FF8F1C';
+const PEACH = '#E8927C';
+const LEMON = '#FCD757';
 
 // Neutral Colors
-const NEUTRAL_LIGHTEST = "#EEEEEE";
-const NEUTRAL_LIGHTER = "#CCCCCC";
-const NEUTRAL_LIGHT = "#AAAAAA";
-const NEUTRAL = "#666666";
-const NEUTRAL_DARK = "#444444";
-const NEUTRAL_DARKER = "#222222";
-const NEUTRAL_DARKEST = "#111111";
+const NEUTRAL_LIGHTEST = '#EEEEEE';
+const NEUTRAL_LIGHTER = '#CCCCCC';
+const NEUTRAL_LIGHT = '#AAAAAA';
+const NEUTRAL = '#666666';
+const NEUTRAL_DARK = '#444444';
+const NEUTRAL_DARKER = '#222222';
+const NEUTRAL_DARKEST = '#111111';
 
 // System Colors
-const SUCCESS_GREEN = "#1EC27F";
-const SUCCESS_GREEN_LIGHT = "#ECFDF3";
-const ERROR_RED = "#B42318";
-const ERROR_RED_LIGHT = "#FEF3F2";
-const WARNING = "#E09541";
+const SUCCESS_GREEN = '#1EC27F';
+const SUCCESS_GREEN_LIGHT = '#ECFDF3';
+const ERROR_RED = '#B42318';
+const ERROR_RED_LIGHT = '#FEF3F2';
+const WARNING = '#E09541';
 
 // Semantic Colors
 const BACKGROUND_PRIMARY = WHITE;
-const BACKGROUND_SECONDARY = "#FAFAFC";
+const BACKGROUND_SECONDARY = '#FAFAFC';
 const BACKGROUND_TERTIARY = NEUTRAL;
 const BACKGROUND_ALTERNATE = BLACK;
 const BACKGROUND_SUCCESS = SUCCESS_GREEN_LIGHT;

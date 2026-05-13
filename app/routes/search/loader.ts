@@ -1,5 +1,5 @@
-import { LoaderFunctionArgs } from "react-router-dom";
-import { AuthenticationError } from "~/lib/.server/error-types";
+import { LoaderFunctionArgs } from 'react-router-dom';
+import { AuthenticationError } from '~/lib/.server/error-types';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -11,7 +11,7 @@ export const loader = async ({ request: _request }: LoaderFunctionArgs) => {
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
   if (!appId || !searchApiKey) {
-    throw new AuthenticationError("Algolia credentials not found");
+    throw new AuthenticationError('Algolia credentials not found');
   }
 
   // Must return a Response object in React Router v7

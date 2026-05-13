@@ -21,8 +21,8 @@ Try Pattern A first; only add the custom router (Pattern B) if you observe the U
 - Define your URL state type, extending `AlgoliaUrlStateBase` with any custom params (e.g. `campus`, `age`, `lat`, `lng`):
 
   ```ts
-  import type { AlgoliaUrlStateBase } from "~/lib/algolia-url-state";
-  import { createAlgoliaUrlStateConfig } from "~/lib/algolia-url-state";
+  import type { AlgoliaUrlStateBase } from '~/lib/algolia-url-state';
+  import { createAlgoliaUrlStateConfig } from '~/lib/algolia-url-state';
 
   export type YourFinderUrlState = AlgoliaUrlStateBase & {
     campus?: string;

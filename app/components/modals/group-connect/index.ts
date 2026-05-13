@@ -1,3 +1,3 @@
-import { GroupConnectModal } from "./group-connect-modal";
+import { GroupConnectModal } from './group-connect-modal';
 
 export { GroupConnectModal };

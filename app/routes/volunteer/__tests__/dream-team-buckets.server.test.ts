@@ -150,9 +150,21 @@ describe('fetchDreamTeamBuckets', () => {
       image: { value: 'img-guid-1111-2222-333333333333' },
     };
     mockFetch.mockResolvedValueOnce([
-      { guid: 'aaaa-0000-0000-0000-000000000001', value: 'First', attributeValues: fullAttrs },
-      { guid: 'aaaa-0000-0000-0000-000000000002', value: 'Second', attributeValues: fullAttrs },
-      { guid: 'aaaa-0000-0000-0000-000000000003', value: 'Third', attributeValues: fullAttrs },
+      {
+        guid: 'aaaa-0000-0000-0000-000000000001',
+        value: 'First',
+        attributeValues: fullAttrs,
+      },
+      {
+        guid: 'aaaa-0000-0000-0000-000000000002',
+        value: 'Second',
+        attributeValues: fullAttrs,
+      },
+      {
+        guid: 'aaaa-0000-0000-0000-000000000003',
+        value: 'Third',
+        attributeValues: fullAttrs,
+      },
     ]);
 
     const result = await fetchDreamTeamBuckets();

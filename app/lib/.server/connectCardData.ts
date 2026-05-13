@@ -1,4 +1,4 @@
-import { fetchRockData } from "~/lib/.server/fetch-rock-data";
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 
 export type ConnectCardDataType = {
   campuses: string[];
@@ -8,19 +8,19 @@ export type ConnectCardDataType = {
 export const fetchConnectCardData = async () => {
   const ALL_THAT_APPLIES_ID = 389; //Rock Define Type ID
   const rockDefineTypes = await fetchRockData({
-    endpoint: "DefinedValues",
+    endpoint: 'DefinedValues',
     queryParams: {
       $filter: `DefinedTypeId eq ${ALL_THAT_APPLIES_ID}`,
-      $select: "Guid, Value",
+      $select: 'Guid, Value',
     },
   });
 
   const campuses = await fetchRockData({
-    endpoint: "Campuses",
+    endpoint: 'Campuses',
     queryParams: {
-      $filter: "IsActive eq true",
-      $orderby: "Order",
-      $select: "Name",
+      $filter: 'IsActive eq true',
+      $orderby: 'Order',
+      $select: 'Name',
     },
   });
 

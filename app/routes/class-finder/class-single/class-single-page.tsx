@@ -1,4 +1,8 @@
-import { useCallback, useMemo, type MouseEvent as ReactMouseEvent } from 'react';
+import {
+  useCallback,
+  useMemo,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Configure, InstantSearch, useHits } from 'react-instantsearch';
 

@@ -54,7 +54,7 @@ export async function fetchDreamTeamBucketByGuid(
 
     const item: RawDefinedValue | undefined = Array.isArray(raw)
       ? raw[0]
-      : raw ?? undefined;
+      : (raw ?? undefined);
     if (!item) return null;
     return mapDefinedValueToResource(item);
   } catch (error) {

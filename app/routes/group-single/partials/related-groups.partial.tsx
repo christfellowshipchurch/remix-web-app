@@ -1,18 +1,18 @@
-import { Configure, InstantSearch } from "react-instantsearch";
-import { useMemo, useState } from "react";
-import { GroupHit } from "../../group-finder/components/group-hit.component";
-import { useLoaderData } from "react-router-dom";
-import { LoaderReturnType } from "../loader";
-import { CardCarousel } from "~/components/resource-carousel";
+import { Configure, InstantSearch } from 'react-instantsearch';
+import { useMemo, useState } from 'react';
+import { GroupHit } from '../../group-finder/components/group-hit.component';
+import { useLoaderData } from 'react-router-dom';
+import { LoaderReturnType } from '../loader';
+import { CardCarousel } from '~/components/resource-carousel';
 import {
   GroupType,
   GROUPS_ALGOLIA_INDEX_NAME,
   splitGroupTopics,
-} from "~/routes/group-finder/types";
-import { createSearchClient } from "~/lib/create-search-client";
-import { escapeAlgoliaFilterString } from "~/components/finders/finder-algolia.utils";
-import { CollectionItem } from "~/routes/page-builder/types";
-import { GetHits } from "~/components/get-hits";
+} from '~/routes/group-finder/types';
+import { createSearchClient } from '~/lib/create-search-client';
+import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { CollectionItem } from '~/routes/page-builder/types';
+import { GetHits } from '~/components/get-hits';
 
 // Custom component to use hits data with ResourceCarousel
 function RelatedGroupsHits({
@@ -36,11 +36,11 @@ function RelatedGroupsHits({
     <CardCarousel
       CardComponent={HitComponentWrapper}
       resources={filteredItems as unknown as CollectionItem[]}
-      mode="light"
-      layout="arrowsRight"
+      mode='light'
+      layout='arrowsRight'
       /* Avoid clipping carousel chrome; viewport already clips slides via Embla. */
-      carouselClassName="w-full min-w-0 max-w-full"
-      carouselItemClassName="w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]"
+      carouselClassName='w-full min-w-0 max-w-full'
+      carouselItemClassName='w-full max-w-[360px] md:max-w-[300px] lg:max-w-[333px] xl:max-w-[300px]'
     />
   );
 }
@@ -82,18 +82,18 @@ export function RelatedGroupsPartial({
       />
       <GetHits setHits={setHits} />
       {hits.length > 1 ? (
-        <div className="mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24">
-          <div className="w-full flex flex-col gap-6 md:gap-12">
-            <div className="content-padding w-full">
-              <div className="w-full flex justify-between items-center max-w-screen-content mx-auto">
-                <h2 className="text-lg md:text-[28px] lg:text-[32px] font-extrabold">
+        <div className='mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24'>
+          <div className='w-full flex flex-col gap-6 md:gap-12'>
+            <div className='content-padding w-full'>
+              <div className='w-full flex justify-between items-center max-w-screen-content mx-auto'>
+                <h2 className='text-lg md:text-[28px] lg:text-[32px] font-extrabold'>
                   Related Groups
                 </h2>
               </div>
             </div>
 
-            <div className="pl-5 md:pl-12 lg:pl-18 lg:pr-18 w-full">
-              <div className="flex w-full min-w-0 gap-4 overflow-x-hidden mx-auto max-w-screen-content">
+            <div className='pl-5 md:pl-12 lg:pl-18 lg:pr-18 w-full'>
+              <div className='flex w-full min-w-0 gap-4 overflow-x-hidden mx-auto max-w-screen-content'>
                 {/* Results using ResourceCarousel */}
                 <RelatedGroupsHits
                   hits={hits}
@@ -104,7 +104,7 @@ export function RelatedGroupsPartial({
           </div>
         </div>
       ) : (
-        <div className="bg-white w-full h-full py-10" />
+        <div className='bg-white w-full h-full py-10' />
       )}
     </InstantSearch>
   );

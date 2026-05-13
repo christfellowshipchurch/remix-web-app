@@ -1,5 +1,5 @@
-import { LoaderFunction } from "react-router-dom";
-import { AuthenticationError } from "~/lib/.server/error-types";
+import { LoaderFunction } from 'react-router-dom';
+import { AuthenticationError } from '~/lib/.server/error-types';
 
 export type AllMessagesLoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -11,7 +11,7 @@ export const loader: LoaderFunction = async () => {
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
   if (!appId || !searchApiKey) {
-    throw new AuthenticationError("Algolia credentials not found");
+    throw new AuthenticationError('Algolia credentials not found');
   }
 
   return {

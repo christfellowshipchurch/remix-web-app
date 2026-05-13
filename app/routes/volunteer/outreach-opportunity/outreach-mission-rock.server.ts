@@ -1,11 +1,11 @@
-import camelCase from "lodash/camelCase";
-import { format, isValid } from "date-fns";
+import camelCase from 'lodash/camelCase';
+import { format, isValid } from 'date-fns';
 
-import { fetchRockData, TTL } from "~/lib/.server/fetch-rock-data";
-import { escapeOData } from "~/lib/.server/rock-utils";
-import { createImageUrlFromGuid } from "~/lib/utils";
+import { fetchRockData, TTL } from '~/lib/.server/fetch-rock-data';
+import { escapeOData } from '~/lib/.server/rock-utils';
+import { createImageUrlFromGuid } from '~/lib/utils';
 
-import type { VolunteerMissionDetail } from "./types";
+import type { VolunteerMissionDetail } from './types';
 
 type AttrEntry = {
   value?: string;
@@ -40,9 +40,9 @@ function readAttrEntry(
   for (const k of attrKeysRock(keys)) {
     const e = attrs[k];
     if (!e) continue;
-    const hasValue = e.value != null && String(e.value).trim() !== "";
+    const hasValue = e.value != null && String(e.value).trim() !== '';
     const hasFormatted =
-      e.valueFormatted != null && String(e.valueFormatted).trim() !== "";
+      e.valueFormatted != null && String(e.valueFormatted).trim() !== '';
     if (hasValue || hasFormatted) return e;
   }
   return undefined;
@@ -54,7 +54,7 @@ function readAttr(
 ): string | undefined {
   const e = readAttrEntry(attrs, keys);
   const v = e?.value;
-  if (v != null && String(v).trim() !== "") return String(v).trim();
+  if (v != null && String(v).trim() !== '') return String(v).trim();
   return undefined;
 }
 
@@ -65,9 +65,9 @@ function readAttrFormatted(
 ): string | undefined {
   const e = readAttrEntry(attrs, keys);
   const f = e?.valueFormatted;
-  if (f != null && String(f).trim() !== "") return String(f).trim();
+  if (f != null && String(f).trim() !== '') return String(f).trim();
   const v = e?.value;
-  if (v != null && String(v).trim() !== "") return String(v).trim();
+  if (v != null && String(v).trim() !== '') return String(v).trim();
   return undefined;
 }
 
@@ -92,18 +92,18 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
   eventTimeStr: string;
   eventEndTimeStr: string | undefined;
 } {
-  const startRaw = readAttr(attrs, ["EventStartDateTime"]);
-  const startFormatted = readAttrFormatted(attrs, ["EventStartDateTime"]);
+  const startRaw = readAttr(attrs, ['EventStartDateTime']);
+  const startFormatted = readAttrFormatted(attrs, ['EventStartDateTime']);
 
-  let eventDateStr = "—";
-  let eventTimeStr = "—";
+  let eventDateStr = '—';
+  let eventTimeStr = '—';
   let eventEndTimeStr: string | undefined;
 
   const startDate = startRaw ? parseRockDateTime(startRaw) : null;
 
   if (startDate) {
-    eventDateStr = format(startDate, "M/d/yyyy");
-    eventTimeStr = format(startDate, "h:mm a");
+    eventDateStr = format(startDate, 'M/d/yyyy');
+    eventTimeStr = format(startDate, 'h:mm a');
   } else if (startFormatted) {
     const m = startFormatted.match(/^(.+?)\s+(\d{1,2}:\d{2}\s*(?:AM|PM))$/i);
     if (m) {
@@ -114,15 +114,15 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
     }
   }
 
-  const endTimeFormatted = readAttrFormatted(attrs, ["EventEndTime"]);
-  const endTimeRaw = readAttr(attrs, ["EventEndTime"]);
+  const endTimeFormatted = readAttrFormatted(attrs, ['EventEndTime']);
+  const endTimeRaw = readAttr(attrs, ['EventEndTime']);
 
   if (endTimeFormatted && !/^\d{1,2}:\d{2}:\d{2}/.test(endTimeFormatted)) {
     eventEndTimeStr = endTimeFormatted;
   } else if (endTimeRaw && /^\d{1,2}:\d{2}/.test(endTimeRaw) && startDate) {
     const endOnStartDay = parseTimeOnDate(startDate, endTimeRaw);
     if (endOnStartDay) {
-      eventEndTimeStr = format(endOnStartDay, "h:mm a");
+      eventEndTimeStr = format(endOnStartDay, 'h:mm a');
     }
   } else if (endTimeFormatted) {
     eventEndTimeStr = endTimeFormatted;
@@ -135,7 +135,7 @@ function resolveImageUrl(raw: string | undefined): string | undefined {
   if (!raw) return undefined;
   const t = raw.trim();
   if (!t) return undefined;
-  if (t.startsWith("http://") || t.startsWith("https://")) return t;
+  if (t.startsWith('http://') || t.startsWith('https://')) return t;
   return createImageUrlFromGuid(t);
 }
 
@@ -143,10 +143,10 @@ async function getPersonIdFromPersonAliasGuid(
   aliasGuid: string,
 ): Promise<string | null> {
   const res = await fetchRockData({
-    endpoint: "PersonAlias",
+    endpoint: 'PersonAlias',
     queryParams: {
       $filter: `Guid eq guid'${escapeOData(aliasGuid)}'`,
-      $top: "1",
+      $top: '1',
     },
     ttl: TTL.NONE,
   });
@@ -162,16 +162,16 @@ async function fetchPersonNameEmail(
     const p = await fetchRockData({
       endpoint: `People/${personId}`,
       queryParams: {
-        $select: "FirstName,LastName,NickName,Email",
+        $select: 'FirstName,LastName,NickName,Email',
       },
       ttl: TTL.NONE,
     });
-    if (!p || typeof p !== "object") return {};
-    const nick = typeof p.nickName === "string" ? p.nickName.trim() : "";
-    const first = typeof p.firstName === "string" ? p.firstName.trim() : "";
-    const last = typeof p.lastName === "string" ? p.lastName.trim() : "";
-    const email = typeof p.email === "string" ? p.email.trim() : undefined;
-    const name = [nick || first, last].filter(Boolean).join(" ").trim();
+    if (!p || typeof p !== 'object') return {};
+    const nick = typeof p.nickName === 'string' ? p.nickName.trim() : '';
+    const first = typeof p.firstName === 'string' ? p.firstName.trim() : '';
+    const last = typeof p.lastName === 'string' ? p.lastName.trim() : '';
+    const email = typeof p.email === 'string' ? p.email.trim() : undefined;
+    const name = [nick || first, last].filter(Boolean).join(' ').trim();
     return { name: name || undefined, email };
   } catch {
     return {};
@@ -184,11 +184,11 @@ async function resolveContact(attrs: AttrBag | undefined): Promise<{
 }> {
   if (!attrs) return {};
 
-  const formattedName = readAttrFormatted(attrs, ["ContactPerson"]);
-  const personIdRaw = readAttr(attrs, ["ContactPersonId"]) ?? "";
-  const aliasGuid = readAttr(attrs, ["ContactPerson"]) ?? "";
+  const formattedName = readAttrFormatted(attrs, ['ContactPerson']);
+  const personIdRaw = readAttr(attrs, ['ContactPersonId']) ?? '';
+  const aliasGuid = readAttr(attrs, ['ContactPerson']) ?? '';
 
-  let personId = /^\d+$/.test(personIdRaw) ? personIdRaw : "";
+  let personId = /^\d+$/.test(personIdRaw) ? personIdRaw : '';
   const guidRe =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -224,12 +224,12 @@ export async function fetchVolunteerMissionDetailFromRock(
   let raw: unknown;
   try {
     raw = await fetchRockData({
-      endpoint: "Groups",
+      endpoint: 'Groups',
       queryParams: {
         $filter: filter,
-        $top: "1",
-        $expand: "Campus,GroupType",
-        loadAttributes: "expanded",
+        $top: '1',
+        $expand: 'Campus,GroupType',
+        loadAttributes: 'expanded',
       },
       ttl: TTL.SHORT,
     });
@@ -241,43 +241,43 @@ export async function fetchVolunteerMissionDetailFromRock(
     ? raw[0]
     : (raw as RockMissionGroup | undefined);
 
-  if (!row || typeof row !== "object") return null;
+  if (!row || typeof row !== 'object') return null;
 
   const attrs = row.attributeValues;
   const title =
-    readAttr(attrs, ["Title"]) ||
-    (typeof row.name === "string" ? row.name.trim() : "") ||
-    "Volunteer opportunity";
+    readAttr(attrs, ['Title']) ||
+    (typeof row.name === 'string' ? row.name.trim() : '') ||
+    'Volunteer opportunity';
 
   const category =
-    readAttr(attrs, ["Category"]) ||
-    (typeof row.groupType?.name === "string"
+    readAttr(attrs, ['Category']) ||
+    (typeof row.groupType?.name === 'string'
       ? row.groupType.name.trim()
-      : "") ||
-    "Volunteer opportunity";
+      : '') ||
+    'Volunteer opportunity';
 
   const campusName =
-    (typeof row.campus?.name === "string" && row.campus.name.trim()) ||
-    (typeof row.campus?.shortCode === "string" &&
+    (typeof row.campus?.name === 'string' && row.campus.name.trim()) ||
+    (typeof row.campus?.shortCode === 'string' &&
       row.campus.shortCode.trim()) ||
-    readAttrFormatted(attrs, ["CampusLocation"]) ||
-    readAttr(attrs, ["CampusName"]) ||
+    readAttrFormatted(attrs, ['CampusLocation']) ||
+    readAttr(attrs, ['CampusName']) ||
     undefined;
 
-  const coverRaw = readAttr(attrs, ["Photo"]) ?? "";
+  const coverRaw = readAttr(attrs, ['Photo']) ?? '';
   const coverImageUrl = resolveImageUrl(coverRaw);
 
   const summary =
-    readAttr(attrs, ["PublicDescription"]) ||
-    (typeof row.description === "string" ? row.description.trim() : "") ||
-    "";
+    readAttr(attrs, ['PublicDescription']) ||
+    (typeof row.description === 'string' ? row.description.trim() : '') ||
+    '';
 
-  const whatToKnow = readAttr(attrs, ["EmailInfo"]) || "";
+  const whatToKnow = readAttr(attrs, ['EmailInfo']) || '';
 
   const questionsHtml =
-    readAttr(attrs, ["QuestionsHtml", "ContactIntro", "Questions"]) || "";
+    readAttr(attrs, ['QuestionsHtml', 'ContactIntro', 'Questions']) || '';
 
-  const spotsRaw = readAttr(attrs, ["SpotsLeft"]);
+  const spotsRaw = readAttr(attrs, ['SpotsLeft']);
   let spotsLeftDisplay: string | number | undefined;
   if (spotsRaw !== undefined) {
     const n = Number(spotsRaw);
@@ -286,7 +286,7 @@ export async function fetchVolunteerMissionDetailFromRock(
   }
 
   const checkInLocation =
-    readAttr(attrs, ["CheckInLocation"]) || campusName || "—";
+    readAttr(attrs, ['CheckInLocation']) || campusName || '—';
 
   const { eventDateStr, eventTimeStr, eventEndTimeStr } =
     buildEventSchedule(attrs);

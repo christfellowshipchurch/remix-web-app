@@ -20,11 +20,11 @@ export function About({ aboutBody }: { aboutBody: string }) {
   if (!trimmed) return null;
 
   return (
-    <section className="space-y-3">
-      <h2 className="text-xl font-extrabold text-text-primary">
+    <section className='space-y-3'>
+      <h2 className='text-xl font-extrabold text-text-primary'>
         About this opportunity
       </h2>
-      <div className="prose prose-neutral max-w-none text-base leading-relaxed text-text-secondary">
+      <div className='prose prose-neutral max-w-none text-base leading-relaxed text-text-secondary'>
         <HTMLRenderer html={trimmed} />
       </div>
     </section>
@@ -36,8 +36,8 @@ export function WhatToKnow({ data }: { data: string }) {
   if (!content) return null;
 
   return (
-    <section className="space-y-3">
-      <h2 className="text-xl font-extrabold text-text-primary">What to know</h2>
+    <section className='space-y-3'>
+      <h2 className='text-xl font-extrabold text-text-primary'>What to know</h2>
       <WhatToKnowBody content={content} />
     </section>
   );
@@ -55,15 +55,15 @@ export function Questions({
   const hasContact = Boolean(name || email);
 
   return (
-    <section className="space-y-3">
-      <h2 className="text-xl font-extrabold text-text-primary">Questions?</h2>
+    <section className='space-y-3'>
+      <h2 className='text-xl font-extrabold text-text-primary'>Questions?</h2>
       {hasContact ? (
-        <p className="text-base leading-relaxed text-text-secondary">
+        <p className='text-base leading-relaxed text-text-secondary'>
           Reach out to{' '}
           {name ? (
-            <span className="font-semibold text-text-primary">{name}</span>
+            <span className='font-semibold text-text-primary'>{name}</span>
           ) : (
-            <span className="text-text-primary">us</span>
+            <span className='text-text-primary'>us</span>
           )}
           {email ? (
             <>
@@ -71,7 +71,7 @@ export function Questions({
               at{' '}
               <a
                 href={`mailto:${email}`}
-                className="font-semibold text-ocean underline-offset-2 hover:underline"
+                className='font-semibold text-ocean underline-offset-2 hover:underline'
               >
                 {email}
               </a>
@@ -80,11 +80,11 @@ export function Questions({
           .
         </p>
       ) : (
-        <p className="text-base text-text-secondary">
+        <p className='text-base text-text-secondary'>
           For questions, visit{' '}
           <Link
-            to="/volunteer#community"
-            className="font-semibold text-ocean hover:underline"
+            to='/volunteer#community'
+            className='font-semibold text-ocean hover:underline'
           >
             Volunteer
           </Link>{' '}
@@ -109,24 +109,24 @@ export function Sidebar({
   return (
     <OutreachSidebarShell>
       <MissionDetailRows mission={mission} />
-      <div className="h-px w-full bg-[#E5E7EB]" />
-      <div className="flex flex-col gap-3">
+      <div className='h-px w-full bg-[#E5E7EB]' />
+      <div className='flex flex-col gap-3'>
         <Button
-          intent="primary"
-          type="button"
+          intent='primary'
+          type='button'
           onClick={onSignUpClick}
-          className="w-full rounded-full"
+          className='w-full rounded-full'
         >
           Sign Up
         </Button>
         <Button
-          intent="secondary"
-          className="w-full rounded-full border-black/12 hover:border-ocean! text-neutral-darker hover:text-white!"
-          type="button"
+          intent='secondary'
+          className='w-full rounded-full border-black/12 hover:border-ocean! text-neutral-darker hover:text-white!'
+          type='button'
           onClick={() => void onCopyPath()}
         >
-          <span className="inline-flex items-center justify-center gap-2">
-            <Icon name="shareAlt" size={18} />
+          <span className='inline-flex items-center justify-center gap-2'>
+            <Icon name='shareAlt' size={18} />
             {copied ? 'Link copied' : 'Share Link'}
           </span>
         </Button>
@@ -160,26 +160,26 @@ export function MobileBottomBar({
     >
       {copied ? (
         <p
-          className="pointer-events-none fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-white shadow-md"
-          role="status"
-          aria-live="polite"
+          className='pointer-events-none fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-white shadow-md'
+          role='status'
+          aria-live='polite'
         >
           Link copied
         </p>
       ) : null}
       <button
-        type="button"
+        type='button'
         onClick={() => void onCopyPath()}
-        className="flex size-12 shrink-0 items-center justify-center rounded-full border-[0.5px] border-black/12 text-neutral-darker"
+        className='flex size-12 shrink-0 items-center justify-center rounded-full border-[0.5px] border-black/12 text-neutral-darker'
         aria-label={copied ? 'Link copied' : 'Share Button'}
       >
-        <Icon name="shareAlt" size={22} />
+        <Icon name='shareAlt' size={22} />
       </button>
       <Button
-        intent="primary"
-        type="button"
+        intent='primary'
+        type='button'
         onClick={onSignUpClick}
-        className="flex-1 min-w-0 min-h-12 rounded-full text-base font-bold"
+        className='flex-1 min-w-0 min-h-12 rounded-full text-base font-bold'
       >
         Sign Up
       </Button>

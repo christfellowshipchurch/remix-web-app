@@ -1,5 +1,5 @@
-import { useRefinementList, useInstantSearch } from "react-instantsearch";
-import { useRef } from "react";
+import { useRefinementList, useInstantSearch } from 'react-instantsearch';
+import { useRef } from 'react';
 
 export const MobileSearchCustomRefinementList = ({
   attribute,
@@ -16,16 +16,16 @@ export const MobileSearchCustomRefinementList = ({
 
   // Check if "Ministry Page", "Page Builder", or "Redirect Card" is selected
   const isPagesSelected =
-    selectedItems.includes("Ministry Page") ||
-    selectedItems.includes("Page Builder") ||
-    selectedItems.includes("Redirect Card");
+    selectedItems.includes('Ministry Page') ||
+    selectedItems.includes('Page Builder') ||
+    selectedItems.includes('Redirect Card');
 
   // Filter out "Ministry Page", "Page Builder", and "Redirect Card" from regular items
   const filteredItems = items.filter(
     (item) =>
-      item.value !== "Ministry Page" &&
-      item.value !== "Page Builder" &&
-      item.value !== "Redirect Card"
+      item.value !== 'Ministry Page' &&
+      item.value !== 'Page Builder' &&
+      item.value !== 'Redirect Card',
   );
 
   const handleItemClick = (value: string) => {
@@ -36,7 +36,7 @@ export const MobileSearchCustomRefinementList = ({
       if (containerRef.current) {
         containerRef.current.scrollTo({
           left: 0,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }
     }, 100);
@@ -45,9 +45,9 @@ export const MobileSearchCustomRefinementList = ({
   const handlePagesClick = () => {
     const currentSelected = selectedItems.filter(
       (item) =>
-        item !== "Ministry Page" &&
-        item !== "Page Builder" &&
-        item !== "Redirect Card"
+        item !== 'Ministry Page' &&
+        item !== 'Page Builder' &&
+        item !== 'Redirect Card',
     );
 
     if (isPagesSelected) {
@@ -67,9 +67,9 @@ export const MobileSearchCustomRefinementList = ({
           ...prevState.refinementList,
           [attribute]: [
             ...currentSelected,
-            "Ministry Page",
-            "Page Builder",
-            "Redirect Card",
+            'Ministry Page',
+            'Page Builder',
+            'Redirect Card',
           ],
         },
       }));
@@ -80,7 +80,7 @@ export const MobileSearchCustomRefinementList = ({
       if (containerRef.current) {
         containerRef.current.scrollTo({
           left: 0,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }
     }, 100);
@@ -89,15 +89,15 @@ export const MobileSearchCustomRefinementList = ({
   return (
     <div
       ref={containerRef}
-      className="flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 scrollbar-hide"
+      className='flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 scrollbar-hide'
     >
       {/* Custom "Pages" button combining Ministry Page and Page Builder */}
       <button
         onClick={handlePagesClick}
         className={`flex items-center justify-center text-center text-sm font-bold px-4 py-1 whitespace-nowrap transition-all duration-300 ml-4 ${
           isPagesSelected
-            ? "text-white bg-navy rounded-[55px]"
-            : "text-[#7B7382]"
+            ? 'text-white bg-navy rounded-[55px]'
+            : 'text-[#7B7382]'
         }`}
       >
         Pages
@@ -113,8 +113,8 @@ export const MobileSearchCustomRefinementList = ({
             onClick={() => handleItemClick(item.value)}
             className={`flex items-center justify-center text-center text-sm font-bold px-4 py-1 whitespace-nowrap transition-all duration-300 ${
               isSelected
-                ? "text-white bg-navy rounded-[55px]"
-                : "text-[#7B7382]"
+                ? 'text-white bg-navy rounded-[55px]'
+                : 'text-[#7B7382]'
             }`}
           >
             {item.label}

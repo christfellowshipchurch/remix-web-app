@@ -1,6 +1,9 @@
 // This Loader is currently used for both Home and About pages.
 import type { LeaderProfile } from '~/routes/about/components/leaders-data';
-import { buildLeadersWithBios, staticLeaders } from '~/lib/.server/build-leaders-with-bios';
+import {
+  buildLeadersWithBios,
+  staticLeaders,
+} from '~/lib/.server/build-leaders-with-bios';
 
 export type HomeLoaderData = {
   leaders: LeaderProfile[];
