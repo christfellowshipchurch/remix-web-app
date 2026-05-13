@@ -13,10 +13,13 @@ export const HTMLRenderer = ({
   className,
   stripFormattingTags = false,
 }: {
-  html: string;
+  /** CMS / API fields may be missing; treat as empty. */
+  html?: string | null;
   className?: string;
   stripFormattingTags?: boolean;
 }) => {
+  const safeHtml = html ?? '';
+
   // Check if the content is just plain text (no HTML tags)
   const isPlainText = (content: string): boolean => {
     // Trim whitespace and check if it contains any HTML tags
@@ -95,8 +98,8 @@ export const HTMLRenderer = ({
     },
   };
 
-  const parsedContent = parse(sanitizeCmsHtml(html), options);
-  const isText = isPlainText(html);
+  const parsedContent = parse(sanitizeCmsHtml(safeHtml), options);
+  const isText = isPlainText(safeHtml);
 
   // Use <p> tag for plain text, <div> for HTML content
   if (isText) {

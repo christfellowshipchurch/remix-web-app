@@ -10,6 +10,7 @@ import { Button } from '~/primitives/button/button.primitive';
 import { useCopyPagePath } from '~/hooks/use-copy-page-path';
 import { GroupType, splitGroupTopics } from '../group-finder/types';
 import { GroupSingleBanner } from './components/group-single-banner.component';
+import { GroupSingleInterestCta } from './components/group-single-interest-cta.component';
 import { GroupSingleMobileBottomBar } from './components/group-single-mobile-bottom-bar.component';
 
 export const GroupNotFound = () => (
@@ -31,7 +32,7 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
   const groupId = String(hit.groupId ?? hit.objectID);
 
   return (
-    <section className='flex flex-col items-center dark:bg-gray-900 pb-24 md:pb-0'>
+    <section className='flex flex-col items-center dark:bg-gray-900'>
       {/* Desktop Only Banner */}
       <GroupSingleBanner
         language={hit.language}
@@ -45,6 +46,8 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
 
       {/* Hero */}
       <GroupSingleHero hit={hit} />
+
+      <GroupSingleInterestCta groupId={groupId} />
 
       <div className='content-padding w-full flex justify-center'>
         <div className='justify-center flex flex-col gap-12 pt-10 lg:pt-16 w-full max-w-screen-content'>

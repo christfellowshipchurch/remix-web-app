@@ -155,7 +155,7 @@ const AllArticlesHit = ({
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center'>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:gap-8! justify-center items-center'>
       {items.map((hit) => (
         <ArticleHit hit={hit} key={hit.objectID} />
       ))}
@@ -170,7 +170,7 @@ const ArticleHit = ({ hit }: { hit: ContentItemHit }) => {
 const AllArticlesLoadingSkeleton = () => {
   return (
     <div className='flex flex-col gap-8 pt-8'>
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:gap-8! justify-center items-center'>
         {[...Array(9)].map((_, i) => (
           <div
             key={i}

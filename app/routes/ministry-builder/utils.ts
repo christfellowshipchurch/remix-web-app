@@ -45,8 +45,11 @@ export const formatDaysOfWeek = (daysOfWeek: string) => {
 };
 
 /**
- * Formats the service times for a ministry service
+ * Individual time strings for pill UI (pipe-separated in Rock)
  */
-export const formattedServiceTimes = (serviceTimes: string) => {
-  return serviceTimes.split('|').join(', ');
+export const serviceTimesList = (serviceTimes: string): string[] => {
+  return serviceTimes
+    .split('|')
+    .map((t) => t.trim())
+    .filter(Boolean);
 };
