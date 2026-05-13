@@ -1,13 +1,10 @@
 import { useLocation } from 'react-router-dom';
 import {
-  useEffect,
   useMemo,
   useRef,
   useState,
-  type Dispatch,
-  type SetStateAction,
+  type PointerEvent as ReactPointerEvent,
 } from 'react';
-import { createPortal } from 'react-dom';
 import capitalize from 'lodash/capitalize';
 
 import Dropdown, {
@@ -18,211 +15,22 @@ import { RockCampuses } from '~/lib/rock-config';
 import { cn } from '~/lib/utils';
 import { MinistryService } from '../../page-builder/types';
 import { ministryTypeRules } from '../utils';
-import {
-  MINISTRY_SHEET_MOBILE_MQ,
-  useMinistryMobileSheetGrip,
-} from './use-ministry-mobile-sheet-grip';
 import { ServiceCard } from './service-card.component';
+import { MobileScrollLock } from './mobile-scroll-lock.component';
 
 interface MinistryServiceTimesProps {
   services?: MinistryService[];
 }
 
-interface MinistryServiceTimesSheetProps {
-  sheetVariant: 'inline' | 'portal';
-  pathnameTitle: string;
-  barSubtitleDefault: string;
-  selectedLocation: string;
-  setSelectedLocation: Dispatch<SetStateAction<string>>;
-  isExpanded: boolean;
-  setIsExpanded: Dispatch<SetStateAction<boolean>>;
-  mobileNarrow: boolean;
-  locationOptions: DropdownOption[];
-  filteredServices: MinistryService[];
-}
+const DRAG_THRESHOLD_PX = 40;
 
-function MinistryServiceTimesSheet({
-  sheetVariant,
-  pathnameTitle,
-  barSubtitleDefault,
-  selectedLocation,
-  setSelectedLocation,
-  isExpanded,
-  setIsExpanded,
-  mobileNarrow,
-  locationOptions,
-  filteredServices,
-}: MinistryServiceTimesSheetProps) {
-  const grip = useMinistryMobileSheetGrip({
-    mobileNarrow,
-    isExpanded,
-    setIsExpanded,
-  });
-
-  return (
-    <div
-      className={cn(
-        'overflow-hidden rounded-t-2xl border-t-2 border-[#e1e6ec] bg-white',
-        'shadow-[0_-12px_32px_-8px_rgba(0,80,120,0.18),0_-4px_12px_-4px_rgba(0,0,0,0.08)]',
-        'md:shadow-[0_-20px_40px_-10px_rgba(0,80,120,0.25),0_-6px_16px_-6px_rgba(0,0,0,0.1)]',
-        sheetVariant === 'portal' &&
-          'flex max-h-[min(88dvh,900px)] w-full max-w-full flex-col',
-        grip.sheetClassName,
-      )}
-      style={grip.sheetStyle}
-    >
-      <div
-        className={grip.gripRowClassName}
-        aria-hidden={!mobileNarrow}
-        {...grip.gripRowProps}
-      >
-        <span
-          className='h-1 w-10 shrink-0 rounded-full bg-[#cfd4dc]'
-          aria-hidden
-        />
-      </div>
-
-      <button
-        type='button'
-        onClick={() => setIsExpanded((open) => !open)}
-        className={cn(
-          'flex w-full shrink-0 cursor-pointer items-center gap-4 px-5 transition-colors',
-          'md:justify-between pt-2 md:pt-5 pb-5',
-          'md:min-h-[72px] md:items-center md:justify-center',
-          'hover:bg-neutral-50/80',
-          isExpanded ? 'border-b border-[#E1E6EC]' : '',
-        )}
-        aria-expanded={isExpanded}
-        aria-label='Toggle Service Times section'
-      >
-        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-[#e6f4f9]'>
-          <Icon name='calendarAlt' className='text-navy' size={18} />
-        </div>
-        <div className='min-w-0 flex-1 text-left md:flex-initial'>
-          <p className='text-base font-extrabold leading-tight text-[#1a2733]'>
-            {pathnameTitle} Service Times
-          </p>
-          {selectedLocation ? (
-            <p className='mt-0.5 w-full min-w-0 truncate text-[13px] font-medium leading-snug text-[#6b7480]'>
-              <span>{selectedLocation}</span>
-              <span className='inline-flex items-center gap-1 align-middle ml-1'>
-                <span
-                  className='size-[3px] shrink-0 rounded-full bg-[#6b7480]'
-                  aria-hidden
-                />
-                Tap to view times
-              </span>
-            </p>
-          ) : (
-            <p className='mt-0.5 text-[13px] font-medium leading-snug text-[#6b7480]'>
-              {barSubtitleDefault}
-            </p>
-          )}
-        </div>
-        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-ocean'>
-          <Icon
-            name='chevronUp'
-            className={cn(
-              'text-white transition-transform duration-300',
-              isExpanded && 'rotate-180',
-            )}
-            size={20}
-          />
-        </div>
-      </button>
-
-      {isExpanded ? (
-        <div
-          className={cn(
-            'animate-in fade-in flex flex-col gap-5 duration-300',
-            'bg-[#f7f9fc]',
-            'px-5 pt-4 pb-6 md:px-5 md:pt-6 md:pb-8',
-            sheetVariant === 'portal'
-              ? 'min-h-0 flex-1 overflow-y-auto overscroll-contain'
-              : 'max-md:min-h-0 max-md:max-h-[min(75dvh,calc(100dvh-11rem))] max-md:overflow-y-auto max-md:overscroll-contain',
-          )}
-        >
-          <div
-            className={cn(
-              'mx-auto flex w-full md:max-w-[298px] flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-center md:gap-4',
-            )}
-          >
-            <span className='shrink-0 text-[13px] font-semibold text-[#1a2733]'>
-              Location
-            </span>
-            <div
-              className={cn(
-                'w-full min-w-0',
-                selectedLocation && 'md:w-[231px] md:max-w-[231px] md:shrink-0',
-              )}
-            >
-              <Dropdown
-                className='w-full'
-                options={locationOptions}
-                value={selectedLocation}
-                onChange={setSelectedLocation}
-                placeholder='Choose a location'
-                triggerIcon='mapFilled'
-                triggerIconClassName='text-ocean'
-                triggerClassName={cn(
-                  'h-[43px] rounded-[10px] border-[#dfe4eb] py-[11px] pl-[13px] pr-[13px] shadow-none',
-                  'text-sm hover:border-[#dfe4eb]',
-                  selectedLocation
-                    ? 'font-semibold text-[#1a2733]'
-                    : 'font-normal text-[#9aa3ad]',
-                )}
-                chevronColor='text-neutral-500'
-                menuClassName='z-[10000]'
-              />
-            </div>
-          </div>
-
-          {!selectedLocation ? (
-            <div className='mx-auto w-full md:max-w-[298px]'>
-              <div className='mx-auto flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-[#cdd6df] bg-white px-6 pb-8 pt-7'>
-                <div className='flex size-12 items-center justify-center rounded-full bg-[#e6f4f9]'>
-                  <Icon name='mapFilled' className='text-ocean' size={20} />
-                </div>
-                <p className='text-center text-[15px] font-semibold leading-snug text-[#1a2733]'>
-                  Pick a location to get started
-                </p>
-                <p className='text-center text-[13px] font-normal leading-normal text-[#6b7480]'>
-                  {`Service times, info, and signups vary by campus. Choose yours above to see what's coming up.`}
-                </p>
-              </div>
-            </div>
-          ) : filteredServices.length > 0 ? (
-            <div className='mx-auto grid w-full max-w-[680px] grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:justify-items-center md:gap-5'>
-              {filteredServices.map((service, i) => (
-                <div
-                  key={service.id ?? i}
-                  className='flex h-full min-h-0 w-full flex-col'
-                >
-                  <ServiceCard
-                    service={service}
-                    onLinkClick={() => setIsExpanded(false)}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-/**
- * Main Ministry Service Times Component
- */
 export const MinistryServiceTimes = ({
   services = [],
 }: MinistryServiceTimesProps) => {
   const { pathname } = useLocation();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [mobileNarrow, setMobileNarrow] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const dragStartYRef = useRef<number | null>(null);
 
   const pathnameTitle = pathname
     .split('/')[2]
@@ -233,9 +41,7 @@ export const MinistryServiceTimes = ({
   const relevantServices = useMemo(() => {
     const pathSegment = pathname.split('/')[2]?.toLowerCase() || '';
     const relatedMinistryTypes = ministryTypeRules[pathSegment];
-    if (!relatedMinistryTypes) {
-      return [];
-    }
+    if (!relatedMinistryTypes) return [];
     return services.filter((service) =>
       relatedMinistryTypes.includes(service.ministryType),
     );
@@ -253,164 +59,197 @@ export const MinistryServiceTimes = ({
     const options: DropdownOption[] = [];
     RockCampuses.forEach((campus) => {
       if (uniqueLocations.includes(campus.name)) {
-        options.push({
-          value: campus.name,
-          label: campus.name,
-        });
+        options.push({ value: campus.name, label: campus.name });
       }
     });
     return options;
   }, [uniqueLocations]);
 
   const filteredServices = useMemo(() => {
-    if (!selectedLocation) {
-      return [];
-    }
+    if (!selectedLocation) return [];
     return relevantServices.filter(
       (service) => service?.location?.name === selectedLocation,
     );
   }, [relevantServices, selectedLocation]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mq = window.matchMedia(MINISTRY_SHEET_MOBILE_MQ);
-    const sync = () => setMobileNarrow(mq.matches);
-    sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
-  }, []);
-
-  useEffect(() => {
-    if (!isExpanded) return;
-
-    const handleMouseDownOutside = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        setIsExpanded(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleMouseDownOutside);
-    return () =>
-      document.removeEventListener('mousedown', handleMouseDownOutside);
-  }, [isExpanded]);
-
-  useEffect(() => {
-    if (!mobileNarrow || !isExpanded) return;
-
-    const scrollY = window.scrollY;
-    const prevBody = {
-      position: document.body.style.position,
-      top: document.body.style.top,
-      left: document.body.style.left,
-      right: document.body.style.right,
-      width: document.body.style.width,
-      overflow: document.body.style.overflow,
-    };
-    const prevHtmlOverflow = document.documentElement.style.overflow;
-
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.documentElement.style.overflow = prevHtmlOverflow;
-      document.body.style.position = prevBody.position;
-      document.body.style.top = prevBody.top;
-      document.body.style.left = prevBody.left;
-      document.body.style.right = prevBody.right;
-      document.body.style.width = prevBody.width;
-      document.body.style.overflow = prevBody.overflow;
-      window.scrollTo(0, scrollY);
-    };
-  }, [mobileNarrow, isExpanded]);
-
-  useEffect(() => {
-    if (!mobileNarrow || !isExpanded) return;
-    const onKey = (e: { key: string }) => {
-      if (e.key === 'Escape') setIsExpanded(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [mobileNarrow, isExpanded]);
-
-  if (relevantServices.length === 0) {
-    return null;
-  }
+  if (relevantServices.length === 0) return null;
 
   const barSubtitleDefault = 'Choose a location and see times';
-  const portalOpen = mobileNarrow && isExpanded;
 
-  const sheetProps = {
-    pathnameTitle,
-    barSubtitleDefault,
-    selectedLocation,
-    setSelectedLocation,
-    isExpanded,
-    setIsExpanded,
-    mobileNarrow,
-    locationOptions,
-    filteredServices,
+  const handleGripPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    dragStartYRef.current = e.clientY;
+  };
+
+  const handleGripPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const startY = dragStartYRef.current;
+    dragStartYRef.current = null;
+    if (startY === null) return;
+    const delta = e.clientY - startY;
+    if (delta < -DRAG_THRESHOLD_PX) setIsExpanded(true);
+    else if (delta > DRAG_THRESHOLD_PX) setIsExpanded(false);
+  };
+
+  const handleGripPointerCancel = () => {
+    dragStartYRef.current = null;
   };
 
   return (
-    <>
-      {portalOpen ? (
+    <MobileScrollLock active={isExpanded}>
+      <div
+        className={cn(
+          'bottom-0 bg-transparent',
+          isExpanded
+            ? 'fixed inset-x-0 z-50 md:sticky md:inset-x-auto md:z-10'
+            : 'sticky z-10',
+        )}
+      >
         <div
-          aria-hidden
-          className='sticky bottom-0 z-0 block min-h-[96px] md:hidden'
-        />
-      ) : null}
-      {!portalOpen ? (
-        <div ref={panelRef} className='sticky bottom-0 z-10 bg-transparent'>
-          <MinistryServiceTimesSheet sheetVariant='inline' {...sheetProps} />
-        </div>
-      ) : null}
-      {portalOpen && typeof document !== 'undefined'
-        ? createPortal(
-            <div
-              className='pointer-events-none fixed inset-0 z-500 box-border flex max-h-dvh flex-col justify-end overflow-x-hidden overscroll-contain'
-              style={{
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                width: '100%',
-                maxWidth: '100%',
-                height: '100%',
-                maxHeight: '100dvh',
-                overscrollBehavior: 'contain',
-              }}
-              role='presentation'
-              data-ministry-service-times-portal
-            >
-              <button
-                type='button'
-                className='pointer-events-auto absolute inset-0 z-0 cursor-default bg-black/30'
-                onClick={() => setIsExpanded(false)}
-                aria-label='Close service times'
+          className={cn(
+            'overflow-hidden rounded-t-2xl border-t-2 border-[#e1e6ec] bg-white',
+            'shadow-[0_-12px_32px_-8px_rgba(0,80,120,0.18),0_-4px_12px_-4px_rgba(0,0,0,0.08)]',
+            'md:shadow-[0_-20px_40px_-10px_rgba(0,80,120,0.25),0_-6px_16px_-6px_rgba(0,0,0,0.1)]',
+          )}
+        >
+          <div
+            className='flex touch-none cursor-grab select-none items-center justify-center py-2.5 active:cursor-grabbing md:hidden md:pointer-events-none'
+            onPointerDown={handleGripPointerDown}
+            onPointerUp={handleGripPointerUp}
+            onPointerCancel={handleGripPointerCancel}
+            aria-label={
+              isExpanded
+                ? 'Drag down to close service times'
+                : 'Drag up to open service times'
+            }
+          >
+            <span
+              className='h-1 w-10 shrink-0 rounded-full bg-[#cfd4dc]'
+              aria-hidden
+            />
+          </div>
+
+          <button
+            type='button'
+            onClick={() => setIsExpanded((open) => !open)}
+            className={cn(
+              'flex w-full shrink-0 cursor-pointer items-center gap-4 px-5 transition-colors',
+              'pt-2 pb-5 md:justify-between md:pt-5',
+              'md:min-h-[72px] md:items-center md:justify-center',
+              'hover:bg-neutral-50/80',
+              isExpanded ? 'border-b border-[#E1E6EC]' : '',
+            )}
+            aria-expanded={isExpanded}
+            aria-label='Toggle Service Times section'
+          >
+            <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-[#e6f4f9]'>
+              <Icon name='calendarAlt' className='text-navy' size={18} />
+            </div>
+            <div className='min-w-0 flex-1 text-left md:flex-initial'>
+              <p className='text-base font-extrabold leading-tight text-[#1a2733]'>
+                {pathnameTitle} Service Times
+              </p>
+              {selectedLocation ? (
+                <p className='mt-0.5 w-full min-w-0 truncate text-[13px] font-medium leading-snug text-[#6b7480]'>
+                  <span>{selectedLocation}</span>
+                  <span className='inline-flex items-center gap-1 align-middle ml-1'>
+                    <span
+                      className='size-[3px] shrink-0 rounded-full bg-[#6b7480]'
+                      aria-hidden
+                    />
+                    Tap to view times
+                  </span>
+                </p>
+              ) : (
+                <p className='mt-0.5 text-[13px] font-medium leading-snug text-[#6b7480]'>
+                  {barSubtitleDefault}
+                </p>
+              )}
+            </div>
+            <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-ocean'>
+              <Icon
+                name='chevronUp'
+                className={cn(
+                  'text-white transition-transform duration-300',
+                  isExpanded && 'rotate-180',
+                )}
+                size={20}
               />
-              <div className='relative z-10 flex w-full min-w-0 max-w-full justify-center pointer-events-none'>
+            </div>
+          </button>
+
+          {isExpanded ? (
+            <div
+              className={cn(
+                'animate-in fade-in flex flex-col gap-5 duration-300',
+                'bg-[#f7f9fc]',
+                'px-5 pt-4 pb-6 md:px-5 md:pt-6 md:pb-8',
+                'max-md:max-h-[min(75dvh,calc(100dvh-11rem))] max-md:overflow-y-auto max-md:overscroll-contain',
+              )}
+            >
+              <div className='mx-auto flex w-full flex-col items-stretch gap-3 md:max-w-[298px] md:flex-row md:items-center md:justify-center md:gap-4'>
+                <span className='shrink-0 text-[13px] font-semibold text-[#1a2733]'>
+                  Location
+                </span>
                 <div
-                  ref={panelRef}
-                  className='pointer-events-auto w-full min-w-0 max-w-full'
-                  role='dialog'
-                  aria-modal='true'
-                  aria-label={`${pathnameTitle} service times`}
+                  className={cn(
+                    'w-full min-w-0',
+                    selectedLocation &&
+                      'md:w-[231px] md:max-w-[231px] md:shrink-0',
+                  )}
                 >
-                  <MinistryServiceTimesSheet
-                    sheetVariant='portal'
-                    {...sheetProps}
+                  <Dropdown
+                    className='w-full'
+                    options={locationOptions}
+                    value={selectedLocation}
+                    onChange={setSelectedLocation}
+                    placeholder='Choose a location'
+                    triggerIcon='mapFilled'
+                    triggerIconClassName='text-ocean'
+                    triggerClassName={cn(
+                      'h-[43px] rounded-[10px] border-[#dfe4eb] py-[11px] pl-[13px] pr-[13px] shadow-none',
+                      'text-sm hover:border-[#dfe4eb]',
+                      selectedLocation
+                        ? 'font-semibold text-[#1a2733]'
+                        : 'font-normal text-[#9aa3ad]',
+                    )}
+                    chevronColor='text-neutral-500'
+                    menuClassName='z-[10000]'
                   />
                 </div>
               </div>
-            </div>,
-            document.body,
-          )
-        : null}
-    </>
+
+              {!selectedLocation ? (
+                <div className='mx-auto w-full md:max-w-[298px]'>
+                  <div className='mx-auto flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-[#cdd6df] bg-white px-6 pb-8 pt-7'>
+                    <div className='flex size-12 items-center justify-center rounded-full bg-[#e6f4f9]'>
+                      <Icon name='mapFilled' className='text-ocean' size={20} />
+                    </div>
+                    <p className='text-center text-[15px] font-semibold leading-snug text-[#1a2733]'>
+                      Pick a location to get started
+                    </p>
+                    <p className='text-center text-[13px] font-normal leading-normal text-[#6b7480]'>
+                      {`Service times, info, and signups vary by campus. Choose yours above to see what's coming up.`}
+                    </p>
+                  </div>
+                </div>
+              ) : filteredServices.length > 0 ? (
+                <div className='mx-auto grid w-full max-w-[680px] grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:justify-items-center md:gap-5'>
+                  {filteredServices.map((service, i) => (
+                    <div
+                      key={service.id ?? i}
+                      className='flex h-full min-h-0 w-full flex-col'
+                    >
+                      <ServiceCard
+                        service={service}
+                        onLinkClick={() => setIsExpanded(false)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </MobileScrollLock>
   );
 };
