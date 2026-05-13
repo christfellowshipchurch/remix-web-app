@@ -22,7 +22,8 @@ interface MinistryServiceTimesProps {
   services?: MinistryService[];
 }
 
-const DRAG_THRESHOLD_PX = 40;
+const DRAG_CLOSE_THRESHOLD_PX = 80;
+const DRAG_SPRING_TRANSITION = 'transform 250ms cubic-bezier(0.32, 0.72, 0, 1)';
 
 export const MinistryServiceTimes = ({
   services = [],
@@ -30,6 +31,8 @@ export const MinistryServiceTimes = ({
   const { pathname } = useLocation();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const dragStartYRef = useRef<number | null>(null);
 
   const pathnameTitle = pathname
@@ -77,20 +80,38 @@ export const MinistryServiceTimes = ({
   const barSubtitleDefault = 'Choose a location and see times';
 
   const handleGripPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isExpanded) return;
     dragStartYRef.current = e.clientY;
+    setIsDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleGripPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current === null) return;
+    const delta = e.clientY - dragStartYRef.current;
+    setDragY(Math.max(0, delta));
   };
 
   const handleGripPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
     const startY = dragStartYRef.current;
     dragStartYRef.current = null;
-    if (startY === null) return;
+    setIsDragging(false);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    if (startY === null) {
+      setDragY(0);
+      return;
+    }
     const delta = e.clientY - startY;
-    if (delta < -DRAG_THRESHOLD_PX) setIsExpanded(true);
-    else if (delta > DRAG_THRESHOLD_PX) setIsExpanded(false);
+    setDragY(0);
+    if (delta > DRAG_CLOSE_THRESHOLD_PX) setIsExpanded(false);
   };
 
   const handleGripPointerCancel = () => {
     dragStartYRef.current = null;
+    setIsDragging(false);
+    setDragY(0);
   };
 
   return (
@@ -108,34 +129,38 @@ export const MinistryServiceTimes = ({
             'overflow-hidden rounded-t-2xl border-t-2 border-[#e1e6ec] bg-white',
             'shadow-[0_-12px_32px_-8px_rgba(0,80,120,0.18),0_-4px_12px_-4px_rgba(0,0,0,0.08)]',
             'md:shadow-[0_-20px_40px_-10px_rgba(0,80,120,0.25),0_-6px_16px_-6px_rgba(0,0,0,0.1)]',
+            isExpanded && 'will-change-transform',
           )}
+          style={{
+            transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+            transition: isDragging ? 'none' : DRAG_SPRING_TRANSITION,
+          }}
         >
-          <div
-            className='flex touch-none cursor-grab select-none items-center justify-center py-2.5 active:cursor-grabbing md:hidden md:pointer-events-none'
-            onPointerDown={handleGripPointerDown}
-            onPointerUp={handleGripPointerUp}
-            onPointerCancel={handleGripPointerCancel}
-            aria-label={
-              isExpanded
-                ? 'Drag down to close service times'
-                : 'Drag up to open service times'
-            }
-          >
-            <span
-              className='h-1 w-10 shrink-0 rounded-full bg-[#cfd4dc]'
-              aria-hidden
-            />
-          </div>
+          {isExpanded ? (
+            <div
+              className='flex touch-none cursor-grab select-none items-center justify-center py-2.5 active:cursor-grabbing md:hidden'
+              onPointerDown={handleGripPointerDown}
+              onPointerMove={handleGripPointerMove}
+              onPointerUp={handleGripPointerUp}
+              onPointerCancel={handleGripPointerCancel}
+              aria-label='Drag down to close service times'
+            >
+              <span
+                className='h-1 w-10 shrink-0 rounded-full bg-[#cfd4dc]'
+                aria-hidden
+              />
+            </div>
+          ) : null}
 
           <button
             type='button'
             onClick={() => setIsExpanded((open) => !open)}
             className={cn(
               'flex w-full shrink-0 cursor-pointer items-center gap-4 px-5 transition-colors',
-              'pt-2 pb-5 md:justify-between md:pt-5',
+              'pb-5 md:justify-between md:pt-5',
               'md:min-h-[72px] md:items-center md:justify-center',
               'hover:bg-neutral-50/80',
-              isExpanded ? 'border-b border-[#E1E6EC]' : '',
+              isExpanded ? 'pt-2 border-b border-[#E1E6EC]' : 'pt-5',
             )}
             aria-expanded={isExpanded}
             aria-label='Toggle Service Times section'
