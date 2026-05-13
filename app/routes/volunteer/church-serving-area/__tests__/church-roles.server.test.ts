@@ -136,7 +136,10 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
 
   it('skips items missing a name', async () => {
     mockFetch.mockResolvedValueOnce([
-      { guid: 'role-guid-1111-2222-3333-444444444444', description: '<p>No name.</p>' },
+      {
+        guid: 'role-guid-1111-2222-3333-444444444444',
+        description: '<p>No name.</p>',
+      },
     ]);
 
     const result = await fetchChurchRolesByPreferenceAreaGuid(BUCKET_GUID);

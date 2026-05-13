@@ -1,13 +1,13 @@
 interface RadioButtonsProps {
   options: { value: string; label: string }[];
-  orientation?: "vertical" | "horizontal";
+  orientation?: 'vertical' | 'horizontal';
   selectedOption: string;
   onChange: (value: string) => void;
 }
 
 const RadioButtons: React.FC<RadioButtonsProps> = ({
   options,
-  orientation = "horizontal",
+  orientation = 'horizontal',
   selectedOption,
   onChange,
 }) => {
@@ -18,18 +18,18 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({
   return (
     <div
       className={
-        orientation === "horizontal"
-          ? "flex flex-row space-x-4"
-          : "flex flex-col space-y-2"
+        orientation === 'horizontal'
+          ? 'flex flex-row space-x-4'
+          : 'flex flex-col space-y-2'
       }
     >
       {options.map((option) => (
-        <label key={option.value} className="flex items-center space-x-2">
+        <label key={option.value} className='flex items-center space-x-2'>
           <input
-            type="radio"
-            name="option"
+            type='radio'
+            name='option'
             value={option.value}
-            className="hidden"
+            className='hidden'
             checked={selectedOption === option.value}
             onChange={handleChange}
             id={`option-${option.value}`}
@@ -39,7 +39,7 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({
           >
             <span
               className={`h-3 w-3 rounded-full bg-ocean ${
-                selectedOption === option.value ? "" : "hidden"
+                selectedOption === option.value ? '' : 'hidden'
               }`}
             />
           </span>

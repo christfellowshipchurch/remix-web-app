@@ -1,10 +1,10 @@
-import { useMemo, type ReactNode } from "react";
-import { Configure, InstantSearch, useHits } from "react-instantsearch";
+import { useMemo, type ReactNode } from 'react';
+import { Configure, InstantSearch, useHits } from 'react-instantsearch';
 
-import { createSearchClient } from "~/lib/create-search-client";
+import { createSearchClient } from '~/lib/create-search-client';
 
-import type { Volunteer } from "../../types";
-import { VOLUNTEER_ALGOLIA_INDEX } from "../../types";
+import type { Volunteer } from '../../types';
+import { VOLUNTEER_ALGOLIA_INDEX } from '../../types';
 
 function normalizeGroupGuid(value: string): string {
   return value.trim().toUpperCase();
@@ -28,9 +28,7 @@ function SpotsFromHits({
 }) {
   const { items } = useHits<Volunteer>();
   const want = normalizeGroupGuid(groupGuid);
-  const hit = items.find(
-    (h) => normalizeGroupGuid(h.groupGuid ?? "") === want,
-  );
+  const hit = items.find((h) => normalizeGroupGuid(h.groupGuid ?? '') === want);
   const fromAlgolia = hit ? spotsLeftToLabel(hit.spotsLeft) : null;
   return <>{children(fromAlgolia ?? rockFallback)}</>;
 }

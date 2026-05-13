@@ -1,4 +1,7 @@
-import { leaders, type LeaderProfile } from '~/routes/about/components/leaders-data';
+import {
+  leaders,
+  type LeaderProfile,
+} from '~/routes/about/components/leaders-data';
 import { fetchAuthorByPathname } from '~/lib/.server/author-utils';
 
 const fetchRockBio = async (pathname: string): Promise<string | null> => {
@@ -13,7 +16,7 @@ const fetchRockBio = async (pathname: string): Promise<string | null> => {
 
 export async function buildLeadersWithBios(): Promise<LeaderProfile[]> {
   const rockBios = await Promise.all(
-    leaders.map((leader) => fetchRockBio(leader.pathname))
+    leaders.map((leader) => fetchRockBio(leader.pathname)),
   );
 
   return leaders.map((leader, index) => ({

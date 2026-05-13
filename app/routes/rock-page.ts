@@ -1,37 +1,37 @@
-import { LoaderFunction } from "react-router-dom";
+import { LoaderFunction } from 'react-router-dom';
 
-const ALLOWED_HOSTS = new Set(["rock.christfellowship.church"]);
+const ALLOWED_HOSTS = new Set(['rock.christfellowship.church']);
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
-  const targetUrl = url.searchParams.get("url");
+  const targetUrl = url.searchParams.get('url');
 
   if (!targetUrl) {
-    throw new Response("URL parameter required", { status: 400 });
+    throw new Response('URL parameter required', { status: 400 });
   }
 
   let parsed: URL;
   try {
     parsed = new URL(targetUrl);
   } catch {
-    throw new Response("Invalid URL", { status: 400 });
+    throw new Response('Invalid URL', { status: 400 });
   }
 
-  if (parsed.protocol !== "https:") {
-    throw new Response("HTTPS only", { status: 400 });
+  if (parsed.protocol !== 'https:') {
+    throw new Response('HTTPS only', { status: 400 });
   }
 
   if (!ALLOWED_HOSTS.has(parsed.hostname)) {
-    throw new Response("Host not allowed", { status: 403 });
+    throw new Response('Host not allowed', { status: 403 });
   }
 
   try {
     // Fetch the content from Rock RMS
     const response = await fetch(targetUrl, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; RockRMS-Proxy/1.0)",
+        'User-Agent': 'Mozilla/5.0 (compatible; RockRMS-Proxy/1.0)',
         Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       },
     });
 
@@ -55,16 +55,16 @@ export const loader: LoaderFunction = async ({ request }) => {
         const hrefMatch = link.match(/href=["']([^"']*)["']/);
         if (hrefMatch) {
           let href = hrefMatch[1];
-          if (href.startsWith("/")) {
+          if (href.startsWith('/')) {
             href = baseUrlString + href;
-          } else if (!href.startsWith("http")) {
-            href = baseUrlString + "/" + href;
+          } else if (!href.startsWith('http')) {
+            href = baseUrlString + '/' + href;
           }
           return `<link rel="stylesheet" href="${href}">`;
         }
         return link;
       })
-      .join("\n");
+      .join('\n');
 
     // Replace specific FontAwesome icons with project icons
     const iconReplacement = `
@@ -110,35 +110,35 @@ export const loader: LoaderFunction = async ({ request }) => {
         const srcMatch = script.match(/src=["']([^"']*)["']/);
         if (srcMatch) {
           let src = srcMatch[1];
-          if (src.startsWith("/")) {
+          if (src.startsWith('/')) {
             src = baseUrlString + src;
-          } else if (!src.startsWith("http")) {
-            src = baseUrlString + "/" + src;
+          } else if (!src.startsWith('http')) {
+            src = baseUrlString + '/' + src;
           }
           return `<script src="${src}"></script>`;
         }
         return script;
       })
-      .join("\n");
+      .join('\n');
 
     /* eslint-disable no-useless-escape */
     // Modify the HTML to work better in iframe
     const modifiedHtml = html
       // Remove any X-Frame-Options meta tags
-      .replace(/<meta[^>]*http-equiv="X-Frame-Options"[^>]*>/gi, "")
+      .replace(/<meta[^>]*http-equiv="X-Frame-Options"[^>]*>/gi, '')
       // Remove CSP meta tags that might block embedding
-      .replace(/<meta[^>]*http-equiv="Content-Security-Policy"[^>]*>/gi, "")
+      .replace(/<meta[^>]*http-equiv="Content-Security-Policy"[^>]*>/gi, '')
       // Remove existing CSS and JS links (we'll add them back with absolute URLs)
-      .replace(/<link[^>]*rel=["']stylesheet["'][^>]*>/gi, "")
-      .replace(/<script[^>]*src=["'][^"']*["'][^>]*><\/script>/gi, "")
+      .replace(/<link[^>]*rel=["']stylesheet["'][^>]*>/gi, '')
+      .replace(/<script[^>]*src=["'][^"']*["'][^>]*><\/script>/gi, '')
       // Fix relative paths in CSS url() functions
       .replace(/url\(\/([^)]*)\)/gi, `url(${baseUrlString}/$1)`)
       .replace(/url\(['"]?\/([^'")]*)/gi, `url('${baseUrlString}/$1`)
       // Add base tag to help with relative paths
-      .replace("<head>", `<head><base href="${baseUrlString}/">`)
+      .replace('<head>', `<head><base href="${baseUrlString}/">`)
       // Add all the CSS and JS back with absolute URLs
       .replace(
-        "</head>",
+        '</head>',
         `
         ${cssUrls}
         ${jsUrls}
@@ -233,22 +233,22 @@ export const loader: LoaderFunction = async ({ request }) => {
             });
           });
         </script>
-        </head>`
+        </head>`,
       );
     /* eslint-enable no-useless-escape */
 
     return new Response(modifiedHtml, {
       headers: {
-        "Content-Type": "text/html; charset=utf-8",
-        "X-Frame-Options": "ALLOWALL",
-        "Content-Security-Policy": "frame-ancestors *",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
+        'Content-Type': 'text/html; charset=utf-8',
+        'X-Frame-Options': 'ALLOWALL',
+        'Content-Security-Policy': 'frame-ancestors *',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
       },
     });
   } catch (error) {
-    console.error("Proxy error:", error);
-    throw new Response("Failed to proxy content", { status: 500 });
+    console.error('Proxy error:', error);
+    throw new Response('Failed to proxy content', { status: 500 });
   }
 };

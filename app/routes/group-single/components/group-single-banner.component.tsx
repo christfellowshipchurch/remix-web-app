@@ -1,10 +1,10 @@
-import { Link, useLocation } from "react-router";
-import { GroupConnectModal } from "~/components/modals/group-connect/group-connect-modal";
-import { cn } from "~/lib/utils";
-import { Button } from "~/primitives/button/button.primitive";
-import { Icon } from "~/primitives/icon/icon";
-import { ImageSource, type GroupType } from "~/routes/group-finder/types";
-import { useStickyTopBelowNavbarClass } from "~/hooks/use-sticky-top-below-navbar";
+import { Link, useLocation } from 'react-router';
+import { GroupConnectModal } from '~/components/modals/group-connect/group-connect-modal';
+import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
+import { Icon } from '~/primitives/icon/icon';
+import { ImageSource, type GroupType } from '~/routes/group-finder/types';
+import { useStickyTopBelowNavbarClass } from '~/hooks/use-sticky-top-below-navbar';
 
 export const GroupSingleBanner = ({
   language,
@@ -13,7 +13,7 @@ export const GroupSingleBanner = ({
   groupName,
   groupId,
 }: {
-  language: GroupType["language"];
+  language: GroupType['language'];
   topics: string[];
   leaderImages: ImageSource[];
   groupName: string;
@@ -22,30 +22,30 @@ export const GroupSingleBanner = ({
   const stickyTopClass = useStickyTopBelowNavbarClass();
   const location = useLocation();
   const backToGroupFinderUrl =
-    typeof location.state?.fromGroupFinder === "string"
+    typeof location.state?.fromGroupFinder === 'string'
       ? location.state.fromGroupFinder
-      : "/group-finder";
+      : '/group-finder';
 
-  const imageStyles = "size-20 rounded-[10px] object-cover";
+  const imageStyles = 'size-20 rounded-[10px] object-cover';
 
   //  If language is Spanish, add "Español" to the list of Tags displayed
-  const tags = language === "Spanish" ? ["Español", ...topics] : topics;
+  const tags = language === 'Spanish' ? ['Español', ...topics] : topics;
 
   return (
     <div
       className={cn(
-        "hidden md:block w-full bg-white content-padding pt-8 pb-4 sticky z-10 shadow-sm transition-[top] duration-300",
+        'hidden md:block w-full bg-white content-padding pt-8 pb-4 sticky z-10 shadow-sm transition-[top] duration-300',
         stickyTopClass,
       )}
     >
-      <div className="max-w-screen-content mx-auto w-full flex justify-between gap-8 items-center">
-        <div className="flex gap-6 lg:gap-8">
-          <div className="flex items-center gap-4">
-            <Link to={backToGroupFinderUrl} className="flex items-center group">
+      <div className='max-w-screen-content mx-auto w-full flex justify-between gap-8 items-center'>
+        <div className='flex gap-6 lg:gap-8'>
+          <div className='flex items-center gap-4'>
+            <Link to={backToGroupFinderUrl} className='flex items-center group'>
               <Icon
-                name="arrowBack"
+                name='arrowBack'
                 size={24}
-                className="text-navy group-hover:text-dark-navy group-hover:-translate-x-[2px] transition-all duration-300"
+                className='text-navy group-hover:text-dark-navy group-hover:-translate-x-[2px] transition-all duration-300'
               />
             </Link>
 
@@ -56,11 +56,11 @@ export const GroupSingleBanner = ({
             />
           </div>
 
-          <div className="flex flex-col justify-between gap-2">
-            <p className="text-[28px] lg:text-[32px] font-extrabold leading-[130%]">
+          <div className='flex flex-col justify-between gap-2'>
+            <p className='text-[28px] lg:text-[32px] font-extrabold leading-[130%]'>
               {groupName}
             </p>
-            <div className="flex gap-[6px]">
+            <div className='flex gap-[6px]'>
               {tags.map((tag, index) => (
                 <TopicBadge key={index} label={tag} isPrimary={index === 0} />
               ))}
@@ -73,8 +73,8 @@ export const GroupSingleBanner = ({
           buttonText="I'm Interested"
           ModalButton={(props) => (
             <Button
-              intent="primary"
-              className="min-w-0 px-4 lg:px-5 min-h-0 py-3 text-base lg:text-lg"
+              intent='primary'
+              className='min-w-0 px-4 lg:px-5 min-h-0 py-3 text-base lg:text-lg'
               {...props}
             />
           )}
@@ -94,8 +94,8 @@ export const TopicBadge = ({
   return (
     <div
       className={cn(
-        "w-fit flex rounded-sm text-sm font-semibold p-[6px] bg-navy-subdued text-dark-navy",
-        isPrimary && "lg:bg-dark-navy lg:text-navy-subdued",
+        'w-fit flex rounded-sm text-sm font-semibold p-[6px] bg-navy-subdued text-dark-navy',
+        isPrimary && 'lg:bg-dark-navy lg:text-navy-subdued',
       )}
     >
       {label}

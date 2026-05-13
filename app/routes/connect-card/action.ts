@@ -1,15 +1,15 @@
-import { ActionFunction, data } from "react-router-dom";
-import { ConnectFormType } from "./types";
-import { postRockData } from "~/lib/.server/fetch-rock-data";
+import { ActionFunction, data } from 'react-router-dom';
+import { ConnectFormType } from './types';
+import { postRockData } from '~/lib/.server/fetch-rock-data';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
 
     const allThatAppliesValues: string = Object.keys(formData)
-      .filter((key) => key.includes("allThatApplies"))
+      .filter((key) => key.includes('allThatApplies'))
       .map((key) => formData[key])
-      .join(",");
+      .join(',');
 
     const {
       email,
@@ -45,13 +45,13 @@ export const action: ActionFunction = async ({ request }) => {
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
   } catch (error) {
     if (error instanceof Error) {
       return data({ error: error.message }, { status: 400 });
     }
-    return data({ error: "Network error please try again" }, { status: 400 });
+    return data({ error: 'Network error please try again' }, { status: 400 });
   }
 };

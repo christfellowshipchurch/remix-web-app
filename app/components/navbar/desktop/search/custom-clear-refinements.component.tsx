@@ -1,17 +1,17 @@
-import Icon from "~/primitives/icon";
+import Icon from '~/primitives/icon';
 import {
   useClearRefinements,
   UseClearRefinementsProps,
-} from "react-instantsearch";
+} from 'react-instantsearch';
 
 export const SearchCustomClearRefinements = (
-  _props: UseClearRefinementsProps
+  _props: UseClearRefinementsProps,
 ) => {
   const { refine, canRefine } = useClearRefinements();
 
   return (
-    <button onClick={() => canRefine && refine()} className="opacity-40">
-      <Icon name="x" size={20} />
+    <button onClick={() => canRefine && refine()} className='opacity-40'>
+      <Icon name='x' size={20} />
     </button>
   );
 };

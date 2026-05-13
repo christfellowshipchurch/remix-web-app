@@ -1,14 +1,14 @@
-import { algoliasearch } from "algoliasearch";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Configure, InstantSearch } from "react-instantsearch";
-import { useFetcher, useLoaderData } from "react-router-dom";
-import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
-import { SearchPopup } from "./search-popup";
-import { cn, isValidZip } from "~/lib/utils";
-import { emptySearchClient } from "~/routes/search/route";
-import { globalSearchClient } from "~/routes/search/route";
-import { SearchBar } from "./search-bar";
-import { loader } from "~/routes/home/loader";
+import { algoliasearch } from 'algoliasearch';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Configure, InstantSearch } from 'react-instantsearch';
+import { useFetcher, useLoaderData } from 'react-router-dom';
+import { getCurrentPositionFromUserGesture } from '~/lib/browser-geolocation';
+import { SearchPopup } from './search-popup';
+import { cn, isValidZip } from '~/lib/utils';
+import { emptySearchClient } from '~/routes/search/route';
+import { globalSearchClient } from '~/routes/search/route';
+import { SearchBar } from './search-bar';
+import { loader } from '~/routes/home/loader';
 
 export function LocationSearchInner({
   isSearching: controlledIsSearching,
@@ -55,9 +55,9 @@ export function LocationSearchInner({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [setIsSearching]);
 
@@ -67,10 +67,10 @@ export function LocationSearchInner({
       return;
     }
     const formData = new FormData();
-    formData.append("address", query);
+    formData.append('address', query);
     geocodeFetcherRef.current.submit(formData, {
-      method: "post",
-      action: "/google-geocode",
+      method: 'post',
+      action: '/google-geocode',
     });
   }, []);
 
@@ -83,7 +83,7 @@ export function LocationSearchInner({
         });
       },
       (error) => {
-        console.error("Geolocation error:", error);
+        console.error('Geolocation error:', error);
       },
     );
   }, []);
@@ -102,16 +102,16 @@ export function LocationSearchInner({
   }, [geocodeLat, geocodeLng]);
 
   return (
-    <div className={cn(isSearching && "mt-32")} ref={locationSearchBarRef}>
+    <div className={cn(isSearching && 'mt-32')} ref={locationSearchBarRef}>
       <InstantSearch
-        indexName="dev_Locations"
+        indexName='dev_Locations'
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
           dev_Locations: {
-            query: "",
+            query: '',
           },
         }}
         insights={false}
@@ -120,7 +120,7 @@ export function LocationSearchInner({
           <Configure
             hitsPerPage={20}
             aroundLatLng={`${coordinates.lat}, ${coordinates.lng}`}
-            aroundRadius="all"
+            aroundRadius='all'
             aroundLatLngViaIP={false}
             getRankingInfo={true}
           />
@@ -130,18 +130,18 @@ export function LocationSearchInner({
 
         <div
           className={cn(
-            "relative w-full md:w-90 z-50 rounded-2xl transition-all duration-300",
+            'relative w-full md:w-90 z-50 rounded-2xl transition-all duration-300',
             {
-              "bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[430px] lg:-translate-y-30 shorter:-translate-y-70":
+              'bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[430px] lg:-translate-y-30 shorter:-translate-y-70':
                 isSearching,
-              "bg-transparent": !isSearching,
+              'bg-transparent': !isSearching,
             },
           )}
         >
           <SearchBar
             onSearchStateChange={setIsSearching}
             onSearchSubmit={handleSearch}
-            data-gtm="hero-cta"
+            data-gtm='hero-cta'
           />
           {isSearching && (
             <SearchPopup

@@ -9,24 +9,24 @@ type RoutePattern = {
 export const darkModeRoutes: RoutePattern[] = [
   // This is to account for the homepage being dark mode only on mobile/iPad -> Designed this way in Figma
   // { path: "/", mobileOnly: true },
-  { path: "/about" },
-  { path: "/events" },
-  { path: "/locations" },
-  { path: "/locations/", isDynamic: true }, // This will match /locations/[slug]
-  { path: "/messages" },
-  { path: "/messages/", isDynamic: true }, // This will match /messages/[slug]
-  { path: "/articles" },
-  { path: "/podcasts" },
-  { path: "/link-tree", isDynamic: true }, // This will match /link-tree/[slug]
+  { path: '/about' },
+  { path: '/events' },
+  { path: '/locations' },
+  { path: '/locations/', isDynamic: true }, // This will match /locations/[slug]
+  { path: '/messages' },
+  { path: '/messages/', isDynamic: true }, // This will match /messages/[slug]
+  { path: '/articles' },
+  { path: '/podcasts' },
+  { path: '/link-tree', isDynamic: true }, // This will match /link-tree/[slug]
   // Add more routes as needed
 ];
 
 // Define routes where the navbar should be completely hidden
 // Include both static and dynamic routes
 export const hideNavbarRoutes: RoutePattern[] = [
-  { path: "/group-finder/", isDynamic: true }, // This will match /groups/[slug]
-  { path: "/volunteer/outreach/", isDynamic: true }, // Matches /volunteer/outreach/:groupGuid
-  { path: "/volunteer/church/", isDynamic: true }, // Matches /volunteer/church/:bucketGuid
+  { path: '/group-finder/', isDynamic: true }, // This will match /groups/[slug]
+  { path: '/volunteer/outreach/', isDynamic: true }, // Matches /volunteer/outreach/:groupGuid
+  { path: '/volunteer/church/', isDynamic: true }, // Matches /volunteer/church/:bucketGuid
 ];
 
 export function shouldUseDarkMode(pathname: string): boolean {

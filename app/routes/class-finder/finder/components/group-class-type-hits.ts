@@ -1,4 +1,4 @@
-import type { ClassHitType } from "../../types";
+import type { ClassHitType } from '../../types';
 
 /** One row per distinct `pathName` (URL slug) after aggregating Algolia hits. */
 export type GroupedClassTypeRow = {
@@ -8,10 +8,10 @@ export type GroupedClassTypeRow = {
   title: string;
   summary: string;
   subtitle: string;
-  topic: ClassHitType["topic"];
+  topic: ClassHitType['topic'];
   locations: string;
-  format: ClassHitType["format"];
-  language: ClassHitType["language"];
+  format: ClassHitType['format'];
+  language: ClassHitType['language'];
 };
 
 type Accumulator = {
@@ -21,15 +21,15 @@ type Accumulator = {
   title: string;
   summary: string;
   subtitle: string;
-  topic: ClassHitType["topic"];
-  format: ClassHitType["format"];
+  topic: ClassHitType['topic'];
+  format: ClassHitType['format'];
   campusLabels: Set<string>;
-  languagesSeen: Set<ClassHitType["language"]>;
+  languagesSeen: Set<ClassHitType['language']>;
   hitCount: number;
 };
 
 function publicPathSlug(hit: ClassHitType): string {
-  return (hit.pathName || "").trim();
+  return (hit.pathName || '').trim();
 }
 
 /** Groups hits that share the same public class URL; falls back to `objectID` if no slug. */
@@ -39,17 +39,17 @@ function pathNameGroupKey(hit: ClassHitType): string {
 
 function locationLabel(campusLabels: Set<string>, hitCount: number): string {
   const distinct = [...campusLabels].filter((l) => l.length > 0);
-  if (distinct.length > 1) return "Multiple Locations";
+  if (distinct.length > 1) return 'Multiple Locations';
   if (distinct.length === 1) return distinct[0];
-  if (hitCount > 1) return "Multiple Locations";
-  return "";
+  if (hitCount > 1) return 'Multiple Locations';
+  return '';
 }
 
 function languageLabel(
-  seen: Set<ClassHitType["language"]>,
-): ClassHitType["language"] {
-  if (seen.size > 1) return "Multiple Languages";
-  return [...seen][0] ?? "English";
+  seen: Set<ClassHitType['language']>,
+): ClassHitType['language'] {
+  if (seen.size > 1) return 'Multiple Languages';
+  return [...seen][0] ?? 'English';
 }
 
 export function groupClassTypeHits(
@@ -59,7 +59,7 @@ export function groupClassTypeHits(
 
   for (const hit of items) {
     const key = pathNameGroupKey(hit);
-    const campusLabel = hit.campus?.trim() ?? "";
+    const campusLabel = hit.campus?.trim() ?? '';
     const existing = byKey.get(key);
 
     if (existing) {
@@ -71,7 +71,7 @@ export function groupClassTypeHits(
       byKey.set(key, {
         pathName,
         classType: hit.classType,
-        coverImage: hit.coverImage.sources[0]?.uri || "",
+        coverImage: hit.coverImage.sources[0]?.uri || '',
         title: hit.classType?.trim() || hit.title,
         summary: hit.summary,
         subtitle: hit.subtitle,
@@ -112,17 +112,17 @@ export function syntheticHitsFromGrouped(
     campus: group.locations,
     groupId: 0,
     _geoloc: { lat: 0, lng: 0 },
-    startDate: "",
-    endDate: "",
-    schedule: "",
+    startDate: '',
+    endDate: '',
+    schedule: '',
     topic: group.topic,
     language: group.language,
     format: group.format,
     _highlightResult: {
-      title: { value: group.title, matchLevel: "none", matchedWords: [] },
+      title: { value: group.title, matchLevel: 'none', matchedWords: [] },
       summary: {
         value: group.summary,
-        matchLevel: "none",
+        matchLevel: 'none',
         matchedWords: [],
       },
     },

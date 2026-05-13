@@ -1,22 +1,22 @@
-import { useLayoutEffect, useRef, useState, useCallback } from "react";
+import { useLayoutEffect, useRef, useState, useCallback } from 'react';
 
-import { Trip } from "../types";
-import { VolunteerTripCard } from "./cards/volunteer-trip-card.component";
+import { Trip } from '../types';
+import { VolunteerTripCard } from './cards/volunteer-trip-card.component';
 import {
   Carousel,
   CarouselArrows,
   CarouselContent,
   CarouselDots,
   CarouselItem,
-} from "~/primitives/shadcn-primitives/carousel";
+} from '~/primitives/shadcn-primitives/carousel';
 
 const CARDS_PER_SLIDE = 3;
 
 const carouselControlProps = {
-  activeClassName: "bg-ocean" as const,
-  inactiveClassName: "bg-white/30" as const,
+  activeClassName: 'bg-ocean' as const,
+  inactiveClassName: 'bg-white/30' as const,
   arrowStyles:
-    "text-white border-white/40 hover:text-neutral-light hover:border-neutral-light bg-transparent transition-colors duration-300",
+    'text-white border-white/40 hover:text-neutral-light hover:border-neutral-light bg-transparent transition-colors duration-300',
 };
 
 const MD_MAX = 767; // same as max-md in Tailwind
@@ -39,14 +39,14 @@ function MobileMultiTripsCarousel({ trips }: { trips: Trip[] }) {
 
   const sync = useCallback(() => {
     const root = rootRef.current;
-    if (typeof window === "undefined" || !root) return;
+    if (typeof window === 'undefined' || !root) return;
 
     if (window.innerWidth > MD_MAX) {
       setMinSlideH(null);
       return;
     }
 
-    const nodes = root.querySelectorAll<HTMLElement>("[data-mission-slide]");
+    const nodes = root.querySelectorAll<HTMLElement>('[data-mission-slide]');
     if (nodes.length === 0) return;
 
     const maxH = Array.from(nodes).reduce(
@@ -80,49 +80,49 @@ function MobileMultiTripsCarousel({ trips }: { trips: Trip[] }) {
     ro.observe(root);
 
     const mql = window.matchMedia(`(max-width: ${MD_MAX}px)`);
-    mql.addEventListener("change", onResize);
-    window.addEventListener("resize", onResize);
+    mql.addEventListener('change', onResize);
+    window.addEventListener('resize', onResize);
 
-    const imgs = root.querySelectorAll("img");
+    const imgs = root.querySelectorAll('img');
     imgs.forEach((img) => {
       if (img.complete) return;
-      img.addEventListener("load", onResize);
+      img.addEventListener('load', onResize);
     });
 
     return () => {
       ro.disconnect();
-      mql.removeEventListener("change", onResize);
-      window.removeEventListener("resize", onResize);
-      imgs.forEach((img) => img.removeEventListener("load", onResize));
+      mql.removeEventListener('change', onResize);
+      window.removeEventListener('resize', onResize);
+      imgs.forEach((img) => img.removeEventListener('load', onResize));
     };
   }, [sync, trips]);
 
   return (
-    <div ref={rootRef} className="w-full">
+    <div ref={rootRef} className='w-full'>
       <Carousel
-        opts={{ align: "start", containScroll: "trimSnaps" }}
-        className="w-full"
+        opts={{ align: 'start', containScroll: 'trimSnaps' }}
+        className='w-full'
       >
-        <CarouselContent className="items-stretch! pr-5">
+        <CarouselContent className='items-stretch! pr-5'>
           {trips.map((trip) => (
             <CarouselItem
               key={trip.id}
               data-mission-slide
-              className="flex w-[60vw] max-w-[258px] min-w-0 min-h-0 basis-[60vw] flex-col pl-5 self-stretch"
+              className='flex w-[60vw] max-w-[258px] min-w-0 min-h-0 basis-[60vw] flex-col pl-5 self-stretch'
               style={minSlideH ? { minHeight: minSlideH } : undefined}
             >
               <VolunteerTripCard
                 trip={trip}
-                className="h-full w-full min-h-0 min-w-0 max-w-full"
+                className='h-full w-full min-h-0 min-w-0 max-w-full'
               />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="mt-6 flex items-center justify-between px-5">
+        <div className='mt-6 flex items-center justify-between px-5'>
           <CarouselDots
             activeClassName={carouselControlProps.activeClassName}
             inactiveClassName={carouselControlProps.inactiveClassName}
-            className="justify-start gap-2"
+            className='justify-start gap-2'
           />
           <CarouselArrows arrowStyles={carouselControlProps.arrowStyles} />
         </div>
@@ -139,9 +139,9 @@ export function VolunteerTripsCarousel({ trips }: { trips: Trip[] }) {
   return (
     <>
       {/* Mobile: one card per slide, horizontal scroll — full-bleed (negates section .content-padding) */}
-      <div className="w-[calc(100%+2.5rem)] -mx-5 md:hidden">
+      <div className='w-[calc(100%+2.5rem)] -mx-5 md:hidden'>
         {trips.length === 1 ? (
-          <div className="px-5">
+          <div className='px-5'>
             <VolunteerTripCard trip={trips[0]!} />
           </div>
         ) : (
@@ -150,9 +150,9 @@ export function VolunteerTripsCarousel({ trips }: { trips: Trip[] }) {
       </div>
 
       {/* md+: vertical stack of up to 3 per page, horizontal pagination when needed */}
-      <div className="hidden md:block">
+      <div className='hidden md:block'>
         {trips.length <= CARDS_PER_SLIDE ? (
-          <div className="flex flex-col gap-4">
+          <div className='flex flex-col gap-4'>
             {trips.map((trip) => (
               <VolunteerTripCard key={trip.id} trip={trip} />
             ))}
@@ -169,11 +169,11 @@ function ChunkCarousel({ trips }: { trips: Trip[] }) {
   const chunks = chunkTrips(trips, CARDS_PER_SLIDE);
 
   return (
-    <Carousel opts={{ align: "start" }} className="w-full">
+    <Carousel opts={{ align: 'start' }} className='w-full'>
       <CarouselContent>
         {chunks.map((chunk, i) => (
-          <CarouselItem key={i} className="basis-full">
-            <div className="flex flex-col gap-4">
+          <CarouselItem key={i} className='basis-full'>
+            <div className='flex flex-col gap-4'>
               {chunk.map((trip) => (
                 <VolunteerTripCard key={trip.id} trip={trip} />
               ))}
@@ -182,11 +182,11 @@ function ChunkCarousel({ trips }: { trips: Trip[] }) {
         ))}
       </CarouselContent>
 
-      <div className="mt-6 flex items-center justify-between px-1">
+      <div className='mt-6 flex items-center justify-between px-1'>
         <CarouselDots
           activeClassName={carouselControlProps.activeClassName}
           inactiveClassName={carouselControlProps.inactiveClassName}
-          className="justify-start gap-2"
+          className='justify-start gap-2'
         />
         <CarouselArrows arrowStyles={carouselControlProps.arrowStyles} />
       </div>

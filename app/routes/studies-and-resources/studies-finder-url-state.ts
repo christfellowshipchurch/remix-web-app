@@ -1,16 +1,16 @@
-import type { AlgoliaUrlStateBase } from "~/lib/algolia-url-state";
-import { createAlgoliaUrlStateConfig } from "~/lib/algolia-url-state";
+import type { AlgoliaUrlStateBase } from '~/lib/algolia-url-state';
+import { createAlgoliaUrlStateConfig } from '~/lib/algolia-url-state';
 
 export const STUDIES_FINDER_PARAMS = {
-  QUERY: "q",
+  QUERY: 'q',
 } as const;
 
 const REFINEMENT_LIST_ATTRIBUTES = [
-  "duration",
-  "audience",
-  "source",
-  "topic",
-  "format",
+  'duration',
+  'audience',
+  'source',
+  'topic',
+  'format',
 ] as const;
 
 export type StudiesFinderUrlState = AlgoliaUrlStateBase;

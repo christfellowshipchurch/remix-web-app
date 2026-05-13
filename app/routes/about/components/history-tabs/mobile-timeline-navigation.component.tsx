@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 function MobileTimelineNavigation({
   timelineData,
@@ -26,17 +26,17 @@ function MobileTimelineNavigation({
 
         container.scrollTo({
           left: scrollLeft,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }
     }
   }, [activeTab]);
 
   return (
-    <div className="my-6 md:hidden">
+    <div className='my-6 md:hidden'>
       <div
         ref={scrollContainerRef}
-        className="flex items-center justify-center gap-[6px] sm:gap-[10px] flex-wrap"
+        className='flex items-center justify-center gap-[6px] sm:gap-[10px] flex-wrap'
       >
         {timelineData.map((item, index) => (
           <button
@@ -44,8 +44,8 @@ function MobileTimelineNavigation({
             onClick={() => handleTabChange(index)}
             className={`px-3 py-2 sm:px-4 sm:py-3 rounded-full font-bold text-sm transition-all duration-300 flex-shrink-0 snap-center whitespace-nowrap flex-grow ${
               activeTab === index
-                ? "bg-ocean text-white"
-                : "border-2 border-neutral-lightest text-text-secondary hover:bg-gray-100"
+                ? 'bg-ocean text-white'
+                : 'border-2 border-neutral-lightest text-text-secondary hover:bg-gray-100'
             }`}
           >
             {item.year}

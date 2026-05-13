@@ -1,16 +1,16 @@
-import { useLoaderData, useLocation } from "react-router-dom";
-import CopyToClipboard from "./copy-link.component";
-import Icon from "~/primitives/icon";
+import { useLoaderData, useLocation } from 'react-router-dom';
+import CopyToClipboard from './copy-link.component';
+import Icon from '~/primitives/icon';
 
 const socialIcons: {
-  name: "linkAlt" | "linkedIn" | "twitter" | "facebook" | "instagram";
+  name: 'linkAlt' | 'linkedIn' | 'twitter' | 'facebook' | 'instagram';
   color?: string;
 }[] = [
-  { name: "linkAlt" },
-  { name: "linkedIn" },
-  { name: "twitter" },
-  { name: "facebook" },
-  { name: "instagram" },
+  { name: 'linkAlt' },
+  { name: 'linkedIn' },
+  { name: 'twitter' },
+  { name: 'facebook' },
+  { name: 'instagram' },
 ];
 
 type ShareLinksProps = {
@@ -49,30 +49,30 @@ export function ShareLinks({
     if (socialLink) {
       return (
         <a
-          target="_blank"
+          target='_blank'
           key={index}
           href={socialLink && socialLink}
-          rel="noreferrer"
+          rel='noreferrer'
         >
           <Icon
             name={icon?.name}
             size={38}
-            color="#0092bc"
+            color='#0092bc'
             className={`duration-300 hover:scale-105 p-1 rounded-full ${
-              backgroundColor || "bg-white"
+              backgroundColor || 'bg-white'
             }`}
           />
         </a>
       );
-    } else if (icon?.name === "linkAlt") {
+    } else if (icon?.name === 'linkAlt') {
       return (
         <div key={index}>
           <CopyToClipboard textToCopy={overrideCopyUrl || fullPath}>
             <Icon
-              name="linkAlt"
+              name='linkAlt'
               size={38}
               className={`text-ocean duration-300 hover:scale-105 p-1 rounded-full ${
-                backgroundColor || "bg-white"
+                backgroundColor || 'bg-white'
               }`}
             />
           </CopyToClipboard>

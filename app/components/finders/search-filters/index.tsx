@@ -6,21 +6,21 @@ import {
   useState,
   type ComponentProps,
   type ReactNode,
-} from "react";
-import { useInstantSearch } from "react-instantsearch";
-import { Icon } from "~/primitives/icon/icon";
+} from 'react';
+import { useInstantSearch } from 'react-instantsearch';
+import { Icon } from '~/primitives/icon/icon';
 import {
   FilterPopup,
   type FilterPopupData,
-} from "~/components/finders/search-filters/filter-popup.component";
-import { cn } from "~/lib/utils";
-const MORE_FILTERS_ID = "moreFilters";
+} from '~/components/finders/search-filters/filter-popup.component';
+import { cn } from '~/lib/utils';
+const MORE_FILTERS_ID = 'moreFilters';
 
 function isInsideSearchFiltersPortal(target: unknown): boolean {
-  if (target == null || typeof target !== "object") return false;
+  if (target == null || typeof target !== 'object') return false;
   const el = target as { closest?: (selector: string) => unknown };
-  if (typeof el.closest !== "function") return false;
-  return el.closest("[data-search-filters-portal]") != null;
+  if (typeof el.closest !== 'function') return false;
+  return el.closest('[data-search-filters-portal]') != null;
 }
 
 function uniqueAttributesFromFilterData(data: FilterPopupData): string[] {
@@ -36,7 +36,7 @@ function countRefinementsForAttributes(
   for (const attr of attributes) {
     const vals = refinementList[attr];
     if (!Array.isArray(vals)) continue;
-    n += vals.filter((v) => v != null && String(v).trim() !== "").length;
+    n += vals.filter((v) => v != null && String(v).trim() !== '').length;
   }
   return n;
 }
@@ -46,7 +46,7 @@ export type SearchFilterDesktopItem = {
   label: string;
   popupTitle: string;
   data: FilterPopupData;
-  icon?: ComponentProps<typeof Icon>["name"];
+  icon?: ComponentProps<typeof Icon>['name'];
 };
 
 export type SearchFiltersAllFiltersRenderProps = {
@@ -70,16 +70,14 @@ export type SearchFiltersProps = {
   /** Overflow panel when two or more filters remain after the inline count; required when there are more filters than `compactInlineFilterCount`. */
   renderMorePanel?: (props: SearchFiltersAllFiltersRenderProps) => ReactNode;
   moreButtonLabel?: string;
-  moreButtonIcon?: ComponentProps<typeof Icon>["name"];
+  moreButtonIcon?: ComponentProps<typeof Icon>['name'];
   /** Wired into `FilterPopup` for group finder “People” age field (refinement + Configure). */
   filterPopupAgeInput?: string;
   setFilterPopupAgeInput?: (value: string) => void;
   /**
    * Highlights a pill when active state is not only from `refinementList` (e.g. campus/age/geo URL).
    */
-  isFilterPillSupplementallyActive?: (
-    item: SearchFilterDesktopItem,
-  ) => boolean;
+  isFilterPillSupplementallyActive?: (item: SearchFilterDesktopItem) => boolean;
   /** Class finder: popup footer uses grouped class count (see FilterPopup `groupedFooterCount`). */
   groupedFooterCount?: boolean;
 };
@@ -89,8 +87,8 @@ export function SearchFilters({
   desktopFilters,
   compactInlineFilterCount,
   renderMorePanel,
-  moreButtonLabel = "More",
-  moreButtonIcon = "sliderAlt",
+  moreButtonLabel = 'More',
+  moreButtonIcon = 'sliderAlt',
   filterPopupAgeInput,
   setFilterPopupAgeInput,
   isFilterPillSupplementallyActive,
@@ -107,11 +105,11 @@ export function SearchFilters({
   const [useMobileBottomSheet, setUseMobileBottomSheet] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
+    const mq = window.matchMedia('(max-width: 767px)');
     const apply = () => setUseMobileBottomSheet(mq.matches);
     apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
   }, []);
 
   const hasCompactOverflow =
@@ -134,11 +132,7 @@ export function SearchFilters({
 
   const compactRowButtonCount = showCompactRow
     ? inlineCompactItems.length +
-      (overflowDesktopItems.length === 1
-        ? 1
-        : showMoreForOverflow
-          ? 1
-          : 0)
+      (overflowDesktopItems.length === 1 ? 1 : showMoreForOverflow ? 1 : 0)
     : 0;
 
   const moreOverflowSelectedCount = useMemo(() => {
@@ -190,20 +184,20 @@ export function SearchFilters({
     };
 
     if (activeDropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("pointerdown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('pointerdown', handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("pointerdown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', handleClickOutside);
     };
   }, [activeDropdown]);
 
   const dropdownButtonStyles =
-    "flex max-w-full items-center justify-center md:justify-between gap-1 rounded-lg border border-[#DEE0E3] px-4 py-2.5 text-sm font-semibold text-neutral-default transition-all duration-300 hover:border-neutral-default cursor-pointer";
+    'flex max-w-full items-center justify-center md:justify-between gap-1 rounded-lg border border-[#DEE0E3] px-4 py-2.5 text-sm font-semibold text-neutral-default transition-all duration-300 hover:border-neutral-default cursor-pointer';
   const dropdownButtonOpenStyles =
-    "border-ocean bg-ocean/10 text-ocean hover:border-ocean";
+    'border-ocean bg-ocean/10 text-ocean hover:border-ocean';
 
   const renderFilterPill = (
     item: SearchFilterDesktopItem,
@@ -222,58 +216,56 @@ export function SearchFilters({
       refinementList,
       uniqueAttributesFromFilterData(item.data),
     );
-    const supplemental =
-      isFilterPillSupplementallyActive?.(item) ?? false;
-    const isHighlighted =
-      isOpen || selectedCount > 0 || supplemental;
+    const supplemental = isFilterPillSupplementallyActive?.(item) ?? false;
+    const isHighlighted = isOpen || selectedCount > 0 || supplemental;
     return (
       <div
         className={cn(
           dropdownButtonStyles,
           isSingleVisibleButton
-            ? "w-full md:w-fit"
+            ? 'w-full md:w-fit'
             : compactEqualWidth
-              ? "min-w-0 flex-1"
-              : "w-fit",
-          embedPopup && "relative",
+              ? 'min-w-0 flex-1'
+              : 'w-fit',
+          embedPopup && 'relative',
           isHighlighted && dropdownButtonOpenStyles,
         )}
         onClick={() => toggleDropdown(item.id)}
       >
-        <div className="flex min-w-0 flex-row items-center gap-2">
+        <div className='flex min-w-0 flex-row items-center gap-2'>
           {item.icon ? (
             <Icon
               name={item.icon}
               className={cn(
-                "transition-colors duration-300",
-                isHighlighted ? "text-ocean" : "text-neutral-default",
-                selectedCount > 0 && "hidden lg:inline-block",
+                'transition-colors duration-300',
+                isHighlighted ? 'text-ocean' : 'text-neutral-default',
+                selectedCount > 0 && 'hidden lg:inline-block',
               )}
               size={16}
             />
           ) : null}
-          <p className="truncate">{item.label}</p>
+          <p className='truncate'>{item.label}</p>
           {selectedCount > 0 ? (
             <span
               className={cn(
-                "relative flex size-5 shrink-0 items-center justify-center rounded-full py-1 px-2",
+                'relative flex size-5 shrink-0 items-center justify-center rounded-full py-1 px-2',
                 isHighlighted
-                  ? "bg-ocean text-white"
-                  : "bg-neutral-default/20 text-neutral-default",
+                  ? 'bg-ocean text-white'
+                  : 'bg-neutral-default/20 text-neutral-default',
               )}
             >
-              <p className="text-[11px] font-extrabold leading-none! text-center">
+              <p className='text-[11px] font-extrabold leading-none! text-center'>
                 {selectedCount}
               </p>
             </span>
           ) : null}
         </div>
         <Icon
-          name="chevronDown"
+          name='chevronDown'
           className={cn(
-            "ml-1 hidden shrink-0 transition-all duration-300 lg:inline-block",
-            isHighlighted ? "text-ocean" : "text-neutral-default",
-            isOpen && "rotate-180",
+            'ml-1 hidden shrink-0 transition-all duration-300 lg:inline-block',
+            isHighlighted ? 'text-ocean' : 'text-neutral-default',
+            isOpen && 'rotate-180',
           )}
         />
 
@@ -283,7 +275,7 @@ export function SearchFilters({
             data={item.data}
             onHide={closeAllDropdowns}
             showSection={isOpen}
-            layout="popover"
+            layout='popover'
             ageInput={filterPopupAgeInput}
             setAgeInput={setFilterPopupAgeInput}
             groupedFooterCount={groupedFooterCount}
@@ -304,17 +296,17 @@ export function SearchFilters({
     (!!showCompactRow && showMoreForOverflow && moreOverflowSelectedCount > 0);
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
+    <div className='flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:gap-4'>
       <div
         ref={containerRef}
-        className="flex min-w-0 flex-1 flex-col gap-2 lg:flex-row lg:items-center"
+        className='flex min-w-0 flex-1 flex-col gap-2 lg:flex-row lg:items-center'
       >
         {showCompactRow ? (
-          <div className="flex w-full min-w-0 flex-col gap-2 lg:hidden">
+          <div className='flex w-full min-w-0 flex-col gap-2 lg:hidden'>
             <div
               className={cn(
-                "flex w-full min-w-0 items-stretch gap-2",
-                compactRowButtonCount > 1 ? "flex-nowrap" : "flex-wrap",
+                'flex w-full min-w-0 items-stretch gap-2',
+                compactRowButtonCount > 1 ? 'flex-nowrap' : 'flex-wrap',
               )}
             >
               {inlineCompactItems.map((item) => (
@@ -339,46 +331,46 @@ export function SearchFilters({
                 <div
                   className={cn(
                     dropdownButtonStyles,
-                    compactRowButtonCount > 1 ? "min-w-0 flex-1" : "w-fit",
+                    compactRowButtonCount > 1 ? 'min-w-0 flex-1' : 'w-fit',
                     isMoreHighlighted && dropdownButtonOpenStyles,
                   )}
                   onClick={() => openMorePanel()}
                 >
-                  <div className="flex min-w-0 flex-row items-center gap-2">
+                  <div className='flex min-w-0 flex-row items-center gap-2'>
                     <Icon
                       name={moreButtonIcon}
                       className={cn(
-                        "transition-colors duration-300",
+                        'transition-colors duration-300',
                         isMoreHighlighted
-                          ? "text-ocean"
-                          : "text-neutral-default",
+                          ? 'text-ocean'
+                          : 'text-neutral-default',
                         moreOverflowSelectedCount > 0 &&
-                          "hidden lg:inline-block",
+                          'hidden lg:inline-block',
                       )}
                       size={16}
                     />
-                    <p className="truncate">{moreButtonLabel}</p>
+                    <p className='truncate'>{moreButtonLabel}</p>
                     {moreOverflowSelectedCount > 0 ? (
                       <span
                         className={cn(
-                          "relative flex size-5 shrink-0 items-center justify-center rounded-full py-1 px-2",
+                          'relative flex size-5 shrink-0 items-center justify-center rounded-full py-1 px-2',
                           isMoreHighlighted
-                            ? "bg-ocean text-white"
-                            : "bg-neutral-default/20 text-neutral-default",
+                            ? 'bg-ocean text-white'
+                            : 'bg-neutral-default/20 text-neutral-default',
                         )}
                       >
-                        <p className="text-[11px] font-extrabold leading-none! text-center">
+                        <p className='text-[11px] font-extrabold leading-none! text-center'>
                           {moreOverflowSelectedCount}
                         </p>
                       </span>
                     ) : null}
                   </div>
                   <Icon
-                    name="chevronDown"
+                    name='chevronDown'
                     className={cn(
-                      "ml-1 hidden shrink-0 transition-all duration-300 lg:inline-block",
-                      isMoreHighlighted ? "text-ocean" : "text-neutral-default",
-                      isMoreOpen && "rotate-180",
+                      'ml-1 hidden shrink-0 transition-all duration-300 lg:inline-block',
+                      isMoreHighlighted ? 'text-ocean' : 'text-neutral-default',
+                      isMoreOpen && 'rotate-180',
                     )}
                   />
                 </div>
@@ -392,36 +384,36 @@ export function SearchFilters({
                 data={compactInlineOpenItem.data}
                 onHide={closeAllDropdowns}
                 showSection
-                layout="bottomSheet"
+                layout='bottomSheet'
                 ageInput={filterPopupAgeInput}
                 setAgeInput={setFilterPopupAgeInput}
                 groupedFooterCount={groupedFooterCount}
               />
             ) : null}
 
-            {showMoreForOverflow && isMoreOpen && renderMorePanel
-              ? useMobileBottomSheet
-                ? renderMorePanel({
+            {showMoreForOverflow && isMoreOpen && renderMorePanel ? (
+              useMobileBottomSheet ? (
+                renderMorePanel({
+                  onHide: closeAllDropdowns,
+                  onClearAllToUrl,
+                  mobileBottomSheet: true,
+                  morePanelTitle: moreButtonLabel,
+                })
+              ) : (
+                <div className='w-full overflow-hidden rounded-lg border border-neutral-300 shadow-md'>
+                  {renderMorePanel({
                     onHide: closeAllDropdowns,
                     onClearAllToUrl,
-                    mobileBottomSheet: true,
+                    mobileBottomSheet: false,
                     morePanelTitle: moreButtonLabel,
-                  })
-                : (
-                    <div className="w-full overflow-hidden rounded-lg border border-neutral-300 shadow-md">
-                      {renderMorePanel({
-                        onHide: closeAllDropdowns,
-                        onClearAllToUrl,
-                        mobileBottomSheet: false,
-                        morePanelTitle: moreButtonLabel,
-                      })}
-                    </div>
-                  )
-              : null}
+                  })}
+                </div>
+              )
+            ) : null}
           </div>
         ) : null}
 
-        <div className="hidden flex-wrap items-center gap-2 lg:flex">
+        <div className='hidden flex-wrap items-center gap-2 lg:flex'>
           {desktopFilters.map((item) => (
             <Fragment key={item.id}>
               {renderFilterPill(item, {

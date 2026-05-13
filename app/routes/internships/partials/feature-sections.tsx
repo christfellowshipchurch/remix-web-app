@@ -1,30 +1,30 @@
-import { getImageUrl } from "~/lib/utils";
-import InternshipFeatureSection from "../components/internship-feature-section";
+import { getImageUrl } from '~/lib/utils';
+import InternshipFeatureSection from '../components/internship-feature-section';
 
 const IntenrshipFeatureSections = () => {
   return (
-    <div className="content-padding w-full py-16 md:py-24">
-      <div className="flex flex-col gap-10 md:gap-24 items-center max-w-[1120px] mx-auto w-full">
+    <div className='content-padding w-full py-16 md:py-24'>
+      <div className='flex flex-col gap-10 md:gap-24 items-center max-w-[1120px] mx-auto w-full'>
         <InternshipFeatureSection
-          title="Mentorship"
-          description="Work closely with experienced leaders who will guide and invest in your personal growth."
-          images={[getImageUrl("3149958")]}
+          title='Mentorship'
+          description='Work closely with experienced leaders who will guide and invest in your personal growth.'
+          images={[getImageUrl('3149958')]}
         />
         <InternshipFeatureSection
-          title="Community"
-          description="Build lasting relationships with other interns and become part of a supportive community."
-          images={[getImageUrl("3149953"), getImageUrl("3149952")]}
+          title='Community'
+          description='Build lasting relationships with other interns and become part of a supportive community.'
+          images={[getImageUrl('3149953'), getImageUrl('3149952')]}
           imageRight={true}
         />
         <InternshipFeatureSection
-          title="Practical Experience"
-          description="Apply your skills in a dynamic environment and make a real impact from day one."
-          images={[getImageUrl("3149950"), getImageUrl("3141725")]}
+          title='Practical Experience'
+          description='Apply your skills in a dynamic environment and make a real impact from day one.'
+          images={[getImageUrl('3149950'), getImageUrl('3141725')]}
         />
         <InternshipFeatureSection
-          title="Leadership Development"
-          description="Gain hands-on experience in leadership and team management through real-world projects."
-          images={[getImageUrl("3149957")]}
+          title='Leadership Development'
+          description='Gain hands-on experience in leadership and team management through real-world projects.'
+          images={[getImageUrl('3149957')]}
           imageRight={true}
         />
       </div>

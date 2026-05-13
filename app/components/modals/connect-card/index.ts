@@ -1,3 +1,3 @@
-import { ConnectCardModal } from "./connect-card-modal";
+import { ConnectCardModal } from './connect-card-modal';
 
 export { ConnectCardModal };

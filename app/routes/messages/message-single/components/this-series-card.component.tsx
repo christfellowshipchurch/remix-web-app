@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from 'react-router';
 
 export const SeriesCard = ({
   message,
@@ -15,13 +15,13 @@ export const SeriesCard = ({
   pClass?: string;
 }) => {
   const hoverClasses =
-    "group-hover:translate-y-[-6px] transition-all duration-300";
+    'group-hover:translate-y-[-6px] transition-all duration-300';
 
   return (
     <Link
       to={`/messages/${message.url}`}
-      prefetch="intent"
-      className="min-w-[318px] max-w-[350px] group"
+      prefetch='intent'
+      className='min-w-[318px] max-w-[350px] group'
     >
       <img
         src={message.coverImage}

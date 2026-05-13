@@ -1,8 +1,8 @@
-import { getImageUrl } from "~/lib/utils";
-import { HeroScrollCard } from "../components/hero-scroll-card.component";
-import { useRef, useEffect, useState } from "react";
+import { getImageUrl } from '~/lib/utils';
+import { HeroScrollCard } from '../components/hero-scroll-card.component';
+import { useRef, useEffect, useState } from 'react';
 
-const infoBgUrl = getImageUrl("3143889");
+const infoBgUrl = getImageUrl('3143889');
 
 /**
  * Creates an infinite scroll of cards used for the CF Info Page
@@ -42,7 +42,7 @@ export const HeroCardScroll = () => {
       const containerCenter = containerRect.left + containerRect.width / 2;
 
       // Find the card closest to center
-      const cardElements = scrollContainer.querySelectorAll(".hero-card");
+      const cardElements = scrollContainer.querySelectorAll('.hero-card');
       let minDiff = Infinity;
       let centerIdx = 0;
 
@@ -67,7 +67,7 @@ export const HeroCardScroll = () => {
       }
     };
 
-    scrollContainer.addEventListener("scroll", handleScroll);
+    scrollContainer.addEventListener('scroll', handleScroll);
 
     // Initialize scroll position to center the middle set
     const centerPosition =
@@ -78,29 +78,29 @@ export const HeroCardScroll = () => {
 
     return () => {
       clearTimeout(timer);
-      scrollContainer.removeEventListener("scroll", handleScroll);
+      scrollContainer.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
     <div
       className={`flex flex-col pt-16 pb-8 items-center justify-center gap-12 ${
-        isVisible ? "animate-fadeIn duration-400" : "opacity-0"
+        isVisible ? 'animate-fadeIn duration-400' : 'opacity-0'
       }`}
       style={{
         backgroundImage: `url(${infoBgUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}
     >
-      <h1 className="text-[32px] text-[#001D26] font-extrabold">
-        Take your next <span className="text-ocean">step...</span>
+      <h1 className='text-[32px] text-[#001D26] font-extrabold'>
+        Take your next <span className='text-ocean'>step...</span>
       </h1>
 
-      <div className="w-full">
+      <div className='w-full'>
         <div
           ref={scrollContainerRef}
-          className="flex items-center 3xl:justify-center gap-4 overflow-y-hidden overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+          className='flex items-center 3xl:justify-center gap-4 overflow-y-hidden overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory'
         >
           {cards.map((card, index) => {
             const isCenterCard = index === centeredCardIndex;
@@ -108,7 +108,7 @@ export const HeroCardScroll = () => {
               <div
                 key={`${card.cta.label}-${index}`}
                 className={`hero-card shrink-0 snap-center transition-all duration-100 p-7 w-[306px] ${
-                  isCenterCard ? "scale-115 " : "scale-100"
+                  isCenterCard ? 'scale-115 ' : 'scale-100'
                 }`}
               >
                 <HeroScrollCard {...card} />
@@ -124,22 +124,22 @@ export const HeroCardScroll = () => {
 const mockCards = [
   {
     image: infoBgUrl,
-    cta: { label: "1", href: "/donate" },
+    cta: { label: '1', href: '/donate' },
   },
   {
     image: infoBgUrl,
-    cta: { label: "2", href: "/donate" },
+    cta: { label: '2', href: '/donate' },
   },
   {
     image: infoBgUrl,
-    cta: { label: "3", href: "/donate" },
+    cta: { label: '3', href: '/donate' },
   },
   {
     image: infoBgUrl,
-    cta: { label: "4", href: "/donate" },
+    cta: { label: '4', href: '/donate' },
   },
   {
     image: infoBgUrl,
-    cta: { label: "5", href: "/donate" },
+    cta: { label: '5', href: '/donate' },
   },
 ];

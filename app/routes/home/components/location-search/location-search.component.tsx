@@ -1,18 +1,18 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { cn } from "~/lib/utils";
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { cn } from '~/lib/utils';
 
 const LocationSearchInner = lazy(() =>
-  import("./location-search-inner.component").then((m) => ({
+  import('./location-search-inner.component').then((m) => ({
     default: m.LocationSearchInner,
-  }))
+  })),
 );
 
 function LocationSearchSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "h-14 w-full rounded-2xl bg-white/20 animate-pulse md:w-90",
-        className
+        'h-14 w-full rounded-2xl bg-white/20 animate-pulse md:w-90',
+        className,
       )}
       aria-hidden
     />

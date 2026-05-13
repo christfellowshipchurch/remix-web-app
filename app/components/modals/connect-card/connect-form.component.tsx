@@ -1,10 +1,10 @@
-import * as Form from "@radix-ui/react-form";
-import { useEffect, useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
-import { defaultTextInputStyles } from "~/primitives/inputs/text-field/text-field.primitive";
-import { useFetcher } from "react-router-dom";
-import { ConnectCardLoaderReturnType } from "~/routes/connect-card/types";
-import { pushFormEvent } from "~/lib/gtm";
+import * as Form from '@radix-ui/react-form';
+import { useEffect, useState } from 'react';
+import { Button } from '~/primitives/button/button.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { useFetcher } from 'react-router-dom';
+import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
+import { pushFormEvent } from '~/lib/gtm';
 
 interface ConnectCardProps {
   onSuccess: () => void;
@@ -15,10 +15,10 @@ export const renderInputField = (
   label: string,
   type: string,
   requiredMessage: string,
-  defaultValue?: string
+  defaultValue?: string,
 ) => (
-  <Form.Field name={name} className="flex flex-col mb-4">
-    <Form.Label className="font-bold text-sm mb-2">{label}</Form.Label>
+  <Form.Field name={name} className='flex flex-col mb-4'>
+    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
     <Form.Control asChild>
       <input
         type={type}
@@ -27,7 +27,7 @@ export const renderInputField = (
         className={defaultTextInputStyles}
       />
     </Form.Control>
-    <Form.Message className="text-sm text-alert" match="valueMissing">
+    <Form.Message className='text-sm text-alert' match='valueMissing'>
       {requiredMessage}
     </Form.Message>
   </Form.Field>
@@ -40,17 +40,17 @@ interface CheckboxOption {
 
 export const renderCheckboxField = (
   checkbox: CheckboxOption,
-  index: number
+  index: number,
 ) => (
   <Form.Field
     key={index}
     name={`allThatApplies-${index}`}
-    className="flex gap-2 md:items-center"
+    className='flex gap-2 md:items-center'
   >
     <Form.Control asChild>
-      <input type="checkbox" id={checkbox.guid} value={checkbox.guid} />
+      <input type='checkbox' id={checkbox.guid} value={checkbox.guid} />
     </Form.Control>
-    <Form.Label className="font-bold leading-4">{checkbox.value}</Form.Label>
+    <Form.Label className='font-bold leading-4'>{checkbox.value}</Form.Label>
   </Form.Field>
 );
 
@@ -68,19 +68,19 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
 
   // Effect for initial data loading
   useEffect(() => {
-    fetcher.load("/connect-card");
+    fetcher.load('/connect-card');
   }, []);
 
   // Effect for handling form data and submissions
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
+    if (fetcher.state === 'idle' && fetcher.data) {
       setLoading(false);
 
-      if ("campuses" in fetcher.data && "allThatApplies" in fetcher.data) {
+      if ('campuses' in fetcher.data && 'allThatApplies' in fetcher.data) {
         // This was the initial data load
         setFormFieldData(fetcher.data as ConnectCardLoaderReturnType);
-      } else if ("error" in fetcher.data) {
-        setError(fetcher.data.error || "An unexpected error occurred");
+      } else if ('error' in fetcher.data) {
+        setError(fetcher.data.error || 'An unexpected error occurred');
       } else {
         // This was a successful form submission
         setError(null);
@@ -89,7 +89,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       }
     }
 
-    if (fetcher.state === "submitting") {
+    if (fetcher.state === 'submitting') {
       setLoading(true);
       setError(null);
     }
@@ -101,12 +101,12 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
 
     try {
       fetcher.submit(formData, {
-        method: "post",
-        action: "/connect-card",
+        method: 'post',
+        action: '/connect-card',
       });
     } catch {
       setError(
-        "An error occurred while submitting the form. Please try again."
+        'An error occurred while submitting the form. Please try again.',
       );
       setLoading(false);
     }
@@ -115,46 +115,46 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const { campuses, allThatApplies } = formFieldData;
 
   const otherCheckbox = allThatApplies.find(
-    (checkbox) => checkbox.value === "Other"
+    (checkbox) => checkbox.value === 'Other',
   );
   const checkboxes = allThatApplies.filter(
-    (checkbox) => checkbox.value !== "Other"
+    (checkbox) => checkbox.value !== 'Other',
   );
 
   return (
     <>
-      <h2 className="mb-6 text-3xl text-navy font-bold">Get Connected</h2>
+      <h2 className='mb-6 text-3xl text-navy font-bold'>Get Connected</h2>
       <Form.Root
         onSubmit={handleSubmit}
-        className="flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2"
+        className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
         {renderInputField(
-          "firstName",
-          "First Name",
-          "text",
-          "Please enter your first name"
+          'firstName',
+          'First Name',
+          'text',
+          'Please enter your first name',
         )}
         {renderInputField(
-          "lastName",
-          "Last Name",
-          "text",
-          "Please enter your last name"
+          'lastName',
+          'Last Name',
+          'text',
+          'Please enter your last name',
         )}
         {renderInputField(
-          "phone",
-          "Phone",
-          "number",
-          "Please enter a valid number"
+          'phone',
+          'Phone',
+          'number',
+          'Please enter a valid number',
         )}
         {renderInputField(
-          "email",
-          "Email",
-          "text",
-          "Please enter a valid email"
+          'email',
+          'Email',
+          'text',
+          'Please enter a valid email',
         )}
 
-        <Form.Field name="campus" className="flex flex-col">
-          <Form.Label className="font-bold text-sm mb-2">Campus</Form.Label>
+        <Form.Field name='campus' className='flex flex-col'>
+          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
               <select
@@ -162,12 +162,12 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 required
                 style={{
                   backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: "24px",
-                  backgroundPosition: "calc(100% - 2%) center",
-                  backgroundRepeat: "no-repeat",
+                  backgroundSize: '24px',
+                  backgroundPosition: 'calc(100% - 2%) center',
+                  backgroundRepeat: 'no-repeat',
                 }}
               >
-                <option value={""}>Select a Campus</option>
+                <option value={''}>Select a Campus</option>
                 {campuses.map(({ guid, name }, index) => (
                   <option key={index} value={guid}>
                     {name}
@@ -176,44 +176,44 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
               </select>
             )}
           </Form.Control>
-          <Form.Message className="text-sm text-alert" match="valueMissing">
+          <Form.Message className='text-sm text-alert' match='valueMissing'>
             Please select a campus
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name="decision" className="flex gap-2 md:items-center mt-3">
+        <Form.Field name='decision' className='flex gap-2 md:items-center mt-3'>
           <Form.Control asChild>
             <input
-              className="mb-1"
-              type="checkbox"
-              id="decision"
-              name="decision"
-              value="I made a decision to follow Christ today."
+              className='mb-1'
+              type='checkbox'
+              id='decision'
+              name='decision'
+              value='I made a decision to follow Christ today.'
             />
           </Form.Control>
-          <Form.Label className="font-bold text-navy leading-4">
+          <Form.Label className='font-bold text-navy leading-4'>
             I made a decision to follow Christ today
           </Form.Label>
         </Form.Field>
 
-        <h3 className="mt-6 font-bold italic col-span-2 text-lg text-navy md:mt-8 ">
+        <h3 className='mt-6 font-bold italic col-span-2 text-lg text-navy md:mt-8 '>
           I am looking to:
         </h3>
         {checkboxes.map(renderCheckboxField)}
 
         {otherCheckbox && (
-          <Form.Field name="other" className="flex gap-2 md:items-center">
+          <Form.Field name='other' className='flex gap-2 md:items-center'>
             <Form.Control asChild>
               <input
-                className="mb-1"
-                type="checkbox"
+                className='mb-1'
+                type='checkbox'
                 id={otherCheckbox.guid}
                 name={otherCheckbox.guid}
                 value={otherCheckbox.guid}
                 onChange={(_e) => setIsOther(!isOther)}
               />
             </Form.Control>
-            <Form.Label className="font-bold leading-4">
+            <Form.Label className='font-bold leading-4'>
               {otherCheckbox.value}
             </Form.Label>
           </Form.Field>
@@ -222,24 +222,24 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         {isOther && (
           <>
             <div />
-            <Form.Field name="otherContent" className="flex flex-col">
+            <Form.Field name='otherContent' className='flex flex-col'>
               <Form.Control asChild>
-                <input type="text" className={defaultTextInputStyles} />
+                <input type='text' className={defaultTextInputStyles} />
               </Form.Control>
             </Form.Field>
           </>
         )}
 
-        {error && <p className="text-alert col-span-2 text-center">{error}</p>}
+        {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
 
-        <Form.Submit className="mt-6 mx-auto col-span-1 md:col-span-2" asChild>
+        <Form.Submit className='mt-6 mx-auto col-span-1 md:col-span-2' asChild>
           <Button
-            className="w-40 h-12"
-            size="md"
-            type="submit"
+            className='w-40 h-12'
+            size='md'
+            type='submit'
             disabled={loading}
           >
-            {loading ? "Loading..." : "Submit"}
+            {loading ? 'Loading...' : 'Submit'}
           </Button>
         </Form.Submit>
       </Form.Root>

@@ -107,6 +107,8 @@ export const icons = {
       fill: 'currentColor',
     },
   ],
+  caretDown: 'M11.998 17L18.998 9H4.99805L11.998 17Z',
+  caretLeft: 'M15 19V5L7 12L15 19Z',
   caretRight: 'M9 18.9997L17 11.9997L9 4.99973V18.9997Z',
   caretRightRounded: [
     {

@@ -2,22 +2,22 @@ import { RockCampuses, type RockCampusName } from '~/lib/rock-config';
 
 // Types for Volunteer Form multi-step process
 export const INTERESTS = [
-  "Children & Youth",
-  "Music & Worship",
-  "Technology & Production",
-  "Hospitality & Connections",
-  "Administrative Support",
-  "Care & Support Ministries",
-  "Creative Arts",
-  "Outreach & Missions",
-  "Facilities & Operations",
+  'Children & Youth',
+  'Music & Worship',
+  'Technology & Production',
+  'Hospitality & Connections',
+  'Administrative Support',
+  'Care & Support Ministries',
+  'Creative Arts',
+  'Outreach & Missions',
+  'Facilities & Operations',
 ] as const;
 
 export const STRENGTHS = [
-  "Leading others",
-  "Working behind the scenes",
-  "Public speaking",
-  "One-on-one conversations",
+  'Leading others',
+  'Working behind the scenes',
+  'Public speaking',
+  'One-on-one conversations',
 ] as const;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -43,17 +43,17 @@ export interface VolunteerFormAvailability {
   hoursPerWeek?: string;
 }
 
-export const DAYS_OF_WEEK = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
-export const TIMES_OF_DAY = ["Morning", "Afternoon", "Evening"];
+export const DAYS_OF_WEEK = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'];
+export const TIMES_OF_DAY = ['Morning', 'Afternoon', 'Evening'];
 export const FREQUENCY_OPTIONS = [
-  { value: "Weekly", label: "Weekly" },
-  { value: "Bi-Weekly", label: "Bi-Weekly" },
-  { value: "Monthly", label: "Monthly" },
+  { value: 'Weekly', label: 'Weekly' },
+  { value: 'Bi-Weekly', label: 'Bi-Weekly' },
+  { value: 'Monthly', label: 'Monthly' },
 ];
 export const HOURS_OPTIONS = [
-  { value: "1-2", label: "1-2 hours" },
-  { value: "2-4", label: "2-4 hours" },
-  { value: "4+", label: "4+ hours" },
+  { value: '1-2', label: '1-2 hours' },
+  { value: '2-4', label: '2-4 hours' },
+  { value: '4+', label: '4+ hours' },
 ];
 
 export interface VolunteerFormInterests {
@@ -77,7 +77,7 @@ export interface VolunteerFormData {
   interests: VolunteerFormInterests;
 }
 
-export type Sticker = "super-hero" | "puzzle" | "stair-stepper";
+export type Sticker = 'super-hero' | 'puzzle' | 'stair-stepper';
 
 export interface VolunteerResultCardProps {
   sticker?: Sticker;
@@ -88,6 +88,6 @@ export interface VolunteerResultCardProps {
   availability: string;
   passion: string;
   cta: string;
-  ctaType?: "primary" | "secondary";
+  ctaType?: 'primary' | 'secondary';
   className?: string;
 }

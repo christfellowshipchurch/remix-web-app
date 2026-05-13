@@ -1,9 +1,9 @@
-import { isValidWistiaId } from "~/lib/.server/fetch-wistia-data";
-import type { LoaderFunctionArgs } from "react-router-dom";
+import { isValidWistiaId } from '~/lib/.server/fetch-wistia-data';
+import type { LoaderFunctionArgs } from 'react-router-dom';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const videoId = url.searchParams.get("videoId");
+  const videoId = url.searchParams.get('videoId');
 
   if (!videoId) {
     return Response.json({ isValid: false }, { status: 400 });

@@ -4,7 +4,7 @@
 
 /** Escape `\` and `"` for Algolia `filters` strings like `campus:"…"`. */
 export function escapeAlgoliaFilterString(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
 /**
@@ -39,19 +39,14 @@ export function hasActiveFinderGeoCoordinates(
 ): boolean {
   if (coordinates == null) return false;
   const { lat, lng } = coordinates;
-  return (
-    lat != null &&
-    lng != null &&
-    !Number.isNaN(lat) &&
-    !Number.isNaN(lng)
-  );
+  return lat != null && lng != null && !Number.isNaN(lat) && !Number.isNaN(lng);
 }
 
 /** Highlights the location pill when geo is set (refinements alone may not cover zip/map). */
 export function isLocationPillSupplementallyActiveFromGeo(
   item: { id: string },
   coordinates: FinderGeoCoordinates,
-  locationPillId = "location",
+  locationPillId = 'location',
 ): boolean {
   if (item.id !== locationPillId) return false;
   return hasActiveFinderGeoCoordinates(coordinates);

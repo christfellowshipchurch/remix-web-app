@@ -1,6 +1,6 @@
-import { LocationSearchPage } from "./location-search/location-search-page";
+import { LocationSearchPage } from './location-search/location-search-page';
 
-export { loader } from "./location-search/loader";
-export { meta } from "./location-search/meta";
+export { loader } from './location-search/loader';
+export { meta } from './location-search/meta';
 
 export default LocationSearchPage;

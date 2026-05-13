@@ -1,16 +1,16 @@
-import { useFetcher, useRouteLoaderData } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { algoliasearch, SearchClient } from "algoliasearch";
-import { Configure, InstantSearch } from "react-instantsearch";
+import { useFetcher, useRouteLoaderData } from 'react-router-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { algoliasearch, SearchClient } from 'algoliasearch';
+import { Configure, InstantSearch } from 'react-instantsearch';
 
-import { ANCHOR_SCROLL_OFFSET } from "~/components/navbar/scroll-offset.constants";
-import { useResponsive } from "~/hooks/use-responsive";
-import { getCurrentPositionFromUserGesture } from "~/lib/browser-geolocation";
-import { RootLoaderData } from "~/routes/navbar/loader";
-import { emptySearchClient } from "~/routes/search/route";
-import { LocationCardList } from "./partials/location-card-list.partial";
-import { LocationSearchBootSkeleton } from "./components/location-search-boot-skeleton.partial";
-import { Search } from "./partials/locations-search-hero.partial";
+import { ANCHOR_SCROLL_OFFSET } from '~/components/navbar/scroll-offset.constants';
+import { useResponsive } from '~/hooks/use-responsive';
+import { getCurrentPositionFromUserGesture } from '~/lib/browser-geolocation';
+import { RootLoaderData } from '~/routes/navbar/loader';
+import { emptySearchClient } from '~/routes/search/route';
+import { LocationCardList } from './partials/location-card-list.partial';
+import { LocationSearchBootSkeleton } from './components/location-search-boot-skeleton.partial';
+import { Search } from './partials/locations-search-hero.partial';
 
 export type LocationSearchCoordinatesType = {
   results: [
@@ -29,7 +29,7 @@ export type LocationSearchCoordinatesType = {
 
 let globalSearchClient: SearchClient | null = null;
 
-const LOCATION_SEARCH_INDEX_NAME = "dev_Locations";
+const LOCATION_SEARCH_INDEX_NAME = 'dev_Locations';
 
 function LocationSearchIndexBody({
   coordinates,
@@ -54,7 +54,7 @@ function LocationSearchIndexBody({
             ? `${coordinates.lat}, ${coordinates.lng}`
             : undefined
         }
-        aroundRadius="all"
+        aroundRadius='all'
         aroundLatLngViaIP={false}
         getRankingInfo={true}
       />
@@ -69,10 +69,10 @@ function LocationSearchIndexBody({
 }
 
 export function LocationSearchPage() {
-  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const algolia = rootData?.algolia ?? {
-    ALGOLIA_APP_ID: "",
-    ALGOLIA_SEARCH_API_KEY: "",
+    ALGOLIA_APP_ID: '',
+    ALGOLIA_SEARCH_API_KEY: '',
   };
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
 
@@ -111,10 +111,10 @@ export function LocationSearchPage() {
         return;
       }
       const formData = new FormData();
-      formData.append("address", query);
+      formData.append('address', query);
       geocodeFetcherRef.current.submit(formData, {
-        method: "post",
-        action: "/google-geocode",
+        method: 'post',
+        action: '/google-geocode',
       });
     },
     [setSearchCoordinates],
@@ -155,7 +155,7 @@ export function LocationSearchPage() {
   }, [isLarge, setSearchCoordinates]);
 
   const scrollCampusesIntoView = useCallback(() => {
-    const campusesSection = document.getElementById("campuses");
+    const campusesSection = document.getElementById('campuses');
     if (!campusesSection) {
       return;
     }
@@ -166,7 +166,7 @@ export function LocationSearchPage() {
       campusesSection.getBoundingClientRect().top + window.scrollY - offsetPx;
     window.scrollTo({
       top: Math.max(0, offsetTop),
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   }, []);
 
@@ -220,14 +220,14 @@ export function LocationSearchPage() {
     void (async () => {
       try {
         if (
-          "searchSingleIndex" in client &&
-          typeof (client as SearchClient).searchSingleIndex === "function"
+          'searchSingleIndex' in client &&
+          typeof (client as SearchClient).searchSingleIndex === 'function'
         ) {
           await (client as SearchClient).searchSingleIndex({
             indexName: LOCATION_SEARCH_INDEX_NAME,
-            searchParams: { hitsPerPage: 1, query: "" },
+            searchParams: { hitsPerPage: 1, query: '' },
           });
-        } else if ("search" in client && typeof client.search === "function") {
+        } else if ('search' in client && typeof client.search === 'function') {
           await (
             client as { search: (params?: unknown) => Promise<unknown> }
           ).search([]);
@@ -245,7 +245,7 @@ export function LocationSearchPage() {
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
 
   return (
-    <div className="flex w-full flex-col min-h-screen">
+    <div className='flex w-full flex-col min-h-screen'>
       {!algoliaBootstrapped ? (
         <LocationSearchBootSkeleton />
       ) : (
@@ -257,7 +257,7 @@ export function LocationSearchPage() {
           }}
           initialUiState={{
             [LOCATION_SEARCH_INDEX_NAME]: {
-              query: "",
+              query: '',
             },
           }}
           insights={false}
@@ -266,7 +266,7 @@ export function LocationSearchPage() {
             coordinates={coordinates}
             setSearchCoordinates={setSearchCoordinates}
             handleSearch={handleSearch}
-            geocodeLoading={geocodeFetcher.state === "loading"}
+            geocodeLoading={geocodeFetcher.state === 'loading'}
           />
         </InstantSearch>
       )}

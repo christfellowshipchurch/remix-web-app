@@ -1,21 +1,21 @@
-import * as Avatar from "@radix-ui/react-avatar";
-import { ShareLinks } from "~/components";
-import { CircleLoader } from "~/primitives/loading-states/circle-loader.primitive";
-import { HTMLRenderer } from "~/primitives/html-renderer/html-renderer.component";
-import { AuthorBioProps } from "../types";
+import * as Avatar from '@radix-ui/react-avatar';
+import { ShareLinks } from '~/components';
+import { CircleLoader } from '~/primitives/loading-states/circle-loader.primitive';
+import { HTMLRenderer } from '~/primitives/html-renderer/html-renderer.component';
+import { AuthorBioProps } from '../types';
 
 export function AuthorBio({
   author,
   homeUrl,
-  variant = "default",
+  variant = 'default',
   hideSocialLinks = false,
 }: AuthorBioProps) {
   const { id, fullName, profilePhoto, authorAttributes } = author;
   const { bio, jobTitle, socialLinks, pathname } = authorAttributes;
 
   // Determine styling based on variant
-  const isLeadersVariant = variant === "leaders";
-  const avatarRounded = isLeadersVariant ? "rounded-[32px]" : "rounded-full";
+  const isLeadersVariant = variant === 'leaders';
+  const avatarRounded = isLeadersVariant ? 'rounded-[32px]' : 'rounded-full';
   const shareLinksSize = isLeadersVariant ? 10 : 8;
   const circleLoaderSize = isLeadersVariant ? 32 : 20;
 
@@ -36,51 +36,51 @@ export function AuthorBio({
         };
 
   return (
-    <div className="flex flex-col gap-5 md:gap-8 font-light text-neutral-700 w-full">
+    <div className='flex flex-col gap-5 md:gap-8 font-light text-neutral-700 w-full'>
       {/* Desktop layout: vertical stack */}
-      <div className="hidden md:flex flex-col gap-5">
+      <div className='hidden md:flex flex-col gap-5'>
         <Avatar.Root>
           <Avatar.Image
             className={`size-32 object-cover object-center ${avatarRounded}`}
             src={profilePhoto}
             alt={fullName}
           />
-          <Avatar.Fallback className="flex size-full">
+          <Avatar.Fallback className='flex size-full'>
             <CircleLoader size={32} />
           </Avatar.Fallback>
         </Avatar.Root>
         <div>
-          <h2 className="text-2xl font-semibold">{fullName}</h2>
-          {jobTitle && <h3 className="text-lg">{jobTitle}</h3>}
+          <h2 className='text-2xl font-semibold'>{fullName}</h2>
+          {jobTitle && <h3 className='text-lg'>{jobTitle}</h3>}
         </div>
         {bio && <HTMLRenderer html={bio} />}
         {!hideSocialLinks && (
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             {socialLinks && <ShareLinks {...shareLinksProps} />}
           </div>
         )}
       </div>
 
       {/* Mobile layout: horizontal avatar + name, then social links, then bio */}
-      <div className="flex md:hidden flex-col gap-4 w-full">
-        <div className="flex gap-4 items-center">
+      <div className='flex md:hidden flex-col gap-4 w-full'>
+        <div className='flex gap-4 items-center'>
           <Avatar.Root>
             <Avatar.Image
               className={`w-full h-auto min-w-20 max-w-32 object-cover object-center ${avatarRounded}`}
               src={profilePhoto}
               alt={fullName}
             />
-            <Avatar.Fallback className="flex size-full">
+            <Avatar.Fallback className='flex size-full'>
               <CircleLoader size={circleLoaderSize} />
             </Avatar.Fallback>
           </Avatar.Root>
           <div>
-            <h2 className="text-2xl font-semibold">{fullName}</h2>
-            {jobTitle && <h3 className="text-lg">{jobTitle}</h3>}
+            <h2 className='text-2xl font-semibold'>{fullName}</h2>
+            {jobTitle && <h3 className='text-lg'>{jobTitle}</h3>}
           </div>
         </div>
         {!hideSocialLinks && (
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             {socialLinks && <ShareLinks {...shareLinksProps} />}
           </div>
         )}

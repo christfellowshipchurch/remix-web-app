@@ -36,7 +36,7 @@ export type AlgoliaUrlStateHandlers<T extends AlgoliaUrlStateBase> = {
 
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 1. */
 export function createAlgoliaUrlStateConfig<T extends AlgoliaUrlStateBase>(
-  config: AlgoliaUrlStateConfig<T>
+  config: AlgoliaUrlStateConfig<T>,
 ): AlgoliaUrlStateHandlers<T> {
   const { queryParamKey, refinementAttributes, custom } = config;
 

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useHits } from "react-instantsearch";
-import { GroupType } from "~/routes/group-finder/types";
+import { useEffect } from 'react';
+import { useHits } from 'react-instantsearch';
+import { GroupType } from '~/routes/group-finder/types';
 
 export const GetHits = ({
   setHits,

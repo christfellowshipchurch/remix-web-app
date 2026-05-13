@@ -1,11 +1,11 @@
-import type { LoaderFunction } from "react-router-dom";
+import type { LoaderFunction } from 'react-router-dom';
 
-import { fetchVolunteerMissionDetailFromRock } from "./outreach-mission-rock.server";
-import type { VolunteerMissionDetail } from "./types";
+import { fetchVolunteerMissionDetailFromRock } from './outreach-mission-rock.server';
+import type { VolunteerMissionDetail } from './types';
 
 /** Static PDF — Community Serving liability waiver. */
 const COMMUNITY_SERVING_WAIVER_PDF_URL =
-  "https://rock.gocf.org/Content/Missions/cfliabilitywaivermissions.pdf";
+  'https://rock.gocf.org/Content/Missions/cfliabilitywaivermissions.pdf';
 
 export type LoaderReturnType = {
   /** Rock GUID from the URL (uppercase) — canonical for links and meta. */
@@ -23,13 +23,13 @@ const ROCK_GUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const raw = decodeURIComponent(params.groupGuid ?? "").trim();
+  const raw = decodeURIComponent(params.groupGuid ?? '').trim();
   if (!raw || !ROCK_GUID_RE.test(raw)) {
-    throw new Response("Mission not found", { status: 404 });
+    throw new Response('Mission not found', { status: 404 });
   }
 
   if (!process.env.ROCK_API || !process.env.ROCK_TOKEN) {
-    throw new Response("Mission data not configured", { status: 503 });
+    throw new Response('Mission data not configured', { status: 503 });
   }
 
   const groupGuid = raw.toUpperCase();
@@ -37,14 +37,14 @@ export const loader: LoaderFunction = async ({ params }) => {
   const mission = await fetchVolunteerMissionDetailFromRock(groupGuid);
 
   if (!mission) {
-    throw new Response("Mission not found", { status: 404 });
+    throw new Response('Mission not found', { status: 404 });
   }
 
   return Response.json({
     groupGuid,
     mission,
     waiverPdfUrl: COMMUNITY_SERVING_WAIVER_PDF_URL,
-    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? "",
-    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? "",
+    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? '',
+    ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? '',
   } satisfies LoaderReturnType);
 };

@@ -29,7 +29,9 @@ export function ChurchServingAreaPage() {
 
   const onContinue = useCallback(() => {
     if (!selectedRoleGuid?.trim()) return;
-    navigate(`/volunteer-form/welcome?role=${encodeURIComponent(selectedRoleGuid)}`);
+    navigate(
+      `/volunteer-form/welcome?role=${encodeURIComponent(selectedRoleGuid)}`,
+    );
   }, [navigate, selectedRoleGuid]);
 
   useEffect(() => {

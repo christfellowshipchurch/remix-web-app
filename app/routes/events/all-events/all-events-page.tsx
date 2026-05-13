@@ -1,16 +1,16 @@
-import { DynamicHero } from "~/components";
+import { DynamicHero } from '~/components';
 
-import { FeaturedEvents } from "./partials/featured-events.partial";
-import { AllEvents } from "./partials/all-events";
-import { getImageUrl } from "~/lib/utils";
+import { FeaturedEvents } from './partials/featured-events.partial';
+import { AllEvents } from './partials/all-events';
+import { getImageUrl } from '~/lib/utils';
 
 export function AllEventsPage() {
   return (
-    <div className="flex flex-col items-center">
+    <div className='flex flex-col items-center'>
       <DynamicHero
-        customTitle="Events"
+        customTitle='Events'
         overlay='full'
-        imagePath={getImageUrl("3166604")}
+        imagePath={getImageUrl('3166604')}
       />
       <FeaturedEvents />
       <AllEvents />

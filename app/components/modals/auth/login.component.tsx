@@ -1,8 +1,8 @@
-import * as Form from "@radix-ui/react-form";
-import React, { useState } from "react";
-import { Button } from "~/primitives/button/button.primitive";
-import TextFieldInput from "~/primitives/inputs/text-field";
-import { useAuth } from "~/providers/auth-provider";
+import * as Form from '@radix-ui/react-form';
+import React, { useState } from 'react';
+import { Button } from '~/primitives/button/button.primitive';
+import TextFieldInput from '~/primitives/inputs/text-field';
+import { useAuth } from '~/providers/auth-provider';
 
 interface LoginProps {
   onSubmit: (identity: string) => Promise<void>;
@@ -12,9 +12,9 @@ const NoUserExistsError: React.FC<{
   onClick: () => void;
 }> = ({ onClick }) => (
   <div>
-    <p className="mt-2 text-xs text-alert">
-      Email or phone not found. Would you like to{" "}
-      <button onClick={onClick} className="hover:text-red underline">
+    <p className='mt-2 text-xs text-alert'>
+      Email or phone not found. Would you like to{' '}
+      <button onClick={onClick} className='hover:text-red underline'>
         create an account?
       </button>
     </p>
@@ -22,7 +22,7 @@ const NoUserExistsError: React.FC<{
 );
 
 const Login: React.FC<LoginProps> = ({ onSubmit }) => {
-  const [identity, setIdentity] = useState("");
+  const [identity, setIdentity] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { checkUserExists } = useAuth();
@@ -38,7 +38,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
 
     if (!isEmail && !isPhoneNumber) {
       setLoading(false);
-      setError("Please enter a valid email or phone number.");
+      setError('Please enter a valid email or phone number.');
       return;
     }
 
@@ -49,24 +49,24 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
 
     if (!userExists) {
       setLoading(false);
-      setError("DOES_NOT_EXIST");
+      setError('DOES_NOT_EXIST');
       return;
     }
 
     try {
       await onSubmit(identity);
     } catch {
-      setError("An error occurred. Please try again.");
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="text-center">
-      <h2 className="mb-6 text-5xl font-bold">Log In</h2>
-      <Form.Root onSubmit={handleSubmit} className="flex flex-col text-left">
-        <Form.Field name="identity" className="flex flex-col">
+    <div className='text-center'>
+      <h2 className='mb-6 text-5xl font-bold'>Log In</h2>
+      <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
+        <Form.Field name='identity' className='flex flex-col'>
           <Form.Label>Mobile Number or Email*</Form.Label>
           <Form.Control asChild>
             <TextFieldInput
@@ -76,26 +76,26 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
               setError={setError}
             />
           </Form.Control>
-          <Form.Message className="text-sm text-alert" match="valueMissing">
+          <Form.Message className='text-sm text-alert' match='valueMissing'>
             Please enter a number or email
           </Form.Message>
         </Form.Field>
-        {error === "DOES_NOT_EXIST" ? (
-          <NoUserExistsError onClick={() => onSubmit("sign-up")} />
+        {error === 'DOES_NOT_EXIST' ? (
+          <NoUserExistsError onClick={() => onSubmit('sign-up')} />
         ) : (
-          <p className="mt-2 text-xs text-alert">{error}</p>
+          <p className='mt-2 text-xs text-alert'>{error}</p>
         )}
-        <Form.Submit className="mt-6" asChild>
-          <Button size="md" type="submit" disabled={loading}>
-            {loading ? "Loading..." : "Log In"}
+        <Form.Submit className='mt-6' asChild>
+          <Button size='md' type='submit' disabled={loading}>
+            {loading ? 'Loading...' : 'Log In'}
           </Button>
         </Form.Submit>
       </Form.Root>
-      <div className="mt-6 flex justify-center gap-1 text-text_primary">
+      <div className='mt-6 flex justify-center gap-1 text-text_primary'>
         <p>{"Don't have an account?"}</p>
         <button
-          className="underline  hover:text-black"
-          onClick={() => onSubmit("sign-up")}
+          className='underline  hover:text-black'
+          onClick={() => onSubmit('sign-up')}
         >
           Sign Up
         </button>

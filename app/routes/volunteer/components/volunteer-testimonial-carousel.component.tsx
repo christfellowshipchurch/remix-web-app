@@ -1,18 +1,18 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
-import type { PointerEvent } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import type { PointerEvent } from 'react';
 
-import { cn } from "~/lib/utils";
-import { Icon } from "~/primitives/icon/icon";
+import { cn } from '~/lib/utils';
+import { Icon } from '~/primitives/icon/icon';
 
 import {
   volunteerTestimonialsData,
   type VolunteerTestimonialCardType,
-} from "../volunteer-testimonials.data";
+} from '../volunteer-testimonials.data';
 
 export type { VolunteerTestimonialCardType };
 
 const SWIPE_MIN_PX = 56;
-const MOBILE_BORDER = "#BFC8CC";
+const MOBILE_BORDER = '#BFC8CC';
 /** Gap between desktop slides (matches `gap-4`). */
 const DESKTOP_SLIDE_GAP_PX = 16;
 /** Main card width; capped by viewport so the next slide fills the remaining visible width. */
@@ -43,25 +43,22 @@ export function VolunteerTestimonialCarousel() {
     [],
   );
 
-  const handlePointerDown = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      if (e.pointerType === "mouse" && e.button !== 0) return;
-      const target = e.target as HTMLElement;
-      if (target.closest("button, a")) return;
+  const handlePointerDown = useCallback((e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a')) return;
 
-      swipeStartRef.current = {
-        x: e.clientX,
-        y: e.clientY,
-        pointerId: e.pointerId,
-      };
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        /* setPointerCapture unsupported or failed */
-      }
-    },
-    [],
-  );
+    swipeStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      pointerId: e.pointerId,
+    };
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* setPointerCapture unsupported or failed */
+    }
+  }, []);
 
   const handlePointerUp = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
@@ -121,23 +118,23 @@ export function VolunteerTestimonialCarousel() {
 
   return (
     <div
-      className="flex w-full flex-col items-center gap-6 md:gap-8"
-      role="region"
-      aria-roledescription="carousel"
-      aria-label="Volunteer testimonial stories"
+      className='flex w-full flex-col items-center gap-6 md:gap-8'
+      role='region'
+      aria-roledescription='carousel'
+      aria-label='Volunteer testimonial stories'
     >
       <div
-        className="flex w-full justify-center [touch-action:pan-y]"
+        className='flex w-full justify-center [touch-action:pan-y]'
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
       >
         <div
           ref={desktopViewportRef}
-          className="mx-auto hidden w-full max-w-content cursor-grab select-none overflow-hidden py-2 active:cursor-grabbing lg:block"
+          className='mx-auto hidden w-full max-w-content cursor-grab select-none overflow-hidden py-2 active:cursor-grabbing lg:block'
         >
           <div
-            className="flex gap-4 transition-transform duration-300 ease-out"
+            className='flex gap-4 transition-transform duration-300 ease-out'
             style={{
               transform: `translateX(-${activeIndex * desktopStepPx}px)`,
             }}
@@ -145,7 +142,7 @@ export function VolunteerTestimonialCarousel() {
             {volunteerTestimonialsData.map((item, index) => (
               <div
                 key={`desktop-slide-${index}`}
-                className="min-w-0 shrink-0"
+                className='min-w-0 shrink-0'
                 style={{ width: desktopSlideWidthPx }}
                 aria-hidden={index !== activeIndex}
                 inert={index !== activeIndex ? true : undefined}
@@ -155,7 +152,7 @@ export function VolunteerTestimonialCarousel() {
             ))}
           </div>
         </div>
-        <div className="flex w-full justify-center lg:hidden">
+        <div className='flex w-full justify-center lg:hidden'>
           <TestimonialMobileCard
             key={activeIndex}
             data={volunteerTestimonialsData[activeIndex]}
@@ -168,23 +165,23 @@ export function VolunteerTestimonialCarousel() {
       </div>
 
       <nav
-        className="hidden items-center justify-center gap-2 lg:flex"
-        aria-label="Choose testimonial"
+        className='hidden items-center justify-center gap-2 lg:flex'
+        aria-label='Choose testimonial'
       >
         {volunteerTestimonialsData.map((_, index) => {
           const isActive = index === activeIndex;
           return (
             <button
               key={index}
-              type="button"
+              type='button'
               onClick={() => setActiveIndex(index)}
               aria-label={`Show testimonial ${index + 1} of ${slideCount}`}
-              aria-current={isActive ? "true" : undefined}
+              aria-current={isActive ? 'true' : undefined}
               className={cn(
-                "h-2 shrink-0 cursor-pointer rounded-full transition-[width,background-color] duration-300 ease-out",
+                'h-2 shrink-0 cursor-pointer rounded-full transition-[width,background-color] duration-300 ease-out',
                 isActive
-                  ? "w-8 bg-ocean"
-                  : "w-2 bg-neutral-lighter hover:bg-ocean/35",
+                  ? 'w-8 bg-ocean'
+                  : 'w-2 bg-neutral-lighter hover:bg-ocean/35',
               )}
             />
           );
@@ -202,30 +199,30 @@ const TestimonialDesktopCard = ({
   const { heading, title, description, desktopImage } = data;
 
   return (
-    <div className="flex w-full select-none items-stretch overflow-hidden rounded-[24px] bg-white p-4 shadow-sm">
-      <div className="relative w-full max-w-[400px] shrink-0 self-start overflow-hidden rounded-2xl">
+    <div className='flex w-full select-none items-stretch overflow-hidden rounded-[24px] bg-white p-4 shadow-sm'>
+      <div className='relative w-full max-w-[400px] shrink-0 self-start overflow-hidden rounded-2xl'>
         <img
           src={desktopImage}
           alt={heading}
           draggable={false}
-          className="block h-auto w-full max-w-full align-top"
+          className='block h-auto w-full max-w-full align-top'
         />
-        <div className="pointer-events-none absolute left-0 top-1 z-2 max-w-[min(100%-3rem,20rem)]">
-          <div className="flex items-center gap-2 rounded-[10px] bg-ocean px-4 py-2 text-white">
+        <div className='pointer-events-none absolute left-0 top-1 z-2 max-w-[min(100%-3rem,20rem)]'>
+          <div className='flex items-center gap-2 rounded-[10px] bg-ocean px-4 py-2 text-white'>
             <span
-              className="size-2 shrink-0 rounded-full bg-white"
+              className='size-2 shrink-0 rounded-full bg-white'
               aria-hidden
             />
-            <p className="line-clamp-2 text-lg font-medium">{title}</p>
+            <p className='line-clamp-2 text-lg font-medium'>{title}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-8 px-8 py-10 xl:px-12 xl:py-14">
-        <h3 className="text-2xl font-extrabold leading-tight text-navy xl:text-3xl">
+      <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-8 px-8 py-10 xl:px-12 xl:py-14'>
+        <h3 className='text-2xl font-extrabold leading-tight text-navy xl:text-3xl'>
           {heading}
         </h3>
-        <p className="text-text-secondary">{description}</p>
+        <p className='text-text-secondary'>{description}</p>
       </div>
     </div>
   );
@@ -249,80 +246,82 @@ const TestimonialMobileCard = ({
   const fullStory = longDescription ?? description;
 
   const arrowBtnClass = cn(
-    "flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-ocean text-ocean transition-colors",
-    "enabled:hover:bg-ocean/10",
-    "disabled:pointer-events-none disabled:border-gray disabled:text-gray disabled:opacity-50",
+    'flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-ocean text-ocean transition-colors',
+    'enabled:hover:bg-ocean/10',
+    'disabled:pointer-events-none disabled:border-gray disabled:text-gray disabled:opacity-50',
   );
 
   return (
-    <article className="w-full max-w-[480px] overflow-hidden">
-      <div className="overflow-hidden rounded-[36px]">
+    <article className='w-full max-w-[480px] overflow-hidden'>
+      <div className='overflow-hidden rounded-[36px]'>
         <img
           src={mobileImage}
           alt={heading}
-          className="aspect-4/3 w-full object-cover"
+          className='aspect-4/3 w-full object-cover'
         />
       </div>
 
-      <div className="mt-5 flex flex-col gap-3">
-        <h3 className="text-xl font-extrabold leading-tight text-navy">
+      <div className='mt-5 flex flex-col gap-3'>
+        <h3 className='text-xl font-extrabold leading-tight text-navy'>
           {heading}
         </h3>
         <p
           className={cn(
-            "text-base leading-relaxed text-text-secondary",
-            !isExpanded && "line-clamp-3",
+            'text-base leading-relaxed text-text-secondary',
+            !isExpanded && 'line-clamp-3',
           )}
         >
           {fullStory}
         </p>
 
-        <div className="flex min-w-0 items-center justify-between gap-3">
+        <div className='flex min-w-0 items-center justify-between gap-3'>
           <button
-            type="button"
+            type='button'
             onClick={() => setIsExpanded((v) => !v)}
-            className="flex min-w-0 items-center gap-2 text-left font-bold text-navy transition-opacity hover:opacity-80"
+            className='flex min-w-0 items-center gap-2 text-left font-bold text-navy transition-opacity hover:opacity-80'
             aria-expanded={isExpanded}
           >
-            <span className="shrink-0">{isExpanded ? "Close Story" : "Read Full Story"}</span>
+            <span className='shrink-0'>
+              {isExpanded ? 'Close Story' : 'Read Full Story'}
+            </span>
             <Icon
-              name="chevronDown"
+              name='chevronDown'
               size={20}
               className={cn(
-                "shrink-0 transition-transform duration-200",
-                isExpanded && "rotate-180",
+                'shrink-0 transition-transform duration-200',
+                isExpanded && 'rotate-180',
               )}
             />
           </button>
 
           <div
-            className="flex shrink-0 items-center gap-2"
-            aria-label="Previous or next testimonial"
+            className='flex shrink-0 items-center gap-2'
+            aria-label='Previous or next testimonial'
           >
             <button
-              type="button"
+              type='button'
               onClick={onPrev}
               disabled={!canGoPrev}
-              aria-label="Previous testimonial"
+              aria-label='Previous testimonial'
               className={arrowBtnClass}
             >
-              <Icon name="chevronLeft" size={20} />
+              <Icon name='chevronLeft' size={20} />
             </button>
             <button
-              type="button"
+              type='button'
               onClick={onNext}
               disabled={!canGoNext}
-              aria-label="Next testimonial"
+              aria-label='Next testimonial'
               className={arrowBtnClass}
             >
-              <Icon name="chevronRight" size={20} />
+              <Icon name='chevronRight' size={20} />
             </button>
           </div>
         </div>
       </div>
 
       <div
-        className="mt-5 border-b"
+        className='mt-5 border-b'
         style={{ borderColor: MOBILE_BORDER }}
         aria-hidden
       />

@@ -33,6 +33,7 @@ Albania, Argentina, Armenia, Australia, Austria, Bahamas, Bangladesh, Belgium, B
 ## Task 1: Create country-coordinates lookup with helper
 
 **Files:**
+
 - Create: `app/routes/volunteer/country-coordinates.ts`
 - Test: `app/routes/volunteer/__tests__/country-coordinates.test.ts`
 
@@ -41,35 +42,35 @@ Albania, Argentina, Armenia, Australia, Austria, Bahamas, Bangladesh, Belgium, B
 Create `app/routes/volunteer/__tests__/country-coordinates.test.ts`:
 
 ```ts
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from 'vitest';
 import {
   getCoordinatesForCountry,
   COUNTRY_COORDINATES,
-} from "../country-coordinates";
+} from '../country-coordinates';
 
-describe("getCoordinatesForCountry", () => {
-  it("returns coordinates for a known country", () => {
-    const result = getCoordinatesForCountry("Guatemala");
+describe('getCoordinatesForCountry', () => {
+  it('returns coordinates for a known country', () => {
+    const result = getCoordinatesForCountry('Guatemala');
     expect(result).toEqual({ lat: 15.7835, lng: -90.2308 });
   });
 
-  it("returns null for an unknown country", () => {
-    expect(getCoordinatesForCountry("Atlantis")).toBeNull();
+  it('returns null for an unknown country', () => {
+    expect(getCoordinatesForCountry('Atlantis')).toBeNull();
   });
 
-  it("returns null for an empty string", () => {
-    expect(getCoordinatesForCountry("")).toBeNull();
+  it('returns null for an empty string', () => {
+    expect(getCoordinatesForCountry('')).toBeNull();
   });
 
-  it("is case-sensitive on exact match (matches Rock dropdown values)", () => {
-    expect(getCoordinatesForCountry("guatemala")).toBeNull();
-    expect(getCoordinatesForCountry("Guatemala")).not.toBeNull();
+  it('is case-sensitive on exact match (matches Rock dropdown values)', () => {
+    expect(getCoordinatesForCountry('guatemala')).toBeNull();
+    expect(getCoordinatesForCountry('Guatemala')).not.toBeNull();
   });
 
-  it("includes all countries from the dropdown list", () => {
-    expect(COUNTRY_COORDINATES["United States"]).toBeDefined();
-    expect(COUNTRY_COORDINATES["Dominican Republic"]).toBeDefined();
-    expect(COUNTRY_COORDINATES["Bosnia and Herzegovina"]).toBeDefined();
+  it('includes all countries from the dropdown list', () => {
+    expect(COUNTRY_COORDINATES['United States']).toBeDefined();
+    expect(COUNTRY_COORDINATES['Dominican Republic']).toBeDefined();
+    expect(COUNTRY_COORDINATES['Bosnia and Herzegovina']).toBeDefined();
   });
 });
 ```
@@ -97,7 +98,7 @@ export const COUNTRY_COORDINATES: Record<string, Coordinates> = {
   Belgium: { lat: 50.5039, lng: 4.4699 },
   Belize: { lat: 17.1899, lng: -88.4976 },
   Bolivia: { lat: -16.2902, lng: -63.5887 },
-  "Bosnia and Herzegovina": { lat: 43.9159, lng: 17.6791 },
+  'Bosnia and Herzegovina': { lat: 43.9159, lng: 17.6791 },
   Brazil: { lat: -14.235, lng: -51.9253 },
   Bulgaria: { lat: 42.7339, lng: 25.4858 },
   Cambodia: { lat: 12.5657, lng: 104.991 },
@@ -106,16 +107,16 @@ export const COUNTRY_COORDINATES: Record<string, Coordinates> = {
   Chile: { lat: -35.6751, lng: -71.543 },
   China: { lat: 35.8617, lng: 104.1954 },
   Colombia: { lat: 4.5709, lng: -74.2973 },
-  "Costa Rica": { lat: 9.7489, lng: -83.7534 },
+  'Costa Rica': { lat: 9.7489, lng: -83.7534 },
   Croatia: { lat: 45.1, lng: 15.2 },
   Cuba: { lat: 21.5218, lng: -77.7812 },
-  "Czech Republic": { lat: 49.8175, lng: 15.473 },
-  "Democratic Republic of the Congo": { lat: -4.0383, lng: 21.7587 },
+  'Czech Republic': { lat: 49.8175, lng: 15.473 },
+  'Democratic Republic of the Congo': { lat: -4.0383, lng: 21.7587 },
   Denmark: { lat: 56.2639, lng: 9.5018 },
-  "Dominican Republic": { lat: 18.7357, lng: -70.1627 },
+  'Dominican Republic': { lat: 18.7357, lng: -70.1627 },
   Ecuador: { lat: -1.8312, lng: -78.1834 },
   Egypt: { lat: 26.8206, lng: 30.8025 },
-  "El Salvador": { lat: 13.7942, lng: -88.8965 },
+  'El Salvador': { lat: 13.7942, lng: -88.8965 },
   Ethiopia: { lat: 9.145, lng: 40.4897 },
   Fiji: { lat: -17.7134, lng: 178.065 },
   Finland: { lat: 61.9241, lng: 25.7482 },
@@ -135,7 +136,7 @@ export const COUNTRY_COORDINATES: Record<string, Coordinates> = {
   Ireland: { lat: 53.1424, lng: -7.6921 },
   Israel: { lat: 31.0461, lng: 34.8516 },
   Italy: { lat: 41.8719, lng: 12.5674 },
-  "Ivory Coast": { lat: 7.54, lng: -5.5471 },
+  'Ivory Coast': { lat: 7.54, lng: -5.5471 },
   Jamaica: { lat: 18.1096, lng: -77.2975 },
   Japan: { lat: 36.2048, lng: 138.2529 },
   Jordan: { lat: 30.5852, lng: 36.2384 },
@@ -156,35 +157,35 @@ export const COUNTRY_COORDINATES: Record<string, Coordinates> = {
   Myanmar: { lat: 21.9162, lng: 95.956 },
   Nepal: { lat: 28.3949, lng: 84.124 },
   Netherlands: { lat: 52.1326, lng: 5.2913 },
-  "New Zealand": { lat: -40.9006, lng: 174.886 },
+  'New Zealand': { lat: -40.9006, lng: 174.886 },
   Nicaragua: { lat: 12.8654, lng: -85.2072 },
   Nigeria: { lat: 9.082, lng: 8.6753 },
-  "North Macedonia": { lat: 41.6086, lng: 21.7453 },
+  'North Macedonia': { lat: 41.6086, lng: 21.7453 },
   Norway: { lat: 60.472, lng: 8.4689 },
   Pakistan: { lat: 30.3753, lng: 69.3451 },
   Panama: { lat: 8.538, lng: -80.7821 },
-  "Papua New Guinea": { lat: -6.315, lng: 143.9555 },
+  'Papua New Guinea': { lat: -6.315, lng: 143.9555 },
   Paraguay: { lat: -23.4425, lng: -58.4438 },
   Peru: { lat: -9.19, lng: -75.0152 },
   Philippines: { lat: 12.8797, lng: 121.774 },
   Poland: { lat: 51.9194, lng: 19.1451 },
   Portugal: { lat: 39.3999, lng: -8.2245 },
-  "Puerto Rico": { lat: 18.2208, lng: -66.5901 },
+  'Puerto Rico': { lat: 18.2208, lng: -66.5901 },
   Romania: { lat: 45.9432, lng: 24.9668 },
   Russia: { lat: 61.524, lng: 105.3188 },
   Rwanda: { lat: -1.9403, lng: 29.8739 },
-  "Saudi Arabia": { lat: 23.8859, lng: 45.0792 },
+  'Saudi Arabia': { lat: 23.8859, lng: 45.0792 },
   Senegal: { lat: 14.4974, lng: -14.4524 },
   Serbia: { lat: 44.0165, lng: 21.0059 },
-  "Sierra Leone": { lat: 8.4606, lng: -11.7799 },
+  'Sierra Leone': { lat: 8.4606, lng: -11.7799 },
   Singapore: { lat: 1.3521, lng: 103.8198 },
   Slovakia: { lat: 48.669, lng: 19.699 },
   Slovenia: { lat: 46.1512, lng: 14.9955 },
-  "South Africa": { lat: -30.5595, lng: 22.9375 },
-  "South Korea": { lat: 35.9078, lng: 127.7669 },
-  "South Sudan": { lat: 6.877, lng: 31.307 },
+  'South Africa': { lat: -30.5595, lng: 22.9375 },
+  'South Korea': { lat: 35.9078, lng: 127.7669 },
+  'South Sudan': { lat: 6.877, lng: 31.307 },
   Spain: { lat: 40.4637, lng: -3.7492 },
-  "Sri Lanka": { lat: 7.8731, lng: 80.7718 },
+  'Sri Lanka': { lat: 7.8731, lng: 80.7718 },
   Sudan: { lat: 12.8628, lng: 30.2176 },
   Sweden: { lat: 60.1282, lng: 18.6435 },
   Switzerland: { lat: 46.8182, lng: 8.2275 },
@@ -193,14 +194,14 @@ export const COUNTRY_COORDINATES: Record<string, Coordinates> = {
   Tanzania: { lat: -6.369, lng: 34.8888 },
   Thailand: { lat: 15.87, lng: 100.9925 },
   Togo: { lat: 8.6195, lng: 0.8248 },
-  "Trinidad and Tobago": { lat: 10.6918, lng: -61.2225 },
+  'Trinidad and Tobago': { lat: 10.6918, lng: -61.2225 },
   Tunisia: { lat: 33.8869, lng: 9.5375 },
   Turkey: { lat: 38.9637, lng: 35.2433 },
   Uganda: { lat: 1.3733, lng: 32.2903 },
   Ukraine: { lat: 48.3794, lng: 31.1656 },
-  "United Arab Emirates": { lat: 23.4241, lng: 53.8478 },
-  "United Kingdom": { lat: 55.3781, lng: -3.436 },
-  "United States": { lat: 37.0902, lng: -95.7129 },
+  'United Arab Emirates': { lat: 23.4241, lng: 53.8478 },
+  'United Kingdom': { lat: 55.3781, lng: -3.436 },
+  'United States': { lat: 37.0902, lng: -95.7129 },
   Uruguay: { lat: -32.5228, lng: -55.7658 },
   Uzbekistan: { lat: 41.3775, lng: 64.5853 },
   Venezuela: { lat: 6.4238, lng: -66.5897 },
@@ -209,9 +210,7 @@ export const COUNTRY_COORDINATES: Record<string, Coordinates> = {
   Zimbabwe: { lat: -19.0154, lng: 29.1549 },
 };
 
-export function getCoordinatesForCountry(
-  country: string,
-): Coordinates | null {
+export function getCoordinatesForCountry(country: string): Coordinates | null {
   if (!country) return null;
   return COUNTRY_COORDINATES[country] ?? null;
 }
@@ -234,6 +233,7 @@ git commit -m "feat(volunteer): add country-to-coordinates lookup"
 ## Task 2: Make Trip.coordinates optional in types
 
 **Files:**
+
 - Modify: `app/routes/volunteer/types.ts:13-16`
 
 - [ ] **Step 1: Update the Trip type**
@@ -274,6 +274,7 @@ Continue to Task 3 â€” types, loader, and component change together.
 ## Task 3: Resolve coordinates from country in loader
 
 **Files:**
+
 - Modify: `app/routes/volunteer/loader.ts:36-66`
 
 - [ ] **Step 1: Update the loader to use the lookup**
@@ -283,7 +284,7 @@ In `app/routes/volunteer/loader.ts`:
 1. Add the import at the top with the other imports:
 
 ```ts
-import { getCoordinatesForCountry } from "./country-coordinates";
+import { getCoordinatesForCountry } from './country-coordinates';
 ```
 
 2. Remove the `latitude` and `longitude` fields from the `attributeValues` type annotation (lines 45-46).
@@ -323,6 +324,7 @@ Expected: `loader.ts` passes. `global-map.component.tsx` may still show errors â
 ## Task 4: Filter map dots to trips with resolved coordinates
 
 **Files:**
+
 - Modify: `app/routes/volunteer/components/global-map.component.tsx:32-54`
 
 - [ ] **Step 1: Update the component to skip trips without coordinates**
@@ -330,30 +332,29 @@ Expected: `loader.ts` passes. `global-map.component.tsx` may still show errors â
 In `app/routes/volunteer/components/global-map.component.tsx`, replace the `trips.map(...)` block with:
 
 ```tsx
-      {trips.map((trip) => {
-        if (!trip.coordinates) return null;
-        const { x, y } = projectToMap(
-          trip.coordinates.lat,
-          trip.coordinates.lng,
-        );
-        return (
-          <div
-            key={trip.id}
-            className="absolute"
-            style={{
-              left: `${x}px`,
-              top: `${y}px`,
-              transform: "translate(-50%, -50%)",
-            }}
-            title={trip.title}
-          >
-            <span className="relative flex size-3">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ocean opacity-75"></span>
-              <span className="relative inline-flex size-3 rounded-full bg-ocean"></span>
-            </span>
-          </div>
-        );
-      })}
+{
+  trips.map((trip) => {
+    if (!trip.coordinates) return null;
+    const { x, y } = projectToMap(trip.coordinates.lat, trip.coordinates.lng);
+    return (
+      <div
+        key={trip.id}
+        className='absolute'
+        style={{
+          left: `${x}px`,
+          top: `${y}px`,
+          transform: 'translate(-50%, -50%)',
+        }}
+        title={trip.title}
+      >
+        <span className='relative flex size-3'>
+          <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-ocean opacity-75'></span>
+          <span className='relative inline-flex size-3 rounded-full bg-ocean'></span>
+        </span>
+      </div>
+    );
+  });
+}
 ```
 
 - [ ] **Step 2: Run typecheck**
@@ -370,6 +371,7 @@ Expected: all tests pass.
 
 Run: `yarn dev`
 Visit the volunteer page. Verify:
+
 - Dots appear on the map for trips whose `country` attribute matches a lookup entry.
 - Trips whose country doesn't match (or is empty) simply don't render a dot â€” nothing crashes, no dots at `{0,0}`.
 

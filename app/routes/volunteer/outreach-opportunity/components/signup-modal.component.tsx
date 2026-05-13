@@ -31,18 +31,18 @@ export function SignupModal({
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
       <Modal.Content>
-        <div className="text-text-primary p-6 md:p-10 overflow-auto overflow-x-hidden w-[90vw] max-w-2xl max-h-[85vh] md:max-h-[90vh]">
+        <div className='text-text-primary p-6 md:p-10 overflow-auto overflow-x-hidden w-[90vw] max-w-2xl max-h-[85vh] md:max-h-[90vh]'>
           {succeeded ? (
-            <div className="flex flex-col items-center gap-4 text-center">
-              <h2 className="text-2xl md:text-3xl font-bold text-navy">
+            <div className='flex flex-col items-center gap-4 text-center'>
+              <h2 className='text-2xl md:text-3xl font-bold text-navy'>
                 You&apos;re signed up!
               </h2>
-              <p className="text-text-secondary">
+              <p className='text-text-secondary'>
                 Thanks for signing up. We&apos;ll be in touch with next steps.
               </p>
               <Button
-                intent="primary"
-                className="rounded-full w-52 mt-2"
+                intent='primary'
+                className='rounded-full w-52 mt-2'
                 onClick={() => onOpenChange(false)}
               >
                 Close
@@ -50,7 +50,7 @@ export function SignupModal({
             </div>
           ) : (
             <>
-              <h2 className="text-2xl md:text-3xl font-bold text-navy text-center mb-6">
+              <h2 className='text-2xl md:text-3xl font-bold text-navy text-center mb-6'>
                 Sign up to serve
               </h2>
               <SignupForm

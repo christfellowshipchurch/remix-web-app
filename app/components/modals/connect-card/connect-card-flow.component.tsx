@@ -1,6 +1,6 @@
-import { useState } from "react";
-import ConnectCardConfirmation from "./confirmation.component";
-import ConnectCardForm from "./connect-form.component";
+import { useState } from 'react';
+import ConnectCardConfirmation from './confirmation.component';
+import ConnectCardForm from './connect-form.component';
 
 enum ConnectCardStep {
   CONNECT_CARD,
@@ -13,7 +13,7 @@ const ConnectCardFlow = ({
   setOpenModal: (open: boolean) => void;
 }) => {
   const [step, setStep] = useState<ConnectCardStep>(
-    ConnectCardStep.CONNECT_CARD
+    ConnectCardStep.CONNECT_CARD,
   );
 
   const renderStep = () => {
@@ -34,7 +34,7 @@ const ConnectCardFlow = ({
   };
 
   return (
-    <div className="pt-10 text-center text-text_primary p-6 w-[90vw] max-w-sm md:max-w-xl lg:max-w-3xl overflow-y-scroll max-h-[85vh] md:max-h-[90vh]">
+    <div className='pt-10 text-center text-text_primary p-6 w-[90vw] max-w-sm md:max-w-xl lg:max-w-3xl overflow-y-scroll max-h-[85vh] md:max-h-[90vh]'>
       {renderStep()}
     </div>
   );

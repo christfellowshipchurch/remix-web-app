@@ -2,17 +2,16 @@ import {
   AttributeMatrixItem,
   attributeProps,
   attributeValuesProps,
-} from "../types/rock-types";
-import { createImageUrlFromGuid } from "~/lib/utils";
-import { fetchRockData } from "./fetch-rock-data";
-import { AttributeMatrix } from "../types/rock-types";
+} from '../types/rock-types';
+import { createImageUrlFromGuid } from '~/lib/utils';
+import { fetchRockData } from './fetch-rock-data';
+import { AttributeMatrix } from '../types/rock-types';
 
 /**
  * Escapes a string value for safe interpolation into an OData $filter expression.
  * OData encodes a literal single-quote inside a string operand as two single-quotes ('').
  */
-export const escapeOData = (value: string): string =>
-  value.replace(/'/g, "''");
+export const escapeOData = (value: string): string => value.replace(/'/g, "''");
 
 export const attributeIsImage = ({
   key,
@@ -22,8 +21,8 @@ export const attributeIsImage = ({
   attributeValues: attributeValuesProps;
 }): boolean => {
   return (
-    key.toLowerCase().includes("image") &&
-    typeof attributeValues[key].value === "string"
+    key.toLowerCase().includes('image') &&
+    typeof attributeValues[key].value === 'string'
   ); // looks like an image url
 };
 
@@ -38,10 +37,10 @@ export const getImages = ({
     attributeIsImage({
       key,
       attributeValues,
-    })
+    }),
   );
   return imageKeys.map((key) =>
-    createImageUrlFromGuid(attributeValues[key].value)
+    createImageUrlFromGuid(attributeValues[key].value),
   );
 };
 
@@ -55,13 +54,13 @@ export const getAttributeMatrixItems = async ({
       endpoint: `AttributeMatrices`,
       queryParams: {
         $filter: `Guid eq guid'${attributeMatrixGuid}'`,
-        $expand: "AttributeMatrixItems",
+        $expand: 'AttributeMatrixItems',
       },
     });
 
     if (!attributeMatrix) {
       console.warn(
-        `Attribute matrix not found with guid: ${attributeMatrixGuid}`
+        `Attribute matrix not found with guid: ${attributeMatrixGuid}`,
       );
       return [];
     }
@@ -75,7 +74,7 @@ export const getAttributeMatrixItems = async ({
       matrixItems.length === 0
     ) {
       console.warn(
-        `No matrix items found for attribute matrix guid: ${attributeMatrixGuid}`
+        `No matrix items found for attribute matrix guid: ${attributeMatrixGuid}`,
       );
       return [];
     }
@@ -86,8 +85,8 @@ export const getAttributeMatrixItems = async ({
       queryParams: {
         $filter: matrixItems
           .map((item: { id: number }) => `(Id eq ${item.id})`)
-          .join(" or "),
-        loadAttributes: "simple",
+          .join(' or '),
+        loadAttributes: 'simple',
       },
     });
 
@@ -95,14 +94,14 @@ export const getAttributeMatrixItems = async ({
     // We need to ensure we always return an array
     if (!matrixItemsExpanded) {
       console.warn(
-        `No expanded matrix items returned for guid: ${attributeMatrixGuid}`
+        `No expanded matrix items returned for guid: ${attributeMatrixGuid}`,
       );
       return [];
     }
 
     // Convert single object to array if needed
     const normalizedItems: AttributeMatrixItem[] = Array.isArray(
-      matrixItemsExpanded
+      matrixItemsExpanded,
     )
       ? matrixItemsExpanded
       : [matrixItemsExpanded];
@@ -111,7 +110,7 @@ export const getAttributeMatrixItems = async ({
   } catch (error) {
     console.error(
       `Error fetching attribute matrix items for guid ${attributeMatrixGuid}:`,
-      error
+      error,
     );
     // Return empty array instead of throwing to prevent page breakage
     return [];

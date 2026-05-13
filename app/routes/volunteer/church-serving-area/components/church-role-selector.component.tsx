@@ -12,9 +12,9 @@ export function ChurchRoleSelector({
 }) {
   return (
     <div
-      role="radiogroup"
-      aria-label="Choose a serving role"
-      className="flex flex-col gap-4"
+      role='radiogroup'
+      aria-label='Choose a serving role'
+      className='flex flex-col gap-4'
     >
       {roles.map((role) => (
         <ChurchRoleCard

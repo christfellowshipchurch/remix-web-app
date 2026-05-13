@@ -1,18 +1,18 @@
-import type { MutableRefObject } from "react";
-import type { EventsFinderUrlState } from "./events-url-state";
+import type { MutableRefObject } from 'react';
+import type { EventsFinderUrlState } from './events-url-state';
 import {
   parseEventsFinderUrlState,
   eventsFinderUrlStateToParams,
-} from "./events-url-state";
+} from './events-url-state';
 
-const INDEX_NAME = "dev_contentItems";
+const INDEX_NAME = 'dev_contentItems';
 
 export type EventsRouterRefs = {
   searchParamsRef: MutableRefObject<URLSearchParams>;
   setSearchParamsRef: MutableRefObject<
     (
       params: URLSearchParams,
-      options?: { replace?: boolean; preventScrollReset?: boolean }
+      options?: { replace?: boolean; preventScrollReset?: boolean },
     ) => void
   >;
   pathnameRef: MutableRefObject<string>;
