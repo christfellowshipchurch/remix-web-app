@@ -34,7 +34,9 @@ const personNameMatches = async (
     ttl: TTL.NONE,
   });
 
-  const person = Array.isArray(personDetails) ? personDetails[0] : personDetails;
+  const person = Array.isArray(personDetails)
+    ? personDetails[0]
+    : personDetails;
 
   return (
     normalizeName(person?.firstName) === normalizeName(firstName) &&
@@ -154,5 +156,60 @@ export const launchGroupClassSignupWorkflow = async (
   await postRockData({
     endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=654&workflowName=Add%20To%20Group/Class`,
     body: { GroupId: groupId, PersonId: personId },
+  });
+};
+
+const resolveRockCampusGuidByName = async (
+  campusName: string,
+): Promise<string> => {
+  const result = await fetchRockData({
+    endpoint: 'Campuses',
+    queryParams: {
+      $filter: `Name eq '${escapeOData(campusName)}'`,
+      $select: 'Guid',
+    },
+    ttl: TTL.NONE,
+  });
+
+  const record = Array.isArray(result) ? result[0] : result;
+  if (!record?.guid || typeof record.guid !== 'string') {
+    throw new Error(`Campus not found in Rock: "${campusName}"`);
+  }
+  return record.guid;
+};
+
+export interface CommunityServingSignupInput {
+  groupGuid: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  /** ISO yyyy-mm-dd from <input type="date">. */
+  birthdate: string;
+  /** Rock canonical campus name (matches RockCampuses[].name in rock-config.ts). Resolved to a Guid before posting. */
+  campus: string;
+  waiverAccepted: boolean;
+}
+
+export const launchCommunityServingSignupWorkflow = async (
+  input: CommunityServingSignupInput,
+): Promise<void> => {
+  const campusGuid = await resolveRockCampusGuidByName(input.campus);
+
+  await postRockData({
+    endpoint:
+      'Workflows/LaunchWorkflow/0?workflowTypeId=1840&workflowName=Community%20Serving%20Opportunity%20Sign%20Up',
+    body: {
+      Group: input.groupGuid,
+      FirstName: input.firstName,
+      LastName: input.lastName,
+      Email: input.email,
+      CellPhone: input.phoneNumber,
+      Birthdate: input.birthdate,
+      Campus: campusGuid,
+      'IacceptthetermsoftheChristFellowshipwaiver.': input.waiverAccepted
+        ? 'Yes'
+        : '',
+    },
   });
 };

@@ -1,7 +1,8 @@
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCopyPagePath } from '~/hooks/use-copy-page-path';
+import { pushFormEvent } from '~/lib/gtm';
 
 import { VolunteerDetailNav } from '../components/volunteer-detail/volunteer-detail-nav.component';
 import { VolunteerDetailHero } from '../components/volunteer-detail/volunteer-detail-hero.component';
@@ -17,6 +18,7 @@ import {
 } from './components/outreach-details.component';
 import { OutreachIntro } from './components/outreach-intro.component';
 import { VolunteerMissionSpotsAlgoliaProvider } from './components/outreach-spots-algolia.component';
+import { SignupModal } from './components/signup-modal.component';
 import {
   About,
   MobileBottomBar,
@@ -26,10 +28,31 @@ import {
 } from './partials/outreach-partials.partial';
 
 export function OutreachOpportunityPage() {
-  const { mission, groupGuid, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderReturnType>();
+  const {
+    mission,
+    groupGuid,
+    waiverPdfUrl,
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
+  } = useLoaderData<LoaderReturnType>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
+  const [signupOpen, setSignupOpen] = useState(false);
+
+  const actionPath = useMemo(
+    () => `${location.pathname}${location.search}`,
+    [location.pathname, location.search],
+  );
+
+  const handleSignupOpen = useCallback(() => {
+    setSignupOpen(true);
+    pushFormEvent(
+      'form_start',
+      'community_serving_signup',
+      'Community Serving Opportunity Sign Up',
+    );
+  }, []);
 
   /** Session payload from finder card click; `navigate(-1)` restores `/volunteer?…` when filters exist. */
   const onBackToOpportunities = useCallback(() => {
@@ -58,7 +81,6 @@ export function OutreachOpportunityPage() {
   const category = str(mission.category) || 'Volunteer opportunity';
   const coverImage = str(mission.coverImageUrl) || undefined;
   const aboutBody = str(mission.summary) || '';
-  const signupHref = str(mission.missionsUrl) || '';
   const contactName = str(mission.contactName);
   const contactEmail = str(mission.contactEmail);
 
@@ -124,7 +146,7 @@ export function OutreachOpportunityPage() {
 
             <Sidebar
               mission={mission}
-              signupHref={signupHref}
+              onSignUpClick={handleSignupOpen}
               copied={copied}
               onCopyPath={copyPath}
             />
@@ -143,7 +165,15 @@ export function OutreachOpportunityPage() {
         <MobileBottomBar
           copied={copied}
           onCopyPath={copyPath}
-          signupHref={signupHref}
+          onSignUpClick={handleSignupOpen}
+        />
+
+        <SignupModal
+          open={signupOpen}
+          onOpenChange={setSignupOpen}
+          groupGuid={groupGuid}
+          waiverPdfUrl={waiverPdfUrl}
+          actionPath={actionPath}
         />
       </article>
     </div>
