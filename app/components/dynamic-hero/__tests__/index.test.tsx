@@ -76,19 +76,19 @@ describe('DynamicHero', () => {
     );
 
     const desktopDivider = document.querySelector(
-      '[role="separator"].hidden.lg\\:block'
+      '[role="separator"].hidden.lg\\:block',
     );
     expect(desktopDivider).toBeInTheDocument();
-    expect(desktopDivider).toHaveClass("h-[2px]");
-    expect(desktopDivider).toHaveClass("bg-[#D9D9D9]");
+    expect(desktopDivider).toHaveClass('h-[2px]');
+    expect(desktopDivider).toHaveClass('bg-[#D9D9D9]');
   });
 
-  it("renders top divider from md when CTAs are present", () => {
-    const ctas = [{ href: "/x", title: "Go" }];
+  it('renders top divider from md when CTAs are present', () => {
+    const ctas = [{ href: '/x', title: 'Go' }];
     render(
       <MemoryRouter>
         <DynamicHero {...defaultProps} ctas={ctas} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const desktopDivider = document.querySelector(

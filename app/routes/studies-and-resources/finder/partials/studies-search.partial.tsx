@@ -216,9 +216,7 @@ function StudyTypeGroupedResults({
           url: hit.url,
           content: hit.content ?? '',
           summary:
-            (hit.summary ?? '').trim() ||
-            (hit.description ?? '').trim() ||
-            '',
+            (hit.summary ?? '').trim() || (hit.description ?? '').trim() || '',
           topic: hit.topic ?? 'Spiritual Growth',
           format: hit.format ?? 'Video',
           duration: hit.duration ?? 'Short',

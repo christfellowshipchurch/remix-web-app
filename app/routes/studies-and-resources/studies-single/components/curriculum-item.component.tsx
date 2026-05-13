@@ -1,10 +1,10 @@
-import { useState } from "react";
-import * as Accordion from "@radix-ui/react-accordion";
-import { cn } from "~/lib/utils";
-import { Link } from "react-router-dom";
-import Modal from "~/primitives/Modal";
-import { Video } from "~/primitives/video/video.primitive";
-import { Icon } from "~/primitives/icon/icon";
+import { useState } from 'react';
+import * as Accordion from '@radix-ui/react-accordion';
+import { cn } from '~/lib/utils';
+import { Link } from 'react-router-dom';
+import Modal from '~/primitives/Modal';
+import { Video } from '~/primitives/video/video.primitive';
+import { Icon } from '~/primitives/icon/icon';
 
 export interface CurriculumListItem {
   link?: string;
@@ -14,8 +14,8 @@ export interface CurriculumListItem {
 }
 
 export function CurriculumItem({
-  title = "Curriculum",
-  subtitle = "Introduction to the study",
+  title = 'Curriculum',
+  subtitle = 'Introduction to the study',
   items = [],
 }: {
   title?: string;
@@ -26,41 +26,41 @@ export function CurriculumItem({
 
   return (
     <Accordion.Root
-      type="single"
+      type='single'
       collapsible
-      value={open ? "curriculum" : undefined}
-      onValueChange={(value) => setOpen(value === "curriculum")}
-      className="w-full rounded-2xl border border-[#ECEBEF] bg-white overflow-hidden"
+      value={open ? 'curriculum' : undefined}
+      onValueChange={(value) => setOpen(value === 'curriculum')}
+      className='w-full rounded-2xl border border-[#ECEBEF] bg-white overflow-hidden'
     >
-      <Accordion.Item value="curriculum" className="w-full">
-        <Accordion.Header className="flex w-full">
+      <Accordion.Item value='curriculum' className='w-full'>
+        <Accordion.Header className='flex w-full'>
           <Accordion.Trigger
             className={cn(
-              "group flex w-full items-center gap-4 py-4 px-4 text-left cursor-pointer",
-              "hover:bg-black/5 transition-colors",
+              'group flex w-full items-center gap-4 py-4 px-4 text-left cursor-pointer',
+              'hover:bg-black/5 transition-colors',
             )}
           >
             <Icon
-              name="caretRightRounded"
+              name='caretRightRounded'
               size={24}
-              className="shrink-0 text-text-primary transition-transform duration-300 group-data-[state=open]:rotate-90"
+              className='shrink-0 text-text-primary transition-transform duration-300 group-data-[state=open]:rotate-90'
               aria-hidden
             />
-            <div className="flex flex-col gap-0.5">
-              <h3 className="text-xl font-semibold text-[#000D25] leading-none">
+            <div className='flex flex-col gap-0.5'>
+              <h3 className='text-xl font-semibold text-[#000D25] leading-none'>
                 {title}
               </h3>
-              <p className="text-sm text-[#8F8F95]">{subtitle}</p>
+              <p className='text-sm text-[#8F8F95]'>{subtitle}</p>
             </div>
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content
           className={cn(
-            "overflow-hidden transition-all duration-300 ease-in-out",
-            "data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+            'overflow-hidden transition-all duration-300 ease-in-out',
+            'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
           )}
         >
-          <ul className="list-none px-4 pb-6 pt-0 flex flex-col gap-2 mt-4">
+          <ul className='list-none px-4 pb-6 pt-0 flex flex-col gap-2 mt-4'>
             {items.map((item, index) => (
               <CurriculumItemContent key={index} item={item} />
             ))}
@@ -76,29 +76,29 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
 
   const content = () => (
     <div>
-      <h4 className="text-xs font-semibold text-[#0091BD] leading-none">
+      <h4 className='text-xs font-semibold text-[#0091BD] leading-none'>
         {item.type}
       </h4>
-      <p className="text-lg text-black font-semibold leading-none">
+      <p className='text-lg text-black font-semibold leading-none'>
         {item.description}
       </p>
     </div>
   );
 
   const wrapperStyles =
-    "flex flex-col gap-0.5 border border-[#D8D8DB] bg-white pl-3 py-5 pr-8 rounded-2xl group-hover:border-ocean transition-colors cursor-pointer";
+    'flex flex-col gap-0.5 border border-[#D8D8DB] bg-white pl-3 py-5 pr-8 rounded-2xl group-hover:border-ocean transition-colors cursor-pointer';
 
   if (item.wistiaId) {
     return (
-      <li className="w-full group">
+      <li className='w-full group'>
         <Modal open={videoModalOpen} onOpenChange={setVideoModalOpen}>
           <Modal.Button asChild>
             <div
-              role="button"
+              role='button'
               tabIndex={0}
               className={wrapperStyles}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+                if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setVideoModalOpen(true);
                 }
@@ -108,8 +108,8 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
             </div>
           </Modal.Button>
           <Modal.Content>
-            <div className="text-center text-text_primary p-8 md:p-12 w-[90vw] max-w-sm md:max-w-screen lg:max-w-3xl overflow-y-scroll aspect-video max-h-[75vh] md:max-h-[90vh]">
-              <Video wistiaId={item.wistiaId} className="size-full" />
+            <div className='text-center text-text_primary p-8 md:p-12 w-[90vw] max-w-sm md:max-w-screen lg:max-w-3xl overflow-y-scroll aspect-video max-h-[75vh] md:max-h-[90vh]'>
+              <Video wistiaId={item.wistiaId} className='size-full' />
             </div>
           </Modal.Content>
         </Modal>
@@ -118,9 +118,9 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
   }
 
   return (
-    <li className="w-full group">
+    <li className='w-full group'>
       {item.link ? (
-        <Link to={item.link} prefetch="intent" className={wrapperStyles}>
+        <Link to={item.link} prefetch='intent' className={wrapperStyles}>
           {content()}
         </Link>
       ) : (
