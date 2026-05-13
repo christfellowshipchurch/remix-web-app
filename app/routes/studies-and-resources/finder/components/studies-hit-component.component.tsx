@@ -77,7 +77,7 @@ export function StudyHitComponent({
                 label={hit.format}
               />
               <StudiesTagItem label={hit.topic} />
-              <StudiesTagItem icon='alarm' label={hit.duration} />
+              <StudiesTagItem icon='timeFive' label={hit.duration} />
               <StudiesTagItem icon='group' label={hit.audience} />
               <StudiesTagItem
                 icon={

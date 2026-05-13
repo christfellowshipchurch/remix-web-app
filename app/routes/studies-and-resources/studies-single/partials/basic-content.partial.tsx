@@ -58,7 +58,7 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
           </h1>
           <div className='flex flex-wrap gap-2'>
             <StudiesTagItem icon={iconForStudyFormat(format)} label={format} />
-            <StudiesTagItem icon='alarm' label={duration} />
+            <StudiesTagItem icon='timeFive' label={duration} />
             <StudiesTagItem icon='group' label={audience} />
             <StudiesTagItem
               icon={
