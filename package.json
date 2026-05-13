@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm install && pnpm lint && pnpm typecheck",
+    "check": "pnpm install && pnpm lint && pnpm typecheck && pnpm format:check",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
