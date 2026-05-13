@@ -10,10 +10,6 @@ import {
 import { createPortal } from 'react-dom';
 import capitalize from 'lodash/capitalize';
 
-import {
-  DraggableMobileSheet,
-  DraggableMobileSheetHandle,
-} from '~/components/draggable-mobile-sheet';
 import Dropdown, {
   type DropdownOption,
 } from '~/primitives/inputs/dropdown/dropdown.primitive';
@@ -22,16 +18,17 @@ import { RockCampuses } from '~/lib/rock-config';
 import { cn } from '~/lib/utils';
 import { MinistryService } from '../../page-builder/types';
 import { ministryTypeRules } from '../utils';
+import {
+  MINISTRY_SHEET_MOBILE_MQ,
+  useMinistryMobileSheetGrip,
+} from './use-ministry-mobile-sheet-grip';
 import { ServiceCard } from './service-card.component';
 
 interface MinistryServiceTimesProps {
   services?: MinistryService[];
 }
 
-/** Matches Tailwind `md` breakpoint — drag sheet only on narrow viewports. */
-const MOBILE_DRAG_MEDIA = '(max-width: 767px)';
-
-interface MinistryServiceTimesDraggablePanelProps {
+interface MinistryServiceTimesSheetProps {
   sheetVariant: 'inline' | 'portal';
   pathnameTitle: string;
   barSubtitleDefault: string;
@@ -44,8 +41,7 @@ interface MinistryServiceTimesDraggablePanelProps {
   filteredServices: MinistryService[];
 }
 
-/** Shared white shell: document `sticky` bar when `inline`, portaled sheet when `portal`. */
-function MinistryServiceTimesDraggablePanel({
+function MinistryServiceTimesSheet({
   sheetVariant,
   pathnameTitle,
   barSubtitleDefault,
@@ -56,33 +52,35 @@ function MinistryServiceTimesDraggablePanel({
   mobileNarrow,
   locationOptions,
   filteredServices,
-}: MinistryServiceTimesDraggablePanelProps) {
+}: MinistryServiceTimesSheetProps) {
+  const grip = useMinistryMobileSheetGrip({
+    mobileNarrow,
+    isExpanded,
+    setIsExpanded,
+  });
+
   return (
-    <DraggableMobileSheet
-      enabled={mobileNarrow && isExpanded}
-      onDismiss={() => setIsExpanded(false)}
+    <div
       className={cn(
         'overflow-hidden rounded-t-2xl border-t-2 border-[#e1e6ec] bg-white',
         'shadow-[0_-12px_32px_-8px_rgba(0,80,120,0.18),0_-4px_12px_-4px_rgba(0,0,0,0.08)]',
         'md:shadow-[0_-20px_40px_-10px_rgba(0,80,120,0.25),0_-6px_16px_-6px_rgba(0,0,0,0.1)]',
         sheetVariant === 'portal' &&
           'flex max-h-[min(88dvh,900px)] w-full max-w-full flex-col',
+        grip.sheetClassName,
       )}
+      style={grip.sheetStyle}
     >
-      <DraggableMobileSheetHandle
-        className={cn(
-          'flex items-center justify-center py-2.5 md:hidden',
-          mobileNarrow && isExpanded
-            ? 'touch-none cursor-grab select-none active:cursor-grabbing'
-            : 'pointer-events-none',
-        )}
-        aria-label='Drag down to close service times'
+      <div
+        className={grip.gripRowClassName}
+        aria-hidden={!mobileNarrow}
+        {...grip.gripRowProps}
       >
         <span
           className='h-1 w-10 shrink-0 rounded-full bg-[#cfd4dc]'
           aria-hidden
         />
-      </DraggableMobileSheetHandle>
+      </div>
 
       <button
         type='button'
@@ -210,7 +208,7 @@ function MinistryServiceTimesDraggablePanel({
           ) : null}
         </div>
       ) : null}
-    </DraggableMobileSheet>
+    </div>
   );
 }
 
@@ -275,7 +273,7 @@ export const MinistryServiceTimes = ({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const mq = window.matchMedia(MOBILE_DRAG_MEDIA);
+    const mq = window.matchMedia(MINISTRY_SHEET_MOBILE_MQ);
     const sync = () => setMobileNarrow(mq.matches);
     sync();
     mq.addEventListener('change', sync);
@@ -296,8 +294,6 @@ export const MinistryServiceTimes = ({
       document.removeEventListener('mousedown', handleMouseDownOutside);
   }, [isExpanded]);
 
-  // Same pattern as `MobileFilterBottomSheet`: portal + `body { position: fixed }` locks scroll
-  // without breaking UI (in-document `sticky` + overflow lock clips the bar).
   useEffect(() => {
     if (!mobileNarrow || !isExpanded) return;
 
@@ -346,7 +342,6 @@ export const MinistryServiceTimes = ({
   }
 
   const barSubtitleDefault = 'Choose a location and see times';
-
   const portalOpen = mobileNarrow && isExpanded;
 
   const sheetProps = {
@@ -371,10 +366,7 @@ export const MinistryServiceTimes = ({
       ) : null}
       {!portalOpen ? (
         <div ref={panelRef} className='sticky bottom-0 z-10 bg-transparent'>
-          <MinistryServiceTimesDraggablePanel
-            sheetVariant='inline'
-            {...sheetProps}
-          />
+          <MinistryServiceTimesSheet sheetVariant='inline' {...sheetProps} />
         </div>
       ) : null}
       {portalOpen && typeof document !== 'undefined'
@@ -409,7 +401,7 @@ export const MinistryServiceTimes = ({
                   aria-modal='true'
                   aria-label={`${pathnameTitle} service times`}
                 >
-                  <MinistryServiceTimesDraggablePanel
+                  <MinistryServiceTimesSheet
                     sheetVariant='portal'
                     {...sheetProps}
                   />
