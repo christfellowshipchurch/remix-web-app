@@ -1,9 +1,11 @@
-import { Icon } from "~/primitives/icon/icon";
-import { Button } from "~/primitives/button/button.primitive";
-import { Link } from "react-router-dom";
-import { ROCK_PUBLIC_SITE_ORIGIN } from "~/lib/rock-config";
-import { MinistryService } from "../../page-builder/types";
-import { formatDaysOfWeek, formattedServiceTimes } from "../utils";
+import { Link } from 'react-router-dom';
+import startCase from 'lodash/startCase';
+
+import { Button } from '~/primitives/button/button.primitive';
+import { Icon } from '~/primitives/icon/icon';
+import { ROCK_PUBLIC_SITE_ORIGIN } from '~/lib/rock-config';
+import { MinistryService } from '../../page-builder/types';
+import { formatDaysOfWeek, serviceTimesList } from '../utils';
 
 interface ServiceCardProps {
   service: MinistryService;
@@ -14,85 +16,76 @@ interface ServiceCardProps {
  * Service Card Component
  */
 export const ServiceCard = ({ service, onLinkClick }: ServiceCardProps) => {
+  const timeSlots = serviceTimesList(service.times);
+  const primaryHref = service.planAVisit
+    ? `${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit`
+    : service.learnMoreLink;
+
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col gap-4 w-[280px] h-full">
-      {/* Ministry Photo/Logo */}
-      <div className="flex justify-center">
-        <img
-          src={`/assets/images/ministry-pages/services/${service.ministryType}.webp`}
-          alt={service.ministryType}
-          className="h-[120px] w-auto object-contain"
-          onError={(e) => {
-            // Fallback to placeholder if image doesn't exist
-            const target = e.target as HTMLImageElement;
-            target.style.display = "none";
-          }}
-        />
-      </div>
-
-      {/* Schedule Information */}
-      <div className="flex flex-col gap-3">
-        {/* Days of Week */}
-        <div className="flex items-start justify-start gap-2">
-          <Icon
-            name="calendarAlt"
-            className="text-ocean flex-shrink-0 self-start mt-[2px]"
-            size={20}
-          />
-          <p className="text-neutral-400">
-            {formatDaysOfWeek(service.daysOfWeek)}
+    <div className='flex h-full min-h-0 w-full flex-col md:justify-between rounded-[14px] border border-[#e5e8ed] bg-white p-4'>
+      <div className='flex min-h-0 flex-1 flex-col gap-3'>
+        <div className='flex flex-col gap-1'>
+          <p className='text-base font-extrabold leading-6 text-[#1a2733]'>
+            {startCase(service.ministryType)}
           </p>
+          <div className='flex items-center gap-1.5'>
+            <Icon
+              name='calendarAlt'
+              className='shrink-0 text-ocean'
+              size={13}
+            />
+            <p className='text-[13px] font-semibold leading-tight text-[#4a5560]'>
+              {formatDaysOfWeek(service.daysOfWeek)}
+            </p>
+          </div>
         </div>
 
-        {/* Service Times */}
-        <div className="flex items-start justify-start gap-2">
-          <Icon
-            name="timeFive"
-            className="text-ocean flex-shrink-0 self-start mt-[2px]"
-            size={20}
-          />
-          <p className="text-neutral-400">
-            {formattedServiceTimes(service.times)}
-          </p>
+        <div className='flex flex-wrap gap-x-2 gap-y-2'>
+          {timeSlots.map((slot, idx) => (
+            <span
+              key={`${slot}-${idx}`}
+              className='inline-flex items-center gap-1 rounded-full border border-[#dbe6ec] bg-white px-3 py-1.5 text-[12.5px] font-semibold leading-tight text-[#00527a]'
+            >
+              <Icon name='timeFive' className='shrink-0 text-ocean' size={12} />
+              {slot}
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* Action Buttons */}
       <div
-        className="flex gap-3 mt-auto pt-2 "
+        className='mt-auto flex shrink-0 gap-2 pt-3'
         onClick={(e) => {
           if ((e.target as HTMLElement).closest('a, [href]')) {
             onLinkClick?.();
           }
         }}
       >
-        {/* Primary Action Button */}
-        {(service.planAVisit === true ||
-          service.learnMoreLink !== undefined) && (
+        {primaryHref ? (
           <Button
-            href={
-              service.planAVisit
-                ? `${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit` // The Plan a Visit form is not working as an embed. So we will open the Rock RMS form in a new tab for now.
-                : service.learnMoreLink
-            }
-            intent="primary"
-            size="md"
-            className="w-full"
-            linkClassName="flex-1"
-            target={service.planAVisit ? "_blank" : undefined}
+            href={primaryHref}
+            intent='primary'
+            size='md'
+            target={service.planAVisit ? '_blank' : undefined}
+            linkClassName='min-w-0 flex-1'
+            className='flex w-full flex-1 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-semibold'
           >
-            {service.planAVisit ? "Plan Your Visit" : "Learn More"}
+            {service.planAVisit ? (
+              <span>Plan My Visit</span>
+            ) : (
+              <span>Learn More</span>
+            )}
+            <Icon name='arrowRight' className='mb-px text-white' size={14} />
           </Button>
-        )}
+        ) : null}
 
-        {/* Secondary Location Pin Button */}
         <Link
-          to={`/locations/${service?.location?.pathname ?? ""}`}
-          className="flex items-center justify-center w-11 h-11 bg-ocean text-white rounded-md hover:bg-navy transition-colors"
-          aria-label={`View ${service?.location?.name ?? ""} location`}
+          to={`/locations/${service?.location?.pathname ?? ''}`}
+          className='flex size-[41px] shrink-0 items-center justify-center rounded-lg border border-[#dbe6ec] bg-white text-ocean transition-colors hover:bg-neutral-50'
+          aria-label={`View ${service?.location?.name ?? ''} location`}
           onClick={onLinkClick}
         >
-          <Icon name="mapFilled" className="text-white" size={20} />
+          <Icon name='mapFilled' size={15} />
         </Link>
       </div>
     </div>

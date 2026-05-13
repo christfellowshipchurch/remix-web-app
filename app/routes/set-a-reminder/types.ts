@@ -5,4 +5,5 @@ export type SetAReminderType = {
   Email: string;
   PhoneNumber: string;
   ServiceTime: string;
+  BeenToCF: boolean;
 };
