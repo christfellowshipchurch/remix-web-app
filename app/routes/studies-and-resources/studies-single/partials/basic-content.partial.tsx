@@ -1,11 +1,29 @@
 import { Link, useLocation } from 'react-router-dom';
-import { IconName } from '~/primitives/button/types';
 import { Icon } from '~/primitives/icon/icon';
 import { Button } from '~/primitives/button/button.primitive';
 import HTMLRenderer from '~/primitives/html-renderer';
 import { StudyHitType } from '../../types';
 import { CurriculumItem } from '../components/curriculum-item.component';
 import { Breadcrumbs } from '~/components';
+import type { IconName } from '~/primitives/button/types';
+
+/** Icon for the study format tag (finder + single). */
+export function iconForStudyFormat(format: string): IconName {
+  switch (format.toLowerCase().trim()) {
+    case 'book study':
+      return 'bible';
+    case 'video':
+      return 'video';
+    case 'discussion guide':
+      return 'bookOpen';
+    case 'devotional':
+      return 'bookBookmark';
+    case 'podcast':
+      return 'microphone';
+    default:
+      return 'bookOpen';
+  }
+}
 
 export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
   const { title, content, audience, source, duration, format } = hit;
@@ -39,10 +57,17 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
             {title}
           </h1>
           <div className='flex flex-wrap gap-2'>
-            <StudiesTagItem icon='bible' label={format} />
+            <StudiesTagItem icon={iconForStudyFormat(format)} label={format} />
             <StudiesTagItem icon='alarm' label={duration} />
-            <StudiesTagItem icon='user' label={audience} />
-            <StudiesTagItem icon='church' label={source} />
+            <StudiesTagItem icon='group' label={audience} />
+            <StudiesTagItem
+              icon={
+                source.toLowerCase().includes('christ fellowship')
+                  ? 'cfLogo'
+                  : 'church'
+              }
+              label={source}
+            />
           </div>
 
           {/* Mobile Top Side */}
@@ -179,7 +204,7 @@ export const StudiesTagItem = ({
   label: string;
 }) => {
   return (
-    <div className='flex items-center gap-2 bg-[#EBEBEB] w-fit rounded-sm text-xs font-semibold px-2 py-1'>
+    <div className='flex items-center gap-1.5 bg-neutral-lightest w-fit rounded-sm text-xs font-semibold px-2 py-1'>
       {icon && <Icon name={icon} size={16} color='black' />}
       <span>{label}</span>
     </div>
