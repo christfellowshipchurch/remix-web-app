@@ -68,19 +68,28 @@ describe('ReminderForm', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it("shows 'Set A Reminder!' heading for English campus", () => {
+  it("shows 'Plan a Visit!' heading for in-person English campus (visit is plannable)", () => {
     mockLoadFetcher.data = mockFormData;
     renderForm();
+    expect(screen.getByText('Plan a Visit!')).toBeInTheDocument();
+  });
+
+  it("shows 'Set A Reminder!' heading for Online campus (nothing to visit)", () => {
+    mockLoadFetcher.data = {
+      ...mockFormData,
+      campusName: 'Christ Fellowship Online',
+    };
+    renderForm({ ...defaultProps, url: 'cf-everywhere' });
     expect(screen.getByText('Set A Reminder!')).toBeInTheDocument();
   });
 
-  it("shows 'Recuérdame' heading for Español campus", () => {
+  it("shows 'Visítanos' heading for Español campus", () => {
     mockLoadFetcher.data = {
       ...mockFormData,
       campusName: 'Español PBG',
     };
     renderForm();
-    expect(screen.getByText('Recuérdame')).toBeInTheDocument();
+    expect(screen.getByText('Visítanos')).toBeInTheDocument();
   });
 
   it('renders English field labels by default', () => {
