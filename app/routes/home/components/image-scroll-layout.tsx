@@ -85,14 +85,14 @@ export function ImageScrollLayout() {
 
   return (
     <div className='relative'>
-      <div className='fixed top-0 left-0 w-screen h-48 md:h-64 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none' />
+      <div className='fixed top-0 left-0 w-screen h-48 md:h-64 short-desktop:h-48 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none' />
 
       <div className='flex flex-col md:flex-row'>
         {/* Sticky image (md+): stays in view while sections pass, then scrolls with the page after the last section */}
         <div className='hidden md:block w-1/2 shrink-0 relative z-0 pointer-events-none'>
-          <div className='sticky top-0 h-screen pl-5 md:pl-12 lg:pl-18'>
+          <div className='sticky top-0 h-screen pl-5 md:pl-12 lg:pl-18 short-desktop:pl-8 short-desktop:lg:pl-12'>
             <div className='flex h-full w-full max-w-[716px] items-center ml-auto'>
-              <div className='relative w-full max-w-md xl:max-w-lg aspect-square'>
+              <div className='relative w-full max-w-md xl:max-w-lg short-desktop:max-w-sm short-desktop:xl:max-w-md aspect-square'>
                 {chanceContent.map((section, index) => (
                   <img
                     key={section.image}
@@ -122,12 +122,12 @@ export function ImageScrollLayout() {
                   sectionRefs.current[index] = el;
                 }}
                 className={cn(
-                  'relative flex items-center p-12 min-h-screen w-full',
+                  'relative flex items-center p-12 min-h-screen w-full short-desktop:p-8',
                   index === 2 && 'pb-24 md:pb-0', // Add padding to the last section on mobile to prevent content from grayed out from gradient
                 )}
                 data-card-index={index}
               >
-                <div className='flex flex-col justify-center items-center gap-12 max-w-2xl mx-auto w-full'>
+                <div className='flex flex-col justify-center items-center gap-12 short-desktop:gap-8 max-w-2xl mx-auto w-full'>
                   {/* Mobile Image */}
                   <img
                     src={section.image}
@@ -137,7 +137,7 @@ export function ImageScrollLayout() {
                     className='md:hidden w-full max-w-sm'
                   />
                   <div
-                    className={`w-full flex flex-col gap-9 transition-all duration-1000 ease-out delay-300 ${
+                    className={`w-full flex flex-col gap-9 short-desktop:gap-6 transition-all duration-1000 ease-out delay-300 ${
                       visibleSections.has(index)
                         ? 'opacity-100 translate-y-0'
                         : 'opacity-0 translate-y-8'
