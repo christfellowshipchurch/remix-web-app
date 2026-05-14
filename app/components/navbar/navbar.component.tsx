@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useRouteLoaderData } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useResponsive } from '~/hooks/use-responsive';
@@ -396,34 +396,25 @@ export function Navbar() {
                 )}
 
                 <div
-                  className={cn('flex gap-2', isSearchOpen && 'hidden xl:flex')}
+                  className={cn(
+                    'flex gap-2 ml-2 xl:ml-6',
+                    isSearchOpen && 'hidden xl:flex',
+                  )}
                 >
-                  {/* We will plan to redirect to legacy my groups site */}
-                  {/* <AuthModal
-                    buttonStyle={cn(
-                      "font-semibold text-sm xl:text-base w-[70px] xl:w-[90px] py-2 min-h-0 h-auto px-0 min-w-0 cursor-pointer hover:text-ocean",
-                      mode === "dark" &&
-                        !openDropdown &&
-                        "border-white text-white group-hover:text-ocean group-hover:border-ocean",
-                    )}
-                    buttonText="Login"
-                  /> */}
-                  <a
-                    href='https://legacy-my-groups.vercel.app/login'
-                    target='_blank'
-                    rel='noreferrer'
-                    aria-label='Login'
+                  <Link
+                    to='/give'
+                    prefetch='intent'
+                    aria-label='Give'
                     className={cn(
-                      'font-semibold text-sm xl:text-base transition-colors h-full my-auto px-6 hover:text-ocean',
-                      mode === 'light' || isSearchOpen
-                        ? 'text-neutral-dark'
-                        : openDropdown
-                          ? 'text-neutral-dark'
-                          : 'text-white group-hover:text-text',
+                      'rounded-lg px-4 font-semibold text-sm xl:text-base',
+                      'border border-ocean cursor-pointer',
+                      'text-ocean transition-colors duration-200',
+                      'hover:bg-ocean/20 transition-colors duration-200',
+                      'flex items-center justify-center',
                     )}
                   >
-                    Login
-                  </a>
+                    Give
+                  </Link>
                   <Button
                     href='/locations'
                     className='font-semibold text-sm xl:text-base w-fit min-w-[180px]'
