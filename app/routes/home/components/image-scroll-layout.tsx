@@ -87,7 +87,12 @@ export function ImageScrollLayout() {
     <div className='relative'>
       <div className='fixed top-0 left-0 w-screen h-48 md:h-64 short-desktop:h-48 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none' />
 
-      <div className='flex flex-col md:flex-row'>
+      <div
+        className={cn(
+          'flex flex-col md:flex-row',
+          'max-w-[1500px] short-desktop:max-w-[1200px] mx-auto short-desktop:px-8',
+        )}
+      >
         {/* Sticky image (md+): stays in view while sections pass, then scrolls with the page after the last section */}
         <div className='hidden md:block w-1/2 shrink-0 relative z-0 pointer-events-none'>
           <div className='sticky top-0 h-screen pl-5 md:pl-12 lg:pl-18 short-desktop:pl-8 short-desktop:lg:pl-12'>
