@@ -30,12 +30,12 @@ function renderModal(props = {}) {
 }
 
 describe('SetAReminderModal', () => {
-  it("renders 'Set a Reminder' button text for non-iglesia URL", () => {
+  it("renders 'Plan a Visit' for an in-person English campus (visit is plannable)", () => {
     renderModal();
-    expect(screen.getByText('Set a Reminder')).toBeInTheDocument();
+    expect(screen.getByText('Plan a Visit')).toBeInTheDocument();
   });
 
-  it("renders 'Recuérdame' button text when campusUrl includes 'iglesia'", () => {
+  it("renders 'Visítanos' button text when campusUrl includes 'iglesia'", () => {
     vi.doMock('react-router-dom', async () => {
       const actual =
         await vi.importActual<typeof import('react-router-dom')>(
@@ -64,7 +64,7 @@ describe('SetAReminderModal', () => {
   it('opens modal and shows flow content when button is clicked', async () => {
     const user = userEvent.setup();
     renderModal();
-    await user.click(screen.getByText('Set a Reminder'));
+    await user.click(screen.getByText('Plan a Visit'));
     expect(screen.getByText('ReminderFlowContent')).toBeInTheDocument();
   });
 });
