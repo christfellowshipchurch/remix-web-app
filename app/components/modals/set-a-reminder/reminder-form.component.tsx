@@ -73,6 +73,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
 
   const { serviceTimes, campusName, user } = formData || {};
   const isEspanol = campusName?.includes('Español');
+  const isOnline = url?.includes('everywhere');
   const firstName = user?.firstName || null;
   const lastName = user?.lastName || null;
   const phoneNumber = null;
@@ -81,7 +82,11 @@ const ReminderForm: React.FC<ReminderProps> = ({
   return (
     <>
       <h2 className='mb-6 text-3xl text-navy font-bold'>
-        {isEspanol ? 'Recuérdame' : 'Set A Reminder!'}
+        {isEspanol
+          ? 'Visítanos'
+          : isOnline
+            ? 'Set A Reminder!'
+            : 'Plan a Visit!'}
       </h2>
       <Form.Root
         onSubmit={handleSubmit}

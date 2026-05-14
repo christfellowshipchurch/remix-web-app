@@ -150,7 +150,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
   const heading2 = isSpanish ? 'lugar para ti' : 'welcome here';
   const ctas = [
     {
-      title: isSpanish ? 'Recuérdame' : 'Set a Reminder',
+      title: isSpanish ? 'Visítanos' : 'Plan a Visit',
       href: '#',
       isSetAReminder: true,
     },

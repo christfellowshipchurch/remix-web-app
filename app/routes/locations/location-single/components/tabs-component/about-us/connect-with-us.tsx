@@ -14,6 +14,13 @@ export const ConnectWithUs = ({
 }) => {
   const isOnline = campusName.toLowerCase().includes('online');
 
+  // Online campuses keep "Set a Reminder" wording (there is no visit to plan).
+  const reminderLabel = isSpanish
+    ? 'Visítanos'
+    : isOnline
+      ? 'Set a Reminder'
+      : 'Plan a Visit';
+
   const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, ...props }, ref) => (
       <Button
@@ -25,7 +32,7 @@ export const ConnectWithUs = ({
         )}
         {...props}
       >
-        Set a Reminder
+        {reminderLabel}
       </Button>
     ),
   );
