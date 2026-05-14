@@ -92,14 +92,14 @@ export default function MobileMenuContent({
             Stay up to date with your groups, classes, and more.
           </p>
           <a
-            href='https://legacy-my-groups.vercel.app/login'
+            href='https://legacy-my-groups.vercel.app/'
             target='_blank'
             rel='noreferrer'
             onClick={closeMenu}
             className='bg-ocean text-white p-2 rounded-lg w-full font-medium text-center'
             aria-label='Login'
           >
-            Login
+            Sign In
           </a>
         </section>
 
