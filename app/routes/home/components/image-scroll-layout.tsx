@@ -84,7 +84,7 @@ export function ImageScrollLayout() {
   }, []);
 
   return (
-    <div className='relative pt-32 md:pt-0'>
+    <div className='relative'>
       <div className='fixed top-0 left-0 w-screen h-48 md:h-64 bg-linear-to-b from-white via-white to-transparent z-5 pointer-events-none' />
 
       <div className='flex flex-col md:flex-row'>
@@ -123,8 +123,7 @@ export function ImageScrollLayout() {
                 }}
                 className={cn(
                   'relative flex items-center p-12 min-h-screen w-full',
-                  index === 2 &&
-                    'pb-24 md:pb-0', // Add padding to the last section on mobile to prevent content from grayed out from gradient
+                  index === 2 && 'pb-24 md:pb-0', // Add padding to the last section on mobile to prevent content from grayed out from gradient
                 )}
                 data-card-index={index}
               >
@@ -171,8 +170,6 @@ export function ImageScrollLayout() {
           </div>
         </div>
       </div>
-
-      <div className='absolute bottom-0 left-0 w-screen h-32 md:h-1/8 bg-linear-to-t from-white to-transparent z-30' />
     </div>
   );
 }
