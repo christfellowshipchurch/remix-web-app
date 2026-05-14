@@ -113,7 +113,11 @@ export const StudiesSearch = () => {
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <ResponsiveConfigure ageInput='' coordinates={null} />
+        <ResponsiveConfigure
+          ageInput=''
+          coordinates={null}
+          hitsPerPageOverride={1000}
+        />
         <div className='flex flex-col bg-white pt-4'>
           <FinderStickyBar>
             <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
