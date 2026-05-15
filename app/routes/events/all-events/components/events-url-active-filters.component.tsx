@@ -72,8 +72,7 @@ export function EventsUrlActiveFilters({
     } else {
       rl[attribute] = next;
     }
-    const refinementList =
-      Object.keys(rl).length > 0 ? rl : undefined;
+    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
     applyUrlState({
       ...urlState,
       page: 0,

@@ -13,7 +13,10 @@ import {
   MESSAGES_SERMON_FILTER,
   SERMON_PRIMARY_CATEGORY_FACET,
 } from './messages-page';
-import { parseAllMessagesUrlState, type AllMessagesUrlState } from './all-messages-url-state';
+import {
+  parseAllMessagesUrlState,
+  type AllMessagesUrlState,
+} from './all-messages-url-state';
 
 export type SermonCategoryFacetItem = {
   value: string;
@@ -138,7 +141,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         ? (seriesHits[0] as unknown as ContentItemHit)
         : null;
 
-    allMessagesHits = (gridRes.hits ?? []).map((h) => h as unknown as ContentItemHit);
+    allMessagesHits = (gridRes.hits ?? []).map(
+      (h) => h as unknown as ContentItemHit,
+    );
     allMessagesNbPages = gridRes.nbPages ?? 0;
 
     sermonCategoryFacets = mapFacetRecord(

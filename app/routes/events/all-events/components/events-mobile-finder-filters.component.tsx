@@ -83,8 +83,7 @@ export function EventsMobileFinderFilters({
     } else {
       delete nextRl[EVENT_FACET_LOCATIONS];
     }
-    const refinementList =
-      Object.keys(nextRl).length > 0 ? nextRl : undefined;
+    const refinementList = Object.keys(nextRl).length > 0 ? nextRl : undefined;
     applyUrlState({
       ...urlState,
       page: 0,
@@ -102,8 +101,7 @@ export function EventsMobileFinderFilters({
     } else {
       delete nextRl[EVENT_FACET_CATEGORIES];
     }
-    const refinementList =
-      Object.keys(nextRl).length > 0 ? nextRl : undefined;
+    const refinementList = Object.keys(nextRl).length > 0 ? nextRl : undefined;
     applyUrlState({
       ...urlState,
       page: 0,
@@ -321,4 +319,4 @@ export function EventsMobileFinderFilters({
       ) : null}
     </>
   );
-};
+}

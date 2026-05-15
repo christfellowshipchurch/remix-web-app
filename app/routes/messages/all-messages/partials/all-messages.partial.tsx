@@ -100,8 +100,7 @@ export function AllMessages() {
     } else {
       rl[SERMON_PRIMARY_CATEGORY_FACET] = next;
     }
-    const refinementList =
-      Object.keys(rl).length > 0 ? rl : undefined;
+    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
     applyUrlState({
       ...urlState,
       page: 0,

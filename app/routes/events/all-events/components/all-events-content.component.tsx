@@ -97,7 +97,7 @@ const PaginationButton = ({
       {children}
     </a>
   );
-}
+};
 
 export function AllEventsContent() {
   const {

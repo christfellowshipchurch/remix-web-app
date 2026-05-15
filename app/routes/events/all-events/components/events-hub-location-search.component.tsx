@@ -40,8 +40,7 @@ export const EventsHubLocationSearch = ({
     } else {
       delete rl[EVENT_FACET_LOCATIONS];
     }
-    const refinementList =
-      Object.keys(rl).length > 0 ? rl : undefined;
+    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
     applyUrlState({
       ...urlState,
       page: 0,

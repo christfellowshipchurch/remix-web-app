@@ -11,7 +11,11 @@ import {
 } from '../all-events-page';
 
 /** Re-export for any remaining imports of the index name / filters. */
-export { EVENTS_INDEX, MAIN_EVENTS_GRID_HITS_PER_PAGE, MAIN_EVENTS_TYPE_FILTER };
+export {
+  EVENTS_INDEX,
+  MAIN_EVENTS_GRID_HITS_PER_PAGE,
+  MAIN_EVENTS_TYPE_FILTER,
+};
 
 export const EventsTagsRefinementList = ({
   categoryFacets,
@@ -36,8 +40,7 @@ export const EventsTagsRefinementList = ({
     } else {
       rl[EVENT_FACET_CATEGORIES] = [category];
     }
-    const refinementList =
-      Object.keys(rl).length > 0 ? rl : undefined;
+    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
     applyUrlState({
       ...urlState,
       page: 0,
