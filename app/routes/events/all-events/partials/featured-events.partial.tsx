@@ -1,11 +1,7 @@
-import { useLoaderData } from 'react-router-dom';
-import { Configure, InstantSearch, useHits } from 'react-instantsearch';
-import { EventReturnType } from '../loader';
+import type { ReactNode } from 'react';
 import { ResourceCard } from '~/primitives/cards/resource-card';
-import { useMemo } from 'react';
 import { ContentItemHit } from '~/routes/search/types';
 import { FeaturedEventCard } from '../components/featured-card.component';
-import { createSearchClient } from '~/lib/create-search-client';
 import {
   Carousel,
   CarouselArrows,
@@ -13,57 +9,41 @@ import {
   CarouselDots,
   CarouselItem,
 } from '~/primitives/shadcn-primitives/carousel';
+import { formatEventCardDate } from '../components/all-events-algolia-tree.component';
 
-export function FeaturedEvents() {
-  const loaderData = useLoaderData<EventReturnType>();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = loaderData ?? {};
-
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
-  );
-
+export function FeaturedEventsSectionLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <div className='w-full py-28 content-padding bg-gray'>
-      <div className='flex flex-col max-w-screen-content mx-auto'>
-        <InstantSearch
-          indexName='dev_daniel_contentItems'
-          searchClient={searchClient}
-          future={{
-            preserveSharedStateOnUnmount: true,
-          }}
-        >
-          <Configure
-            filters='contentType:"Event" AND isFeatured:true'
-            hitsPerPage={4}
-          />
-
-          <FeaturedEventsHits />
-        </InstantSearch>
+      <div className='flex min-h-88 flex-col max-w-screen-content mx-auto md:min-h-112'>
+        {children}
       </div>
     </div>
   );
 }
 
-const FeaturedEventsHits = () => {
-  const { items } = useHits<ContentItemHit>();
-  const firstHit = items[0];
-  const remainingHits = items.slice(1);
+/** Featured block from loader data (no InstantSearch). */
+export function FeaturedEventsFromHits({ hits }: { hits: ContentItemHit[] }) {
+  const firstHit = hits[0];
+  const remainingHits = hits.slice(1);
 
-  if (!firstHit) return null;
+  if (!firstHit) {
+    return null;
+  }
 
   return (
     <>
       <FeaturedEventCard card={firstHit} />
 
-      {/* Desktop Layout */}
       <div className='hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start'>
-        {remainingHits?.map((hit) => (
+        {remainingHits.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
       </div>
 
-      {/* Mobile Layout - Carousel */}
       {remainingHits.length > 0 && (
         <div className='-ml-5 md:ml-0 mt-12 md:hidden'>
           <Carousel
@@ -105,17 +85,10 @@ const FeaturedEventsHits = () => {
       )}
     </>
   );
-};
+}
 
 const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
-  const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
-    'en-US',
-    {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    },
-  );
+  const formattedDate = formatEventCardDate(hit.startDateTime);
 
   return (
     <ResourceCard

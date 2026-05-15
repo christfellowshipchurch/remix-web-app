@@ -10,7 +10,6 @@ export const darkModeRoutes: RoutePattern[] = [
   // This is to account for the homepage being dark mode only on mobile/iPad -> Designed this way in Figma
   // { path: "/", mobileOnly: true },
   { path: '/about' },
-  { path: '/events' },
   { path: '/locations' },
   { path: '/locations/', isDynamic: true }, // This will match /locations/[slug]
   { path: '/messages' },

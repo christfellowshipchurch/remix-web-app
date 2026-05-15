@@ -1,22 +1,21 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type { EventsFinderUrlState } from './events-url-state';
 import {
   parseEventsFinderUrlState,
   eventsFinderUrlStateToParams,
 } from './events-url-state';
-
-const INDEX_NAME = 'dev_contentItems';
+import { EVENTS_INDEX } from './all-events/components/events-tags-refinement.component';
 
 export type EventsRouterRefs = {
-  searchParamsRef: MutableRefObject<URLSearchParams>;
-  setSearchParamsRef: MutableRefObject<
+  searchParamsRef: RefObject<URLSearchParams>;
+  setSearchParamsRef: RefObject<
     (
       params: URLSearchParams,
       options?: { replace?: boolean; preventScrollReset?: boolean },
     ) => void
   >;
-  pathnameRef: MutableRefObject<string>;
-  onUpdateCallbackRef: MutableRefObject<
+  pathnameRef: RefObject<string>;
+  onUpdateCallbackRef: RefObject<
     ((route: EventsFinderUrlState) => void) | null
   >;
 };
@@ -59,18 +58,25 @@ export function createEventsInstantSearchRouter(refs: EventsRouterRefs) {
 export function createEventsStateMapping() {
   return {
     stateToRoute(uiState: { [indexId: string]: Record<string, unknown> }) {
-      const idx = uiState[INDEX_NAME] || {};
+      const idx = uiState[EVENTS_INDEX] || {};
+      const rawPage = idx.page;
+      const pageNum =
+        typeof rawPage === 'number' && Number.isFinite(rawPage)
+          ? Math.max(0, Math.floor(rawPage))
+          : 0;
       return {
         query: (idx.query as string) ?? undefined,
         refinementList:
           (idx.refinementList as Record<string, string[]>) ?? undefined,
+        page: pageNum > 0 ? pageNum : undefined,
       } as EventsFinderUrlState;
     },
     routeToState(routeState: EventsFinderUrlState) {
       return {
-        [INDEX_NAME]: {
+        [EVENTS_INDEX]: {
           query: routeState.query,
           refinementList: routeState.refinementList ?? {},
+          page: routeState.page ?? 0,
         },
       };
     },

@@ -2,6 +2,7 @@ import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 import HtmlRenderer from '~/primitives/html-renderer';
 import { ContentItemHit } from '~/routes/search/types';
+import { formatEventCardDate } from './all-events-algolia-tree.component';
 
 export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   const {
@@ -15,13 +16,7 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   } = card;
 
   const image = coverImage?.sources[0]?.uri || '';
-  const formattedDate = startDateTime
-    ? new Date(startDateTime).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '';
+  const formattedDate = startDateTime ? formatEventCardDate(startDateTime) : '';
   const campus =
     locations && locations.length > 1
       ? 'Multiple Locations'

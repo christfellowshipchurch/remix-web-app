@@ -3,7 +3,10 @@ import { useInstantSearch, useRefinementList } from 'react-instantsearch';
 import startCase from 'lodash/startCase';
 import Icon from '~/primitives/icon';
 
-/** Main events index. No replica; "Recent" order is done via client-side sort. */
+/** Matches `<Configure>` on the all-events page and server loader requests. */
+export const MAIN_EVENTS_TYPE_FILTER = 'contentType:"Event"';
+export const MAIN_EVENTS_GRID_HITS_PER_PAGE = 9;
+
 export const EVENTS_INDEX = 'dev_contentItems';
 
 export const EventsTagsRefinementList = () => {
