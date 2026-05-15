@@ -2,8 +2,8 @@
 @import 'tw-animate-css';
 @config "../../tailwind.config.ts";
 
-/* ------------ Custom Variant for shorter viewport ------------ */
-@custom-variant shorter (@media (min-width: 1024px) and (max-height: 900px));
+/* Desktop (lg+) with limited vertical space — e.g. laptop 1024×800 */
+@custom-variant short-desktop (@media (min-width: 1024px) and (max-height: 800px));
 
 /* ------------ Custom Utilities ------------ */
 @utility scrollbar-hide {

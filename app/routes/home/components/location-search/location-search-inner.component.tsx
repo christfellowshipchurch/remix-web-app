@@ -132,7 +132,7 @@ export function LocationSearchInner({
           className={cn(
             'relative w-full md:w-90 z-50 rounded-2xl transition-all duration-300',
             {
-              'bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[430px] lg:-translate-y-30 shorter:-translate-y-70':
+              'bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[430px] lg:-translate-y-30 short-desktop:-translate-y-70':
                 isSearching,
               'bg-transparent': !isSearching,
             },
