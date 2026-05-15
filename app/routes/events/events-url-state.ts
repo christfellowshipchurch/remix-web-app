@@ -1,3 +1,4 @@
+import { hasRefinementListValues } from '~/lib/algolia-active-filters';
 import type { AlgoliaUrlStateBase } from '~/lib/algolia-url-state';
 import { createAlgoliaUrlStateConfig } from '~/lib/algolia-url-state';
 
@@ -49,3 +50,13 @@ export {
   eventsFinderUrlStateToParams,
   eventsFinderEmptyState,
 };
+
+/** True when URL state has something “Clear All” should reset (events finder, URL-only mode). */
+export function hasEventsFinderUrlActiveFilters(
+  state: EventsFinderUrlState,
+): boolean {
+  if ((state.query?.trim()?.length ?? 0) > 0) return true;
+  if (hasRefinementListValues(state.refinementList)) return true;
+  if (state.page != null && state.page > 0) return true;
+  return false;
+}

@@ -5,23 +5,33 @@ import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.u
 import type { ContentItemHit } from '~/routes/search/types';
 
 import {
-  parseEventsFinderUrlState,
-  type EventsFinderUrlState,
-} from '../events-url-state';
-import {
+  EVENT_FACET_CATEGORIES,
+  EVENT_FACET_LOCATIONS,
   EVENTS_INDEX,
   MAIN_EVENTS_GRID_HITS_PER_PAGE,
   MAIN_EVENTS_TYPE_FILTER,
-} from './components/events-tags-refinement.component';
+} from './all-events-page';
+import {
+  parseEventsFinderUrlState,
+  type EventsFinderUrlState,
+} from '../events-url-state';
 
 const FEATURED_FILTER = 'contentType:"Event" AND eventIsFeatured:true';
 const FEATURED_HITS_PER_PAGE = 4;
 
+export type EventFinderFacetItem = {
+  value: string;
+  label: string;
+  count: number;
+};
+
 export interface AllEventsLoaderData {
-  ALGOLIA_APP_ID: string;
-  ALGOLIA_SEARCH_API_KEY: string;
   featuredHits: ContentItemHit[];
-  initialEventHits: ContentItemHit[];
+  mainEventHits: ContentItemHit[];
+  eventCategoryFacets: EventFinderFacetItem[];
+  eventLocationFacets: EventFinderFacetItem[];
+  eventsNbPages: number;
+  eventsPage: number;
 }
 
 function refinementListToFacetFilters(
@@ -40,7 +50,6 @@ function refinementListToFacetFilters(
   return groups.length > 0 ? groups : undefined;
 }
 
-/** Same filters / pagination / query as `<Configure>` + URL routing. */
 function buildMainEventsSearchParams(urlState: EventsFinderUrlState): {
   filters: string;
   hitsPerPage: number;
@@ -94,20 +103,40 @@ function moveFeaturedJourneyCardFirst(
   return [journey, ...copy];
 }
 
+function mapFacetRecord(
+  facets: Record<string, Record<string, number>> | undefined,
+  attribute: string,
+): EventFinderFacetItem[] {
+  const slice = facets?.[attribute];
+  if (!slice) return [];
+  return Object.entries(slice)
+    .map(([value, count]) => ({
+      value,
+      label: value,
+      count,
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID ?? '';
-  const ALGOLIA_SEARCH_API_KEY = process.env.ALGOLIA_SEARCH_API_KEY ?? '';
+  const appId = process.env.ALGOLIA_APP_ID ?? '';
+  const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY ?? '';
 
   let featuredHits: ContentItemHit[] = [];
-  let initialEventHits: ContentItemHit[] = [];
+  let mainEventHits: ContentItemHit[] = [];
+  let eventCategoryFacets: EventFinderFacetItem[] = [];
+  let eventLocationFacets: EventFinderFacetItem[] = [];
+  let eventsNbPages = 0;
 
-  if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY) {
-    const url = new URL(request.url);
-    const urlState = parseEventsFinderUrlState(url.searchParams);
-    const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {});
+  const url = new URL(request.url);
+  const urlState = parseEventsFinderUrlState(url.searchParams);
+  const eventsPage = urlState.page ?? 0;
+
+  if (appId && searchApiKey) {
+    const client = algoliasearch(appId, searchApiKey, {});
 
     try {
-      const [featuredRes, mainRes] = await Promise.all([
+      const [featuredRes, mainRes, facetRes] = await Promise.all([
         client.searchForHits<Record<string, unknown>>([
           {
             indexName: EVENTS_INDEX,
@@ -121,27 +150,47 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           indexName: EVENTS_INDEX,
           searchParams: buildMainEventsSearchParams(urlState),
         }),
+        client.searchSingleIndex({
+          indexName: EVENTS_INDEX,
+          searchParams: {
+            filters: MAIN_EVENTS_TYPE_FILTER,
+            hitsPerPage: 0,
+            facets: [EVENT_FACET_CATEGORIES, EVENT_FACET_LOCATIONS],
+            maxValuesPerFacet: 50,
+          },
+        }),
       ]);
 
       const rawFeatured = featuredRes.results[0]?.hits ?? [];
-      const mappedFeatured = rawFeatured.map(
-        (h) => h as unknown as ContentItemHit,
+      featuredHits = moveFeaturedJourneyCardFirst(
+        rawFeatured.map((h) => h as unknown as ContentItemHit),
       );
-      featuredHits = moveFeaturedJourneyCardFirst(mappedFeatured);
 
       const rawMain = mainRes.hits ?? [];
-      initialEventHits = sortEventHitsByStartDateDesc(
+      mainEventHits = sortEventHitsByStartDateDesc(
         rawMain.map((h) => h as unknown as ContentItemHit),
       );
+      eventsNbPages = mainRes.nbPages ?? 0;
+
+      const facetMap = facetRes.facets as
+        | Record<string, Record<string, number>>
+        | undefined;
+      eventCategoryFacets = mapFacetRecord(facetMap, EVENT_FACET_CATEGORIES);
+      eventLocationFacets = mapFacetRecord(
+        facetMap,
+        EVENT_FACET_LOCATIONS,
+      ).sort((a, b) => a.label.localeCompare(b.label));
     } catch (error) {
       console.error('[events/all-events] Algolia loader fetch failed', error);
     }
   }
 
   return Response.json({
-    ALGOLIA_APP_ID,
-    ALGOLIA_SEARCH_API_KEY,
     featuredHits,
-    initialEventHits,
+    mainEventHits,
+    eventCategoryFacets,
+    eventLocationFacets,
+    eventsNbPages,
+    eventsPage,
   } satisfies AllEventsLoaderData);
 };

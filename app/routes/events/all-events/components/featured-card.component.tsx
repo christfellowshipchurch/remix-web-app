@@ -31,7 +31,7 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
       : locations?.[0]?.name || 'Christ Fellowship Church';
 
   return (
-    <div className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] border border-neutral-lighter'>
+    <div className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-xl border border-neutral-lighter'>
       <img
         src={image}
         alt={title}

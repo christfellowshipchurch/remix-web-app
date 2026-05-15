@@ -1,53 +1,32 @@
+import { useCallback, useMemo, useRef } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { useEffect, useMemo, useRef, type ComponentProps } from 'react';
-import { InstantSearch } from 'react-instantsearch';
 
 import {
-  parseEventsFinderUrlState,
-  eventsFinderUrlStateToParams,
   eventsFinderEmptyState,
+  eventsFinderUrlStateToParams,
+  parseEventsFinderUrlState,
 } from '../../events-url-state';
-import {
-  createEventsInstantSearchRouter,
-  createEventsStateMapping,
-} from '../../events-instantsearch-router';
-
-type InstantSearchRouting = NonNullable<
-  ComponentProps<typeof InstantSearch>['routing']
->;
+import type { EventsFinderUrlState } from '../../events-url-state';
 
 export function useEventsAlgoliaRouting() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const eventsMobilePinEndRef = useRef<HTMLDivElement>(null);
 
-  const searchParamsRef = useRef(searchParams);
-  const setSearchParamsRef = useRef(setSearchParams);
-  const pathnameRef = useRef(location.pathname);
-  const onUpdateCallbackRef = useRef<
-    ((route: ReturnType<typeof parseEventsFinderUrlState>) => void) | null
-  >(null);
-
-  searchParamsRef.current = searchParams;
-  setSearchParamsRef.current = setSearchParams;
-  pathnameRef.current = location.pathname;
-
-  const router = useMemo(
-    () =>
-      createEventsInstantSearchRouter({
-        searchParamsRef,
-        setSearchParamsRef,
-        pathnameRef,
-        onUpdateCallbackRef,
-      }),
-    [],
+  const urlState = useMemo(
+    () => parseEventsFinderUrlState(searchParams),
+    [searchParams],
   );
 
-  const stateMapping = useMemo(() => createEventsStateMapping(), []);
-
-  useEffect(() => {
-    const cb = onUpdateCallbackRef.current;
-    if (cb) cb(parseEventsFinderUrlState(searchParams));
-  }, [searchParams]);
+  const applyUrlState = useCallback(
+    (next: EventsFinderUrlState) => {
+      setSearchParams(eventsFinderUrlStateToParams(next), {
+        replace: true,
+        preventScrollReset: true,
+      });
+    },
+    [setSearchParams],
+  );
 
   const clearAllFiltersFromUrl = () => {
     setSearchParams(eventsFinderUrlStateToParams(eventsFinderEmptyState), {
@@ -56,23 +35,13 @@ export function useEventsAlgoliaRouting() {
     });
   };
 
-  const routing = useMemo(
-    () =>
-      ({
-        router,
-        stateMapping,
-      }) as InstantSearchRouting,
-    [router, stateMapping],
-  );
-
   const fromEventsUrl =
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
-  const eventsMobilePinEndRef = useRef<HTMLDivElement>(null);
-
   return {
-    routing,
+    urlState,
+    applyUrlState,
     searchParams,
     clearAllFiltersFromUrl,
     fromEventsUrl,

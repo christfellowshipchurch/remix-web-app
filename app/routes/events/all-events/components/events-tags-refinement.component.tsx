@@ -1,38 +1,48 @@
-import { useState, useEffect } from 'react';
-import { useInstantSearch, useRefinementList } from 'react-instantsearch';
 import startCase from 'lodash/startCase';
 import Icon from '~/primitives/icon';
 
-/** Matches `<Configure>` on the all-events page and server loader requests. */
-export const MAIN_EVENTS_TYPE_FILTER = 'contentType:"Event"';
-export const MAIN_EVENTS_GRID_HITS_PER_PAGE = 9;
+import type { EventFinderFacetItem } from '../loader';
+import type { EventsFinderUrlState } from '../../events-url-state';
+import {
+  EVENT_FACET_CATEGORIES,
+  EVENTS_INDEX,
+  MAIN_EVENTS_GRID_HITS_PER_PAGE,
+  MAIN_EVENTS_TYPE_FILTER,
+} from '../all-events-page';
 
-export const EVENTS_INDEX = 'dev_contentItems';
+/** Re-export for any remaining imports of the index name / filters. */
+export { EVENTS_INDEX, MAIN_EVENTS_GRID_HITS_PER_PAGE, MAIN_EVENTS_TYPE_FILTER };
 
-export const EventsTagsRefinementList = () => {
-  const { items } = useRefinementList({ attribute: 'eventCategories' });
-  const { setIndexUiState, indexUiState } = useInstantSearch();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  useEffect(() => {
-    const eventCategories = indexUiState?.refinementList?.eventCategories || [];
-    if (eventCategories.length === 0) {
-      setSelectedCategory(null);
-    } else if (eventCategories.length === 1) {
-      setSelectedCategory(eventCategories[0]);
-    }
-  }, [indexUiState?.refinementList?.eventCategories]);
+export const EventsTagsRefinementList = ({
+  categoryFacets,
+  urlState,
+  applyUrlState,
+}: {
+  categoryFacets: EventFinderFacetItem[];
+  urlState: EventsFinderUrlState;
+  applyUrlState: (next: EventsFinderUrlState) => void;
+}) => {
+  const selectedCategories =
+    urlState.refinementList?.[EVENT_FACET_CATEGORIES] ?? [];
+  const selectedCategory =
+    selectedCategories.length === 1 ? selectedCategories[0] : null;
 
   const handleCategoryClick = (category: string | null) => {
-    setSelectedCategory(category);
-    setIndexUiState((prevState) => ({
-      ...prevState,
-      refinementList: {
-        ...prevState.refinementList,
-        eventCategories: category === null ? [] : [category],
-      },
+    const rl = {
+      ...(urlState.refinementList as Record<string, string[]> | undefined),
+    };
+    if (category === null) {
+      delete rl[EVENT_FACET_CATEGORIES];
+    } else {
+      rl[EVENT_FACET_CATEGORIES] = [category];
+    }
+    const refinementList =
+      Object.keys(rl).length > 0 ? rl : undefined;
+    applyUrlState({
+      ...urlState,
       page: 0,
-    }));
+      refinementList,
+    });
   };
 
   return (
@@ -49,7 +59,7 @@ export const EventsTagsRefinementList = () => {
         Upcoming
       </button>
 
-      {items.map((item) => {
+      {categoryFacets.map((item) => {
         const isSelected = selectedCategory === item.value;
         const pillBase =
           'inline-flex shrink-0 items-center rounded-full text-sm whitespace-nowrap transition-colors duration-300';
