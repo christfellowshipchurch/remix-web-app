@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 import { ResourceCard } from '~/primitives/cards/resource-card';
-import { ContentItemHit } from '~/routes/search/types';
-import { FeaturedEventCard } from '../components/featured-card.component';
 import {
   Carousel,
   CarouselArrows,
@@ -9,7 +7,11 @@ import {
   CarouselDots,
   CarouselItem,
 } from '~/primitives/shadcn-primitives/carousel';
-import { formatEventCardDate } from '../components/all-events-algolia-tree.component';
+import { ContentItemHit } from '~/routes/search/types';
+import {
+  FeaturedEventCard,
+  formatEventCardDate,
+} from '../components/featured-card.component';
 
 export function FeaturedEventsSectionLayout({
   children,
