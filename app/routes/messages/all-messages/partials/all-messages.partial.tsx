@@ -1,81 +1,64 @@
-import { useLoaderData, useSearchParams, useLocation } from 'react-router-dom';
 import {
-  InstantSearch,
-  Configure,
-  useHits,
-  useInstantSearch,
-} from 'react-instantsearch';
-import { useMemo, useState, useEffect, useRef } from 'react';
+  useLoaderData,
+  useSearchParams,
+  useLocation,
+  useNavigation,
+} from 'react-router-dom';
+import { useMemo } from 'react';
 
 import { SectionTitle } from '~/components';
 import { ResourceCard } from '~/primitives/cards/resource-card';
-import { ContentItemHit } from '~/routes/search/types';
-import { CustomPagination } from '~/components/custom-pagination';
-import {
-  HubsTagsRefinementList,
-  HubsTagsRefinementLoadingSkeleton,
-} from '~/components/hubs-tags-refinement';
-import { createSearchClient } from '~/lib/create-search-client';
-import { AllMessagesLoaderReturnType } from '../loader';
-import { parseAllMessagesUrlState } from '../all-messages-url-state';
-import {
-  createAllMessagesInstantSearchRouter,
-  createAllMessagesStateMapping,
-} from '../all-messages-instantsearch-router';
+import type { ContentItemHit } from '~/routes/search/types';
+import { Icon } from '~/primitives/icon/icon';
+import { cn, getFirstParagraph } from '~/lib/utils';
 import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import { HubsTagsRefinementLoadingSkeleton } from '~/components/hubs-tags-refinement';
 
-const INDEX_NAME = 'dev_contentItems';
+import type { AllMessagesLoaderReturnType } from '../loader';
+import { SERMON_PRIMARY_CATEGORY_FACET } from '../messages-page';
+import {
+  parseAllMessagesUrlState,
+  allMessagesUrlStateToParams,
+} from '../all-messages-url-state';
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern B (routing). */
+const pillVisualClass =
+  'rounded-[999px] text-sm font-semibold transition-colors duration-300';
+
+const unselectedPillClass = cn(
+  'flex shrink-0 items-center',
+  pillVisualClass,
+  'w-fit max-w-full cursor-pointer justify-center whitespace-nowrap bg-gray px-4 py-2 text-text-primary hover:bg-neutral-200 md:py-2.5',
+);
+
+const selectedPillClass = cn(
+  'grid w-max max-w-[min(100%,calc(100vw-2.5rem))] shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-0.5',
+  pillVisualClass,
+  'cursor-default bg-ocean/10 px-4 py-2 text-left text-ocean hover:bg-ocean/10 md:py-2.5',
+);
+
+const removeButtonClass =
+  'shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1';
+
+/** URL-driven finder — Algolia only in `loader.ts`. */
 export function AllMessages() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<AllMessagesLoaderReturnType>();
+  const {
+    allMessagesHits,
+    sermonCategoryFacets,
+    allMessagesNbPages,
+    allMessagesPage,
+  } = useLoaderData<AllMessagesLoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const navigation = useNavigation();
 
-  const searchParamsRef = useRef(searchParams);
-  const setSearchParamsRef = useRef(setSearchParams);
-  const pathnameRef = useRef(location.pathname);
-  const onUpdateCallbackRef = useRef<
-    ((route: ReturnType<typeof parseAllMessagesUrlState>) => void) | null
-  >(null);
-
-  searchParamsRef.current = searchParams;
-  setSearchParamsRef.current = setSearchParams;
-  pathnameRef.current = location.pathname;
-
-  const router = useMemo(
-    () =>
-      createAllMessagesInstantSearchRouter({
-        searchParamsRef,
-        setSearchParamsRef,
-        pathnameRef,
-        onUpdateCallbackRef,
-      }),
-    [],
+  const urlState = useMemo(
+    () => parseAllMessagesUrlState(searchParams),
+    [searchParams],
   );
 
-  const stateMapping = useMemo(() => createAllMessagesStateMapping(), []);
-
-  useEffect(() => {
-    const cb = onUpdateCallbackRef.current;
-    if (cb) cb(parseAllMessagesUrlState(searchParams));
-  }, [searchParams]);
-
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
-  );
-
-  const routing = useMemo(
-    () => ({
-      router,
-      stateMapping,
-    }),
-    [router, stateMapping],
-  );
-
-  const [allMessagesLoading, setAllMessagesLoading] = useState(true);
+  const isLoading =
+    navigation.state === 'loading' &&
+    navigation.location?.pathname === location.pathname;
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
     const s = parseAllMessagesUrlState(params);
@@ -85,6 +68,62 @@ export function AllMessages() {
     );
   });
 
+  const selectedCategories =
+    urlState.refinementList?.[SERMON_PRIMARY_CATEGORY_FACET] ?? [];
+
+  const applyUrlState = (next: ReturnType<typeof parseAllMessagesUrlState>) => {
+    setSearchParams(allMessagesUrlStateToParams(next), {
+      replace: true,
+      preventScrollReset: true,
+    });
+  };
+
+  const selectCategory = (value: string) => {
+    applyUrlState({
+      ...urlState,
+      page: 0,
+      refinementList: {
+        ...urlState.refinementList,
+        [SERMON_PRIMARY_CATEGORY_FACET]: [value],
+      },
+    });
+  };
+
+  const removeCategory = (value: string) => {
+    const rl = {
+      ...(urlState.refinementList as Record<string, string[]> | undefined),
+    };
+    const current = rl[SERMON_PRIMARY_CATEGORY_FACET] ?? [];
+    const next = current.filter((v) => v !== value);
+    if (next.length === 0) {
+      delete rl[SERMON_PRIMARY_CATEGORY_FACET];
+    } else {
+      rl[SERMON_PRIMARY_CATEGORY_FACET] = next;
+    }
+    const refinementList =
+      Object.keys(rl).length > 0 ? rl : undefined;
+    applyUrlState({
+      ...urlState,
+      page: 0,
+      refinementList,
+    });
+  };
+
+  const goToPage = (nextPage: number) => {
+    applyUrlState({
+      ...urlState,
+      page: Math.max(0, nextPage),
+    });
+    const scrollTarget = document.querySelector('.pagination-scroll-to');
+    if (scrollTarget) {
+      scrollTarget.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const isFirstPage = allMessagesPage <= 0;
+  const isLastPage =
+    allMessagesNbPages <= 0 || allMessagesPage >= allMessagesNbPages - 1;
+
   return (
     <section className='relative py-32 min-h-screen bg-white content-padding pagination-scroll-to'>
       <div className='relative max-w-screen-content mx-auto'>
@@ -93,91 +132,175 @@ export function AllMessages() {
           sectionTitle='all messages.'
           title='Christ Fellowship Church Messages'
         />
-        {allMessagesLoading && <AllMessagesLoadingSkeleton />}
-        <InstantSearch
-          indexName={INDEX_NAME}
-          searchClient={searchClient}
-          routing={routing}
-          future={{
-            preserveSharedStateOnUnmount: true,
-          }}
-        >
-          <Configure filters='contentType:"Sermon"' hitsPerPage={9} />
 
-          {/* Filter Section */}
-          <div className='mt-10 mb-12'>
-            <HubsTagsRefinementList attribute='sermonPrimaryCategories' />
+        <div className='mt-10 mb-12'>
+          <div className='flex gap-2 md:gap-4 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide'>
+            {sermonCategoryFacets.map((item) => {
+              const isRefined = selectedCategories.includes(item.value);
+              return isRefined ? (
+                <div
+                  key={item.value}
+                  className={selectedPillClass}
+                  role='group'
+                  aria-label={`Active filter ${item.label}`}
+                >
+                  <span className='min-w-0 break-words leading-snug'>
+                    {item.label}
+                  </span>
+                  <button
+                    type='button'
+                    className={cn(removeButtonClass, 'self-start pt-0.5')}
+                    aria-label={`Remove filter ${item.label}`}
+                    onClick={() => removeCategory(item.value)}
+                  >
+                    <Icon name='x' className='text-ocean' size={16} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type='button'
+                  key={item.value}
+                  className={unselectedPillClass}
+                  onClick={() => selectCategory(item.value)}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Results Grid */}
-          <div className='min-h-[320px]'>
-            <AllMessagesHit setAllMessagesLoading={setAllMessagesLoading} />
+        {isLoading && allMessagesHits.length === 0 && (
+          <AllMessagesLoadingSkeleton />
+        )}
+
+        <div className='min-h-[320px]'>
+          {allMessagesHits.length === 0 && !isLoading ? (
+            <p className='text-text-secondary text-center py-8'>
+              No messages found. Try adjusting your filters or search.
+            </p>
+          ) : allMessagesHits.length === 0 && isLoading ? null : (
+            <div
+              className={cn(
+                'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center',
+                isLoading && 'opacity-60 pointer-events-none',
+              )}
+            >
+              {allMessagesHits.map((hit) => (
+                <MessageHit hit={hit} key={hit.objectID} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {allMessagesNbPages > 1 && (
+          <div className='flex items-center justify-start gap-4 mt-16'>
+            <PaginationButton
+              isDisabled={isFirstPage}
+              onClick={() => goToPage(allMessagesPage - 1)}
+              href='#'
+              className='w-12 h-12'
+            >
+              <Icon name='chevronLeft' size={24} />
+            </PaginationButton>
+
+            <PaginationButton
+              isActive
+              onClick={() => {}}
+              href='#'
+              className='w-12 h-12 bg-navy text-white'
+            >
+              {allMessagesPage + 1}
+            </PaginationButton>
+
+            <PaginationButton
+              isDisabled={isLastPage}
+              onClick={() => goToPage(allMessagesPage + 1)}
+              href='#'
+              className='w-12 h-12'
+            >
+              <Icon name='chevronRight' size={24} />
+            </PaginationButton>
           </div>
-          <CustomPagination />
-        </InstantSearch>
+        )}
       </div>
     </section>
   );
 }
 
-const AllMessagesHit = ({
-  setAllMessagesLoading,
-}: {
-  setAllMessagesLoading: (allMessagesLoading: boolean) => void;
-}) => {
-  const { items } = useHits<ContentItemHit>();
-  const { status } = useInstantSearch();
-
-  useEffect(() => {
-    if (status === 'idle') {
-      setAllMessagesLoading(false);
-    }
-  }, [status, setAllMessagesLoading]);
-
-  if (items.length === 0) {
-    return (
-      <p className='text-text-secondary text-center py-8'>
-        No messages found. Try adjusting your filters or search.
-      </p>
-    );
-  }
-
-  return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center'>
-      {items.map((hit) => (
-        <MessageHit hit={hit} key={hit.objectID} />
-      ))}
-    </div>
-  );
-};
-
 const MessageHit = ({ hit }: { hit: ContentItemHit }) => {
-  const formattedDate = new Date(hit.startDateTime).toLocaleDateString(
-    'en-US',
-    {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    },
-  );
+  const formattedDate = hit.startDateTime
+    ? new Date(hit.startDateTime).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : '';
+
+  const imageUri = hit.coverImage?.sources?.[0]?.uri ?? '';
 
   return (
     <ResourceCard
       resource={{
         id: hit.objectID,
-        contentChannelId: '63', // MESSAGE type from builder-utils.ts
+        contentChannelId: '63',
         contentType: 'MESSAGES',
         author:
           hit?.author?.firstName && hit?.author?.lastName
-            ? hit?.author?.firstName + ' ' + hit?.author?.lastName
+            ? `${hit.author.firstName} ${hit.author.lastName}`
             : 'Christ Fellowship Team',
-        image: hit.coverImage.sources[0].uri,
+        image: imageUri,
         name: hit.title,
-        summary: hit.summary,
+        summary: hit.summary ?? getFirstParagraph(hit.htmlContent || ''),
         pathname: `/messages/${hit.url}`,
         startDate: formattedDate,
       }}
     />
+  );
+};
+
+interface PaginationButtonProps {
+  children: React.ReactNode;
+  isDisabled?: boolean;
+  isActive?: boolean;
+  href: string;
+  onClick: () => void;
+  className?: string;
+}
+
+const PaginationButton = ({
+  children,
+  isDisabled = false,
+  isActive = false,
+  href,
+  onClick,
+  className = '',
+}: PaginationButtonProps) => {
+  if (isDisabled) {
+    return (
+      <span
+        className={`${className} inline-flex items-center justify-center border-2 border-neutral-200 text-neutral-200 cursor-not-allowed`}
+      >
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
+      className={`${className} inline-flex items-center justify-center border-2 ${
+        isActive
+          ? 'border-navy bg-navy text-white'
+          : 'border-navy text-navy hover:bg-navy hover:text-white'
+      } transition-colors duration-200 cursor-pointer`}
+    >
+      {children}
+    </a>
   );
 };
 
