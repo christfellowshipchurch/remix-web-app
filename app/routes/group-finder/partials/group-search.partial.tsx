@@ -49,6 +49,19 @@ import {
   GROUP_FINDER_MORE_POPUP_TITLE,
 } from '../group-search-filters.data';
 
+/**
+ * Group finder data flow (SSR-friendly):
+ *
+ * 1. Route loader fetches Algolia from URL → `groupHits`, `groupFacets`, pagination metadata.
+ * 2. The results grid renders directly from loader data (outside `<InstantSearch>`) so HTML
+ *    can stream on first paint without waiting for react-instantsearch.
+ * 3. Filter popups still use InstantSearch + a loader-backed SearchClient for facet UI only.
+ * 4. `filtersMounted` defers step 3 until after hydration so step 2 is not blocked.
+ * 5. URL is the source of truth; filter/query changes call `updateUrlIfChanged` → loader revalidation.
+ *
+ * See also `.github/ALGOLIA-URL-STATE-REUSABILITY.md` (Pattern A).
+ */
+
 function firstCampusRefinement(
   refinementList: Record<string, string[]> | undefined,
 ): string | null {
@@ -72,7 +85,7 @@ function coordinatesFromUrlState(
   return null;
 }
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
+/** Snapshot for InstantSearch `initialUiState` and local age/geo state on first client render. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? '';
@@ -99,10 +112,12 @@ export const GroupSearch = () => {
     [searchParams],
   );
 
+  // Same-route revalidation after URL updates (filter/page/query); grid stays visible, dimmed.
   const isLoading =
     navigation.state === 'loading' &&
     navigation.location?.pathname === location.pathname;
 
+  // Rebuilt whenever the loader returns new data after a URL change.
   const searchClient = useMemo(
     () => createGroupFinderLoaderSearchClient(loaderData),
     [loaderData],
@@ -115,6 +130,7 @@ export const GroupSearch = () => {
     debounceMs: 400,
   });
 
+  // Captured once when this route mounts; InstantSearch mounts one frame later (see `filtersMounted`).
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
   const [coordinates, setCoordinatesState] = useState<{
@@ -129,7 +145,7 @@ export const GroupSearch = () => {
     initial.selectedLocation,
   );
 
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A steps 3, 5 (custom state ref). */
+  // Ref lets `onStateChange` read latest age/geo without stale closures while URL updates debounce.
   type CustomState = {
     coordinates: { lat: number | null; lng: number | null } | null;
     ageInput: string;
@@ -147,7 +163,7 @@ export const GroupSearch = () => {
     selectedLocation,
   };
 
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 4 (sync custom state from URL). */
+  // Back/forward and loader navigation: rehydrate age/geo/campus from URL (not in refinementList alone).
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     setAgeInputState(urlState.age ?? '');
@@ -260,6 +276,7 @@ export const GroupSearch = () => {
     [ageInput, selectedLocation, coordinates],
   );
 
+  // Merges InstantSearch refinements with age + lat/lng that live in URL but outside uiState.
   const mergeUrlState = useCallback(
     (partial: Partial<GroupFinderUrlState>) => {
       const coords = customStateRef.current.coordinates;
@@ -301,7 +318,7 @@ export const GroupSearch = () => {
     [mergeUrlState, updateUrlIfChanged],
   );
 
-  /** Refinements + pagination sync to URL immediately (loader refetch). Query uses {@link GroupFinderQueryInput}. */
+  // Refinement/pagination → URL immediately (triggers loader). Query is committed via GroupFinderQueryInput.
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const rawPage = indexUiState.page;
     const pageNum =
@@ -321,7 +338,11 @@ export const GroupSearch = () => {
   const isFirstPage = groupPage <= 0;
   const isLastPage = groupNbPages <= 0 || groupPage >= groupNbPages - 1;
 
-  /** Defer InstantSearch so loader-driven results paint on SSR/first frame without waiting on react-instantsearch. */
+  /**
+   * SSR/hydration: first paint uses loader HTML for the grid + skeleton for filters.
+   * `useEffect` flips true after hydration so react-instantsearch does not block the results tree.
+   * Server and first client render both use `filtersMounted === false` (no mismatch).
+   */
   const [filtersMounted, setFiltersMounted] = useState(false);
   useEffect(() => {
     setFiltersMounted(true);
@@ -404,6 +425,7 @@ export const GroupSearch = () => {
           )}
         </FinderStickyBar>
 
+        {/* Intentionally outside `<InstantSearch>` — renders from loader on server and client. */}
         <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
           <div className='max-w-screen-content mx-auto md:w-full'>
             <FinderResultsStats hitCount={groupNbHits} />

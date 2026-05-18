@@ -9,7 +9,10 @@ import { GROUPS_ALGOLIA_INDEX_NAME } from '../types';
 
 import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
 
-/** InstantSearch `initialUiState` slice for group finder filter widgets. */
+/**
+ * Builds the InstantSearch index slice from URL state.
+ * Shared by `initialUiState` on mount and by {@link GroupFinderInstantSearchSync} after navigation.
+ */
 export function buildGroupFinderInstantSearchUiState(
   urlState: GroupFinderUrlState,
 ): Record<string, Record<string, unknown>> {
@@ -32,7 +35,12 @@ export function buildGroupFinderInstantSearchUiState(
 }
 
 /**
- * Keeps InstantSearch filter widgets aligned with URL after loader navigation (back/forward, Clear All).
+ * Reconciles InstantSearch uiState when the URL changes without remounting InstantSearch.
+ *
+ * Filter changes flow: widget → `onStateChange` → URL → loader → new `searchParams`.
+ * That path does not always round-trip through InstantSearch, so this effect copies
+ * URL → uiState (back/forward, Clear All, direct link with query string).
+ * Skips `setUiState` when values are unchanged to avoid extra search cycles.
  */
 export function GroupFinderInstantSearchSync() {
   const [searchParams] = useSearchParams();

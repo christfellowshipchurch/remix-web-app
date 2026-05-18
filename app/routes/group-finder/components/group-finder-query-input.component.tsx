@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 
 import Icon from '~/primitives/icon';
 
+/**
+ * Search box lives outside `<InstantSearch>` so typing does not block first paint.
+ * Commits to the URL (debounced); the route loader refetches and the grid updates from loader data.
+ */
+
 export function GroupFinderQueryInput({
   query,
   onQueryCommit,

@@ -44,6 +44,11 @@ function mapFacetRecord(
   return out;
 }
 
+/**
+ * Server-only Algolia fetch for group finder.
+ * URL search params are the source of truth: each navigation re-runs this loader and
+ * returns hits + facet counts for the current filters (no Algolia keys on the client).
+ */
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
@@ -66,6 +71,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const built = buildGroupFinderAlgoliaSearchParams(urlState);
     const { indexName, ...indexSearchParams } = built;
+    // One request returns both the result page and facet values for filter popups.
     const hitsRes = await client.searchSingleIndex({
       indexName,
       searchParams: {

@@ -17,8 +17,12 @@ function facetMapToAlgoliaFacets(
 }
 
 /**
- * Returns loader-prefetched hits/facets for InstantSearch widgets without browser Algolia requests.
- * URL changes re-run the route loader and refresh this client via `useMemo` in `group-search.partial`.
+ * Stub SearchClient for filter widgets only (`useRefinementList`, filter popup counts).
+ *
+ * The visible grid is rendered from `loaderData.groupHits`, not from InstantSearch `<Hits>`.
+ * This client answers InstantSearch's internal `search()` calls with the latest loader
+ * snapshot so facet pills populate without exposing Algolia credentials in the browser.
+ * When the URL changes, the route loader refetches and `useMemo` rebuilds this client.
  */
 export function createGroupFinderLoaderSearchClient(
   data: LoaderReturnType,
@@ -50,6 +54,7 @@ export function createGroupFinderLoaderSearchClient(
           };
         }
 
+        // Hits are included for InstantSearch widgets (e.g. footer counts); the grid ignores them.
         return {
           hits: data.groupHits,
           nbHits: data.groupNbHits,

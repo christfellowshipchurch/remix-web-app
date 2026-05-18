@@ -47,6 +47,7 @@ function buildAgeNumericFilter(
   return `minAge <= ${userAge} AND maxAge >= ${userAge}`;
 }
 
+/** Maps parsed URL state to Algolia `searchParams` for the route loader (server-side only). */
 export function buildGroupFinderAlgoliaSearchParams(
   urlState: GroupFinderUrlState,
 ): {
