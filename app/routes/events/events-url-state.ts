@@ -1,11 +1,16 @@
+import { hasRefinementListValues } from '~/lib/algolia-active-filters';
 import type { AlgoliaUrlStateBase } from '~/lib/algolia-url-state';
 import { createAlgoliaUrlStateConfig } from '~/lib/algolia-url-state';
 
 export const EVENTS_FINDER_PARAMS = {
   QUERY: 'q',
+  PAGE: 'p',
 } as const;
 
-export type EventsFinderUrlState = AlgoliaUrlStateBase;
+export type EventsFinderUrlState = AlgoliaUrlStateBase & {
+  /** Algolia page index (0-based). Omitted in URL when 0. */
+  page?: number;
+};
 
 const REFINEMENT_LIST_ATTRIBUTES = [
   'eventCategories',
@@ -19,6 +24,25 @@ const {
 } = createAlgoliaUrlStateConfig<EventsFinderUrlState>({
   queryParamKey: EVENTS_FINDER_PARAMS.QUERY,
   refinementAttributes: REFINEMENT_LIST_ATTRIBUTES,
+  custom: {
+    parse: (params) => {
+      const raw = params.get(EVENTS_FINDER_PARAMS.PAGE);
+      if (raw == null || raw === '') {
+        return {};
+      }
+      const n = Number.parseInt(raw, 10);
+      if (!Number.isFinite(n) || n < 0) {
+        return {};
+      }
+      return { page: n };
+    },
+    toParams: (state, params) => {
+      const page = state.page;
+      if (page != null && page > 0) {
+        params.set(EVENTS_FINDER_PARAMS.PAGE, String(page));
+      }
+    },
+  },
 });
 
 export {
@@ -26,3 +50,13 @@ export {
   eventsFinderUrlStateToParams,
   eventsFinderEmptyState,
 };
+
+/** True when URL state has something “Clear All” should reset (events finder, URL-only mode). */
+export function hasEventsFinderUrlActiveFilters(
+  state: EventsFinderUrlState,
+): boolean {
+  if ((state.query?.trim()?.length ?? 0) > 0) return true;
+  if (hasRefinementListValues(state.refinementList)) return true;
+  if (state.page != null && state.page > 0) return true;
+  return false;
+}

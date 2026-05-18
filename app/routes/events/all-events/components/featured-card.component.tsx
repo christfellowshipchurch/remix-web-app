@@ -3,6 +3,15 @@ import Icon from '~/primitives/icon';
 import HtmlRenderer from '~/primitives/html-renderer';
 import { ContentItemHit } from '~/routes/search/types';
 
+export function formatEventCardDate(isoDate: string) {
+  return new Date(isoDate).toLocaleDateString('en-US', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
 export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   const {
     title,
@@ -15,20 +24,14 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   } = card;
 
   const image = coverImage?.sources[0]?.uri || '';
-  const formattedDate = startDateTime
-    ? new Date(startDateTime).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '';
+  const formattedDate = startDateTime ? formatEventCardDate(startDateTime) : '';
   const campus =
     locations && locations.length > 1
       ? 'Multiple Locations'
       : locations?.[0]?.name || 'Christ Fellowship Church';
 
   return (
-    <div className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-[1rem] border border-neutral-lighter'>
+    <div className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-xl border border-neutral-lighter'>
       <img
         src={image}
         alt={title}

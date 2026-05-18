@@ -1,6 +1,5 @@
 import type { RefObject } from 'react';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useInstantSearch, useRefinementList } from 'react-instantsearch';
 import startCase from 'lodash/startCase';
 
 import {
@@ -10,10 +9,17 @@ import {
 import { MobileFilterBottomSheet } from '~/components/finders/search-filters/filter-popup.component';
 import { finderFilterSectionSubtitleClass } from '~/components/finders/search-filters/filter-section-subtitle';
 import { finderLocationInputBaseClass } from '~/components/finders/location-search';
-import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
 import { FiltersFooter } from '~/routes/group-finder/components/filters/filters-footer.component';
 import { Icon } from '~/primitives/icon/icon';
 import { cn } from '~/lib/utils';
+
+import type { EventFinderFacetItem } from '../loader';
+import type { EventsFinderUrlState } from '../../events-url-state';
+import {
+  EVENT_FACET_CATEGORIES,
+  EVENT_FACET_LOCATIONS,
+} from '../all-events-page';
+import { EventsUrlActiveFilters } from './events-url-active-filters.component';
 
 const PILL_BASE =
   'flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-1 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-all duration-300';
@@ -32,28 +38,27 @@ const PINNED_SLOT_MIN_H = 'min-h-[5.5rem]';
 export function EventsMobileFinderFilters({
   onClearAllToUrl,
   pinEndRef,
+  categoryFacets,
+  locationFacets,
+  urlState,
+  applyUrlState,
 }: {
   onClearAllToUrl: () => void;
-  /** Bottom of the events hits + pagination block; pins only while this is below the nav line. */
   pinEndRef?: RefObject<HTMLDivElement | null>;
+  categoryFacets: EventFinderFacetItem[];
+  locationFacets: EventFinderFacetItem[];
+  urlState: EventsFinderUrlState;
+  applyUrlState: (next: EventsFinderUrlState) => void;
 }) {
-  const { setIndexUiState, indexUiState } = useInstantSearch();
   const [openSheet, setOpenSheet] = useState<'location' | 'type' | null>(null);
   const pinSlotRef = useRef<HTMLDivElement>(null);
   const [filtersPinned, setFiltersPinned] = useState(false);
   const stickyTopClass = useStickyTopBelowNavbarClass();
   const stickyTopPx = useStickyTopBelowNavbarOffsetPx();
 
-  const { items: locationItems } = useRefinementList({
-    attribute: 'eventLocations',
-  });
-  const { items: categoryItems } = useRefinementList({
-    attribute: 'eventCategories',
-  });
-
-  const rl = indexUiState?.refinementList ?? {};
-  const selectedLocation = rl.eventLocations?.[0] ?? '';
-  const selectedCategories = rl.eventCategories ?? [];
+  const rl = urlState.refinementList ?? {};
+  const selectedLocation = rl[EVENT_FACET_LOCATIONS]?.[0] ?? '';
+  const selectedCategories = rl[EVENT_FACET_CATEGORIES] ?? [];
   const selectedCategory =
     selectedCategories.length === 1 ? selectedCategories[0] : null;
 
@@ -61,35 +66,47 @@ export function EventsMobileFinderFilters({
   const hasType = Boolean(selectedCategory);
 
   const sortedLocations = useMemo(
-    () => [...locationItems].sort((a, b) => a.label.localeCompare(b.label)),
-    [locationItems],
+    () => [...locationFacets].sort((a, b) => a.label.localeCompare(b.label)),
+    [locationFacets],
   );
   const sortedCategories = useMemo(
-    () => [...categoryItems].sort((a, b) => a.label.localeCompare(b.label)),
-    [categoryItems],
+    () => [...categoryFacets].sort((a, b) => a.label.localeCompare(b.label)),
+    [categoryFacets],
   );
 
   const applyLocation = (value: string, closeSheet: boolean) => {
-    setIndexUiState((prev) => ({
-      ...prev,
-      refinementList: {
-        ...prev.refinementList,
-        eventLocations: value ? [value] : [],
-      },
+    const nextRl = {
+      ...(urlState.refinementList as Record<string, string[]> | undefined),
+    };
+    if (value) {
+      nextRl[EVENT_FACET_LOCATIONS] = [value];
+    } else {
+      delete nextRl[EVENT_FACET_LOCATIONS];
+    }
+    const refinementList = Object.keys(nextRl).length > 0 ? nextRl : undefined;
+    applyUrlState({
+      ...urlState,
       page: 0,
-    }));
+      refinementList,
+    });
     if (closeSheet) setOpenSheet(null);
   };
 
   const applyCategory = (value: string | null, closeSheet: boolean) => {
-    setIndexUiState((prev) => ({
-      ...prev,
-      refinementList: {
-        ...prev.refinementList,
-        eventCategories: value ? [value] : [],
-      },
+    const nextRl = {
+      ...(urlState.refinementList as Record<string, string[]> | undefined),
+    };
+    if (value) {
+      nextRl[EVENT_FACET_CATEGORIES] = [value];
+    } else {
+      delete nextRl[EVENT_FACET_CATEGORIES];
+    }
+    const refinementList = Object.keys(nextRl).length > 0 ? nextRl : undefined;
+    applyUrlState({
+      ...urlState,
       page: 0,
-    }));
+      refinementList,
+    });
     if (closeSheet) setOpenSheet(null);
   };
 
@@ -105,7 +122,6 @@ export function EventsMobileFinderFilters({
       const endBottom = pinEndRef?.current
         ? pinEndRef.current.getBoundingClientRect().bottom
         : Number.POSITIVE_INFINITY;
-      // Pin after the filter row reaches the nav offset, until the results block has scrolled past.
       setFiltersPinned(startTop <= line && endBottom > line);
     };
 
@@ -214,7 +230,11 @@ export function EventsMobileFinderFilters({
       </div>
 
       <div className='bg-white content-padding'>
-        <ActiveFilters onClearAllToUrl={onClearAllToUrl} />
+        <EventsUrlActiveFilters
+          urlState={urlState}
+          applyUrlState={applyUrlState}
+          onClearAllToUrl={onClearAllToUrl}
+        />
       </div>
 
       {openSheet === 'location' ? (

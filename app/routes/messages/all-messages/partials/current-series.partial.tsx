@@ -1,64 +1,49 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useLocation, useNavigation } from 'react-router-dom';
 import { IconButton } from '~/primitives/button/icon-button.primitive';
 
 import type { AllMessagesLoaderReturnType } from '../loader';
-import { getFirstParagraph } from '~/lib/utils';
+import { cn, getFirstParagraph } from '~/lib/utils';
 import { SectionTitle } from '~/components';
-import { ContentItemHit } from '~/routes/search/types';
-import { Configure, InstantSearch, useHits } from 'react-instantsearch';
-import { createSearchClient } from '~/lib/create-search-client';
+import type { ContentItemHit } from '~/routes/search/types';
 
-const CurrentSeries: React.FC = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<AllMessagesLoaderReturnType>();
+const CurrentSeries = () => {
+  const { currentSeriesHit } = useLoaderData<AllMessagesLoaderReturnType>();
+  const navigation = useNavigation();
+  const location = useLocation();
 
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
-  );
+  const isLoading =
+    navigation.state === 'loading' &&
+    navigation.location?.pathname === location.pathname;
 
-  const [currentSeriesLoading, setCurrentSeriesLoading] = useState(true);
-
-  return (
-    <div className='bg-gray w-full content-padding py-28'>
-      <div className='flex flex-col gap-12 max-w-screen-content mx-auto'>
-        {currentSeriesLoading && <CurrentSeriesLoadingSkeleton />}
-        <InstantSearch
-          indexName='dev_contentItems'
-          searchClient={searchClient}
-          future={{
-            preserveSharedStateOnUnmount: true,
-          }}
-        >
-          <Configure filters={`contentType:"Sermon"`} hitsPerPage={1} />
-          <CurrentSeriesHit setCurrentSeriesLoading={setCurrentSeriesLoading} />
-        </InstantSearch>
+  if (currentSeriesHit) {
+    return (
+      <div
+        className={cn(
+          'bg-gray w-full content-padding py-28',
+          isLoading && 'opacity-60 pointer-events-none',
+        )}
+      >
+        <div className='flex flex-col gap-12 max-w-screen-content mx-auto'>
+          <CurrentSeriesContent hit={currentSeriesHit} />
+        </div>
       </div>
-    </div>
-  );
-};
-
-const CurrentSeriesHit = ({
-  setCurrentSeriesLoading,
-}: {
-  setCurrentSeriesLoading: (currentSeriesLoading: boolean) => void;
-}) => {
-  const { items } = useHits<ContentItemHit>();
-
-  useEffect(() => {
-    if (items.length > 0) {
-      setCurrentSeriesLoading(false);
-    }
-  }, [items]);
-
-  const hit = items[0];
-
-  // This is a fallback for when the current series is not found or when loading the current series is still in progress.
-  if (!hit) {
-    return null;
+    );
   }
 
+  if (isLoading) {
+    return (
+      <div className='bg-gray w-full content-padding py-28'>
+        <div className='flex flex-col gap-12 max-w-screen-content mx-auto'>
+          <CurrentSeriesLoadingSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+function CurrentSeriesContent({ hit }: { hit: ContentItemHit }) {
   const currentSeriesTitle = hit.seriesName || 'Current Series';
   const coverImageUri = hit.coverImage?.sources?.[0]?.uri;
 
@@ -69,7 +54,6 @@ const CurrentSeriesHit = ({
     <>
       <SectionTitle title={currentSeriesTitle} sectionTitle='current series' />
 
-      {/* Latest Message Card */}
       <div className='flex flex-col-reverse lg:flex-row items-center justify-center size-full overflow-hidden rounded-2xl lg:h-[620px]'>
         <div className='flex flex-col h-full lg:w-1/2 justify-between lg:justify-center lg:gap-16 bg-white w-full p-8 md:p-16 lg:px-10 lg:py-12 xl:p-16'>
           <div className='flex flex-col gap-4'>
@@ -93,7 +77,6 @@ const CurrentSeriesHit = ({
             </div>
           </div>
 
-          {/* Buttons */}
           <div className='mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8'>
             {hit.sermonSeriesGuid && (
               <IconButton
@@ -124,7 +107,7 @@ const CurrentSeriesHit = ({
       </div>
     </>
   );
-};
+}
 
 const CurrentSeriesLoadingSkeleton = () => {
   return (

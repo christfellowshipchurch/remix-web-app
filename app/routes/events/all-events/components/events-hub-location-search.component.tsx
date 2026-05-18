@@ -1,39 +1,51 @@
-import { useInstantSearch, useRefinementList } from 'react-instantsearch';
 import Dropdown, {
   type DropdownOption,
 } from '~/primitives/inputs/dropdown/dropdown.primitive';
 import { cn } from '~/lib/utils';
 
+import type { EventFinderFacetItem } from '../loader';
+import type { EventsFinderUrlState } from '../../events-url-state';
+import { EVENT_FACET_LOCATIONS } from '../all-events-page';
+
 interface EventsHubLocationSearchProps {
   placeholder?: string;
+  locationFacets: EventFinderFacetItem[];
+  urlState: EventsFinderUrlState;
+  applyUrlState: (next: EventsFinderUrlState) => void;
 }
 
 export const EventsHubLocationSearch = ({
   placeholder = 'Select Campus',
+  locationFacets,
+  urlState,
+  applyUrlState,
 }: EventsHubLocationSearchProps) => {
-  const { items } = useRefinementList({ attribute: 'eventLocations' });
-  const { setIndexUiState, indexUiState } = useInstantSearch();
-
   const selectedLocation =
-    indexUiState?.refinementList?.eventLocations?.[0] || '';
+    urlState.refinementList?.[EVENT_FACET_LOCATIONS]?.[0] || '';
 
   const locationOptions: DropdownOption[] = [
     { value: '', label: 'Filter By Campus Location' },
-    ...items.map((item) => ({
+    ...locationFacets.map((item) => ({
       value: item.value,
       label: item.label,
     })),
   ];
 
   const handleLocationSelect = (locationValue: string) => {
-    setIndexUiState((prevState) => ({
-      ...prevState,
-      refinementList: {
-        ...prevState.refinementList,
-        eventLocations: locationValue ? [locationValue] : [],
-      },
+    const rl = {
+      ...(urlState.refinementList as Record<string, string[]> | undefined),
+    };
+    if (locationValue) {
+      rl[EVENT_FACET_LOCATIONS] = [locationValue];
+    } else {
+      delete rl[EVENT_FACET_LOCATIONS];
+    }
+    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
+    applyUrlState({
+      ...urlState,
       page: 0,
-    }));
+      refinementList,
+    });
   };
 
   const hasCampusFilter = Boolean(selectedLocation);
