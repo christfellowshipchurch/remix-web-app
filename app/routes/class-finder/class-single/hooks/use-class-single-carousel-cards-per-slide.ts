@@ -32,11 +32,12 @@ export const CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS =
 
 export const CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS = 'gap-3';
 
-/** `lg` (1024px) and up: chunked multi-card slides; below: single-hit peek rows (Join a Class only). */
+/**
+ * `lg` (1024px) and up: chunked multi-card slides; below: single-hit peek rows (Join a Class only).
+ * Always `false` until mount so SSR does not disagree with the first client render.
+ */
 export function useMinWidthLg(): boolean {
-  const [matches, setMatches] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth >= LG : false,
-  );
+  const [matches, setMatches] = useState(false);
 
   useEffect(() => {
     const update = () => setMatches(window.innerWidth >= LG);
@@ -46,6 +47,22 @@ export function useMinWidthLg(): boolean {
   }, []);
 
   return matches;
+}
+
+/**
+ * Avoids rendering one Embla slide per hit on the server (loader can return up to 1000 sessions).
+ * SSR/first paint use chunked slides; after mount, mobile switches to peek layout.
+ */
+export function useClassSingleCarouselLayoutMode(): 'chunk' | 'peek' {
+  const isLg = useMinWidthLg();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return 'chunk';
+  return isLg ? 'chunk' : 'peek';
 }
 
 /**

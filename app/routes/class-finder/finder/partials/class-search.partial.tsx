@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
-import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { InstantSearch, SearchBox, useHits } from 'react-instantsearch';
+import {
+  useLoaderData,
+  useLocation,
+  useNavigation,
+  useSearchParams,
+} from 'react-router-dom';
+import { InstantSearch, SearchBox } from 'react-instantsearch';
 
 import Icon from '~/primitives/icon';
 
@@ -16,8 +20,8 @@ import {
   SearchFilters,
 } from '~/components/finders/search-filters';
 import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
-import { ResponsiveConfigure } from '~/routes/group-finder/partials/group-search.partial';
 import { ClassHitType } from '../../types';
+import { cn } from '~/lib/utils';
 
 import {
   groupClassTypeHits,
@@ -32,8 +36,18 @@ import {
   classFinderUrlStateToParams,
   parseClassFinderUrlState,
 } from '../components/class-finder-url-state';
+import { CLASSES_ALGOLIA_INDEX_NAME } from '../components/build-class-finder-algolia-search';
+import { createClassFinderLoaderSearchClient } from '../components/create-class-finder-loader-search-client';
+import { ClassFinderFiltersSkeleton } from '../components/filters/class-finder-filters-skeleton.component';
 
-const INDEX_NAME = 'dev_Classes';
+/**
+ * Class finder data flow:
+ * 1. Route loader reads URL → Algolia on the server → `classHits` + `classFacets`.
+ * 2. Results grid renders from loader hits (outside `<InstantSearch>`) for fast first paint.
+ * 3. InstantSearch + loader-backed SearchClient only powers filter widgets and URL sync.
+ * 4. Grouping + 12-per-page pagination stay client-side (same as before; loader returns up to 1000 raw hits).
+ * 5. `filtersMounted` defers InstantSearch until after hydration so the results grid is not blocked.
+ */
 
 const CLASS_SEARCH_DESKTOP_FILTERS = [
   {
@@ -53,19 +67,20 @@ const CLASS_SEARCH_DESKTOP_FILTERS = [
   },
 ] satisfies SearchFilterDesktopItem[];
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
   return {
-    initialUiState: buildIndexInitialUiState(INDEX_NAME, urlState) ?? {},
+    initialUiState:
+      buildIndexInitialUiState(CLASSES_ALGOLIA_INDEX_NAME, urlState) ?? {},
   };
 }
 
 export const ClassSearch = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderReturnType>();
+  const loaderData = useLoaderData<LoaderReturnType>();
+  const { classHits } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const navigation = useNavigation();
 
   const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
     searchParams,
@@ -76,11 +91,14 @@ export const ClassSearch = () => {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const searchClient = algoliasearch(
-    ALGOLIA_APP_ID,
-    ALGOLIA_SEARCH_API_KEY,
-    {},
+  const searchClient = useMemo(
+    () => createClassFinderLoaderSearchClient(loaderData),
+    [loaderData],
   );
+
+  const isLoading =
+    navigation.state === 'loading' &&
+    navigation.location?.pathname === location.pathname;
 
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
@@ -112,38 +130,39 @@ export const ClassSearch = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
+  /** SSR/hydration: skeleton filters until react-instantsearch mounts (same pattern as group finder). */
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
+
   return (
     <div
       className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
       id='search'
     >
-      <InstantSearch
-        indexName={INDEX_NAME}
-        searchClient={searchClient}
-        initialUiState={
-          Object.keys(initial.initialUiState).length > 0
-            ? initial.initialUiState
-            : undefined
-        }
-        onStateChange={({ uiState, setUiState }) => {
-          // Controlled InstantSearch: commit widget/programmatic UI state to the
-          // helper + schedule search. Without this, URL can update while hits stay stale.
-          setUiState(uiState);
-          const indexState = uiState[INDEX_NAME];
-          if (indexState)
-            syncUrlFromUiState(indexState as Record<string, unknown>);
-        }}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-      >
-        <ResponsiveConfigure
-          ageInput=''
-          coordinates={null}
-          hitsPerPageOverride={1000}
-        />
-        <div className='flex flex-col bg-white pt-4'>
-          <FinderStickyBar>
+      <div className='flex flex-col bg-white pt-4'>
+        <FinderStickyBar>
+          {filtersMounted ? (
+            <InstantSearch
+            indexName={CLASSES_ALGOLIA_INDEX_NAME}
+            searchClient={searchClient}
+            initialUiState={
+              Object.keys(initial.initialUiState).length > 0
+                ? initial.initialUiState
+                : undefined
+            }
+            onStateChange={({ uiState, setUiState }) => {
+              setUiState(uiState);
+              const indexState = uiState[CLASSES_ALGOLIA_INDEX_NAME];
+              if (indexState) {
+                syncUrlFromUiState(indexState as Record<string, unknown>);
+              }
+            }}
+            future={{
+              preserveSharedStateOnUnmount: true,
+            }}
+          >
             <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
               <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
                 <Icon
@@ -202,18 +221,28 @@ export const ClassSearch = () => {
               </div>
             </div>
             <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
-          </FinderStickyBar>
-
-          {/* CLASS SEARCH RESULTS */}
-          <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
-            <div className='max-w-screen-content mx-auto md:w-full'>
-              <ClassTypeGroupedResults
-                fromClassFinderUrl={fromClassFinderUrl}
+            </InstantSearch>
+          ) : (
+            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+              <div
+                className='h-[42px] w-full animate-pulse rounded-lg bg-neutral-200 md:w-[240px] lg:w-[250px] xl:w-[266px]'
+                aria-hidden
               />
+              <ClassFinderFiltersSkeleton />
             </div>
+          )}
+        </FinderStickyBar>
+
+        <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+          <div className='max-w-screen-content mx-auto md:w-full'>
+            <ClassTypeGroupedResults
+              hits={classHits}
+              isLoading={isLoading}
+              fromClassFinderUrl={fromClassFinderUrl}
+            />
           </div>
         </div>
-      </InstantSearch>
+      </div>
     </div>
   );
 };
@@ -221,14 +250,17 @@ export const ClassSearch = () => {
 const ITEMS_PER_PAGE = 12;
 
 function ClassTypeGroupedResults({
+  hits,
+  isLoading,
   fromClassFinderUrl,
 }: {
+  hits: ClassHitType[];
+  isLoading: boolean;
   fromClassFinderUrl?: string;
 }) {
-  const { items } = useHits<ClassHitType>();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const grouped = useMemo(() => groupClassTypeHits(items), [items]);
+  const grouped = useMemo(() => groupClassTypeHits(hits), [hits]);
   const mappedHits = useMemo(
     () => syntheticHitsFromGrouped(grouped),
     [grouped],
@@ -243,7 +275,11 @@ function ClassTypeGroupedResults({
 
   return (
     <>
-      <div className='min-h-[320px]'>
+      <div
+        className={cn('min-h-[320px] transition-opacity', {
+          'opacity-50 pointer-events-none': isLoading,
+        })}
+      >
         <FinderResultsStats hitCount={mappedHits.length} />
 
         <div className='flex w-full items-center justify-center md:items-start md:justify-start'>

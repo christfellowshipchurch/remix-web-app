@@ -9,14 +9,22 @@ vi.mock('~/lib/.server/error-types', () => ({
   AuthenticationError: class AuthenticationError extends Error {},
 }));
 
+const searchSingleIndex = vi.fn().mockResolvedValue({ hits: [] });
+
+vi.mock('algoliasearch', () => ({
+  algoliasearch: vi.fn(() => ({
+    searchSingleIndex,
+  })),
+}));
+
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 
 const mockFetchRockData = fetchRockData as ReturnType<typeof vi.fn>;
 
-function makeParams(path: string) {
+function makeParams(path: string, search = '') {
   return {
     params: { path },
-    request: new Request('http://localhost/'),
+    request: new Request(`http://localhost/class-finder/${path}${search}`),
     context: {},
   } as unknown as Parameters<typeof loader>[0];
 }
@@ -25,6 +33,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   process.env.ALGOLIA_APP_ID = 'test-app-id';
   process.env.ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+  searchSingleIndex.mockResolvedValue({ hits: [] });
 });
 
 describe('class-single loader — onDemandUrl', () => {
@@ -88,5 +97,18 @@ describe('class-single loader — onDemandUrl', () => {
     } finally {
       warnSpy.mockRestore();
     }
+  });
+});
+
+describe('class-single loader — Algolia', () => {
+  it('returns null classHit when hero search has no hits', async () => {
+    mockFetchRockData.mockResolvedValueOnce(undefined);
+    searchSingleIndex.mockResolvedValueOnce({ hits: [] });
+
+    const result = await loader(makeParams('missing-class'));
+
+    expect(result.classHit).toBeNull();
+    expect(result.upcomingHits).toEqual([]);
+    expect(result.groupHits).toEqual([]);
   });
 });
