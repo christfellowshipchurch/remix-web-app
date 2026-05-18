@@ -171,11 +171,11 @@ export const CardCarousel = ({
 
       <div
         className={cn(
-          'relative w-full flex justify-between items-center mt-8 sm:mt-12 md:mt-16',
+          'relative w-full flex justify-between items-center mt-8 sm:mt-12 md:mt-14 px-4',
           /* Reserve space for absolutely positioned dots/arrows (parent had ~0 in-flow height on mobile → clipped by overflow-hidden). */
           'min-h-[4.5rem]',
           {
-            'lg:mt-0 lg:min-h-0 lg:pb-0': resources.length < 4,
+            'flex md:hidden': resources.length < 4,
           },
         )}
       >
