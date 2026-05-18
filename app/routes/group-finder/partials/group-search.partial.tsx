@@ -1,17 +1,35 @@
-import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
-import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { Configure, Hits, InstantSearch, SearchBox } from 'react-instantsearch';
+import {
+  useLoaderData,
+  useLocation,
+  useNavigation,
+  useSearchParams,
+} from 'react-router-dom';
+import { Configure, InstantSearch } from 'react-instantsearch';
 
-import { FindersCustomPagination } from '~/components/finders/finders-custom-pagination.component';
 import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
 import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
 import { useResponsive } from '~/hooks/use-responsive';
-import Icon from '~/primitives/icon';
-import { LoaderReturnType } from '../loader';
+import { cn } from '~/lib/utils';
+import { Icon } from '~/primitives/icon/icon';
+import { GroupFinderFiltersSkeleton } from '../components/filters/group-finder-filters-skeleton.component';
+import {
+  buildGroupFinderInstantSearchUiState,
+  GroupFinderInstantSearchSync,
+} from '../components/group-finder-instant-search-sync.component';
+import { GroupFinderQueryInput } from '../components/group-finder-query-input.component';
+import { createGroupFinderLoaderSearchClient } from '../components/create-group-finder-loader-search-client';
+import type { LoaderReturnType } from '../loader';
 import { GroupHit } from '../components/group-hit.component';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { GroupFinderOverflowFiltersPanel } from '../components/group-finder-overflow-filters.component';
-import { GroupType, GROUPS_ALGOLIA_INDEX_NAME } from '../types';
+import { GROUPS_ALGOLIA_INDEX_NAME } from '../types';
 import {
   parseGroupFinderUrlState,
   groupFinderUrlStateToParams,
@@ -20,7 +38,6 @@ import {
   type GroupFinderUrlState,
 } from '../group-finder-url-state';
 import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
-import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
 import {
   SearchFilters,
   type SearchFilterDesktopItem,
@@ -32,8 +49,6 @@ import {
   GROUP_FINDER_MORE_POPUP_TITLE,
 } from '../group-search-filters.data';
 
-const INDEX_NAME = GROUPS_ALGOLIA_INDEX_NAME;
-
 function firstCampusRefinement(
   refinementList: Record<string, string[]> | undefined,
 ): string | null {
@@ -43,33 +58,62 @@ function firstCampusRefinement(
   return first ? first : null;
 }
 
+function coordinatesFromUrlState(
+  urlState: ReturnType<typeof parseGroupFinderUrlState>,
+) {
+  if (
+    urlState.lat != null &&
+    urlState.lng != null &&
+    Number.isFinite(urlState.lat) &&
+    Number.isFinite(urlState.lng)
+  ) {
+    return { lat: urlState.lat, lng: urlState.lng };
+  }
+  return null;
+}
+
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 2 (initial state from URL). */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? '';
   const selectedLocation =
     firstCampusRefinement(urlState.refinementList) ?? null;
-  const initialUiState =
-    buildIndexInitialUiState(INDEX_NAME, {
-      query: urlState.query,
-      refinementList: urlState.refinementList,
-    }) ?? {};
-  return { coordinates: null, ageInput, selectedLocation, initialUiState };
+
+  return {
+    coordinates: coordinatesFromUrlState(urlState),
+    ageInput,
+    selectedLocation,
+    initialUiState: buildGroupFinderInstantSearchUiState(urlState),
+  };
 }
 
 export const GroupSearch = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderReturnType>();
+  const loaderData = useLoaderData<LoaderReturnType>();
+  const { groupHits, groupNbHits, groupNbPages, groupPage } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const navigation = useNavigation();
 
-  const { cancelDebounce, debouncedUpdateUrl, updateUrlIfChanged } =
-    useAlgoliaUrlSync({
-      searchParams,
-      setSearchParams,
-      toParams: groupFinderUrlStateToParams,
-      debounceMs: 400,
-    });
+  const urlState = useMemo(
+    () => parseGroupFinderUrlState(searchParams),
+    [searchParams],
+  );
+
+  const isLoading =
+    navigation.state === 'loading' &&
+    navigation.location?.pathname === location.pathname;
+
+  const searchClient = useMemo(
+    () => createGroupFinderLoaderSearchClient(loaderData),
+    [loaderData],
+  );
+
+  const { cancelDebounce, updateUrlIfChanged } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: groupFinderUrlStateToParams,
+    debounceMs: 400,
+  });
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
@@ -110,13 +154,8 @@ export const GroupSearch = () => {
     setSelectedLocationState(
       firstCampusRefinement(urlState.refinementList) ?? null,
     );
+    setCoordinatesState(coordinatesFromUrlState(urlState));
   }, [searchParams]);
-
-  const searchClient = algoliasearch(
-    ALGOLIA_APP_ID,
-    ALGOLIA_SEARCH_API_KEY,
-    {},
-  );
 
   const clearAllFiltersFromUrl = () => {
     cancelDebounce();
@@ -135,18 +174,35 @@ export const GroupSearch = () => {
     });
   };
 
-  const setCoordinates = useCallback((next: typeof coordinates) => {
-    setCoordinatesState(next);
-    const noCoords =
-      next == null ||
-      next.lat == null ||
-      next.lng == null ||
-      Number.isNaN(next.lat) ||
-      Number.isNaN(next.lng);
-    if (noCoords) {
-      setLocationSource(null);
-    }
-  }, []);
+  const setCoordinates = useCallback(
+    (next: typeof coordinates) => {
+      setCoordinatesState(next);
+      const noCoords =
+        next == null ||
+        next.lat == null ||
+        next.lng == null ||
+        Number.isNaN(next.lat) ||
+        Number.isNaN(next.lng);
+      if (noCoords) {
+        setLocationSource(null);
+      }
+
+      const merged: GroupFinderUrlState = {
+        ...parseGroupFinderUrlState(searchParams),
+        age: customStateRef.current.ageInput || undefined,
+        page: 0,
+      };
+      if (noCoords) {
+        delete merged.lat;
+        delete merged.lng;
+      } else {
+        merged.lat = next.lat ?? undefined;
+        merged.lng = next.lng ?? undefined;
+      }
+      updateUrlIfChanged(merged);
+    },
+    [searchParams, updateUrlIfChanged],
+  );
 
   const setAgeInput = (next: string) => {
     setAgeInputState(next);
@@ -154,6 +210,7 @@ export const GroupSearch = () => {
     const merged: GroupFinderUrlState = {
       ...parseGroupFinderUrlState(searchParams),
       age: ageValue,
+      page: 0,
     };
     updateUrlIfChanged(merged);
   };
@@ -203,130 +260,236 @@ export const GroupSearch = () => {
     [ageInput, selectedLocation, coordinates],
   );
 
-  /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md § Pattern A step 3 (onStateChange → URL). */
+  const mergeUrlState = useCallback(
+    (partial: Partial<GroupFinderUrlState>) => {
+      const coords = customStateRef.current.coordinates;
+      const merged: GroupFinderUrlState = {
+        ...parseGroupFinderUrlState(searchParams),
+        age: customStateRef.current.ageInput || undefined,
+        lat: coords?.lat ?? undefined,
+        lng: coords?.lng ?? undefined,
+        ...partial,
+      };
+      return merged;
+    },
+    [searchParams],
+  );
+
+  const commitQuery = useCallback(
+    (nextQuery: string) => {
+      const q = nextQuery.trim();
+      updateUrlIfChanged(
+        mergeUrlState({
+          query: q || undefined,
+          page: 0,
+        }),
+      );
+    },
+    [mergeUrlState, updateUrlIfChanged],
+  );
+
+  const goToPage = useCallback(
+    (nextPage: number) => {
+      updateUrlIfChanged(
+        mergeUrlState({
+          page: Math.max(0, nextPage),
+        }),
+      );
+      const scrollTarget = document.querySelector('.pagination-scroll-to');
+      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+    [mergeUrlState, updateUrlIfChanged],
+  );
+
+  /** Refinements + pagination sync to URL immediately (loader refetch). Query uses {@link GroupFinderQueryInput}. */
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
-    const urlState: GroupFinderUrlState = {
-      ...parseGroupFinderUrlState(searchParams),
-      query: (indexUiState.query as string) ?? undefined,
-      refinementList:
-        (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
-      age: customStateRef.current.ageInput || undefined,
-    };
-    debouncedUpdateUrl(urlState);
+    const rawPage = indexUiState.page;
+    const pageNum =
+      typeof rawPage === 'number' && Number.isFinite(rawPage)
+        ? Math.max(0, Math.floor(rawPage))
+        : 0;
+    updateUrlIfChanged(
+      mergeUrlState({
+        refinementList:
+          (indexUiState.refinementList as Record<string, string[]>) ??
+          undefined,
+        page: pageNum > 0 ? pageNum : undefined,
+      }),
+    );
   };
+
+  const isFirstPage = groupPage <= 0;
+  const isLastPage = groupNbPages <= 0 || groupPage >= groupNbPages - 1;
+
+  /** Defer InstantSearch so loader-driven results paint on SSR/first frame without waiting on react-instantsearch. */
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
 
   return (
     <div
       className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
       id='search'
     >
-      <InstantSearch
-        indexName={INDEX_NAME}
-        searchClient={searchClient}
-        initialUiState={
-          Object.keys(initial.initialUiState).length > 0
-            ? initial.initialUiState
-            : undefined
-        }
-        onStateChange={({ uiState, setUiState }) => {
-          setUiState(uiState);
-          const indexState = uiState[INDEX_NAME];
-          if (indexState)
-            syncUrlFromUiState(indexState as Record<string, unknown>);
-        }}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-      >
-        <ResponsiveConfigure ageInput={ageInput} coordinates={coordinates} />
-        <div className='flex flex-col'>
-          <FinderStickyBar>
-            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
-              <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
-                <Icon
-                  name='searchAlt'
-                  className='text-neutral-default ml-3'
-                  size={16}
+      <div className='flex flex-col'>
+        <FinderStickyBar>
+          {filtersMounted ? (
+            <InstantSearch
+              indexName={GROUPS_ALGOLIA_INDEX_NAME}
+              searchClient={searchClient}
+              initialUiState={
+                Object.keys(initial.initialUiState).length > 0
+                  ? initial.initialUiState
+                  : undefined
+              }
+              onStateChange={({ uiState, setUiState }) => {
+                setUiState(uiState);
+                const indexState = uiState[GROUPS_ALGOLIA_INDEX_NAME];
+                if (indexState)
+                  syncUrlFromUiState(indexState as Record<string, unknown>);
+              }}
+              future={{
+                preserveSharedStateOnUnmount: true,
+              }}
+            >
+              <GroupFinderInstantSearchSync />
+              <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+                <GroupFinderQueryInput
+                  query={urlState.query}
+                  onQueryCommit={commitQuery}
                 />
-                <SearchBox
-                  placeholder='Search'
-                  translations={{
-                    submitButtonTitle: 'Search',
-                    resetButtonTitle: 'Reset',
-                  }}
-                  classNames={{
-                    root: 'flex-grow',
-                    form: 'flex',
-                    input:
-                      'w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm',
-                    resetIcon: 'hidden',
-                    submit: 'hidden',
-                    loadingIcon: 'hidden',
-                  }}
+                <SearchFilters
+                  onClearAllToUrl={clearAllFiltersFromUrl}
+                  desktopFilters={desktopFilters}
+                  compactInlineFilterCount={2}
+                  filterPopupAgeInput={ageInput}
+                  setFilterPopupAgeInput={setAgeInput}
+                  isFilterPillSupplementallyActive={
+                    isFilterPillSupplementallyActive
+                  }
+                  renderMorePanel={({
+                    onHide,
+                    onClearAllToUrl,
+                    mobileBottomSheet,
+                  }) => (
+                    <GroupFinderOverflowFiltersPanel
+                      onHide={onHide}
+                      ageInput={ageInput}
+                      setAgeInput={setAgeInput}
+                      coordinates={coordinates}
+                      setCoordinates={setCoordinates}
+                      locationSource={locationSource}
+                      onLocationKind={setLocationSource}
+                      onClearAllToUrl={onClearAllToUrl}
+                      mobileBottomSheet={mobileBottomSheet}
+                      bottomSheetTitle={GROUP_FINDER_MORE_POPUP_TITLE}
+                    />
+                  )}
                 />
               </div>
-
-              <SearchFilters
+              <ActiveFilters
                 onClearAllToUrl={clearAllFiltersFromUrl}
-                desktopFilters={desktopFilters}
-                compactInlineFilterCount={2}
-                filterPopupAgeInput={ageInput}
-                setFilterPopupAgeInput={setAgeInput}
-                isFilterPillSupplementallyActive={
-                  isFilterPillSupplementallyActive
-                }
-                renderMorePanel={({
-                  onHide,
-                  onClearAllToUrl,
-                  mobileBottomSheet,
-                }) => (
-                  <GroupFinderOverflowFiltersPanel
-                    onHide={onHide}
-                    ageInput={ageInput}
-                    setAgeInput={setAgeInput}
-                    coordinates={coordinates}
-                    setCoordinates={setCoordinates}
-                    locationSource={locationSource}
-                    onLocationKind={setLocationSource}
-                    onClearAllToUrl={onClearAllToUrl}
-                    mobileBottomSheet={mobileBottomSheet}
-                    bottomSheetTitle={GROUP_FINDER_MORE_POPUP_TITLE}
-                  />
-                )}
+                additionalFiltersActive={additionalClearAllFiltersActive}
               />
+            </InstantSearch>
+          ) : (
+            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+              <GroupFinderQueryInput
+                query={urlState.query}
+                onQueryCommit={commitQuery}
+              />
+              <GroupFinderFiltersSkeleton />
             </div>
-            <ActiveFilters
-              onClearAllToUrl={clearAllFiltersFromUrl}
-              additionalFiltersActive={additionalClearAllFiltersActive}
-            />
-          </FinderStickyBar>
+          )}
+        </FinderStickyBar>
 
-          {/* Group Search Hits / Results & Pagination */}
-          <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
-            <div className='max-w-screen-content mx-auto md:w-full'>
-              <FinderResultsStats />
-              <div className='min-h-[320px]'>
-                <Hits
-                  classNames={{
-                    root: 'flex w-full items-center justify-center md:items-start md:justify-start',
-                    item: 'flex h-full min-h-0 w-full flex-col',
-                    list: 'grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
-                  }}
-                  hitComponent={({ hit }: { hit: GroupType }) => {
-                    return <GroupHit hit={hit} backUrl={fromGroupFinderUrl} />;
-                  }}
-                />
-              </div>
-              <div className='mt-6 flex justify-center md:justify-start'>
-                <FindersCustomPagination />
-              </div>
+        <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+          <div className='max-w-screen-content mx-auto md:w-full'>
+            <FinderResultsStats hitCount={groupNbHits} />
+            <div className='min-h-[320px]'>
+              {groupHits.length === 0 && !isLoading ? (
+                <p className='text-text-secondary text-center py-8'>
+                  No groups found. Try adjusting your filters or search.
+                </p>
+              ) : (
+                <div
+                  className={cn(
+                    'grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-auto md:mx-0',
+                    isLoading && 'opacity-60 pointer-events-none',
+                  )}
+                >
+                  {groupHits.map((hit) => (
+                    <GroupHit
+                      key={hit.objectID}
+                      hit={hit}
+                      backUrl={fromGroupFinderUrl}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
+            {groupNbPages > 1 && (
+              <div className='mt-6 flex items-center justify-center gap-2 md:justify-start'>
+                <GroupFinderPaginationButton
+                  isDisabled={isFirstPage}
+                  onClick={() => goToPage(groupPage - 1)}
+                >
+                  <Icon
+                    name='chevronLeft'
+                    size={32}
+                    color={isFirstPage ? '#CECECE' : '#0092BC'}
+                  />
+                </GroupFinderPaginationButton>
+                <p>
+                  {groupPage + 1} of {groupNbPages}
+                </p>
+                <GroupFinderPaginationButton
+                  isDisabled={isLastPage}
+                  onClick={() => goToPage(groupPage + 1)}
+                >
+                  <Icon
+                    name='chevronRight'
+                    size={32}
+                    color={isLastPage ? '#CECECE' : '#0092BC'}
+                  />
+                </GroupFinderPaginationButton>
+              </div>
+            )}
           </div>
         </div>
-      </InstantSearch>
+      </div>
     </div>
   );
 };
+
+function GroupFinderPaginationButton({
+  children,
+  isDisabled = false,
+  onClick,
+}: {
+  children: ReactNode;
+  isDisabled?: boolean;
+  onClick: () => void;
+}) {
+  if (isDisabled) {
+    return (
+      <span className='inline-flex cursor-not-allowed items-center justify-center opacity-50'>
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type='button'
+      onClick={onClick}
+      className='inline-flex cursor-pointer items-center justify-center'
+    >
+      {children}
+    </button>
+  );
+}
 
 export const ResponsiveConfigure = ({
   ageInput,
