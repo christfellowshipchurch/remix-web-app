@@ -35,7 +35,9 @@ export function Navbar() {
 
   // State management
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  /** Last window.scrollY for direction math — ref avoids stale giant deltas when isSmall toggles. */
+  const lastScrollYRef = useRef(0);
+  const prevPathnameRef = useRef<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -106,25 +108,26 @@ export function Navbar() {
 
       const currentScrollY = window.scrollY;
       const scrollThreshold = 10;
-      const scrollDelta = currentScrollY - lastScrollY;
+      const scrollDelta = currentScrollY - lastScrollYRef.current;
 
       // Reset at top of page
       if (currentScrollY < scrollThreshold) {
         setIsVisible(true);
         setMode(defaultMode);
-        setLastScrollY(currentScrollY);
+        lastScrollYRef.current = currentScrollY;
         return;
       }
 
       // Handle scroll direction
       if (Math.abs(scrollDelta) > scrollThreshold) {
-        setIsVisible(scrollDelta < 0);
+        const nextVisible = scrollDelta < 0;
+        setIsVisible(nextVisible);
         if (currentScrollY > scrollThreshold) {
           setMode(scrollDelta < 0 ? 'light' : 'dark');
         }
       }
 
-      setLastScrollY(currentScrollY);
+      lastScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -132,14 +135,7 @@ export function Navbar() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [
-    lastScrollY,
-    defaultMode,
-    pathname,
-    isSmall,
-    isNavbarHidden,
-    isSearchOpen,
-  ]);
+  }, [defaultMode, isNavbarHidden, isSearchOpen]);
 
   // Initial mode setup
   useEffect(() => {
@@ -150,7 +146,7 @@ export function Navbar() {
     }
   }, [pathname, isSmall]);
 
-  // Route change handling
+  // Route change handling (mode follows pathname + breakpoint; scroll baseline only on real navigation)
   useEffect(() => {
     let newMode: 'light' | 'dark';
     // If on home page, set mode based on screen size
@@ -161,9 +157,14 @@ export function Navbar() {
     }
     setDefaultMode(newMode);
     setMode(newMode);
-    setLastScrollY(0);
-    setIsVisible(true);
     setOpenDropdown(null); // Close menu when navigating to a new page
+
+    if (prevPathnameRef.current !== pathname) {
+      prevPathnameRef.current = pathname;
+      lastScrollYRef.current =
+        typeof window !== 'undefined' ? window.scrollY : 0;
+      setIsVisible(true);
+    }
   }, [pathname, isSmall]);
 
   // Mode sync effect

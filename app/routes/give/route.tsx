@@ -33,7 +33,7 @@ export default function Give() {
         />
       </div>
 
-      <div className='w-full -my-16'>
+      <div className='w-full py-12 md:py-0'>
         <FAQsComponent data={giveFaqData} />
       </div>
     </div>
