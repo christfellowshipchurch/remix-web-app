@@ -87,12 +87,12 @@ export const FeatureSection: FC<{
         {(data.coverImage || data.featureVideo) &&
           data.imageLayout === 'LEFT' && <FeatureImage data={data} />}
         <div className={`flex-1 flex flex-col gap-5`}>
-          <h2 className='text-text-primary heading-h4 md:heading-h2'>
+          <h2 className='text-text-primary text-2xl md:text-4xl lg:text-[52px] font-extrabold'>
             {data.name}
           </h2>
           {data.subtitle && (
             <h4
-              className={`text-text-secondary text-lg font-bold uppercase mb-2 tracking-widest -mt-2 md:mt-0`}
+              className={`text-text-secondary text-base md:text-lg font-bold uppercase mb-2 tracking-widest -mt-2 md:mt-0`}
             >
               {data.subtitle}
             </h4>
