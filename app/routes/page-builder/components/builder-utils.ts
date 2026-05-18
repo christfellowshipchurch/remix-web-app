@@ -1,6 +1,6 @@
 import { cn } from '~/lib/utils';
 import { parseRockKeyValueList } from '~/lib/utils';
-import { ContentBlockData, ContentType, SectionType } from '../types';
+import { ContentBlockData, ContentType, PageBuilderSection, SectionType } from '../types';
 
 /**
  * Maps content channel IDs to their corresponding content types
@@ -36,6 +36,52 @@ const COLLECTION_TYPES_MAP = [
   'RESOURCE_COLLECTION',
   'CTA_COLLECTION',
 ] as const;
+
+/**
+ * Section types that participate in the carousel background alternation logic
+ */
+const CAROUSEL_COLLECTION_TYPES = [
+  'EVENT_COLLECTION',
+  'RESOURCE_COLLECTION',
+] as const;
+
+type CarouselCollectionType = (typeof CAROUSEL_COLLECTION_TYPES)[number];
+
+/**
+ * Computes alternating 'white' | 'gray' backgrounds for consecutive runs of
+ * EVENT_COLLECTION / RESOURCE_COLLECTION sections. A single isolated section
+ * stays 'white'; consecutive sections within a run alternate white → gray → …
+ * Any other section type between two collections breaks the run, restarting the
+ * alternation from 'white'.
+ */
+export function getCarouselCollectionBackgrounds(
+  sections: PageBuilderSection[],
+): Map<string, 'white' | 'gray'> {
+  const result = new Map<string, 'white' | 'gray'>();
+
+  const isCarouselType = (type: SectionType): type is CarouselCollectionType =>
+    (CAROUSEL_COLLECTION_TYPES as readonly string[]).includes(type);
+
+  let runIndex = 0;
+  let inRun = false;
+
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i];
+
+    if (isCarouselType(section.type)) {
+      result.set(section.id, runIndex % 2 === 0 ? 'white' : 'gray');
+      runIndex++;
+      inRun = true;
+    } else {
+      if (inRun) {
+        runIndex = 0;
+        inRun = false;
+      }
+    }
+  }
+
+  return result;
+}
 
 type CollectionTypes = (typeof COLLECTION_TYPES_MAP)[number];
 

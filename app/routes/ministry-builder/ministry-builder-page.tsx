@@ -2,6 +2,7 @@ import { useLoaderData, useLocation } from 'react-router-dom';
 import { DynamicHero } from '~/components';
 import { PageBuilderLoader } from '../page-builder/types';
 import { renderSection } from '../page-builder/page-builder-page';
+import { getCarouselCollectionBackgrounds } from '../page-builder/components/builder-utils';
 import { MinistryServiceTimes } from './components/ministry-service-times.component';
 import { displayServiceTimes } from './utils';
 
@@ -17,6 +18,8 @@ export function MinistryBuilderRoute() {
     cleanPathname,
   );
 
+  const backgrounds = getCarouselCollectionBackgrounds(sections);
+
   return (
     <div className='bg-white'>
       <DynamicHero
@@ -28,7 +31,11 @@ export function MinistryBuilderRoute() {
         }))}
       />
 
-      {sections.map(renderSection)}
+      {sections.map((section) =>
+        renderSection(section, {
+          collectionBackground: backgrounds.get(section.id),
+        }),
+      )}
 
       {shouldDisplayServiceTimes && (
         <MinistryServiceTimes services={services} />
