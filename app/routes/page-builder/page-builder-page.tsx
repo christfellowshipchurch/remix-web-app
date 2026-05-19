@@ -7,8 +7,12 @@ import { ContentBlock } from './components/content-block';
 import { ContentBlockData } from './types';
 import { ImageGallerySection } from './components/image-gallery';
 import { FAQsComponent } from './components/faq';
+import { getCarouselCollectionBackgrounds } from './components/builder-utils';
 
-export function renderSection(section: PageBuilderSection) {
+export function renderSection(
+  section: PageBuilderSection,
+  options?: { collectionBackground?: 'white' | 'gray' },
+) {
   const sectionName =
     section.titleOverride !== '' ? section.titleOverride : section.name;
 
@@ -24,6 +28,9 @@ export function renderSection(section: PageBuilderSection) {
             description={section.content}
             resources={section.collection || []}
             viewMoreLink={section.viewMoreLink || undefined}
+            className={
+              options?.collectionBackground === 'gray' ? 'bg-gray' : 'bg-white'
+            }
           />
         </div>
       );
@@ -84,9 +91,16 @@ export function renderSection(section: PageBuilderSection) {
 
 export function PageBuilderRoute() {
   const { sections } = useLoaderData<PageBuilderLoader>();
+  const backgrounds = getCarouselCollectionBackgrounds(sections);
 
   return (
-    <div className='w-full flex flex-col'>{sections.map(renderSection)}</div>
+    <div className='w-full flex flex-col'>
+      {sections.map((section) =>
+        renderSection(section, {
+          collectionBackground: backgrounds.get(section.id),
+        }),
+      )}
+    </div>
   );
 }
 

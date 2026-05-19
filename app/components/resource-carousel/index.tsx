@@ -55,7 +55,7 @@ export const CardCarouselSection = ({
     >
       <div className='flex flex-col max-w-screen-content mx-auto'>
         <div className='w-full flex justify-center'>
-          <div className='w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24 lg:py-28'>
+          <div className='w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24'>
             {/* Header */}
             <div className='w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:pr-8! 3xl:pr-0!'>
               <div
@@ -171,11 +171,12 @@ export const CardCarousel = ({
 
       <div
         className={cn(
-          'relative w-full flex justify-between items-center mt-8 sm:mt-12 md:mt-16',
+          'relative w-full flex justify-between items-center mt-8 sm:mt-12 md:mt-14 px-4',
           /* Reserve space for absolutely positioned dots/arrows (parent had ~0 in-flow height on mobile → clipped by overflow-hidden). */
           'min-h-[4.5rem]',
           {
-            'lg:mt-0 lg:min-h-0 lg:pb-0': resources.length < 4,
+            'flex md:hidden': resources.length < 4 && resources.length > 1,
+            hidden: resources.length < 2,
           },
         )}
       >
