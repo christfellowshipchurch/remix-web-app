@@ -5,7 +5,7 @@ import {
   CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_CONTENT_GAP_CLASS,
   CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS,
   classSingleCarouselSlideGridColsClass,
-  useMinWidthLg,
+  useClassSingleCarouselLayoutMode,
 } from '../hooks/use-class-single-carousel-cards-per-slide';
 import { Button } from '~/primitives/shadcn-primitives/button';
 import {
@@ -77,8 +77,8 @@ export function UpcomingSessionsCarousel({
   hits: ClassHitType[];
   resetKey: string;
 }) {
-  /** Below `lg`, match Join a Group: one hit per Embla slide with ~1.5-card peek (not 2-up grid). */
-  const isDesktopChunkGrid = useMinWidthLg();
+  const layoutMode = useClassSingleCarouselLayoutMode();
+  const isDesktopChunkGrid = layoutMode === 'chunk';
 
   const slides = useMemo(() => {
     const out: ClassHitType[][] = [];
@@ -94,7 +94,7 @@ export function UpcomingSessionsCarousel({
 
   return (
     <Carousel
-      key={`${resetKey}-${isDesktopChunkGrid ? 'lg' : 'peek'}`}
+      key={`${resetKey}-${layoutMode}`}
       opts={{ align: 'start', containScroll: 'trimSnaps' }}
       className='w-full max-w-[1296px]'
     >

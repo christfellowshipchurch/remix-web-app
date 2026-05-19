@@ -4,9 +4,7 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { Configure, InstantSearch, useHits } from 'react-instantsearch';
 
-import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { FinderHero, type FinderHeroCta } from '~/components/finders/hero';
 import { VideoModal } from '~/components/modals/video-modal';
 import { Button } from '~/primitives/button/button.primitive';
@@ -14,7 +12,6 @@ import { Icon } from '~/primitives/icon/icon';
 import { ClassFAQ } from './components/faq.component';
 import { LoaderReturnType } from './loader';
 import { ClassSingleUpcomingSearch } from './partials/upcoming-sections.partial';
-import { createSearchClient } from '~/lib/create-search-client';
 import { ClassHitType } from '../types';
 
 function escapeHtml(text: string): string {
@@ -160,7 +157,6 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
           onDemandUrl={onDemandUrl}
         />
 
-        {/* FAQs */}
         <div className='content-padding flex w-full flex-col items-center'>
           <div className='mx-auto flex w-full max-w-screen-content flex-col items-center'>
             <ClassFAQ />
@@ -171,44 +167,16 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   );
 };
 
+/**
+ * Hero + sessions/groups are loader-driven (Algolia on the server).
+ * No page-level InstantSearch — avoids shipping search keys and blocks first paint on widgets.
+ */
 export function ClassSinglePage() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classUrl } =
-    useLoaderData<LoaderReturnType>();
+  const { classHit } = useLoaderData<LoaderReturnType>();
 
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
-  );
+  if (!classHit) {
+    return <ClassNotFound />;
+  }
 
-  return (
-    <InstantSearch
-      indexName='dev_Classes'
-      searchClient={searchClient}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-      key={classUrl}
-    >
-      <Configure
-        hitsPerPage={1}
-        filters={`pathName:"${escapeAlgoliaFilterString(classUrl)}"`}
-      />
-
-      <CustomClassSingleHits />
-    </InstantSearch>
-  );
+  return <ClassSingleContent hit={classHit} />;
 }
-
-const CustomClassSingleHits = () => {
-  const { items } = useHits<ClassHitType>();
-
-  return (
-    <div className='w-full'>
-      {items.length > 0 ? (
-        items.map((hit) => <ClassSingleContent key={hit.objectID} hit={hit} />)
-      ) : (
-        <ClassNotFound />
-      )}
-    </div>
-  );
-};

@@ -48,6 +48,7 @@ export const FinderLocationSearch = ({
   const [isGpsRequesting, setIsGpsRequesting] = useState(false);
   const geocodeFetcher = useFetcher();
   const lastSubmittedZipRef = useRef<string | null>(null);
+  const gpsRequestIdRef = useRef(0);
 
   useEffect(() => {
     if (!showZipInput) return;
@@ -90,14 +91,27 @@ export const FinderLocationSearch = ({
   ]);
 
   useEffect(() => {
-    if (coordinates === null && showZipInput) {
-      setInputValue('');
+    if (coordinates === null) {
+      gpsRequestIdRef.current += 1;
+      if (showZipInput) {
+        setInputValue('');
+      }
       lastSubmittedZipRef.current = null;
     }
   }, [coordinates, showZipInput]);
 
   useEffect(() => {
     if (geocodeFetcher.state === 'idle' && geocodeFetcher.data) {
+      // Ignore stale geocode responses after Clear All / input clear. Otherwise
+      // an in-flight zip lookup can re-apply old lat/lng and trigger a URL loop.
+      if (
+        !lastSubmittedZipRef.current ||
+        inputValue !== lastSubmittedZipRef.current
+      ) {
+        setIsGeocoding(false);
+        return;
+      }
+
       const location = geocodeFetcher.data?.results?.[0]?.geometry?.location;
       if (
         location &&
@@ -112,6 +126,7 @@ export const FinderLocationSearch = ({
   }, [
     geocodeFetcher.data,
     geocodeFetcher.state,
+    inputValue,
     setCoordinates,
     onLocationKind,
   ]);
@@ -152,8 +167,10 @@ export const FinderLocationSearch = ({
     }
 
     setIsGpsRequesting(true);
+    const requestId = ++gpsRequestIdRef.current;
     getCurrentPositionFromUserGesture(
       (position) => {
+        if (requestId !== gpsRequestIdRef.current) return;
         setIsGpsRequesting(false);
         setCoordinates({
           lat: position.coords.latitude,
@@ -162,6 +179,7 @@ export const FinderLocationSearch = ({
         onLocationKind?.('gps');
       },
       (error) => {
+        if (requestId !== gpsRequestIdRef.current) return;
         setIsGpsRequesting(false);
         console.error('Error getting current location:', error);
       },

@@ -1,5 +1,17 @@
-import { useLoaderData, useLocation, useNavigation } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
+import { useEffect, useMemo, useState, type RefObject } from 'react';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import {
+  Configure,
+  InstantSearch,
+  useInstantSearch,
+  usePagination,
+  useRefinementList,
+} from 'react-instantsearch';
+
 import { cn } from '~/lib/utils';
+import { createInstantSearchUrlSync } from '~/components/finders/instant-search-url-sync/create-instant-search-url-sync';
+import { useHydratedHitsFallback } from '~/components/finders/use-hydrated-hits-fallback';
 
 import { SectionTitle } from '~/components';
 import { Icon } from '~/primitives/icon/icon';
@@ -7,16 +19,33 @@ import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-res
 import { ResourceCard } from '~/primitives/cards/resource-card';
 import type { ContentItemHit } from '~/routes/search/types';
 
-import type { AllEventsLoaderData } from '../loader';
+import type { AllEventsLoaderData, EventFinderFacetItem } from '../loader';
 import { useEventsAlgoliaRouting } from '../hooks/use-events-algolia-routing.hook';
 import {
   FeaturedEventsFromHits,
   FeaturedEventsSectionLayout,
 } from '../partials/featured-events.partial';
 import { parseEventsFinderUrlState } from '../../events-url-state';
+import type { EventsFinderUrlState } from '../../events-url-state';
 
 import { formatEventCardDate } from './featured-card.component';
 import { EventsFiltersViewport } from './events-filters-viewport.component';
+import {
+  EVENT_FACET_CATEGORIES,
+  EVENT_FACET_LOCATIONS,
+  EVENTS_INDEX,
+  MAIN_EVENTS_GRID_HITS_PER_PAGE,
+  MAIN_EVENTS_TYPE_FILTER,
+} from '../all-events.constants';
+
+const { InstantSearchUrlSync, buildUiState } =
+  createInstantSearchUrlSync<EventsFinderUrlState>({
+    indexName: EVENTS_INDEX,
+    parseUrlState: parseEventsFinderUrlState,
+  });
+
+const AllEventsInstantSearchSync = InstantSearchUrlSync;
+const buildAllEventsInstantSearchUiState = buildUiState;
 
 function EventHit({
   hit,
@@ -99,12 +128,21 @@ const PaginationButton = ({
   );
 };
 
+function sortEventHitsByStartDateDesc(
+  hits: ContentItemHit[],
+): ContentItemHit[] {
+  return [...hits].sort(
+    (a, b) =>
+      new Date(b.startDateTime).getTime() - new Date(a.startDateTime).getTime(),
+  );
+}
+
 export function AllEventsContent() {
   const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
     featuredHits,
     mainEventHits,
-    eventCategoryFacets,
-    eventLocationFacets,
     eventsNbPages,
     eventsPage,
   } = useLoaderData<AllEventsLoaderData>();
@@ -118,11 +156,20 @@ export function AllEventsContent() {
     eventsMobilePinEndRef,
   } = useEventsAlgoliaRouting();
 
-  const navigation = useNavigation();
-  const location = useLocation();
-  const isLoading =
-    navigation.state === 'loading' &&
-    navigation.location?.pathname === location.pathname;
+  const searchClient = useMemo(
+    () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+  );
+
+  // Events can be deep-linked with category/location/page params. The loader
+  // uses those params for SSR first paint; this passes the same state into
+  // InstantSearch when the client widgets mount.
+  const initialUiState = useMemo(() => {
+    const state = buildAllEventsInstantSearchUiState(urlState);
+    return Object.keys(state).length > 0
+      ? (state as Record<string, Record<string, unknown>>)
+      : undefined;
+  }, [urlState]);
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
     const s = parseEventsFinderUrlState(params);
@@ -132,19 +179,13 @@ export function AllEventsContent() {
     );
   });
 
-  const goToPage = (nextPage: number) => {
-    applyUrlState({
-      ...urlState,
-      page: Math.max(0, nextPage),
-    });
-    const scrollTarget = document.querySelector('.pagination-scroll-to');
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const isFirstPage = eventsPage <= 0;
   const isLastPage = eventsNbPages <= 0 || eventsPage >= eventsNbPages - 1;
+
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
 
   return (
     <>
@@ -168,72 +209,271 @@ export function AllEventsContent() {
           </div>
         </div>
 
-        <EventsFiltersViewport
-          onClearAllToUrl={clearAllFiltersFromUrl}
-          eventsMobilePinEndRef={eventsMobilePinEndRef}
-          urlState={urlState}
-          applyUrlState={applyUrlState}
-          categoryFacets={eventCategoryFacets}
-          locationFacets={eventLocationFacets}
-        />
+        {filtersMounted ? (
+          <InstantSearch
+            indexName={EVENTS_INDEX}
+            searchClient={searchClient}
+            initialUiState={initialUiState}
+            onStateChange={({ uiState, setUiState }) => {
+              setUiState(uiState);
+              const indexState = uiState[EVENTS_INDEX];
+              if (!indexState) return;
+              const index = indexState as Record<string, unknown>;
 
-        <div className='content-padding pt-16 md:pt-0'>
-          <div className='mx-auto min-h-[22rem] w-full max-w-screen-content md:min-h-[28rem]'>
-            {mainEventHits.length === 0 && !isLoading ? null : (
-              <ul
-                className={cn(
-                  'grid w-full list-none grid-cols-1 justify-items-center gap-10 p-0 md:grid-cols-2 lg:grid-cols-3',
-                  isLoading && 'opacity-60 pointer-events-none',
-                )}
-                role='list'
-              >
-                {mainEventHits.map((hit) => (
-                  <li key={hit.objectID} className='w-full'>
-                    <EventHit hit={hit} fromEventsUrl={fromEventsUrl} />
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {eventsNbPages > 1 ? (
-              <div className='flex items-center justify-start gap-4 mt-16'>
-                <PaginationButton
-                  isDisabled={isFirstPage}
-                  onClick={() => goToPage(eventsPage - 1)}
-                  href='#'
-                  className='w-12 h-12'
-                >
-                  <Icon name='chevronLeft' size={24} />
-                </PaginationButton>
-
-                <PaginationButton
-                  isActive
-                  onClick={() => {}}
-                  href='#'
-                  className='w-12 h-12 bg-navy text-white'
-                >
-                  {eventsPage + 1}
-                </PaginationButton>
-
-                <PaginationButton
-                  isDisabled={isLastPage}
-                  onClick={() => goToPage(eventsPage + 1)}
-                  href='#'
-                  className='w-12 h-12'
-                >
-                  <Icon name='chevronRight' size={24} />
-                </PaginationButton>
-              </div>
-            ) : null}
-
-            <div
-              ref={eventsMobilePinEndRef}
-              className='pointer-events-none h-0 w-full shrink-0'
-              aria-hidden
+              // Keep the existing events URL contract (`q`, `p`,
+              // `eventCategories`, `eventLocations`) rather than exposing
+              // InstantSearch's default routing shape.
+              applyUrlState({
+                query:
+                  typeof index.query === 'string' &&
+                  index.query.trim().length > 0
+                    ? index.query
+                    : undefined,
+                refinementList:
+                  (index.refinementList as Record<string, string[]>) ??
+                  undefined,
+                page:
+                  typeof index.page === 'number' && index.page > 0
+                    ? index.page
+                    : undefined,
+              });
+            }}
+            future={{ preserveSharedStateOnUnmount: true }}
+          >
+            <AllEventsInstantSearchSync />
+            <Configure
+              filters={MAIN_EVENTS_TYPE_FILTER}
+              hitsPerPage={MAIN_EVENTS_GRID_HITS_PER_PAGE}
             />
-          </div>
-        </div>
+            <AllEventsInstantFilters
+              eventsMobilePinEndRef={eventsMobilePinEndRef}
+            />
+            <AllEventsInstantResults
+              initialEventHits={mainEventHits}
+              fromEventsUrl={fromEventsUrl}
+            />
+          </InstantSearch>
+        ) : (
+          <>
+            {/* Before hydration, show the loader-backed grid and the events
+                filter skeleton. The real filter facet values come from
+                `useRefinementList` after InstantSearch mounts. */}
+            <EventsFiltersViewport
+              onClearAllToUrl={clearAllFiltersFromUrl}
+              eventsMobilePinEndRef={eventsMobilePinEndRef}
+              urlState={urlState}
+              applyUrlState={applyUrlState}
+              categoryFacets={[]}
+              locationFacets={[]}
+            />
+            <AllEventsResultsLayout
+              eventHits={mainEventHits}
+              eventsNbPages={eventsNbPages}
+              eventsPage={eventsPage}
+              isFirstPage={isFirstPage}
+              isLastPage={isLastPage}
+              isLoading={false}
+              fromEventsUrl={fromEventsUrl}
+              goToPage={(nextPage) => {
+                applyUrlState({
+                  ...urlState,
+                  page: Math.max(0, nextPage),
+                });
+                const scrollTarget = document.querySelector(
+                  '.pagination-scroll-to',
+                );
+                if (scrollTarget) {
+                  scrollTarget.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              eventsMobilePinEndRef={eventsMobilePinEndRef}
+            />
+          </>
+        )}
       </div>
     </>
+  );
+}
+
+function mapRefinementItemsToFacets(
+  items: ReturnType<typeof useRefinementList>['items'],
+): EventFinderFacetItem[] {
+  // Existing events filter components are presentational and expect loader-like
+  // facet objects. Map InstantSearch refinement items into that same shape so
+  // desktop and mobile UI can stay unchanged.
+  return items.map((item) => ({
+    value: item.value,
+    label: item.label,
+    count: item.count,
+  }));
+}
+
+function AllEventsInstantFilters({
+  eventsMobilePinEndRef,
+}: Pick<Parameters<typeof EventsFiltersViewport>[0], 'eventsMobilePinEndRef'>) {
+  const { indexUiState, setIndexUiState } = useInstantSearch();
+  const categoryItems = useRefinementList({
+    attribute: EVENT_FACET_CATEGORIES,
+    limit: 50,
+  });
+  const locationItems = useRefinementList({
+    attribute: EVENT_FACET_LOCATIONS,
+    limit: 50,
+  });
+
+  // Events filter components still work with URL-shaped state because that is
+  // also what the active-chip and clear-all UI understand. Here the source of
+  // truth is InstantSearch's index state, converted into the same shape.
+  const urlState = {
+    query:
+      typeof indexUiState.query === 'string' &&
+      indexUiState.query.trim().length > 0
+        ? indexUiState.query
+        : undefined,
+    refinementList:
+      (indexUiState.refinementList as Record<string, string[]>) ?? undefined,
+    page:
+      typeof indexUiState.page === 'number' && indexUiState.page > 0
+        ? indexUiState.page
+        : undefined,
+  } satisfies EventsFinderUrlState;
+
+  const applyUrlState = (next: EventsFinderUrlState) => {
+    // Convert the events UI's URL-shaped update back into InstantSearch state.
+    // The parent `onStateChange` then writes the canonical URL, so filter clicks
+    // remain client-side without invoking the route loader.
+    const nextUiState = buildAllEventsInstantSearchUiState(next)[EVENTS_INDEX];
+    setIndexUiState((nextUiState ?? {}) as Record<string, unknown>);
+  };
+
+  return (
+    <EventsFiltersViewport
+      onClearAllToUrl={() => setIndexUiState({})}
+      eventsMobilePinEndRef={eventsMobilePinEndRef}
+      urlState={urlState}
+      applyUrlState={applyUrlState}
+      categoryFacets={mapRefinementItemsToFacets(categoryItems.items)}
+      locationFacets={mapRefinementItemsToFacets(locationItems.items)}
+    />
+  );
+}
+
+function AllEventsInstantResults({
+  initialEventHits,
+  fromEventsUrl,
+}: {
+  initialEventHits: ContentItemHit[];
+  fromEventsUrl: string;
+}) {
+  const { hits, isLoading } = useHydratedHitsFallback<ContentItemHit>({
+    initialHits: initialEventHits,
+  });
+  const { currentRefinement, nbPages, isFirstPage, isLastPage, refine } =
+    usePagination();
+
+  // The index response is sorted by Algolia ranking; events still need the
+  // existing date-desc presentation order used by the loader-backed first paint.
+  const eventHits = sortEventHitsByStartDateDesc(hits);
+
+  return (
+    <AllEventsResultsLayout
+      eventHits={eventHits}
+      eventsNbPages={nbPages}
+      eventsPage={currentRefinement}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
+      isLoading={isLoading}
+      fromEventsUrl={fromEventsUrl}
+      goToPage={(nextPage) => {
+        // Let InstantSearch own pagination after hydration; the route URL is
+        // synchronized by `onStateChange` above.
+        refine(Math.max(0, nextPage));
+        window.requestAnimationFrame(() => {
+          const scrollTarget = document.querySelector('.pagination-scroll-to');
+          scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }}
+    />
+  );
+}
+
+function AllEventsResultsLayout({
+  eventHits,
+  eventsNbPages,
+  eventsPage,
+  isFirstPage,
+  isLastPage,
+  isLoading,
+  fromEventsUrl,
+  goToPage,
+  eventsMobilePinEndRef,
+}: {
+  eventHits: ContentItemHit[];
+  eventsNbPages: number;
+  eventsPage: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+  isLoading: boolean;
+  fromEventsUrl: string;
+  goToPage: (nextPage: number) => void;
+  eventsMobilePinEndRef?: RefObject<HTMLDivElement | null>;
+}) {
+  return (
+    <div className='content-padding pt-16 md:pt-0'>
+      <div className='mx-auto min-h-88 w-full max-w-screen-content md:min-h-112'>
+        {eventHits.length === 0 && !isLoading ? null : (
+          <ul
+            className={cn(
+              'grid w-full list-none grid-cols-1 justify-items-center gap-10 p-0 md:grid-cols-2 lg:grid-cols-3',
+              isLoading && 'opacity-60 pointer-events-none',
+            )}
+            role='list'
+          >
+            {eventHits.map((hit) => (
+              <li key={hit.objectID} className='w-full'>
+                <EventHit hit={hit} fromEventsUrl={fromEventsUrl} />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {eventsNbPages > 1 ? (
+          <div className='flex items-center justify-start gap-4 mt-16'>
+            <PaginationButton
+              isDisabled={isFirstPage}
+              onClick={() => goToPage(eventsPage - 1)}
+              href='#'
+              className='w-12 h-12'
+            >
+              <Icon name='chevronLeft' size={24} />
+            </PaginationButton>
+
+            <PaginationButton
+              isActive
+              onClick={() => {}}
+              href='#'
+              className='w-12 h-12 bg-navy text-white'
+            >
+              {eventsPage + 1}
+            </PaginationButton>
+
+            <PaginationButton
+              isDisabled={isLastPage}
+              onClick={() => goToPage(eventsPage + 1)}
+              href='#'
+              className='w-12 h-12'
+            >
+              <Icon name='chevronRight' size={24} />
+            </PaginationButton>
+          </div>
+        ) : null}
+
+        <div
+          ref={eventsMobilePinEndRef}
+          className='pointer-events-none h-0 w-full shrink-0'
+          aria-hidden
+        />
+      </div>
+    </div>
   );
 }

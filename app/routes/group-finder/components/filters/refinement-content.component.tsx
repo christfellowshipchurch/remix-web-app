@@ -79,7 +79,7 @@ export const AllFiltersRefinementContent = ({
         <Icon
           name={meetingTypeUsesGlobeIcon(item.label) ? 'globe' : 'map'}
           size={16}
-          className={item.isRefined ? 'text-white' : 'text-[#222222]'}
+          className={item.isRefined ? 'text-white' : 'hover:text-white'}
         />
       )}
       {content.attribute === ('meetingDay' as const satisfies keyof GroupType)

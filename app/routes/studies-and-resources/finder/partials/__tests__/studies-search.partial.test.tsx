@@ -64,7 +64,6 @@ vi.mock('~/primitives/icon', () => ({
 
 vi.mock('~/routes/group-finder/partials/group-search.partial', () => ({
   ResponsiveConfigure: (props: {
-    ageInput: string;
     coordinates: { lat: number | null; lng: number | null } | null;
     hitsPerPageOverride?: number;
   }) => {

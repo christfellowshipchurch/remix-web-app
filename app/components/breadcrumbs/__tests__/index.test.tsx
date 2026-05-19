@@ -81,6 +81,28 @@ describe('Breadcrumbs', () => {
     expect(screen.getByText('Encoded segment')).toBeInTheDocument();
   });
 
+  it('does not link the current page segment', () => {
+    const testPath = '/test/path/segment';
+    render(
+      <MemoryRouter initialEntries={[testPath]}>
+        <Breadcrumbs />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole('link', { name: 'Test' })).toHaveAttribute(
+      'href',
+      '/test',
+    );
+    expect(screen.getByRole('link', { name: 'Path' })).toHaveAttribute(
+      'href',
+      '/test/path',
+    );
+    expect(
+      screen.queryByRole('link', { name: 'Segment' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('Segment')).toHaveAttribute('aria-current', 'page');
+  });
+
   it('capitalizes words in path segments', () => {
     const testPath = '/test-path/another-segment';
     render(

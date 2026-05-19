@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { InstantSearch, SearchBox, useHits } from 'react-instantsearch';
+import {
+  InstantSearch,
+  SearchBox,
+  useHits,
+  useInstantSearch,
+} from 'react-instantsearch';
 
 import Icon from '~/primitives/icon';
 
@@ -16,8 +21,8 @@ import {
   SearchFilters,
 } from '~/components/finders/search-filters';
 import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
-import { ResponsiveConfigure } from '~/routes/group-finder/partials/group-search.partial';
 import { ClassHitType } from '../../types';
+import { cn } from '~/lib/utils';
 
 import {
   groupClassTypeHits,
@@ -32,8 +37,16 @@ import {
   classFinderUrlStateToParams,
   parseClassFinderUrlState,
 } from '../components/class-finder-url-state';
+import { CLASSES_ALGOLIA_INDEX_NAME } from '../components/build-class-finder-algolia-search';
+import { ClassFinderFiltersSkeleton } from '../components/filters/class-finder-filters-skeleton.component';
 
-const INDEX_NAME = 'dev_Classes';
+/**
+ * Class finder data flow:
+ * 1. Loader fetches initial hits so first paint has real class cards.
+ * 2. After hydration, InstantSearch mounts with the real client Algolia search key.
+ * 3. Same-route query param changes do not re-run this loader (`route.tsx`); filters/search fetch client-side.
+ * 4. Grouping + 12-per-page pagination stay client-side (same as before).
+ */
 
 const CLASS_SEARCH_DESKTOP_FILTERS = [
   {
@@ -53,17 +66,20 @@ const CLASS_SEARCH_DESKTOP_FILTERS = [
   },
 ] satisfies SearchFilterDesktopItem[];
 
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
   return {
-    initialUiState: buildIndexInitialUiState(INDEX_NAME, urlState) ?? {},
+    // Snapshot the URL only for the first InstantSearch mount. Later filter
+    // changes are synchronized through `onStateChange` instead of remounting
+    // the whole search tree.
+    initialUiState:
+      buildIndexInitialUiState(CLASSES_ALGOLIA_INDEX_NAME, urlState) ?? {},
   };
 }
 
 export const ClassSearch = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<LoaderReturnType>();
+  const loaderData = useLoaderData<LoaderReturnType>();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classHits } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
@@ -76,13 +92,14 @@ export const ClassSearch = () => {
 
   const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
 
-  const searchClient = algoliasearch(
-    ALGOLIA_APP_ID,
-    ALGOLIA_SEARCH_API_KEY,
-    {},
+  const searchClient = useMemo(
+    () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const clearAllFiltersFromUrl = () => {
+    // Clear pending query debounce before resetting params; otherwise a delayed
+    // SearchBox write can restore the old query after Clear All.
     cancelDebounce();
     setSearchParams(classFinderUrlStateToParams(classFinderEmptyState), {
       replace: true,
@@ -91,6 +108,8 @@ export const ClassSearch = () => {
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    // Keep the route's existing URL schema as the share/deep-link contract while
+    // letting InstantSearch own interactive query/refinement state after mount.
     const urlState: ClassFinderUrlState = {
       ...parseClassFinderUrlState(searchParams),
       query: (indexUiState.query as string) ?? undefined,
@@ -112,123 +131,182 @@ export const ClassSearch = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
+  /** SSR/hydration: skeleton filters until react-instantsearch mounts (same pattern as group finder). */
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
+
   return (
     <div
       className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
       id='search'
     >
-      <InstantSearch
-        indexName={INDEX_NAME}
-        searchClient={searchClient}
-        initialUiState={
-          Object.keys(initial.initialUiState).length > 0
-            ? initial.initialUiState
-            : undefined
-        }
-        onStateChange={({ uiState, setUiState }) => {
-          // Controlled InstantSearch: commit widget/programmatic UI state to the
-          // helper + schedule search. Without this, URL can update while hits stay stale.
-          setUiState(uiState);
-          const indexState = uiState[INDEX_NAME];
-          if (indexState)
-            syncUrlFromUiState(indexState as Record<string, unknown>);
-        }}
-        future={{
-          preserveSharedStateOnUnmount: true,
-        }}
-      >
-        <ResponsiveConfigure
-          ageInput=''
-          coordinates={null}
-          hitsPerPageOverride={1000}
-        />
-        <div className='flex flex-col bg-white pt-4'>
-          <FinderStickyBar>
-            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
-              <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
-                <Icon
-                  name='searchAlt'
-                  className='text-neutral-default ml-3'
-                  size={16}
-                />
-                <SearchBox
-                  placeholder='Search'
-                  translations={{
-                    submitButtonTitle: 'Search',
-                    resetButtonTitle: 'Reset',
-                  }}
-                  classNames={{
-                    root: 'flex-grow',
-                    form: 'flex',
-                    input:
-                      'w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm',
-                    resetIcon: 'hidden',
-                    submit: 'hidden',
-                    loadingIcon: 'hidden',
-                  }}
-                />
-              </div>
+      <div className='flex flex-col bg-white pt-4'>
+        {filtersMounted ? (
+          <InstantSearch
+            indexName={CLASSES_ALGOLIA_INDEX_NAME}
+            searchClient={searchClient}
+            initialUiState={
+              Object.keys(initial.initialUiState).length > 0
+                ? initial.initialUiState
+                : undefined
+            }
+            onStateChange={({ uiState, setUiState }) => {
+              setUiState(uiState);
+              const indexState = uiState[CLASSES_ALGOLIA_INDEX_NAME];
+              if (indexState) {
+                syncUrlFromUiState(indexState as Record<string, unknown>);
+              }
+            }}
+            future={{
+              preserveSharedStateOnUnmount: true,
+            }}
+          >
+            <FinderStickyBar>
+              <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+                <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
+                  <Icon
+                    name='searchAlt'
+                    className='text-neutral-default ml-3'
+                    size={16}
+                  />
+                  <SearchBox
+                    placeholder='Search'
+                    translations={{
+                      submitButtonTitle: 'Search',
+                      resetButtonTitle: 'Reset',
+                    }}
+                    classNames={{
+                      root: 'flex-grow',
+                      form: 'flex',
+                      input:
+                        'w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm',
+                      resetIcon: 'hidden',
+                      submit: 'hidden',
+                      loadingIcon: 'hidden',
+                    }}
+                  />
+                </div>
 
-              <div className='lg:hidden w-full'>
-                <SearchFilters
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                  desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
-                  compactInlineFilterCount={2}
-                  groupedFooterCount
-                  renderMorePanel={({
-                    onHide,
-                    onClearAllToUrl,
-                    mobileBottomSheet,
-                    morePanelTitle,
-                  }) => (
-                    <AllClassFiltersPopup
-                      hideTopic
-                      hideLanguage
-                      showFormat
-                      onHide={onHide}
-                      onClearAllToUrl={onClearAllToUrl}
-                      mobileBottomSheet={mobileBottomSheet}
-                      bottomSheetTitle={morePanelTitle}
-                    />
-                  )}
-                />
-              </div>
+                <div className='lg:hidden w-full'>
+                  <SearchFilters
+                    onClearAllToUrl={clearAllFiltersFromUrl}
+                    desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
+                    compactInlineFilterCount={2}
+                    groupedFooterCount
+                    renderMorePanel={({
+                      onHide,
+                      onClearAllToUrl,
+                      mobileBottomSheet,
+                      morePanelTitle,
+                    }) => (
+                      <AllClassFiltersPopup
+                        hideTopic
+                        hideLanguage
+                        showFormat
+                        onHide={onHide}
+                        onClearAllToUrl={onClearAllToUrl}
+                        mobileBottomSheet={mobileBottomSheet}
+                        bottomSheetTitle={morePanelTitle}
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='hidden min-w-0 flex-1 lg:block'>
-                <HubsTagsRefinementList
-                  attribute='topic'
-                  wrapperClass='flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3'
+                <div className='hidden min-w-0 flex-1 lg:block'>
+                  <HubsTagsRefinementList
+                    attribute='topic'
+                    wrapperClass='flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3'
+                  />
+                </div>
+              </div>
+              <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
+            </FinderStickyBar>
+
+            <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+              <div className='max-w-screen-content mx-auto md:w-full'>
+                <ClassTypeGroupedInstantSearchResults
+                  initialHits={classHits}
+                  fromClassFinderUrl={fromClassFinderUrl}
                 />
               </div>
             </div>
-            <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
-          </FinderStickyBar>
+          </InstantSearch>
+        ) : (
+          <>
+            {/* SSR fallback: the loader already produced grouped class cards.
+                Hold those on screen and show filter skeletons until client-side
+                InstantSearch is ready to take over. */}
+            <FinderStickyBar>
+              <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+                <div
+                  className='h-[42px] w-full animate-pulse rounded-lg bg-neutral-200 md:w-[240px] lg:w-[250px] xl:w-[266px]'
+                  aria-hidden
+                />
+                <ClassFinderFiltersSkeleton />
+              </div>
+            </FinderStickyBar>
 
-          {/* CLASS SEARCH RESULTS */}
-          <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
-            <div className='max-w-screen-content mx-auto md:w-full'>
-              <ClassTypeGroupedResults
-                fromClassFinderUrl={fromClassFinderUrl}
-              />
+            <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+              <div className='max-w-screen-content mx-auto md:w-full'>
+                <ClassTypeGroupedResults
+                  hits={classHits}
+                  isLoading={false}
+                  fromClassFinderUrl={fromClassFinderUrl}
+                />
+              </div>
             </div>
-          </div>
-        </div>
-      </InstantSearch>
+          </>
+        )}
+      </div>
     </div>
   );
 };
 
 const ITEMS_PER_PAGE = 12;
 
-function ClassTypeGroupedResults({
+function ClassTypeGroupedInstantSearchResults({
+  initialHits,
   fromClassFinderUrl,
 }: {
+  initialHits: ClassHitType[];
   fromClassFinderUrl?: string;
 }) {
   const { items } = useHits<ClassHitType>();
+  const { status } = useInstantSearch();
+  const isLoading = status === 'loading' || status === 'stalled';
+
+  // Keep loader hits visible while the first hydrated InstantSearch request is
+  // pending. This preserves the SSR first paint and avoids a flash before
+  // client-side Algolia returns equivalent results.
+  const hits = isLoading && items.length === 0 ? initialHits : items;
+
+  return (
+    <ClassTypeGroupedResults
+      hits={hits}
+      isLoading={isLoading}
+      fromClassFinderUrl={fromClassFinderUrl}
+    />
+  );
+}
+
+function ClassTypeGroupedResults({
+  hits,
+  isLoading,
+  fromClassFinderUrl,
+}: {
+  hits: ClassHitType[];
+  isLoading: boolean;
+  fromClassFinderUrl?: string;
+}) {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const grouped = useMemo(() => groupClassTypeHits(items), [items]);
+  const grouped = useMemo(() => groupClassTypeHits(hits), [hits]);
+
+  // The class finder presents one card per class type group, not one raw
+  // Algolia record per session. Build synthetic cards from grouped hits before
+  // local pagination so the UI stays consistent with the pre-SSR behavior.
   const mappedHits = useMemo(
     () => syntheticHitsFromGrouped(grouped),
     [grouped],
@@ -238,12 +316,18 @@ function ClassTypeGroupedResults({
   const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
 
   useEffect(() => {
+    // Filter/search changes can shrink the synthetic group list. Resetting to
+    // page one prevents landing on an empty local page after the result set changes.
     setCurrentPage(1);
   }, [mappedHits.length]);
 
   return (
     <>
-      <div className='min-h-[320px]'>
+      <div
+        className={cn('min-h-[320px] transition-opacity', {
+          'opacity-50 pointer-events-none': isLoading,
+        })}
+      >
         <FinderResultsStats hitCount={mappedHits.length} />
 
         <div className='flex w-full items-center justify-center md:items-start md:justify-start'>

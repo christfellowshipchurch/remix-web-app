@@ -1,25 +1,34 @@
-import { useMemo } from 'react';
-import { Configure, InstantSearch, useHits } from 'react-instantsearch';
+import { useEffect, useMemo, useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import {
+  Configure,
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+} from 'react-instantsearch';
 
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
 import { SearchFilters } from '~/components/finders/search-filters';
 import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
+import { cn } from '~/lib/utils';
+
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
+import { ClassSingleFiltersSkeleton } from '../components/filters/class-single-filters-skeleton.component';
 import {
   CLASS_SINGLE_UPCOMING_INDEX_NAME,
   useClassSingleUpcomingInstantSearch,
 } from '../hooks/use-class-single-upcoming-instant-search';
 import type { ClassHitType } from '../../types';
+import type { LoaderReturnType } from '../loader';
 import OnDemandCard from '../components/on-demand-card.component';
-import { ClassSingleGroupsSection } from './groups.partial';
+import {
+  ClassSingleGroupsSection,
+  ClassSingleInitialGroupsSection,
+} from './groups.partial';
+import { CLASS_SINGLE_UPCOMING_MAX_HITS } from '../components/build-class-single-algolia-search';
 
 const LOCATION_FILTERS_HINT = 'Location filters are applied.';
-
-/**
- * One Algolia response loads enough hits for carousel slides + geo/virtual ordering (Algolia max per request).
- */
-const CLASS_SINGLE_UPCOMING_MAX_HITS = 1000;
 
 function parseStartMs(hit: ClassHitType): number {
   const t = new Date(hit.startDate).getTime();
@@ -41,7 +50,8 @@ function geoDistanceMeters(hit: ClassHitType): number {
 }
 
 /**
- * Without geo: soonest `startDate` first only. With geo: in-person by distance then date; Virtual last.
+ * Without geo: soonest `startDate` first. With geo: in-person by distance then date; Virtual last.
+ * Sorting stays client-side; loader supplies hits (with `_rankingInfo` when lat/lng are in the URL).
  */
 function sortUpcomingSessionHitsForDisplay(
   items: ClassHitType[],
@@ -70,8 +80,10 @@ function sortUpcomingSessionHitsForDisplay(
 }
 
 /**
- * One InstantSearch for class-single upcoming sessions (mobile + desktop share URL, geo, and refinements).
- * `ClassSingleGroupsSection` is a nested Algolia `Index` (`dev_Groups`) that mirrors the same refinements + geo via `Configure`.
+ * Class-single upcoming sessions:
+ * - Loader prefetches carousel hits for first paint.
+ * - After hydration, real client InstantSearch handles filters/search/geo.
+ * - Same-page URL changes do not re-run the loader (see `class-finder_.$path.tsx`).
  */
 export function ClassSingleUpcomingSearch({
   classHeroCoverImageUri,
@@ -82,91 +94,113 @@ export function ClassSingleUpcomingSearch({
   classType: string;
   onDemandUrl: string;
 }) {
+  const { upcomingHits, groupHits } = useLoaderData<LoaderReturnType>();
   const upcoming = useClassSingleUpcomingInstantSearch();
 
+  /** SSR/hydration: skeleton filters until react-instantsearch mounts. */
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
+
   return (
-    <InstantSearch
-      indexName={CLASS_SINGLE_UPCOMING_INDEX_NAME}
-      searchClient={upcoming.searchClient}
-      initialUiState={upcoming.initialUiState}
-      onStateChange={upcoming.onStateChange}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-    >
-      <ResponsiveClassesSingleConfigure
-        classesIndexClassType={classType}
-        classUrl={upcoming.classUrl}
-        coordinates={upcoming.coordinates}
-      />
-
-      <div className='flex w-full flex-col pagination-scroll-to' id='search'>
-        <div className='flex min-w-0 w-full flex-col max-md:pt-6'>
-          <FinderStickyBar className='max-md:shadow-none'>
-            <h2 className='w-full pb-2 text-[28px] font-extrabold md:hidden'>
-              Filter Sessions
-            </h2>
-            <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-3 md:py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
-              <div className='hidden w-fit shrink-0 items-center gap-4 md:flex'>
-                <h2 className='w-fit min-w-[260px] text-[28px] font-extrabold'>
-                  Filter Sessions
-                </h2>
-                <div className='hidden h-full w-px bg-text-secondary lg:block' />
-              </div>
-              <div className='min-w-0 flex-1'>
-                <SearchFilters
-                  onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
-                  desktopFilters={upcoming.desktopFilters}
-                  compactInlineFilterCount={2}
-                  isFilterPillSupplementallyActive={
-                    upcoming.isFilterPillSupplementallyActive
-                  }
-                />
-              </div>
-            </div>
-            <ActiveFilters
-              onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
-              additionalFiltersActive={upcoming.geoFiltersActive}
-              additionalFiltersHint={LOCATION_FILTERS_HINT}
+    <div className='flex w-full flex-col pagination-scroll-to' id='search'>
+      <div className='flex min-w-0 w-full flex-col max-md:pt-6'>
+        {filtersMounted ? (
+          <InstantSearch
+            indexName={CLASS_SINGLE_UPCOMING_INDEX_NAME}
+            searchClient={upcoming.searchClient}
+            initialUiState={upcoming.initialUiState}
+            onStateChange={upcoming.onStateChange}
+            future={{
+              preserveSharedStateOnUnmount: true,
+            }}
+          >
+            <ClassSingleUpcomingConfigure
+              classesIndexClassType={classType}
+              classUrl={upcoming.classUrl}
+              coordinates={upcoming.coordinates}
             />
-          </FinderStickyBar>
 
-          <div className='flex w-full flex-col bg-gray py-8 pl-5 md:pl-12 lg:pl-18 lg:pr-18 md:pt-12 md:pb-20'>
-            <div className='mx-auto w-full max-w-screen-content'>
-              <ClassSingleUpcomingResults
-                geoActive={upcoming.geoFiltersActive}
-              />
-            </div>
-
-            {/* On Demand Section*/}
-            <div className='mx-auto mt-8 flex w-full max-w-screen-content flex-col items-center gap-4'>
-              {onDemandUrl && (
-                <div className='mr-auto flex w-full max-w-[1296px] flex-col gap-4 border-t border-neutral-lighter py-16'>
-                  <h2 className='w-full text-2xl leading-[1.4] font-extrabold'>
-                    Take It Anytime
+            <FinderStickyBar className='max-md:shadow-none'>
+              <h2 className='w-full pb-2 text-[28px] font-extrabold md:hidden'>
+                Filter Sessions
+              </h2>
+              <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-3 md:py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
+                <div className='hidden w-fit shrink-0 items-center gap-4 md:flex'>
+                  <h2 className='w-fit min-w-[260px] text-[28px] font-extrabold'>
+                    Filter Sessions
                   </h2>
-                  <OnDemandCard
-                    title={classType}
-                    image={classHeroCoverImageUri}
-                    link={onDemandUrl}
+                  <div className='hidden h-full w-px bg-text-secondary lg:block' />
+                </div>
+                <div className='min-w-0 flex-1'>
+                  <SearchFilters
+                    onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
+                    desktopFilters={upcoming.desktopFilters}
+                    compactInlineFilterCount={2}
+                    isFilterPillSupplementallyActive={
+                      upcoming.isFilterPillSupplementallyActive
+                    }
                   />
                 </div>
-              )}
-
-              <ClassSingleGroupsSection
-                coordinates={upcoming.coordinates}
-                classUrl={upcoming.classUrl}
-                classesIndexClassType={classType}
+              </div>
+              <ActiveFilters
+                onClearAllToUrl={upcoming.clearAllFiltersFromUrl}
+                additionalFiltersActive={upcoming.geoFiltersActive}
+                additionalFiltersHint={LOCATION_FILTERS_HINT}
               />
-            </div>
-          </div>
-        </div>
+            </FinderStickyBar>
+
+            <ClassSingleUpcomingBody
+              classHeroCoverImageUri={classHeroCoverImageUri}
+              classType={classType}
+              onDemandUrl={onDemandUrl}
+              initialUpcomingHits={upcomingHits}
+              initialGroupHits={groupHits}
+              classUrl={upcoming.classUrl}
+              geoActive={upcoming.geoFiltersActive}
+              coordinates={upcoming.coordinates}
+            />
+          </InstantSearch>
+        ) : (
+          <>
+            {/* First paint uses the loader's upcoming/group hits. Filters are
+                skeletonized until InstantSearch mounts so the carousel content
+                stays visible during hydration. */}
+            <FinderStickyBar className='max-md:shadow-none'>
+              <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-3 md:py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
+                <h2 className='w-full pb-2 text-[28px] font-extrabold md:hidden'>
+                  Filter Sessions
+                </h2>
+                <div className='hidden w-fit shrink-0 items-center gap-4 md:flex'>
+                  <h2 className='w-fit min-w-[260px] text-[28px] font-extrabold'>
+                    Filter Sessions
+                  </h2>
+                  <div className='hidden h-full w-px bg-text-secondary lg:block' />
+                </div>
+                <ClassSingleFiltersSkeleton />
+              </div>
+            </FinderStickyBar>
+
+            <ClassSingleUpcomingBody
+              classHeroCoverImageUri={classHeroCoverImageUri}
+              classType={classType}
+              onDemandUrl={onDemandUrl}
+              initialUpcomingHits={upcomingHits}
+              initialGroupHits={groupHits}
+              classUrl={upcoming.classUrl}
+              geoActive={upcoming.geoFiltersActive}
+              coordinates={upcoming.coordinates}
+              useInitialHitsOnly
+            />
+          </>
+        )}
       </div>
-    </InstantSearch>
+    </div>
   );
 }
 
-export const ResponsiveClassesSingleConfigure = ({
+function ClassSingleUpcomingConfigure({
   classesIndexClassType,
   classUrl,
   coordinates,
@@ -178,7 +212,7 @@ export const ResponsiveClassesSingleConfigure = ({
     lat: number | null;
     lng: number | null;
   } | null;
-}) => {
+}) {
   const trimmed = classesIndexClassType.trim();
   const classTypeFilter = trimmed
     ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
@@ -186,6 +220,9 @@ export const ResponsiveClassesSingleConfigure = ({
 
   return (
     <Configure
+      // Force Configure to re-register when the class page, class type, or geo
+      // target changes. These values influence Algolia search parameters but
+      // are not all represented in InstantSearch uiState.
       key={`${classUrl}-${trimmed}-${coordinates?.lat ?? ''}-${coordinates?.lng ?? ''}`}
       hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
       filters={classTypeFilter}
@@ -199,14 +236,118 @@ export const ResponsiveClassesSingleConfigure = ({
       getRankingInfo={true}
     />
   );
-};
+}
 
-function ClassSingleUpcomingResults({ geoActive }: { geoActive: boolean }) {
+function ClassSingleUpcomingBody({
+  classHeroCoverImageUri,
+  classType,
+  onDemandUrl,
+  initialUpcomingHits,
+  initialGroupHits,
+  classUrl,
+  geoActive,
+  coordinates,
+  useInitialHitsOnly = false,
+}: {
+  classHeroCoverImageUri: string;
+  classType: string;
+  onDemandUrl: string;
+  initialUpcomingHits: ClassHitType[];
+  initialGroupHits: LoaderReturnType['groupHits'];
+  classUrl: string;
+  geoActive: boolean;
+  coordinates: { lat: number | null; lng: number | null } | null;
+  useInitialHitsOnly?: boolean;
+}) {
+  return (
+    <div className='flex w-full flex-col bg-gray py-8 pl-5 md:pl-12 lg:pl-18 lg:pr-18 md:pt-12 md:pb-20'>
+      <div className='mx-auto w-full max-w-screen-content'>
+        {useInitialHitsOnly ? (
+          <>
+            {/* Pre-hydration branch: avoid reading InstantSearch hooks before the
+                provider is mounted. The loader data is already sorted for first paint. */}
+            <ClassSingleUpcomingResults
+              hits={initialUpcomingHits}
+              geoActive={geoActive}
+              isLoading={false}
+            />
+          </>
+        ) : (
+          <ClassSingleUpcomingInstantSearchResults
+            initialHits={initialUpcomingHits}
+            geoActive={geoActive}
+          />
+        )}
+      </div>
+
+      <div className='mx-auto mt-8 flex w-full max-w-screen-content flex-col items-center gap-4'>
+        {onDemandUrl && (
+          <div className='mr-auto flex w-full max-w-[1296px] flex-col gap-4 border-t border-neutral-lighter py-16'>
+            <h2 className='w-full text-2xl leading-[1.4] font-extrabold'>
+              Take It Anytime
+            </h2>
+            <OnDemandCard
+              title={classType}
+              image={classHeroCoverImageUri}
+              link={onDemandUrl}
+            />
+          </div>
+        )}
+
+        {useInitialHitsOnly ? (
+          <ClassSingleInitialGroupsSection
+            groupHits={initialGroupHits}
+            classUrl={classUrl}
+          />
+        ) : (
+          <ClassSingleGroupsSection
+            initialGroupHits={initialGroupHits}
+            classUrl={classUrl}
+            classesIndexClassType={classType}
+            coordinates={coordinates}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ClassSingleUpcomingInstantSearchResults({
+  initialHits,
+  geoActive,
+}: {
+  initialHits: ClassHitType[];
+  geoActive: boolean;
+}) {
   const { items } = useHits<ClassHitType>();
+  const { status } = useInstantSearch();
+  const isLoading = status === 'loading' || status === 'stalled';
 
+  // Keep loader sessions visible until the first client-side Algolia response
+  // arrives, then switch to hydrated results for filter/search changes.
+  const hits = isLoading && items.length === 0 ? initialHits : items;
+
+  return (
+    <ClassSingleUpcomingResults
+      hits={hits}
+      geoActive={geoActive}
+      isLoading={isLoading}
+    />
+  );
+}
+
+function ClassSingleUpcomingResults({
+  hits,
+  geoActive,
+  isLoading,
+}: {
+  hits: ClassHitType[];
+  geoActive: boolean;
+  isLoading: boolean;
+}) {
   const ordered = useMemo(
-    () => sortUpcomingSessionHitsForDisplay(items, geoActive),
-    [items, geoActive],
+    () => sortUpcomingSessionHitsForDisplay(hits, geoActive),
+    [hits, geoActive],
   );
 
   const carouselResetKey = ordered.map((h) => h.objectID).join('|');
@@ -214,14 +355,27 @@ function ClassSingleUpcomingResults({ geoActive }: { geoActive: boolean }) {
   return (
     <div
       data-upcoming-sessions-results
-      className='scroll-mt-[100px] w-full max-w-[1296px] mr-auto'
+      className={cn(
+        'scroll-mt-[100px] w-full max-w-[1296px] transition-opacity',
+        { 'opacity-50 pointer-events-none': isLoading },
+      )}
     >
       <h3 className='pt-2 text-2xl font-extrabold mb-6 md:pt-4'>
         Join a Class
       </h3>
-      <div className='flex w-full justify-center md:justify-start'>
-        <UpcomingSessionsCarousel hits={ordered} resetKey={carouselResetKey} />
-      </div>
+      {ordered.length === 0 ? (
+        <p className='text-text-secondary pb-4'>
+          No upcoming sessions match your filters. Try adjusting location or
+          format.
+        </p>
+      ) : (
+        <div className='flex w-full justify-center md:justify-start'>
+          <UpcomingSessionsCarousel
+            hits={ordered}
+            resetKey={carouselResetKey}
+          />
+        </div>
+      )}
     </div>
   );
 }
