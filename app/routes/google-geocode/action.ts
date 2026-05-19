@@ -6,6 +6,7 @@ import {
 } from '~/lib/.server/error-types';
 
 export type LocationSearchCoordinatesType = {
+  requestId?: string;
   results: [
     {
       geometry: {
@@ -20,10 +21,14 @@ export type LocationSearchCoordinatesType = {
   error: string | undefined | null;
 };
 export const action: ActionFunction = async ({ request }) => {
+  let requestId: string | undefined;
+
   try {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     const formData = Object.fromEntries(await request.formData());
     const address = formData.address as string;
+    requestId =
+      typeof formData.requestId === 'string' ? formData.requestId : undefined;
 
     const response = await fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -39,22 +44,25 @@ export const action: ActionFunction = async ({ request }) => {
 
     if (data.status === 'ZERO_RESULTS') {
       return Response.json(
-        { data, error: 'Zipcode does not exist, please try again' },
+        { data, error: 'Zipcode does not exist, please try again', requestId },
         { status: 400 },
       );
     }
 
-    return Response.json(data);
+    return Response.json({ ...data, requestId });
   } catch (error) {
     if (
       error instanceof AuthenticationError ||
       error instanceof EncryptionError ||
       error instanceof RockAPIError
     ) {
-      return Response.json({ error: error.message }, { status: 400 });
+      return Response.json(
+        { error: error.message, requestId },
+        { status: 400 },
+      );
     }
     return Response.json(
-      { error: 'An unexpected error occurred' },
+      { error: 'An unexpected error occurred', requestId },
       { status: 500 },
     );
   }
