@@ -1,6 +1,11 @@
 import { cn } from '~/lib/utils';
 import { parseRockKeyValueList } from '~/lib/utils';
-import { ContentBlockData, ContentType, PageBuilderSection, SectionType } from '../types';
+import {
+  ContentBlockData,
+  ContentType,
+  PageBuilderSection,
+  SectionType,
+} from '../types';
 
 /**
  * Maps content channel IDs to their corresponding content types

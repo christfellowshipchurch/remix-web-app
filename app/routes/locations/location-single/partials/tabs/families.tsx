@@ -6,7 +6,9 @@ import {
 } from './tabs.data';
 
 export const ForFamilies = ({ isSpanish }: { isSpanish?: boolean }) => {
-  const children = isSpanish ? spanishFamiliesMappedChildren : familiesMappedChildren;
+  const children = isSpanish
+    ? spanishFamiliesMappedChildren
+    : familiesMappedChildren;
   const backgrounds = getCarouselCollectionBackgrounds(children);
 
   return (
