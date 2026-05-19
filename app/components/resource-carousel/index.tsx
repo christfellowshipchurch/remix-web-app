@@ -175,7 +175,8 @@ export const CardCarousel = ({
           /* Reserve space for absolutely positioned dots/arrows (parent had ~0 in-flow height on mobile → clipped by overflow-hidden). */
           'min-h-[4.5rem]',
           {
-            'flex md:hidden': resources.length < 4,
+            'flex md:hidden': resources.length < 4 && resources.length > 1,
+            hidden: resources.length < 2,
           },
         )}
       >
