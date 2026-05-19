@@ -7,10 +7,7 @@ import {
   useInstantSearch,
 } from 'react-instantsearch';
 
-import {
-  escapeAlgoliaFilterString,
-  type FinderGeoCoordinates,
-} from '~/components/finders/finder-algolia.utils';
+import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { createSearchClient } from '~/lib/create-search-client';
 import {
   GROUPS_ALGOLIA_INDEX_NAME,
@@ -19,29 +16,13 @@ import {
 
 import { ClassSingleGroupsCarousel } from '../components/class-single-groups-carousel.component';
 import type { LoaderReturnType } from '../loader';
+import { CLASS_SINGLE_UPCOMING_MAX_HITS } from '../components/build-class-single-algolia-search';
 
-const CLASS_SINGLE_GROUPS_MAX_HITS = 1000;
+type ClassSingleInitialGroupsSectionProps = {
+  groupHits: GroupType[];
+  classUrl: string;
+};
 
-/**
- * `classesIndexClassType` must match `dev_Classes` / `dev_Groups` attribute `classType`
- * (the class-type value on records), not necessarily the URL segment.
- */
-function composeGroupsFilters(
-  classesIndexClassType: string,
-  mirroredFacetFilters: string | undefined,
-): string | undefined {
-  const trimmed = classesIndexClassType.trim();
-  const classTypeFilter = trimmed
-    ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
-    : null;
-  if (classTypeFilter && mirroredFacetFilters) {
-    return `${classTypeFilter} AND ${mirroredFacetFilters}`;
-  }
-  if (classTypeFilter) return classTypeFilter;
-  return mirroredFacetFilters;
-}
-
-/** Maps class session format to `dev_Groups` `meetingType` facet values. */
 function classFormatToGroupMeetingType(format: string): string | null {
   if (format === 'Virtual') return 'Virtual';
   if (format === 'In-Person') return 'In Person';
@@ -54,15 +35,14 @@ function classLanguageToGroupLanguage(lang: string): string | null {
   return null;
 }
 
-/**
- * Maps `dev_Classes` refinement facets (Filter Sessions) to `dev_Groups` Algolia filter string.
- * `campus` on classes maps to `campusName` on groups.
- */
 function mirrorGroupsFacets(
   refinementList: Record<string, string[]>,
 ): string | undefined {
   const parts: string[] = [];
 
+  // The visible filters operate on class-session attributes, while this section
+  // queries the groups index. Translate the overlapping class refinements into
+  // equivalent group filters so "Join a Group" follows the same user intent.
   const campuses = (refinementList.campus ?? []).filter(
     (v) => v != null && String(v).trim() !== '',
   );
@@ -114,13 +94,49 @@ function mirrorGroupsFacets(
   return parts.join(' AND ');
 }
 
-function ClassSingleGroupsHits({ backUrl }: { backUrl: string }) {
-  const { items } = useHits<GroupType>();
-  const resetKey = items.map((h) => h.objectID).join('|');
+function composeGroupsFilters(
+  classesIndexClassType: string,
+  mirroredFacetFilters: string | undefined,
+): string | undefined {
+  const trimmed = classesIndexClassType.trim();
 
-  if (items.length === 0) {
+  // Related groups should stay scoped to the class type first, then optionally
+  // mirror format/campus/language filters from the sessions search.
+  const classTypeFilter = trimmed
+    ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
+    : null;
+  if (classTypeFilter && mirroredFacetFilters) {
+    return `${classTypeFilter} AND ${mirroredFacetFilters}`;
+  }
+  if (classTypeFilter) return classTypeFilter;
+  return mirroredFacetFilters;
+}
+
+/**
+ * First-paint related groups from the loader. Hydrated filtering uses `ClassSingleGroupsSection`.
+ */
+export function ClassSingleInitialGroupsSection({
+  groupHits,
+  classUrl,
+}: ClassSingleInitialGroupsSectionProps) {
+  return (
+    <ClassSingleGroupsCarouselSection
+      groupHits={groupHits}
+      classUrl={classUrl}
+    />
+  );
+}
+
+function ClassSingleGroupsCarouselSection({
+  groupHits,
+  classUrl,
+}: ClassSingleInitialGroupsSectionProps) {
+  if (groupHits.length === 0) {
     return null;
   }
+
+  const backUrl = `/class-finder/${classUrl}`;
+  const resetKey = groupHits.map((h) => h.objectID).join('|');
 
   return (
     <div className='w-full max-w-[1296px] mr-auto py-16 border-t border-neutral-lighter'>
@@ -130,7 +146,7 @@ function ClassSingleGroupsHits({ backUrl }: { backUrl: string }) {
         </h2>
         <div className='flex w-full justify-center md:justify-start'>
           <ClassSingleGroupsCarousel
-            hits={items}
+            hits={groupHits}
             resetKey={resetKey}
             backUrl={backUrl}
           />
@@ -140,17 +156,39 @@ function ClassSingleGroupsHits({ backUrl }: { backUrl: string }) {
   );
 }
 
-function ClassSingleGroupsAlgolia({
+function ClassSingleGroupsHits({
+  initialGroupHits,
+  classUrl,
+}: {
+  initialGroupHits: GroupType[];
+  classUrl: string;
+}) {
+  const { items } = useHits<GroupType>();
+  const { status } = useInstantSearch();
+  const isLoading = status === 'loading' || status === 'stalled';
+
+  // This nested groups search starts after the parent sessions search has
+  // mounted. Show the loader-provided groups until the client-side groups query
+  // returns, matching the first paint while filters hydrate.
+  const hits = isLoading && items.length === 0 ? initialGroupHits : items;
+
+  return (
+    <ClassSingleGroupsCarouselSection groupHits={hits} classUrl={classUrl} />
+  );
+}
+
+export function ClassSingleGroupsSection({
+  initialGroupHits,
   classUrl,
   classesIndexClassType,
-  mirroredFacetFilters,
-  aroundLatLng,
+  coordinates,
 }: {
+  initialGroupHits: GroupType[];
   classUrl: string;
   classesIndexClassType: string;
-  mirroredFacetFilters: string | undefined;
-  aroundLatLng: string | undefined;
+  coordinates: { lat: number | null; lng: number | null } | null;
 }) {
+  const { indexUiState } = useInstantSearch();
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
     useLoaderData<LoaderReturnType>();
 
@@ -159,17 +197,37 @@ function ClassSingleGroupsAlgolia({
     [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
-  const backUrl = `/class-finder/${classUrl}`;
-
-  const configureFilters = useMemo(
-    () => composeGroupsFilters(classesIndexClassType, mirroredFacetFilters),
-    [classesIndexClassType, mirroredFacetFilters],
+  const refinementList = useMemo(
+    () => (indexUiState.refinementList ?? {}) as Record<string, string[]>,
+    [indexUiState.refinementList],
   );
 
-  const configureKey = `${classesIndexClassType}|${configureFilters ?? ''}|${aroundLatLng ?? ''}`;
+  // Read the parent sessions InstantSearch state and use it to configure a
+  // separate groups InstantSearch instance. The two indexes do not share schema,
+  // so the mapping happens via `mirrorGroupsFacets` instead of reusing uiState.
+  const configureFilters = useMemo(
+    () =>
+      composeGroupsFilters(
+        classesIndexClassType,
+        mirrorGroupsFacets(refinementList),
+      ),
+    [classesIndexClassType, refinementList],
+  );
+
+  const aroundLatLng =
+    coordinates != null &&
+    coordinates.lat != null &&
+    coordinates.lng != null &&
+    !Number.isNaN(coordinates.lat) &&
+    !Number.isNaN(coordinates.lng)
+      ? `${coordinates.lat}, ${coordinates.lng}`
+      : undefined;
 
   return (
     <InstantSearch
+      // This is an intentionally separate InstantSearch instance for the groups
+      // index. It does not sync to URL; it mirrors the parent session filters
+      // through Configure so group results remain contextual to the class page.
       key={`${classUrl}|${classesIndexClassType}`}
       indexName={GROUPS_ALGOLIA_INDEX_NAME}
       searchClient={searchClient}
@@ -183,8 +241,8 @@ function ClassSingleGroupsAlgolia({
       }}
     >
       <Configure
-        key={configureKey}
-        hitsPerPage={CLASS_SINGLE_GROUPS_MAX_HITS}
+        key={`${classesIndexClassType}|${configureFilters ?? ''}|${aroundLatLng ?? ''}`}
+        hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
         query=''
         filters={configureFilters}
         aroundLatLng={aroundLatLng}
@@ -192,53 +250,10 @@ function ClassSingleGroupsAlgolia({
         aroundLatLngViaIP={false}
         getRankingInfo={aroundLatLng != null}
       />
-      <ClassSingleGroupsHits backUrl={backUrl} />
+      <ClassSingleGroupsHits
+        initialGroupHits={initialGroupHits}
+        classUrl={classUrl}
+      />
     </InstantSearch>
-  );
-}
-
-export type ClassSingleGroupsSectionProps = {
-  coordinates: FinderGeoCoordinates;
-  classUrl: string;
-  /** `classType` from the current `dev_Classes` hit — used for Groups `classType` facet filter. */
-  classesIndexClassType: string;
-};
-
-/**
- * Reads Filter Sessions state from the parent `dev_Classes` InstantSearch, then runs a separate
- * groups `InstantSearch` with mirrored `Configure` (nested `Index` was unreliable: helper can stay null so hits never mount).
- */
-export function ClassSingleGroupsSection({
-  coordinates,
-  classUrl,
-  classesIndexClassType,
-}: ClassSingleGroupsSectionProps) {
-  const { indexUiState } = useInstantSearch();
-  const refinementList = useMemo(
-    () => (indexUiState.refinementList ?? {}) as Record<string, string[]>,
-    [indexUiState.refinementList],
-  );
-
-  const mirroredFacetFilters = useMemo(
-    () => mirrorGroupsFacets(refinementList),
-    [refinementList],
-  );
-
-  const aroundLatLng =
-    coordinates != null &&
-    coordinates.lat != null &&
-    coordinates.lng != null &&
-    !Number.isNaN(coordinates.lat) &&
-    !Number.isNaN(coordinates.lng)
-      ? `${coordinates.lat}, ${coordinates.lng}`
-      : undefined;
-
-  return (
-    <ClassSingleGroupsAlgolia
-      classUrl={classUrl}
-      classesIndexClassType={classesIndexClassType}
-      mirroredFacetFilters={mirroredFacetFilters}
-      aroundLatLng={aroundLatLng}
-    />
   );
 }

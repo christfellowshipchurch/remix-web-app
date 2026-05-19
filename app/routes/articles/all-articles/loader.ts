@@ -7,24 +7,18 @@ import { AuthenticationError } from '~/lib/.server/error-types';
 import type { ContentItemHit } from '~/routes/search/types';
 
 import {
-  ALL_ARTICLES_CATEGORY_FACET,
   ALL_ARTICLES_INDEX_NAME,
   ALL_ARTICLES_TYPE_FILTER,
-} from './all-articles-page';
+} from './all-articles.constants';
 import { parseAllArticlesUrlState } from './all-articles-url-state';
 
 /** Matches largest grid column count in `all-articles.partial.tsx`. */
 const ALL_ARTICLES_LOADER_HITS_PER_PAGE = 12;
 
-export type ArticleCategoryFacetItem = {
-  value: string;
-  label: string;
-  count: number;
-};
-
 export type AllArticlesReturnType = {
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
   initialArticleHits: ContentItemHit[];
-  articleCategoryFacets: ArticleCategoryFacetItem[];
   articlesNbPages: number;
   articlesPage: number;
 };
@@ -43,21 +37,6 @@ function refinementListToFacetFilters(
     groups.push(values.map((v) => `${attr}:"${escapeAlgoliaFilterString(v)}"`));
   }
   return groups.length > 0 ? groups : undefined;
-}
-
-function mapFacetRecord(
-  facets: Record<string, Record<string, number>> | undefined,
-  attribute: string,
-): ArticleCategoryFacetItem[] {
-  const slice = facets?.[attribute];
-  if (!slice) return [];
-  return Object.entries(slice)
-    .map(([value, count]) => ({
-      value,
-      label: value,
-      count,
-    }))
-    .sort((a, b) => b.count - a.count);
 }
 
 function buildArticlesSearchParams(
@@ -103,7 +82,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   let initialArticleHits: ContentItemHit[] = [];
-  let articleCategoryFacets: ArticleCategoryFacetItem[] = [];
   let articlesNbPages = 0;
 
   const url = new URL(request.url);
@@ -112,38 +90,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const client = algoliasearch(appId, searchApiKey, {});
 
   try {
-    const [hitsRes, facetRes] = await Promise.all([
-      client.searchSingleIndex({
-        indexName: ALL_ARTICLES_INDEX_NAME,
-        searchParams: buildArticlesSearchParams(urlState),
-      }),
-      client.searchSingleIndex({
-        indexName: ALL_ARTICLES_INDEX_NAME,
-        searchParams: {
-          filters: ALL_ARTICLES_TYPE_FILTER,
-          distinct: true,
-          hitsPerPage: 0,
-          facets: [ALL_ARTICLES_CATEGORY_FACET],
-          maxValuesPerFacet: 50,
-        },
-      }),
-    ]);
+    const hitsRes = await client.searchSingleIndex({
+      indexName: ALL_ARTICLES_INDEX_NAME,
+      searchParams: buildArticlesSearchParams(urlState),
+    });
 
     initialArticleHits = (hitsRes.hits ?? []).map(
       (h) => h as unknown as ContentItemHit,
     );
     articlesNbPages = hitsRes.nbPages ?? 0;
-    articleCategoryFacets = mapFacetRecord(
-      facetRes.facets as Record<string, Record<string, number>> | undefined,
-      ALL_ARTICLES_CATEGORY_FACET,
-    );
   } catch (error) {
     console.error('[articles/all-articles] Algolia loader fetch failed', error);
   }
 
   return Response.json({
+    ALGOLIA_APP_ID: appId,
+    ALGOLIA_SEARCH_API_KEY: searchApiKey,
     initialArticleHits,
-    articleCategoryFacets,
     articlesNbPages,
     articlesPage,
   } satisfies AllArticlesReturnType);

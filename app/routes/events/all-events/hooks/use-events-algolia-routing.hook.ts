@@ -20,12 +20,16 @@ export function useEventsAlgoliaRouting() {
 
   const applyUrlState = useCallback(
     (next: EventsFinderUrlState) => {
-      setSearchParams(eventsFinderUrlStateToParams(next), {
+      const nextParams = eventsFinderUrlStateToParams(next);
+      if (nextParams.toString() === searchParams.toString()) {
+        return;
+      }
+      setSearchParams(nextParams, {
         replace: true,
         preventScrollReset: true,
       });
     },
-    [setSearchParams],
+    [searchParams, setSearchParams],
   );
 
   const clearAllFiltersFromUrl = () => {

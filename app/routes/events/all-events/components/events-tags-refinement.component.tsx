@@ -8,7 +8,7 @@ import {
   EVENTS_INDEX,
   MAIN_EVENTS_GRID_HITS_PER_PAGE,
   MAIN_EVENTS_TYPE_FILTER,
-} from '../all-events-page';
+} from '../all-events.constants';
 
 /** Re-export for any remaining imports of the index name / filters. */
 export {

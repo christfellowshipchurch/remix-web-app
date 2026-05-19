@@ -145,7 +145,7 @@ export function GroupFinderOverflowFiltersPanel({
         {embeddedFilters}
       </div>
 
-      <div className='flex-shrink-0'>{footer}</div>
+      <div className='shrink-0'>{footer}</div>
     </div>
   );
 }
