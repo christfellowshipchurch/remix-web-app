@@ -4,10 +4,10 @@ import { cn } from '~/lib/utils';
 import { LeadersModal } from '~/components/modals/leaders';
 import Modal from '~/primitives/Modal';
 import type { LeaderProfile } from './leaders-data';
-import type { HomeLoaderData } from '~/routes/home/loader';
+import type { AboutLoaderData } from '~/routes/about/loader';
 
 export function LeaderScroll() {
-  const { leaders } = useLoaderData<HomeLoaderData>();
+  const { leaders } = useLoaderData<AboutLoaderData>();
   const [openModal, setOpenModal] = useState(false);
 
   const seniorLeaderItem = leaders[0];
