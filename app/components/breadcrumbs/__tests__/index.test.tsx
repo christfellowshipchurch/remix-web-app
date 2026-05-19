@@ -97,7 +97,9 @@ describe('Breadcrumbs', () => {
       'href',
       '/test/path',
     );
-    expect(screen.queryByRole('link', { name: 'Segment' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Segment' }),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Segment')).toHaveAttribute('aria-current', 'page');
   });
 
