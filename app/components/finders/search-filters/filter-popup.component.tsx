@@ -506,6 +506,7 @@ const FilterPopupContent = ({
 }: FilterPopupContentProps) => {
   const { items, refine } = useRefinementList({ attribute: data.attribute });
   const [localAgeInput, setLocalAgeInput] = useState<string>(ageInput || '');
+  const [showAgeInputError, setShowAgeInputError] = useState(false);
 
   // Topic categories for filtering
   const spiritualGrowthTopics = ['Bible Study', 'Prayer', 'Message Discussion'];
@@ -529,6 +530,11 @@ const FilterPopupContent = ({
     'Sunday',
   ];
 
+  const getAgeRangeStart = (label: string) => {
+    const start = Number.parseInt(label, 10);
+    return Number.isFinite(start) ? start : Number.MAX_SAFE_INTEGER;
+  };
+
   // Filter items based on category and popup title
   const getFilteredItems = () => {
     if (data.attribute === 'topics' && data.title === 'Spiritual Growth') {
@@ -547,6 +553,13 @@ const FilterPopupContent = ({
           MEETING_DAYS_ORDER.indexOf(b.label),
       );
     }
+    if (data.isAgeRange === true) {
+      return [...items].sort(
+        (a, b) =>
+          getAgeRangeStart(a.label) - getAgeRangeStart(b.label) ||
+          a.label.localeCompare(b.label),
+      );
+    }
     return items;
   };
 
@@ -558,6 +571,19 @@ const FilterPopupContent = ({
 
   const dropdownSelectValue =
     sortedForDropdown.find((item) => item.isRefined)?.value ?? '';
+  const ageRangeErrorId = `age-range-error-${sectionKey}`;
+
+  const commitInputValue = () => {
+    if (data.isAgeRange === true) {
+      const age = Number.parseInt(localAgeInput, 10);
+      if (!Number.isFinite(age) || age < 12 || age > 120) {
+        setShowAgeInputError(true);
+        return;
+      }
+    }
+    setShowAgeInputError(false);
+    setAgeInput?.(localAgeInput);
+  };
 
   const dropdownEmptyLabel =
     data.attribute === 'campusName' || data.attribute === 'campus'
@@ -631,6 +657,7 @@ const FilterPopupContent = ({
       }
     });
     setLocalAgeInput('');
+    setShowAgeInputError(false);
     setAgeInput?.('');
     if (data.isLocation || data.isCurrentLocation) {
       data.setCoordinates?.(null);
@@ -699,23 +726,51 @@ const FilterPopupContent = ({
             <>
               {data.input ? (
                 <div className='flex w-full min-w-0 flex-row items-stretch gap-2'>
-                  <input
-                    type='number'
-                    placeholder={data.inputPlaceholder || 'Enter your age'}
-                    className={cn(
-                      finderLocationInputBaseClass,
-                      'min-w-0 flex-1 max-w-[160px] py-1.5',
-                    )}
-                    value={localAgeInput}
-                    onChange={(e) => setLocalAgeInput(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    min='13'
-                    max='120'
-                  />
+                  <div className='relative min-w-0 flex-1 max-w-[160px]'>
+                    <input
+                      type='number'
+                      placeholder={data.inputPlaceholder || 'Enter your age'}
+                      className={cn(
+                        finderLocationInputBaseClass,
+                        'w-full py-1.5',
+                      )}
+                      value={localAgeInput}
+                      onChange={(e) => {
+                        setLocalAgeInput(e.target.value);
+                        setShowAgeInputError(false);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          commitInputValue();
+                        }
+                      }}
+                      min='12'
+                      max='120'
+                      aria-invalid={showAgeInputError}
+                      aria-describedby={
+                        showAgeInputError ? ageRangeErrorId : undefined
+                      }
+                    />
+                    {showAgeInputError ? (
+                      <div
+                        id={ageRangeErrorId}
+                        role='alert'
+                        className='absolute bottom-full left-0 z-10 mb-1 w-[220px] rounded-md bg-text-primary px-3 py-2 text-xs font-semibold leading-snug text-white shadow-lg md:bottom-auto md:top-full md:mb-0 md:mt-1'
+                      >
+                        Groups range from age 12-120. Enter a valid age.
+                      </div>
+                    ) : null}
+                  </div>
                   <button
                     type='button'
                     className={finderApplyZipButtonClass}
-                    onClick={() => setAgeInput?.(localAgeInput)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      commitInputValue();
+                    }}
                   >
                     Apply
                   </button>

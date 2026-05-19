@@ -10,6 +10,7 @@ export const GROUP_FINDER_FACET_ATTRIBUTES = [
   'campusName',
   'groupFor',
   'peopleWhoAre',
+  'minMaxAge',
   'topics',
   'meetingDay',
   'meetingFrequency',
@@ -33,23 +34,60 @@ function refinementListToFacetFilters(
   return groups.length > 0 ? groups : undefined;
 }
 
-function buildAgeNumericFilter(
+function parseMinMaxAgeRange(value: string):
+  | {
+      min: number;
+      max: number;
+    }
+  | undefined {
+  const [minRaw, maxRaw] = value.split(/\s+to\s+/i);
+  if (!minRaw || !maxRaw) {
+    return undefined;
+  }
+
+  const min = Number.parseInt(minRaw, 10);
+  const max = Number.parseInt(maxRaw, 10);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    return undefined;
+  }
+
+  return { min, max };
+}
+
+export function buildMinMaxAgeFilter(
   ageInput: string | undefined,
+  minMaxAgeValues: string[],
 ): string | undefined {
   const trimmed = ageInput?.trim() ?? '';
   if (trimmed.length < 2) {
     return undefined;
   }
-  const userAge = parseInt(trimmed, 10);
-  if (Number.isNaN(userAge) || userAge < 1) {
+
+  const userAge = Number.parseInt(trimmed, 10);
+  if (!Number.isFinite(userAge) || userAge < 1) {
     return undefined;
   }
-  return `minAge <= ${userAge} AND maxAge >= ${userAge}`;
+
+  const matchingRanges = minMaxAgeValues.filter((value) => {
+    const range = parseMinMaxAgeRange(value);
+    return range != null && range.min <= userAge && userAge <= range.max;
+  });
+
+  if (matchingRanges.length === 0) {
+    return minMaxAgeValues.length > 0
+      ? 'minMaxAge:"__no_matching_age_range__"'
+      : undefined;
+  }
+
+  return matchingRanges
+    .map((value) => `minMaxAge:"${escapeAlgoliaFilterString(value)}"`)
+    .join(' OR ');
 }
 
 /** Maps parsed URL state to Algolia `searchParams` for the route loader (server-side only). */
 export function buildGroupFinderAlgoliaSearchParams(
   urlState: GroupFinderUrlState,
+  minMaxAgeValues: string[] = [],
 ): {
   indexName: string;
   filters?: string;
@@ -81,7 +119,7 @@ export function buildGroupFinderAlgoliaSearchParams(
     getRankingInfo: true,
   };
 
-  const ageFilter = buildAgeNumericFilter(urlState.age);
+  const ageFilter = buildMinMaxAgeFilter(urlState.age, minMaxAgeValues);
   if (ageFilter) {
     params.filters = ageFilter;
   }

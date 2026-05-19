@@ -26,7 +26,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -50,6 +49,7 @@ import {
   getGroupSearchDesktopFilters,
   GROUP_FINDER_MORE_POPUP_TITLE,
 } from '../group-search-filters.data';
+import { buildMinMaxAgeFilter } from '../components/build-group-finder-algolia-search';
 
 /**
  * Group finder data flow (SSR-friendly):
@@ -112,6 +112,7 @@ export const GroupSearch = () => {
     groupNbHits,
     groupNbPages,
     groupPage,
+    minMaxAgeValues,
   } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -149,24 +150,6 @@ export const GroupSearch = () => {
     initial.selectedLocation,
   );
 
-  // Ref lets `onStateChange` read latest age/geo without stale closures while URL updates debounce.
-  type CustomState = {
-    coordinates: { lat: number | null; lng: number | null } | null;
-    ageInput: string;
-    selectedLocation: string | null;
-  };
-
-  const customStateRef = useRef<CustomState>({
-    coordinates: initial.coordinates,
-    ageInput: initial.ageInput,
-    selectedLocation: initial.selectedLocation,
-  });
-  customStateRef.current = {
-    coordinates,
-    ageInput,
-    selectedLocation,
-  };
-
   // Back/forward and loader navigation: rehydrate age/geo/campus from URL (not in refinementList alone).
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
@@ -182,11 +165,6 @@ export const GroupSearch = () => {
     // (age + geo). Canceling the debounce prevents an in-flight URL write from
     // re-applying stale filters after the user has cleared everything.
     cancelDebounce();
-    customStateRef.current = {
-      coordinates: null,
-      ageInput: '',
-      selectedLocation: null,
-    };
     setCoordinatesState(null);
     setLocationSource(null);
     setAgeInputState('');
@@ -212,7 +190,7 @@ export const GroupSearch = () => {
 
       const merged: GroupFinderUrlState = {
         ...parseGroupFinderUrlState(searchParams),
-        age: customStateRef.current.ageInput || undefined,
+        age: ageInput || undefined,
         page: 0,
       };
       if (noCoords) {
@@ -227,7 +205,7 @@ export const GroupSearch = () => {
       }
       updateUrlIfChanged(merged);
     },
-    [searchParams, updateUrlIfChanged],
+    [ageInput, searchParams, updateUrlIfChanged],
   );
 
   const setAgeInput = (next: string) => {
@@ -291,17 +269,16 @@ export const GroupSearch = () => {
   // Merges InstantSearch refinements with age + lat/lng that live in URL but outside uiState.
   const mergeUrlState = useCallback(
     (partial: Partial<GroupFinderUrlState>) => {
-      const coords = customStateRef.current.coordinates;
       const merged: GroupFinderUrlState = {
         ...parseGroupFinderUrlState(searchParams),
-        age: customStateRef.current.ageInput || undefined,
-        lat: coords?.lat ?? undefined,
-        lng: coords?.lng ?? undefined,
+        age: ageInput || undefined,
+        lat: coordinates?.lat ?? undefined,
+        lng: coordinates?.lng ?? undefined,
         ...partial,
       };
       return merged;
     },
-    [searchParams],
+    [ageInput, searchParams, coordinates],
   );
 
   const commitQuery = useCallback(
@@ -391,6 +368,7 @@ export const GroupSearch = () => {
             <ResponsiveConfigure
               ageInput={ageInput}
               coordinates={coordinates}
+              minMaxAgeValues={minMaxAgeValues}
             />
 
             <FinderStickyBar>
@@ -661,14 +639,16 @@ function GroupFinderPaginationButton({
 export const ResponsiveConfigure = ({
   ageInput,
   coordinates,
+  minMaxAgeValues = [],
   /** When set, skips responsive 5–12 caps (e.g. class finder groups many hits by `classType` client-side). */
   hitsPerPageOverride,
 }: {
-  ageInput: string;
+  ageInput?: string;
   coordinates: {
     lat: number | null;
     lng: number | null;
   } | null;
+  minMaxAgeValues?: string[];
   hitsPerPageOverride?: number;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
@@ -688,20 +668,13 @@ export const ResponsiveConfigure = ({
       }
     })();
 
-  const filters = [];
-  if (ageInput.trim().length >= 2) {
-    const userAge = parseInt(ageInput, 10);
-    if (!isNaN(userAge) && userAge >= 1) {
-      // Filter groups where user's age falls within the group's age range
-      filters.push(`minAge <= ${userAge} AND maxAge >= ${userAge}`);
-    }
-  }
+  const ageFilter = buildMinMaxAgeFilter(ageInput, minMaxAgeValues);
 
   return (
     <Configure
       key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
-      filters={filters.length > 0 ? filters.join(' AND ') : undefined}
+      filters={ageFilter}
       aroundLatLng={
         coordinates?.lat && coordinates?.lng
           ? `${coordinates.lat}, ${coordinates.lng}`

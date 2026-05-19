@@ -6,7 +6,7 @@ import { AuthenticationError } from '~/lib/.server/error-types';
 
 import { buildGroupFinderAlgoliaSearchParams } from './components/build-group-finder-algolia-search';
 import { parseGroupFinderUrlState } from './group-finder-url-state';
-import type { GroupType } from './types';
+import { GROUPS_ALGOLIA_INDEX_NAME, type GroupType } from './types';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -15,6 +15,7 @@ export type LoaderReturnType = {
   groupNbHits: number;
   groupNbPages: number;
   groupPage: number;
+  minMaxAgeValues: string[];
 };
 
 /**
@@ -33,6 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let groupHits: GroupType[] = [];
   let groupNbHits = 0;
   let groupNbPages = 0;
+  let minMaxAgeValues: string[] = [];
   const url = new URL(request.url);
 
   // The loader owns first paint and deep links. Once hydrated, same-page filter
@@ -44,7 +46,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const client = algoliasearch(appId, searchApiKey, {});
 
   try {
-    const built = buildGroupFinderAlgoliaSearchParams(urlState);
+    const facetRes = await client.searchSingleIndex({
+      indexName: GROUPS_ALGOLIA_INDEX_NAME,
+      searchParams: {
+        facets: ['minMaxAge'],
+        hitsPerPage: 0,
+        maxValuesPerFacet: 1000,
+      },
+    });
+    minMaxAgeValues = Object.keys(facetRes.facets?.minMaxAge ?? {});
+
+    const built = buildGroupFinderAlgoliaSearchParams(
+      urlState,
+      minMaxAgeValues,
+    );
     const { indexName, ...indexSearchParams } = built;
     const hitsRes = await client.searchSingleIndex({
       indexName,
@@ -67,5 +82,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     groupNbHits,
     groupNbPages,
     groupPage,
+    minMaxAgeValues,
   } satisfies LoaderReturnType);
 };

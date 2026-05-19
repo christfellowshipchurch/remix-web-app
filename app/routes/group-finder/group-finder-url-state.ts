@@ -34,6 +34,7 @@ const REFINEMENT_LIST_ATTRIBUTES = [
   'campusName',
   'groupFor',
   'peopleWhoAre',
+  'minMaxAge',
   'topics',
   'meetingDay',
   'meetingFrequency',

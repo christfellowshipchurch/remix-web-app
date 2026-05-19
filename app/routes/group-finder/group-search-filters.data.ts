@@ -78,7 +78,7 @@ export function getGroupSearchDesktopFilters(
           },
           {
             title: 'Age Range',
-            attribute: 'minAge',
+            attribute: 'minMaxAge',
             input: true,
             inputPlaceholder: 'Enter your Age',
             isAgeRange: true,
