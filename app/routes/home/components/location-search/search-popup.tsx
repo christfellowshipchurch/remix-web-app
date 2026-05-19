@@ -38,7 +38,7 @@ export const SearchPopup = ({
                 return (
                   <li
                     key={hit.objectID ?? `${hit.campusUrl}-${index}`}
-                    className='flex w-full rounded-xl transition-transform duration-300 border-px border-[#E8E8E8] first:border-navy! hover:border-navy'
+                    className='flex w-full rounded-xl border-[2.37px] border-[#E8E8E8] transition-colors duration-300 first:border-neutral-default hover:border-neutral-default'
                   >
                     <CampusHit hit={campusData} />
                   </li>
