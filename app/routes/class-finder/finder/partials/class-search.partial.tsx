@@ -145,82 +145,82 @@ export const ClassSearch = () => {
         <FinderStickyBar>
           {filtersMounted ? (
             <InstantSearch
-            indexName={CLASSES_ALGOLIA_INDEX_NAME}
-            searchClient={searchClient}
-            initialUiState={
-              Object.keys(initial.initialUiState).length > 0
-                ? initial.initialUiState
-                : undefined
-            }
-            onStateChange={({ uiState, setUiState }) => {
-              setUiState(uiState);
-              const indexState = uiState[CLASSES_ALGOLIA_INDEX_NAME];
-              if (indexState) {
-                syncUrlFromUiState(indexState as Record<string, unknown>);
+              indexName={CLASSES_ALGOLIA_INDEX_NAME}
+              searchClient={searchClient}
+              initialUiState={
+                Object.keys(initial.initialUiState).length > 0
+                  ? initial.initialUiState
+                  : undefined
               }
-            }}
-            future={{
-              preserveSharedStateOnUnmount: true,
-            }}
-          >
-            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
-              <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
-                <Icon
-                  name='searchAlt'
-                  className='text-neutral-default ml-3'
-                  size={16}
-                />
-                <SearchBox
-                  placeholder='Search'
-                  translations={{
-                    submitButtonTitle: 'Search',
-                    resetButtonTitle: 'Reset',
-                  }}
-                  classNames={{
-                    root: 'flex-grow',
-                    form: 'flex',
-                    input:
-                      'w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm',
-                    resetIcon: 'hidden',
-                    submit: 'hidden',
-                    loadingIcon: 'hidden',
-                  }}
-                />
-              </div>
+              onStateChange={({ uiState, setUiState }) => {
+                setUiState(uiState);
+                const indexState = uiState[CLASSES_ALGOLIA_INDEX_NAME];
+                if (indexState) {
+                  syncUrlFromUiState(indexState as Record<string, unknown>);
+                }
+              }}
+              future={{
+                preserveSharedStateOnUnmount: true,
+              }}
+            >
+              <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+                <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>
+                  <Icon
+                    name='searchAlt'
+                    className='text-neutral-default ml-3'
+                    size={16}
+                  />
+                  <SearchBox
+                    placeholder='Search'
+                    translations={{
+                      submitButtonTitle: 'Search',
+                      resetButtonTitle: 'Reset',
+                    }}
+                    classNames={{
+                      root: 'flex-grow',
+                      form: 'flex',
+                      input:
+                        'w-full text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm',
+                      resetIcon: 'hidden',
+                      submit: 'hidden',
+                      loadingIcon: 'hidden',
+                    }}
+                  />
+                </div>
 
-              <div className='lg:hidden w-full'>
-                <SearchFilters
-                  onClearAllToUrl={clearAllFiltersFromUrl}
-                  desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
-                  compactInlineFilterCount={2}
-                  groupedFooterCount
-                  renderMorePanel={({
-                    onHide,
-                    onClearAllToUrl,
-                    mobileBottomSheet,
-                    morePanelTitle,
-                  }) => (
-                    <AllClassFiltersPopup
-                      hideTopic
-                      hideLanguage
-                      showFormat
-                      onHide={onHide}
-                      onClearAllToUrl={onClearAllToUrl}
-                      mobileBottomSheet={mobileBottomSheet}
-                      bottomSheetTitle={morePanelTitle}
-                    />
-                  )}
-                />
-              </div>
+                <div className='lg:hidden w-full'>
+                  <SearchFilters
+                    onClearAllToUrl={clearAllFiltersFromUrl}
+                    desktopFilters={CLASS_SEARCH_DESKTOP_FILTERS}
+                    compactInlineFilterCount={2}
+                    groupedFooterCount
+                    renderMorePanel={({
+                      onHide,
+                      onClearAllToUrl,
+                      mobileBottomSheet,
+                      morePanelTitle,
+                    }) => (
+                      <AllClassFiltersPopup
+                        hideTopic
+                        hideLanguage
+                        showFormat
+                        onHide={onHide}
+                        onClearAllToUrl={onClearAllToUrl}
+                        mobileBottomSheet={mobileBottomSheet}
+                        bottomSheetTitle={morePanelTitle}
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='hidden min-w-0 flex-1 lg:block'>
-                <HubsTagsRefinementList
-                  attribute='topic'
-                  wrapperClass='flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3'
-                />
+                <div className='hidden min-w-0 flex-1 lg:block'>
+                  <HubsTagsRefinementList
+                    attribute='topic'
+                    wrapperClass='flex min-w-0 flex-nowrap gap-2 overflow-x-auto py-1 scrollbar-hide md:gap-3'
+                  />
+                </div>
               </div>
-            </div>
-            <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
+              <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
             </InstantSearch>
           ) : (
             <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>

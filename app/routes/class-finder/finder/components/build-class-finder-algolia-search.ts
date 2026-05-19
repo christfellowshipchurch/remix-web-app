@@ -31,7 +31,9 @@ function refinementListToFacetFilters(
 }
 
 /** Maps URL state → Algolia params for the class finder route loader (server only). */
-export function buildClassFinderAlgoliaSearchParams(urlState: ClassFinderUrlState): {
+export function buildClassFinderAlgoliaSearchParams(
+  urlState: ClassFinderUrlState,
+): {
   indexName: string;
   hitsPerPage: number;
   page: number;

@@ -164,7 +164,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
             | Record<string, Record<string, number>>
             | undefined,
         );
-        groupHits = (groupsRes.hits ?? []).map((h) => h as unknown as GroupType);
+        groupHits = (groupsRes.hits ?? []).map(
+          (h) => h as unknown as GroupType,
+        );
       }
     }
   } catch (error) {

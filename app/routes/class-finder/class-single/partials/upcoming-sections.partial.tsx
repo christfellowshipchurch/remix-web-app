@@ -221,7 +221,10 @@ function ClassSingleUpcomingResults({
         </p>
       ) : (
         <div className='flex w-full justify-center md:justify-start'>
-          <UpcomingSessionsCarousel hits={ordered} resetKey={carouselResetKey} />
+          <UpcomingSessionsCarousel
+            hits={ordered}
+            resetKey={carouselResetKey}
+          />
         </div>
       )}
     </div>
