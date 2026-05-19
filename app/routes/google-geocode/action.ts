@@ -56,7 +56,10 @@ export const action: ActionFunction = async ({ request }) => {
       error instanceof EncryptionError ||
       error instanceof RockAPIError
     ) {
-      return Response.json({ error: error.message, requestId }, { status: 400 });
+      return Response.json(
+        { error: error.message, requestId },
+        { status: 400 },
+      );
     }
     return Response.json(
       { error: 'An unexpected error occurred', requestId },

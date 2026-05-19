@@ -1,8 +1,9 @@
+import { Link } from 'react-router-dom';
 import kebabCase from 'lodash/kebabCase';
+import { useHits, useInstantSearch } from 'react-instantsearch';
+
 import LocationCard from '../components/locations-search-card.component';
 import { LocationsLoader } from '../components/locations-search-skeleton.component';
-import { Link } from 'react-router-dom';
-import { useHits } from 'react-instantsearch';
 
 export type CampusHit = {
   campusUrl: string;
@@ -21,12 +22,14 @@ export type CampusHit = {
   serviceTimes: string;
   objectID?: string;
   _rankingInfo?: {
+    geoDistance?: number;
     distance?: number;
   };
 };
 
 export type LocationCardListProps = {
   loading: boolean;
+  initialHits?: CampusHit[];
 };
 
 /** Static card art: `public/assets/images/locations/location-card-images/{campusUrl}.webp` */
@@ -38,8 +41,25 @@ function locationSearchCardImage(hitUrl: string) {
   return slug ? `${LOCATION_CARD_IMAGES_BASE}/${slug}.webp` : '';
 }
 
-export const LocationCardList = ({ loading }: LocationCardListProps) => {
+export const LocationCardList = ({
+  loading,
+  initialHits = [],
+}: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
+  const { status } = useInstantSearch();
+  const isSearchLoading = status === 'loading' || status === 'stalled';
+  const hits = isSearchLoading && items.length === 0 ? initialHits : items;
+
+  return <LocationCardGrid items={hits} loading={loading} />;
+};
+
+export function LocationCardGrid({
+  items,
+  loading,
+}: {
+  items: CampusHit[];
+  loading: boolean;
+}) {
   const onlineCampus = items?.find((item) =>
     item.campusName?.includes('Online'),
   );
@@ -123,4 +143,4 @@ export const LocationCardList = ({ loading }: LocationCardListProps) => {
       </div>
     </div>
   );
-};
+}

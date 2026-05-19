@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  sortCampusHitsForDistanceSearch,
-} from '../location-search-results';
+import { sortCampusHitsForDistanceSearch } from '../location-search-results';
 import type { CampusSearchHit } from '../location-search-results';
 
 function createCampusHit(

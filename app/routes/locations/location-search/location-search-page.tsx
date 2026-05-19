@@ -1,4 +1,8 @@
-import { useFetcher, useRouteLoaderData } from 'react-router-dom';
+import {
+  useFetcher,
+  useLoaderData,
+  useRouteLoaderData,
+} from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { algoliasearch, SearchClient } from 'algoliasearch';
 import { Configure, InstantSearch } from 'react-instantsearch';
@@ -8,8 +12,12 @@ import { useResponsive } from '~/hooks/use-responsive';
 import { getCurrentPositionFromUserGesture } from '~/lib/browser-geolocation';
 import { RootLoaderData } from '~/routes/navbar/loader';
 import { emptySearchClient } from '~/routes/search/route';
-import { LocationCardList } from './partials/location-card-list.partial';
-import { LocationSearchBootSkeleton } from './components/location-search-boot-skeleton.partial';
+import type { LocationSearchLoaderData } from './loader';
+import { LOCATION_SEARCH_INDEX_NAME } from './location-search.constants';
+import {
+  LocationCardGrid,
+  LocationCardList,
+} from './partials/location-card-list.partial';
 import { Search } from './partials/locations-search-hero.partial';
 
 export type LocationSearchCoordinatesType = {
@@ -29,13 +37,12 @@ export type LocationSearchCoordinatesType = {
 
 let globalSearchClient: SearchClient | null = null;
 
-const LOCATION_SEARCH_INDEX_NAME = 'dev_Locations';
-
 function LocationSearchIndexBody({
   coordinates,
   setSearchCoordinates,
   handleSearch,
   geocodeLoading,
+  initialLocationHits,
 }: {
   coordinates: { lat: number | null; lng: number | null } | null;
   setSearchCoordinates: (
@@ -44,6 +51,7 @@ function LocationSearchIndexBody({
   ) => void;
   handleSearch: (query: string | null) => void;
   geocodeLoading: boolean;
+  initialLocationHits: LocationSearchLoaderData['initialLocationHits'];
 }) {
   return (
     <>
@@ -63,17 +71,24 @@ function LocationSearchIndexBody({
         handleSearch={handleSearch}
         setCoordinates={setSearchCoordinates}
       />
-      <LocationCardList loading={geocodeLoading} />
+      <LocationCardList
+        loading={geocodeLoading}
+        initialHits={initialLocationHits}
+      />
     </>
   );
 }
 
 export function LocationSearchPage() {
+  const loaderData = useLoaderData<LocationSearchLoaderData>();
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
-  const algolia = rootData?.algolia ?? {
-    ALGOLIA_APP_ID: '',
-    ALGOLIA_SEARCH_API_KEY: '',
-  };
+  const algolia =
+    rootData?.algolia?.ALGOLIA_APP_ID && rootData.algolia.ALGOLIA_SEARCH_API_KEY
+      ? rootData.algolia
+      : {
+          ALGOLIA_APP_ID: loaderData.ALGOLIA_APP_ID,
+          ALGOLIA_SEARCH_API_KEY: loaderData.ALGOLIA_SEARCH_API_KEY,
+        };
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
 
   const [coordinates, setCoordinates] = useState<{
@@ -247,7 +262,17 @@ export function LocationSearchPage() {
   return (
     <div className='flex w-full flex-col min-h-screen'>
       {!algoliaBootstrapped ? (
-        <LocationSearchBootSkeleton />
+        <>
+          <Search
+            handleSearch={handleSearch}
+            setCoordinates={setSearchCoordinates}
+            instantSearchReady={false}
+          />
+          <LocationCardGrid
+            items={loaderData.initialLocationHits}
+            loading={false}
+          />
+        </>
       ) : (
         <InstantSearch
           indexName={LOCATION_SEARCH_INDEX_NAME}
@@ -267,6 +292,7 @@ export function LocationSearchPage() {
             setSearchCoordinates={setSearchCoordinates}
             handleSearch={handleSearch}
             geocodeLoading={geocodeFetcher.state === 'loading'}
+            initialLocationHits={loaderData.initialLocationHits}
           />
         </InstantSearch>
       )}
