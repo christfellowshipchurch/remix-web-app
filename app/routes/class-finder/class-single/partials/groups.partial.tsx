@@ -1,20 +1,130 @@
-import type { GroupType } from '~/routes/group-finder/types';
+import { useMemo } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import {
+  Configure,
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+} from 'react-instantsearch';
+
+import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { createSearchClient } from '~/lib/create-search-client';
+import {
+  GROUPS_ALGOLIA_INDEX_NAME,
+  type GroupType,
+} from '~/routes/group-finder/types';
 
 import { ClassSingleGroupsCarousel } from '../components/class-single-groups-carousel.component';
+import type { LoaderReturnType } from '../loader';
+import { CLASS_SINGLE_UPCOMING_MAX_HITS } from '../components/build-class-single-algolia-search';
 
-export type ClassSingleGroupsSectionProps = {
+type ClassSingleInitialGroupsSectionProps = {
   groupHits: GroupType[];
   classUrl: string;
 };
 
+function classFormatToGroupMeetingType(format: string): string | null {
+  if (format === 'Virtual') return 'Virtual';
+  if (format === 'In-Person') return 'In Person';
+  return null;
+}
+
+function classLanguageToGroupLanguage(lang: string): string | null {
+  if (lang === 'English') return 'English';
+  if (lang === 'Español' || lang === 'Spanish') return 'Spanish';
+  return null;
+}
+
+function mirrorGroupsFacets(
+  refinementList: Record<string, string[]>,
+): string | undefined {
+  const parts: string[] = [];
+
+  const campuses = (refinementList.campus ?? []).filter(
+    (v) => v != null && String(v).trim() !== '',
+  );
+  if (campuses.length === 1) {
+    parts.push(`campusName:"${escapeAlgoliaFilterString(campuses[0])}"`);
+  } else if (campuses.length > 1) {
+    parts.push(
+      `(${campuses.map((c) => `campusName:"${escapeAlgoliaFilterString(c)}"`).join(' OR ')})`,
+    );
+  }
+
+  const formats = (refinementList.format ?? []).filter(
+    (v) => v != null && String(v).trim() !== '',
+  );
+  const meetingTypes = [
+    ...new Set(
+      formats
+        .map((f) => classFormatToGroupMeetingType(f))
+        .filter((m): m is string => m != null),
+    ),
+  ];
+  if (meetingTypes.length === 1) {
+    parts.push(`meetingType:"${escapeAlgoliaFilterString(meetingTypes[0])}"`);
+  } else if (meetingTypes.length > 1) {
+    parts.push(
+      `(${meetingTypes.map((m) => `meetingType:"${escapeAlgoliaFilterString(m)}"`).join(' OR ')})`,
+    );
+  }
+
+  const languages = (refinementList.language ?? []).filter(
+    (v) => v != null && String(v).trim() !== '',
+  );
+  const groupLanguages = [
+    ...new Set(
+      languages
+        .map((l) => classLanguageToGroupLanguage(l))
+        .filter((l): l is string => l != null),
+    ),
+  ];
+  if (groupLanguages.length === 1) {
+    parts.push(`language:"${escapeAlgoliaFilterString(groupLanguages[0])}"`);
+  } else if (groupLanguages.length > 1) {
+    parts.push(
+      `(${groupLanguages.map((l) => `language:"${escapeAlgoliaFilterString(l)}"`).join(' OR ')})`,
+    );
+  }
+
+  if (parts.length === 0) return undefined;
+  return parts.join(' AND ');
+}
+
+function composeGroupsFilters(
+  classesIndexClassType: string,
+  mirroredFacetFilters: string | undefined,
+): string | undefined {
+  const trimmed = classesIndexClassType.trim();
+  const classTypeFilter = trimmed
+    ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
+    : null;
+  if (classTypeFilter && mirroredFacetFilters) {
+    return `${classTypeFilter} AND ${mirroredFacetFilters}`;
+  }
+  if (classTypeFilter) return classTypeFilter;
+  return mirroredFacetFilters;
+}
+
 /**
- * Related groups carousel — hits are prefetched in the route loader (mirrors session URL filters/geo).
- * Intentionally outside Filter Sessions InstantSearch (nested Index was unreliable in production).
+ * First-paint related groups from the loader. Hydrated filtering uses `ClassSingleGroupsSection`.
  */
-export function ClassSingleGroupsSection({
+export function ClassSingleInitialGroupsSection({
   groupHits,
   classUrl,
-}: ClassSingleGroupsSectionProps) {
+}: ClassSingleInitialGroupsSectionProps) {
+  return (
+    <ClassSingleGroupsCarouselSection
+      groupHits={groupHits}
+      classUrl={classUrl}
+    />
+  );
+}
+
+function ClassSingleGroupsCarouselSection({
+  groupHits,
+  classUrl,
+}: ClassSingleInitialGroupsSectionProps) {
   if (groupHits.length === 0) {
     return null;
   }
@@ -37,5 +147,97 @@ export function ClassSingleGroupsSection({
         </div>
       </div>
     </div>
+  );
+}
+
+function ClassSingleGroupsHits({
+  initialGroupHits,
+  classUrl,
+}: {
+  initialGroupHits: GroupType[];
+  classUrl: string;
+}) {
+  const { items } = useHits<GroupType>();
+  const { status } = useInstantSearch();
+  const isLoading = status === 'loading' || status === 'stalled';
+  const hits = isLoading && items.length === 0 ? initialGroupHits : items;
+
+  return (
+    <ClassSingleGroupsCarouselSection groupHits={hits} classUrl={classUrl} />
+  );
+}
+
+export function ClassSingleGroupsSection({
+  initialGroupHits,
+  classUrl,
+  classesIndexClassType,
+  coordinates,
+}: {
+  initialGroupHits: GroupType[];
+  classUrl: string;
+  classesIndexClassType: string;
+  coordinates: { lat: number | null; lng: number | null } | null;
+}) {
+  const { indexUiState } = useInstantSearch();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+    useLoaderData<LoaderReturnType>();
+
+  const searchClient = useMemo(
+    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+  );
+
+  const refinementList = useMemo(
+    () => (indexUiState.refinementList ?? {}) as Record<string, string[]>,
+    [indexUiState.refinementList],
+  );
+
+  const configureFilters = useMemo(
+    () =>
+      composeGroupsFilters(
+        classesIndexClassType,
+        mirrorGroupsFacets(refinementList),
+      ),
+    [classesIndexClassType, refinementList],
+  );
+
+  const aroundLatLng =
+    coordinates != null &&
+    coordinates.lat != null &&
+    coordinates.lng != null &&
+    !Number.isNaN(coordinates.lat) &&
+    !Number.isNaN(coordinates.lng)
+      ? `${coordinates.lat}, ${coordinates.lng}`
+      : undefined;
+
+  return (
+    <InstantSearch
+      key={`${classUrl}|${classesIndexClassType}`}
+      indexName={GROUPS_ALGOLIA_INDEX_NAME}
+      searchClient={searchClient}
+      initialUiState={{
+        [GROUPS_ALGOLIA_INDEX_NAME]: {
+          query: '',
+        },
+      }}
+      future={{
+        preserveSharedStateOnUnmount: true,
+      }}
+    >
+      <Configure
+        key={`${classesIndexClassType}|${configureFilters ?? ''}|${aroundLatLng ?? ''}`}
+        hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
+        query=''
+        filters={configureFilters}
+        aroundLatLng={aroundLatLng}
+        aroundRadius='all'
+        aroundLatLngViaIP={false}
+        getRankingInfo={aroundLatLng != null}
+      />
+      <ClassSingleGroupsHits
+        initialGroupHits={initialGroupHits}
+        classUrl={classUrl}
+      />
+    </InstantSearch>
   );
 }

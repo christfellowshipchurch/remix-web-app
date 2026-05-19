@@ -1,10 +1,13 @@
+import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
-  useLoaderData,
-  useLocation,
-  useNavigation,
-  useSearchParams,
-} from 'react-router-dom';
-import { Configure, InstantSearch } from 'react-instantsearch';
+  Configure,
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+  usePagination,
+  useStats,
+} from 'react-instantsearch';
 
 import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
 import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
@@ -17,7 +20,6 @@ import {
   GroupFinderInstantSearchSync,
 } from '../components/group-finder-instant-search-sync.component';
 import { GroupFinderQueryInput } from '../components/group-finder-query-input.component';
-import { createGroupFinderLoaderSearchClient } from '../components/create-group-finder-loader-search-client';
 import type { LoaderReturnType } from '../loader';
 import { GroupHit } from '../components/group-hit.component';
 import {
@@ -52,12 +54,10 @@ import {
 /**
  * Group finder data flow (SSR-friendly):
  *
- * 1. Route loader fetches Algolia from URL → `groupHits`, `groupFacets`, pagination metadata.
- * 2. The results grid renders directly from loader data (outside `<InstantSearch>`) so HTML
- *    can stream on first paint without waiting for react-instantsearch.
- * 3. Filter popups still use InstantSearch + a loader-backed SearchClient for facet UI only.
- * 4. `filtersMounted` defers step 3 until after hydration so step 2 is not blocked.
- * 5. URL is the source of truth; filter/query changes call `updateUrlIfChanged` → loader revalidation.
+ * 1. Route loader fetches initial Algolia hits so first paint has real group cards.
+ * 2. After hydration, InstantSearch mounts with the real client Algolia search key.
+ * 3. Same-route query param changes do not re-run this loader (`route.tsx`); filters/search fetch client-side.
+ * 4. `filtersMounted` defers InstantSearch until after hydration so the initial grid is not blocked.
  *
  * See also `.github/ALGOLIA-URL-STATE-REUSABILITY.md` (Pattern A).
  */
@@ -102,25 +102,26 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
 
 export const GroupSearch = () => {
   const loaderData = useLoaderData<LoaderReturnType>();
-  const { groupHits, groupNbHits, groupNbPages, groupPage } = loaderData;
+  const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
+    groupHits,
+    groupNbHits,
+    groupNbPages,
+    groupPage,
+  } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const navigation = useNavigation();
 
   const urlState = useMemo(
     () => parseGroupFinderUrlState(searchParams),
     [searchParams],
   );
 
-  // Same-route revalidation after URL updates (filter/page/query); grid stays visible, dimmed.
-  const isLoading =
-    navigation.state === 'loading' &&
-    navigation.location?.pathname === location.pathname;
-
-  // Rebuilt whenever the loader returns new data after a URL change.
+  // Loader seeds first paint; hydrated interactions use the real client search key.
   const searchClient = useMemo(
-    () => createGroupFinderLoaderSearchClient(loaderData),
-    [loaderData],
+    () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
   );
 
   const { cancelDebounce, updateUrlIfChanged } = useAlgoliaUrlSync({
@@ -354,27 +355,32 @@ export const GroupSearch = () => {
       id='search'
     >
       <div className='flex flex-col'>
-        <FinderStickyBar>
-          {filtersMounted ? (
-            <InstantSearch
-              indexName={GROUPS_ALGOLIA_INDEX_NAME}
-              searchClient={searchClient}
-              initialUiState={
-                Object.keys(initial.initialUiState).length > 0
-                  ? initial.initialUiState
-                  : undefined
-              }
-              onStateChange={({ uiState, setUiState }) => {
-                setUiState(uiState);
-                const indexState = uiState[GROUPS_ALGOLIA_INDEX_NAME];
-                if (indexState)
-                  syncUrlFromUiState(indexState as Record<string, unknown>);
-              }}
-              future={{
-                preserveSharedStateOnUnmount: true,
-              }}
-            >
-              <GroupFinderInstantSearchSync />
+        {filtersMounted ? (
+          <InstantSearch
+            indexName={GROUPS_ALGOLIA_INDEX_NAME}
+            searchClient={searchClient}
+            initialUiState={
+              Object.keys(initial.initialUiState).length > 0
+                ? initial.initialUiState
+                : undefined
+            }
+            onStateChange={({ uiState, setUiState }) => {
+              setUiState(uiState);
+              const indexState = uiState[GROUPS_ALGOLIA_INDEX_NAME];
+              if (indexState)
+                syncUrlFromUiState(indexState as Record<string, unknown>);
+            }}
+            future={{
+              preserveSharedStateOnUnmount: true,
+            }}
+          >
+            <GroupFinderInstantSearchSync />
+            <ResponsiveConfigure
+              ageInput={ageInput}
+              coordinates={coordinates}
+            />
+
+            <FinderStickyBar>
               <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
                 <GroupFinderQueryInput
                   query={urlState.query}
@@ -413,77 +419,196 @@ export const GroupSearch = () => {
                 onClearAllToUrl={clearAllFiltersFromUrl}
                 additionalFiltersActive={additionalClearAllFiltersActive}
               />
-            </InstantSearch>
-          ) : (
-            <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
-              <GroupFinderQueryInput
-                query={urlState.query}
-                onQueryCommit={commitQuery}
-              />
-              <GroupFinderFiltersSkeleton />
-            </div>
-          )}
-        </FinderStickyBar>
+            </FinderStickyBar>
 
-        {/* Intentionally outside `<InstantSearch>` — renders from loader on server and client. */}
-        <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
-          <div className='max-w-screen-content mx-auto md:w-full'>
-            <FinderResultsStats hitCount={groupNbHits} />
-            <div className='min-h-[320px]'>
-              {groupHits.length === 0 && !isLoading ? (
-                <p className='text-text-secondary text-center py-8'>
-                  No groups found. Try adjusting your filters or search.
-                </p>
-              ) : (
-                <div
-                  className={cn(
-                    'grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-auto md:mx-0',
-                    isLoading && 'opacity-60 pointer-events-none',
-                  )}
-                >
-                  {groupHits.map((hit) => (
-                    <GroupHit
-                      key={hit.objectID}
-                      hit={hit}
-                      backUrl={fromGroupFinderUrl}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-            {groupNbPages > 1 && (
-              <div className='mt-6 flex items-center justify-center gap-2 md:justify-start'>
-                <GroupFinderPaginationButton
-                  isDisabled={isFirstPage}
-                  onClick={() => goToPage(groupPage - 1)}
-                >
-                  <Icon
-                    name='chevronLeft'
-                    size={32}
-                    color={isFirstPage ? '#CECECE' : '#0092BC'}
-                  />
-                </GroupFinderPaginationButton>
-                <p>
-                  {groupPage + 1} of {groupNbPages}
-                </p>
-                <GroupFinderPaginationButton
-                  isDisabled={isLastPage}
-                  onClick={() => goToPage(groupPage + 1)}
-                >
-                  <Icon
-                    name='chevronRight'
-                    size={32}
-                    color={isLastPage ? '#CECECE' : '#0092BC'}
-                  />
-                </GroupFinderPaginationButton>
+            <GroupFinderInstantSearchResults
+              initialHits={groupHits}
+              initialNbHits={groupNbHits}
+              fromGroupFinderUrl={fromGroupFinderUrl}
+            />
+          </InstantSearch>
+        ) : (
+          <>
+            <FinderStickyBar>
+              <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
+                <GroupFinderQueryInput
+                  query={urlState.query}
+                  onQueryCommit={commitQuery}
+                />
+                <GroupFinderFiltersSkeleton />
               </div>
-            )}
-          </div>
-        </div>
+            </FinderStickyBar>
+
+            <GroupFinderInitialResults
+              groupHits={groupHits}
+              groupNbHits={groupNbHits}
+              groupNbPages={groupNbPages}
+              groupPage={groupPage}
+              isFirstPage={isFirstPage}
+              isLastPage={isLastPage}
+              fromGroupFinderUrl={fromGroupFinderUrl}
+              onPageChange={goToPage}
+            />
+          </>
+        )}
       </div>
     </div>
   );
 };
+
+function GroupFinderInstantSearchResults({
+  initialHits,
+  initialNbHits,
+  fromGroupFinderUrl,
+}: {
+  initialHits: LoaderReturnType['groupHits'];
+  initialNbHits: number;
+  fromGroupFinderUrl: string;
+}) {
+  const { items } = useHits<LoaderReturnType['groupHits'][number]>();
+  const { nbHits } = useStats();
+  const { status } = useInstantSearch();
+  const { currentRefinement, nbPages, isFirstPage, isLastPage, refine } =
+    usePagination();
+  const isLoading = status === 'loading' || status === 'stalled';
+  const hits = isLoading && items.length === 0 ? initialHits : items;
+  const hitCount = isLoading && items.length === 0 ? initialNbHits : nbHits;
+
+  const goToPage = (nextPage: number) => {
+    refine(Math.max(0, nextPage));
+    window.requestAnimationFrame(() => {
+      const scrollTarget = document.querySelector('.pagination-scroll-to');
+      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
+  return (
+    <GroupFinderResultsLayout
+      groupHits={hits}
+      groupNbHits={hitCount}
+      groupNbPages={nbPages}
+      groupPage={currentRefinement}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
+      isLoading={isLoading}
+      fromGroupFinderUrl={fromGroupFinderUrl}
+      onPageChange={goToPage}
+    />
+  );
+}
+
+function GroupFinderInitialResults({
+  groupHits,
+  groupNbHits,
+  groupNbPages,
+  groupPage,
+  isFirstPage,
+  isLastPage,
+  fromGroupFinderUrl,
+  onPageChange,
+}: {
+  groupHits: LoaderReturnType['groupHits'];
+  groupNbHits: number;
+  groupNbPages: number;
+  groupPage: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+  fromGroupFinderUrl: string;
+  onPageChange: (nextPage: number) => void;
+}) {
+  return (
+    <GroupFinderResultsLayout
+      groupHits={groupHits}
+      groupNbHits={groupNbHits}
+      groupNbPages={groupNbPages}
+      groupPage={groupPage}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
+      isLoading={false}
+      fromGroupFinderUrl={fromGroupFinderUrl}
+      onPageChange={onPageChange}
+    />
+  );
+}
+
+function GroupFinderResultsLayout({
+  groupHits,
+  groupNbHits,
+  groupNbPages,
+  groupPage,
+  isFirstPage,
+  isLastPage,
+  isLoading,
+  fromGroupFinderUrl,
+  onPageChange,
+}: {
+  groupHits: LoaderReturnType['groupHits'];
+  groupNbHits: number;
+  groupNbPages: number;
+  groupPage: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+  isLoading: boolean;
+  fromGroupFinderUrl: string;
+  onPageChange: (nextPage: number) => void;
+}) {
+  return (
+    <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+      <div className='max-w-screen-content mx-auto md:w-full'>
+        <FinderResultsStats hitCount={groupNbHits} />
+        <div className='min-h-[320px]'>
+          {groupHits.length === 0 && !isLoading ? (
+            <p className='text-text-secondary text-center py-8'>
+              No groups found. Try adjusting your filters or search.
+            </p>
+          ) : (
+            <div
+              className={cn(
+                'grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-6 md:gap-x-6 md:gap-y-8 lg:gap-x-4 lg:gap-y-12 xl:gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-auto md:mx-0',
+                isLoading && 'opacity-60 pointer-events-none',
+              )}
+            >
+              {groupHits.map((hit) => (
+                <GroupHit
+                  key={hit.objectID}
+                  hit={hit}
+                  backUrl={fromGroupFinderUrl}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        {groupNbPages > 1 && (
+          <div className='mt-6 flex items-center justify-center gap-2 md:justify-start'>
+            <GroupFinderPaginationButton
+              isDisabled={isFirstPage}
+              onClick={() => onPageChange(groupPage - 1)}
+            >
+              <Icon
+                name='chevronLeft'
+                size={32}
+                color={isFirstPage ? '#CECECE' : '#0092BC'}
+              />
+            </GroupFinderPaginationButton>
+            <p>
+              {groupPage + 1} of {groupNbPages}
+            </p>
+            <GroupFinderPaginationButton
+              isDisabled={isLastPage}
+              onClick={() => onPageChange(groupPage + 1)}
+            >
+              <Icon
+                name='chevronRight'
+                size={32}
+                color={isLastPage ? '#CECECE' : '#0092BC'}
+              />
+            </GroupFinderPaginationButton>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function GroupFinderPaginationButton({
   children,

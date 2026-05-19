@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 import { InstantSearch } from 'react-instantsearch';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
 
 import {
   buildIndexInitialUiState,
@@ -27,7 +28,6 @@ import {
   type ClassSingleUrlState,
 } from '../class-single-url-state';
 import { CLASSES_ALGOLIA_INDEX_NAME } from '../components/build-class-single-algolia-search';
-import { createClassSingleLoaderSearchClient } from '../components/create-class-single-loader-search-client';
 import type { LoaderReturnType } from '../loader';
 
 export const CLASS_SINGLE_UPCOMING_INDEX_NAME = CLASSES_ALGOLIA_INDEX_NAME;
@@ -41,8 +41,9 @@ function coordinatesFromUrl(
 }
 
 /**
- * Filter Sessions UI state: URL is source of truth; loader refetches on navigation.
- * Geo (zip / current location) is stored as `lat`/`lng` in the URL so the loader can sort by distance.
+ * Filter Sessions UI state for the hydrated page.
+ * The URL still mirrors filters/share state, but same-page URL changes do not
+ * re-run the loader; InstantSearch uses the client Algolia key after first paint.
  */
 export function useClassSingleUpcomingInstantSearch() {
   const loaderData = useLoaderData<LoaderReturnType>();
@@ -78,8 +79,13 @@ export function useClassSingleUpcomingInstantSearch() {
   }, [searchParams]);
 
   const searchClient = useMemo(
-    () => createClassSingleLoaderSearchClient(loaderData),
-    [loaderData],
+    () =>
+      algoliasearch(
+        loaderData.ALGOLIA_APP_ID,
+        loaderData.ALGOLIA_SEARCH_API_KEY,
+        {},
+      ),
+    [loaderData.ALGOLIA_APP_ID, loaderData.ALGOLIA_SEARCH_API_KEY],
   );
 
   const setCoordinates = useCallback(

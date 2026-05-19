@@ -12,21 +12,15 @@ import {
   buildClassSingleGroupsSearchParams,
   buildClassSingleHeroSearchParams,
   buildClassSingleUpcomingSearchParams,
-  CLASS_SINGLE_UPCOMING_FACET_ATTRIBUTES,
 } from './components/build-class-single-algolia-search';
 import { parseClassSingleUrlState } from './class-single-url-state';
 
-export type ClassSingleFacetItem = {
-  value: string;
-  label: string;
-  count: number;
-};
-
 export type LoaderReturnType = {
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
   classUrl: string;
   classHit: ClassHitType | null;
   upcomingHits: ClassHitType[];
-  upcomingFacets: Record<string, ClassSingleFacetItem[]>;
   groupHits: GroupType[];
   discussionGuideUrl: string;
   classTrailer: string;
@@ -41,32 +35,14 @@ function rockStringAttr(
   return typeof v === 'string' ? v.trim() : '';
 }
 
-function mapFacetRecord(
-  facets: Record<string, Record<string, number>> | undefined,
-): Record<string, ClassSingleFacetItem[]> {
-  const out: Record<string, ClassSingleFacetItem[]> = {};
-  if (!facets) return out;
-  for (const attr of CLASS_SINGLE_UPCOMING_FACET_ATTRIBUTES) {
-    const slice = facets[attr];
-    if (!slice) continue;
-    out[attr] = Object.entries(slice)
-      .map(([value, count]) => ({
-        value,
-        label: value,
-        count,
-      }))
-      .sort((a, b) => b.count - a.count);
-  }
-  return out;
-}
-
 /**
- * Server-only Algolia for class-single:
+ * Initial Algolia fetch for class-single:
  * 1. Hero class by URL path (`pathName`)
  * 2. Upcoming sessions for that class type + filter URL (incl. lat/lng)
  * 3. Related groups mirroring the same refinements/geo
  *
- * Credentials stay on the server; filter widgets use a loader-backed SearchClient.
+ * This seeds first paint. After hydration, Filter Sessions and related groups
+ * use client-side InstantSearch for interaction on this route.
  */
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const classUrl = params.path || '';
@@ -108,7 +84,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
   let classHit: ClassHitType | null = null;
   let upcomingHits: ClassHitType[] = [];
-  let upcomingFacets: Record<string, ClassSingleFacetItem[]> = {};
   let groupHits: GroupType[] = [];
 
   const url = new URL(request.url);
@@ -144,11 +119,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         const [upcomingRes, groupsRes] = await Promise.all([
           client.searchSingleIndex({
             indexName: upcomingIndex,
-            searchParams: {
-              ...upcomingParams,
-              facets: [...CLASS_SINGLE_UPCOMING_FACET_ATTRIBUTES],
-              maxValuesPerFacet: 50,
-            },
+            searchParams: upcomingParams,
           }),
           client.searchSingleIndex({
             indexName: groupsIndex,
@@ -158,11 +129,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
         upcomingHits = (upcomingRes.hits ?? []).map(
           (h) => h as unknown as ClassHitType,
-        );
-        upcomingFacets = mapFacetRecord(
-          upcomingRes.facets as
-            | Record<string, Record<string, number>>
-            | undefined,
         );
         groupHits = (groupsRes.hits ?? []).map(
           (h) => h as unknown as GroupType,
@@ -174,10 +140,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   }
 
   return {
+    ALGOLIA_APP_ID: appId,
+    ALGOLIA_SEARCH_API_KEY: searchApiKey,
     classUrl,
     classHit,
     upcomingHits,
-    upcomingFacets,
     groupHits,
     discussionGuideUrl,
     classTrailer,

@@ -7,7 +7,8 @@ export function GroupFinderFiltersSkeleton() {
     >
       <div className='h-10 w-24 animate-pulse rounded-full bg-neutral-200' />
       <div className='h-10 w-24 animate-pulse rounded-full bg-neutral-200' />
-      <div className='h-10 w-20 animate-pulse rounded-full bg-neutral-200 md:ml-auto' />
+      <div className='h-10 w-24 animate-pulse rounded-full bg-neutral-200' />
+      <div className='h-10 w-24 animate-pulse rounded-full bg-neutral-200' />
     </div>
   );
 }
