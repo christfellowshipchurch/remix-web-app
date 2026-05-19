@@ -87,6 +87,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   let groupHits: GroupType[] = [];
 
   const url = new URL(request.url);
+
+  // Deep-linked filters should affect the initial server-rendered session and
+  // related-group carousels. After hydration, the same URL shape is maintained
+  // by client-side InstantSearch for interactions.
   const urlState = parseClassSingleUrlState(url.searchParams);
   const client = algoliasearch(appId, searchApiKey, {});
 
@@ -104,6 +108,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       const classType = classHit.classType?.trim() ?? '';
 
       if (classType) {
+        // The class type from the hero hit is the canonical value used to scope
+        // upcoming sessions and related groups; the route slug can differ from
+        // the Algolia classType label shown to users.
         const upcomingBuilt = buildClassSingleUpcomingSearchParams(
           urlState,
           classType,
@@ -140,6 +147,8 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   }
 
   return {
+    // Include the browser search credentials so hydrated filter changes can go
+    // straight to Algolia without revalidating this route loader.
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     classUrl,

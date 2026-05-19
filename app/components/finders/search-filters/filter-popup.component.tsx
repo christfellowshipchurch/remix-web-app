@@ -802,7 +802,7 @@ const FilterPopupContent = ({
                                 className={
                                   item.isRefined
                                     ? 'text-white'
-                                    : 'text-text-primary'
+                                    : 'hover:text-white'
                                 }
                               />
                             )}

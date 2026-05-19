@@ -40,6 +40,9 @@ function mirrorGroupsFacets(
 ): string | undefined {
   const parts: string[] = [];
 
+  // The visible filters operate on class-session attributes, while this section
+  // queries the groups index. Translate the overlapping class refinements into
+  // equivalent group filters so "Join a Group" follows the same user intent.
   const campuses = (refinementList.campus ?? []).filter(
     (v) => v != null && String(v).trim() !== '',
   );
@@ -96,6 +99,9 @@ function composeGroupsFilters(
   mirroredFacetFilters: string | undefined,
 ): string | undefined {
   const trimmed = classesIndexClassType.trim();
+
+  // Related groups should stay scoped to the class type first, then optionally
+  // mirror format/campus/language filters from the sessions search.
   const classTypeFilter = trimmed
     ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
     : null;
@@ -160,6 +166,10 @@ function ClassSingleGroupsHits({
   const { items } = useHits<GroupType>();
   const { status } = useInstantSearch();
   const isLoading = status === 'loading' || status === 'stalled';
+
+  // This nested groups search starts after the parent sessions search has
+  // mounted. Show the loader-provided groups until the client-side groups query
+  // returns, matching the first paint while filters hydrate.
   const hits = isLoading && items.length === 0 ? initialGroupHits : items;
 
   return (
@@ -192,6 +202,9 @@ export function ClassSingleGroupsSection({
     [indexUiState.refinementList],
   );
 
+  // Read the parent sessions InstantSearch state and use it to configure a
+  // separate groups InstantSearch instance. The two indexes do not share schema,
+  // so the mapping happens via `mirrorGroupsFacets` instead of reusing uiState.
   const configureFilters = useMemo(
     () =>
       composeGroupsFilters(
@@ -212,6 +225,9 @@ export function ClassSingleGroupsSection({
 
   return (
     <InstantSearch
+      // This is an intentionally separate InstantSearch instance for the groups
+      // index. It does not sync to URL; it mirrors the parent session filters
+      // through Configure so group results remain contextual to the class page.
       key={`${classUrl}|${classesIndexClassType}`}
       indexName={GROUPS_ALGOLIA_INDEX_NAME}
       searchClient={searchClient}

@@ -25,6 +25,9 @@ function refinementListToFacetFilters(
     if (!values?.length) {
       continue;
     }
+
+    // Algolia facetFilters uses an inner array as OR and separate arrays as AND:
+    // topic:(A OR B) AND language:(English OR Spanish), matching the finder UI.
     groups.push(values.map((v) => `${attr}:"${escapeAlgoliaFilterString(v)}"`));
   }
   return groups.length > 0 ? groups : undefined;

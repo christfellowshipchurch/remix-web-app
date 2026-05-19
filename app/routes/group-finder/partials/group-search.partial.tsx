@@ -74,6 +74,9 @@ function firstCampusRefinement(
 function coordinatesFromUrlState(
   urlState: ReturnType<typeof parseGroupFinderUrlState>,
 ) {
+  // Zip/GPS searches are represented outside Algolia's refinementList because
+  // InstantSearch stores geo as Configure props. Keep lat/lng in our URL state
+  // so full page loads and browser navigation can recreate the same search.
   if (
     urlState.lat != null &&
     urlState.lng != null &&
@@ -175,6 +178,9 @@ export const GroupSearch = () => {
   }, [searchParams]);
 
   const clearAllFiltersFromUrl = () => {
+    // Clear both InstantSearch-owned refinements and custom URL-only state
+    // (age + geo). Canceling the debounce prevents an in-flight URL write from
+    // re-applying stale filters after the user has cleared everything.
     cancelDebounce();
     customStateRef.current = {
       coordinates: null,
@@ -213,6 +219,9 @@ export const GroupSearch = () => {
         delete merged.lat;
         delete merged.lng;
       } else {
+        // Coordinates are later translated into Algolia geo Configure props by
+        // ResponsiveConfigure. They stay in the URL so share links preserve the
+        // user's zip/GPS location context.
         merged.lat = next.lat ?? undefined;
         merged.lng = next.lng ?? undefined;
       }
@@ -223,6 +232,8 @@ export const GroupSearch = () => {
 
   const setAgeInput = (next: string) => {
     setAgeInputState(next);
+    // Do not treat one-off keystrokes as a real age filter. This matches the
+    // filter UI threshold and avoids URL churn while the user starts typing.
     const ageValue = next.trim().length >= 2 ? next.trim() : undefined;
     const merged: GroupFinderUrlState = {
       ...parseGroupFinderUrlState(searchParams),
@@ -319,7 +330,9 @@ export const GroupSearch = () => {
     [mergeUrlState, updateUrlIfChanged],
   );
 
-  // Refinement/pagination → URL immediately (triggers loader). Query is committed via GroupFinderQueryInput.
+  // Refinement/pagination -> URL. Same-path URL changes are blocked from
+  // revalidating by route.tsx, so this write updates share/back-forward state
+  // while the actual search happens client-side in InstantSearch.
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
     const rawPage = indexUiState.page;
     const pageNum =
@@ -429,6 +442,9 @@ export const GroupSearch = () => {
           </InstantSearch>
         ) : (
           <>
+            {/* Before hydration, keep the loader-rendered results visible and
+                reserve filter space with a skeleton. This avoids a blank grid
+                while the client-only Algolia widgets boot. */}
             <FinderStickyBar>
               <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
                 <GroupFinderQueryInput
@@ -471,6 +487,10 @@ function GroupFinderInstantSearchResults({
   const { currentRefinement, nbPages, isFirstPage, isLastPage, refine } =
     usePagination();
   const isLoading = status === 'loading' || status === 'stalled';
+
+  // InstantSearch can briefly have no client hits while it issues the first
+  // request after hydration. Continue showing loader hits/counts during that
+  // gap so the SSR first paint does not flash empty.
   const hits = isLoading && items.length === 0 ? initialHits : items;
   const hitCount = isLoading && items.length === 0 ? initialNbHits : nbHits;
 

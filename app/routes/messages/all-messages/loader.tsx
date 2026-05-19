@@ -11,23 +11,17 @@ import {
   CURRENT_SERIES_LOADER_HITS_PER_PAGE,
   MESSAGES_ALGOLIA_INDEX_NAME,
   MESSAGES_SERMON_FILTER,
-  SERMON_PRIMARY_CATEGORY_FACET,
 } from './messages-page';
 import {
   parseAllMessagesUrlState,
   type AllMessagesUrlState,
 } from './all-messages-url-state';
 
-export type SermonCategoryFacetItem = {
-  value: string;
-  label: string;
-  count: number;
-};
-
 export type AllMessagesLoaderReturnType = {
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_SEARCH_API_KEY: string;
   currentSeriesHit: ContentItemHit | null;
   allMessagesHits: ContentItemHit[];
-  sermonCategoryFacets: SermonCategoryFacetItem[];
   allMessagesNbPages: number;
   allMessagesPage: number;
 };
@@ -46,21 +40,6 @@ function refinementListToFacetFilters(
     groups.push(values.map((v) => `${attr}:"${escapeAlgoliaFilterString(v)}"`));
   }
   return groups.length > 0 ? groups : undefined;
-}
-
-function mapFacetRecord(
-  facets: Record<string, Record<string, number>> | undefined,
-  attribute: string,
-): SermonCategoryFacetItem[] {
-  const slice = facets?.[attribute];
-  if (!slice) return [];
-  return Object.entries(slice)
-    .map(([value, count]) => ({
-      value,
-      label: value,
-      count,
-    }))
-    .sort((a, b) => b.count - a.count);
 }
 
 function buildAllMessagesSearchParams(urlState: AllMessagesUrlState): {
@@ -102,7 +81,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   let currentSeriesHit: ContentItemHit | null = null;
   let allMessagesHits: ContentItemHit[] = [];
-  let sermonCategoryFacets: SermonCategoryFacetItem[] = [];
   let allMessagesNbPages = 0;
 
   const url = new URL(request.url);
@@ -112,7 +90,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const client = algoliasearch(appId, searchApiKey, {});
 
   try {
-    const [seriesRes, gridRes, facetRes] = await Promise.all([
+    const [seriesRes, gridRes] = await Promise.all([
       client.searchSingleIndex({
         indexName: MESSAGES_ALGOLIA_INDEX_NAME,
         searchParams: {
@@ -123,15 +101,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       client.searchSingleIndex({
         indexName: MESSAGES_ALGOLIA_INDEX_NAME,
         searchParams: buildAllMessagesSearchParams(urlState),
-      }),
-      client.searchSingleIndex({
-        indexName: MESSAGES_ALGOLIA_INDEX_NAME,
-        searchParams: {
-          filters: MESSAGES_SERMON_FILTER,
-          hitsPerPage: 0,
-          facets: [SERMON_PRIMARY_CATEGORY_FACET],
-          maxValuesPerFacet: 50,
-        },
       }),
     ]);
 
@@ -145,19 +114,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       (h) => h as unknown as ContentItemHit,
     );
     allMessagesNbPages = gridRes.nbPages ?? 0;
-
-    sermonCategoryFacets = mapFacetRecord(
-      facetRes.facets as Record<string, Record<string, number>> | undefined,
-      SERMON_PRIMARY_CATEGORY_FACET,
-    );
   } catch (error) {
     console.error('[messages/all-messages] Algolia loader fetch failed', error);
   }
 
   return Response.json({
+    ALGOLIA_APP_ID: appId,
+    ALGOLIA_SEARCH_API_KEY: searchApiKey,
     currentSeriesHit,
     allMessagesHits,
-    sermonCategoryFacets,
     allMessagesNbPages,
     allMessagesPage,
   } satisfies AllMessagesLoaderReturnType);

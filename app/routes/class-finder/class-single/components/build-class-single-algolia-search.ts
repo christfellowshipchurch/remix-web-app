@@ -77,6 +77,8 @@ export function buildClassSingleUpcomingSearchParams(
 
   const coords = coordinatesFromClassSingleUrlState(urlState);
   if (coords) {
+    // Request ranking info whenever geo is active so the display layer can sort
+    // in-person sessions by distance while still pushing virtual sessions later.
     params.aroundLatLng = `${coords.lat}, ${coords.lng}`;
     params.aroundRadius = 'all';
     params.getRankingInfo = true;
@@ -91,6 +93,9 @@ export function mirrorGroupsFacetsFromClassRefinements(
 ): string | undefined {
   const parts: string[] = [];
 
+  // Session filters live on the Classes index, but related groups are searched
+  // on the Groups index. Translate only the facets that have a meaningful group
+  // equivalent; unmatched class facets are intentionally ignored.
   const campuses = (refinementList.campus ?? []).filter(
     (v) => v != null && String(v).trim() !== '',
   );
@@ -198,6 +203,8 @@ export function buildClassSingleGroupsSearchParams(
 
   const coords = coordinatesFromClassSingleUrlState(urlState);
   if (coords) {
+    // Mirror geo into the groups query so the related carousel follows the same
+    // location context as the upcoming sessions list.
     params.aroundLatLng = `${coords.lat}, ${coords.lng}`;
     params.aroundRadius = 'all';
     params.getRankingInfo = true;

@@ -69,6 +69,9 @@ const CLASS_SEARCH_DESKTOP_FILTERS = [
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
   return {
+    // Snapshot the URL only for the first InstantSearch mount. Later filter
+    // changes are synchronized through `onStateChange` instead of remounting
+    // the whole search tree.
     initialUiState:
       buildIndexInitialUiState(CLASSES_ALGOLIA_INDEX_NAME, urlState) ?? {},
   };
@@ -95,6 +98,8 @@ export const ClassSearch = () => {
   );
 
   const clearAllFiltersFromUrl = () => {
+    // Clear pending query debounce before resetting params; otherwise a delayed
+    // SearchBox write can restore the old query after Clear All.
     cancelDebounce();
     setSearchParams(classFinderUrlStateToParams(classFinderEmptyState), {
       replace: true,
@@ -103,6 +108,8 @@ export const ClassSearch = () => {
   };
 
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    // Keep the route's existing URL schema as the share/deep-link contract while
+    // letting InstantSearch own interactive query/refinement state after mount.
     const urlState: ClassFinderUrlState = {
       ...parseClassFinderUrlState(searchParams),
       query: (indexUiState.query as string) ?? undefined,
@@ -228,6 +235,9 @@ export const ClassSearch = () => {
           </InstantSearch>
         ) : (
           <>
+            {/* SSR fallback: the loader already produced grouped class cards.
+                Hold those on screen and show filter skeletons until client-side
+                InstantSearch is ready to take over. */}
             <FinderStickyBar>
               <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
                 <div
@@ -266,6 +276,10 @@ function ClassTypeGroupedInstantSearchResults({
   const { items } = useHits<ClassHitType>();
   const { status } = useInstantSearch();
   const isLoading = status === 'loading' || status === 'stalled';
+
+  // Keep loader hits visible while the first hydrated InstantSearch request is
+  // pending. This preserves the SSR first paint and avoids a flash before
+  // client-side Algolia returns equivalent results.
   const hits = isLoading && items.length === 0 ? initialHits : items;
 
   return (
@@ -289,6 +303,10 @@ function ClassTypeGroupedResults({
   const [currentPage, setCurrentPage] = useState(1);
 
   const grouped = useMemo(() => groupClassTypeHits(hits), [hits]);
+
+  // The class finder presents one card per class type group, not one raw
+  // Algolia record per session. Build synthetic cards from grouped hits before
+  // local pagination so the UI stays consistent with the pre-SSR behavior.
   const mappedHits = useMemo(
     () => syntheticHitsFromGrouped(grouped),
     [grouped],
@@ -298,6 +316,8 @@ function ClassTypeGroupedResults({
   const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
 
   useEffect(() => {
+    // Filter/search changes can shrink the synthetic group list. Resetting to
+    // page one prevents landing on an empty local page after the result set changes.
     setCurrentPage(1);
   }, [mappedHits.length]);
 

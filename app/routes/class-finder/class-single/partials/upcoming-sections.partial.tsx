@@ -164,6 +164,9 @@ export function ClassSingleUpcomingSearch({
           </InstantSearch>
         ) : (
           <>
+            {/* First paint uses the loader's upcoming/group hits. Filters are
+                skeletonized until InstantSearch mounts so the carousel content
+                stays visible during hydration. */}
             <FinderStickyBar className='max-md:shadow-none'>
               <div className='mx-auto flex w-full min-w-0 max-w-screen-content flex-col gap-3 py-3 md:py-4 md:pt-8 lg:min-h-20 lg:flex-row lg:items-center lg:gap-4'>
                 <h2 className='w-full pb-2 text-[28px] font-extrabold md:hidden'>
@@ -217,6 +220,9 @@ function ClassSingleUpcomingConfigure({
 
   return (
     <Configure
+      // Force Configure to re-register when the class page, class type, or geo
+      // target changes. These values influence Algolia search parameters but
+      // are not all represented in InstantSearch uiState.
       key={`${classUrl}-${trimmed}-${coordinates?.lat ?? ''}-${coordinates?.lng ?? ''}`}
       hitsPerPage={CLASS_SINGLE_UPCOMING_MAX_HITS}
       filters={classTypeFilter}
@@ -257,11 +263,15 @@ function ClassSingleUpcomingBody({
     <div className='flex w-full flex-col bg-gray py-8 pl-5 md:pl-12 lg:pl-18 lg:pr-18 md:pt-12 md:pb-20'>
       <div className='mx-auto w-full max-w-screen-content'>
         {useInitialHitsOnly ? (
-          <ClassSingleUpcomingResults
-            hits={initialUpcomingHits}
-            geoActive={geoActive}
-            isLoading={false}
-          />
+          <>
+            {/* Pre-hydration branch: avoid reading InstantSearch hooks before the
+                provider is mounted. The loader data is already sorted for first paint. */}
+            <ClassSingleUpcomingResults
+              hits={initialUpcomingHits}
+              geoActive={geoActive}
+              isLoading={false}
+            />
+          </>
         ) : (
           <ClassSingleUpcomingInstantSearchResults
             initialHits={initialUpcomingHits}
@@ -312,6 +322,9 @@ function ClassSingleUpcomingInstantSearchResults({
   const { items } = useHits<ClassHitType>();
   const { status } = useInstantSearch();
   const isLoading = status === 'loading' || status === 'stalled';
+
+  // Keep loader sessions visible until the first client-side Algolia response
+  // arrives, then switch to hydrated results for filter/search changes.
   const hits = isLoading && items.length === 0 ? initialHits : items;
 
   return (

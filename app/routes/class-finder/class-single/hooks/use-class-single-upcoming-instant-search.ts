@@ -58,6 +58,10 @@ export function useClassSingleUpcomingInstantSearch() {
     });
 
   const initialSearchParamsRef = useRef(searchParams);
+
+  // Capture URL state once for InstantSearch's initial mount. Subsequent URL
+  // changes are reconciled through onStateChange/search param effects, which
+  // keeps the client search tree mounted after hydration.
   const initialUiState = useMemo(
     () =>
       buildIndexInitialUiState(
@@ -70,6 +74,10 @@ export function useClassSingleUpcomingInstantSearch() {
   const [coordinates, setCoordinatesState] = useState<FinderGeoCoordinates>(
     () => coordinatesFromUrl(initialSearchParamsRef.current),
   );
+
+  // Geo coordinates are not stored in InstantSearch uiState; they become
+  // Configure props. The ref lets URL sync callbacks read the freshest geo
+  // value without waiting for React state closures to update.
   const coordinatesRef = useRef<FinderGeoCoordinates>(
     coordinatesFromUrl(initialSearchParamsRef.current),
   );
@@ -78,6 +86,9 @@ export function useClassSingleUpcomingInstantSearch() {
   );
 
   useEffect(() => {
+    // Back/forward navigation can change lat/lng in the URL without touching an
+    // Algolia refinement. Mirror those params into local state so Configure and
+    // location pill highlighting stay aligned with the URL.
     const next = coordinatesFromUrl(searchParams);
     coordinatesRef.current = next;
     setCoordinatesState(next);
@@ -114,6 +125,9 @@ export function useClassSingleUpcomingInstantSearch() {
         delete merged.lat;
         delete merged.lng;
       } else {
+        // Keep geo in the route URL rather than InstantSearch uiState so shared
+        // links reload into the same zip/GPS search and the loader can prefetch
+        // geo-ranked hits on a full page request.
         merged.lat = next.lat ?? undefined;
         merged.lng = next.lng ?? undefined;
       }
@@ -123,6 +137,8 @@ export function useClassSingleUpcomingInstantSearch() {
   );
 
   const clearAllFiltersFromUrl = useCallback(() => {
+    // Cancel pending query/refinement writes before clearing. Without this, a
+    // delayed debounce could restore stale filters after Clear All.
     cancelDebounce();
     coordinatesRef.current = null;
     setCoordinatesState(null);
@@ -135,6 +151,9 @@ export function useClassSingleUpcomingInstantSearch() {
 
   const syncUrlFromUiState = useCallback(
     (indexUiState: Record<string, unknown>) => {
+      // Merge InstantSearch-owned query/refinements with URL-only geo state.
+      // That keeps one shareable URL representing both regular filters and the
+      // Configure-driven aroundLatLng search.
       const urlState: ClassSingleUrlState = {
         ...parseClassSingleUrlState(searchParams),
         query: (indexUiState.query as string) ?? undefined,

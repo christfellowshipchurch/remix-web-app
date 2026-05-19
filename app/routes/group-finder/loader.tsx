@@ -34,6 +34,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let groupNbHits = 0;
   let groupNbPages = 0;
   const url = new URL(request.url);
+
+  // The loader owns first paint and deep links. Once hydrated, same-page filter
+  // changes are handled by InstantSearch, but a full request must still reflect
+  // the URL so shared links and refreshes render correctly.
   const urlState = parseGroupFinderUrlState(url.searchParams);
   const groupPage = urlState.page ?? 0;
 
@@ -55,6 +59,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   return Response.json({
+    // Expose only the search key needed by Algolia's browser client; interactive
+    // filtering then continues client-side without re-running this loader.
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     groupHits,

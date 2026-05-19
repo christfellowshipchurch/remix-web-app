@@ -1,64 +1,90 @@
+import { useLoaderData, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
-  useLoaderData,
-  useSearchParams,
-  useLocation,
-  useNavigation,
-} from 'react-router-dom';
-import { useMemo } from 'react';
+  Configure,
+  InstantSearch,
+  usePagination,
+  useRefinementList,
+} from 'react-instantsearch';
 
 import { SectionTitle } from '~/components';
+import { RefinementPills } from '~/components/finders/refinement-pills/refinement-pills.component';
+import { createInstantSearchUrlSync } from '~/components/finders/instant-search-url-sync/create-instant-search-url-sync';
+import { useHydratedHitsFallback } from '~/components/finders/use-hydrated-hits-fallback';
 import { ResourceCard } from '~/primitives/cards/resource-card';
 import type { ContentItemHit } from '~/routes/search/types';
 import { Icon } from '~/primitives/icon/icon';
 import { cn, getFirstParagraph } from '~/lib/utils';
 import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
 import { HubsTagsRefinementLoadingSkeleton } from '~/components/hubs-tags-refinement';
+import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 
 import type { AllMessagesLoaderReturnType } from '../loader';
-import { SERMON_PRIMARY_CATEGORY_FACET } from '../messages-page';
 import {
+  ALL_MESSAGES_GRID_HITS_PER_PAGE,
+  MESSAGES_ALGOLIA_INDEX_NAME,
+  MESSAGES_SERMON_FILTER,
+  SERMON_PRIMARY_CATEGORY_FACET,
+} from '../messages-page';
+import {
+  type AllMessagesUrlState,
   parseAllMessagesUrlState,
   allMessagesUrlStateToParams,
 } from '../all-messages-url-state';
 
-const pillVisualClass =
-  'rounded-[999px] text-sm font-semibold transition-colors duration-300';
+const { InstantSearchUrlSync, buildUiState } =
+  createInstantSearchUrlSync<AllMessagesUrlState>({
+    indexName: MESSAGES_ALGOLIA_INDEX_NAME,
+    parseUrlState: parseAllMessagesUrlState,
+  });
 
-const unselectedPillClass = cn(
-  'flex shrink-0 items-center',
-  pillVisualClass,
-  'w-fit max-w-full cursor-pointer justify-center whitespace-nowrap bg-gray px-4 py-2 text-text-primary hover:bg-neutral-200 md:py-2.5',
-);
+const AllMessagesInstantSearchSync = InstantSearchUrlSync;
+const buildAllMessagesInstantSearchUiState = buildUiState;
 
-const selectedPillClass = cn(
-  'grid w-max max-w-[min(100%,calc(100vw-2.5rem))] shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-0.5',
-  pillVisualClass,
-  'cursor-default bg-ocean/10 px-4 py-2 text-left text-ocean hover:bg-ocean/10 md:py-2.5',
-);
-
-const removeButtonClass =
-  'shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1';
-
-/** URL-driven finder — Algolia only in `loader.ts`. */
+/**
+ * Hybrid hub flow:
+ *
+ * - The loader fetches the initial message grid for SSR/first paint.
+ * - Current-series content remains loader-backed and independent of grid filters.
+ * - Once hydrated, InstantSearch owns the message grid refinements and pagination.
+ * - `onStateChange` mirrors InstantSearch state into the existing `/messages`
+ *   URL schema so deep links and browser navigation continue to work.
+ */
 export function AllMessages() {
   const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
     allMessagesHits,
-    sermonCategoryFacets,
     allMessagesNbPages,
     allMessagesPage,
   } = useLoaderData<AllMessagesLoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const navigation = useNavigation();
 
-  const urlState = useMemo(
-    () => parseAllMessagesUrlState(searchParams),
-    [searchParams],
+  const searchClient = useMemo(
+    () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+  );
+  const initialUrlStateRef = useRef<AllMessagesUrlState>(
+    parseAllMessagesUrlState(searchParams),
   );
 
-  const isLoading =
-    navigation.state === 'loading' &&
-    navigation.location?.pathname === location.pathname;
+  // `initialUiState` is consumed only on the first InstantSearch mount. Keeping
+  // this URL snapshot stable avoids resetting Algolia state on every query
+  // string update; later URL changes are reconciled by AllMessagesInstantSearchSync.
+  const initialUiState = useMemo(() => {
+    const state = buildAllMessagesInstantSearchUiState(
+      initialUrlStateRef.current,
+    );
+    return Object.keys(state).length > 0
+      ? (state as Record<string, Record<string, unknown>>)
+      : undefined;
+  }, []);
+  const { updateUrlIfChanged } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: allMessagesUrlStateToParams,
+  });
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
     const s = parseAllMessagesUrlState(params);
@@ -68,60 +94,14 @@ export function AllMessages() {
     );
   });
 
-  const selectedCategories =
-    urlState.refinementList?.[SERMON_PRIMARY_CATEGORY_FACET] ?? [];
-
-  const applyUrlState = (next: ReturnType<typeof parseAllMessagesUrlState>) => {
-    setSearchParams(allMessagesUrlStateToParams(next), {
-      replace: true,
-      preventScrollReset: true,
-    });
-  };
-
-  const selectCategory = (value: string) => {
-    applyUrlState({
-      ...urlState,
-      page: 0,
-      refinementList: {
-        ...urlState.refinementList,
-        [SERMON_PRIMARY_CATEGORY_FACET]: [value],
-      },
-    });
-  };
-
-  const removeCategory = (value: string) => {
-    const rl = {
-      ...(urlState.refinementList as Record<string, string[]> | undefined),
-    };
-    const current = rl[SERMON_PRIMARY_CATEGORY_FACET] ?? [];
-    const next = current.filter((v) => v !== value);
-    if (next.length === 0) {
-      delete rl[SERMON_PRIMARY_CATEGORY_FACET];
-    } else {
-      rl[SERMON_PRIMARY_CATEGORY_FACET] = next;
-    }
-    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
-    applyUrlState({
-      ...urlState,
-      page: 0,
-      refinementList,
-    });
-  };
-
-  const goToPage = (nextPage: number) => {
-    applyUrlState({
-      ...urlState,
-      page: Math.max(0, nextPage),
-    });
-    const scrollTarget = document.querySelector('.pagination-scroll-to');
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const isFirstPage = allMessagesPage <= 0;
   const isLastPage =
     allMessagesNbPages <= 0 || allMessagesPage >= allMessagesNbPages - 1;
+
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
 
   return (
     <section className='relative py-32 min-h-screen bg-white content-padding pagination-scroll-to'>
@@ -132,98 +112,218 @@ export function AllMessages() {
           title='Christ Fellowship Church Messages'
         />
 
-        <div className='mt-10 mb-12'>
-          <div className='flex gap-2 md:gap-4 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide'>
-            {sermonCategoryFacets.map((item) => {
-              const isRefined = selectedCategories.includes(item.value);
-              return isRefined ? (
-                <div
-                  key={item.value}
-                  className={selectedPillClass}
-                  role='group'
-                  aria-label={`Active filter ${item.label}`}
-                >
-                  <span className='min-w-0 break-words leading-snug'>
-                    {item.label}
-                  </span>
-                  <button
-                    type='button'
-                    className={cn(removeButtonClass, 'self-start pt-0.5')}
-                    aria-label={`Remove filter ${item.label}`}
-                    onClick={() => removeCategory(item.value)}
-                  >
-                    <Icon name='x' className='text-ocean' size={16} />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type='button'
-                  key={item.value}
-                  className={unselectedPillClass}
-                  onClick={() => selectCategory(item.value)}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {filtersMounted ? (
+          <InstantSearch
+            indexName={MESSAGES_ALGOLIA_INDEX_NAME}
+            searchClient={searchClient}
+            initialUiState={initialUiState}
+            onStateChange={({ uiState, setUiState }) => {
+              setUiState(uiState);
+              const indexState = uiState[MESSAGES_ALGOLIA_INDEX_NAME];
+              if (!indexState) return;
+              const index = indexState as Record<string, unknown>;
 
-        {isLoading && allMessagesHits.length === 0 && (
-          <AllMessagesLoadingSkeleton />
-        )}
-
-        <div className='min-h-[320px]'>
-          {allMessagesHits.length === 0 && !isLoading ? (
-            <p className='text-text-secondary text-center py-8'>
-              No messages found. Try adjusting your filters or search.
-            </p>
-          ) : allMessagesHits.length === 0 && isLoading ? null : (
-            <div
-              className={cn(
-                'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center',
-                isLoading && 'opacity-60 pointer-events-none',
-              )}
-            >
-              {allMessagesHits.map((hit) => (
-                <MessageHit hit={hit} key={hit.objectID} />
-              ))}
+              // Translate InstantSearch's index slice back into our route URL
+              // shape instead of adopting InstantSearch's default routing format.
+              const nextUrlState: AllMessagesUrlState = {
+                query:
+                  typeof index.query === 'string' &&
+                  index.query.trim().length > 0
+                    ? index.query
+                    : undefined,
+                refinementList:
+                  (index.refinementList as Record<string, string[]>) ??
+                  undefined,
+                page:
+                  typeof index.page === 'number' && index.page > 0
+                    ? index.page
+                    : undefined,
+              };
+              updateUrlIfChanged(nextUrlState);
+            }}
+            future={{ preserveSharedStateOnUnmount: true }}
+          >
+            <AllMessagesInstantSearchSync />
+            <Configure
+              filters={MESSAGES_SERMON_FILTER}
+              hitsPerPage={ALL_MESSAGES_GRID_HITS_PER_PAGE}
+            />
+            <AllMessagesFilters />
+            <AllMessagesInstantResults initialMessageHits={allMessagesHits} />
+          </InstantSearch>
+        ) : (
+          <>
+            {/* SSR fallback: preserve the loader-rendered cards and reserve the
+                filter row while the client-only InstantSearch widgets mount. */}
+            <div className='mt-10 mb-12'>
+              <HubsTagsRefinementLoadingSkeleton />
             </div>
-          )}
-        </div>
-
-        {allMessagesNbPages > 1 && (
-          <div className='flex items-center justify-start gap-4 mt-16'>
-            <PaginationButton
-              isDisabled={isFirstPage}
-              onClick={() => goToPage(allMessagesPage - 1)}
-              href='#'
-              className='w-12 h-12'
-            >
-              <Icon name='chevronLeft' size={24} />
-            </PaginationButton>
-
-            <PaginationButton
-              isActive
-              onClick={() => {}}
-              href='#'
-              className='w-12 h-12 bg-navy text-white'
-            >
-              {allMessagesPage + 1}
-            </PaginationButton>
-
-            <PaginationButton
-              isDisabled={isLastPage}
-              onClick={() => goToPage(allMessagesPage + 1)}
-              href='#'
-              className='w-12 h-12'
-            >
-              <Icon name='chevronRight' size={24} />
-            </PaginationButton>
-          </div>
+            <AllMessagesResultsLayout
+              messageHits={allMessagesHits}
+              messagesNbPages={allMessagesNbPages}
+              messagesPage={allMessagesPage}
+              isFirstPage={isFirstPage}
+              isLastPage={isLastPage}
+              isLoading={false}
+              goToPage={(nextPage) => {
+                updateUrlIfChanged({ page: Math.max(0, nextPage) });
+                const scrollTarget = document.querySelector(
+                  '.pagination-scroll-to',
+                );
+                if (scrollTarget) {
+                  scrollTarget.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            />
+          </>
         )}
       </div>
     </section>
+  );
+}
+
+function AllMessagesFilters() {
+  const { items, refine } = useRefinementList({
+    attribute: SERMON_PRIMARY_CATEGORY_FACET,
+    limit: 50,
+  });
+  const selectedCategories = items
+    .filter((item) => item.isRefined)
+    .map((item) => item.value);
+
+  const setSingleCategory = (value: string | null) => {
+    // Algolia's refinement list is naturally multi-select. The hub UI is
+    // intentionally single-select, so clear any existing category before
+    // selecting the next one.
+    const currentlyRefined = items.filter((item) => item.isRefined);
+    currentlyRefined.forEach((item) => {
+      if (value == null || item.value !== value) {
+        refine(item.value);
+      }
+    });
+    if (value == null) return;
+    const next = items.find((item) => item.value === value);
+    if (next && !next.isRefined) {
+      refine(value);
+    }
+  };
+
+  return (
+    <div className='mt-10 mb-12'>
+      <RefinementPills
+        items={items.map((item) => ({ value: item.value, label: item.label }))}
+        selectedValues={selectedCategories}
+        onSelect={(value) => setSingleCategory(value)}
+        onRemove={() => setSingleCategory(null)}
+      />
+    </div>
+  );
+}
+
+function AllMessagesInstantResults({
+  initialMessageHits,
+}: {
+  initialMessageHits: ContentItemHit[];
+}) {
+  const { hits: messageHits, isLoading } =
+    useHydratedHitsFallback<ContentItemHit>({
+      initialHits: initialMessageHits,
+    });
+  const { currentRefinement, nbPages, isFirstPage, isLastPage, refine } =
+    usePagination();
+
+  return (
+    <AllMessagesResultsLayout
+      messageHits={messageHits}
+      messagesNbPages={nbPages}
+      messagesPage={currentRefinement}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
+      isLoading={isLoading}
+      goToPage={(nextPage) => {
+        // Pagination is a client-side Algolia refinement. The route URL updates
+        // through `onStateChange`, keeping loader revalidation disabled.
+        refine(Math.max(0, nextPage));
+        window.requestAnimationFrame(() => {
+          const scrollTarget = document.querySelector('.pagination-scroll-to');
+          scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }}
+    />
+  );
+}
+
+function AllMessagesResultsLayout({
+  messageHits,
+  messagesNbPages,
+  messagesPage,
+  isFirstPage,
+  isLastPage,
+  isLoading,
+  goToPage,
+}: {
+  messageHits: ContentItemHit[];
+  messagesNbPages: number;
+  messagesPage: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+  isLoading: boolean;
+  goToPage: (nextPage: number) => void;
+}) {
+  return (
+    <>
+      {isLoading && messageHits.length === 0 && <AllMessagesLoadingSkeleton />}
+
+      <div className='min-h-[320px]'>
+        {messageHits.length === 0 && !isLoading ? (
+          <p className='text-text-secondary text-center py-8'>
+            No messages found. Try adjusting your filters or search.
+          </p>
+        ) : messageHits.length === 0 && isLoading ? null : (
+          <div
+            className={cn(
+              'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:gap-8! justify-center items-center',
+              isLoading && 'opacity-60 pointer-events-none',
+            )}
+          >
+            {messageHits.map((hit) => (
+              <MessageHit hit={hit} key={hit.objectID} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {messagesNbPages > 1 && (
+        <div className='flex items-center justify-start gap-4 mt-16'>
+          <PaginationButton
+            isDisabled={isFirstPage}
+            onClick={() => goToPage(messagesPage - 1)}
+            href='#'
+            className='w-12 h-12'
+          >
+            <Icon name='chevronLeft' size={24} />
+          </PaginationButton>
+
+          <PaginationButton
+            isActive
+            onClick={() => {}}
+            href='#'
+            className='w-12 h-12 bg-navy text-white'
+          >
+            {messagesPage + 1}
+          </PaginationButton>
+
+          <PaginationButton
+            isDisabled={isLastPage}
+            onClick={() => goToPage(messagesPage + 1)}
+            href='#'
+            className='w-12 h-12'
+          >
+            <Icon name='chevronRight' size={24} />
+          </PaginationButton>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -307,7 +407,7 @@ const AllMessagesLoadingSkeleton = () => {
   return (
     <div className='flex flex-col gap-8 pt-8'>
       <HubsTagsRefinementLoadingSkeleton />
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:!gap-8 justify-center items-center'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:gap-8! justify-center items-center'>
         {[...Array(9)].map((_, i) => (
           <div
             key={i}

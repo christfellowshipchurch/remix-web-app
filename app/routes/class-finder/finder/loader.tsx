@@ -30,6 +30,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let classHits: ClassHitType[] = [];
 
   const url = new URL(request.url);
+
+  // Direct links with ?q=/refinement params should render the matching class
+  // cards on first paint. Same-route param changes after hydration are handled
+  // by InstantSearch, but a full request still needs to honor the URL.
   const urlState = parseClassFinderUrlState(url.searchParams);
 
   const client = algoliasearch(appId, searchApiKey, {});
@@ -49,6 +53,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   return Response.json({
+    // The browser receives the search-only key so the hydrated InstantSearch
+    // tree can own subsequent filtering without posting back to this loader.
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     classHits,

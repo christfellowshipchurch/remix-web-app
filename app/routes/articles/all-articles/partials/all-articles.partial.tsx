@@ -1,62 +1,92 @@
+import { useLoaderData, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
-  useLoaderData,
-  useSearchParams,
-  useLocation,
-  useNavigation,
-} from 'react-router-dom';
-import { useMemo } from 'react';
+  Configure,
+  InstantSearch,
+  useInstantSearch,
+  usePagination,
+  useRefinementList,
+} from 'react-instantsearch';
 
 import { ContentItemHit } from '~/routes/search/types';
 import { Icon } from '~/primitives/icon/icon';
 import { cn } from '~/lib/utils';
+import { createInstantSearchUrlSync } from '~/components/finders/instant-search-url-sync/create-instant-search-url-sync';
+import { RefinementPills } from '~/components/finders/refinement-pills/refinement-pills.component';
+import { useHydratedHitsFallback } from '~/components/finders/use-hydrated-hits-fallback';
 import { ArticleCard } from '../components/article-card.component';
 import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import { HubsTagsRefinementLoadingSkeleton } from '~/components/hubs-tags-refinement';
+import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 
 import { AllArticlesReturnType } from '../loader';
-import { ALL_ARTICLES_CATEGORY_FACET } from '../all-articles-page';
 import {
+  ALL_ARTICLES_CATEGORY_FACET,
+  ALL_ARTICLES_INDEX_NAME,
+  ALL_ARTICLES_TYPE_FILTER,
+} from '../all-articles-page';
+import {
+  type AllArticlesUrlState,
   parseAllArticlesUrlState,
   allArticlesUrlStateToParams,
 } from '../all-articles-url-state';
 
-const pillVisualClass =
-  'rounded-[999px] text-sm font-semibold transition-colors duration-300';
+const { InstantSearchUrlSync, buildUiState } =
+  createInstantSearchUrlSync<AllArticlesUrlState>({
+    indexName: ALL_ARTICLES_INDEX_NAME,
+    parseUrlState: parseAllArticlesUrlState,
+  });
 
-const unselectedPillClass = cn(
-  'flex shrink-0 items-center',
-  pillVisualClass,
-  'w-fit max-w-full cursor-pointer justify-center whitespace-nowrap bg-gray px-4 py-2 text-text-primary hover:bg-neutral-200 md:py-2.5',
-);
+const AllArticlesInstantSearchSync = InstantSearchUrlSync;
+const buildAllArticlesInstantSearchUiState = buildUiState;
 
-const selectedPillClass = cn(
-  'grid w-max max-w-[min(100%,calc(100vw-2.5rem))] shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-0.5',
-  pillVisualClass,
-  'cursor-default bg-ocean/10 px-4 py-2 text-left text-ocean hover:bg-ocean/10 md:py-2.5',
-);
+const ALL_ARTICLES_CLIENT_HITS_PER_PAGE = 12;
 
-const removeButtonClass =
-  'shrink-0 cursor-pointer rounded-full p-0.5 text-ocean transition-colors hover:bg-ocean/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-1';
-
-/** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — URL-driven finder (Algolia only in loader). */
+/**
+ * Hybrid hub flow:
+ *
+ * - The route loader fetches article hits for SSR/first paint.
+ * - After hydration, InstantSearch mounts with the same URL-derived state.
+ * - Filter and pagination changes update InstantSearch first, then `onStateChange`
+ *   mirrors those changes into the existing route URL format.
+ * - `shouldRevalidate` on the route prevents same-page query-string changes from
+ *   re-running this loader, so subsequent searches stay client-side.
+ */
 export function AllArticles() {
   const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
     initialArticleHits,
-    articleCategoryFacets,
     articlesNbPages,
     articlesPage,
   } = useLoaderData<AllArticlesReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const navigation = useNavigation();
 
-  const urlState = useMemo(
-    () => parseAllArticlesUrlState(searchParams),
-    [searchParams],
+  const searchClient = useMemo(
+    () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
+    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
+  );
+  const initialUrlStateRef = useRef<AllArticlesUrlState>(
+    parseAllArticlesUrlState(searchParams),
   );
 
-  const isLoading =
-    navigation.state === 'loading' &&
-    navigation.location?.pathname === location.pathname;
+  // Capture the first URL state once. `initialUiState` is only meant for the
+  // first InstantSearch mount; later URL changes are handled by
+  // `AllArticlesInstantSearchSync` instead of remounting the entire search tree.
+  const initialUiState = useMemo(() => {
+    const state = buildAllArticlesInstantSearchUiState(
+      initialUrlStateRef.current,
+    );
+    return Object.keys(state).length > 0
+      ? (state as Record<string, Record<string, unknown>>)
+      : undefined;
+  }, []);
+  const { updateUrlIfChanged } = useAlgoliaUrlSync({
+    searchParams,
+    setSearchParams,
+    toParams: allArticlesUrlStateToParams,
+  });
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
     const s = parseAllArticlesUrlState(params);
@@ -66,156 +96,244 @@ export function AllArticles() {
     );
   });
 
-  const selectedCategories =
-    urlState.refinementList?.[ALL_ARTICLES_CATEGORY_FACET] ?? [];
-
-  const applyUrlState = (next: ReturnType<typeof parseAllArticlesUrlState>) => {
-    setSearchParams(allArticlesUrlStateToParams(next), {
-      replace: true,
-      preventScrollReset: true,
-    });
-  };
-
-  const selectCategory = (value: string) => {
-    applyUrlState({
-      ...urlState,
-      page: 0,
-      refinementList: {
-        ...urlState.refinementList,
-        [ALL_ARTICLES_CATEGORY_FACET]: [value],
-      },
-    });
-  };
-
-  const removeCategory = (value: string) => {
-    const rl = {
-      ...(urlState.refinementList as Record<string, string[]> | undefined),
-    };
-    const current = rl[ALL_ARTICLES_CATEGORY_FACET] ?? [];
-    const next = current.filter((v) => v !== value);
-    if (next.length === 0) {
-      delete rl[ALL_ARTICLES_CATEGORY_FACET];
-    } else {
-      rl[ALL_ARTICLES_CATEGORY_FACET] = next;
-    }
-    const refinementList = Object.keys(rl).length > 0 ? rl : undefined;
-    applyUrlState({
-      ...urlState,
-      page: 0,
-      refinementList,
-    });
-  };
-
-  const goToPage = (nextPage: number) => {
-    applyUrlState({
-      ...urlState,
-      page: Math.max(0, nextPage),
-    });
-    const scrollTarget = document.querySelector('.pagination-scroll-to');
-    if (scrollTarget) {
-      scrollTarget.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const isFirstPage = articlesPage <= 0;
   const isLastPage =
     articlesNbPages <= 0 || articlesPage >= articlesNbPages - 1;
 
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  useEffect(() => {
+    setFiltersMounted(true);
+  }, []);
+
   return (
     <section className='relative pb-28 pt-8 md:pt-16 min-h-screen bg-white content-padding pagination-scroll-to'>
       <div className='relative max-w-screen-content mx-auto'>
-        <div className='mb-4'>
-          <div className='flex gap-2 md:gap-4 flex-nowrap px-1 pb-4 overflow-x-auto scrollbar-hide'>
-            {articleCategoryFacets.map((item) => {
-              const isRefined = selectedCategories.includes(item.value);
-              return isRefined ? (
-                <div
-                  key={item.value}
-                  className={selectedPillClass}
-                  role='group'
-                  aria-label={`Active filter ${item.label}`}
-                >
-                  <span className='min-w-0 break-words leading-snug'>
-                    {item.label}
-                  </span>
-                  <button
-                    type='button'
-                    className={cn(removeButtonClass, 'self-start pt-0.5')}
-                    aria-label={`Remove filter ${item.label}`}
-                    onClick={() => removeCategory(item.value)}
-                  >
-                    <Icon name='x' className='text-ocean' size={16} />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type='button'
-                  key={item.value}
-                  className={unselectedPillClass}
-                  onClick={() => selectCategory(item.value)}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {filtersMounted ? (
+          <InstantSearch
+            indexName={ALL_ARTICLES_INDEX_NAME}
+            searchClient={searchClient}
+            initialUiState={initialUiState}
+            onStateChange={({ uiState, setUiState }) => {
+              setUiState(uiState);
+              const indexState = uiState[ALL_ARTICLES_INDEX_NAME];
+              if (!indexState) return;
+              const index = indexState as Record<string, unknown>;
 
-        {isLoading && initialArticleHits.length === 0 && (
-          <AllArticlesLoadingSkeleton />
-        )}
-
-        <div className='min-h-[320px]'>
-          {initialArticleHits.length === 0 && !isLoading ? (
-            <p className='text-text-secondary text-center py-8'>
-              No articles found. Try adjusting your filters or search.
-            </p>
-          ) : initialArticleHits.length === 0 && isLoading ? null : (
-            <div
-              className={cn(
-                'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:gap-8! justify-center items-center',
-                isLoading && 'opacity-60 pointer-events-none',
-              )}
-            >
-              {initialArticleHits.map((hit) => (
-                <ArticleHit hit={hit} key={hit.objectID} />
-              ))}
+              // InstantSearch owns interactive state after hydration. This
+              // adapter keeps the public URL contract stable for deep links,
+              // browser navigation, and server loader parsing on full refresh.
+              const nextUrlState: AllArticlesUrlState = {
+                query:
+                  typeof index.query === 'string' &&
+                  index.query.trim().length > 0
+                    ? index.query
+                    : undefined,
+                refinementList:
+                  (index.refinementList as Record<string, string[]>) ??
+                  undefined,
+                page:
+                  typeof index.page === 'number' && index.page > 0
+                    ? index.page
+                    : undefined,
+              };
+              updateUrlIfChanged(nextUrlState);
+            }}
+            future={{ preserveSharedStateOnUnmount: true }}
+          >
+            <AllArticlesInstantSearchSync />
+            <Configure
+              filters={ALL_ARTICLES_TYPE_FILTER}
+              hitsPerPage={ALL_ARTICLES_CLIENT_HITS_PER_PAGE}
+              distinct
+            />
+            <AllArticlesFilters />
+            <AllArticlesInstantResults
+              initialArticleHits={initialArticleHits}
+            />
+          </InstantSearch>
+        ) : (
+          <>
+            {/* Server-rendered fallback: real loader cards plus a filter skeleton.
+                This branch avoids hydration mismatch and keeps first paint fast. */}
+            <div className='mb-4'>
+              <HubsTagsRefinementLoadingSkeleton />
             </div>
-          )}
-        </div>
-
-        {articlesNbPages > 1 && (
-          <div className='flex items-center justify-start gap-4 mt-16'>
-            <PaginationButton
-              isDisabled={isFirstPage}
-              onClick={() => goToPage(articlesPage - 1)}
-              href='#'
-              className='w-12 h-12'
-            >
-              <Icon name='chevronLeft' size={24} />
-            </PaginationButton>
-
-            <PaginationButton
-              isActive
-              onClick={() => {}}
-              href='#'
-              className='w-12 h-12 bg-navy text-white'
-            >
-              {articlesPage + 1}
-            </PaginationButton>
-
-            <PaginationButton
-              isDisabled={isLastPage}
-              onClick={() => goToPage(articlesPage + 1)}
-              href='#'
-              className='w-12 h-12'
-            >
-              <Icon name='chevronRight' size={24} />
-            </PaginationButton>
-          </div>
+            <AllArticlesResultsLayout
+              articleHits={initialArticleHits}
+              articlesNbPages={articlesNbPages}
+              articlesPage={articlesPage}
+              isFirstPage={isFirstPage}
+              isLastPage={isLastPage}
+              isLoading={false}
+              goToPage={(nextPage) => {
+                updateUrlIfChanged({ page: Math.max(0, nextPage) });
+                const scrollTarget = document.querySelector(
+                  '.pagination-scroll-to',
+                );
+                if (scrollTarget) {
+                  scrollTarget.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            />
+          </>
         )}
       </div>
     </section>
+  );
+}
+
+function AllArticlesFilters() {
+  const { items } = useRefinementList({
+    attribute: ALL_ARTICLES_CATEGORY_FACET,
+    limit: 50,
+  });
+  const { indexUiState, setIndexUiState } = useInstantSearch();
+  const refinementList =
+    (indexUiState.refinementList as Record<string, string[]>) ?? {};
+  const selectedCategories = refinementList[ALL_ARTICLES_CATEGORY_FACET] ?? [];
+
+  const setSingleCategory = (value: string | null) => {
+    setIndexUiState((prev) => {
+      const prevRefinementList =
+        (prev.refinementList as Record<string, string[]>) ?? {};
+      const nextRefinementList = { ...prevRefinementList };
+      if (value == null) {
+        delete nextRefinementList[ALL_ARTICLES_CATEGORY_FACET];
+      } else {
+        // The UI behaves like a menu/radio group, even though Algolia stores
+        // facet refinements as arrays. Replacing the array keeps one active
+        // category while preserving the standard `refinementList` state shape.
+        nextRefinementList[ALL_ARTICLES_CATEGORY_FACET] = [value];
+      }
+
+      return {
+        ...prev,
+        // Any filter change should return to the first result page.
+        page: 0,
+        refinementList:
+          Object.keys(nextRefinementList).length > 0
+            ? nextRefinementList
+            : undefined,
+      };
+    });
+  };
+
+  return (
+    <div className='mb-4'>
+      <RefinementPills
+        items={items.map((item) => ({ value: item.value, label: item.label }))}
+        selectedValues={selectedCategories}
+        onSelect={(value) => setSingleCategory(value)}
+        onRemove={() => setSingleCategory(null)}
+      />
+    </div>
+  );
+}
+
+function AllArticlesInstantResults({
+  initialArticleHits,
+}: {
+  initialArticleHits: ContentItemHit[];
+}) {
+  const { hits: articleHits, isLoading } =
+    useHydratedHitsFallback<ContentItemHit>({
+      initialHits: initialArticleHits,
+    });
+  const { currentRefinement, nbPages, isFirstPage, isLastPage, refine } =
+    usePagination();
+
+  return (
+    <AllArticlesResultsLayout
+      articleHits={articleHits}
+      articlesNbPages={nbPages}
+      articlesPage={currentRefinement}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
+      isLoading={isLoading}
+      goToPage={(nextPage) => {
+        // Pagination refines InstantSearch state; `onStateChange` above handles
+        // writing the resulting 0-based page back into the route URL.
+        refine(Math.max(0, nextPage));
+        window.requestAnimationFrame(() => {
+          const scrollTarget = document.querySelector('.pagination-scroll-to');
+          scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }}
+    />
+  );
+}
+
+function AllArticlesResultsLayout({
+  articleHits,
+  articlesNbPages,
+  articlesPage,
+  isFirstPage,
+  isLastPage,
+  isLoading,
+  goToPage,
+}: {
+  articleHits: ContentItemHit[];
+  articlesNbPages: number;
+  articlesPage: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+  isLoading: boolean;
+  goToPage: (nextPage: number) => void;
+}) {
+  return (
+    <>
+      {isLoading && articleHits.length === 0 && <AllArticlesLoadingSkeleton />}
+
+      <div className='min-h-[320px]'>
+        {articleHits.length === 0 && !isLoading ? (
+          <p className='text-text-secondary text-center py-8'>
+            No articles found. Try adjusting your filters or search.
+          </p>
+        ) : articleHits.length === 0 && isLoading ? null : (
+          <div
+            className={cn(
+              'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-4 xl:gap-8! justify-center items-center',
+              isLoading && 'opacity-60 pointer-events-none',
+            )}
+          >
+            {articleHits.map((hit) => (
+              <ArticleHit hit={hit} key={hit.objectID} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {articlesNbPages > 1 && (
+        <div className='flex items-center justify-start gap-4 mt-16'>
+          <PaginationButton
+            isDisabled={isFirstPage}
+            onClick={() => goToPage(articlesPage - 1)}
+            href='#'
+            className='w-12 h-12'
+          >
+            <Icon name='chevronLeft' size={24} />
+          </PaginationButton>
+
+          <PaginationButton
+            isActive
+            onClick={() => {}}
+            href='#'
+            className='w-12 h-12 bg-navy text-white'
+          >
+            {articlesPage + 1}
+          </PaginationButton>
+
+          <PaginationButton
+            isDisabled={isLastPage}
+            onClick={() => goToPage(articlesPage + 1)}
+            href='#'
+            className='w-12 h-12'
+          >
+            <Icon name='chevronRight' size={24} />
+          </PaginationButton>
+        </div>
+      )}
+    </>
   );
 }
 
