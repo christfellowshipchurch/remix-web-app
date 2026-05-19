@@ -13,10 +13,12 @@ export function Breadcrumbs({ mode = 'dark' }: BreadcrumbsProps) {
 
   const breadcrumbs = pathSegments.map((segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join('/')}`;
+    const isCurrentPage = index === pathSegments.length - 1;
     const pageName = segment
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
+    const label = decodeURIComponent(pageName);
 
     return (
       <div
@@ -29,11 +31,17 @@ export function Breadcrumbs({ mode = 'dark' }: BreadcrumbsProps) {
           size={20}
           name='caretRight'
         />
-        <Link to={path}>
-          <span className='hover:underline text-sm line-clamp-2'>
-            {decodeURIComponent(pageName)}
+        {isCurrentPage ? (
+          <span className='text-sm line-clamp-2' aria-current='page'>
+            {label}
           </span>
-        </Link>
+        ) : (
+          <Link to={path}>
+            <span className='hover:underline text-sm line-clamp-2'>
+              {label}
+            </span>
+          </Link>
+        )}
       </div>
     );
   });
