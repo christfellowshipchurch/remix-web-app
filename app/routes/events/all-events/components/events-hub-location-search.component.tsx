@@ -5,7 +5,7 @@ import { cn } from '~/lib/utils';
 
 import type { EventFinderFacetItem } from '../loader';
 import type { EventsFinderUrlState } from '../../events-url-state';
-import { EVENT_FACET_LOCATIONS } from '../all-events-page';
+import { EVENT_FACET_LOCATIONS } from '../all-events.constants';
 
 interface EventsHubLocationSearchProps {
   placeholder?: string;

@@ -10,7 +10,7 @@ import {
 import {
   EVENT_FACET_CATEGORIES,
   EVENT_FACET_LOCATIONS,
-} from '../all-events-page';
+} from '../all-events.constants';
 
 type RefinementChip = {
   key: string;

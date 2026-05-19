@@ -26,21 +26,12 @@ import {
   MESSAGES_ALGOLIA_INDEX_NAME,
   MESSAGES_SERMON_FILTER,
   SERMON_PRIMARY_CATEGORY_FACET,
-} from '../messages-page';
+} from '../all-messages.constants';
 import {
   type AllMessagesUrlState,
   parseAllMessagesUrlState,
   allMessagesUrlStateToParams,
 } from '../all-messages-url-state';
-
-const { InstantSearchUrlSync, buildUiState } =
-  createInstantSearchUrlSync<AllMessagesUrlState>({
-    indexName: MESSAGES_ALGOLIA_INDEX_NAME,
-    parseUrlState: parseAllMessagesUrlState,
-  });
-
-const AllMessagesInstantSearchSync = InstantSearchUrlSync;
-const buildAllMessagesInstantSearchUiState = buildUiState;
 
 /**
  * Hybrid hub flow:
@@ -60,6 +51,15 @@ export function AllMessages() {
     allMessagesPage,
   } = useLoaderData<AllMessagesLoaderReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { InstantSearchUrlSync, buildUiState } =
+    createInstantSearchUrlSync<AllMessagesUrlState>({
+      indexName: MESSAGES_ALGOLIA_INDEX_NAME,
+      parseUrlState: parseAllMessagesUrlState,
+    });
+
+  const AllMessagesInstantSearchSync = InstantSearchUrlSync;
+  const buildAllMessagesInstantSearchUiState = buildUiState;
 
   const searchClient = useMemo(
     () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),

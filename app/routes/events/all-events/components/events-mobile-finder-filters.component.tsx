@@ -18,7 +18,7 @@ import type { EventsFinderUrlState } from '../../events-url-state';
 import {
   EVENT_FACET_CATEGORIES,
   EVENT_FACET_LOCATIONS,
-} from '../all-events-page';
+} from '../all-events.constants';
 import { EventsUrlActiveFilters } from './events-url-active-filters.component';
 
 const PILL_BASE =

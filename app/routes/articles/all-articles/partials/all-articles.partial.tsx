@@ -21,7 +21,11 @@ import { HubsTagsRefinementLoadingSkeleton } from '~/components/hubs-tags-refine
 import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 
 import type { AllArticlesReturnType } from '../loader';
-
+import {
+  ALL_ARTICLES_CATEGORY_FACET,
+  ALL_ARTICLES_INDEX_NAME,
+  ALL_ARTICLES_TYPE_FILTER,
+} from '../all-articles.constants';
 import {
   type AllArticlesUrlState,
   parseAllArticlesUrlState,
@@ -45,8 +49,6 @@ export function AllArticles() {
     initialArticleHits,
     articlesNbPages,
     articlesPage,
-    ALL_ARTICLES_INDEX_NAME,
-    ALL_ARTICLES_TYPE_FILTER,
   } = useLoaderData<AllArticlesReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -181,8 +183,6 @@ export function AllArticles() {
 }
 
 function AllArticlesFilters() {
-  const { ALL_ARTICLES_CATEGORY_FACET } =
-    useLoaderData<AllArticlesReturnType>();
   const { items } = useRefinementList({
     attribute: ALL_ARTICLES_CATEGORY_FACET,
     limit: 50,

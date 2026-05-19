@@ -36,7 +36,7 @@ import {
   EVENTS_INDEX,
   MAIN_EVENTS_GRID_HITS_PER_PAGE,
   MAIN_EVENTS_TYPE_FILTER,
-} from '../all-events-page';
+} from '../all-events.constants';
 
 const { InstantSearchUrlSync, buildUiState } =
   createInstantSearchUrlSync<EventsFinderUrlState>({

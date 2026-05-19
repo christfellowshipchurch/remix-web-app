@@ -11,7 +11,7 @@ import {
   CURRENT_SERIES_LOADER_HITS_PER_PAGE,
   MESSAGES_ALGOLIA_INDEX_NAME,
   MESSAGES_SERMON_FILTER,
-} from './messages-page';
+} from './all-messages.constants';
 import {
   parseAllMessagesUrlState,
   type AllMessagesUrlState,
