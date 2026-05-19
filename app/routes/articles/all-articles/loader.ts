@@ -6,18 +6,20 @@ import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.u
 import { AuthenticationError } from '~/lib/.server/error-types';
 import type { ContentItemHit } from '~/routes/search/types';
 
-import {
-  ALL_ARTICLES_INDEX_NAME,
-  ALL_ARTICLES_TYPE_FILTER,
-} from './all-articles-page';
 import { parseAllArticlesUrlState } from './all-articles-url-state';
 
 /** Matches largest grid column count in `all-articles.partial.tsx`. */
 const ALL_ARTICLES_LOADER_HITS_PER_PAGE = 12;
+const ALL_ARTICLES_INDEX_NAME = 'dev_contentItems' as const;
+const ALL_ARTICLES_TYPE_FILTER = 'contentType:"Article"' as const;
+const ALL_ARTICLES_CATEGORY_FACET = 'articlePrimaryCategories' as const;
 
 export type AllArticlesReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  ALL_ARTICLES_INDEX_NAME: string;
+  ALL_ARTICLES_TYPE_FILTER: string;
+  ALL_ARTICLES_CATEGORY_FACET: string;
   initialArticleHits: ContentItemHit[];
   articlesNbPages: number;
   articlesPage: number;
@@ -106,6 +108,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return Response.json({
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    ALL_ARTICLES_INDEX_NAME,
+    ALL_ARTICLES_TYPE_FILTER,
+    ALL_ARTICLES_CATEGORY_FACET,
     initialArticleHits,
     articlesNbPages,
     articlesPage,

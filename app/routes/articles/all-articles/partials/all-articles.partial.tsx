@@ -20,28 +20,13 @@ import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-res
 import { HubsTagsRefinementLoadingSkeleton } from '~/components/hubs-tags-refinement';
 import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 
-import { AllArticlesReturnType } from '../loader';
-import {
-  ALL_ARTICLES_CATEGORY_FACET,
-  ALL_ARTICLES_INDEX_NAME,
-  ALL_ARTICLES_TYPE_FILTER,
-} from '../all-articles-page';
+import type { AllArticlesReturnType } from '../loader';
+
 import {
   type AllArticlesUrlState,
   parseAllArticlesUrlState,
   allArticlesUrlStateToParams,
 } from '../all-articles-url-state';
-
-const { InstantSearchUrlSync, buildUiState } =
-  createInstantSearchUrlSync<AllArticlesUrlState>({
-    indexName: ALL_ARTICLES_INDEX_NAME,
-    parseUrlState: parseAllArticlesUrlState,
-  });
-
-const AllArticlesInstantSearchSync = InstantSearchUrlSync;
-const buildAllArticlesInstantSearchUiState = buildUiState;
-
-const ALL_ARTICLES_CLIENT_HITS_PER_PAGE = 12;
 
 /**
  * Hybrid hub flow:
@@ -60,8 +45,21 @@ export function AllArticles() {
     initialArticleHits,
     articlesNbPages,
     articlesPage,
+    ALL_ARTICLES_INDEX_NAME,
+    ALL_ARTICLES_TYPE_FILTER,
   } = useLoaderData<AllArticlesReturnType>();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { InstantSearchUrlSync, buildUiState } =
+    createInstantSearchUrlSync<AllArticlesUrlState>({
+      indexName: ALL_ARTICLES_INDEX_NAME,
+      parseUrlState: parseAllArticlesUrlState,
+    });
+
+  const AllArticlesInstantSearchSync = InstantSearchUrlSync;
+  const buildAllArticlesInstantSearchUiState = buildUiState;
+
+  const ALL_ARTICLES_CLIENT_HITS_PER_PAGE = 12;
 
   const searchClient = useMemo(
     () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
@@ -183,6 +181,8 @@ export function AllArticles() {
 }
 
 function AllArticlesFilters() {
+  const { ALL_ARTICLES_CATEGORY_FACET } =
+    useLoaderData<AllArticlesReturnType>();
   const { items } = useRefinementList({
     attribute: ALL_ARTICLES_CATEGORY_FACET,
     limit: 50,
