@@ -70,12 +70,17 @@ export function useClassSingleUpcomingInstantSearch() {
   const [coordinates, setCoordinatesState] = useState<FinderGeoCoordinates>(
     () => coordinatesFromUrl(initialSearchParamsRef.current),
   );
+  const coordinatesRef = useRef<FinderGeoCoordinates>(
+    coordinatesFromUrl(initialSearchParamsRef.current),
+  );
   const [locationSource, setLocationKind] = useState<'zip' | 'gps' | null>(
     null,
   );
 
   useEffect(() => {
-    setCoordinatesState(coordinatesFromUrl(searchParams));
+    const next = coordinatesFromUrl(searchParams);
+    coordinatesRef.current = next;
+    setCoordinatesState(next);
   }, [searchParams]);
 
   const searchClient = useMemo(
@@ -90,6 +95,7 @@ export function useClassSingleUpcomingInstantSearch() {
 
   const setCoordinates = useCallback(
     (next: FinderGeoCoordinates) => {
+      coordinatesRef.current = next;
       setCoordinatesState(next);
       const noCoords =
         next == null ||
@@ -118,6 +124,7 @@ export function useClassSingleUpcomingInstantSearch() {
 
   const clearAllFiltersFromUrl = useCallback(() => {
     cancelDebounce();
+    coordinatesRef.current = null;
     setCoordinatesState(null);
     setLocationKind(null);
     setSearchParams(classSingleUrlStateToParams(classSingleEmptyState), {
@@ -135,6 +142,19 @@ export function useClassSingleUpcomingInstantSearch() {
           (indexUiState.refinementList as Record<string, string[]>) ??
           undefined,
       };
+      const coords = coordinatesRef.current;
+      if (
+        coords?.lat != null &&
+        coords.lng != null &&
+        !Number.isNaN(coords.lat) &&
+        !Number.isNaN(coords.lng)
+      ) {
+        urlState.lat = coords.lat;
+        urlState.lng = coords.lng;
+      } else {
+        delete urlState.lat;
+        delete urlState.lng;
+      }
       debouncedUpdateUrl(urlState);
     },
     [debouncedUpdateUrl, searchParams],
