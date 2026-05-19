@@ -52,7 +52,9 @@ export function CampusHit({
 const HitContent = ({ hit }: { hit: Hit<CampusHitType> | CampusHitType }) => {
   const { street1, street2, city } = hit?.campusLocation || {};
   const serviceTimes = formattedServiceTimes(hit?.serviceTimes || '');
-  const isOnline = hit?.campusUrl === 'cf-everywhere';
+  const isOnline =
+    hit?.campusUrl === 'cf-everywhere' ||
+    hit?.campusName?.toLowerCase().includes('online');
 
   return (
     <>
