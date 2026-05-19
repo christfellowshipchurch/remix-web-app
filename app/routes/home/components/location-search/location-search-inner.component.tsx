@@ -10,6 +10,18 @@ import { globalSearchClient } from '~/routes/search/route';
 import { SearchBar } from './search-bar';
 import { loader } from '~/routes/home/loader';
 
+type GeocodeFetcherData = {
+  requestId?: string;
+  results?: {
+    geometry?: {
+      location?: {
+        lat?: number;
+        lng?: number;
+      };
+    };
+  }[];
+};
+
 export function LocationSearchInner({
   isSearching: controlledIsSearching,
   setIsSearching: controlledSetIsSearching,
@@ -22,6 +34,10 @@ export function LocationSearchInner({
   const geocodeFetcher = useFetcher();
   const geocodeFetcherRef = useRef(geocodeFetcher);
   geocodeFetcherRef.current = geocodeFetcher;
+  const submittedZipRef = useRef<string | null>(null);
+  const geocodeRequestIdRef = useRef(0);
+  const submittedGeocodeRequestIdRef = useRef<string | null>(null);
+  const hasPendingGeocodeResponseRef = useRef(false);
 
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [internalIsSearching, setInternalIsSearching] = useState(false);
@@ -32,6 +48,7 @@ export function LocationSearchInner({
     lat: number;
     lng: number;
   } | null>(null);
+  const [isDistanceSearch, setIsDistanceSearch] = useState(false);
 
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
@@ -63,11 +80,19 @@ export function LocationSearchInner({
 
   const handleSearch = useCallback((query: string | null) => {
     if (!query || query.length !== 5 || !isValidZip(query)) {
-      setCoordinates(null);
+      submittedZipRef.current = null;
+      submittedGeocodeRequestIdRef.current = null;
+      hasPendingGeocodeResponseRef.current = false;
       return;
     }
+    const requestId = `home-location-${geocodeRequestIdRef.current + 1}`;
+    geocodeRequestIdRef.current += 1;
+    submittedZipRef.current = query;
+    submittedGeocodeRequestIdRef.current = requestId;
+    hasPendingGeocodeResponseRef.current = false;
     const formData = new FormData();
     formData.append('address', query);
+    formData.append('requestId', requestId);
     geocodeFetcherRef.current.submit(formData, {
       method: 'post',
       action: '/google-geocode',
@@ -75,12 +100,16 @@ export function LocationSearchInner({
   }, []);
 
   const handlePreciseLocationRequest = useCallback(() => {
+    submittedZipRef.current = null;
+    submittedGeocodeRequestIdRef.current = null;
+    hasPendingGeocodeResponseRef.current = false;
     getCurrentPositionFromUserGesture(
       (position) => {
         setCoordinates({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
+        setIsDistanceSearch(true);
       },
       (error) => {
         console.error('Geolocation error:', error);
@@ -88,18 +117,43 @@ export function LocationSearchInner({
     );
   }, []);
 
-  const geocodeLat =
-    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lat ?? null;
-  const geocodeLng =
-    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lng ?? null;
-
   useEffect(() => {
-    if (geocodeLat == null || geocodeLng == null) return;
-    setCoordinates((prev) => {
-      if (prev?.lat === geocodeLat && prev?.lng === geocodeLng) return prev;
-      return { lat: geocodeLat, lng: geocodeLng };
+    if (geocodeFetcher.state !== 'idle') {
+      hasPendingGeocodeResponseRef.current = true;
+      return;
+    }
+
+    if (
+      !submittedZipRef.current ||
+      !hasPendingGeocodeResponseRef.current ||
+      !geocodeFetcher.data
+    ) {
+      return;
+    }
+
+    const geocodeData = geocodeFetcher.data as GeocodeFetcherData;
+    if (geocodeData.requestId !== submittedGeocodeRequestIdRef.current) {
+      return;
+    }
+
+    hasPendingGeocodeResponseRef.current = false;
+
+    const location = geocodeData.results?.[0]?.geometry?.location;
+    if (
+      !location ||
+      typeof location.lat !== 'number' ||
+      typeof location.lng !== 'number'
+    ) {
+      setCoordinates(null);
+      return;
+    }
+
+    setCoordinates({
+      lat: location.lat,
+      lng: location.lng,
     });
-  }, [geocodeLat, geocodeLng]);
+    setIsDistanceSearch(true);
+  }, [geocodeFetcher.data, geocodeFetcher.state]);
 
   return (
     <div className={cn(isSearching && 'mt-32')} ref={locationSearchBarRef}>
@@ -145,6 +199,7 @@ export function LocationSearchInner({
           />
           {isSearching && (
             <SearchPopup
+              isDistanceSearch={isDistanceSearch}
               onRequestPreciseLocation={handlePreciseLocationRequest}
             />
           )}

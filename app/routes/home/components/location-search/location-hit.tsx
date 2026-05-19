@@ -58,7 +58,7 @@ const HitContent = ({ hit }: { hit: Hit<CampusHitType> | CampusHitType }) => {
     <>
       <Icon
         name={isOnline ? 'globe' : 'map'}
-        color='neutral-default'
+        className='text-black self-start'
         size={20}
       />
       <div className='flex flex-col'>
