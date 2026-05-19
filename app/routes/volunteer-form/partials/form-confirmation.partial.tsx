@@ -66,7 +66,7 @@ export const VolunteerFormConfirmationPartial: React.FC = () => (
         church.
       </p>
       <a
-        href='/journey'
+        href='/events/journey'
         className='bg-white p-4 rounded-lg shadow-medium hover:translate-y-[-6px] transition-all duration-300 max-w-96 border-1 border-neutral-lighter'
       >
         <img

@@ -93,7 +93,7 @@ export const ministriesData: MenuLink = {
         subtitle: 'new classes',
         callToAction: {
           title: 'Sign up now',
-          url: '/journey',
+          url: '/events/journey',
         },
         image: 'https://picsum.photos/282/228',
         navMenu: 'ministries',
