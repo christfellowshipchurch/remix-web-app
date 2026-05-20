@@ -52,13 +52,15 @@ export function CampusHit({
 const HitContent = ({ hit }: { hit: Hit<CampusHitType> | CampusHitType }) => {
   const { street1, street2, city } = hit?.campusLocation || {};
   const serviceTimes = formattedServiceTimes(hit?.serviceTimes || '');
-  const isOnline = hit?.campusUrl === 'cf-everywhere';
+  const isOnline =
+    hit?.campusUrl === 'cf-everywhere' ||
+    hit?.campusName?.toLowerCase().includes('online');
 
   return (
     <>
       <Icon
         name={isOnline ? 'globe' : 'map'}
-        color='neutral-default'
+        className='text-black self-start'
         size={20}
       />
       <div className='flex flex-col'>

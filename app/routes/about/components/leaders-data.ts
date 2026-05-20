@@ -15,7 +15,7 @@ export const leaders: LeaderProfile[] = [
     bio: "Pastors Todd and Julie Mullins are the Senior Pastors of Christ Fellowship Church. Under their leadership, Christ Fellowship has continued its growth as a multi-site congregation that gathers thousands in South Florida each week and digitally reaches thousands beyond the region through Christ Fellowship Everywhere. <br /> <br /> Their leadership expands beyond the walls of Christ Fellowship as they serve the South Florida region and beyond. They are the founders of Church United, a partnership of local churches across various denominations that join together to transform South Florida. Todd and Julie also serve on the lead team of the Association of Related Churches (ARC) and on the board of directors for Place of Hope Children's Home in South Florida. They are both frequently invited to speak at churches and conferences around the globe, and Todd recently authored his debut book, Don't Let Doubt Take You Out. Together, they have a son, Jefferson, who also serves in ministry at Christ Fellowship alongside his wife, Cassie.",
     pathname: 'todd-julie-mullins',
     profilePhoto:
-      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3169737',
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3176146',
   },
   {
     id: '2',
