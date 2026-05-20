@@ -18,6 +18,10 @@ export type ContentType =
   | 'DEVOTIONALS'
   | 'MINISTRY_PAGE'
   | 'PODCASTS'
+  | 'CREW_CAST'
+  | 'YOUNG_+_ADULTING'
+  | 'SO_GOOD_SISTERHOOD'
+  | 'MADE_FOR_MORE'
   | 'REDIRECT_CARD'
   | 'PAGE_BUILDER';
 

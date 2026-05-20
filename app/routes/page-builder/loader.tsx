@@ -246,20 +246,22 @@ export const mapPageBuilderChildItems = async (
                 }
               }
 
-              return [{
-                id: item.id,
-                contentChannelId: item.contentChannelId,
-                contentType: contentType,
-                name: item.title,
-                summary,
-                image:
-                  createImageUrlFromGuid(
-                    getStringValue(itemAttributeValues?.image || ''),
-                  ) || '',
-                startDate,
-                pathname,
-                // attributeValues,
-              }];
+              return [
+                {
+                  id: item.id,
+                  contentChannelId: item.contentChannelId,
+                  contentType: contentType,
+                  name: item.title,
+                  summary,
+                  image:
+                    createImageUrlFromGuid(
+                      getStringValue(itemAttributeValues?.image || ''),
+                    ) || '',
+                  startDate,
+                  pathname,
+                  // attributeValues,
+                },
+              ];
             },
           ),
         };
