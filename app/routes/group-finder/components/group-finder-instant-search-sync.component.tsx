@@ -69,12 +69,26 @@ export function GroupFinderInstantSearchSync() {
         return prev;
       }
 
+      const nextIndex = { ...prevIndex };
+      if (nextQuery) {
+        nextIndex.query = nextQuery;
+      } else {
+        delete nextIndex.query;
+      }
+      if (indexSlice.refinementList) {
+        nextIndex.refinementList = indexSlice.refinementList;
+      } else {
+        delete nextIndex.refinementList;
+      }
+      if (nextPage > 0) {
+        nextIndex.page = nextPage;
+      } else {
+        delete nextIndex.page;
+      }
+
       return {
         ...prevRecord,
-        [GROUPS_ALGOLIA_INDEX_NAME]: {
-          ...prevIndex,
-          ...indexSlice,
-        },
+        [GROUPS_ALGOLIA_INDEX_NAME]: nextIndex,
       };
     });
   }, [searchParams, setUiState]);

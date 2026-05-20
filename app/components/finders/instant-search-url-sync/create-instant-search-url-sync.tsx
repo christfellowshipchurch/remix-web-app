@@ -89,12 +89,26 @@ export function createInstantSearchUrlSync<T extends SyncUrlState>({
           return prev;
         }
 
+        const nextIndex = { ...prevIndex };
+        if (nextQuery) {
+          nextIndex.query = nextQuery;
+        } else {
+          delete nextIndex.query;
+        }
+        if (indexSlice.refinementList) {
+          nextIndex.refinementList = indexSlice.refinementList;
+        } else {
+          delete nextIndex.refinementList;
+        }
+        if (nextPage > 0) {
+          nextIndex.page = nextPage;
+        } else {
+          delete nextIndex.page;
+        }
+
         return {
           ...prevRecord,
-          [indexName]: {
-            ...prevIndex,
-            ...indexSlice,
-          },
+          [indexName]: nextIndex,
         };
       });
     }, [searchParams, setUiState]);

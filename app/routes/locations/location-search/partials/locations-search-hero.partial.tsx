@@ -18,6 +18,8 @@ type SetCoordinatesProp = (
 type SearchProps = {
   handleSearch: (query: string | null) => void;
   setCoordinates: SetCoordinatesProp;
+  beginCoordinateRequest: (source: 'gps') => string;
+  isLatestCoordinateRequest: (requestId: string) => boolean;
   /** When false: static hero image only (no video), search UI disabled until InstantSearch is idle. */
   instantSearchReady?: boolean;
 };
@@ -27,6 +29,8 @@ const LOCATIONS_FINDER_HERO_BG = '/assets/images/locations/finder-hero-bg.webp';
 export const Search = ({
   handleSearch,
   setCoordinates,
+  beginCoordinateRequest,
+  isLatestCoordinateRequest,
   instantSearchReady = true,
 }: SearchProps) => {
   const [locationActive, setLocationActive] = useState(true);
@@ -51,11 +55,13 @@ export const Search = ({
 
   const handleUseCurrentLocation = () => {
     if (!instantSearchReady) return;
+    const requestId = beginCoordinateRequest('gps');
     setIsLocating(true);
     setError(null);
     getCurrentPositionFromUserGesture(
       (position) => {
         setIsLocating(false);
+        if (!isLatestCoordinateRequest(requestId)) return;
         setCoordinates(
           {
             lat: position.coords.latitude,
@@ -67,6 +73,7 @@ export const Search = ({
       },
       (geoError) => {
         setIsLocating(false);
+        if (!isLatestCoordinateRequest(requestId)) return;
         console.error(geoError);
         setLocationActive(false);
         setError(getGeolocationUserMessage(geoError));

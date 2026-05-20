@@ -49,7 +49,10 @@ import {
   getGroupSearchDesktopFilters,
   GROUP_FINDER_MORE_POPUP_TITLE,
 } from '../group-search-filters.data';
-import { buildMinMaxAgeFilter } from '../components/build-group-finder-algolia-search';
+import {
+  buildMinMaxAgeFilter,
+  GROUP_FINDER_LOADER_HITS_PER_PAGE,
+} from '../components/build-group-finder-algolia-search';
 
 /**
  * Group finder data flow (SSR-friendly):
@@ -369,6 +372,7 @@ export const GroupSearch = () => {
               ageInput={ageInput}
               coordinates={coordinates}
               minMaxAgeValues={minMaxAgeValues}
+              hitsPerPageOverride={GROUP_FINDER_LOADER_HITS_PER_PAGE}
             />
 
             <FinderStickyBar>
@@ -676,7 +680,7 @@ export const ResponsiveConfigure = ({
       hitsPerPage={hitsPerPage}
       filters={ageFilter}
       aroundLatLng={
-        coordinates?.lat && coordinates?.lng
+        coordinates?.lat != null && coordinates?.lng != null
           ? `${coordinates.lat}, ${coordinates.lng}`
           : undefined
       }

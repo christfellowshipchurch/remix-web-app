@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import kebabCase from 'lodash/kebabCase';
 import { useHits, useInstantSearch } from 'react-instantsearch';
 
+import { sortCampusHitsForDistanceSearch } from '~/routes/home/components/location-search/location-search-results';
 import LocationCard from '../components/locations-search-card.component';
 import { LocationsLoader } from '../components/locations-search-skeleton.component';
 
@@ -30,6 +31,7 @@ export type CampusHit = {
 export type LocationCardListProps = {
   loading: boolean;
   initialHits?: CampusHit[];
+  isDistanceSearch?: boolean;
 };
 
 /** Static card art: `public/assets/images/locations/location-card-images/{campusUrl}.webp` */
@@ -44,28 +46,70 @@ function locationSearchCardImage(hitUrl: string) {
 export const LocationCardList = ({
   loading,
   initialHits = [],
+  isDistanceSearch = false,
 }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
   const { status } = useInstantSearch();
   const isSearchLoading = status === 'loading' || status === 'stalled';
   const hits = isSearchLoading && items.length === 0 ? initialHits : items;
 
-  return <LocationCardGrid items={hits} loading={loading} />;
+  return (
+    <LocationCardGrid
+      items={hits}
+      loading={loading}
+      isDistanceSearch={isDistanceSearch}
+    />
+  );
 };
+
+function isOnlineCampus(item: CampusHit) {
+  return (
+    item.campusUrl === 'cf-everywhere' || item.campusName?.includes('Online')
+  );
+}
+
+function getLocationCardLink(hit: CampusHit) {
+  if (isOnlineCampus(hit)) {
+    return '/cf-everywhere';
+  }
+
+  if (hit?.campusName?.includes('Español')) {
+    const url = hit.campusName.substring(25, hit.campusName.length);
+    return `/iglesia-${kebabCase(url)}`;
+  }
+
+  return `/${kebabCase(hit?.campusName)}`;
+}
+
+function getDistanceFromLocation(hit: CampusHit) {
+  const geoDistance = hit?._rankingInfo?.geoDistance;
+  return typeof geoDistance === 'number' ? geoDistance / 1609.34 : undefined;
+}
+
+export function getLocationCardDisplayItems(
+  items: CampusHit[],
+  isDistanceSearch = false,
+) {
+  if (isDistanceSearch) {
+    return sortCampusHitsForDistanceSearch(items);
+  }
+
+  return [
+    ...items.filter((item) => isOnlineCampus(item)),
+    ...items.filter((item) => !isOnlineCampus(item)),
+  ];
+}
 
 export function LocationCardGrid({
   items,
   loading,
+  isDistanceSearch = false,
 }: {
   items: CampusHit[];
   loading: boolean;
+  isDistanceSearch?: boolean;
 }) {
-  const onlineCampus = items?.find((item) =>
-    item.campusName?.includes('Online'),
-  );
-  const filteredItems = items?.filter(
-    (item) => !item.campusName?.includes('Online'),
-  );
+  const displayItems = getLocationCardDisplayItems(items, isDistanceSearch);
 
   if (loading) {
     return (
@@ -85,40 +129,14 @@ export function LocationCardGrid({
     >
       {/* Hits */}
       <div className='grid max-w-[1100px] grid-cols-12 gap-5 md:gap-y-10'>
-        {onlineCampus && (
-          <LocationCard
-            name='Online'
-            image={locationSearchCardImage(onlineCampus.campusUrl)}
-            distanceFromLocation={0}
-            key={onlineCampus?.objectID}
-            link='/cf-everywhere'
-          />
-        )}
-
-        {filteredItems?.map((hit, index) => {
-          let url = '';
-          if (hit?.campusName?.includes('Español')) {
-            url = hit?.campusName.substring(25, hit?.campusName.length);
-          }
-
-          // Converting the distance from meters to miles
-          const distanceFromLocation = hit?._rankingInfo?.geoDistance
-            ? hit?._rankingInfo?.geoDistance / 1609.34
-            : undefined;
-
+        {displayItems.map((hit, index) => {
           return (
             <LocationCard
               name={hit?.campusName}
               image={locationSearchCardImage(hit.campusUrl)}
-              distanceFromLocation={distanceFromLocation}
+              distanceFromLocation={getDistanceFromLocation(hit)}
               key={hit.objectID || index}
-              link={
-                hit?.campusName?.includes('Online')
-                  ? `/${url}`
-                  : !hit?.campusName.includes('Español')
-                    ? `/${kebabCase(hit?.campusName)}`
-                    : `/iglesia-${kebabCase(url)}`
-              }
+              link={getLocationCardLink(hit)}
             />
           );
         })}
