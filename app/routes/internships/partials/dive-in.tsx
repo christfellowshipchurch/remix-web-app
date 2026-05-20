@@ -12,7 +12,7 @@ const DiveIn = ({
   title = 'Find Your Place',
   paragraph = 'Discover your niche by engaging with others and building meaningful connections. Apply today to start your journey.',
   ctaText = 'Apply Now',
-  ctaHref = '#todo',
+  ctaHref = 'https://job-boards.greenhouse.io/christfellowship?departments%5B%5D=4030237002',
 }: DiveInProps) => {
   return (
     <section
