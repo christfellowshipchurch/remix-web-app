@@ -94,6 +94,7 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
 
   const {
     campusName,
+    campusUrl,
     campusLocation = undefined,
     campusImage,
     campusInstagram,
@@ -138,7 +139,10 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
     campusImage,
   );
 
-  const isOnline = campusName?.includes('Online');
+  const isOnline =
+    campusUrl === 'cf-everywhere' ||
+    campusName?.includes('Online') ||
+    campusName?.includes('Everywhere');
   const isSpanish = campusName?.includes('Español');
 
   if (isOnline) {
