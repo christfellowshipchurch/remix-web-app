@@ -5,10 +5,10 @@ import { LeadersModal } from '~/components/modals/leaders';
 import { Icon } from '~/primitives/icon/icon';
 import Modal from '~/primitives/Modal';
 import type { LeaderProfile } from './leaders-data';
-import type { HomeLoaderData } from '~/routes/home/loader';
+import type { AboutLoaderData } from '~/routes/about/loader';
 
 export function LeaderGrid() {
-  const { leaders } = useLoaderData<HomeLoaderData>();
+  const { leaders } = useLoaderData<AboutLoaderData>();
 
   return (
     <div className='flex items-start lg:items-end gap-3'>

@@ -44,7 +44,7 @@ export const getInvolvedItems: MenuItem[] = [
     title: 'The Journey',
     description: "Life's better together",
     icon: 'arrowTopRight',
-    to: '/journey',
+    to: '/events/journey',
   },
   {
     id: 'volunteer',

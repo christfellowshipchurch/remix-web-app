@@ -1,26 +1,16 @@
 // This loader is used to fetch the feature cards for the navbar and is stored in the root loader to be used across the app
 
 import type { LoaderFunctionArgs } from 'react-router-dom';
-import { fetchRockData, TTL } from '~/lib/.server/fetch-rock-data';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 // import { fetchTopSearches } from "~/lib/.server/fetch-top-searches";
 import type { FeatureCard } from '~/components/navbar/types';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import { getUserFromRequest } from '~/lib/.server/authentication/get-user-from-request';
 import type { User } from '~/providers/auth-provider';
-import { IconName } from '~/primitives/button/types';
-
-export interface HeroAction {
-  iconName: IconName;
-  heading: string;
-  title: string;
-  url: string;
-  position: number;
-}
 
 // Define the return type for the loader
 export interface RootLoaderData {
   userData: User | null;
-  actions: HeroAction[];
   ministries: {
     featureCards: FeatureCard[];
   };
@@ -71,7 +61,7 @@ const fetchFeatureCards = async () => {
       subtitle: 'Learn who we are, what we believe, and how to get connected.',
       callToAction: {
         title: 'Join the Next Class',
-        url: '/journey',
+        url: '/events/journey',
       },
       image: 'https://rock.christfellowship.church/GetImage.ashx?id=3166460',
       navMenu: 'get involved',
@@ -105,48 +95,6 @@ const fetchSiteBanner = async () => {
     }
   } catch (error) {
     console.error('Error fetching site banner:', error);
-    return [];
-  }
-};
-
-const sanitizeIconName = (raw: string | undefined): IconName | undefined => {
-  if (raw == null || typeof raw !== 'string') return undefined;
-  const cleaned = raw.replace(/\|/g, '').replace(/\s/g, '').trim();
-  return cleaned.length > 0 ? (cleaned as IconName) : undefined;
-};
-
-interface HeroActionRaw {
-  attributeValues?: { icon?: { value?: string }; url?: { value?: string } };
-  description?: string;
-  value?: string;
-  order?: number;
-}
-
-const fetchHeroActions = async () => {
-  const definedTypeId = 512;
-
-  try {
-    const heroActions = await fetchRockData({
-      endpoint: 'DefinedValues',
-      queryParams: {
-        $filter: `DefinedTypeId eq ${definedTypeId} and IsActive eq true`,
-        $orderby: 'Order desc',
-        $top: '2',
-        loadAttributes: 'simple',
-      },
-      ttl: TTL.LONG,
-    });
-
-    return heroActions.map((action: HeroActionRaw) => ({
-      iconName: (sanitizeIconName(action.attributeValues?.icon?.value) ??
-        'bell') as IconName,
-      heading: action.description as string,
-      title: action.value as string,
-      url: action.attributeValues?.url?.value as string,
-      position: action.order,
-    }));
-  } catch (error) {
-    console.error('Error fetching hero actions:', error);
     return [];
   }
 };
@@ -208,7 +156,6 @@ export async function loader({
       // );
       return {
         userData: parsedUserData,
-        actions: [],
         ministries: { featureCards: [] },
         watchReadListen: { featureCards: [] },
         algolia: {
@@ -280,12 +227,9 @@ export async function loader({
     //   12
     // );
 
-    const actions = await fetchHeroActions();
-
     return {
       // Navbar Data
       userData: parsedUserData,
-      actions: actions,
       ministries: {
         featureCards: ministryCards,
       },
@@ -306,7 +250,6 @@ export async function loader({
     return {
       // Navbar Data
       userData: null,
-      actions: [],
       ministries: { featureCards: [] },
       watchReadListen: { featureCards: [] },
       algolia: {

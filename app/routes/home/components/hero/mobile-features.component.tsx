@@ -1,10 +1,10 @@
 import { Icon } from '~/primitives/icon/icon';
 import { cn } from '~/lib/utils';
-import { Link, useRouteLoaderData } from 'react-router-dom';
-import { HeroAction, RootLoaderData } from '~/routes/navbar/loader';
+import { Link, useLoaderData } from 'react-router-dom';
+import { HeroAction, HomeLoaderData } from '~/routes/home/loader';
 
 export const MobileFeaturedItems = () => {
-  const { actions } = useRouteLoaderData('root') as RootLoaderData;
+  const { actions } = useLoaderData<HomeLoaderData>();
 
   return (
     <div className='w-full md:ml-4'>

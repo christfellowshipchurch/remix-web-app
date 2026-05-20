@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => {
   });
 };
 
-export { loader } from '../home/loader'; // Using the home loader for the about page to grab author data for the leaders grid and scroll components
+export { loader } from './loader';
 
 export default function AboutPage() {
   return (
