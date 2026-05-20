@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useLoaderData, useLocation, useSearchParams } from 'react-router-dom';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
+  Configure,
   InstantSearch,
   SearchBox,
   useHits,
@@ -13,7 +14,7 @@ import Icon from '~/primitives/icon';
 import { LoaderReturnType } from '../loader';
 import { ClassHitComponent } from '../components/class-hit-component.component';
 import { AllClassFiltersPopup } from '../components/all-filters.component';
-import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
+import { createInstantSearchUrlSync } from '~/components/finders/instant-search-url-sync/create-instant-search-url-sync';
 import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
 import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
 import {
@@ -37,7 +38,10 @@ import {
   classFinderUrlStateToParams,
   parseClassFinderUrlState,
 } from '../components/class-finder-url-state';
-import { CLASSES_ALGOLIA_INDEX_NAME } from '../components/build-class-finder-algolia-search';
+import {
+  CLASSES_ALGOLIA_INDEX_NAME,
+  CLASS_FINDER_LOADER_HITS_PER_PAGE,
+} from '../components/build-class-finder-algolia-search';
 import { ClassFinderFiltersSkeleton } from '../components/filters/class-finder-filters-skeleton.component';
 
 /**
@@ -66,14 +70,21 @@ const CLASS_SEARCH_DESKTOP_FILTERS = [
   },
 ] satisfies SearchFilterDesktopItem[];
 
+const {
+  InstantSearchUrlSync: ClassFinderInstantSearchSync,
+  buildUiState: buildClassFinderInstantSearchUiState,
+} = createInstantSearchUrlSync<ClassFinderUrlState>({
+  indexName: CLASSES_ALGOLIA_INDEX_NAME,
+  parseUrlState: parseClassFinderUrlState,
+});
+
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseClassFinderUrlState(searchParams);
   return {
     // Snapshot the URL only for the first InstantSearch mount. Later filter
     // changes are synchronized through `onStateChange` instead of remounting
     // the whole search tree.
-    initialUiState:
-      buildIndexInitialUiState(CLASSES_ALGOLIA_INDEX_NAME, urlState) ?? {},
+    initialUiState: buildClassFinderInstantSearchUiState(urlState),
   };
 }
 
@@ -163,6 +174,8 @@ export const ClassSearch = () => {
               preserveSharedStateOnUnmount: true,
             }}
           >
+            <ClassFinderInstantSearchSync />
+            <Configure hitsPerPage={CLASS_FINDER_LOADER_HITS_PER_PAGE} />
             <FinderStickyBar>
               <div className='mx-auto flex max-w-screen-content flex-col gap-3 py-4 md:flex-row md:items-center md:gap-4'>
                 <div className='w-full md:w-[240px] lg:w-[250px] xl:w-[266px] flex items-center rounded-lg border border-[#DEE0E3] focus-within:border-ocean py-2'>

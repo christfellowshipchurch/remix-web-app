@@ -35,12 +35,28 @@ export type LocationSearchCoordinatesType = {
   error: string | undefined | null;
 };
 
+type GeocodeFetcherData = {
+  requestId?: string;
+  results?: Array<{
+    geometry?: {
+      location?: {
+        lat?: number;
+        lng?: number;
+      };
+    };
+  }>;
+};
+
+type CoordinateRequestSource = 'zip' | 'gps' | 'auto-gps' | 'clear';
+
 let globalSearchClient: SearchClient | null = null;
 
 function LocationSearchIndexBody({
   coordinates,
   setSearchCoordinates,
   handleSearch,
+  beginCoordinateRequest,
+  isLatestCoordinateRequest,
   geocodeLoading,
   initialLocationHits,
 }: {
@@ -50,17 +66,19 @@ function LocationSearchIndexBody({
     options?: { scrollWithNavbarOffset?: boolean },
   ) => void;
   handleSearch: (query: string | null) => void;
+  beginCoordinateRequest: (source: CoordinateRequestSource) => string;
+  isLatestCoordinateRequest: (requestId: string) => boolean;
   geocodeLoading: boolean;
   initialLocationHits: LocationSearchLoaderData['initialLocationHits'];
 }) {
+  const hasCoordinates = coordinates?.lat != null && coordinates.lng != null;
+
   return (
     <>
       <Configure
         hitsPerPage={20}
         aroundLatLng={
-          coordinates?.lat && coordinates?.lng
-            ? `${coordinates.lat}, ${coordinates.lng}`
-            : undefined
+          hasCoordinates ? `${coordinates.lat}, ${coordinates.lng}` : undefined
         }
         aroundRadius='all'
         aroundLatLngViaIP={false}
@@ -70,6 +88,8 @@ function LocationSearchIndexBody({
       <Search
         handleSearch={handleSearch}
         setCoordinates={setSearchCoordinates}
+        beginCoordinateRequest={beginCoordinateRequest}
+        isLatestCoordinateRequest={isLatestCoordinateRequest}
       />
       <LocationCardList
         loading={geocodeLoading}
@@ -98,7 +118,23 @@ export function LocationSearchPage() {
 
   const campusScrollUsesNavbarOffsetRef = useRef(false);
   const desktopAutoGeolocationAttemptedRef = useRef(false);
+  const coordinateRequestIdRef = useRef(0);
+  const latestCoordinateRequestRef = useRef<string | null>(null);
   const { isLarge } = useResponsive();
+
+  const beginCoordinateRequest = useCallback(
+    (source: CoordinateRequestSource) => {
+      coordinateRequestIdRef.current += 1;
+      const requestId = `locations-${source}-${coordinateRequestIdRef.current}`;
+      latestCoordinateRequestRef.current = requestId;
+      return requestId;
+    },
+    [],
+  );
+
+  const isLatestCoordinateRequest = useCallback((requestId: string) => {
+    return latestCoordinateRequestRef.current === requestId;
+  }, []);
 
   const setSearchCoordinates = useCallback(
     (
@@ -122,17 +158,20 @@ export function LocationSearchPage() {
   const handleSearch = useCallback(
     (query: string | null) => {
       if (!query) {
+        beginCoordinateRequest('clear');
         setSearchCoordinates(null);
         return;
       }
+      const requestId = beginCoordinateRequest('zip');
       const formData = new FormData();
       formData.append('address', query);
+      formData.append('requestId', requestId);
       geocodeFetcherRef.current.submit(formData, {
         method: 'post',
         action: '/google-geocode',
       });
     },
-    [setSearchCoordinates],
+    [beginCoordinateRequest, setSearchCoordinates],
   );
 
   useEffect(() => {
@@ -153,8 +192,10 @@ export function LocationSearchPage() {
   useEffect(() => {
     if (!isLarge || desktopAutoGeolocationAttemptedRef.current) return;
     desktopAutoGeolocationAttemptedRef.current = true;
+    const requestId = beginCoordinateRequest('auto-gps');
     getCurrentPositionFromUserGesture(
       (position) => {
+        if (!isLatestCoordinateRequest(requestId)) return;
         setSearchCoordinates(
           {
             lat: position.coords.latitude,
@@ -167,7 +208,12 @@ export function LocationSearchPage() {
         /* silent — user can still use “Use my current location” */
       },
     );
-  }, [isLarge, setSearchCoordinates]);
+  }, [
+    beginCoordinateRequest,
+    isLarge,
+    isLatestCoordinateRequest,
+    setSearchCoordinates,
+  ]);
 
   const scrollCampusesIntoView = useCallback(() => {
     const campusesSection = document.getElementById('campuses');
@@ -185,19 +231,29 @@ export function LocationSearchPage() {
     });
   }, []);
 
-  const geocodeLat =
-    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lat ?? null;
-  const geocodeLng =
-    geocodeFetcher.data?.results?.[0]?.geometry?.location?.lng ?? null;
+  const geocodeData = geocodeFetcher.data as GeocodeFetcherData | undefined;
+  const geocodeLat = geocodeData?.results?.[0]?.geometry?.location?.lat ?? null;
+  const geocodeLng = geocodeData?.results?.[0]?.geometry?.location?.lng ?? null;
 
   useEffect(() => {
     if (geocodeLat == null || geocodeLng == null) return;
+    if (
+      !geocodeData?.requestId ||
+      !isLatestCoordinateRequest(geocodeData.requestId)
+    ) {
+      return;
+    }
     campusScrollUsesNavbarOffsetRef.current = true;
     setCoordinates((prev) => {
       if (prev?.lat === geocodeLat && prev?.lng === geocodeLng) return prev;
       return { lat: geocodeLat, lng: geocodeLng };
     });
-  }, [geocodeLat, geocodeLng]);
+  }, [
+    geocodeData?.requestId,
+    geocodeLat,
+    geocodeLng,
+    isLatestCoordinateRequest,
+  ]);
 
   useEffect(() => {
     if (
@@ -266,6 +322,8 @@ export function LocationSearchPage() {
           <Search
             handleSearch={handleSearch}
             setCoordinates={setSearchCoordinates}
+            beginCoordinateRequest={beginCoordinateRequest}
+            isLatestCoordinateRequest={isLatestCoordinateRequest}
             instantSearchReady={false}
           />
           <LocationCardGrid
@@ -291,6 +349,8 @@ export function LocationSearchPage() {
             coordinates={coordinates}
             setSearchCoordinates={setSearchCoordinates}
             handleSearch={handleSearch}
+            beginCoordinateRequest={beginCoordinateRequest}
+            isLatestCoordinateRequest={isLatestCoordinateRequest}
             geocodeLoading={geocodeFetcher.state === 'loading'}
             initialLocationHits={loaderData.initialLocationHits}
           />

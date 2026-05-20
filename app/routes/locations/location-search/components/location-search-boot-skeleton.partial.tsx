@@ -3,6 +3,8 @@ import { Search } from '../partials/locations-search-hero.partial';
 
 const noopSearch = () => {};
 const noopSetCoordinates = () => {};
+const noopBeginCoordinateRequest = () => 'locations-disabled';
+const noopIsLatestCoordinateRequest = () => false;
 
 /**
  * Shown before `InstantSearch` mounts: same hero (image only, no video) + disabled zip,
@@ -14,6 +16,8 @@ export function LocationSearchBootSkeleton() {
       <Search
         handleSearch={noopSearch}
         setCoordinates={noopSetCoordinates}
+        beginCoordinateRequest={noopBeginCoordinateRequest}
+        isLatestCoordinateRequest={noopIsLatestCoordinateRequest}
         instantSearchReady={false}
       />
       <div
