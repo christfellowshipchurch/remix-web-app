@@ -1,8 +1,7 @@
 import { LoaderFunctionArgs } from 'react-router-dom';
-import { RegionCard, Trip, VolunteerAtChurchResource } from './types';
+import { Trip, VolunteerAtChurchResource } from './types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { createImageUrlFromGuid } from '~/lib/utils';
-import { mockRegionData } from './mock-data';
 import { getCoordinatesForCountry } from './country-coordinates';
 import { ContentChannelIds } from '~/lib/rock-config';
 import { fetchDreamTeamBuckets } from './dream-team-buckets.server';
@@ -25,7 +24,6 @@ const fetchVolunteerTrips = async () => {
 
 export type LoaderReturnType = {
   volunteerTrips: Record<string, Trip[]>;
-  mockRegionData: RegionCard[];
   dreamTeamBuckets: VolunteerAtChurchResource[];
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
@@ -80,7 +78,6 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
 
   return Response.json({
     volunteerTrips: groupedTrips,
-    mockRegionData,
     dreamTeamBuckets,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? '',
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? '',
