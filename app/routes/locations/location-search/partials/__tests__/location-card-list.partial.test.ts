@@ -31,7 +31,7 @@ function createCampusHit(campusUrl: string, geoDistance?: number): CampusHit {
 }
 
 describe('getLocationCardDisplayItems', () => {
-  it('keeps the online campus first before a distance search', () => {
+  it('keeps the online campus first on the /location page', () => {
     const onlineCampus = createCampusHit('cf-everywhere');
     const nearbyCampus = createCampusHit('nearby');
 
@@ -46,20 +46,21 @@ describe('getLocationCardDisplayItems', () => {
     ]);
   });
 
-  it('uses distance ordering after a nearby zip or GPS search', () => {
+  it('keeps online first after a zip or GPS search (physical hits stay in input order)', () => {
     const onlineCampus = createCampusHit('cf-everywhere', 100);
     const nearbyCampus = createCampusHit('nearby', 5 * 1609.344);
     const fartherCampus = createCampusHit('farther', 100 * 1609.344);
 
-    const displayItems = getLocationCardDisplayItems(
-      [onlineCampus, nearbyCampus, fartherCampus],
-      true,
-    );
+    const displayItems = getLocationCardDisplayItems([
+      nearbyCampus,
+      fartherCampus,
+      onlineCampus,
+    ]);
 
     expect(displayItems.map((hit) => hit.campusUrl)).toEqual([
+      'cf-everywhere',
       'nearby',
       'farther',
-      'cf-everywhere',
     ]);
   });
 });

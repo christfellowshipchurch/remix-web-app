@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import kebabCase from 'lodash/kebabCase';
 import { useHits, useInstantSearch } from 'react-instantsearch';
 
-import { sortCampusHitsForDistanceSearch } from '~/routes/home/components/location-search/location-search-results';
 import LocationCard from '../components/locations-search-card.component';
 import { LocationsLoader } from '../components/locations-search-skeleton.component';
 
@@ -31,7 +30,6 @@ export type CampusHit = {
 export type LocationCardListProps = {
   loading: boolean;
   initialHits?: CampusHit[];
-  isDistanceSearch?: boolean;
 };
 
 /** Static card art: `public/assets/images/locations/location-card-images/{campusUrl}.webp` */
@@ -46,20 +44,13 @@ function locationSearchCardImage(hitUrl: string) {
 export const LocationCardList = ({
   loading,
   initialHits = [],
-  isDistanceSearch = false,
 }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
   const { status } = useInstantSearch();
   const isSearchLoading = status === 'loading' || status === 'stalled';
   const hits = isSearchLoading && items.length === 0 ? initialHits : items;
 
-  return (
-    <LocationCardGrid
-      items={hits}
-      loading={loading}
-      isDistanceSearch={isDistanceSearch}
-    />
-  );
+  return <LocationCardGrid items={hits} loading={loading} />;
 };
 
 function isOnlineCampus(item: CampusHit) {
@@ -86,14 +77,12 @@ function getDistanceFromLocation(hit: CampusHit) {
   return typeof geoDistance === 'number' ? geoDistance / 1609.34 : undefined;
 }
 
-export function getLocationCardDisplayItems(
-  items: CampusHit[],
-  isDistanceSearch = false,
-) {
-  if (isDistanceSearch) {
-    return sortCampusHitsForDistanceSearch(items);
-  }
-
+/**
+ * /location (Location Search page) always lists the Online campus first, then
+ * physical campuses in Algolia order (distance when coordinates are set).
+ * Home/nav location popups use different rules via `sortCampusHitsForDistanceSearch`.
+ */
+export function getLocationCardDisplayItems(items: CampusHit[]) {
   return [
     ...items.filter((item) => isOnlineCampus(item)),
     ...items.filter((item) => !isOnlineCampus(item)),
@@ -103,13 +92,11 @@ export function getLocationCardDisplayItems(
 export function LocationCardGrid({
   items,
   loading,
-  isDistanceSearch = false,
 }: {
   items: CampusHit[];
   loading: boolean;
-  isDistanceSearch?: boolean;
 }) {
-  const displayItems = getLocationCardDisplayItems(items, isDistanceSearch);
+  const displayItems = getLocationCardDisplayItems(items);
 
   if (loading) {
     return (

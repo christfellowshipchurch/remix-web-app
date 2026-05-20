@@ -94,7 +94,6 @@ function LocationSearchIndexBody({
       <LocationCardList
         loading={geocodeLoading}
         initialHits={initialLocationHits}
-        isDistanceSearch={hasCoordinates}
       />
     </>
   );
@@ -330,7 +329,6 @@ export function LocationSearchPage() {
           <LocationCardGrid
             items={loaderData.initialLocationHits}
             loading={false}
-            isDistanceSearch={false}
           />
         </>
       ) : (
