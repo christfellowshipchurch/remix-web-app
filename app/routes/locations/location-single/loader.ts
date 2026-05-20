@@ -83,7 +83,8 @@ export const loader: LoaderFunction = async ({ params }) => {
       },
     });
 
-    campusHit = (res.hits?.[0] as unknown as LocationHitType | undefined) ?? null;
+    campusHit =
+      (res.hits?.[0] as unknown as LocationHitType | undefined) ?? null;
   } catch (error) {
     console.warn('Failed to load campus from Algolia:', error);
   }
