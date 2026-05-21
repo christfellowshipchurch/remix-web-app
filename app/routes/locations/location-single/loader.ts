@@ -1,8 +1,11 @@
-import { LoaderFunction } from 'react-router-dom';
+import type { LoaderFunction } from 'react-router';
+import { algoliasearch } from 'algoliasearch';
+
 import { mapPageBuilderChildItems } from '~/routes/page-builder/loader';
 import { PageBuilderSection } from '~/routes/page-builder/types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { createImageUrlFromGuid } from '~/lib/utils';
+import type { LocationHitType } from './types';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
@@ -10,6 +13,7 @@ export type LoaderReturnType = {
   campusUrl: string;
   campusName: string;
   campusImage: string;
+  campusHit: LocationHitType | null;
   upcomingEvents: PageBuilderSection & { type: 'EVENT_COLLECTION' };
 };
 
@@ -65,6 +69,24 @@ export const loader: LoaderFunction = async ({ params }) => {
     throw new Response('Keys not found', {
       status: 404,
     });
+  }
+
+  let campusHit: LocationHitType | null = null;
+  const client = algoliasearch(appId, searchApiKey, {});
+
+  try {
+    const res = await client.searchSingleIndex({
+      indexName: 'dev_Locations',
+      searchParams: {
+        filters: `campusUrl:"${campusUrl}"`,
+        hitsPerPage: 1,
+      },
+    });
+
+    campusHit =
+      (res.hits?.[0] as unknown as LocationHitType | undefined) ?? null;
+  } catch (error) {
+    console.warn('Failed to load campus from Algolia:', error);
   }
 
   type CampusRock = {
@@ -145,6 +167,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     campusUrl: decodeURIComponent(campusUrl),
     campusName: campusName,
     campusImage,
+    campusHit,
     upcomingEvents,
   };
 

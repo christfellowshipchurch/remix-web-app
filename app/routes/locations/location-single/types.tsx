@@ -11,6 +11,7 @@ export type LocationHitType = {
   campusId: number;
   campusImage: string;
   campusInstagram: string;
+  campusUrl?: string;
   campusLocation?: {
     city: string;
     postalCode: string;

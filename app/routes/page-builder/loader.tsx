@@ -185,8 +185,8 @@ export const mapPageBuilderChildItems = async (
         );
         return {
           ...baseChild,
-          collection: visibleItems.map(
-            (item: RockContentItem): CollectionItem => {
+          collection: visibleItems.flatMap(
+            (item: RockContentItem): CollectionItem[] => {
               const contentType = getContentType(item.contentChannelId);
               // Map the attribute values to a key-value object for easier access
               const itemAttributeValues = Object.fromEntries(
@@ -199,9 +199,10 @@ export const mapPageBuilderChildItems = async (
               );
 
               if (!contentType) {
-                throw new Error(
-                  `Invalid content type for content channel ID: ${item.contentChannelId}`,
+                console.warn(
+                  `[page-builder] Skipping unsupported collection item ${item.id} with content channel ID ${item.contentChannelId}`,
                 );
+                return [];
               }
 
               // Generate the summary for the item
@@ -245,20 +246,22 @@ export const mapPageBuilderChildItems = async (
                 }
               }
 
-              return {
-                id: item.id,
-                contentChannelId: item.contentChannelId,
-                contentType: contentType,
-                name: item.title,
-                summary,
-                image:
-                  createImageUrlFromGuid(
-                    getStringValue(itemAttributeValues?.image || ''),
-                  ) || '',
-                startDate,
-                pathname,
-                // attributeValues,
-              };
+              return [
+                {
+                  id: item.id,
+                  contentChannelId: item.contentChannelId,
+                  contentType: contentType,
+                  name: item.title,
+                  summary,
+                  image:
+                    createImageUrlFromGuid(
+                      getStringValue(itemAttributeValues?.image || ''),
+                    ) || '',
+                  startDate,
+                  pathname,
+                  // attributeValues,
+                },
+              ];
             },
           ),
         };
