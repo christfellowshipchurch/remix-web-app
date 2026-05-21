@@ -17,6 +17,10 @@ const CONTENT_TYPE_MAP: Record<string, ContentType> = {
   '43': 'ARTICLES',
   '83': 'DEVOTIONALS',
   '55': 'PODCASTS',
+  '181': 'CREW_CAST',
+  '182': 'YOUNG_+_ADULTING',
+  '188': 'SO_GOOD_SISTERHOOD',
+  '191': 'MADE_FOR_MORE',
   '171': 'MINISTRY_PAGE',
   '176': 'PAGE_BUILDER',
 } as const;
