@@ -1,11 +1,8 @@
 import type { PodcastShow } from '../../types';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
-import HtmlRenderer from '~/primitives/html-renderer';
-import {
-  getPodcastShowHref,
-  hasValidHref,
-} from '../../utils/podcast-links';
+import { getPodcastShowHref, hasValidHref } from '../../utils/podcast-links';
+import { cn, getFirstSentence } from '~/lib/utils';
 
 type PodcastCardProps = {
   podcast: PodcastShow;
@@ -17,6 +14,27 @@ type PlatformLink = {
   icon: string;
   href: string;
 };
+
+function PodcastCoverImage({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        'w-full aspect-video shrink-0 self-start overflow-hidden rounded-lg',
+        className,
+      )}
+    >
+      <img src={src} alt={alt} className='h-full w-full object-cover' />
+    </div>
+  );
+}
 
 function PlatformLinkButton({
   link,
@@ -67,6 +85,7 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
   } = podcast;
 
   const showHref = getPodcastShowHref(url);
+  const descriptionPreview = getFirstSentence(description);
 
   const platformLinks: PlatformLink[] = [
     {
@@ -97,22 +116,20 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
     >
       {/* Desktop */}
       <div className='hidden relative md:flex flex-col lg:flex-row gap-8 w-full max-w-screen-content mx-auto'>
-        {/* Image */}
-        <img
+        <PodcastCoverImage
           src={coverImage}
           alt={title}
-          className='object-cover bg-cover w-full h-[360px] lg:h-[282px] lg:w-[480px] xl:w-[590px] xl:h-[350px] rounded-lg'
+          className={cn('max-w-[550px]', 'lg:w-[480px]', 'xl:w-[590px]')}
         />
 
         {/* Content */}
         <div className='flex flex-col justify-center gap-4'>
           <h3 className='text-[32px] font-extrabold'>{title}</h3>
-          <p className='text-xl text-[#767676] lg:max-w-[540px]'>
-            <HtmlRenderer
-              html={description}
-              className='text-xl text-[#767676] lg:max-w-[540px]'
-            />
-          </p>
+          {descriptionPreview ? (
+            <p className='text-xl text-[#767676] lg:max-w-[540px]'>
+              {descriptionPreview}
+            </p>
+          ) : null}
           <div className='flex items-center gap-8 w-full'>
             {showHref ? (
               <Button intent='secondary' href={showHref} className='h-full'>
@@ -137,22 +154,13 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
 
       {/* Mobile */}
       <div className='relative w-full max-w-screen-content mx-auto md:hidden'>
-        <div className='flex flex-col justify-center gap-2'>
+        <div className='flex flex-col justify-center gap-4'>
           <div className='flex flex-col gap-4'>
-            <div className='flex flex-col gap-2'>
-              <h3 className='text-[32px] font-extrabold'>{title}</h3>
-              <p className='text-sm text-[#767676]'>
-                <HtmlRenderer
-                  html={description}
-                  className='text-sm text-[#767676]'
-                />
-              </p>
-            </div>
-            <img
-              src={coverImage}
-              alt={title}
-              className='object-cover bg-cover w-full h-[360px] rounded-lg'
-            />
+            <h3 className='text-[32px] font-extrabold'>{title}</h3>
+            {descriptionPreview ? (
+              <p className='text-[#767676]'>{descriptionPreview}</p>
+            ) : null}
+            <PodcastCoverImage src={coverImage} alt={title} />
           </div>
 
           <div className='flex flex-col items-center gap-6 w-full'>

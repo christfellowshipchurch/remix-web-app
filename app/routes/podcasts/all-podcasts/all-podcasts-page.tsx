@@ -11,7 +11,7 @@ export function AllPodcastsPage() {
   return (
     <div className='flex flex-col items-center'>
       <DynamicHero imagePath={getImageUrl('3143814')} customTitle='Podcasts' />
-      <div className='py-6 md:py-20 w-full'>
+      <div className='w-full'>
         <div className='flex flex-col'>
           {podcastShows.map((podcast: PodcastShow, index: number) => (
             <PodcastHubCard
