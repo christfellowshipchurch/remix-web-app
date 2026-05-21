@@ -81,7 +81,7 @@ export const MoreEpisodesSearch = ({
       {/* Episodes Section - Only render if there are hits */}
       <HitsWrapper>
         <div className='w-full bg-white content-padding'>
-          <div className='flex flex-col gap-8 md:gap-7 max-w-screen-content mx-auto py-16 md:py-20'>
+          <div className='flex flex-col gap-6 md:gap-7 max-w-screen-content mx-auto py-10 md:py-20'>
             <h2 className='text-[28px] font-extrabold'>More in this season</h2>
 
             <Hits

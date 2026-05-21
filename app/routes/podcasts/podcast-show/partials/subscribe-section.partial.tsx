@@ -39,8 +39,8 @@ export const SubscribeSection = ({
 
   return (
     <div className='w-full bg-linear-to-br from-[#1C3647] to-navy content-padding'>
-      <div className='max-w-screen-content mx-auto py-16'>
-        <div className='flex flex-col items-center gap-8 text-white'>
+      <div className='max-w-screen-content mx-auto py-10 md:py-16'>
+        <div className='flex flex-col items-center gap-6 md:gap-8 text-white'>
           <h2 className='text-[24px] md:text-[28px] font-extrabold leading-none'>
             {title}
           </h2>
@@ -55,6 +55,7 @@ export const SubscribeSection = ({
                   <a
                     href={link.href}
                     target='_blank'
+                    rel='noopener noreferrer'
                     aria-label={`${link.label} Link`}
                   >
                     <Icon

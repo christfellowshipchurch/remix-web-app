@@ -11,6 +11,7 @@ import {
   isValidZip,
   latLonDistance,
   getFirstParagraph,
+  getFirstSentence,
   parseRockKeyValueList,
   parseRockValueList,
   formattedServiceTimes,
@@ -294,6 +295,29 @@ describe('getFirstParagraph', () => {
 
   it('returns empty string for empty input', () => {
     expect(getFirstParagraph('')).toBe('');
+  });
+});
+
+describe('getFirstSentence', () => {
+  it('extracts the first sentence from HTML', () => {
+    const html =
+      '<p>First sentence. Second sentence.</p><p>Third paragraph.</p>';
+    expect(getFirstSentence(html)).toBe('First sentence.');
+  });
+
+  it('strips nested HTML tags within the sentence', () => {
+    const html = '<p>Hello <strong>world</strong>. More text.</p>';
+    expect(getFirstSentence(html)).toBe('Hello world.');
+  });
+
+  it('returns full plain text when no sentence end exists', () => {
+    expect(getFirstSentence('<p>No ending punctuation</p>')).toBe(
+      'No ending punctuation',
+    );
+  });
+
+  it('returns empty string for empty input', () => {
+    expect(getFirstSentence('')).toBe('');
   });
 });
 

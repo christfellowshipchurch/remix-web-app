@@ -15,7 +15,7 @@ export const HeroContent = ({
   latestEpisode: PodcastEpisode;
 }) => {
   return (
-    <div className='flex px-6 md:px-16 pt-16 pb-6 md:pb-16 md:pt-24'>
+    <div className='flex px-6 md:px-16 pt-10 pb-4 md:pb-16 md:pt-24'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto w-full max-w-[1438px]'>
         <div className='flex flex-col justify-center order-2 md:order-1'>
           {title && (

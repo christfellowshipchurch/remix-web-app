@@ -11,7 +11,7 @@ export function EpisodeNotes({
 }) {
   return (
     <div className='w-full bg-white content-padding'>
-      <div className='flex flex-col gap-16 max-w-[1150px] mx-auto py-12 md:py-20'>
+      <div className='flex flex-col gap-10 md:gap-16 max-w-[1150px] mx-auto py-8 md:py-20'>
         <div>
           <h2 className='text-[18px] md:text-[32px] font-extrabold'>
             Episode Notes
