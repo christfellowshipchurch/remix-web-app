@@ -8,7 +8,7 @@ export const AllSeasons = () => {
 
   return (
     <div className='w-full bg-[#F5F5FA] content-padding'>
-      <div className='max-w-screen-content mx-auto py-16 md:py-28'>
+      <div className='max-w-screen-content mx-auto py-10 md:py-28'>
         <div className='flex flex-col gap-8'>
           <h2 className='text-[28px] font-extrabold'>All Seasons</h2>
 

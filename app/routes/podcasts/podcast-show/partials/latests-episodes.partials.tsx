@@ -9,7 +9,7 @@ export const LatestEpisodes = () => {
 
   return (
     <div className='w-full bg-white'>
-      <div className='py-16 md:py-28'>
+      <div className='py-10 md:py-28'>
         <CardCarouselSection
           title='Latest Episodes'
           CardComponent={PodcastEpisodeCard}
