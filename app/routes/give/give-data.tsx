@@ -9,7 +9,7 @@ export const giveFaqData: PageBuilderSection = {
   type: 'FAQs',
   cta: {
     title: 'Contact',
-    url: '#todo',
+    url: 'https://rock.gocf.org/contactus',
   },
   faqs: [
     {

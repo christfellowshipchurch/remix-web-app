@@ -15,10 +15,7 @@ export const footerColumns: FooterColumn[] = [
     title: 'Resources',
     links: [
       { title: 'Church Online', url: '/locations/cf-everywhere' },
-      {
-        title: 'Past Messages',
-        url: 'https://www.youtube.com/playlist?list=PLUQ7jSnRB_efXMDq9Lka6stS02awWoaz4',
-      },
+      { title: 'Past Messages', url: '/messages' },
       { title: 'Give Online', url: '/give' },
     ],
   },
@@ -32,7 +29,7 @@ export const footerColumns: FooterColumn[] = [
       },
       {
         title: 'Subscribe to Updates',
-        url: 'https://church.us11.list-manage.com/subscribe?u=76848e191018191e2e2d01d77&id=3265404466',
+        url: `${ROCK_PUBLIC_SITE_ORIGIN}/page/4344`,
       },
       { title: 'Contact Us', url: 'mailto:hello@christfellowship.church' },
     ],
@@ -40,7 +37,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: 'About',
     links: [
-      { title: 'Our Leadership', url: '/about' },
+      { title: 'Our Leadership', url: '/about#leadership' },
       { title: 'Career Opportunities', url: '/career-opportunities' },
       { title: 'Privacy Policy', url: '/privacy-policy' },
       { title: 'Terms of Use', url: '/terms-of-use' },

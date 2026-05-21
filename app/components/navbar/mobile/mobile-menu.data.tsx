@@ -80,7 +80,7 @@ export const nextStepsItems: SubMenuItem[] = [
     id: 'baptism',
     title: 'Baptism',
     icon: 'waves',
-    to: '/events/baptism',
+    to: '/events/interested-in-getting-baptized',
   },
   {
     id: 'take-a-class',

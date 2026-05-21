@@ -16,7 +16,7 @@ export function LeadershipSection({
     <section
       id='leadership'
       className={cn(
-        'pt-16 pb-24 lg:px-18 w-full relative z-30',
+        'scroll-mt-18 pt-16 pb-24 lg:px-18 w-full relative z-30',
         bg || 'bg-gray',
         className,
       )}
