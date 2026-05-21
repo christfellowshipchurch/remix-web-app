@@ -1,3 +1,4 @@
+import { trimRemovingInvisibleUnicode } from '~/lib/text-content';
 import { clsx, type ClassValue } from 'clsx';
 import camelCase from 'lodash/camelCase';
 import mapKeys from 'lodash/mapKeys';
@@ -275,6 +276,43 @@ export const getFirstParagraph = (html: string): string => {
   const doc = parser.parseFromString(html, 'text/html');
   const firstParagraph = doc.querySelector('p');
   return firstParagraph?.textContent || '';
+};
+
+const htmlToPlainText = (html: string): string => {
+  if (!html) return '';
+
+  if (typeof window === 'undefined') {
+    return trimRemovingInvisibleUnicode(
+      html
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th|blockquote)\s*>/gi, ' ')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&#(?:160|x0*A0);/gi, ' ')
+        .replace(/\s+/g, ' '),
+    );
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  return trimRemovingInvisibleUnicode(
+    (doc.body.textContent || '').replace(/\s+/g, ' '),
+  );
+};
+
+/**
+ * Get the first sentence of plain text extracted from HTML
+ * @param html - The HTML string to parse
+ * @returns The first sentence, or the full plain text if no sentence end is found
+ */
+export const getFirstSentence = (html: string): string => {
+  const text = htmlToPlainText(html);
+  if (!text) return '';
+
+  const match = text.match(/^[^.!?]+[.!?]/);
+  return match ? match[0].trim() : text;
 };
 
 export const parseRockKeyValueList = (
