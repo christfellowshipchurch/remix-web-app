@@ -54,13 +54,13 @@ const floatingCardData: FloatingCardType[] = [
     icon: 'handsPraying',
   },
   {
-    title: 'What are your grateful for?',
+    title: 'What are you grateful for?',
     subtitle: 'Practice Gratitude',
     icon: 'handsClapping',
   },
   {
     title: 'People are journaling',
-    subtitle: 'Ready Scripture',
+    subtitle: 'Read Scripture',
     icon: 'bookOpenText',
   },
 ];

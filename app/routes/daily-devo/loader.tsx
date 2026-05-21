@@ -80,6 +80,12 @@ const fetchDailyDevo = async () => {
   return validItems[0]; // Return the most recent valid item
 };
 
+const normalizeDailyDevoContent = (content: string) =>
+  content.replace(
+    'J*esus, search my heart, and show me if I’m treating anyone like my enemy.*',
+    '*Jesus, search my heart, and show me if I’m treating anyone like my enemy.*',
+  );
+
 const avatars = [
   { src: 'https://picsum.photos/id/1011/70/70', alt: 'Avatar 1' },
   { src: 'https://picsum.photos/id/1012/70/70', alt: 'Avatar 2' },
@@ -101,7 +107,7 @@ export const loader: LoaderFunction = async (): Promise<LoaderReturnType> => {
 
   const dailyDevo = {
     title: dailyDevoRockData.title,
-    content: dailyDevoRockData.content,
+    content: normalizeDailyDevoContent(dailyDevoRockData.content),
     startDateTime: dailyDevoRockData.startDateTime,
     wistiaId: dailyDevoRockData.attributeValues.media.value,
     coverImage: await createImageUrlFromGuid(
