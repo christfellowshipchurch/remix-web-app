@@ -1,6 +1,13 @@
-ignoredBuiltDependencies:
-  - core-js
-  - unrs-resolver
+overrides:
+  '@babel/runtime': ^7.24.0
+  jsdom: 26.1.0
 
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: true
+  core-js: false
+  unrs-resolver: false
+
+peerDependencyRules:
+  allowedVersions:
+    eslint: '10'
+    zod: '4'
