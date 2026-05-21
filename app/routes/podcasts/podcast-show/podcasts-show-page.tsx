@@ -16,7 +16,6 @@ export function PodcastsShowPage() {
       <SubscribeSection
         apple={podcast.apple}
         spotify={podcast.spotify}
-        amazon={podcast.amazon}
         youtube={podcast.youtube}
       />
       {featureBlocks &&
