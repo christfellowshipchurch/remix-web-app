@@ -5,13 +5,11 @@ export const SubscribeSection = ({
   title = 'Subscribe and follow',
   apple,
   spotify,
-  amazon,
   youtube,
 }: {
   title?: string;
   apple: string;
   spotify: string;
-  amazon: string;
   youtube: string;
 }) => {
   const links = [
@@ -29,11 +27,6 @@ export const SubscribeSection = ({
       label: 'Spotify',
       icon: 'spotify',
       href: spotify,
-    },
-    {
-      label: 'Amazon Music',
-      icon: 'amazonMusic',
-      href: amazon,
     },
   ];
 
@@ -55,18 +48,12 @@ export const SubscribeSection = ({
                   <a
                     href={link.href}
                     target='_blank'
+                    rel='noopener noreferrer'
                     aria-label={`${link.label} Link`}
                   >
-                    <Icon
-                      name={link.icon as keyof typeof icons}
-                      size={link.icon === 'amazonMusic' ? 62 : 52}
-                    />
+                    <Icon name={link.icon as keyof typeof icons} size={52} />
                   </a>
-                  <p
-                    className={`text-[10px] md:text-xs text-center font-extrabold ${
-                      link.icon === 'amazonMusic' ? '-mt-3' : ''
-                    }`}
-                  >
+                  <p className='text-[10px] md:text-xs text-center font-extrabold'>
                     {link.label}
                   </p>
                 </div>
