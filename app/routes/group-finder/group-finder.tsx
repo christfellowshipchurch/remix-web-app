@@ -1,6 +1,10 @@
 import { GroupSearch } from './partials/group-search.partial';
 import { FinderHero } from '../../components/finders/hero';
 
+const helpFindGroupUrl = 'https://rock.gocf.org/page/2113';
+const leadGroupUrl =
+  'https://rock.christfellowship.church/dreamteam/locations/opportunities/ministries?AreaId=2030&SetContext=Rock.Model.Campus2&CampusId=2';
+
 export function GroupFinderPage() {
   return (
     <div className='flex flex-col min-h-svh'>
@@ -16,13 +20,13 @@ export function GroupFinderPage() {
             desktopDescription='No matter where you are in life or your journey with God, Groups connect you with people who encourage you, support you, and help you grow. Find a group today that will help you live the full life God intended for you.'
             ctas={[
               {
-                href: '/connect-card',
+                href: helpFindGroupUrl,
                 title: 'Help me find a group',
                 intent: 'secondaryWhite',
                 className: 'text-base font-normal',
               },
               {
-                href: '/group-finder',
+                href: leadGroupUrl,
                 title: 'Lead a group',
                 intent: 'primary',
                 className:
@@ -42,13 +46,13 @@ export function GroupFinderPage() {
             desktopDescription='No matter where you are in life or your journey with God, Groups connect you with people who encourage you, support you, and help you grow. Find a group today that will help you live the full life God intended for you.'
             ctas={[
               {
-                href: '/connect-card',
+                href: helpFindGroupUrl,
                 title: 'Help me find a group',
                 intent: 'white',
                 className: 'text-base font-normal',
               },
               {
-                href: '/group-finder',
+                href: leadGroupUrl,
                 title: 'Lead a group',
                 intent: 'primary',
                 className:

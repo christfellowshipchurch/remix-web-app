@@ -10,7 +10,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     });
   }
   const { title, content } = data;
-  const ministryTitle = title?.includes('Ministry') ? title : `${title} Ministry`;
+  const ministryTitle = title?.includes('Ministry')
+    ? title
+    : `${title} Ministry`;
   const description = content
     ? content
         .replace(/<[^>]*>/g, '')
