@@ -14,19 +14,22 @@ export const ResourceCard = ({
   /** Optional state to pass to the Link (e.g. { fromEvents: '/events?q=...' } for back navigation). */
   linkState?: Record<string, unknown>;
 }) => {
-  const { summary, startDate, location, author, image, name, pathname } =
-    resource;
+  const {
+    summary,
+    startDate,
+    location,
+    author,
+    image,
+    name,
+    pathname,
+    contentType,
+    disableCard,
+  } = resource;
 
-  return (
-    <Link
-      to={pathname}
-      state={linkState}
-      className={cn(
-        'flex flex-col w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300 border border-neutral-lighter rounded-lg',
-        className,
-      )}
-      prefetch='intent'
-    >
+  const isDisabledRedirectCard = contentType === 'REDIRECT_CARD' && disableCard;
+
+  const innerContent = (
+    <>
       <img
         src={image}
         alt={name}
@@ -36,7 +39,7 @@ export const ResourceCard = ({
 
       <div className='flex-1 flex flex-col gap-4 p-6 bg-white h-fit rounded-b-[8px]'>
         {(startDate || location || author) && (
-          <ul className='flex gap-2 md:gap-4 lg:flex-col lg:gap-2 xl:!gap-4 xl:!flex-row'>
+          <ul className='flex gap-2 md:gap-4 lg:flex-col lg:gap-2 xl:gap-4! xl:flex-row!'>
             {startDate && (
               <li className='flex items-center gap-2'>
                 <Icon name='calendarAlt' color='black' />
@@ -66,6 +69,33 @@ export const ResourceCard = ({
           <HtmlRenderer html={summary || ''} className='line-clamp-3' />
         </div>
       </div>
+    </>
+  );
+
+  if (isDisabledRedirectCard) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col w-full h-full overflow-hidden border border-neutral-lighter rounded-lg',
+          className,
+        )}
+      >
+        {innerContent}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      to={pathname}
+      state={linkState}
+      className={cn(
+        'flex flex-col w-full h-full overflow-hidden hover:translate-y-[-4px] transition-all duration-300 border border-neutral-lighter rounded-lg',
+        className,
+      )}
+      prefetch='intent'
+    >
+      {innerContent}
     </Link>
   );
 };

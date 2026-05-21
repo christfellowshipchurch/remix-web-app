@@ -38,6 +38,15 @@ const getStringValue = (value: string | number | boolean): string => {
   return String(value);
 };
 
+const getBooleanValue = (
+  value: string | number | boolean | null | undefined,
+): boolean => {
+  if (typeof value === 'boolean') return value;
+  if (value == null) return false;
+  const normalized = String(value).toLowerCase();
+  return normalized === 'true' || normalized === 'on' || normalized === '1';
+};
+
 const toArray = <T,>(value: T | T[] | null | undefined): T[] => {
   if (!value) {
     return [];
@@ -198,6 +207,8 @@ export const mapPageBuilderChildItems = async (
                 ),
               );
 
+              console.log({ itemAttributeValues });
+
               if (!contentType) {
                 console.warn(
                   `[page-builder] Skipping unsupported collection item ${item.id} with content channel ID ${item.contentChannelId}`,
@@ -259,7 +270,10 @@ export const mapPageBuilderChildItems = async (
                     ) || '',
                   startDate,
                   pathname,
-                  // attributeValues,
+                  disableCard:
+                    contentType === 'REDIRECT_CARD'
+                      ? getBooleanValue(itemAttributeValues?.disableCard)
+                      : undefined,
                 },
               ];
             },

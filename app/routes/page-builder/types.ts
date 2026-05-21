@@ -83,6 +83,8 @@ export type CollectionItem = {
   startDate?: string; // for Events, Sermons, Articles, Devotionals, Podcasts
   author?: string; // for Sermons, Articles, Devotionals, Podcasts
   location?: string; // for Events
+  /** Redirect Card only (Rock `disableCard`). When true, carousel renders static content without link/card chrome. */
+  disableCard?: boolean;
 };
 
 /**
