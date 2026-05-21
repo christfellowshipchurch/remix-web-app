@@ -15,7 +15,6 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
     description,
     apple,
     spotify,
-    amazon,
     youtube,
     url,
     coverImage,
@@ -33,16 +32,13 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
       href: spotify,
     },
     {
-      label: 'Amazon Music',
-      icon: 'amazonMusic',
-      href: amazon,
-    },
-    {
       label: 'YouTube',
       icon: 'youtube',
       href: youtube,
     },
   ];
+
+  const subscriptionLinks = links.filter((link) => !!link.href);
 
   return (
     <div
@@ -72,34 +68,24 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
             </Button>
 
             <div className='flex gap-2'>
-              {links
-                .filter((link) => !!link.href)
-                .map((link, index) => (
-                  <Link
-                    key={index}
-                    to={link.href}
-                    target='_blank'
-                    className='flex flex-col items-center justify-center gap-1 bg-ocean rounded-lg size-[54px]'
-                  >
-                    <Icon
-                      name={
-                        link.icon as keyof typeof import('~/lib/icons').icons
-                      }
-                      color='white'
-                      size={link.icon === 'amazonMusic' ? 36 : 24}
-                      className={`${
-                        link.icon === 'amazonMusic' ? '-mt-1' : ''
-                      }`}
-                    />
-                    <p
-                      className={`text-[7px] font-extrabold text-white ${
-                        link.icon === 'amazonMusic' ? '-mt-2' : ''
-                      }`}
-                    >
-                      {link.label}
-                    </p>
-                  </Link>
-                ))}
+              {subscriptionLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex flex-col items-center justify-center gap-1 bg-ocean rounded-lg size-[54px]'
+                >
+                  <Icon
+                    name={link.icon as keyof typeof import('~/lib/icons').icons}
+                    color='white'
+                    size={24}
+                  />
+                  <p className='text-[7px] font-extrabold text-white'>
+                    {link.label}
+                  </p>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -124,7 +110,6 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
             <Button
               intent='secondary'
               href={url || ''}
-              target='_blank'
               linkClassName='w-full'
               className='w-full'
             >
@@ -132,24 +117,20 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
             </Button>
 
             <div className='flex gap-2'>
-              {links.map((link, index) => (
+              {subscriptionLinks.map((link, index) => (
                 <Link
                   key={index}
                   to={link.href}
                   target='_blank'
+                  rel='noopener noreferrer'
                   className='flex flex-col items-center justify-center gap-1 bg-ocean rounded-lg size-[72px]'
                 >
                   <Icon
                     name={link.icon as keyof typeof import('~/lib/icons').icons}
                     color='white'
-                    size={link.icon === 'amazonMusic' ? 50 : 36}
-                    className={`${link.icon === 'amazonMusic' ? '-mt-1' : ''}`}
+                    size={36}
                   />
-                  <p
-                    className={`text-[7px] font-extrabold text-white ${
-                      link.icon === 'amazonMusic' ? '-mt-2' : ''
-                    }`}
-                  >
+                  <p className='text-[7px] font-extrabold text-white'>
                     {link.label}
                   </p>
                 </Link>
