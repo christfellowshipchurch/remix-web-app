@@ -10,13 +10,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     });
   }
   const { title, content } = data;
+  const ministryTitle = title?.includes('Ministry') ? title : `${title} Ministry`;
   const description = content
     ? content
         .replace(/<[^>]*>/g, '')
         .substring(0, 160)
         .trim() + (content.length > 160 ? '...' : '')
-    : `Learn more about ${title}'s Ministry at Christ Fellowship Church`;
-  const metaTitle = title ? `${title}'s Ministry` : 'Ministry';
+    : `Learn more about ${ministryTitle} at Christ Fellowship Church`;
+  const metaTitle = title ? ministryTitle : 'Ministry';
   return createMeta({
     title: metaTitle,
     description,
