@@ -64,6 +64,42 @@ describe('ResourceCard', () => {
     });
     expect(screen.queryByRole('list')).not.toBeInTheDocument();
   });
+
+  describe('REDIRECT_CARD disableCard', () => {
+    it('renders a link when REDIRECT_CARD has disableCard false', () => {
+      renderCard({
+        contentType: 'REDIRECT_CARD',
+        pathname: 'https://example.com',
+        disableCard: false,
+      });
+      const link = screen.getByRole('link');
+      expect(link).toHaveAttribute('href', 'https://example.com');
+    });
+
+    it('renders a link when REDIRECT_CARD has disableCard undefined', () => {
+      renderCard({
+        contentType: 'REDIRECT_CARD',
+        pathname: 'https://example.com',
+      });
+      expect(screen.getByRole('link')).toBeInTheDocument();
+    });
+
+    it('renders static content with no link when REDIRECT_CARD has disableCard true', () => {
+      renderCard({
+        contentType: 'REDIRECT_CARD',
+        pathname: 'https://example.com',
+        disableCard: true,
+      });
+      expect(screen.queryByRole('link')).not.toBeInTheDocument();
+      expect(screen.getByText('Test Resource')).toBeInTheDocument();
+      expect(screen.getByAltText('Test Resource')).toBeInTheDocument();
+    });
+
+    it('does not disable the link for non-redirect content types even when disableCard is true', () => {
+      renderCard({ contentType: 'ARTICLES', disableCard: true });
+      expect(screen.getByRole('link')).toBeInTheDocument();
+    });
+  });
 });
 
 describe('MinistryCard', () => {

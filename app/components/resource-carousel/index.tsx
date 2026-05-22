@@ -9,6 +9,7 @@ import {
 } from '~/primitives/shadcn-primitives/carousel';
 import { ResourceCard } from '~/primitives/cards/resource-card';
 import { CollectionItem } from '~/routes/page-builder/types';
+import HTMLRenderer from '~/primitives/html-renderer';
 
 interface CardCarouselSectionProps {
   viewMoreStyles?: string;
@@ -68,7 +69,7 @@ export const CardCarouselSection = ({
                   {title}
                 </h2>
                 {description && (
-                  <p className='md:text-lg leading-none'>{description}</p>
+                  <HTMLRenderer html={description} className='md:text-lg' />
                 )}
               </div>
 
