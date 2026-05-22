@@ -2,6 +2,7 @@ import { LoaderFunctionArgs } from 'react-router-dom';
 import { PodcastEpisode, RockPodcastEpisode, WistiaElement } from '../types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { createImageUrlFromGuid, parseRockKeyValueList } from '~/lib/utils';
+import { PODCAST_SHOW_CHANNEL_ID } from '../podcast-routing.server';
 
 // Error messages
 const ERROR_MESSAGES = {
@@ -76,7 +77,7 @@ async function getPodcastChannel(
       queryParams: {
         attributeKey: 'Url',
         value: path,
-        $filter: 'ContentChannelId eq 179',
+        $filter: `ContentChannelId eq ${PODCAST_SHOW_CHANNEL_ID}`,
         loadAttributes: 'simple',
       },
     });
