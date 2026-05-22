@@ -1,5 +1,6 @@
 import Icon from '~/primitives/icon';
 import HTMLRenderer from '~/primitives/html-renderer';
+import { icsLink } from '~/lib/utils';
 
 import {
   collapseHtmlToVisibleText,
@@ -43,6 +44,82 @@ function formatEventTimeRange(mission: VolunteerMissionDetail): string {
   return start || end || '—';
 }
 
+function plainTextFromHtml(value: string): string {
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th)\s*>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#(?:160|x0*A0);/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function calendarFilename(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  return `${slug || 'community-serving-opportunity'}.ics`;
+}
+
+function AddToCalendarIconButton({
+  mission,
+}: {
+  mission: VolunteerMissionDetail;
+}) {
+  if (!mission.calendarStartDateTime) {
+    return null;
+  }
+
+  const handleAddToCalendar = () => {
+    const startTime = new Date(mission.calendarStartDateTime as string);
+    const fallbackEndTime = new Date(startTime.getTime() + 60 * 60 * 1000);
+    const endTime = mission.calendarEndDateTime
+      ? new Date(mission.calendarEndDateTime)
+      : fallbackEndTime;
+
+    if (Number.isNaN(startTime.getTime())) {
+      return;
+    }
+
+    const calendarUrl = icsLink({
+      title: mission.title,
+      description: plainTextFromHtml(mission.summary),
+      address: mission.checkInLocation || mission.campusName || '',
+      startTime,
+      endTime: Number.isNaN(endTime.getTime()) ? fallbackEndTime : endTime,
+      url:
+        typeof window !== 'undefined'
+          ? window.location.href
+          : mission.missionsUrl,
+    });
+
+    const link = document.createElement('a');
+    link.href = calendarUrl;
+    link.download = calendarFilename(mission.title);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => window.URL.revokeObjectURL(calendarUrl), 0);
+  };
+
+  return (
+    <button
+      type='button'
+      onClick={handleAddToCalendar}
+      className='ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-black/12 text-neutral-darker transition-colors hover:border-ocean hover:bg-ocean hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2'
+      aria-label='Add to Calendar'
+      title='Add to Calendar'
+    >
+      <Icon name='calendarPlus' size={18} />
+    </button>
+  );
+}
+
 export function MissionDetailRows({
   mission,
 }: {
@@ -54,7 +131,11 @@ export function MissionDetailRows({
 
   const rows = [
     { icon: 'map' as const, label: locationLabel },
-    { icon: 'calendar' as const, label: dateLabel },
+    {
+      icon: 'calendar' as const,
+      label: dateLabel,
+      action: <AddToCalendarIconButton mission={mission} />,
+    },
     { icon: 'time' as const, label: timeLabel },
   ];
 
@@ -68,6 +149,7 @@ export function MissionDetailRows({
           <span className='text-base font-medium leading-snug text-neutral-darker'>
             {row.label}
           </span>
+          {'action' in row ? row.action : null}
         </li>
       ))}
     </ul>
