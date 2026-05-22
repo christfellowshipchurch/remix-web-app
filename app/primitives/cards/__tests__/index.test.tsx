@@ -77,7 +77,10 @@ describe('ResourceCard', () => {
     });
 
     it('renders a link when REDIRECT_CARD has disableCard undefined', () => {
-      renderCard({ contentType: 'REDIRECT_CARD', pathname: 'https://example.com' });
+      renderCard({
+        contentType: 'REDIRECT_CARD',
+        pathname: 'https://example.com',
+      });
       expect(screen.getByRole('link')).toBeInTheDocument();
     });
 

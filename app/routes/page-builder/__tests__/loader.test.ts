@@ -17,7 +17,10 @@ vi.mock('~/lib/.server/fetch-wistia-data', () => ({
   fetchWistiaDataFromRock: vi.fn(),
 }));
 
-import { fetchRockData, isItemInDateRange } from '~/lib/.server/fetch-rock-data';
+import {
+  fetchRockData,
+  isItemInDateRange,
+} from '~/lib/.server/fetch-rock-data';
 import {
   buildPodcastRoutingIndex,
   PODCAST_SHOW_CHANNEL_ID,
