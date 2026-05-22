@@ -66,7 +66,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
   const moreEpisodesHits =
-    appId && apiKey ? await fetchMoreEpisodesFromAlgolia(episode, appId, apiKey) : [];
+    appId && apiKey
+      ? await fetchMoreEpisodesFromAlgolia(episode, appId, apiKey)
+      : [];
 
   return {
     episode,
@@ -109,7 +111,10 @@ async function fetchMoreEpisodesFromAlgolia(
 
     return (response.hits ?? []).map((hit) => hit as unknown as ContentItemHit);
   } catch (error) {
-    console.error('[podcasts/podcast-episode] Algolia loader fetch failed', error);
+    console.error(
+      '[podcasts/podcast-episode] Algolia loader fetch failed',
+      error,
+    );
     return [];
   }
 }

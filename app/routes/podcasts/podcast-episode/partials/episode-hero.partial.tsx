@@ -21,9 +21,7 @@ export function EpisodeHero() {
             <div>
               <HeroContent />
               <div className='hidden md:block lg:hidden mt-6'>
-                <EpisodeShareButton
-                  className='text-white border-white'
-                />
+                <EpisodeShareButton className='text-white border-white' />
               </div>
             </div>
           </div>

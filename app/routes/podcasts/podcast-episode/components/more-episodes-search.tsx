@@ -43,9 +43,7 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
   );
 };
 
-export const MoreEpisodesSearch = ({
-  hits,
-}: MoreEpisodesSearchProps) => {
+export const MoreEpisodesSearch = ({ hits }: MoreEpisodesSearchProps) => {
   if (hits.length === 0) {
     return null;
   }

@@ -25,7 +25,11 @@ type WeeklyMinistryServiceDisplay = {
 function normalizeWeeklyMinistryService(
   service: WeeklyMinistryService,
 ): WeeklyMinistryServiceDisplay | null {
-  const ministryType = (service.ministryType ?? service.minstryType ?? '').trim();
+  const ministryType = (
+    service.ministryType ??
+    service.minstryType ??
+    ''
+  ).trim();
   const dayOfWeek = (service.daysOfWeek ?? service.dayOfWeek ?? '').trim();
   const serviceTimes = (service.times ?? service.serviceTimes ?? '').trim();
   const learnMoreUrl = (
