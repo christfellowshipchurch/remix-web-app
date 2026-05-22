@@ -1,12 +1,9 @@
-export type WhatWeOfferContentItem = {
-  image?: string;
-  label?: string;
-  imageAspectRatio?: string;
-  description1: string;
-  description2?: string;
+export type WhatWeOfferCardItem = {
+  image: string;
+  tag: string;
+  name: string;
+  description: string;
   url: string;
-  /** Defaults to "Learn More" in the UI */
-  ctaLabel?: string;
 };
 
 export type WhatWeOfferTab = {
@@ -15,7 +12,7 @@ export type WhatWeOfferTab = {
   mobileLabel: string;
   /** Shown below the tab cards; updates with the active tab */
   footerSummary: string;
-  content: WhatWeOfferContentItem[];
+  content: WhatWeOfferCardItem[];
 };
 
 export const whatWeOfferData: WhatWeOfferTab[] = [
@@ -28,21 +25,26 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
     content: [
       {
         image: '/assets/images/home/kids.png',
-        description1: 'Babies-Elementary',
-        description2: 'Every Sunday & Resources Throughout the Week',
+        tag: 'Every Sunday',
+        name: 'Sunday Kids',
+        description:
+          'Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.',
         url: '/ministries/kids',
       },
       {
         image: '/assets/images/home/kids-u.png',
-        imageAspectRatio: '144/190',
-        description1: 'Discipleship Programming for Preschool-Elementary',
-        description2: 'Midweek at Select Locations',
+        tag: 'Mid Week',
+        name: 'Kids University',
+        description:
+          'Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.',
         url: '/christ-fellowship-kids-university',
       },
       {
         image: '/assets/images/home/students.png',
-        description1: 'Middle & High School Students',
-        description2: 'Every Wednesday',
+        tag: 'Wednesdays',
+        name: 'Students',
+        description:
+          'Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.',
         url: '/ministries/students',
       },
     ],
@@ -56,18 +58,17 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
     content: [
       {
         image: '/assets/images/home/ya.png',
-        imageAspectRatio: '85/25',
-        description1: `For Young Adults in
-Their 20s & 30s`,
-        description2: 'Every Tuesday (hosted regionally & online)',
+        tag: 'Every Tuesday',
+        name: 'Young Adults',
+        description: "For Young Adults in Their 20s & 30s — hosted regionally & online.",
         url: '/ministries/young-adults',
       },
       {
         image: '/assets/images/home/college-nights.png',
-        imageAspectRatio: '22/16',
-        description1: 'For College Students',
-        description2:
-          'Every Thursday (hosted at Trinity in Palm Beach Gardens)',
+        tag: 'Every Thursday',
+        name: 'College Nights',
+        description:
+          'For College Students, hosted at Trinity in Palm Beach Gardens.',
         url: '/college-nights',
       },
     ],
@@ -80,19 +81,25 @@ Their 20s & 30s`,
       'Cultivate deep connections and meaningful growth with community support.',
     content: [
       {
-        label: 'Groups',
-        description1:
+        image: 'https://placehold.co/405x192',
+        tag: 'Groups',
+        name: 'Find Your Group',
+        description:
           'Find a variety of small groups near you, doing what you like to do!',
         url: '/group-finder',
       },
       {
-        label: 'Classes',
-        description1: 'Grow through on-site studies on a variety of topics.',
+        image: 'https://placehold.co/405x192',
+        tag: 'Classes',
+        name: 'Grow Through Classes',
+        description: 'Grow through on-site studies on a variety of topics.',
         url: '/class-finder',
       },
       {
-        label: 'Freedom & Care',
-        description1:
+        image: 'https://placehold.co/405x192',
+        tag: 'Freedom & Care',
+        name: 'Freedom & Care',
+        description:
           'Resources to help you find freedom from hurts, habits, and hangups.',
         url: '/ministries/freedom-and-care',
       },

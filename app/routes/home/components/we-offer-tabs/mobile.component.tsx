@@ -8,18 +8,9 @@ import { SectionTitle } from '~/components';
 import { whatWeOfferData } from './what-we-offer.data';
 import { WhatWeOfferCard } from './desktop.component';
 
-export const WhatWeOfferMobile = ({
-  onTabChange,
-}: {
-  onTabChange?: (tabValue: string) => void;
-}) => {
+export const WhatWeOfferMobile = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState('family');
-
-  const handleTabChange = (tabValue: string) => {
-    setActiveTab(tabValue);
-    onTabChange?.(tabValue);
-  };
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -33,13 +24,11 @@ export const WhatWeOfferMobile = ({
     const targetCard = cards[targetIndex] as HTMLElement;
     if (!targetCard) return;
 
-    // Calculate scroll position to center the target card
     const containerWidth = container.clientWidth;
     const cardWidth = targetCard.offsetWidth;
     const cardOffset = targetCard.offsetLeft;
     const scrollPosition = cardOffset - (containerWidth - cardWidth) / 2;
 
-    // Scroll to center
     container.scrollTo({
       left: scrollPosition,
       behavior: 'auto',
@@ -61,19 +50,17 @@ export const WhatWeOfferMobile = ({
         <Tabs.Root
           defaultValue='family'
           className='w-full flex flex-col gap-4'
-          onValueChange={handleTabChange}
+          onValueChange={setActiveTab}
         >
-          <Tabs.List className='flex justify-between gap-1 rounded-[13px] bg-[rgba(244,245,247,0.37)] p-2 max-w-[360px] mx-auto'>
+          <Tabs.List className='flex justify-center gap-3 max-w-none mx-auto'>
             {whatWeOfferData.map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
                 className={cn(
                   button({ intent: 'secondary' }),
-                  'rounded-xl border-transparent text-white hover:border-ocean py-1 px-3',
-                  'data-[state=active]:text-black data-[state=active]:bg-white',
-                  'data-[state=active]:shadow-[0px_2.416px_2.416px_0px_rgba(0,0,0,0.25)]',
-                  'data-[state=active]:py-2 data-[state=active]:mb-[2px]',
+                  'rounded-full border-transparent text-white hover:border-ocean py-2 px-4',
+                  'data-[state=active]:text-white data-[state=active]:bg-ocean border-white data-[state=active]:border-ocean',
                 )}
                 data-tab={tab.value}
               >
@@ -81,9 +68,6 @@ export const WhatWeOfferMobile = ({
               </Tabs.Trigger>
             ))}
           </Tabs.List>
-
-          {/* divider */}
-          <div className='w-full h-[1px] bg-[#D8D8DB]/25 max-w-[350px] mx-auto' />
 
           {whatWeOfferData.map((tab) => (
             <Tabs.Content
@@ -111,7 +95,7 @@ export const WhatWeOfferMobile = ({
                     key={index}
                     data-card
                     className='snap-center snap-always'
-                    data-card-title={content.label}
+                    data-card-title={content.name}
                     data-tab-context={tab.value}
                   >
                     <WhatWeOfferCard

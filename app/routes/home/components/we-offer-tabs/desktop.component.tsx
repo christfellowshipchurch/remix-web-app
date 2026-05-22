@@ -1,84 +1,52 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import * as Tabs from '@radix-ui/react-tabs';
 import { SectionTitle } from '~/components';
 import { cn } from '~/lib/utils';
-import { Button, button } from '~/primitives/button/button.primitive';
+import { button } from '~/primitives/button/button.primitive';
 import {
   whatWeOfferData,
-  type WhatWeOfferContentItem,
+  type WhatWeOfferCardItem,
 } from './what-we-offer.data';
 
 export const WhatWeOfferCard = ({
   content,
   middleCard,
 }: {
-  content: WhatWeOfferContentItem;
+  content: WhatWeOfferCardItem;
   middleCard: boolean;
 }) => {
   return (
-    <div
-      className={cn(
-        'flex flex-col justify-between gap-12 rounded-[18px] bg-white p-6',
-        'lg:px-5 lg:py-8',
-        'w-[300px] md:w-[230px] lg:w-[300px] xl:w-[340px] h-full',
-        middleCard && ['min-h-[340px]', 'md:min-h-[340px]', 'lg:min-h-[420px]'],
-      )}
+    <Link
+      to={content.url}
+      prefetch='intent'
+      className='flex flex-col rounded-[36px] overflow-hidden w-full max-w-[405px] h-full hover:translate-y-[-4px] transition-all duration-300'
     >
-      <div className='flex flex-col items-center gap-9 flex-1'>
-        {content.image ? (
-          <div className='w-full flex justify-center items-center md:min-h-[160px] lg:min-h-[190px]'>
-            <img
-              src={content.image}
-              alt={content.description1}
-              className={cn(
-                'max-h-[190px] w-auto',
-                content.imageAspectRatio
-                  ? `aspect-[${content.imageAspectRatio}]`
-                  : 'aspect-200/125',
-              )}
-            />
-          </div>
-        ) : (
-          <h3
-            className={cn(
-              'text-center',
-              'font-extrabold',
-              'text-navy',
-              'leading-none',
-              content.label === 'Freedom & Care'
-                ? 'text-[32px] lg:text-[40px] leading-10'
-                : 'text-[52px]',
-            )}
-          >
-            {content.label}
-          </h3>
+      <img
+        className={cn(
+          'w-full object-cover object-center',
+          middleCard ? 'h-[220px]' : 'h-[164px]',
         )}
-
-        <div className='flex flex-col gap-4 flex-1 text-center font-semibold justify-center'>
-          <p>{content.description1}</p>
-          {content.description2 && <p>{content.description2}</p>}
+        src={content.image}
+        alt={content.name}
+      />
+      <div className='flex flex-col gap-4 p-6 pb-8 bg-white size-full'>
+        <div className='flex items-center justify-center bg-ocean-subdued rounded-full w-fit px-3 py-1'>
+          <p className='text-xs font-bold text-[#1C697E]'>{content.tag}</p>
         </div>
+        <h2 className='text-navy text-xl font-extrabold leading-none'>
+          {content.name}
+        </h2>
+        <p className='text-[#3F484C] text-sm'>{content.description}</p>
       </div>
-      <Button intent='primary' className='w-full h-fit' href={content.url}>
-        {content.ctaLabel ?? 'Learn More'}
-      </Button>
-    </div>
+    </Link>
   );
 };
 
-export const WhatWeOfferDesktop = ({
-  onTabChange,
-}: {
-  onTabChange?: (tabValue: string) => void;
-}) => {
+export const WhatWeOfferDesktop = () => {
   const [activeTab, setActiveTab] = useState(
     () => whatWeOfferData[0]?.value ?? 'family',
   );
-
-  const handleTabChange = (tabValue: string) => {
-    setActiveTab(tabValue);
-    onTabChange?.(tabValue);
-  };
 
   const activeTabData = whatWeOfferData.find((tab) => tab.value === activeTab);
 
@@ -98,7 +66,7 @@ export const WhatWeOfferDesktop = ({
         <Tabs.Root
           value={activeTab}
           className='w-full flex flex-col gap-12'
-          onValueChange={handleTabChange}
+          onValueChange={setActiveTab}
         >
           <Tabs.List className='flex justify-center gap-4 max-w-none mx-auto'>
             {whatWeOfferData.map((tab) => (
@@ -130,7 +98,7 @@ export const WhatWeOfferDesktop = ({
               <div
                 className={cn(
                   'flex gap-4 lg:gap-8 flex-nowrap overflow-x-visible mx-auto md:min-h-[520px] lg:min-h-[600px]',
-                  tab.content.length === 2 ? 'items-center' : 'items-center',
+                  'items-center',
                 )}
               >
                 {tab.content.map((content, index) => (
@@ -148,7 +116,7 @@ export const WhatWeOfferDesktop = ({
                         'lg:rotate-0': index === 1,
                       },
                     )}
-                    data-card-title={content.label}
+                    data-card-title={content.name}
                     data-tab-context={tab.value}
                   >
                     <WhatWeOfferCard
