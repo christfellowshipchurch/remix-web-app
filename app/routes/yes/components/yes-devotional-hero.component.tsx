@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { appleLink, googleLink, isAppleDevice } from '~/lib/utils';
 import { Icon } from '~/primitives/icon/icon';
 
 export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
@@ -42,38 +42,44 @@ export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
 
 const heroCardData: { link: string; copy: string }[] = [
   {
-    link: '/app',
+    link: googleLink, // TODO: Change to the correct link when available
     copy: 'A two-week course to start your relationship with Jesus.',
   },
   {
-    link: '/app',
+    link: isAppleDevice() ? appleLink : googleLink,
     copy: 'Access resources, submit prayers, & get involved in our app',
   },
   {
-    link: '/app',
+    link: 'https://www.bible.com/app',
     copy: 'Download the free Bible App from YouVersion',
   },
 ];
 
 const spanishHeroCardData: { link: string; copy: string }[] = [
   {
-    link: '/app',
+    link: googleLink,
     copy: 'Un curso de dos semanas para comenzar tu relación con Jesús.',
   },
   {
-    link: '/app',
+    link: googleLink,
     copy: 'Accede a recursos, envía oraciones y participa en nuestra app',
   },
   {
-    link: '/app',
+    link: googleLink,
     copy: 'Descarga la app de la Biblia YouVersion gratis',
   },
 ];
 
 const HeroCard = ({ copy, link }: { copy: string; link: string }) => {
   return (
-    <Link
-      to={link}
+    <a
+      href={link}
+      target='_blank'
+      rel='noopener noreferrer'
+      onClick={(event) => {
+        event.preventDefault();
+        window.open(isAppleDevice() ? appleLink : googleLink, '_blank');
+      }}
       className='bg-white lg:bg-transparent relative flex justify-between items-center lg:justify-center gap-4 border-2 border-white w-full lg:max-w-[200px] pl-4 pr-3 lg:px-2 pt-2 pb-2 lg:pt-8 lg:pb-14 rounded-[36px] group hover:bg-white transition-all duration-400 cursor-pointer'
     >
       <p className='max-w-[85%] md:max-w-[92%] lg:max-w-none lg:text-lg lg:text-center text-text-secondary lg:text-[#FAFAFC] font-semibold group-hover:text-text-secondary transition-all duration-400'>
@@ -83,6 +89,6 @@ const HeroCard = ({ copy, link }: { copy: string; link: string }) => {
         name='arrowRight'
         className='lg:absolute right-auto -bottom-5 text-white bg-navy rounded-full size-10 p-[2px] lg:-rotate-45 group-hover:rotate-0 transition-all duration-400'
       />
-    </Link>
+    </a>
   );
 };
