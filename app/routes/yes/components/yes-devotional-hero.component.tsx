@@ -42,15 +42,15 @@ export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
 
 const heroCardData: { link: string; copy: string }[] = [
   {
-    link: googleLink,
+    link: googleLink, // TODO: Change to the correct link when available
     copy: 'A two-week course to start your relationship with Jesus.',
   },
   {
-    link: googleLink,
+    link: isAppleDevice() ? appleLink : googleLink,
     copy: 'Access resources, submit prayers, & get involved in our app',
   },
   {
-    link: googleLink,
+    link: 'https://www.bible.com/app',
     copy: 'Download the free Bible App from YouVersion',
   },
 ];
