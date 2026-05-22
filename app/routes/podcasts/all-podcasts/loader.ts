@@ -2,6 +2,7 @@
 import type { PodcastShow } from '../types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { createImageUrlFromGuid } from '~/lib/utils';
+import { PODCAST_SHOW_CHANNEL_ID } from '../podcast-routing.server';
 
 export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
   let podcastShowsData;
@@ -9,7 +10,7 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
     podcastShowsData = await fetchRockData({
       endpoint: 'ContentChannelItems',
       queryParams: {
-        $filter: 'ContentChannelId eq 179',
+        $filter: `ContentChannelId eq ${PODCAST_SHOW_CHANNEL_ID}`,
         $orderby: 'Order asc',
         loadAttributes: 'simple',
       },

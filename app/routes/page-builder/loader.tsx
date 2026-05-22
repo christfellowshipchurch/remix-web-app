@@ -23,6 +23,12 @@ import {
 } from './types';
 import { format, parseISO } from 'date-fns';
 import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
+import {
+  buildPodcastRoutingIndex,
+  PODCAST_SHOW_CHANNEL_ID,
+  PodcastRoutingIndex,
+  PodcastShowRouteInfo,
+} from '../podcasts/podcast-routing.server';
 
 // Type definitions for Rock API responses
 interface ChildReference {
@@ -150,6 +156,17 @@ const getLinkTreeLayout = async (attributeValues: RockAttributeValues) => {
 export const mapPageBuilderChildItems = async (
   children: RockContentItem[],
 ): Promise<PageBuilderSection[]> => {
+  // Build the podcast routing index once if any section is a collection.
+  // This resolves Rock show items once for all collections in this call so that
+  // episode items can be routed to /podcasts/:showPath/:episodePath without
+  // hardcoding any show-specific content channel IDs.
+  const hasCollections = children.some((child) =>
+    isCollectionType(child.contentChannelId),
+  );
+  const podcastIndex: PodcastRoutingIndex = hasCollections
+    ? await buildPodcastRoutingIndex()
+    : { byEpisodeChannelId: new Map<string, PodcastShowRouteInfo>() };
+
   return Promise.all(
     // Map over the children and define the PageBuilder Section Type
     children.map(async (child) => {
@@ -196,8 +213,9 @@ export const mapPageBuilderChildItems = async (
           ...baseChild,
           collection: visibleItems.flatMap(
             (item: RockContentItem): CollectionItem[] => {
-              const contentType = getContentType(item.contentChannelId);
-              // Map the attribute values to a key-value object for easier access
+              const channelId = item.contentChannelId;
+
+              // Flatten attribute values (needed for all routing paths)
               const itemAttributeValues = Object.fromEntries(
                 Object.entries(item.attributeValues || {}).map(
                   ([key, obj]: [string, RockAttributeValue]) => [
@@ -207,11 +225,120 @@ export const mapPageBuilderChildItems = async (
                 ),
               );
 
-              console.log({ itemAttributeValues });
+              // --- Podcast show channel item → /podcasts/:showPath ---
+              if (channelId === PODCAST_SHOW_CHANNEL_ID) {
+                const showPath = getStringValue(
+                  itemAttributeValues?.url ||
+                    itemAttributeValues?.pathname ||
+                    '',
+                )
+                  .trim()
+                  .replace(/^\/+/, '');
+
+                if (!showPath) {
+                  console.warn(
+                    `[page-builder] Skipping podcast show item ${item.id}: missing url/pathname attribute`,
+                  );
+                  return [];
+                }
+
+                const summary =
+                  getStringValue(itemAttributeValues?.summary || '') ||
+                  item.content;
+                let startDate = '';
+                if (item.startDateTime) {
+                  startDate = format(
+                    parseISO(item.startDateTime),
+                    'EEE dd MMM yyyy',
+                  );
+                }
+
+                return [
+                  {
+                    id: item.id,
+                    contentChannelId: channelId,
+                    contentType: 'PODCASTS' as const,
+                    name: item.title,
+                    summary,
+                    image:
+                      createImageUrlFromGuid(
+                        getStringValue(itemAttributeValues?.image || ''),
+                      ) || '',
+                    startDate,
+                    pathname: `/podcasts/${showPath}`,
+                  },
+                ];
+              }
+
+              // --- Podcast episode channel item → /podcasts/:showPath/:episodePath ---
+              const episodeShowInfo =
+                podcastIndex.byEpisodeChannelId.get(channelId);
+              if (episodeShowInfo) {
+                const episodePath = getStringValue(
+                  itemAttributeValues?.pathname ||
+                    itemAttributeValues?.url ||
+                    '',
+                )
+                  .trim()
+                  .replace(/^\/+/, '');
+
+                if (!episodePath) {
+                  console.warn(
+                    `[page-builder] Skipping podcast episode item ${item.id}: missing pathname/url attribute`,
+                  );
+                  return [];
+                }
+
+                const summary =
+                  getStringValue(itemAttributeValues?.summary || '') ||
+                  item.content;
+                let startDate = '';
+                if (item.startDateTime) {
+                  startDate = format(
+                    parseISO(item.startDateTime),
+                    'EEE dd MMM yyyy',
+                  );
+                }
+
+                return [
+                  {
+                    id: item.id,
+                    contentChannelId: channelId,
+                    contentType: 'PODCASTS' as const,
+                    name: item.title,
+                    summary,
+                    image:
+                      createImageUrlFromGuid(
+                        getStringValue(itemAttributeValues?.image || ''),
+                      ) || '',
+                    startDate,
+                    pathname: `/podcasts/${episodeShowInfo.showPath}/${episodePath}`,
+                  },
+                ];
+              }
+
+              // --- Non-podcast items: existing contentType-based routing ---
+              const contentType = getContentType(channelId);
 
               if (!contentType) {
                 console.warn(
-                  `[page-builder] Skipping unsupported collection item ${item.id} with content channel ID ${item.contentChannelId}`,
+                  `[page-builder] Skipping unsupported collection item ${item.id} with content channel ID ${channelId}`,
+                );
+                return [];
+              }
+
+              // If this channel maps to a known podcast content type but was NOT
+              // found in the routing index, skip it. We cannot determine the
+              // correct show path and must not generate a guessed URL.
+              if (
+                contentType === 'PODCASTS' ||
+                contentType === 'CREW_CAST' ||
+                contentType === 'YOUNG_+_ADULTING' ||
+                contentType === 'SO_GOOD_SISTERHOOD' ||
+                contentType === 'MADE_FOR_MORE'
+              ) {
+                console.warn(
+                  `[page-builder] Skipping podcast item ${item.id} (channel ${channelId}, type ${contentType}): could not resolve show via routing index`,
                 );
                 return [];
               }
