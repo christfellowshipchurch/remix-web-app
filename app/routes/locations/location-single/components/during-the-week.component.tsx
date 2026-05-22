@@ -3,12 +3,48 @@ import { Icon } from '~/primitives/icon/icon';
 import { weekdaySpanishTranslation } from '../util';
 
 export type WeeklyMinistryService = {
-  minstryType: string;
+  ministryType?: string;
+  minstryType?: string;
+  daysOfWeek?: string;
+  dayOfWeek?: string;
+  times?: string;
+  serviceTimes?: string;
+  learnMoreLink?: string;
+  learnMoreUrl?: string;
+  planAVisit?: boolean;
+  planMyvisit?: string;
+};
+
+type WeeklyMinistryServiceDisplay = {
+  ministryType: string;
   dayOfWeek: string;
   serviceTimes: string;
   learnMoreUrl: string;
-  planMyvisit: string;
 };
+
+function normalizeWeeklyMinistryService(
+  service: WeeklyMinistryService,
+): WeeklyMinistryServiceDisplay | null {
+  const ministryType = (service.ministryType ?? service.minstryType ?? '').trim();
+  const dayOfWeek = (service.daysOfWeek ?? service.dayOfWeek ?? '').trim();
+  const serviceTimes = (service.times ?? service.serviceTimes ?? '').trim();
+  const learnMoreUrl = (
+    service.learnMoreLink ??
+    service.learnMoreUrl ??
+    ''
+  ).trim();
+
+  if (!ministryType || !dayOfWeek || !serviceTimes) {
+    return null;
+  }
+
+  return {
+    ministryType,
+    dayOfWeek,
+    serviceTimes,
+    learnMoreUrl,
+  };
+}
 
 export const DuringTheWeek = ({
   weeklyMinistryServices,
@@ -17,14 +53,20 @@ export const DuringTheWeek = ({
   weeklyMinistryServices: WeeklyMinistryService[];
   isSpanish?: boolean;
 }) => {
-  const byDay = (weeklyMinistryServices ?? []).reduce(
+  const displayServices = (weeklyMinistryServices ?? [])
+    .map(normalizeWeeklyMinistryService)
+    .filter((service): service is WeeklyMinistryServiceDisplay =>
+      Boolean(service),
+    );
+
+  const byDay = displayServices.reduce(
     (acc, item) => {
       const day = item.dayOfWeek;
       if (!acc[day]) acc[day] = [];
       acc[day].push(item);
       return acc;
     },
-    {} as Record<string, WeeklyMinistryService[]>,
+    {} as Record<string, WeeklyMinistryServiceDisplay[]>,
   );
   const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const orderedDays = dayOrder.filter((day) => byDay[day]?.length);
@@ -46,12 +88,12 @@ export const DuringTheWeek = ({
                   key={i}
                   className='font-medium text-neutral-default md:max-w-[260px] lg:max-w-[180px] lg:text-xs'
                 >
-                  {ministry.serviceTimes} | {ministry.minstryType}{' '}
+                  {ministry.serviceTimes} | {ministry.ministryType}{' '}
                   {ministry.learnMoreUrl ? (
                     <Link
                       to={ministry.learnMoreUrl}
                       className='inline align-middle'
-                      aria-label={`${ministry.minstryType} Link`}
+                      aria-label={`${ministry.ministryType} Link`}
                     >
                       <Icon
                         name='linkExternal'

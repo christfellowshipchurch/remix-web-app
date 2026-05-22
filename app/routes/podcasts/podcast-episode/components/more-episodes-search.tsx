@@ -1,17 +1,9 @@
-import { useMemo } from 'react';
-import { InstantSearch, Hits, Configure } from 'react-instantsearch';
 import { Icon } from '~/primitives/icon/icon';
 import { Link } from 'react-router-dom';
 import { ContentItemHit } from '~/routes/search/types';
-import { createSearchClient } from '~/lib/create-search-client';
-import { HitsWrapper } from '~/components/hits-wrapper';
 
 interface MoreEpisodesSearchProps {
-  ALGOLIA_APP_ID: string;
-  ALGOLIA_SEARCH_API_KEY: string;
-  podcastShow: string;
-  podcastSeason: string;
-  currentEpisodeTitle?: string;
+  hits: ContentItemHit[];
 }
 
 const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
@@ -52,47 +44,23 @@ const MoreEpisodesHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 };
 
 export const MoreEpisodesSearch = ({
-  ALGOLIA_APP_ID,
-  ALGOLIA_SEARCH_API_KEY,
-  podcastShow,
-  podcastSeason,
-  currentEpisodeTitle,
+  hits,
 }: MoreEpisodesSearchProps) => {
-  const searchClient = useMemo(
-    () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
-    [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY],
-  );
-
-  // Filter for episodes from the same show and season, excluding the current episode
-  const filter = `contentType:"Podcast" AND podcastShow:"${podcastShow}" AND podcastSeasonNumber:${podcastSeason}${
-    currentEpisodeTitle ? ` AND NOT title:"${currentEpisodeTitle}"` : ''
-  }`;
+  if (hits.length === 0) {
+    return null;
+  }
 
   return (
-    <InstantSearch
-      indexName='dev_contentItems'
-      searchClient={searchClient}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-    >
-      <Configure filters={filter} hitsPerPage={8} />
+    <div className='w-full bg-white content-padding'>
+      <div className='flex flex-col gap-6 md:gap-7 max-w-screen-content mx-auto py-10 md:py-20'>
+        <h2 className='text-[28px] font-extrabold'>More in this season</h2>
 
-      {/* Episodes Section - Only render if there are hits */}
-      <HitsWrapper>
-        <div className='w-full bg-white content-padding'>
-          <div className='flex flex-col gap-6 md:gap-7 max-w-screen-content mx-auto py-10 md:py-20'>
-            <h2 className='text-[28px] font-extrabold'>More in this season</h2>
-
-            <Hits
-              hitComponent={MoreEpisodesHitComponent}
-              classNames={{
-                list: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6',
-              }}
-            />
-          </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+          {hits.map((hit) => (
+            <MoreEpisodesHitComponent key={hit.objectID} hit={hit} />
+          ))}
         </div>
-      </HitsWrapper>
-    </InstantSearch>
+      </div>
+    </div>
   );
 };

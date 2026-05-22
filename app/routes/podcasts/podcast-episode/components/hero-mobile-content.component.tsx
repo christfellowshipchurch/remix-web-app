@@ -1,7 +1,7 @@
-import { IconButton } from '~/primitives/button/icon-button.primitive';
 import { sanitizeCmsHtml } from '~/lib/sanitize';
 import { useLoaderData } from 'react-router-dom';
 import { LoaderReturnType } from '../loader';
+import { EpisodeShareButton } from './episode-share-button.component';
 
 export const HeroMobileContent = () => {
   const { episode } = useLoaderData<LoaderReturnType>();
@@ -28,8 +28,7 @@ export const HeroMobileContent = () => {
               dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(summary) }}
             />
           )}
-          {/* TODO: Add share functionality */}
-          <IconButton withRotatingArrow={true}>Share this episode</IconButton>
+          <EpisodeShareButton />
         </div>
         <div className='h-[1px] opacity-10 bg-black/75 mt-8' />
       </div>

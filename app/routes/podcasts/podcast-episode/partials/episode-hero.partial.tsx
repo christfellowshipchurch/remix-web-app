@@ -1,8 +1,8 @@
 import { useLoaderData } from 'react-router-dom';
 import { HeroContent } from '../components/hero-content.component';
 import { Breadcrumbs } from '~/components';
-import { IconButton } from '~/primitives/button/icon-button.primitive';
 import { LoaderReturnType } from '../loader';
+import { EpisodeShareButton } from '../components/episode-share-button.component';
 
 export function EpisodeHero() {
   const { episode } = useLoaderData<LoaderReturnType>();
@@ -21,12 +21,9 @@ export function EpisodeHero() {
             <div>
               <HeroContent />
               <div className='hidden md:block lg:hidden mt-6'>
-                <IconButton
+                <EpisodeShareButton
                   className='text-white border-white'
-                  withRotatingArrow
-                >
-                  Share this episode
-                </IconButton>
+                />
               </div>
             </div>
           </div>
@@ -36,10 +33,7 @@ export function EpisodeHero() {
           <div className='flex flex-col md:flex-row justify-between items-center py-10'>
             <Breadcrumbs mode='light' />
             <div className='mt-5 md:mt-0 flex-wrap justify-between hidden lg:flex'>
-              {/* TODO: Add share functionality */}
-              <IconButton className='text-white border-white' withRotatingArrow>
-                Share this episode
-              </IconButton>
+              <EpisodeShareButton className='text-white border-white' />
             </div>
           </div>
         </div>
