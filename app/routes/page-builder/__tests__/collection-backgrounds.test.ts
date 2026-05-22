@@ -104,6 +104,11 @@ describe('getCarouselCollectionBackgrounds', () => {
 });
 
 describe('getPathname', () => {
+  // getPathname still handles podcast ContentType values so that
+  // series-resources/loader.tsx (which uses getContentType + getPathname)
+  // continues to work without change. Page-builder collection items are
+  // intercepted by the podcast routing index in loader.tsx before reaching
+  // getPathname, so these show-only paths are no longer generated from there.
   it('routes every podcast content channel through the podcasts route', () => {
     expect(getPathname('PODCASTS', 'latest-episode')).toBe(
       '/podcasts/latest-episode',

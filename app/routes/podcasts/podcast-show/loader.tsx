@@ -7,6 +7,7 @@ import {
   mapPageBuilderChildItems,
 } from '../../page-builder/loader';
 import { ContentBlockData } from '~/routes/page-builder/types';
+import { PODCAST_SHOW_CHANNEL_ID } from '../podcast-routing.server';
 
 export type LoaderReturnType = {
   path: string;
@@ -87,7 +88,6 @@ export async function getLatestEpisodes(channelGuid: string) {
 }
 
 export async function getPodcast(path: string) {
-  const contentChannelId = 179;
   let podcastData;
   try {
     podcastData = await fetchRockData({
@@ -95,7 +95,7 @@ export async function getPodcast(path: string) {
       queryParams: {
         attributeKey: 'Url',
         value: path,
-        $filter: `ContentChannelId eq ${contentChannelId} and Status eq 'Approved' and StartDateTime le datetime'${new Date().toISOString()}'`,
+        $filter: `ContentChannelId eq ${PODCAST_SHOW_CHANNEL_ID} and Status eq 'Approved' and StartDateTime le datetime'${new Date().toISOString()}'`,
         loadAttributes: 'simple',
       },
     });
