@@ -54,6 +54,14 @@ const CAROUSEL_COLLECTION_TYPES = [
   'RESOURCE_COLLECTION',
 ] as const;
 
+const PODCAST_CONTENT_TYPES: readonly ContentType[] = [
+  'PODCASTS',
+  'CREW_CAST',
+  'YOUNG_+_ADULTING',
+  'SO_GOOD_SISTERHOOD',
+  'MADE_FOR_MORE',
+];
+
 type CarouselCollectionType = (typeof CAROUSEL_COLLECTION_TYPES)[number];
 
 /**
@@ -133,6 +141,9 @@ export const getPathname = (
     }
     if (contentType === 'PAGE_BUILDER') {
       return `/${pathname}`;
+    }
+    if (PODCAST_CONTENT_TYPES.includes(contentType)) {
+      return `/podcasts/${pathname}`;
     }
     return `/${contentType.toLowerCase()}/${pathname}`;
   }

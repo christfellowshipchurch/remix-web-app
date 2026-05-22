@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { getCarouselCollectionBackgrounds } from '../components/builder-utils';
+import {
+  getCarouselCollectionBackgrounds,
+  getPathname,
+} from '../components/builder-utils';
 import { PageBuilderSection } from '../types';
 
 function makeSection(
@@ -97,5 +100,23 @@ describe('getCarouselCollectionBackgrounds', () => {
     expect(result.get('a')).toBe('white');
     expect(result.has('b')).toBe(false);
     expect(result.get('c')).toBe('white');
+  });
+});
+
+describe('getPathname', () => {
+  it('routes every podcast content channel through the podcasts route', () => {
+    expect(getPathname('PODCASTS', 'latest-episode')).toBe(
+      '/podcasts/latest-episode',
+    );
+    expect(getPathname('CREW_CAST', 'crew-cast')).toBe('/podcasts/crew-cast');
+    expect(getPathname('YOUNG_+_ADULTING', 'young-adulting')).toBe(
+      '/podcasts/young-adulting',
+    );
+    expect(getPathname('SO_GOOD_SISTERHOOD', 'so-good-sisterhood')).toBe(
+      '/podcasts/so-good-sisterhood',
+    );
+    expect(getPathname('MADE_FOR_MORE', 'made-for-more')).toBe(
+      '/podcasts/made-for-more',
+    );
   });
 });
