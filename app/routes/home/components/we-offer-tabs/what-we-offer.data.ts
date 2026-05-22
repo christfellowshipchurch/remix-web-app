@@ -1,3 +1,5 @@
+import { getImageUrl } from '~/lib/utils';
+
 export type WhatWeOfferCardItem = {
   image: string;
   tag: string;
@@ -24,7 +26,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
       'Empowering your children and strengthening your family through engaging, faith-centered experiences.',
     content: [
       {
-        image: '/assets/images/home/kids.png',
+        image: getImageUrl('3176684'),
         tag: 'Every Sunday',
         name: 'Sunday Kids',
         description:
@@ -32,7 +34,9 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         url: '/ministries/kids',
       },
       {
-        image: '/assets/images/home/kids-u.png',
+        image: getImageUrl('7bcd69be-8395-45a6-9221-a547461bdcad', {
+          useGuid: true,
+        }),
         tag: 'Mid Week',
         name: 'Kids University',
         description:
@@ -40,7 +44,9 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         url: '/christ-fellowship-kids-university',
       },
       {
-        image: '/assets/images/home/students.png',
+        image: getImageUrl('c9c1aeed-43d0-4e20-9a28-9a96787c02a0', {
+          useGuid: true,
+        }),
         tag: 'Wednesdays',
         name: 'Students',
         description:
@@ -57,14 +63,17 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
       'Vibrant community and resources designed for young adults and working professionals.',
     content: [
       {
-        image: '/assets/images/home/ya.png',
+        image: getImageUrl('3176687'),
         tag: 'Every Tuesday',
         name: 'Young Adults',
-        description: "For Young Adults in Their 20s & 30s — hosted regionally & online.",
+        description:
+          'For Young Adults in Their 20s & 30s — hosted regionally & online.',
         url: '/ministries/young-adults',
       },
       {
-        image: '/assets/images/home/college-nights.png',
+        image: getImageUrl('492a58fc-8af1-42b1-9774-3c8804c9fb25', {
+          useGuid: true,
+        }),
         tag: 'Every Thursday',
         name: 'College Nights',
         description:
@@ -81,7 +90,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
       'Cultivate deep connections and meaningful growth with community support.',
     content: [
       {
-        image: 'https://placehold.co/405x192',
+        image: getImageUrl('3176685'),
         tag: 'Groups',
         name: 'Find Your Group',
         description:
@@ -89,14 +98,14 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         url: '/group-finder',
       },
       {
-        image: 'https://placehold.co/405x192',
+        image: getImageUrl('3176686'),
         tag: 'Classes',
         name: 'Grow Through Classes',
         description: 'Grow through on-site studies on a variety of topics.',
         url: '/class-finder',
       },
       {
-        image: 'https://placehold.co/405x192',
+        image: getImageUrl('3176688'),
         tag: 'Freedom & Care',
         name: 'Freedom & Care',
         description:
