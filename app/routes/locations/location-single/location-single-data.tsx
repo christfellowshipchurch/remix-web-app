@@ -148,7 +148,7 @@ export const englishCampusAmenities: CampusAmenity[] = [
     icon: 'handicap',
   },
   {
-    title: 'Helpful Greeters & Ushers',
+    title: 'Welcoming Team of Volunteers',
     icon: 'happy',
   },
   {
@@ -183,7 +183,7 @@ export const spanishCampusAmenities: CampusAmenity[] = [
     icon: 'handicap',
   },
   {
-    title: 'Anfitriones y Acomodadores Serviciales',
+    title: 'Equipo de Voluntarios Amigables',
     icon: 'happy',
   },
   {
