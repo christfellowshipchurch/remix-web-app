@@ -4,10 +4,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { googleLink } from '~/lib/utils';
 import { YesHero } from '../yes-devotional-hero.component';
 
-function getCardLink(text: string): HTMLAnchorElement {
+function getCardLink(text: string) {
   const link = screen.getByText(text).closest('a');
-  expect(link).toBeInstanceOf(HTMLAnchorElement);
-  return link as HTMLAnchorElement;
+  if (!link) {
+    throw new Error(`Expected card link for "${text}"`);
+  }
+  return link;
 }
 
 afterEach(() => {
