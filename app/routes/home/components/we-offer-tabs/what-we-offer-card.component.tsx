@@ -4,8 +4,10 @@ import type { WhatWeOfferCardItem } from './what-we-offer.data';
 
 export const WhatWeOfferCard = ({
   content,
+  className,
 }: {
   content: WhatWeOfferCardItem;
+  className?: string;
 }) => {
   return (
     <Link
@@ -13,6 +15,7 @@ export const WhatWeOfferCard = ({
       prefetch='intent'
       className={cn(
         'flex flex-col rounded-[36px] overflow-hidden hover:translate-y-[-4px] transition-all duration-300 h-[405px] w-[310px]',
+        className,
       )}
     >
       <div className='h-1/2 shrink-0 overflow-hidden'>
