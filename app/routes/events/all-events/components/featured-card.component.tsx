@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 import HtmlRenderer from '~/primitives/html-renderer';
@@ -29,9 +31,9 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
     locations && locations.length > 1
       ? 'Multiple Locations'
       : locations?.[0]?.name || 'Christ Fellowship Church';
-
-  return (
-    <div className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-xl border border-neutral-lighter'>
+  const eventPath = `/events/${url}`;
+  const cardContent = (showButton: boolean) => (
+    <>
       <img
         src={image}
         alt={title}
@@ -65,14 +67,28 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
           )}
         </div>
 
-        <Button
-          intent='secondary'
-          className='font-normal'
-          href={`/events/${url}`}
-        >
-          Save my spot
-        </Button>
+        {showButton ? (
+          <Button intent='secondary' className='font-normal' href={eventPath}>
+            Save my spot
+          </Button>
+        ) : null}
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      <Link
+        to={eventPath}
+        className='flex flex-col items-center justify-center size-full overflow-hidden rounded-xl border border-neutral-lighter md:hidden'
+        prefetch='intent'
+      >
+        {cardContent(false)}
+      </Link>
+
+      <div className='hidden md:flex md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-xl border border-neutral-lighter'>
+        {cardContent(true)}
+      </div>
+    </>
   );
 };
