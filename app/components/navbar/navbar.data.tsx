@@ -92,7 +92,7 @@ export const ministriesData: MenuLink = {
         title: 'Take the Journey',
         subtitle: 'new classes',
         callToAction: {
-          title: 'Sign up now',
+          title: 'Take the Journey Class',
           url: '/events/journey',
         },
         image: 'https://picsum.photos/282/228',

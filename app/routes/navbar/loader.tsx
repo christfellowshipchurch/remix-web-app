@@ -60,7 +60,7 @@ const fetchFeatureCards = async () => {
       title: 'New to our Church?',
       subtitle: 'Learn who we are, what we believe, and how to get connected.',
       callToAction: {
-        title: 'Join the Next Class',
+        title: 'Take the Journey Class',
         url: '/events/journey',
       },
       image: 'https://rock.christfellowship.church/GetImage.ashx?id=3166460',

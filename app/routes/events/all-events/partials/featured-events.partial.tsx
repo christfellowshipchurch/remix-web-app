@@ -1,16 +1,12 @@
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+
+import { Icon } from '~/primitives/icon/icon';
 import { ResourceCard } from '~/primitives/cards/resource-card';
-import {
-  Carousel,
-  CarouselArrows,
-  CarouselContent,
-  CarouselDots,
-  CarouselItem,
-} from '~/primitives/shadcn-primitives/carousel';
 import { ContentItemHit } from '~/routes/search/types';
 import {
   FeaturedEventCard,
-  formatEventCardDate,
+  formatFeaturedEventDate,
 } from '../components/featured-card.component';
 
 export function FeaturedEventsSectionLayout({
@@ -19,7 +15,7 @@ export function FeaturedEventsSectionLayout({
   children: ReactNode;
 }) {
   return (
-    <div className='w-full py-28 content-padding bg-gray'>
+    <div className='w-full py-16 md:py-28 content-padding bg-gray'>
       <div className='flex min-h-88 flex-col max-w-screen-content mx-auto md:min-h-112'>
         {children}
       </div>
@@ -47,50 +43,91 @@ export function FeaturedEventsFromHits({ hits }: { hits: ContentItemHit[] }) {
       </div>
 
       {remainingHits.length > 0 && (
-        <div className='-ml-5 md:ml-0 mt-12 md:hidden'>
-          <Carousel
-            opts={{
-              align: 'start',
-            }}
-            className='w-full'
-          >
-            <CarouselContent className='py-2 gap-4'>
-              {remainingHits.map((hit, index) => (
-                <CarouselItem
-                  key={hit.objectID}
-                  className='w-full basis-[360px] pl-0'
-                  style={{
-                    marginLeft: index === 0 ? '20px' : '0px',
-                    marginRight:
-                      index === remainingHits.length - 1 ? '20px' : '0px',
-                  }}
-                >
-                  <OtherFeatureEventCardHit hit={hit} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-
-            <div className='w-full relative mt-4 pb-4'>
-              <div className='absolute h-12 top-7 left-5'>
-                <CarouselDots
-                  activeClassName='bg-ocean'
-                  inactiveClassName='bg-neutral-lighter'
-                />
-              </div>
-
-              <div className='absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28'>
-                <CarouselArrows />
-              </div>
-            </div>
-          </Carousel>
+        <div className='mt-8 flex w-full flex-col gap-2 md:hidden'>
+          {remainingHits.map((hit) => (
+            <OtherFeatureEventMobileCardHit hit={hit} key={hit.objectID} />
+          ))}
         </div>
       )}
     </>
   );
 }
 
+function getFeaturedEventLocation(hit: ContentItemHit) {
+  return hit.eventLocations && hit.eventLocations.length > 1
+    ? 'Multiple Locations'
+    : hit.eventLocations?.[0] ||
+        (hit.locations && hit.locations.length > 1
+          ? 'Multiple Locations'
+          : hit.locations?.[0]?.name) ||
+        'Christ Fellowship Church';
+}
+
+const OtherFeatureEventMobileCardHit = ({ hit }: { hit: ContentItemHit }) => {
+  const image = hit.coverImage?.sources?.[0]?.uri || '';
+  const formattedDate = formatFeaturedEventDate(hit.startDateTime);
+  const campus = getFeaturedEventLocation(hit);
+
+  return (
+    <Link
+      to={`/events/${hit.url}`}
+      className='flex h-[98px] w-full items-start overflow-hidden rounded-xl border border-neutral-lighter bg-white text-text-primary'
+      prefetch='intent'
+    >
+      <div className='flex shrink-0 p-[7px]'>
+        <img
+          src={image}
+          alt={hit.title}
+          className='size-[84px] rounded-[5.5px] object-cover'
+          loading='lazy'
+        />
+      </div>
+
+      <div className='flex h-[98px] min-w-0 flex-1 items-center pr-1'>
+        <div className='flex h-full min-w-0 flex-1 flex-col items-start gap-2 py-2 pl-1 pr-4'>
+          <h4 className='line-clamp-2 w-full text-base font-bold leading-[1.4] text-pretty'>
+            {hit.title}
+          </h4>
+
+          <div className='flex w-full min-w-0 flex-col gap-1'>
+            <div className='flex min-w-0 items-center gap-2'>
+              <Icon
+                name='calendarAlt'
+                color='currentColor'
+                size={18}
+                className='shrink-0'
+              />
+              <p className='truncate text-sm font-semibold leading-normal'>
+                {formattedDate}
+              </p>
+            </div>
+            <div className='flex min-w-0 items-center gap-2'>
+              <Icon
+                name='map'
+                color='currentColor'
+                size={18}
+                className='shrink-0'
+              />
+              <p className='truncate text-sm font-semibold leading-normal'>
+                {campus}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <Icon
+          name='chevronRight'
+          color='currentColor'
+          size={24}
+          className='shrink-0 text-neutral-light'
+        />
+      </div>
+    </Link>
+  );
+};
+
 const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
-  const formattedDate = formatEventCardDate(hit.startDateTime);
+  const formattedDate = formatFeaturedEventDate(hit.startDateTime);
 
   return (
     <ResourceCard
@@ -104,10 +141,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
         startDate: formattedDate,
-        location:
-          hit.locations && hit.locations.length > 1
-            ? 'Multiple Locations'
-            : hit.locations?.[0]?.name || 'Christ Fellowship Church',
+        location: getFeaturedEventLocation(hit),
       }}
     />
   );
