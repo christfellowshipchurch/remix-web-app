@@ -28,7 +28,7 @@ export const WhatWeOfferTabs = () => {
   const activeTabData = whatWeOfferData.find((tab) => tab.value === activeTab);
 
   return (
-    <div className='flex flex-col gap-8 lg:gap-12'>
+    <div className='flex flex-col gap-8'>
       <div className='flex flex-col gap-2 md:gap-4 content-padding'>
         <div className='flex items-center justify-center gap-3'>
           <div className='w-6 h-1 bg-[#56CAEB]' />
@@ -54,7 +54,7 @@ export const WhatWeOfferTabs = () => {
           className='w-full flex flex-col gap-4'
           onValueChange={setActiveTab}
         >
-          <div className='pr-5 md:pr-0'>
+          <div className='lg:mb-6'>
             <Tabs.List className={tabListClassName}>
               {whatWeOfferData.map((tab) => (
                 <Tabs.Trigger
@@ -94,7 +94,6 @@ export const WhatWeOfferTabs = () => {
                   'hidden lg:flex mx-auto',
                   'flex-nowrap items-center overflow-x-scroll',
                   'gap-6 xl:gap-2 pb-2',
-                  'min-h-[600px]',
                 )}
               >
                 {tab.content.map((content, index) => (
