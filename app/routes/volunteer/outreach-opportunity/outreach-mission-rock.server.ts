@@ -1,5 +1,5 @@
 import camelCase from 'lodash/camelCase';
-import { format, isValid } from 'date-fns';
+import { addHours, format, isValid, parse } from 'date-fns';
 
 import { fetchRockData, TTL } from '~/lib/.server/fetch-rock-data';
 import { escapeOData } from '~/lib/.server/rock-utils';
@@ -78,6 +78,17 @@ function parseRockDateTime(value: string): Date | null {
   return isValid(d) ? d : null;
 }
 
+function formatEventDateLabel(value: string): string {
+  const trimmed = value.trim();
+  for (const dateFormat of ['M/d/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd']) {
+    const parsed = parse(trimmed, dateFormat, new Date());
+    if (isValid(parsed)) {
+      return format(parsed, 'EEE d MMM yyyy');
+    }
+  }
+  return trimmed;
+}
+
 /** `HH:mm:ss` or `H:mm:ss` on same calendar day as `base`. */
 function parseTimeOnDate(base: Date, timeHHmmss: string): Date | null {
   const m = timeHHmmss.trim().match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
@@ -91,6 +102,8 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
   eventDateStr: string;
   eventTimeStr: string;
   eventEndTimeStr: string | undefined;
+  calendarStartDateTime: string | undefined;
+  calendarEndDateTime: string | undefined;
 } {
   const startRaw = readAttr(attrs, ['EventStartDateTime']);
   const startFormatted = readAttrFormatted(attrs, ['EventStartDateTime']);
@@ -98,19 +111,22 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
   let eventDateStr = '—';
   let eventTimeStr = '—';
   let eventEndTimeStr: string | undefined;
+  let calendarStartDateTime: string | undefined;
+  let calendarEndDateTime: string | undefined;
 
   const startDate = startRaw ? parseRockDateTime(startRaw) : null;
 
   if (startDate) {
-    eventDateStr = format(startDate, 'M/d/yyyy');
+    eventDateStr = format(startDate, 'EEE d MMM yyyy');
     eventTimeStr = format(startDate, 'h:mm a');
+    calendarStartDateTime = startDate.toISOString();
   } else if (startFormatted) {
     const m = startFormatted.match(/^(.+?)\s+(\d{1,2}:\d{2}\s*(?:AM|PM))$/i);
     if (m) {
-      eventDateStr = m[1].trim();
+      eventDateStr = formatEventDateLabel(m[1]);
       eventTimeStr = m[2].trim();
     } else {
-      eventDateStr = startFormatted;
+      eventDateStr = formatEventDateLabel(startFormatted);
     }
   }
 
@@ -119,16 +135,33 @@ function buildEventSchedule(attrs: AttrBag | undefined): {
 
   if (endTimeFormatted && !/^\d{1,2}:\d{2}:\d{2}/.test(endTimeFormatted)) {
     eventEndTimeStr = endTimeFormatted;
+    if (startDate) {
+      const endOnStartDay = parse(endTimeFormatted, 'h:mm a', startDate);
+      if (isValid(endOnStartDay)) {
+        calendarEndDateTime = endOnStartDay.toISOString();
+      }
+    }
   } else if (endTimeRaw && /^\d{1,2}:\d{2}/.test(endTimeRaw) && startDate) {
     const endOnStartDay = parseTimeOnDate(startDate, endTimeRaw);
     if (endOnStartDay) {
       eventEndTimeStr = format(endOnStartDay, 'h:mm a');
+      calendarEndDateTime = endOnStartDay.toISOString();
     }
   } else if (endTimeFormatted) {
     eventEndTimeStr = endTimeFormatted;
   }
 
-  return { eventDateStr, eventTimeStr, eventEndTimeStr };
+  if (startDate && !calendarEndDateTime) {
+    calendarEndDateTime = addHours(startDate, 1).toISOString();
+  }
+
+  return {
+    eventDateStr,
+    eventTimeStr,
+    eventEndTimeStr,
+    calendarStartDateTime,
+    calendarEndDateTime,
+  };
 }
 
 function resolveImageUrl(raw: string | undefined): string | undefined {
@@ -288,8 +321,13 @@ export async function fetchVolunteerMissionDetailFromRock(
   const checkInLocation =
     readAttr(attrs, ['CheckInLocation']) || campusName || '—';
 
-  const { eventDateStr, eventTimeStr, eventEndTimeStr } =
-    buildEventSchedule(attrs);
+  const {
+    eventDateStr,
+    eventTimeStr,
+    eventEndTimeStr,
+    calendarStartDateTime,
+    calendarEndDateTime,
+  } = buildEventSchedule(attrs);
 
   const missionsUrl = `https://rock.gocf.org/page/1038?Group=${encodeURIComponent(guid)}`;
 
@@ -308,6 +346,8 @@ export async function fetchVolunteerMissionDetailFromRock(
     eventDateStr,
     eventTimeStr,
     eventEndTimeStr,
+    calendarStartDateTime,
+    calendarEndDateTime,
     missionsUrl,
     contactName: contact.contactName,
     contactEmail: contact.contactEmail,

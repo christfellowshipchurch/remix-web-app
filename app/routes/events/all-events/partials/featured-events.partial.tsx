@@ -70,15 +70,15 @@ export function FeaturedEventsFromHits({ hits }: { hits: ContentItemHit[] }) {
               ))}
             </CarouselContent>
 
-            <div className='w-full relative mt-4 pb-4'>
-              <div className='absolute h-12 top-7 left-5'>
+            <div className='mt-8 flex w-full items-center justify-between px-5 pb-4'>
+              <div className='flex min-h-12 items-center'>
                 <CarouselDots
                   activeClassName='bg-ocean'
                   inactiveClassName='bg-neutral-lighter'
                 />
               </div>
 
-              <div className='absolute h-12 right-44 lg:right-44 2xl:right-36 3xl:right-28'>
+              <div className='flex min-h-12 items-center'>
                 <CarouselArrows />
               </div>
             </div>
