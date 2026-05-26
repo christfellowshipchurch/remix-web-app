@@ -1,8 +1,16 @@
 import { appleLink, googleLink, isAppleDevice } from '~/lib/utils';
 import { Icon } from '~/primitives/icon/icon';
 
+type HeroCardData = {
+  link: string;
+  copy: string;
+};
+
+const bibleAppLink = 'https://www.bible.com/app';
+const getChurchAppLink = () => (isAppleDevice() ? appleLink : googleLink);
+
 export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
-  const cardData = isSpanish ? spanishHeroCardData : heroCardData;
+  const cardData = getHeroCardData(isSpanish);
 
   return (
     <div className='flex flex-col items-center w-full h-screen lg:h-full lg:min-h-[110svh]'>
@@ -40,35 +48,37 @@ export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
   );
 };
 
-const heroCardData: { link: string; copy: string }[] = [
-  {
-    link: googleLink, // TODO: Change to the correct link when available
-    copy: 'A two-week course to start your relationship with Jesus.',
-  },
-  {
-    link: isAppleDevice() ? appleLink : googleLink,
-    copy: 'Access resources, submit prayers, & get involved in our app',
-  },
-  {
-    link: 'https://www.bible.com/app',
-    copy: 'Download the free Bible App from YouVersion',
-  },
-];
+const englishHeroCardCopies = {
+  devotional: 'A two-week course to start your relationship with Jesus.',
+  churchApp: 'Access resources, submit prayers, & get involved in our app',
+  bibleApp: 'Download the free Bible App from YouVersion',
+};
 
-const spanishHeroCardData: { link: string; copy: string }[] = [
-  {
-    link: googleLink,
-    copy: 'Un curso de dos semanas para comenzar tu relación con Jesús.',
-  },
-  {
-    link: googleLink,
-    copy: 'Accede a recursos, envía oraciones y participa en nuestra app',
-  },
-  {
-    link: 'https://www.bible.com/app',
-    copy: 'Descarga la app de la Biblia YouVersion gratis',
-  },
-];
+const spanishHeroCardCopies = {
+  devotional: 'Un curso de dos semanas para comenzar tu relación con Jesús.',
+  churchApp: 'Accede a recursos, envía oraciones y participa en nuestra app',
+  bibleApp: 'Descarga la app de la Biblia YouVersion gratis',
+};
+
+const getHeroCardData = (isSpanish?: boolean): HeroCardData[] => {
+  const copy = isSpanish ? spanishHeroCardCopies : englishHeroCardCopies;
+  const churchAppLink = getChurchAppLink();
+
+  return [
+    {
+      link: churchAppLink,
+      copy: copy.devotional,
+    },
+    {
+      link: churchAppLink,
+      copy: copy.churchApp,
+    },
+    {
+      link: bibleAppLink,
+      copy: copy.bibleApp,
+    },
+  ];
+};
 
 const HeroCard = ({ copy, link }: { copy: string; link: string }) => {
   return (
