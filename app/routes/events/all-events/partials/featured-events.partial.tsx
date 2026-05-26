@@ -15,8 +15,8 @@ export function FeaturedEventsSectionLayout({
   children: ReactNode;
 }) {
   return (
-    <div className='w-full py-16 md:py-28 content-padding bg-gray'>
-      <div className='flex min-h-88 flex-col max-w-screen-content mx-auto md:min-h-112'>
+    <div className='w-full pt-10 pb-16 md:py-28 content-padding bg-gray md:min-h-112'>
+      <div className='flex min-h-88 flex-col max-w-screen-content mx-auto'>
         {children}
       </div>
     </div>
@@ -36,14 +36,14 @@ export function FeaturedEventsFromHits({ hits }: { hits: ContentItemHit[] }) {
     <>
       <FeaturedEventCard card={firstHit} />
 
-      <div className='hidden mt-16 lg:mt-24 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start'>
+      <div className='hidden mt-8 lg:mt-12 md:grid grid-cols-2 lg:grid-cols-3 gap-4 place-items-center md:place-items-start'>
         {remainingHits.map((hit) => (
           <OtherFeatureEventCardHit hit={hit} key={hit.objectID} />
         ))}
       </div>
 
       {remainingHits.length > 0 && (
-        <div className='mt-8 flex w-full flex-col gap-2 md:hidden'>
+        <div className='mt-6 flex w-full flex-col gap-2 md:hidden'>
           {remainingHits.map((hit) => (
             <OtherFeatureEventMobileCardHit hit={hit} key={hit.objectID} />
           ))}
@@ -85,7 +85,7 @@ const OtherFeatureEventMobileCardHit = ({ hit }: { hit: ContentItemHit }) => {
 
       <div className='flex h-[98px] min-w-0 flex-1 items-center pr-1'>
         <div className='flex h-full min-w-0 flex-1 flex-col items-start gap-2 py-2 pl-1 pr-4'>
-          <h4 className='line-clamp-2 w-full text-base font-bold leading-[1.4] text-pretty'>
+          <h4 className='line-clamp-1 w-full text-base font-bold leading-[1.4] text-pretty'>
             {hit.title}
           </h4>
 
@@ -132,6 +132,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
   return (
     <ResourceCard
       className='min-w-[360px] w-[360px] md:w-full md:min-w-0'
+      summaryClassName='line-clamp-1'
       resource={{
         id: hit.objectID,
         contentChannelId: '78', // EVENT type from builder-utils.ts

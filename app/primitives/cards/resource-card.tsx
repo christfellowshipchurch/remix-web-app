@@ -7,10 +7,12 @@ import { CollectionItem } from '~/routes/page-builder/types';
 export const ResourceCard = ({
   resource,
   className,
+  summaryClassName,
   linkState,
 }: {
   resource: CollectionItem;
   className?: string;
+  summaryClassName?: string;
   /** Optional state to pass to the Link (e.g. { fromEvents: '/events?q=...' } for back navigation). */
   linkState?: Record<string, unknown>;
 }) => {
@@ -66,7 +68,10 @@ export const ResourceCard = ({
             {name}
           </h4>
 
-          <HtmlRenderer html={summary || ''} className='line-clamp-3' />
+          <HtmlRenderer
+            html={summary || ''}
+            className={cn('line-clamp-3', summaryClassName)}
+          />
         </div>
       </div>
     </>
