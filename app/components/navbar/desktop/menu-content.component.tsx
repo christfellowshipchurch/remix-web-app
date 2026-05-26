@@ -33,15 +33,9 @@ export const MenuContent: React.FC<
   MenuLink['content'] & { isLoading: boolean; menuType: string }
 > = ({ mainContent, featureCards, isLoading = true, menuType = 'media' }) => {
   return (
-    <div
-      style={{
-        background:
-          'linear-gradient(to right, white 0%, white 80%, #F3F5FA 80%, #F3F5FA 100%)',
-      }}
-      className='w-screen shadow-sm flex items-center justify-center content-padding'
-    >
-      <div className='max-w-screen-content mx-auto w-full flex flex-col lg:flex-row'>
-        <div className='bg-white grid grid-cols-3 xl:gap-8 w-full ml-auto '>
+    <div className='w-screen overflow-hidden bg-white shadow-sm flex items-center justify-center content-padding'>
+      <div className='relative isolate max-w-screen-content mx-auto w-full flex flex-col lg:flex-row'>
+        <div className='bg-white grid grid-cols-3 xl:gap-8 w-full ml-auto'>
           {mainContent.map((section, index) => (
             <div className='w-full px-4 py-8' key={index}>
               <h4 className='font-medium text-link-secondary'>
@@ -80,7 +74,8 @@ export const MenuContent: React.FC<
 
         <div
           className={cn(
-            'py-6 w-1/2 min-w-[340px] max-w-[400px] bg-gray flex flex-col gap-4 items-end',
+            'relative py-6 w-1/2 min-w-[340px] max-w-[400px] bg-gray flex flex-col gap-4 items-end',
+            'before:absolute before:inset-y-0 before:left-0 before:-z-10 before:w-screen before:bg-gray',
             featureCards.length > 1 ? 'pl-4 3xl:pl-6!' : 'pl-0',
             featureCards.length > 1 && 'pb-14',
           )}
