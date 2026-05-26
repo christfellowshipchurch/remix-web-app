@@ -4,12 +4,10 @@ import { weekdaySpanishTranslation } from '../util';
 
 export type WeeklyMinistryService = {
   ministryType?: string;
+  // TOOD: Remove minstryType when fixed in Algolia
   minstryType?: string;
-  daysOfWeek?: string;
   dayOfWeek?: string;
-  times?: string;
   serviceTimes?: string;
-  learnMoreLink?: string;
   learnMoreUrl?: string;
   planAVisit?: boolean;
   planMyvisit?: string;
@@ -22,32 +20,58 @@ type WeeklyMinistryServiceDisplay = {
   learnMoreUrl: string;
 };
 
+const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+const weekdayDisplayNames = dayOrder.reduce<Record<string, string>>(
+  (acc, day) => {
+    acc[day.toLowerCase()] = day;
+    acc[`${day.toLowerCase()}s`] = day;
+    return acc;
+  },
+  {},
+);
+
+const ministryDisplayNames: Record<string, string> = {
+  'cf-kids': 'Kids',
+  'kids-university': 'Kid U',
+  students: 'Students',
+  'the-mix': 'The Mix',
+  'young-adults': 'Young Adults',
+  'college-nights': 'College Nights',
+  'celebrate-recovery': 'Celebrate Recovery',
+};
+
+function normalizeMinistryType(ministryType: string) {
+  return ministryDisplayNames[ministryType] ?? ministryType;
+}
+
+function normalizeDaysOfWeek(dayOfWeek: string) {
+  return dayOfWeek
+    .split(',')
+    .map((day) => day.trim())
+    .map((day) => weekdayDisplayNames[day.toLowerCase()] ?? day)
+    .filter((day) => dayOrder.includes(day));
+}
+
 function normalizeWeeklyMinistryService(
   service: WeeklyMinistryService,
-): WeeklyMinistryServiceDisplay | null {
-  const ministryType = (
-    service.ministryType ??
-    service.minstryType ??
-    ''
-  ).trim();
-  const dayOfWeek = (service.daysOfWeek ?? service.dayOfWeek ?? '').trim();
-  const serviceTimes = (service.times ?? service.serviceTimes ?? '').trim();
-  const learnMoreUrl = (
-    service.learnMoreLink ??
-    service.learnMoreUrl ??
-    ''
-  ).trim();
+): WeeklyMinistryServiceDisplay[] {
+  // TOOD: Update minstryType to be ministryType when fixed in Algolia
+  const ministryType = (service.minstryType ?? '').trim();
+  const daysOfWeek = (service.dayOfWeek ?? '').trim();
+  const serviceTimes = (service.serviceTimes ?? '').trim();
+  const learnMoreUrl = (service.learnMoreUrl ?? '').trim();
 
-  if (!ministryType || !dayOfWeek || !serviceTimes) {
-    return null;
+  if (!ministryType || !daysOfWeek || !serviceTimes) {
+    return [];
   }
 
-  return {
-    ministryType,
+  return normalizeDaysOfWeek(daysOfWeek).map((dayOfWeek) => ({
+    ministryType: normalizeMinistryType(ministryType),
     dayOfWeek,
     serviceTimes,
     learnMoreUrl,
-  };
+  }));
 }
 
 export const DuringTheWeek = ({
@@ -57,11 +81,9 @@ export const DuringTheWeek = ({
   weeklyMinistryServices: WeeklyMinistryService[];
   isSpanish?: boolean;
 }) => {
-  const displayServices = (weeklyMinistryServices ?? [])
-    .map(normalizeWeeklyMinistryService)
-    .filter((service): service is WeeklyMinistryServiceDisplay =>
-      Boolean(service),
-    );
+  const displayServices = (weeklyMinistryServices ?? []).flatMap(
+    normalizeWeeklyMinistryService,
+  );
 
   const byDay = displayServices.reduce(
     (acc, item) => {
@@ -72,7 +94,6 @@ export const DuringTheWeek = ({
     },
     {} as Record<string, WeeklyMinistryServiceDisplay[]>,
   );
-  const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const orderedDays = dayOrder.filter((day) => byDay[day]?.length);
 
   return (
