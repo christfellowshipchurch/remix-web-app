@@ -30,7 +30,7 @@ export const ministriesData: MenuLink = {
           },
           {
             title: 'Special Needs',
-            description: 'Children and adults',
+            description: 'Children & Adults',
             url: '/ministries/special-needs',
           },
         ],
@@ -41,12 +41,12 @@ export const ministriesData: MenuLink = {
         items: [
           {
             title: 'Men',
-            description: 'Men of all ages',
+            description: 'Men of All Ages',
             url: '/ministries/men',
           },
           {
             title: 'Women',
-            description: 'Girls in every season',
+            description: 'Girls in Every Season',
             url: '/ministries/women',
           },
           {
@@ -56,7 +56,7 @@ export const ministriesData: MenuLink = {
           },
           {
             title: 'Freedom & Care',
-            description: 'Healing and Freedom',
+            description: 'Healing & Freedom',
             url: '/ministries/freedom-and-care',
           },
         ],
@@ -65,12 +65,12 @@ export const ministriesData: MenuLink = {
         title: 'COMMUNITY',
         items: [
           {
-            title: 'Group Finder',
+            title: 'Find a Group',
             description: 'Find community',
             url: '/group-finder',
           },
           {
-            title: 'Class Finder',
+            title: 'Find a Class',
             description: 'Learn together',
             url: '/class-finder',
           },
