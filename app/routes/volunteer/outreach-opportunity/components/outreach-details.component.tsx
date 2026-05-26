@@ -92,9 +92,9 @@ export function AddToCalendarButton({
     }
 
     const calendarUrl = icsLink({
-      title: mission.title,
+      title: `CF Missions - ${mission.title}`,
       description: plainTextFromHtml(mission.summary),
-      address: mission.checkInLocation || mission.campusName || '',
+      address: mission.campusName || '',
       startTime,
       endTime: Number.isNaN(endTime.getTime()) ? fallbackEndTime : endTime,
       url:
