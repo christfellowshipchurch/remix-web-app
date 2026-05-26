@@ -4,8 +4,6 @@ import { weekdaySpanishTranslation } from '../util';
 
 export type WeeklyMinistryService = {
   ministryType?: string;
-  // TOOD: Remove minstryType when fixed in Algolia
-  minstryType?: string;
   dayOfWeek?: string;
   serviceTimes?: string;
   learnMoreUrl?: string;
@@ -56,8 +54,7 @@ function normalizeDaysOfWeek(dayOfWeek: string) {
 function normalizeWeeklyMinistryService(
   service: WeeklyMinistryService,
 ): WeeklyMinistryServiceDisplay[] {
-  // TOOD: Update minstryType to be ministryType when fixed in Algolia
-  const ministryType = (service.minstryType ?? '').trim();
+  const ministryType = (service.ministryType ?? '').trim();
   const daysOfWeek = (service.dayOfWeek ?? '').trim();
   const serviceTimes = (service.serviceTimes ?? '').trim();
   const learnMoreUrl = (service.learnMoreUrl ?? '').trim();
