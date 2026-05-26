@@ -65,7 +65,7 @@ const spanishHeroCardData: { link: string; copy: string }[] = [
     copy: 'Accede a recursos, envía oraciones y participa en nuestra app',
   },
   {
-    link: googleLink,
+    link: 'https://www.bible.com/app',
     copy: 'Descarga la app de la Biblia YouVersion gratis',
   },
 ];
@@ -76,10 +76,6 @@ const HeroCard = ({ copy, link }: { copy: string; link: string }) => {
       href={link}
       target='_blank'
       rel='noopener noreferrer'
-      onClick={(event) => {
-        event.preventDefault();
-        window.open(isAppleDevice() ? appleLink : googleLink, '_blank');
-      }}
       className='bg-white lg:bg-transparent relative flex justify-between items-center lg:justify-center gap-4 border-2 border-white w-full lg:max-w-[200px] pl-4 pr-3 lg:px-2 pt-2 pb-2 lg:pt-8 lg:pb-14 rounded-[36px] group hover:bg-white transition-all duration-400 cursor-pointer'
     >
       <p className='max-w-[85%] md:max-w-[92%] lg:max-w-none lg:text-lg lg:text-center text-text-secondary lg:text-[#FAFAFC] font-semibold group-hover:text-text-secondary transition-all duration-400'>

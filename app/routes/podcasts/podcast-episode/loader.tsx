@@ -1,8 +1,12 @@
 import { LoaderFunctionArgs } from 'react-router-dom';
+import { algoliasearch } from 'algoliasearch';
+
+import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { PodcastEpisode, RockPodcastEpisode, WistiaElement } from '../types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { createImageUrlFromGuid, parseRockKeyValueList } from '~/lib/utils';
 import { PODCAST_SHOW_CHANNEL_ID } from '../podcast-routing.server';
+import type { ContentItemHit } from '~/routes/search/types';
 
 // Error messages
 const ERROR_MESSAGES = {
@@ -16,9 +20,13 @@ const ERROR_MESSAGES = {
 
 export type LoaderReturnType = {
   episode: PodcastEpisode;
+  moreEpisodesHits: ContentItemHit[];
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
 };
+
+const CONTENT_ITEMS_INDEX_NAME = 'dev_contentItems';
+const MORE_EPISODES_HITS_PER_PAGE = 8;
 
 /**
  * Loader function for podcast episode pages
@@ -57,13 +65,59 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   // Get Algolia configuration
   const appId = process.env.ALGOLIA_APP_ID;
   const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const moreEpisodesHits =
+    appId && apiKey
+      ? await fetchMoreEpisodesFromAlgolia(episode, appId, apiKey)
+      : [];
 
   return {
     episode,
+    moreEpisodesHits,
     ALGOLIA_APP_ID: appId || '',
     ALGOLIA_SEARCH_API_KEY: apiKey || '',
-  };
+  } satisfies LoaderReturnType;
 };
+
+async function fetchMoreEpisodesFromAlgolia(
+  episode: PodcastEpisode,
+  appId: string,
+  apiKey: string,
+): Promise<ContentItemHit[]> {
+  const seasonNumber = Number(episode.season);
+  const rockItemId = Number(episode.id);
+
+  if (!episode.show || !Number.isFinite(seasonNumber)) {
+    return [];
+  }
+
+  const filters = [
+    'contentType:"Podcast"',
+    `podcastShow:"${escapeAlgoliaFilterString(episode.show)}"`,
+    `podcastSeasonNumber:${seasonNumber}`,
+    Number.isFinite(rockItemId) ? `rockItemId != ${rockItemId}` : '',
+  ]
+    .filter(Boolean)
+    .join(' AND ');
+
+  try {
+    const client = algoliasearch(appId, apiKey, {});
+    const response = await client.searchSingleIndex({
+      indexName: CONTENT_ITEMS_INDEX_NAME,
+      searchParams: {
+        filters,
+        hitsPerPage: MORE_EPISODES_HITS_PER_PAGE,
+      },
+    });
+
+    return (response.hits ?? []).map((hit) => hit as unknown as ContentItemHit);
+  } catch (error) {
+    console.error(
+      '[podcasts/podcast-episode] Algolia loader fetch failed',
+      error,
+    );
+    return [];
+  }
+}
 
 /**
  * Fetches the PodcastShow ContentChannelItem and returns the show ContentChannel containing the episodes

@@ -3,12 +3,73 @@ import { Icon } from '~/primitives/icon/icon';
 import { weekdaySpanishTranslation } from '../util';
 
 export type WeeklyMinistryService = {
-  minstryType: string;
+  ministryType?: string;
+  dayOfWeek?: string;
+  serviceTimes?: string;
+  learnMoreUrl?: string;
+  planAVisit?: boolean;
+  planMyvisit?: string;
+};
+
+type WeeklyMinistryServiceDisplay = {
+  ministryType: string;
   dayOfWeek: string;
   serviceTimes: string;
   learnMoreUrl: string;
-  planMyvisit: string;
 };
+
+const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+const weekdayDisplayNames = dayOrder.reduce<Record<string, string>>(
+  (acc, day) => {
+    acc[day.toLowerCase()] = day;
+    acc[`${day.toLowerCase()}s`] = day;
+    return acc;
+  },
+  {},
+);
+
+const ministryDisplayNames: Record<string, string> = {
+  'cf-kids': 'Kids',
+  'kids-university': 'Kid U',
+  students: 'Students',
+  'the-mix': 'The Mix',
+  'young-adults': 'Young Adults',
+  'college-nights': 'College Nights',
+  'celebrate-recovery': 'Celebrate Recovery',
+};
+
+function normalizeMinistryType(ministryType: string) {
+  return ministryDisplayNames[ministryType] ?? ministryType;
+}
+
+function normalizeDaysOfWeek(dayOfWeek: string) {
+  return dayOfWeek
+    .split(',')
+    .map((day) => day.trim())
+    .map((day) => weekdayDisplayNames[day.toLowerCase()] ?? day)
+    .filter((day) => dayOrder.includes(day));
+}
+
+function normalizeWeeklyMinistryService(
+  service: WeeklyMinistryService,
+): WeeklyMinistryServiceDisplay[] {
+  const ministryType = (service.ministryType ?? '').trim();
+  const daysOfWeek = (service.dayOfWeek ?? '').trim();
+  const serviceTimes = (service.serviceTimes ?? '').trim();
+  const learnMoreUrl = (service.learnMoreUrl ?? '').trim();
+
+  if (!ministryType || !daysOfWeek || !serviceTimes) {
+    return [];
+  }
+
+  return normalizeDaysOfWeek(daysOfWeek).map((dayOfWeek) => ({
+    ministryType: normalizeMinistryType(ministryType),
+    dayOfWeek,
+    serviceTimes,
+    learnMoreUrl,
+  }));
+}
 
 export const DuringTheWeek = ({
   weeklyMinistryServices,
@@ -17,16 +78,19 @@ export const DuringTheWeek = ({
   weeklyMinistryServices: WeeklyMinistryService[];
   isSpanish?: boolean;
 }) => {
-  const byDay = (weeklyMinistryServices ?? []).reduce(
+  const displayServices = (weeklyMinistryServices ?? []).flatMap(
+    normalizeWeeklyMinistryService,
+  );
+
+  const byDay = displayServices.reduce(
     (acc, item) => {
       const day = item.dayOfWeek;
       if (!acc[day]) acc[day] = [];
       acc[day].push(item);
       return acc;
     },
-    {} as Record<string, WeeklyMinistryService[]>,
+    {} as Record<string, WeeklyMinistryServiceDisplay[]>,
   );
-  const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const orderedDays = dayOrder.filter((day) => byDay[day]?.length);
 
   return (
@@ -46,12 +110,12 @@ export const DuringTheWeek = ({
                   key={i}
                   className='font-medium text-neutral-default md:max-w-[260px] lg:max-w-[180px] lg:text-xs'
                 >
-                  {ministry.serviceTimes} | {ministry.minstryType}{' '}
+                  {ministry.serviceTimes} | {ministry.ministryType}{' '}
                   {ministry.learnMoreUrl ? (
                     <Link
                       to={ministry.learnMoreUrl}
                       className='inline align-middle'
-                      aria-label={`${ministry.minstryType} Link`}
+                      aria-label={`${ministry.ministryType} Link`}
                     >
                       <Icon
                         name='linkExternal'

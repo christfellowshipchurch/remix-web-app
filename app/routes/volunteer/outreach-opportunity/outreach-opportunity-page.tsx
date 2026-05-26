@@ -164,6 +164,7 @@ export function OutreachOpportunityPage() {
 
         <MobileBottomBar
           copied={copied}
+          mission={mission}
           onCopyPath={copyPath}
           onSignUpClick={handleSignupOpen}
         />
