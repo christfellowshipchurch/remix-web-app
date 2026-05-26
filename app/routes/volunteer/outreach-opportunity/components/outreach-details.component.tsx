@@ -1,6 +1,7 @@
+import { icsLink } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 import HTMLRenderer from '~/primitives/html-renderer';
-import { icsLink } from '~/lib/utils';
 
 import {
   collapseHtmlToVisibleText,
@@ -66,10 +67,14 @@ function calendarFilename(title: string): string {
   return `${slug || 'community-serving-opportunity'}.ics`;
 }
 
-function AddToCalendarIconButton({
+export function AddToCalendarButton({
   mission,
+  className,
+  showLabel = true,
 }: {
   mission: VolunteerMissionDetail;
+  className?: string;
+  showLabel?: boolean;
 }) {
   if (!mission.calendarStartDateTime) {
     return null;
@@ -108,15 +113,18 @@ function AddToCalendarIconButton({
   };
 
   return (
-    <button
+    <Button
+      intent='secondary'
+      className={className}
       type='button'
       onClick={handleAddToCalendar}
-      className='ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-black/12 text-neutral-darker transition-colors hover:border-ocean hover:bg-ocean hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2'
-      aria-label='Add to Calendar'
-      title='Add to Calendar'
+      aria-label={showLabel ? undefined : 'Add to Calendar'}
     >
-      <Icon name='calendarPlus' size={18} />
-    </button>
+      <span className='inline-flex items-center justify-center gap-2'>
+        <Icon name='calendarPlus' size={18} />
+        {showLabel ? 'Add to Calendar' : null}
+      </span>
+    </Button>
   );
 }
 
@@ -131,11 +139,7 @@ export function MissionDetailRows({
 
   const rows = [
     { icon: 'map' as const, label: locationLabel },
-    {
-      icon: 'calendar' as const,
-      label: dateLabel,
-      action: <AddToCalendarIconButton mission={mission} />,
-    },
+    { icon: 'calendar' as const, label: dateLabel },
     { icon: 'time' as const, label: timeLabel },
   ];
 
@@ -149,7 +153,6 @@ export function MissionDetailRows({
           <span className='text-base font-medium leading-snug text-neutral-darker'>
             {row.label}
           </span>
-          {'action' in row ? row.action : null}
         </li>
       ))}
     </ul>

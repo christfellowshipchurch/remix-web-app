@@ -9,6 +9,7 @@ import HTMLRenderer from '~/primitives/html-renderer';
 
 import type { VolunteerMissionDetail } from '../types';
 import {
+  AddToCalendarButton,
   MissionDetailRows,
   normalizeWhatToKnowContent,
   WhatToKnowBody,
@@ -130,6 +131,10 @@ export function Sidebar({
             {copied ? 'Link copied' : 'Share Link'}
           </span>
         </Button>
+        <AddToCalendarButton
+          mission={mission}
+          className='w-full rounded-full border-black/12 hover:border-ocean! text-neutral-darker hover:text-white!'
+        />
       </div>
     </OutreachSidebarShell>
   );
@@ -137,10 +142,12 @@ export function Sidebar({
 
 export function MobileBottomBar({
   copied,
+  mission,
   onCopyPath,
   onSignUpClick,
 }: {
   copied: boolean;
+  mission: VolunteerMissionDetail;
   onCopyPath: () => void;
   onSignUpClick: () => void;
 }) {
@@ -175,6 +182,11 @@ export function MobileBottomBar({
       >
         <Icon name='shareAlt' size={22} />
       </button>
+      <AddToCalendarButton
+        mission={mission}
+        showLabel={false}
+        className='flex size-12 min-w-0 shrink-0 rounded-full border-[0.5px] border-black/12 p-0 text-neutral-darker hover:border-ocean!'
+      />
       <Button
         intent='primary'
         type='button'
