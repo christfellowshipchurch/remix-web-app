@@ -18,12 +18,11 @@ export type MobileContentHitType = {
 
 export function MobileContentHit({ hit }: { hit: MobileContentHitType }) {
   const imageUrl = hit.coverImage?.sources?.[0]?.uri || '';
+  const pathname = hit?.routing?.pathname || '';
+  const to = pathname.startsWith('http') ? pathname : `/${pathname}`;
 
   return (
-    <Link
-      to={`/${hit?.routing?.pathname || ''}`}
-      className='flex gap-2 pb-2 w-full'
-    >
+    <Link to={to} className='flex gap-2 pb-2 w-full'>
       <img
         src={imageUrl}
         alt={hit.title}

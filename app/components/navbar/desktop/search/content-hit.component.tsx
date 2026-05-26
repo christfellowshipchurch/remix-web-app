@@ -66,6 +66,10 @@ export const getPathname = (
     contentTypeLower === 'redirect card' ||
     contentTypeLower === 'page builder'
   ) {
+    if (pathname.startsWith('http')) {
+      return pathname;
+    }
+
     return `/${pathname}`;
   }
 

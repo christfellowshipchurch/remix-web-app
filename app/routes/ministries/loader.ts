@@ -1,7 +1,7 @@
 import { LoaderFunction } from 'react-router-dom';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { RockContentChannelItem } from '~/lib/types/rock-types';
-import { createImageUrlFromGuid } from '~/lib/utils';
+import { createImageUrlFromGuid, getImageUrl } from '~/lib/utils';
 
 export type Ministry = {
   title: string;
@@ -24,6 +24,23 @@ const mapMinistryChannelItems = async (
     };
   });
 };
+
+const hardCodedMinistries: Ministry[] = [
+  {
+    title: 'Internships',
+    description:
+      'Gain hands-on ministry experience, intentional mentorship, and leadership development.',
+    image: getImageUrl('3141722'),
+    url: '/internships',
+  },
+  {
+    title: 'CFSEU',
+    description:
+      'Earn your degree through Southeastern University at Christ Fellowship.',
+    image: getImageUrl('2966341'),
+    url: 'https://www.cfseu.com',
+  },
+];
 
 export const loader: LoaderFunction = async (): Promise<{
   ministries: Ministry[];
@@ -53,7 +70,10 @@ export const loader: LoaderFunction = async (): Promise<{
       ministriesArray = ministriesData;
     }
 
-    const ministries = await mapMinistryChannelItems(ministriesArray);
+    const ministries = [
+      ...(await mapMinistryChannelItems(ministriesArray)),
+      ...hardCodedMinistries,
+    ];
 
     return { ministries };
   } catch (error) {

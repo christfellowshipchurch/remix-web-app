@@ -201,6 +201,7 @@ export function Navbar() {
   const latestMessageFeaturedUrl = getLatestMessageFeaturedUrl(
     watchReadListen?.featureCards,
   );
+  const isTransparentMode = mode === 'dark' && !openDropdown && !isSearchOpen;
 
   // Search handling
   const handleSearchClick = () => {
@@ -408,10 +409,11 @@ export function Navbar() {
                     aria-label='Give'
                     className={cn(
                       'rounded-lg px-4 font-semibold text-sm xl:text-base',
-                      'border border-ocean cursor-pointer',
-                      'text-ocean transition-colors duration-200',
-                      'hover:bg-ocean/20 transition-colors duration-200',
+                      'border cursor-pointer transition-colors duration-200',
                       'flex items-center justify-center',
+                      isTransparentMode
+                        ? 'border-white text-white hover:bg-white/20 group-hover:border-ocean group-hover:text-ocean group-hover:hover:bg-ocean/20'
+                        : 'border-ocean text-ocean hover:bg-ocean/20',
                     )}
                   >
                     Give
