@@ -1,7 +1,60 @@
-import * as Avatar from '@radix-ui/react-avatar';
-import { CircleLoader } from '~/primitives/loading-states/circle-loader.primitive';
-import { AuthorProps } from '../partials/hero.partial';
 import { Link } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import * as Avatar from '@radix-ui/react-avatar';
+
+import { CircleLoader } from '~/primitives/loading-states/circle-loader.primitive';
+
+import type { AuthorProps } from '../partials/hero.partial';
+
+const DEFAULT_AUTHOR_PATHNAME = 'christ-fellowship-team';
+const TODD_AND_JULIE_AUTHOR_PATHNAME = 'todd-julie-mullins';
+const TODD_AUTHOR_PATHNAME = 'todd-mullins';
+const JULIE_AUTHOR_PATHNAME = 'julie-mullins';
+
+function getAuthorPathname(author: AuthorProps) {
+  if (
+    author?.authorAttributes?.pathname &&
+    author?.authorAttributes?.pathname !== 'undefined'
+  ) {
+    return author.authorAttributes.pathname;
+  }
+
+  if (
+    author?.authorAttributes?.authorId &&
+    author?.authorAttributes?.authorId !== 'undefined'
+  ) {
+    return author.authorAttributes.authorId;
+  }
+
+  return DEFAULT_AUTHOR_PATHNAME;
+}
+
+function isToddAndJulieAuthor(author: AuthorProps, authorPathname: string) {
+  const normalizedFullName = author.fullName.trim().toLowerCase();
+
+  return (
+    authorPathname === TODD_AND_JULIE_AUTHOR_PATHNAME ||
+    normalizedFullName === 'todd and julie mullins'
+  );
+}
+
+function AuthorNameLink({
+  children,
+  pathname,
+}: {
+  children: ReactNode;
+  pathname: string;
+}) {
+  return (
+    <Link
+      to={`/author/${pathname}`}
+      prefetch='intent'
+      className='underline hover:text-text-secondary'
+    >
+      {children}
+    </Link>
+  );
+}
 
 export default function ArticleAuthor({
   author,
@@ -12,22 +65,15 @@ export default function ArticleAuthor({
   publishDate: string;
   readTime: number;
 }) {
-  let authorPathname = 'christ-fellowship-team';
-  if (
-    author?.authorAttributes?.pathname &&
-    author?.authorAttributes?.pathname !== 'undefined'
-  ) {
-    authorPathname = author?.authorAttributes?.pathname;
-  } else if (
-    author?.authorAttributes?.authorId &&
-    author?.authorAttributes?.authorId !== 'undefined'
-  ) {
-    authorPathname = author?.authorAttributes?.authorId;
-  }
+  const authorPathname = getAuthorPathname(author);
+  const isToddAndJulie = isToddAndJulieAuthor(author, authorPathname);
+  const avatarAuthorPathname = isToddAndJulie
+    ? TODD_AUTHOR_PATHNAME
+    : authorPathname;
 
   return (
     <div className='flex'>
-      <Link prefetch='intent' to={`/author/${authorPathname}`}>
+      <Link prefetch='intent' to={`/author/${avatarAuthorPathname}`}>
         <Avatar.Root className='flex cursor-pointer duration-300 hover:scale-105'>
           <Avatar.Image
             className='size-16 rounded-full'
@@ -46,13 +92,22 @@ export default function ArticleAuthor({
       <div className='ml-4 flex flex-col justify-center'>
         <h2 className='semibold mb-2'>
           Authored by{' '}
-          <Link
-            to={`/author/${authorPathname}`}
-            prefetch='intent'
-            className='underline hover:text-text-secondary'
-          >
-            {author?.fullName || 'Christ Fellowship Church'}
-          </Link>
+          {isToddAndJulie ? (
+            <>
+              <AuthorNameLink pathname={TODD_AUTHOR_PATHNAME}>
+                Todd
+              </AuthorNameLink>{' '}
+              and{' '}
+              <AuthorNameLink pathname={JULIE_AUTHOR_PATHNAME}>
+                Julie
+              </AuthorNameLink>{' '}
+              Mullins
+            </>
+          ) : (
+            <AuthorNameLink pathname={authorPathname}>
+              {author?.fullName || 'Christ Fellowship Church'}
+            </AuthorNameLink>
+          )}
         </h2>
         <div className='flex text-neutral-500 font-normal'>
           {publishDate && (
