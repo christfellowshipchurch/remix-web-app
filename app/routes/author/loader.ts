@@ -2,6 +2,13 @@ import { LoaderFunction } from 'react-router-dom';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import { format } from 'date-fns';
 import { Author } from './types';
+import {
+  fetchAuthorData,
+  fetchPersonAliasGuid,
+  fetchAuthorArticles,
+  fetchAuthorId,
+  fetchAuthorByPathname,
+} from '~/lib/.server/author-utils';
 
 interface ArticleData {
   title: string;
@@ -13,13 +20,15 @@ interface ArticleData {
     url?: { value: string };
   };
 }
-import {
-  fetchAuthorData,
-  fetchPersonAliasGuid,
-  fetchAuthorArticles,
-  fetchAuthorId,
-  fetchAuthorByPathname,
-} from '~/lib/.server/author-utils';
+
+interface RockAttributeValue {
+  value?: string | null;
+  valueFormatted?: string | null;
+}
+
+function getHtmlAttributeValue(attribute?: RockAttributeValue) {
+  return attribute?.valueFormatted?.trim() || attribute?.value || '';
+}
 
 // Utility function to check if a string is a GUID
 const isGuid = (str: string): boolean => {
@@ -83,7 +92,7 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
         uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
       },
       authorAttributes: {
-        bio: authorData?.attributeValues?.authorBio?.value || '',
+        bio: getHtmlAttributeValue(authorData?.attributeValues?.authorBio),
         authorId: authorData.id,
         jobTitle: authorData?.attributeValues?.jobTitle?.value || '',
         socialLinks,
@@ -217,7 +226,7 @@ export const getAuthorDetails = async (personId: string) => {
         uri: createImageUrlFromGuid(authorData.photo?.guid) || null,
       },
       authorAttributes: {
-        bio: authorData?.attributeValues?.authorBio?.value || '',
+        bio: getHtmlAttributeValue(authorData?.attributeValues?.authorBio),
         authorId: personId,
         jobTitle: authorData?.attributeValues?.jobTitle?.value || '',
         socialLinks,

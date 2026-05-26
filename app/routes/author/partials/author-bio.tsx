@@ -84,11 +84,7 @@ export function AuthorBio({
             {socialLinks && <ShareLinks {...shareLinksProps} />}
           </div>
         )}
-        {bio && (
-          <p>
-            <HTMLRenderer html={bio} />
-          </p>
-        )}
+        {bio && <HTMLRenderer html={bio} />}
       </div>
     </div>
   );

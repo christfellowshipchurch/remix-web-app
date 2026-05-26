@@ -2,6 +2,14 @@ import type { MetaFunction } from 'react-router-dom';
 import { loader } from './loader';
 import { Author } from './types';
 import { createMeta } from '~/lib/meta-utils';
+import { sanitizeCmsHtml } from '~/lib/sanitize';
+
+function htmlToMetaDescription(html: string) {
+  return sanitizeCmsHtml(html)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) {
@@ -11,9 +19,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     });
   }
   const author = data as Author;
+  const description = htmlToMetaDescription(author.authorAttributes?.bio ?? '');
+
   return createMeta({
     title: author.fullName,
-    description:
-      author.authorAttributes?.bio ?? 'Author at Christ Fellowship Church',
+    description: description || 'Author at Christ Fellowship Church',
   });
 };
