@@ -2,8 +2,7 @@ import { useCallback, useState } from 'react';
 
 function getLocationPathForClipboard(): string {
   if (typeof window === 'undefined') return '';
-  const { pathname, search, hash } = window.location;
-  return `${pathname}${search}${hash}`;
+  return window.location.href;
 }
 
 export function useCopyPagePath() {

@@ -48,21 +48,18 @@ export const SubscribeSection = ({
             {links
               .filter((link) => link.href && link.href !== '')
               .map((link, index) => (
-                <div
+                <a
+                  href={link.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label={`${link.label} Link`}
                   className='flex flex-col items-center justify-center gap-2 basis-1/3 md:basis-auto bg-[#0092BC] rounded-lg size-[100px] p-2 sm:p-4 sm:size-[120px] hover:scale-105 transition-all duration-300 cursor-pointer'
                   key={index}
                 >
-                  <a
-                    href={link.href}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    aria-label={`${link.label} Link`}
-                  >
-                    <Icon
-                      name={link.icon as keyof typeof icons}
-                      size={link.icon === 'amazonMusic' ? 62 : 52}
-                    />
-                  </a>
+                  <Icon
+                    name={link.icon as keyof typeof icons}
+                    size={link.icon === 'amazonMusic' ? 62 : 52}
+                  />
                   <p
                     className={`text-[10px] md:text-xs text-center font-extrabold ${
                       link.icon === 'amazonMusic' ? '-mt-3' : ''
@@ -70,7 +67,7 @@ export const SubscribeSection = ({
                   >
                     {link.label}
                   </p>
-                </div>
+                </a>
               ))}
           </div>
         </div>
