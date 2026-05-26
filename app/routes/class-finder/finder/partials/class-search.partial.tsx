@@ -150,10 +150,10 @@ export const ClassSearch = () => {
 
   return (
     <div
-      className='flex w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
+      className='flex flex-1 w-full min-w-0 max-w-full flex-col gap-4 pagination-scroll-to'
       id='search'
     >
-      <div className='flex flex-col bg-white pt-4'>
+      <div className='flex flex-1 flex-col bg-white pt-4'>
         {filtersMounted ? (
           <InstantSearch
             indexName={CLASSES_ALGOLIA_INDEX_NAME}
@@ -237,7 +237,7 @@ export const ClassSearch = () => {
               <ActiveFilters onClearAllToUrl={clearAllFiltersFromUrl} />
             </FinderStickyBar>
 
-            <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+            <div className='flex flex-1 flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
               <div className='max-w-screen-content mx-auto md:w-full'>
                 <ClassTypeGroupedInstantSearchResults
                   initialHits={classHits}
@@ -261,7 +261,7 @@ export const ClassSearch = () => {
               </div>
             </FinderStickyBar>
 
-            <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+            <div className='flex flex-1 flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
               <div className='max-w-screen-content mx-auto md:w-full'>
                 <ClassTypeGroupedResults
                   hits={classHits}
