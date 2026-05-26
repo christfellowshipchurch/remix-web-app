@@ -140,7 +140,7 @@ export const SearchPopup = ({
     : contentHits;
 
   return (
-    <div className='size-full p-4 !pt-0 md:p-6 md:!pt-6'>
+    <div className='size-full p-4 pt-0! md:p-6 md:pt-6!'>
       {/* Always render content collector to receive search updates */}
       <ContentItemsHitsCollector onHitsChange={setContentHits} />
 

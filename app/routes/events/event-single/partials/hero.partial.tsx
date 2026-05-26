@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import BulletPoints from '~/primitives/bullet-points';
 import { Button } from '~/primitives/button/button.primitive';
+import HtmlRenderer from '~/primitives/html-renderer';
 import heroBgImgStyles from '~/styles/hero-bg-image-styles';
 
 export const EventsSingleHero = ({
@@ -29,9 +30,10 @@ export const EventsSingleHero = ({
                 </h1>
 
                 {subtitle && (
-                  <p className='font-medium lg:text-lg text-[#717182]'>
-                    {subtitle}
-                  </p>
+                  <HtmlRenderer
+                    html={subtitle}
+                    className='font-medium lg:text-lg text-[#717182]'
+                  />
                 )}
 
                 {/* CTAs */}

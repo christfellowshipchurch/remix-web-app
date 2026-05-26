@@ -1,4 +1,4 @@
-import { useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import { useEffect, useMemo, useState, type RefObject } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
@@ -47,6 +47,105 @@ const { InstantSearchUrlSync, buildUiState } =
 const AllEventsInstantSearchSync = InstantSearchUrlSync;
 const buildAllEventsInstantSearchUiState = buildUiState;
 
+function formatMobileEventDateParts(isoDate: string) {
+  const date = new Date(isoDate);
+
+  return {
+    month: date
+      .toLocaleDateString('en-US', {
+        timeZone: 'America/New_York',
+        month: 'short',
+      })
+      .toUpperCase(),
+    day: date.toLocaleDateString('en-US', {
+      timeZone: 'America/New_York',
+      day: 'numeric',
+    }),
+    weekday: date
+      .toLocaleDateString('en-US', {
+        timeZone: 'America/New_York',
+        weekday: 'short',
+      })
+      .toUpperCase(),
+  };
+}
+
+function getEventHitLocation(
+  hit: ContentItemHit,
+  multipleLabel = 'Multiple Locations',
+) {
+  return hit.eventLocations && hit.eventLocations.length > 1
+    ? multipleLabel
+    : hit.eventLocations?.[0] ||
+        hit.locations?.[0]?.name ||
+        'Christ Fellowship Church';
+}
+
+function MobileEventHitCard({
+  hit,
+  fromEventsUrl,
+}: {
+  hit: ContentItemHit;
+  fromEventsUrl: string;
+}) {
+  const dateParts = hit.startDateTime
+    ? formatMobileEventDateParts(hit.startDateTime)
+    : null;
+  const location = getEventHitLocation(hit, 'Multiple campuses');
+
+  return (
+    <Link
+      to={`/events/${hit.url}`}
+      state={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
+      className='flex h-[88px] w-full items-start overflow-hidden rounded-xl border border-neutral-lighter bg-white text-text-primary transition-colors duration-200 hover:border-neutral-light md:hidden'
+      prefetch='intent'
+    >
+      <div className='flex h-[88px] w-[74px] shrink-0 flex-col items-center justify-center px-[7px] py-[7px] text-center leading-normal'>
+        {dateParts ? (
+          <time dateTime={hit.startDateTime} className='block'>
+            <span className='block text-xs font-semibold leading-[18px] opacity-70'>
+              {dateParts.month}
+            </span>
+            <span className='block text-2xl font-extrabold leading-9'>
+              {dateParts.day}
+            </span>
+            <span className='block text-xs font-semibold leading-[18px] opacity-70'>
+              {dateParts.weekday}
+            </span>
+          </time>
+        ) : null}
+      </div>
+
+      <div className='flex h-[88px] min-w-0 flex-1 items-center pr-1'>
+        <div className='flex h-full min-w-0 flex-1 flex-col justify-center gap-2 py-2 pl-1 pr-4'>
+          <h4 className='line-clamp-2 w-full text-base font-bold leading-[1.4] text-pretty'>
+            {hit.title}
+          </h4>
+
+          <div className='flex min-w-0 items-center gap-1'>
+            <Icon
+              name='map'
+              color='currentColor'
+              size={18}
+              className='shrink-0'
+            />
+            <p className='truncate text-sm font-semibold leading-normal'>
+              {location}
+            </p>
+          </div>
+        </div>
+
+        <Icon
+          name='chevronRight'
+          color='currentColor'
+          size={24}
+          className='shrink-0 text-neutral-light'
+        />
+      </div>
+    </Link>
+  );
+}
+
 function EventHit({
   hit,
   fromEventsUrl,
@@ -59,27 +158,28 @@ function EventHit({
     : '';
 
   const imageUri = hit.coverImage?.sources?.[0]?.uri ?? '';
+  const location = getEventHitLocation(hit);
 
   return (
-    <ResourceCard
-      resource={{
-        id: hit.objectID,
-        contentChannelId: '78',
-        contentType: 'EVENTS',
-        name: hit.title,
-        summary: hit.summary ?? '',
-        image: imageUri,
-        pathname: `/events/${hit.url}`,
-        startDate: formattedDate,
-        location:
-          hit.eventLocations && hit.eventLocations.length > 1
-            ? 'Multiple Locations'
-            : hit.eventLocations?.[0] ||
-              hit.locations?.[0]?.name ||
-              'Christ Fellowship Church',
-      }}
-      linkState={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
-    />
+    <>
+      <MobileEventHitCard hit={hit} fromEventsUrl={fromEventsUrl} />
+      <div className='hidden h-full md:block'>
+        <ResourceCard
+          resource={{
+            id: hit.objectID,
+            contentChannelId: '78',
+            contentType: 'EVENTS',
+            name: hit.title,
+            summary: hit.summary ?? '',
+            image: imageUri,
+            pathname: `/events/${hit.url}`,
+            startDate: formattedDate,
+            location,
+          }}
+          linkState={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
+        />
+      </div>
+    </>
   );
 }
 
@@ -424,7 +524,7 @@ function AllEventsResultsLayout({
         {eventHits.length === 0 && !isLoading ? null : (
           <ul
             className={cn(
-              'grid w-full list-none grid-cols-1 justify-items-center gap-10 p-0 md:grid-cols-2 lg:grid-cols-3',
+              'grid w-full list-none grid-cols-1 justify-items-center gap-4 p-0 md:grid-cols-2 md:gap-10 lg:grid-cols-3',
               isLoading && 'opacity-60 pointer-events-none',
             )}
             role='list'

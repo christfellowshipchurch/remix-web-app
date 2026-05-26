@@ -1,4 +1,5 @@
-import { Button } from '~/primitives/button/button.primitive';
+import { Link } from 'react-router-dom';
+
 import Icon from '~/primitives/icon';
 import HtmlRenderer from '~/primitives/html-renderer';
 import { ContentItemHit } from '~/routes/search/types';
@@ -12,11 +13,34 @@ export function formatEventCardDate(isoDate: string) {
   });
 }
 
+export function formatFeaturedEventDate(isoDate: string) {
+  const date = new Date(isoDate);
+  const weekday = date.toLocaleDateString('en-US', {
+    timeZone: 'America/New_York',
+    weekday: 'short',
+  });
+  const day = date.toLocaleDateString('en-US', {
+    timeZone: 'America/New_York',
+    day: '2-digit',
+  });
+  const month = date.toLocaleDateString('en-US', {
+    timeZone: 'America/New_York',
+    month: 'short',
+  });
+  const year = date.toLocaleDateString('en-US', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+  });
+
+  return `${weekday} ${day} ${month} ${year}`;
+}
+
 export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   const {
     title,
     coverImage,
     startDateTime,
+    eventLocations,
     locations,
     summary,
     url,
@@ -24,55 +48,72 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   } = card;
 
   const image = coverImage?.sources[0]?.uri || '';
-  const formattedDate = startDateTime ? formatEventCardDate(startDateTime) : '';
+  const formattedDate = startDateTime
+    ? formatFeaturedEventDate(startDateTime)
+    : '';
   const campus =
-    locations && locations.length > 1
+    eventLocations && eventLocations.length > 1
       ? 'Multiple Locations'
-      : locations?.[0]?.name || 'Christ Fellowship Church';
+      : eventLocations?.[0] ||
+        (locations && locations.length > 1
+          ? 'Multiple Locations'
+          : locations?.[0]?.name) ||
+        'Christ Fellowship Church';
+  const eventPath = `/events/${url}`;
 
   return (
-    <div className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-xl border border-neutral-lighter'>
+    <Link
+      to={eventPath}
+      className='flex flex-col md:h-[400px] lg:h-[420px] xl:h-[450px] md:flex-row items-center justify-center size-full overflow-hidden rounded-2xl md:rounded-xl border border-neutral-lighter'
+      prefetch='intent'
+    >
       <img
         src={image}
         alt={title}
-        className='w-full md:w-1/2 aspect-video md:aspect-auto max-w-[720px] h-full object-cover'
+        className='h-[124px] w-full object-cover md:h-full md:w-1/2 md:aspect-auto md:max-w-[720px]'
       />
 
-      <div className='flex flex-col justify-center gap-4 bg-white p-5 md:p-12 w-full md:h-[400px] lg:h-[420px] xl:h-[450px]'>
+      <div className='flex flex-col justify-center gap-4 bg-white px-5 pb-5 md:p-12 w-full md:h-[400px] lg:h-[420px] xl:h-[450px]'>
         <div className='flex flex-col gap-4'>
-          <ul className='flex gap-4'>
-            <li className='flex items-center gap-1'>
-              {startDateTime && <Icon name='calendarAlt' color='black' />}
-              <p className='text-sm'>{formattedDate}</p>
-            </li>
+          <div className='pt-4 md:hidden'>
+            <p className='text-sm font-extrabold leading-normal text-ocean'>
+              FEATURED EVENT
+            </p>
+          </div>
 
-            <li className='flex items-center gap-1'>
-              {campus && <Icon name='map' color='black' />}
-              <p className='text-sm'>{campus}</p>
-            </li>
-          </ul>
-
-          <h4 className='font-extrabold text-[28px] leading-tight text-pretty'>
+          <h4 className='text-2xl font-extrabold leading-[1.4] text-pretty md:text-[28px] md:leading-tight'>
             {title}
           </h4>
           {summary ? (
-            <p>{summary}</p>
+            <p className='leading-normal'>{summary}</p>
           ) : (
             <HtmlRenderer
               html={htmlContent || ''}
               className={`line-clamp-5  ${htmlContent ? 'block' : 'hidden'}`}
             />
           )}
+
+          <ul className='flex flex-col gap-2 md:flex-row md:gap-4'>
+            <li className='flex items-center gap-1'>
+              {startDateTime && <Icon name='calendarAlt' color='black' />}
+              <p className='text-base font-bold leading-normal md:text-sm md:font-normal'>
+                {formattedDate}
+              </p>
+            </li>
+
+            <li className='flex items-center gap-1'>
+              {campus && <Icon name='map' color='black' />}
+              <p className='text-base font-bold leading-normal md:text-sm md:font-normal'>
+                {campus}
+              </p>
+            </li>
+          </ul>
         </div>
 
-        <Button
-          intent='secondary'
-          className='font-normal'
-          href={`/events/${url}`}
-        >
+        <span className='hidden min-h-12 w-fit min-w-24 items-center justify-center rounded-md border border-ocean px-6 py-3 text-center text-lg font-normal text-ocean transition-colors delay-50 hover:bg-ocean hover:text-white md:inline-flex'>
           Save my spot
-        </Button>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 };
