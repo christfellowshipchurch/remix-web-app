@@ -1,3 +1,5 @@
+import { icsLink } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 import HTMLRenderer from '~/primitives/html-renderer';
 
@@ -41,6 +43,89 @@ function formatEventTimeRange(mission: VolunteerMissionDetail): string {
     return `${start} – ${end}`;
   }
   return start || end || '—';
+}
+
+function plainTextFromHtml(value: string): string {
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th)\s*>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#(?:160|x0*A0);/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function calendarFilename(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  return `${slug || 'community-serving-opportunity'}.ics`;
+}
+
+export function AddToCalendarButton({
+  mission,
+  className,
+  showLabel = true,
+}: {
+  mission: VolunteerMissionDetail;
+  className?: string;
+  showLabel?: boolean;
+}) {
+  if (!mission.calendarStartDateTime) {
+    return null;
+  }
+
+  const handleAddToCalendar = () => {
+    const startTime = new Date(mission.calendarStartDateTime as string);
+    const fallbackEndTime = new Date(startTime.getTime() + 60 * 60 * 1000);
+    const endTime = mission.calendarEndDateTime
+      ? new Date(mission.calendarEndDateTime)
+      : fallbackEndTime;
+
+    if (Number.isNaN(startTime.getTime())) {
+      return;
+    }
+
+    const calendarUrl = icsLink({
+      title: `CF Missions - ${mission.title}`,
+      description: plainTextFromHtml(mission.summary),
+      address: mission.campusName || '',
+      startTime,
+      endTime: Number.isNaN(endTime.getTime()) ? fallbackEndTime : endTime,
+      url:
+        typeof window !== 'undefined'
+          ? window.location.href
+          : mission.missionsUrl,
+    });
+
+    const link = document.createElement('a');
+    link.href = calendarUrl;
+    link.download = calendarFilename(mission.title);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => window.URL.revokeObjectURL(calendarUrl), 0);
+  };
+
+  return (
+    <Button
+      intent='secondary'
+      className={className}
+      type='button'
+      onClick={handleAddToCalendar}
+      aria-label={showLabel ? undefined : 'Add to Calendar'}
+    >
+      <span className='inline-flex items-center justify-center gap-2'>
+        <Icon name='calendarPlus' size={18} />
+        {showLabel ? 'Add to Calendar' : null}
+      </span>
+    </Button>
+  );
 }
 
 export function MissionDetailRows({
