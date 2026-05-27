@@ -4,9 +4,6 @@ import { weekdaySpanishTranslation } from '../util';
 
 export type WeeklyMinistryService = {
   ministryType?: string;
-  // Legacy Algolia records used this typo; keep reading it until all indexes
-  // are reindexed with `ministryType`.
-  minstryType?: string;
   dayOfWeek?: string;
   serviceTimes?: string;
   learnMoreUrl?: string;
@@ -57,11 +54,7 @@ function normalizeDaysOfWeek(dayOfWeek: string) {
 function normalizeWeeklyMinistryService(
   service: WeeklyMinistryService,
 ): WeeklyMinistryServiceDisplay[] {
-  const ministryType = (
-    service.ministryType ??
-    service.minstryType ??
-    ''
-  ).trim();
+  const ministryType = (service.ministryType ?? '').trim();
   const daysOfWeek = (service.dayOfWeek ?? '').trim();
   const serviceTimes = (service.serviceTimes ?? '').trim();
   const learnMoreUrl = (service.learnMoreUrl ?? '').trim();
