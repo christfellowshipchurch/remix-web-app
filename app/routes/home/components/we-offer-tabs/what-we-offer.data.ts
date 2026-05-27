@@ -30,7 +30,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Every Sunday',
         name: 'Sunday Kids',
         description:
-          'Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.',
+          'Fun, age-based classes for kids during Sunday services with games, music, Bible stories, and small group activities.',
         url: '/ministries/kids',
       },
       {
@@ -40,7 +40,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Mid Week',
         name: 'Kids University',
         description:
-          'Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.',
+          'A weekday program where kids learn about faith, build friendships, and take part in hands-on activities and lessons.',
         url: '/christ-fellowship-kids-university',
       },
       {
@@ -50,7 +50,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Wednesdays',
         name: 'Students',
         description:
-          'Welcome guests, serve coffee, or help behind the scenes. Be part of making church feel easy to walk into.',
+          'A weekly gathering for middle and high school students with worship, teaching, games.',
         url: '/ministries/students',
       },
     ],
@@ -67,7 +67,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Every Tuesday',
         name: 'Young Adults',
         description:
-          'For Young Adults in Their 20s & 30s — hosted regionally & online.',
+          'Young adults and working professionals to meet people, have conversations, and build community.',
         url: '/ministries/young-adults',
       },
       {
@@ -77,7 +77,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Every Thursday',
         name: 'College Nights',
         description:
-          'For College Students, hosted at Trinity in Palm Beach Gardens.',
+          'Weekly discussions, worship, and opportunities to meet other students.',
         url: '/college-nights',
       },
     ],
@@ -94,14 +94,15 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Groups',
         name: 'Find Your Group',
         description:
-          'Find a variety of small groups near you, doing what you like to do!',
+          'Small groups that meet throughout the week around shared interests, Bible studies, life stages, or community.',
         url: '/group-finder',
       },
       {
         image: getImageUrl('3176686'),
         tag: 'Classes',
         name: 'Grow Through Classes',
-        description: 'Grow through on-site studies on a variety of topics.',
+        description:
+          'Short-term classes focused on topics like faith, relationships, parenting, finances, and personal growth.',
         url: '/class-finder',
       },
       {
@@ -109,7 +110,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         tag: 'Freedom & Care',
         name: 'Freedom & Care',
         description:
-          'Resources to help you find freedom from hurts, habits, and hangups.',
+          'Support and recovery programs for people walking through difficult seasons.',
         url: '/ministries/freedom-and-care',
       },
     ],
