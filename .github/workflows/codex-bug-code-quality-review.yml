@@ -1,0 +1,122 @@
+name: Bug & Code Quality Review (Base Branch)
+
+on:
+  schedule:
+    # GitHub schedules use UTC. Running at 12:00 and 13:00 UTC lets the
+    # timezone gate below honor 8:00 AM America/New_York across DST changes.
+    - cron: "0 12,13 * * 1-5"
+  workflow_dispatch:
+
+concurrency:
+  group: codex-bug-code-quality-review
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  submit-codex-cloud-task:
+    name: Submit Codex Cloud Task
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CODEX_CLOUD_ENV_ID: ${{ secrets.CODEX_CLOUD_ENV_ID }}
+      CODEX_ACCESS_TOKEN: ${{ secrets.CODEX_ACCESS_TOKEN }}
+    steps:
+      - name: Check New York schedule gate
+        id: schedule_gate
+        if: github.event_name == 'schedule'
+        run: |
+          NY_DAY="$(TZ=America/New_York date +%u)"
+          NY_HOUR="$(TZ=America/New_York date +%H)"
+
+          if [ "$NY_DAY" -gt 5 ] || [ "$NY_HOUR" != "08" ]; then
+            echo "Not 8:00 AM on a weekday in America/New_York; cancelling duplicate UTC schedule."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+
+      - name: Validate required secrets
+        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
+        run: |
+          if [ -z "$CODEX_CLOUD_ENV_ID" ]; then
+            echo "Missing CODEX_CLOUD_ENV_ID repository secret."
+            exit 1
+          fi
+
+          if [ -z "$CODEX_ACCESS_TOKEN" ]; then
+            echo "Missing CODEX_ACCESS_TOKEN repository secret."
+            exit 1
+          fi
+
+      - name: Checkout base branch
+        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
+      - name: Resolve commit range
+        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
+        id: range
+        run: |
+          BASE_BRANCH="${{ github.event.repository.default_branch }}"
+          WORKFLOW_NAME="${{ github.workflow }}"
+
+          git fetch origin "$BASE_BRANCH"
+          END_SHA="$(git rev-parse "origin/$BASE_BRANCH")"
+
+          PREVIOUS_SUCCESS_SHA="$(
+            gh run list \
+              --workflow "$WORKFLOW_NAME" \
+              --branch "$BASE_BRANCH" \
+              --status success \
+              --limit 1 \
+              --json headSha \
+              --jq '.[0].headSha // ""'
+          )"
+
+          if [ -z "$PREVIOUS_SUCCESS_SHA" ]; then
+            PREVIOUS_SUCCESS_SHA="$(git rev-list --max-parents=0 "$END_SHA")"
+          fi
+
+          echo "base_branch=$BASE_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "start_sha=$PREVIOUS_SUCCESS_SHA" >> "$GITHUB_OUTPUT"
+          echo "end_sha=$END_SHA" >> "$GITHUB_OUTPUT"
+
+          if [ "$PREVIOUS_SUCCESS_SHA" = "$END_SHA" ]; then
+            echo "has_new_commits=false" >> "$GITHUB_OUTPUT"
+            echo "No new changes since last check; cancelling run."
+          else
+            echo "has_new_commits=true" >> "$GITHUB_OUTPUT"
+            echo "Reviewing $PREVIOUS_SUCCESS_SHA...$END_SHA on $BASE_BRANCH."
+          fi
+
+      - name: Stop when there are no new commits
+        if: (github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true') && steps.range.outputs.has_new_commits == 'false'
+        run: echo "No new changes since last check; cancelling run."
+
+      - name: Install Codex CLI
+        if: (github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true') && steps.range.outputs.has_new_commits == 'true'
+        run: npm install -g @openai/codex
+
+      - name: Authenticate Codex CLI
+        if: (github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true') && steps.range.outputs.has_new_commits == 'true'
+        run: printenv CODEX_ACCESS_TOKEN | codex login --with-access-token
+
+      - name: Submit Codex Cloud task
+        if: (github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true') && steps.range.outputs.has_new_commits == 'true'
+        run: |
+          PROMPT="$(sed \
+            -e "s/\${BASE_BRANCH}/${{ steps.range.outputs.base_branch }}/g" \
+            -e "s/\${START_SHA}/${{ steps.range.outputs.start_sha }}/g" \
+            -e "s/\${END_SHA}/${{ steps.range.outputs.end_sha }}/g" \
+            .codex/automations/bug-code-quality-review.md)"
+
+          codex cloud exec \
+            --env "$CODEX_CLOUD_ENV_ID" \
+            --branch "${{ steps.range.outputs.base_branch }}" \
+            "$PROMPT"
