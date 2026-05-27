@@ -6,6 +6,7 @@ export type ContactFormType = {
   Campus: string; // campus guid
   Message: string;
   SendingFormName: string;
+  LaunchSource: string;
 };
 
 export type ContactUsLoaderReturnType = {

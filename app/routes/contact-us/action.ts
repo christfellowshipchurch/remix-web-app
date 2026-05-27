@@ -16,6 +16,7 @@ export const action: ActionFunction = async ({ request }) => {
       Campus: campus as string,
       Message: message as string,
       SendingFormName: 'CFDP App Contact Us',
+      LaunchSource: 'app',
     };
 
     await postRockData({
