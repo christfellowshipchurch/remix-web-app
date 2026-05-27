@@ -28,9 +28,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
       setLoading(false);
 
       if ('campuses' in fetcher.data) {
-        setCampuses(
-          (fetcher.data as ContactUsLoaderReturnType).campuses,
-        );
+        setCampuses((fetcher.data as ContactUsLoaderReturnType).campuses);
       } else if ('error' in fetcher.data) {
         setError(fetcher.data.error || 'An unexpected error occurred');
       } else {
@@ -66,6 +64,11 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
   return (
     <>
       <h2 className='mb-6 text-3xl text-navy font-bold'>Contact Us</h2>
+      <p className='mb-10 text-pretty text-center'>
+        With a lot of locations it’s easy to feel lost in the shuffle, so we’ve
+        made a point to personally answer every question, comment, or prayer
+        request you send us. We look forward to hearing from you!
+      </p>
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
@@ -143,17 +146,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field
-          name='message'
-          className='flex flex-col mb-4 md:col-span-2'
-        >
+        <Form.Field name='message' className='flex flex-col mb-4 md:col-span-2'>
           <Form.Label className='font-bold text-sm mb-2'>Message</Form.Label>
           <Form.Control asChild>
-            <textarea
-              required
-              rows={5}
-              className={defaultTextInputStyles}
-            />
+            <textarea required rows={5} className={defaultTextInputStyles} />
           </Form.Control>
           <Form.Message className='text-sm text-alert' match='valueMissing'>
             Please enter a message
@@ -206,9 +202,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        {error && (
-          <p className='text-alert col-span-2 text-center'>{error}</p>
-        )}
+        {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
 
         <Form.Submit className='mt-6 mx-auto col-span-1 md:col-span-2' asChild>
           <Button
