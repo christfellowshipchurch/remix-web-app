@@ -9,8 +9,8 @@ import { cn } from '~/lib/utils';
 import type { WhatWeOfferCardItem } from './what-we-offer.data';
 import { WhatWeOfferCard } from './what-we-offer-card.component';
 
-// Slides are ~82% of the carousel container width, leaving ~18% peek on the right.
-const SLIDE_CLASS = 'pl-0 basis-[66.666667%] sm:basis-[50%] md:basis-[35%]';
+// ~82% slide width leaves a peek of the next card on the right (see volunteer-how-it-works).
+const SLIDE_CLASS = 'pl-0 shrink-0 basis-[82%] sm:basis-[50%] md:basis-[35%]';
 
 function WhatWeOfferCarouselNav({ itemCount }: { itemCount: number }) {
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
@@ -50,6 +50,41 @@ function WhatWeOfferCarouselNav({ itemCount }: { itemCount: number }) {
   );
 }
 
+function WhatWeOfferCarouselTrack({
+  items,
+  tabValue,
+}: {
+  items: WhatWeOfferCardItem[];
+  tabValue: string;
+}) {
+  return (
+    <Carousel
+      key={tabValue}
+      opts={{ align: 'start', containScroll: 'trimSnaps', slidesToScroll: 1 }}
+      aria-label='What we offer'
+      className='w-full min-w-0'
+    >
+      <CarouselContent className='gap-4 pl-5 pt-2 md:pl-8'>
+        {items.map((item, index) => (
+          <CarouselItem
+            key={index}
+            aria-label={`${index + 1} of ${items.length}`}
+            className={cn(
+              SLIDE_CLASS,
+              index === items.length - 1 && 'mr-5 md:mr-8',
+            )}
+          >
+            <WhatWeOfferCard content={item} className='w-full max-w-none' />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <div className='content-padding'>
+        <WhatWeOfferCarouselNav itemCount={items.length} />
+      </div>
+    </Carousel>
+  );
+}
+
 export function WhatWeOfferMobileCarousel({
   items,
   tabValue,
@@ -59,42 +94,21 @@ export function WhatWeOfferMobileCarousel({
 }) {
   if (items.length < 3) {
     return (
-      <div
-        key={tabValue}
-        className='flex flex-wrap justify-center gap-4 px-5 pt-2 md:px-8'
-      >
-        {items.map((item, index) => (
-          <WhatWeOfferCard key={index} content={item} />
-        ))}
-      </div>
+      <>
+        <div className='md:hidden'>
+          <WhatWeOfferCarouselTrack items={items} tabValue={tabValue} />
+        </div>
+        <div
+          key={tabValue}
+          className='hidden md:flex flex-wrap justify-center gap-4 px-5 pt-2 md:px-8'
+        >
+          {items.map((item, index) => (
+            <WhatWeOfferCard key={index} content={item} />
+          ))}
+        </div>
+      </>
     );
   }
 
-  return (
-    <Carousel
-      key={tabValue}
-      opts={{ align: 'start', containScroll: 'trimSnaps', slidesToScroll: 1 }}
-      aria-label='What we offer'
-      className='w-full'
-    >
-      <CarouselContent className='gap-4 pt-2'>
-        {items.map((item, index) => (
-          <CarouselItem
-            key={index}
-            aria-label={`${index + 1} of ${items.length}`}
-            className={cn(
-              SLIDE_CLASS,
-              index === items.length - 1 && 'mr-5 md:mr-8',
-              index === 0 && 'ml-5 md:ml-8',
-            )}
-          >
-            <WhatWeOfferCard content={item} className='w-full' />
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <div className='px-5 md:px-8'>
-        <WhatWeOfferCarouselNav itemCount={items.length} />
-      </div>
-    </Carousel>
-  );
+  return <WhatWeOfferCarouselTrack items={items} tabValue={tabValue} />;
 }

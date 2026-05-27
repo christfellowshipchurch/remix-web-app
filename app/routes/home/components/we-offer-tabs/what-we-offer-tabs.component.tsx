@@ -28,7 +28,7 @@ export const WhatWeOfferTabs = () => {
   const activeTabData = whatWeOfferData.find((tab) => tab.value === activeTab);
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='flex w-full min-w-0 flex-col gap-8'>
       <div className='flex flex-col gap-2 md:gap-4 content-padding'>
         <div className='flex items-center justify-center gap-3'>
           <div className='w-6 h-1 bg-[#56CAEB]' />
@@ -43,10 +43,8 @@ export const WhatWeOfferTabs = () => {
       </div>
 
       {/*
-        Mobile layout strategy:
-        - pl-5 md:px-0: only left-indent on mobile so carousel can bleed to the right viewport edge
-        - The Tabs.List pill gets a pr-5 md:pr-0 wrapper to stay symmetric
-        - WhatWeOfferMobileCarousel fills from the left-indented edge to the viewport right
+        Mobile layout: header + tab pill use content-padding; carousel track uses pl-5
+        with basis-[82%] peek slides and mr-5 on the last slide (volunteer-how-it-works pattern).
       */}
       <div className='w-full'>
         <Tabs.Root
@@ -54,7 +52,7 @@ export const WhatWeOfferTabs = () => {
           className='w-full flex flex-col gap-4'
           onValueChange={setActiveTab}
         >
-          <div className='lg:mb-6'>
+          <div className='content-padding lg:mb-6'>
             <Tabs.List className={tabListClassName}>
               {whatWeOfferData.map((tab) => (
                 <Tabs.Trigger
@@ -80,7 +78,7 @@ export const WhatWeOfferTabs = () => {
             >
               {/* Mobile: Embla peek carousel — conditional mount resets to slide 0 on tab switch */}
               {activeTab === tab.value && (
-                <div className='lg:hidden'>
+                <div className='w-full min-w-0 lg:hidden'>
                   <WhatWeOfferMobileCarousel
                     items={tab.content}
                     tabValue={tab.value}
@@ -94,6 +92,7 @@ export const WhatWeOfferTabs = () => {
                   'hidden lg:flex mx-auto',
                   'flex-nowrap items-center overflow-x-scroll',
                   'gap-6 xl:gap-2 pb-2',
+                  'min-h-[500px]',
                 )}
               >
                 {tab.content.map((content, index) => (
