@@ -67,7 +67,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
       <p className='mb-10 text-pretty text-center'>
         With a lot of locations it’s easy to feel lost in the shuffle, so we’ve
         made a point to personally answer every question, comment, or prayer
-        request you send us. We look forward to hearing from you!
+        request you send us. <br /> <br /> We look forward to hearing from you!
       </p>
       <Form.Root
         onSubmit={handleSubmit}
@@ -158,46 +158,51 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
 
         <Form.Field
           name='smsConsent'
-          className='flex gap-2 items-start md:col-span-2 mt-2'
+          className='flex flex-col md:col-span-2 mt-2'
         >
-          <Form.Control asChild>
-            <input type='checkbox' required className='mt-1 shrink-0' />
-          </Form.Control>
-          <Form.Label className='text-sm text-text-secondary leading-5'>
-            By submitting, you agree to our{' '}
-            <a
-              href='https://www.christfellowship.church/terms-of-use'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='underline'
-            >
-              Terms of Use
-            </a>{' '}
-            and{' '}
-            <a
-              href='https://www.christfellowship.church/privacy-policy'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='underline'
-            >
-              Privacy Policy
-            </a>
-            . I agree to receive communications by text message about my
-            inquiry. You may opt-out by replying STOP or REMOVE or ask for more
-            information by replying HELP. Message frequency varies depending on
-            your activities. Message and data rates may apply. You may review
-            our{' '}
-            <a
-              href='https://www.christfellowship.church/privacy-policy'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='underline'
-            >
-              Privacy Policy
-            </a>{' '}
-            to learn how your data is used.
-          </Form.Label>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <div className='flex gap-2 items-start'>
+            <Form.Control asChild>
+              <input type='checkbox' required className='mt-1 shrink-0' />
+            </Form.Control>
+            <Form.Label className='text-sm text-text-secondary leading-5'>
+              By submitting, you agree to our{' '}
+              <a
+                href='https://www.christfellowship.church/terms-of-use'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='underline'
+              >
+                Terms of Use
+              </a>{' '}
+              and{' '}
+              <a
+                href='https://www.christfellowship.church/privacy-policy'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='underline'
+              >
+                Privacy Policy
+              </a>
+              . I agree to receive communications by text message about my
+              inquiry. You may opt-out by replying STOP or REMOVE or ask for
+              more information by replying HELP. Message frequency varies
+              depending on your activities. Message and data rates may apply.
+              You may review our{' '}
+              <a
+                href='https://www.christfellowship.church/privacy-policy'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='underline'
+              >
+                Privacy Policy
+              </a>{' '}
+              to learn how your data is used.
+            </Form.Label>
+          </div>
+          <Form.Message
+            className='text-sm text-alert pl-5'
+            match='valueMissing'
+          >
             You must agree to continue
           </Form.Message>
         </Form.Field>
