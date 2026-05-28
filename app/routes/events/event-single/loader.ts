@@ -90,6 +90,9 @@ export const loader: LoaderFunction = async ({ params }) => {
       question: item.key,
       answer: item.value,
     })),
+    // FAQEmail attribute key from Rock Events Content Channel.
+    // Optional — falls back to the default contact email when absent.
+    faqEmail: eventData.attributeValues?.fAQEmail?.value || undefined,
     groupType,
     sessionScheduleCards,
   };

@@ -3,8 +3,8 @@ import { sanitizeCmsHtml } from '~/lib/sanitize';
 import HistoryTabs from '../components/history-tabs/history-tabs.component';
 
 export function HistorySection({
-  sectionTitle = 'our history.',
-  title = 'History of Christ <br /> Fellowship Church',
+  sectionTitle = 'our history',
+  title = 'History of Christ Fellowship Church',
 }: {
   sectionTitle?: string;
   title?: string;

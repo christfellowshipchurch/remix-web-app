@@ -16,9 +16,12 @@ export const ContactInfo = () => {
         </div>
         <div className='flex flex-col h-full justify-center'>
           <p className='text-sm md:text-lg font-medium text-coconut'>Call Us</p>
-          <a className={linkStyle} href='tel:5617997600'>
+          <a className={`${linkStyle} md:hidden`} href='tel:5617997600'>
             (561) 799-7600
           </a>
+          <span className={`${linkStyle} hidden md:inline hover:text-white cursor-default`}>
+            (561) 799-7600
+          </span>
         </div>
       </div>
       <SideDivider />

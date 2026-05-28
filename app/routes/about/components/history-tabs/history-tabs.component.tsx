@@ -30,14 +30,14 @@ const timelineData: TimelineItem[] = [
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068098',
     title: 'Multi-Site Expansion',
-    body: 'Christ Fellowship launched a bold multi-site strategy in 2011 to make it easy for people across South Florida to encounter Jesus. Today, thousands gather each week across multiple campuses—from Boynton Beach to Port St. Lucie—bringing church closer to where people live and work.',
+    body: 'Christ Fellowship launched a bold multi-site strategy in 2011 to make it easy for people across South Florida to encounter Jesus. Today, thousands gather each week across multiple campuses—from Boca Raton to Vero Beach—bringing church closer to where people live and work.',
   },
   {
     year: '1992',
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068099',
     title: 'Building the First Campus',
-    body: 'After years of gathering in schools and temporary spaces, the church’s founding families sacrificed greatly—selling cars, mortgaging homes, and giving generously—to purchase an old horse barn on Northlake Blvd. In 1992, members worked six days a week to transform it into Christ Fellowship’s first permanent campus, a place that quickly filled with life and faith',
+    body: 'After years of gathering in schools and temporary spaces, the church’s founding families sacrificed greatly—selling cars, mortgaging homes, and giving generously—to purchase an old horse barn on Northlake Blvd. In 1992, members worked six days a week to transform it into Christ Fellowship’s first permanent campus, a place that quickly filled with life and faith.',
   },
   {
     year: '1984',

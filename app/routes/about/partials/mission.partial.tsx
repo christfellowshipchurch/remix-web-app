@@ -12,7 +12,7 @@ export function OurMissionSection({
     ? 'Además de nuestra misión, Dios nos ha dado la visión de liderar una transformación radical para Jesucristo en esta región y más allá. Todos Nosotros, en todo momento, en todo lugar.'
     : ' In addition to our mission, God has given us a vision to lead a radical transformation for Jesus Christ in this region and beyond. Everyone, Everyday, Everywhere.';
 
-  const sectionTitle = isSpanish ? 'nuestra misión.' : 'our mission.';
+  const sectionTitle = isSpanish ? 'nuestra misión' : 'our mission';
 
   return (
     <section id='mission' className='py-2 lg:py-24 content-padding'>

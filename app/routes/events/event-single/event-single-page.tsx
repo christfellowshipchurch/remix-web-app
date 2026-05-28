@@ -92,7 +92,11 @@ export const EventSinglePage: React.FC = () => {
         )}
 
         {data.faqItems && data.faqItems.length > 0 && (
-          <EventSingleFAQ title={data.title} items={data.faqItems} />
+          <EventSingleFAQ
+            title={data.title}
+            items={data.faqItems}
+            faqEmail={data.faqEmail}
+          />
         )}
 
         <RegistrationSection />
