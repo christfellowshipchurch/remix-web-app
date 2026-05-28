@@ -1,42 +1,10 @@
-import { useState } from 'react';
-import { WhatWeOfferMobile } from '../components/we-offer-tabs/mobile.component';
-import { WhatWeOfferDesktop } from '../components/we-offer-tabs/desktop.component';
-import { getImageUrl } from '~/lib/utils';
-
-const backgroundImages = {
-  family: getImageUrl('3143922'),
-  'young-adults': getImageUrl('3143923'),
-  everyone: getImageUrl('3143927'),
-};
+import { WhatWeOfferTabs } from '../components/we-offer-tabs/what-we-offer-tabs.component';
 
 export function WhatWeOfferSection() {
-  const [activeTab, setActiveTab] =
-    useState<keyof typeof backgroundImages>('family');
-
-  const handleTabChange = (tabValue: string) => {
-    if (tabValue in backgroundImages) {
-      setActiveTab(tabValue as keyof typeof backgroundImages);
-    }
-  };
-
   return (
-    <section
-      className='md:px-12 lg:px-18 w-full py-24 md:pt-38 md:pb-23 bg-navy relative z-30'
-      style={{
-        backgroundImage: `url('${backgroundImages[activeTab]}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        transition: 'background-image 0.3s ease-in-out',
-      }}
-    >
-      <div className='max-w-screen-content mx-auto flex flex-col items-center gap-12'>
-        <div className='md:hidden'>
-          <WhatWeOfferMobile onTabChange={handleTabChange} />
-        </div>
-        <div className='hidden md:block'>
-          <WhatWeOfferDesktop onTabChange={handleTabChange} />
-        </div>
+    <section className='w-full py-16 md:pt-38 md:pb-23 bg-navy relative z-30'>
+      <div className='max-w-screen-content mx-auto flex w-full min-w-0 flex-col items-center gap-8 md:gap-12'>
+        <WhatWeOfferTabs />
       </div>
     </section>
   );
