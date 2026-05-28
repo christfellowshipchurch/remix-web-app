@@ -25,7 +25,9 @@ describe('YesHero', () => {
       getCardLink('A two-week course to start your relationship with Jesus.'),
     ).toHaveAttribute('href', googleLink);
     expect(
-      getCardLink('Access resources, submit prayers, & get involved in our app'),
+      getCardLink(
+        'Access resources, submit prayers, & get involved in our app',
+      ),
     ).toHaveAttribute('href', googleLink);
 
     const bibleAppLink = getCardLink(
