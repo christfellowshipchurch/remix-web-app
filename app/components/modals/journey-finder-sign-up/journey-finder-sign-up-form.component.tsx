@@ -4,9 +4,19 @@ import { useFetcher, useSearchParams } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
 import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
 import { pushFormEvent } from '~/lib/gtm';
+import Icon from '~/primitives/icon';
+
+const formControlStyles = `${defaultTextInputStyles} border-transparent bg-[#f4f5f7] text-sm`;
+
+export type JourneyFinderSignUpSuccessDetails = {
+  firstName: string;
+  lastName: string;
+};
 
 interface JourneyFinderSignUpFormProps {
-  onSuccess: () => void;
+  onSuccess: (details?: JourneyFinderSignUpSuccessDetails) => void;
+  groupGuid?: string;
+  isSpanish?: boolean;
 }
 
 export const renderInputField = (
@@ -15,15 +25,16 @@ export const renderInputField = (
   type: string,
   requiredMessage: string,
   defaultValue?: string,
+  fieldClassName = '',
 ) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
+  <Form.Field name={name} className={`flex flex-col mb-4 ${fieldClassName}`}>
     <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
     <Form.Control asChild>
       <input
         type={type}
         required
         defaultValue={defaultValue}
-        className={defaultTextInputStyles}
+        className={formControlStyles}
       />
     </Form.Control>
     <Form.Message className='text-sm text-alert' match='valueMissing'>
@@ -40,14 +51,68 @@ const AT_CF_OPTIONS: { value: string; label: string }[] = [
   { value: '5', label: 'Over 5 years' },
 ];
 
+const SPANISH_AT_CF_OPTIONS: { value: string; label: string }[] = [
+  { value: '1', label: 'Menos de 1 mes' },
+  { value: '2', label: '1-6 meses' },
+  { value: '3', label: '7-12 meses' },
+  { value: '4', label: '1-5 años' },
+  { value: '5', label: 'Más de 5 años' },
+];
+
+const FORM_COPY = {
+  English: {
+    cardHeading: 'Personal Information',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    phone: 'Cell Phone',
+    email: 'Email Address',
+    atCF: 'How long have you attended Christ Fellowship?',
+    hopeToGet: 'What do you hope to gain from this Journey Experience?',
+    submit: 'Submit',
+    loading: 'Loading...',
+    missingGroup: 'Missing group reference. Please use the link provided.',
+    requiredFirstName: 'Please enter your first name',
+    requiredLastName: 'Please enter your last name',
+    requiredPhone: 'Please enter a valid number',
+    requiredEmail: 'Please enter a valid email',
+    requiredAtCF: 'Please select an option',
+    atCFOptions: AT_CF_OPTIONS,
+  },
+  Spanish: {
+    cardHeading: 'Información personal',
+    firstName: 'Nombre',
+    lastName: 'Apellido',
+    phone: 'Teléfono celular',
+    email: 'Correo electrónico',
+    atCF: '¿Cuánto tiempo has asistido a Christ Fellowship?',
+    hopeToGet: '¿Qué esperas recibir de esta experiencia de Journey?',
+    submit: 'Enviar',
+    loading: 'Cargando...',
+    missingGroup:
+      'Falta la referencia del grupo. Por favor usa el enlace proporcionado.',
+    requiredFirstName: 'Por favor ingresa tu nombre',
+    requiredLastName: 'Por favor ingresa tu apellido',
+    requiredPhone: 'Por favor ingresa un número válido',
+    requiredEmail: 'Por favor ingresa un correo electrónico válido',
+    requiredAtCF: 'Por favor selecciona una opción',
+    atCFOptions: SPANISH_AT_CF_OPTIONS,
+  },
+};
+
 const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
   onSuccess,
+  groupGuid,
+  isSpanish = false,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [submittedName, setSubmittedName] =
+    useState<JourneyFinderSignUpSuccessDetails | null>(null);
   const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
-  const groupGuid = searchParams.get('Group') ?? '';
+  const selectedGroupGuid = groupGuid ?? searchParams.get('Group') ?? '';
+  const language = isSpanish ? 'Spanish' : 'English';
+  const copy = FORM_COPY[language];
 
   useEffect(() => {
     fetcher.load('/journey-finder-sign-up');
@@ -66,7 +131,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           'journey_finder_sign_up',
           'Journey Finder Sign Up',
         );
-        onSuccess();
+        onSuccess(submittedName ?? undefined);
       }
     }
 
@@ -74,22 +139,30 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
       setLoading(true);
       setError(null);
     }
-  }, [fetcher.state, fetcher.data, onSuccess]);
+  }, [fetcher.state, fetcher.data, onSuccess, submittedName]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!groupGuid) {
-      setError('Missing group reference. Please use the link provided.');
+    if (!selectedGroupGuid) {
+      setError(copy.missingGroup);
       return;
     }
 
     const formData = new FormData(event.currentTarget);
+    setSubmittedName({
+      firstName: formData.get('firstName')?.toString() ?? '',
+      lastName: formData.get('lastName')?.toString() ?? '',
+    });
+    const actionSearchParams = new URLSearchParams({
+      Group: selectedGroupGuid,
+      Language: language,
+    });
 
     try {
       fetcher.submit(formData, {
         method: 'post',
-        action: `/journey-finder-sign-up?Group=${encodeURIComponent(groupGuid)}`,
+        action: `/journey-finder-sign-up?${actionSearchParams.toString()}`,
       });
     } catch {
       setError(
@@ -100,48 +173,39 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
   };
 
   return (
-    <>
-      <h2 className='mb-6 text-3xl text-navy font-bold'>
-        Journey Finder Sign Up
-      </h2>
+    <div className='w-full rounded-xl border border-neutral-lighter bg-white p-6 shadow-sm md:p-8'>
+      <div className='mb-6 flex items-center gap-2 text-black'>
+        <Icon name='user' size={16} className='text-black' />
+        <h2 className='text-sm font-extrabold'>{copy.cardHeading}</h2>
+      </div>
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
         {renderInputField(
           'firstName',
-          'First Name',
+          copy.firstName,
           'text',
-          'Please enter your first name',
+          copy.requiredFirstName,
         )}
         {renderInputField(
           'lastName',
-          'Last Name',
+          copy.lastName,
           'text',
-          'Please enter your last name',
+          copy.requiredLastName,
         )}
-        {renderInputField(
-          'phone',
-          'Cell Phone',
-          'tel',
-          'Please enter a valid number',
-        )}
-        {renderInputField(
-          'email',
-          'Email Address',
-          'email',
-          'Please enter a valid email',
-        )}
+        {renderInputField('phone', copy.phone, 'tel', copy.requiredPhone)}
+        {renderInputField('email', copy.email, 'email', copy.requiredEmail)}
 
         <Form.Field
           name='atCF'
           className='flex flex-col col-span-1 md:col-span-2 mt-2'
         >
           <Form.Label className='font-bold text-sm mb-2'>
-            How long have you attended Christ Fellowship?
+            {copy.atCF}
           </Form.Label>
           <div className='flex flex-col gap-2'>
-            {AT_CF_OPTIONS.map((option) => (
+            {copy.atCFOptions.map((option) => (
               <label key={option.value} className='flex items-center gap-2'>
                 <Form.Control asChild>
                   <input
@@ -156,7 +220,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
             ))}
           </div>
           <Form.Message className='text-sm text-alert' match='valueMissing'>
-            Please select an option
+            {copy.requiredAtCF}
           </Form.Message>
         </Form.Field>
 
@@ -165,29 +229,33 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           className='flex flex-col col-span-1 md:col-span-2 mt-2'
         >
           <Form.Label className='font-bold text-sm mb-2'>
-            What do you hope to gain from this Journey Experience?
+            {copy.hopeToGet}
           </Form.Label>
           <Form.Control asChild>
-            <textarea rows={4} className={defaultTextInputStyles} />
+            <textarea rows={4} className={formControlStyles} />
           </Form.Control>
         </Form.Field>
 
-        <input type='hidden' name='Group' value={groupGuid} />
+        <input type='hidden' name='Group' value={selectedGroupGuid} />
 
-        {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
+        {error && (
+          <p className='text-alert col-span-1 md:col-span-2 text-center'>
+            {error}
+          </p>
+        )}
 
         <Form.Submit className='mt-6 mx-auto col-span-1 md:col-span-2' asChild>
           <Button
-            className='w-40 h-12'
+            className='w-full h-12'
             size='md'
             type='submit'
             disabled={loading}
           >
-            {loading ? 'Loading...' : 'Submit'}
+            {loading ? copy.loading : copy.submit}
           </Button>
         </Form.Submit>
       </Form.Root>
-    </>
+    </div>
   );
 };
 

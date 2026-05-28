@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import JourneyFinderSignUpForm from '../journey-finder-sign-up-form.component';
@@ -32,10 +32,11 @@ vi.mock('react-router-dom', async () => {
 function renderForm(
   onSuccess = vi.fn(),
   initialEntries: string[] = ['/journey-finder-sign-up?Group=test-guid-123'],
+  props: { groupGuid?: string; isSpanish?: boolean } = {},
 ) {
   return render(
     <MemoryRouter initialEntries={initialEntries}>
-      <JourneyFinderSignUpForm onSuccess={onSuccess} />
+      <JourneyFinderSignUpForm onSuccess={onSuccess} {...props} />
     </MemoryRouter>,
   );
 }
@@ -48,7 +49,7 @@ describe('JourneyFinderSignUpForm', () => {
 
   it('renders the heading', () => {
     renderForm();
-    expect(screen.getByText('Journey Finder Sign Up')).toBeInTheDocument();
+    expect(screen.getByText('Personal Information')).toBeInTheDocument();
   });
 
   it('renders First Name, Last Name, Cell Phone, Email Address fields', () => {
@@ -93,9 +94,64 @@ describe('JourneyFinderSignUpForm', () => {
     expect(hidden.value).toBe('test-guid-123');
   });
 
+  it('uses the groupGuid prop when provided', () => {
+    renderForm(vi.fn(), ['/journey-finder-sign-up?Group=test-guid-123'], {
+      groupGuid: 'prop-guid-456',
+    });
+    const hidden = document.querySelector(
+      "input[type='hidden'][name='Group']",
+    ) as HTMLInputElement;
+    expect(hidden).toBeInTheDocument();
+    expect(hidden.value).toBe('prop-guid-456');
+  });
+
   it('renders Submit button', () => {
     renderForm();
     expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
+  });
+
+  it('submits with English language by default', () => {
+    renderForm();
+    const form = document.querySelector('form');
+    expect(form).toBeInTheDocument();
+
+    fireEvent.submit(form as HTMLFormElement);
+
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/journey-finder-sign-up?Group=test-guid-123&Language=English',
+    });
+  });
+
+  it('submits with Spanish language when isSpanish is true', () => {
+    renderForm(vi.fn(), ['/journey-finder-sign-up'], {
+      groupGuid: 'spanish-guid-123',
+      isSpanish: true,
+    });
+    const form = document.querySelector('form');
+    expect(form).toBeInTheDocument();
+
+    fireEvent.submit(form as HTMLFormElement);
+
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/journey-finder-sign-up?Group=spanish-guid-123&Language=Spanish',
+    });
+  });
+
+  it('renders Spanish copy when isSpanish is true', () => {
+    renderForm(vi.fn(), ['/journey-finder-sign-up'], {
+      groupGuid: 'spanish-guid-123',
+      isSpanish: true,
+    });
+
+    expect(screen.getByText('Información personal')).toBeInTheDocument();
+    expect(screen.getByText('Nombre')).toBeInTheDocument();
+    expect(screen.getByText('Apellido')).toBeInTheDocument();
+    expect(screen.getByText('Teléfono celular')).toBeInTheDocument();
+    expect(screen.getByText('Correo electrónico')).toBeInTheDocument();
+    expect(screen.getByText('Menos de 1 mes')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /enviar/i })).toBeInTheDocument();
   });
 
   it('shows Loading... and disables submit while submitting', () => {

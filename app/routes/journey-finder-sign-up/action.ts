@@ -15,6 +15,9 @@ export const action: ActionFunction = async ({ request }) => {
 
     const url = new URL(request.url);
     const group = url.searchParams.get('Group') ?? '';
+    const language =
+      url.searchParams.get('Language') === 'Spanish' ? 'Spanish' : 'English';
+    const workflowTypeId = language === 'Spanish' ? '1835' : '1872';
 
     if (!firstName || !lastName || !phone || !email || !atCF || !group) {
       return data({ error: 'Missing required fields' }, { status: 400 });
@@ -35,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
 
     await postRockData({
-      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=1872&workflowName=Journey%20Finder%20Sign%20Up`,
+      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=${workflowTypeId}&workflowName=Journey%20Finder%20Sign%20Up`,
       body: submission,
     });
 
