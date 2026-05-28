@@ -1,7 +1,6 @@
 import { ActionFunction, data } from 'react-router-dom';
 import { JourneyFinderSignUpFormType } from './types';
 import { postRockData } from '~/lib/.server/fetch-rock-data';
-import { findOrCreateRockPersonForSignup } from '~/lib/.server/rock-signup';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -21,23 +20,14 @@ export const action: ActionFunction = async ({ request }) => {
       return data({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const personId = await findOrCreateRockPersonForSignup({
-      firstName,
-      lastName,
-      email,
-      phoneNumber: phone,
-    });
-
     const submission: JourneyFinderSignUpFormType = {
       FirstName: firstName,
       LastName: lastName,
       PrimaryPhoneNumber: phone,
       EmailAddress: email,
       AtCF: atCF,
-      OriginalEntrySource: 'Web',
       LaunchSource: 'app',
       Group: group,
-      PersonId: personId,
     };
 
     if (hopeToGet) {
@@ -45,7 +35,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
 
     await postRockData({
-      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=1833&workflowName=Journey%20Finder%20Sign%20Up`,
+      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=1872&workflowName=Journey%20Finder%20Sign%20Up`,
       body: submission,
     });
 
