@@ -215,7 +215,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
                     required
                   />
                 </Form.Control>
-                <span className='font-bold leading-4'>{option.label}</span>
+                <span className='leading-4'>{option.label}</span>
               </label>
             ))}
           </div>
