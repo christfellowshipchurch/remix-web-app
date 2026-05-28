@@ -91,7 +91,7 @@ export const WhatWeOfferTabs = () => {
                 className={cn(
                   'hidden lg:flex mx-auto',
                   'flex-nowrap items-center overflow-x-scroll',
-                  'gap-6 xl:gap-2 pb-2',
+                  'gap-6 xl:gap-2 pb-2 px-2',
                   'min-h-[500px]',
                 )}
               >
