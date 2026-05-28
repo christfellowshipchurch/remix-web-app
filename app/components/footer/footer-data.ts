@@ -31,7 +31,7 @@ export const footerColumns: FooterColumn[] = [
         title: 'Subscribe to Updates',
         url: `${ROCK_PUBLIC_SITE_ORIGIN}/page/4344`,
       },
-      { title: 'Contact Us', url: 'mailto:hello@christfellowship.church' },
+      { title: 'Contact Us', url: '/contact-us' },
     ],
   },
   {
