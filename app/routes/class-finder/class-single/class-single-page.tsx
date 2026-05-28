@@ -96,11 +96,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   const handleBack = useCallback(
     (e: ReactMouseEvent<Element>) => {
       e.preventDefault();
-      if (typeof window !== 'undefined' && window.history.length > 1) {
-        navigate(-1);
-      } else {
-        navigate('/class-finder');
-      }
+      navigate('/class-finder');
     },
     [navigate],
   );
