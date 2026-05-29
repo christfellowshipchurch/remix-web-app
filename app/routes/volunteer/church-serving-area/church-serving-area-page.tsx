@@ -30,7 +30,7 @@ export function ChurchServingAreaPage() {
   const onContinue = useCallback(() => {
     if (!selectedRoleGuid?.trim()) return;
     navigate(
-      `/volunteer-form/welcome?role=${encodeURIComponent(selectedRoleGuid)}`,
+      `/rock-page?url=https://rock.christfellowship.church/page/5886?OpportunityId=${encodeURIComponent(selectedRoleGuid)}`,
     );
   }, [navigate, selectedRoleGuid]);
 

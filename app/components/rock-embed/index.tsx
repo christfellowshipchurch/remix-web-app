@@ -1,11 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '~/lib/utils';
 
 interface RockProxyEmbedProps {
   /** The Rock RMS page URL to embed */
   url: string;
-  /** Height of the iframe in pixels */
+  /** Height of the iframe in pixels. Used as the loading placeholder height and ignored when autoHeight is true. */
   height?: number;
+  /**
+   * When true, the iframe expands to match its content height automatically.
+   * Works because /rock-proxy serves from the same origin, allowing DOM access.
+   * The `height` prop is still used as the loading placeholder height.
+   */
+  autoHeight?: boolean;
   /** Whether to show a loading state */
   showLoading?: boolean;
   /** Custom CSS classes */
@@ -25,6 +31,7 @@ interface RockProxyEmbedProps {
 export function RockProxyEmbed({
   url,
   height = 600,
+  autoHeight = false,
   showLoading = true,
   className,
   useAdvancedProxy = true,
@@ -33,15 +40,41 @@ export function RockProxyEmbed({
 }: RockProxyEmbedProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [autoHeightPx, setAutoHeightPx] = useState(height);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
     setHasError(false);
-  }, [url]);
+    setAutoHeightPx(height);
+  }, [url, height]);
+
+  // Attach a ResizeObserver to the iframe body so height tracks DOM changes
+  // (e.g. multi-step forms revealing/hiding sections).
+  const attachObserver = useCallback(() => {
+    if (!autoHeight) return;
+    const body = iframeRef.current?.contentDocument?.body;
+    if (!body) return;
+
+    observerRef.current?.disconnect();
+    observerRef.current = new ResizeObserver(() => {
+      const scrollH = iframeRef.current?.contentDocument?.body?.scrollHeight;
+      if (scrollH) setAutoHeightPx(scrollH);
+    });
+    observerRef.current.observe(body);
+
+    // Set initial height immediately
+    setAutoHeightPx(body.scrollHeight || height);
+  }, [autoHeight, height]);
+
+  useEffect(() => {
+    return () => observerRef.current?.disconnect();
+  }, []);
 
   const handleLoad = () => {
     setIsLoading(false);
+    attachObserver();
     onLoad?.();
   };
 
@@ -50,18 +83,17 @@ export function RockProxyEmbed({
     setHasError(true);
   };
 
-  // Build the iframe source URL
-  // When useAdvancedProxy is true, use the server-side proxy to handle CORS and CSS issues
-  // When false, embed directly (may fail due to CORS/X-Frame-Options restrictions)
   const iframeSrc = useAdvancedProxy
     ? `/rock-proxy?url=${encodeURIComponent(url)}`
     : url;
+
+  const resolvedHeight = autoHeight ? autoHeightPx : height;
 
   const iframeAttributes = {
     ref: iframeRef,
     src: iframeSrc,
     className: cn('w-full border-0', hasError && 'hidden'),
-    style: { height: `${height}px` },
+    style: { height: `${resolvedHeight}px` },
     title: 'Rock RMS Embedded Content',
     sandbox:
       'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-fullscreen',
