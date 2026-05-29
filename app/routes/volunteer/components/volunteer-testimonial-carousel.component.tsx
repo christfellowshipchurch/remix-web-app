@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -95,30 +95,6 @@ export function VolunteerTestimonialCarousel() {
 
   const desktopViewportRef = useRef<HTMLDivElement>(null);
   const [desktopViewportWidth, setDesktopViewportWidth] = useState(0);
-  const wheelCooldownRef = useRef(false);
-
-  useEffect(() => {
-    const el = desktopViewportRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      if (wheelCooldownRef.current) return;
-      e.preventDefault();
-      wheelCooldownRef.current = true;
-      setTimeout(() => {
-        wheelCooldownRef.current = false;
-      }, 500);
-      if (e.deltaX > 0) {
-        setActiveIndex((i) => Math.min(lastIndex, i + 1));
-      } else {
-        setActiveIndex((i) => Math.max(0, i - 1));
-      }
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [lastIndex]);
 
   useLayoutEffect(() => {
     const el = desktopViewportRef.current;
