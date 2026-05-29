@@ -36,7 +36,7 @@ export const VolunteerHero = () => {
 
           {/* Body */}
           <p className='text-[#3F484C] text-lg lg:text-xl max-w-[520px]'>
-            We want every volunteer&apos;s experience at Church to be a
+            We want every volunteer&apos;s experience at church to be a
             fulfilling journey where they feel welcomed and can share the love
             of Jesus. Our hope is that every volunteer understands the impact
             they have, knowing they are making a difference in the lives of
