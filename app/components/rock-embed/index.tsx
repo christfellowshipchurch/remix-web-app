@@ -54,7 +54,7 @@ export function RockProxyEmbed({
   // When useAdvancedProxy is true, use the server-side proxy to handle CORS and CSS issues
   // When false, embed directly (may fail due to CORS/X-Frame-Options restrictions)
   const iframeSrc = useAdvancedProxy
-    ? `/rock-page?url=${encodeURIComponent(url)}`
+    ? `/rock-proxy?url=${encodeURIComponent(url)}`
     : url;
 
   const iframeAttributes = {
