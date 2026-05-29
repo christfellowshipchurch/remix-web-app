@@ -19,7 +19,9 @@ export const ContactInfo = () => {
           <a className={`${linkStyle} md:hidden`} href='tel:5617997600'>
             (561) 799-7600
           </a>
-          <span className={`${linkStyle} hidden md:inline hover:text-white cursor-default`}>
+          <span
+            className={`${linkStyle} hidden md:inline hover:text-white cursor-default`}
+          >
             (561) 799-7600
           </span>
         </div>

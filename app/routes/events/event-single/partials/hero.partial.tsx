@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { cn } from '~/lib/utils';
 import BulletPoints from '~/primitives/bullet-points';
 import { Button } from '~/primitives/button/button.primitive';
 import HtmlRenderer from '~/primitives/html-renderer';
@@ -25,7 +26,7 @@ export const EventsSingleHero = ({
             {/* Left / Bottom Side (Desktop) */}
             <div className='order-2 md:order-1 flex flex-col gap-10 mb-4 md:mb-0'>
               <div className='flex flex-col gap-3 max-w-[600px]'>
-                <h1 className='font-extrabold heading-h4 md:heading-h3 lg:text-[52px] text-text-primary leading-tight !text-pretty -mb-1'>
+                <h1 className='font-extrabold heading-h4 md:heading-h3 lg:text-[52px] text-text-primary leading-tight text-pretty! -mb-1'>
                   {customTitle}
                 </h1>
 
@@ -37,22 +38,18 @@ export const EventsSingleHero = ({
                 )}
 
                 {/* CTAs */}
-                <div className='flex flex-col md:flex-row gap-2 sm:gap-4'>
+                <div className='flex flex-col md:flex-wrap xl:flex-row gap-2 sm:gap-4'>
                   {ctas?.map((cta, i) => (
                     <Fragment key={i}>
                       <Button
                         href={cta.url}
                         intent={i === 0 ? 'primary' : 'secondary'}
-                        size='md'
-                        className='w-full md:w-auto lg:hidden'
-                      >
-                        {cta.title}
-                      </Button>
-                      <Button
-                        href={cta.url}
-                        intent={i === 0 ? 'primary' : 'secondary'}
-                        size='lg'
-                        className='w-full md:w-auto hidden lg:inline-flex'
+                        className={cn(
+                          'w-full md:w-auto',
+                          'py-2 lg:py-3',
+                          'px-4 lg:px-6',
+                          'text-base lg:text-lg',
+                        )}
                       >
                         {cta.title}
                       </Button>
@@ -76,7 +73,7 @@ export const EventsSingleHero = ({
             <img
               src={imagePath}
               alt={customTitle}
-              className='order-1 md:order-2 w-full max-w-lg md:max-w-[340px] lg:max-w-[480px] xl:!max-w-[638px] aspect-638/478 md:aspect-5/6 lg:aspect-638/478 object-cover rounded-[14px] shadow-xl'
+              className='order-1 md:order-2 w-full max-w-lg md:max-w-[340px] lg:max-w-[480px] xl:max-w-[638px]! aspect-638/478 md:aspect-5/6 lg:aspect-638/478 object-cover rounded-[14px] shadow-xl'
             />
           </div>
         </div>
