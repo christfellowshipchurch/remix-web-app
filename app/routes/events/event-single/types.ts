@@ -37,6 +37,7 @@ export type EventSinglePageType = {
   moreInfoText?: string;
   optionalBlurb?: { title: string; description: string }[];
   faqItems?: { question: string; answer: string }[];
+  faqEmail?: string;
   sessionScheduleCards?: SessionRegistrationCardType[];
 };
 

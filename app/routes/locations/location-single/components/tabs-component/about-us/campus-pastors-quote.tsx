@@ -39,7 +39,7 @@ export const CampusPastorsQuote = ({
           />
           <div className='flex flex-col justify-center items-center md:items-start'>
             <h4 className='text-lg text-text-secondary'>
-              {isSpanish ? 'Pastores del Campus' : 'Campus Pastors'}
+              {isSpanish ? 'Pastores del Campus' : 'Campus Pastor'}
             </h4>
             <h3 className='font-semibold text-[22px]'>
               {campusPastor.firstName} {campusPastor.lastName}

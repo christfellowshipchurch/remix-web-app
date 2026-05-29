@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router';
+import { Link } from 'react-router';
 import { GroupConnectModal } from '~/components/modals/group-connect/group-connect-modal';
 import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
@@ -20,11 +20,7 @@ export const GroupSingleBanner = ({
   groupId: string;
 }) => {
   const stickyTopClass = useStickyTopBelowNavbarClass();
-  const location = useLocation();
-  const backToGroupFinderUrl =
-    typeof location.state?.fromGroupFinder === 'string'
-      ? location.state.fromGroupFinder
-      : '/group-finder';
+  const backToGroupFinderUrl = '/group-finder';
 
   const imageStyles = 'size-20 rounded-[10px] object-cover';
 

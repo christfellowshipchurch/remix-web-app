@@ -26,44 +26,32 @@ export function GroupHit({
   const preference = hit.groupFor?.trim() || 'Anyone';
   const topicTags = splitGroupTopics(hit.topics);
 
-  // Format the time string to show time with AM/PM and timezone
   const formatTime = (timeString: string) => {
-    // If the time string already contains AM/PM, return it as is
+    const normalizedTimeString = timeString.replace(/\bE[SD]T\b/g, 'ET');
+
     if (
-      timeString.toLowerCase().includes('am') ||
-      timeString.toLowerCase().includes('pm')
+      normalizedTimeString.toLowerCase().includes('am') ||
+      normalizedTimeString.toLowerCase().includes('pm')
     ) {
-      return timeString;
+      return normalizedTimeString.includes('ET')
+        ? normalizedTimeString
+        : `${normalizedTimeString.replace(' ', '')} ET`;
     }
 
     try {
-      const [hoursStr, minutesStr] = timeString.split(':');
+      const [hoursStr, minutesStr] = normalizedTimeString.split(':');
       const hours = parseInt(hoursStr, 10);
       const minutes = parseInt(minutesStr || '0', 10);
 
-      if (isNaN(hours) || isNaN(minutes)) return timeString;
+      if (isNaN(hours) || isNaN(minutes)) return normalizedTimeString;
 
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const displayHours = hours % 12 || 12;
       const displayMinutes = minutes.toString().padStart(2, '0');
 
-      // Get current timezone abbreviation
-      const timeZone =
-        new Date()
-          .toLocaleTimeString('en-US', { timeZoneName: 'short' })
-          .split(' ')
-          .pop() || '';
-
-      // Shorten timezone abbreviations
-      const shortTimeZone = timeZone
-        .replace(/E[SD]T/, 'ET')
-        .replace(/C[SD]T/, 'CT')
-        .replace(/M[SD]T/, 'MT')
-        .replace(/P[SD]T/, 'PT');
-
-      return `${displayHours}:${displayMinutes}${ampm} ${shortTimeZone}`;
+      return `${displayHours}:${displayMinutes}${ampm} ET`;
     } catch {
-      return timeString;
+      return normalizedTimeString;
     }
   };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ResultsProgressBar } from '../components/results-progress-bar.component';
 import { ResultCard } from '../components/result-card.component';
 import { mockResultCards } from '../mock-data';
@@ -11,11 +12,17 @@ export const VolunteerFormConfirmationPartial: React.FC = () => (
       <h2 className='heading-h2 mb-6 text-center'>What Happens Next?</h2>
       <ResultsProgressBar />
       <p className='my-6 text-center max-w-2xl text-text-secondary'>
-        We are thrilled to have you join our team. [Persons Name and title] from
-        your home [Campus] will contact you within [timeframe, e.g., 3-5
-        business days] to discuss potential volunteer opportunities and next
-        steps. In the meantime, you can sign up for the Journey if you haven't
-        taken it yet as it is the first step for volunteering.
+        We're excited to have you join the Dream Team! One of our team members
+        from your home campus will be in touch within the next few days to help
+        you explore volunteer opportunities and share your next steps. In the
+        meantime, if you haven't taken Journey yet, we encourage you to{' '}
+        <Link
+          to='/events/journey'
+          className='text-ocean underline hover:text-navy transition-colors'
+        >
+          sign up
+        </Link>{' '}
+        — it's the first step toward serving on the Dream Team.
       </p>
       <div className='flex items-center gap-4 my-12'>
         <img
