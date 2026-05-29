@@ -24,7 +24,7 @@ export const VolunteerHero = () => {
               Home
             </a>
             <Icon name='chevronRight' size={16} className='text-navy' />
-            <a href='/volunteer'>Volunteer</a>
+            <span>Volunteer</span>
           </div>
 
           {/* Heading */}
