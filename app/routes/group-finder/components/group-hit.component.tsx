@@ -15,12 +15,19 @@ function formatGroupHitCampusName(campusName: string): string {
   return afterMarker ? `CFE ${afterMarker}` : 'CFE';
 }
 
+function formatDistanceMiles(meters: number): string {
+  const miles = meters / 1609.344;
+  return `${miles.toFixed(1)} miles away`;
+}
+
 export function GroupHit({
   hit,
   backUrl,
+  isGeoSearch = false,
 }: {
   hit: GroupType;
   backUrl?: string;
+  isGeoSearch?: boolean;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
   const preference = hit.groupFor?.trim() || 'Anyone';
@@ -154,7 +161,11 @@ export function GroupHit({
             <div className='w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white '>
               <Icon name='map' size={20} color='white' />
               <p className='text-sm font-semibold'>
-                {formatGroupHitCampusName(hit.campusName)}
+                {isGeoSearch && hit._geoloc && hit._rankingInfo?.geoDistance != null
+                  ? formatDistanceMiles(hit._rankingInfo.geoDistance)
+                  : isGeoSearch && !hit._geoloc
+                    ? 'Location varies'
+                    : formatGroupHitCampusName(hit.campusName)}
               </p>
             </div>
           </div>

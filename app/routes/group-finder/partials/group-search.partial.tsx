@@ -420,6 +420,9 @@ export const GroupSearch = () => {
               initialHits={groupHits}
               initialNbHits={groupNbHits}
               fromGroupFinderUrl={fromGroupFinderUrl}
+              isGeoSearch={
+                coordinates?.lat != null && coordinates?.lng != null
+              }
             />
           </InstantSearch>
         ) : (
@@ -446,6 +449,9 @@ export const GroupSearch = () => {
               isLastPage={isLastPage}
               fromGroupFinderUrl={fromGroupFinderUrl}
               onPageChange={goToPage}
+              isGeoSearch={
+                coordinates?.lat != null && coordinates?.lng != null
+              }
             />
           </>
         )}
@@ -458,10 +464,12 @@ function GroupFinderInstantSearchResults({
   initialHits,
   initialNbHits,
   fromGroupFinderUrl,
+  isGeoSearch,
 }: {
   initialHits: LoaderReturnType['groupHits'];
   initialNbHits: number;
   fromGroupFinderUrl: string;
+  isGeoSearch: boolean;
 }) {
   const { items } = useHits<LoaderReturnType['groupHits'][number]>();
   const { nbHits } = useStats();
@@ -495,6 +503,7 @@ function GroupFinderInstantSearchResults({
       isLoading={isLoading}
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={goToPage}
+      isGeoSearch={isGeoSearch}
     />
   );
 }
@@ -508,6 +517,7 @@ function GroupFinderInitialResults({
   isLastPage,
   fromGroupFinderUrl,
   onPageChange,
+  isGeoSearch,
 }: {
   groupHits: LoaderReturnType['groupHits'];
   groupNbHits: number;
@@ -517,6 +527,7 @@ function GroupFinderInitialResults({
   isLastPage: boolean;
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
+  isGeoSearch: boolean;
 }) {
   return (
     <GroupFinderResultsLayout
@@ -529,6 +540,7 @@ function GroupFinderInitialResults({
       isLoading={false}
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={onPageChange}
+      isGeoSearch={isGeoSearch}
     />
   );
 }
@@ -543,6 +555,7 @@ function GroupFinderResultsLayout({
   isLoading,
   fromGroupFinderUrl,
   onPageChange,
+  isGeoSearch,
 }: {
   groupHits: LoaderReturnType['groupHits'];
   groupNbHits: number;
@@ -553,6 +566,7 @@ function GroupFinderResultsLayout({
   isLoading: boolean;
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
+  isGeoSearch: boolean;
 }) {
   return (
     <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
@@ -575,6 +589,7 @@ function GroupFinderResultsLayout({
                   key={hit.objectID}
                   hit={hit}
                   backUrl={fromGroupFinderUrl}
+                  isGeoSearch={isGeoSearch}
                 />
               ))}
             </div>

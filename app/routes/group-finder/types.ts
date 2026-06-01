@@ -104,6 +104,8 @@ export interface GroupType {
   topics: string;
   minMaxAge: string;
   _geoloc: { lat: number; lng: number } | null;
+  /** Present when getRankingInfo is true and aroundLatLng is set; distance in meters from search point. */
+  _rankingInfo?: { geoDistance?: number };
 }
 
 /** Split `topics` from Algolia into display tags. */
