@@ -17,7 +17,7 @@ export const action: ActionFunction = async ({ request }) => {
     const group = url.searchParams.get('Group') ?? '';
     const language =
       url.searchParams.get('Language') === 'Spanish' ? 'Spanish' : 'English';
-    const workflowTypeId = language === 'Spanish' ? '1835' : '1872';
+    const workflowTypeId = language === 'Spanish' ? '1835' : '1833';
 
     if (!firstName || !lastName || !phone || !email || !atCF || !group) {
       return data({ error: 'Missing required fields' }, { status: 400 });
