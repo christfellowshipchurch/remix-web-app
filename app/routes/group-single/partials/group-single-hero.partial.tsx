@@ -108,7 +108,9 @@ const GroupInfo = ({ hit }: { hit: GroupType }) => {
   } = hit;
   const adultsOnlyBool = adultsOnly === 'True';
 
-  const formattedMeetingTime = meetingTime.replace(' ', '');
+  const formattedMeetingTime = meetingTime
+    .replace(/\s*(EST|EDT|ET)$/i, '')
+    .replace(/\s/g, '');
   const campus = (campusName || '').trim();
   const rawLocationType = (meetingLocationType || '').trim();
   const locationType = rawLocationType.toLowerCase();

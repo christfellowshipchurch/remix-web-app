@@ -25,7 +25,7 @@ export function BeliefsSection({
           {/* Beliefs Title */}
           <div className='relative flex flex-col gap-6 pb-12 w-full'>
             <SectionTitle
-              sectionTitle={isSpanish ? 'nuestras creencias.' : 'our beliefs.'}
+              sectionTitle={isSpanish ? 'nuestras creencias' : 'our beliefs'}
             />
             <h3 className='font-extrabold text-text-primary text-[28px] md:text-5xl leading-tight'>
               {isSpanish ? 'Lo Que' : 'What We'} <br className='sm:hidden' />{' '}

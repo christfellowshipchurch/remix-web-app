@@ -288,7 +288,7 @@ export const faqCfEverywhereData = [
   {
     title: 'What can I expect from a live-streamed service?',
     content:
-      'Every Sunday, we craft a unique livestream experience for our Christ Fellowship Everywhere audience. We have live services at 8:30, 10, and 11:45AM ET every Sunday but we would love to see you for our interactive pre-service segment that begins 6 minutes before services. You never know what’s going to happen, but we promise it’ll always be fun.',
+      'Every Sunday, we craft a unique livestream experience for our Christ Fellowship Everywhere audience. We have live services at 8:15AM, 9:45AM, & 11:30AM ET every Sunday but we would love to see you for our interactive pre-service segment that begins 6 minutes before services. You never know what’s going to happen, but we promise it’ll always be fun.',
   },
   {
     title: 'How can I get campus-specific information?',
@@ -300,7 +300,7 @@ export const faqCfEverywhereData = [
   },
   {
     title: 'How can I get involved?',
-    content: `We are so excited to get you involved with Christ Fellowship Everywhere and want to help you take your next step. <a href=/next-steps> Journey</a> is a great first step that will lay out a variety of ways to get involved. Looking for your next step? <a target="blank" href="mailto:online@christfellowship.church"> Send us an email</a> so we can help you discover your next step!`,
+    content: `We are so excited to get you involved with Christ Fellowship Everywhere and want to help you take your next step. <a href=/events/journey>Journey</a> is a great first step that will lay out a variety of ways to get involved. Looking for your next step? <a target="blank" href="mailto:online@christfellowship.church"> Send us an email</a> so we can help you discover your next step!`,
   },
 ];
 
