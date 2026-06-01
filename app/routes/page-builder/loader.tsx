@@ -213,7 +213,7 @@ export const mapPageBuilderChildItems = async (
           ...baseChild,
           collection: visibleItems.flatMap(
             (item: RockContentItem): CollectionItem[] => {
-              const channelId = item.contentChannelId;
+              const channelId = String(item.contentChannelId);
 
               // Flatten attribute values (needed for all routing paths)
               const itemAttributeValues = Object.fromEntries(
