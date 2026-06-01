@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLoaderData, useLocation } from 'react-router-dom';
 
-import { ANCHOR_SCROLL_OFFSET } from '~/components/navbar/scroll-offset.constants';
+import { scrollToAnchor } from '~/lib/scroll-to-anchor';
 
 import { EventSinglePageType } from './types';
 import { EventsSingleHero } from './partials/hero.partial';
@@ -22,11 +22,7 @@ export const EventSinglePage: React.FC = () => {
     const hash = location.hash?.slice(1);
     if (!hash || !SECTION_IDS.includes(hash as (typeof SECTION_IDS)[number]))
       return;
-    const el = document.getElementById(hash);
-    if (!el) return;
-    const offsetTop =
-      el.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
-    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+    scrollToAnchor(hash);
   }, [location.hash]);
 
   // Check if sessionScheduleCards exist

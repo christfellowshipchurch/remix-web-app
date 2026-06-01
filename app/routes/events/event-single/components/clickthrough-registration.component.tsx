@@ -18,6 +18,7 @@ import {
   hasSubGroupTypes,
   isSpanishCampusLabel,
 } from '../registration.data';
+import { scrollToAnchor } from '~/lib/scroll-to-anchor';
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -68,6 +69,7 @@ export const ClickThroughRegistration = ({
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
   const [isGoingBack, setIsGoingBack] = useState(false);
+  const [pendingRegisterScroll, setPendingRegisterScroll] = useState(false);
   const previousStepRef = useRef<number>(1);
 
   const resetRegistrationFlow = () => {
@@ -79,7 +81,17 @@ export const ClickThroughRegistration = ({
     setCampusSearchQuery('');
     setIsGoingBack(false);
     previousStepRef.current = 1;
+    setPendingRegisterScroll(true);
   };
+
+  useEffect(() => {
+    if (!pendingRegisterScroll) return;
+
+    setPendingRegisterScroll(false);
+    requestAnimationFrame(() => {
+      scrollToAnchor('register');
+    });
+  }, [pendingRegisterScroll]);
 
   const searchClient = useMemo(
     () =>
@@ -198,10 +210,7 @@ export const ClickThroughRegistration = ({
         }
       />
 
-      <section
-        className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'
-        id='register'
-      >
+      <section className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'>
         <div className='w-full max-w-3xl flex flex-col gap-13 mx-auto'>
           <div className='flex flex-col gap-4'>
             <h2 className='font-extrabold text-center text-black text-[32px]'>
