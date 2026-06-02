@@ -1,14 +1,11 @@
 const ALLOWED_HOSTS = new Set(['rock.christfellowship.church']);
 
 /**
- * Validates a Rock RMS URL from a request's `url` query parameter.
+ * Validates a Rock RMS URL string.
  * Throws a `Response` on any validation failure.
  * Returns the validated URL string on success.
  */
-export function validateRockUrl(request: Request): string {
-  const url = new URL(request.url);
-  const targetUrl = url.searchParams.get('url');
-
+export function validateRockUrlString(targetUrl: string | null): string {
   if (!targetUrl) {
     throw new Response('URL parameter required', { status: 400 });
   }
@@ -29,4 +26,14 @@ export function validateRockUrl(request: Request): string {
   }
 
   return targetUrl;
+}
+
+/**
+ * Validates a Rock RMS URL from a request's `url` query parameter.
+ * Throws a `Response` on any validation failure.
+ * Returns the validated URL string on success.
+ */
+export function validateRockUrl(request: Request): string {
+  const url = new URL(request.url);
+  return validateRockUrlString(url.searchParams.get('url'));
 }

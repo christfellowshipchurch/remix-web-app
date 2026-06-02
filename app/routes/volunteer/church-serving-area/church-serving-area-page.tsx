@@ -28,10 +28,12 @@ export function ChurchServingAreaPage() {
   }, [navigate]);
 
   const onContinue = useCallback(() => {
-    if (!selectedRoleGuid?.trim()) return;
-    navigate(
-      `/rock-page?url=https://rock.christfellowship.church/page/5886?OpportunityId=${encodeURIComponent(selectedRoleGuid)}`,
-    );
+    const opportunityId = selectedRoleGuid?.trim();
+    if (!opportunityId) return;
+    const searchParams = new URLSearchParams({
+      opportunityId,
+    });
+    navigate(`/rock-page?${searchParams.toString()}`);
   }, [navigate, selectedRoleGuid]);
 
   useEffect(() => {
