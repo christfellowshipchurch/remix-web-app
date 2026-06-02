@@ -46,7 +46,7 @@ const DesktopFeaturedItem = ({
       data-position={position}
       data-item-title={title}
     >
-      <div className='bg-ocean lg:bg-dark-navy group-hover:bg-ocean transition-colors duration-300 rounded-sm lg:rounded-none p-2'>
+      <div className='bg-ocean lg:bg-dark-navy group-hover:bg-ocean transition-colors duration-300 rounded-sm p-2'>
         <Icon name={iconName} color='white' />
       </div>
       <div>
