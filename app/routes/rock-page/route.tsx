@@ -10,7 +10,12 @@ export default function RockPage() {
   const { url } = useLoaderData<typeof loader>();
   return (
     <div className='w-full max-w-screen-content mx-auto px-4'>
-      <RockProxyEmbed url={url} autoHeight showLoading={false} />
+      <RockProxyEmbed
+        useAdvancedProxy={false}
+        url={url}
+        autoHeight
+        showLoading={false}
+      />
     </div>
   );
 }

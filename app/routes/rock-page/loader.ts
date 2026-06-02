@@ -3,23 +3,34 @@ import {
   validateRockUrl,
   validateRockUrlString,
 } from '~/lib/.server/validate-rock-url';
-import { buildChurchOpportunityApplicationUrl } from './rock-page.data';
+import {
+  buildRockPageEmbedUrl,
+  ROCK_PAGE_EMBED_KEYS,
+} from './rock-page.data';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const requestUrl = new URL(request.url);
+  const embed = requestUrl.searchParams.get('embed')?.trim();
   const hasOpportunityId = requestUrl.searchParams.has('opportunityId');
-  const opportunityId = requestUrl.searchParams.get('opportunityId')?.trim();
 
-  if (hasOpportunityId && !opportunityId) {
-    throw new Response('OpportunityId parameter required', { status: 400 });
+  if (embed) {
+    return {
+      url: validateRockUrlString(
+        buildRockPageEmbedUrl(embed, requestUrl.searchParams),
+      ),
+    };
   }
 
-  const url =
-    hasOpportunityId && opportunityId
-      ? validateRockUrlString(
-          buildChurchOpportunityApplicationUrl(opportunityId),
-        )
-      : validateRockUrl(request);
+  if (hasOpportunityId) {
+    return {
+      url: validateRockUrlString(
+        buildRockPageEmbedUrl(
+          ROCK_PAGE_EMBED_KEYS.churchOpportunity,
+          requestUrl.searchParams,
+        ),
+      ),
+    };
+  }
 
-  return { url };
+  return { url: validateRockUrl(request) };
 }

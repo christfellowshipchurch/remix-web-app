@@ -31,6 +31,7 @@ export function ChurchServingAreaPage() {
     const opportunityId = selectedRoleGuid?.trim();
     if (!opportunityId) return;
     const searchParams = new URLSearchParams({
+      embed: 'church-opportunity',
       opportunityId,
     });
     navigate(`/rock-page?${searchParams.toString()}`);

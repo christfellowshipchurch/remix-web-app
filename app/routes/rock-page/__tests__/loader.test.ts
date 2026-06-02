@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { loader } from '../loader';
-import { buildChurchOpportunityApplicationUrl } from '../rock-page.data';
+import {
+  buildChurchOpportunityApplicationUrl,
+  buildRockPageEmbedUrl,
+  ROCK_PAGE_EMBED_KEYS,
+} from '../rock-page.data';
 
 function makeLoaderArgs(search = ''): Parameters<typeof loader>[0] {
   return {
@@ -29,21 +33,70 @@ describe('buildChurchOpportunityApplicationUrl', () => {
   });
 });
 
+describe('buildRockPageEmbedUrl', () => {
+  it('builds registered Rock embed URLs from server-side config', () => {
+    const result = buildRockPageEmbedUrl(
+      ROCK_PAGE_EMBED_KEYS.churchOpportunity,
+      new URLSearchParams({ opportunityId: 'abc-123' }),
+    );
+
+    expect(result).toBe(
+      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123',
+    );
+  });
+
+  it('rejects unsupported embed keys', () => {
+    try {
+      buildRockPageEmbedUrl(
+        'unknown-embed',
+        new URLSearchParams({ opportunityId: 'abc-123' }),
+      );
+      throw new Error('Expected buildRockPageEmbedUrl to throw');
+    } catch (error) {
+      expectResponse(error, 400);
+    }
+  });
+
+  it('requires configured query params', () => {
+    try {
+      buildRockPageEmbedUrl(
+        ROCK_PAGE_EMBED_KEYS.churchOpportunity,
+        new URLSearchParams(),
+      );
+      throw new Error('Expected buildRockPageEmbedUrl to throw');
+    } catch (error) {
+      expectResponse(error, 400);
+    }
+  });
+});
+
 describe('rock-page loader', () => {
-  it('returns a validated Rock URL for opportunityId links', async () => {
-    const result = await loader(makeLoaderArgs('?opportunityId=abc-123'));
+  it('returns a validated Rock URL for registered embed links', async () => {
+    const result = await loader(
+      makeLoaderArgs('?embed=church-opportunity&opportunityId=abc-123'),
+    );
 
     expect(result).toEqual({
       url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123',
     });
   });
 
-  it('trims opportunityId values before building the Rock URL', async () => {
-    const result = await loader(makeLoaderArgs('?opportunityId=%20abc-123%20'));
+  it('trims embed query param values before building the Rock URL', async () => {
+    const result = await loader(
+      makeLoaderArgs('?embed=church-opportunity&opportunityId=%20abc-123%20'),
+    );
 
     expect(result.url).toBe(
       'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123',
     );
+  });
+
+  it('keeps supporting previous bare opportunityId links', async () => {
+    const result = await loader(makeLoaderArgs('?opportunityId=abc-123'));
+
+    expect(result).toEqual({
+      url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123',
+    });
   });
 
   it('keeps supporting legacy encoded url links', async () => {
@@ -56,7 +109,38 @@ describe('rock-page loader', () => {
     expect(result).toEqual({ url: rockUrl });
   });
 
-  it('rejects blank opportunityId values instead of falling back to url', async () => {
+  it('rejects unsupported embed links instead of falling back to url', async () => {
+    const rockUrl = 'https://rock.christfellowship.church/page/5886';
+    const searchParams = new URLSearchParams({
+      embed: 'unknown-embed',
+      url: rockUrl,
+    });
+
+    try {
+      await loader(makeLoaderArgs(`?${searchParams.toString()}`));
+      throw new Error('Expected loader to throw');
+    } catch (error) {
+      expectResponse(error, 400);
+    }
+  });
+
+  it('rejects blank embed opportunityId values instead of falling back to url', async () => {
+    const rockUrl = 'https://rock.christfellowship.church/page/5886';
+    const searchParams = new URLSearchParams({
+      embed: 'church-opportunity',
+      opportunityId: ' ',
+      url: rockUrl,
+    });
+
+    try {
+      await loader(makeLoaderArgs(`?${searchParams.toString()}`));
+      throw new Error('Expected loader to throw');
+    } catch (error) {
+      expectResponse(error, 400);
+    }
+  });
+
+  it('rejects previous blank opportunityId links instead of falling back to url', async () => {
     const rockUrl = 'https://rock.christfellowship.church/page/5886';
     const searchParams = new URLSearchParams({
       opportunityId: ' ',
