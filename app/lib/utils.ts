@@ -126,6 +126,28 @@ interface EventDetails {
   url?: string;
 }
 
+export const googleCalendarLink = (event: EventDetails): string => {
+  const { title, description, address, url } = event;
+  let { startTime, endTime } = event;
+
+  if (typeof startTime === 'string' || typeof endTime === 'string') {
+    startTime = parseISO(startTime as string);
+    endTime = parseISO(endTime as string);
+  }
+
+  const formatDate = (date: Date) => format(date, "yyyyMMdd'T'HHmmss");
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: `${formatDate(startTime as Date)}/${formatDate(endTime as Date)}`,
+    details: `${description}\n\n${url ?? ''}`,
+    location: address,
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
+
 export const icsLink = (event: EventDetails): string => {
   const { title, description, address, url } = event;
   let { startTime, endTime } = event;

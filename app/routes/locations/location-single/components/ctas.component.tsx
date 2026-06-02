@@ -50,8 +50,7 @@ export const CTAs = ({
           <CTAButton
             icon='calendarAlt'
             title={reminderTitle}
-            href='https://rock.christfellowship.church/CFKidsPlanaVisit'
-            target='_blank'
+            isSetAReminder
           />
         </div>
         <div className={ctaSlotClassName}>
