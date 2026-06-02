@@ -7,7 +7,10 @@ import HTMLRenderer from '~/primitives/html-renderer';
 import { getCtaStyles } from '../builder-utils';
 import { SetAReminderModal } from '~/components/modals/set-a-reminder/reminder-modal.component';
 
-const SET_A_REMINDER_SENTINELS = new Set(['/#set-a-reminder', '#set-a-reminder']);
+const SET_A_REMINDER_SENTINELS = new Set([
+  '/#set-a-reminder',
+  '#set-a-reminder',
+]);
 
 // CTA Card Layout
 export const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
