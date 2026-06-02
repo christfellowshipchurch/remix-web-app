@@ -25,7 +25,7 @@ export const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
   },
   {
     title: 'Addi’s Story',
-    heading: 'A Place Of Belonging',
+    heading: 'A place of belonging',
     description:
       'After a lonely start to her college experience, Addi’s path began to change when someone suggested Southeastern University at Christ Fellowship (CFSEU).',
     shortContent:
@@ -37,7 +37,7 @@ export const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
   },
   {
     title: 'Markaveus’ Story',
-    heading: 'When Jesus Steps In, Freedom Begins',
+    heading: 'When Jesus steps in, freedom begins',
     description:
       'As Markaveus’ mom watched her son fall into a life of violence, gangs, and drugs, she prayed diligently that he would remember the values she tried to instill in him.',
     shortContent: '\u201cI Walked Out A Free Man In More Ways Than One.\u201d',
@@ -74,7 +74,7 @@ export const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
     title: 'Ruth’s Story',
     heading: 'The Message of Jesus',
     description:
-      'How the Gospel Reached This 17-Year-Old From Liberia Who Grew Up in a Devout Muslim Home...',
+      'How the gospel reached this 17-year-old from Liberia who grew up in a devout Muslim home...',
     shortContent: '\u201cI Believe Jesus Is The Son Of God.\u201d',
     longDescription:
       'Ruth is a 17-year-old from Liberia who grew up in a devout Muslim home. When she joined a Beyond Success table, she was drawn to the values being taught, but hesitant about the message of Jesus. During a session called \u201cMy Most Important Relationship,\u201d Ruth quietly prayed to accept Christ. Though nervous to share her decision, she later told her facilitator, \u201cI believe Jesus is the Son of God.\u201d Her faith is now growing, and her heart is open to all God has for her.',
@@ -83,7 +83,7 @@ export const volunteerTestimonialsData: VolunteerTestimonialCardType[] = [
   },
   {
     title: 'Donnie & Maria',
-    heading: 'When The City Called, The Church Responded',
+    heading: 'When the city called, the church responded',
     description:
       'When Palm Beach Gardens Police and city officials discovered a local couple, Maria and Donnie, living in horrific conditions after their home was taken over by drug dealers, they didn’t know where to turn—so they called the church.',
     shortContent: '\u201cStunned And Grateful Beyond Words\u201d',

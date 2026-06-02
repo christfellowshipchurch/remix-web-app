@@ -5,6 +5,12 @@ import { Button } from '~/primitives/button/button.primitive';
 import lowerCase from 'lodash/lowerCase';
 import HTMLRenderer from '~/primitives/html-renderer';
 import { getCtaStyles } from '../builder-utils';
+import { SetAReminderModal } from '~/components/modals/set-a-reminder/reminder-modal.component';
+
+const SET_A_REMINDER_SENTINELS = new Set([
+  '/#set-a-reminder',
+  '#set-a-reminder',
+]);
 
 // CTA Card Layout
 export const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
@@ -43,16 +49,24 @@ export const CtaCardSection: FC<{ data: ContentBlockData }> = ({ data }) => {
 
         <div className='flex flex-col lg:flex-row gap-2'>
           {/* Limit to 2 CTA buttons */}
-          {ctas.slice(0, 2).map((cta, idx) => (
-            <Button
-              key={cta.url}
-              className={cn(getButtonClassName(idx), 'font-normal')}
-              intent={getButtonIntent(idx)}
-              href={cta.url}
-            >
-              {cta.title}
-            </Button>
-          ))}
+          {ctas.slice(0, 2).map((cta, idx) =>
+            SET_A_REMINDER_SENTINELS.has(cta.url) ? (
+              <SetAReminderModal
+                key={cta.url}
+                intent={getButtonIntent(idx)}
+                buttonClassName={cn(getButtonClassName(idx), 'font-normal')}
+              />
+            ) : (
+              <Button
+                key={cta.url}
+                className={cn(getButtonClassName(idx), 'font-normal')}
+                intent={getButtonIntent(idx)}
+                href={cta.url}
+              >
+                {cta.title}
+              </Button>
+            ),
+          )}
         </div>
       </div>
     </section>
