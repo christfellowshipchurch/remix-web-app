@@ -1,10 +1,10 @@
 import type { ActionFunctionArgs } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { postRockData } from '~/lib/.server/fetch-rock-data';
+import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 import { action } from './action';
 
-vi.mock('~/lib/.server/fetch-rock-data', () => ({
-  postRockData: vi.fn(),
+vi.mock('~/lib/.server/rock-workflow', () => ({
+  postRockWorkflowLaunchWithApiInitiator: vi.fn(),
 }));
 
 const createRequest = (language?: 'English' | 'Spanish') => {
@@ -32,19 +32,22 @@ const createRequest = (language?: 'English' | 'Spanish') => {
 describe('journey finder sign up action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(postRockData).mockResolvedValue({});
+    vi.mocked(postRockWorkflowLaunchWithApiInitiator).mockResolvedValue(
+      undefined,
+    );
   });
 
-  it('posts English submissions to workflow ID 1872 by default', async () => {
+  it('posts English submissions to workflow ID 1833 by default', async () => {
     await action({ request: createRequest() } as ActionFunctionArgs);
 
-    expect(postRockData).toHaveBeenCalledWith({
-      endpoint:
-        'Workflows/LaunchWorkflow/0?workflowTypeId=1872&workflowName=Journey%20Finder%20Sign%20Up',
+    expect(postRockWorkflowLaunchWithApiInitiator).toHaveBeenCalledWith({
+      workflowTypeId: '1833',
+      workflowName: 'Journey Finder Sign Up',
       body: expect.objectContaining({
         Group: 'group-guid-123',
         LaunchSource: 'app',
       }),
+      instanceName: 'Test Person',
     });
   });
 
@@ -53,13 +56,14 @@ describe('journey finder sign up action', () => {
       request: createRequest('Spanish'),
     } as ActionFunctionArgs);
 
-    expect(postRockData).toHaveBeenCalledWith({
-      endpoint:
-        'Workflows/LaunchWorkflow/0?workflowTypeId=1835&workflowName=Journey%20Finder%20Sign%20Up',
+    expect(postRockWorkflowLaunchWithApiInitiator).toHaveBeenCalledWith({
+      workflowTypeId: '1835',
+      workflowName: 'Journey Finder Sign Up',
       body: expect.objectContaining({
         Group: 'group-guid-123',
         LaunchSource: 'app',
       }),
+      instanceName: 'Test Person',
     });
   });
 });
