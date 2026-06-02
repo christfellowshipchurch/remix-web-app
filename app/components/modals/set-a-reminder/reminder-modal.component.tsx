@@ -9,6 +9,12 @@ import { pushFormEvent } from '~/lib/gtm';
 
 interface SetAReminderModalProps {
   className?: string;
+  /**
+   * When provided, used as the sole className on the trigger button, bypassing
+   * the modal's internal default styles. Use this when the button needs to
+   * match an existing design system style (e.g. inside a CTA card).
+   */
+  buttonClassName?: string;
   intent?: ButtonProps['intent'];
   ModalButton?: React.ComponentType<ButtonProps>;
   /** Merged onto `Modal.Button` (e.g. `w-full mr-0` for full-width triggers). */
@@ -17,6 +23,7 @@ interface SetAReminderModalProps {
 
 export function SetAReminderModal({
   className,
+  buttonClassName,
   intent = 'secondary',
   ModalButton = Button,
   triggerClassName,
@@ -46,10 +53,14 @@ export function SetAReminderModal({
         <ModalButton
           intent={intent}
           type='button'
-          className={cn(
-            'text-white border-[#FAFAFC] rounded-md md:rounded-none border hover:bg-white/10',
-            className,
-          )}
+          className={
+            buttonClassName !== undefined
+              ? buttonClassName
+              : cn(
+                  'text-white border-[#FAFAFC] rounded-md md:rounded-none border hover:bg-white/10',
+                  className,
+                )
+          }
         >
           {buttonLabel}
         </ModalButton>
