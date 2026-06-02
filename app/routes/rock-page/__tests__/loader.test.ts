@@ -91,14 +91,6 @@ describe('rock-page loader', () => {
     );
   });
 
-  it('keeps supporting previous bare opportunityId links', async () => {
-    const result = await loader(makeLoaderArgs('?opportunityId=abc-123'));
-
-    expect(result).toEqual({
-      url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123',
-    });
-  });
-
   it('keeps supporting legacy encoded url links', async () => {
     const rockUrl =
       'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123';
@@ -140,21 +132,6 @@ describe('rock-page loader', () => {
     }
   });
 
-  it('rejects previous blank opportunityId links instead of falling back to url', async () => {
-    const rockUrl = 'https://rock.christfellowship.church/page/5886';
-    const searchParams = new URLSearchParams({
-      opportunityId: ' ',
-      url: rockUrl,
-    });
-
-    try {
-      await loader(makeLoaderArgs(`?${searchParams.toString()}`));
-      throw new Error('Expected loader to throw');
-    } catch (error) {
-      expectResponse(error, 400);
-    }
-  });
-
   it('keeps rejecting wrong-host legacy urls', async () => {
     const searchParams = new URLSearchParams({
       url: 'https://example.com/page/5886',
@@ -171,6 +148,15 @@ describe('rock-page loader', () => {
   it('keeps rejecting requests without a supported Rock URL parameter', async () => {
     try {
       await loader(makeLoaderArgs());
+      throw new Error('Expected loader to throw');
+    } catch (error) {
+      expectResponse(error, 400);
+    }
+  });
+
+  it('does not treat bare opportunityId links as supported embeds', async () => {
+    try {
+      await loader(makeLoaderArgs('?opportunityId=abc-123'));
       throw new Error('Expected loader to throw');
     } catch (error) {
       expectResponse(error, 400);
