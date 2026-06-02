@@ -373,6 +373,7 @@ export const GroupSearch = () => {
               coordinates={coordinates}
               minMaxAgeValues={minMaxAgeValues}
               hitsPerPageOverride={GROUP_FINDER_LOADER_HITS_PER_PAGE}
+              query={urlState.query}
             />
 
             <FinderStickyBar>
@@ -661,6 +662,7 @@ export const ResponsiveConfigure = ({
   minMaxAgeValues = [],
   /** When set, skips responsive 5–12 caps (e.g. class finder groups many hits by `classType` client-side). */
   hitsPerPageOverride,
+  query,
 }: {
   ageInput?: string;
   coordinates: {
@@ -669,6 +671,7 @@ export const ResponsiveConfigure = ({
   } | null;
   minMaxAgeValues?: string[];
   hitsPerPageOverride?: number;
+  query?: string;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
 
@@ -694,6 +697,7 @@ export const ResponsiveConfigure = ({
       key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
       filters={ageFilter}
+      query={query}
       aroundLatLng={
         coordinates?.lat != null && coordinates?.lng != null
           ? `${coordinates.lat}, ${coordinates.lng}`

@@ -1,6 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { cn, isValidZip } from '~/lib/utils';
-import { useEffect, useRef, useState } from 'react';
 import { getCurrentPositionFromUserGesture } from '~/lib/browser-geolocation';
 import { Icon } from '~/primitives/icon/icon';
 
@@ -24,6 +24,7 @@ export const FinderLocationSearch = ({
   showZipInput = true,
   showCurrentLocationButton = true,
   onLocationKind,
+  cancelSignalRef,
 }: {
   coordinates: {
     lat: number | null;
@@ -42,6 +43,12 @@ export const FinderLocationSearch = ({
   showCurrentLocationButton?: boolean;
   /** Called when this control sets or clears map search coordinates (zip geocode, GPS, or clear). */
   onLocationKind?: (kind: FinderLocationKind) => void;
+  /**
+   * Shared mutable ref across sibling location inputs (zip + GPS).
+   * Incremented when any source starts a request; each source captures its token
+   * and only applies its result if the token still matches — last click wins.
+   */
+  cancelSignalRef?: React.MutableRefObject<number>;
 }) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [isGeocoding, setIsGeocoding] = useState(false);
@@ -49,6 +56,7 @@ export const FinderLocationSearch = ({
   const geocodeFetcher = useFetcher();
   const lastSubmittedZipRef = useRef<string | null>(null);
   const gpsRequestIdRef = useRef(0);
+  const myZipTokenRef = useRef(0);
 
   useEffect(() => {
     if (!showZipInput) return;
@@ -112,6 +120,12 @@ export const FinderLocationSearch = ({
         return;
       }
 
+      // If another source started after this geocode, discard the result.
+      if (cancelSignalRef && myZipTokenRef.current !== cancelSignalRef.current) {
+        setIsGeocoding(false);
+        return;
+      }
+
       const location = geocodeFetcher.data?.results?.[0]?.geometry?.location;
       if (
         location &&
@@ -138,6 +152,10 @@ export const FinderLocationSearch = ({
       geocodeFetcher.state !== 'idle'
     ) {
       return;
+    }
+    if (cancelSignalRef) {
+      cancelSignalRef.current += 1;
+      myZipTokenRef.current = cancelSignalRef.current;
     }
     lastSubmittedZipRef.current = zip;
     setIsGeocoding(true);
@@ -166,11 +184,20 @@ export const FinderLocationSearch = ({
       lastSubmittedZipRef.current = null;
     }
 
+    // Claim the signal so any in-flight zip geocode (from a sibling instance) is discarded.
+    const myToken = cancelSignalRef
+      ? (cancelSignalRef.current += 1)
+      : undefined;
+
     setIsGpsRequesting(true);
     const requestId = ++gpsRequestIdRef.current;
     getCurrentPositionFromUserGesture(
       (position) => {
         if (requestId !== gpsRequestIdRef.current) return;
+        if (myToken !== undefined && myToken !== cancelSignalRef!.current) {
+          setIsGpsRequesting(false);
+          return;
+        }
         setIsGpsRequesting(false);
         setCoordinates({
           lat: position.coords.latitude,

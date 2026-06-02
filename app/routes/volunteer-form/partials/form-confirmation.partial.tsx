@@ -24,19 +24,6 @@ export const VolunteerFormConfirmationPartial: React.FC = () => (
         </Link>{' '}
         — it's the first step toward serving on the Dream Team.
       </p>
-      <div className='flex items-center gap-4 my-12'>
-        <img
-          src='https://randomuser.me/api/portraits/men/32.jpg'
-          alt='Bob Ross'
-          className='w-18 h-18 rounded-full mb-2 shadow-md'
-        />
-        <div className='flex flex-col'>
-          <div className='font-semibold text-3xl'>Bob Ross</div>
-          <div className='text-lg text-text-secondary'>
-            Volunteer Coordinator
-          </div>
-        </div>
-      </div>
     </div>
 
     {/* Your Results */}

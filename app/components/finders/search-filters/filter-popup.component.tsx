@@ -311,6 +311,7 @@ interface FilterPopupContentProps {
   ageInput?: string;
   setAgeInput?: (age: string) => void;
   popupTitle?: string;
+  cancelSignalRef?: React.MutableRefObject<number>;
 }
 
 export const FilterPopup = ({
@@ -326,6 +327,9 @@ export const FilterPopup = ({
   groupedFooterCount = false,
 }: FilterPopupProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  // Shared between isLocation and isCurrentLocation sections so that whichever
+  // starts a new request last wins and the other's stale result is discarded.
+  const locationCancelSignalRef = useRef(0);
   const [sectionFooterRegistry, setSectionFooterRegistry] = useState<
     Record<string, SectionFooterRegistration>
   >({});
@@ -392,6 +396,11 @@ export const FilterPopup = ({
             ageInput={ageInput}
             setAgeInput={setAgeInput}
             popupTitle={popupTitle}
+            cancelSignalRef={
+              content.isLocation || content.isCurrentLocation
+                ? locationCancelSignalRef
+                : undefined
+            }
           />
         </div>
       ))}
@@ -503,6 +512,7 @@ const FilterPopupContent = ({
   ageInput,
   setAgeInput,
   popupTitle,
+  cancelSignalRef,
 }: FilterPopupContentProps) => {
   const { items, refine } = useRefinementList({ attribute: data.attribute });
   const [localAgeInput, setLocalAgeInput] = useState<string>(ageInput || '');
@@ -714,6 +724,7 @@ const FilterPopupContent = ({
               autoGeocodeZip={false}
               showCurrentLocationButton={false}
               onLocationKind={data.onLocationKind}
+              cancelSignalRef={cancelSignalRef}
             />
           ) : data.isCurrentLocation ? (
             <FinderLocationSearch
@@ -721,6 +732,7 @@ const FilterPopupContent = ({
               setCoordinates={data.setCoordinates || (() => {})}
               showZipInput={false}
               onLocationKind={data.onLocationKind}
+              cancelSignalRef={cancelSignalRef}
             />
           ) : (
             <>

@@ -20,9 +20,11 @@ export function MobileContentHit({ hit }: { hit: MobileContentHitType }) {
   const imageUrl = hit.coverImage?.sources?.[0]?.uri || '';
   const pathname = hit?.routing?.pathname || '';
   const to = pathname.startsWith('http') ? pathname : `/${pathname}`;
+  const isExternal = to.startsWith('http');
 
-  return (
-    <Link to={to} className='flex gap-2 pb-2 w-full'>
+  const sharedClassName = 'flex gap-2 pb-2 w-full';
+  const content = (
+    <>
       <img
         src={imageUrl}
         alt={hit.title}
@@ -39,6 +41,25 @@ export function MobileContentHit({ hit }: { hit: MobileContentHitType }) {
 
         <Icon name='chevronRight' size={32} color='black' />
       </div>
+    </>
+  );
+
+  if (isExternal) {
+    return (
+      <a
+        href={to}
+        target='_blank'
+        rel='noopener noreferrer'
+        className={sharedClassName}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={to} className={sharedClassName}>
+      {content}
     </Link>
   );
 }
