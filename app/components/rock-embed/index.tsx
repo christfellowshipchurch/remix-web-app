@@ -1,18 +1,19 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { cn } from '~/lib/utils';
+import { getRockEmbedOrigin } from '~/lib/rock-iframe-resize';
 
 type RockProxyMode = 'full' | 'minimal';
 
 interface RockProxyEmbedProps {
   /** The Rock RMS page URL to embed */
   url: string;
-  /** Height of the iframe in pixels. Used as the loading placeholder height and ignored when autoHeight is true. */
+  /** Height of the iframe in pixels. Used as the loading placeholder height and initial autoHeight value. */
   height?: number;
   /**
    * When true, the iframe expands to match its content height automatically.
-   * Requires same-origin access (via /rock-proxy) or postMessage height updates
-   * from the embedded page.
-   * The `height` prop is still used as the loading placeholder height.
+   * Direct Rock embeds (useAdvancedProxy=false) require the Rock page to send
+   * `rock-iframe-resize` postMessage events — see /public/rock-iframe-resize.js.
+   * Proxied embeds can use same-origin ResizeObserver instead.
    */
   autoHeight?: boolean;
   /** Whether to show a loading state */
@@ -27,7 +28,7 @@ interface RockProxyEmbedProps {
   useAdvancedProxy?: boolean;
   /**
    * Proxy transformation mode when `useAdvancedProxy` is true.
-   * Use `minimal` when Rock page scripts break under the full CSS/JS rewrite.
+   * Prefer direct embed for interactive Rock WebForms; proxy breaks postbacks.
    */
   proxyMode?: RockProxyMode;
   /** Additional iframe attributes */
@@ -52,6 +53,7 @@ export function RockProxyEmbed({
   const [autoHeightPx, setAutoHeightPx] = useState(height);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const observerRef = useRef<ResizeObserver | null>(null);
+  const embedOrigin = useMemo(() => getRockEmbedOrigin(url), [url]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -87,10 +89,17 @@ export function RockProxyEmbed({
     const handleMessage = (event: Event) => {
       const messageEvent = event as Event & {
         data?: { type?: string; height?: number };
+        origin: string;
         source: unknown;
       };
       if (messageEvent.data?.type !== 'rock-iframe-resize') return;
       if (messageEvent.source !== iframeRef.current?.contentWindow) return;
+
+      // Accept resize messages from the Rock origin (direct embed) or same-origin proxy.
+      const allowedOrigins = new Set(
+        [embedOrigin, window.location.origin].filter(Boolean),
+      );
+      if (!allowedOrigins.has(messageEvent.origin)) return;
 
       const nextHeight = messageEvent.data.height;
       if (typeof nextHeight !== 'number' || nextHeight <= 0) return;
@@ -100,11 +109,33 @@ export function RockProxyEmbed({
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [autoHeight]);
+  }, [autoHeight, embedOrigin]);
+
+  // Direct Rock embeds are cross-origin; poll for height until Rock page script responds.
+  useEffect(() => {
+    if (!autoHeight || useAdvancedProxy || !embedOrigin) return;
+
+    const requestHeight = () => {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: 'rock-iframe-height-request' },
+        embedOrigin,
+      );
+    };
+
+    requestHeight();
+    const intervalId = window.setInterval(requestHeight, 400);
+    return () => window.clearInterval(intervalId);
+  }, [autoHeight, useAdvancedProxy, embedOrigin, url]);
 
   const handleLoad = () => {
     setIsLoading(false);
     attachObserver();
+    if (autoHeight && !useAdvancedProxy && embedOrigin) {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: 'rock-iframe-height-request' },
+        embedOrigin,
+      );
+    }
     onLoad?.();
   };
 
@@ -129,6 +160,7 @@ export function RockProxyEmbed({
     title: 'Rock RMS Embedded Content',
     sandbox:
       'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-fullscreen',
+    scrolling: autoHeight ? ('no' as const) : undefined,
     loading: 'lazy' as const,
     onLoad: handleLoad,
     onError: handleError,

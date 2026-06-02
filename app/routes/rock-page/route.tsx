@@ -11,10 +11,10 @@ export default function RockPage() {
   return (
     <div className='w-full max-w-screen-content mx-auto px-4'>
       <RockProxyEmbed
-        useAdvancedProxy
-        proxyMode='minimal'
+        useAdvancedProxy={false}
         url={url}
         autoHeight
+        height={1200}
         showLoading={false}
       />
     </div>

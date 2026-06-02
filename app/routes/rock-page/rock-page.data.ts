@@ -1,7 +1,11 @@
 import { ROCK_PUBLIC_SITE_ORIGIN } from '~/lib/rock-config';
+import { ROCK_PARENT_RESIZE_QUERY_PARAM } from '~/lib/rock-iframe-resize';
 
 // Server-side registry for named Rock embeds. Keep Rock paths and allowed
 // query params here so callers pass intent, not arbitrary destination URLs.
+//
+// Cross-origin auto-height: Rock pages must include the resize script when
+// ParentResize=1 is present. See app/lib/rock-iframe-resize.ts.
 
 // Page IDs for Rock pages that this app embeds by name.
 export const CHURCH_OPPORTUNITY_APPLICATION_PAGE_ID = '5886';
@@ -50,6 +54,8 @@ export function buildRockPageEmbedUrl(
 
     url.searchParams.set(rockParam, value);
   }
+
+  url.searchParams.set(ROCK_PARENT_RESIZE_QUERY_PARAM, '1');
 
   return url.toString();
 }
