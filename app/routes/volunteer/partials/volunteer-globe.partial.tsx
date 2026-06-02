@@ -16,7 +16,7 @@ export function VolunteerGlobe() {
       className='w-full bg-dark-navy text-white py-28 content-padding'
     >
       <div className='max-w-screen-content mx-auto'>
-        <SectionTitle sectionTitle='Go Further' color='#56c6f2' />
+        <SectionTitle sectionTitle='Go further' color='#56c6f2' />
         <div className='flex flex-col gap-4 mt-3 mb-12'>
           <h2 className='heading-h2 text-[40px] md:text-6xl text-white'>
             Volunteer Around The Globe

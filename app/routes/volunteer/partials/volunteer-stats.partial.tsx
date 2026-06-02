@@ -10,23 +10,23 @@ type ImpactStat = {
 const IMPACT_STATS_ROW1: ImpactStat[] = [
   {
     value: '695k+',
-    label: 'People impacted through our mission efforts.',
+    label: 'People impacted through our mission efforts',
   },
   { value: '13k+', label: 'Volunteers served' },
   {
     value: '8,010',
-    label: 'People said “yes” to Jesus.',
+    label: 'People said “yes” to Jesus',
   },
   {
     value: '639k+',
-    label: 'Kids received hot meals in 39 different countries.',
+    label: 'Kids received hot meals in 39 different countries',
   },
 ];
 
 const IMPACT_STATS_ROW2: ImpactStat[] = [
   {
     value: '42k+',
-    label: 'People served by the food truck in our community.',
+    label: 'People served by the food truck in our community',
   },
   {
     value: '41',
@@ -34,11 +34,11 @@ const IMPACT_STATS_ROW2: ImpactStat[] = [
   },
   {
     value: '427k',
-    label: 'Food distributed to the Missions Center.',
+    label: 'Food distributed to the Missions Center',
   },
   {
     value: '2,794',
-    label: 'People were baptized, declaring their faith.',
+    label: 'People were baptized, declaring their faith',
   },
 ];
 
