@@ -28,10 +28,13 @@ export function ChurchServingAreaPage() {
   }, [navigate]);
 
   const onContinue = useCallback(() => {
-    if (!selectedRoleGuid?.trim()) return;
-    navigate(
-      `/volunteer-form/welcome?role=${encodeURIComponent(selectedRoleGuid)}`,
-    );
+    const opportunityId = selectedRoleGuid?.trim();
+    if (!opportunityId) return;
+    const searchParams = new URLSearchParams({
+      embed: 'church-opportunity',
+      opportunityId,
+    });
+    navigate(`/rock-page?${searchParams.toString()}`);
   }, [navigate, selectedRoleGuid]);
 
   useEffect(() => {

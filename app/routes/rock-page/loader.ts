@@ -1,0 +1,21 @@
+import { type LoaderFunctionArgs } from 'react-router-dom';
+import {
+  validateRockUrl,
+  validateRockUrlString,
+} from '~/lib/.server/validate-rock-url';
+import { buildRockPageEmbedUrl } from './rock-page.data';
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const requestUrl = new URL(request.url);
+  const embed = requestUrl.searchParams.get('embed')?.trim();
+
+  if (embed) {
+    return {
+      url: validateRockUrlString(
+        buildRockPageEmbedUrl(embed, requestUrl.searchParams),
+      ),
+    };
+  }
+
+  return { url: validateRockUrl(request) };
+}

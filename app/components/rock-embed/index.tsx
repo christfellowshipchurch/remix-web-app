@@ -1,11 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { cn } from '~/lib/utils';
+import { getRockEmbedOrigin } from '~/lib/rock-iframe-resize';
+
+type RockProxyMode = 'full' | 'minimal';
 
 interface RockProxyEmbedProps {
   /** The Rock RMS page URL to embed */
   url: string;
-  /** Height of the iframe in pixels */
+  /** Height of the iframe in pixels. Used as the loading placeholder height and initial autoHeight value. */
   height?: number;
+  /**
+   * When true, the iframe expands to match its content height automatically.
+   * Direct Rock embeds (useAdvancedProxy=false) require the Rock page to send
+   * `rock-iframe-resize` postMessage events — see /public/rock-iframe-resize.js.
+   * Proxied embeds can use same-origin ResizeObserver instead.
+   */
+  autoHeight?: boolean;
   /** Whether to show a loading state */
   showLoading?: boolean;
   /** Custom CSS classes */
@@ -16,6 +26,11 @@ interface RockProxyEmbedProps {
    * When false, embeds directly (may fail due to CORS/X-Frame-Options restrictions).
    */
   useAdvancedProxy?: boolean;
+  /**
+   * Proxy transformation mode when `useAdvancedProxy` is true.
+   * Prefer direct embed for interactive Rock WebForms; proxy breaks postbacks.
+   */
+  proxyMode?: RockProxyMode;
   /** Additional iframe attributes */
   iframeProps?: React.IframeHTMLAttributes<HTMLIFrameElement>;
   /** Called each time the iframe finishes loading (including after in-frame navigation). */
@@ -25,23 +40,102 @@ interface RockProxyEmbedProps {
 export function RockProxyEmbed({
   url,
   height = 600,
+  autoHeight = false,
   showLoading = true,
   className,
   useAdvancedProxy = true,
+  proxyMode = 'full',
   iframeProps = {},
   onLoad,
 }: RockProxyEmbedProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [autoHeightPx, setAutoHeightPx] = useState(height);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
+  const embedOrigin = useMemo(() => getRockEmbedOrigin(url), [url]);
 
   useEffect(() => {
     setIsLoading(true);
     setHasError(false);
-  }, [url]);
+    setAutoHeightPx(height);
+  }, [url, height]);
+
+  // Attach a ResizeObserver to the iframe body so height tracks DOM changes
+  // (e.g. multi-step forms revealing/hiding sections).
+  const attachObserver = useCallback(() => {
+    if (!autoHeight) return;
+    const body = iframeRef.current?.contentDocument?.body;
+    if (!body) return;
+
+    observerRef.current?.disconnect();
+    observerRef.current = new ResizeObserver(() => {
+      const scrollH = iframeRef.current?.contentDocument?.body?.scrollHeight;
+      if (scrollH) setAutoHeightPx(scrollH);
+    });
+    observerRef.current.observe(body);
+
+    // Set initial height immediately
+    setAutoHeightPx(body.scrollHeight || height);
+  }, [autoHeight, height]);
+
+  useEffect(() => {
+    return () => observerRef.current?.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!autoHeight) return;
+
+    const handleMessage = (event: Event) => {
+      const messageEvent = event as Event & {
+        data?: { type?: string; height?: number };
+        origin: string;
+        source: unknown;
+      };
+      if (messageEvent.data?.type !== 'rock-iframe-resize') return;
+      if (messageEvent.source !== iframeRef.current?.contentWindow) return;
+
+      // Accept resize messages from the Rock origin (direct embed) or same-origin proxy.
+      const allowedOrigins = new Set(
+        [embedOrigin, window.location.origin].filter(Boolean),
+      );
+      if (!allowedOrigins.has(messageEvent.origin)) return;
+
+      const nextHeight = messageEvent.data.height;
+      if (typeof nextHeight !== 'number' || nextHeight <= 0) return;
+
+      setAutoHeightPx(nextHeight);
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [autoHeight, embedOrigin]);
+
+  // Direct Rock embeds are cross-origin; poll for height until Rock page script responds.
+  useEffect(() => {
+    if (!autoHeight || useAdvancedProxy || !embedOrigin) return;
+
+    const requestHeight = () => {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: 'rock-iframe-height-request' },
+        embedOrigin,
+      );
+    };
+
+    requestHeight();
+    const intervalId = window.setInterval(requestHeight, 400);
+    return () => window.clearInterval(intervalId);
+  }, [autoHeight, useAdvancedProxy, embedOrigin, url]);
 
   const handleLoad = () => {
     setIsLoading(false);
+    attachObserver();
+    if (autoHeight && !useAdvancedProxy && embedOrigin) {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: 'rock-iframe-height-request' },
+        embedOrigin,
+      );
+    }
     onLoad?.();
   };
 
@@ -50,21 +144,23 @@ export function RockProxyEmbed({
     setHasError(true);
   };
 
-  // Build the iframe source URL
-  // When useAdvancedProxy is true, use the server-side proxy to handle CORS and CSS issues
-  // When false, embed directly (may fail due to CORS/X-Frame-Options restrictions)
   const iframeSrc = useAdvancedProxy
-    ? `/rock-page?url=${encodeURIComponent(url)}`
+    ? `/rock-proxy?url=${encodeURIComponent(url)}${
+        proxyMode === 'minimal' ? '&mode=minimal' : ''
+      }`
     : url;
+
+  const resolvedHeight = autoHeight ? autoHeightPx : height;
 
   const iframeAttributes = {
     ref: iframeRef,
     src: iframeSrc,
     className: cn('w-full border-0', hasError && 'hidden'),
-    style: { height: `${height}px` },
+    style: { height: `${resolvedHeight}px` },
     title: 'Rock RMS Embedded Content',
     sandbox:
       'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-fullscreen',
+    scrolling: autoHeight ? ('no' as const) : undefined,
     loading: 'lazy' as const,
     onLoad: handleLoad,
     onError: handleError,
