@@ -121,7 +121,10 @@ export const FinderLocationSearch = ({
       }
 
       // If another source started after this geocode, discard the result.
-      if (cancelSignalRef && myZipTokenRef.current !== cancelSignalRef.current) {
+      if (
+        cancelSignalRef &&
+        myZipTokenRef.current !== cancelSignalRef.current
+      ) {
         setIsGeocoding(false);
         return;
       }

@@ -161,7 +161,9 @@ export function GroupHit({
             <div className='w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white '>
               <Icon name='map' size={20} color='white' />
               <p className='text-sm font-semibold'>
-                {isGeoSearch && hit._geoloc && hit._rankingInfo?.geoDistance != null
+                {isGeoSearch &&
+                hit._geoloc &&
+                hit._rankingInfo?.geoDistance != null
                   ? formatDistanceMiles(hit._rankingInfo.geoDistance)
                   : isGeoSearch && !hit._geoloc
                     ? 'Location varies'

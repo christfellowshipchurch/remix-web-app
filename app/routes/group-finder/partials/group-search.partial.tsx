@@ -421,9 +421,7 @@ export const GroupSearch = () => {
               initialHits={groupHits}
               initialNbHits={groupNbHits}
               fromGroupFinderUrl={fromGroupFinderUrl}
-              isGeoSearch={
-                coordinates?.lat != null && coordinates?.lng != null
-              }
+              isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
             />
           </InstantSearch>
         ) : (
@@ -450,9 +448,7 @@ export const GroupSearch = () => {
               isLastPage={isLastPage}
               fromGroupFinderUrl={fromGroupFinderUrl}
               onPageChange={goToPage}
-              isGeoSearch={
-                coordinates?.lat != null && coordinates?.lng != null
-              }
+              isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
             />
           </>
         )}
