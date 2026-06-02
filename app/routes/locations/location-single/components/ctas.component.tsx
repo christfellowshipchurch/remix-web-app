@@ -66,7 +66,7 @@ export const CTAs = ({
             icon='mobileAlt'
             title={isSpanish ? 'Contáctanos' : 'Contact Us'}
             target='_blank'
-            href='mailto:hello@christfellowship.church'
+            href='https://rock.gocf.org/contactus'
           />
         </div>
       </div>

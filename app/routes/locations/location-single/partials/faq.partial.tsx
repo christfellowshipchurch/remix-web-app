@@ -33,7 +33,7 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
                 : `Someone from our team is happy to answer any of your questions!`}
             </p>
             <Button
-              href='mailto:hello@christfellowship.church'
+              href='https://rock.gocf.org/contactus'
               target='_blank'
               className='w-full rounded-sm'
               intent='secondary'
