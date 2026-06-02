@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '~/lib/utils';
 
+type RockProxyMode = 'full' | 'minimal';
+
 interface RockProxyEmbedProps {
   /** The Rock RMS page URL to embed */
   url: string;
@@ -8,7 +10,8 @@ interface RockProxyEmbedProps {
   height?: number;
   /**
    * When true, the iframe expands to match its content height automatically.
-   * Works because /rock-proxy serves from the same origin, allowing DOM access.
+   * Requires same-origin access (via /rock-proxy) or postMessage height updates
+   * from the embedded page.
    * The `height` prop is still used as the loading placeholder height.
    */
   autoHeight?: boolean;
@@ -22,6 +25,11 @@ interface RockProxyEmbedProps {
    * When false, embeds directly (may fail due to CORS/X-Frame-Options restrictions).
    */
   useAdvancedProxy?: boolean;
+  /**
+   * Proxy transformation mode when `useAdvancedProxy` is true.
+   * Use `minimal` when Rock page scripts break under the full CSS/JS rewrite.
+   */
+  proxyMode?: RockProxyMode;
   /** Additional iframe attributes */
   iframeProps?: React.IframeHTMLAttributes<HTMLIFrameElement>;
   /** Called each time the iframe finishes loading (including after in-frame navigation). */
@@ -35,6 +43,7 @@ export function RockProxyEmbed({
   showLoading = true,
   className,
   useAdvancedProxy = true,
+  proxyMode = 'full',
   iframeProps = {},
   onLoad,
 }: RockProxyEmbedProps) {
@@ -72,6 +81,27 @@ export function RockProxyEmbed({
     return () => observerRef.current?.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!autoHeight) return;
+
+    const handleMessage = (event: Event) => {
+      const messageEvent = event as Event & {
+        data?: { type?: string; height?: number };
+        source: unknown;
+      };
+      if (messageEvent.data?.type !== 'rock-iframe-resize') return;
+      if (messageEvent.source !== iframeRef.current?.contentWindow) return;
+
+      const nextHeight = messageEvent.data.height;
+      if (typeof nextHeight !== 'number' || nextHeight <= 0) return;
+
+      setAutoHeightPx(nextHeight);
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [autoHeight]);
+
   const handleLoad = () => {
     setIsLoading(false);
     attachObserver();
@@ -84,7 +114,9 @@ export function RockProxyEmbed({
   };
 
   const iframeSrc = useAdvancedProxy
-    ? `/rock-proxy?url=${encodeURIComponent(url)}`
+    ? `/rock-proxy?url=${encodeURIComponent(url)}${
+        proxyMode === 'minimal' ? '&mode=minimal' : ''
+      }`
     : url;
 
   const resolvedHeight = autoHeight ? autoHeightPx : height;

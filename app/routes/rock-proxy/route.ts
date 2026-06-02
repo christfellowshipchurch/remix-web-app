@@ -1,12 +1,18 @@
 import { type LoaderFunctionArgs } from 'react-router-dom';
 import { validateRockUrl } from '~/lib/.server/validate-rock-url';
-import { fetchRockProxyHtml } from './rock-proxy.server';
+import { fetchRockProxyHtml, type RockProxyMode } from './rock-proxy.server';
+
+function parseProxyMode(request: Request): RockProxyMode {
+  const mode = new URL(request.url).searchParams.get('mode');
+  return mode === 'minimal' ? 'minimal' : 'full';
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const targetUrl = validateRockUrl(request);
+  const mode = parseProxyMode(request);
 
   try {
-    const html = await fetchRockProxyHtml(targetUrl);
+    const html = await fetchRockProxyHtml(targetUrl, mode);
     return new Response(html, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',

@@ -1,11 +1,23 @@
+export type RockProxyMode = 'full' | 'minimal';
+
 /**
- * Fetches a Rock RMS page and transforms its HTML for clean iframe embedding:
+ * Fetches a Rock RMS page and transforms its HTML for clean iframe embedding.
+ *
+ * `full` mode:
  * - Resolves all relative CSS/JS/asset URLs to absolute
  * - Hides Rock's own nav, header, and footer
  * - Injects FontAwesome icon replacements
  * - Posts `rock-iframe-loaded` to parent window on load
+ *
+ * `minimal` mode preserves the original Rock HTML/JS load order and only:
+ * - Strips frame-blocking meta tags
+ * - Adds a base href so relative assets resolve to Rock
+ * - Injects embed chrome-hiding CSS and a height postMessage script
  */
-export async function fetchRockProxyHtml(targetUrl: string): Promise<string> {
+export async function fetchRockProxyHtml(
+  targetUrl: string,
+  mode: RockProxyMode = 'full',
+): Promise<string> {
   const response = await fetch(targetUrl, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (compatible; RockRMS-Proxy/1.0)',
@@ -23,6 +35,10 @@ export async function fetchRockProxyHtml(targetUrl: string): Promise<string> {
 
   const baseUrl = new URL(targetUrl);
   const baseUrlString = `${baseUrl.protocol}//${baseUrl.host}`;
+
+  if (mode === 'minimal') {
+    return buildMinimalProxyHtml(html, baseUrlString);
+  }
 
   const cssLinks = html.match(/<link[^>]*rel=["']stylesheet["'][^>]*>/gi) || [];
   const cssUrls = cssLinks
@@ -187,4 +203,88 @@ export async function fetchRockProxyHtml(targetUrl: string): Promise<string> {
   /* eslint-enable no-useless-escape */
 
   return modifiedHtml;
+}
+
+function buildMinimalProxyHtml(html: string, baseUrlString: string): string {
+  const embedStyles = `
+    <style data-rock-minimal-proxy>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+      .navbar, .navbar-default, .navbar-static-top,
+      .page-footer, .text-muted,
+      header, .header, .site-header,
+      .main-header, .page-header,
+      nav, .nav, .navigation,
+      footer, .footer, .site-footer {
+        display: none !important;
+      }
+      .main-content, .content, .page-content,
+      .container-fluid, .container {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+      }
+    </style>
+  `;
+
+  const resizeScript = `
+    <script data-rock-minimal-proxy>
+      (function() {
+        function reportHeight() {
+          var body = document.body;
+          var root = document.documentElement;
+          var height = Math.max(
+            body ? body.scrollHeight : 0,
+            root ? root.scrollHeight : 0
+          );
+
+          if (window.parent !== window && height) {
+            window.parent.postMessage({ type: 'rock-iframe-resize', height: height }, '*');
+          }
+        }
+
+        function init() {
+          reportHeight();
+
+          if (typeof ResizeObserver !== 'undefined' && document.body) {
+            new ResizeObserver(reportHeight).observe(document.body);
+          }
+
+          if (typeof MutationObserver !== 'undefined' && document.body) {
+            new MutationObserver(reportHeight).observe(document.body, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+            });
+          }
+
+          window.addEventListener('load', reportHeight);
+          window.addEventListener('resize', reportHeight);
+
+          if (window.parent !== window) {
+            window.parent.postMessage({ type: 'rock-iframe-loaded' }, '*');
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+  `;
+
+  return html
+    .replace(/<meta[^>]*http-equiv=["']X-Frame-Options["'][^>]*>/gi, '')
+    .replace(/<meta[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>/gi, '')
+    .replace(
+      /<head([^>]*)>/i,
+      `<head$1><base href="${baseUrlString}/">${embedStyles}`,
+    )
+    .replace(/<\/body>/i, `${resizeScript}</body>`);
 }
