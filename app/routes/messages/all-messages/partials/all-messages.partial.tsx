@@ -108,7 +108,7 @@ export function AllMessages() {
       <div className='relative max-w-screen-content mx-auto'>
         <SectionTitle
           className='mb8'
-          sectionTitle='all messages.'
+          sectionTitle='all messages'
           title='Christ Fellowship Church Messages'
         />
 

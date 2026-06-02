@@ -299,7 +299,7 @@ export function AllEventsContent() {
             <div className='hidden md:block'>
               <SectionTitle
                 title='Discover Events For You'
-                sectionTitle='all events.'
+                sectionTitle='all events'
               />
             </div>
 

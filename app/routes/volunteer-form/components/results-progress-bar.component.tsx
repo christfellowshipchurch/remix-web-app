@@ -4,7 +4,7 @@ import { StepDotCurrent, StepDotDone, StepDotTodo } from './form-nav.component';
 // Static progress steps for confirmation
 const progressSteps = [
   { label: 'Volunteer Application Complete', state: 'done' },
-  { label: 'Our team is re-viewing', state: 'current' },
+  { label: 'Our team is reviewing', state: 'current' },
   { label: 'One on One Conversation', state: 'todo' },
 ];
 

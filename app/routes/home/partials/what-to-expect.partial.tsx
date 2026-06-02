@@ -17,7 +17,7 @@ export function WhatToExpectSection() {
               {/* Desktop Title */}
               <div className='flex flex-col gap-12'>
                 <div className='hidden lg:block'>
-                  <SectionTitle sectionTitle='get to know us.' />
+                  <SectionTitle sectionTitle='get to know us' />
                 </div>
                 <h2 className='hidden lg:block lg:text-[52px] font-extrabold'>
                   What to Expect

@@ -1,12 +1,17 @@
 import { StyledAccordion } from '~/components';
 
+const DEFAULT_FAQ_EMAIL = 'hello@christfellowship.church';
+
 export const EventSingleFAQ = ({
   title,
   items,
+  faqEmail,
 }: {
   title: string;
   items?: { question: string; answer: string }[];
+  faqEmail?: string;
 }) => {
+  const contactEmail = faqEmail?.trim() || DEFAULT_FAQ_EMAIL;
   return (
     <section
       className='flex flex-col gap-12 py-12 md:py-24 content-padding'
@@ -39,9 +44,9 @@ export const EventSingleFAQ = ({
               Contact us at{' '}
               <a
                 className='text-[#4D4D4D] hover:text-ocean cursor-pointer'
-                href='mailto:hello@christfellowship.church'
+                href={`mailto:${contactEmail}`}
               >
-                hello@christfellowship.church
+                {contactEmail}
               </a>{' '}
               or call{' '}
               <a

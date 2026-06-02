@@ -30,19 +30,19 @@ export function LeadershipSection({
               layout === 'vertical' ? 'flex-col gap-8' : 'gap-24 items-center',
             )}
           >
-            <SectionTitle sectionTitle='our team.' />
+            <SectionTitle sectionTitle='our team' />
             <h3 className='text-5xl font-extrabold leading-none max-w-3xl'>
-              Meet The Passionate Leaders <br />
-              Of Christ Fellowship Church.
+              Meet the Passionate Leaders <br />
+              of Christ Fellowship Church
             </h3>
           </div>
 
           {/* Mobile title */}
           <div className='lg:hidden'>
-            <SectionTitle className='mb-6' sectionTitle='our team.' />
+            <SectionTitle className='mb-6' sectionTitle='our team' />
             <h3 className='text-2xl md:text-4xl font-extrabold leading-tight mb-4 md:mb-8 max-w-3xl'>
-              Meet The Passionate Leaders <br />
-              Of Christ Fellowship Church.
+              Meet the Passionate Leaders <br />
+              of Christ Fellowship Church
             </h3>
           </div>
 

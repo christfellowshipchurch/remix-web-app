@@ -35,7 +35,7 @@ export function ImpactSection({ isSpanish = false }: { isSpanish?: boolean }) {
               <div className='flex flex-col gap-8'>
                 <SectionTitle
                   sectionTitle={
-                    isSpanish ? 'nuestro impacto 2025.' : 'our impact 2025.'
+                    isSpanish ? 'nuestro impacto 2025' : 'our impact 2025'
                   }
                 />
                 <h3 className='text-[32px] xl:text-5xl leading-tight font-extrabold mb-6'>

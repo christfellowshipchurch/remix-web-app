@@ -81,7 +81,7 @@ const UpcomingSessionCardBody = ({ hit }: { hit: ClassHitType }) => {
 
               <div className='flex items-center gap-2'>
                 <Icon name='timeFive' size={24} />
-                <p className='text-sm'>{schedule} EST</p>
+                <p className='text-sm'>{schedule} ET</p>
               </div>
             </div>
           </div>
