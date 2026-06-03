@@ -20,6 +20,18 @@ function formatDistanceMiles(meters: number): string {
   return `${miles.toFixed(1)} miles away`;
 }
 
+function hasKnownGroupHitGeoloc(
+  geoloc: GroupType['_geoloc'],
+): geoloc is { lat: number; lng: number } {
+  return (
+    geoloc != null &&
+    typeof geoloc.lat === 'number' &&
+    typeof geoloc.lng === 'number' &&
+    Number.isFinite(geoloc.lat) &&
+    Number.isFinite(geoloc.lng)
+  );
+}
+
 export function GroupHit({
   hit,
   backUrl,
@@ -81,6 +93,16 @@ export function GroupHit({
   const meetingInfo = formattedMeetingDay + ' ' + formattedMeetingTime;
 
   const leaders = Array.isArray(hit.leaders) ? hit.leaders : [];
+  // Algolia can return groups with blank-string `_geoloc` (no real coordinates).
+  // Only show a distance when geoloc is numeric and a finite geoDistance exists;
+  // otherwise the group's location "varies".
+  const distanceLabel =
+    isGeoSearch &&
+    hasKnownGroupHitGeoloc(hit._geoloc) &&
+    typeof hit._rankingInfo?.geoDistance === 'number' &&
+    Number.isFinite(hit._rankingInfo.geoDistance)
+      ? formatDistanceMiles(hit._rankingInfo.geoDistance)
+      : null;
 
   return (
     <Link
@@ -161,13 +183,9 @@ export function GroupHit({
             <div className='w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white '>
               <Icon name='map' size={20} color='white' />
               <p className='text-sm font-semibold'>
-                {isGeoSearch &&
-                hit._geoloc &&
-                hit._rankingInfo?.geoDistance != null
-                  ? formatDistanceMiles(hit._rankingInfo.geoDistance)
-                  : isGeoSearch && !hit._geoloc
-                    ? 'Location varies'
-                    : formatGroupHitCampusName(hit.campusName)}
+                {isGeoSearch
+                  ? (distanceLabel ?? 'Location Varies')
+                  : formatGroupHitCampusName(hit.campusName)}
               </p>
             </div>
           </div>

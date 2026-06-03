@@ -688,12 +688,17 @@ export const ResponsiveConfigure = ({
 
   const ageFilter = buildMinMaxAgeFilter(ageInput, minMaxAgeValues);
 
+  // No `key` here: a key tied to coordinates/age remounts Configure whenever the
+  // geo filter changes. Under `preserveSharedStateOnUnmount`, that remount strands
+  // the previous `query`/geo params in InstantSearch, so clearing a geo search left
+  // the old query active and stuck on 0 results until a page refresh. Keeping
+  // Configure mounted lets it reactively apply (and remove) params as props change.
+  // `query ?? ''` ensures the query param is always explicitly set, never stranded.
   return (
     <Configure
-      key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
       filters={ageFilter}
-      query={query}
+      query={query ?? ''}
       aroundLatLng={
         coordinates?.lat != null && coordinates?.lng != null
           ? `${coordinates.lat}, ${coordinates.lng}`
