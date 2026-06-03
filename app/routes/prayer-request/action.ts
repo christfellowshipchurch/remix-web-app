@@ -1,6 +1,6 @@
 import { ActionFunction, data } from 'react-router-dom';
 import { PrayerRequestFormType } from './types';
-import { postRockData } from '~/lib/.server/fetch-rock-data';
+import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -31,10 +31,14 @@ export const action: ActionFunction = async ({ request }) => {
       prayerRequestSubmission.FollowUp = FollowUp as string;
     }
 
-    await postRockData({
-      endpoint:
-        'Workflows/LaunchWorkflow/0?workflowTypeId=348&workflowName=CFDP%20App%20Prayer%20Request',
+    const firstName = FirstName as string;
+    const lastName = LastName as string;
+
+    await postRockWorkflowLaunchWithApiInitiator({
+      workflowTypeId: '348',
+      workflowName: 'CFDP App Prayer Request',
       body: prayerRequestSubmission,
+      instanceName: `${firstName} ${lastName}`.trim(),
     });
 
     return new Response(JSON.stringify({ success: true }), {
