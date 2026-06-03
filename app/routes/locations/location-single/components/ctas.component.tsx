@@ -1,4 +1,5 @@
 import { SetAReminderModal } from '~/components/modals/set-a-reminder/reminder-modal.component';
+import { ContactUsModal } from '~/components/modals/contact-us/contact-us-modal.component';
 import { icons } from '~/lib/icons';
 import { Icon } from '~/primitives/icon/icon';
 import { ButtonProps } from '~/primitives/button/button.primitive';
@@ -61,12 +62,9 @@ export const CTAs = ({
           />
         </div>
         <div className={ctaSlotClassName}>
-          <CTAButton
-            icon='mobileAlt'
-            title={isSpanish ? 'Contáctanos' : 'Contact Us'}
-            target='_blank'
-            href='https://rock.gocf.org/contactus'
-          />
+          <ContactUsModal>
+            <CTAButtonContent icon='mobileAlt' title={isSpanish ? 'Contáctanos' : 'Contact Us'} />
+          </ContactUsModal>
         </div>
       </div>
     </div>
