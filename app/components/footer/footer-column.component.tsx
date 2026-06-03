@@ -1,5 +1,5 @@
 import type { FooterColumn } from './footer-data';
-import { ConnectCardModal } from '~/components';
+import { ConnectCardModal, PrayerRequestModal } from '~/components';
 
 interface FooterColumnProps {
   column: FooterColumn;
@@ -18,6 +18,12 @@ export const FooterColumnComponent = ({ column }: FooterColumnProps) => {
       {column.links.map((link) =>
         link.url === '#connect-card' ? (
           <ConnectCardModal
+            key={link.title}
+            triggerStyles='text-lg font-light text-coconut m-0 p-0 border-0 rounded-none bg-transparent items-start justify-start min-h-0 min-w-0 hover:enabled:bg-transparent hover:cursor-pointer hover:text-white/50'
+            buttonTitle={link.title}
+          />
+        ) : link.url === '#prayer-request' ? (
+          <PrayerRequestModal
             key={link.title}
             triggerStyles='text-lg font-light text-coconut m-0 p-0 border-0 rounded-none bg-transparent items-start justify-start min-h-0 min-w-0 hover:enabled:bg-transparent hover:cursor-pointer hover:text-white/50'
             buttonTitle={link.title}

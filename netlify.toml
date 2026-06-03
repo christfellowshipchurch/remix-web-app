@@ -19,11 +19,11 @@ command = "pnpm dev"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
 
-# rock-page is a server-side proxy intentionally served inside an iframe;
+# rock-proxy is a server-side proxy intentionally served inside an iframe;
 # its loader sets X-Frame-Options: ALLOWALL and CSP frame-ancestors: * in the
 # response, but netlify.toml headers take precedence, so we override here.
 [[headers]]
-  for = "/rock-page"
+  for = "/rock-proxy"
   [headers.values]
     X-Frame-Options = "ALLOWALL"
 

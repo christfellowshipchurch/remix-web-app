@@ -1,0 +1,41 @@
+import { Button } from '~/primitives/button/button.primitive';
+import Icon from '~/primitives/icon';
+
+interface PrayerRequestConfirmationProps {
+  firstName: string;
+  onAddAnother: () => void;
+  onSuccess: () => void;
+}
+
+const PrayerRequestConfirmation: React.FC<PrayerRequestConfirmationProps> = ({
+  firstName,
+  onAddAnother,
+  onSuccess,
+}) => {
+  return (
+    <div className='flex flex-col items-center gap-4 p-8'>
+      <Icon name='handsPraying' size={64} color='#0092bc' />
+      <h1 className='my-4 font-bold text-2xl text-navy'>
+        Thank you {firstName} for allowing us to pray with you.
+      </h1>
+      <Button
+        intent='secondary'
+        size='md'
+        className='rounded-xl w-auto whitespace-nowrap'
+        onClick={onAddAnother}
+      >
+        Add another prayer request
+      </Button>
+      <Button
+        intent='primary'
+        size='md'
+        className='rounded-xl w-52'
+        onClick={onSuccess}
+      >
+        Continue
+      </Button>
+    </div>
+  );
+};
+
+export default PrayerRequestConfirmation;
