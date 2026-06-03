@@ -26,6 +26,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -475,11 +476,24 @@ function GroupFinderInstantSearchResults({
     usePagination();
   const isLoading = status === 'loading' || status === 'stalled';
 
-  // InstantSearch can briefly have no client hits while it issues the first
-  // request after hydration. Continue showing loader hits/counts during that
-  // gap so the SSR first paint does not flash empty.
-  const hits = isLoading && items.length === 0 ? initialHits : items;
-  const hitCount = isLoading && items.length === 0 ? initialNbHits : nbHits;
+  // Show the SSR loader hits until the first client search returns results.
+  // Latch on `items.length > 0` (not merely `!isLoading`): InstantSearch reports
+  // status 'idle' on its very first render *before* issuing a search, so latching
+  // on `!isLoading` alone would drop the loader hits and blank the grid during the
+  // SSR->client handoff. Once resolved, `items` already retains the previous
+  // results while a new search is in flight, so we render those — this avoids
+  // flashing the loader groups when clearing filters from a 0-results state.
+  const hasResolvedRef = useRef(false);
+  if (!isLoading && items.length > 0) hasResolvedRef.current = true;
+  const useInitialFallback = !hasResolvedRef.current && items.length === 0;
+
+  const hits = useInitialFallback ? initialHits : items;
+  const hitCount = useInitialFallback ? initialNbHits : nbHits;
+
+  // Don't dim during the initial handoff: we're showing the loader hits, so a
+  // loading flash would just be noise. Only show the loading state for searches
+  // the user triggers after the first client results have resolved.
+  const showLoading = isLoading && hasResolvedRef.current;
 
   const goToPage = (nextPage: number) => {
     refine(Math.max(0, nextPage));
@@ -497,7 +511,7 @@ function GroupFinderInstantSearchResults({
       groupPage={currentRefinement}
       isFirstPage={isFirstPage}
       isLastPage={isLastPage}
-      isLoading={isLoading}
+      isLoading={showLoading}
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={goToPage}
       isGeoSearch={isGeoSearch}

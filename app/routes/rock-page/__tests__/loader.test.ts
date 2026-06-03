@@ -10,6 +10,7 @@ function makeLoaderArgs(search = ''): Parameters<typeof loader>[0] {
   return {
     request: new Request(`http://localhost/rock-page${search}`),
     params: {},
+    unstable_pattern: '/rock-page',
     context: {},
   };
 }
