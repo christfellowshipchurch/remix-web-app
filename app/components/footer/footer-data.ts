@@ -23,10 +23,7 @@ export const footerColumns: FooterColumn[] = [
     title: 'Connect',
     links: [
       { title: 'Connect Card', url: '#connect-card' },
-      {
-        title: 'Request Prayer',
-        url: `${ROCK_PUBLIC_SITE_ORIGIN}/RequestPrayer`,
-      },
+      { title: 'Request Prayer', url: '#prayer-request' },
       {
         title: 'Subscribe to Updates',
         url: `${ROCK_PUBLIC_SITE_ORIGIN}/page/4344`,
