@@ -14,18 +14,24 @@ const PrayerRequestConfirmation: React.FC<PrayerRequestConfirmationProps> = ({
 }) => {
   return (
     <div className='flex flex-col items-center gap-4 p-8'>
-      <Icon name='check' size={64} color='#1ec27f' />
-      <h1 className='font-bold text-2xl text-navy'>
+      <Icon name='handsPraying' size={64} color='#0092bc' />
+      <h1 className='my-4 font-bold text-2xl text-navy'>
         Thank you {firstName} for allowing us to pray with you.
       </h1>
       <Button
         intent='secondary'
+        size='md'
         className='rounded-xl w-auto whitespace-nowrap'
         onClick={onAddAnother}
       >
         Add another prayer request
       </Button>
-      <Button intent='primary' className='rounded-xl w-52' onClick={onSuccess}>
+      <Button
+        intent='primary'
+        size='md'
+        className='rounded-xl w-52'
+        onClick={onSuccess}
+      >
         Continue
       </Button>
     </div>
