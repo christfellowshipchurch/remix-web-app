@@ -34,7 +34,10 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
                 : `Someone from our team is happy to answer any of your questions!`}
             </p>
             <ContactUsModal>
-              <Button className='w-full rounded-sm' intent='secondary'>
+              <Button
+                className='w-full max-w-[200px] rounded-sm'
+                intent='secondary'
+              >
                 {isEspanol ? `Contáctanos` : `Contact Us`}
               </Button>
             </ContactUsModal>
