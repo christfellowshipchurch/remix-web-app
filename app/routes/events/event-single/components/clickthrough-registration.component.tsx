@@ -4,6 +4,10 @@ import { InstantSearch, Configure, useHits } from 'react-instantsearch';
 import { createSearchClient } from '~/lib/create-search-client';
 import Icon from '~/primitives/icon';
 import { RockProxyEmbed } from '~/components/rock-embed';
+import JourneyFinderSignUpForm, {
+  JourneyFinderSignUpSuccessDetails,
+} from '~/components/modals/journey-finder-sign-up/journey-finder-sign-up-form.component';
+import JourneyFinderSignUpConfirmation from '~/components/modals/journey-finder-sign-up/confirmation.component';
 import { EventFinderHit, EventSinglePageType } from '../types';
 import { RootLoaderData } from '~/routes/navbar/loader';
 import { ClickableCard } from './clickable-card.component';
@@ -12,7 +16,9 @@ import {
   getSubGroupTypeDescription,
   getWorkflowTypeGuidForGroupType,
   hasSubGroupTypes,
+  isSpanishCampusLabel,
 } from '../registration.data';
+import { scrollToAnchor } from '~/lib/scroll-to-anchor';
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -63,7 +69,29 @@ export const ClickThroughRegistration = ({
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
   const [isGoingBack, setIsGoingBack] = useState(false);
+  const [pendingRegisterScroll, setPendingRegisterScroll] = useState(false);
   const previousStepRef = useRef<number>(1);
+
+  const resetRegistrationFlow = () => {
+    setStep(1);
+    setSelectedCampus('');
+    setSelectedSubGroupType('');
+    setSelectedDate('');
+    setSelectedTime('');
+    setCampusSearchQuery('');
+    setIsGoingBack(false);
+    previousStepRef.current = 1;
+    setPendingRegisterScroll(true);
+  };
+
+  useEffect(() => {
+    if (!pendingRegisterScroll) return;
+
+    setPendingRegisterScroll(false);
+    requestAnimationFrame(() => {
+      scrollToAnchor('register');
+    });
+  }, [pendingRegisterScroll]);
 
   const searchClient = useMemo(
     () =>
@@ -182,10 +210,7 @@ export const ClickThroughRegistration = ({
         }
       />
 
-      <section
-        className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'
-        id='register'
-      >
+      <section className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'>
         <div className='w-full max-w-3xl flex flex-col gap-13 mx-auto'>
           <div className='flex flex-col gap-4'>
             <h2 className='font-extrabold text-center text-black text-[32px]'>
@@ -309,6 +334,7 @@ export const ClickThroughRegistration = ({
               }}
               hasSubGroups={hasSubGroups}
               onCampusSearchChange={setCampusSearchQuery}
+              onResetRegistration={resetRegistrationFlow}
             />
           </div>
         </div>
@@ -356,6 +382,7 @@ interface StepContentProps {
   onDateSelect: (date: string) => void;
   onTimeSelect: (time: string) => void;
   onCampusSearchChange: (query: string) => void;
+  onResetRegistration: () => void;
 }
 
 const StepContent = ({
@@ -373,6 +400,7 @@ const StepContent = ({
   onDateSelect,
   onTimeSelect,
   onCampusSearchChange,
+  onResetRegistration,
 }: StepContentProps) => {
   const { items } = useHits<EventFinderHit>();
   const stepRef = useRef(step);
@@ -472,6 +500,7 @@ const StepContent = ({
         selectedCampus={selectedCampus}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
+        onResetRegistration={onResetRegistration}
       />
     );
   }
@@ -818,7 +847,6 @@ const TimeStep = ({
 const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
   'Kids Dedication': 890,
   'Kids Starting Line': 890,
-  Journey: 700,
   Baptism: 1440,
   'Dream Team Kickoff': 1000,
 };
@@ -832,12 +860,20 @@ const DEFAULT_EMBED_HEIGHT = 1000;
 const CONFIRMATION_EMBED_HEIGHT = 600;
 
 function getEmbedHeightForGroupType(groupType: string): number {
-  const normalized = groupType
+  const normalized = normalizeGroupType(groupType);
+  return EMBED_HEIGHT_BY_GROUP_TYPE[normalized] ?? DEFAULT_EMBED_HEIGHT;
+}
+
+function normalizeGroupType(groupType: string): string {
+  return groupType
     .replace(/-/g, ' ')
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
-  return EMBED_HEIGHT_BY_GROUP_TYPE[normalized] ?? DEFAULT_EMBED_HEIGHT;
+}
+
+function getRegistrationFormMode(groupType: string): 'native' | 'embed' {
+  return normalizeGroupType(groupType) === 'Journey' ? 'native' : 'embed';
 }
 
 // Form Step Component
@@ -847,15 +883,23 @@ interface FormStepProps {
   selectedCampus: string;
   selectedDate: string;
   selectedTime: string;
+  onResetRegistration: () => void;
 }
 
 const FormStep = ({
   groupGuid,
   groupType,
   selectedCampus,
-  selectedDate: _selectedDate,
-  selectedTime: _selectedTime,
+  selectedDate,
+  selectedTime,
+  onResetRegistration,
 }: FormStepProps) => {
+  const [isNativeSuccess, setIsNativeSuccess] = useState(false);
+  const [nativeSuccessDetails, setNativeSuccessDetails] =
+    useState<JourneyFinderSignUpSuccessDetails | null>(null);
+  const registrationFormMode = getRegistrationFormMode(groupType);
+  const isSpanish = isSpanishCampusLabel(selectedCampus);
+
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
     selectedCampus,
   });
@@ -883,6 +927,49 @@ const FormStep = ({
         <p className='text-gray-600'>
           Unable to load registration form. Please go back and try again.
         </p>
+      </div>
+    );
+  }
+
+  if (registrationFormMode === 'native') {
+    if (isNativeSuccess) {
+      return (
+        <div className='w-full max-w-[600px] mx-auto'>
+          <JourneyFinderSignUpConfirmation
+            buttonText='Register someone else'
+            details={{
+              title: 'Journey Details',
+              campus: selectedCampus,
+              date: formatDateDisplay(selectedDate),
+              time: `${selectedTime} ET`,
+              name:
+                nativeSuccessDetails?.firstName ||
+                nativeSuccessDetails?.lastName
+                  ? `${nativeSuccessDetails?.firstName ?? ''} ${
+                      nativeSuccessDetails?.lastName ?? ''
+                    }`.trim()
+                  : 'Journey Registrant',
+            }}
+            onContinue={() => {
+              setNativeSuccessDetails(null);
+              setIsNativeSuccess(false);
+              onResetRegistration();
+            }}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className='w-full max-w-[600px] mx-auto'>
+        <JourneyFinderSignUpForm
+          groupGuid={groupGuid}
+          isSpanish={isSpanish}
+          onSuccess={(details) => {
+            setNativeSuccessDetails(details ?? null);
+            setIsNativeSuccess(true);
+          }}
+        />
       </div>
     );
   }

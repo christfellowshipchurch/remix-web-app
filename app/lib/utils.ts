@@ -184,11 +184,13 @@ interface ServiceTime {
 }
 
 export function icsLinkEvents({
+  title,
   serviceTimes,
   address,
   campusName,
   url,
 }: {
+  title?: string;
   serviceTimes: ServiceTime[];
   address: string;
   campusName: string;
@@ -205,8 +207,9 @@ export function icsLinkEvents({
     return {
       label: `${time}`,
       event: {
-        title:
-          campusName !== 'Trinity'
+        title: title
+          ? title
+          : campusName !== 'Trinity'
             ? `Sunday service at Christ Fellowship Church in ${campusName}`
             : 'Sunday service at Trinity Church by Christ Fellowship',
         description: `Join us this Sunday!`,

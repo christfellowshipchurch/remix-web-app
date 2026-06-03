@@ -16,11 +16,11 @@ export const subGroupTypeDescriptions: Record<string, SubGroupTypeDescription> =
     },
     'Two Days': {
       description:
-        'The Journey is the starting point to learn about the heartbeat of Christ Fellowship. Join us for a Two session experience in which you will Know God, Grow in your Relationships, Discover your Purpose & partner with us as we Impact the World together!',
+        'The Journey is the starting point to learn about the heartbeat of Christ Fellowship. Join us for a two-week experience in which you will Know God, Grow in your Relationships, Discover your Purpose & partner with us as we Impact the World together.',
     },
     'Two Days with Dream Team Kickoff': {
       description:
-        'The Journey class is your first step to getting connected here at Christ Fellowship. It’s a fun group setting where you will get to know the history and heartbeat of the place you call home. During this experience, our prayer is that you will know God and grow in your relationships so that you can discover your purpose and impact the world.',
+        'Join us for a two-session conversation, where you will Know God, Grow in your Relationships, Discover your Purpose & partner together as we Impact the World. Bonus! Session 2 of Journey will include Dream Team Kickoff. Childcare is available through our regularly scheduled CFKids programming',
     },
   };
 
