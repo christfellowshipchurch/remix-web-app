@@ -19,11 +19,11 @@ const PrayerRequestConfirmation: React.FC<PrayerRequestConfirmationProps> = ({
         Thank you {firstName} for allowing us to pray with you.
       </h1>
       <Button
-        intent='primary'
-        className='rounded-xl w-64'
+        intent='secondary'
+        className='rounded-xl w-auto whitespace-nowrap'
         onClick={onAddAnother}
       >
-        Add Another Prayer Request
+        Add another prayer request
       </Button>
       <Button intent='primary' className='rounded-xl w-52' onClick={onSuccess}>
         Continue
