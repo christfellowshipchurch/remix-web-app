@@ -24,7 +24,7 @@ export const renderInputField = (
   requiredMessage: string,
   defaultValue?: string,
 ) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
+  <Form.Field name={name} className='flex flex-col mb-4 group'>
     <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
       <input
@@ -52,7 +52,7 @@ export const renderCheckboxField = (
   <Form.Field
     key={index}
     name={`allThatApplies-${index}`}
-    className='flex gap-2 md:items-center'
+    className='flex gap-2 md:items-center group'
   >
     <Form.Control asChild>
       <input
@@ -165,7 +165,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'Please enter a valid email',
         )}
 
-        <Form.Field name='campus' className='flex flex-col'>
+        <Form.Field name='campus' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
@@ -197,7 +197,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='decision' className='flex gap-2 md:items-center mt-3'>
+        <Form.Field name='decision' className='flex gap-2 md:items-center mt-3 group'>
           <Form.Control asChild>
             <input
               className={cn('mb-1', nativeCheckboxStyles)}
@@ -218,7 +218,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         {checkboxes.map(renderCheckboxField)}
 
         {otherCheckbox && (
-          <Form.Field name='other' className='flex gap-2 md:items-center'>
+          <Form.Field name='other' className='flex gap-2 md:items-center group'>
             <Form.Control asChild>
               <input
                 className={cn('mb-1', nativeCheckboxStyles)}
@@ -238,7 +238,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         {isOther && (
           <>
             <div />
-            <Form.Field name='otherContent' className='flex flex-col'>
+            <Form.Field name='otherContent' className='flex flex-col group'>
               <Form.Control asChild>
                 <input
                   type='text'

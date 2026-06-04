@@ -20,6 +20,7 @@ import {
   formControlTrailingIconStyles,
   formLabelStyles,
   formErrorMessageStyles,
+  formFieldWrapperStyles,
 } from '~/primitives/inputs/form-control.styles';
 
 export { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
@@ -82,7 +83,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
     };
 
     return (
-      <div className='flex flex-col gap-1 w-full'>
+      <div className={formFieldWrapperStyles}>
         {label && (
           <label className={formLabelStyles}>
             {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}

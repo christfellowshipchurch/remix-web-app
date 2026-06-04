@@ -136,7 +136,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           email || undefined,
         )}
 
-        <Form.Field name='campus' className='flex flex-col'>
+        <Form.Field name='campus' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Campus</Form.Label>
           <Form.Control asChild>
             <select
@@ -159,7 +159,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           </Form.Control>
         </Form.Field>
 
-        <Form.Field name='serviceTime' className='flex flex-col'>
+        <Form.Field name='serviceTime' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>
             {isEspanol ? 'Horarios de Servicios' : 'Service Time'}
           </Form.Label>
@@ -204,7 +204,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
 
         <Form.Field
           name='beenToCF'
-          className='flex flex-col col-span-1 md:col-span-2 mt-4'
+          className='flex flex-col col-span-1 md:col-span-2 mt-4 group'
         >
           <Form.Label className={formLabelStyles}>
             {isEspanol

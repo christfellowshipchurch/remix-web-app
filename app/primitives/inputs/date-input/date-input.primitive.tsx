@@ -7,6 +7,7 @@ import {
   formControlErrorStyles,
   formLabelStyles,
   formErrorMessageStyles,
+  formFieldWrapperStyles,
 } from '~/primitives/inputs/form-control.styles';
 
 export { defaultDateInputStyles } from '~/primitives/inputs/form-control.styles';
@@ -59,7 +60,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
     };
 
     return (
-      <div className='flex flex-col gap-1 w-full'>
+      <div className={formFieldWrapperStyles}>
         {label && (
           <label className={formLabelStyles}>
             {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}

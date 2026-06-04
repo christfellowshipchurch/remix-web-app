@@ -82,7 +82,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2 px-0 md:px-6'
       >
-        <Form.Field name='firstName' className='flex flex-col mb-4'>
+        <Form.Field name='firstName' className='flex flex-col mb-4 group'>
           <Form.Label className={formLabelStyles}>First Name</Form.Label>
           <Form.Control asChild>
             <input
@@ -96,7 +96,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='lastName' className='flex flex-col mb-4'>
+        <Form.Field name='lastName' className='flex flex-col mb-4 group'>
           <Form.Label className={formLabelStyles}>Last Name</Form.Label>
           <Form.Control asChild>
             <input
@@ -110,7 +110,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='phone' className='flex flex-col mb-4'>
+        <Form.Field name='phone' className='flex flex-col mb-4 group'>
           <Form.Label className={formLabelStyles}>Cell Phone</Form.Label>
           <Form.Control asChild>
             <input
@@ -124,7 +124,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='email' className='flex flex-col mb-4'>
+        <Form.Field name='email' className='flex flex-col mb-4 group'>
           <Form.Label className={formLabelStyles}>Email Address</Form.Label>
           <Form.Control asChild>
             <input
@@ -141,7 +141,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='campus' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field name='campus' className='flex flex-col mb-4 md:col-span-2 group'>
           <Form.Label className={formLabelStyles}>Location</Form.Label>
           <Form.Control asChild>
             {campuses && (
@@ -173,7 +173,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='message' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field name='message' className='flex flex-col mb-4 md:col-span-2 group'>
           <Form.Label className={formLabelStyles}>Message</Form.Label>
           <Form.Control asChild>
             <textarea
@@ -193,7 +193,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
 
         <Form.Field
           name='smsConsent'
-          className='flex flex-col md:col-span-2 mt-2'
+          className='flex flex-col md:col-span-2 mt-2 group'
         >
           <div className='flex gap-2 items-start'>
             <Form.Control asChild>

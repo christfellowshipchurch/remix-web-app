@@ -32,7 +32,7 @@ export const renderInputField = (
   defaultValue?: string,
   fieldClassName = '',
 ) => (
-  <Form.Field name={name} className={`flex flex-col mb-4 ${fieldClassName}`}>
+  <Form.Field name={name} className={`flex flex-col mb-4 group ${fieldClassName}`}>
     <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
       <input
@@ -204,7 +204,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='atCF'
-          className='flex flex-col col-span-1 md:col-span-2 mt-2'
+          className='flex flex-col col-span-1 md:col-span-2 mt-2 group'
         >
           <Form.Label className={formLabelStyles}>{copy.atCF}</Form.Label>
           <div className='flex flex-col gap-2'>
@@ -230,7 +230,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='hopeToGet'
-          className='flex flex-col col-span-1 md:col-span-2 mt-2'
+          className='flex flex-col col-span-1 md:col-span-2 mt-2 group'
         >
           <Form.Label className={formLabelStyles}>{copy.hopeToGet}</Form.Label>
           <Form.Control asChild>

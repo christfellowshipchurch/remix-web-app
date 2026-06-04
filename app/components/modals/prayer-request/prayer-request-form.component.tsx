@@ -29,7 +29,7 @@ const renderInputField = (
   type: string,
   requiredMessage: string,
 ) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
+  <Form.Field name={name} className='flex flex-col mb-4 group'>
     <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
       <input
@@ -133,7 +133,7 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
           'Please enter your phone number',
         )}
 
-        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2 group'>
           <Form.Label className={formLabelStyles}>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
@@ -165,7 +165,7 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
           </Form.Message>
         </Form.Field>
 
-        <Form.Field name='Request' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field name='Request' className='flex flex-col mb-4 md:col-span-2 group'>
           <Form.Label className={formLabelStyles}>
             How can we pray for you?
           </Form.Label>
@@ -187,7 +187,7 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
 
         <Form.Field
           name='FollowUp'
-          className='flex flex-col mb-4 md:col-span-2'
+          className='flex flex-col mb-4 md:col-span-2 group'
         >
           <Form.Label className={formLabelStyles}>
             Would you like our team to follow up with you?

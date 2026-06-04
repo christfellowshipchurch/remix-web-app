@@ -71,7 +71,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         <input type='hidden' name='groupId' value={groupId} />
 
         {/* First Name */}
-        <Form.Field name='firstName' className='flex flex-col'>
+        <Form.Field name='firstName' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>First Name*</Form.Label>
           <Form.Control asChild>
             <input
@@ -85,7 +85,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
           </Form.Message>
         </Form.Field>
         {/* Last Name */}
-        <Form.Field name='lastName' className='flex flex-col'>
+        <Form.Field name='lastName' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Last Name*</Form.Label>
           <Form.Control asChild>
             <input
@@ -99,7 +99,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
           </Form.Message>
         </Form.Field>
         {/* Phone */}
-        <Form.Field name='phoneNumber' className='flex flex-col'>
+        <Form.Field name='phoneNumber' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Phone*</Form.Label>
           <Form.Control asChild>
             <input
@@ -113,7 +113,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
           </Form.Message>
         </Form.Field>
         {/* Email */}
-        <Form.Field name='email' className='flex flex-col'>
+        <Form.Field name='email' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Email*</Form.Label>
           <Form.Control asChild>
             <input
@@ -129,7 +129,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
-          <Form.Field name='campus' className='flex flex-col md:col-span-2'>
+          <Form.Field name='campus' className='flex flex-col md:col-span-2 group'>
             <Form.Label className={formLabelStyles}>Campus</Form.Label>
             <input type='hidden' name='campus' value={campus} />
             <Form.Control asChild>

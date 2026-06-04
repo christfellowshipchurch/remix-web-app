@@ -82,7 +82,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         className='grid grid-cols-1 gap-6 md:grid-cols-2'
       >
         {/* First Name */}
-        <Form.Field name='firstName' className='flex flex-col'>
+        <Form.Field name='firstName' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>First Name*</Form.Label>
           <Form.Control asChild>
             <input type='text' required className={defaultTextInputStyles} />
@@ -92,7 +92,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
           </Form.Message>
         </Form.Field>
         {/* Last Name */}
-        <Form.Field name='lastName' className='flex flex-col'>
+        <Form.Field name='lastName' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Last Name*</Form.Label>
           <Form.Control asChild>
             <input type='text' required className={defaultTextInputStyles} />
@@ -102,7 +102,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
           </Form.Message>
         </Form.Field>
         {/* Birthdate */}
-        <Form.Field name='birthDate' className='flex flex-col'>
+        <Form.Field name='birthDate' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Birth Date*</Form.Label>
           <Form.Control asChild>
             <input type='date' required className={defaultTextInputStyles} />
@@ -115,7 +115,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         {/* Email or Phone */}
         <Form.Field
           name={identityType === 'email' ? 'phone' : 'email'}
-          className='flex flex-col'
+          className='flex flex-col group'
         >
           <Form.Label className={formLabelStyles}>
             {identityType === 'email' ? 'Phone' : 'Email'}
@@ -128,7 +128,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
           </Form.Message>
         </Form.Field>
         {/* Gender */}
-        <Form.Field name='gender' className='flex flex-col'>
+        <Form.Field name='gender' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>Gender</Form.Label>
           <div className='flex gap-4 pt-3'>
             <RadioButtons

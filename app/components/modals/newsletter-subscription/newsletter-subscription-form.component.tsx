@@ -22,7 +22,7 @@ export const renderInputField = (
   type: string,
   requiredMessage: string,
 ) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
+  <Form.Field name={name} className='flex flex-col mb-4 group'>
     <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
       <input
@@ -134,7 +134,7 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
           'Please enter your email address',
         )}
 
-        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2 group'>
           <Form.Label className={formLabelStyles}>Campus Location</Form.Label>
           <Form.Control asChild>
             {campuses && (

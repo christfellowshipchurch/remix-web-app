@@ -67,7 +67,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
         Enter your phone number <br /> or email address to get started.
       </p>
       <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
-        <Form.Field name='identity' className='flex flex-col'>
+        <Form.Field name='identity' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>
             Mobile Number or Email*
           </Form.Label>
@@ -88,7 +88,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
         ) : (
           <p className='text-sm text-alert'>{error}</p>
         )}
-        <Form.Field className='mt-4' name='agreement'>
+        <Form.Field className='mt-4 group' name='agreement'>
           <div className='flex items-center gap-3'>
             <Form.Control asChild>
               <input id='c1' type='checkbox' className='text-ocean' required />

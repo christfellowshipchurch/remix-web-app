@@ -20,12 +20,17 @@ export const formControlTrailingIconStyles: string = 'pr-10';
 
 // Typography
 export const formLabelStyles: string =
-  'text-[20px] leading-5 text-dark-navy font-bold';
+  'text-[14px] font-medium leading-5 text-dark-navy tracking-[-0.15px] group-focus-within:text-ocean transition-colors duration-150';
 
-export const formHelperTextStyles: string = 'text-base leading-4 text-navy';
+export const formHelperTextStyles: string =
+  'text-[12px] font-normal leading-4 text-navy';
 
 export const formErrorMessageStyles: string =
-  'text-[20px] leading-5 text-alert flex items-center gap-1.5';
+  'text-[14px] font-normal leading-5 text-alert tracking-[-0.15px] flex items-center gap-1.5';
+
+// Wrapper for a field group (label + input + helper/error). Provides gap-3 spacing
+// and the `group` class needed for label focus-within color change.
+export const formFieldWrapperStyles: string = 'flex flex-col gap-3 w-full group';
 
 // For Radix modal forms that use native inputs inside Form.Control
 export const nativeCheckboxStyles: string =

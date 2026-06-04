@@ -62,7 +62,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
     >
       <input type='hidden' name='groupGuid' value={groupGuid} />
 
-      <Form.Field name='firstName' className='flex flex-col'>
+      <Form.Field name='firstName' className='flex flex-col group'>
         <Form.Label className={formLabelStyles}>First Name*</Form.Label>
         <Form.Control asChild>
           <input
@@ -76,7 +76,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </Form.Message>
       </Form.Field>
 
-      <Form.Field name='lastName' className='flex flex-col'>
+      <Form.Field name='lastName' className='flex flex-col group'>
         <Form.Label className={formLabelStyles}>Last Name*</Form.Label>
         <Form.Control asChild>
           <input
@@ -90,7 +90,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </Form.Message>
       </Form.Field>
 
-      <Form.Field name='phoneNumber' className='flex flex-col'>
+      <Form.Field name='phoneNumber' className='flex flex-col group'>
         <Form.Label className={formLabelStyles}>Cell Phone*</Form.Label>
         <Form.Control asChild>
           <input
@@ -104,7 +104,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </Form.Message>
       </Form.Field>
 
-      <Form.Field name='email' className='flex flex-col'>
+      <Form.Field name='email' className='flex flex-col group'>
         <Form.Label className={formLabelStyles}>Email*</Form.Label>
         <Form.Control asChild>
           <input
@@ -121,7 +121,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </Form.Message>
       </Form.Field>
 
-      <Form.Field name='birthdate' className='flex flex-col'>
+      <Form.Field name='birthdate' className='flex flex-col group'>
         <Form.Label className={formLabelStyles}>Birthdate*</Form.Label>
         <Form.Control asChild>
           <input
@@ -136,7 +136,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </Form.Message>
       </Form.Field>
 
-      <Form.Field name='campus' className='flex flex-col'>
+      <Form.Field name='campus' className='flex flex-col group'>
         <Form.Label className={formLabelStyles}>Campus*</Form.Label>
         <Form.Control asChild>
           <select
@@ -165,7 +165,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
       <Form.Field
         name='waiverAccepted'
-        className='flex flex-col gap-2 md:col-span-2 my-1 md:my-4'
+        className='flex flex-col gap-2 md:col-span-2 my-1 md:my-4 group'
       >
         <label className='flex items-center gap-3 cursor-pointer select-none'>
           <Form.Control asChild>

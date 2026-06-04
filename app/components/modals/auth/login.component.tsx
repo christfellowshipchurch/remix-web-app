@@ -67,7 +67,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
     <div className='text-center'>
       <h2 className='mb-6 text-5xl font-bold'>Log In</h2>
       <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
-        <Form.Field name='identity' className='flex flex-col'>
+        <Form.Field name='identity' className='flex flex-col group'>
           <Form.Label className={formLabelStyles}>
             Mobile Number or Email*
           </Form.Label>
