@@ -25,7 +25,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   id,
 }) => {
   const visualCheckboxClass = cn(
-    'rounded-[4px] size-5 transition-colors duration-150 border-2',
+    'rounded-md size-5 transition-colors duration-150 border-2',
     checked && !disabled && 'bg-ocean border-ocean',
     checked && disabled && 'bg-ocean/40 border-ocean/40',
     !checked && error && 'bg-white border-alert',
@@ -35,7 +35,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   return (
     <label
       className={cn(
-        'flex items-center gap-2 select-none',
+        'flex items-center gap-3 select-none',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         className,
       )}
@@ -85,7 +85,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         className={
           labelClassName && labelClassName !== ''
             ? labelClassName
-            : 'text-text-primary font-normal'
+            : 'text-dark-navy font-normal'
         }
       >
         {label}
