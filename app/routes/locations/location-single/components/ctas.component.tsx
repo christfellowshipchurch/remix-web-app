@@ -48,11 +48,7 @@ export const CTAs = ({
     <div className='w-full md:mx-auto md:max-w-md lg:mx-0 lg:max-w-full'>
       <div className='grid w-full grid-cols-3 items-stretch gap-4 lg:gap-6'>
         <div className={ctaSlotClassName}>
-          <CTAButton
-            icon='calendarAlt'
-            title={reminderTitle}
-            isSetAReminder
-          />
+          <CTAButton icon='calendarAlt' title={reminderTitle} isSetAReminder />
         </div>
         <div className={ctaSlotClassName}>
           <CTAButton
@@ -63,7 +59,10 @@ export const CTAs = ({
         </div>
         <div className={ctaSlotClassName}>
           <ContactUsModal>
-            <CTAButtonContent icon='mobileAlt' title={isSpanish ? 'Contáctanos' : 'Contact Us'} />
+            <CTAButtonContent
+              icon='mobileAlt'
+              title={isSpanish ? 'Contáctanos' : 'Contact Us'}
+            />
           </ContactUsModal>
         </div>
       </div>
