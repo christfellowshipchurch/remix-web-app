@@ -1,9 +1,15 @@
 import React, { forwardRef } from 'react';
 import Icon from '~/primitives/icon';
-import colors from '~/styles/colors';
+import { cn } from '~/lib/utils';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formControlErrorStyles,
+  formLabelStyles,
+  formErrorMessageStyles,
+} from '~/primitives/inputs/form-control.styles';
 
-export const defaultSelectInputStyles =
-  'rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full';
+export { defaultSelectInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface SelectOption {
   value: string;
@@ -40,24 +46,24 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
     ref,
   ) => {
     return (
-      <div className='relative flex flex-col gap-1 w-full'>
+      <div className='flex flex-col gap-1 w-full'>
         {label && (
-          <label className='font-bold text-text-primary text-sm mb-1'>
+          <label className={formLabelStyles}>
             {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
+              <span className='font-normal text-navy ml-1 italic'>
                 {'(required)'}
               </span>
             )}
           </label>
         )}
-        {error ? (
-          <div className='relative'>
+        <div className='relative'>
+          {error ? (
             <select
               ref={ref}
               name={name}
-              className='w-full rounded-md border-2 border-alert p-2 bg-white'
+              className={cn(formControlErrorStyles, 'appearance-none pr-10')}
               value={value}
               onFocus={() => setError(null)}
               required={isRequired}
@@ -70,34 +76,39 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
                 </option>
               ))}
             </select>
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
-            </span>
-          </div>
-        ) : (
-          <select
-            ref={ref}
-            name={name}
-            className={`${defaultSelectInputStyles} ${className} bg-white appearance-none pr-10`}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            required={isRequired}
-            data-invalid={!!error}
-            style={{
-              background: 'none',
-            }}
-          >
-            {placeholder && <option value=''>{placeholder}</option>}
-            {options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          ) : (
+            <select
+              ref={ref}
+              name={name}
+              className={cn(
+                formControlBaseStyles,
+                formControlFocusStyles,
+                'appearance-none pr-10',
+                className,
+              )}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              required={isRequired}
+              data-invalid={!!error}
+            >
+              {placeholder && <option value=''>{placeholder}</option>}
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          )}
+          <span className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <Icon name='chevronDown' size={20} />
+          </span>
+        </div>
+        {error && (
+          <p className={formErrorMessageStyles}>
+            <Icon name='errorCircle' className='shrink-0' size={20} />
+            {error}
+          </p>
         )}
-        <span className='pointer-events-none absolute right-3 top-10 text-gray-500'>
-          <Icon name='chevronDown' size={20} />
-        </span>
       </div>
     );
   },

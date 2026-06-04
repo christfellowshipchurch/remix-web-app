@@ -8,12 +8,21 @@ import React, {
   HTMLInputTypeAttribute,
   useEffect,
   useRef,
+  useState,
 } from 'react';
 import Icon from '~/primitives/icon';
-import colors from '~/styles/colors';
+import { cn } from '~/lib/utils';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formControlErrorStyles,
+  formControlLeadingIconStyles,
+  formControlTrailingIconStyles,
+  formLabelStyles,
+  formErrorMessageStyles,
+} from '~/primitives/inputs/form-control.styles';
 
-export const defaultTextInputStyles =
-  'overflow-x-hidden rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full';
+export { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface TextFieldInputProps {
   name?: string;
@@ -27,6 +36,7 @@ interface TextFieldInputProps {
   label?: string;
   isRequired?: boolean;
   customIcon?: React.ReactNode;
+  isValidated?: boolean;
 }
 
 const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
@@ -43,10 +53,12 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       label,
       isRequired = false,
       customIcon,
+      isValidated = false,
     },
     ref,
   ) => {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
       if (error === null && inputRef.current) {
@@ -54,73 +66,110 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       }
     }, [error]);
 
+    const hasLeadingIcon = type === 'email' || type === 'tel' || !!customIcon;
+    const isPassword = type === 'password';
+    const hasTrailingIcon = isPassword || (isValidated && !error);
+    const resolvedType = isPassword && showPassword ? 'text' : type;
+
+    const mergedRef = (el: HTMLInputElement | null) => {
+      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
+      if (typeof ref === 'function') {
+        ref(el);
+      } else if (ref) {
+        ref.current = el;
+      }
+    };
+
     return (
       <div className='flex flex-col gap-1 w-full'>
         {label && (
-          <label className='font-bold text-text-primary mb-1'>
+          <label className={formLabelStyles}>
             {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
+              <span className='font-normal text-navy ml-1 italic'>
                 {'(required)'}
               </span>
             )}
           </label>
         )}
-        {error ? (
-          <div className='relative'>
+        <div className='relative'>
+          {error ? (
             <input
               ref={ref}
-              className='w-full rounded-md border-2 border-alert p-2 pl-10'
-              type={type}
+              className={cn(
+                formControlErrorStyles,
+                hasLeadingIcon && formControlLeadingIconStyles,
+                hasTrailingIcon && formControlTrailingIconStyles,
+              )}
+              type={resolvedType}
               name={name}
               value={value}
               placeholder={placeholder}
               required={isRequired}
               onFocus={() => setError(null)}
-              readOnly
+              onChange={(e) => setValue(e.target.value)}
             />
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
-            </span>
-          </div>
-        ) : (
-          <div className='relative'>
+          ) : (
             <input
-              ref={(el) => {
-                (
-                  inputRef as React.MutableRefObject<HTMLInputElement | null>
-                ).current = el;
-                if (typeof ref === 'function') {
-                  ref(el);
-                } else if (ref) {
-                  ref.current = el;
-                }
-              }}
+              ref={mergedRef}
               name={name}
-              className={`${defaultTextInputStyles} ${className} ${
-                type === 'email' || type === 'tel' || customIcon ? 'pl-10' : ''
-              }`}
-              type={type}
+              className={cn(
+                formControlBaseStyles,
+                formControlFocusStyles,
+                hasLeadingIcon && formControlLeadingIconStyles,
+                hasTrailingIcon && formControlTrailingIconStyles,
+                className,
+              )}
+              type={resolvedType}
               value={value}
               placeholder={placeholder}
               onChange={(e) => setValue(e.target.value)}
               required={isRequired}
             />
-            {type === 'email' && (
-              <span className='absolute left-3 top-2.5'>
-                <Icon name='envelope' className='text-navy size-5 mt-[1px]' />
-              </span>
-            )}
-            {type === 'tel' && (
-              <span className='absolute left-3 top-2.5'>
-                <Icon name='smartphone' className='text-navy size-5' />
-              </span>
-            )}
-            {customIcon && (
-              <span className='absolute left-3 top-2.5'>{customIcon}</span>
-            )}
-          </div>
+          )}
+          {/* Leading icons */}
+          {type === 'email' && (
+            <span className='absolute left-3 top-1/2 -translate-y-1/2'>
+              <Icon name='envelope' className='text-navy size-5 mt-[1px]' />
+            </span>
+          )}
+          {type === 'tel' && (
+            <span className='absolute left-3 top-1/2 -translate-y-1/2'>
+              <Icon name='smartphone' className='text-navy size-5' />
+            </span>
+          )}
+          {customIcon && (
+            <span className='absolute left-3 top-1/2 -translate-y-1/2'>
+              {customIcon}
+            </span>
+          )}
+          {/* Trailing icons */}
+          {isPassword && (
+            <button
+              type='button'
+              className='absolute right-3 top-1/2 -translate-y-1/2'
+              onClick={() => setShowPassword((prev) => !prev)}
+              tabIndex={-1}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <Icon
+                name={showPassword ? 'eyeSlash' : 'eye'}
+                className='text-navy size-5'
+              />
+            </button>
+          )}
+          {!isPassword && isValidated && !error && (
+            <span className='absolute right-3 top-1/2 -translate-y-1/2'>
+              <Icon name='checkCircle' className='text-success size-5' />
+            </span>
+          )}
+        </div>
+        {error && (
+          <p className={formErrorMessageStyles}>
+            <Icon name='errorCircle' className='shrink-0' size={20} />
+            {error}
+          </p>
         )}
       </div>
     );

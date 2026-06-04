@@ -1,7 +1,14 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import Icon from '~/primitives/icon';
-import colors from '~/styles/colors';
-import { defaultTextInputStyles } from './text-field.primitive';
+import { cn } from '~/lib/utils';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formControlErrorStyles,
+  formControlLeadingIconStyles,
+  formLabelStyles,
+  formErrorMessageStyles,
+} from '~/primitives/inputs/form-control.styles';
 
 interface SecureTextFieldInputProps {
   className?: string;
@@ -89,16 +96,14 @@ const SecureTextFieldInput = forwardRef<
       e.preventDefault();
     };
 
-    const errorStyles = 'border-alert focus:border-alert focus:ring-alert/50';
-
     return (
       <div className='flex flex-col gap-1 w-full'>
         {label && (
-          <label className='font-bold text-text-primary mb-1'>
+          <label className={formLabelStyles}>
             {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
+              <span className='font-normal text-navy ml-1 italic'>
                 {'(required)'}
               </span>
             )}
@@ -117,27 +122,30 @@ const SecureTextFieldInput = forwardRef<
                 ref.current = el;
               }
             }}
-            className={`${defaultTextInputStyles} ${className} pl-10 ${
-              error ? errorStyles : ''
-            }`}
+            className={cn(
+              error ? formControlErrorStyles : cn(formControlBaseStyles, formControlFocusStyles),
+              formControlLeadingIconStyles,
+              className,
+            )}
             type='text'
             value={maskedValue}
             placeholder={placeholder}
             onKeyDown={handleKeyDown}
+            onFocus={() => error && undefined}
             required={isRequired}
             inputMode='numeric'
             autoComplete='off'
           />
-          <span className='absolute left-3 top-2.5'>
+          <span className='absolute left-3 top-1/2 -translate-y-1/2'>
             <Icon name='lockAlt' className='text-navy size-5' />
           </span>
-          {error && (
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
-            </span>
-          )}
         </div>
-        {error && <p className='text-sm text-alert'>{error}</p>}
+        {error && (
+          <p className={formErrorMessageStyles}>
+            <Icon name='errorCircle' className='shrink-0' size={20} />
+            {error}
+          </p>
+        )}
       </div>
     );
   },

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import Icon from '~/primitives/icon';
 import { cn } from '~/lib/utils';
 import {
@@ -9,22 +9,20 @@ import {
   formErrorMessageStyles,
 } from '~/primitives/inputs/form-control.styles';
 
-export { defaultDateInputStyles } from '~/primitives/inputs/form-control.styles';
-
-interface DateInputProps {
+interface TextareaInputProps {
   name?: string;
   className?: string;
   value: string;
   error: string | null;
   setValue: (value: string) => void;
   setError: (value: string | null) => void;
+  placeholder?: string;
   label?: string;
   isRequired?: boolean;
-  min?: string;
-  max?: string;
+  rows?: number;
 }
 
-const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
+const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
   (
     {
       name,
@@ -33,30 +31,13 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
       error,
       setValue,
       setError,
+      placeholder = '',
       label,
       isRequired = false,
-      min,
-      max,
+      rows,
     },
     ref,
   ) => {
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-      if (error === null && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, [error]);
-
-    const mergedRef = (el: HTMLInputElement | null) => {
-      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
-      if (typeof ref === 'function') {
-        ref(el);
-      } else if (ref) {
-        ref.current = el;
-      }
-    };
-
     return (
       <div className='flex flex-col gap-1 w-full'>
         {label && (
@@ -71,29 +52,32 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
           </label>
         )}
         {error ? (
-          <input
+          <textarea
             ref={ref}
             name={name}
-            className={formControlErrorStyles}
-            type='date'
+            className={cn(formControlErrorStyles, 'min-h-[120px] h-auto')}
             value={value}
+            placeholder={placeholder}
             onFocus={() => setError(null)}
             onChange={(e) => setValue(e.target.value)}
             required={isRequired}
-            min={min}
-            max={max}
+            rows={rows}
           />
         ) : (
-          <input
-            ref={mergedRef}
+          <textarea
+            ref={ref}
             name={name}
-            className={cn(formControlBaseStyles, formControlFocusStyles, className)}
-            type='date'
+            className={cn(
+              formControlBaseStyles,
+              formControlFocusStyles,
+              'min-h-[120px] h-auto',
+              className,
+            )}
             value={value}
+            placeholder={placeholder}
             onChange={(e) => setValue(e.target.value)}
             required={isRequired}
-            min={min}
-            max={max}
+            rows={rows}
           />
         )}
         {error && (
@@ -107,6 +91,6 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
   },
 );
 
-DateInput.displayName = 'DateInput';
+TextareaInput.displayName = 'TextareaInput';
 
-export default DateInput;
+export default TextareaInput;
