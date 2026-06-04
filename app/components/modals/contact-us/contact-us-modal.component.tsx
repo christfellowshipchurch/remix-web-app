@@ -24,7 +24,9 @@ export function ContactUsModal({ children }: { children: React.ReactNode }) {
       <Modal.Content>
         <div className='pt-10 p-6 w-[90vw] max-w-sm md:max-w-xl lg:max-w-3xl overflow-y-scroll max-h-[85vh] md:max-h-[90vh]'>
           {step === ContactUsStep.FORM ? (
-            <ContactUsForm onSuccess={() => setStep(ContactUsStep.CONFIRMATION)} />
+            <ContactUsForm
+              onSuccess={() => setStep(ContactUsStep.CONFIRMATION)}
+            />
           ) : (
             <ContactUsConfirmation onClose={() => setOpen(false)} />
           )}

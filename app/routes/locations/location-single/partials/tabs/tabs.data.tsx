@@ -26,7 +26,8 @@ export const familiesMappedChildren: ContentBlockData[] = [
       "Plan your visit to let us know you're coming and to help speed up the check-in process. ",
     layoutType: 'CARD',
     subtitle: '',
-    callsToAction: 'Plan your first Visit^https://rock.christfellowship.church/CFKidsPlanaVisit',
+    callsToAction:
+      'Plan your first Visit^https://rock.christfellowship.church/CFKidsPlanaVisit',
     coverImage: undefined,
     featureVideo: undefined,
     aspectRatio: '16by9',
@@ -150,7 +151,8 @@ export const spanishFamiliesMappedChildren: ContentBlockData[] = [
       'Planifica tu visita para avisarnos que vienes y ayudar a que el proceso de registro sea más rápido.',
     layoutType: 'CARD',
     subtitle: '',
-    callsToAction: 'Planifica tu primera visita^https://rock.christfellowship.church/CFKidsPlanaVisit',
+    callsToAction:
+      'Planifica tu primera visita^https://rock.christfellowship.church/CFKidsPlanaVisit',
     coverImage: undefined,
     featureVideo: undefined,
     aspectRatio: '16by9',
