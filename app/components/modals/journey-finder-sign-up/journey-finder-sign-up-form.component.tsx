@@ -2,11 +2,16 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher, useSearchParams } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+  nativeRadioStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { pushFormEvent } from '~/lib/gtm';
 import Icon from '~/primitives/icon';
-
-const formControlStyles = `${defaultTextInputStyles} border-transparent bg-[#f4f5f7] text-sm`;
 
 export type JourneyFinderSignUpSuccessDetails = {
   firstName: string;
@@ -28,16 +33,16 @@ export const renderInputField = (
   fieldClassName = '',
 ) => (
   <Form.Field name={name} className={`flex flex-col mb-4 ${fieldClassName}`}>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
+    <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
       <input
         type={type}
         required
         defaultValue={defaultValue}
-        className={formControlStyles}
+        className={cn(formControlBaseStyles, formControlFocusStyles)}
       />
     </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
+    <Form.Message className={formErrorMessageStyles} match='valueMissing'>
       {requiredMessage}
     </Form.Message>
   </Form.Field>
@@ -201,7 +206,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           name='atCF'
           className='flex flex-col col-span-1 md:col-span-2 mt-2'
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             {copy.atCF}
           </Form.Label>
           <div className='flex flex-col gap-2'>
@@ -213,13 +218,14 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
                     name='atCF'
                     value={option.value}
                     required
+                    className={nativeRadioStyles}
                   />
                 </Form.Control>
                 <span className='leading-4'>{option.label}</span>
               </label>
             ))}
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             {copy.requiredAtCF}
           </Form.Message>
         </Form.Field>
@@ -228,11 +234,18 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           name='hopeToGet'
           className='flex flex-col col-span-1 md:col-span-2 mt-2'
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             {copy.hopeToGet}
           </Form.Label>
           <Form.Control asChild>
-            <textarea rows={4} className={formControlStyles} />
+            <textarea
+              rows={4}
+              className={cn(
+                formControlBaseStyles,
+                formControlFocusStyles,
+                'min-h-[120px] h-auto',
+              )}
+            />
           </Form.Control>
         </Form.Field>
 

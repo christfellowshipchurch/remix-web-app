@@ -1,7 +1,14 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+  nativeCheckboxStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { useFetcher } from 'react-router-dom';
 import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
 import { pushFormEvent } from '~/lib/gtm';
@@ -18,16 +25,16 @@ export const renderInputField = (
   defaultValue?: string,
 ) => (
   <Form.Field name={name} className='flex flex-col mb-4'>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
+    <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
       <input
         type={type}
         required
         defaultValue={defaultValue}
-        className={defaultTextInputStyles}
+        className={cn(formControlBaseStyles, formControlFocusStyles)}
       />
     </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
+    <Form.Message className={formErrorMessageStyles} match='valueMissing'>
       {requiredMessage}
     </Form.Message>
   </Form.Field>
@@ -48,9 +55,14 @@ export const renderCheckboxField = (
     className='flex gap-2 md:items-center'
   >
     <Form.Control asChild>
-      <input type='checkbox' id={checkbox.guid} value={checkbox.guid} />
+      <input
+        type='checkbox'
+        id={checkbox.guid}
+        value={checkbox.guid}
+        className={nativeCheckboxStyles}
+      />
     </Form.Control>
-    <Form.Label className='font-bold leading-4'>{checkbox.value}</Form.Label>
+    <Form.Label className={formLabelStyles}>{checkbox.value}</Form.Label>
   </Form.Field>
 );
 
@@ -154,11 +166,15 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         )}
 
         <Form.Field name='campus' className='flex flex-col'>
-          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+          <Form.Label className={formLabelStyles}>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
               <select
-                className={`appearance-none ${defaultTextInputStyles}`}
+                className={cn(
+                  'appearance-none',
+                  formControlBaseStyles,
+                  formControlFocusStyles,
+                )}
                 required
                 style={{
                   backgroundImage: `url('/assets/icons/chevron-down.svg')`,
@@ -176,7 +192,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please select a campus
           </Form.Message>
         </Form.Field>
@@ -184,7 +200,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         <Form.Field name='decision' className='flex gap-2 md:items-center mt-3'>
           <Form.Control asChild>
             <input
-              className='mb-1'
+              className={cn('mb-1', nativeCheckboxStyles)}
               type='checkbox'
               id='decision'
               name='decision'
@@ -205,7 +221,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           <Form.Field name='other' className='flex gap-2 md:items-center'>
             <Form.Control asChild>
               <input
-                className='mb-1'
+                className={cn('mb-1', nativeCheckboxStyles)}
                 type='checkbox'
                 id={otherCheckbox.guid}
                 name={otherCheckbox.guid}
@@ -213,7 +229,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 onChange={(_e) => setIsOther(!isOther)}
               />
             </Form.Control>
-            <Form.Label className='font-bold leading-4'>
+            <Form.Label className={formLabelStyles}>
               {otherCheckbox.value}
             </Form.Label>
           </Form.Field>
@@ -224,7 +240,10 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
             <div />
             <Form.Field name='otherContent' className='flex flex-col'>
               <Form.Control asChild>
-                <input type='text' className={defaultTextInputStyles} />
+                <input
+                  type='text'
+                  className={cn(formControlBaseStyles, formControlFocusStyles)}
+                />
               </Form.Control>
             </Form.Field>
           </>

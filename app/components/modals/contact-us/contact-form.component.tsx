@@ -1,7 +1,14 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+  nativeCheckboxStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { useFetcher } from 'react-router-dom';
 import { ContactUsLoaderReturnType } from '~/routes/contact-us/types';
 import { pushFormEvent } from '~/lib/gtm';
@@ -76,56 +83,76 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2 px-0 md:px-6'
       >
         <Form.Field name='firstName' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>First Name</Form.Label>
+          <Form.Label className={formLabelStyles}>First Name</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your first name
           </Form.Message>
         </Form.Field>
 
         <Form.Field name='lastName' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>Last Name</Form.Label>
+          <Form.Label className={formLabelStyles}>Last Name</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your last name
           </Form.Message>
         </Form.Field>
 
         <Form.Field name='phone' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>Cell Phone</Form.Label>
+          <Form.Label className={formLabelStyles}>Cell Phone</Form.Label>
           <Form.Control asChild>
-            <input type='tel' required className={defaultTextInputStyles} />
+            <input
+              type='tel'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your phone number
           </Form.Message>
         </Form.Field>
 
         <Form.Field name='email' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             Email Address
           </Form.Label>
           <Form.Control asChild>
-            <input type='email' required className={defaultTextInputStyles} />
+            <input
+              type='email'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your email address
           </Form.Message>
-          <Form.Message className='text-sm text-alert' match='typeMismatch'>
+          <Form.Message className={formErrorMessageStyles} match='typeMismatch'>
             Please enter a valid email address
           </Form.Message>
         </Form.Field>
 
         <Form.Field name='campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>Location</Form.Label>
+          <Form.Label className={formLabelStyles}>Location</Form.Label>
           <Form.Control asChild>
             {campuses && (
               <select
-                className={`appearance-none ${defaultTextInputStyles}`}
+                className={cn(
+                  'appearance-none',
+                  formControlBaseStyles,
+                  formControlFocusStyles,
+                )}
                 required
                 style={{
                   backgroundImage: `url('/assets/icons/chevron-down.svg')`,
@@ -143,17 +170,25 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please select a campus
           </Form.Message>
         </Form.Field>
 
         <Form.Field name='message' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>Message</Form.Label>
+          <Form.Label className={formLabelStyles}>Message</Form.Label>
           <Form.Control asChild>
-            <textarea required rows={5} className={defaultTextInputStyles} />
+            <textarea
+              required
+              rows={5}
+              className={cn(
+                formControlBaseStyles,
+                formControlFocusStyles,
+                'min-h-[120px] h-auto',
+              )}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter a message
           </Form.Message>
         </Form.Field>
@@ -164,7 +199,11 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         >
           <div className='flex gap-2 items-start'>
             <Form.Control asChild>
-              <input type='checkbox' required className='mt-1 shrink-0' />
+              <input
+                type='checkbox'
+                required
+                className={cn('mt-1 shrink-0', nativeCheckboxStyles)}
+              />
             </Form.Control>
             <Form.Label className='text-sm text-text-secondary leading-5'>
               By submitting, you agree to our{' '}
@@ -202,7 +241,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
             </Form.Label>
           </div>
           <Form.Message
-            className='text-sm text-alert pl-5'
+            className={cn(formErrorMessageStyles, 'pl-5')}
             match='valueMissing'
           >
             You must agree to continue

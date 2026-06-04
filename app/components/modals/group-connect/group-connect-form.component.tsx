@@ -2,7 +2,13 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { pushFormEvent } from '~/lib/gtm';
 
 interface GroupConnectFormProps {
@@ -66,41 +72,57 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
         {/* First Name */}
         <Form.Field name='firstName' className='flex flex-col'>
-          <Form.Label>First Name*</Form.Label>
+          <Form.Label className={formLabelStyles}>First Name*</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your first name
           </Form.Message>
         </Form.Field>
         {/* Last Name */}
         <Form.Field name='lastName' className='flex flex-col'>
-          <Form.Label>Last Name*</Form.Label>
+          <Form.Label className={formLabelStyles}>Last Name*</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your last name
           </Form.Message>
         </Form.Field>
         {/* Phone */}
         <Form.Field name='phoneNumber' className='flex flex-col'>
-          <Form.Label>Phone*</Form.Label>
+          <Form.Label className={formLabelStyles}>Phone*</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your phone number
           </Form.Message>
         </Form.Field>
         {/* Email */}
         <Form.Field name='email' className='flex flex-col'>
-          <Form.Label>Email*</Form.Label>
+          <Form.Label className={formLabelStyles}>Email*</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              className={cn(formControlBaseStyles, formControlFocusStyles)}
+            />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your email
           </Form.Message>
         </Form.Field>
@@ -108,11 +130,15 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
           <Form.Field name='campus' className='flex flex-col md:col-span-2'>
-            <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+            <Form.Label className={formLabelStyles}>Campus</Form.Label>
             <input type='hidden' name='campus' value={campus} />
             <Form.Control asChild>
               <select
-                className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
+                className={cn(
+                  'appearance-none text-neutral-400',
+                  formControlBaseStyles,
+                  formControlFocusStyles,
+                )}
                 required
                 disabled
                 style={{

@@ -3,7 +3,14 @@ import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+  nativeCheckboxStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { pushFormEvent } from '~/lib/gtm';
 import { RockCampuses } from '~/lib/rock-config';
 
@@ -56,69 +63,89 @@ const SignupForm: React.FC<SignupFormProps> = ({
       <input type='hidden' name='groupGuid' value={groupGuid} />
 
       <Form.Field name='firstName' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>First Name*</Form.Label>
+        <Form.Label className={formLabelStyles}>First Name*</Form.Label>
         <Form.Control asChild>
-          <input type='text' required className={defaultTextInputStyles} />
+          <input
+            type='text'
+            required
+            className={cn(formControlBaseStyles, formControlFocusStyles)}
+          />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           Please enter your first name
         </Form.Message>
       </Form.Field>
 
       <Form.Field name='lastName' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Last Name*</Form.Label>
+        <Form.Label className={formLabelStyles}>Last Name*</Form.Label>
         <Form.Control asChild>
-          <input type='text' required className={defaultTextInputStyles} />
+          <input
+            type='text'
+            required
+            className={cn(formControlBaseStyles, formControlFocusStyles)}
+          />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           Please enter your last name
         </Form.Message>
       </Form.Field>
 
       <Form.Field name='phoneNumber' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Cell Phone*</Form.Label>
+        <Form.Label className={formLabelStyles}>Cell Phone*</Form.Label>
         <Form.Control asChild>
-          <input type='tel' required className={defaultTextInputStyles} />
+          <input
+            type='tel'
+            required
+            className={cn(formControlBaseStyles, formControlFocusStyles)}
+          />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           Please enter your phone number
         </Form.Message>
       </Form.Field>
 
       <Form.Field name='email' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Email*</Form.Label>
+        <Form.Label className={formLabelStyles}>Email*</Form.Label>
         <Form.Control asChild>
-          <input type='email' required className={defaultTextInputStyles} />
+          <input
+            type='email'
+            required
+            className={cn(formControlBaseStyles, formControlFocusStyles)}
+          />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           Please enter your email
         </Form.Message>
-        <Form.Message className='text-alert text-sm' match='typeMismatch'>
+        <Form.Message className={formErrorMessageStyles} match='typeMismatch'>
           Please enter a valid email
         </Form.Message>
       </Form.Field>
 
       <Form.Field name='birthdate' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Birthdate*</Form.Label>
+        <Form.Label className={formLabelStyles}>Birthdate*</Form.Label>
         <Form.Control asChild>
           <input
             type='date'
             required
             max={new Date().toISOString().slice(0, 10)}
-            className={defaultTextInputStyles}
+            className={cn(formControlBaseStyles, formControlFocusStyles)}
           />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           Please enter your birthdate
         </Form.Message>
       </Form.Field>
 
       <Form.Field name='campus' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Campus*</Form.Label>
+        <Form.Label className={formLabelStyles}>Campus*</Form.Label>
         <Form.Control asChild>
           <select
             required
-            className={`appearance-none ${defaultTextInputStyles}`}
+            className={cn(
+              'appearance-none',
+              formControlBaseStyles,
+              formControlFocusStyles,
+            )}
             defaultValue=''
           >
             <option value='' disabled>
@@ -131,7 +158,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
             ))}
           </select>
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           Please select your home campus
         </Form.Message>
       </Form.Field>
@@ -146,7 +173,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
               type='checkbox'
               required
               value='true'
-              className='h-5 w-5 shrink-0 rounded border border-ocean accent-ocean'
+              className={cn('shrink-0', nativeCheckboxStyles)}
             />
           </Form.Control>
           <span className='text-sm'>
@@ -163,7 +190,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
             *
           </span>
         </label>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <Form.Message className={formErrorMessageStyles} match='valueMissing'>
           You must accept the waiver to sign up.
         </Form.Message>
       </Form.Field>

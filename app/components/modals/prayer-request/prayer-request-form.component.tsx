@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { PrayerRequestLoaderReturnType } from '~/routes/prayer-request/types';
 
 interface PrayerRequestFormProps {
@@ -24,15 +30,19 @@ const renderInputField = (
   requiredMessage: string,
 ) => (
   <Form.Field name={name} className='flex flex-col mb-4'>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
+    <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
-      <input type={type} required className={defaultTextInputStyles} />
+      <input
+        type={type}
+        required
+        className={cn(formControlBaseStyles, formControlFocusStyles)}
+      />
     </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
+    <Form.Message className={formErrorMessageStyles} match='valueMissing'>
       {requiredMessage}
     </Form.Message>
     {type === 'email' && (
-      <Form.Message className='text-sm text-alert' match='typeMismatch'>
+      <Form.Message className={formErrorMessageStyles} match='typeMismatch'>
         Please enter a valid email address
       </Form.Message>
     )}
@@ -124,11 +134,15 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
         )}
 
         <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+          <Form.Label className={formLabelStyles}>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
               <select
-                className={`appearance-none ${defaultTextInputStyles}`}
+                className={cn(
+                  'appearance-none',
+                  formControlBaseStyles,
+                  formControlFocusStyles,
+                )}
                 required
                 style={{
                   backgroundImage: `url('/assets/icons/chevron-down.svg')`,
@@ -146,19 +160,27 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please select a campus
           </Form.Message>
         </Form.Field>
 
         <Form.Field name='Request' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             How can we pray for you?
           </Form.Label>
           <Form.Control asChild>
-            <textarea required rows={5} className={defaultTextInputStyles} />
+            <textarea
+              required
+              rows={5}
+              className={cn(
+                formControlBaseStyles,
+                formControlFocusStyles,
+                'min-h-[120px] h-auto',
+              )}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please enter your prayer request
           </Form.Message>
         </Form.Field>
@@ -167,12 +189,16 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
           name='FollowUp'
           className='flex flex-col mb-4 md:col-span-2'
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             Would you like our team to follow up with you?
           </Form.Label>
           <Form.Control asChild>
             <select
-              className={`appearance-none ${defaultTextInputStyles}`}
+              className={cn(
+                'appearance-none',
+                formControlBaseStyles,
+                formControlFocusStyles,
+              )}
               style={{
                 backgroundImage: `url('/assets/icons/chevron-down.svg')`,
                 backgroundSize: '24px',

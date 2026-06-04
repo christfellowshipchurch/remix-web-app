@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { NewsletterSubscriptionLoaderReturnType } from '~/routes/newsletter-subscription/types';
 
 interface NewsletterSubscriptionFormProps {
@@ -17,15 +23,19 @@ export const renderInputField = (
   requiredMessage: string,
 ) => (
   <Form.Field name={name} className='flex flex-col mb-4'>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
+    <Form.Label className={formLabelStyles}>{label}</Form.Label>
     <Form.Control asChild>
-      <input type={type} required className={defaultTextInputStyles} />
+      <input
+        type={type}
+        required
+        className={cn(formControlBaseStyles, formControlFocusStyles)}
+      />
     </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
+    <Form.Message className={formErrorMessageStyles} match='valueMissing'>
       {requiredMessage}
     </Form.Message>
     {type === 'email' && (
-      <Form.Message className='text-sm text-alert' match='typeMismatch'>
+      <Form.Message className={formErrorMessageStyles} match='typeMismatch'>
         Please enter a valid email address
       </Form.Message>
     )}
@@ -125,13 +135,17 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
         )}
 
         <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             Campus Location
           </Form.Label>
           <Form.Control asChild>
             {campuses && (
               <select
-                className={`appearance-none ${defaultTextInputStyles}`}
+                className={cn(
+                  'appearance-none',
+                  formControlBaseStyles,
+                  formControlFocusStyles,
+                )}
                 required
                 style={{
                   backgroundImage: `url('/assets/icons/chevron-down.svg')`,
@@ -149,7 +163,7 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             Please select a campus
           </Form.Message>
         </Form.Field>

@@ -1,7 +1,14 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+  formErrorMessageStyles,
+  formLabelStyles,
+  nativeRadioStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { useFetcher } from 'react-router-dom';
 import { renderInputField } from '../connect-card/connect-form.component';
 import { LoaderReturnType } from '~/routes/set-a-reminder/loader';
@@ -130,10 +137,14 @@ const ReminderForm: React.FC<ReminderProps> = ({
         )}
 
         <Form.Field name='campus' className='flex flex-col'>
-          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+          <Form.Label className={formLabelStyles}>Campus</Form.Label>
           <Form.Control asChild>
             <select
-              className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
+              className={cn(
+                'appearance-none text-neutral-400',
+                formControlBaseStyles,
+                formControlFocusStyles,
+              )}
               required
               disabled
               style={{
@@ -149,13 +160,17 @@ const ReminderForm: React.FC<ReminderProps> = ({
         </Form.Field>
 
         <Form.Field name='serviceTime' className='flex flex-col'>
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             {isEspanol ? 'Horarios de Servicios' : 'Service Time'}
           </Form.Label>
           <Form.Control asChild>
             {serviceTimes && (
               <select
-                className={`appearance-none ${defaultTextInputStyles} cursor-pointer`}
+                className={cn(
+                  'appearance-none cursor-pointer',
+                  formControlBaseStyles,
+                  formControlFocusStyles,
+                )}
                 required
                 onChange={(e) => setServiceTime(e.target.value)}
                 style={{
@@ -180,7 +195,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             {isEspanol
               ? 'Porfavor seleccione un horario de servicio'
               : 'Please select a service time'}
@@ -191,7 +206,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           name='beenToCF'
           className='flex flex-col col-span-1 md:col-span-2 mt-4'
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={formLabelStyles}>
             {isEspanol
               ? '¿Ha estado en Christ Fellowship antes?'
               : 'Have you been to Christ Fellowship before?'}
@@ -203,7 +218,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
                 name='beenToCF'
                 value='true'
                 required
-                className='h-4 w-4 accent-ocean shrink-0'
+                className={nativeRadioStyles}
               />
               {isEspanol ? 'Sí' : 'Yes'}
             </label>
@@ -212,12 +227,12 @@ const ReminderForm: React.FC<ReminderProps> = ({
                 type='radio'
                 name='beenToCF'
                 value='false'
-                className='h-4 w-4 accent-ocean shrink-0'
+                className={nativeRadioStyles}
               />
               No, {isEspanol ? 'es mi primera vez' : "it's my first time"}
             </label>
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Message className={formErrorMessageStyles} match='valueMissing'>
             {isEspanol
               ? 'Porfavor indique si ha estado en Christ Fellowship antes.'
               : 'Please let us know if you have been to Christ Fellowship before.'}
