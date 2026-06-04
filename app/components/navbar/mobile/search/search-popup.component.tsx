@@ -19,6 +19,14 @@ interface LocationHit {
   campusImage?: string;
 }
 
+function hasNonBlankUrl(hit: { url?: unknown }): boolean {
+  return typeof hit.url === 'string' && hit.url.trim().length > 0;
+}
+
+function hasNonBlankCampusUrl(hit: LocationHit): boolean {
+  return typeof hit.campusUrl === 'string' && hit.campusUrl.trim().length > 0;
+}
+
 const ContentItemsHitsCollector = ({
   onHitsChange,
 }: {
@@ -27,19 +35,20 @@ const ContentItemsHitsCollector = ({
   const { items } = useHits<Record<string, unknown>>();
 
   useEffect(() => {
-    const contentHits: MobileContentHitType[] = items.map((hit) => ({
-      routing: {
-        pathname:
-          (hit.routing as { pathname?: string })?.pathname ||
-          (hit.url as string) ||
-          '',
-      },
-      coverImage:
-        (hit.coverImage as MobileContentHitType['coverImage']) || null,
-      title: (hit.title as string) || '',
-      contentType: (hit.contentType as string) || '',
-      summary: (hit.summary as string) || '',
-    }));
+    const contentHits: MobileContentHitType[] = items
+      .filter(hasNonBlankUrl)
+      .map((hit) => ({
+        routing: {
+          pathname:
+            (hit.routing as { pathname?: string })?.pathname ||
+            (hit.url as string),
+        },
+        coverImage:
+          (hit.coverImage as MobileContentHitType['coverImage']) || null,
+        title: (hit.title as string) || '',
+        contentType: (hit.contentType as string) || '',
+        summary: (hit.summary as string) || '',
+      }));
 
     onHitsChange(contentHits);
   }, [items, onHitsChange]);
@@ -103,7 +112,7 @@ export const SearchPopup = ({
           'hits' in firstResult ? (firstResult.hits as LocationHit[]) : [];
 
         const transformedHits: MobileContentHitType[] = hits
-          .filter((hit) => hit?.campusName)
+          .filter((hit) => hit?.campusName && hasNonBlankCampusUrl(hit))
           .map((hit) => {
             const uri = hit.campusCardImage?.trim() || hit.campusImage?.trim();
             return {
