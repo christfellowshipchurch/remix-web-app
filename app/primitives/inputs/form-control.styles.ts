@@ -29,10 +29,10 @@ export const formErrorMessageStyles: string =
 
 // For Radix modal forms that use native inputs inside Form.Control
 export const nativeCheckboxStyles: string =
-  'size-5 rounded-[4px] border-2 border-[#d1d5db] bg-white checked:bg-ocean checked:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20 accent-ocean';
+  'size-5 rounded-[4px] border-2 border-form-stroke-muted bg-white checked:bg-ocean checked:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20 accent-ocean';
 
 export const nativeRadioStyles: string =
-  'size-5 rounded-full border-2 border-[#d1d5db] bg-white checked:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20 accent-ocean';
+  'size-5 rounded-full border-2 border-form-stroke-muted bg-white checked:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20 accent-ocean';
 
 // Group containers
 export const formCheckboxGroupStyles: string = 'flex flex-col gap-2';
