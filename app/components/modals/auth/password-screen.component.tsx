@@ -2,7 +2,10 @@ import * as Form from '@radix-ui/react-form';
 import React, { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
-import { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
+import {
+  defaultTextInputStyles,
+  formLabelStyles,
+} from '~/primitives/inputs/form-control.styles';
 
 interface PasswordScreenProps {
   onSubmit: (password: string) => Promise<void>;
@@ -55,7 +58,7 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
         className='flex flex-col gap-4 p-4 text-left'
       >
         <Form.Field name='password' className='flex flex-col'>
-          <Form.Label className='text-gray-700'>Password*</Form.Label>
+          <Form.Label className={formLabelStyles}>Password*</Form.Label>
           <div className='relative'>
             <Form.Control asChild>
               <input

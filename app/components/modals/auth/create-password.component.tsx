@@ -2,7 +2,10 @@ import * as Form from '@radix-ui/react-form';
 import React, { useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
-import { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
+import {
+  defaultTextInputStyles,
+  formLabelStyles,
+} from '~/primitives/inputs/form-control.styles';
 
 interface CreatePasswordProps {
   onSubmit: (password: string) => void;
@@ -53,7 +56,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
         className='flex flex-col p-4 text-left'
       >
         <Form.Field name='password' className='flex flex-col'>
-          <Form.Label className='text-text_primary'>Password*</Form.Label>
+          <Form.Label className={formLabelStyles}>Password*</Form.Label>
           <div className='relative'>
             <Form.Control asChild>
               <input
@@ -80,7 +83,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
           </Form.Message>
         </Form.Field>
         <Form.Field name='confirmPassword' className='mt-4 flex flex-col'>
-          <Form.Label className='text-text_primary'>
+          <Form.Label className={formLabelStyles}>
             Confirm Password*
           </Form.Label>
           <Form.Control asChild>
