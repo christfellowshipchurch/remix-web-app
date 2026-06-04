@@ -92,7 +92,7 @@ export default function MobileMenuContent({
             Stay up to date with your groups, classes, and more.
           </p>
           <a
-            href='https://legacy-my-groups.vercel.app/'
+            href='https://groups.christfellowship.church/'
             target='_blank'
             rel='noreferrer'
             onClick={closeMenu}
