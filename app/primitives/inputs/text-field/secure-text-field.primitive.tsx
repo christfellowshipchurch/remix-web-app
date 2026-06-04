@@ -33,6 +33,7 @@ const SecureTextFieldInput = forwardRef<
       value,
       error,
       setValue,
+      setError,
       placeholder = '***-**-0000',
       label,
       isRequired = false,
@@ -131,7 +132,7 @@ const SecureTextFieldInput = forwardRef<
             value={maskedValue}
             placeholder={placeholder}
             onKeyDown={handleKeyDown}
-            onFocus={() => error && undefined}
+            onFocus={() => setError(null)}
             required={isRequired}
             inputMode='numeric'
             autoComplete='off'

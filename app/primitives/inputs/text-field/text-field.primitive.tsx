@@ -96,7 +96,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
         <div className='relative'>
           {error ? (
             <input
-              ref={ref}
+              ref={mergedRef}
               className={cn(
                 formControlErrorStyles,
                 hasLeadingIcon && formControlLeadingIconStyles,

@@ -6,6 +6,7 @@ import {
   formControlFocusStyles,
   formControlErrorStyles,
   formLabelStyles,
+  formHelperTextStyles,
   formErrorMessageStyles,
 } from '~/primitives/inputs/form-control.styles';
 
@@ -20,6 +21,7 @@ interface TextareaInputProps {
   label?: string;
   isRequired?: boolean;
   rows?: number;
+  helperText?: string;
 }
 
 const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
@@ -35,6 +37,7 @@ const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
       label,
       isRequired = false,
       rows,
+      helperText,
     },
     ref,
   ) => {
@@ -80,6 +83,7 @@ const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
             rows={rows}
           />
         )}
+        {helperText && <p className={formHelperTextStyles}>{helperText}</p>}
         {error && (
           <p className={formErrorMessageStyles}>
             <Icon name='errorCircle' className='shrink-0' size={20} />
