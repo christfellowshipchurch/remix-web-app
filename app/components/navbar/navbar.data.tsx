@@ -82,7 +82,7 @@ export const ministriesData: MenuLink = {
           {
             title: 'My Groups & Classes',
             description: 'Stay connected & up to date',
-            url: 'https://legacy-my-groups.vercel.app/login',
+            url: 'https://groups.christfellowship.church/login',
           },
         ],
       },
