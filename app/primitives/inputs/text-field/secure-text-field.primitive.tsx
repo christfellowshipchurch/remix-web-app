@@ -124,7 +124,9 @@ const SecureTextFieldInput = forwardRef<
               }
             }}
             className={cn(
-              error ? formControlErrorStyles : cn(formControlBaseStyles, formControlFocusStyles),
+              error
+                ? formControlErrorStyles
+                : cn(formControlBaseStyles, formControlFocusStyles),
               formControlLeadingIconStyles,
               className,
             )}

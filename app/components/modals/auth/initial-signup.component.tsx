@@ -68,7 +68,9 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
       </p>
       <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
         <Form.Field name='identity' className='flex flex-col'>
-          <Form.Label className={formLabelStyles}>Mobile Number or Email*</Form.Label>
+          <Form.Label className={formLabelStyles}>
+            Mobile Number or Email*
+          </Form.Label>
           <Form.Control asChild>
             <TextFieldInput
               value={identity}

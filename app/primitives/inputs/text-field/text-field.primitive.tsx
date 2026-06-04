@@ -72,7 +72,8 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
     const resolvedType = isPassword && showPassword ? 'text' : type;
 
     const mergedRef = (el: HTMLInputElement | null) => {
-      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
+      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current =
+        el;
       if (typeof ref === 'function') {
         ref(el);
       } else if (ref) {

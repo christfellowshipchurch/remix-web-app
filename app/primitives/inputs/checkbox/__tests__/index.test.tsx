@@ -50,4 +50,59 @@ describe('Checkbox', () => {
     render(<Checkbox checked={false} onChange={vi.fn()} label='Optional' />);
     expect(screen.getByRole('checkbox')).not.toBeRequired();
   });
+
+  it('unchecked state has border-form-stroke-muted class on visual box', () => {
+    const { container } = render(
+      <Checkbox checked={false} onChange={vi.fn()} label='Accept' />,
+    );
+    // The visual checkbox is the span after the input
+    const visualBox = container.querySelector('span.absolute');
+    expect(visualBox?.className).toContain('border-form-stroke-muted');
+  });
+
+  it('checked state has bg-ocean class on visual box', () => {
+    const { container } = render(
+      <Checkbox checked={true} onChange={vi.fn()} label='Accept' />,
+    );
+    const visualBox = container.querySelector('span.absolute');
+    expect(visualBox?.className).toContain('bg-ocean');
+  });
+
+  it('error prop: visual box has border-alert class', () => {
+    const { container } = render(
+      <Checkbox
+        checked={false}
+        onChange={vi.fn()}
+        label='Accept'
+        error={true}
+      />,
+    );
+    const visualBox = container.querySelector('span.absolute');
+    expect(visualBox?.className).toContain('border-alert');
+  });
+
+  it('disabled prop: input has disabled attribute', () => {
+    render(
+      <Checkbox
+        checked={false}
+        onChange={vi.fn()}
+        label='Accept'
+        disabled={true}
+      />,
+    );
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+  });
+
+  it('disabled prop: wrapper label has cursor-not-allowed class', () => {
+    const { container } = render(
+      <Checkbox
+        checked={false}
+        onChange={vi.fn()}
+        label='Accept'
+        disabled={true}
+      />,
+    );
+    const label = container.querySelector('label');
+    expect(label?.className).toContain('cursor-not-allowed');
+  });
 });

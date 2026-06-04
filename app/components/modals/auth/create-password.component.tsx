@@ -83,9 +83,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
           </Form.Message>
         </Form.Field>
         <Form.Field name='confirmPassword' className='mt-4 flex flex-col'>
-          <Form.Label className={formLabelStyles}>
-            Confirm Password*
-          </Form.Label>
+          <Form.Label className={formLabelStyles}>Confirm Password*</Form.Label>
           <Form.Control asChild>
             <input
               type='password'

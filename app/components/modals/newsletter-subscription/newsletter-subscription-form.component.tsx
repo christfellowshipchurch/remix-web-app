@@ -135,9 +135,7 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
         )}
 
         <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className={formLabelStyles}>
-            Campus Location
-          </Form.Label>
+          <Form.Label className={formLabelStyles}>Campus Location</Form.Label>
           <Form.Control asChild>
             {campuses && (
               <select

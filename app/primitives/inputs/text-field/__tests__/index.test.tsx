@@ -93,9 +93,11 @@ describe('TextFieldInput', () => {
         setError={vi.fn()}
       />,
     );
-    // In error state the input is readOnly — no onChange
+    // Error message is rendered below the field
+    expect(screen.getByText('Invalid email')).toBeInTheDocument();
+    // Input is still editable (not readOnly) in error state
     const input = document.querySelector('input');
-    expect(input).toHaveAttribute('readonly');
+    expect(input).not.toHaveAttribute('readonly');
   });
 
   it('clears error on focus when in error state', () => {
@@ -110,6 +112,89 @@ describe('TextFieldInput', () => {
     );
     fireEvent.focus(screen.getByRole('textbox'));
     expect(setError).toHaveBeenCalledWith(null);
+  });
+
+  it('input has rounded-[10px] class (radius token)', () => {
+    render(
+      <TextFieldInput
+        value=''
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+      />,
+    );
+    const input = document.querySelector('input');
+    expect(input?.className).toContain('rounded-[10px]');
+  });
+
+  it('input has h-[46px] class (height token)', () => {
+    render(
+      <TextFieldInput
+        value=''
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+      />,
+    );
+    const input = document.querySelector('input');
+    expect(input?.className).toContain('h-[46px]');
+  });
+
+  it('input has bg-gray class (background token)', () => {
+    render(
+      <TextFieldInput
+        value=''
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+      />,
+    );
+    const input = document.querySelector('input');
+    expect(input?.className).toContain('bg-gray');
+  });
+
+  it('error message is rendered below the field, not inside the input', () => {
+    render(
+      <TextFieldInput
+        value=''
+        error='Required field'
+        setValue={vi.fn()}
+        setError={vi.fn()}
+      />,
+    );
+    const errorMsg = screen.getByText('Required field');
+    expect(errorMsg.tagName).not.toBe('INPUT');
+    expect(errorMsg.closest('p')).toBeInTheDocument();
+  });
+
+  it('password type renders a toggle button', () => {
+    render(
+      <TextFieldInput
+        value=''
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+        type='password'
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: /show password/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('isValidated prop: shows trailing icon when true and no error', () => {
+    render(
+      <TextFieldInput
+        value='test'
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+        isValidated={true}
+      />,
+    );
+    // The checkCircle icon span is rendered as a trailing icon
+    const wrapper = document.querySelector('.relative');
+    expect(wrapper?.querySelector('span.absolute')).toBeInTheDocument();
   });
 
   it('renders name attribute when provided', () => {

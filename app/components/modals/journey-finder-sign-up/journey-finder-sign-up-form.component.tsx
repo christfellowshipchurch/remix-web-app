@@ -206,9 +206,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           name='atCF'
           className='flex flex-col col-span-1 md:col-span-2 mt-2'
         >
-          <Form.Label className={formLabelStyles}>
-            {copy.atCF}
-          </Form.Label>
+          <Form.Label className={formLabelStyles}>{copy.atCF}</Form.Label>
           <div className='flex flex-col gap-2'>
             {copy.atCFOptions.map((option) => (
               <label key={option.value} className='flex items-center gap-2'>
@@ -234,9 +232,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           name='hopeToGet'
           className='flex flex-col col-span-1 md:col-span-2 mt-2'
         >
-          <Form.Label className={formLabelStyles}>
-            {copy.hopeToGet}
-          </Form.Label>
+          <Form.Label className={formLabelStyles}>{copy.hopeToGet}</Form.Label>
           <Form.Control asChild>
             <textarea
               rows={4}

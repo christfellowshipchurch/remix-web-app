@@ -125,9 +125,7 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         </Form.Field>
 
         <Form.Field name='email' className='flex flex-col mb-4'>
-          <Form.Label className={formLabelStyles}>
-            Email Address
-          </Form.Label>
+          <Form.Label className={formLabelStyles}>Email Address</Form.Label>
           <Form.Control asChild>
             <input
               type='email'

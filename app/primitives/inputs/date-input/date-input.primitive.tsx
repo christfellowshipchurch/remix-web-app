@@ -49,7 +49,8 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
     }, [error]);
 
     const mergedRef = (el: HTMLInputElement | null) => {
-      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
+      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current =
+        el;
       if (typeof ref === 'function') {
         ref(el);
       } else if (ref) {
@@ -87,7 +88,11 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
           <input
             ref={mergedRef}
             name={name}
-            className={cn(formControlBaseStyles, formControlFocusStyles, className)}
+            className={cn(
+              formControlBaseStyles,
+              formControlFocusStyles,
+              className,
+            )}
             type='date'
             value={value}
             onChange={(e) => setValue(e.target.value)}
