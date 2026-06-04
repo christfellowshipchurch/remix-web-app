@@ -7,11 +7,7 @@ import {
   getRockApiPersonAliasId,
   postRockWorkflowLaunchWithApiInitiator,
 } from '../rock-workflow';
-import {
-  fetchRockData,
-  patchRockData,
-  postRockData,
-} from '../fetch-rock-data';
+import { fetchRockData, patchRockData, postRockData } from '../fetch-rock-data';
 
 vi.mock('../fetch-rock-data', () => ({
   fetchRockData: vi.fn(),
@@ -48,13 +44,17 @@ describe('buildRockWorkflowLaunchEndpoint', () => {
   it('uses PersonAlias launch when API alias is configured', () => {
     process.env.API_ALIAS_PERSON_ID = '648297';
 
-    expect(buildRockWorkflowLaunchEndpoint('1833', 'Journey Finder Sign Up')).toBe(
+    expect(
+      buildRockWorkflowLaunchEndpoint('1833', 'Journey Finder Sign Up'),
+    ).toBe(
       'PersonAlias/LaunchWorkflow/648297?workflowTypeId=1833&workflowName=Journey%20Finder%20Sign%20Up',
     );
   });
 
   it('uses Workflows/LaunchWorkflow/0 when API alias is not configured', () => {
-    expect(buildRockWorkflowLaunchEndpoint('1833', 'Journey Finder Sign Up')).toBe(
+    expect(
+      buildRockWorkflowLaunchEndpoint('1833', 'Journey Finder Sign Up'),
+    ).toBe(
       'Workflows/LaunchWorkflow/0?workflowTypeId=1833&workflowName=Journey%20Finder%20Sign%20Up',
     );
   });

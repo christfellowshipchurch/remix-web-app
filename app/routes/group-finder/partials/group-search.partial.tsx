@@ -26,6 +26,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -373,6 +374,7 @@ export const GroupSearch = () => {
               coordinates={coordinates}
               minMaxAgeValues={minMaxAgeValues}
               hitsPerPageOverride={GROUP_FINDER_LOADER_HITS_PER_PAGE}
+              query={urlState.query}
             />
 
             <FinderStickyBar>
@@ -420,6 +422,7 @@ export const GroupSearch = () => {
               initialHits={groupHits}
               initialNbHits={groupNbHits}
               fromGroupFinderUrl={fromGroupFinderUrl}
+              isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
             />
           </InstantSearch>
         ) : (
@@ -446,6 +449,7 @@ export const GroupSearch = () => {
               isLastPage={isLastPage}
               fromGroupFinderUrl={fromGroupFinderUrl}
               onPageChange={goToPage}
+              isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
             />
           </>
         )}
@@ -458,10 +462,12 @@ function GroupFinderInstantSearchResults({
   initialHits,
   initialNbHits,
   fromGroupFinderUrl,
+  isGeoSearch,
 }: {
   initialHits: LoaderReturnType['groupHits'];
   initialNbHits: number;
   fromGroupFinderUrl: string;
+  isGeoSearch: boolean;
 }) {
   const { items } = useHits<LoaderReturnType['groupHits'][number]>();
   const { nbHits } = useStats();
@@ -470,11 +476,24 @@ function GroupFinderInstantSearchResults({
     usePagination();
   const isLoading = status === 'loading' || status === 'stalled';
 
-  // InstantSearch can briefly have no client hits while it issues the first
-  // request after hydration. Continue showing loader hits/counts during that
-  // gap so the SSR first paint does not flash empty.
-  const hits = isLoading && items.length === 0 ? initialHits : items;
-  const hitCount = isLoading && items.length === 0 ? initialNbHits : nbHits;
+  // Show the SSR loader hits until the first client search returns results.
+  // Latch on `items.length > 0` (not merely `!isLoading`): InstantSearch reports
+  // status 'idle' on its very first render *before* issuing a search, so latching
+  // on `!isLoading` alone would drop the loader hits and blank the grid during the
+  // SSR->client handoff. Once resolved, `items` already retains the previous
+  // results while a new search is in flight, so we render those — this avoids
+  // flashing the loader groups when clearing filters from a 0-results state.
+  const hasResolvedRef = useRef(false);
+  if (!isLoading && items.length > 0) hasResolvedRef.current = true;
+  const useInitialFallback = !hasResolvedRef.current && items.length === 0;
+
+  const hits = useInitialFallback ? initialHits : items;
+  const hitCount = useInitialFallback ? initialNbHits : nbHits;
+
+  // Don't dim during the initial handoff: we're showing the loader hits, so a
+  // loading flash would just be noise. Only show the loading state for searches
+  // the user triggers after the first client results have resolved.
+  const showLoading = isLoading && hasResolvedRef.current;
 
   const goToPage = (nextPage: number) => {
     refine(Math.max(0, nextPage));
@@ -492,9 +511,10 @@ function GroupFinderInstantSearchResults({
       groupPage={currentRefinement}
       isFirstPage={isFirstPage}
       isLastPage={isLastPage}
-      isLoading={isLoading}
+      isLoading={showLoading}
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={goToPage}
+      isGeoSearch={isGeoSearch}
     />
   );
 }
@@ -508,6 +528,7 @@ function GroupFinderInitialResults({
   isLastPage,
   fromGroupFinderUrl,
   onPageChange,
+  isGeoSearch,
 }: {
   groupHits: LoaderReturnType['groupHits'];
   groupNbHits: number;
@@ -517,6 +538,7 @@ function GroupFinderInitialResults({
   isLastPage: boolean;
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
+  isGeoSearch: boolean;
 }) {
   return (
     <GroupFinderResultsLayout
@@ -529,6 +551,7 @@ function GroupFinderInitialResults({
       isLoading={false}
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={onPageChange}
+      isGeoSearch={isGeoSearch}
     />
   );
 }
@@ -543,6 +566,7 @@ function GroupFinderResultsLayout({
   isLoading,
   fromGroupFinderUrl,
   onPageChange,
+  isGeoSearch,
 }: {
   groupHits: LoaderReturnType['groupHits'];
   groupNbHits: number;
@@ -553,6 +577,7 @@ function GroupFinderResultsLayout({
   isLoading: boolean;
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
+  isGeoSearch: boolean;
 }) {
   return (
     <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
@@ -575,6 +600,7 @@ function GroupFinderResultsLayout({
                   key={hit.objectID}
                   hit={hit}
                   backUrl={fromGroupFinderUrl}
+                  isGeoSearch={isGeoSearch}
                 />
               ))}
             </div>
@@ -646,6 +672,7 @@ export const ResponsiveConfigure = ({
   minMaxAgeValues = [],
   /** When set, skips responsive 5–12 caps (e.g. class finder groups many hits by `classType` client-side). */
   hitsPerPageOverride,
+  query,
 }: {
   ageInput?: string;
   coordinates: {
@@ -654,6 +681,7 @@ export const ResponsiveConfigure = ({
   } | null;
   minMaxAgeValues?: string[];
   hitsPerPageOverride?: number;
+  query?: string;
 }) => {
   const { isSmall, isMedium, isLarge, isXLarge } = useResponsive();
 
@@ -674,11 +702,17 @@ export const ResponsiveConfigure = ({
 
   const ageFilter = buildMinMaxAgeFilter(ageInput, minMaxAgeValues);
 
+  // No `key` here: a key tied to coordinates/age remounts Configure whenever the
+  // geo filter changes. Under `preserveSharedStateOnUnmount`, that remount strands
+  // the previous `query`/geo params in InstantSearch, so clearing a geo search left
+  // the old query active and stuck on 0 results until a page refresh. Keeping
+  // Configure mounted lets it reactively apply (and remove) params as props change.
+  // `query ?? ''` ensures the query param is always explicitly set, never stranded.
   return (
     <Configure
-      key={`${coordinates?.lat}-${coordinates?.lng}-${ageInput}`}
       hitsPerPage={hitsPerPage}
       filters={ageFilter}
+      query={query ?? ''}
       aroundLatLng={
         coordinates?.lat != null && coordinates?.lng != null
           ? `${coordinates.lat}, ${coordinates.lng}`

@@ -45,11 +45,13 @@ export const GroupSingleBanner = ({
               />
             </Link>
 
-            <img
-              src={leaderImages[0].sources[0].uri}
-              alt={groupName}
-              className={imageStyles}
-            />
+            {leaderImages[0]?.sources?.[0]?.uri && (
+              <img
+                src={leaderImages[0].sources[0].uri}
+                alt={groupName}
+                className={imageStyles}
+              />
+            )}
           </div>
 
           <div className='flex flex-col justify-between gap-2'>

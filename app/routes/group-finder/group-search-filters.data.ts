@@ -35,11 +35,6 @@ export function getGroupSearchDesktopFilters(
             isMeetingType: true,
           },
           {
-            title: 'Christ Fellowship Campus',
-            attribute: 'campusName',
-            isDropdown: true,
-          },
-          {
             title: 'Filter by zip code',
             attribute: 'campusName',
             isLocation: true,
@@ -77,7 +72,7 @@ export function getGroupSearchDesktopFilters(
             attribute: 'peopleWhoAre',
           },
           {
-            title: 'Age Range',
+            title: 'Your Age',
             attribute: 'minMaxAge',
             input: true,
             inputPlaceholder: 'Enter your Age',
@@ -124,6 +119,11 @@ export function getGroupSearchDesktopFilters(
             checkbox: true,
           },
           { title: 'Language', attribute: 'language' },
+          {
+            title: 'Christ Fellowship Campus',
+            attribute: 'campusName',
+            isDropdown: true,
+          },
         ],
       },
     },
@@ -143,7 +143,7 @@ export function getGroupFinderMoreOverflowFilterData(
   };
 }
 
-/** Tablet/desktop full “all filters” card: location (incl. campus dropdown), people, topics, more. */
+/** Tablet/desktop full “all filters” card: location, people, topics, more. */
 export function getGroupFinderTabletFiltersPanelData(
   opts: GroupSearchDesktopFilterOpts,
 ): FilterPopupData {
