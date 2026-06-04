@@ -1,5 +1,3 @@
-import { ROCK_PUBLIC_SITE_ORIGIN } from '~/lib/rock-config';
-
 export interface FooterLink {
   title: string;
   url: string;
@@ -26,7 +24,7 @@ export const footerColumns: FooterColumn[] = [
       { title: 'Request Prayer', url: '#prayer-request' },
       {
         title: 'Subscribe to Updates',
-        url: `${ROCK_PUBLIC_SITE_ORIGIN}/page/4344`,
+        url: '#newsletter-subscription',
       },
       { title: 'Contact Us', url: '/contact-us' },
     ],
