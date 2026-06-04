@@ -3,6 +3,7 @@ import * as Form from '@radix-ui/react-form';
 import TextFieldInput from '~/primitives/inputs/text-field/text-field.primitive';
 import { Button } from '~/primitives/button/button.primitive';
 import { useAuth } from '~/providers/auth-provider';
+import { formLabelStyles } from '~/primitives/inputs/form-control.styles';
 
 interface InitialSignUpProps {
   onSubmit: (identity: string) => Promise<void>;
@@ -67,7 +68,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
       </p>
       <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
         <Form.Field name='identity' className='flex flex-col'>
-          <Form.Label>Mobile Number or Email*</Form.Label>
+          <Form.Label className={formLabelStyles}>Mobile Number or Email*</Form.Label>
           <Form.Control asChild>
             <TextFieldInput
               value={identity}

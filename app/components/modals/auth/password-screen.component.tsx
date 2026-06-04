@@ -2,7 +2,7 @@ import * as Form from '@radix-ui/react-form';
 import React, { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface PasswordScreenProps {
   onSubmit: (password: string) => Promise<void>;

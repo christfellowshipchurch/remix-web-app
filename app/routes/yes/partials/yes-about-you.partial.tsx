@@ -4,7 +4,7 @@ import { useFetcher, useNavigate } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
 import TextFieldInput from '~/primitives/inputs/text-field';
 import DateInput from '~/primitives/inputs/date-input/date-input.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { defaultSelectInputStyles } from '~/primitives/inputs/form-control.styles';
 import { YesFormPersonalInfo } from '../types';
 import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
 
@@ -178,7 +178,7 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
           {campuses && campuses.length > 0 && (
             <select
               name='campus'
-              className={`appearance-none ${defaultTextInputStyles}`}
+              className={`appearance-none ${defaultSelectInputStyles}`}
               required
               style={{
                 backgroundImage: `url('/assets/icons/chevron-down.svg')`,

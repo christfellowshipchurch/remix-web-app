@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import TextFieldInput from '~/primitives/inputs/text-field';
 import { useAuth } from '~/providers/auth-provider';
+import { formLabelStyles } from '~/primitives/inputs/form-control.styles';
 
 interface LoginProps {
   onSubmit: (identity: string) => Promise<void>;
@@ -67,7 +68,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       <h2 className='mb-6 text-5xl font-bold'>Log In</h2>
       <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
         <Form.Field name='identity' className='flex flex-col'>
-          <Form.Label>Mobile Number or Email*</Form.Label>
+          <Form.Label className={formLabelStyles}>Mobile Number or Email*</Form.Label>
           <Form.Control asChild>
             <TextFieldInput
               value={identity}

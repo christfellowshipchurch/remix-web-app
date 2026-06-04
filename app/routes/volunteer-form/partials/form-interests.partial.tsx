@@ -3,7 +3,10 @@ import { INTERESTS, STRENGTHS, VolunteerFormInterests } from '../types';
 import { Button } from '~/primitives/button/button.primitive';
 import Slider from '~/primitives/inputs/slider/slider.primitive';
 import { Checkbox } from '~/primitives/inputs/checkbox/checkbox.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlFocusStyles,
+} from '~/primitives/inputs/form-control.styles';
 import SecureTextField from '~/primitives/inputs/text-field/secure-text-field.primitive';
 import { Form, useActionData } from 'react-router-dom';
 
@@ -121,7 +124,7 @@ export const VolunteerFormInterestsPartial: React.FC<Props> = ({
         <label className='font-bold'>What are you passionate about?</label>
         <textarea
           name='comments'
-          className={defaultTextInputStyles}
+          className={`${formControlBaseStyles} ${formControlFocusStyles} min-h-[120px] h-auto`}
           value={formData.comments}
           rows={5}
           onChange={(e) => handleChange('comments', e.target.value)}

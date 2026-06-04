@@ -1,7 +1,7 @@
 import * as Form from '@radix-ui/react-form';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface PinScreenProps {
   onSubmit: (pin: string) => Promise<void>;
