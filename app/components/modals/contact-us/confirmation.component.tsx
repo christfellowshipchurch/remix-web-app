@@ -2,7 +2,9 @@ import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 import { useNavigate } from 'react-router-dom';
 
-const ContactUsConfirmation: React.FC = () => {
+const ContactUsConfirmation: React.FC<{ onClose?: () => void }> = ({
+  onClose,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -14,7 +16,7 @@ const ContactUsConfirmation: React.FC = () => {
       <Button
         intent='primary'
         className='rounded-xl w-52'
-        onClick={() => navigate('/')}
+        onClick={() => (onClose ? onClose() : navigate('/'))}
       >
         Continue
       </Button>

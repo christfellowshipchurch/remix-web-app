@@ -2,7 +2,13 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { Icon } from '~/primitives/icon/icon';
 import { Video } from '~/primitives/video/video.primitive';
 
-const GoogleMap = ({ address }: { address: string }) => {
+const GoogleMap = ({
+  address,
+  className,
+}: {
+  address: string;
+  className?: string;
+}) => {
   const src = `/maps-embed?address=${encodeURIComponent(address)}`;
   return (
     <iframe
@@ -13,6 +19,7 @@ const GoogleMap = ({ address }: { address: string }) => {
       allowFullScreen
       loading='lazy'
       referrerPolicy='no-referrer-when-downgrade'
+      className={className}
     />
   );
 };
@@ -36,6 +43,7 @@ export const VirtualTourTabs = ({
             value='map'
             isOnline={isOnline}
             address={address}
+            roundedBottom={!wistiaId}
             title={isSpanish ? 'Visítanos' : 'Visit Us'}
             description={
               isSpanish
@@ -66,16 +74,12 @@ export const VirtualTourTabs = ({
           />
         )}
 
-        {!isOnline && address && (
+        {!isOnline && address && wistiaId && (
           <Tabs.List className='flex justify-center gap-4 p-8'>
-            <>
-              <TourButton value='map'>{isSpanish ? 'Mapa' : 'Map'}</TourButton>
-              {wistiaId && (
-                <TourButton value='tour'>
-                  {isSpanish ? 'Recorrido Virtual' : 'Virtual Tour'}
-                </TourButton>
-              )}
-            </>
+            <TourButton value='map'>{isSpanish ? 'Mapa' : 'Map'}</TourButton>
+            <TourButton value='tour'>
+              {isSpanish ? 'Recorrido Virtual' : 'Virtual Tour'}
+            </TourButton>
           </Tabs.List>
         )}
       </Tabs.Root>
@@ -112,6 +116,7 @@ const TabContent = ({
   wistiaId,
   value,
   isOnline,
+  roundedBottom,
 }: {
   address?: string;
   title: string;
@@ -119,6 +124,7 @@ const TabContent = ({
   wistiaId?: string;
   value: string;
   isOnline?: boolean;
+  roundedBottom?: boolean;
 }) => {
   return (
     <Tabs.Content value={value}>
@@ -127,7 +133,12 @@ const TabContent = ({
         <p>{description}</p>
       </div>
 
-      {address && value === 'map' && <GoogleMap address={address} />}
+      {address && value === 'map' && (
+        <GoogleMap
+          address={address}
+          className={roundedBottom ? 'rounded-b-[18px]' : undefined}
+        />
+      )}
 
       {wistiaId && value === 'tour' && (
         <Video

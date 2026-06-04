@@ -44,6 +44,13 @@ function ModalContent({
         className={cn(
           'sm:h-auto max-h-[90vh] data-[state=closed]:animate-dialogContentHide data-[state=open]:animate-dialogContentShow z-500 content-padding',
         )}
+        onPointerDownOutside={(e) => {
+          // iOS Safari fires a synthetic pointerdown on document.body when the
+          // virtual keyboard dismisses after a form submit. Radix mistakes this
+          // for an "outside click" and closes the dialog. We block it here;
+          // genuine overlay taps target the Dialog.Overlay element, not body.
+          if (e.target === document.body) e.preventDefault();
+        }}
       >
         <div
           className={cn(

@@ -15,9 +15,6 @@ import {
   nextSunday,
 } from 'date-fns';
 
-let _uniqueIdCounter = 0;
-const uniqueId = () => String(++_uniqueIdCounter);
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -117,6 +114,9 @@ export const shareMessaging = ({
   };
   return messages;
 };
+let _uniqueIdCounter = 0;
+const uniqueId = () => String(++_uniqueIdCounter);
+
 interface EventDetails {
   title: string;
   description: string;
@@ -163,6 +163,28 @@ export const icsLink = (event: EventDetails): string => {
   const calendarLink = window.URL.createObjectURL(blob);
 
   return calendarLink;
+};
+
+export const googleCalendarLink = (event: EventDetails): string => {
+  const { title, description, address, url } = event;
+  let { startTime, endTime } = event;
+
+  if (typeof startTime === 'string' || typeof endTime === 'string') {
+    startTime = parseISO(startTime as string);
+    endTime = parseISO(endTime as string);
+  }
+
+  const formatDate = (date: Date) => format(date, "yyyyMMdd'T'HHmmss");
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: `${formatDate(startTime as Date)}/${formatDate(endTime as Date)}`,
+    details: `${description}\n\n${url ?? ''}`,
+    location: address,
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 };
 
 function parseTimeAsInt(_time: string) {
