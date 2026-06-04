@@ -1,6 +1,7 @@
 import { useLoaderData, useLocation } from 'react-router-dom';
 import CopyToClipboard from './copy-link.component';
 import Icon from '~/primitives/icon';
+import { buildSocialShareUrls } from '~/lib/share';
 
 const socialIcons: {
   name: 'linkAlt' | 'linkedIn' | 'twitter' | 'facebook' | 'instagram';
@@ -18,11 +19,18 @@ type ShareLinksProps = {
   url?: string;
   overrideCopyUrl?: string;
   backgroundColor?: string;
+  /** Optional page title used to pre-fill the share message on Twitter/X. */
+  title?: string;
   socialMedia: SocialMedia[];
   hideSocialLinks?: boolean;
 };
 
-type SocialMedia = { type: string; url: string };
+/**
+ * url is optional — when omitted, ShareLinks auto-generates the correct
+ * social share URL for known platforms (twitter, facebook, linkedIn) using
+ * the current page URL + title.
+ */
+type SocialMedia = { type: string; url?: string };
 
 export function ShareLinks({
   size: _size = 8,
@@ -30,6 +38,7 @@ export function ShareLinks({
   url,
   overrideCopyUrl,
   backgroundColor,
+  title,
   hideSocialLinks = false,
 }: ShareLinksProps) {
   // Add the host URL to the loader data in the route loader, since we can't use window or access env via client-side
@@ -38,20 +47,38 @@ export function ShareLinks({
   const { pathname } = useLocation();
   const fullPath = `${hostUrl}${pathname}`;
 
+  // Pre-build share URLs from the current page URL + title so consumers
+  // don't need to construct them manually.
+  const generatedUrls = buildSocialShareUrls(fullPath, title);
+
   if (hideSocialLinks) {
     return null;
   }
 
   return socialIcons?.map((icon, index) => {
-    const socialLink = socialMedia?.find(
-      (media) => media?.type === icon?.name,
-    )?.url;
-    if (socialLink) {
+    const socialEntry = socialMedia?.find((media) => media?.type === icon?.name);
+
+    // Resolve the href:
+    // 1. Use an explicitly provided URL if it looks like a real link.
+    // 2. Auto-generate for known social types using the current page URL.
+    // 3. Skip if neither applies.
+    const resolveHref = (): string | null => {
+      const provided = socialEntry?.url;
+      if (provided && provided.startsWith('http')) return provided;
+
+      const key = icon.name as keyof typeof generatedUrls;
+      return generatedUrls[key] ?? null;
+    };
+
+    if (socialEntry) {
+      const href = resolveHref();
+      if (!href) return null;
+
       return (
         <a
           target='_blank'
           key={index}
-          href={socialLink && socialLink}
+          href={href}
           rel='noreferrer'
         >
           <Icon
