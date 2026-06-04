@@ -116,6 +116,8 @@ export const DuringTheWeek = ({
                       to={ministry.learnMoreUrl}
                       className='inline align-middle'
                       aria-label={`${ministry.ministryType} Link`}
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
                       <Icon
                         name='linkExternal'

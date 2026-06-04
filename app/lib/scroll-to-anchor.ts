@@ -8,9 +8,7 @@ export function scrollToAnchor(
   if (!element) return false;
 
   const offsetTop =
-    element.getBoundingClientRect().top +
-    window.scrollY -
-    ANCHOR_SCROLL_OFFSET;
+    element.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
 
   window.scrollTo({
     top: offsetTop,

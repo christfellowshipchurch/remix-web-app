@@ -3,7 +3,8 @@ import { fetchRockProxyHtml } from '../rock-proxy.server';
 
 describe('fetchRockProxyHtml minimal mode', () => {
   it('preserves original script tags while injecting base href and resize script', async () => {
-    const targetUrl = 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123';
+    const targetUrl =
+      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123';
     const originalHtml = `
       <!DOCTYPE html>
       <html>
@@ -18,9 +19,9 @@ describe('fetchRockProxyHtml minimal mode', () => {
       </html>
     `;
 
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(originalHtml, { status: 200 }),
-    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(originalHtml, { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
 
     const html = await fetchRockProxyHtml(targetUrl, 'minimal');
@@ -33,7 +34,9 @@ describe('fetchRockProxyHtml minimal mode', () => {
         }),
       }),
     );
-    expect(html).toContain('<base href="https://rock.christfellowship.church/">');
+    expect(html).toContain(
+      '<base href="https://rock.christfellowship.church/">',
+    );
     expect(html).toContain('<script src="/Scripts/app.js"></script>');
     expect(html).toContain('rock-iframe-resize');
     expect(html).not.toContain('X-Frame-Options');

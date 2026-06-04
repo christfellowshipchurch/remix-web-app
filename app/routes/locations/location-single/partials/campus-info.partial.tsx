@@ -111,7 +111,7 @@ export const CampusInfo = ({
   }
 
   return (
-    <div className='w-full content-padding'>
+    <div id='info' className='w-full content-padding'>
       <div className='mx-auto flex w-full max-w-screen-content flex-col gap-8 pt-16 pb-20 lg:flex-row lg:gap-12 lg:justify-between lg:pb-32'>
         {/* Location Info */}
         <div className='flex max-w-[646px] flex-1 flex-col gap-8 lg:pb-16'>

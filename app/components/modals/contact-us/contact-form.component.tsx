@@ -63,15 +63,17 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
 
   return (
     <>
-      <h2 className='mb-6 text-3xl text-navy font-bold'>Contact Us</h2>
-      <p className='mb-10 text-pretty text-center'>
+      <h2 className='mb-4 text-3xl text-center text-navy font-bold'>
+        Contact Us
+      </h2>
+      <p className='mb-8 text-pretty text-center'>
         With a lot of locations it’s easy to feel lost in the shuffle, so we’ve
         made a point to personally answer every question, comment, or prayer
         request you send us. <br /> <br /> We look forward to hearing from you!
       </p>
       <Form.Root
         onSubmit={handleSubmit}
-        className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
+        className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2 px-0 md:px-6'
       >
         <Form.Field name='firstName' className='flex flex-col mb-4'>
           <Form.Label className='font-bold text-sm mb-2'>First Name</Form.Label>

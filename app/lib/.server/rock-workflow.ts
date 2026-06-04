@@ -65,7 +65,9 @@ interface FindLaunchedWorkflowOptions {
   delayMs?: number;
 }
 
-const firstWorkflowRow = (rows: unknown): { id?: number; Id?: number } | null => {
+const firstWorkflowRow = (
+  rows: unknown,
+): { id?: number; Id?: number } | null => {
   if (Array.isArray(rows)) {
     return rows[0] ?? null;
   }
@@ -104,10 +106,7 @@ export const findLaunchedWorkflowId = async ({
   const baseFilter = `WorkflowTypeId eq ${workflowTypeId} and Id gt ${workflowIdAfter} and InitiatorPersonAliasId eq null`;
 
   const filters = workflowName
-    ? [
-        `${baseFilter} and Name eq '${escapeOData(workflowName)}'`,
-        baseFilter,
-      ]
+    ? [`${baseFilter} and Name eq '${escapeOData(workflowName)}'`, baseFilter]
     : [baseFilter];
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -188,7 +187,9 @@ const logBackgroundPatchFailure = (err: unknown) => {
  *
  * Works while the server process stays alive (local dev, `react-router-serve`).
  */
-export const scheduleRockWorkflowBackgroundWork = (work: Promise<boolean>): void => {
+export const scheduleRockWorkflowBackgroundWork = (
+  work: Promise<boolean>,
+): void => {
   void work.catch(logBackgroundPatchFailure);
 };
 
@@ -200,7 +201,10 @@ export const postRockWorkflowLaunchWithApiInitiator = async ({
 }: PostRockWorkflowLaunchOptions): Promise<void> => {
   const initiatorPersonAliasId = getRockApiPersonAliasId();
   const workflowIdAfter = await getLatestWorkflowIdForType(workflowTypeId);
-  const endpoint = buildRockWorkflowLaunchEndpoint(workflowTypeId, workflowName);
+  const endpoint = buildRockWorkflowLaunchEndpoint(
+    workflowTypeId,
+    workflowName,
+  );
 
   await postRockData({ endpoint, body });
 

@@ -146,12 +146,11 @@ export function ContentHit({
     contentTypeLower !== 'redirect card' &&
     hitPath !== '';
 
-  return (
-    <Link
-      to={hitPath}
-      prefetch={shouldPrefetch ? 'intent' : undefined}
-      className='pr-8 py-2 flex gap-2 hover:translate-x-1 transition-transform duration-300'
-    >
+  const isExternal = hitPath.startsWith('http');
+  const sharedClassName =
+    'pr-8 py-2 flex gap-2 hover:translate-x-1 transition-transform duration-300';
+  const content = (
+    <>
       <Icon name={iconName} color='#666666' size={28} />
       <div className='flex flex-col'>
         <h3 className='text-sm font-semibold'>
@@ -161,6 +160,29 @@ export function ContentHit({
           {getDisplayContentType(hit.contentType)}
         </p>
       </div>
+    </>
+  );
+
+  if (isExternal) {
+    return (
+      <a
+        href={hitPath}
+        target='_blank'
+        rel='noopener noreferrer'
+        className={sharedClassName}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      to={hitPath}
+      prefetch={shouldPrefetch ? 'intent' : undefined}
+      className={sharedClassName}
+    >
+      {content}
     </Link>
   );
 }

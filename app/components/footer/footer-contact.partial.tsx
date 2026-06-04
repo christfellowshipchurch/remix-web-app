@@ -1,4 +1,5 @@
 import Icon from '~/primitives/icon';
+import { useState } from 'react';
 
 const linkStyle =
   'font-bold text-xl text-white hover:text-white/50 transition-colors md:heading-h5';
@@ -6,7 +7,18 @@ const SideDivider = () => (
   <div className='hidden lg:block w-px h-18 bg-white/30' />
 );
 
+const EMAIL = 'hello@christfellowship.church';
+
 export const ContactInfo = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleEmailClick = () => {
+    navigator.clipboard.writeText(EMAIL).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <div className='flex flex-col items-center lg:flex-row py-12 lg:gap-4 xl:gap-10'>
       {/* Call */}
@@ -37,10 +49,11 @@ export const ContactInfo = () => {
             Email Us
           </p>
           <a
-            href='mailto:hello@christfellowship.church'
+            href={`mailto:${EMAIL}`}
             className={`${linkStyle} w-full`}
+            onClick={handleEmailClick}
           >
-            hello@christfellowship.church
+            {copied ? 'Copied!' : EMAIL}
           </a>
         </div>
       </div>
