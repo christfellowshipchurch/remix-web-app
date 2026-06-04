@@ -22,7 +22,7 @@ export const EventSinglePage: React.FC = () => {
     const hash = location.hash?.slice(1);
     if (!hash || !SECTION_IDS.includes(hash as (typeof SECTION_IDS)[number]))
       return;
-    scrollToAnchor(hash);
+    scrollToAnchor(hash, { behavior: 'auto' });
   }, [location.hash]);
 
   // Check if sessionScheduleCards exist

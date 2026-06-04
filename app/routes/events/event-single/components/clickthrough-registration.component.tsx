@@ -62,6 +62,7 @@ export const ClickThroughRegistration = ({
     return actualStep - 1;
   };
 
+  const [hitsReady, setHitsReady] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedCampus, setSelectedCampus] = useState<string>('');
   const [selectedSubGroupType, setSelectedSubGroupType] = useState<string>('');
@@ -192,154 +193,168 @@ export const ClickThroughRegistration = ({
   };
 
   return (
-    <InstantSearch
-      indexName='dev_EventFinderItems'
-      searchClient={searchClient}
-      future={{
-        preserveSharedStateOnUnmount: true,
-      }}
-    >
-      <Configure
-        filters={buildFilter()}
-        hitsPerPage={1000}
-        query={step === 1 && campusSearchQuery ? campusSearchQuery : ''}
-        restrictSearchableAttributes={
-          step === 1 && campusSearchQuery
-            ? ['campus.name', 'campus.city']
-            : undefined
-        }
-      />
+    <>
+      {!hitsReady && <RegistrationSkeleton totalSteps={totalSteps} />}
+      <InstantSearch
+        indexName='dev_EventFinderItems'
+        searchClient={searchClient}
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
+      >
+        <Configure
+          filters={buildFilter()}
+          hitsPerPage={1000}
+          query={step === 1 && campusSearchQuery ? campusSearchQuery : ''}
+          restrictSearchableAttributes={
+            step === 1 && campusSearchQuery
+              ? ['campus.name', 'campus.city']
+              : undefined
+          }
+        />
 
-      <section className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'>
-        <div className='w-full max-w-3xl flex flex-col gap-13 mx-auto'>
-          <div className='flex flex-col gap-4'>
-            <h2 className='font-extrabold text-center text-black text-[32px]'>
-              Register for {title}
-            </h2>
-            <p className='text-center text-[#717182] text-lg font-medium md:mx-4'>
-              Ready to take the next step? Complete our {totalSteps}-step
-              registration process to secure your spot.
-            </p>
-          </div>
+        <HitsDetector onReady={() => setHitsReady(true)} />
+        {hitsReady && (
+          <section className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'>
+            <div className='w-full max-w-3xl flex flex-col gap-13 mx-auto'>
+              <div className='flex flex-col gap-4'>
+                <h2 className='font-extrabold text-center text-black text-[32px]'>
+                  Register for {title}
+                </h2>
+                <p className='text-center text-[#717182] text-lg font-medium md:mx-4'>
+                  Ready to take the next step? Complete our {totalSteps}-step
+                  registration process to secure your spot.
+                </p>
+              </div>
 
-          <div className='flex flex-col gap-3'>
-            {/* Top */}
-            <div className='flex flex-col gap-2 items-center'>
-              <div className='flex gap-4 items-center'>
-                {step > 1 && (
-                  <div
-                    className='flex items-center cursor-pointer'
-                    onClick={handleBack}
-                  >
-                    <Icon name='chevronLeft' size={16} className='text-black' />
-                    <p className='text-xs font-semibold text-[#616161]'>Back</p>
+              <div className='flex flex-col gap-3'>
+                {/* Top */}
+                <div className='flex flex-col gap-2 items-center'>
+                  <div className='flex gap-4 items-center'>
+                    {step > 1 && (
+                      <div
+                        className='flex items-center cursor-pointer'
+                        onClick={handleBack}
+                      >
+                        <Icon
+                          name='chevronLeft'
+                          size={16}
+                          className='text-black'
+                        />
+                        <p className='text-xs font-semibold text-[#616161]'>
+                          Back
+                        </p>
+                      </div>
+                    )}
+                    <h3 className='text-xl font-bold text-black'>
+                      {getCurrentStepData().title}
+                    </h3>
+                  </div>
+
+                  <div className='flex gap-2 items-center'>
+                    {Array.from({ length: totalSteps }, (_, i) => i + 1).map(
+                      (dotStep) => {
+                        const displayStep = getDisplayStep(step);
+                        return (
+                          <div
+                            key={dotStep}
+                            className={`${
+                              dotStep <= displayStep
+                                ? 'bg-ocean'
+                                : 'bg-[#AEAEAE]'
+                            } size-[10px] rounded-full`}
+                          />
+                        );
+                      },
+                    )}
+                  </div>
+
+                  <p className='text-black font-semibold text-sm mb-4'>
+                    Step {getDisplayStep(step)} of {totalSteps}
+                  </p>
+                </div>
+
+                {/* Selected Bar - shows previous selections */}
+                {(selectedCampus ||
+                  selectedSubGroupType ||
+                  selectedDate ||
+                  selectedTime) && (
+                  <div className='flex gap-4 items-center justify-center flex-wrap mb-4'>
+                    {selectedCampus && (
+                      <SelectedBar
+                        icon='map'
+                        text={selectedCampus}
+                        onClick={() => navigateToStep(1)}
+                      />
+                    )}
+                    {selectedSubGroupType && hasSubGroups && (
+                      <SelectedBar
+                        icon='group'
+                        text={selectedSubGroupType}
+                        onClick={() => navigateToStep(2)}
+                      />
+                    )}
+                    {selectedDate && (
+                      <SelectedBar
+                        icon='calendarAlt'
+                        text={formatDateDisplay(selectedDate)}
+                        onClick={() => navigateToStep(hasSubGroups ? 3 : 2)}
+                      />
+                    )}
+                    {selectedTime && (
+                      <SelectedBar
+                        icon='timeFive'
+                        text={`${selectedTime} ET`}
+                        onClick={() => navigateToStep(hasSubGroups ? 4 : 3)}
+                      />
+                    )}
                   </div>
                 )}
-                <h3 className='text-xl font-bold text-black'>
-                  {getCurrentStepData().title}
-                </h3>
-              </div>
 
-              <div className='flex gap-2 items-center'>
-                {Array.from({ length: totalSteps }, (_, i) => i + 1).map(
-                  (dotStep) => {
-                    const displayStep = getDisplayStep(step);
-                    return (
-                      <div
-                        key={dotStep}
-                        className={`${
-                          dotStep <= displayStep ? 'bg-ocean' : 'bg-[#AEAEAE]'
-                        } size-[10px] rounded-full`}
-                      />
-                    );
-                  },
-                )}
+                {/* Step Content */}
+                <StepContent
+                  step={step}
+                  selectedCampus={selectedCampus}
+                  selectedSubGroupType={selectedSubGroupType}
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                  campusSearchQuery={campusSearchQuery}
+                  isGoingBack={isGoingBack}
+                  groupType={extractedGroupType}
+                  onCampusSelect={(campus) => {
+                    setSelectedCampus(campus);
+                    setIsGoingBack(false);
+                    previousStepRef.current = 1;
+                    setStep(hasSubGroups ? 2 : 3);
+                  }}
+                  onSubGroupTypeSelect={(subGroupType) => {
+                    setSelectedSubGroupType(subGroupType);
+                    setIsGoingBack(false);
+                    previousStepRef.current = 2;
+                    setStep(3);
+                  }}
+                  onDateSelect={(date) => {
+                    setSelectedDate(date);
+                    setIsGoingBack(false);
+                    previousStepRef.current = hasSubGroups ? 3 : 3;
+                    setStep(4);
+                  }}
+                  onTimeSelect={(time) => {
+                    setSelectedTime(time);
+                    setIsGoingBack(false);
+                    previousStepRef.current = hasSubGroups ? 4 : 3;
+                    setStep(5);
+                  }}
+                  hasSubGroups={hasSubGroups}
+                  onCampusSearchChange={setCampusSearchQuery}
+                  onResetRegistration={resetRegistrationFlow}
+                />
               </div>
-
-              <p className='text-black font-semibold text-sm mb-4'>
-                Step {getDisplayStep(step)} of {totalSteps}
-              </p>
             </div>
-
-            {/* Selected Bar - shows previous selections */}
-            {(selectedCampus ||
-              selectedSubGroupType ||
-              selectedDate ||
-              selectedTime) && (
-              <div className='flex gap-4 items-center justify-center flex-wrap mb-4'>
-                {selectedCampus && (
-                  <SelectedBar
-                    icon='map'
-                    text={selectedCampus}
-                    onClick={() => navigateToStep(1)}
-                  />
-                )}
-                {selectedSubGroupType && hasSubGroups && (
-                  <SelectedBar
-                    icon='group'
-                    text={selectedSubGroupType}
-                    onClick={() => navigateToStep(2)}
-                  />
-                )}
-                {selectedDate && (
-                  <SelectedBar
-                    icon='calendarAlt'
-                    text={formatDateDisplay(selectedDate)}
-                    onClick={() => navigateToStep(hasSubGroups ? 3 : 2)}
-                  />
-                )}
-                {selectedTime && (
-                  <SelectedBar
-                    icon='timeFive'
-                    text={`${selectedTime} ET`}
-                    onClick={() => navigateToStep(hasSubGroups ? 4 : 3)}
-                  />
-                )}
-              </div>
-            )}
-
-            {/* Step Content */}
-            <StepContent
-              step={step}
-              selectedCampus={selectedCampus}
-              selectedSubGroupType={selectedSubGroupType}
-              selectedDate={selectedDate}
-              selectedTime={selectedTime}
-              campusSearchQuery={campusSearchQuery}
-              isGoingBack={isGoingBack}
-              groupType={extractedGroupType}
-              onCampusSelect={(campus) => {
-                setSelectedCampus(campus);
-                setIsGoingBack(false);
-                previousStepRef.current = 1;
-                setStep(hasSubGroups ? 2 : 3);
-              }}
-              onSubGroupTypeSelect={(subGroupType) => {
-                setSelectedSubGroupType(subGroupType);
-                setIsGoingBack(false);
-                previousStepRef.current = 2;
-                setStep(3);
-              }}
-              onDateSelect={(date) => {
-                setSelectedDate(date);
-                setIsGoingBack(false);
-                previousStepRef.current = hasSubGroups ? 3 : 3;
-                setStep(4);
-              }}
-              onTimeSelect={(time) => {
-                setSelectedTime(time);
-                setIsGoingBack(false);
-                previousStepRef.current = hasSubGroups ? 4 : 3;
-                setStep(5);
-              }}
-              hasSubGroups={hasSubGroups}
-              onCampusSearchChange={setCampusSearchQuery}
-              onResetRegistration={resetRegistrationFlow}
-            />
-          </div>
-        </div>
-      </section>
-    </InstantSearch>
+          </section>
+        )}
+      </InstantSearch>
+    </>
   );
 };
 
@@ -987,6 +1002,55 @@ const FormStep = ({
     </div>
   );
 };
+
+// Fires onReady once when Algolia returns its first batch of hits
+const HitsDetector = ({ onReady }: { onReady: () => void }) => {
+  const { items } = useHits<EventFinderHit>();
+  const calledRef = useRef(false);
+
+  useEffect(() => {
+    if (items.length > 0 && !calledRef.current) {
+      calledRef.current = true;
+      onReady();
+    }
+  }, [items.length, onReady]);
+
+  return null;
+};
+
+const RegistrationSkeleton = ({ totalSteps }: { totalSteps: number }) => (
+  <section className='flex items-center w-full py-8 md:py-16 content-padding bg-gray'>
+    <div className='w-full max-w-3xl flex flex-col gap-13 mx-auto'>
+      <div className='flex flex-col gap-4'>
+        <div className='h-9 rounded animate-pulse bg-neutral-lighter w-64 mx-auto' />
+        <div className='h-5 rounded animate-pulse bg-neutral-lighter w-80 mx-auto' />
+      </div>
+      <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-2 items-center'>
+          <div className='h-7 rounded animate-pulse bg-neutral-lighter w-48' />
+          <div className='flex gap-2 items-center'>
+            {Array.from({ length: totalSteps }, (_, i) => (
+              <div
+                key={i}
+                className='size-[10px] rounded-full bg-neutral-lighter animate-pulse'
+              />
+            ))}
+          </div>
+          <div className='h-4 rounded animate-pulse bg-neutral-lighter w-24 mb-4' />
+        </div>
+        <div className='h-10 rounded-lg animate-pulse bg-neutral-lighter max-w-[400px] mx-auto w-full mb-4' />
+        <div className='flex flex-wrap justify-center gap-4'>
+          {Array.from({ length: 12 }, (_, i) => (
+            <div
+              key={i}
+              className='rounded-lg animate-pulse bg-neutral-lighter w-full md:w-[calc(33.333%-0.67rem)] md:max-w-[300px] h-[120px]'
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 // Helper Functions
 const formatDateDisplay = (dateString: string, dayName?: string): string => {
