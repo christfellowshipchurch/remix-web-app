@@ -4,13 +4,24 @@ import { MemoryRouter } from 'react-router-dom';
 import ReminderConfirmation from '../confirmation.component';
 
 vi.mock('~/lib/gtm', () => ({ pushFormEvent: vi.fn() }));
+
+const mockCalendarEvent = {
+  title: 'Sunday service at Christ Fellowship Church in Palm Beach Gardens',
+  description: 'Join us this Sunday!',
+  address: '123 Main St',
+  startTime: new Date('2025-06-08T09:00:00'),
+  endTime: new Date('2025-06-08T10:30:00'),
+  url: 'https://christfellowship.church/locations/pbg',
+};
+
 vi.mock('~/lib/utils', async () => {
   const actual =
     await vi.importActual<typeof import('~/lib/utils')>('~/lib/utils');
   return {
     ...actual,
-    icsLink: () => 'webcal://example.com/event.ics',
-    icsLinkEvents: () => [{ event: {} }],
+    icsLinkEvents: () => [{ label: '9:00 AM', event: mockCalendarEvent }],
+    googleCalendarLink: () =>
+      'https://calendar.google.com/calendar/render?action=TEMPLATE',
   };
 });
 vi.mock('~/primitives/icon', () => ({
@@ -110,7 +121,7 @@ describe('ReminderConfirmation', () => {
     expect(onSuccess).toHaveBeenCalledOnce();
   });
 
-  it('renders Add to Calendar link', () => {
+  it('renders Add to Calendar button with calendar options in dropdown', () => {
     mockFetcherData = {
       address: '123 Main St',
       url: 'pbg',
@@ -118,7 +129,18 @@ describe('ReminderConfirmation', () => {
       campusName: 'Palm Beach Gardens',
     };
     renderConfirmation();
-    const link = screen.getByRole('link', { name: /Add to Calendar/i });
-    expect(link).toHaveAttribute('href', 'webcal://example.com/event.ics');
+    fireEvent.click(screen.getByRole('button', { name: /Add to Calendar/i }));
+    expect(
+      screen.getByRole('link', { name: /Google Calendar/i }),
+    ).toHaveAttribute(
+      'href',
+      'https://calendar.google.com/calendar/render?action=TEMPLATE',
+    );
+    expect(
+      screen.getByRole('link', { name: /Apple Calendar/i }),
+    ).toHaveAttribute(
+      'href',
+      '/calendar-ics?campus=palm-beach-gardens&time=9%3A00%20AM',
+    );
   });
 });
