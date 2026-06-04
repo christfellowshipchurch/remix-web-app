@@ -38,7 +38,7 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({
         const outerCircleClass = cn(
           'flex h-5 w-5 items-center justify-center rounded-full border-2 transition duration-200',
           isSelected && !disabled && 'border-ocean bg-white',
-          isSelected && disabled && 'border-ocean/40 bg-white opacity-50',
+          isSelected && disabled && 'border-ocean/40 bg-white',
           !isSelected && error && 'border-alert bg-white',
           !isSelected && !error && 'border-form-stroke-muted bg-white',
         );
