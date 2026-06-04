@@ -27,6 +27,7 @@ export const renderInputField = (
   type: string,
   requiredMessage: string,
   defaultValue?: string,
+  placeholder?: string,
   fieldClassName = '',
 ) => (
   <Form.Field
@@ -39,6 +40,7 @@ export const renderInputField = (
         type={type}
         required
         defaultValue={defaultValue}
+        placeholder={placeholder}
         className={radixInputClassName}
       />
     </Form.Control>
@@ -163,24 +165,32 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'First Name',
           'text',
           'Please enter your first name',
+          undefined,
+          'First Name',
         )}
         {renderInputField(
           'lastName',
           'Last Name',
           'text',
           'Please enter your last name',
+          undefined,
+          'Last Name',
         )}
         {renderInputField(
           'phone',
           'Phone',
           'tel',
           'Please enter a valid number',
+          undefined,
+          'xxx-xxx-xxxx',
         )}
         {renderInputField(
           'email',
           'Email',
           'text',
           'Please enter a valid email',
+          undefined,
+          'Example@gmail.com',
         )}
 
         <Form.Field name='campus' className={radixFormFieldStackClassName}>
@@ -274,7 +284,11 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
               className={radixFormFieldStackClassName}
             >
               <Form.Control asChild>
-                <input type='text' className={radixInputClassName} />
+                <input
+                  type='text'
+                  placeholder='Please specify'
+                  className={radixInputClassName}
+                />
               </Form.Control>
             </Form.Field>
           </>

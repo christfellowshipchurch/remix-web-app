@@ -90,7 +90,12 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
             First Name
           </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={radixInputClassName} />
+            <input
+              type='text'
+              required
+              placeholder='First Name'
+              className={radixInputClassName}
+            />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter your first name
@@ -100,7 +105,12 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         <Form.Field name='lastName' className={cn('mb-4', radixFormFieldStackClassName)}>
           <Form.Label className={radixFormLabelClassName}>Last Name</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={radixInputClassName} />
+            <input
+              type='text'
+              required
+              placeholder='Last Name'
+              className={radixInputClassName}
+            />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter your last name
@@ -112,7 +122,12 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
             Cell Phone
           </Form.Label>
           <Form.Control asChild>
-            <input type='tel' required className={radixInputClassName} />
+            <input
+              type='tel'
+              required
+              placeholder='xxx-xxx-xxxx'
+              className={radixInputClassName}
+            />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter your phone number
@@ -124,7 +139,12 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
             Email Address
           </Form.Label>
           <Form.Control asChild>
-            <input type='email' required className={radixInputClassName} />
+            <input
+              type='email'
+              required
+              placeholder='Example@gmail.com'
+              className={radixInputClassName}
+            />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter your email address
@@ -158,7 +178,12 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         <Form.Field name='message' className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}>
           <Form.Label className={radixFormLabelClassName}>Message</Form.Label>
           <Form.Control asChild>
-            <textarea required rows={5} className={radixTextareaClassName} />
+            <textarea
+              required
+              rows={5}
+              placeholder='Enter your message'
+              className={radixTextareaClassName}
+            />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter a message
