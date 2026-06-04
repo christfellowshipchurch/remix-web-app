@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  radixCheckboxClassName,
+  radixFormLabelClassName,
+  radixInputClassName,
+  radixSelectClassName,
+  RadixFormErrorMessage,
+} from '~/primitives/inputs/form-radix-field';
 import { pushFormEvent } from '~/lib/gtm';
 import { RockCampuses } from '~/lib/rock-config';
 
@@ -56,71 +62,67 @@ const SignupForm: React.FC<SignupFormProps> = ({
       <input type='hidden' name='groupGuid' value={groupGuid} />
 
       <Form.Field name='firstName' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>First Name*</Form.Label>
+        <Form.Label className={radixFormLabelClassName}>First Name*</Form.Label>
         <Form.Control asChild>
-          <input type='text' required className={defaultTextInputStyles} />
+          <input type='text' required className={radixInputClassName} />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           Please enter your first name
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       <Form.Field name='lastName' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Last Name*</Form.Label>
+        <Form.Label className={radixFormLabelClassName}>Last Name*</Form.Label>
         <Form.Control asChild>
-          <input type='text' required className={defaultTextInputStyles} />
+          <input type='text' required className={radixInputClassName} />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           Please enter your last name
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       <Form.Field name='phoneNumber' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Cell Phone*</Form.Label>
+        <Form.Label className={radixFormLabelClassName}>Cell Phone*</Form.Label>
         <Form.Control asChild>
-          <input type='tel' required className={defaultTextInputStyles} />
+          <input type='tel' required className={radixInputClassName} />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           Please enter your phone number
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       <Form.Field name='email' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Email*</Form.Label>
+        <Form.Label className={radixFormLabelClassName}>Email*</Form.Label>
         <Form.Control asChild>
-          <input type='email' required className={defaultTextInputStyles} />
+          <input type='email' required className={radixInputClassName} />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           Please enter your email
-        </Form.Message>
-        <Form.Message className='text-alert text-sm' match='typeMismatch'>
+        </RadixFormErrorMessage>
+        <RadixFormErrorMessage match='typeMismatch'>
           Please enter a valid email
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       <Form.Field name='birthdate' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Birthdate*</Form.Label>
+        <Form.Label className={radixFormLabelClassName}>Birthdate*</Form.Label>
         <Form.Control asChild>
           <input
             type='date'
             required
             max={new Date().toISOString().slice(0, 10)}
-            className={defaultTextInputStyles}
+            className={radixInputClassName}
           />
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           Please enter your birthdate
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       <Form.Field name='campus' className='flex flex-col'>
-        <Form.Label className='font-bold text-sm mb-1'>Campus*</Form.Label>
+        <Form.Label className={radixFormLabelClassName}>Campus*</Form.Label>
         <Form.Control asChild>
-          <select
-            required
-            className={`appearance-none ${defaultTextInputStyles}`}
-            defaultValue=''
-          >
+          <select required className={radixSelectClassName} defaultValue=''>
             <option value='' disabled>
               Select campus
             </option>
@@ -131,9 +133,9 @@ const SignupForm: React.FC<SignupFormProps> = ({
             ))}
           </select>
         </Form.Control>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           Please select your home campus
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       <Form.Field
@@ -146,7 +148,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
               type='checkbox'
               required
               value='true'
-              className='h-5 w-5 shrink-0 rounded border border-ocean accent-ocean'
+              className={radixCheckboxClassName}
             />
           </Form.Control>
           <span className='text-sm'>
@@ -163,9 +165,9 @@ const SignupForm: React.FC<SignupFormProps> = ({
             *
           </span>
         </label>
-        <Form.Message className='text-alert text-sm' match='valueMissing'>
+        <RadixFormErrorMessage match='valueMissing'>
           You must accept the waiver to sign up.
-        </Form.Message>
+        </RadixFormErrorMessage>
       </Form.Field>
 
       {error ? (

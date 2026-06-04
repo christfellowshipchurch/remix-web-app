@@ -101,6 +101,9 @@
   --color-border-error: var(--color-alert);
   --color-border: var(--color-border-primary);
 
+  /* Form UX – checkbox/radio unchecked stroke */
+  --color-form-stroke-muted: #d1d5db;
+
   /* Semantic – text */
   --color-text-primary: var(--color-neutral-darker);
   --color-text-secondary: var(--color-neutral-default);

@@ -1,7 +1,16 @@
-import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import * as Form from '@radix-ui/react-form';
+import { cn } from '~/lib/utils';
+import {
+  RadixFormSelectShell,
+  radixCheckboxClassName,
+  radixCheckboxOptionLabelClassName,
+  radixCompactFormLabelClassName,
+  RadixFormErrorMessage,
+  radixInputClassName,
+  radixSelectClassName,
+} from '~/primitives/inputs/form-radix-field';
 import { useFetcher } from 'react-router-dom';
 import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
 import { pushFormEvent } from '~/lib/gtm';
@@ -16,20 +25,26 @@ export const renderInputField = (
   type: string,
   requiredMessage: string,
   defaultValue?: string,
+  fieldClassName = '',
 ) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
+  <Form.Field name={name} className={cn('mb-4 flex flex-col', fieldClassName)}>
+    <Form.Label className={radixCompactFormLabelClassName}>{label}</Form.Label>
     <Form.Control asChild>
       <input
         type={type}
         required
         defaultValue={defaultValue}
-        className={defaultTextInputStyles}
+        className={radixInputClassName}
       />
     </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
+    <RadixFormErrorMessage match='valueMissing'>
       {requiredMessage}
-    </Form.Message>
+    </RadixFormErrorMessage>
+    {type === 'email' && (
+      <RadixFormErrorMessage match='typeMismatch'>
+        Please enter a valid email address
+      </RadixFormErrorMessage>
+    )}
   </Form.Field>
 );
 
@@ -48,9 +63,19 @@ export const renderCheckboxField = (
     className='flex gap-2 md:items-center'
   >
     <Form.Control asChild>
-      <input type='checkbox' id={checkbox.guid} value={checkbox.guid} />
+      <input
+        type='checkbox'
+        id={checkbox.guid}
+        value={checkbox.guid}
+        className={radixCheckboxClassName}
+      />
     </Form.Control>
-    <Form.Label className='font-bold leading-4'>{checkbox.value}</Form.Label>
+    <Form.Label
+      htmlFor={checkbox.guid}
+      className={radixCheckboxOptionLabelClassName}
+    >
+      {checkbox.value}
+    </Form.Label>
   </Form.Field>
 );
 
@@ -154,44 +179,37 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         )}
 
         <Form.Field name='campus' className='flex flex-col'>
-          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
-          <Form.Control asChild>
-            {campuses && (
-              <select
-                className={`appearance-none ${defaultTextInputStyles}`}
-                required
-                style={{
-                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: '24px',
-                  backgroundPosition: 'calc(100% - 2%) center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
-                <option value={''}>Select a Campus</option>
-                {campuses.map(({ guid, name }, index) => (
-                  <option key={index} value={guid}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <Form.Label className={radixCompactFormLabelClassName}>Campus</Form.Label>
+          {campuses && (
+            <RadixFormSelectShell>
+              <Form.Control asChild>
+                <select className={radixSelectClassName} required defaultValue=''>
+                  <option value=''>Select a Campus</option>
+                  {campuses.map(({ guid, name }, index) => (
+                    <option key={index} value={guid}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </Form.Control>
+            </RadixFormSelectShell>
+          )}
+          <RadixFormErrorMessage match='valueMissing'>
             Please select a campus
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         <Form.Field name='decision' className='flex gap-2 md:items-center mt-3'>
           <Form.Control asChild>
             <input
-              className='mb-1'
               type='checkbox'
               id='decision'
               name='decision'
               value='I made a decision to follow Christ today.'
+              className={radixCheckboxClassName}
             />
           </Form.Control>
-          <Form.Label className='font-bold text-navy leading-4'>
+          <Form.Label htmlFor='decision' className={radixCheckboxOptionLabelClassName}>
             I made a decision to follow Christ today
           </Form.Label>
         </Form.Field>
@@ -205,15 +223,18 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           <Form.Field name='other' className='flex gap-2 md:items-center'>
             <Form.Control asChild>
               <input
-                className='mb-1'
                 type='checkbox'
                 id={otherCheckbox.guid}
                 name={otherCheckbox.guid}
                 value={otherCheckbox.guid}
+                className={radixCheckboxClassName}
                 onChange={(_e) => setIsOther(!isOther)}
               />
             </Form.Control>
-            <Form.Label className='font-bold leading-4'>
+            <Form.Label
+              htmlFor={otherCheckbox.guid}
+              className={radixCheckboxOptionLabelClassName}
+            >
               {otherCheckbox.value}
             </Form.Label>
           </Form.Field>
@@ -224,7 +245,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
             <div />
             <Form.Field name='otherContent' className='flex flex-col'>
               <Form.Control asChild>
-                <input type='text' className={defaultTextInputStyles} />
+                <input type='text' className={radixInputClassName} />
               </Form.Control>
             </Form.Field>
           </>

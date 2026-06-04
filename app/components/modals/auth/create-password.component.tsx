@@ -2,7 +2,14 @@ import * as Form from '@radix-ui/react-form';
 import React, { useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { cn } from '~/lib/utils';
+import { formControlTrailingIconStyles } from '~/primitives/inputs/form-control.styles';
+import {
+  radixFormLabelClassName,
+  radixInputClassName,
+  RadixFormErrorMessage,
+  FormFieldErrorText,
+} from '~/primitives/inputs/form-radix-field';
 
 interface CreatePasswordProps {
   onSubmit: (password: string) => void;
@@ -26,7 +33,6 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
       return;
     }
 
-    // You might want to add more password strength validation here
     if (password.length < 8) {
       setError('Password must be at least 8 characters long');
       setLoading(false);
@@ -53,7 +59,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
         className='flex flex-col p-4 text-left'
       >
         <Form.Field name='password' className='flex flex-col'>
-          <Form.Label className='text-text_primary'>Password*</Form.Label>
+          <Form.Label className={radixFormLabelClassName}>Password*</Form.Label>
           <div className='relative'>
             <Form.Control asChild>
               <input
@@ -62,25 +68,28 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className={defaultTextInputStyles}
+                className={cn(
+                  radixInputClassName,
+                  formControlTrailingIconStyles,
+                )}
               />
             </Form.Control>
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className='absolute right-3 top-2 text-gray-500'
+              className='absolute right-4 top-1/2 -translate-y-1/2 text-navy'
             >
               <Icon name={showPassword ? 'eye' : 'eyeSlash'} size={24} />
             </span>
           </div>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter a password
-          </Form.Message>
-          <Form.Message className='text-alert' match='tooShort'>
+          </RadixFormErrorMessage>
+          <RadixFormErrorMessage match='tooShort'>
             Password must be at least 8 characters long
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         <Form.Field name='confirmPassword' className='mt-4 flex flex-col'>
-          <Form.Label className='text-text_primary'>
+          <Form.Label className={radixFormLabelClassName}>
             Confirm Password*
           </Form.Label>
           <Form.Control asChild>
@@ -89,14 +98,14 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className={defaultTextInputStyles}
+              className={radixInputClassName}
             />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please confirm your password
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
-        {error && <p className='mt-2 text-sm text-alert'>{error}</p>}
+        {error && <FormFieldErrorText>{error}</FormFieldErrorText>}
 
         <Form.Submit className='mt-8' asChild>
           <Button size='md' type='submit' disabled={loading}>

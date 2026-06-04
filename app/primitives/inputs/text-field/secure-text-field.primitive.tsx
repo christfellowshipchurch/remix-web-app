@@ -1,7 +1,15 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { cn } from '~/lib/utils';
 import Icon from '~/primitives/icon';
 import colors from '~/styles/colors';
-import { defaultTextInputStyles } from './text-field.primitive';
+import {
+  formControlBaseStyles,
+  formControlLeadingIconStyles,
+  formLabelStyles,
+  formRequiredHintStyles,
+  formRequiredMarkerStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { FormFieldErrorText } from '~/primitives/inputs/form-error-message';
 
 interface SecureTextFieldInputProps {
   className?: string;
@@ -35,13 +43,10 @@ const SecureTextFieldInput = forwardRef<
     const inputRef = useRef<HTMLInputElement>(null);
     const [maskedValue, setMaskedValue] = useState('');
 
-    // Helper function to mask SSN
     const maskSSN = (rawValue: string) => {
       const len = rawValue.length;
       if (len === 0) return '';
 
-      // const _first = rawValue.slice(0, 3);
-      // const _mid = rawValue.slice(3, 5);
       const last = rawValue.slice(5);
 
       if (len <= 3) {
@@ -53,7 +58,6 @@ const SecureTextFieldInput = forwardRef<
       return '***-**-' + last;
     };
 
-    // Update masked value whenever the real value changes
     useEffect(() => {
       setMaskedValue(maskSSN(value));
     }, [value]);
@@ -61,12 +65,10 @@ const SecureTextFieldInput = forwardRef<
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       const { key } = e;
 
-      // Allow navigation keys
       if (['ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(key)) {
         return;
       }
 
-      // Handle backspace
       if (key === 'Backspace') {
         if (value.length > 0) {
           setValue(value.slice(0, -1));
@@ -75,13 +77,11 @@ const SecureTextFieldInput = forwardRef<
         return;
       }
 
-      // Ignore non-digit keys
       if (!/\d/.test(key)) {
         e.preventDefault();
         return;
       }
 
-      // Append digit if we have < 9 so far
       if (value.length < 9) {
         setValue(value + key);
       }
@@ -89,18 +89,16 @@ const SecureTextFieldInput = forwardRef<
       e.preventDefault();
     };
 
-    const errorStyles = 'border-alert focus:border-alert focus:ring-alert/50';
-
     return (
-      <div className='flex flex-col gap-1 w-full'>
+      <div className='flex w-full flex-col gap-1'>
         {label && (
-          <label className='font-bold text-text-primary mb-1'>
-            {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
+          <label className={cn(formLabelStyles, 'mb-1')}>
+            {isRequired && (
+              <span className={formRequiredMarkerStyles}>{'*'}</span>
+            )}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
-                {'(required)'}
-              </span>
+              <span className={formRequiredHintStyles}>{'(required)'}</span>
             )}
           </label>
         )}
@@ -117,9 +115,12 @@ const SecureTextFieldInput = forwardRef<
                 ref.current = el;
               }
             }}
-            className={`${defaultTextInputStyles} ${className} pl-10 ${
-              error ? errorStyles : ''
-            }`}
+            className={cn(
+              formControlBaseStyles,
+              formControlLeadingIconStyles,
+              error && 'border-2 border-alert h-[48px]',
+              className,
+            )}
             type='text'
             value={maskedValue}
             placeholder={placeholder}
@@ -127,17 +128,22 @@ const SecureTextFieldInput = forwardRef<
             required={isRequired}
             inputMode='numeric'
             autoComplete='off'
+            aria-invalid={Boolean(error)}
           />
-          <span className='absolute left-3 top-2.5'>
-            <Icon name='lockAlt' className='text-navy size-5' />
+          <span className='pointer-events-none absolute left-4 top-1/2 -translate-y-1/2'>
+            <Icon name='lockAlt' className='size-5 text-navy' />
           </span>
           {error && (
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
+            <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'>
+              <Icon
+                name='errorCircle'
+                color={colors.alert}
+                className='size-5'
+              />
             </span>
           )}
         </div>
-        {error && <p className='text-sm text-alert'>{error}</p>}
+        {error && <FormFieldErrorText>{error}</FormFieldErrorText>}
       </div>
     );
   },

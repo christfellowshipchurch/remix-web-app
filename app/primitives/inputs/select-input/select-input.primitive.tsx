@@ -1,9 +1,17 @@
 import React, { forwardRef } from 'react';
+import { cn } from '~/lib/utils';
 import Icon from '~/primitives/icon';
 import colors from '~/styles/colors';
+import {
+  defaultSelectInputStyles,
+  formControlErrorStyles,
+  formLabelStyles,
+  formRequiredHintStyles,
+  formRequiredMarkerStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { FormFieldErrorText } from '~/primitives/inputs/form-error-message';
 
-export const defaultSelectInputStyles =
-  'rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full';
+export { defaultSelectInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface SelectOption {
   value: string;
@@ -21,6 +29,7 @@ interface SelectInputProps {
   placeholder?: string;
   label?: string;
   isRequired?: boolean;
+  disabled?: boolean;
 }
 
 const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
@@ -36,56 +45,39 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
       placeholder = '',
       label,
       isRequired = false,
+      disabled = false,
     },
     ref,
   ) => {
     return (
-      <div className='relative flex flex-col gap-1 w-full'>
+      <div className='relative flex w-full flex-col gap-1'>
         {label && (
-          <label className='font-bold text-text-primary text-sm mb-1'>
-            {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
+          <label className={cn(formLabelStyles, 'mb-1')}>
+            {isRequired && (
+              <span className={formRequiredMarkerStyles}>{'*'}</span>
+            )}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
-                {'(required)'}
-              </span>
+              <span className={formRequiredHintStyles}>{'(required)'}</span>
             )}
           </label>
         )}
-        {error ? (
-          <div className='relative'>
-            <select
-              ref={ref}
-              name={name}
-              className='w-full rounded-md border-2 border-alert p-2 bg-white'
-              value={value}
-              onFocus={() => setError(null)}
-              required={isRequired}
-              data-invalid={!!error}
-            >
-              {placeholder && <option value=''>{placeholder}</option>}
-              {options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
-            </span>
-          </div>
-        ) : (
+        <div className='relative'>
           <select
             ref={ref}
             name={name}
-            className={`${defaultSelectInputStyles} ${className} bg-white appearance-none pr-10`}
+            className={cn(
+              error ? formControlErrorStyles : defaultSelectInputStyles,
+              'appearance-none pr-10',
+              className,
+            )}
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            onFocus={() => error && setError(null)}
             required={isRequired}
-            data-invalid={!!error}
-            style={{
-              background: 'none',
-            }}
+            disabled={disabled}
+            data-invalid={Boolean(error)}
+            aria-invalid={Boolean(error)}
           >
             {placeholder && <option value=''>{placeholder}</option>}
             {options.map((opt) => (
@@ -94,10 +86,20 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
               </option>
             ))}
           </select>
-        )}
-        <span className='pointer-events-none absolute right-3 top-10 text-gray-500'>
-          <Icon name='chevronDown' size={20} />
-        </span>
+          <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500'>
+            <Icon name='chevronDown' size={20} />
+          </span>
+          {error && (
+            <span className='pointer-events-none absolute right-10 top-1/2 -translate-y-1/2'>
+              <Icon
+                name='errorCircle'
+                color={colors.alert}
+                className='size-5'
+              />
+            </span>
+          )}
+        </div>
+        {error && <FormFieldErrorText>{error}</FormFieldErrorText>}
       </div>
     );
   },

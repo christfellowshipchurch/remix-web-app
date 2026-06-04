@@ -2,6 +2,7 @@ import * as Form from '@radix-ui/react-form';
 import React, { useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import TextFieldInput from '~/primitives/inputs/text-field';
+import { RadixFormErrorMessage } from '~/primitives/inputs/form-radix-field';
 import { useAuth } from '~/providers/auth-provider';
 
 interface LoginProps {
@@ -76,9 +77,9 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
               setError={setError}
             />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter a number or email
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {error === 'DOES_NOT_EXIST' ? (
           <NoUserExistsError onClick={() => onSubmit('sign-up')} />

@@ -2,7 +2,12 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  radixFormLabelClassName,
+  radixInputClassName,
+  radixSelectClassName,
+  RadixFormErrorMessage,
+} from '~/primitives/inputs/form-radix-field';
 import { pushFormEvent } from '~/lib/gtm';
 
 interface GroupConnectFormProps {
@@ -66,62 +71,56 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
         {/* First Name */}
         <Form.Field name='firstName' className='flex flex-col'>
-          <Form.Label>First Name*</Form.Label>
+          <Form.Label className={radixFormLabelClassName}>
+            First Name*
+          </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your first name
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {/* Last Name */}
         <Form.Field name='lastName' className='flex flex-col'>
-          <Form.Label>Last Name*</Form.Label>
+          <Form.Label className={radixFormLabelClassName}>
+            Last Name*
+          </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your last name
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {/* Phone */}
         <Form.Field name='phoneNumber' className='flex flex-col'>
-          <Form.Label>Phone*</Form.Label>
+          <Form.Label className={radixFormLabelClassName}>Phone*</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your phone number
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {/* Email */}
         <Form.Field name='email' className='flex flex-col'>
-          <Form.Label>Email*</Form.Label>
+          <Form.Label className={radixFormLabelClassName}>Email*</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your email
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
           <Form.Field name='campus' className='flex flex-col md:col-span-2'>
-            <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+            <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
             <input type='hidden' name='campus' value={campus} />
             <Form.Control asChild>
-              <select
-                className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
-                required
-                disabled
-                style={{
-                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: '24px',
-                  backgroundPosition: 'calc(100% - 2%) center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
+              <select className={radixSelectClassName} required disabled>
                 <option>{campus}</option>
               </select>
             </Form.Control>

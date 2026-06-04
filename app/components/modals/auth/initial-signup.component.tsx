@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as Form from '@radix-ui/react-form';
 import TextFieldInput from '~/primitives/inputs/text-field/text-field.primitive';
+import { RadixFormErrorMessage } from '~/primitives/inputs/form-radix-field';
 import { Button } from '~/primitives/button/button.primitive';
 import { useAuth } from '~/providers/auth-provider';
 
@@ -76,9 +77,9 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
               setError={setError}
             />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter a number or email
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {error === 'ALREADY_EXISTS' ? (
           <UserExistsError onClick={() => onSubmit('')} />
@@ -95,9 +96,9 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
               Fellowship Church.
             </label>
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please agree to the terms and conditions
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         <Form.Submit className='mt-12' asChild>
           <Button size='md' type='submit' disabled={loading}>
