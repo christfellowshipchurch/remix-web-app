@@ -18,6 +18,7 @@ import {
   formControlErrorStyles,
   formControlLeadingIconStyles,
   formControlTrailingIconStyles,
+  formFieldStackStyles,
   formHelperTextStyles,
   formLabelStyles,
   formRequiredHintStyles,
@@ -94,9 +95,9 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
     );
 
     return (
-      <div className='flex w-full flex-col gap-1'>
+      <div className={cn('w-full', formFieldStackStyles)}>
         {label && (
-          <label className={cn(formLabelStyles, 'mb-1')}>
+          <label className={formLabelStyles}>
             {isRequired && (
               <span className={formRequiredMarkerStyles}>{'*'}</span>
             )}

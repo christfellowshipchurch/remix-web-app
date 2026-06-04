@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { cn } from '~/lib/utils';
 import {
+  formFieldStackStyles,
   formHelperTextStyles,
   formLabelStyles,
   formRequiredHintStyles,
@@ -47,9 +48,9 @@ const TextareaInput = forwardRef<
     ref,
   ) => {
     return (
-      <div className='flex w-full flex-col gap-1'>
+      <div className={cn('w-full', formFieldStackStyles)}>
         {label && (
-          <label className={cn(formLabelStyles, 'mb-1')}>
+          <label className={formLabelStyles}>
             {isRequired && (
               <span className={formRequiredMarkerStyles}>{'*'}</span>
             )}

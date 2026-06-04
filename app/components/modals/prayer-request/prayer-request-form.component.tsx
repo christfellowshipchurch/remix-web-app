@@ -2,8 +2,10 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useRef, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixSelectClassName,
   radixTextareaClassName,
@@ -107,7 +109,10 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
           'Please enter your phone number',
         )}
 
-        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field
+          name='Campus'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
@@ -126,7 +131,10 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='Request' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field
+          name='Request'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>
             How can we pray for you?
           </Form.Label>
@@ -140,7 +148,7 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
 
         <Form.Field
           name='FollowUp'
-          className='flex flex-col mb-4 md:col-span-2'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
         >
           <Form.Label className={radixFormLabelClassName}>
             Would you like our team to follow up with you?

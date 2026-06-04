@@ -9,6 +9,7 @@ import {
   formControlTrailingIconStyles,
 } from '~/primitives/inputs/form-control.styles';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   RadixFormErrorMessage,
   FormFieldErrorText,
@@ -64,7 +65,7 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
         onSubmit={handleSubmit}
         className='flex flex-col gap-4 p-4 text-left'
       >
-        <Form.Field name='password' className='flex flex-col'>
+        <Form.Field name='password' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>Password*</Form.Label>
           <div className='relative'>
             <Form.Control asChild>

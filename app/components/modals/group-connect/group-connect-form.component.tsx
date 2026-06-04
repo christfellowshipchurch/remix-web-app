@@ -1,8 +1,10 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixInputClassName,
   radixSelectClassName,
@@ -70,7 +72,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
         <input type='hidden' name='groupId' value={groupId} />
 
         {/* First Name */}
-        <Form.Field name='firstName' className='flex flex-col'>
+        <Form.Field name='firstName' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>
             First Name*
           </Form.Label>
@@ -82,7 +84,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
         {/* Last Name */}
-        <Form.Field name='lastName' className='flex flex-col'>
+        <Form.Field name='lastName' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>
             Last Name*
           </Form.Label>
@@ -94,7 +96,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
         {/* Phone */}
-        <Form.Field name='phoneNumber' className='flex flex-col'>
+        <Form.Field name='phoneNumber' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>Phone*</Form.Label>
           <Form.Control asChild>
             <input type='text' required className={radixInputClassName} />
@@ -104,7 +106,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
         {/* Email */}
-        <Form.Field name='email' className='flex flex-col'>
+        <Form.Field name='email' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>Email*</Form.Label>
           <Form.Control asChild>
             <input type='text' required className={radixInputClassName} />
@@ -116,7 +118,7 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
-          <Form.Field name='campus' className='flex flex-col md:col-span-2'>
+          <Form.Field name='campus' className={cn('md:col-span-2', radixFormFieldStackClassName)}>
             <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
             <input type='hidden' name='campus' value={campus} />
             <Form.Control asChild>

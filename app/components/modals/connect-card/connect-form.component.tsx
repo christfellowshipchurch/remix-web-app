@@ -8,9 +8,11 @@ import {
   radixCheckboxOptionLabelClassName,
   radixCompactFormLabelClassName,
   RadixFormErrorMessage,
+  radixFormFieldStackClassName,
   radixInputClassName,
   radixSelectClassName,
 } from '~/primitives/inputs/form-radix-field';
+import { formFieldInvalidControlStyles } from '~/primitives/inputs/form-control.styles';
 import { useFetcher } from 'react-router-dom';
 import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
 import { pushFormEvent } from '~/lib/gtm';
@@ -27,7 +29,10 @@ export const renderInputField = (
   defaultValue?: string,
   fieldClassName = '',
 ) => (
-  <Form.Field name={name} className={cn('mb-4 flex flex-col', fieldClassName)}>
+  <Form.Field
+    name={name}
+    className={cn('mb-4', radixFormFieldStackClassName, fieldClassName)}
+  >
     <Form.Label className={radixCompactFormLabelClassName}>{label}</Form.Label>
     <Form.Control asChild>
       <input
@@ -60,7 +65,7 @@ export const renderCheckboxField = (
   <Form.Field
     key={index}
     name={`allThatApplies-${index}`}
-    className='flex gap-2 md:items-center'
+    className={cn('flex gap-2 md:items-center', formFieldInvalidControlStyles)}
   >
     <Form.Control asChild>
       <input
@@ -168,7 +173,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         {renderInputField(
           'phone',
           'Phone',
-          'number',
+          'tel',
           'Please enter a valid number',
         )}
         {renderInputField(
@@ -178,12 +183,18 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'Please enter a valid email',
         )}
 
-        <Form.Field name='campus' className='flex flex-col'>
-          <Form.Label className={radixCompactFormLabelClassName}>Campus</Form.Label>
+        <Form.Field name='campus' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixCompactFormLabelClassName}>
+            Campus
+          </Form.Label>
           {campuses && (
             <RadixFormSelectShell>
               <Form.Control asChild>
-                <select className={radixSelectClassName} required defaultValue=''>
+                <select
+                  className={radixSelectClassName}
+                  required
+                  defaultValue=''
+                >
                   <option value=''>Select a Campus</option>
                   {campuses.map(({ guid, name }, index) => (
                     <option key={index} value={guid}>
@@ -199,7 +210,13 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='decision' className='flex gap-2 md:items-center mt-3'>
+        <Form.Field
+          name='decision'
+          className={cn(
+            'mt-3 flex gap-2 md:items-center',
+            formFieldInvalidControlStyles,
+          )}
+        >
           <Form.Control asChild>
             <input
               type='checkbox'
@@ -209,7 +226,10 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
               className={radixCheckboxClassName}
             />
           </Form.Control>
-          <Form.Label htmlFor='decision' className={radixCheckboxOptionLabelClassName}>
+          <Form.Label
+            htmlFor='decision'
+            className={radixCheckboxOptionLabelClassName}
+          >
             I made a decision to follow Christ today
           </Form.Label>
         </Form.Field>
@@ -220,7 +240,13 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         {checkboxes.map(renderCheckboxField)}
 
         {otherCheckbox && (
-          <Form.Field name='other' className='flex gap-2 md:items-center'>
+          <Form.Field
+            name='other'
+            className={cn(
+              'flex gap-2 md:items-center',
+              formFieldInvalidControlStyles,
+            )}
+          >
             <Form.Control asChild>
               <input
                 type='checkbox'
@@ -243,7 +269,10 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         {isOther && (
           <>
             <div />
-            <Form.Field name='otherContent' className='flex flex-col'>
+            <Form.Field
+              name='otherContent'
+              className={radixFormFieldStackClassName}
+            >
               <Form.Control asChild>
                 <input type='text' className={radixInputClassName} />
               </Form.Control>

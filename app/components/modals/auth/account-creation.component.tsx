@@ -2,6 +2,7 @@ import * as Form from '@radix-ui/react-form';
 import React, { useState } from 'react';
 import { NewUser } from './login-flow.component';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixInputClassName,
   RadixFormErrorMessage,
@@ -84,7 +85,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         className='grid grid-cols-1 gap-6 md:grid-cols-2'
       >
         {/* First Name */}
-        <Form.Field name='firstName' className='flex flex-col'>
+        <Form.Field name='firstName' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>
             First Name*
           </Form.Label>
@@ -96,7 +97,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
         {/* Last Name */}
-        <Form.Field name='lastName' className='flex flex-col'>
+        <Form.Field name='lastName' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>
             Last Name*
           </Form.Label>
@@ -108,7 +109,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
         {/* Birthdate */}
-        <Form.Field name='birthDate' className='flex flex-col'>
+        <Form.Field name='birthDate' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>
             Birth Date*
           </Form.Label>
@@ -125,7 +126,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         {/* Email or Phone */}
         <Form.Field
           name={identityType === 'email' ? 'phone' : 'email'}
-          className='flex flex-col'
+          className={radixFormFieldStackClassName}
         >
           <Form.Label className={radixFormLabelClassName}>
             {identityType === 'email' ? 'Phone' : 'Email'}
@@ -138,7 +139,7 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
         {/* Gender */}
-        <Form.Field name='gender' className='flex flex-col'>
+        <Form.Field name='gender' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>Gender</Form.Label>
           <div className='flex gap-4 pt-3'>
             <RadioButtons

@@ -52,15 +52,50 @@ export const formTextareaErrorStyles = cn(
   'box-border w-full rounded-[10px]',
   'border-2 border-alert bg-white px-4 py-2.5',
   'min-h-[120px] text-text-primary outline-none ring-0',
+  'focus:border-2 focus:border-alert',
+  'focus:shadow-[0_0_0_3px_rgba(180,35,24,0.2)]',
 );
 
 /** Field / option labels (#00354D, 14px / 500 / 20px line-height) */
 export const formLabelStyles = cn(
   'text-sm font-medium leading-5 text-dark-navy tracking-[-0.15px]',
+  'transition-colors duration-150',
 );
 
-/** Radix modal field labels (same typography, block spacing) */
-export const formCompactFieldLabelStyles = cn(formLabelStyles, 'mb-2 block');
+/** Label turns ocean when any control in the field wrapper is focused */
+export const formFieldFocusLabelStyles = 'focus-within:[&_label]:text-ocean';
+
+/** Radix modal field labels (typography only; use formFieldStackStyles for 12px gaps) */
+export const formCompactFieldLabelStyles = cn(formLabelStyles, 'block');
+
+/** 12px vertical gap between label, control, and error message */
+export const formFieldStackStyles = cn(
+  'flex flex-col gap-3',
+  formFieldFocusLabelStyles,
+);
+
+/** Radix Form.Field invalid — shown after submit, not via native :invalid on load */
+export const formFieldInvalidControlStyles = cn(
+  formFieldFocusLabelStyles,
+  'data-[invalid]:[&_textarea]:border-2 data-[invalid]:[&_textarea]:border-alert',
+  'data-[invalid]:[&_textarea]:focus:border-2 data-[invalid]:[&_textarea]:focus:border-alert',
+  'data-[invalid]:[&_textarea]:focus:shadow-[0_0_0_3px_rgba(180,35,24,0.2)]',
+  'data-[invalid]:[&_select]:border-2 data-[invalid]:[&_select]:border-alert',
+  'data-[invalid]:[&_select]:focus:border-2 data-[invalid]:[&_select]:focus:border-alert',
+  'data-[invalid]:[&_select]:focus:shadow-[0_0_0_3px_rgba(180,35,24,0.2)]',
+  'data-[invalid]:[&_input:not([type=checkbox]):not([type=radio])]:border-2',
+  'data-[invalid]:[&_input:not([type=checkbox]):not([type=radio])]:border-alert',
+  'data-[invalid]:[&_input:not([type=checkbox]):not([type=radio])]:focus:border-2',
+  'data-[invalid]:[&_input:not([type=checkbox]):not([type=radio])]:focus:border-alert',
+  'data-[invalid]:[&_input:not([type=checkbox]):not([type=radio])]:focus:shadow-[0_0_0_3px_rgba(180,35,24,0.2)]',
+  'data-[invalid]:[&_input[type=checkbox]]:border-2',
+  'data-[invalid]:[&_input[type=checkbox]]:border-alert',
+  'data-[invalid]:[&_input[type=checkbox]]:bg-white',
+  'data-[invalid]:[&_input[type=checkbox]:checked]:border-alert',
+  'data-[invalid]:[&_input[type=checkbox]:checked]:bg-alert',
+  'data-[invalid]:[&_input[type=radio]]:border-2',
+  'data-[invalid]:[&_input[type=radio]]:border-alert',
+);
 
 /** Checkbox / radio option labels beside controls */
 export const formCheckboxOptionLabelStyles = formLabelStyles;
@@ -84,7 +119,6 @@ export const nativeCheckboxStyles = cn(
   'checked:border-ocean checked:bg-ocean',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean/30',
   'disabled:cursor-not-allowed disabled:opacity-60',
-  'aria-invalid:border-alert aria-invalid:border-2',
 );
 
 /** Native radio for Radix Form.Control */
@@ -115,7 +149,10 @@ export const formCheckboxControlStyles = cn(
 export const formCheckboxControlCheckedStyles =
   'checked:border-ocean checked:bg-ocean';
 
-export const formCheckboxControlErrorStyles = 'border-alert border-2';
+export const formCheckboxControlErrorStyles = cn(
+  '!border-2 !border-alert bg-white',
+  'checked:!border-alert checked:!bg-alert',
+);
 
 export const formCheckboxLabelStyles = 'text-text-primary font-normal';
 

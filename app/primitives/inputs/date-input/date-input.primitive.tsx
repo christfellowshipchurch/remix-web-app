@@ -5,6 +5,7 @@ import colors from '~/styles/colors';
 import {
   formControlBaseStyles,
   formControlErrorStyles,
+  formFieldStackStyles,
   formLabelStyles,
   formRequiredHintStyles,
   formRequiredMarkerStyles,
@@ -63,9 +64,9 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
     };
 
     return (
-      <div className='flex w-full flex-col gap-1'>
+      <div className={cn('w-full', formFieldStackStyles)}>
         {label && (
-          <label className={cn(formLabelStyles, 'mb-1')}>
+          <label className={formLabelStyles}>
             {isRequired && (
               <span className={formRequiredMarkerStyles}>{'*'}</span>
             )}

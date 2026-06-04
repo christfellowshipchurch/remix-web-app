@@ -1,7 +1,9 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixRadioClassName,
   radixSelectClassName,
@@ -135,7 +137,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           email || undefined,
         )}
 
-        <Form.Field name='campus' className='flex flex-col'>
+        <Form.Field name='campus' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
           <Form.Control asChild>
             <select className={radixSelectClassName} required disabled>
@@ -144,7 +146,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
           </Form.Control>
         </Form.Field>
 
-        <Form.Field name='serviceTime' className='flex flex-col'>
+        <Form.Field name='serviceTime' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>
             {isEspanol ? 'Horarios de Servicios' : 'Service Time'}
           </Form.Label>
@@ -179,7 +181,7 @@ const ReminderForm: React.FC<ReminderProps> = ({
 
         <Form.Field
           name='beenToCF'
-          className='flex flex-col col-span-1 md:col-span-2 mt-4'
+          className={cn('col-span-1 mt-4 md:col-span-2', radixFormFieldStackClassName)}
         >
           <Form.Label className={radixFormLabelClassName}>
             {isEspanol

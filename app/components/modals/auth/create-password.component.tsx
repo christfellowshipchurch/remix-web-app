@@ -5,6 +5,7 @@ import Icon from '~/primitives/icon';
 import { cn } from '~/lib/utils';
 import { formControlTrailingIconStyles } from '~/primitives/inputs/form-control.styles';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixInputClassName,
   RadixFormErrorMessage,
@@ -58,7 +59,7 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
         onSubmit={handleSubmit}
         className='flex flex-col p-4 text-left'
       >
-        <Form.Field name='password' className='flex flex-col'>
+        <Form.Field name='password' className={radixFormFieldStackClassName}>
           <Form.Label className={radixFormLabelClassName}>Password*</Form.Label>
           <div className='relative'>
             <Form.Control asChild>
@@ -88,7 +89,10 @@ const CreatePassword: React.FC<CreatePasswordProps> = ({ onSubmit }) => {
             Password must be at least 8 characters long
           </RadixFormErrorMessage>
         </Form.Field>
-        <Form.Field name='confirmPassword' className='mt-4 flex flex-col'>
+        <Form.Field
+          name='confirmPassword'
+          className={cn('mt-4', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>
             Confirm Password*
           </Form.Label>

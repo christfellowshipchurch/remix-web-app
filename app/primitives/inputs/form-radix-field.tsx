@@ -6,6 +6,8 @@ import {
   formCheckboxOptionLabelStyles,
   formCompactFieldLabelStyles,
   formErrorMessageStyles,
+  formFieldInvalidControlStyles,
+  formFieldStackStyles,
   formTextareaBaseStyles,
   nativeCheckboxStyles,
   nativeRadioStyles,
@@ -33,6 +35,11 @@ export const radixSelectClassName = cn(
 
 export const radixTextareaClassName = formTextareaBaseStyles;
 
+export const radixFormFieldStackClassName = cn(
+  formFieldStackStyles,
+  formFieldInvalidControlStyles,
+);
+
 export const radixCheckboxClassName = nativeCheckboxStyles;
 
 export const radixRadioClassName = nativeRadioStyles;
@@ -57,7 +64,10 @@ export const renderRadixInputField = (
   defaultValue?: string,
   fieldClassName = '',
 ) => (
-  <Form.Field name={name} className={cn('mb-4 flex flex-col', fieldClassName)}>
+  <Form.Field
+    name={name}
+    className={cn('mb-4', radixFormFieldStackClassName, fieldClassName)}
+  >
     <Form.Label className={radixFormLabelClassName}>{label}</Form.Label>
     <Form.Control asChild>
       <input

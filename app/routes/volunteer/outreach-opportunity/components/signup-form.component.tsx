@@ -2,9 +2,11 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import {
   radixCheckboxClassName,
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixInputClassName,
   radixSelectClassName,
@@ -61,7 +63,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
     >
       <input type='hidden' name='groupGuid' value={groupGuid} />
 
-      <Form.Field name='firstName' className='flex flex-col'>
+      <Form.Field name='firstName' className={radixFormFieldStackClassName}>
         <Form.Label className={radixFormLabelClassName}>First Name*</Form.Label>
         <Form.Control asChild>
           <input type='text' required className={radixInputClassName} />
@@ -71,7 +73,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </RadixFormErrorMessage>
       </Form.Field>
 
-      <Form.Field name='lastName' className='flex flex-col'>
+      <Form.Field name='lastName' className={radixFormFieldStackClassName}>
         <Form.Label className={radixFormLabelClassName}>Last Name*</Form.Label>
         <Form.Control asChild>
           <input type='text' required className={radixInputClassName} />
@@ -81,7 +83,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </RadixFormErrorMessage>
       </Form.Field>
 
-      <Form.Field name='phoneNumber' className='flex flex-col'>
+      <Form.Field name='phoneNumber' className={radixFormFieldStackClassName}>
         <Form.Label className={radixFormLabelClassName}>Cell Phone*</Form.Label>
         <Form.Control asChild>
           <input type='tel' required className={radixInputClassName} />
@@ -91,7 +93,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </RadixFormErrorMessage>
       </Form.Field>
 
-      <Form.Field name='email' className='flex flex-col'>
+      <Form.Field name='email' className={radixFormFieldStackClassName}>
         <Form.Label className={radixFormLabelClassName}>Email*</Form.Label>
         <Form.Control asChild>
           <input type='email' required className={radixInputClassName} />
@@ -104,7 +106,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </RadixFormErrorMessage>
       </Form.Field>
 
-      <Form.Field name='birthdate' className='flex flex-col'>
+      <Form.Field name='birthdate' className={radixFormFieldStackClassName}>
         <Form.Label className={radixFormLabelClassName}>Birthdate*</Form.Label>
         <Form.Control asChild>
           <input
@@ -119,7 +121,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         </RadixFormErrorMessage>
       </Form.Field>
 
-      <Form.Field name='campus' className='flex flex-col'>
+      <Form.Field name='campus' className={radixFormFieldStackClassName}>
         <Form.Label className={radixFormLabelClassName}>Campus*</Form.Label>
         <Form.Control asChild>
           <select required className={radixSelectClassName} defaultValue=''>
@@ -140,7 +142,10 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
       <Form.Field
         name='waiverAccepted'
-        className='flex flex-col gap-2 md:col-span-2 my-1 md:my-4'
+        className={cn(
+          'my-1 md:col-span-2 md:my-4',
+          radixFormFieldStackClassName,
+        )}
       >
         <label className='flex items-center gap-3 cursor-pointer select-none'>
           <Form.Control asChild>

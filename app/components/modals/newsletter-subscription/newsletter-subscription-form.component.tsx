@@ -2,8 +2,10 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixSelectClassName,
   renderRadixInputField,
@@ -109,7 +111,10 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
           'Please enter your email address',
         )}
 
-        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
+        <Form.Field
+          name='Campus'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>
             Campus Location
           </Form.Label>

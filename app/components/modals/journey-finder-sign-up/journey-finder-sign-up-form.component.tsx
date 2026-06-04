@@ -4,8 +4,10 @@ import { useFetcher, useSearchParams } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
 import { pushFormEvent } from '~/lib/gtm';
 import Icon from '~/primitives/icon';
+import { cn } from '~/lib/utils';
 import { formRadioGroupVerticalStyles } from '~/primitives/inputs/form-control.styles';
 import {
+  radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixRadioClassName,
   radixTextareaClassName,
@@ -182,7 +184,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='atCF'
-          className='flex flex-col col-span-1 md:col-span-2 mt-2'
+          className={cn('col-span-1 mt-2 md:col-span-2', radixFormFieldStackClassName)}
         >
           <Form.Label className={radixFormLabelClassName}>
             {copy.atCF}
@@ -210,7 +212,7 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='hopeToGet'
-          className='flex flex-col col-span-1 md:col-span-2 mt-2'
+          className={cn('col-span-1 mt-2 md:col-span-2', radixFormFieldStackClassName)}
         >
           <Form.Label className={radixFormLabelClassName}>
             {copy.hopeToGet}

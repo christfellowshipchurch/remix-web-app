@@ -5,6 +5,7 @@ import colors from '~/styles/colors';
 import {
   defaultSelectInputStyles,
   formControlErrorStyles,
+  formFieldStackStyles,
   formLabelStyles,
   formRequiredHintStyles,
   formRequiredMarkerStyles,
@@ -50,9 +51,9 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
     ref,
   ) => {
     return (
-      <div className='relative flex w-full flex-col gap-1'>
+      <div className={cn('relative w-full', formFieldStackStyles)}>
         {label && (
-          <label className={cn(formLabelStyles, 'mb-1')}>
+          <label className={formLabelStyles}>
             {isRequired && (
               <span className={formRequiredMarkerStyles}>{'*'}</span>
             )}
