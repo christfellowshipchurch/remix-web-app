@@ -1,5 +1,5 @@
 import { ActionFunction, data } from 'react-router-dom';
-import { postRockData } from '~/lib/.server/fetch-rock-data';
+import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 import { NewsletterSubscriptionFormType } from './types';
 
 export const action: ActionFunction = async ({ request }) => {
@@ -16,10 +16,14 @@ export const action: ActionFunction = async ({ request }) => {
       LaunchSource: 'app',
     };
 
-    await postRockData({
-      endpoint:
-        'Workflows/LaunchWorkflow/0?workflowTypeId=1202&workflowName=Newsletter%20Subscription',
+    const firstName = FirstName as string;
+    const lastName = LastName as string;
+
+    await postRockWorkflowLaunchWithApiInitiator({
+      workflowTypeId: '1202',
+      workflowName: 'Newsletter Subscription',
       body: newsletterSubscriptionSubmission,
+      instanceName: `${firstName} ${lastName}`.trim(),
     });
 
     return new Response(JSON.stringify({ success: true }), {
