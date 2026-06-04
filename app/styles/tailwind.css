@@ -84,6 +84,9 @@
   --color-neutral-darker: #222222;
   --color-neutral-darkest: #111111;
 
+  /* Form */
+  --color-form-stroke-muted: #d1d5db;
+
   /* Semantic – background */
   --color-background-primary: var(--color-white);
   --color-background-secondary: var(--color-soft-white);
