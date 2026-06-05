@@ -2,35 +2,22 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  radixSelectClassName,
+  renderRadixInputField,
+  RadixFormErrorMessage,
+} from '~/primitives/inputs/form-radix-field';
 import { NewsletterSubscriptionLoaderReturnType } from '~/routes/newsletter-subscription/types';
 
 interface NewsletterSubscriptionFormProps {
   onSuccess: () => void;
 }
 
-export const renderInputField = (
-  name: string,
-  label: string,
-  type: string,
-  requiredMessage: string,
-) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
-    <Form.Control asChild>
-      <input type={type} required className={defaultTextInputStyles} />
-    </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
-      {requiredMessage}
-    </Form.Message>
-    {type === 'email' && (
-      <Form.Message className='text-sm text-alert' match='typeMismatch'>
-        Please enter a valid email address
-      </Form.Message>
-    )}
-  </Form.Field>
-);
+export const renderInputField = renderRadixInputField;
 
 const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
   onSuccess,
@@ -124,22 +111,16 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
           'Please enter your email address',
         )}
 
-        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>
+        <Form.Field
+          name='Campus'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
+          <Form.Label className={radixFormLabelClassName}>
             Campus Location
           </Form.Label>
           <Form.Control asChild>
             {campuses && (
-              <select
-                className={`appearance-none ${defaultTextInputStyles}`}
-                required
-                style={{
-                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: '24px',
-                  backgroundPosition: 'calc(100% - 2%) center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
+              <select className={radixSelectClassName} required>
                 <option value=''>Select a Campus</option>
                 {campuses.map(({ guid, name }, index) => (
                   <option key={index} value={guid}>
@@ -149,9 +130,9 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please select a campus
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         {error && <p className='text-alert col-span-2 text-center'>{error}</p>}

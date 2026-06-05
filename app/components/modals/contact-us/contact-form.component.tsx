@@ -1,7 +1,17 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { cn } from '~/lib/utils';
+import {
+  radixCheckboxClassName,
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  radixInputClassName,
+  radixSelectClassName,
+  radixTextareaClassName,
+  RadixFormErrorMessage,
+  RadixFormSelectShell,
+} from '~/primitives/inputs/form-radix-field';
 import { useFetcher } from 'react-router-dom';
 import { ContactUsLoaderReturnType } from '~/routes/contact-us/types';
 import { pushFormEvent } from '~/lib/gtm';
@@ -75,96 +85,122 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2 px-0 md:px-6'
       >
-        <Form.Field name='firstName' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>First Name</Form.Label>
+        <Form.Field name='firstName' className={cn('mb-4', radixFormFieldStackClassName)}>
+          <Form.Label className={radixFormLabelClassName}>
+            First Name
+          </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              placeholder='First Name'
+              className={radixInputClassName}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your first name
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='lastName' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>Last Name</Form.Label>
+        <Form.Field name='lastName' className={cn('mb-4', radixFormFieldStackClassName)}>
+          <Form.Label className={radixFormLabelClassName}>Last Name</Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input
+              type='text'
+              required
+              placeholder='Last Name'
+              className={radixInputClassName}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your last name
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='phone' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>Cell Phone</Form.Label>
+        <Form.Field name='phone' className={cn('mb-4', radixFormFieldStackClassName)}>
+          <Form.Label className={radixFormLabelClassName}>
+            Cell Phone
+          </Form.Label>
           <Form.Control asChild>
-            <input type='tel' required className={defaultTextInputStyles} />
+            <input
+              type='tel'
+              required
+              placeholder='xxx-xxx-xxxx'
+              className={radixInputClassName}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your phone number
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='email' className='flex flex-col mb-4'>
-          <Form.Label className='font-bold text-sm mb-2'>
+        <Form.Field name='email' className={cn('mb-4', radixFormFieldStackClassName)}>
+          <Form.Label className={radixFormLabelClassName}>
             Email Address
           </Form.Label>
           <Form.Control asChild>
-            <input type='email' required className={defaultTextInputStyles} />
+            <input
+              type='email'
+              required
+              placeholder='Example@gmail.com'
+              className={radixInputClassName}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your email address
-          </Form.Message>
-          <Form.Message className='text-sm text-alert' match='typeMismatch'>
+          </RadixFormErrorMessage>
+          <RadixFormErrorMessage match='typeMismatch'>
             Please enter a valid email address
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>Location</Form.Label>
-          <Form.Control asChild>
-            {campuses && (
-              <select
-                className={`appearance-none ${defaultTextInputStyles}`}
-                required
-                style={{
-                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: '24px',
-                  backgroundPosition: 'calc(100% - 2%) center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
-                <option value=''>Select a Campus</option>
-                {campuses.map(({ guid, name }, index) => (
-                  <option key={index} value={guid}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+        <Form.Field name='campus' className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}>
+          <Form.Label className={radixFormLabelClassName}>Location</Form.Label>
+          {campuses && (
+            <RadixFormSelectShell>
+              <Form.Control asChild>
+                <select className={radixSelectClassName} required>
+                  <option value=''>Select a Campus</option>
+                  {campuses.map(({ guid, name }, index) => (
+                    <option key={index} value={guid}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </Form.Control>
+            </RadixFormSelectShell>
+          )}
+          <RadixFormErrorMessage match='valueMissing'>
             Please select a campus
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='message' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>Message</Form.Label>
+        <Form.Field name='message' className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}>
+          <Form.Label className={radixFormLabelClassName}>Message</Form.Label>
           <Form.Control asChild>
-            <textarea required rows={5} className={defaultTextInputStyles} />
+            <textarea
+              required
+              rows={5}
+              placeholder='Enter your message'
+              className={radixTextareaClassName}
+            />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter a message
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         <Form.Field
           name='smsConsent'
-          className='flex flex-col md:col-span-2 mt-2'
+          className={cn('mt-2 md:col-span-2', radixFormFieldStackClassName)}
         >
           <div className='flex gap-2 items-start'>
             <Form.Control asChild>
-              <input type='checkbox' required className='mt-1 shrink-0' />
+              <input
+                type='checkbox'
+                required
+                className={radixCheckboxClassName}
+              />
             </Form.Control>
             <Form.Label className='text-sm text-text-secondary leading-5'>
               By submitting, you agree to our{' '}
@@ -201,12 +237,9 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
               to learn how your data is used.
             </Form.Label>
           </div>
-          <Form.Message
-            className='text-sm text-alert pl-5'
-            match='valueMissing'
-          >
+          <RadixFormErrorMessage match='valueMissing'>
             You must agree to continue
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         {error && <p className='text-alert col-span-2 text-center'>{error}</p>}

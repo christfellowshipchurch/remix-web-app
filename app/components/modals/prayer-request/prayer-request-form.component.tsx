@@ -2,8 +2,16 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useRef, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  radixSelectClassName,
+  radixTextareaClassName,
+  renderRadixInputField,
+  RadixFormErrorMessage,
+} from '~/primitives/inputs/form-radix-field';
 import { PrayerRequestLoaderReturnType } from '~/routes/prayer-request/types';
 
 interface PrayerRequestFormProps {
@@ -16,28 +24,6 @@ const followUpOptions = [
   { value: '3', label: 'Yes - Email' },
   { value: '4', label: 'No Thank You' },
 ];
-
-const renderInputField = (
-  name: string,
-  label: string,
-  type: string,
-  requiredMessage: string,
-) => (
-  <Form.Field name={name} className='flex flex-col mb-4'>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
-    <Form.Control asChild>
-      <input type={type} required className={defaultTextInputStyles} />
-    </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
-      {requiredMessage}
-    </Form.Message>
-    {type === 'email' && (
-      <Form.Message className='text-sm text-alert' match='typeMismatch'>
-        Please enter a valid email address
-      </Form.Message>
-    )}
-  </Form.Field>
-);
 
 const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
   const [error, setError] = useState<string | null>(null);
@@ -98,45 +84,39 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
-        {renderInputField(
+        {renderRadixInputField(
           'FirstName',
           'First Name',
           'text',
           'Please enter your first name',
         )}
-        {renderInputField(
+        {renderRadixInputField(
           'LastName',
           'Last Name',
           'text',
           'Please enter your last name',
         )}
-        {renderInputField(
+        {renderRadixInputField(
           'Email',
           'Email',
           'email',
           'Please enter your email address',
         )}
-        {renderInputField(
+        {renderRadixInputField(
           'MobilePhone',
           'Mobile Phone',
           'tel',
           'Please enter your phone number',
         )}
 
-        <Form.Field name='Campus' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+        <Form.Field
+          name='Campus'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
+          <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
           <Form.Control asChild>
             {campuses && (
-              <select
-                className={`appearance-none ${defaultTextInputStyles}`}
-                required
-                style={{
-                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: '24px',
-                  backgroundPosition: 'calc(100% - 2%) center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
+              <select className={radixSelectClassName} required>
                 <option value=''>Select a Campus</option>
                 {campuses.map(({ guid, name }, index) => (
                   <option key={index} value={guid}>
@@ -146,40 +126,35 @@ const PrayerRequestForm: React.FC<PrayerRequestFormProps> = ({ onSuccess }) => {
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please select a campus
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='Request' className='flex flex-col mb-4 md:col-span-2'>
-          <Form.Label className='font-bold text-sm mb-2'>
+        <Form.Field
+          name='Request'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
+          <Form.Label className={radixFormLabelClassName}>
             How can we pray for you?
           </Form.Label>
           <Form.Control asChild>
-            <textarea required rows={5} className={defaultTextInputStyles} />
+            <textarea required rows={5} className={radixTextareaClassName} />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your prayer request
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         <Form.Field
           name='FollowUp'
-          className='flex flex-col mb-4 md:col-span-2'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={radixFormLabelClassName}>
             Would you like our team to follow up with you?
           </Form.Label>
           <Form.Control asChild>
-            <select
-              className={`appearance-none ${defaultTextInputStyles}`}
-              style={{
-                backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                backgroundSize: '24px',
-                backgroundPosition: 'calc(100% - 2%) center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
+            <select className={radixSelectClassName}>
               <option value=''>Select one...</option>
               {followUpOptions.map(({ value, label }) => (
                 <option key={value} value={value}>

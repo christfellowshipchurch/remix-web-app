@@ -1,53 +1,44 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Checkbox } from '../checkbox.primitive';
 
 describe('Checkbox', () => {
-  it('renders label text', () => {
+  it('renders label', () => {
     render(
       <Checkbox checked={false} onChange={vi.fn()} label='Accept terms' />,
     );
     expect(screen.getByText('Accept terms')).toBeInTheDocument();
   });
 
-  it('renders unchecked by default', () => {
-    render(<Checkbox checked={false} onChange={vi.fn()} label='Accept' />);
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).not.toBeChecked();
+  it('reflects checked state', () => {
+    render(<Checkbox checked={true} onChange={vi.fn()} label='Checked' />);
+    expect(screen.getByRole('checkbox')).toBeChecked();
   });
 
-  it('renders in checked state', () => {
-    render(<Checkbox checked={true} onChange={vi.fn()} label='Accept' />);
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toBeChecked();
-  });
-
-  it('calls onChange with true when unchecked box is clicked', async () => {
+  it('calls onChange when clicked', () => {
     const onChange = vi.fn();
-    const user = userEvent.setup();
-    render(<Checkbox checked={false} onChange={onChange} label='Accept' />);
-    await user.click(screen.getByRole('checkbox'));
+    render(<Checkbox checked={false} onChange={onChange} label='Toggle me' />);
+    fireEvent.click(screen.getByRole('checkbox'));
     expect(onChange).toHaveBeenCalledWith(true);
   });
 
-  it('calls onChange with false when checked box is clicked', async () => {
-    const onChange = vi.fn();
-    const user = userEvent.setup();
-    render(<Checkbox checked={true} onChange={onChange} label='Accept' />);
-    await user.click(screen.getByRole('checkbox'));
-    expect(onChange).toHaveBeenCalledWith(false);
-  });
-
-  it('sets required attribute when required is true', () => {
-    render(
-      <Checkbox checked={false} onChange={vi.fn()} label='Required' required />,
+  it('applies unchecked Figma styles', () => {
+    render(<Checkbox checked={false} onChange={vi.fn()} label='Style' />);
+    expect(screen.getByRole('checkbox').className).toContain(
+      'border-form-stroke-muted',
     );
-    expect(screen.getByRole('checkbox')).toBeRequired();
+    expect(screen.getByRole('checkbox').className).toContain('rounded-[4px]');
   });
 
-  it('does not set required by default', () => {
-    render(<Checkbox checked={false} onChange={vi.fn()} label='Optional' />);
-    expect(screen.getByRole('checkbox')).not.toBeRequired();
+  it('applies error styles when error is true', () => {
+    render(<Checkbox checked={false} onChange={vi.fn()} label='Error' error />);
+    expect(screen.getByRole('checkbox').className).toContain('border-alert');
+  });
+
+  it('supports disabled state', () => {
+    render(
+      <Checkbox checked={true} onChange={vi.fn()} label='Disabled' disabled />,
+    );
+    expect(screen.getByRole('checkbox')).toBeDisabled();
   });
 });

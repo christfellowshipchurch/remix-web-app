@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import * as Form from '@radix-ui/react-form';
 import TextFieldInput from '~/primitives/inputs/text-field/text-field.primitive';
+import { cn } from '~/lib/utils';
+import {
+  RadixFormErrorMessage,
+  radixCheckboxClassName,
+  radixFormFieldStackClassName,
+} from '~/primitives/inputs/form-radix-field';
 import { Button } from '~/primitives/button/button.primitive';
 import { useAuth } from '~/providers/auth-provider';
 
@@ -66,7 +72,7 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
         Enter your phone number <br /> or email address to get started.
       </p>
       <Form.Root onSubmit={handleSubmit} className='flex flex-col text-left'>
-        <Form.Field name='identity' className='flex flex-col'>
+        <Form.Field name='identity' className={radixFormFieldStackClassName}>
           <Form.Label>Mobile Number or Email*</Form.Label>
           <Form.Control asChild>
             <TextFieldInput
@@ -76,28 +82,36 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
               setError={setError}
             />
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter a number or email
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {error === 'ALREADY_EXISTS' ? (
           <UserExistsError onClick={() => onSubmit('')} />
         ) : (
           <p className='text-sm text-alert'>{error}</p>
         )}
-        <Form.Field className='mt-4' name='agreement'>
+        <Form.Field
+          className={cn('mt-4', radixFormFieldStackClassName)}
+          name='agreement'
+        >
           <div className='flex items-center gap-3'>
             <Form.Control asChild>
-              <input id='c1' type='checkbox' className='text-ocean' required />
+              <input
+                id='c1'
+                type='checkbox'
+                className={radixCheckboxClassName}
+                required
+              />
             </Form.Control>
             <label className='text-xs' htmlFor='c1'>
               I agree to the Terms of Use and Privacy Policy laid out by Christ
               Fellowship Church.
             </label>
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please agree to the terms and conditions
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         <Form.Submit className='mt-12' asChild>
           <Button size='md' type='submit' disabled={loading}>

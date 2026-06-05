@@ -1,7 +1,15 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
+import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  radixRadioClassName,
+  radixSelectClassName,
+  RadixFormErrorMessage,
+} from '~/primitives/inputs/form-radix-field';
+import { formRadioGroupVerticalStyles } from '~/primitives/inputs/form-control.styles';
 import { useFetcher } from 'react-router-dom';
 import { renderInputField } from '../connect-card/connect-form.component';
 import { LoaderReturnType } from '~/routes/set-a-reminder/loader';
@@ -129,41 +137,25 @@ const ReminderForm: React.FC<ReminderProps> = ({
           email || undefined,
         )}
 
-        <Form.Field name='campus' className='flex flex-col'>
-          <Form.Label className='font-bold text-sm mb-2'>Campus</Form.Label>
+        <Form.Field name='campus' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
           <Form.Control asChild>
-            <select
-              className={`appearance-none ${defaultTextInputStyles} text-neutral-400`}
-              required
-              disabled
-              style={{
-                backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                backgroundSize: '24px',
-                backgroundPosition: 'calc(100% - 2%) center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
+            <select className={radixSelectClassName} required disabled>
               <option>{campusName}</option>
             </select>
           </Form.Control>
         </Form.Field>
 
-        <Form.Field name='serviceTime' className='flex flex-col'>
-          <Form.Label className='font-bold text-sm mb-2'>
+        <Form.Field name='serviceTime' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>
             {isEspanol ? 'Horarios de Servicios' : 'Service Time'}
           </Form.Label>
           <Form.Control asChild>
             {serviceTimes && (
               <select
-                className={`appearance-none ${defaultTextInputStyles} cursor-pointer`}
+                className={radixSelectClassName}
                 required
                 onChange={(e) => setServiceTime(e.target.value)}
-                style={{
-                  backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                  backgroundSize: '24px',
-                  backgroundPosition: 'calc(100% - 2%) center',
-                  backgroundRepeat: 'no-repeat',
-                }}
               >
                 <option value={''}>
                   {isEspanol
@@ -180,48 +172,48 @@ const ReminderForm: React.FC<ReminderProps> = ({
               </select>
             )}
           </Form.Control>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             {isEspanol
               ? 'Porfavor seleccione un horario de servicio'
               : 'Please select a service time'}
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         <Form.Field
           name='beenToCF'
-          className='flex flex-col col-span-1 md:col-span-2 mt-4'
+          className={cn('col-span-1 mt-4 md:col-span-2', radixFormFieldStackClassName)}
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={radixFormLabelClassName}>
             {isEspanol
               ? '¿Ha estado en Christ Fellowship antes?'
               : 'Have you been to Christ Fellowship before?'}
           </Form.Label>
-          <div className='flex flex-wrap gap-x-6 gap-y-2' role='radiogroup'>
-            <label className='inline-flex items-center gap-2 text-sm cursor-pointer'>
+          <div className={formRadioGroupVerticalStyles} role='radiogroup'>
+            <label className='inline-flex cursor-pointer items-center gap-2'>
               <input
                 type='radio'
                 name='beenToCF'
                 value='true'
                 required
-                className='h-4 w-4 accent-ocean shrink-0'
+                className={radixRadioClassName}
               />
               {isEspanol ? 'Sí' : 'Yes'}
             </label>
-            <label className='inline-flex items-center gap-2 text-sm cursor-pointer'>
+            <label className='inline-flex cursor-pointer items-center gap-2'>
               <input
                 type='radio'
                 name='beenToCF'
                 value='false'
-                className='h-4 w-4 accent-ocean shrink-0'
+                className={radixRadioClassName}
               />
               No, {isEspanol ? 'es mi primera vez' : "it's my first time"}
             </label>
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             {isEspanol
               ? 'Porfavor indique si ha estado en Christ Fellowship antes.'
               : 'Please let us know if you have been to Christ Fellowship before.'}
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
