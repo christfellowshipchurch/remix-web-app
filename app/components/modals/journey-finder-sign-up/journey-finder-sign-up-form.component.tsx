@@ -2,11 +2,18 @@ import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
 import { useFetcher, useSearchParams } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
 import { pushFormEvent } from '~/lib/gtm';
 import Icon from '~/primitives/icon';
-
-const formControlStyles = `${defaultTextInputStyles} border-transparent bg-[#f4f5f7] text-sm`;
+import { cn } from '~/lib/utils';
+import { formRadioGroupVerticalStyles } from '~/primitives/inputs/form-control.styles';
+import {
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  radixRadioClassName,
+  radixTextareaClassName,
+  renderRadixInputField,
+  RadixFormErrorMessage,
+} from '~/primitives/inputs/form-radix-field';
 
 export type JourneyFinderSignUpSuccessDetails = {
   firstName: string;
@@ -19,29 +26,7 @@ interface JourneyFinderSignUpFormProps {
   isSpanish?: boolean;
 }
 
-export const renderInputField = (
-  name: string,
-  label: string,
-  type: string,
-  requiredMessage: string,
-  defaultValue?: string,
-  fieldClassName = '',
-) => (
-  <Form.Field name={name} className={`flex flex-col mb-4 ${fieldClassName}`}>
-    <Form.Label className='font-bold text-sm mb-2'>{label}</Form.Label>
-    <Form.Control asChild>
-      <input
-        type={type}
-        required
-        defaultValue={defaultValue}
-        className={formControlStyles}
-      />
-    </Form.Control>
-    <Form.Message className='text-sm text-alert' match='valueMissing'>
-      {requiredMessage}
-    </Form.Message>
-  </Form.Field>
-);
+export const renderInputField = renderRadixInputField;
 
 const AT_CF_OPTIONS: { value: string; label: string }[] = [
   { value: '1', label: 'Less than 1 month' },
@@ -199,12 +184,12 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='atCF'
-          className='flex flex-col col-span-1 md:col-span-2 mt-2'
+          className={cn('col-span-1 mt-2 md:col-span-2', radixFormFieldStackClassName)}
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={radixFormLabelClassName}>
             {copy.atCF}
           </Form.Label>
-          <div className='flex flex-col gap-2'>
+          <div className={formRadioGroupVerticalStyles}>
             {copy.atCFOptions.map((option) => (
               <label key={option.value} className='flex items-center gap-2'>
                 <Form.Control asChild>
@@ -213,26 +198,27 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
                     name='atCF'
                     value={option.value}
                     required
+                    className={radixRadioClassName}
                   />
                 </Form.Control>
                 <span className='leading-4'>{option.label}</span>
               </label>
             ))}
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             {copy.requiredAtCF}
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
 
         <Form.Field
           name='hopeToGet'
-          className='flex flex-col col-span-1 md:col-span-2 mt-2'
+          className={cn('col-span-1 mt-2 md:col-span-2', radixFormFieldStackClassName)}
         >
-          <Form.Label className='font-bold text-sm mb-2'>
+          <Form.Label className={radixFormLabelClassName}>
             {copy.hopeToGet}
           </Form.Label>
           <Form.Control asChild>
-            <textarea rows={4} className={formControlStyles} />
+            <textarea rows={4} className={radixTextareaClassName} />
           </Form.Control>
         </Form.Field>
 

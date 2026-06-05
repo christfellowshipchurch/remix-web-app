@@ -1,9 +1,18 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
+import { cn } from '~/lib/utils';
 import Icon from '~/primitives/icon';
 import colors from '~/styles/colors';
+import {
+  formControlBaseStyles,
+  formControlErrorStyles,
+  formFieldStackStyles,
+  formLabelStyles,
+  formRequiredHintStyles,
+  formRequiredMarkerStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { FormFieldErrorText } from '~/primitives/inputs/form-error-message';
 
-export const defaultDateInputStyles =
-  'rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full';
+export { defaultDateInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface DateInputProps {
   name?: string;
@@ -16,6 +25,7 @@ interface DateInputProps {
   isRequired?: boolean;
   min?: string;
   max?: string;
+  disabled?: boolean;
 }
 
 const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
@@ -31,6 +41,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
       isRequired = false,
       min,
       max,
+      disabled = false,
     },
     ref,
   ) => {
@@ -42,59 +53,59 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
       }
     }, [error]);
 
+    const assignRef = (el: HTMLInputElement | null) => {
+      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current =
+        el;
+      if (typeof ref === 'function') {
+        ref(el);
+      } else if (ref) {
+        ref.current = el;
+      }
+    };
+
     return (
-      <div className='flex flex-col gap-1 w-full'>
+      <div className={cn('w-full', formFieldStackStyles)}>
         {label && (
-          <label className='font-bold text-text-primary text-sm mb-1'>
-            {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
+          <label className={formLabelStyles}>
+            {isRequired && (
+              <span className={formRequiredMarkerStyles}>{'*'}</span>
+            )}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
-                {'(required)'}
-              </span>
+              <span className={formRequiredHintStyles}>{'(required)'}</span>
             )}
           </label>
         )}
-        {error ? (
-          <div className='relative'>
-            <input
-              ref={ref}
-              name={name}
-              className='w-full rounded-md border-2 border-alert p-2'
-              type='date'
-              value={value}
-              onFocus={() => setError(null)}
-              readOnly
-              required={isRequired}
-              min={min}
-              max={max}
-            />
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
-            </span>
-          </div>
-        ) : (
+        <div className='relative'>
           <input
-            ref={(el) => {
-              (
-                inputRef as React.MutableRefObject<HTMLInputElement | null>
-              ).current = el;
-              if (typeof ref === 'function') {
-                ref(el);
-              } else if (ref) {
-                ref.current = el;
-              }
-            }}
+            ref={assignRef}
             name={name}
-            className={`${defaultDateInputStyles} ${className}`}
+            className={cn(
+              error ? formControlErrorStyles : formControlBaseStyles,
+              className,
+            )}
             type='date'
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            onFocus={() => error && setError(null)}
             required={isRequired}
+            disabled={disabled}
             min={min}
             max={max}
+            data-invalid={Boolean(error)}
+            aria-invalid={Boolean(error)}
           />
-        )}
+          {error && (
+            <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'>
+              <Icon
+                name='errorCircle'
+                color={colors.alert}
+                className='size-5'
+              />
+            </span>
+          )}
+        </div>
+        {error && <FormFieldErrorText>{error}</FormFieldErrorText>}
       </div>
     );
   },

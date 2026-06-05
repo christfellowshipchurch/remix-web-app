@@ -1,6 +1,6 @@
 /**
  * @name TextFieldInput
- * @description This component is a text input field that can be used in forms. It was mainly created inorder to be able to place icons inside the input field when there is an error. If icon is not needed, a normal text input field can be used with the defaultTextInputStyles.
+ * @description Text input with icon slots, password toggle, and validation states.
  */
 
 import React, {
@@ -8,12 +8,25 @@ import React, {
   HTMLInputTypeAttribute,
   useEffect,
   useRef,
+  useState,
 } from 'react';
+import { cn } from '~/lib/utils';
 import Icon from '~/primitives/icon';
 import colors from '~/styles/colors';
+import {
+  formControlBaseStyles,
+  formControlErrorStyles,
+  formControlLeadingIconStyles,
+  formControlTrailingIconStyles,
+  formFieldStackStyles,
+  formHelperTextStyles,
+  formLabelStyles,
+  formRequiredHintStyles,
+  formRequiredMarkerStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { FormFieldErrorText } from '~/primitives/inputs/form-error-message';
 
-export const defaultTextInputStyles =
-  'overflow-x-hidden rounded-md border border-neutral-500 p-2 focus:border-2 focus:border-ocean focus:outline-none focus:ring-0 data-[invalid=true]:focus:border-alert w-full';
+export { defaultTextInputStyles } from '~/primitives/inputs/form-control.styles';
 
 interface TextFieldInputProps {
   name?: string;
@@ -25,8 +38,11 @@ interface TextFieldInputProps {
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
   label?: string;
+  helperText?: string;
   isRequired?: boolean;
+  isValidated?: boolean;
   customIcon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
@@ -41,12 +57,21 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       type = 'text',
       placeholder = '',
       label,
+      helperText,
       isRequired = false,
+      isValidated = false,
       customIcon,
+      disabled = false,
     },
     ref,
   ) => {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const isPassword = type === 'password';
+    const inputType = isPassword && showPassword ? 'text' : type;
+    const hasLeadingIcon =
+      type === 'email' || type === 'tel' || Boolean(customIcon);
+    const hasTrailingIcon = isPassword || isValidated || Boolean(error);
 
     useEffect(() => {
       if (error === null && inputRef.current) {
@@ -54,74 +79,105 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(
       }
     }, [error]);
 
+    const assignRef = (el: HTMLInputElement | null) => {
+      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current =
+        el;
+      if (typeof ref === 'function') {
+        ref(el);
+      } else if (ref) {
+        ref.current = el;
+      }
+    };
+
+    const paddingClasses = cn(
+      hasLeadingIcon && formControlLeadingIconStyles,
+      hasTrailingIcon && formControlTrailingIconStyles,
+    );
+
     return (
-      <div className='flex flex-col gap-1 w-full'>
+      <div className={cn('w-full', formFieldStackStyles)}>
         {label && (
-          <label className='font-bold text-text-primary mb-1'>
-            {isRequired && <span className='text-ocean mr-1'>{'*'}</span>}
+          <label className={formLabelStyles}>
+            {isRequired && (
+              <span className={formRequiredMarkerStyles}>{'*'}</span>
+            )}
             {label}
             {isRequired && (
-              <span className='font-normal text-text-secondary ml-1 italic'>
-                {'(required)'}
-              </span>
+              <span className={formRequiredHintStyles}>{'(required)'}</span>
             )}
           </label>
         )}
-        {error ? (
-          <div className='relative'>
-            <input
-              ref={ref}
-              className='w-full rounded-md border-2 border-alert p-2 pl-10'
-              type={type}
-              name={name}
-              value={value}
-              placeholder={placeholder}
-              required={isRequired}
-              onFocus={() => setError(null)}
-              readOnly
-            />
-            <span className='absolute right-3 top-2.5 text-gray-500'>
-              <Icon name='errorCircle' color={colors.alert} />
-            </span>
-          </div>
-        ) : (
-          <div className='relative'>
-            <input
-              ref={(el) => {
-                (
-                  inputRef as React.MutableRefObject<HTMLInputElement | null>
-                ).current = el;
-                if (typeof ref === 'function') {
-                  ref(el);
-                } else if (ref) {
-                  ref.current = el;
-                }
-              }}
-              name={name}
-              className={`${defaultTextInputStyles} ${className} ${
-                type === 'email' || type === 'tel' || customIcon ? 'pl-10' : ''
-              }`}
-              type={type}
-              value={value}
-              placeholder={placeholder}
-              onChange={(e) => setValue(e.target.value)}
-              required={isRequired}
-            />
-            {type === 'email' && (
-              <span className='absolute left-3 top-2.5'>
-                <Icon name='envelope' className='text-navy size-5 mt-[1px]' />
-              </span>
-            )}
-            {type === 'tel' && (
-              <span className='absolute left-3 top-2.5'>
-                <Icon name='smartphone' className='text-navy size-5' />
-              </span>
-            )}
-            {customIcon && (
-              <span className='absolute left-3 top-2.5'>{customIcon}</span>
-            )}
-          </div>
+        {helperText && !error && (
+          <p className={formHelperTextStyles}>{helperText}</p>
         )}
+        <div className='relative'>
+          <input
+            ref={assignRef}
+            name={name}
+            className={cn(
+              error ? formControlErrorStyles : formControlBaseStyles,
+              paddingClasses,
+              className,
+            )}
+            type={inputType}
+            value={value}
+            placeholder={placeholder}
+            onChange={(e) => setValue(e.target.value)}
+            onFocus={() => error && setError(null)}
+            required={isRequired}
+            disabled={disabled}
+            data-invalid={Boolean(error)}
+            aria-invalid={Boolean(error)}
+          />
+          {type === 'email' && !error && (
+            <span className='pointer-events-none absolute left-4 top-1/2 -translate-y-1/2'>
+              <Icon name='envelope' className='size-5 text-navy' />
+            </span>
+          )}
+          {type === 'tel' && !error && (
+            <span className='pointer-events-none absolute left-4 top-1/2 -translate-y-1/2'>
+              <Icon name='smartphone' className='size-5 text-navy' />
+            </span>
+          )}
+          {customIcon && !error && (
+            <span className='pointer-events-none absolute left-4 top-1/2 -translate-y-1/2'>
+              {customIcon}
+            </span>
+          )}
+          {isPassword && !error && (
+            <button
+              type='button'
+              className='absolute right-4 top-1/2 -translate-y-1/2 text-navy'
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              <Icon
+                name={showPassword ? 'eyeSlash' : 'eye'}
+                className='size-5'
+              />
+            </button>
+          )}
+          {isValidated && !error && !isPassword && (
+            <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'>
+              <Icon
+                name='checkCircle'
+                color={colors.success}
+                className='size-5'
+              />
+            </span>
+          )}
+          {error && (
+            <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'>
+              <Icon
+                name='errorCircle'
+                color={colors.alert}
+                className='size-5'
+              />
+            </span>
+          )}
+        </div>
+        {error && <FormFieldErrorText>{error}</FormFieldErrorText>}
       </div>
     );
   },

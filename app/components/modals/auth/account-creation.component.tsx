@@ -1,7 +1,13 @@
 import * as Form from '@radix-ui/react-form';
 import React, { useState } from 'react';
 import { NewUser } from './login-flow.component';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import {
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  radixInputClassName,
+  RadixFormErrorMessage,
+  FormFieldErrorText,
+} from '~/primitives/inputs/form-radix-field';
 import RadioButtons from '~/primitives/inputs/radio-buttons';
 import { Button } from '~/primitives/button/button.primitive';
 
@@ -79,56 +85,65 @@ const AccountCreation: React.FC<AccountCreationProps> = ({
         className='grid grid-cols-1 gap-6 md:grid-cols-2'
       >
         {/* First Name */}
-        <Form.Field name='firstName' className='flex flex-col'>
-          <Form.Label>First Name*</Form.Label>
+        <Form.Field name='firstName' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>
+            First Name*
+          </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your first name
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {/* Last Name */}
-        <Form.Field name='lastName' className='flex flex-col'>
-          <Form.Label>Last Name*</Form.Label>
+        <Form.Field name='lastName' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>
+            Last Name*
+          </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your last name
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {/* Birthdate */}
-        <Form.Field name='birthDate' className='flex flex-col'>
-          <Form.Label>Birth Date*</Form.Label>
+        <Form.Field name='birthDate' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>
+            Birth Date*
+          </Form.Label>
           <Form.Control asChild>
-            <input type='date' required className={defaultTextInputStyles} />
+            <input type='date' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your birth date
-          </Form.Message>
-          {birthDateError && <p className='text-alert'>{birthDateError}</p>}
+          </RadixFormErrorMessage>
+          {birthDateError && (
+            <FormFieldErrorText>{birthDateError}</FormFieldErrorText>
+          )}
         </Form.Field>
         {/* Email or Phone */}
         <Form.Field
           name={identityType === 'email' ? 'phone' : 'email'}
-          className='flex flex-col'
+          className={radixFormFieldStackClassName}
         >
-          <Form.Label>
+          <Form.Label className={radixFormLabelClassName}>
             {identityType === 'email' ? 'Phone' : 'Email'}
           </Form.Label>
           <Form.Control asChild>
-            <input type='text' required className={defaultTextInputStyles} />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
-          <Form.Message className='text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter your email
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
         {/* Gender */}
-        <Form.Field name='gender' className='flex flex-col'>
-          <Form.Label>Gender</Form.Label>
+        <Form.Field name='gender' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>Gender</Form.Label>
           <div className='flex gap-4 pt-3'>
             <RadioButtons
+              name='gender'
               options={[
                 { value: 'male', label: 'Male' },
                 { value: 'female', label: 'Female' },

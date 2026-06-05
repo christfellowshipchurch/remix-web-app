@@ -2,7 +2,18 @@ import * as Form from '@radix-ui/react-form';
 import React, { useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { cn } from '~/lib/utils';
+import {
+  formControlBaseStyles,
+  formControlErrorStyles,
+  formControlTrailingIconStyles,
+} from '~/primitives/inputs/form-control.styles';
+import {
+  radixFormFieldStackClassName,
+  radixFormLabelClassName,
+  RadixFormErrorMessage,
+  FormFieldErrorText,
+} from '~/primitives/inputs/form-radix-field';
 
 interface PasswordScreenProps {
   onSubmit: (password: string) => Promise<void>;
@@ -54,8 +65,8 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
         onSubmit={handleSubmit}
         className='flex flex-col gap-4 p-4 text-left'
       >
-        <Form.Field name='password' className='flex flex-col'>
-          <Form.Label className='text-gray-700'>Password*</Form.Label>
+        <Form.Field name='password' className={radixFormFieldStackClassName}>
+          <Form.Label className={radixFormLabelClassName}>Password*</Form.Label>
           <div className='relative'>
             <Form.Control asChild>
               <input
@@ -65,25 +76,24 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onSubmit }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className={
-                  error
-                    ? 'w-full rounded-md border-2 border-alert p-2 focus:outline-none focus:ring-0'
-                    : defaultTextInputStyles
-                }
+                className={cn(
+                  error ? formControlErrorStyles : formControlBaseStyles,
+                  formControlTrailingIconStyles,
+                )}
               />
             </Form.Control>
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className='absolute right-3 top-2 text-gray-500'
+              className='absolute right-4 top-1/2 -translate-y-1/2 text-navy'
             >
               <Icon name={showPassword ? 'eye' : 'eyeSlash'} size={24} />
             </span>
           </div>
-          <Form.Message className='text-sm text-alert' match='valueMissing'>
+          <RadixFormErrorMessage match='valueMissing'>
             Please enter a password
-          </Form.Message>
+          </RadixFormErrorMessage>
         </Form.Field>
-        {error && <p className='text-sm text-alert'>{error}</p>}
+        {error && <FormFieldErrorText>{error}</FormFieldErrorText>}
         <Form.Submit className='mt-2' asChild>
           <Button size='md' type='submit' disabled={loading}>
             {loading ? 'Loading...' : 'Log In'}
