@@ -137,7 +137,7 @@ export const AddToCalendar = ({
     <div className={`relative ${className ?? ''}`} ref={dropdownRef}>
       <Button
         intent='secondary'
-        className='rounded-xl w-full sm:w-auto sm:mx-auto'
+        className='rounded-xl w-full'
         onClick={handleAddToCalendar}
       >
         <Icon name='calendarPlus' size={18} className='mr-2' />
