@@ -88,7 +88,9 @@ export function AddToCalendarButton({
     startTime,
     endTime: Number.isNaN(endTime.getTime()) ? fallbackEndTime : endTime,
     url:
-      typeof window !== 'undefined' ? window.location.href : mission.missionsUrl,
+      typeof window !== 'undefined'
+        ? window.location.href
+        : mission.missionsUrl,
   };
 
   if (!showLabel) {

@@ -28,8 +28,24 @@ const GoogleCalendarIcon = ({ date }: { date: Date }) => (
     <rect width='32' height='32' rx='6' stroke='#dadce0' strokeWidth='1' />
     <rect width='32' height='11' rx='6' fill='#1a73e8' />
     <rect y='6' width='32' height='5' fill='#1a73e8' />
-    <rect x='8.5' y='0' width='2' height='6' rx='1' fill='white' opacity='0.6' />
-    <rect x='21.5' y='0' width='2' height='6' rx='1' fill='white' opacity='0.6' />
+    <rect
+      x='8.5'
+      y='0'
+      width='2'
+      height='6'
+      rx='1'
+      fill='white'
+      opacity='0.6'
+    />
+    <rect
+      x='21.5'
+      y='0'
+      width='2'
+      height='6'
+      rx='1'
+      fill='white'
+      opacity='0.6'
+    />
     <circle cx='8' cy='18' r='2.2' fill='#4285F4' />
     <circle cx='24' cy='18' r='2.2' fill='#EA4335' />
     <circle cx='8' cy='27' r='2.2' fill='#34A853' />
