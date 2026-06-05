@@ -1,5 +1,5 @@
-import { icsLink } from '~/lib/utils';
-import { Button } from '~/primitives/button/button.primitive';
+import { googleCalendarLink, icsLink } from '~/lib/utils';
+import { AddToCalendar } from '~/components/add-to-calendar/add-to-calendar.component';
 import Icon from '~/primitives/icon';
 import HTMLRenderer from '~/primitives/html-renderer';
 
@@ -58,15 +58,6 @@ function plainTextFromHtml(value: string): string {
     .trim();
 }
 
-function calendarFilename(title: string): string {
-  const slug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-
-  return `${slug || 'community-serving-opportunity'}.ics`;
-}
-
 export function AddToCalendarButton({
   mission,
   className,
@@ -80,51 +71,49 @@ export function AddToCalendarButton({
     return null;
   }
 
-  const handleAddToCalendar = () => {
-    const startTime = new Date(mission.calendarStartDateTime as string);
-    const fallbackEndTime = new Date(startTime.getTime() + 60 * 60 * 1000);
-    const endTime = mission.calendarEndDateTime
-      ? new Date(mission.calendarEndDateTime)
-      : fallbackEndTime;
+  const startTime = new Date(mission.calendarStartDateTime as string);
+  if (Number.isNaN(startTime.getTime())) {
+    return null;
+  }
 
-    if (Number.isNaN(startTime.getTime())) {
-      return;
-    }
+  const fallbackEndTime = new Date(startTime.getTime() + 60 * 60 * 1000);
+  const endTime = mission.calendarEndDateTime
+    ? new Date(mission.calendarEndDateTime)
+    : fallbackEndTime;
 
-    const calendarUrl = icsLink({
-      title: `CF Missions - ${mission.title}`,
-      description: plainTextFromHtml(mission.summary),
-      address: mission.campusName || '',
-      startTime,
-      endTime: Number.isNaN(endTime.getTime()) ? fallbackEndTime : endTime,
-      url:
-        typeof window !== 'undefined'
-          ? window.location.href
-          : mission.missionsUrl,
-    });
-
-    const link = document.createElement('a');
-    link.href = calendarUrl;
-    link.download = calendarFilename(mission.title);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => window.URL.revokeObjectURL(calendarUrl), 0);
+  const eventDetails = {
+    title: `CF Missions - ${mission.title}`,
+    description: plainTextFromHtml(mission.summary),
+    address: mission.campusName || '',
+    startTime,
+    endTime: Number.isNaN(endTime.getTime()) ? fallbackEndTime : endTime,
+    url:
+      typeof window !== 'undefined' ? window.location.href : mission.missionsUrl,
   };
 
+  if (!showLabel) {
+    // Icon-only compact variant (mobile bottom bar) — simple ICS trigger, no dropdown
+    return (
+      <button
+        type='button'
+        className={className}
+        onClick={() => {
+          window.location.href = icsLink(eventDetails);
+        }}
+        aria-label='Add to Calendar'
+      >
+        <Icon name='calendarPlus' size={22} />
+      </button>
+    );
+  }
+
   return (
-    <Button
-      intent='secondary'
+    <AddToCalendar
+      googleHref={googleCalendarLink(eventDetails)}
+      getIcsUrl={() => icsLink(eventDetails)}
+      eventDate={startTime}
       className={className}
-      type='button'
-      onClick={handleAddToCalendar}
-      aria-label={showLabel ? undefined : 'Add to Calendar'}
-    >
-      <span className='inline-flex items-center justify-center gap-2'>
-        <Icon name='calendarPlus' size={18} />
-        {showLabel ? 'Add to Calendar' : null}
-      </span>
-    </Button>
+    />
   );
 }
 
