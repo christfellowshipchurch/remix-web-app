@@ -84,18 +84,34 @@ describe('TextFieldInput', () => {
     expect(screen.getByPlaceholderText('Enter email')).toBeInTheDocument();
   });
 
-  it('renders error state when error is provided', () => {
+  it('applies Figma form control base styles', () => {
     render(
       <TextFieldInput
         value=''
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+      />,
+    );
+    const input = screen.getByRole('textbox');
+    expect(input.className).toContain('rounded-[10px]');
+    expect(input.className).toContain('bg-gray');
+    expect(input.className).toContain('h-[46px]');
+  });
+
+  it('renders error message row when error is provided', () => {
+    render(
+      <TextFieldInput
+        value='bad'
         error='Invalid email'
         setValue={vi.fn()}
         setError={vi.fn()}
       />,
     );
-    // In error state the input is readOnly — no onChange
-    const input = document.querySelector('input');
-    expect(input).toHaveAttribute('readonly');
+    expect(screen.getByRole('alert')).toHaveTextContent('Invalid email');
+    expect(screen.getByRole('alert').className).toContain('text-sm');
+    expect(document.getElementById('icon-alertCircle')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
   });
 
   it('clears error on focus when in error state', () => {
@@ -110,6 +126,21 @@ describe('TextFieldInput', () => {
     );
     fireEvent.focus(screen.getByRole('textbox'));
     expect(setError).toHaveBeenCalledWith(null);
+  });
+
+  it('renders password toggle for password type', () => {
+    render(
+      <TextFieldInput
+        type='password'
+        value='secret'
+        error={null}
+        setValue={vi.fn()}
+        setError={vi.fn()}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Show password' }),
+    ).toBeInTheDocument();
   });
 
   it('renders name attribute when provided', () => {

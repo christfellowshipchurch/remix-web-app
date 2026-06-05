@@ -4,7 +4,14 @@ import { useFetcher, useNavigate } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
 import TextFieldInput from '~/primitives/inputs/text-field';
 import DateInput from '~/primitives/inputs/date-input/date-input.primitive';
-import { defaultTextInputStyles } from '~/primitives/inputs/text-field/text-field.primitive';
+import { radixSelectClassName } from '~/primitives/inputs/form-radix-field';
+import {
+  formFieldStackStyles,
+  formLabelStyles,
+  formRequiredHintStyles,
+  formRequiredMarkerStyles,
+} from '~/primitives/inputs/form-control.styles';
+import { cn } from '~/lib/utils';
 import { YesFormPersonalInfo } from '../types';
 import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
 
@@ -167,26 +174,14 @@ const YesFormPersonalInfoPartial: React.FC<Props> = ({ data, isSpanish }) => {
           isRequired
           max={new Date().toISOString().split('T')[0]}
         />
-        <div className='flex flex-col gap-1 w-full'>
-          <label className='font-bold text-text-primary mb-1'>
-            <span className='text-ocean mr-1'>{'*'}</span>
+        <div className={cn('w-full', formFieldStackStyles)}>
+          <label className={formLabelStyles}>
+            <span className={formRequiredMarkerStyles}>{'*'}</span>
             {copy.campusLabel}
-            <span className='font-normal text-text-secondary ml-1 italic'>
-              {copy.required}
-            </span>
+            <span className={formRequiredHintStyles}>{copy.required}</span>
           </label>
           {campuses && campuses.length > 0 && (
-            <select
-              name='campus'
-              className={`appearance-none ${defaultTextInputStyles}`}
-              required
-              style={{
-                backgroundImage: `url('/assets/icons/chevron-down.svg')`,
-                backgroundSize: '24px',
-                backgroundPosition: 'calc(100% - 2%) center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
+            <select name='campus' className={radixSelectClassName} required>
               <option value={''}>{copy.selectCampus}</option>
               {campuses.map(({ guid, name }, index) => (
                 <option key={index} value={guid}>
