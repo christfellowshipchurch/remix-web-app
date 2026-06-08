@@ -85,7 +85,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2 px-0 md:px-6'
       >
-        <Form.Field name='firstName' className={cn('mb-4', radixFormFieldStackClassName)}>
+        <Form.Field
+          name='firstName'
+          className={cn('mb-4', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>
             First Name
           </Form.Label>
@@ -102,7 +105,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='lastName' className={cn('mb-4', radixFormFieldStackClassName)}>
+        <Form.Field
+          name='lastName'
+          className={cn('mb-4', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>Last Name</Form.Label>
           <Form.Control asChild>
             <input
@@ -117,7 +123,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='phone' className={cn('mb-4', radixFormFieldStackClassName)}>
+        <Form.Field
+          name='phone'
+          className={cn('mb-4', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>
             Cell Phone
           </Form.Label>
@@ -134,7 +143,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='email' className={cn('mb-4', radixFormFieldStackClassName)}>
+        <Form.Field
+          name='email'
+          className={cn('mb-4', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>
             Email Address
           </Form.Label>
@@ -154,7 +166,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='campus' className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}>
+        <Form.Field
+          name='campus'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>Location</Form.Label>
           {campuses && (
             <RadixFormSelectShell>
@@ -175,7 +190,10 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field name='message' className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}>
+        <Form.Field
+          name='message'
+          className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
+        >
           <Form.Label className={radixFormLabelClassName}>Message</Form.Label>
           <Form.Control asChild>
             <textarea

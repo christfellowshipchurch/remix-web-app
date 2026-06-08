@@ -40,6 +40,8 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
     title,
     coverImage,
     startDateTime,
+    eventCardDate,
+    eventCardDescription,
     eventLocations,
     locations,
     summary,
@@ -48,9 +50,12 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
   } = card;
 
   const image = coverImage?.sources[0]?.uri || '';
-  const formattedDate = startDateTime
-    ? formatFeaturedEventDate(startDateTime)
-    : '';
+  const formattedDate = eventCardDate
+    ? eventCardDate
+    : startDateTime
+      ? formatFeaturedEventDate(startDateTime)
+      : '';
+  const description = eventCardDescription || summary;
   const campus =
     eventLocations && eventLocations.length > 1
       ? 'Multiple Locations'
@@ -84,8 +89,8 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
           <h4 className='text-2xl font-extrabold leading-[1.4] text-pretty md:text-[28px] md:leading-tight'>
             {title}
           </h4>
-          {summary ? (
-            <p className='leading-normal'>{summary}</p>
+          {description ? (
+            <p className='leading-normal'>{description}</p>
           ) : (
             <HtmlRenderer
               html={htmlContent || ''}
@@ -95,7 +100,7 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
 
           <ul className='flex flex-col gap-2 md:flex-row md:gap-4'>
             <li className='flex items-center gap-1'>
-              {startDateTime && <Icon name='calendarAlt' color='black' />}
+              {formattedDate && <Icon name='calendarAlt' color='black' />}
               <p className='text-base font-bold leading-normal md:text-sm md:font-normal'>
                 {formattedDate}
               </p>
@@ -111,7 +116,7 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
         </div>
 
         <span className='hidden min-h-12 w-fit min-w-24 items-center justify-center rounded-md border border-ocean px-6 py-3 text-center text-lg font-normal text-ocean transition-colors delay-50 hover:bg-ocean hover:text-white md:inline-flex'>
-          Save my spot
+          Learn More
         </span>
       </div>
     </Link>

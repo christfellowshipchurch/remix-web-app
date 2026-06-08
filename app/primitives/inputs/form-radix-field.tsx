@@ -24,7 +24,10 @@ export const radixCheckboxOptionLabelClassName = formCheckboxOptionLabelStyles;
 /** @deprecated Use RadixFormErrorMessage for validation messages with icon */
 export const radixFormMessageClassName = formErrorMessageStyles;
 
-export { RadixFormErrorMessage, FormFieldErrorText } from '~/primitives/inputs/form-error-message';
+export {
+  RadixFormErrorMessage,
+  FormFieldErrorText,
+} from '~/primitives/inputs/form-error-message';
 
 export const radixInputClassName = defaultTextInputStyles;
 
