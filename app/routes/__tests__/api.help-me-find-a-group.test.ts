@@ -1,11 +1,14 @@
 import type { ActionFunctionArgs } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { postRockData } from '~/lib/.server/fetch-rock-data';
+import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 import { action } from '~/routes/api.help-me-find-a-group';
 
 vi.mock('~/lib/.server/fetch-rock-data', () => ({
   fetchRockData: vi.fn(),
-  postRockData: vi.fn(),
+}));
+
+vi.mock('~/lib/.server/rock-workflow', () => ({
+  postRockWorkflowLaunchWithApiInitiator: vi.fn(),
 }));
 
 const createValidRequest = (overrides?: {
@@ -72,7 +75,9 @@ async function parseActionResult(result: unknown) {
 describe('help me find a group action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(postRockData).mockResolvedValue(undefined);
+    vi.mocked(postRockWorkflowLaunchWithApiInitiator).mockResolvedValue(
+      undefined,
+    );
   });
 
   it('rejects missing required fields', async () => {
@@ -84,7 +89,7 @@ describe('help me find a group action', () => {
 
     expect(status).toBe(400);
     expect(body.error).toBe('Please fill in all required fields.');
-    expect(postRockData).not.toHaveBeenCalled();
+    expect(postRockWorkflowLaunchWithApiInitiator).not.toHaveBeenCalled();
   });
 
   it('rejects empty Hub selection', async () => {
@@ -96,7 +101,7 @@ describe('help me find a group action', () => {
 
     expect(status).toBe(400);
     expect(body.error).toBe('Please select at least one area.');
-    expect(postRockData).not.toHaveBeenCalled();
+    expect(postRockWorkflowLaunchWithApiInitiator).not.toHaveBeenCalled();
   });
 
   it('posts comma-separated Hub GUIDs to workflow type 419', async () => {
@@ -104,12 +109,13 @@ describe('help me find a group action', () => {
       request: createValidRequest(),
     } as ActionFunctionArgs);
 
-    expect(postRockData).toHaveBeenCalledWith({
-      endpoint:
-        'Workflows/LaunchWorkflow/0?workflowTypeId=419&workflowName=Help%20Me%20Find%20a%20Group',
+    expect(postRockWorkflowLaunchWithApiInitiator).toHaveBeenCalledWith({
+      workflowTypeId: '419',
+      workflowName: 'Help Me Find a Group',
       body: expect.objectContaining({
         Hub: 'hub-guid-1,hub-guid-2',
       }),
+      instanceName: 'Test Person',
     });
   });
 
@@ -118,7 +124,7 @@ describe('help me find a group action', () => {
       request: createValidRequest(),
     } as ActionFunctionArgs);
 
-    expect(postRockData).toHaveBeenCalledWith(
+    expect(postRockWorkflowLaunchWithApiInitiator).toHaveBeenCalledWith(
       expect.objectContaining({
         body: expect.objectContaining({
           LaunchSource: 'app',
@@ -133,7 +139,7 @@ describe('help me find a group action', () => {
       request: createValidRequest({ includeComments: true }),
     } as ActionFunctionArgs);
 
-    expect(postRockData).toHaveBeenCalledWith(
+    expect(postRockWorkflowLaunchWithApiInitiator).toHaveBeenCalledWith(
       expect.objectContaining({
         body: expect.objectContaining({
           Comments: 'Looking for a small group',
@@ -147,7 +153,8 @@ describe('help me find a group action', () => {
       request: createValidRequest(),
     } as ActionFunctionArgs);
 
-    const call = vi.mocked(postRockData).mock.calls[0][0];
+    const call = vi.mocked(postRockWorkflowLaunchWithApiInitiator).mock
+      .calls[0][0];
     expect(call.body).not.toHaveProperty('Comments');
   });
 

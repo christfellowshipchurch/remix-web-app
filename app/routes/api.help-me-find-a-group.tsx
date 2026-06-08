@@ -5,7 +5,8 @@ import {
 } from 'react-router-dom';
 import type { HelpMeFindAGroupFormType } from '~/components/modals/help-me-find-a-group/types';
 import type { HelpMeFindAGroupLoaderReturnType } from '~/components/modals/help-me-find-a-group/types';
-import { fetchRockData, postRockData } from '~/lib/.server/fetch-rock-data';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 
 const HUB_DEFINED_TYPE_ID = 366;
 
@@ -87,9 +88,11 @@ export const action: ActionFunction = async ({ request }) => {
       submission.Comments = Comments;
     }
 
-    await postRockData({
-      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=419&workflowName=${encodeURIComponent('Help Me Find a Group')}`,
+    await postRockWorkflowLaunchWithApiInitiator({
+      workflowTypeId: '419',
+      workflowName: 'Help Me Find a Group',
       body: submission,
+      instanceName: `${FirstName} ${LastName}`.trim(),
     });
 
     return new Response(JSON.stringify({ success: true }), {

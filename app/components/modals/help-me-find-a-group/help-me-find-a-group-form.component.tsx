@@ -167,13 +167,15 @@ const HelpMeFindAGroupForm: React.FC<HelpMeFindAGroupFormProps> = ({
                 key={option.value}
                 className='inline-flex cursor-pointer items-center gap-2'
               >
-                <input
-                  type='radio'
-                  name='Type'
-                  value={option.value}
-                  required
-                  className={radixRadioClassName}
-                />
+                <Form.Control asChild>
+                  <input
+                    type='radio'
+                    name='Type'
+                    value={option.value}
+                    required
+                    className={radixRadioClassName}
+                  />
+                </Form.Control>
                 <span className='leading-4'>{option.label}</span>
               </label>
             ))}
