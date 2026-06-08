@@ -184,7 +184,10 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='atCF'
-          className={cn('col-span-1 mt-2 md:col-span-2', radixFormFieldStackClassName)}
+          className={cn(
+            'col-span-1 mt-2 md:col-span-2',
+            radixFormFieldStackClassName,
+          )}
         >
           <Form.Label className={radixFormLabelClassName}>
             {copy.atCF}
@@ -212,7 +215,10 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
 
         <Form.Field
           name='hopeToGet'
-          className={cn('col-span-1 mt-2 md:col-span-2', radixFormFieldStackClassName)}
+          className={cn(
+            'col-span-1 mt-2 md:col-span-2',
+            radixFormFieldStackClassName,
+          )}
         >
           <Form.Label className={radixFormLabelClassName}>
             {copy.hopeToGet}

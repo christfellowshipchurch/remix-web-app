@@ -181,7 +181,10 @@ const ReminderForm: React.FC<ReminderProps> = ({
 
         <Form.Field
           name='beenToCF'
-          className={cn('col-span-1 mt-4 md:col-span-2', radixFormFieldStackClassName)}
+          className={cn(
+            'col-span-1 mt-4 md:col-span-2',
+            radixFormFieldStackClassName,
+          )}
         >
           <Form.Label className={radixFormLabelClassName}>
             {isEspanol
