@@ -95,7 +95,10 @@ const getSeriesResources = async (
     let url: string;
     switch (contentType) {
       case 'REDIRECT_CARD':
-        url = getAttrValue(attrs, 'redirectUrl') || '';
+        // Use the URL 3.0 `pathname` attribute (Rock), then `url` as secondary.
+        // No fallback to legacy `redirectUrl` — items without a valid URL 3.0 value should not appear.
+        url =
+          getAttrValue(attrs, 'pathname') || getAttrValue(attrs, 'url') || '';
         break;
       case 'EVENTS':
         url = getPathname(contentType, getAttrValue(attrs, 'url'));
