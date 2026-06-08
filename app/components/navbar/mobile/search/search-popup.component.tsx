@@ -6,6 +6,7 @@ import {
   useInstantSearch,
   useSearchBox,
 } from 'react-instantsearch';
+import { ContentItemHit } from '~/routes/search/types';
 import { PopularSearches } from './popular-searches.component';
 import {
   MobileContentHit,
@@ -32,7 +33,7 @@ const ContentItemsHitsCollector = ({
 }: {
   onHitsChange: (hits: MobileContentHitType[]) => void;
 }) => {
-  const { items } = useHits<Record<string, unknown>>();
+  const { items } = useHits<ContentItemHit>();
 
   useEffect(() => {
     const contentHits: MobileContentHitType[] = items
