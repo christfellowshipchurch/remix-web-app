@@ -59,13 +59,6 @@ export function ShareLinks({
   // no public web share endpoint and `linkAlt` is the copy-link control (handled
   // separately below), so neither is generated here — missing keys resolve to null.
   const encodedPath = encodeURIComponent(fullPath);
-  const generatedUrls: Partial<
-    Record<(typeof socialIcons)[number]['name'], string>
-  > = {
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedPath}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodedPath}`,
-    linkedIn: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPath}`,
-  };
 
   return socialIcons?.map((icon, index) => {
     const socialEntry = socialMedia?.find(
