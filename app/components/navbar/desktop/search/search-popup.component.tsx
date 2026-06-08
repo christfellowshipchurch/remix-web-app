@@ -13,6 +13,14 @@ interface LocationHit {
   objectID?: string;
 }
 
+function hasNonBlankUrl(hit: { url?: unknown }): boolean {
+  return typeof hit.url === 'string' && hit.url.trim().length > 0;
+}
+
+function hasNonBlankCampusUrl(hit: LocationHit): boolean {
+  return typeof hit.campusUrl === 'string' && hit.campusUrl.trim().length > 0;
+}
+
 const ContentItemsHitsCollector = ({
   onHitsChange,
 }: {
@@ -21,7 +29,7 @@ const ContentItemsHitsCollector = ({
   const { items } = useHits<ContentItemHit>();
 
   useEffect(() => {
-    onHitsChange(items);
+    onHitsChange(items.filter(hasNonBlankUrl));
   }, [items, onHitsChange]);
 
   return null;
@@ -85,7 +93,7 @@ export const SearchPopup = ({
           'hits' in firstResult ? (firstResult.hits as LocationHit[]) : [];
 
         const transformedHits: ContentItemHit[] = hits
-          .filter((hit) => hit?.campusName)
+          .filter((hit) => hit?.campusName && hasNonBlankCampusUrl(hit))
           .map((hit) => {
             const uri = hit.campusCardImage?.trim() || hit.campusImage?.trim();
             return {

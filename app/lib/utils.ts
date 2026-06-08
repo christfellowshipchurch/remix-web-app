@@ -320,8 +320,16 @@ const htmlToPlainText = (html: string): string => {
     );
   }
 
+  // Normalize line breaks and block boundaries to spaces before extracting
+  // text — `textContent` alone would mash adjacent lines together (e.g.
+  // "Line one<br>Line two" -> "Line oneLine two").
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
+  const doc = parser.parseFromString(
+    html
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<\/\s*(?:p|div|h[1-6]|li|tr|td|th|blockquote)\s*>/gi, ' '),
+    'text/html',
+  );
   return trimRemovingInvisibleUnicode(
     (doc.body.textContent || '').replace(/\s+/g, ' '),
   );
@@ -338,6 +346,28 @@ export const getFirstSentence = (html: string): string => {
 
   const match = text.match(/^[^.!?]+[.!?]/);
   return match ? match[0].trim() : text;
+};
+
+/**
+ * Get the first one or two sentences of plain text extracted from HTML.
+ * Returns two sentences when their combined length fits within `maxChars`
+ * (roughly two lines on a card), otherwise just the first sentence.
+ * @param html - The HTML string to parse
+ * @param maxChars - Length threshold before falling back to a single sentence
+ * @returns The trimmed plain-text snippet
+ */
+export const getSummarySnippet = (html: string, maxChars = 110): string => {
+  const text = htmlToPlainText(html);
+  if (!text) return '';
+
+  const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g);
+  if (!sentences) return text;
+
+  const first = sentences[0].trim();
+  if (sentences.length < 2) return first;
+
+  const firstTwo = `${first} ${sentences[1].trim()}`;
+  return firstTwo.length <= maxChars ? firstTwo : first;
 };
 
 export const parseRockKeyValueList = (
