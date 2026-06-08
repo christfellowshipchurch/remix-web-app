@@ -122,6 +122,9 @@ describe('ReminderConfirmation', () => {
   });
 
   it('renders Add to Calendar button with calendar options in dropdown', () => {
+    const location = { href: '' };
+    vi.stubGlobal('location', location);
+
     mockFetcherData = {
       address: '123 Main St',
       url: 'pbg',
@@ -136,11 +139,15 @@ describe('ReminderConfirmation', () => {
       'href',
       'https://calendar.google.com/calendar/render?action=TEMPLATE',
     );
-    expect(
-      screen.getByRole('link', { name: /Apple Calendar/i }),
-    ).toHaveAttribute(
-      'href',
+
+    const appleCalendarButton = screen.getByRole('button', {
+      name: /Apple Calendar/i,
+    });
+    fireEvent.click(appleCalendarButton);
+    expect(location.href).toBe(
       '/calendar-ics?campus=palm-beach-gardens&time=9%3A00%20AM',
     );
+
+    vi.unstubAllGlobals();
   });
 });

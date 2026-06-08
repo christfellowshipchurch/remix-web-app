@@ -358,7 +358,9 @@ export const mapPageBuilderChildItems = async (
                   // Use the URL 3.0 `pathname` attribute (Rock), then `url` as secondary.
                   // No fallback to legacy `redirectUrl` — items without a valid URL 3.0 value should not appear.
                   pathname = getStringValue(
-                    itemAttributeValues?.pathname || itemAttributeValues?.url || '',
+                    itemAttributeValues?.pathname ||
+                      itemAttributeValues?.url ||
+                      '',
                   );
                   break;
                 case 'EVENTS':

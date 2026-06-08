@@ -56,7 +56,9 @@ export function ShareLinks({
   }
 
   return socialIcons?.map((icon, index) => {
-    const socialEntry = socialMedia?.find((media) => media?.type === icon?.name);
+    const socialEntry = socialMedia?.find(
+      (media) => media?.type === icon?.name,
+    );
 
     // Resolve the href:
     // 1. Use an explicitly provided URL if it looks like a real link.
@@ -75,12 +77,7 @@ export function ShareLinks({
       if (!href) return null;
 
       return (
-        <a
-          target='_blank'
-          key={index}
-          href={href}
-          rel='noreferrer'
-        >
+        <a target='_blank' key={index} href={href} rel='noreferrer'>
           <Icon
             name={icon?.name}
             size={38}
