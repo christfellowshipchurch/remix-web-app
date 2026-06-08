@@ -1,7 +1,8 @@
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
 import { useNavigate } from 'react-router-dom';
-import { icsLink, icsLinkEvents } from '~/lib/utils';
+import { googleCalendarLink, icsLink, icsLinkEvents } from '~/lib/utils';
+import { AddToCalendar } from '~/components/add-to-calendar/add-to-calendar.component';
 
 interface JourneyFinderSignUpConfirmationProps {
   onSuccess?: () => void;
@@ -69,17 +70,13 @@ const JourneyFinderSignUpConfirmation: React.FC<
         </div>
       )}
 
-      {/* add to calendar button */}
-      <Button
-        intent='secondary'
-        className='h-14 w-full rounded-xl text-lg font-bold'
-        onClick={() => {
-          window.open(icsLink(events[0].event), '_blank');
-        }}
-      >
-        <Icon name='calendarPlus' size={18} className='mr-2' />
-        Add to Calendar
-      </Button>
+      {/* add to calendar */}
+      <AddToCalendar
+        googleHref={googleCalendarLink(events[0].event)}
+        getIcsUrl={() => icsLink(events[0].event)}
+        eventDate={events[0].event.startTime as Date}
+        className='w-full'
+      />
 
       <Button
         intent='primary'

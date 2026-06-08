@@ -37,6 +37,7 @@ export interface ContentItemHit {
   eventLocations?: string[];
   eventStartDate?: string;
   eventCardDate?: string;
+  eventCardDescription?: string;
   eventIsFeatured?: boolean;
   locations?: {
     name: string;

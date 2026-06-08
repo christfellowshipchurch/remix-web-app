@@ -118,7 +118,10 @@ const GroupConnectForm: React.FC<GroupConnectFormProps> = ({
 
         {/* Campus (optional — only shown when campus prop is provided) */}
         {campus !== undefined && (
-          <Form.Field name='campus' className={cn('md:col-span-2', radixFormFieldStackClassName)}>
+          <Form.Field
+            name='campus'
+            className={cn('md:col-span-2', radixFormFieldStackClassName)}
+          >
             <Form.Label className={radixFormLabelClassName}>Campus</Form.Label>
             <input type='hidden' name='campus' value={campus} />
             <Form.Control asChild>
