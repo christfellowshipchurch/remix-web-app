@@ -343,18 +343,20 @@ export const mapPageBuilderChildItems = async (
                 return [];
               }
 
-              // Generate the summary for the item
-              const summary = getStringValue(
-                itemAttributeValues?.summary || '',
-              );
-              if (!summary) {
-                itemAttributeValues.summary = item.content;
-              }
+              // Generate the summary for the item. Fall back to body content
+              // (item.content) when no summary attribute is set, matching the
+              // pattern used for podcast items above.
+              const summary =
+                getStringValue(itemAttributeValues?.summary || '') ||
+                item.content ||
+                '';
 
               // Generate the pathname for the item
               let pathname: string;
               switch (contentType) {
                 case 'REDIRECT_CARD':
+                  // Use the URL 3.0 `pathname` attribute (Rock), then `url` as secondary.
+                  // No fallback to legacy `redirectUrl` — items without a valid URL 3.0 value should not appear.
                   pathname = getStringValue(
                     itemAttributeValues?.pathname ||
                       itemAttributeValues?.url ||
