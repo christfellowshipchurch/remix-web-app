@@ -1,6 +1,13 @@
 import { cn } from '~/lib/utils';
 import {
   formRadioControlInnerSelectedStyles,
+  formRadioControlInnerStyles,
+  formRadioControlInnerUnselectedStyles,
+  formRadioControlOuterDisabledStyles,
+  formRadioControlOuterErrorStyles,
+  formRadioControlOuterSelectedStyles,
+  formRadioControlOuterStyles,
+  formRadioControlOuterUnselectedStyles,
   formRadioGroupHorizontalStyles,
   formRadioGroupVerticalStyles,
   formRadioLabelStyles,
@@ -51,7 +58,7 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({
             key={option.value}
             htmlFor={inputId}
             className={cn(
-              'flex cursor-pointer items-center gap-2',
+              'flex cursor-pointer select-none items-center gap-2',
               disabled && 'cursor-not-allowed opacity-60',
             )}
           >
@@ -60,7 +67,7 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({
               id={inputId}
               name={name}
               value={option.value}
-              className='peer sr-only'
+              className='sr-only'
               checked={isSelected}
               onChange={handleChange}
               disabled={disabled}
@@ -68,16 +75,20 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({
             />
             <span
               className={cn(
-                'flex size-5 shrink-0 items-center justify-center rounded-full border-2 bg-white transition duration-200',
-                isSelected ? 'border-ocean' : 'border-form-stroke-muted',
-                error && 'border-alert',
-                disabled && 'border-ocean/40 bg-ocean-subdued',
+                formRadioControlOuterStyles,
+                isSelected
+                  ? formRadioControlOuterSelectedStyles
+                  : formRadioControlOuterUnselectedStyles,
+                error && formRadioControlOuterErrorStyles,
+                disabled && formRadioControlOuterDisabledStyles,
               )}
             >
               <span
                 className={cn(
-                  'size-3 rounded-full',
-                  isSelected ? formRadioControlInnerSelectedStyles : 'hidden',
+                  formRadioControlInnerStyles,
+                  isSelected
+                    ? formRadioControlInnerSelectedStyles
+                    : formRadioControlInnerUnselectedStyles,
                 )}
               />
             </span>
