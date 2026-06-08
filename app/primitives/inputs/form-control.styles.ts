@@ -62,8 +62,9 @@ export const formLabelStyles = cn(
   'transition-colors duration-150',
 );
 
-/** Label turns ocean when any control in the field wrapper is focused */
-export const formFieldFocusLabelStyles = 'focus-within:[&_label]:text-ocean';
+/** Label turns ocean when a text/select/textarea control in the field wrapper is focused */
+export const formFieldFocusLabelStyles =
+  'focus-within:[&:has(input:not([type=checkbox]):not([type=radio]):focus,select:focus,textarea:focus)_label]:text-ocean';
 
 /** Radix modal field labels (typography only; use formFieldStackStyles for 12px gaps) */
 export const formCompactFieldLabelStyles = cn(formLabelStyles, 'block');
@@ -98,7 +99,10 @@ export const formFieldInvalidControlStyles = cn(
 );
 
 /** Checkbox / radio option labels beside controls */
-export const formCheckboxOptionLabelStyles = formLabelStyles;
+export const formCheckboxOptionLabelStyles = cn(
+  formLabelStyles,
+  'cursor-pointer select-none',
+);
 
 export const formHelperTextStyles = 'text-base leading-4 text-navy';
 
@@ -125,7 +129,7 @@ export const nativeCheckboxStyles = cn(
 export const nativeRadioStyles = cn(
   'size-5 shrink-0 cursor-pointer appearance-none rounded-full',
   'border-2 border-form-stroke-muted bg-white',
-  'checked:border-ocean checked:bg-ocean',
+  'checked:border-ocean checked:bg-[radial-gradient(circle,var(--color-ocean)_45%,var(--color-white)_36%)]',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean/30',
   'disabled:cursor-not-allowed disabled:opacity-60',
 );
@@ -161,19 +165,27 @@ export const formCheckboxLabelDisabledStyles =
 
 /** Custom radio faux control */
 export const formRadioControlOuterStyles = cn(
-  'flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-full',
-  'border-2 border-form-stroke-muted bg-white transition duration-200',
-  'peer-checked:border-ocean peer-focus-visible:ring-2 peer-focus-visible:ring-ocean/30',
-  'peer-disabled:cursor-not-allowed peer-disabled:border-ocean/40 peer-disabled:bg-ocean-subdued',
-  'peer-aria-invalid:border-alert',
+  'flex size-5 shrink-0 items-center justify-center rounded-full',
+  'border-2 bg-white transition duration-200',
 );
 
+export const formRadioControlOuterSelectedStyles = 'border-ocean';
+
+export const formRadioControlOuterUnselectedStyles = 'border-form-stroke-muted';
+
+export const formRadioControlOuterDisabledStyles =
+  'border-ocean/40 bg-ocean-subdued';
+
+export const formRadioControlOuterErrorStyles = 'border-alert';
+
 export const formRadioControlInnerStyles =
-  'size-3 rounded-full bg-ocean peer-checked:opacity-100 opacity-0';
+  'rounded-full bg-ocean transition-opacity duration-200';
 
-export const formRadioControlInnerSelectedStyles = 'bg-ocean';
+export const formRadioControlInnerSelectedStyles = 'opacity-100';
 
-export const formRadioLabelStyles = 'text-text-primary';
+export const formRadioControlInnerUnselectedStyles = 'opacity-0';
+
+export const formRadioLabelStyles = 'text-text-primary select-none';
 
 /** Back-compat aliases */
 export const defaultTextInputStyles = formControlBaseStyles;
