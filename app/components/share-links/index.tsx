@@ -42,18 +42,41 @@ export function ShareLinks({
     return null;
   }
 
+  // Web share-intent URLs auto-generated from the current page URL. Instagram has
+  // no public web share endpoint and `linkAlt` is the copy-link control (handled
+  // separately below), so neither is generated here — missing keys resolve to null.
+  const encodedPath = encodeURIComponent(fullPath);
+  const generatedUrls: Partial<
+    Record<(typeof socialIcons)[number]['name'], string>
+  > = {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedPath}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodedPath}`,
+    linkedIn: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPath}`,
+  };
+
   return socialIcons?.map((icon, index) => {
-    const socialLink = socialMedia?.find(
+    const socialEntry = socialMedia?.find(
       (media) => media?.type === icon?.name,
-    )?.url;
-    if (socialLink) {
+    );
+
+    // Resolve the href:
+    // 1. Use an explicitly provided URL if it looks like a real link.
+    // 2. Auto-generate for known social types using the current page URL.
+    // 3. Skip if neither applies.
+    const resolveHref = (): string | null => {
+      const provided = socialEntry?.url;
+      if (provided && provided.startsWith('http')) return provided;
+
+      const key = icon.name as keyof typeof generatedUrls;
+      return generatedUrls[key] ?? null;
+    };
+
+    if (socialEntry) {
+      const href = resolveHref();
+      if (!href) return null;
+
       return (
-        <a
-          target='_blank'
-          key={index}
-          href={socialLink && socialLink}
-          rel='noreferrer'
-        >
+        <a target='_blank' key={index} href={href} rel='noreferrer'>
           <Icon
             name={icon?.name}
             size={38}

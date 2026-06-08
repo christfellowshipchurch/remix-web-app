@@ -356,7 +356,9 @@ export const mapPageBuilderChildItems = async (
               switch (contentType) {
                 case 'REDIRECT_CARD':
                   pathname = getStringValue(
-                    itemAttributeValues?.redirectUrl || '',
+                    itemAttributeValues?.pathname ||
+                      itemAttributeValues?.url ||
+                      '',
                   );
                   break;
                 case 'EVENTS':

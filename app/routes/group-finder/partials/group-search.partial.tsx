@@ -154,6 +154,16 @@ export const GroupSearch = () => {
     initial.selectedLocation,
   );
 
+  // `setCoordinates` must keep a STABLE identity. It is passed down into
+  // `FinderLocationSearch`, whose effects list it as a dependency; if it changed
+  // on every `searchParams` update, those effects would re-run and re-apply the
+  // last geocoded coordinates (with `page: 0`), wiping pagination and looping.
+  // Read the latest searchParams/age from refs so the callback stays stable.
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
+  const ageInputRef = useRef(ageInput);
+  ageInputRef.current = ageInput;
+
   // Back/forward and loader navigation: rehydrate age/geo/campus from URL (not in refinementList alone).
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
@@ -161,7 +171,22 @@ export const GroupSearch = () => {
     setSelectedLocationState(
       firstCampusRefinement(urlState.refinementList) ?? null,
     );
-    setCoordinatesState(coordinatesFromUrlState(urlState));
+    // Keep the previous object identity when lat/lng are unchanged.
+    // `coordinatesFromUrlState` mints a fresh object on every call, so writing
+    // it unconditionally gave `coordinates` a new identity on *every* URL change
+    // (e.g. pagination), which re-ran `mergeUrlState`/`desktopFilters` and
+    // re-evaluated the geo `<Configure>`. With no geo this is a no-op (null ===
+    // null), which is why the bugs were geo-only; this makes the geo path match.
+    setCoordinatesState((prev) => {
+      const next = coordinatesFromUrlState(urlState);
+      if (
+        (prev?.lat ?? null) === (next?.lat ?? null) &&
+        (prev?.lng ?? null) === (next?.lng ?? null)
+      ) {
+        return prev;
+      }
+      return next;
+    });
   }, [searchParams]);
 
   const clearAllFiltersFromUrl = () => {
@@ -193,8 +218,8 @@ export const GroupSearch = () => {
       }
 
       const merged: GroupFinderUrlState = {
-        ...parseGroupFinderUrlState(searchParams),
-        age: ageInput || undefined,
+        ...parseGroupFinderUrlState(searchParamsRef.current),
+        age: ageInputRef.current || undefined,
         page: 0,
       };
       if (noCoords) {
@@ -209,7 +234,7 @@ export const GroupSearch = () => {
       }
       updateUrlIfChanged(merged);
     },
-    [ageInput, searchParams, updateUrlIfChanged],
+    [updateUrlIfChanged],
   );
 
   const setAgeInput = (next: string) => {
@@ -315,17 +340,20 @@ export const GroupSearch = () => {
   // revalidating by route.tsx, so this write updates share/back-forward state
   // while the actual search happens client-side in InstantSearch.
   const syncUrlFromUiState = (indexUiState: Record<string, unknown>) => {
+    // `indexUiState.page` is 1-based (InstantSearch), but `GroupFinderUrlState.page`
+    // is 0-based (the parser/serializer add/remove the +1 for the URL). Convert
+    // down by one so a round-trip preserves the page instead of inflating it.
     const rawPage = indexUiState.page;
-    const pageNum =
-      typeof rawPage === 'number' && Number.isFinite(rawPage)
-        ? Math.max(0, Math.floor(rawPage))
-        : 0;
+    const pageZeroBased =
+      typeof rawPage === 'number' && Number.isFinite(rawPage) && rawPage > 1
+        ? Math.floor(rawPage) - 1
+        : undefined;
     updateUrlIfChanged(
       mergeUrlState({
         refinementList:
           (indexUiState.refinementList as Record<string, string[]>) ??
           undefined,
-        page: pageNum > 0 ? pageNum : undefined,
+        page: pageZeroBased,
       }),
     );
   };

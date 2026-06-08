@@ -668,7 +668,12 @@ const FilterPopupContent = ({
     });
     setLocalAgeInput('');
     setShowAgeInputError(false);
-    setAgeInput?.('');
+    // `setAgeInput` is a shared (popup-global) handler, so only the age section
+    // itself may clear it. Otherwise clearing an unrelated section (e.g. the
+    // Location popup) would wipe an active age filter from another popup.
+    if (data.input || data.isAgeRange) {
+      setAgeInput?.('');
+    }
     if (data.isLocation || data.isCurrentLocation) {
       data.setCoordinates?.(null);
       data.onLocationKind?.(null);
@@ -677,6 +682,8 @@ const FilterPopupContent = ({
     items,
     refine,
     setAgeInput,
+    data.input,
+    data.isAgeRange,
     data.isLocation,
     data.isCurrentLocation,
     data.setCoordinates,
