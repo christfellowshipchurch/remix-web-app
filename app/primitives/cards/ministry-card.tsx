@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import HtmlRenderer from '../html-renderer';
+import { getSummarySnippet } from '~/lib/utils';
 
 export function MinistryCard({
   title,
@@ -24,10 +24,9 @@ export function MinistryCard({
       />
       <div className='flex flex-col p-6 gap-4 bg-white flex-1'>
         <h3 className='text-[24px] font-bold leading-none'>{title}</h3>
-        <HtmlRenderer
-          html={description}
-          className='text-text-secondary flex-1 line-clamp-3'
-        />
+        <p className='text-text-secondary flex-1 line-clamp-2'>
+          {getSummarySnippet(description)}
+        </p>
       </div>
     </>
   );
