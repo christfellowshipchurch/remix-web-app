@@ -104,6 +104,7 @@ export const loader = async ({
         loadAttributes: 'simple',
         $filter: "ContentChannelId eq 171 and Status eq 'Approved'",
       },
+      filterByDateRange: true,
     });
 
     if (!pageData) {

@@ -42,6 +42,7 @@ const fetchArticleData = async (articlePath: string) => {
         value: articlePath,
         loadAttributes: 'simple',
       },
+      filterByDateRange: true,
     });
 
     if (!rockData || rockData.length === 0) {
