@@ -10,12 +10,14 @@ import { AboutPartial } from './partials/about.partial';
 import { EventBanner } from './components/event-banner.component';
 import { RegistrationSection } from './partials/registration.partial';
 import BackBanner from '~/components/back-banner';
+import { useEventsBackUrl } from '../events-back-url';
 
 const SECTION_IDS = ['about', 'faq', 'register'] as const;
 
 export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
   const location = useLocation();
+  const backToEventsUrl = useEventsBackUrl();
 
   // Scroll to section when landing with a hash (e.g. /events/baptism#register)
   useEffect(() => {
@@ -48,7 +50,7 @@ export const EventSinglePage: React.FC = () => {
         <BackBanner
           backText='Back to Events'
           pageTitle={data.title}
-          link='/events'
+          link={backToEventsUrl}
         />
 
         <EventsSingleHero

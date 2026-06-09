@@ -27,6 +27,7 @@ import {
 } from '../partials/featured-events.partial';
 import { parseEventsFinderUrlState } from '../../events-url-state';
 import type { EventsFinderUrlState } from '../../events-url-state';
+import { buildEventSingleUrl } from '../../events-back-url';
 
 import { formatEventCardDate } from './featured-card.component';
 import { EventsFiltersViewport } from './events-filters-viewport.component';
@@ -81,13 +82,7 @@ function getEventHitLocation(
         'Christ Fellowship Church';
 }
 
-function MobileEventHitCard({
-  hit,
-  fromEventsUrl,
-}: {
-  hit: ContentItemHit;
-  fromEventsUrl: string;
-}) {
+function MobileEventHitCard({ hit, to }: { hit: ContentItemHit; to: string }) {
   const dateParts = hit.startDateTime
     ? formatMobileEventDateParts(hit.startDateTime)
     : null;
@@ -95,8 +90,7 @@ function MobileEventHitCard({
 
   return (
     <Link
-      to={`/events/${hit.url}`}
-      state={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
+      to={to}
       className='flex h-[88px] w-full items-start overflow-hidden rounded-xl border border-neutral-lighter bg-white text-text-primary transition-colors duration-200 hover:border-neutral-light md:hidden'
       prefetch='intent'
     >
@@ -160,9 +154,13 @@ function EventHit({
   const imageUri = hit.coverImage?.sources?.[0]?.uri ?? '';
   const location = getEventHitLocation(hit);
 
+  // Forward the active finder filters so the event's back button can restore
+  // them (stateless `from` query param — see events-back-url.ts).
+  const eventSingleUrl = buildEventSingleUrl(hit.url, fromEventsUrl);
+
   return (
     <>
-      <MobileEventHitCard hit={hit} fromEventsUrl={fromEventsUrl} />
+      <MobileEventHitCard hit={hit} to={eventSingleUrl} />
       <div className='hidden h-full md:block'>
         <ResourceCard
           resource={{
@@ -172,11 +170,10 @@ function EventHit({
             name: hit.title,
             summary: hit.summary ?? '',
             image: imageUri,
-            pathname: `/events/${hit.url}`,
+            pathname: eventSingleUrl,
             startDate: formattedDate,
             location,
           }}
-          linkState={fromEventsUrl ? { fromEvents: fromEventsUrl } : undefined}
         />
       </div>
     </>
