@@ -21,7 +21,7 @@ export const SearchPopup = ({
     : items;
 
   return (
-    <div className='w-full py-4 z-4 overflow-hidden min-h-[332px]'>
+    <div className='w-full overflow-hidden min-h-[332px]'>
       {/* Search Results */}
       <div className='space-y-4'>
         <div className='flex flex-col overflow-y-auto max-h-[300px]'>

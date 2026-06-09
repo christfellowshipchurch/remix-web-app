@@ -41,6 +41,8 @@ export function LocationSearchInner({
 
   const locationSearchBarRef = useRef<HTMLDivElement>(null);
   const [internalIsSearching, setInternalIsSearching] = useState(false);
+  const [isPopupMounted, setIsPopupMounted] = useState(false);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const isSearching = controlledIsSearching ?? internalIsSearching;
   const setIsSearching = controlledSetIsSearching ?? setInternalIsSearching;
@@ -77,6 +79,24 @@ export function LocationSearchInner({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [setIsSearching]);
+
+  useEffect(() => {
+    if (isSearching) {
+      setIsPopupMounted(true);
+      setIsPopupVisible(false);
+      const frame = requestAnimationFrame(() => {
+        setIsPopupVisible(true);
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+
+    setIsPopupVisible(false);
+    const timer = window.setTimeout(() => {
+      setIsPopupMounted(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [isSearching]);
 
   const handleSearch = useCallback((query: string | null) => {
     if (!query || query.length !== 5 || !isValidZip(query)) {
@@ -156,7 +176,7 @@ export function LocationSearchInner({
   }, [geocodeFetcher.data, geocodeFetcher.state]);
 
   return (
-    <div className={cn(isSearching && 'mt-32')} ref={locationSearchBarRef}>
+    <div>
       <InstantSearch
         indexName='dev_Locations'
         searchClient={searchClient}
@@ -183,26 +203,36 @@ export function LocationSearchInner({
         )}
 
         <div
-          className={cn(
-            'relative w-full md:w-90 z-50 rounded-2xl transition-all duration-300',
-            {
-              'bg-white p-4 shadow-md sm:w-[450px] md:w-[620px] lg:w-[430px] lg:-translate-y-30 short-desktop:-translate-y-70':
-                isSearching,
-              'bg-transparent': !isSearching,
-            },
-          )}
+          ref={locationSearchBarRef}
+          className='relative z-50 w-full rounded-2xl sm:w-[450px] md:w-[620px] lg:w-[400px]'
         >
-          <SearchBar
-            onSearchStateChange={setIsSearching}
-            onSearchSubmit={handleSearch}
-            data-gtm='hero-cta'
-          />
-          {isSearching && (
-            <SearchPopup
-              isDistanceSearch={isDistanceSearch}
-              onRequestPreciseLocation={handlePreciseLocationRequest}
-            />
+          {isPopupMounted && (
+            <div
+              className={cn(
+                'absolute left-0 right-0 top-0 z-10 rounded-2xl bg-white p-4 shadow-md transition-opacity duration-200 ease-out',
+                isPopupVisible ? 'opacity-100' : 'opacity-0',
+                !isPopupVisible && 'pointer-events-none',
+              )}
+            >
+              <div className='h-14 shrink-0' aria-hidden='true' />
+              <SearchPopup
+                isDistanceSearch={isDistanceSearch}
+                onRequestPreciseLocation={handlePreciseLocationRequest}
+              />
+            </div>
           )}
+          <div
+            className={cn(
+              'relative z-20 transition-[padding] duration-200 ease-out',
+              isPopupVisible ? 'p-4 pb-0' : 'p-0',
+            )}
+          >
+            <SearchBar
+              onSearchStateChange={setIsSearching}
+              onSearchSubmit={handleSearch}
+              data-gtm='hero-cta'
+            />
+          </div>
         </div>
       </InstantSearch>
     </div>
