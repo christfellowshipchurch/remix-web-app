@@ -68,8 +68,9 @@ const fetchArticleData = async (articlePath: string) => {
   }
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const articlePath = params?.path || '';
+  const origin = new URL(request.url).origin;
 
   const articleData = await fetchArticleData(articlePath);
   if (!articleData) {
@@ -120,7 +121,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || '',
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY || '',
-    hostUrl: process.env.HOST_URL || 'host-url-not-found',
+    hostUrl: origin,
     title,
     id: articleData.id,
     content,
