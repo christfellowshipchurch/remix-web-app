@@ -77,9 +77,9 @@ const ContactUsForm: React.FC<ContactUsFormProps> = ({ onSuccess }) => {
         Contact Us
       </h2>
       <p className='mb-8 text-pretty text-center'>
-        With a lot of locations it’s easy to feel lost in the shuffle, so we’ve
-        made a point to personally answer every question, comment, or prayer
-        request you send us. <br /> <br /> We look forward to hearing from you!
+        We believe every person matters, so we personally respond to every
+        question, comment, and prayer request you send us. <br /> <br /> We look
+        forward to hearing from you!
       </p>
       <Form.Root
         onSubmit={handleSubmit}
