@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LocationSearch } from '../location-search/location-search.component';
 import { DesktopFeaturedItems } from './desktop-features.component';
 import { Video } from '~/primitives/video/video.primitive';
+import { cn } from '~/lib/utils';
 
 export function DesktopHeroSection() {
   const [isSearching, setIsSearching] = useState(false);
@@ -62,14 +63,17 @@ export function DesktopHeroSection() {
                   Your Purpose.
                 </span>
               </h1>
-              {!isSearching && (
-                <p className='text-white max-w-[470px] xl:max-w-[529px] text-xl z-2'>
-                  From inspiring messages to genuine community, Christ
-                  Fellowship is a place where you and your family can grow in
-                  your faith and make lifelong friendships.
-                </p>
-              )}
-              <div className='flex w-fit relative pb-10 z-3'>
+              <p className='text-white max-w-[470px] xl:max-w-[529px] text-xl z-2'>
+                From inspiring messages to genuine community, Christ
+                Fellowship is a place where you and your family can grow in
+                your faith and make lifelong friendships.
+              </p>
+              <div
+                className={cn(
+                  'relative flex w-fit pb-10',
+                  isSearching ? 'z-20' : 'z-3',
+                )}
+              >
                 {/* Location Search */}
                 <LocationSearch
                   isSearching={isSearching}
