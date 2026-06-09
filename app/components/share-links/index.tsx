@@ -55,11 +55,6 @@ export function ShareLinks({
     return null;
   }
 
-  // Web share-intent URLs auto-generated from the current page URL. Instagram has
-  // no public web share endpoint and `linkAlt` is the copy-link control (handled
-  // separately below), so neither is generated here — missing keys resolve to null.
-  const encodedPath = encodeURIComponent(fullPath);
-
   return socialIcons?.map((icon, index) => {
     const socialEntry = socialMedia?.find(
       (media) => media?.type === icon?.name,
