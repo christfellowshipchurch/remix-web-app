@@ -158,7 +158,9 @@ describe('HelpMeFindAGroupForm', () => {
     fireEvent.click(screen.getByLabelText('In Person'));
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
-    expect(screen.getByText('Please select at least one area.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Please select at least one area.'),
+    ).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 
