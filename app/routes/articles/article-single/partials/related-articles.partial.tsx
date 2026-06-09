@@ -32,12 +32,18 @@ export function RelatedArticles() {
         filters={`contentType:"Article" AND articlePrimaryCategories:"${articlePrimaryCategories[0]}" AND rockItemId != ${id}`}
         hitsPerPage={6}
       />
-      <CardCarouselSectionWrapper />
+      <CardCarouselSectionWrapper
+        articlePrimaryCategories={articlePrimaryCategories}
+      />
     </InstantSearch>
   );
 }
 
-const CardCarouselSectionWrapper = () => {
+const CardCarouselSectionWrapper = ({
+  articlePrimaryCategories,
+}: {
+  articlePrimaryCategories: string[];
+}) => {
   const { items } = useHits<ContentItemHit>();
 
   if (items.length === 0) {
@@ -76,7 +82,7 @@ const CardCarouselSectionWrapper = () => {
         },
       }))}
       viewMoreText='More Articles'
-      viewMoreLink={`/articles`}
+      viewMoreLink={`/articles?articlePrimaryCategories=${articlePrimaryCategories[0]}`}
       CardComponent={RelatedArticleCardWrapper}
     />
   );

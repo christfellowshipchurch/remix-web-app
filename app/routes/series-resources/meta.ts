@@ -2,7 +2,7 @@ import type { MetaFunction } from 'react-router-dom';
 import type { loader } from './loader';
 import { createMeta } from '~/lib/meta-utils';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   if (!data?.series) {
     return createMeta({
       title: 'Series Resources',
@@ -16,6 +16,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     description:
       data.series.description ??
       `Messages, resources, and events for ${seriesName} at Christ Fellowship Church.`,
-    path: '/series-resources',
+    image: data.series.attributeValues.coverImage || undefined,
+    path: location.pathname,
   });
 };
