@@ -27,7 +27,7 @@ const faqDefaultData = [
   },
   {
     title: 'Is childcare provided?',
-    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
+    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="/ministries/kids">here</a>!`,
   },
 ];
 
@@ -121,7 +121,7 @@ const faqJupiterData = [
   },
   {
     title: 'Is childcare provided?',
-    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
+    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="/ministries/kids">here</a>!`,
   },
 ];
 
@@ -153,7 +153,7 @@ const faqWestlakeData = [
   },
   {
     title: 'Is childcare provided?',
-    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting Christ Fellowship Kids this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that CFKids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
+    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 6). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="/ministries/kids">here</a>!`,
   },
 ];
 
@@ -183,7 +183,7 @@ const faqTrinityData = [
   },
   {
     title: 'Is childcare provided?',
-    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/FamilyRegistration">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> If you are planning on visiting this Sunday, <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">let us know</a> so we can help your family experience all that Christ Fellowship Kids has to offer! <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="https://www.christfellowship.church/christ-fellowship-kids">here</a>!`,
+    content: `Yes! We have a fun, safe, and clean area for kids & students (newborn–grade 5). <br/> <br/> <b> New to Christ Fellowship Kids?</b> <br/> We’d love to meet you! Let us know a little about your family using this <a target="_blank" href="${ROCK_PUBLIC_SITE_ORIGIN}/CFKidsPlanaVisit">brief form</a> so that our team can help get you connected when you arrive. <br/> <br/> You can learn more about Christ Fellowship Kids programming <a target="_blank" href="/ministries/kids">here</a>!`,
   },
   {
     title: 'Is there anything available for students and young adults?',
