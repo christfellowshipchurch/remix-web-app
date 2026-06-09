@@ -45,6 +45,8 @@ export type CreateMetaOptions = {
   license?: string;
   /** Author name for meta author, article:author, and twitter:creator. */
   author?: string;
+  /** og:type value. Defaults to 'website'. Use 'article' for article pages. */
+  type?: 'website' | 'article';
 };
 
 type MetaDescriptor =
@@ -66,6 +68,7 @@ export function createMeta({
   generator,
   license,
   author,
+  type,
 }: CreateMetaOptions): MetaDescriptor[] {
   const fullTitle = title.includes(SITE_NAME)
     ? title
@@ -82,7 +85,7 @@ export function createMeta({
     { name: 'application-name', content: SITE_NAME },
     { property: 'og:title', content: fullTitle },
     { property: 'og:description', content: description },
-    { property: 'og:type', content: 'website' },
+    { property: 'og:type', content: type ?? 'website' },
     { property: 'og:site_name', content: SITE_NAME },
     { property: 'og:image', content: ogImage },
     { name: 'twitter:card', content: 'summary_large_image' },

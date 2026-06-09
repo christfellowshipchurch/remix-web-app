@@ -26,5 +26,6 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
     path: location.pathname,
     keywords,
     author: articleData.author?.fullName?.trim() || undefined,
+    type: 'article',
   });
 };

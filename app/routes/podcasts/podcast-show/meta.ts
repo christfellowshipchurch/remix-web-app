@@ -2,7 +2,7 @@ import type { MetaFunction } from 'react-router-dom';
 import type { loader } from './loader';
 import { createMeta } from '~/lib/meta-utils';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   if (!data?.podcast) {
     return createMeta({
       title: 'Podcast Not Found',
@@ -22,5 +22,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     title: metaTitle,
     description,
     image: podcast.coverImage,
+    path: location.pathname,
   });
 };
