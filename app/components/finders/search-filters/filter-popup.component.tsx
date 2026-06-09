@@ -514,7 +514,15 @@ const FilterPopupContent = ({
   popupTitle,
   cancelSignalRef,
 }: FilterPopupContentProps) => {
-  const { items, refine } = useRefinementList({ attribute: data.attribute });
+  // `useRefinementList` defaults to a limit of 10 facet values (top 10 by
+  // count). That silently dropped lower-count topics (e.g. "Prayer",
+  // "Watch Party") and could truncate other facets like the campus dropdown.
+  // Raise it well above the number of distinct values so every tagged option
+  // is available to the section's display logic below.
+  const { items, refine } = useRefinementList({
+    attribute: data.attribute,
+    limit: 50,
+  });
   const [localAgeInput, setLocalAgeInput] = useState<string>(ageInput || '');
   const [showAgeInputError, setShowAgeInputError] = useState(false);
 
@@ -524,7 +532,7 @@ const FilterPopupContent = ({
   const communityFunTopics = [
     'Friendship',
     'Sports',
-    'Activty/Hobby',
+    'Activity/Hobby',
     'Book Club',
     'Watch Party',
     'Podcast',
@@ -668,7 +676,12 @@ const FilterPopupContent = ({
     });
     setLocalAgeInput('');
     setShowAgeInputError(false);
-    setAgeInput?.('');
+    // `setAgeInput` is a shared (popup-global) handler, so only the age section
+    // itself may clear it. Otherwise clearing an unrelated section (e.g. the
+    // Location popup) would wipe an active age filter from another popup.
+    if (data.input || data.isAgeRange) {
+      setAgeInput?.('');
+    }
     if (data.isLocation || data.isCurrentLocation) {
       data.setCoordinates?.(null);
       data.onLocationKind?.(null);
@@ -677,6 +690,8 @@ const FilterPopupContent = ({
     items,
     refine,
     setAgeInput,
+    data.input,
+    data.isAgeRange,
     data.isLocation,
     data.isCurrentLocation,
     data.setCoordinates,

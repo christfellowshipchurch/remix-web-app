@@ -61,7 +61,7 @@ export type GroupTopic =
   | 'Parenting'
   | 'Finances'
   | 'Friendship'
-  | 'Activty/Hobby'
+  | 'Activity/Hobby'
   | 'Book Club'
   | 'Sports'
   | 'Podcast'

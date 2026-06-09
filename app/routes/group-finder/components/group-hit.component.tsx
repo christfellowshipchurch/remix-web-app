@@ -92,6 +92,16 @@ export function GroupHit({
 
   const meetingInfo = formattedMeetingDay + ' ' + formattedMeetingTime;
 
+  // Forward the active Group Search filters (its URL query string) to the detail
+  // page as a stateless `from` param, so the back button can restore the filtered
+  // results. Using a query param (not router `state`) keeps it working across
+  // refreshes and shared links. `backUrl` is the Group Search URL (path + search).
+  const qIndex = backUrl?.indexOf('?') ?? -1;
+  const fromSearch = qIndex >= 0 ? backUrl!.slice(qIndex + 1) : '';
+  const groupSingleUrl = fromSearch
+    ? `/group-finder/${hit.groupGuid}?from=${encodeURIComponent(fromSearch)}`
+    : `/group-finder/${hit.groupGuid}`;
+
   const leaders = Array.isArray(hit.leaders) ? hit.leaders : [];
   // Algolia can return groups with blank-string `_geoloc` (no real coordinates).
   // Only show a distance when geoloc is numeric and a finite geoDistance exists;
@@ -107,8 +117,7 @@ export function GroupHit({
   return (
     <Link
       prefetch='intent'
-      to={`/group-finder/${hit.groupGuid}`}
-      state={backUrl ? { fromGroupFinder: backUrl } : undefined}
+      to={groupSingleUrl}
       className='flex h-full min-h-0 w-full max-w-full flex-col'
     >
       <div

@@ -5,6 +5,7 @@ import { Button } from '~/primitives/button/button.primitive';
 import { Icon } from '~/primitives/icon/icon';
 import { ImageSource, type GroupType } from '~/routes/group-finder/types';
 import { useStickyTopBelowNavbarClass } from '~/hooks/use-sticky-top-below-navbar';
+import { useGroupSearchBackUrl } from '../group-single-back-url';
 
 export const GroupSingleBanner = ({
   language,
@@ -20,7 +21,7 @@ export const GroupSingleBanner = ({
   groupId: string;
 }) => {
   const stickyTopClass = useStickyTopBelowNavbarClass();
-  const backToGroupFinderUrl = '/group-finder';
+  const backToGroupFinderUrl = useGroupSearchBackUrl();
 
   const imageStyles = 'size-20 rounded-[10px] object-cover';
 

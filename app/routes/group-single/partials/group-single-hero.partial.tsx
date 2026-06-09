@@ -4,9 +4,11 @@ import { GroupType, splitGroupTopics } from '~/routes/group-finder/types';
 import { icons } from '~/lib/icons';
 import { Icon } from '~/primitives/icon/icon';
 import { Link } from 'react-router-dom';
+import { useGroupSearchBackUrl } from '../group-single-back-url';
 
 export function GroupSingleHero({ hit }: { hit: GroupType }) {
   const imagePath = hit.coverImage?.sources?.[0]?.uri ?? '';
+  const backToGroupFinderUrl = useGroupSearchBackUrl();
 
   return (
     <>
@@ -18,7 +20,7 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
         />
         {/* Back Button */}
         <Link
-          to='/group-finder'
+          to={backToGroupFinderUrl}
           className='absolute top-4 left-4 flex items-center gap-2 bg-white shadow-sm border border-[#DEE0E3] rounded-full p-2'
         >
           <Icon name='arrowBack' className='text-neutral-darker' />
