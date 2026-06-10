@@ -147,7 +147,12 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
   return (
     <li className='w-full group'>
       {item.link ? (
-        <Link to={item.link} prefetch='intent' className={wrapperStyles}>
+        <Link
+          to={item.link}
+          target='_blank'
+          prefetch='intent'
+          className={wrapperStyles}
+        >
           {content()}
         </Link>
       ) : (
