@@ -28,12 +28,8 @@ import * as cheerio from 'cheerio';
 // ---------------------------------------------------------------------------
 const CONFIG = {
   oldSitemapUrl: 'https://www.christfellowship.church/sitemap.xml',
-  // newBaseUrl: "https://cf-web-v3.vercel.app",
-  // // The new sitemap currently 404s; left here so it's used automatically once it exists.
-  // newSitemapUrl: "https://cf-web-v3.vercel.app/sitemap.xml",
-  newBaseUrl: 'https://deploy-preview-291--cf-web-v3.netlify.app',
-  newSitemapUrl:
-    'https://deploy-preview-291--cf-web-v3.netlify.app/sitemap.xml',
+  newBaseUrl: 'https://cf-web-v3.vercel.app',
+  newSitemapUrl: 'https://cf-web-v3.vercel.app/sitemap.xml',
   gscCsvPath: process.env.GSC_CSV || null, // optional Search Console export
 
   // GSC-only URLs (present in the export but NOT in the old sitemap) with fewer than
