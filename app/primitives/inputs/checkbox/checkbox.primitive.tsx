@@ -70,7 +70,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
             <path
               d='M5 10.5L9 14L15 7'
               stroke='white'
-              strokeWidth='1.5'
+              strokeWidth='2'
               strokeLinecap='round'
               strokeLinejoin='round'
             />
