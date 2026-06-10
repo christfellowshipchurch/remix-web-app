@@ -104,8 +104,10 @@
   /* Form UX – checkbox/radio unchecked stroke */
   --color-form-stroke-muted: #d1d5db;
 
-  /* Form UX – white checkmark for native (appearance-none) checkboxes */
-  --cf-checkbox-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 10.5L9 14L15 7' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  /* Form UX – white checkmark for native (appearance-none) checkboxes.
+     Bare <input>s can't host an <Icon>, so the mark is a CSS background.
+     Path mirrors the `check` icon in app/lib/icons.ts (keep in sync). */
+  --cf-checkbox-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M9.99997 15.5858L6.70697 12.2928L5.29297 13.7068L9.99997 18.4138L19.707 8.70675L18.293 7.29276L9.99997 15.5858Z' fill='white'/%3E%3C/svg%3E");
 
   /* Semantic – text */
   --color-text-primary: var(--color-neutral-darker);

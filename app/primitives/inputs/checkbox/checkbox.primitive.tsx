@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '~/lib/utils';
+import { Icon } from '~/primitives/icon/icon';
 import {
   formCheckboxControlErrorStyles,
   formCheckboxControlStyles,
@@ -60,21 +61,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
             checked ? 'opacity-100' : 'opacity-0',
           )}
         >
-          <svg
-            width='20'
-            height='20'
-            viewBox='0 0 20 20'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              d='M5 10.5L9 14L15 7'
-              stroke='white'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            />
-          </svg>
+          <Icon name='check' color='white' size={16} />
         </span>
       </span>
       <span
