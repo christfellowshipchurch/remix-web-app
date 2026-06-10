@@ -10,6 +10,11 @@ import { buildPodcastRoutingIndex } from '~/routes/podcasts/podcast-routing.serv
  * so new content appears automatically. Algolia is only a search layer, so we go
  * to Rock's ContentChannelItems directly via the existing fetchRockData util.
  *
+ * Exception: studies-and-resources detail pages resolve via Algolia
+ * (dev_StudiesAndResources) in their route loader, not Rock directly. The sitemap
+ * enumerates Rock channels 79/80 as an approximation; any Rock-approved study
+ * absent from Algolia would 404. The parity check script surfaces such drift.
+ *
  * Excluded on purpose: groups/classes (search-driven, no canonical per-item route),
  * mission trips / volunteer details (GUID + 301-redirect routing). These are
  * intentionally absent — the parity check surfaces any dropped legacy pages.
@@ -66,6 +71,8 @@ const CONTENT_SOURCES: {
     prefix: '/studies-and-resources',
     attr: 'url',
   },
+  // Podcast *shows* only — episodes are resolved separately via buildPodcastRoutingIndex().
+  // Date gate mirrors podcast-show/loader.tsx:98 (StartDateTime le now).
   { label: 'podcasts', channelIds: [179], prefix: '/podcasts', attr: 'url' },
 ];
 
@@ -93,17 +100,24 @@ interface RockItemLite {
   attributeValues?: Record<string, { value?: unknown } | undefined>;
 }
 
-/** Fetches every approved item in a channel, paginating until exhausted. */
-async function fetchAllChannelItems(channelId: number): Promise<RockItemLite[]> {
+/** Fetches every approved item in a channel, paginating until exhausted.
+ *  extraFilter is ANDed with the base ContentChannelId clause (e.g. a date gate). */
+async function fetchAllChannelItems(
+  channelId: number,
+  extraFilter?: string,
+): Promise<RockItemLite[]> {
   const PAGE = 100;
   const MAX_PAGES = 100; // safety backstop (10k items/channel) against runaway loops
   const all: RockItemLite[] = [];
+  const baseFilter = extraFilter
+    ? `ContentChannelId eq ${channelId} and ${extraFilter}`
+    : `ContentChannelId eq ${channelId}`;
 
   for (let page = 0; page < MAX_PAGES; page++) {
     const data = await fetchRockData({
       endpoint: 'ContentChannelItems',
       queryParams: {
-        $filter: `ContentChannelId eq ${channelId}`,
+        $filter: baseFilter,
         $top: String(PAGE),
         $skip: String(page * PAGE),
         loadAttributes: 'simple',
@@ -130,9 +144,17 @@ async function fetchAllChannelItems(channelId: number): Promise<RockItemLite[]> 
   return all;
 }
 
-/** "/Foo/" -> "/foo" ; "" -> "/" . Keeps the sitemap comparable to the crawler's. */
+/** "/Foo/" -> "/foo" ; "" -> "/" . Keeps the sitemap comparable to the crawler's.
+ *  Each path segment is percent-encoded so slugs with spaces (or other RFC-3986
+ *  reserved chars) produce valid <loc> URLs — raw spaces are rejected by crawlers. */
 function normalizePath(prefix: string, slug: string): string {
-  const clean = slug.trim().replace(/^\/+/, '').replace(/\/+$/, '');
+  const clean = slug
+    .trim()
+    .replace(/^\/+/, '')
+    .replace(/\/+$/, '')
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/');
   const path = prefix ? `${prefix}/${clean}` : `/${clean}`;
   return path.length > 1 ? path.replace(/\/+$/, '') : path;
 }
@@ -147,6 +169,10 @@ const escapeXml = (s: string): string =>
 
 export async function loader() {
   const paths = new Set<string>(STATIC_ROUTES);
+  // ISO timestamp used for podcast date gates — mirrors StartDateTime filters in
+  // podcast-show/loader.tsx:98 and podcast-episode/loader.tsx:173.
+  const nowIso = new Date().toISOString();
+  const startedFilter = `StartDateTime le datetime'${nowIso}'`;
 
   // Campuses are a fixed const, not a Url-attribute channel.
   for (const campus of RockCampuses) {
@@ -158,7 +184,10 @@ export async function loader() {
   for (const source of CONTENT_SOURCES) {
     try {
       for (const channelId of source.channelIds) {
-        const items = await fetchAllChannelItems(channelId);
+        // Podcast shows require a StartDateTime gate so future-scheduled shows
+        // aren't emitted before they're live (podcast-show/loader.tsx:98).
+        const extraFilter = source.label === 'podcasts' ? startedFilter : undefined;
+        const items = await fetchAllChannelItems(channelId, extraFilter);
         for (const item of items) {
           const slug = item.attributeValues?.[source.attr]?.value;
           if (typeof slug === 'string' && slug.trim()) {
@@ -173,16 +202,17 @@ export async function loader() {
 
   // Podcast episodes. buildPodcastRoutingIndex() resolves each show's episode
   // ContentChannel ID from Rock, so we don't hardcode show-specific channel IDs.
-  // Episode slug is stored in the 'pathname' attribute (Rock key 'Pathname'),
-  // with 'url' as fallback — matching the episode loader and page-builder.
+  // Slug preference: 'url' first (matches podcast-episode/loader.tsx:174 which
+  // resolves via attributeKey 'Url'), falling back to 'pathname'.
+  // Date gate mirrors podcast-episode/loader.tsx:173 (StartDateTime le now).
   try {
     const podcastIndex = await buildPodcastRoutingIndex();
     for (const [episodeChannelId, { showPath }] of podcastIndex.byEpisodeChannelId) {
-      const episodes = await fetchAllChannelItems(Number(episodeChannelId));
+      const episodes = await fetchAllChannelItems(Number(episodeChannelId), startedFilter);
       for (const ep of episodes) {
         const slug =
-          (ep.attributeValues?.pathname?.value as string | undefined) ||
           (ep.attributeValues?.url?.value as string | undefined) ||
+          (ep.attributeValues?.pathname?.value as string | undefined) ||
           '';
         if (slug.trim()) {
           paths.add(`/podcasts/${showPath}/${slug.trim().replace(/^\/+/, '')}`);
