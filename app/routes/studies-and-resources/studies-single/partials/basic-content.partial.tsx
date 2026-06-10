@@ -2,8 +2,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '~/primitives/icon/icon';
 import { Button } from '~/primitives/button/button.primitive';
 import HTMLRenderer from '~/primitives/html-renderer';
-import { StudyHitType } from '../../types';
-import { CurriculumItem } from '../components/curriculum-item.component';
+import {
+  CurriculumSession,
+  StudyCallToAction,
+  StudyHitType,
+} from '../../types';
+import { CurriculumSessions } from '../components/curriculum-item.component';
 import { Breadcrumbs } from '~/components';
 import type { IconName } from '~/primitives/button/types';
 
@@ -25,7 +29,15 @@ export function iconForStudyFormat(format: string): IconName {
   }
 }
 
-export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
+export function StudySingleBasicContent({
+  hit,
+  curriculum,
+  callsToAction,
+}: {
+  hit: StudyHitType;
+  curriculum: CurriculumSession[];
+  callsToAction: StudyCallToAction[];
+}) {
   const { title, content, audience, source, duration, format } = hit;
   const location = useLocation();
   const backToStudiesFinderUrl =
@@ -72,7 +84,11 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
 
           {/* Mobile Top Side */}
           <div className='md:hidden'>
-            <RightSide title={title} source={source} />
+            <RightSide
+              title={title}
+              source={source}
+              callsToAction={callsToAction}
+            />
           </div>
 
           <div className='flex flex-col gap-4 mt-8 md:mt-12'>
@@ -84,47 +100,38 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
           </div>
 
           {/* Desktop Curriculum Section */}
-          <div className='hidden md:flex flex-col gap-5.5 md:mt-12 p-4 pb-8 rounded-2xl border border-[#ECEBEF] bg-gray'>
-            <h3 className='text-lg font-semibold text-black leading-tight'>
-              Curriculum
-            </h3>
-            <div className='flex flex-col gap-4'>
-              <CurriculumItem
-                title='Week 1: Getting Started'
-                subtitle='Release date: June 12, 2024'
-                items={[
-                  {
-                    type: 'Video',
-                    description: 'Week 1: Getting Started',
-                    wistiaId: 'wcs977y9ac',
-                  },
-                ]}
-              />
-              <CurriculumItem
-                title='Week 1: Getting Started'
-                subtitle='Release date: June 12, 2024'
-                items={[
-                  {
-                    type: 'Video',
-                    description: 'Week 1: Getting Started',
-                    wistiaId: 'wcs977y9ac',
-                  },
-                ]}
-              />
+          {curriculum.length > 0 && (
+            <div className='hidden md:flex flex-col gap-5.5 md:mt-12 p-4 pb-8 rounded-2xl border border-[#ECEBEF] bg-gray'>
+              <h3 className='text-lg font-semibold text-black leading-tight'>
+                Curriculum
+              </h3>
+              <CurriculumSessions sessions={curriculum} />
             </div>
-          </div>
+          )}
         </div>
 
         {/* Desktop Right side */}
         <div className='hidden md:block max-w-[324px] w-full'>
-          <RightSide title={title} source={source} />
+          <RightSide
+            title={title}
+            source={source}
+            callsToAction={callsToAction}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-const RightSide = ({ title, source }: { title: string; source: string }) => {
+const RightSide = ({
+  title,
+  source,
+  callsToAction,
+}: {
+  title: string;
+  source: string;
+  callsToAction: StudyCallToAction[];
+}) => {
   return (
     <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
       <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
@@ -146,27 +153,17 @@ const RightSide = ({ title, source }: { title: string; source: string }) => {
       </div>
 
       <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white'>
-        <Button
-          intent='secondaryWhite'
-          size='md'
-          className='w-full border-[#417890] md:border-[#FAFAFC]'
-        >
-          Study Trailer
-        </Button>
-        <Button
-          intent='secondaryWhite'
-          size='md'
-          className='w-full border-[#417890] md:border-[#FAFAFC]'
-        >
-          Discussion Guide
-        </Button>
-        <Button
-          intent='secondaryWhite'
-          size='md'
-          className='w-full border-[#417890] md:border-[#FAFAFC]'
-        >
-          Facilitator Guide
-        </Button>
+        {callsToAction.map((cta) => (
+          <Button
+            key={cta.title}
+            href={cta.url}
+            intent='secondaryWhite'
+            size='md'
+            className='w-full border-[#417890] md:border-[#FAFAFC]'
+          >
+            {cta.title}
+          </Button>
+        ))}
 
         <div className='flex flex-col gap-2 border-t border-[#417890] pt-4 md:border-none md:pt-0'>
           <h3 className='text-lg font-extrabold leading-tight'>

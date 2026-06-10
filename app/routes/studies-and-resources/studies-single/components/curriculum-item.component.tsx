@@ -5,12 +5,39 @@ import { Link } from 'react-router-dom';
 import Modal from '~/primitives/Modal';
 import { Video } from '~/primitives/video/video.primitive';
 import { Icon } from '~/primitives/icon/icon';
+import type { CurriculumSession } from '../../types';
 
 export interface CurriculumListItem {
   link?: string;
   type: string;
   description: string;
   wistiaId?: string;
+}
+
+export function CurriculumSessions({
+  sessions,
+}: {
+  sessions: CurriculumSession[];
+}) {
+  return (
+    <div className='flex flex-col gap-4'>
+      {sessions.map((session, index) => (
+        <CurriculumItem
+          key={index}
+          title={session.title}
+          subtitle={`${session.resources.length} ${
+            session.resources.length === 1 ? 'resource' : 'resources'
+          }`}
+          items={session.resources.map((resource) => ({
+            type: resource.type,
+            description: resource.title,
+            wistiaId: resource.wistiaId,
+            link: resource.url,
+          }))}
+        />
+      ))}
+    </div>
+  );
 }
 
 export function CurriculumItem({

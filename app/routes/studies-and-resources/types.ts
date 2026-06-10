@@ -3,6 +3,8 @@ import { ImageSource } from '../group-finder/types';
 export interface StudyHitType {
   objectID: string;
   id: string;
+  /** Rock ContentChannelItem Id — used to fetch curriculum/CTA attributes */
+  rockItemId: number;
   title: string; // this will either be Rock Class Title
   studyType: string;
   url: string;
@@ -81,3 +83,22 @@ export type ContactFormType = {
   PersonId: string;
   GroupId: string;
 };
+
+export interface CurriculumResource {
+  title: string;
+  /** Formatted label for display, e.g. "Video", "Discussion Guide" */
+  type: string;
+  url?: string;
+  wistiaId?: string;
+}
+
+export interface CurriculumSession {
+  /** From the SessionTitles value list attribute */
+  title: string;
+  resources: CurriculumResource[];
+}
+
+export interface StudyCallToAction {
+  title: string;
+  url: string;
+}

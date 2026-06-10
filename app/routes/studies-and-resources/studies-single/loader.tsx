@@ -1,14 +1,127 @@
 import { LoaderFunctionArgs } from 'react-router-dom';
 import { algoliasearch } from 'algoliasearch';
 import { AuthenticationError } from '~/lib/.server/error-types';
-import type { StudyHitType } from '../types';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
+import { getAttributeMatrixItems } from '~/lib/.server/rock-utils';
+import { parseRockKeyValueList, parseRockValueList } from '~/lib/utils';
+import type {
+  CurriculumSession,
+  StudyCallToAction,
+  StudyHitType,
+} from '../types';
 
 const STUDIES_ALGOLIA_INDEX_NAME = 'dev_StudiesAndResources';
 
 export type LoaderReturnType = {
   studyUrl: string;
   studyHit: StudyHitType | null;
+  curriculum: CurriculumSession[];
+  callsToAction: StudyCallToAction[];
 };
+
+/** Rock stores resource types in all caps (e.g. "DISCUSSION GUIDE") */
+const formatResourceType = (type: string) =>
+  type
+    .toLowerCase()
+    .replace(/(^|\s)\w/g, (character) => character.toUpperCase());
+
+async function fetchStudyRockData(rockItemId: number): Promise<{
+  curriculum: CurriculumSession[];
+  callsToAction: StudyCallToAction[];
+}> {
+  const empty = { curriculum: [], callsToAction: [] };
+  const id = Number(rockItemId);
+  if (!Number.isFinite(id)) {
+    console.warn(`Studies single: invalid Rock item id: ${rockItemId}`);
+    return empty;
+  }
+
+  try {
+    const studyItem = await fetchRockData({
+      endpoint: 'ContentChannelItems',
+      queryParams: {
+        $filter: `Id eq ${id}`,
+        loadAttributes: 'simple',
+      },
+    });
+
+    if (!studyItem) {
+      return empty;
+    }
+
+    const callsToAction = parseRockKeyValueList(
+      studyItem.attributeValues?.calltoActions?.value || '',
+    ).map((cta) => ({ title: cta.key, url: cta.value }));
+
+    const sessionTitles = parseRockValueList(
+      studyItem.attributeValues?.sessionTitles?.value || '',
+    );
+
+    const resourceMatrixGuid =
+      studyItem.attributeValues?.resourceItems?.value || '';
+    const matrixItems = resourceMatrixGuid
+      ? await getAttributeMatrixItems({
+          attributeMatrixGuid: resourceMatrixGuid,
+        })
+      : [];
+
+    const resources = await Promise.all(
+      matrixItems.map(async (item) => {
+        let wistiaId: string | undefined;
+        const mediaGuid = item.attributeValues?.video?.value;
+        if (mediaGuid) {
+          try {
+            const mediaElement = await fetchWistiaDataFromRock(mediaGuid);
+            wistiaId = mediaElement?.sourceKey || undefined;
+          } catch (error) {
+            console.error(
+              'Studies single: error fetching Wistia data:',
+              error,
+            );
+          }
+        }
+
+        return {
+          title: item.attributeValues?.title?.value || '',
+          type: formatResourceType(
+            item.attributeValues?.type?.valueFormatted ||
+              item.attributeValues?.type?.value ||
+              '',
+          ),
+          url: item.attributeValues?.url?.value || undefined,
+          wistiaId,
+          sessionNumber: Number(item.attributeValues?.sessionNumber?.value),
+        };
+      }),
+    );
+
+    const orphanedCount = resources.filter(
+      (resource) =>
+        !(
+          resource.sessionNumber >= 1 &&
+          resource.sessionNumber <= sessionTitles.length
+        ),
+    ).length;
+    if (orphanedCount > 0) {
+      console.warn(
+        `Studies single: dropped ${orphanedCount} resource(s) with a session number outside the SessionTitles list`,
+      );
+    }
+
+    const curriculum = sessionTitles.map((title, index) => ({
+      title,
+      resources: resources
+        .filter((resource) => resource.sessionNumber === index + 1)
+        .map(({ sessionNumber: _sessionNumber, ...resource }) => resource),
+    }));
+
+    return { curriculum, callsToAction };
+  } catch (error) {
+    console.error('Studies single: Rock data fetch failed:', error);
+    return empty;
+  }
+}
 
 async function fetchStudyHitForPath(
   studyUrl: string,
@@ -61,8 +174,14 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const studyHit = await fetchStudyHitForPath(studyUrl, appId, searchApiKey);
 
+  const { curriculum, callsToAction } = studyHit
+    ? await fetchStudyRockData(studyHit.rockItemId)
+    : { curriculum: [], callsToAction: [] };
+
   return {
     studyUrl,
     studyHit,
+    curriculum,
+    callsToAction,
   };
 }

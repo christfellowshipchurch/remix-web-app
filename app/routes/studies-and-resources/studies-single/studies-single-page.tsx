@@ -3,7 +3,7 @@ import { LoaderReturnType } from './loader';
 
 import { StudySingleBasicContent } from './partials/basic-content.partial';
 import { Button } from '~/primitives/button/button.primitive';
-import { CurriculumItem } from './components/curriculum-item.component';
+import { CurriculumSessions } from './components/curriculum-item.component';
 
 const StudyNotFound = () => {
   return (
@@ -21,7 +21,11 @@ const StudyNotFound = () => {
 };
 
 export function StudiesSinglePage() {
-  const { studyHit } = useLoaderData<LoaderReturnType>();
+  const { studyHit, curriculum, callsToAction } =
+    useLoaderData<LoaderReturnType>();
+  const hasCurriculum = curriculum.some(
+    (session) => session.resources.length > 0,
+  );
 
   return (
     <div className='w-full'>
@@ -38,40 +42,23 @@ export function StudiesSinglePage() {
           {/* Content */}
           <div className='content-padding w-full flex flex-col items-center pt-8 md:pt-10'>
             <div className='w-full flex flex-col items-center max-w-screen-content'>
-              <StudySingleBasicContent hit={studyHit} />
+              <StudySingleBasicContent
+                hit={studyHit}
+                curriculum={hasCurriculum ? curriculum : []}
+                callsToAction={callsToAction}
+              />
             </div>
           </div>
 
           {/* Mobile Curriculum Section */}
-          <div className='flex md:hidden flex-col gap-5.5 md:mt-12 pt-8 pb-12 content-padding bg-gray w-full'>
-            <h3 className='text-lg font-semibold text-black leading-tight'>
-              Curriculum
-            </h3>
-            <div className='flex flex-col gap-4'>
-              <CurriculumItem
-                title='Week 1: Getting Started'
-                subtitle='Release date: June 12, 2024'
-                items={[
-                  {
-                    type: 'Video',
-                    description: 'Week 1: Getting Started',
-                    wistiaId: 'wcs977y9ac',
-                  },
-                ]}
-              />
-              <CurriculumItem
-                title='Week 1: Getting Started'
-                subtitle='Release date: June 12, 2024'
-                items={[
-                  {
-                    type: 'Video',
-                    description: 'Week 1: Getting Started',
-                    wistiaId: 'wcs977y9ac',
-                  },
-                ]}
-              />
+          {hasCurriculum && (
+            <div className='flex md:hidden flex-col gap-5.5 md:mt-12 pt-8 pb-12 content-padding bg-gray w-full'>
+              <h3 className='text-lg font-semibold text-black leading-tight'>
+                Curriculum
+              </h3>
+              <CurriculumSessions sessions={curriculum} />
             </div>
-          </div>
+          )}
         </section>
       ) : (
         <StudyNotFound />
