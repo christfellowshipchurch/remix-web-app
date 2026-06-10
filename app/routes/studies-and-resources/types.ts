@@ -4,7 +4,7 @@ export interface StudyHitType {
   objectID: string;
   id: string;
   /** Rock ContentChannelItem Id — used to fetch curriculum/CTA attributes */
-  rockItemId: number;
+  rockItemId?: number;
   title: string; // this will either be Rock Class Title
   studyType: string;
   url: string;

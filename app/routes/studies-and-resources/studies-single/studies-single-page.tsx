@@ -53,9 +53,17 @@ export function StudiesSinglePage() {
           {/* Mobile Curriculum Section */}
           {hasCurriculum && (
             <div className='flex md:hidden flex-col gap-5.5 md:mt-12 pt-8 pb-12 content-padding bg-gray w-full'>
-              <h3 className='text-lg font-semibold text-black leading-tight'>
-                Curriculum
-              </h3>
+              <div className='flex items-center justify-between'>
+                <h3 className='text-lg font-semibold text-black leading-tight'>
+                  Curriculum
+                </h3>
+                <p className='text-xs text-[#8F8F95]'>
+                  {curriculum.length}{' '}
+                  {curriculum.length === 1 ? 'session' : 'sessions'} &middot;{' '}
+                  {curriculum.reduce((sum, s) => sum + s.resources.length, 0)}{' '}
+                  resources
+                </p>
+              </div>
               <CurriculumSessions sessions={curriculum} />
             </div>
           )}

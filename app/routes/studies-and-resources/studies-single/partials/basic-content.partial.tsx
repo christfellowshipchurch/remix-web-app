@@ -102,9 +102,17 @@ export function StudySingleBasicContent({
           {/* Desktop Curriculum Section */}
           {curriculum.length > 0 && (
             <div className='hidden md:flex flex-col gap-5.5 md:mt-12 p-4 pb-8 rounded-2xl border border-[#ECEBEF] bg-gray'>
-              <h3 className='text-lg font-semibold text-black leading-tight'>
-                Curriculum
-              </h3>
+              <div className='flex items-center justify-between'>
+                <h3 className='text-lg font-semibold text-black leading-tight'>
+                  Curriculum
+                </h3>
+                <p className='text-xs text-[#8F8F95]'>
+                  {curriculum.length}{' '}
+                  {curriculum.length === 1 ? 'session' : 'sessions'} &middot;{' '}
+                  {curriculum.reduce((sum, s) => sum + s.resources.length, 0)}{' '}
+                  resources
+                </p>
+              </div>
               <CurriculumSessions sessions={curriculum} />
             </div>
           )}

@@ -174,9 +174,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const studyHit = await fetchStudyHitForPath(studyUrl, appId, searchApiKey);
 
-  const { curriculum, callsToAction } = studyHit
-    ? await fetchStudyRockData(studyHit.rockItemId)
-    : { curriculum: [], callsToAction: [] };
+  const { curriculum, callsToAction } =
+    studyHit?.rockItemId != null
+      ? await fetchStudyRockData(studyHit.rockItemId)
+      : { curriculum: [], callsToAction: [] };
 
   return {
     studyUrl,

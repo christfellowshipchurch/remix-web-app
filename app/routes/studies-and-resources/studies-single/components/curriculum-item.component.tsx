@@ -102,7 +102,7 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const content = () => (
-    <div>
+    <div className='flex flex-col gap-1.5'>
       <h4 className='text-xs font-semibold text-[#0091BD] leading-none'>
         {item.type}
       </h4>
