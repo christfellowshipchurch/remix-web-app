@@ -21,7 +21,7 @@ const StudyNotFound = () => {
 };
 
 export function StudiesSinglePage() {
-  const { studyHit, curriculum, callsToAction } =
+  const { studyHit, curriculum, callsToAction, trailerWistiaId } =
     useLoaderData<LoaderReturnType>();
   const hasCurriculum = curriculum.some(
     (session) => session.resources.length > 0,
@@ -46,6 +46,7 @@ export function StudiesSinglePage() {
                 hit={studyHit}
                 curriculum={hasCurriculum ? curriculum : []}
                 callsToAction={callsToAction}
+                trailerWistiaId={trailerWistiaId}
               />
             </div>
           </div>

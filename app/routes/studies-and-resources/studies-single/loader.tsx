@@ -18,6 +18,7 @@ export type LoaderReturnType = {
   studyHit: StudyHitType | null;
   curriculum: CurriculumSession[];
   callsToAction: StudyCallToAction[];
+  trailerWistiaId: string | null;
 };
 
 /** Rock stores resource types in all caps (e.g. "DISCUSSION GUIDE") */
@@ -29,8 +30,9 @@ const formatResourceType = (type: string) =>
 async function fetchStudyRockData(rockItemId: number): Promise<{
   curriculum: CurriculumSession[];
   callsToAction: StudyCallToAction[];
+  trailerWistiaId: string | null;
 }> {
-  const empty = { curriculum: [], callsToAction: [] };
+  const empty = { curriculum: [], callsToAction: [], trailerWistiaId: null };
   const id = Number(rockItemId);
   if (!Number.isFinite(id)) {
     console.warn(`Studies single: invalid Rock item id: ${rockItemId}`);
@@ -116,7 +118,21 @@ async function fetchStudyRockData(rockItemId: number): Promise<{
         .map(({ sessionNumber: _sessionNumber, ...resource }) => resource),
     }));
 
-    return { curriculum, callsToAction };
+    let trailerWistiaId: string | null = null;
+    const trailerMediaGuid = studyItem.attributeValues?.trailerVideo?.value;
+    if (trailerMediaGuid) {
+      try {
+        const mediaElement = await fetchWistiaDataFromRock(trailerMediaGuid);
+        trailerWistiaId = mediaElement?.sourceKey || null;
+      } catch (error) {
+        console.error(
+          'Studies single: error fetching trailer Wistia data:',
+          error,
+        );
+      }
+    }
+
+    return { curriculum, callsToAction, trailerWistiaId };
   } catch (error) {
     console.error('Studies single: Rock data fetch failed:', error);
     return empty;
@@ -174,15 +190,16 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const studyHit = await fetchStudyHitForPath(studyUrl, appId, searchApiKey);
 
-  const { curriculum, callsToAction } =
+  const { curriculum, callsToAction, trailerWistiaId } =
     studyHit?.rockItemId != null
       ? await fetchStudyRockData(studyHit.rockItemId)
-      : { curriculum: [], callsToAction: [] };
+      : { curriculum: [], callsToAction: [], trailerWistiaId: null };
 
   return {
     studyUrl,
     studyHit,
     curriculum,
     callsToAction,
+    trailerWistiaId,
   };
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '~/primitives/icon/icon';
 import { Button } from '~/primitives/button/button.primitive';
@@ -8,6 +9,8 @@ import {
   StudyHitType,
 } from '../../types';
 import { CurriculumSessions } from '../components/curriculum-item.component';
+import Modal from '~/primitives/Modal';
+import { Video } from '~/primitives/video/video.primitive';
 import { Breadcrumbs } from '~/components';
 import type { IconName } from '~/primitives/button/types';
 
@@ -33,10 +36,12 @@ export function StudySingleBasicContent({
   hit,
   curriculum,
   callsToAction,
+  trailerWistiaId,
 }: {
   hit: StudyHitType;
   curriculum: CurriculumSession[];
   callsToAction: StudyCallToAction[];
+  trailerWistiaId: string | null;
 }) {
   const { title, content, audience, source, duration, format } = hit;
   const location = useLocation();
@@ -88,6 +93,7 @@ export function StudySingleBasicContent({
               title={title}
               source={source}
               callsToAction={callsToAction}
+              trailerWistiaId={trailerWistiaId}
             />
           </div>
 
@@ -124,6 +130,7 @@ export function StudySingleBasicContent({
             title={title}
             source={source}
             callsToAction={callsToAction}
+            trailerWistiaId={trailerWistiaId}
           />
         </div>
       </div>
@@ -135,11 +142,15 @@ const RightSide = ({
   title,
   source,
   callsToAction,
+  trailerWistiaId,
 }: {
   title: string;
   source: string;
   callsToAction: StudyCallToAction[];
+  trailerWistiaId: string | null;
 }) => {
+  const [trailerOpen, setTrailerOpen] = useState(false);
+
   return (
     <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
       <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
@@ -161,6 +172,24 @@ const RightSide = ({
       </div>
 
       <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white'>
+        {trailerWistiaId && (
+          <Modal open={trailerOpen} onOpenChange={setTrailerOpen}>
+            <Modal.Button asChild>
+              <Button
+                intent='secondaryWhite'
+                size='md'
+                className='w-full border-[#417890] md:border-[#FAFAFC]'
+              >
+                Study Trailer
+              </Button>
+            </Modal.Button>
+            <Modal.Content>
+              <div className='text-center text-text_primary p-8 md:p-12 w-[90vw] max-w-sm md:max-w-screen lg:max-w-3xl overflow-y-scroll aspect-video max-h-[75vh] md:max-h-[90vh]'>
+                <Video wistiaId={trailerWistiaId} className='size-full' />
+              </div>
+            </Modal.Content>
+          </Modal>
+        )}
         {callsToAction.map((cta) => (
           <Button
             key={cta.title}
