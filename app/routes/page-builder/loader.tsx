@@ -376,9 +376,14 @@ export const mapPageBuilderChildItems = async (
                   );
               }
 
-              // Generate the start date for the item
+              // Generate the start date for the item.
+              // Page Builder items have no meaningful start date in a
+              // collection context, so skip it (same as REDIRECT_CARD).
               let startDate = '';
-              if (contentType !== 'REDIRECT_CARD') {
+              if (
+                contentType !== 'REDIRECT_CARD' &&
+                contentType !== 'PAGE_BUILDER'
+              ) {
                 const startDateTime = item.startDateTime || '';
                 if (startDateTime) {
                   startDate = format(
@@ -462,6 +467,7 @@ export const mapPageBuilderChildItems = async (
           endpoint: `AttributeMatrixItems`,
           queryParams: {
             $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
+            $orderby: 'Order',
             loadAttributes: 'simple',
           },
         });
