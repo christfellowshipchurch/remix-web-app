@@ -112,3 +112,56 @@ describe('class-single loader — Algolia', () => {
     expect(result.groupHits).toEqual([]);
   });
 });
+
+describe('class-single loader — hero fields (Rock-first, Algolia fallback)', () => {
+  const algoliaHit = {
+    classType: 'Algolia Title',
+    summary: 'Algolia summary',
+    coverImage: { sources: [{ uri: 'https://cdn/algolia.jpg' }] },
+  };
+
+  function mockHeroHit() {
+    // Hero search resolves first; subsequent upcoming/groups searches are empty.
+    searchSingleIndex
+      .mockResolvedValueOnce({ hits: [algoliaHit] })
+      .mockResolvedValue({ hits: [] });
+  }
+
+  it('prefers Rock Defined Type values over the Algolia hit', async () => {
+    mockFetchRockData.mockResolvedValueOnce({
+      value: 'Rock Title',
+      attributeValues: {
+        summary: { value: '  Rock summary  ' },
+        image: { value: '03418602-8c89-42d3-a569-18a3e6b8bec4' },
+      },
+    });
+    mockHeroHit();
+
+    const result = await loader(makeParams('financial-peace-university'));
+
+    expect(result.heroTitle).toBe('Rock Title');
+    expect(result.heroSummary).toBe('Rock summary');
+    // Image GUID is resolved to a Rock GetImage URL rather than the Algolia uri.
+    expect(result.heroCoverImageUri).toContain(
+      '03418602-8c89-42d3-a569-18a3e6b8bec4',
+    );
+    expect(result.heroCoverImageUri).not.toBe('https://cdn/algolia.jpg');
+  });
+
+  it('leaves summary and cover image blank when Rock lacks them (no Algolia fallback); title still falls back', async () => {
+    mockFetchRockData.mockResolvedValueOnce({
+      value: '',
+      attributeValues: {
+        summary: { value: '   ' },
+        image: { value: '' },
+      },
+    });
+    mockHeroHit();
+
+    const result = await loader(makeParams('foundations-of-faith'));
+
+    expect(result.heroTitle).toBe('Algolia Title');
+    expect(result.heroSummary).toBe('');
+    expect(result.heroCoverImageUri).toBe('');
+  });
+});
