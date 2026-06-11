@@ -86,6 +86,21 @@ export default [
     },
   },
   {
+    // Standalone Node ESM tooling scripts (run via `node`, not bundled).
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        URL: 'readonly',
+        fetch: 'readonly',
+        AbortController: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+      },
+    },
+  },
+  {
     ignores: [
       'node_modules/**',
       'build/**',
