@@ -37,7 +37,9 @@ function getCanonicalOrigin(): string {
   const env = (import.meta as { env?: Record<string, unknown> }).env;
   const origin = env?.VITE_PUBLIC_ORIGIN;
   const raw =
-    typeof origin === 'string' && origin.trim() ? origin.trim() : FALLBACK_ORIGIN;
+    typeof origin === 'string' && origin.trim()
+      ? origin.trim()
+      : FALLBACK_ORIGIN;
   return raw.replace(/\/+$/, '');
 }
 
@@ -64,7 +66,12 @@ const CONTENT_SOURCES: {
   { label: 'messages', channelIds: [63], prefix: '/messages', attr: 'url' },
   { label: 'articles', channelIds: [43], prefix: '/articles', attr: 'url' },
   { label: 'events', channelIds: [186], prefix: '/events', attr: 'url' },
-  { label: 'ministries', channelIds: [171], prefix: '/ministries', attr: 'pathname' },
+  {
+    label: 'ministries',
+    channelIds: [171],
+    prefix: '/ministries',
+    attr: 'pathname',
+  },
   {
     label: 'studies',
     channelIds: [79, 80],
@@ -186,7 +193,8 @@ export async function loader() {
       for (const channelId of source.channelIds) {
         // Podcast shows require a StartDateTime gate so future-scheduled shows
         // aren't emitted before they're live (podcast-show/loader.tsx:98).
-        const extraFilter = source.label === 'podcasts' ? startedFilter : undefined;
+        const extraFilter =
+          source.label === 'podcasts' ? startedFilter : undefined;
         const items = await fetchAllChannelItems(channelId, extraFilter);
         for (const item of items) {
           const slug = item.attributeValues?.[source.attr]?.value;
@@ -207,8 +215,14 @@ export async function loader() {
   // Date gate mirrors podcast-episode/loader.tsx:173 (StartDateTime le now).
   try {
     const podcastIndex = await buildPodcastRoutingIndex();
-    for (const [episodeChannelId, { showPath }] of podcastIndex.byEpisodeChannelId) {
-      const episodes = await fetchAllChannelItems(Number(episodeChannelId), startedFilter);
+    for (const [
+      episodeChannelId,
+      { showPath },
+    ] of podcastIndex.byEpisodeChannelId) {
+      const episodes = await fetchAllChannelItems(
+        Number(episodeChannelId),
+        startedFilter,
+      );
       for (const ep of episodes) {
         const slug =
           (ep.attributeValues?.url?.value as string | undefined) ||
