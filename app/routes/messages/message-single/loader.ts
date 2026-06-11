@@ -132,6 +132,7 @@ const fetchMessageByPath = async (path: string) => {
       value: path,
       loadAttributes: 'simple',
     },
+    filterByDateRange: true,
   });
 
   const messages = ensureArray(rockData);

@@ -52,6 +52,7 @@ export async function getLatestEpisodes(channelGuid: string) {
         $top: '6',
         loadAttributes: 'simple',
       },
+      filterByDateRange: true,
     });
 
     if (!Array.isArray(episodes)) {
@@ -98,6 +99,7 @@ export async function getPodcast(path: string) {
         $filter: `ContentChannelId eq ${PODCAST_SHOW_CHANNEL_ID} and Status eq 'Approved' and StartDateTime le datetime'${new Date().toISOString()}'`,
         loadAttributes: 'simple',
       },
+      filterByDateRange: true,
     });
 
     if (Array.isArray(podcastData)) {
