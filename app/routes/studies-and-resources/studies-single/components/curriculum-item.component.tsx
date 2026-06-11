@@ -5,12 +5,39 @@ import { Link } from 'react-router-dom';
 import Modal from '~/primitives/Modal';
 import { Video } from '~/primitives/video/video.primitive';
 import { Icon } from '~/primitives/icon/icon';
+import type { CurriculumSession } from '../../types';
 
 export interface CurriculumListItem {
   link?: string;
   type: string;
   description: string;
   wistiaId?: string;
+}
+
+export function CurriculumSessions({
+  sessions,
+}: {
+  sessions: CurriculumSession[];
+}) {
+  return (
+    <div className='flex flex-col gap-4'>
+      {sessions.map((session, index) => (
+        <CurriculumItem
+          key={index}
+          title={session.title}
+          subtitle={`${session.resources.length} ${
+            session.resources.length === 1 ? 'resource' : 'resources'
+          }`}
+          items={session.resources.map((resource) => ({
+            type: resource.type,
+            description: resource.title,
+            wistiaId: resource.wistiaId,
+            link: resource.url,
+          }))}
+        />
+      ))}
+    </div>
+  );
 }
 
 export function CurriculumItem({
@@ -75,7 +102,7 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const content = () => (
-    <div>
+    <div className='flex flex-col gap-1.5'>
       <h4 className='text-xs font-semibold text-[#0091BD] leading-none'>
         {item.type}
       </h4>
@@ -120,7 +147,12 @@ const CurriculumItemContent = ({ item }: { item: CurriculumListItem }) => {
   return (
     <li className='w-full group'>
       {item.link ? (
-        <Link to={item.link} prefetch='intent' className={wrapperStyles}>
+        <Link
+          to={item.link}
+          target='_blank'
+          prefetch='intent'
+          className={wrapperStyles}
+        >
           {content()}
         </Link>
       ) : (

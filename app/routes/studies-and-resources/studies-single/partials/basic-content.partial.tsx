@@ -1,9 +1,16 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '~/primitives/icon/icon';
 import { Button } from '~/primitives/button/button.primitive';
 import HTMLRenderer from '~/primitives/html-renderer';
-import { StudyHitType } from '../../types';
-import { CurriculumItem } from '../components/curriculum-item.component';
+import {
+  CurriculumSession,
+  StudyCallToAction,
+  StudyHitType,
+} from '../../types';
+import { CurriculumSessions } from '../components/curriculum-item.component';
+import Modal from '~/primitives/Modal';
+import { Video } from '~/primitives/video/video.primitive';
 import { Breadcrumbs } from '~/components';
 import type { IconName } from '~/primitives/button/types';
 
@@ -25,7 +32,17 @@ export function iconForStudyFormat(format: string): IconName {
   }
 }
 
-export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
+export function StudySingleBasicContent({
+  hit,
+  curriculum,
+  callsToAction,
+  trailerWistiaId,
+}: {
+  hit: StudyHitType;
+  curriculum: CurriculumSession[];
+  callsToAction: StudyCallToAction[];
+  trailerWistiaId: string | null;
+}) {
   const { title, content, audience, source, duration, format } = hit;
   const location = useLocation();
   const backToStudiesFinderUrl =
@@ -72,7 +89,12 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
 
           {/* Mobile Top Side */}
           <div className='md:hidden'>
-            <RightSide title={title} source={source} />
+            <RightSide
+              title={title}
+              source={source}
+              callsToAction={callsToAction}
+              trailerWistiaId={trailerWistiaId}
+            />
           </div>
 
           <div className='flex flex-col gap-4 mt-8 md:mt-12'>
@@ -84,53 +106,57 @@ export function StudySingleBasicContent({ hit }: { hit: StudyHitType }) {
           </div>
 
           {/* Desktop Curriculum Section */}
-          <div className='hidden md:flex flex-col gap-5.5 md:mt-12 p-4 pb-8 rounded-2xl border border-[#ECEBEF] bg-gray'>
-            <h3 className='text-lg font-semibold text-black leading-tight'>
-              Curriculum
-            </h3>
-            <div className='flex flex-col gap-4'>
-              <CurriculumItem
-                title='Week 1: Getting Started'
-                subtitle='Release date: June 12, 2024'
-                items={[
-                  {
-                    type: 'Video',
-                    description: 'Week 1: Getting Started',
-                    wistiaId: 'wcs977y9ac',
-                  },
-                ]}
-              />
-              <CurriculumItem
-                title='Week 1: Getting Started'
-                subtitle='Release date: June 12, 2024'
-                items={[
-                  {
-                    type: 'Video',
-                    description: 'Week 1: Getting Started',
-                    wistiaId: 'wcs977y9ac',
-                  },
-                ]}
-              />
+          {curriculum.length > 0 && (
+            <div className='hidden md:flex flex-col gap-5.5 md:mt-12 p-4 pb-8 rounded-2xl border border-[#ECEBEF] bg-gray'>
+              <div className='flex items-center justify-between'>
+                <h3 className='text-lg font-semibold text-black leading-tight'>
+                  Curriculum
+                </h3>
+                <p className='text-xs text-[#8F8F95]'>
+                  {curriculum.length}{' '}
+                  {curriculum.length === 1 ? 'session' : 'sessions'} &middot;{' '}
+                  {curriculum.reduce((sum, s) => sum + s.resources.length, 0)}{' '}
+                  resources
+                </p>
+              </div>
+              <CurriculumSessions sessions={curriculum} />
             </div>
-          </div>
+          )}
         </div>
 
         {/* Desktop Right side */}
         <div className='hidden md:block max-w-[324px] w-full'>
-          <RightSide title={title} source={source} />
+          <RightSide
+            title={title}
+            source={source}
+            callsToAction={callsToAction}
+            trailerWistiaId={trailerWistiaId}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-const RightSide = ({ title, source }: { title: string; source: string }) => {
+const RightSide = ({
+  title,
+  source,
+  callsToAction,
+  trailerWistiaId,
+}: {
+  title: string;
+  source: string;
+  callsToAction: StudyCallToAction[];
+  trailerWistiaId: string | null;
+}) => {
+  const [trailerOpen, setTrailerOpen] = useState(false);
+
   return (
     <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
       <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
         <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
           <img
-            src='/cf-logo.png'
+            src='/cf-icon.png'
             alt={title}
             className='w-full h-full object-cover'
           />
@@ -146,27 +172,35 @@ const RightSide = ({ title, source }: { title: string; source: string }) => {
       </div>
 
       <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white'>
-        <Button
-          intent='secondaryWhite'
-          size='md'
-          className='w-full border-[#417890] md:border-[#FAFAFC]'
-        >
-          Study Trailer
-        </Button>
-        <Button
-          intent='secondaryWhite'
-          size='md'
-          className='w-full border-[#417890] md:border-[#FAFAFC]'
-        >
-          Discussion Guide
-        </Button>
-        <Button
-          intent='secondaryWhite'
-          size='md'
-          className='w-full border-[#417890] md:border-[#FAFAFC]'
-        >
-          Facilitator Guide
-        </Button>
+        {trailerWistiaId && (
+          <Modal open={trailerOpen} onOpenChange={setTrailerOpen}>
+            <Modal.Button asChild>
+              <Button
+                intent='secondaryWhite'
+                size='md'
+                className='w-full border-[#417890] md:border-[#FAFAFC]'
+              >
+                Study Trailer
+              </Button>
+            </Modal.Button>
+            <Modal.Content>
+              <div className='text-center text-text_primary p-8 md:p-12 w-[90vw] max-w-sm md:max-w-screen lg:max-w-3xl overflow-y-scroll aspect-video max-h-[75vh] md:max-h-[90vh]'>
+                <Video wistiaId={trailerWistiaId} className='size-full' />
+              </div>
+            </Modal.Content>
+          </Modal>
+        )}
+        {callsToAction.map((cta) => (
+          <Button
+            key={cta.title}
+            href={cta.url}
+            intent='secondaryWhite'
+            size='md'
+            className='w-full border-[#417890] md:border-[#FAFAFC]'
+          >
+            {cta.title}
+          </Button>
+        ))}
 
         <div className='flex flex-col gap-2 border-t border-[#417890] pt-4 md:border-none md:pt-0'>
           <h3 className='text-lg font-extrabold leading-tight'>
