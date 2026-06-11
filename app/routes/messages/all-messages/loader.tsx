@@ -3,13 +3,14 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import { AuthenticationError } from '~/lib/.server/error-types';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 import type { ContentItemHit } from '~/routes/search/types';
 
 import {
   ALL_MESSAGES_GRID_HITS_PER_PAGE,
   CURRENT_SERIES_LOADER_HITS_PER_PAGE,
-  MESSAGES_ALGOLIA_INDEX_NAME,
   MESSAGES_SERMON_FILTER,
 } from './all-messages.constants';
 import {
@@ -20,6 +21,7 @@ import {
 export type AllMessagesLoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   currentSeriesHit: ContentItemHit | null;
   allMessagesHits: ContentItemHit[];
   allMessagesNbPages: number;
@@ -74,6 +76,7 @@ function buildAllMessagesSearchParams(urlState: AllMessagesUrlState): {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new AuthenticationError('Algolia credentials not found');
@@ -92,14 +95,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const [seriesRes, gridRes] = await Promise.all([
       client.searchSingleIndex({
-        indexName: MESSAGES_ALGOLIA_INDEX_NAME,
+        indexName: algoliaIndexes.contentItems,
         searchParams: {
           filters: MESSAGES_SERMON_FILTER,
           hitsPerPage: CURRENT_SERIES_LOADER_HITS_PER_PAGE,
         },
       }),
       client.searchSingleIndex({
-        indexName: MESSAGES_ALGOLIA_INDEX_NAME,
+        indexName: algoliaIndexes.contentItems,
         searchParams: buildAllMessagesSearchParams(urlState),
       }),
     ]);
@@ -121,6 +124,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return Response.json({
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes,
     currentSeriesHit,
     allMessagesHits,
     allMessagesNbPages,

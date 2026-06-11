@@ -5,17 +5,12 @@ import type { EventFinderFacetItem } from '../loader';
 import type { EventsFinderUrlState } from '../../events-url-state';
 import {
   EVENT_FACET_CATEGORIES,
-  EVENTS_INDEX,
   MAIN_EVENTS_GRID_HITS_PER_PAGE,
   MAIN_EVENTS_TYPE_FILTER,
 } from '../all-events.constants';
 
-/** Re-export for any remaining imports of the index name / filters. */
-export {
-  EVENTS_INDEX,
-  MAIN_EVENTS_GRID_HITS_PER_PAGE,
-  MAIN_EVENTS_TYPE_FILTER,
-};
+/** Re-export for any remaining imports of event finder settings. */
+export { MAIN_EVENTS_GRID_HITS_PER_PAGE, MAIN_EVENTS_TYPE_FILTER };
 
 export const EventsTagsRefinementList = ({
   categoryFacets,

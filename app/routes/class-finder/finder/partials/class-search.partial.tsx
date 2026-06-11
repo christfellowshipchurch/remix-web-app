@@ -39,7 +39,6 @@ import {
   parseClassFinderUrlState,
 } from '../components/class-finder-url-state';
 import {
-  CLASSES_ALGOLIA_INDEX_NAME,
   CLASS_FINDER_LOADER_HITS_PER_PAGE,
 } from '../components/build-class-finder-algolia-search';
 import { ClassFinderFiltersSkeleton } from '../components/filters/class-finder-filters-skeleton.component';
@@ -70,15 +69,12 @@ const CLASS_SEARCH_DESKTOP_FILTERS = [
   },
 ] satisfies SearchFilterDesktopItem[];
 
-const {
-  InstantSearchUrlSync: ClassFinderInstantSearchSync,
-  buildUiState: buildClassFinderInstantSearchUiState,
-} = createInstantSearchUrlSync<ClassFinderUrlState>({
-  indexName: CLASSES_ALGOLIA_INDEX_NAME,
-  parseUrlState: parseClassFinderUrlState,
-});
-
-function getInitialStateFromUrl(searchParams: URLSearchParams) {
+function getInitialStateFromUrl(
+  searchParams: URLSearchParams,
+  buildClassFinderInstantSearchUiState: (urlState: ClassFinderUrlState) => {
+    [indexName: string]: Record<string, unknown>;
+  },
+) {
   const urlState = parseClassFinderUrlState(searchParams);
   return {
     // Snapshot the URL only for the first InstantSearch mount. Later filter
@@ -90,9 +86,22 @@ function getInitialStateFromUrl(searchParams: URLSearchParams) {
 
 export const ClassSearch = () => {
   const loaderData = useLoaderData<LoaderReturnType>();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classHits } = loaderData;
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classHits, algoliaIndexes } =
+    loaderData;
+  const classIndexName = algoliaIndexes.classes;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const {
+    InstantSearchUrlSync: ClassFinderInstantSearchSync,
+    buildUiState: buildClassFinderInstantSearchUiState,
+  } = useMemo(
+    () =>
+      createInstantSearchUrlSync<ClassFinderUrlState>({
+        indexName: classIndexName,
+        parseUrlState: parseClassFinderUrlState,
+      }),
+    [classIndexName],
+  );
 
   const { debouncedUpdateUrl, cancelDebounce } = useAlgoliaUrlSync({
     searchParams,
@@ -101,7 +110,14 @@ export const ClassSearch = () => {
     debounceMs: 400,
   });
 
-  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+  const initial = useMemo(
+    () =>
+      getInitialStateFromUrl(
+        searchParams,
+        buildClassFinderInstantSearchUiState,
+      ),
+    [buildClassFinderInstantSearchUiState],
+  );
 
   const searchClient = useMemo(
     () => algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, {}),
@@ -156,7 +172,7 @@ export const ClassSearch = () => {
       <div className='flex flex-col bg-white pt-4'>
         {filtersMounted ? (
           <InstantSearch
-            indexName={CLASSES_ALGOLIA_INDEX_NAME}
+            indexName={classIndexName}
             searchClient={searchClient}
             initialUiState={
               Object.keys(initial.initialUiState).length > 0
@@ -165,7 +181,7 @@ export const ClassSearch = () => {
             }
             onStateChange={({ uiState, setUiState }) => {
               setUiState(uiState);
-              const indexState = uiState[CLASSES_ALGOLIA_INDEX_NAME];
+              const indexState = uiState[classIndexName];
               if (indexState) {
                 syncUrlFromUiState(indexState as Record<string, unknown>);
               }

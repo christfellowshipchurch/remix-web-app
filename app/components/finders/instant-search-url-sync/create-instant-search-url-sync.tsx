@@ -111,7 +111,7 @@ export function createInstantSearchUrlSync<T extends SyncUrlState>({
           [indexName]: nextIndex,
         };
       });
-    }, [searchParams, setUiState]);
+    }, [indexName, searchParams, setUiState]);
 
     return null;
   };

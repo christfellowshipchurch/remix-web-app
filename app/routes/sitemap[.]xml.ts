@@ -11,7 +11,7 @@ import { buildPodcastRoutingIndex } from '~/routes/podcasts/podcast-routing.serv
  * to Rock's ContentChannelItems directly via the existing fetchRockData util.
  *
  * Exception: studies-and-resources detail pages resolve via Algolia
- * (dev_StudiesAndResources) in their route loader, not Rock directly. The sitemap
+ * (studies/resources index) in their route loader, not Rock directly. The sitemap
  * enumerates Rock channels 79/80 as an approximation; any Rock-approved study
  * absent from Algolia would 404. The parity check script surfaces such drift.
  *

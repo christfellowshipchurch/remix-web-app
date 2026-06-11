@@ -7,10 +7,13 @@ import { getBasicAuthorInfoFlexible } from '~/lib/.server/author-utils';
 import { getImages } from '~/lib/.server/rock-utils';
 import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
 import { parseRockKeyValueList } from '~/lib/utils';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   hostUrl: string;
   title: string;
   id: string;
@@ -122,6 +125,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || '',
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY || '',
+    algoliaIndexes: getServerAlgoliaIndexes(),
     hostUrl: origin,
     title,
     id: articleData.id,

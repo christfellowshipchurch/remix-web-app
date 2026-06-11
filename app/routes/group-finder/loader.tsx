@@ -3,14 +3,17 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { AuthenticationError } from '~/lib/.server/error-types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 import { buildGroupFinderAlgoliaSearchParams } from './components/build-group-finder-algolia-search';
 import { parseGroupFinderUrlState } from './group-finder-url-state';
-import { GROUPS_ALGOLIA_INDEX_NAME, type GroupType } from './types';
+import { type GroupType } from './types';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   groupHits: GroupType[];
   groupNbHits: number;
   groupNbPages: number;
@@ -26,6 +29,7 @@ export type LoaderReturnType = {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new AuthenticationError('Algolia credentials not found');
@@ -47,7 +51,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   try {
     const facetRes = await client.searchSingleIndex({
-      indexName: GROUPS_ALGOLIA_INDEX_NAME,
+      indexName: algoliaIndexes.groups,
       searchParams: {
         facets: ['minMaxAge'],
         hitsPerPage: 0,
@@ -59,6 +63,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const built = buildGroupFinderAlgoliaSearchParams(
       urlState,
       minMaxAgeValues,
+      algoliaIndexes.groups,
     );
     const { indexName, ...indexSearchParams } = built;
     const hitsRes = await client.searchSingleIndex({
@@ -78,6 +83,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     // filtering then continues client-side without re-running this loader.
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes,
     groupHits,
     groupNbHits,
     groupNbPages,

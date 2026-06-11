@@ -32,7 +32,9 @@ export const ClickThroughRegistration = ({
   const algolia = rootData?.algolia ?? {
     ALGOLIA_APP_ID: '',
     ALGOLIA_SEARCH_API_KEY: '',
+    indexes: undefined,
   };
+  const eventFinderIndexName = algolia.indexes?.eventFinderItems ?? '';
 
   const extractedGroupType = loaderGroupType ?? '';
 
@@ -196,7 +198,7 @@ export const ClickThroughRegistration = ({
     <>
       {!hitsReady && <RegistrationSkeleton totalSteps={totalSteps} />}
       <InstantSearch
-        indexName='dev_EventFinderItems'
+        indexName={eventFinderIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,

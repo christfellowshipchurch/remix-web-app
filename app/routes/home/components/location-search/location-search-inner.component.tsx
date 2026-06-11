@@ -8,7 +8,7 @@ import { cn, isValidZip } from '~/lib/utils';
 import { emptySearchClient } from '~/routes/search/route';
 import { globalSearchClient } from '~/routes/search/route';
 import { SearchBar } from './search-bar';
-import { loader } from '~/routes/home/loader';
+import type { HomeLoaderData } from '~/routes/home/loader';
 
 type GeocodeFetcherData = {
   requestId?: string;
@@ -29,8 +29,9 @@ export function LocationSearchInner({
   isSearching?: boolean;
   setIsSearching?: (isSearching: boolean) => void;
 } = {}) {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
-    useLoaderData<typeof loader>();
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
+    useLoaderData<HomeLoaderData>();
+  const locationIndexName = algoliaIndexes.locations;
   const geocodeFetcher = useFetcher();
   const geocodeFetcherRef = useRef(geocodeFetcher);
   geocodeFetcherRef.current = geocodeFetcher;
@@ -178,13 +179,13 @@ export function LocationSearchInner({
   return (
     <div>
       <InstantSearch
-        indexName='dev_Locations'
+        indexName={locationIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          dev_Locations: {
+          [locationIndexName]: {
             query: '',
           },
         }}

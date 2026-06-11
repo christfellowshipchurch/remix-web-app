@@ -8,7 +8,7 @@ export type ClassHitHighlightField = {
 };
 
 /**
- * `dev_Classes` record shape + optional `_highlightResult` from search API.
+ * Classes index record shape + optional `_highlightResult` from search API.
  */
 export interface ClassHitType {
   objectID: string;
