@@ -12,9 +12,7 @@ const ShareMySkillsFlow = ({
 }: {
   setOpenModal: (open: boolean) => void;
 }) => {
-  const [step, setStep] = useState<ShareMySkillsStep>(
-    ShareMySkillsStep.FORM,
-  );
+  const [step, setStep] = useState<ShareMySkillsStep>(ShareMySkillsStep.FORM);
 
   const renderStep = () => {
     switch (step) {
