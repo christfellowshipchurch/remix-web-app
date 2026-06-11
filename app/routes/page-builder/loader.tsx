@@ -343,20 +343,24 @@ export const mapPageBuilderChildItems = async (
                 return [];
               }
 
-              // Generate the summary for the item
-              const summary = getStringValue(
-                itemAttributeValues?.summary || '',
-              );
-              if (!summary) {
-                itemAttributeValues.summary = item.content;
-              }
+              // Generate the summary for the item. Fall back to body content
+              // (item.content) when no summary attribute is set, matching the
+              // pattern used for podcast items above.
+              const summary =
+                getStringValue(itemAttributeValues?.summary || '') ||
+                item.content ||
+                '';
 
               // Generate the pathname for the item
               let pathname: string;
               switch (contentType) {
                 case 'REDIRECT_CARD':
+                  // Use the URL 3.0 `pathname` attribute (Rock), then `url` as secondary.
+                  // No fallback to legacy `redirectUrl` — items without a valid URL 3.0 value should not appear.
                   pathname = getStringValue(
-                    itemAttributeValues?.redirectUrl || '',
+                    itemAttributeValues?.pathname ||
+                      itemAttributeValues?.url ||
+                      '',
                   );
                   break;
                 case 'EVENTS':
@@ -528,6 +532,8 @@ export const loader: LoaderFunction = async ({ params }) => {
         loadAttributes: 'simple',
         $filter: 'ContentChannelId eq 176',
       },
+      // Only approved pages are publicly accessible (matches articles/events/messages).
+      filterByStatusApproved: true,
     });
 
     // Handle case where pageData might be an array or null/undefined
@@ -543,6 +549,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 
     if (!page || !page.id) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
+        status: 404,
+        statusText: 'Not Found',
+      });
+    }
+
+    // Time-based publishing: a page with a future StartDateTime or a past
+    // ExpireDateTime is not publicly accessible. Undated pages stay visible.
+    if (!isItemInDateRange(page, new Date())) {
+      throw new Response(`Page not available with pathname: ${pathname}`, {
         status: 404,
         statusText: 'Not Found',
       });

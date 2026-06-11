@@ -78,7 +78,7 @@ export const CardCarouselSection = ({
                   href={viewMoreLink}
                   size='md'
                   className={cn(
-                    'hidden md:block min-w-32 w-fit',
+                    'hidden md:block min-w-32 w-fit whitespace-nowrap',
                     mode === 'dark' &&
                       'text-white border-white hover:bg-white/10!',
                     viewMoreStyles,
@@ -106,6 +106,7 @@ export const CardCarouselSection = ({
                   href={viewMoreLink}
                   size='md'
                   className={cn(
+                    'whitespace-nowrap',
                     mode === 'dark' && 'text-white border-white',
                     viewMoreStyles,
                   )}

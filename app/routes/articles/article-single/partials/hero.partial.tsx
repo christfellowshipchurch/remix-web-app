@@ -67,10 +67,11 @@ export const ArticleHero: React.FC<LoaderReturnType> = ({
                     <div className='flex gap-2'>
                       <ShareLinks
                         size={10}
+                        title={title || ''}
                         socialMedia={[
-                          { type: 'twitter', url: '/twitter' },
-                          { type: 'facebook', url: '/facebook' },
-                          { type: 'linkedIn', url: '/linkedIn' },
+                          { type: 'twitter' },
+                          { type: 'facebook' },
+                          { type: 'linkedIn' },
                         ]}
                       />
                     </div>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useInstantSearch } from 'react-instantsearch';
 import {
@@ -25,8 +25,13 @@ export function buildGroupFinderInstantSearchUiState(
   if (baseIndex) {
     Object.assign(indexSlice, baseIndex);
   }
+  // `urlState.page` is a 0-based index (parser stores URL `page` minus 1), but
+  // InstantSearch `uiState.page` is 1-based. Convert here so the page survives
+  // the URL<->uiState round-trip at the right value. Without the +1 the page
+  // read back from the URL is one less than what InstantSearch holds, which made
+  // the sync reconciliation overwrite the real page and snap pagination back.
   if (urlState.page != null && urlState.page > 0) {
-    indexSlice.page = urlState.page;
+    indexSlice.page = urlState.page + 1;
   }
 
   return Object.keys(indexSlice).length > 0
@@ -44,32 +49,48 @@ export function buildGroupFinderInstantSearchUiState(
  */
 export function GroupFinderInstantSearchSync() {
   const [searchParams] = useSearchParams();
-  const { setUiState } = useInstantSearch();
+  const { setUiState, uiState } = useInstantSearch();
+
+  // Always read the latest uiState without making the effect depend on it.
+  // The effect must react only to URL changes; reacting to uiState changes too
+  // would re-introduce the feedback loop this guard exists to prevent.
+  const uiStateRef = useRef(uiState);
+  uiStateRef.current = uiState;
 
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     const nextUiState = buildGroupFinderInstantSearchUiState(urlState);
     const indexSlice = nextUiState[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
 
+    const prevRecord = uiStateRef.current as Record<
+      string,
+      Record<string, unknown>
+    >;
+    const prevIndex = prevRecord[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
+    const nextQuery = (indexSlice.query as string) ?? '';
+    const prevQuery = (prevIndex.query as string) ?? '';
+    const nextRl = JSON.stringify(indexSlice.refinementList ?? {});
+    const prevRl = JSON.stringify(prevIndex.refinementList ?? {});
+    const nextPage = (indexSlice.page as number) ?? 0;
+    const prevPage = (prevIndex.page as number) ?? 0;
+
+    // Only InstantSearch-owned state (query/refinementList/page) belongs in
+    // uiState. Age and geo live in the URL but outside uiState, so when only
+    // those change there is nothing to reconcile here. Crucially we must NOT
+    // call `setUiState` in that case: core `setUiState` fires `onStateChange`
+    // unconditionally (even when the value is unchanged), and our
+    // `onStateChange` writes the URL from `mergeUrlState`. Calling it as a
+    // no-op therefore rewrites the URL from React state that can lag the URL by
+    // a render, producing an infinite URL<->state oscillation (clearing geo
+    // with age active) and stomping the page during geo pagination.
+    if (nextQuery === prevQuery && nextRl === prevRl && nextPage === prevPage) {
+      return;
+    }
+
     setUiState((prev) => {
-      const prevRecord = prev as Record<string, Record<string, unknown>>;
-      const prevIndex = prevRecord[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
-      const nextQuery = (indexSlice.query as string) ?? '';
-      const prevQuery = (prevIndex.query as string) ?? '';
-      const nextRl = JSON.stringify(indexSlice.refinementList ?? {});
-      const prevRl = JSON.stringify(prevIndex.refinementList ?? {});
-      const nextPage = (indexSlice.page as number) ?? 0;
-      const prevPage = (prevIndex.page as number) ?? 0;
-
-      if (
-        nextQuery === prevQuery &&
-        nextRl === prevRl &&
-        nextPage === prevPage
-      ) {
-        return prev;
-      }
-
-      const nextIndex = { ...prevIndex };
+      const prevRec = prev as Record<string, Record<string, unknown>>;
+      const prevIdx = prevRec[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
+      const nextIndex = { ...prevIdx };
       if (nextQuery) {
         nextIndex.query = nextQuery;
       } else {
@@ -87,7 +108,7 @@ export function GroupFinderInstantSearchSync() {
       }
 
       return {
-        ...prevRecord,
+        ...prevRec,
         [GROUPS_ALGOLIA_INDEX_NAME]: nextIndex,
       };
     });

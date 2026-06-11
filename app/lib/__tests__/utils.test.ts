@@ -12,6 +12,7 @@ import {
   latLonDistance,
   getFirstParagraph,
   getFirstSentence,
+  getSummarySnippet,
   parseRockKeyValueList,
   parseRockValueList,
   formattedServiceTimes,
@@ -318,6 +319,45 @@ describe('getFirstSentence', () => {
 
   it('returns empty string for empty input', () => {
     expect(getFirstSentence('')).toBe('');
+  });
+});
+
+describe('getSummarySnippet', () => {
+  it('returns two sentences when they fit within the limit', () => {
+    const html = '<p>Short one. Short two.</p>';
+    expect(getSummarySnippet(html)).toBe('Short one. Short two.');
+  });
+
+  it('falls back to one sentence when two exceed the limit', () => {
+    const long =
+      'This is a fairly long first sentence that already fills a line.';
+    const html = `<p>${long} And here is a second sentence that pushes us over.</p>`;
+    expect(getSummarySnippet(html)).toBe(long);
+  });
+
+  it('honors a custom maxChars threshold', () => {
+    const html = '<p>One. Two.</p>';
+    expect(getSummarySnippet(html, 4)).toBe('One.');
+  });
+
+  it('strips HTML formatting from the snippet', () => {
+    const html = '<p>Hello <strong>world</strong>. More <em>text</em>.</p>';
+    expect(getSummarySnippet(html)).toBe('Hello world. More text.');
+  });
+
+  it('separates lines split by <br> with a space when combining', () => {
+    const html = '<p>Line one.<br>Line two.</p>';
+    expect(getSummarySnippet(html)).toBe('Line one. Line two.');
+  });
+
+  it('returns the full text when no sentence end exists', () => {
+    expect(getSummarySnippet('<p>No ending punctuation</p>')).toBe(
+      'No ending punctuation',
+    );
+  });
+
+  it('returns empty string for empty input', () => {
+    expect(getSummarySnippet('')).toBe('');
   });
 });
 

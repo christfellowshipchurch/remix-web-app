@@ -132,6 +132,7 @@ const fetchMessageByPath = async (path: string) => {
       value: path,
       loadAttributes: 'simple',
     },
+    filterByDateRange: true,
   });
 
   const messages = ensureArray(rockData);
@@ -200,8 +201,10 @@ const fetchSpeakerData = async (guid: string) => {
 
 export const loader: LoaderFunction = async ({
   params,
+  request,
 }): Promise<LoaderReturnType> => {
   const path = params?.path || '';
+  const origin = new URL(request.url).origin;
 
   const messageData = await fetchMessageByPath(path);
 
@@ -218,6 +221,6 @@ export const loader: LoaderFunction = async ({
     message,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
-    hostUrl: process.env.HOST_URL || 'host-url-not-found',
+    hostUrl: origin,
   };
 };

@@ -14,6 +14,7 @@ export async function loader(): Promise<{ podcastShows: PodcastShow[] }> {
         $orderby: 'Order asc',
         loadAttributes: 'simple',
       },
+      filterByDateRange: true,
     });
   } catch (error) {
     console.error(error);
