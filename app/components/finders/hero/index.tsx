@@ -102,7 +102,7 @@ export const FinderHero = ({
         bgColor === 'white' && 'bg-white',
       )}
     >
-      <div className='container mx-auto grid max-w-screen-content items-center justify-center gap-10 sm:grid-cols-2 md:gap-8 lg:grid-cols-5 xl:gap-16'>
+      <div className='container mx-auto grid max-w-screen-content grid-cols-1 items-center justify-center gap-10 sm:grid-cols-2 md:gap-8 lg:grid-cols-5 xl:gap-16'>
         {bgImage ? (
           <img
             src={bgImage}
