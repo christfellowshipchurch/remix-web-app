@@ -130,7 +130,7 @@ const RightSide = ({ title, source }: { title: string; source: string }) => {
       <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
         <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
           <img
-            src='/cf-logo.png'
+            src='/cf-icon.png'
             alt={title}
             className='w-full h-full object-cover'
           />

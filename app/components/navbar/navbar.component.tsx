@@ -263,19 +263,13 @@ export function Navbar() {
               <div className='flex items-center gap-8'>
                 <a
                   href='/'
-                  className='relative flex items-center justify-center gap-2.5'
+                  className='relative flex items-center justify-center gap-2.5 overflow-hidden'
                   aria-label='Christ Fellowship Church'
                 >
-                  <Icon
-                    name='logo'
-                    className={cn(
-                      'size-32 my-[-48px] transition-colors duration-200',
-                      mode === 'light' || isSearchOpen
-                        ? 'text-ocean'
-                        : openDropdown
-                          ? 'text-ocean'
-                          : 'text-white group-hover:text-ocean',
-                    )}
+                  <img
+                    src={`/cf-logo-${mode === 'light' ? 'ocean' : 'white'}.svg`}
+                    alt='Christ Fellowship Church'
+                    className='w-32 h-16 transition-colors duration-200'
                   />
                 </a>
 
