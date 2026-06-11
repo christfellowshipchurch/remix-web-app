@@ -532,6 +532,8 @@ export const loader: LoaderFunction = async ({ params }) => {
         loadAttributes: 'simple',
         $filter: 'ContentChannelId eq 176',
       },
+      // Only approved pages are publicly accessible (matches articles/events/messages).
+      filterByStatusApproved: true,
     });
 
     // Handle case where pageData might be an array or null/undefined
@@ -547,6 +549,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 
     if (!page || !page.id) {
       throw new Response(`Page not found with pathname: ${pathname}`, {
+        status: 404,
+        statusText: 'Not Found',
+      });
+    }
+
+    // Time-based publishing: a page with a future StartDateTime or a past
+    // ExpireDateTime is not publicly accessible. Undated pages stay visible.
+    if (!isItemInDateRange(page, new Date())) {
+      throw new Response(`Page not available with pathname: ${pathname}`, {
         status: 404,
         statusText: 'Not Found',
       });

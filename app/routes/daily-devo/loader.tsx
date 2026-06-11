@@ -66,6 +66,7 @@ const fetchDailyDevo = async () => {
       loadAttributes: 'simple',
     },
     ttl: TTL.NONE,
+    filterByDateRange: true,
   });
 
   // Filter to get the most recent item that has started (StartDateTime <= current date)
