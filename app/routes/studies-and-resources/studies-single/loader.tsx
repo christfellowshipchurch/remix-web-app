@@ -77,7 +77,6 @@ async function fetchStudyRockData(rockItemId: number): Promise<{
             const mediaElement = await fetchWistiaDataFromRock(mediaGuid);
             wistiaId = mediaElement?.sourceKey || undefined;
           } catch (error) {
-            );
             console.error('Studies single: error fetching Wistia data:', error);
           }
         }
