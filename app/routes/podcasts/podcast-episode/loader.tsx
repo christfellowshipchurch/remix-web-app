@@ -175,6 +175,7 @@ async function getPodcastEpisode({
         value: path,
         loadAttributes: 'simple',
       },
+      filterByDateRange: true,
     });
 
     return getFirstItem(episode) as RockPodcastEpisode;

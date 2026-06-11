@@ -175,7 +175,7 @@ export const ministriesItems: SubMenuItem[] = [
   {
     id: 'care',
     title: 'Care',
-    description: 'Healing & freedom',
+    description: 'Freedom & Recovery',
     to: '/ministries/care',
   },
 ];

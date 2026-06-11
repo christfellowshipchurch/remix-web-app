@@ -33,6 +33,7 @@ const fetchLinkTreePage = async (
       value: pathname,
       loadAttributes: 'simple',
     },
+    filterByDateRange: true,
   });
 
   if (!linkTreePage || linkTreePage.length === 0) {

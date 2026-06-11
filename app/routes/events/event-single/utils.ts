@@ -13,6 +13,7 @@ export const fetchEventData = async (eventPath: string) => {
       value: eventPath,
       loadAttributes: 'simple',
     },
+    filterByDateRange: true,
   });
 
   if (!rockData || rockData.length === 0) {
