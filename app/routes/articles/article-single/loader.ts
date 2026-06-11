@@ -37,7 +37,7 @@ const fetchArticleData = async (articlePath: string) => {
     const rockData = await fetchRockData({
       endpoint: 'ContentChannelItems/GetByAttributeValue',
       queryParams: {
-        attributeKey: 'Url',
+        attributeKey: 'Pathname', //TODO: decide whether to use Url or Pathname for all content channels
         $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
         value: articlePath,
         loadAttributes: 'simple',
