@@ -1,6 +1,6 @@
 import { StyledAccordion } from '~/components';
 import { Button } from '~/primitives/button/button.primitive';
-import { ContactUsModal } from '~/components/modals/contact-us/contact-us-modal.component';
+import { ConnectCardModal } from '~/components/modals/connect-card';
 import { faqData } from '~/lib/faq-data.data';
 
 export const LocationFAQ = ({ campusName }: { campusName: string }) => {
@@ -33,14 +33,14 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
                 ? `Alguien de nuestro equipo estará encatado de responder a tus preguntas`
                 : `Someone from our team is happy to answer any of your questions!`}
             </p>
-            <ContactUsModal>
+            <ConnectCardModal>
               <Button
                 className='w-full max-w-[200px] rounded-sm'
                 intent='secondary'
               >
                 {isEspanol ? `Contáctanos` : `Contact Us`}
               </Button>
-            </ContactUsModal>
+            </ConnectCardModal>
           </div>
         </div>
       </div>

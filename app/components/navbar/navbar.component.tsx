@@ -202,6 +202,7 @@ export function Navbar() {
     watchReadListen?.featureCards,
   );
   const isTransparentMode = mode === 'dark' && !openDropdown && !isSearchOpen;
+  const useOceanLogo = mode === 'light' || openDropdown !== null || isSearchOpen;
 
   // Search handling
   const handleSearchClick = () => {
@@ -266,11 +267,29 @@ export function Navbar() {
                   className='relative flex items-center justify-center gap-2.5 overflow-hidden'
                   aria-label='Christ Fellowship Church'
                 >
-                  <img
-                    src={`/cf-logo-${mode === 'light' ? 'ocean' : 'white'}.svg`}
-                    alt='Christ Fellowship Church'
-                    className='w-32 h-16 transition-colors duration-200'
-                  />
+                  <div className='relative w-32 h-16'>
+                    <img
+                      src='/cf-logo-ocean.svg'
+                      alt='Christ Fellowship Church'
+                      className={cn(
+                        'absolute inset-0 w-full h-full transition-opacity duration-200',
+                        useOceanLogo
+                          ? 'opacity-100'
+                          : 'opacity-0 group-hover:opacity-100',
+                      )}
+                    />
+                    <img
+                      src='/cf-logo-white.svg'
+                      alt=''
+                      aria-hidden='true'
+                      className={cn(
+                        'absolute inset-0 w-full h-full transition-opacity duration-200',
+                        useOceanLogo
+                          ? 'opacity-0'
+                          : 'opacity-100 group-hover:opacity-0',
+                      )}
+                    />
+                  </div>
                 </a>
 
                 {/* Desktop Navigation Menu */}

@@ -1,5 +1,5 @@
 import { SetAReminderModal } from '~/components/modals/set-a-reminder/reminder-modal.component';
-import { ContactUsModal } from '~/components/modals/contact-us/contact-us-modal.component';
+import { ConnectCardModal } from '~/components/modals/connect-card';
 import { icons } from '~/lib/icons';
 import { Icon } from '~/primitives/icon/icon';
 import { ButtonProps } from '~/primitives/button/button.primitive';
@@ -58,12 +58,12 @@ export const CTAs = ({
           />
         </div>
         <div className={ctaSlotClassName}>
-          <ContactUsModal>
+          <ConnectCardModal>
             <CTAButtonContent
               icon='mobileAlt'
               title={isSpanish ? 'Contáctanos' : 'Contact Us'}
             />
-          </ContactUsModal>
+          </ConnectCardModal>
         </div>
       </div>
     </div>

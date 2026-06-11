@@ -7,7 +7,7 @@ export function OurMissionSection({
 }) {
   const missionTitle = isSpanish
     ? 'Nuestra misión es ayudarte a conocer a Dios y crecer en tus relaciones para que puedas descubrir tu propósito e impactar al mundo.'
-    : 'Our mission is to help you know God and grow in your relationships so that you can discover your purpose and impact the world.';
+    : 'Our goal is to help you know God and grow in your relationships so that you can discover your purpose and impact the world.';
   const missionDescription = isSpanish
     ? 'Además de nuestra misión, Dios nos ha dado la visión de liderar una transformación radical para Jesucristo en esta región y más allá. Todos Nosotros, en todo momento, en todo lugar.'
     : ' In addition to our mission, God has given us a vision to lead a radical transformation for Jesus Christ in this region and beyond. Everyone, Everyday, Everywhere.';

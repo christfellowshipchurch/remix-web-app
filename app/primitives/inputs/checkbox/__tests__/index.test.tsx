@@ -27,7 +27,7 @@ describe('Checkbox', () => {
     expect(screen.getByRole('checkbox').className).toContain(
       'border-form-stroke-muted',
     );
-    expect(screen.getByRole('checkbox').className).toContain('rounded-[4px]');
+    expect(screen.getByRole('checkbox').className).toContain('rounded-[6px]');
   });
 
   it('applies error styles when error is true', () => {

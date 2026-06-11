@@ -118,9 +118,9 @@ export const formRequiredHintStyles =
 
 /** Native checkbox for Radix Form.Control */
 export const nativeCheckboxStyles = cn(
-  'size-5 shrink-0 cursor-pointer appearance-none rounded-[4px]',
-  'border-2 border-form-stroke-muted bg-white',
-  'checked:border-ocean checked:bg-ocean',
+  'size-5 shrink-0 cursor-pointer appearance-none rounded-[6px]',
+  'border-2 border-form-stroke-muted bg-white bg-center bg-no-repeat',
+  'checked:border-ocean checked:bg-ocean checked:bg-[image:var(--cf-checkbox-tick)]',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean/30',
   'disabled:cursor-not-allowed disabled:opacity-60',
 );
@@ -142,7 +142,7 @@ export const formRadioGroupHorizontalStyles = 'flex flex-row flex-wrap gap-2.5';
 
 /** Custom checkbox control (peer pattern) */
 export const formCheckboxControlStyles = cn(
-  'peer size-5 shrink-0 appearance-none rounded-[4px]',
+  'peer size-5 shrink-0 appearance-none rounded-[6px]',
   'border-2 border-form-stroke-muted bg-white transition-colors duration-150',
   'checked:border-ocean checked:bg-ocean',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean/30',

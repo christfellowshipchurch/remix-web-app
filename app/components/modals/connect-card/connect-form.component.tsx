@@ -60,6 +60,11 @@ interface CheckboxOption {
   value: string;
 }
 
+// Options grouped under the "next step in my faith" sub-heading within the
+// "I am looking to:" section. Matched by Rock defined-value label, mirroring
+// the existing `Other` handling.
+const NEXT_STEP_VALUES = ['The Journey class', 'Baptism'];
+
 export const renderCheckboxField = (
   checkbox: CheckboxOption,
   index: number,
@@ -149,8 +154,18 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const otherCheckbox = allThatApplies.find(
     (checkbox) => checkbox.value === 'Other',
   );
-  const checkboxes = allThatApplies.filter(
-    (checkbox) => checkbox.value !== 'Other',
+  // Preserve each option's original index so submitted field names
+  // (`allThatApplies-${index}`) stay unique across the grouped sub-lists.
+  const indexedCheckboxes = allThatApplies.map((checkbox, index) => ({
+    checkbox,
+    index,
+  }));
+  const nextStepCheckboxes = indexedCheckboxes.filter(({ checkbox }) =>
+    NEXT_STEP_VALUES.includes(checkbox.value),
+  );
+  const generalCheckboxes = indexedCheckboxes.filter(
+    ({ checkbox }) =>
+      checkbox.value !== 'Other' && !NEXT_STEP_VALUES.includes(checkbox.value),
   );
 
   return (
@@ -247,7 +262,21 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         <h3 className='mt-6 font-bold italic col-span-2 text-lg text-navy md:mt-8 '>
           I am looking to:
         </h3>
-        {checkboxes.map(renderCheckboxField)}
+        {nextStepCheckboxes.length > 0 && (
+          <div className='col-span-2 my-1 flex flex-col items-start gap-3'>
+            <p className='italic text-navy'>
+              Take the next step in my faith through…
+            </p>
+            <div className='flex flex-wrap justify-start gap-x-8 gap-y-2 pl-4'>
+              {nextStepCheckboxes.map(({ checkbox, index }) =>
+                renderCheckboxField(checkbox, index),
+              )}
+            </div>
+          </div>
+        )}
+        {generalCheckboxes.map(({ checkbox, index }) =>
+          renderCheckboxField(checkbox, index),
+        )}
 
         {otherCheckbox && (
           <Form.Field
