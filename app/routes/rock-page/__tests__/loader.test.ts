@@ -3,6 +3,7 @@ import { loader } from '../loader';
 import {
   buildChurchOpportunityApplicationUrl,
   buildRockPageEmbedUrl,
+  buildVolunteerApplicationUrl,
   ROCK_PAGE_EMBED_KEYS,
 } from '../rock-page.data';
 
@@ -30,6 +31,14 @@ describe('buildChurchOpportunityApplicationUrl', () => {
   it('encodes opportunity IDs as query parameter values', () => {
     expect(buildChurchOpportunityApplicationUrl('abc 123?x=y')).toBe(
       'https://rock.christfellowship.church/page/5886?OpportunityId=abc+123%3Fx%3Dy&ParentResize=1',
+    );
+  });
+});
+
+describe('buildVolunteerApplicationUrl', () => {
+  it('builds the Rock volunteer application form embed URL', () => {
+    expect(buildVolunteerApplicationUrl()).toBe(
+      'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&ParentResize=1',
     );
   });
 });
@@ -79,6 +88,16 @@ describe('rock-page loader', () => {
 
     expect(result).toEqual({
       url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&ParentResize=1',
+    });
+  });
+
+  it('returns a validated Rock URL for the volunteer application embed', async () => {
+    const result = await loader(
+      makeLoaderArgs('?embed=volunteer-application'),
+    );
+
+    expect(result).toEqual({
+      url: 'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&ParentResize=1',
     });
   });
 
