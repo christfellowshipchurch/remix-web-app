@@ -245,7 +245,7 @@ export function Navbar() {
           </div>
           <div
             className={cn(
-              'w-full content-padding transition-colors duration-200 overflow-hidden',
+              'w-full content-padding transition-colors duration-200',
               mode === 'light' || isSearchOpen
                 ? 'bg-white shadow-sm'
                 : openDropdown
