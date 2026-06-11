@@ -16,11 +16,7 @@ const ShareMySkillsConfirmation: React.FC<ShareMySkillsConfirmationProps> = ({
         Thank you for sharing your unique skills and experiences. We'll reach
         out when opportunities arise that match what you have to offer.
       </p>
-      <Button
-        intent='primary'
-        className='rounded-xl w-52'
-        onClick={onSuccess}
-      >
+      <Button intent='primary' className='rounded-xl w-52' onClick={onSuccess}>
         Continue
       </Button>
     </div>
