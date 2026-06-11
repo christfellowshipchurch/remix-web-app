@@ -112,3 +112,61 @@ describe('class-single loader — Algolia', () => {
     expect(result.groupHits).toEqual([]);
   });
 });
+
+describe('class-single loader — hero fields (Rock-first, Algolia fallback)', () => {
+  const algoliaHit = {
+    classType: 'Algolia Title',
+    summary: 'Algolia summary',
+    coverImage: { sources: [{ uri: 'https://cdn/algolia.jpg' }] },
+  };
+
+  function mockHeroHit() {
+    // Hero search resolves first; subsequent upcoming/groups searches are empty.
+    searchSingleIndex
+      .mockResolvedValueOnce({ hits: [algoliaHit] })
+      .mockResolvedValue({ hits: [] });
+  }
+
+  it('prefers Rock Defined Type values over the Algolia hit', async () => {
+    mockFetchRockData.mockResolvedValueOnce({
+      value: 'Rock Title',
+      description: 'Rock Tagline',
+      attributeValues: {
+        summary: { value: '  Rock summary  ' },
+        image: { value: '03418602-8c89-42d3-a569-18a3e6b8bec4' },
+      },
+    });
+    mockHeroHit();
+
+    const result = await loader(makeParams('financial-peace-university'));
+
+    expect(result.heroTitle).toBe('Rock Title');
+    expect(result.heroSubtitle).toBe('Rock Tagline');
+    expect(result.heroSummary).toBe('Rock summary');
+    // Image GUID is resolved to a Rock GetImage URL rather than the Algolia uri.
+    expect(result.heroCoverImageUri).toContain(
+      '03418602-8c89-42d3-a569-18a3e6b8bec4',
+    );
+    expect(result.heroCoverImageUri).not.toBe('https://cdn/algolia.jpg');
+  });
+
+  it('falls back to the Algolia hit per-field when Rock attributes are empty', async () => {
+    mockFetchRockData.mockResolvedValueOnce({
+      value: '',
+      description: '',
+      attributeValues: {
+        summary: { value: '   ' },
+        image: { value: '' },
+      },
+    });
+    mockHeroHit();
+
+    const result = await loader(makeParams('foundations-of-faith'));
+
+    expect(result.heroTitle).toBe('Algolia Title');
+    expect(result.heroSummary).toBe('Algolia summary');
+    expect(result.heroCoverImageUri).toBe('https://cdn/algolia.jpg');
+    // No Rock Description and no Algolia equivalent — subtitle stays empty.
+    expect(result.heroSubtitle).toBe('');
+  });
+});

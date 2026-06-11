@@ -47,17 +47,24 @@ const ClassNotFound = () => {
 };
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
-  const { summary, classType, topic } = hit;
+  const { classType, topic } = hit;
   const navigate = useNavigate();
-  const { discussionGuideUrl, classTrailer, onDemandUrl } =
-    useLoaderData<LoaderReturnType>();
+  const {
+    discussionGuideUrl,
+    classTrailer,
+    onDemandUrl,
+    heroTitle,
+    heroSubtitle,
+    heroSummary,
+    heroCoverImageUri,
+  } = useLoaderData<LoaderReturnType>();
 
   const heroDescriptionHtml = useMemo(
-    () => buildClassSingleHeroDescriptionHtml(summary),
-    [summary],
+    () => buildClassSingleHeroDescriptionHtml(heroSummary),
+    [heroSummary],
   );
 
-  const heroTitleHtml = useMemo(() => escapeHtml(classType ?? ''), [classType]);
+  const heroTitleHtml = useMemo(() => escapeHtml(heroTitle), [heroTitle]);
 
   const ctas = useMemo<FinderHeroCta[]>(() => {
     const items: FinderHeroCta[] = [];
@@ -110,7 +117,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
     [handleBack],
   );
 
-  const coverUri = hit.coverImage.sources[0].uri;
+  const coverUri = heroCoverImageUri;
 
   return (
     <section className='flex w-full flex-col items-center dark:bg-gray-900 md:pt-6'>
@@ -118,7 +125,7 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
         <div className='relative w-full shrink-0 md:hidden'>
           <img
             src={coverUri}
-            alt={hit.title}
+            alt={heroTitle}
             className='aspect-video w-full max-w-screen object-cover'
           />
           <button
@@ -134,7 +141,8 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
         <FinderHero
           bgColor='white'
           bgImage={coverUri}
-          imageAlt={hit.title}
+          imageAlt={heroTitle}
+          sectionTitle={heroSubtitle}
           title={heroTitleHtml}
           topic={topic}
           mobileDescription={heroDescriptionHtml}
