@@ -54,13 +54,17 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
     classTrailer,
     onDemandUrl,
     heroTitle,
-    heroSubtitle,
     heroSummary,
     heroCoverImageUri,
   } = useLoaderData<LoaderReturnType>();
 
+  // No Rock summary means no "What to Expect" copy at all (heading included),
+  // rather than rendering an empty section.
   const heroDescriptionHtml = useMemo(
-    () => buildClassSingleHeroDescriptionHtml(heroSummary),
+    () =>
+      heroSummary.trim()
+        ? buildClassSingleHeroDescriptionHtml(heroSummary)
+        : '',
     [heroSummary],
   );
 
@@ -122,34 +126,37 @@ const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
   return (
     <section className='flex w-full flex-col items-center dark:bg-gray-900 md:pt-6'>
       <div className='flex w-full flex-none flex-col'>
-        <div className='relative w-full shrink-0 md:hidden'>
-          <img
-            src={coverUri}
-            alt={heroTitle}
-            className='aspect-video w-full max-w-screen object-cover'
-          />
-          <button
-            type='button'
-            onClick={handleBack}
-            className='absolute left-4 top-4 flex items-center justify-center rounded-full border border-[#DEE0E3] bg-white p-2 shadow-sm'
-            aria-label='Back to All Classes'
-          >
-            <Icon name='arrowBack' className='text-neutral-darker' />
-          </button>
-        </div>
+        {coverUri ? (
+          <div className='relative w-full shrink-0 md:hidden'>
+            <img
+              src={coverUri}
+              alt={heroTitle}
+              className='aspect-video w-full max-w-screen object-cover'
+            />
+            <button
+              type='button'
+              onClick={handleBack}
+              className='absolute left-4 top-4 flex items-center justify-center rounded-full border border-[#DEE0E3] bg-white p-2 shadow-sm'
+              aria-label='Back to All Classes'
+            >
+              <Icon name='arrowBack' className='text-neutral-darker' />
+            </button>
+          </div>
+        ) : null}
 
         <FinderHero
           bgColor='white'
           bgImage={coverUri}
           imageAlt={heroTitle}
-          sectionTitle={heroSubtitle}
           title={heroTitleHtml}
           topic={topic}
           mobileDescription={heroDescriptionHtml}
           desktopDescription={heroDescriptionHtml}
           ctas={ctas}
           backLink={backLink}
-          backLinkMdUpOnly
+          // With no cover image the mobile overlay back button is gone, so let
+          // the hero's own back link show on mobile too.
+          backLinkMdUpOnly={Boolean(coverUri)}
           heroImageMdUpOnly
         />
       </div>

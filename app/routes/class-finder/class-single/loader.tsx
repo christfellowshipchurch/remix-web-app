@@ -33,19 +33,17 @@ export type LoaderReturnType = {
    * existing content for classes not yet populated in the Defined Type.
    */
   heroTitle: string;
-  heroSubtitle: string;
   heroSummary: string;
   heroCoverImageUri: string;
 };
 
 /**
  * Defined Value from Rock Classes Defined Type (387). Adds the top-level
- * `value`/`description` (class name + tagline) that the generic content-item
- * type omits; attribute values arrive under `attributeValues` post-normalize.
+ * `value` (class name) that the generic content-item type omits; attribute
+ * values arrive under `attributeValues` post-normalize.
  */
 type RockClassDefinedValue = RockContentChannelItem & {
   value?: string;
-  description?: string;
 };
 
 function rockStringAttr(
@@ -83,7 +81,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   let classTrailer = '';
   let onDemandUrl = '';
   let rockTitle = '';
-  let rockSubtitle = '';
   let rockSummary = '';
   let rockCoverImageUri = '';
 
@@ -103,7 +100,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       classTrailer = rockStringAttr(classData, 'classTrailer');
       onDemandUrl = rockStringAttr(classData, 'onDemandSignUpLink');
       rockTitle = classData.value?.trim() ?? '';
-      rockSubtitle = classData.description?.trim() ?? '';
       rockSummary = rockStringAttr(classData, 'summary');
       const imageGuid = rockStringAttr(classData, 'image');
       rockCoverImageUri = imageGuid ? createImageUrlFromGuid(imageGuid) : '';
@@ -176,15 +172,14 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     console.error('[class-single] Algolia loader fetch failed', error);
   }
 
-  // Rock Defined Type 387 is the authoritative source for hero content; fall
-  // back to the Algolia hero hit per-field so classes not yet populated in Rock
-  // keep their existing content. `classType` itself stays Algolia-driven since
-  // it scopes the upcoming-session and related-group searches above.
-  const algoliaCoverUri = classHit?.coverImage?.sources?.[0]?.uri ?? '';
+  // Rock Defined Type 387 is the authoritative source for hero content.
+  // Summary and cover image come from Rock only (no Algolia fallback): when the
+  // Defined Value lacks them, the page shows no "What to Expect" copy and hides
+  // the hero image. Title still falls back to the Algolia hit. `classType` stays
+  // Algolia-driven since it scopes the session/group searches above.
   const heroTitle = rockTitle || classHit?.classType || '';
-  const heroSubtitle = rockSubtitle;
-  const heroSummary = rockSummary || classHit?.summary || '';
-  const heroCoverImageUri = rockCoverImageUri || algoliaCoverUri;
+  const heroSummary = rockSummary;
+  const heroCoverImageUri = rockCoverImageUri;
 
   return {
     // Include the browser search credentials so hydrated filter changes can go
@@ -199,7 +194,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     classTrailer,
     onDemandUrl,
     heroTitle,
-    heroSubtitle,
     heroSummary,
     heroCoverImageUri,
   };
