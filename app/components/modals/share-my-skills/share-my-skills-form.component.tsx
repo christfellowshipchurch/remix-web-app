@@ -50,9 +50,7 @@ const ShareMySkillsForm: React.FC<ShareMySkillsFormProps> = ({ onSuccess }) => {
       setLoading(false);
 
       if ('campuses' in fetcher.data) {
-        setCampuses(
-          (fetcher.data as ShareMySkillsLoaderReturnType).campuses,
-        );
+        setCampuses((fetcher.data as ShareMySkillsLoaderReturnType).campuses);
       } else if ('error' in fetcher.data) {
         setError(
           (fetcher.data as { error: string }).error ||
@@ -103,7 +101,14 @@ const ShareMySkillsForm: React.FC<ShareMySkillsFormProps> = ({ onSuccess }) => {
 
   return (
     <>
-      <h2 className='mb-6 text-3xl text-navy font-bold'>Share My Skills</h2>
+      <h2 className='mb-2 text-3xl text-navy font-bold'>Share My Skills</h2>
+      <h3 className='mb-4 text-lg text-ocean'>
+        Do you have a unique skill set or experience?
+      </h3>
+      <p className='mb-10 text-pretty max-w-lg mx-auto'>
+        Unique opportunities arise throughout the year that need specific
+        skills. Share yours below and we'll reach out if there's a fit.
+      </p>
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
@@ -116,11 +121,7 @@ const ShareMySkillsForm: React.FC<ShareMySkillsFormProps> = ({ onSuccess }) => {
             First Name
           </Form.Label>
           <Form.Control asChild>
-            <input
-              type='text'
-              required
-              className={radixInputClassName}
-            />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter your first name
@@ -135,14 +136,43 @@ const ShareMySkillsForm: React.FC<ShareMySkillsFormProps> = ({ onSuccess }) => {
             Last Name
           </Form.Label>
           <Form.Control asChild>
-            <input
-              type='text'
-              required
-              className={radixInputClassName}
-            />
+            <input type='text' required className={radixInputClassName} />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please enter your last name
+          </RadixFormErrorMessage>
+        </Form.Field>
+
+        <Form.Field
+          name='PhoneNumber'
+          className={cn('mb-4', radixFormFieldStackClassName)}
+        >
+          <Form.Label className={radixCompactFormLabelClassName}>
+            Phone
+          </Form.Label>
+          <Form.Control asChild>
+            <input type='tel' required className={radixInputClassName} />
+          </Form.Control>
+          <RadixFormErrorMessage match='valueMissing'>
+            Please enter your phone number
+          </RadixFormErrorMessage>
+        </Form.Field>
+
+        <Form.Field
+          name='EmailAddress'
+          className={cn('mb-4', radixFormFieldStackClassName)}
+        >
+          <Form.Label className={radixCompactFormLabelClassName}>
+            Email
+          </Form.Label>
+          <Form.Control asChild>
+            <input type='email' required className={radixInputClassName} />
+          </Form.Control>
+          <RadixFormErrorMessage match='valueMissing'>
+            Please enter your email address
+          </RadixFormErrorMessage>
+          <RadixFormErrorMessage match='typeMismatch'>
+            Please enter a valid email address
           </RadixFormErrorMessage>
         </Form.Field>
 
@@ -176,48 +206,7 @@ const ShareMySkillsForm: React.FC<ShareMySkillsFormProps> = ({ onSuccess }) => {
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <Form.Field
-          name='PhoneNumber'
-          className={cn('mb-4', radixFormFieldStackClassName)}
-        >
-          <Form.Label className={radixCompactFormLabelClassName}>
-            Cell Phone
-          </Form.Label>
-          <Form.Control asChild>
-            <input
-              type='tel'
-              required
-              className={radixInputClassName}
-            />
-          </Form.Control>
-          <RadixFormErrorMessage match='valueMissing'>
-            Please enter your phone number
-          </RadixFormErrorMessage>
-        </Form.Field>
-
-        <Form.Field
-          name='EmailAddress'
-          className={cn('mb-4', radixFormFieldStackClassName)}
-        >
-          <Form.Label className={radixCompactFormLabelClassName}>
-            Email Address
-          </Form.Label>
-          <Form.Control asChild>
-            <input
-              type='email'
-              required
-              className={radixInputClassName}
-            />
-          </Form.Control>
-          <RadixFormErrorMessage match='valueMissing'>
-            Please enter your email address
-          </RadixFormErrorMessage>
-          <RadixFormErrorMessage match='typeMismatch'>
-            Please enter a valid email address
-          </RadixFormErrorMessage>
-        </Form.Field>
-
-        <div className='md:col-span-2'>
+        <div>
           <p className={cn('mb-2', radixCompactFormLabelClassName)}>
             Skills and Interests
           </p>

@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { SectionTitle } from '~/components/section-title';
+import { ShareMySkillsModal } from '~/components/modals/share-my-skills';
 import { cn } from '~/lib/utils';
+import { Button } from '~/primitives/button/button.primitive';
+import Icon from '~/primitives/icon';
 import { VolunteerAlgolia } from '../components/volunteer-algolia.component';
 import { VolunteerAlgoliaSkeleton } from '../components/volunteer-algolia-skeleton.component';
 import { LoaderReturnType } from '../loader';
-import { IconButton } from '~/primitives/button/icon-button.primitive';
 
 export function VolunteerCommunity() {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
@@ -48,19 +50,25 @@ export function VolunteerCommunity() {
         <div className='content-padding'>
           <div className='max-w-[1280px] mx-auto mt-16 flex flex-col md:flex-row items-center justify-center gap-6 text-center'>
             <p className='md:text-lg font-semibold text-neutral-dark'>
-              Not finding an opportunity? Share your skills with us, and
-              we&apos;ll get in touch.
+              Have a skill set we should know about?
             </p>
-            <IconButton
-              to='/volunteer-form'
-              withRotatingArrow={true}
-              iconName='arrowRight'
-              iconSize={24}
-              className='rounded-full border-neutral-darker px-6 text-neutral-darker hover:text-white! hover:bg-navy! hover:border-navy!'
-              iconClasses='text-white -rotate-45! group-hover:rotate-0!'
-            >
-              <span className='flex items-center gap-3'>Share Your Skills</span>
-            </IconButton>
+            <ShareMySkillsModal>
+              <div className='group flex cursor-pointer'>
+                <Button
+                  intent='secondary'
+                  className='font-semibold hover:enabled:bg-current/10 rounded-full border-neutral-darker px-6 text-neutral-darker hover:text-white! hover:bg-navy! hover:border-navy!'
+                >
+                  <span className='flex items-center gap-3'>
+                    Share Your Skills
+                  </span>
+                </Button>
+                <Icon
+                  name='arrowRight'
+                  className='-ml-3 text-white rounded-full p-2 transition-transform duration-300 size-10 bg-ocean -rotate-45 group-hover:rotate-0'
+                  size={24}
+                />
+              </div>
+            </ShareMySkillsModal>
           </div>
         </div>
       </div>
