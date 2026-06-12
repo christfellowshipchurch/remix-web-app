@@ -15,6 +15,22 @@ function formatGroupHitCampusName(campusName: string): string {
   return afterMarker ? `CFE ${afterMarker}` : 'CFE';
 }
 
+/**
+ * City for the card's bottom bar: the group's own meeting city when set
+ * (`meetingLocation` is "City, FL 33458"), else the campus city, else the
+ * campus name itself (e.g. "Online (CF Everywhere)").
+ */
+function groupHitCityLabel(
+  hit: GroupType,
+  campusCityByName: Record<string, string>,
+): string {
+  const meetingCity = (hit.meetingLocation || '').split(',')[0]?.trim();
+  if (meetingCity) return meetingCity;
+  return (
+    campusCityByName[hit.campusName] ?? formatGroupHitCampusName(hit.campusName)
+  );
+}
+
 function formatDistanceMiles(meters: number): string {
   const miles = meters / 1609.344;
   return `${miles.toFixed(1)} miles away`;
@@ -36,13 +52,18 @@ export function GroupHit({
   hit,
   backUrl,
   isGeoSearch = false,
+  campusCityByName = {},
 }: {
   hit: GroupType;
   backUrl?: string;
   isGeoSearch?: boolean;
+  campusCityByName?: Record<string, string>;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
   const preference = hit.groupFor?.trim() || 'Anyone';
+  const campusBadge = hit.campusName?.trim()
+    ? formatGroupHitCampusName(hit.campusName)
+    : '';
   const topicTags = splitGroupTopics(hit.topics);
 
   const formatTime = (timeString: string) => {
@@ -157,7 +178,7 @@ export function GroupHit({
 
           <div className='flex min-h-0 flex-1 flex-col gap-3 pt-[10px]'>
             <div className='flex flex-col px-6 gap-3'>
-              <div className='flex flex-col gap-[10px]'>
+              <div className='flex flex-wrap items-center gap-2'>
                 <div
                   className={`${
                     preference === 'Women'
@@ -172,6 +193,11 @@ export function GroupHit({
                 >
                   {preference}
                 </div>
+                {campusBadge && (
+                  <div className='bg-navy-subdued text-dark-navy w-fit flex rounded-sm text-xs font-semibold px-2 py-1'>
+                    {campusBadge}
+                  </div>
+                )}
               </div>
 
               <div className='flex flex-col gap-1'>
@@ -194,7 +220,7 @@ export function GroupHit({
               <p className='text-sm font-semibold'>
                 {isGeoSearch
                   ? (distanceLabel ?? 'Location Varies')
-                  : formatGroupHitCampusName(hit.campusName)}
+                  : groupHitCityLabel(hit, campusCityByName)}
               </p>
             </div>
           </div>
