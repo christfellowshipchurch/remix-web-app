@@ -109,3 +109,15 @@ export function buildVolunteerApplicationUrl(): string {
     new URLSearchParams(),
   );
 }
+
+/** In-app back link for volunteer embed routes (outside the Rock iframe). */
+export function getRockPageVolunteerBackLink(embed?: string | null) {
+  if (
+    embed === ROCK_PAGE_EMBED_KEYS.volunteerApplication ||
+    embed === ROCK_PAGE_EMBED_KEYS.churchOpportunity
+  ) {
+    return { href: '/volunteer', label: 'Back to volunteer page' };
+  }
+
+  return null;
+}

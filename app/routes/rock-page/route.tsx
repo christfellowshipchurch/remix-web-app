@@ -1,15 +1,30 @@
-import { useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import { RockProxyEmbed } from '~/components/rock-embed';
+import Icon from '~/primitives/icon';
 import { loader } from './loader';
 import { meta } from './meta';
+import { getRockPageVolunteerBackLink } from './rock-page.data';
 
 export { meta };
 export { loader };
 
 export default function RockPage() {
-  const { url } = useLoaderData<typeof loader>();
+  const { url, embed } = useLoaderData<typeof loader>();
+  const backLink = getRockPageVolunteerBackLink(embed);
+
   return (
-    <div className='w-full max-w-screen-content mx-auto px-4'>
+    <div className='w-full max-w-screen-content mx-auto px-4 py-4'>
+      {backLink && (
+        <nav className='mb-4'>
+          <Link
+            to={backLink.href}
+            className='inline-flex items-center gap-2 text-sm font-semibold text-neutral-darker transition-colors hover:text-ocean'
+          >
+            <Icon name='chevronLeft' size={20} className='shrink-0' />
+            {backLink.label}
+          </Link>
+        </nav>
+      )}
       <RockProxyEmbed
         useAdvancedProxy={false}
         url={url}

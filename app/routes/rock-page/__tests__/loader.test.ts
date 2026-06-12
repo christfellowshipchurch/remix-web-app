@@ -87,6 +87,7 @@ describe('rock-page loader', () => {
     );
 
     expect(result).toEqual({
+      embed: 'church-opportunity',
       url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     });
   });
@@ -97,6 +98,7 @@ describe('rock-page loader', () => {
     );
 
     expect(result).toEqual({
+      embed: 'volunteer-application',
       url: 'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     });
   });
@@ -118,7 +120,7 @@ describe('rock-page loader', () => {
 
     const result = await loader(makeLoaderArgs(`?${searchParams.toString()}`));
 
-    expect(result).toEqual({ url: rockUrl });
+    expect(result).toEqual({ embed: null, url: rockUrl });
   });
 
   it('rejects unsupported embed links instead of falling back to url', async () => {
