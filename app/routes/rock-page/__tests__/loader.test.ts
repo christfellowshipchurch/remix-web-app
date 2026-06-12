@@ -24,13 +24,13 @@ function expectResponse(error: unknown, status: number): void {
 describe('buildChurchOpportunityApplicationUrl', () => {
   it('builds the Rock church opportunity application URL', () => {
     expect(buildChurchOpportunityApplicationUrl('abc-123')).toBe(
-      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&ParentResize=1',
+      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     );
   });
 
   it('encodes opportunity IDs as query parameter values', () => {
     expect(buildChurchOpportunityApplicationUrl('abc 123?x=y')).toBe(
-      'https://rock.christfellowship.church/page/5886?OpportunityId=abc+123%3Fx%3Dy&ParentResize=1',
+      'https://rock.christfellowship.church/page/5886?OpportunityId=abc+123%3Fx%3Dy&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     );
   });
 });
@@ -51,7 +51,7 @@ describe('buildRockPageEmbedUrl', () => {
     );
 
     expect(result).toBe(
-      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&ParentResize=1',
+      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     );
   });
 
@@ -87,7 +87,7 @@ describe('rock-page loader', () => {
     );
 
     expect(result).toEqual({
-      url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&ParentResize=1',
+      url: 'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     });
   });
 
@@ -107,7 +107,7 @@ describe('rock-page loader', () => {
     );
 
     expect(result.url).toBe(
-      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&ParentResize=1',
+      'https://rock.christfellowship.church/page/5886?OpportunityId=abc-123&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     );
   });
 
