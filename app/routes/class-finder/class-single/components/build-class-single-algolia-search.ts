@@ -1,10 +1,7 @@
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
-import { GROUPS_ALGOLIA_INDEX_NAME } from '~/routes/group-finder/types';
 
 import type { ClassSingleUrlState } from '../class-single-url-state';
 import { coordinatesFromClassSingleUrlState } from '../class-single-url-state';
-
-export const CLASSES_ALGOLIA_INDEX_NAME = 'dev_Classes' as const;
 
 /** Enough hits for carousel slides + geo/virtual ordering (matches client `Configure`). */
 export const CLASS_SINGLE_UPCOMING_MAX_HITS = 1000;
@@ -30,24 +27,28 @@ function refinementListToFacetFilters(
 }
 
 /** Loads the hero class record for `/class-finder/:path`. */
-export function buildClassSingleHeroSearchParams(classUrl: string): {
-  indexName: typeof CLASSES_ALGOLIA_INDEX_NAME;
+export function buildClassSingleHeroSearchParams(
+  classUrl: string,
+  indexName: string,
+): {
+  indexName: string;
   hitsPerPage: number;
   filters: string;
 } {
   return {
-    indexName: CLASSES_ALGOLIA_INDEX_NAME,
+    indexName,
     hitsPerPage: 1,
     filters: `pathName:"${escapeAlgoliaFilterString(classUrl)}"`,
   };
 }
 
-/** Upcoming sessions on `dev_Classes` for the current class type + URL filters/geo. */
+/** Upcoming sessions on the classes index for the current class type + URL filters/geo. */
 export function buildClassSingleUpcomingSearchParams(
   urlState: ClassSingleUrlState,
   classesIndexClassType: string,
+  indexName: string,
 ): {
-  indexName: typeof CLASSES_ALGOLIA_INDEX_NAME;
+  indexName: string;
   hitsPerPage: number;
   filters?: string;
   query?: string;
@@ -59,7 +60,7 @@ export function buildClassSingleUpcomingSearchParams(
 } {
   const trimmed = classesIndexClassType.trim();
   const params: ReturnType<typeof buildClassSingleUpcomingSearchParams> = {
-    indexName: CLASSES_ALGOLIA_INDEX_NAME,
+    indexName,
     hitsPerPage: CLASS_SINGLE_UPCOMING_MAX_HITS,
     aroundLatLngViaIP: false,
     getRankingInfo: true,
@@ -87,7 +88,7 @@ export function buildClassSingleUpcomingSearchParams(
   return params;
 }
 
-/** Maps `dev_Classes` session refinements to `dev_Groups` filter string. */
+/** Maps classes-index session refinements to a groups-index filter string. */
 export function mirrorGroupsFacetsFromClassRefinements(
   refinementList: Record<string, string[]>,
 ): string | undefined {
@@ -174,12 +175,13 @@ function composeGroupsFilters(
   return mirroredFacetFilters;
 }
 
-/** Related groups carousel on `dev_Groups`, mirroring session URL refinements. */
+/** Related groups carousel on the groups index, mirroring session URL refinements. */
 export function buildClassSingleGroupsSearchParams(
   urlState: ClassSingleUrlState,
   classesIndexClassType: string,
+  indexName: string,
 ): {
-  indexName: typeof GROUPS_ALGOLIA_INDEX_NAME;
+  indexName: string;
   hitsPerPage: number;
   query: string;
   filters?: string;
@@ -192,7 +194,7 @@ export function buildClassSingleGroupsSearchParams(
     urlState.refinementList ?? {},
   );
   const params: ReturnType<typeof buildClassSingleGroupsSearchParams> = {
-    indexName: GROUPS_ALGOLIA_INDEX_NAME,
+    indexName,
     hitsPerPage: CLASS_SINGLE_UPCOMING_MAX_HITS,
     query: '',
     aroundLatLngViaIP: false,

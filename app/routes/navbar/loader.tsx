@@ -7,6 +7,8 @@ import type { FeatureCard } from '~/components/navbar/types';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import { getUserFromRequest } from '~/lib/.server/authentication/get-user-from-request';
 import type { User } from '~/providers/auth-provider';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 // Define the return type for the loader
 export interface RootLoaderData {
@@ -20,6 +22,7 @@ export interface RootLoaderData {
   algolia: {
     ALGOLIA_APP_ID: string | undefined;
     ALGOLIA_SEARCH_API_KEY: string | undefined;
+    indexes: AlgoliaIndexMap;
   };
   /** Popular results (content users click most). From Algolia getTopHits when available; else empty and UI uses hardcoded fallback. */
   popularResults: { title: string; pathname: string }[];
@@ -102,6 +105,8 @@ const fetchSiteBanner = async () => {
 export async function loader({
   request,
 }: LoaderFunctionArgs): Promise<RootLoaderData> {
+  const algoliaIndexes = getServerAlgoliaIndexes();
+
   try {
     // Todo: fix user data for mobile/desktop nav menus. right now it's not returning the full user object, but is at least notifying is user is logged in or not. We will wait until the UI for the logged in experience is complete to fix this.
     const userData = await getUserFromRequest(request);
@@ -161,6 +166,7 @@ export async function loader({
         algolia: {
           ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
           ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+          indexes: algoliaIndexes,
         },
         popularResults: [],
         // Site Banner Data
@@ -239,6 +245,7 @@ export async function loader({
       algolia: {
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+        indexes: algoliaIndexes,
       },
       popularResults: [],
       // Site Banner Data
@@ -255,6 +262,7 @@ export async function loader({
       algolia: {
         ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
         ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+        indexes: algoliaIndexes,
       },
       popularResults: [],
       // Site Banner Data

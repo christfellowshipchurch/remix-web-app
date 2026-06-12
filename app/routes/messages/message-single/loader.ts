@@ -10,11 +10,14 @@ import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
 import { attributeProps, attributeValuesProps } from '~/lib/types/rock-types';
 import { RockContentChannelItem } from '~/lib/types/rock-types';
 import { getImages } from '~/lib/.server/rock-utils';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 export type LoaderReturnType = {
   message: MessageType;
   ALGOLIA_APP_ID: string | undefined;
   ALGOLIA_SEARCH_API_KEY: string | undefined;
+  algoliaIndexes: AlgoliaIndexMap;
   hostUrl: string;
 };
 
@@ -221,6 +224,7 @@ export const loader: LoaderFunction = async ({
     message,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+    algoliaIndexes: getServerAlgoliaIndexes(),
     hostUrl: origin,
   };
 };

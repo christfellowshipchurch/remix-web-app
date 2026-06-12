@@ -4,11 +4,7 @@ import { GroupHit } from '../../group-finder/components/group-hit.component';
 import { useLoaderData } from 'react-router-dom';
 import { LoaderReturnType } from '../loader';
 import { CardCarousel } from '~/components/resource-carousel';
-import {
-  GroupType,
-  GROUPS_ALGOLIA_INDEX_NAME,
-  splitGroupTopics,
-} from '~/routes/group-finder/types';
+import { GroupType, splitGroupTopics } from '~/routes/group-finder/types';
 import { createSearchClient } from '~/lib/create-search-client';
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { CollectionItem } from '~/routes/page-builder/types';
@@ -56,8 +52,9 @@ export function RelatedGroupsPartial({
   const [hits, setHits] = useState<GroupType[]>([]);
   const topicTags = splitGroupTopics(topics);
 
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
+  const groupIndexName = algoliaIndexes.groups;
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
@@ -66,7 +63,7 @@ export function RelatedGroupsPartial({
 
   return (
     <InstantSearch
-      indexName={GROUPS_ALGOLIA_INDEX_NAME}
+      indexName={groupIndexName}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

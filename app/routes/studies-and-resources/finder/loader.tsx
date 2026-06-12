@@ -1,9 +1,12 @@
 import { LoaderFunction } from 'react-router-dom';
 import { AuthenticationError } from '~/lib/.server/error-types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
 };
 
 export const loader: LoaderFunction = async () => {
@@ -17,5 +20,6 @@ export const loader: LoaderFunction = async () => {
   return {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes: getServerAlgoliaIndexes(),
   };
 };

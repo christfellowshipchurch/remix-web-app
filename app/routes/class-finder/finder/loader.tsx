@@ -3,6 +3,8 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { AuthenticationError } from '~/lib/.server/error-types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 import type { ClassHitType } from '../types';
 import { buildClassFinderAlgoliaSearchParams } from './components/build-class-finder-algolia-search';
@@ -11,6 +13,7 @@ import { parseClassFinderUrlState } from './components/class-finder-url-state';
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   classHits: ClassHitType[];
 };
 
@@ -22,6 +25,7 @@ export type LoaderReturnType = {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new AuthenticationError('Algolia credentials not found');
@@ -39,7 +43,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const client = algoliasearch(appId, searchApiKey, {});
 
   try {
-    const built = buildClassFinderAlgoliaSearchParams(urlState);
+    const built = buildClassFinderAlgoliaSearchParams(
+      urlState,
+      algoliaIndexes.classes,
+    );
     const { indexName, ...indexSearchParams } = built;
 
     const res = await client.searchSingleIndex({
@@ -57,6 +64,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     // tree can own subsequent filtering without posting back to this loader.
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes,
     classHits,
   } satisfies LoaderReturnType);
 };
