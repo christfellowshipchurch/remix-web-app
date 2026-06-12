@@ -118,6 +118,19 @@ const HelpMeFindAGroupForm: React.FC<HelpMeFindAGroupFormProps> = ({
           'Please enter your last name',
         )}
 
+        {renderRadixInputField(
+          'PhoneNumber',
+          'Phone',
+          'tel',
+          'Please enter your phone number',
+        )}
+        {renderRadixInputField(
+          'EmailAddress',
+          'Email',
+          'email',
+          'Please enter your email address',
+        )}
+
         <Form.Field
           name='Campus'
           className={cn('mb-4 md:col-span-2', radixFormFieldStackClassName)}
@@ -138,26 +151,7 @@ const HelpMeFindAGroupForm: React.FC<HelpMeFindAGroupFormProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
 
-        {renderRadixInputField(
-          'PhoneNumber',
-          'Cell Phone',
-          'tel',
-          'Please enter your phone number',
-        )}
-        {renderRadixInputField(
-          'EmailAddress',
-          'Email Address',
-          'email',
-          'Please enter your email address',
-        )}
-
-        <Form.Field
-          name='Type'
-          className={cn(
-            'col-span-1 mt-2 md:col-span-2',
-            radixFormFieldStackClassName,
-          )}
-        >
+        <Form.Field name='Type' className={cn(radixFormFieldStackClassName)}>
           <Form.Label className={radixFormLabelClassName}>
             I prefer to meet:
           </Form.Label>
@@ -185,12 +179,7 @@ const HelpMeFindAGroupForm: React.FC<HelpMeFindAGroupFormProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <div
-          className={cn(
-            'col-span-1 mt-2 md:col-span-2',
-            radixFormFieldStackClassName,
-          )}
-        >
+        <div className={cn('col-span-1 mt-2', radixFormFieldStackClassName)}>
           <p className={radixFormLabelClassName}>
             I am interested in Groups in these areas:
           </p>
