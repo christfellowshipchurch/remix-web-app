@@ -34,9 +34,13 @@ export function getGroupSearchDesktopFilters(
             attribute: 'meetingType',
             isMeetingType: true,
           },
+          // Zip/distance rows render location inputs, not refinement items; the
+          // attribute is a placeholder for the popup hooks. It must be one this
+          // popup already owns (`meetingType`) so campus selections (People)
+          // don't count toward — or get cleared by — the Location pill.
           {
             title: 'Filter by zip code',
-            attribute: 'campusName',
+            attribute: 'meetingType',
             isLocation: true,
             coordinates: opts.coordinates,
             setCoordinates: opts.setCoordinates,
@@ -45,7 +49,7 @@ export function getGroupSearchDesktopFilters(
           },
           {
             title: 'Filter by distance',
-            attribute: 'campusName',
+            attribute: 'meetingType',
             isCurrentLocation: true,
             coordinates: opts.coordinates,
             setCoordinates: opts.setCoordinates,
@@ -70,6 +74,11 @@ export function getGroupSearchDesktopFilters(
           {
             title: 'I want to meet people who are...',
             attribute: 'peopleWhoAre',
+          },
+          {
+            title: 'I want to meet people who attend...',
+            attribute: 'campusName',
+            isDropdown: true,
           },
           {
             title: 'Your Age',
@@ -119,11 +128,6 @@ export function getGroupSearchDesktopFilters(
             checkbox: true,
           },
           { title: 'Language', attribute: 'language' },
-          {
-            title: 'Christ Fellowship Campus',
-            attribute: 'campusName',
-            isDropdown: true,
-          },
         ],
       },
     },
