@@ -38,7 +38,7 @@ describe('buildChurchOpportunityApplicationUrl', () => {
 describe('buildVolunteerApplicationUrl', () => {
   it('builds the Rock volunteer application form embed URL', () => {
     expect(buildVolunteerApplicationUrl()).toBe(
-      'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&ParentResize=1',
+      'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     );
   });
 });
@@ -97,7 +97,7 @@ describe('rock-page loader', () => {
     );
 
     expect(result).toEqual({
-      url: 'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&ParentResize=1',
+      url: 'https://rock.christfellowship.church/form-embed?WorkflowTypeGuid=119671db-8ad4-4654-ab45-32d7e79e55e0&returnUrl=https%3A%2F%2Fchristfellowship.church%2Fvolunteer&ParentResize=1',
     });
   });
 

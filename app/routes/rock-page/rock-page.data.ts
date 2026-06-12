@@ -14,6 +14,10 @@ export const CHURCH_OPPORTUNITY_APPLICATION_PAGE_ID = '5886';
 export const VOLUNTEER_APPLICATION_WORKFLOW_TYPE_GUID =
   '119671db-8ad4-4654-ab45-32d7e79e55e0';
 
+/** Return URL passed to Rock for post-submission navigation back to the site. */
+export const VOLUNTEER_APPLICATION_RETURN_URL =
+  'https://christfellowship.church/volunteer';
+
 // Keys for the embeds.
 export const ROCK_PAGE_EMBED_KEYS = {
   churchOpportunity: 'church-opportunity',
@@ -43,6 +47,7 @@ const ROCK_PAGE_EMBEDS: Record<RockPageEmbedKey, RockPageEmbedConfig> = {
     path: '/form-embed',
     fixedQueryParams: {
       WorkflowTypeGuid: VOLUNTEER_APPLICATION_WORKFLOW_TYPE_GUID,
+      returnUrl: VOLUNTEER_APPLICATION_RETURN_URL,
     },
   },
 };
