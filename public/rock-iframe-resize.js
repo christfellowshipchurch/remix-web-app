@@ -44,6 +44,20 @@
         reportHeight();
       }
     });
+
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('[data-rock-parent-navigate]');
+      if (!link) return;
+
+      event.preventDefault();
+      var url = link.getAttribute('data-rock-parent-navigate');
+      if (!url) return;
+
+      window.parent.postMessage(
+        { type: 'rock-iframe-navigate', url: url },
+        '*',
+      );
+    });
   }
 
   if (document.readyState === 'loading') {

@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { ROCK_PAGE_EMBED_KEYS } from '~/routes/rock-page/rock-page.data';
 import { Button } from '~/primitives/button/button.primitive';
 import Icon from '~/primitives/icon';
+
+const VOLUNTEER_APPLICATION_ROCK_PAGE = `/rock-page?embed=${ROCK_PAGE_EMBED_KEYS.volunteerApplication}`;
 
 export const VolunteerFormWelcome: React.FC = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -22,7 +25,7 @@ export const VolunteerFormWelcome: React.FC = () => {
           <Button
             ref={buttonRef}
             intent='primary'
-            href='/volunteer-form/about-you'
+            href={VOLUNTEER_APPLICATION_ROCK_PAGE}
             className='font-normal'
             aria-label='Start Volunteer Form'
             prefetch='viewport'
