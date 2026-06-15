@@ -67,10 +67,10 @@ function fillRequiredFields() {
   fireEvent.change(screen.getByLabelText('Campus'), {
     target: { value: 'campus-guid-1' },
   });
-  fireEvent.change(screen.getByLabelText('Cell Phone'), {
+  fireEvent.change(screen.getByLabelText('Phone'), {
     target: { value: '5615551234' },
   });
-  fireEvent.change(screen.getByLabelText('Email Address'), {
+  fireEvent.change(screen.getByLabelText('Email'), {
     target: { value: 'ada@example.com' },
   });
   fireEvent.click(screen.getByLabelText('In Person'));
@@ -149,10 +149,10 @@ describe('HelpMeFindAGroupForm', () => {
     fireEvent.change(screen.getByLabelText('Campus'), {
       target: { value: 'campus-guid-1' },
     });
-    fireEvent.change(screen.getByLabelText('Cell Phone'), {
+    fireEvent.change(screen.getByLabelText('Phone'), {
       target: { value: '5615551234' },
     });
-    fireEvent.change(screen.getByLabelText('Email Address'), {
+    fireEvent.change(screen.getByLabelText('Email'), {
       target: { value: 'ada@example.com' },
     });
     fireEvent.click(screen.getByLabelText('In Person'));
