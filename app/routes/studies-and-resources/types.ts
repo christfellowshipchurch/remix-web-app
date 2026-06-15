@@ -93,7 +93,7 @@ export interface CurriculumResource {
 }
 
 export interface CurriculumSession {
-  /** From the SessionTitles value list attribute */
+  /** Session name from the Resource Items matrix (first occurrence in the matrix sets display order) */
   title: string;
   resources: CurriculumResource[];
 }
