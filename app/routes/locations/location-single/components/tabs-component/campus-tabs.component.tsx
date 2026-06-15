@@ -96,7 +96,7 @@ export const CampusTabs = ({
         role='tablist'
         aria-orientation='horizontal'
         className={cn(
-          'flex max-w-[90vw] md:max-w-none lg:w-auto md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0 scroll-mt-28',
+          'flex max-w-[90vw] md:max-w-none lg:w-auto md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0 scroll-mt-4 lg:scroll-mt-28',
           isSpanish ? 'gap-0 text-[14.5px] sm:text-base' : 'gap-2',
           tasListStyle,
           activeTab === 'sunday-details' && 'absolute! -top-9 left-1/2',
