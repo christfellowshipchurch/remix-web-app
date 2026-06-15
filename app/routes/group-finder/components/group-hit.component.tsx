@@ -61,9 +61,6 @@ export function GroupHit({
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
   const preference = hit.groupFor?.trim() || 'Anyone';
-  const campusBadge = hit.campusName?.trim()
-    ? formatGroupHitCampusName(hit.campusName)
-    : '';
   const topicTags = splitGroupTopics(hit.topics);
 
   const formatTime = (timeString: string) => {
@@ -178,7 +175,7 @@ export function GroupHit({
 
           <div className='flex min-h-0 flex-1 flex-col gap-3 pt-[10px]'>
             <div className='flex flex-col px-6 gap-3'>
-              <div className='flex flex-wrap items-center gap-2'>
+              <div className='flex flex-col gap-[10px]'>
                 <div
                   className={`${
                     preference === 'Women'
@@ -193,11 +190,6 @@ export function GroupHit({
                 >
                   {preference}
                 </div>
-                {campusBadge && (
-                  <div className='bg-navy-subdued text-dark-navy w-fit flex rounded-sm text-xs font-semibold px-2 py-1'>
-                    {campusBadge}
-                  </div>
-                )}
               </div>
 
               <div className='flex flex-col gap-1'>
