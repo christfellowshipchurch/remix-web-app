@@ -5,6 +5,7 @@ import { Button } from '~/primitives/button/button.primitive';
 import HTMLRenderer from '~/primitives/html-renderer';
 import {
   CurriculumSession,
+  formatStudyAuthorName,
   StudyCallToAction,
   StudyHitType,
 } from '../../types';
@@ -43,7 +44,9 @@ export function StudySingleBasicContent({
   callsToAction: StudyCallToAction[];
   trailerWistiaId: string | null;
 }) {
-  const { title, content, audience, source, duration, format } = hit;
+  const { title, content, audience, source, duration, format, author } = hit;
+  const createdByName = formatStudyAuthorName(author) ?? source;
+  const createdByImage = author?.profileImage?.trim() || '/cf-icon.png';
   const location = useLocation();
   const backToStudiesFinderUrl =
     typeof location.state?.fromStudiesFinder === 'string'
@@ -90,8 +93,8 @@ export function StudySingleBasicContent({
           {/* Mobile Top Side */}
           <div className='md:hidden'>
             <RightSide
-              title={title}
-              source={source}
+              createdByName={createdByName}
+              createdByImage={createdByImage}
               callsToAction={callsToAction}
               trailerWistiaId={trailerWistiaId}
             />
@@ -127,8 +130,8 @@ export function StudySingleBasicContent({
         {/* Desktop Right side */}
         <div className='hidden md:block max-w-[324px] w-full'>
           <RightSide
-            title={title}
-            source={source}
+            createdByName={createdByName}
+            createdByImage={createdByImage}
             callsToAction={callsToAction}
             trailerWistiaId={trailerWistiaId}
           />
@@ -139,13 +142,13 @@ export function StudySingleBasicContent({
 }
 
 const RightSide = ({
-  title,
-  source,
+  createdByName,
+  createdByImage,
   callsToAction,
   trailerWistiaId,
 }: {
-  title: string;
-  source: string;
+  createdByName: string;
+  createdByImage: string;
   callsToAction: StudyCallToAction[];
   trailerWistiaId: string | null;
 }) => {
@@ -156,8 +159,8 @@ const RightSide = ({
       <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
         <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
           <img
-            src='/cf-icon.png'
-            alt={title}
+            src={createdByImage}
+            alt={createdByName}
             className='w-full h-full object-cover'
           />
         </div>
@@ -166,7 +169,7 @@ const RightSide = ({
             Created by<span className='hidden md:inline'>:</span>
           </p>
           <h3 className='font-extrabold text-sm md:text-base text-white md:text-text-primary'>
-            {source}
+            {createdByName}
           </h3>
         </div>
       </div>
