@@ -3,6 +3,7 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { AuthenticationError } from '~/lib/.server/error-types';
+import { LOCATION_SEARCH_INDEX_NAME } from '../locations/location-search/location-search.constants';
 
 import { buildGroupFinderAlgoliaSearchParams } from './components/build-group-finder-algolia-search';
 import { parseGroupFinderUrlState } from './group-finder-url-state';
@@ -16,6 +17,13 @@ export type LoaderReturnType = {
   groupNbPages: number;
   groupPage: number;
   minMaxAgeValues: string[];
+  /** Campus name -> campus city, for group cards whose groups have no meeting location. */
+  campusCityByName: Record<string, string>;
+};
+
+type CampusCityHit = {
+  campusName?: string;
+  campusLocation?: { city?: string };
 };
 
 /**
@@ -35,6 +43,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let groupNbHits = 0;
   let groupNbPages = 0;
   let minMaxAgeValues: string[] = [];
+  const campusCityByName: Record<string, string> = {};
   const url = new URL(request.url);
 
   // The loader owns first paint and deep links. Once hydrated, same-page filter
@@ -46,15 +55,40 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const client = algoliasearch(appId, searchApiKey, {});
 
   try {
-    const facetRes = await client.searchSingleIndex({
-      indexName: GROUPS_ALGOLIA_INDEX_NAME,
-      searchParams: {
-        facets: ['minMaxAge'],
-        hitsPerPage: 0,
-        maxValuesPerFacet: 1000,
-      },
-    });
+    // Campus cities are a card-display nicety; don't let a failure here drop
+    // the group results, just fall back to campus names on the cards.
+    const [facetRes, campusRes] = await Promise.all([
+      client.searchSingleIndex({
+        indexName: GROUPS_ALGOLIA_INDEX_NAME,
+        searchParams: {
+          facets: ['minMaxAge'],
+          hitsPerPage: 0,
+          maxValuesPerFacet: 1000,
+        },
+      }),
+      client
+        .searchSingleIndex({
+          indexName: LOCATION_SEARCH_INDEX_NAME,
+          searchParams: {
+            query: '',
+            hitsPerPage: 100,
+            attributesToRetrieve: ['campusName', 'campusLocation.city'],
+            attributesToHighlight: [],
+          },
+        })
+        .catch((error) => {
+          console.error('[group-finder] campus city fetch failed', error);
+          return null;
+        }),
+    ]);
     minMaxAgeValues = Object.keys(facetRes.facets?.minMaxAge ?? {});
+
+    for (const h of campusRes?.hits ?? []) {
+      const campus = h as unknown as CampusCityHit;
+      const name = campus.campusName?.trim();
+      const city = campus.campusLocation?.city?.trim();
+      if (name && city) campusCityByName[name] = city;
+    }
 
     const built = buildGroupFinderAlgoliaSearchParams(
       urlState,
@@ -83,5 +117,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     groupNbPages,
     groupPage,
     minMaxAgeValues,
+    campusCityByName,
   } satisfies LoaderReturnType);
 };

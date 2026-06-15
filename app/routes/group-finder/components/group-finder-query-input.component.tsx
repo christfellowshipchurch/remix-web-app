@@ -38,7 +38,7 @@ export function GroupFinderQueryInput({
         type='search'
         value={localQuery}
         onChange={(event) => setLocalQuery(event.target.value)}
-        placeholder='Search'
+        placeholder='Search by group name'
         aria-label='Search groups'
         className='w-full flex-grow text-base text-neutral-default placeholder:text-neutral-default px-2 py-1 focus:outline-none md:text-sm'
       />

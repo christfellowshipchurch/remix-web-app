@@ -15,6 +15,22 @@ function formatGroupHitCampusName(campusName: string): string {
   return afterMarker ? `CFE ${afterMarker}` : 'CFE';
 }
 
+/**
+ * City for the card's bottom bar: the group's own meeting city when set
+ * (`meetingLocation` is "City, FL 33458"), else the campus city, else the
+ * campus name itself (e.g. "Online (CF Everywhere)").
+ */
+function groupHitCityLabel(
+  hit: GroupType,
+  campusCityByName: Record<string, string>,
+): string {
+  const meetingCity = (hit.meetingLocation || '').split(',')[0]?.trim();
+  if (meetingCity) return meetingCity;
+  return (
+    campusCityByName[hit.campusName] ?? formatGroupHitCampusName(hit.campusName)
+  );
+}
+
 function formatDistanceMiles(meters: number): string {
   const miles = meters / 1609.344;
   return `${miles.toFixed(1)} miles away`;
@@ -36,10 +52,12 @@ export function GroupHit({
   hit,
   backUrl,
   isGeoSearch = false,
+  campusCityByName = {},
 }: {
   hit: GroupType;
   backUrl?: string;
   isGeoSearch?: boolean;
+  campusCityByName?: Record<string, string>;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
   const preference = hit.groupFor?.trim() || 'Anyone';
@@ -194,7 +212,7 @@ export function GroupHit({
               <p className='text-sm font-semibold'>
                 {isGeoSearch
                   ? (distanceLabel ?? 'Location Varies')
-                  : formatGroupHitCampusName(hit.campusName)}
+                  : groupHitCityLabel(hit, campusCityByName)}
               </p>
             </div>
           </div>

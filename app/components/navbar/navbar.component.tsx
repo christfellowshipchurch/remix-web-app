@@ -202,7 +202,8 @@ export function Navbar() {
     watchReadListen?.featureCards,
   );
   const isTransparentMode = mode === 'dark' && !openDropdown && !isSearchOpen;
-  const useOceanLogo = mode === 'light' || openDropdown !== null || isSearchOpen;
+  const useOceanLogo =
+    mode === 'light' || openDropdown !== null || isSearchOpen;
 
   // Search handling
   const handleSearchClick = () => {
