@@ -46,10 +46,13 @@ export function StudySingleBasicContent({
 }) {
   const { title, content, audience, source, duration, format, author } = hit;
   const createdByName = formatStudyAuthorName(author) || null;
-  const createdByImage =
-    author?.profileImage?.trim() || createdByName === 'Christ Fellowship Team'
-      ? '/cf-icon.png'
-      : null;
+  let createdByImage: string | null = null;
+  if (createdByName === 'Christ Fellowship Team') {
+    createdByImage = '/cf-icon.png';
+  } else if (author?.profileImage?.trim()) {
+    createdByImage = author.profileImage.trim();
+  }
+
   const location = useLocation();
   const backToStudiesFinderUrl =
     typeof location.state?.fromStudiesFinder === 'string'
