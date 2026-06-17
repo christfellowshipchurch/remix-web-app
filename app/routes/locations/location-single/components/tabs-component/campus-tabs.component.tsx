@@ -1,4 +1,4 @@
-import { ComponentType, Fragment, useMemo } from 'react';
+import { ComponentType, Fragment, useMemo, useRef } from 'react';
 import { cn } from '~/lib/utils';
 import {
   englishTabData,
@@ -55,6 +55,15 @@ export const CampusTabs = ({
     data[activeIndex]?.value ?? data[0]?.value ?? activeTab;
   const ActiveTabComponent = tabs[activeIndex];
 
+  const tablistRef = useRef<HTMLDivElement>(null);
+
+  // Switch tabs and anchor the section into view, so tabs clicked from higher
+  // up the page (e.g. the hero) scroll the user down to the tab content.
+  const handleTabClick = (value: string) => {
+    setActiveTab(value);
+    tablistRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const isHorizontal =
       event.key === 'ArrowLeft' || event.key === 'ArrowRight';
@@ -83,10 +92,11 @@ export const CampusTabs = ({
   return (
     <div className={cn('w-full flex flex-col justify-center items-center')}>
       <div
+        ref={tablistRef}
         role='tablist'
         aria-orientation='horizontal'
         className={cn(
-          'flex max-w-[90vw] md:max-w-none lg:w-auto md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0',
+          'flex max-w-[90vw] md:max-w-none lg:w-auto md:gap-4 md:border border-neutral-lighter px-3 py-2 md:py-4 relative mt-15 md:mt-0 scroll-mt-4 lg:scroll-mt-28',
           isSpanish ? 'gap-0 text-[14.5px] sm:text-base' : 'gap-2',
           tasListStyle,
           activeTab === 'sunday-details' && 'absolute! -top-9 left-1/2',
@@ -112,7 +122,7 @@ export const CampusTabs = ({
                     aria-controls={panelId}
                     data-state={isActive ? 'active' : 'inactive'}
                     tabIndex={isActive ? 0 : -1}
-                    onClick={() => setActiveTab(tab.value)}
+                    onClick={() => handleTabClick(tab.value)}
                     className='hidden lg:flex px-6 py-2 text-text-secondary font-bold data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer'
                   >
                     {tab.label}
@@ -127,7 +137,7 @@ export const CampusTabs = ({
                     aria-controls={panelId}
                     data-state={isActive ? 'active' : 'inactive'}
                     tabIndex={isActive ? 0 : -1}
-                    onClick={() => setActiveTab(tab.value)}
+                    onClick={() => handleTabClick(tab.value)}
                     className='lg:hidden px-4 md:px-6 py-2 font-bold data-[state=active]:bg-navy-subdued rounded-[12px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer'
                   >
                     {tab.mobileLabel}

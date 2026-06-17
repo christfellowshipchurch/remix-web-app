@@ -10,12 +10,12 @@ const faqData = [
   {
     question: 'Where Do Small Groups Meet?',
     answer:
-      'Most groups meet in homes, parks, or restaurants—usually based on the leader’s location and often near a church campus.',
+      'Most groups meet in homes, parks, restaurants, or online—usually based on the leader’s location and often near a church campus.',
   },
   {
     question: 'What Types of Small Groups Are Available?',
     answer:
-      'We offer Bible study, activity, and Freedom groups for men, women, and married couples. Groups are available for all life stages, with both morning and evening options.',
+      'We offer Bible study, activity, and social groups for men, women, and married couples. Groups are available for all life stages, with both morning and evening options.',
   },
   {
     question: 'Is Childcare Provided During Group Meetings?',

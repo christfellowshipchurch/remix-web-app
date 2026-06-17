@@ -54,7 +54,11 @@ export const GroupSingleContent = ({ hit }: { hit: GroupType }) => {
           <GroupSingleBasicContent summary={hit.summary} />
         </div>
       </div>
-      <RelatedGroupsPartial topics={hit.topics} currentGroupName={hit.title} />
+      <RelatedGroupsPartial
+        topics={hit.topics}
+        language={hit.language}
+        currentGroupName={hit.title}
+      />
 
       <GroupSingleMobileBottomBar
         copied={copied}
