@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 import { RockProxyEmbed } from '~/components/rock-embed';
 import Icon from '~/primitives/icon';
@@ -11,6 +12,14 @@ export { loader };
 export default function RockPage() {
   const { url, embed } = useLoaderData<typeof loader>();
   const backLink = getRockPageVolunteerBackLink(embed);
+
+  const handleEmbedLoad = useCallback(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      });
+    });
+  }, []);
 
   return (
     <div className='w-full max-w-screen-content mx-auto px-4 py-4'>
@@ -31,6 +40,7 @@ export default function RockPage() {
         autoHeight
         height={1200}
         showLoading={false}
+        onLoad={handleEmbedLoad}
       />
     </div>
   );
