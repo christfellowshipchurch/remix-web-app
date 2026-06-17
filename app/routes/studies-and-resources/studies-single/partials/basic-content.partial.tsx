@@ -161,7 +161,7 @@ const RightSide = ({
           <img
             src={createdByImage}
             alt={createdByName}
-            className='w-full h-full object-cover'
+            className='w-full h-full object-cover rounded-lg'
           />
         </div>
         <div className='w-fit flex flex-col gap-0.5 text-sm font-semibold text-neutral-default'>
