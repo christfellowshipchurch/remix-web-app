@@ -17,8 +17,9 @@ export const VolunteerFormWelcome: React.FC = () => {
       <div className='px-4 flex flex-col items-center justify-center bg-white rounded-xl py-10 shadow-md max-w-md md:max-w-xl mx-auto gap-6 mb-24'>
         <h1 className='heading-h3 text-center'>Help Me Find a Place</h1>
         <p className='text-center text-text-secondary mb-10 max-w-md'>
-          Thank you for your interest in volunteering with us. We're excited to
-          have you join our team.
+          Thank you so much for your interest in volunteering at Christ
+          Fellowship! You are on your way to joining one of the most dynamic
+          ministry teams ever!
         </p>
         <div className='grid grid-cols-3 items-center gap-2'>
           <div />
