@@ -8,19 +8,24 @@ import { useResponsive } from '~/hooks/use-responsive';
 import {
   expectEnglishItems,
   expectSpanishItems,
+  getKidsGrade,
 } from '../../../location-single-data';
 
 export const WhatToExpect = ({
   setReminderVideo,
   isOnline,
   isSpanish,
+  campusUrl,
 }: {
   setReminderVideo: string | null | undefined;
   isOnline?: boolean;
   isSpanish?: boolean;
+  campusUrl?: string;
 }) => {
   const title = isSpanish ? '¿Qué esperar?' : 'What to Expect';
-  const expectItems = isSpanish ? expectSpanishItems : expectEnglishItems;
+  const expectItems = isSpanish
+    ? expectSpanishItems
+    : expectEnglishItems(getKidsGrade(campusUrl));
   const { isSmall } = useResponsive();
 
   return (

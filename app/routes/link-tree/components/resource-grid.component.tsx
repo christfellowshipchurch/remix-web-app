@@ -6,6 +6,10 @@ export const GridCard = ({ resource }: { resource: CollectionItem }) => (
     <Link
       to={resource.pathname}
       prefetch='intent'
+      target={resource.pathname?.includes('http') ? '_blank' : undefined}
+      rel={
+        resource.pathname?.includes('http') ? 'noopener noreferrer' : undefined
+      }
       className='flex flex-col w-full'
       aria-label={resource.name}
     >
