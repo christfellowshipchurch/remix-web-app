@@ -4,8 +4,9 @@ import { AuthenticationError } from '~/lib/.server/error-types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
 import { getAttributeMatrixItems } from '~/lib/.server/rock-utils';
-import { parseRockKeyValueList, parseRockValueList } from '~/lib/utils';
+import { parseRockKeyValueList } from '~/lib/utils';
 import type {
+  CurriculumResource,
   CurriculumSession,
   StudyCallToAction,
   StudyHitType,
@@ -56,10 +57,6 @@ async function fetchStudyRockData(rockItemId: number): Promise<{
       studyItem.attributeValues?.calltoActions?.value || '',
     ).map((cta) => ({ title: cta.key, url: cta.value }));
 
-    const sessionTitles = parseRockValueList(
-      studyItem.attributeValues?.sessionTitles?.value || '',
-    );
-
     const resourceMatrixGuid =
       studyItem.attributeValues?.resourceItems?.value || '';
     const matrixItems = resourceMatrixGuid
@@ -90,29 +87,48 @@ async function fetchStudyRockData(rockItemId: number): Promise<{
           ),
           url: item.attributeValues?.url?.value || undefined,
           wistiaId,
-          sessionNumber: Number(item.attributeValues?.sessionNumber?.value),
+          sessionName: (item.attributeValues?.sessionName?.value ?? '').trim(),
         };
       }),
     );
 
-    const orphanedCount = resources.filter(
-      (resource) =>
-        !(
-          resource.sessionNumber >= 1 &&
-          resource.sessionNumber <= sessionTitles.length
-        ),
-    ).length;
-    if (orphanedCount > 0) {
+    const seenSessions = new Map<string, CurriculumResource[]>();
+    const sessionOrder: string[] = [];
+    const seenLower = new Map<string, string>();
+    let blankCount = 0;
+
+    for (const { sessionName, ...resource } of resources) {
+      if (!sessionName) {
+        blankCount++;
+        continue;
+      }
+      const existing = seenSessions.get(sessionName);
+      if (existing) {
+        existing.push(resource);
+      } else {
+        const lowerKey = sessionName.toLowerCase();
+        const prior = seenLower.get(lowerKey);
+        if (prior) {
+          console.warn(
+            `Studies single: session name variant detected — "${sessionName}" vs existing "${prior}" (case differs); treating as separate sessions`,
+          );
+        } else {
+          seenLower.set(lowerKey, sessionName);
+        }
+        sessionOrder.push(sessionName);
+        seenSessions.set(sessionName, [resource]);
+      }
+    }
+
+    if (blankCount > 0) {
       console.warn(
-        `Studies single: dropped ${orphanedCount} resource(s) with a session number outside the SessionTitles list`,
+        `Studies single: dropped ${blankCount} resource(s) with a missing Session value`,
       );
     }
 
-    const curriculum = sessionTitles.map((title, index) => ({
+    const curriculum: CurriculumSession[] = sessionOrder.map((title) => ({
       title,
-      resources: resources
-        .filter((resource) => resource.sessionNumber === index + 1)
-        .map(({ sessionNumber: _sessionNumber, ...resource }) => resource),
+      resources: seenSessions.get(title)!,
     }));
 
     let trailerWistiaId: string | null = null;

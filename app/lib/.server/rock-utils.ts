@@ -86,6 +86,7 @@ export const getAttributeMatrixItems = async ({
         $filter: matrixItems
           .map((item: { id: number }) => `(Id eq ${item.id})`)
           .join(' or '),
+        $orderby: 'Order',
         loadAttributes: 'simple',
       },
     });

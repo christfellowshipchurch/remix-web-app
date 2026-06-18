@@ -1,5 +1,26 @@
 import { ImageSource } from '../group-finder/types';
 
+export interface StudyAuthor {
+  guid?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImage?: string;
+}
+
+/** Returns a display name when Algolia author fields are present; otherwise null. */
+export function formatStudyAuthorName(author?: StudyAuthor): string | null {
+  if (!author) {
+    return null;
+  }
+
+  const name = [author.firstName, author.lastName]
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join(' ');
+
+  return name || null;
+}
+
 export interface StudyHitType {
   objectID: string;
   id: string;
@@ -40,6 +61,8 @@ export interface StudyHitType {
     | 'Parents'
     | 'New Believers';
   source: 'Christ Fellowship' | 'Recommended External';
+  /** From Algolia when set in Rock; not required for every study. */
+  author?: StudyAuthor;
   _highlightResult: {
     title: {
       value: string;
@@ -51,7 +74,7 @@ export interface StudyHitType {
       matchLevel: string;
       matchedWords: string[];
     };
-    author: {
+    author?: {
       firstName: {
         value: string;
         matchLevel: string;
@@ -93,7 +116,7 @@ export interface CurriculumResource {
 }
 
 export interface CurriculumSession {
-  /** From the SessionTitles value list attribute */
+  /** Session name from the Resource Items matrix (first occurrence in the matrix sets display order) */
   title: string;
   resources: CurriculumResource[];
 }
