@@ -133,6 +133,25 @@ describe('getAttributeMatrixItems', () => {
     expect(result).toEqual(expandedItems);
   });
 
+  it('requests expanded items ordered by Rock Order field', async () => {
+    mockFetch
+      .mockResolvedValueOnce({ attributeMatrixItems: [{ id: 1 }] })
+      .mockResolvedValueOnce([{ id: 1, attributeValues: {} }]);
+
+    await getAttributeMatrixItems({
+      attributeMatrixGuid: 'guid-order',
+    });
+
+    expect(mockFetch).toHaveBeenNthCalledWith(2, {
+      endpoint: 'AttributeMatrixItems',
+      queryParams: {
+        $filter: '(Id eq 1)',
+        $orderby: 'Order',
+        loadAttributes: 'simple',
+      },
+    });
+  });
+
   it('wraps a single expanded item in an array', async () => {
     const singleItem = { id: 1, attributeValues: {} };
     mockFetch
