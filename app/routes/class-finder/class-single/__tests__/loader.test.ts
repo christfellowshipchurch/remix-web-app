@@ -131,7 +131,7 @@ describe('class-single loader — hero fields (Rock-first, Algolia fallback)', (
     mockFetchRockData.mockResolvedValueOnce({
       value: 'Rock Title',
       attributeValues: {
-        summary: { value: '  Rock summary  ' },
+        description: { value: '  Rock summary  ' },
         image: { value: '03418602-8c89-42d3-a569-18a3e6b8bec4' },
       },
     });
@@ -152,7 +152,7 @@ describe('class-single loader — hero fields (Rock-first, Algolia fallback)', (
     mockFetchRockData.mockResolvedValueOnce({
       value: '',
       attributeValues: {
-        summary: { value: '   ' },
+        description: { value: '   ' },
         image: { value: '' },
       },
     });

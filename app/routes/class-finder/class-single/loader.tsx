@@ -100,7 +100,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       classTrailer = rockStringAttr(classData, 'classTrailer');
       onDemandUrl = rockStringAttr(classData, 'onDemandSignUpLink');
       rockTitle = classData.value?.trim() ?? '';
-      rockSummary = rockStringAttr(classData, 'summary');
+      rockSummary = rockStringAttr(classData, 'description');
       const imageGuid = rockStringAttr(classData, 'image');
       rockCoverImageUri = imageGuid ? createImageUrlFromGuid(imageGuid) : '';
     }
