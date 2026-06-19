@@ -12,7 +12,6 @@ export function ClassHitComponent({
   hit: ClassHitType;
   fromClassFinderUrl?: string;
 }) {
-  const campusLabel = hit.campus?.trim() ?? '';
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
   const slug = hit.pathName;
   const pathSegment = slug
@@ -47,11 +46,6 @@ export function ClassHitComponent({
               <p className='bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1'>
                 {hit.topic}
               </p>
-              {campusLabel ? (
-                <p className='bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1'>
-                  {campusLabel}
-                </p>
-              ) : null}
             </div>
 
             {/* Description Info */}
