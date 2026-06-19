@@ -28,7 +28,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
       {
         image: getImageUrl('3176684'),
         tag: 'Every Sunday',
-        name: 'Sunday Kids',
+        name: 'Christ Fellowship Kids',
         description:
           'Fun, age-based classes for kids during Sunday services with games, music, Bible stories, and small group activities.',
         url: '/ministries/kids',
@@ -37,7 +37,7 @@ export const whatWeOfferData: WhatWeOfferTab[] = [
         image: getImageUrl('7bcd69be-8395-45a6-9221-a547461bdcad', {
           useGuid: true,
         }),
-        tag: 'Mid Week',
+        tag: 'Wednesdays',
         name: 'Kids University',
         description:
           'A weekday program where kids learn about faith, build friendships, and take part in hands-on activities and lessons.',
