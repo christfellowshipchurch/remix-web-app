@@ -35,7 +35,7 @@ export function StudyHitComponent({
       to={`/studies-and-resources/${hit.url}`}
       state={
         fromStudiesFinderUrl
-          ? { fromStudiesAndResources: fromStudiesFinderUrl }
+          ? { fromStudiesFinder: fromStudiesFinderUrl }
           : undefined
       }
       className='size-full'
