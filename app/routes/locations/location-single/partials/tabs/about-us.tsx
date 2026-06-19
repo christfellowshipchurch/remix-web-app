@@ -34,7 +34,7 @@ export const AboutUs = ({
     : englishPastorTitle;
   const pastorQuote = isSpanish
     ? 'Nuestros servicios principales de adoración son los domingos, y también nos reunimos como comunidad durante la semana a través de distintos eventos para conectar, crecer y servir juntos. Es un honor ser parte de esta comunidad y nos alegraría que nos acompañes en un servicio este domingo. Si estás buscando una iglesia cerca de ti, será un gusto recibirte, conocerte y caminar contigo.'
-    : 'We’re so glad you’re here! Christ Fellowship is a church for people at every stage of life and faith. We’re committed to helping people know God personally, grow in their relationships, discover their purpose, and impact their world. We gather every Sunday for worship and offer experiences all throughout the week through groups, classes, and events designed to help you take your next step in faith and build meaningful connections. Whether you\'re exploring faith or looking for a church home, there\'s a place for you here.';
+    : "We’re so glad you’re here! Christ Fellowship is a church for people at every stage of life and faith. We’re committed to helping people know God personally, grow in their relationships, discover their purpose, and impact their world. We gather every Sunday for worship and offer experiences all throughout the week through groups, classes, and events designed to help you take your next step in faith and build meaningful connections. Whether you're exploring faith or looking for a church home, there's a place for you here.";
 
   return (
     <div className='flex flex-col w-full'>
