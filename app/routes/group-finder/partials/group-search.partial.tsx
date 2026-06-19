@@ -83,6 +83,22 @@ function coordinatesFromUrlState(
   return null;
 }
 
+/**
+ * Whether the "Virtual" meeting-type filter is currently active. Virtual groups
+ * are faceted under `meetingType` as either "Virtual" or "Online" in Algolia, so
+ * treat either value as active. When active, group cards show "Online" in their
+ * footer bar instead of a physical meeting location.
+ */
+function isVirtualMeetingTypeActive(
+  urlState: ReturnType<typeof parseGroupFinderUrlState>,
+): boolean {
+  const values = urlState.refinementList?.meetingType ?? [];
+  return values.some((v) => {
+    const t = v.trim().toLowerCase();
+    return t === 'virtual' || t === 'online';
+  });
+}
+
 /** Snapshot for InstantSearch `initialUiState` and local age/geo state on first client render. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
@@ -113,6 +129,11 @@ export const GroupSearch = () => {
   const urlState = useMemo(
     () => parseGroupFinderUrlState(searchParams),
     [searchParams],
+  );
+
+  const isVirtualFilterActive = useMemo(
+    () => isVirtualMeetingTypeActive(urlState),
+    [urlState],
   );
 
   // Loader seeds first paint; hydrated interactions use the real client search key.
@@ -438,6 +459,7 @@ export const GroupSearch = () => {
               initialNbHits={groupNbHits}
               fromGroupFinderUrl={fromGroupFinderUrl}
               isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
+              isVirtualFilterActive={isVirtualFilterActive}
               campusCityByName={campusCityByName}
             />
           </InstantSearch>
@@ -470,6 +492,7 @@ export const GroupSearch = () => {
               fromGroupFinderUrl={fromGroupFinderUrl}
               onPageChange={goToPage}
               isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
+              isVirtualFilterActive={isVirtualFilterActive}
               campusCityByName={campusCityByName}
             />
           </>
@@ -484,12 +507,14 @@ function GroupFinderInstantSearchResults({
   initialNbHits,
   fromGroupFinderUrl,
   isGeoSearch,
+  isVirtualFilterActive,
   campusCityByName,
 }: {
   initialHits: LoaderReturnType['groupHits'];
   initialNbHits: number;
   fromGroupFinderUrl: string;
   isGeoSearch: boolean;
+  isVirtualFilterActive: boolean;
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   const { items } = useHits<LoaderReturnType['groupHits'][number]>();
@@ -538,6 +563,7 @@ function GroupFinderInstantSearchResults({
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={goToPage}
       isGeoSearch={isGeoSearch}
+      isVirtualFilterActive={isVirtualFilterActive}
       campusCityByName={campusCityByName}
     />
   );
@@ -553,6 +579,7 @@ function GroupFinderInitialResults({
   fromGroupFinderUrl,
   onPageChange,
   isGeoSearch,
+  isVirtualFilterActive,
   campusCityByName,
 }: {
   groupHits: LoaderReturnType['groupHits'];
@@ -564,6 +591,7 @@ function GroupFinderInitialResults({
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
   isGeoSearch: boolean;
+  isVirtualFilterActive: boolean;
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
@@ -578,6 +606,7 @@ function GroupFinderInitialResults({
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={onPageChange}
       isGeoSearch={isGeoSearch}
+      isVirtualFilterActive={isVirtualFilterActive}
       campusCityByName={campusCityByName}
     />
   );
@@ -594,6 +623,7 @@ function GroupFinderResultsLayout({
   fromGroupFinderUrl,
   onPageChange,
   isGeoSearch,
+  isVirtualFilterActive,
   campusCityByName,
 }: {
   groupHits: LoaderReturnType['groupHits'];
@@ -606,6 +636,7 @@ function GroupFinderResultsLayout({
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
   isGeoSearch: boolean;
+  isVirtualFilterActive: boolean;
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
@@ -630,6 +661,7 @@ function GroupFinderResultsLayout({
                   hit={hit}
                   backUrl={fromGroupFinderUrl}
                   isGeoSearch={isGeoSearch}
+                  isVirtualFilterActive={isVirtualFilterActive}
                   campusCityByName={campusCityByName}
                 />
               ))}

@@ -58,4 +58,23 @@ describe('GroupHit', () => {
 
     expect(screen.getByText('1.0 miles away')).toBeInTheDocument();
   });
+
+  it('shows "Online" in the footer when the Virtual filter is active, overriding location/distance', () => {
+    render(
+      <MemoryRouter>
+        <GroupHit
+          hit={createGroupHit({
+            meetingType: 'Virtual',
+            meetingLocation: 'Jupiter, FL 33458',
+          })}
+          isGeoSearch
+          isVirtualFilterActive
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Online')).toBeInTheDocument();
+    expect(screen.queryByText(/miles away/i)).not.toBeInTheDocument();
+    expect(screen.queryByText('Jupiter')).not.toBeInTheDocument();
+  });
 });

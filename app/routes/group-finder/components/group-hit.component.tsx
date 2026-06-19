@@ -52,11 +52,15 @@ export function GroupHit({
   hit,
   backUrl,
   isGeoSearch = false,
+  isVirtualFilterActive = false,
   campusCityByName = {},
 }: {
   hit: GroupType;
   backUrl?: string;
   isGeoSearch?: boolean;
+  /** When the "Virtual" meeting-type filter is active, the footer bar reads
+   * "Online" instead of a physical meeting location. */
+  isVirtualFilterActive?: boolean;
   campusCityByName?: Record<string, string>;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
@@ -208,11 +212,17 @@ export function GroupHit({
               ))}
             </div>
             <div className='w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white '>
-              <Icon name='map' size={20} color='white' />
+              <Icon
+                name={isVirtualFilterActive ? 'globe' : 'map'}
+                size={20}
+                color='white'
+              />
               <p className='text-sm font-semibold'>
-                {isGeoSearch
-                  ? (distanceLabel ?? 'Location Varies')
-                  : groupHitCityLabel(hit, campusCityByName)}
+                {isVirtualFilterActive
+                  ? 'Online'
+                  : isGeoSearch
+                    ? (distanceLabel ?? 'Location Varies')
+                    : groupHitCityLabel(hit, campusCityByName)}
               </p>
             </div>
           </div>
