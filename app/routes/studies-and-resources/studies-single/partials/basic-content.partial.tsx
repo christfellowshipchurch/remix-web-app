@@ -5,6 +5,7 @@ import { Button } from '~/primitives/button/button.primitive';
 import HTMLRenderer from '~/primitives/html-renderer';
 import {
   CurriculumSession,
+  formatStudyAuthorName,
   StudyCallToAction,
   StudyHitType,
 } from '../../types';
@@ -43,7 +44,15 @@ export function StudySingleBasicContent({
   callsToAction: StudyCallToAction[];
   trailerWistiaId: string | null;
 }) {
-  const { title, content, audience, source, duration, format } = hit;
+  const { title, content, audience, source, duration, format, author } = hit;
+  const createdByName = formatStudyAuthorName(author) || null;
+  let createdByImage: string | null = null;
+  if (createdByName === 'Christ Fellowship Team') {
+    createdByImage = '/cf-icon.png';
+  } else if (author?.profileImage?.trim()) {
+    createdByImage = author.profileImage.trim();
+  }
+
   const location = useLocation();
   const backToStudiesFinderUrl =
     typeof location.state?.fromStudiesFinder === 'string'
@@ -90,8 +99,8 @@ export function StudySingleBasicContent({
           {/* Mobile Top Side */}
           <div className='md:hidden'>
             <RightSide
-              title={title}
-              source={source}
+              createdByName={createdByName}
+              createdByImage={createdByImage || ''}
               callsToAction={callsToAction}
               trailerWistiaId={trailerWistiaId}
             />
@@ -127,8 +136,8 @@ export function StudySingleBasicContent({
         {/* Desktop Right side */}
         <div className='hidden md:block max-w-[324px] w-full'>
           <RightSide
-            title={title}
-            source={source}
+            createdByName={createdByName}
+            createdByImage={createdByImage || ''}
             callsToAction={callsToAction}
             trailerWistiaId={trailerWistiaId}
           />
@@ -139,13 +148,13 @@ export function StudySingleBasicContent({
 }
 
 const RightSide = ({
-  title,
-  source,
+  createdByName,
+  createdByImage,
   callsToAction,
   trailerWistiaId,
 }: {
-  title: string;
-  source: string;
+  createdByName: string | null;
+  createdByImage: string;
   callsToAction: StudyCallToAction[];
   trailerWistiaId: string | null;
 }) => {
@@ -153,23 +162,25 @@ const RightSide = ({
 
   return (
     <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
-      <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
-        <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
-          <img
-            src='/cf-icon.png'
-            alt={title}
-            className='w-full h-full object-cover'
-          />
+      {createdByImage && createdByName && (
+        <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
+          <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
+            <img
+              src={createdByImage}
+              alt={createdByName}
+              className='w-full h-full object-cover rounded-lg'
+            />
+          </div>
+          <div className='w-fit flex flex-col gap-0.5 text-sm font-semibold text-neutral-default'>
+            <p className='text-[#D0D0CE] md:text-neutral-default uppercase md:normal-case'>
+              Created by<span className='hidden md:inline'>:</span>
+            </p>
+            <h3 className='font-extrabold text-sm md:text-base text-white md:text-text-primary'>
+              {createdByName}
+            </h3>
+          </div>
         </div>
-        <div className='w-fit flex flex-col gap-0.5 text-sm font-semibold text-neutral-default'>
-          <p className='text-[#D0D0CE] md:text-neutral-default uppercase md:normal-case'>
-            Created by<span className='hidden md:inline'>:</span>
-          </p>
-          <h3 className='font-extrabold text-sm md:text-base text-white md:text-text-primary'>
-            {source}
-          </h3>
-        </div>
-      </div>
+      )}
 
       <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white'>
         {trailerWistiaId && (

@@ -4,7 +4,11 @@ import { GroupHit } from '../../group-finder/components/group-hit.component';
 import { useLoaderData } from 'react-router-dom';
 import { LoaderReturnType } from '../loader';
 import { CardCarousel } from '~/components/resource-carousel';
-import { GroupType, splitGroupTopics } from '~/routes/group-finder/types';
+import {
+  GroupLanguage,
+  GroupType,
+  splitGroupTopics,
+} from '~/routes/group-finder/types';
 import { createSearchClient } from '~/lib/create-search-client';
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { CollectionItem } from '~/routes/page-builder/types';
@@ -43,14 +47,27 @@ function RelatedGroupsHits({
 
 export function RelatedGroupsPartial({
   topics,
+  language,
   currentGroupName,
 }: {
   /** Raw `topics` field from the group Algolia record (comma-separated or empty). */
   topics: string;
+  /** Current group's language; used to keep related groups in the same language. */
+  language?: GroupLanguage | '';
   currentGroupName?: string;
 }) {
   const [hits, setHits] = useState<GroupType[]>([]);
   const topicTags = splitGroupTopics(topics);
+
+  // Filter related groups by topic and (when set) language. Groups without a
+  // language attribute fall back to topic-only matching.
+  const filters =
+    [
+      topicTags[0] && `topics:"${escapeAlgoliaFilterString(topicTags[0])}"`,
+      language && `language:"${escapeAlgoliaFilterString(language)}"`,
+    ]
+      .filter(Boolean)
+      .join(' AND ') || undefined;
 
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
@@ -69,14 +86,7 @@ export function RelatedGroupsPartial({
         preserveSharedStateOnUnmount: true,
       }}
     >
-      <Configure
-        filters={
-          topicTags[0]
-            ? `topics:"${escapeAlgoliaFilterString(topicTags[0])}"`
-            : undefined
-        }
-        hitsPerPage={6}
-      />
+      <Configure filters={filters} hitsPerPage={6} />
       <GetHits setHits={setHits} />
       {hits.length > 1 ? (
         <div className='mt-20 w-full flex flex-col items-center bg-linear-to-b from-white to-[#EEE] pb-24'>

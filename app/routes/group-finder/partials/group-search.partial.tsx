@@ -65,15 +65,6 @@ import {
  * See also `.github/ALGOLIA-URL-STATE-REUSABILITY.md` (Pattern A).
  */
 
-function firstCampusRefinement(
-  refinementList: Record<string, string[]> | undefined,
-): string | null {
-  const values = refinementList?.campusName;
-  if (!values?.length) return null;
-  const first = values[0]?.trim();
-  return first ? first : null;
-}
-
 function coordinatesFromUrlState(
   urlState: ReturnType<typeof parseGroupFinderUrlState>,
 ) {
@@ -98,13 +89,10 @@ function getInitialStateFromUrl(
 ) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? '';
-  const selectedLocation =
-    firstCampusRefinement(urlState.refinementList) ?? null;
 
   return {
     coordinates: coordinatesFromUrlState(urlState),
     ageInput,
-    selectedLocation,
     initialUiState: buildGroupFinderInstantSearchUiState(urlState, indexName),
   };
 }
@@ -120,6 +108,7 @@ export const GroupSearch = () => {
     groupPage,
     minMaxAgeValues,
     algoliaIndexes,
+    campusCityByName,
   } = loaderData;
   const groupIndexName = algoliaIndexes.groups;
   const [searchParams, setSearchParams] = useSearchParams();
@@ -157,9 +146,6 @@ export const GroupSearch = () => {
     null,
   );
   const [ageInput, setAgeInputState] = useState<string>(initial.ageInput);
-  const [selectedLocation, setSelectedLocationState] = useState<string | null>(
-    initial.selectedLocation,
-  );
 
   // `setCoordinates` must keep a STABLE identity. It is passed down into
   // `FinderLocationSearch`, whose effects list it as a dependency; if it changed
@@ -175,9 +161,6 @@ export const GroupSearch = () => {
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
     setAgeInputState(urlState.age ?? '');
-    setSelectedLocationState(
-      firstCampusRefinement(urlState.refinementList) ?? null,
-    );
     // Keep the previous object identity when lat/lng are unchanged.
     // `coordinatesFromUrlState` mints a fresh object on every call, so writing
     // it unconditionally gave `coordinates` a new identity on *every* URL change
@@ -204,7 +187,6 @@ export const GroupSearch = () => {
     setCoordinatesState(null);
     setLocationSource(null);
     setAgeInputState('');
-    setSelectedLocationState(null);
     setSearchParams(groupFinderUrlStateToParams(groupFinderEmptyState), {
       replace: true,
       preventScrollReset: true,
@@ -291,15 +273,14 @@ export const GroupSearch = () => {
       if (item.id === 'people') return ageInput.trim().length >= 2;
       if (item.id === 'location')
         return (
-          selectedLocation != null ||
-          (coordinates?.lat != null &&
-            coordinates?.lng != null &&
-            !Number.isNaN(coordinates.lat) &&
-            !Number.isNaN(coordinates.lng))
+          coordinates?.lat != null &&
+          coordinates?.lng != null &&
+          !Number.isNaN(coordinates.lat) &&
+          !Number.isNaN(coordinates.lng)
         );
       return false;
     },
-    [ageInput, selectedLocation, coordinates],
+    [ageInput, coordinates],
   );
 
   // Merges InstantSearch refinements with age + lat/lng that live in URL but outside uiState.
@@ -418,6 +399,12 @@ export const GroupSearch = () => {
                   query={urlState.query}
                   onQueryCommit={commitQuery}
                 />
+                {/* Separates keyword search from the location/filter pills so
+                    users don't type zip codes into the keyword field. */}
+                <div
+                  aria-hidden
+                  className='hidden h-8 w-px shrink-0 bg-[#DEE0E3] md:block'
+                />
                 <SearchFilters
                   onClearAllToUrl={clearAllFiltersFromUrl}
                   desktopFilters={desktopFilters}
@@ -458,6 +445,7 @@ export const GroupSearch = () => {
               initialNbHits={groupNbHits}
               fromGroupFinderUrl={fromGroupFinderUrl}
               isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
+              campusCityByName={campusCityByName}
             />
           </InstantSearch>
         ) : (
@@ -470,6 +458,10 @@ export const GroupSearch = () => {
                 <GroupFinderQueryInput
                   query={urlState.query}
                   onQueryCommit={commitQuery}
+                />
+                <div
+                  aria-hidden
+                  className='hidden h-8 w-px shrink-0 bg-[#DEE0E3] md:block'
                 />
                 <GroupFinderFiltersSkeleton />
               </div>
@@ -485,6 +477,7 @@ export const GroupSearch = () => {
               fromGroupFinderUrl={fromGroupFinderUrl}
               onPageChange={goToPage}
               isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
+              campusCityByName={campusCityByName}
             />
           </>
         )}
@@ -498,11 +491,13 @@ function GroupFinderInstantSearchResults({
   initialNbHits,
   fromGroupFinderUrl,
   isGeoSearch,
+  campusCityByName,
 }: {
   initialHits: LoaderReturnType['groupHits'];
   initialNbHits: number;
   fromGroupFinderUrl: string;
   isGeoSearch: boolean;
+  campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   const { items } = useHits<LoaderReturnType['groupHits'][number]>();
   const { nbHits } = useStats();
@@ -550,6 +545,7 @@ function GroupFinderInstantSearchResults({
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={goToPage}
       isGeoSearch={isGeoSearch}
+      campusCityByName={campusCityByName}
     />
   );
 }
@@ -564,6 +560,7 @@ function GroupFinderInitialResults({
   fromGroupFinderUrl,
   onPageChange,
   isGeoSearch,
+  campusCityByName,
 }: {
   groupHits: LoaderReturnType['groupHits'];
   groupNbHits: number;
@@ -574,6 +571,7 @@ function GroupFinderInitialResults({
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
   isGeoSearch: boolean;
+  campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
     <GroupFinderResultsLayout
@@ -587,6 +585,7 @@ function GroupFinderInitialResults({
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={onPageChange}
       isGeoSearch={isGeoSearch}
+      campusCityByName={campusCityByName}
     />
   );
 }
@@ -602,6 +601,7 @@ function GroupFinderResultsLayout({
   fromGroupFinderUrl,
   onPageChange,
   isGeoSearch,
+  campusCityByName,
 }: {
   groupHits: LoaderReturnType['groupHits'];
   groupNbHits: number;
@@ -613,6 +613,7 @@ function GroupFinderResultsLayout({
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
   isGeoSearch: boolean;
+  campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
     <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
@@ -636,6 +637,7 @@ function GroupFinderResultsLayout({
                   hit={hit}
                   backUrl={fromGroupFinderUrl}
                   isGeoSearch={isGeoSearch}
+                  campusCityByName={campusCityByName}
                 />
               ))}
             </div>

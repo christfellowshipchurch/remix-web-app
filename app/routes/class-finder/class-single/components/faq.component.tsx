@@ -1,3 +1,4 @@
+import { HelpMeFindAGroupModal } from '~/components/modals';
 import { Button } from '~/primitives/button/button.primitive';
 import { FinderSingleFAQ } from '~/routes/group-single/components/faq.component';
 
@@ -52,18 +53,11 @@ export const ClassFAQ = () => {
           <h3 className='text-[28px] font-extrabold'>
             Need Help Finding a Group or Class?
           </h3>
-          <p className='text-lg'>
-            Reach out to the class leader for more information.
-          </p>
         </div>
 
-        <Button
-          href='https://rock.gocf.org/page/5521?contentChannelId=170'
-          target='_blank'
-          intent='secondary'
-        >
-          Contact
-        </Button>
+        <HelpMeFindAGroupModal>
+          <Button intent='secondary'>Contact</Button>
+        </HelpMeFindAGroupModal>
       </div>
     </div>
   );
