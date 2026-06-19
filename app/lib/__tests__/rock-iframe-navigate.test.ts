@@ -12,7 +12,10 @@ describe('resolveRockIframeNavigateUrl', () => {
 
   it('accepts absolute production URLs', () => {
     expect(
-      resolveRockIframeNavigateUrl('https://christfellowship.church/volunteer', origin),
+      resolveRockIframeNavigateUrl(
+        'https://christfellowship.church/volunteer',
+        origin,
+      ),
     ).toBe('https://christfellowship.church/volunteer');
   });
 
@@ -23,6 +26,8 @@ describe('resolveRockIframeNavigateUrl', () => {
   });
 
   it('rejects protocol-relative URLs', () => {
-    expect(resolveRockIframeNavigateUrl('//example.com/volunteer', origin)).toBeNull();
+    expect(
+      resolveRockIframeNavigateUrl('//example.com/volunteer', origin),
+    ).toBeNull();
   });
 });

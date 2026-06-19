@@ -15,10 +15,7 @@ export function resolveRockIframeNavigateUrl(
   const trimmed = rawUrl.trim();
   if (!trimmed) return null;
 
-  const allowedOrigins = new Set([
-    currentOrigin,
-    ...PRODUCTION_SITE_ORIGINS,
-  ]);
+  const allowedOrigins = new Set([currentOrigin, ...PRODUCTION_SITE_ORIGINS]);
 
   if (trimmed.startsWith('/') && !trimmed.startsWith('//')) {
     try {

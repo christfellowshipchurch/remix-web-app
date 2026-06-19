@@ -93,9 +93,7 @@ describe('rock-page loader', () => {
   });
 
   it('returns a validated Rock URL for the volunteer application embed', async () => {
-    const result = await loader(
-      makeLoaderArgs('?embed=volunteer-application'),
-    );
+    const result = await loader(makeLoaderArgs('?embed=volunteer-application'));
 
     expect(result).toEqual({
       embed: 'volunteer-application',
