@@ -11,11 +11,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (embed) {
     return {
+      embed,
       url: validateRockUrlString(
         buildRockPageEmbedUrl(embed, requestUrl.searchParams),
       ),
     };
   }
 
-  return { url: validateRockUrl(request) };
+  return { embed: null, url: validateRockUrl(request) };
 }
