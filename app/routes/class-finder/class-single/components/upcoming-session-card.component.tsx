@@ -25,6 +25,9 @@ const UpcomingSessionCardBody = ({ hit }: { hit: ClassHitType }) => {
     ? 'globe'
     : 'map';
   const { schedule, startDate, endDate, format, language, classType } = hit;
+  const languageLabel =
+    language?.toLowerCase() === 'spanish' ? 'Español' : (language ?? '');
+  const displayClassType = classType?.trim() ?? '';
   const isVirtualFormat = format === 'Virtual';
 
   const geoMeters = hit._rankingInfo?.geoDistance;
@@ -58,10 +61,10 @@ const UpcomingSessionCardBody = ({ hit }: { hit: ClassHitType }) => {
         <div className='flex min-h-0 flex-1 flex-col gap-5'>
           <div className='flex flex-col gap-2'>
             <p className='bg-[#EBEBEB] w-fit flex rounded-sm text-xs font-semibold px-2 py-1'>
-              {language.toLowerCase() === 'spanish' ? 'Español' : language}
+              {languageLabel}
             </p>
             <h3 className='text-lg font-bold leading-6 line-clamp-2'>
-              {classType}
+              {displayClassType}
             </h3>
           </div>
 
@@ -119,7 +122,7 @@ const FullCardModalTrigger = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
-  const { classType } = hit;
+  const displayClassType = hit.classType?.trim() ?? '';
 
   if (hit.groupId) {
     return (
@@ -130,7 +133,7 @@ export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
         triggerChildren={<UpcomingSessionCardBody hit={hit} />}
         ModalButton={(props) => (
           <FullCardModalTrigger
-            aria-label={`Sign up — ${classType}`}
+            aria-label={`Sign up — ${displayClassType}`}
             {...props}
           />
         )}

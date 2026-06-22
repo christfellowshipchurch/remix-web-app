@@ -212,7 +212,7 @@ function ClassSingleUpcomingConfigure({
     lng: number | null;
   } | null;
 }) {
-  const trimmed = classesIndexClassType.trim();
+  const trimmed = classesIndexClassType?.trim() ?? '';
   const classTypeFilter = trimmed
     ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
     : undefined;

@@ -58,7 +58,7 @@ export function buildClassSingleUpcomingSearchParams(
   aroundLatLngViaIP?: boolean;
   getRankingInfo?: boolean;
 } {
-  const trimmed = classesIndexClassType.trim();
+  const trimmed = classesIndexClassType?.trim() ?? '';
   const params: ReturnType<typeof buildClassSingleUpcomingSearchParams> = {
     indexName,
     hitsPerPage: CLASS_SINGLE_UPCOMING_MAX_HITS,
@@ -164,7 +164,7 @@ function composeGroupsFilters(
   classesIndexClassType: string,
   mirroredFacetFilters: string | undefined,
 ): string | undefined {
-  const trimmed = classesIndexClassType.trim();
+  const trimmed = classesIndexClassType?.trim() ?? '';
   const classTypeFilter = trimmed
     ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
     : null;

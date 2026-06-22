@@ -11,19 +11,15 @@ export type AlgoliaIndexName =
 
 export type AlgoliaIndexMap = Record<AlgoliaIndexName, string>;
 
-const INDEX_BASE_NAMES = {
-  contentItems: 'ContentItems',
-  groups: 'Groups',
-  classes: 'Classes',
-  locations: 'Locations',
-  missions: 'Missions',
-  studiesAndResources: 'StudiesAndResources',
-  eventFinderItems: 'EventFinderItems',
-} as const satisfies Record<AlgoliaIndexName, string>;
-
-export const ALGOLIA_INDEX_NAMES = Object.keys(
-  INDEX_BASE_NAMES,
-) as AlgoliaIndexName[];
+export const ALGOLIA_INDEX_NAMES = [
+  'contentItems',
+  'groups',
+  'classes',
+  'locations',
+  'missions',
+  'studiesAndResources',
+  'eventFinderItems',
+] as const satisfies readonly AlgoliaIndexName[];
 
 export function normalizeAlgoliaIndexEnv(
   env: string | null | undefined,
@@ -39,7 +35,7 @@ export function getAlgoliaIndexes(
   return Object.fromEntries(
     ALGOLIA_INDEX_NAMES.map((name) => [
       name,
-      `${normalizedEnv}_webv3_${INDEX_BASE_NAMES[name]}`,
+      `${normalizedEnv}_webv3_${name}`,
     ]),
   ) as AlgoliaIndexMap;
 }

@@ -95,7 +95,7 @@ function composeGroupsFilters(
   classesIndexClassType: string,
   mirroredFacetFilters: string | undefined,
 ): string | undefined {
-  const trimmed = classesIndexClassType.trim();
+  const trimmed = classesIndexClassType?.trim() ?? '';
 
   // Related groups should stay scoped to the class type first, then optionally
   // mirror format/campus/language filters from the sessions search.
