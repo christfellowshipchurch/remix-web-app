@@ -49,7 +49,7 @@ export const giveImproveFinancesData: CollectionItem[] = [
     id: 'give-improve-finances-1',
     name: 'Raising God-Honoring Money Managers',
     contentType: 'REDIRECT_CARD',
-    pathname: '/class-finder',
+    pathname: '/class-finder/my-god-my-money',
     contentChannelId: 'give-improve-finances-1',
     summary:
       'A study to help you manage your money with biblical wisdom and practical next steps.',
