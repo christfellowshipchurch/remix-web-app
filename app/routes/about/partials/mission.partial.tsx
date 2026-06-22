@@ -7,10 +7,10 @@ export function OurMissionSection({
 }) {
   const missionTitle = isSpanish
     ? 'Nuestra misión es ayudarte a conocer a Dios y crecer en tus relaciones para que puedas descubrir tu propósito e impactar al mundo.'
-    : 'Our goal is to help you know God and grow in your relationships so that you can discover your purpose and impact the world.';
+    : 'Christ Fellowship is one church with many locations in South Florida, with a passion to help you know God and grow in your relationships so that you can discover your purpose and impact the world. Led by senior pastors Todd & Julie Mullins, God has given us a vision to lead a radical transformation for Jesus Christ in this region and beyond– everyone, everyday, everywhere.';
   const missionDescription = isSpanish
     ? 'Además de nuestra misión, Dios nos ha dado la visión de liderar una transformación radical para Jesucristo en esta región y más allá. Todos Nosotros, en todo momento, en todo lugar.'
-    : ' In addition to our mission, God has given us a vision to lead a radical transformation for Jesus Christ in this region and beyond. Everyone, Everyday, Everywhere.';
+    : 'At Christ Fellowship, we believe that church isn’t just a building you walk into, but a family you can belong to. Every Sunday, we gather for inspiring services where you can learn more about Jesus and discover your purpose in life.';
 
   const sectionTitle = isSpanish ? 'nuestra misión' : 'our mission';
 

@@ -18,7 +18,7 @@ const faqDefaultData = [
   {
     title: 'What should I wear?',
     content:
-      'You can wear whatever you feel most comfortable in! Every Sunday, we have casual, relaxing services where everyone is welcome. Come as you are and expect to feel right at home!',
+      'Wear whatever you’re most comfortable in! Whether you want to keep it casual or dress up in your favorite outfit—you’ll fit right in.',
   },
   {
     title: 'Where do I park?',
@@ -80,7 +80,7 @@ const faqDowntownData = [
   {
     title: 'What should I wear?',
     content:
-      'You can wear whatever you feel most comfortable in! Every Sunday, we have casual, relaxing services where everyone is welcome. Come as you are and expect to feel right at home!',
+      'Wear whatever you’re most comfortable in! Whether you want to keep it casual or dress up in your favorite outfit—you’ll fit right in.',
   },
   {
     title: 'Where do I park?',
@@ -112,7 +112,7 @@ const faqJupiterData = [
   {
     title: 'What should I wear?',
     content:
-      'You can wear whatever you feel most comfortable in! Every Sunday, we have casual, relaxing services where everyone is welcome. Come as you are and expect to feel right at home!',
+      'Wear whatever you’re most comfortable in! Whether you want to keep it casual or dress up in your favorite outfit—you’ll fit right in.',
   },
   {
     title: 'Where do I park?',
@@ -144,7 +144,7 @@ const faqWestlakeData = [
   {
     title: 'What should I wear?',
     content:
-      'You can wear whatever you feel most comfortable in! Every Sunday, we have casual, relaxing services where everyone is welcome. Come as you are and expect to feel right at home!',
+      'Wear whatever you’re most comfortable in! Whether you want to keep it casual or dress up in your favorite outfit—you’ll fit right in.',
   },
   {
     title: 'Where do I park?',
@@ -304,25 +304,53 @@ export const faqCfEverywhereData = [
   },
 ];
 
-export const faqData = (campus: string) => {
+// CF Kids upper grade varies by campus, so the "Is childcare provided?" answer
+// is normalized here per campus rather than hardcoded in each array.
+const applyKidsGrade = <T extends { title: string; content: string }>(
+  items: T[],
+  kidsGrade: '5th' | '6th',
+): T[] => {
+  const gradeNum = kidsGrade === '6th' ? 6 : 5;
+  const gradeWord = kidsGrade === '6th' ? 'sexto' : 'quinto';
+  return items.map((item) => {
+    if (item.title === 'Is childcare provided?') {
+      return {
+        ...item,
+        content: item.content.replace(/(newborn–grade )\d/, `$1${gradeNum}`),
+      };
+    }
+    if (item.title === '¿Tienen cuidado de niños?') {
+      return {
+        ...item,
+        content: item.content.replace(
+          /hasta (?:quinto|sexto) grado/,
+          `hasta ${gradeWord} grado`,
+        ),
+      };
+    }
+    return item;
+  });
+};
+
+export const faqData = (campus: string, kidsGrade: '5th' | '6th' = '5th') => {
   switch (campus) {
     case 'Downtown West Palm Beach':
       return faqDowntownData;
     case 'Jupiter':
-      return faqJupiterData;
+      return applyKidsGrade(faqJupiterData, kidsGrade);
     case 'Westlake':
-      return faqWestlakeData;
+      return applyKidsGrade(faqWestlakeData, kidsGrade);
     case 'Trinity':
-      return faqTrinityData;
+      return applyKidsGrade(faqTrinityData, kidsGrade);
     case 'Online (CF Everywhere)':
       return faqCfEverywhereData;
     case 'Give':
       return faqGive;
     case 'Christ Fellowship Español Palm Beach Gardens':
-      return faqEspanolData;
+      return applyKidsGrade(faqEspanolData, kidsGrade);
     case 'Christ Fellowship Español Royal Palm Beach':
-      return faqEspanolData;
+      return applyKidsGrade(faqEspanolData, kidsGrade);
     default:
-      return faqDefaultData;
+      return applyKidsGrade(faqDefaultData, kidsGrade);
   }
 };

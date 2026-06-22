@@ -5,45 +5,47 @@ import MobileTimelineNavigation from './mobile-timeline-navigation.component';
 interface TimelineItem {
   year: string;
   image: string;
-  title: string;
   body: string;
+  /** Optional object-position class to control image cropping (e.g. 'object-top'). */
+  imagePosition?: string;
 }
 
 const timelineData: TimelineItem[] = [
   {
-    year: '2025',
+    year: '2026',
     image:
-      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068095',
-    title:
-      'Christ Fellowship is a non-denominational church led by Pastors Todd and Julie Mullins. We gather across multiple locations throughout Florida and online through Christ Fellowship Everywhere.',
-    body: 'At Christ Fellowship, we believe that church isn’t just a building you walk into, but a family you can belong to. Every Sunday, we have inspiring services where you can learn more about Jesus and discover your purpose in life. Come as you are and expect to feel right at home. Our mission is to impact our world with the love and message of Jesus Christ—everyone, everyday, everywhere.',
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3176146',
+    imagePosition: 'object-[center_25%]',
+    body: 'Today, Christ Fellowship gathers across 14 locations in South Florida, online through Christ Fellowship Everywhere, and inside # local prison locations. For over 40 years, we’ve helped thousands of people just like you to find people to do life with, break free from the pain of their past, thrive in their marriage, become a better parent, experience financial freedom, and learn how to make a difference.',
   },
   {
     year: '2023',
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068097',
-    title: 'Get There First',
     body: 'In 2023, Christ Fellowship launched “Get There First,” a multi-year vision focused on reaching the next generation. With Kids University discipleship programs,  and expanded youth ministry, the church is making its biggest investment yet in raising up young leaders for the future.',
   },
   {
     year: '2011',
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068098',
-    title: 'Multi-Site Expansion',
-    body: 'Christ Fellowship launched a bold multi-site strategy in 2011 to make it easy for people across South Florida to encounter Jesus. Today, thousands gather each week across multiple campuses—from Boca Raton to Vero Beach—bringing church closer to where people live and work.',
+    body: 'After 25 years of faithfully leading Christ Fellowship, Pastors Tom and Donna Mullins passed the baton and transitioned the senior leadership of Christ Fellowship to Pastors Todd and Julie Mullins. Stepping into this new season, they built upon the mission statement that had been lived out by Tom and Donna: “We are called to impact our world with the love and message of Jesus Christ—everyone, every day, everywhere.”',
+  },
+  {
+    year: '2005',
+    image:
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068098',
+    body: 'Christ Fellowship launched a bold multi-site strategy in 2005 to make it easy for people across South Florida to encounter Jesus, launching its first satellite campus in Wellington, Florida, and growing to five locations by 2009. Today, thousands gather each week across multiple campuses—from Boca Raton to Vero Beach—bringing church closer to where people live and work.',
   },
   {
     year: '1992',
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068099',
-    title: 'Building the First Campus',
     body: 'After years of gathering in schools and temporary spaces, the church’s founding families sacrificed greatly—selling cars, mortgaging homes, and giving generously—to purchase an old horse barn on Northlake Blvd. In 1992, members worked six days a week to transform it into Christ Fellowship’s first permanent campus, a place that quickly filled with life and faith.',
   },
   {
     year: '1984',
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068100',
-    title: 'Humble Beginnings',
     body: 'Christ Fellowship began in the Mullins’ living room with just 40 people gathered for prayer and worship. That simple step of faith sparked a movement that has grown into a church family impacting communities across South Florida and around the world.',
   },
 ];
@@ -70,7 +72,9 @@ function HistoryTabs() {
           <img
             src={timelineData[activeTab].image}
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
-            className={`w-full h-full object-cover shadow-xl transition-all duration-300 rounded-[1rem] md:rounded-none 2xl:!rounded-[1rem] ${
+            className={`w-full h-full object-cover ${
+              timelineData[activeTab].imagePosition ?? ''
+            } shadow-xl transition-all duration-300 rounded-[1rem] md:rounded-none 2xl:!rounded-[1rem] ${
               transitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
             }`}
           />
@@ -85,13 +89,7 @@ function HistoryTabs() {
           />
           {/* Desktop Timeline Navigation */}
           <TimelineNavigation
-            timelineData={timelineData.map(
-              ({ year, title, body: description }) => ({
-                year,
-                title,
-                description,
-              }),
-            )}
+            timelineData={timelineData.map(({ year }) => ({ year }))}
             activeTab={activeTab}
             handleTabChange={handleTabChange}
           />
@@ -102,9 +100,6 @@ function HistoryTabs() {
                 : 'opacity-100 translate-y-0'
             }`}
           >
-            <p className='md:text-xl lg:text-2xl font-bold md:font-medium text-text-primary'>
-              {timelineData[activeTab].title}
-            </p>
             <p className='md:text-lg text-text-secondary w-full sm:w-3/4 md:w-full mt-4'>
               {timelineData[activeTab].body}
             </p>
