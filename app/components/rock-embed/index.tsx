@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { cn } from '~/lib/utils';
+import { resolveRockIframeNavigateUrl } from '~/lib/rock-iframe-navigate';
 import { getRockEmbedOrigin } from '~/lib/rock-iframe-resize';
 
 type RockProxyMode = 'full' | 'minimal';
@@ -84,22 +85,36 @@ export function RockProxyEmbed({
   }, []);
 
   useEffect(() => {
-    if (!autoHeight) return;
-
     const handleMessage = (event: Event) => {
       const messageEvent = event as Event & {
-        data?: { type?: string; height?: number };
+        data?: { type?: string; height?: number; url?: string };
         origin: string;
         source: unknown;
       };
-      if (messageEvent.data?.type !== 'rock-iframe-resize') return;
       if (messageEvent.source !== iframeRef.current?.contentWindow) return;
 
-      // Accept resize messages from the Rock origin (direct embed) or same-origin proxy.
       const allowedOrigins = new Set(
         [embedOrigin, window.location.origin].filter(Boolean),
       );
       if (!allowedOrigins.has(messageEvent.origin)) return;
+
+      if (messageEvent.data?.type === 'rock-iframe-navigate') {
+        const targetUrl = messageEvent.data.url;
+        if (typeof targetUrl !== 'string') return;
+
+        const resolved = resolveRockIframeNavigateUrl(
+          targetUrl,
+          window.location.origin,
+        );
+        if (!resolved) return;
+
+        window.location.assign(resolved);
+        return;
+      }
+
+      if (!autoHeight || messageEvent.data?.type !== 'rock-iframe-resize') {
+        return;
+      }
 
       const nextHeight = messageEvent.data.height;
       if (typeof nextHeight !== 'number' || nextHeight <= 0) return;
@@ -159,7 +174,7 @@ export function RockProxyEmbed({
     style: { height: `${resolvedHeight}px` },
     title: 'Rock RMS Embedded Content',
     sandbox:
-      'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-fullscreen',
+      'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-fullscreen allow-top-navigation-by-user-activation',
     scrolling: autoHeight ? ('no' as const) : undefined,
     loading: 'lazy' as const,
     onLoad: handleLoad,

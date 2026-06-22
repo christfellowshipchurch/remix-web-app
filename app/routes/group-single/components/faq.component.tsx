@@ -17,11 +17,6 @@ const faqData = [
     answer:
       'We offer Bible study, activity, and social groups for men, women, and married couples. Groups are available for all life stages, with both morning and evening options.',
   },
-  {
-    question: 'Is Childcare Provided During Group Meetings?',
-    answer:
-      'Childcare is not provided, so group members will need to make their own arrangements.',
-  },
 ];
 
 export function FinderSingleFAQ({

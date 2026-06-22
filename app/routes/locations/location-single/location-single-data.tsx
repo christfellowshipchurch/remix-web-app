@@ -293,29 +293,45 @@ export const expectSpanishItems = [
   {
     title: 'Los Niños También Se Divierten!',
     description:
-      'Programas seguros y atractivos están disponibles para niños desde recién nacidos hasta 5.º grado(los rangos de edad se ajustan según cada campus) durante el servicio.',
+      'Programas seguros y atractivos están disponibles cada domingo para niños desde recién nacidos hasta 6to grado durante el servicio.',
   },
 ];
 
-export const expectEnglishItems = [
-  {
-    title: 'Come As You Are, Seriously!',
-    description:
-      'Comfortable clothes are the norm—no need to dress up to check out a service.',
-  },
-  {
-    title: 'Messages That Speak to Real Life (in about 1 hour)',
-    description:
-      'Engaging and inspiring, Bible-based messages that connect with everyday challenges and questions.',
-  },
+// CF Kids programming runs newborn–6th grade at these campuses; all other
+// English campuses run newborn–5th grade.
+const sixthGradeCampusUrls = [
+  'palm-beach-gardens',
+  'port-st-lucie',
+  'royal-palm-beach',
+  'boynton-beach',
+  'stuart',
+  'westlake',
+  'cf-everywhere',
+  'iglesia-palm-beach-gardens',
+  'iglesia-royal-palm-beach',
+];
+
+export const getKidsGrade = (campusUrl?: string): '5th' | '6th' =>
+  campusUrl && sixthGradeCampusUrls.includes(campusUrl) ? '6th' : '5th';
+
+export const expectEnglishItems = (kidsGrade: '5th' | '6th') => [
   {
     title: 'Friendly Faces and Helpful People',
     description:
-      'We’re here to help you feel comfortable from the moment you arrive.',
+      'When you walk through the doors at any location, someone will be there to welcome you, and help you find your way.',
   },
   {
-    title: 'Kids Have Fun Too! ',
+    title: 'An Hour Designed to Help You Grow',
     description:
-      'Safe and engaging programs are available for newborns through 5th grade (adjust the age ranges based on each campus) during the service.',
+      'Uplifting worship and practical, bible-based messages to help you grow in your faith and thrive in every area of life.',
+  },
+  {
+    title: 'Fun for the Whole Family!',
+    description: `Safe and engaging programs are available every Sunday for newborns through ${kidsGrade} grade during service.`,
+  },
+  {
+    title: 'Wondering What to Wear?',
+    description:
+      'Wear whatever you’re most comfortable in! Whether you want to keep it casual or dress up in your favorite outfit—you’ll fit right in.',
   },
 ];

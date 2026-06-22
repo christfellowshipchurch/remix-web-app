@@ -25,8 +25,8 @@ export function AChanceSection() {
           )}
         />
         <span className='relative z-20'>
-          Think of it less as a chore and more as ...{' '}
-          <span className='text-ocean'>a chance.</span>
+          Think of church less as a chore and more as a…{' '}
+          <span className='text-ocean'>chance</span>
         </span>
       </h2>
       <ImageScrollLayout />

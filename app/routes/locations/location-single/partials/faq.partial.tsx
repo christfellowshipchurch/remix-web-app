@@ -2,8 +2,15 @@ import { StyledAccordion } from '~/components';
 import { Button } from '~/primitives/button/button.primitive';
 import { ConnectCardModal } from '~/components/modals/connect-card';
 import { faqData } from '~/lib/faq-data.data';
+import { getKidsGrade } from '../location-single-data';
 
-export const LocationFAQ = ({ campusName }: { campusName: string }) => {
+export const LocationFAQ = ({
+  campusName,
+  campusUrl,
+}: {
+  campusName: string;
+  campusUrl?: string;
+}) => {
   const isEspanol = campusName.includes('Español');
 
   return (
@@ -17,7 +24,7 @@ export const LocationFAQ = ({ campusName }: { campusName: string }) => {
           </div>
 
           <StyledAccordion
-            data={faqData(campusName)}
+            data={faqData(campusName, getKidsGrade(campusUrl))}
             rootStyle='items-center'
             itemsStyle='bg-white border border-[#C6C6C6]'
           />

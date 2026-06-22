@@ -14,6 +14,11 @@ export const ROCK_PARENT_RESIZE_QUERY_PARAM = 'ParentResize';
  * {% if PageParameter.ParentResize == '1' %}
  * <script src="https://YOUR_APP_ORIGIN/rock-iframe-resize.js"></script>
  * {% endif %}
+ *
+ * Parent navigation from inside the iframe (when target="_top" is blocked):
+ * <a href="#" data-rock-parent-navigate="https://christfellowship.church/volunteer">
+ *   Back to volunteer page
+ * </a>
  */
 export function getRockEmbedOrigin(url: string): string | null {
   try {

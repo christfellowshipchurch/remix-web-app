@@ -33,7 +33,7 @@ export const WhatWeOfferTabs = () => {
         <div className='flex items-center justify-center gap-3'>
           <div className='w-6 h-1 bg-[#56CAEB]' />
           <p className='text-base font-extrabold leading-none text-[#56CAEB]'>
-            What We Offer
+            See What’s Here For You
           </p>
           <div className='w-6 h-1 bg-[#56CAEB]' />
         </div>
