@@ -71,7 +71,7 @@ export const SearchBar = ({
       <button
         type='submit'
         className='flex items-center justify-center p-2 bg-ocean lg:bg-dark-navy rounded-full relative'
-        aria-label='Search by zip code'
+        aria-label='Find a service near you'
       >
         <Icon
           name='search'
@@ -87,7 +87,7 @@ export const SearchBar = ({
         autoComplete='postal-code'
         value={inputValue}
         onChange={handleChange}
-        placeholder='Search by zip code'
+        placeholder='Find a service near you'
         className='w-full grow justify-center text-black px-3 outline-none appearance-none bg-transparent'
         aria-label='Zip code'
       />
