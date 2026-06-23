@@ -51,9 +51,7 @@ const GroupFinderNotifyForm: React.FC<GroupFinderNotifyFormProps> = ({
         fetcher.data !== null &&
         'error' in fetcher.data
       ) {
-        setError(
-          String(fetcher.data.error) || 'An unexpected error occurred',
-        );
+        setError(String(fetcher.data.error) || 'An unexpected error occurred');
       } else {
         setError(null);
         pushFormEvent(

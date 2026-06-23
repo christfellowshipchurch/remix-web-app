@@ -1,5 +1,9 @@
 import type { ActionFunction } from 'react-router-dom';
-import { fetchRockData, postRockData, TTL } from '~/lib/.server/fetch-rock-data';
+import {
+  fetchRockData,
+  postRockData,
+  TTL,
+} from '~/lib/.server/fetch-rock-data';
 import { findOrCreateRockPersonForSignup } from '~/lib/.server/rock-signup';
 import { escapeOData } from '~/lib/.server/rock-utils';
 
@@ -28,7 +32,7 @@ type CampusLookupResult = {
   id?: number;
 };
 
-const getFirstRecord = <T,>(result: T | T[] | null | undefined): T | null => {
+const getFirstRecord = <T>(result: T | T[] | null | undefined): T | null => {
   if (Array.isArray(result)) {
     return result[0] ?? null;
   }

@@ -102,10 +102,7 @@ describe('GroupFinderNotifyForm', () => {
     await screen.findByRole('option', { name: 'Palm Beach Gardens' });
     await user.type(screen.getByLabelText('First Name'), 'Test');
     await user.type(screen.getByLabelText('Last Name'), 'Person');
-    await user.type(
-      screen.getByLabelText('Email Address'),
-      'test@example.com',
-    );
+    await user.type(screen.getByLabelText('Email Address'), 'test@example.com');
     await user.type(screen.getByLabelText('Phone'), '5555555555');
     await user.selectOptions(screen.getByLabelText('Campus'), 'campus-guid-10');
     await user.click(screen.getByRole('button', { name: 'Submit' }));
