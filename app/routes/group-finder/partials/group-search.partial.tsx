@@ -11,6 +11,7 @@ import {
 
 import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
 import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
+import { GroupFinderNotifyModal } from '~/components/modals';
 import { useResponsive } from '~/hooks/use-responsive';
 import { cn } from '~/lib/utils';
 import { Icon } from '~/primitives/icon/icon';
@@ -640,9 +641,9 @@ function GroupFinderResultsLayout({
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
-    <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+    <div className='flex flex-col bg-gray pt-4 pb-8 md:pt-12 md:pb-20 w-full content-padding'>
       <div className='max-w-screen-content mx-auto md:w-full'>
-        <FinderResultsStats hitCount={groupNbHits} />
+        <GroupFinderResultsHeader hitCount={groupNbHits} />
         <div className='min-h-[320px]'>
           {groupHits.length === 0 && !isLoading ? (
             <p className='text-text-secondary text-center py-8'>
@@ -697,6 +698,62 @@ function GroupFinderResultsLayout({
         )}
       </div>
     </div>
+  );
+}
+
+function GroupFinderResultsHeader({ hitCount }: { hitCount: number }) {
+  const formattedHitCount = hitCount.toLocaleString();
+
+  return (
+    <div className='mb-4 md:mb-6'>
+      <div className='hidden md:flex md:items-center md:justify-between md:gap-6'>
+        <FinderResultsStats hitCount={hitCount} />
+        <div className='flex items-center gap-6 text-base text-text-primary'>
+          <p>More groups available at our next launch.</p>
+          <GroupFinderNotifyTrigger variant='desktop' />
+        </div>
+      </div>
+
+      <div className='flex flex-col items-start gap-1 md:hidden'>
+        <p className='text-sm leading-5 text-text-primary'>
+          {formattedHitCount} Results - More available at our next groups
+          launch.
+        </p>
+        <GroupFinderNotifyTrigger variant='mobile' />
+      </div>
+    </div>
+  );
+}
+
+function GroupFinderNotifyTrigger({
+  variant,
+}: {
+  variant: 'desktop' | 'mobile';
+}) {
+  if (variant === 'mobile') {
+    return (
+      <GroupFinderNotifyModal>
+        <button
+          type='button'
+          className='inline-flex items-center gap-2 text-sm leading-none text-ocean'
+        >
+          <Icon name='bell' size={18} color='currentColor' />
+          <span>Get Notified</span>
+        </button>
+      </GroupFinderNotifyModal>
+    );
+  }
+
+  return (
+    <GroupFinderNotifyModal>
+      <button
+        type='button'
+        className='inline-flex min-h-10 items-center gap-2 rounded-[8px] bg-[#DAEAF1] px-4 text-base font-semibold text-ocean transition-colors hover:bg-[#CDE7F1]'
+      >
+        <Icon name='bell' size={18} color='currentColor' />
+        <span>Get Notified</span>
+      </button>
+    </GroupFinderNotifyModal>
   );
 }
 
