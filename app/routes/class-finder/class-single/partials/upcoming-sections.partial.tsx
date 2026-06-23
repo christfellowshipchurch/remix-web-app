@@ -15,9 +15,7 @@ import { cn } from '~/lib/utils';
 
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
 import { ClassSingleFiltersSkeleton } from '../components/filters/class-single-filters-skeleton.component';
-import {
-  useClassSingleUpcomingInstantSearch,
-} from '../hooks/use-class-single-upcoming-instant-search';
+import { useClassSingleUpcomingInstantSearch } from '../hooks/use-class-single-upcoming-instant-search';
 import type { ClassHitType } from '../../types';
 import type { LoaderReturnType } from '../loader';
 import OnDemandCard from '../components/on-demand-card.component';

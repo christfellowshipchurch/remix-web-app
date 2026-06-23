@@ -45,9 +45,8 @@ function getInitialStateFromUrl(
 export const StudiesSearch = () => {
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
-  const studiesIndexName = (
-    algoliaIndexes ?? DEFAULT_ALGOLIA_INDEXES
-  ).studiesAndResources;
+  const studiesIndexName = (algoliaIndexes ?? DEFAULT_ALGOLIA_INDEXES)
+    .studiesAndResources;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 

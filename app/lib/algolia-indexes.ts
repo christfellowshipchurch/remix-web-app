@@ -33,10 +33,7 @@ export function getAlgoliaIndexes(
   const normalizedEnv = normalizeAlgoliaIndexEnv(env);
 
   return Object.fromEntries(
-    ALGOLIA_INDEX_NAMES.map((name) => [
-      name,
-      `${normalizedEnv}_webv3_${name}`,
-    ]),
+    ALGOLIA_INDEX_NAMES.map((name) => [name, `${normalizedEnv}_webv3_${name}`]),
   ) as AlgoliaIndexMap;
 }
 

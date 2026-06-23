@@ -414,7 +414,10 @@ function mapRefinementItemsToFacets(
 function AllEventsInstantFilters({
   eventsMobilePinEndRef,
   buildAllEventsInstantSearchUiState,
-}: Pick<Parameters<typeof EventsFiltersViewport>[0], 'eventsMobilePinEndRef'> & {
+}: Pick<
+  Parameters<typeof EventsFiltersViewport>[0],
+  'eventsMobilePinEndRef'
+> & {
   buildAllEventsInstantSearchUiState: (
     urlState: EventsFinderUrlState,
   ) => Record<string, Record<string, unknown>>;

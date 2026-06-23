@@ -38,9 +38,7 @@ import {
   classFinderUrlStateToParams,
   parseClassFinderUrlState,
 } from '../components/class-finder-url-state';
-import {
-  CLASS_FINDER_LOADER_HITS_PER_PAGE,
-} from '../components/build-class-finder-algolia-search';
+import { CLASS_FINDER_LOADER_HITS_PER_PAGE } from '../components/build-class-finder-algolia-search';
 import { ClassFinderFiltersSkeleton } from '../components/filters/class-finder-filters-skeleton.component';
 
 /**

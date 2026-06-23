@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import {
   ALGOLIA_INDEX_NAMES,
   getAlgoliaIndexes,
