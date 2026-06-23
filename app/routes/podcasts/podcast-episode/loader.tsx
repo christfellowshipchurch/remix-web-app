@@ -7,6 +7,7 @@ import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { createImageUrlFromGuid, parseRockKeyValueList } from '~/lib/utils';
 import { PODCAST_SHOW_CHANNEL_ID } from '../podcast-routing.server';
 import type { ContentItemHit } from '~/routes/search/types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 
 // Error messages
 const ERROR_MESSAGES = {
@@ -25,7 +26,6 @@ export type LoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
 };
 
-const CONTENT_ITEMS_INDEX_NAME = 'dev_contentItems';
 const MORE_EPISODES_HITS_PER_PAGE = 8;
 
 /**
@@ -65,9 +65,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   // Get Algolia configuration
   const appId = process.env.ALGOLIA_APP_ID;
   const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
   const moreEpisodesHits =
     appId && apiKey
-      ? await fetchMoreEpisodesFromAlgolia(episode, appId, apiKey)
+      ? await fetchMoreEpisodesFromAlgolia(
+          episode,
+          appId,
+          apiKey,
+          algoliaIndexes.contentItems,
+        )
       : [];
 
   return {
@@ -82,6 +88,7 @@ async function fetchMoreEpisodesFromAlgolia(
   episode: PodcastEpisode,
   appId: string,
   apiKey: string,
+  indexName: string,
 ): Promise<ContentItemHit[]> {
   const seasonNumber = Number(episode.season);
   const rockItemId = Number(episode.id);
@@ -102,7 +109,7 @@ async function fetchMoreEpisodesFromAlgolia(
   try {
     const client = algoliasearch(appId, apiKey, {});
     const response = await client.searchSingleIndex({
-      indexName: CONTENT_ITEMS_INDEX_NAME,
+      indexName,
       searchParams: {
         filters,
         hitsPerPage: MORE_EPISODES_HITS_PER_PAGE,

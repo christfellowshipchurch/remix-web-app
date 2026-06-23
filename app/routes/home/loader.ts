@@ -5,6 +5,8 @@ import {
 } from '~/lib/.server/build-leaders-with-bios';
 import { fetchHeroActions } from './hero-actions.server';
 import type { IconName } from '~/primitives/button/types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 export interface HeroAction {
   iconName: IconName;
@@ -19,6 +21,7 @@ export type HomeLoaderData = {
   actions: HeroAction[];
   ALGOLIA_APP_ID?: string;
   ALGOLIA_SEARCH_API_KEY?: string;
+  algoliaIndexes: AlgoliaIndexMap;
 };
 
 export const loader = async (): Promise<Response> => {
@@ -42,5 +45,6 @@ export const loader = async (): Promise<Response> => {
     actions,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY,
+    algoliaIndexes: getServerAlgoliaIndexes(),
   });
 };

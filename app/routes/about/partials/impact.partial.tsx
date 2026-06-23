@@ -34,9 +34,7 @@ export function ImpactSection({ isSpanish = false }: { isSpanish?: boolean }) {
             <div className='row-span-1'>
               <div className='flex flex-col gap-8'>
                 <SectionTitle
-                  sectionTitle={
-                    isSpanish ? 'nuestro impacto 2025' : 'our impact 2025'
-                  }
+                  sectionTitle={isSpanish ? 'nuestro impacto' : 'our impact'}
                 />
                 <h3 className='text-[32px] xl:text-5xl leading-tight font-extrabold mb-6'>
                   {isSpanish ? 'Juntos, Estamos' : 'Together, We’re'} <br />
@@ -45,8 +43,8 @@ export function ImpactSection({ isSpanish = false }: { isSpanish?: boolean }) {
               </div>
               <p className='text-lg xl:text-xl pr-2 lg:max-w-[526px]'>
                 {isSpanish
-                  ? 'Una pequeña muestra del impacto que Christ Fellowship Church ha tenido en el mundo, todo gracias a la increíble generosidad de nuestra familia de la iglesia.'
-                  : 'A small glimpse into the impact that Christ Fellowship Church has had on the world, all thanks to our incredibly generous church family.'}
+                  ? 'Aquí hay una pequeña muestra del impacto que hemos hecho juntos en el último año como familia de la iglesia en nuestra comunidad y en el mundo.'
+                  : 'Here’s a small glimpse into the impact that we’ve made together in the last year as a church family locally and around the world.'}
               </p>
             </div>
             <div className='row-span-1 hidden lg:block'>

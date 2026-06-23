@@ -32,7 +32,9 @@ export const ClickThroughRegistration = ({
   const algolia = rootData?.algolia ?? {
     ALGOLIA_APP_ID: '',
     ALGOLIA_SEARCH_API_KEY: '',
+    indexes: undefined,
   };
+  const eventFinderIndexName = algolia.indexes?.eventFinderItems ?? '';
 
   const extractedGroupType = loaderGroupType ?? '';
 
@@ -69,7 +71,6 @@ export const ClickThroughRegistration = ({
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
-  const [isGoingBack, setIsGoingBack] = useState(false);
   const [pendingRegisterScroll, setPendingRegisterScroll] = useState(false);
   const previousStepRef = useRef<number>(1);
 
@@ -80,7 +81,6 @@ export const ClickThroughRegistration = ({
     setSelectedDate('');
     setSelectedTime('');
     setCampusSearchQuery('');
-    setIsGoingBack(false);
     previousStepRef.current = 1;
     setPendingRegisterScroll(true);
   };
@@ -105,8 +105,6 @@ export const ClickThroughRegistration = ({
 
   const handleBack = () => {
     if (step > 1) {
-      // Set flag to disable auto-select (will be reset when user makes a selection)
-      setIsGoingBack(true);
       previousStepRef.current = step;
       // Clear selections when going back based on current step
       if (step === 5) {
@@ -131,8 +129,6 @@ export const ClickThroughRegistration = ({
   };
 
   const navigateToStep = (targetDisplayStep: number) => {
-    // Set flag to disable auto-select (will be reset when user makes a selection)
-    setIsGoingBack(true);
     previousStepRef.current = step;
     const targetActualStep = getActualStep(targetDisplayStep);
     // Clear selections for steps after the target step
@@ -196,7 +192,7 @@ export const ClickThroughRegistration = ({
     <>
       {!hitsReady && <RegistrationSkeleton totalSteps={totalSteps} />}
       <InstantSearch
-        indexName='dev_EventFinderItems'
+        indexName={eventFinderIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
@@ -319,29 +315,24 @@ export const ClickThroughRegistration = ({
                   selectedDate={selectedDate}
                   selectedTime={selectedTime}
                   campusSearchQuery={campusSearchQuery}
-                  isGoingBack={isGoingBack}
                   groupType={extractedGroupType}
                   onCampusSelect={(campus) => {
                     setSelectedCampus(campus);
-                    setIsGoingBack(false);
                     previousStepRef.current = 1;
                     setStep(hasSubGroups ? 2 : 3);
                   }}
                   onSubGroupTypeSelect={(subGroupType) => {
                     setSelectedSubGroupType(subGroupType);
-                    setIsGoingBack(false);
                     previousStepRef.current = 2;
                     setStep(3);
                   }}
                   onDateSelect={(date) => {
                     setSelectedDate(date);
-                    setIsGoingBack(false);
                     previousStepRef.current = hasSubGroups ? 3 : 3;
                     setStep(4);
                   }}
                   onTimeSelect={(time) => {
                     setSelectedTime(time);
-                    setIsGoingBack(false);
                     previousStepRef.current = hasSubGroups ? 4 : 3;
                     setStep(5);
                   }}
@@ -389,7 +380,6 @@ interface StepContentProps {
   selectedDate: string;
   selectedTime: string;
   campusSearchQuery: string;
-  isGoingBack: boolean;
   groupType: string;
   hasSubGroups: boolean;
   onCampusSelect: (campus: string) => void;
@@ -407,7 +397,6 @@ const StepContent = ({
   selectedDate,
   selectedTime,
   campusSearchQuery,
-  isGoingBack,
   groupType,
   hasSubGroups,
   onCampusSelect,
@@ -418,20 +407,6 @@ const StepContent = ({
   onResetRegistration,
 }: StepContentProps) => {
   const { items } = useHits<EventFinderHit>();
-  const stepRef = useRef(step);
-  const wasGoingBackRef = useRef(false);
-
-  // Track if we're going back by comparing current step to previous step
-  useEffect(() => {
-    if (step < stepRef.current) {
-      // Going backward - set flag
-      wasGoingBackRef.current = true;
-    } else if (step > stepRef.current) {
-      // Going forward - clear flag
-      wasGoingBackRef.current = false;
-    }
-    stepRef.current = step;
-  }, [step]);
 
   // Handle case where no hits are available
   if (items.length === 0 && step !== 5) {
@@ -451,7 +426,6 @@ const StepContent = ({
         onSelect={onCampusSelect}
         searchQuery={campusSearchQuery}
         onSearchChange={onCampusSearchChange}
-        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
@@ -463,7 +437,6 @@ const StepContent = ({
         selectedCampus={selectedCampus}
         groupType={groupType}
         onSelect={onSubGroupTypeSelect}
-        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
@@ -476,7 +449,6 @@ const StepContent = ({
         selectedSubGroupType={selectedSubGroupType}
         hasSubGroups={hasSubGroups}
         onSelect={onDateSelect}
-        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
@@ -490,7 +462,6 @@ const StepContent = ({
         selectedDate={selectedDate}
         hasSubGroups={hasSubGroups}
         onSelect={onTimeSelect}
-        isGoingBack={isGoingBack || wasGoingBackRef.current}
       />
     );
   }
@@ -529,7 +500,6 @@ interface CampusStepProps {
   onSelect: (campus: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  isGoingBack: boolean;
 }
 
 const CampusStep = ({
@@ -537,7 +507,6 @@ const CampusStep = ({
   onSelect,
   searchQuery,
   onSearchChange,
-  isGoingBack,
 }: CampusStepProps) => {
   // Get unique campuses
   const uniqueCampuses = useMemo(() => {
@@ -582,13 +551,6 @@ const CampusStep = ({
     );
   }, [uniqueCampuses, searchQuery]);
 
-  // Auto-select if only one option (only when not searching and not going back)
-  useEffect(() => {
-    if (!isGoingBack && !searchQuery && filteredCampuses.length === 1) {
-      onSelect(filteredCampuses[0].name);
-    }
-  }, [filteredCampuses, searchQuery, onSelect, isGoingBack]);
-
   return (
     <div className='flex flex-col gap-4'>
       {/* Search Input */}
@@ -631,7 +593,6 @@ interface SubGroupTypeStepProps {
   selectedCampus: string;
   groupType: string;
   onSelect: (subGroupType: string) => void;
-  isGoingBack: boolean;
 }
 
 const SubGroupTypeStep = ({
@@ -639,7 +600,6 @@ const SubGroupTypeStep = ({
   selectedCampus,
   groupType,
   onSelect,
-  isGoingBack,
 }: SubGroupTypeStepProps) => {
   // Get unique subGroupTypes for selected campus
   const uniqueSubGroupTypes = useMemo(() => {
@@ -658,13 +618,6 @@ const SubGroupTypeStep = ({
       });
     return Array.from(subGroupTypeMap.values()).sort();
   }, [hits, selectedCampus]);
-
-  // Auto-select if only one option (only when not going back)
-  useEffect(() => {
-    if (!isGoingBack && uniqueSubGroupTypes.length === 1) {
-      onSelect(uniqueSubGroupTypes[0]);
-    }
-  }, [uniqueSubGroupTypes, onSelect, isGoingBack]);
 
   if (uniqueSubGroupTypes.length === 0) {
     return (
@@ -704,7 +657,6 @@ interface DateStepProps {
   selectedSubGroupType: string;
   hasSubGroups: boolean;
   onSelect: (date: string) => void;
-  isGoingBack: boolean;
 }
 
 const DateStep = ({
@@ -713,7 +665,6 @@ const DateStep = ({
   selectedSubGroupType,
   hasSubGroups,
   onSelect,
-  isGoingBack,
 }: DateStepProps) => {
   // Get unique dates for selected campus and subGroupType (if applicable)
   const uniqueDates = useMemo(() => {
@@ -746,13 +697,6 @@ const DateStep = ({
     );
   }, [hits, selectedCampus, selectedSubGroupType, hasSubGroups]);
 
-  // Auto-select if only one option (only when not going back)
-  useEffect(() => {
-    if (!isGoingBack && uniqueDates.length === 1) {
-      onSelect(uniqueDates[0].date);
-    }
-  }, [uniqueDates, onSelect, isGoingBack]);
-
   return (
     <div className='flex flex-wrap justify-center gap-4'>
       {uniqueDates.map((dateInfo) => (
@@ -777,7 +721,6 @@ interface TimeStepProps {
   selectedDate: string;
   hasSubGroups: boolean;
   onSelect: (time: string) => void;
-  isGoingBack: boolean;
 }
 
 const TimeStep = ({
@@ -787,7 +730,6 @@ const TimeStep = ({
   selectedDate,
   hasSubGroups,
   onSelect,
-  isGoingBack,
 }: TimeStepProps) => {
   // Get unique times for selected campus, subGroupType (if applicable), and date
   const uniqueTimes = useMemo(() => {
@@ -823,13 +765,6 @@ const TimeStep = ({
 
     return Array.from(timeMap.values());
   }, [hits, selectedCampus, selectedSubGroupType, selectedDate, hasSubGroups]);
-
-  // Auto-select if only one option (only when not going back)
-  useEffect(() => {
-    if (!isGoingBack && uniqueTimes.length === 1) {
-      onSelect(uniqueTimes[0].time);
-    }
-  }, [uniqueTimes, onSelect, isGoingBack]);
 
   if (uniqueTimes.length === 0) {
     return (

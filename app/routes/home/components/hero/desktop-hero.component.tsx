@@ -64,9 +64,9 @@ export function DesktopHeroSection() {
                 </span>
               </h1>
               <p className='text-white max-w-[470px] xl:max-w-[529px] text-xl z-2'>
-                From inspiring messages to genuine community, Christ Fellowship
-                is a place where you and your family can grow in your faith and
-                make lifelong friendships.
+                Christ Fellowship is a place where you and your family can grow
+                in your faith, build meaningful relationships, and discover the
+                life you were created to live.
               </p>
               <div
                 className={cn(

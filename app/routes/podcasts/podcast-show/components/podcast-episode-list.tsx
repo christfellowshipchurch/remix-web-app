@@ -15,6 +15,7 @@ import { LoaderReturnType } from '../loader';
 interface PodcastEpisodeListProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  indexName: string;
   podcastTitle: string;
 }
 
@@ -121,6 +122,7 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 export const PodcastEpisodeList = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
+  indexName,
   podcastTitle,
 }: PodcastEpisodeListProps) => {
   const searchClient = useMemo(
@@ -132,7 +134,7 @@ export const PodcastEpisodeList = ({
 
   return (
     <InstantSearch
-      indexName='dev_contentItems'
+      indexName={indexName}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

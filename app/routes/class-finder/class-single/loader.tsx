@@ -3,10 +3,12 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { AuthenticationError } from '~/lib/.server/error-types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import type { RockContentChannelItem } from '~/lib/types/rock-types';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import type { GroupType } from '~/routes/group-finder/types';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 import type { ClassHitType } from '../types';
 import {
@@ -19,6 +21,7 @@ import { parseClassSingleUrlState } from './class-single-url-state';
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   classUrl: string;
   classHit: ClassHitType | null;
   upcomingHits: ClassHitType[];
@@ -39,11 +42,14 @@ export type LoaderReturnType = {
 
 /**
  * Defined Value from Rock Classes Defined Type (387). Adds the top-level
- * `value` (class name) that the generic content-item type omits; attribute
- * values arrive under `attributeValues` post-normalize.
+ * `value` (class name) and `description` (the native Defined Value description,
+ * shown as the "Description" column in Rock admin) that the generic
+ * content-item type omits; custom attribute values arrive under
+ * `attributeValues` post-normalize.
  */
 type RockClassDefinedValue = RockContentChannelItem & {
   value?: string;
+  description?: string;
 };
 
 function rockStringAttr(
@@ -72,6 +78,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new AuthenticationError('Algolia credentials not found');
@@ -100,7 +107,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       classTrailer = rockStringAttr(classData, 'classTrailer');
       onDemandUrl = rockStringAttr(classData, 'onDemandSignUpLink');
       rockTitle = classData.value?.trim() ?? '';
-      rockSummary = rockStringAttr(classData, 'summary');
+      rockSummary = classData.description?.trim() ?? '';
       const imageGuid = rockStringAttr(classData, 'image');
       rockCoverImageUri = imageGuid ? createImageUrlFromGuid(imageGuid) : '';
     }
@@ -121,7 +128,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   const client = algoliasearch(appId, searchApiKey, {});
 
   try {
-    const heroBuilt = buildClassSingleHeroSearchParams(classUrl);
+    const heroBuilt = buildClassSingleHeroSearchParams(
+      classUrl,
+      algoliaIndexes.classes,
+    );
     const { indexName: heroIndex, ...heroParams } = heroBuilt;
     const heroRes = await client.searchSingleIndex({
       indexName: heroIndex,
@@ -140,10 +150,12 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         const upcomingBuilt = buildClassSingleUpcomingSearchParams(
           urlState,
           classType,
+          algoliaIndexes.classes,
         );
         const groupsBuilt = buildClassSingleGroupsSearchParams(
           urlState,
           classType,
+          algoliaIndexes.groups,
         );
 
         const { indexName: upcomingIndex, ...upcomingParams } = upcomingBuilt;
@@ -186,6 +198,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     // straight to Algolia without revalidating this route loader.
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes,
     classUrl,
     classHit,
     upcomingHits,

@@ -4,6 +4,7 @@ import { algoliasearch } from 'algoliasearch';
 import { mapPageBuilderChildItems } from '~/routes/page-builder/loader';
 import { PageBuilderSection } from '~/routes/page-builder/types';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import type { LocationHitType } from './types';
 
@@ -64,6 +65,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new Response('Keys not found', {
@@ -76,7 +78,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   try {
     const res = await client.searchSingleIndex({
-      indexName: 'dev_Locations',
+      indexName: algoliaIndexes.locations,
       searchParams: {
         filters: `campusUrl:"${campusUrl}"`,
         hitsPerPage: 1,

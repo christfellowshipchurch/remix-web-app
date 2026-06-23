@@ -8,6 +8,8 @@ import {
 } from '../../page-builder/loader';
 import { ContentBlockData } from '~/routes/page-builder/types';
 import { PODCAST_SHOW_CHANNEL_ID } from '../podcast-routing.server';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 export type LoaderReturnType = {
   path: string;
@@ -16,6 +18,7 @@ export type LoaderReturnType = {
   featureBlocks: ContentBlockData[] | null;
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
 };
 
 export async function getChannelIdByGuid(channelGuid: string) {
@@ -166,5 +169,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
     featureBlocks: featureBlocks || null,
     ALGOLIA_APP_ID: appId || '',
     ALGOLIA_SEARCH_API_KEY: searchApiKey || '',
+    algoliaIndexes: getServerAlgoliaIndexes(),
   };
 }

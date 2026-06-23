@@ -195,9 +195,10 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         campusPastor={campusPastor}
         campusName={campusName}
         campusInstagram={campusInstagram}
+        campusUrl={campusUrl}
       />
 
-      <LocationFAQ campusName={campusName} />
+      <LocationFAQ campusName={campusName} campusUrl={campusUrl} />
     </div>
   );
 }
@@ -283,9 +284,10 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
         campusPastor={campusPastor}
         campusName={campusName}
         campusInstagram={campusInstagram}
+        campusUrl='cf-everywhere'
       />
 
-      <LocationFAQ campusName={campusName} />
+      <LocationFAQ campusName={campusName} campusUrl='cf-everywhere' />
     </div>
   );
 };
@@ -299,6 +301,7 @@ const CampusTabsWrapper = ({
   setActiveTab,
   setReminderVideo,
   isOnline,
+  campusUrl,
 }: {
   activeTab: string;
   campusPastor: {
@@ -313,6 +316,7 @@ const CampusTabsWrapper = ({
   setActiveTab: (tab: string) => void;
   setReminderVideo: string | undefined;
   isOnline: boolean;
+  campusUrl?: string;
 }) => {
   const { upcomingEvents } = useLoaderData<LoaderReturnType>();
   const hasUpcomingEvents = (upcomingEvents.collection?.length ?? 0) > 0;
@@ -337,11 +341,12 @@ const CampusTabsWrapper = ({
           setReminderVideo={setReminderVideo}
           isOnline={isOnline}
           isSpanish={isSpanish}
+          campusUrl={campusUrl}
         />
       );
     }
     return SundayTabPanel;
-  }, [setReminderVideo, isOnline, isSpanish]);
+  }, [setReminderVideo, isOnline, isSpanish, campusUrl]);
 
   const AboutTabPanel = useMemo(() => {
     function AboutTabPanel() {

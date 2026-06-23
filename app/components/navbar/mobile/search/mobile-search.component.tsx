@@ -27,7 +27,7 @@ const emptySearchClient = {
           query: '',
           params: '',
           processingTimeMS: 0,
-          index: 'dev_contentItems',
+          index: 'empty',
         },
       ],
     }),
@@ -42,7 +42,11 @@ export const MobileSearch = ({
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = rootData?.algolia ?? {
     ALGOLIA_APP_ID: '',
     ALGOLIA_SEARCH_API_KEY: '',
+    indexes: undefined,
   };
+  const contentItemsIndexName =
+    rootData?.algolia.indexes.contentItems ?? '';
+  const locationsIndexName = rootData?.algolia.indexes.locations ?? '';
 
   // Create or retrieve the Algolia client
   useEffect(() => {
@@ -64,16 +68,16 @@ export const MobileSearch = ({
   return (
     <div className='h-full overflow-y-auto bg-white'>
       <InstantSearch
-        indexName='dev_contentItems'
+        indexName={contentItemsIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          dev_contentItems: {
+          [contentItemsIndexName]: {
             query: '',
           },
-          dev_Locations: {
+          [locationsIndexName]: {
             query: '',
           },
         }}
@@ -117,6 +121,7 @@ export const MobileSearch = ({
         <SearchPopup
           setIsSearchOpen={setIsSearchOpen}
           searchClient={searchClient}
+          locationsIndexName={locationsIndexName}
         />
       </InstantSearch>
     </div>

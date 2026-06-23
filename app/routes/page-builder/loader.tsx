@@ -155,7 +155,12 @@ const getLinkTreeLayout = async (attributeValues: RockAttributeValues) => {
 
 export const mapPageBuilderChildItems = async (
   children: RockContentItem[],
+  options: { summaryFallbackToContent?: boolean } = {},
 ): Promise<PageBuilderSection[]> => {
+  // When false, collection items with no `summary` attribute leave the summary
+  // blank instead of falling back to the item's HTML body content. Link tree
+  // cards opt out so empty-summary articles don't render raw content.
+  const { summaryFallbackToContent = true } = options;
   // Build the podcast routing index once if any section is a collection.
   // This resolves Rock show items once for all collections in this call so that
   // episode items can be routed to /podcasts/:showPath/:episodePath without
@@ -244,7 +249,7 @@ export const mapPageBuilderChildItems = async (
 
                 const summary =
                   getStringValue(itemAttributeValues?.summary || '') ||
-                  item.content;
+                  (summaryFallbackToContent ? item.content : '');
                 let startDate = '';
                 if (item.startDateTime) {
                   startDate = format(
@@ -291,7 +296,7 @@ export const mapPageBuilderChildItems = async (
 
                 const summary =
                   getStringValue(itemAttributeValues?.summary || '') ||
-                  item.content;
+                  (summaryFallbackToContent ? item.content : '');
                 let startDate = '';
                 if (item.startDateTime) {
                   startDate = format(
@@ -348,7 +353,7 @@ export const mapPageBuilderChildItems = async (
               // pattern used for podcast items above.
               const summary =
                 getStringValue(itemAttributeValues?.summary || '') ||
-                item.content ||
+                (summaryFallbackToContent ? item.content : '') ||
                 '';
 
               // Generate the pathname for the item
@@ -376,9 +381,14 @@ export const mapPageBuilderChildItems = async (
                   );
               }
 
-              // Generate the start date for the item
+              // Generate the start date for the item.
+              // Page Builder items have no meaningful start date in a
+              // collection context, so skip it (same as REDIRECT_CARD).
               let startDate = '';
-              if (contentType !== 'REDIRECT_CARD') {
+              if (
+                contentType !== 'REDIRECT_CARD' &&
+                contentType !== 'PAGE_BUILDER'
+              ) {
                 const startDateTime = item.startDateTime || '';
                 if (startDateTime) {
                   startDate = format(
@@ -462,6 +472,7 @@ export const mapPageBuilderChildItems = async (
           endpoint: `AttributeMatrixItems`,
           queryParams: {
             $filter: `AttributeMatrix/${getIdentifierType(matrixId).query}`,
+            $orderby: 'Order',
             loadAttributes: 'simple',
           },
         });

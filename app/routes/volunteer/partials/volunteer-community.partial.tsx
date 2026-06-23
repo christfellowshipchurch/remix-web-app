@@ -11,7 +11,7 @@ import { VolunteerAlgoliaSkeleton } from '../components/volunteer-algolia-skelet
 import { LoaderReturnType } from '../loader';
 
 export function VolunteerCommunity() {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
   const [volunteerUiReady, setVolunteerUiReady] = useState(false);
 
@@ -40,6 +40,7 @@ export function VolunteerCommunity() {
             <VolunteerAlgolia
               appId={ALGOLIA_APP_ID}
               apiKey={ALGOLIA_SEARCH_API_KEY}
+              indexName={algoliaIndexes.missions}
               onVolunteerUiReady={() => setVolunteerUiReady(true)}
             />
           </div>

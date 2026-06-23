@@ -12,9 +12,9 @@ export function ClassFinderPage() {
           sectionTitle='learn together'
           sectionTitleColor='#004F71'
           title={`<span className='hidden md:inline'>Discover ${' '}</span>Classes For You`}
-          mobileDescription='From topics like building your faith, growing your marriage, finances, and more–there’s a class for you!'
+          mobileDescription='From topics like building your faith, growing your marriage, finances, finding Freedom, and more–there’s a class for you!'
           desktopDescription='Discover a class that will help give you practical steps to grow in your journey with God.
-From topics like building your faith, growing your marriage, managing your finances, and more–there’s a class for you!'
+From topics like building your faith, growing your marriage, managing your finances, finding Freedom, and more–there’s a class for you!'
         />
       </div>
       <div className='flex flex-col flex-1 w-full'>

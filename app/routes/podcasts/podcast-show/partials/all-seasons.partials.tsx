@@ -3,7 +3,7 @@ import { LoaderReturnType } from '../loader';
 import { PodcastEpisodeList } from '../components/podcast-episode-list';
 
 export const AllSeasons = () => {
-  const { podcast, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { podcast, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
 
   return (
@@ -15,6 +15,7 @@ export const AllSeasons = () => {
           <PodcastEpisodeList
             ALGOLIA_APP_ID={ALGOLIA_APP_ID}
             ALGOLIA_SEARCH_API_KEY={ALGOLIA_SEARCH_API_KEY}
+            indexName={algoliaIndexes.contentItems}
             podcastTitle={podcast.title}
           />
         </div>

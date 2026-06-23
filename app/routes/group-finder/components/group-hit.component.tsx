@@ -15,6 +15,22 @@ function formatGroupHitCampusName(campusName: string): string {
   return afterMarker ? `CFE ${afterMarker}` : 'CFE';
 }
 
+/**
+ * City for the card's bottom bar: the group's own meeting city when set
+ * (`meetingLocation` is "City, FL 33458"), else the campus city, else the
+ * campus name itself (e.g. "Online (CF Everywhere)").
+ */
+function groupHitCityLabel(
+  hit: GroupType,
+  campusCityByName: Record<string, string>,
+): string {
+  const meetingCity = (hit.meetingLocation || '').split(',')[0]?.trim();
+  if (meetingCity) return meetingCity;
+  return (
+    campusCityByName[hit.campusName] ?? formatGroupHitCampusName(hit.campusName)
+  );
+}
+
 function formatDistanceMiles(meters: number): string {
   const miles = meters / 1609.344;
   return `${miles.toFixed(1)} miles away`;
@@ -36,10 +52,16 @@ export function GroupHit({
   hit,
   backUrl,
   isGeoSearch = false,
+  isVirtualFilterActive = false,
+  campusCityByName = {},
 }: {
   hit: GroupType;
   backUrl?: string;
   isGeoSearch?: boolean;
+  /** When the "Virtual" meeting-type filter is active, the footer bar reads
+   * "Online" instead of a physical meeting location. */
+  isVirtualFilterActive?: boolean;
+  campusCityByName?: Record<string, string>;
 }) {
   const coverImage = hit.coverImage?.sources?.[0]?.uri || '';
   const preference = hit.groupFor?.trim() || 'Anyone';
@@ -113,6 +135,25 @@ export function GroupHit({
     Number.isFinite(hit._rankingInfo.geoDistance)
       ? formatDistanceMiles(hit._rankingInfo.geoDistance)
       : null;
+
+  // A group whose own meeting type is virtual/online has no physical location,
+  // so its footer reads "Online" rather than a city or distance.
+  const isVirtualGroup = (() => {
+    const t = hit.meetingType?.trim().toLowerCase();
+    return t === 'virtual' || t === 'online';
+  })();
+
+  // Footer bar text + icon. Priority: the active "Virtual" filter, then a geo
+  // distance when one is available, then "Online" for virtual groups, otherwise
+  // the group/campus city. A geo search with no usable distance falls back to
+  // the same city label instead of "Location Varies".
+  const footerShowsOnline =
+    isVirtualFilterActive || (isGeoSearch && !distanceLabel && isVirtualGroup);
+  const footerLabel = footerShowsOnline
+    ? 'Online'
+    : isGeoSearch && distanceLabel
+      ? distanceLabel
+      : groupHitCityLabel(hit, campusCityByName);
 
   return (
     <Link
@@ -190,12 +231,12 @@ export function GroupHit({
               ))}
             </div>
             <div className='w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white '>
-              <Icon name='map' size={20} color='white' />
-              <p className='text-sm font-semibold'>
-                {isGeoSearch
-                  ? (distanceLabel ?? 'Location Varies')
-                  : formatGroupHitCampusName(hit.campusName)}
-              </p>
+              <Icon
+                name={footerShowsOnline ? 'globe' : 'map'}
+                size={20}
+                color='white'
+              />
+              <p className='text-sm font-semibold'>{footerLabel}</p>
             </div>
           </div>
         </div>

@@ -47,7 +47,8 @@ const ClassNotFound = () => {
 };
 
 const ClassSingleContent = ({ hit }: { hit: ClassHitType }) => {
-  const { classType, topic } = hit;
+  const { topic } = hit;
+  const classType = hit.classType?.trim() ?? '';
   const navigate = useNavigate();
   const {
     discussionGuideUrl,

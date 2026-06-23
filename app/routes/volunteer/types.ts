@@ -1,8 +1,5 @@
 import type { Coordinates } from './country-coordinates';
 
-/** Algolia index id (configured in Algolia dashboard). */
-export const VOLUNTEER_ALGOLIA_INDEX = 'dev_Missions';
-
 /** `coverImage` shape from Algolia volunteer index records. */
 export interface VolunteerCoverImage {
   sources: { uri: string }[];
@@ -22,6 +19,11 @@ export interface Volunteer {
   groupGuid: string;
   title: string;
   coverImage: VolunteerCoverImage;
+  /**
+   * Image URL of the group's **Event Type** Defined Value, used as the cover
+   * image fallback when `coverImage` has no group photo. Indexed from Rock.
+   */
+  eventTypeImageUrl?: string;
   summary: string;
   campusList: string[];
   eventDateStr: string;

@@ -6,10 +6,12 @@ export const SundayDetails = ({
   setReminderVideo,
   isOnline,
   isSpanish,
+  campusUrl,
 }: {
   setReminderVideo?: string;
   isOnline?: boolean;
   isSpanish?: boolean;
+  campusUrl?: string;
 }) => {
   return (
     <div className='flex flex-col w-full'>
@@ -17,6 +19,7 @@ export const SundayDetails = ({
         setReminderVideo={setReminderVideo}
         isOnline={isOnline}
         isSpanish={isSpanish}
+        campusUrl={campusUrl}
       />
 
       {!isOnline && <CampusAmenities isSpanish={isSpanish} />}

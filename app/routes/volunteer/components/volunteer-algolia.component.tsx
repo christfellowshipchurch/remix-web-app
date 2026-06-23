@@ -26,7 +26,6 @@ import {
 
 import { VolunteerCard } from './volunteer-card.component';
 import type { Volunteer } from '../types';
-import { VOLUNTEER_ALGOLIA_INDEX } from '../types';
 import {
   parseVolunteerAlgoliaUrlState,
   type VolunteerAlgoliaUrlState,
@@ -187,10 +186,12 @@ function CampusFilterSelect() {
 export function VolunteerAlgolia({
   appId,
   apiKey,
+  indexName,
   onVolunteerUiReady,
 }: {
   appId: string;
   apiKey: string;
+  indexName: string;
   /** Called once when credentials are missing, or when the first Algolia search reaches `idle`. */
   onVolunteerUiReady?: () => void;
 }) {
@@ -219,7 +220,10 @@ export function VolunteerAlgolia({
     [],
   );
 
-  const stateMapping = useMemo(() => createVolunteerAlgoliaStateMapping(), []);
+  const stateMapping = useMemo(
+    () => createVolunteerAlgoliaStateMapping(indexName),
+    [indexName],
+  );
 
   useEffect(() => {
     const cb = onUpdateCallbackRef.current;
@@ -261,7 +265,7 @@ export function VolunteerAlgolia({
   return (
     <InstantSearch
       searchClient={searchClient}
-      indexName={VOLUNTEER_ALGOLIA_INDEX}
+      indexName={indexName}
       routing={routing}
       future={{ preserveSharedStateOnUnmount: true }}
     >

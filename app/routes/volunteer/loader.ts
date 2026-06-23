@@ -5,6 +5,8 @@ import { createImageUrlFromGuid } from '~/lib/utils';
 import { getCoordinatesForCountry } from './country-coordinates';
 import { ContentChannelIds } from '~/lib/rock-config';
 import { fetchDreamTeamBuckets } from './dream-team-buckets.server';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 const MISSION_TRIPS_CONTENT_CHANNEL_ID = ContentChannelIds.missionTrips;
 
@@ -27,6 +29,7 @@ export type LoaderReturnType = {
   dreamTeamBuckets: VolunteerAtChurchResource[];
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
 };
 
 export async function loader({ request: _request }: LoaderFunctionArgs) {
@@ -81,5 +84,6 @@ export async function loader({ request: _request }: LoaderFunctionArgs) {
     dreamTeamBuckets,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? '',
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? '',
+    algoliaIndexes: getServerAlgoliaIndexes(),
   } satisfies LoaderReturnType);
 }

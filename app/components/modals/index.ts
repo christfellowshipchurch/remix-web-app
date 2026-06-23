@@ -1,6 +1,7 @@
 export { AuthModal } from './auth';
 export { ConnectCardModal } from './connect-card';
 export { GroupConnectModal } from './group-connect';
+export { GroupFinderNotifyModal } from './group-finder-notify';
 export { HelpMeFindAGroupModal } from './help-me-find-a-group';
 export { NewsletterSubscriptionModal } from './newsletter-subscription';
 export { PrayerRequestModal } from './prayer-request';

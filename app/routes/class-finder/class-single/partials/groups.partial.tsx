@@ -9,10 +9,7 @@ import {
 
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { createSearchClient } from '~/lib/create-search-client';
-import {
-  GROUPS_ALGOLIA_INDEX_NAME,
-  type GroupType,
-} from '~/routes/group-finder/types';
+import { type GroupType } from '~/routes/group-finder/types';
 
 import { ClassSingleGroupsCarousel } from '../components/class-single-groups-carousel.component';
 import type { LoaderReturnType } from '../loader';
@@ -98,7 +95,7 @@ function composeGroupsFilters(
   classesIndexClassType: string,
   mirroredFacetFilters: string | undefined,
 ): string | undefined {
-  const trimmed = classesIndexClassType.trim();
+  const trimmed = classesIndexClassType?.trim() ?? '';
 
   // Related groups should stay scoped to the class type first, then optionally
   // mirror format/campus/language filters from the sessions search.
@@ -189,8 +186,9 @@ export function ClassSingleGroupsSection({
   coordinates: { lat: number | null; lng: number | null } | null;
 }) {
   const { indexUiState } = useInstantSearch();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
+  const groupIndexName = algoliaIndexes.groups;
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
@@ -229,10 +227,10 @@ export function ClassSingleGroupsSection({
       // index. It does not sync to URL; it mirrors the parent session filters
       // through Configure so group results remain contextual to the class page.
       key={`${classUrl}|${classesIndexClassType}`}
-      indexName={GROUPS_ALGOLIA_INDEX_NAME}
+      indexName={groupIndexName}
       searchClient={searchClient}
       initialUiState={{
-        [GROUPS_ALGOLIA_INDEX_NAME]: {
+        [groupIndexName]: {
           query: '',
         },
       }}

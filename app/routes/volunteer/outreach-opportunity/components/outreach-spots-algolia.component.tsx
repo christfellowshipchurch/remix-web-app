@@ -4,7 +4,6 @@ import { Configure, InstantSearch, useHits } from 'react-instantsearch';
 import { createSearchClient } from '~/lib/create-search-client';
 
 import type { Volunteer } from '../../types';
-import { VOLUNTEER_ALGOLIA_INDEX } from '../../types';
 
 function normalizeGroupGuid(value: string): string {
   return value.trim().toUpperCase();
@@ -40,12 +39,14 @@ function SpotsFromHits({
 export function VolunteerMissionSpotsAlgoliaProvider({
   appId,
   searchApiKey,
+  indexName,
   groupGuid,
   rockFallback,
   children,
 }: {
   appId: string;
   searchApiKey: string;
+  indexName: string;
   groupGuid: string;
   rockFallback: string | null;
   children: (spotsLabel: string | null) => ReactNode;
@@ -62,7 +63,7 @@ export function VolunteerMissionSpotsAlgoliaProvider({
   return (
     <InstantSearch
       searchClient={searchClient}
-      indexName={VOLUNTEER_ALGOLIA_INDEX}
+      indexName={indexName}
       key={groupGuid}
     >
       <Configure query={groupGuid} hitsPerPage={50} />

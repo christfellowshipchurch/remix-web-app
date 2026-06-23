@@ -13,7 +13,6 @@ import { getCurrentPositionFromUserGesture } from '~/lib/browser-geolocation';
 import { RootLoaderData } from '~/routes/navbar/loader';
 import { emptySearchClient } from '~/routes/search/route';
 import type { LocationSearchLoaderData } from './loader';
-import { LOCATION_SEARCH_INDEX_NAME } from './location-search.constants';
 import {
   LocationCardGrid,
   LocationCardList,
@@ -101,6 +100,7 @@ function LocationSearchIndexBody({
 
 export function LocationSearchPage() {
   const loaderData = useLoaderData<LocationSearchLoaderData>();
+  const locationIndexName = loaderData.algoliaIndexes.locations;
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const algolia =
     rootData?.algolia?.ALGOLIA_APP_ID && rootData.algolia.ALGOLIA_SEARCH_API_KEY
@@ -295,7 +295,7 @@ export function LocationSearchPage() {
           typeof (client as SearchClient).searchSingleIndex === 'function'
         ) {
           await (client as SearchClient).searchSingleIndex({
-            indexName: LOCATION_SEARCH_INDEX_NAME,
+            indexName: locationIndexName,
             searchParams: { hitsPerPage: 1, query: '' },
           });
         } else if ('search' in client && typeof client.search === 'function') {
@@ -313,7 +313,7 @@ export function LocationSearchPage() {
     return () => {
       cancelled = true;
     };
-  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY]);
+  }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, locationIndexName]);
 
   return (
     <div className='flex w-full flex-col min-h-screen'>
@@ -333,13 +333,13 @@ export function LocationSearchPage() {
         </>
       ) : (
         <InstantSearch
-          indexName={LOCATION_SEARCH_INDEX_NAME}
+          indexName={locationIndexName}
           searchClient={searchClient}
           future={{
             preserveSharedStateOnUnmount: true,
           }}
           initialUiState={{
-            [LOCATION_SEARCH_INDEX_NAME]: {
+            [locationIndexName]: {
               query: '',
             },
           }}

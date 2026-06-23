@@ -96,7 +96,9 @@ export const loader = async ({
 
   // Use the page builder loader to fetch the child items and map them to the page builder sections
   const children = await fetchChildItems(rockLinkTreePage.id);
-  const collections = await mapPageBuilderChildItems(children);
+  const collections = await mapPageBuilderChildItems(children, {
+    summaryFallbackToContent: false,
+  });
   // Ensure we only return resource collections
   const resourceCollections = collections.filter(
     (collection) => collection.type === 'RESOURCE_COLLECTION',

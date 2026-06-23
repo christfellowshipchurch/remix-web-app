@@ -11,35 +11,34 @@ export const chanceContent: {
   aspectRatio?: string;
 }[] = [
   {
-    title: `<span className="font-bold">To connect</span> with other people`,
+    title: `<span className="font-bold">To focus</span> on what matters most`,
     image: '/assets/images/home/parallax-scroll-1.webp',
     imageWidth: 1216,
     imageHeight: 1058,
     description:
-      " Looking for community? A place where you can find genuine connection with other people? A place where you're not just a face in the crowd, but someone who belongs? ",
-    buttonTitle: 'Get Connected',
-    buttonLink: '/group-finder',
+      'Every week, experience services designed to help you grow in your faith and equip you with practical wisdom for your everyday life.',
+    buttonTitle: 'Find a Service',
+    buttonLink: '/locations',
   },
   {
-    title: `<span className="font-bold">To hit pause</span> on the chaos of everyday life`,
+    title: 'To grow in every area of life',
     image: '/assets/images/home/parallax-scroll-2.webp',
     imageWidth: 1204,
     imageHeight: 806,
     description:
-      'Searching for some kind of peace or purpose? Life can throw some curveballs, and sometimes you need a place to reflect, recharge, and find some perspective. ',
-    buttonTitle: 'Find Your Purpose',
-    buttonLink: '/messages',
-    buttonLinkFromLatestMessage: true,
+      'Church is more than just an hour on Sunday. Whether you’re exploring faith, raising a family, or looking to grow, there are opportunities all throughout the week to help you take your next step.',
+    buttonTitle: 'Find Your Place',
+    buttonLink: '#something-for-everyone',
     aspectRatio: '600 / 400',
   },
   {
-    title: `<span className="font-bold">To hear a story,</span> to sing a song, to be reminded of hope.`,
+    title: `<span className="font-bold">To connect</span> with other people`,
     image: '/assets/images/home/parallax-scroll-3.webp',
     imageWidth: 1203,
     imageHeight: 1134,
     description:
-      'Sing some songs, hear a good story, and be reminded that there is still good in the world. ',
-    buttonTitle: 'Find Your Hope',
-    buttonLink: '/locations',
+      'Life is better together!  Find a community where you can grow in your relationship with God and others, and find people to walk through life with.',
+    buttonTitle: 'Find Your People',
+    buttonLink: '/group-finder',
   },
 ];

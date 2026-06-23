@@ -6,7 +6,7 @@
  * - ALGOLIA_ANALYTICS_API_KEY (or ALGOLIA_SEARCH_API_KEY if it has analytics ACL)
  */
 
-const CONTENT_INDEX = 'dev_contentItems';
+import { getAlgoliaIndexes } from '~/lib/algolia-indexes';
 
 function getAnalyticsBase(): string {
   return `https://analytics.us.algolia.com`;
@@ -20,8 +20,10 @@ export async function fetchTopSearches(
   if (!appId || !apiKey) return [];
 
   const base = getAnalyticsBase();
+  const contentIndex = getAlgoliaIndexes(process.env.ALGOLIA_INDEX_ENV)
+    .contentItems;
   const params = new URLSearchParams({
-    index: CONTENT_INDEX,
+    index: contentIndex,
     limit: String(limit),
     orderBy: 'searchCount',
     direction: 'desc',
