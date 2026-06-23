@@ -49,13 +49,13 @@ describe('ShareMySkillsForm', () => {
     expect(screen.getByText('Share My Skills')).toBeInTheDocument();
   });
 
-  it('renders First Name, Last Name, Campus, Cell Phone, Email Address fields', () => {
+  it('renders First Name, Last Name, Campus, Phone, Email fields', () => {
     renderForm();
     expect(screen.getByText('First Name')).toBeInTheDocument();
     expect(screen.getByText('Last Name')).toBeInTheDocument();
     expect(screen.getByText('Campus Location')).toBeInTheDocument();
-    expect(screen.getByText('Cell Phone')).toBeInTheDocument();
-    expect(screen.getByText('Email Address')).toBeInTheDocument();
+    expect(screen.getByText('Phone')).toBeInTheDocument();
+    expect(screen.getByText('Email')).toBeInTheDocument();
   });
 
   it('renders all five skills and interests checkboxes', () => {
