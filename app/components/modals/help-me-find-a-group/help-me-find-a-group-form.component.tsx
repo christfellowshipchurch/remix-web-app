@@ -179,11 +179,16 @@ const HelpMeFindAGroupForm: React.FC<HelpMeFindAGroupFormProps> = ({
           </RadixFormErrorMessage>
         </Form.Field>
 
-        <div className={cn('col-span-1 mt-2', radixFormFieldStackClassName)}>
+        <div
+          className={cn(
+            'mt-2 md:mt-0 col-span-1',
+            radixFormFieldStackClassName,
+          )}
+        >
           <p className={radixFormLabelClassName}>
-            I am interested in Groups in these areas:
+            I am interested in meeting with:
           </p>
-          <div className='mt-2 flex flex-col gap-2'>
+          <div className='flex flex-col gap-2'>
             {hubs.map((hub) => (
               <label
                 key={hub.guid}
@@ -207,7 +212,7 @@ const HelpMeFindAGroupForm: React.FC<HelpMeFindAGroupFormProps> = ({
         <Form.Field
           name='Comments'
           className={cn(
-            'col-span-1 mt-2 md:col-span-2',
+            'col-span-1 mt-2 md:mt-0 md:col-span-2',
             radixFormFieldStackClassName,
           )}
         >

@@ -19,6 +19,11 @@ export interface Volunteer {
   groupGuid: string;
   title: string;
   coverImage: VolunteerCoverImage;
+  /**
+   * Image URL of the group's **Event Type** Defined Value, used as the cover
+   * image fallback when `coverImage` has no group photo. Indexed from Rock.
+   */
+  eventTypeImageUrl?: string;
   summary: string;
   campusList: string[];
   eventDateStr: string;

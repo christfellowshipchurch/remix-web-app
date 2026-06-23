@@ -8,7 +8,10 @@ import type { HelpMeFindAGroupLoaderReturnType } from '~/components/modals/help-
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 
-const HUB_DEFINED_TYPE_ID = 366;
+// People Group Type (CFDP-4062). Feeds the "Group Preference" attribute on
+// workflow 419, submitted under the `Hub` key (the workflow attribute key is
+// unchanged — only the Defined Type it references moved from 366 to 625).
+const HUB_DEFINED_TYPE_ID = 625;
 
 export const loader: LoaderFunction = async () => {
   const [campuses, hubs] = await Promise.all([

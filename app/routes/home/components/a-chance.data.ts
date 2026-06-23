@@ -21,12 +21,12 @@ export const chanceContent: {
     buttonLink: '/locations',
   },
   {
-    title: `<span className="font-bold">To experience</span> real growth`,
+    title: 'To grow in every area of life',
     image: '/assets/images/home/parallax-scroll-2.webp',
     imageWidth: 1204,
     imageHeight: 806,
     description:
-      "Church isn't just an hour on Sunday, it's a place to belong. Discover opportunities for the whole family to grow in their relationship with God and others.",
+      'Church is more than just an hour on Sunday. Whether you’re exploring faith, raising a family, or looking to grow, there are opportunities all throughout the week to help you take your next step.',
     buttonTitle: 'Find Your Place',
     buttonLink: '#something-for-everyone',
     aspectRatio: '600 / 400',
@@ -37,7 +37,7 @@ export const chanceContent: {
     imageWidth: 1203,
     imageHeight: 1134,
     description:
-      'Life is better together! Find genuine community, build meaningful relationships, and connect with people to do life with.',
+      'Life is better together!  Find a community where you can grow in your relationship with God and others, and find people to walk through life with.',
     buttonTitle: 'Find Your People',
     buttonLink: '/group-finder',
   },
