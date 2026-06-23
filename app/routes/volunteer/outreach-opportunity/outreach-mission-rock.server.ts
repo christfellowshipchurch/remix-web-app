@@ -172,6 +172,47 @@ function resolveImageUrl(raw: string | undefined): string | undefined {
   return createImageUrlFromGuid(t);
 }
 
+const GUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Resolves the cover-image fallback from the group's **Event Type** Defined
+ * Value. The group attribute holds the Defined Value guid; the image lives as
+ * an attribute on that Defined Value, so it needs a second Rock fetch.
+ */
+async function fetchEventTypeImageUrl(
+  attrs: AttrBag | undefined,
+): Promise<string | undefined> {
+  const eventTypeGuid = readAttr(attrs, ['EventType']);
+  if (!eventTypeGuid || !GUID_RE.test(eventTypeGuid)) return undefined;
+
+  let raw: unknown;
+  try {
+    raw = await fetchRockData({
+      endpoint: 'DefinedValues',
+      queryParams: {
+        $filter: `Guid eq guid'${escapeOData(eventTypeGuid)}'`,
+        $top: '1',
+        loadAttributes: 'expanded',
+      },
+      ttl: TTL.SHORT,
+    });
+  } catch {
+    return undefined;
+  }
+
+  const row = Array.isArray(raw) ? raw[0] : raw;
+  const dvAttrs = (row as { attributeValues?: AttrBag } | undefined)
+    ?.attributeValues;
+  const imageRaw = readAttr(dvAttrs, [
+    'Image',
+    'EventTypeImage',
+    'CoverImage',
+    'Photo',
+  ]);
+  return resolveImageUrl(imageRaw);
+}
+
 async function getPersonIdFromPersonAliasGuid(
   aliasGuid: string,
 ): Promise<string | null> {
@@ -297,8 +338,10 @@ export async function fetchVolunteerMissionDetailFromRock(
     readAttr(attrs, ['CampusName']) ||
     undefined;
 
+  // Cover image: group photo first, Event Type Defined Value image as fallback.
   const coverRaw = readAttr(attrs, ['Photo']) ?? '';
-  const coverImageUrl = resolveImageUrl(coverRaw);
+  const coverImageUrl =
+    resolveImageUrl(coverRaw) ?? (await fetchEventTypeImageUrl(attrs));
 
   const summary =
     readAttr(attrs, ['PublicDescription']) ||

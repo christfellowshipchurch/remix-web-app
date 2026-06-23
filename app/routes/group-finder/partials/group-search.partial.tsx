@@ -11,6 +11,7 @@ import {
 
 import { FinderResultsStats } from '~/components/finders/finder-results-stats.component';
 import { FinderStickyBar } from '~/components/finders/finder-sticky-bar.component';
+import { GroupFinderNotifyModal } from '~/components/modals';
 import { useResponsive } from '~/hooks/use-responsive';
 import { cn } from '~/lib/utils';
 import { Icon } from '~/primitives/icon/icon';
@@ -83,6 +84,22 @@ function coordinatesFromUrlState(
   return null;
 }
 
+/**
+ * Whether the "Virtual" meeting-type filter is currently active. Virtual groups
+ * are faceted under `meetingType` as either "Virtual" or "Online" in Algolia, so
+ * treat either value as active. When active, group cards show "Online" in their
+ * footer bar instead of a physical meeting location.
+ */
+function isVirtualMeetingTypeActive(
+  urlState: ReturnType<typeof parseGroupFinderUrlState>,
+): boolean {
+  const values = urlState.refinementList?.meetingType ?? [];
+  return values.some((v) => {
+    const t = v.trim().toLowerCase();
+    return t === 'virtual' || t === 'online';
+  });
+}
+
 /** Snapshot for InstantSearch `initialUiState` and local age/geo state on first client render. */
 function getInitialStateFromUrl(searchParams: URLSearchParams) {
   const urlState = parseGroupFinderUrlState(searchParams);
@@ -113,6 +130,11 @@ export const GroupSearch = () => {
   const urlState = useMemo(
     () => parseGroupFinderUrlState(searchParams),
     [searchParams],
+  );
+
+  const isVirtualFilterActive = useMemo(
+    () => isVirtualMeetingTypeActive(urlState),
+    [urlState],
   );
 
   // Loader seeds first paint; hydrated interactions use the real client search key.
@@ -438,6 +460,7 @@ export const GroupSearch = () => {
               initialNbHits={groupNbHits}
               fromGroupFinderUrl={fromGroupFinderUrl}
               isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
+              isVirtualFilterActive={isVirtualFilterActive}
               campusCityByName={campusCityByName}
             />
           </InstantSearch>
@@ -470,6 +493,7 @@ export const GroupSearch = () => {
               fromGroupFinderUrl={fromGroupFinderUrl}
               onPageChange={goToPage}
               isGeoSearch={coordinates?.lat != null && coordinates?.lng != null}
+              isVirtualFilterActive={isVirtualFilterActive}
               campusCityByName={campusCityByName}
             />
           </>
@@ -484,12 +508,14 @@ function GroupFinderInstantSearchResults({
   initialNbHits,
   fromGroupFinderUrl,
   isGeoSearch,
+  isVirtualFilterActive,
   campusCityByName,
 }: {
   initialHits: LoaderReturnType['groupHits'];
   initialNbHits: number;
   fromGroupFinderUrl: string;
   isGeoSearch: boolean;
+  isVirtualFilterActive: boolean;
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   const { items } = useHits<LoaderReturnType['groupHits'][number]>();
@@ -538,6 +564,7 @@ function GroupFinderInstantSearchResults({
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={goToPage}
       isGeoSearch={isGeoSearch}
+      isVirtualFilterActive={isVirtualFilterActive}
       campusCityByName={campusCityByName}
     />
   );
@@ -553,6 +580,7 @@ function GroupFinderInitialResults({
   fromGroupFinderUrl,
   onPageChange,
   isGeoSearch,
+  isVirtualFilterActive,
   campusCityByName,
 }: {
   groupHits: LoaderReturnType['groupHits'];
@@ -564,6 +592,7 @@ function GroupFinderInitialResults({
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
   isGeoSearch: boolean;
+  isVirtualFilterActive: boolean;
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
@@ -578,6 +607,7 @@ function GroupFinderInitialResults({
       fromGroupFinderUrl={fromGroupFinderUrl}
       onPageChange={onPageChange}
       isGeoSearch={isGeoSearch}
+      isVirtualFilterActive={isVirtualFilterActive}
       campusCityByName={campusCityByName}
     />
   );
@@ -594,6 +624,7 @@ function GroupFinderResultsLayout({
   fromGroupFinderUrl,
   onPageChange,
   isGeoSearch,
+  isVirtualFilterActive,
   campusCityByName,
 }: {
   groupHits: LoaderReturnType['groupHits'];
@@ -606,12 +637,13 @@ function GroupFinderResultsLayout({
   fromGroupFinderUrl: string;
   onPageChange: (nextPage: number) => void;
   isGeoSearch: boolean;
+  isVirtualFilterActive: boolean;
   campusCityByName: LoaderReturnType['campusCityByName'];
 }) {
   return (
-    <div className='flex flex-col bg-gray py-8 md:pt-12 md:pb-20 w-full content-padding'>
+    <div className='flex flex-col bg-gray pt-4 pb-8 md:pt-12 md:pb-20 w-full content-padding'>
       <div className='max-w-screen-content mx-auto md:w-full'>
-        <FinderResultsStats hitCount={groupNbHits} />
+        <GroupFinderResultsHeader hitCount={groupNbHits} />
         <div className='min-h-[320px]'>
           {groupHits.length === 0 && !isLoading ? (
             <p className='text-text-secondary text-center py-8'>
@@ -630,6 +662,7 @@ function GroupFinderResultsLayout({
                   hit={hit}
                   backUrl={fromGroupFinderUrl}
                   isGeoSearch={isGeoSearch}
+                  isVirtualFilterActive={isVirtualFilterActive}
                   campusCityByName={campusCityByName}
                 />
               ))}
@@ -665,6 +698,62 @@ function GroupFinderResultsLayout({
         )}
       </div>
     </div>
+  );
+}
+
+function GroupFinderResultsHeader({ hitCount }: { hitCount: number }) {
+  const formattedHitCount = hitCount.toLocaleString();
+
+  return (
+    <div className='mb-4 md:mb-6'>
+      <div className='hidden md:flex md:items-center md:justify-between md:gap-6'>
+        <FinderResultsStats hitCount={hitCount} />
+        <div className='flex items-center gap-6 text-base text-text-primary'>
+          <p>More groups available at our next launch.</p>
+          <GroupFinderNotifyTrigger variant='desktop' />
+        </div>
+      </div>
+
+      <div className='flex flex-col items-start gap-1 md:hidden'>
+        <p className='text-sm leading-5 text-text-primary'>
+          {formattedHitCount} Results - More available at our next groups
+          launch.
+        </p>
+        <GroupFinderNotifyTrigger variant='mobile' />
+      </div>
+    </div>
+  );
+}
+
+function GroupFinderNotifyTrigger({
+  variant,
+}: {
+  variant: 'desktop' | 'mobile';
+}) {
+  if (variant === 'mobile') {
+    return (
+      <GroupFinderNotifyModal>
+        <button
+          type='button'
+          className='inline-flex items-center gap-2 text-sm leading-none text-ocean'
+        >
+          <Icon name='bell' size={18} color='currentColor' />
+          <span>Get Notified</span>
+        </button>
+      </GroupFinderNotifyModal>
+    );
+  }
+
+  return (
+    <GroupFinderNotifyModal>
+      <button
+        type='button'
+        className='inline-flex min-h-10 items-center gap-2 rounded-[8px] bg-[#DAEAF1] px-4 text-base font-semibold text-ocean transition-colors hover:bg-[#CDE7F1]'
+      >
+        <Icon name='bell' size={18} color='currentColor' />
+        <span>Get Notified</span>
+      </button>
+    </GroupFinderNotifyModal>
   );
 }
 

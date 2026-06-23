@@ -51,6 +51,9 @@ function volunteerCardPropsEqual(
   ) {
     return false;
   }
+  if ((p.eventTypeImageUrl ?? '') !== (n.eventTypeImageUrl ?? '')) {
+    return false;
+  }
   if (
     JSON.stringify(p.campusList ?? []) !== JSON.stringify(n.campusList ?? [])
   ) {
@@ -83,6 +86,11 @@ function VolunteerCardInner({
     volunteerListSearch: listingSearch,
   };
 
+  // Cover image: group photo first, Event Type Defined Value image as fallback.
+  const coverImageUri =
+    (volunteer.coverImage?.sources?.[0]?.uri ?? '').trim() ||
+    (volunteer.eventTypeImageUrl ?? '').trim();
+
   return (
     <Link
       to={`/volunteer/outreach/${volunteer.groupGuid}`}
@@ -94,12 +102,13 @@ function VolunteerCardInner({
       )}
     >
       <div className='relative aspect-16/10 w-full max-h-[156px] shrink-0 overflow-hidden rounded-t-2xl bg-neutral-lighter'>
-        {(volunteer.coverImage?.sources?.[0]?.uri ?? '').trim() ? (
+        {coverImageUri ? (
           <img
-            src={withRockGetImageSizing(
-              volunteer.coverImage?.sources?.[0]?.uri ?? '',
-              { maxwidth: 800, maxheight: 500, quality: 85 },
-            )}
+            src={withRockGetImageSizing(coverImageUri, {
+              maxwidth: 800,
+              maxheight: 500,
+              quality: 85,
+            })}
             alt=''
             className='size-full object-cover transition-transform duration-300 group-hover:scale-[1.02]'
           />
