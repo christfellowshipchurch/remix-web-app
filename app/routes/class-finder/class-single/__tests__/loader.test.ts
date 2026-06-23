@@ -130,8 +130,8 @@ describe('class-single loader — hero fields (Rock-first, Algolia fallback)', (
   it('prefers Rock Defined Type values over the Algolia hit', async () => {
     mockFetchRockData.mockResolvedValueOnce({
       value: 'Rock Title',
+      description: '  Rock summary  ',
       attributeValues: {
-        description: { value: '  Rock summary  ' },
         image: { value: '03418602-8c89-42d3-a569-18a3e6b8bec4' },
       },
     });
@@ -151,8 +151,8 @@ describe('class-single loader — hero fields (Rock-first, Algolia fallback)', (
   it('leaves summary and cover image blank when Rock lacks them (no Algolia fallback); title still falls back', async () => {
     mockFetchRockData.mockResolvedValueOnce({
       value: '',
+      description: '   ',
       attributeValues: {
-        description: { value: '   ' },
         image: { value: '' },
       },
     });

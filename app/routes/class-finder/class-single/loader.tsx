@@ -39,11 +39,14 @@ export type LoaderReturnType = {
 
 /**
  * Defined Value from Rock Classes Defined Type (387). Adds the top-level
- * `value` (class name) that the generic content-item type omits; attribute
- * values arrive under `attributeValues` post-normalize.
+ * `value` (class name) and `description` (the native Defined Value description,
+ * shown as the "Description" column in Rock admin) that the generic
+ * content-item type omits; custom attribute values arrive under
+ * `attributeValues` post-normalize.
  */
 type RockClassDefinedValue = RockContentChannelItem & {
   value?: string;
+  description?: string;
 };
 
 function rockStringAttr(
@@ -100,7 +103,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       classTrailer = rockStringAttr(classData, 'classTrailer');
       onDemandUrl = rockStringAttr(classData, 'onDemandSignUpLink');
       rockTitle = classData.value?.trim() ?? '';
-      rockSummary = rockStringAttr(classData, 'description');
+      rockSummary = classData.description?.trim() ?? '';
       const imageGuid = rockStringAttr(classData, 'image');
       rockCoverImageUri = imageGuid ? createImageUrlFromGuid(imageGuid) : '';
     }
