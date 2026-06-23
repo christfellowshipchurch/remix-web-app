@@ -126,31 +126,35 @@ export function RockProxyEmbed({
     return () => window.removeEventListener('message', handleMessage);
   }, [autoHeight, embedOrigin]);
 
+  const requestEmbedHeight = useCallback(() => {
+    if (!autoHeight || useAdvancedProxy || !embedOrigin) return;
+
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'rock-iframe-height-request' },
+      embedOrigin,
+    );
+  }, [autoHeight, useAdvancedProxy, embedOrigin]);
+
   // Direct Rock embeds are cross-origin; poll for height until Rock page script responds.
   useEffect(() => {
     if (!autoHeight || useAdvancedProxy || !embedOrigin) return;
 
-    const requestHeight = () => {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: 'rock-iframe-height-request' },
-        embedOrigin,
-      );
-    };
-
-    requestHeight();
-    const intervalId = window.setInterval(requestHeight, 400);
+    requestEmbedHeight();
+    const intervalId = window.setInterval(requestEmbedHeight, 400);
     return () => window.clearInterval(intervalId);
-  }, [autoHeight, useAdvancedProxy, embedOrigin, url]);
+  }, [autoHeight, useAdvancedProxy, embedOrigin, url, requestEmbedHeight]);
 
   const handleLoad = () => {
     setIsLoading(false);
     attachObserver();
-    if (autoHeight && !useAdvancedProxy && embedOrigin) {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: 'rock-iframe-height-request' },
-        embedOrigin,
-      );
-    }
+
+    // Rock WebForm step transitions reload or postback inside the iframe; burst
+    // height requests so step 2+ content is measured after paint.
+    requestEmbedHeight();
+    [100, 300, 600, 1200].forEach((delay) => {
+      window.setTimeout(requestEmbedHeight, delay);
+    });
+
     onLoad?.();
   };
 
