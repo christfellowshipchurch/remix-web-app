@@ -6,4 +6,5 @@ export { HelpMeFindAGroupModal } from './help-me-find-a-group';
 export { NewsletterSubscriptionModal } from './newsletter-subscription';
 export { PrayerRequestModal } from './prayer-request';
 export { SetAReminderModal } from './set-a-reminder';
+export { ShareMySkillsModal } from './share-my-skills';
 export { VideoModal } from './video-modal';

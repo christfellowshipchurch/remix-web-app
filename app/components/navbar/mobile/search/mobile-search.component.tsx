@@ -44,8 +44,7 @@ export const MobileSearch = ({
     ALGOLIA_SEARCH_API_KEY: '',
     indexes: undefined,
   };
-  const contentItemsIndexName =
-    rootData?.algolia.indexes.contentItems ?? '';
+  const contentItemsIndexName = rootData?.algolia.indexes.contentItems ?? '';
   const locationsIndexName = rootData?.algolia.indexes.locations ?? '';
 
   // Create or retrieve the Algolia client
