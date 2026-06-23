@@ -54,6 +54,11 @@ export const CtaFullscreenSection: FC<{ data: ContentBlockData }> = ({
             'text-text-secondary': !isDark,
           },
         )}
+        linkClassName={
+          isDark
+            ? 'text-link-alternate underline hover:text-ocean-web'
+            : 'text-ocean hover:text-navy'
+        }
         html={data.content}
       />
       <div className='flex flex-wrap gap-4 justify-center'>

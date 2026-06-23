@@ -11,11 +11,13 @@ import { sanitizeCmsHtml } from '~/lib/sanitize';
 export const HTMLRenderer = ({
   html,
   className,
+  linkClassName,
   stripFormattingTags = false,
 }: {
   /** CMS / API fields may be missing; treat as empty. */
   html?: string | null;
   className?: string;
+  linkClassName?: string;
   stripFormattingTags?: boolean;
 }) => {
   const safeHtml = html ?? '';
@@ -55,7 +57,10 @@ export const HTMLRenderer = ({
           return (
             <Link
               to={href}
-              className={cn(className?.toString(), '!text-ocean')}
+              className={cn(
+                className?.toString(),
+                linkClassName ?? '!text-ocean',
+              )}
               prefetch='intent'
             >
               {domToReact((domNode.children as DOMNode[]) || [], options)}
@@ -67,7 +72,10 @@ export const HTMLRenderer = ({
         return (
           <a
             href={href?.toString()}
-            className={cn(className, 'text-ocean hover:text-navy')}
+            className={cn(
+              className,
+              linkClassName ?? 'text-ocean hover:text-navy',
+            )}
             target={target?.toString()}
             rel={target === '_blank' ? 'noopener noreferrer' : undefined}
           >
