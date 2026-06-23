@@ -189,7 +189,7 @@ export const CampusInfo = ({
 
 const OnlineCampusInfo = ({
   campusName: _campusName,
-  // digitalTourVideo,
+  digitalTourVideo,
   phoneNumber,
   additionalInfo,
   serviceTimes,
@@ -243,9 +243,10 @@ const OnlineCampusInfo = ({
         </div>
 
         <div className='max-w-[670px] flex-1 lg:pt-16 mx-auto'>
-          {/* Hardcoded wistiaId for now */}
-          <VirtualTourTabs wistiaId='beicrozg21' isOnline />
-          {/* <VirtualTourTabs wistiaId={digitalTourVideo || ""} isOnline /> TODO: Uncomment this when the video gets added to the Online Campus in Rock*/}
+          <VirtualTourTabs
+            wistiaId={digitalTourVideo || 'khix40y1uf'}
+            isOnline
+          />
         </div>
 
         {/* Mobile CTAs */}
