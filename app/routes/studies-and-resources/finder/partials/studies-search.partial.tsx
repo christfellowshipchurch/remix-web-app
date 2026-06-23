@@ -10,6 +10,7 @@ import { SearchFilters } from '~/components/finders/search-filters';
 import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
 import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
+import { DEFAULT_ALGOLIA_INDEXES } from '~/lib/algolia-indexes';
 import Icon from '~/primitives/icon';
 import { ResponsiveConfigure } from '~/routes/group-finder/partials/group-search.partial';
 
@@ -28,20 +29,25 @@ import {
   type StudiesFinderUrlState,
 } from '../../studies-finder-url-state';
 
-const INDEX_NAME = 'dev_StudiesAndResources';
 const ITEMS_PER_PAGE = 12;
 
 /** See .github/ALGOLIA-URL-STATE-REUSABILITY.md — Pattern A step 2. */
-function getInitialStateFromUrl(searchParams: URLSearchParams) {
+function getInitialStateFromUrl(
+  searchParams: URLSearchParams,
+  indexName: string,
+) {
   const urlState = parseStudiesFinderUrlState(searchParams);
   return {
-    initialUiState: buildIndexInitialUiState(INDEX_NAME, urlState) ?? {},
+    initialUiState: buildIndexInitialUiState(indexName, urlState) ?? {},
   };
 }
 
 export const StudiesSearch = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
+  const studiesIndexName = (
+    algoliaIndexes ?? DEFAULT_ALGOLIA_INDEXES
+  ).studiesAndResources;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
@@ -52,7 +58,10 @@ export const StudiesSearch = () => {
     debounceMs: 400,
   });
 
-  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+  const initial = useMemo(
+    () => getInitialStateFromUrl(searchParams, studiesIndexName),
+    [studiesIndexName],
+  );
 
   const searchClient = algoliasearch(
     ALGOLIA_APP_ID,
@@ -96,7 +105,7 @@ export const StudiesSearch = () => {
       id='search'
     >
       <InstantSearch
-        indexName={INDEX_NAME}
+        indexName={studiesIndexName}
         searchClient={searchClient}
         initialUiState={
           Object.keys(initial.initialUiState).length > 0
@@ -105,7 +114,7 @@ export const StudiesSearch = () => {
         }
         onStateChange={({ uiState, setUiState }) => {
           setUiState(uiState);
-          const indexState = uiState[INDEX_NAME];
+          const indexState = uiState[studiesIndexName];
           if (indexState)
             syncUrlFromUiState(indexState as Record<string, unknown>);
         }}

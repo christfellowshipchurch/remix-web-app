@@ -2,8 +2,6 @@ import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.u
 
 import type { ClassFinderUrlState } from './class-finder-url-state';
 
-export const CLASSES_ALGOLIA_INDEX_NAME = 'dev_Classes' as const;
-
 /** Matches previous client `hitsPerPageOverride={1000}` — grouping runs server-side in the loader response. */
 export const CLASS_FINDER_LOADER_HITS_PER_PAGE = 1000;
 
@@ -36,6 +34,7 @@ function refinementListToFacetFilters(
 /** Maps URL state → Algolia params for the class finder route loader (server only). */
 export function buildClassFinderAlgoliaSearchParams(
   urlState: ClassFinderUrlState,
+  indexName: string,
 ): {
   indexName: string;
   hitsPerPage: number;
@@ -50,7 +49,7 @@ export function buildClassFinderAlgoliaSearchParams(
     query?: string;
     facetFilters?: string[][];
   } = {
-    indexName: CLASSES_ALGOLIA_INDEX_NAME,
+    indexName,
     hitsPerPage: CLASS_FINDER_LOADER_HITS_PER_PAGE,
     page: 0,
   };

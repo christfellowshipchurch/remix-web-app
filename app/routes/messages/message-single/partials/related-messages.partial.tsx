@@ -14,7 +14,7 @@ import { Configure, InstantSearch } from 'react-instantsearch';
 import { HitsWrapper } from '~/components/hits-wrapper';
 
 export const RelatedMessages = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, message } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, message, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
   const searchClient = useMemo(
     () =>
@@ -42,7 +42,7 @@ export const RelatedMessages = () => {
 
   return (
     <InstantSearch
-      indexName='dev_contentItems'
+      indexName={algoliaIndexes.contentItems}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

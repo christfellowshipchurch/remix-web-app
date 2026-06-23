@@ -7,7 +7,6 @@ import { CardCarousel } from '~/components/resource-carousel';
 import {
   GroupLanguage,
   GroupType,
-  GROUPS_ALGOLIA_INDEX_NAME,
   splitGroupTopics,
 } from '~/routes/group-finder/types';
 import { createSearchClient } from '~/lib/create-search-client';
@@ -70,8 +69,9 @@ export function RelatedGroupsPartial({
       .filter(Boolean)
       .join(' AND ') || undefined;
 
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
+  const groupIndexName = algoliaIndexes.groups;
 
   const searchClient = useMemo(
     () => createSearchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY),
@@ -80,7 +80,7 @@ export function RelatedGroupsPartial({
 
   return (
     <InstantSearch
-      indexName={GROUPS_ALGOLIA_INDEX_NAME}
+      indexName={groupIndexName}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

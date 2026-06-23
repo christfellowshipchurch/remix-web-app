@@ -32,7 +32,7 @@ const emptySearchClient = {
           query: '',
           params: '',
           processingTimeMS: 0,
-          index: 'dev_contentItems',
+          index: 'empty',
         },
       ],
     }),
@@ -76,8 +76,11 @@ export const SearchBar = ({
   const algolia = rootData?.algolia ?? {
     ALGOLIA_APP_ID: '',
     ALGOLIA_SEARCH_API_KEY: '',
+    indexes: undefined,
   };
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
+  const contentItemsIndexName = algolia.indexes?.contentItems ?? '';
+  const locationsIndexName = algolia.indexes?.locations ?? '';
 
   // Create or retrieve the Algolia client
   useEffect(() => {
@@ -153,16 +156,16 @@ export const SearchBar = ({
   return (
     <div className='relative size-full' ref={searchBarRef}>
       <InstantSearch
-        indexName='dev_contentItems'
+        indexName={contentItemsIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          dev_contentItems: {
+          [contentItemsIndexName]: {
             query: '',
           },
-          dev_Locations: {
+          [locationsIndexName]: {
             query: '',
           },
         }}
@@ -200,7 +203,10 @@ export const SearchBar = ({
           />
         </div>
         <CurrentQueryProvider searchClient={searchClient}>
-          <SearchPopup setIsSearchOpen={setIsSearchOpen} />
+          <SearchPopup
+            setIsSearchOpen={setIsSearchOpen}
+            locationsIndexName={locationsIndexName}
+          />
         </CurrentQueryProvider>
       </InstantSearch>
     </div>

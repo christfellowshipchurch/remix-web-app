@@ -23,7 +23,6 @@ import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 import type { AllMessagesLoaderReturnType } from '../loader';
 import {
   ALL_MESSAGES_GRID_HITS_PER_PAGE,
-  MESSAGES_ALGOLIA_INDEX_NAME,
   MESSAGES_SERMON_FILTER,
   SERMON_PRIMARY_CATEGORY_FACET,
 } from '../all-messages.constants';
@@ -49,12 +48,14 @@ export function AllMessages() {
     allMessagesHits,
     allMessagesNbPages,
     allMessagesPage,
+    algoliaIndexes,
   } = useLoaderData<AllMessagesLoaderReturnType>();
+  const messagesIndexName = algoliaIndexes.contentItems;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { InstantSearchUrlSync, buildUiState } =
     createInstantSearchUrlSync<AllMessagesUrlState>({
-      indexName: MESSAGES_ALGOLIA_INDEX_NAME,
+      indexName: messagesIndexName,
       parseUrlState: parseAllMessagesUrlState,
     });
 
@@ -79,7 +80,7 @@ export function AllMessages() {
     return Object.keys(state).length > 0
       ? (state as Record<string, Record<string, unknown>>)
       : undefined;
-  }, []);
+  }, [buildAllMessagesInstantSearchUiState]);
   const { updateUrlIfChanged } = useAlgoliaUrlSync({
     searchParams,
     setSearchParams,
@@ -114,12 +115,12 @@ export function AllMessages() {
 
         {filtersMounted ? (
           <InstantSearch
-            indexName={MESSAGES_ALGOLIA_INDEX_NAME}
+            indexName={messagesIndexName}
             searchClient={searchClient}
             initialUiState={initialUiState}
             onStateChange={({ uiState, setUiState }) => {
               setUiState(uiState);
-              const indexState = uiState[MESSAGES_ALGOLIA_INDEX_NAME];
+              const indexState = uiState[messagesIndexName];
               if (!indexState) return;
               const index = indexState as Record<string, unknown>;
 

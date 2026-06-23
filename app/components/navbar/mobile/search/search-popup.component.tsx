@@ -60,9 +60,11 @@ const ContentItemsHitsCollector = ({
 export const SearchPopup = ({
   setIsSearchOpen,
   searchClient,
+  locationsIndexName,
 }: {
   setIsSearchOpen: (isSearchOpen: boolean) => void;
   searchClient: SearchClient | { search: () => Promise<unknown> };
+  locationsIndexName: string;
 }) => {
   const { query } = useSearchBox();
   const { items } = useCurrentRefinements();
@@ -100,7 +102,7 @@ export const SearchPopup = ({
         ).search<LocationHit>({
           requests: [
             {
-              indexName: 'dev_Locations',
+              indexName: locationsIndexName,
               query: searchQuery,
               hitsPerPage: 9,
             },
@@ -133,7 +135,7 @@ export const SearchPopup = ({
         setLocationHits([]);
       }
     },
-    [searchClient],
+    [locationsIndexName, searchClient],
   );
 
   // Search locations when query changes or when Pages is selected

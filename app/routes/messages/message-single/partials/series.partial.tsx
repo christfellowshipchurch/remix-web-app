@@ -53,7 +53,7 @@ const SeriesContent = ({ seriesTitle }: { seriesTitle: string }) => {
 };
 
 export const InThisSeries = () => {
-  const { message, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } =
+  const { message, ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, algoliaIndexes } =
     useLoaderData<LoaderReturnType>();
 
   const searchClient = useMemo(
@@ -70,7 +70,7 @@ export const InThisSeries = () => {
 
   return (
     <InstantSearch
-      indexName='dev_contentItems'
+      indexName={algoliaIndexes.contentItems}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

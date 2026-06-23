@@ -2,10 +2,11 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 import type { ContentItemHit } from '~/routes/search/types';
 
 import {
-  EVENTS_INDEX,
   MAIN_EVENTS_GRID_HITS_PER_PAGE,
   MAIN_EVENTS_TYPE_FILTER,
 } from './all-events.constants';
@@ -26,6 +27,7 @@ export type EventFinderFacetItem = {
 export interface AllEventsLoaderData {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   featuredHits: ContentItemHit[];
   mainEventHits: ContentItemHit[];
   eventsNbPages: number;
@@ -104,6 +106,7 @@ function moveFeaturedJourneyCardFirst(
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID ?? '';
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY ?? '';
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   let featuredHits: ContentItemHit[] = [];
   let mainEventHits: ContentItemHit[] = [];
@@ -120,7 +123,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       const [featuredRes, mainRes] = await Promise.all([
         client.searchForHits<Record<string, unknown>>([
           {
-            indexName: EVENTS_INDEX,
+            indexName: algoliaIndexes.contentItems,
             params: {
               filters: FEATURED_FILTER,
               hitsPerPage: FEATURED_HITS_PER_PAGE,
@@ -128,7 +131,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           },
         ]),
         client.searchSingleIndex({
-          indexName: EVENTS_INDEX,
+          indexName: algoliaIndexes.contentItems,
           searchParams: buildMainEventsSearchParams(urlState),
         }),
       ]);
@@ -151,6 +154,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return Response.json({
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes,
     featuredHits,
     mainEventHits,
     eventsNbPages,
