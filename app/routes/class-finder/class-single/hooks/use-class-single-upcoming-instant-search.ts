@@ -27,10 +27,7 @@ import {
   parseClassSingleUrlState,
   type ClassSingleUrlState,
 } from '../class-single-url-state';
-import { CLASSES_ALGOLIA_INDEX_NAME } from '../components/build-class-single-algolia-search';
 import type { LoaderReturnType } from '../loader';
-
-export const CLASS_SINGLE_UPCOMING_INDEX_NAME = CLASSES_ALGOLIA_INDEX_NAME;
 
 function coordinatesFromUrl(
   searchParams: URLSearchParams,
@@ -47,6 +44,7 @@ function coordinatesFromUrl(
  */
 export function useClassSingleUpcomingInstantSearch() {
   const loaderData = useLoaderData<LoaderReturnType>();
+  const classIndexName = loaderData.algoliaIndexes.classes;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { debouncedUpdateUrl, cancelDebounce, updateUrlIfChanged } =
@@ -65,10 +63,10 @@ export function useClassSingleUpcomingInstantSearch() {
   const initialUiState = useMemo(
     () =>
       buildIndexInitialUiState(
-        CLASS_SINGLE_UPCOMING_INDEX_NAME,
+        classIndexName,
         parseClassSingleUrlState(initialSearchParamsRef.current),
       ),
-    [],
+    [classIndexName],
   );
 
   const [coordinates, setCoordinatesState] = useState<FinderGeoCoordinates>(
@@ -212,14 +210,15 @@ export function useClassSingleUpcomingInstantSearch() {
   >(
     ({ uiState, setUiState }) => {
       setUiState(uiState);
-      const indexState = uiState[CLASS_SINGLE_UPCOMING_INDEX_NAME];
+      const indexState = uiState[classIndexName];
       if (indexState) syncUrlFromUiState(indexState as Record<string, unknown>);
     },
-    [syncUrlFromUiState],
+    [classIndexName, syncUrlFromUiState],
   );
 
   return {
     classUrl: loaderData.classUrl,
+    indexName: classIndexName,
     searchClient,
     initialUiState,
     onStateChange,

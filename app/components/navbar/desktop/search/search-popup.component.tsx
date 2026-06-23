@@ -39,10 +39,12 @@ export const SearchPopup = ({
   setIsSearchOpen,
   query,
   searchClient,
+  locationsIndexName,
 }: {
   setIsSearchOpen: (isSearchOpen: boolean) => void;
   query?: string;
   searchClient?: SearchClient | { search: () => Promise<unknown> };
+  locationsIndexName: string;
 }) => {
   const { indexUiState } = useInstantSearch();
   const [contentHits, setContentHits] = useState<ContentItemHit[]>([]);
@@ -80,7 +82,7 @@ export const SearchPopup = ({
         ).search<LocationHit>({
           requests: [
             {
-              indexName: 'dev_Locations',
+              indexName: locationsIndexName,
               query: searchQuery,
               hitsPerPage: 10,
             },
@@ -166,7 +168,7 @@ export const SearchPopup = ({
         setLocationHits([]);
       }
     },
-    [searchClient],
+    [locationsIndexName, searchClient],
   );
 
   // Search locations when query changes or when Pages is selected

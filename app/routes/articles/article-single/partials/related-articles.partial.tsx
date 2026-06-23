@@ -18,6 +18,7 @@ export function RelatedArticles() {
     ALGOLIA_SEARCH_API_KEY,
     id,
     articlePrimaryCategories,
+    algoliaIndexes,
   } = data;
 
   const searchClient = useMemo(
@@ -27,7 +28,10 @@ export function RelatedArticles() {
   );
 
   return (
-    <InstantSearch indexName='dev_contentItems' searchClient={searchClient}>
+    <InstantSearch
+      indexName={algoliaIndexes.contentItems}
+      searchClient={searchClient}
+    >
       <Configure
         filters={`contentType:"Article" AND articlePrimaryCategories:"${articlePrimaryCategories[0]}" AND rockItemId != ${id}`}
         hitsPerPage={6}

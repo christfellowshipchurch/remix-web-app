@@ -3,13 +3,12 @@ import type { LoaderFunctionArgs } from 'react-router';
 import { algoliasearch } from 'algoliasearch';
 
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import { AuthenticationError } from '~/lib/.server/error-types';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 import type { ContentItemHit } from '~/routes/search/types';
 
-import {
-  ALL_ARTICLES_INDEX_NAME,
-  ALL_ARTICLES_TYPE_FILTER,
-} from './all-articles.constants';
+import { ALL_ARTICLES_TYPE_FILTER } from './all-articles.constants';
 import { parseAllArticlesUrlState } from './all-articles-url-state';
 
 /** Matches largest grid column count in `all-articles.partial.tsx`. */
@@ -18,6 +17,7 @@ const ALL_ARTICLES_LOADER_HITS_PER_PAGE = 12;
 export type AllArticlesReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
   initialArticleHits: ContentItemHit[];
   articlesNbPages: number;
   articlesPage: number;
@@ -76,6 +76,7 @@ function buildArticlesSearchParams(
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new AuthenticationError('Algolia credentials not found');
@@ -91,7 +92,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   try {
     const hitsRes = await client.searchSingleIndex({
-      indexName: ALL_ARTICLES_INDEX_NAME,
+      indexName: algoliaIndexes.contentItems,
       searchParams: buildArticlesSearchParams(urlState),
     });
 
@@ -106,6 +107,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return Response.json({
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
+    algoliaIndexes,
     initialArticleHits,
     articlesNbPages,
     articlesPage,

@@ -5,14 +5,13 @@ import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import { fetchWistiaDataFromRock } from '~/lib/.server/fetch-wistia-data';
 import { getAttributeMatrixItems } from '~/lib/.server/rock-utils';
 import { parseRockKeyValueList } from '~/lib/utils';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import type {
   CurriculumResource,
   CurriculumSession,
   StudyCallToAction,
   StudyHitType,
 } from '../types';
-
-const STUDIES_ALGOLIA_INDEX_NAME = 'dev_StudiesAndResources';
 
 export type LoaderReturnType = {
   studyUrl: string;
@@ -156,12 +155,13 @@ async function fetchStudyHitForPath(
   studyUrl: string,
   appId: string,
   apiKey: string,
+  indexName: string,
 ): Promise<StudyHitType | null> {
   try {
     const client = algoliasearch(appId, apiKey);
     const response = await client.searchForHits<Record<string, unknown>>([
       {
-        indexName: STUDIES_ALGOLIA_INDEX_NAME,
+        indexName,
         params: {
           query: studyUrl,
           hitsPerPage: 50,
@@ -196,12 +196,18 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const appId = process.env.ALGOLIA_APP_ID;
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY;
+  const algoliaIndexes = getServerAlgoliaIndexes();
 
   if (!appId || !searchApiKey) {
     throw new AuthenticationError('Algolia credentials not found');
   }
 
-  const studyHit = await fetchStudyHitForPath(studyUrl, appId, searchApiKey);
+  const studyHit = await fetchStudyHitForPath(
+    studyUrl,
+    appId,
+    searchApiKey,
+    algoliaIndexes.studiesAndResources,
+  );
 
   const { curriculum, callsToAction, trailerWistiaId } =
     studyHit?.rockItemId != null

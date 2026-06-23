@@ -34,6 +34,7 @@ export function OutreachOpportunityPage() {
     waiverPdfUrl,
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
+    algoliaIndexes,
   } = useLoaderData<LoaderReturnType>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,6 +117,7 @@ export function OutreachOpportunityPage() {
               <VolunteerMissionSpotsAlgoliaProvider
                 appId={ALGOLIA_APP_ID}
                 searchApiKey={ALGOLIA_SEARCH_API_KEY}
+                indexName={algoliaIndexes.missions}
                 groupGuid={groupGuid}
                 rockFallback={spotsLabel}
               >

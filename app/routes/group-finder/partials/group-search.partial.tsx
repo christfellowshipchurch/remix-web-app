@@ -32,7 +32,6 @@ import {
   type ReactNode,
 } from 'react';
 import { GroupFinderOverflowFiltersPanel } from '../components/group-finder-overflow-filters.component';
-import { GROUPS_ALGOLIA_INDEX_NAME } from '../types';
 import {
   parseGroupFinderUrlState,
   groupFinderUrlStateToParams,
@@ -101,14 +100,17 @@ function isVirtualMeetingTypeActive(
 }
 
 /** Snapshot for InstantSearch `initialUiState` and local age/geo state on first client render. */
-function getInitialStateFromUrl(searchParams: URLSearchParams) {
+function getInitialStateFromUrl(
+  searchParams: URLSearchParams,
+  indexName: string,
+) {
   const urlState = parseGroupFinderUrlState(searchParams);
   const ageInput = urlState.age ?? '';
 
   return {
     coordinates: coordinatesFromUrlState(urlState),
     ageInput,
-    initialUiState: buildGroupFinderInstantSearchUiState(urlState),
+    initialUiState: buildGroupFinderInstantSearchUiState(urlState, indexName),
   };
 }
 
@@ -122,8 +124,10 @@ export const GroupSearch = () => {
     groupNbPages,
     groupPage,
     minMaxAgeValues,
+    algoliaIndexes,
     campusCityByName,
   } = loaderData;
+  const groupIndexName = algoliaIndexes.groups;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
@@ -151,7 +155,10 @@ export const GroupSearch = () => {
   });
 
   // Captured once when this route mounts; InstantSearch mounts one frame later (see `filtersMounted`).
-  const initial = useMemo(() => getInitialStateFromUrl(searchParams), []);
+  const initial = useMemo(
+    () => getInitialStateFromUrl(searchParams, groupIndexName),
+    [groupIndexName],
+  );
 
   const [coordinates, setCoordinatesState] = useState<{
     lat: number | null;
@@ -382,7 +389,7 @@ export const GroupSearch = () => {
       <div className='flex flex-col'>
         {filtersMounted ? (
           <InstantSearch
-            indexName={GROUPS_ALGOLIA_INDEX_NAME}
+            indexName={groupIndexName}
             searchClient={searchClient}
             initialUiState={
               Object.keys(initial.initialUiState).length > 0
@@ -391,7 +398,7 @@ export const GroupSearch = () => {
             }
             onStateChange={({ uiState, setUiState }) => {
               setUiState(uiState);
-              const indexState = uiState[GROUPS_ALGOLIA_INDEX_NAME];
+              const indexState = uiState[groupIndexName];
               if (indexState)
                 syncUrlFromUiState(indexState as Record<string, unknown>);
             }}
@@ -399,7 +406,7 @@ export const GroupSearch = () => {
               preserveSharedStateOnUnmount: true,
             }}
           >
-            <GroupFinderInstantSearchSync />
+            <GroupFinderInstantSearchSync indexName={groupIndexName} />
             <ResponsiveConfigure
               ageInput={ageInput}
               coordinates={coordinates}

@@ -71,7 +71,7 @@ export function groupClassTypeHits(
       byKey.set(key, {
         pathName,
         classType: hit.classType,
-        coverImage: hit.coverImage.sources[0]?.uri || '',
+        coverImage: hit.coverImage?.sources?.[0]?.uri || '',
         title: hit.classType?.trim() || hit.title,
         summary: hit.summary,
         subtitle: hit.subtitle,

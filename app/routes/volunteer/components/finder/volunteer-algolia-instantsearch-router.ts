@@ -6,7 +6,6 @@ import {
   parseVolunteerAlgoliaUrlState,
   volunteerAlgoliaUrlStateToParams,
 } from './volunteer-algolia-url-state';
-import { VOLUNTEER_ALGOLIA_INDEX } from '../../types';
 
 export type VolunteerAlgoliaRouterRefs = {
   searchParamsRef: RefObject<URLSearchParams>;
@@ -57,10 +56,10 @@ export function createVolunteerAlgoliaInstantSearchRouter(
   };
 }
 
-export function createVolunteerAlgoliaStateMapping() {
+export function createVolunteerAlgoliaStateMapping(indexName: string) {
   return {
     stateToRoute(uiState: { [indexId: string]: Record<string, unknown> }) {
-      const idx = uiState[VOLUNTEER_ALGOLIA_INDEX] || {};
+      const idx = uiState[indexName] || {};
       return {
         query: (idx.query as string) ?? undefined,
         refinementList:
@@ -69,7 +68,7 @@ export function createVolunteerAlgoliaStateMapping() {
     },
     routeToState(routeState: VolunteerAlgoliaUrlState) {
       return {
-        [VOLUNTEER_ALGOLIA_INDEX]: {
+        [indexName]: {
           query: routeState.query,
           refinementList: routeState.refinementList ?? {},
         },

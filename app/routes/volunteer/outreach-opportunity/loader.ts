@@ -2,6 +2,8 @@ import type { LoaderFunction } from 'react-router-dom';
 
 import { fetchVolunteerMissionDetailFromRock } from './outreach-mission-rock.server';
 import type { VolunteerMissionDetail } from './types';
+import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 /** Static PDF — Community Serving liability waiver. */
 const COMMUNITY_SERVING_WAIVER_PDF_URL =
@@ -16,6 +18,7 @@ export type LoaderReturnType = {
   /** Optional — used only for Algolia `spotsLeft` on the mission intro. */
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  algoliaIndexes: AlgoliaIndexMap;
 };
 
 /** UUID / Rock GUID (with hyphens), case-insensitive. */
@@ -46,5 +49,6 @@ export const loader: LoaderFunction = async ({ params }) => {
     waiverPdfUrl: COMMUNITY_SERVING_WAIVER_PDF_URL,
     ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID ?? '',
     ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY ?? '',
+    algoliaIndexes: getServerAlgoliaIndexes(),
   } satisfies LoaderReturnType);
 };

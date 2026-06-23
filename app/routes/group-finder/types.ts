@@ -1,6 +1,3 @@
-/** Algolia index for small-group search (finder, single group loader, related groups, class-single). */
-export const GROUPS_ALGOLIA_INDEX_NAME = 'dev_Groups';
-
 // Image source structure
 export interface ImageSource {
   sources: {
@@ -8,7 +5,7 @@ export interface ImageSource {
   }[];
 }
 
-/** One leader row as returned from the `dev_Groups` Algolia index. */
+/** One leader row as returned from the groups Algolia index. */
 export interface GroupLeaderHit {
   id: number | string;
   firstName: string;
@@ -71,7 +68,7 @@ export type GroupTopic =
 export type GroupAdultsOnlyFacet = 'True' | 'False';
 
 /**
- * Record shape for the `dev_Groups` Algolia index (UI reads these fields directly).
+ * Record shape for the groups Algolia index (UI reads these fields directly).
  * Index payloads are asserted to this type at the loader / InstantSearch boundary.
  */
 export interface GroupType {
