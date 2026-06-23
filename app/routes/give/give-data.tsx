@@ -34,7 +34,7 @@ export const giveFaqData: PageBuilderSection = {
       id: 'give-faq-4',
       question: 'How can I get my giving statement for tax purposes?',
       answer:
-        'If you give through our online giving platform, you can access your giving history anytime We will also send you a giving statement via email at the end of each quarter. If you need help getting a copy of your giving statement, need to update your email address, or have questions about your giving history, just let us know at contributions@christfellowship.church and we’d be happy to help!',
+        'If you give through our online giving platform, you can access your giving history anytime. We will also send you a giving statement via email at the end of each quarter. If you need help getting a copy of your giving statement, need to update your email address, or have questions about your giving history, just let us know at <a class="text-ocean" href="mailto:contributions@christfellowship.church">contributions@christfellowship.church</a> and we’d be happy to help!',
     },
     {
       id: 'give-faq-5',
@@ -47,10 +47,21 @@ export const giveFaqData: PageBuilderSection = {
 export const giveImproveFinancesData: CollectionItem[] = [
   {
     id: 'give-improve-finances-1',
+    name: 'My God My Money',
+    contentType: 'REDIRECT_CARD',
+    pathname: '/class-finder/my-god-my-money',
+    contentChannelId: 'give-improve-finances-1',
+    summary:
+      'A study to help you manage your money with biblical wisdom and practical next steps.',
+    image:
+      'https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=0039bfd2-d4e5-46b9-8209-f7554057ccdc',
+  },
+  {
+    id: 'give-improve-finances-4',
     name: 'Financial Peace University (FPU) and other classes',
     contentType: 'REDIRECT_CARD',
-    pathname: '/class-finder',
-    contentChannelId: 'give-improve-finances-1',
+    pathname: '/class-finder/financial-peace-university',
+    contentChannelId: 'give-improve-finances-4',
     summary: 'An on-demand class to help you experience financial freedom!',
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?guid=093ef63e-7254-43ee-9b1b-33c416b0e4e2',
@@ -59,7 +70,7 @@ export const giveImproveFinancesData: CollectionItem[] = [
     id: 'give-improve-finances-2',
     name: 'Messages About Giving',
     contentType: 'REDIRECT_CARD',
-    pathname: '/messages',
+    pathname: '/series-resources/9a381c82-d93c-4b2e-aab7-3440f53a8a2e',
     contentChannelId: 'give-improve-finances-2',
     summary:
       'It’s not about what God wants from you but what He wants for you!',
@@ -69,7 +80,7 @@ export const giveImproveFinancesData: CollectionItem[] = [
     id: 'give-improve-finances-3',
     name: 'Articles and Devotionals',
     contentType: 'REDIRECT_CARD',
-    pathname: '/articles',
+    pathname: '/link-tree/financial-resources',
     contentChannelId: 'give-improve-finances-3',
     summary: 'Read more about the topic of finances and biblical stewardship.',
     image: getImageUrl('3143868'),
