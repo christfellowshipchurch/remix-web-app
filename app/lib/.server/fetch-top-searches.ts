@@ -20,8 +20,9 @@ export async function fetchTopSearches(
   if (!appId || !apiKey) return [];
 
   const base = getAnalyticsBase();
-  const contentIndex = getAlgoliaIndexes(process.env.ALGOLIA_INDEX_ENV)
-    .contentItems;
+  const contentIndex = getAlgoliaIndexes(
+    process.env.ALGOLIA_INDEX_ENV,
+  ).contentItems;
   const params = new URLSearchParams({
     index: contentIndex,
     limit: String(limit),

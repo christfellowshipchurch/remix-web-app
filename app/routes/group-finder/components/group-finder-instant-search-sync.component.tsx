@@ -34,9 +34,7 @@ export function buildGroupFinderInstantSearchUiState(
     indexSlice.page = urlState.page + 1;
   }
 
-  return Object.keys(indexSlice).length > 0
-    ? { [indexName]: indexSlice }
-    : {};
+  return Object.keys(indexSlice).length > 0 ? { [indexName]: indexSlice } : {};
 }
 
 /**
