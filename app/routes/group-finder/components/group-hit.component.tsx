@@ -136,6 +136,25 @@ export function GroupHit({
       ? formatDistanceMiles(hit._rankingInfo.geoDistance)
       : null;
 
+  // A group whose own meeting type is virtual/online has no physical location,
+  // so its footer reads "Online" rather than a city or distance.
+  const isVirtualGroup = (() => {
+    const t = hit.meetingType?.trim().toLowerCase();
+    return t === 'virtual' || t === 'online';
+  })();
+
+  // Footer bar text + icon. Priority: the active "Virtual" filter, then a geo
+  // distance when one is available, then "Online" for virtual groups, otherwise
+  // the group/campus city. A geo search with no usable distance falls back to
+  // the same city label instead of "Location Varies".
+  const footerShowsOnline =
+    isVirtualFilterActive || (isGeoSearch && !distanceLabel && isVirtualGroup);
+  const footerLabel = footerShowsOnline
+    ? 'Online'
+    : isGeoSearch && distanceLabel
+      ? distanceLabel
+      : groupHitCityLabel(hit, campusCityByName);
+
   return (
     <Link
       prefetch='intent'
@@ -213,17 +232,11 @@ export function GroupHit({
             </div>
             <div className='w-full px-6 flex items-center justify-center gap-2 py-3 bg-navy text-white '>
               <Icon
-                name={isVirtualFilterActive ? 'globe' : 'map'}
+                name={footerShowsOnline ? 'globe' : 'map'}
                 size={20}
                 color='white'
               />
-              <p className='text-sm font-semibold'>
-                {isVirtualFilterActive
-                  ? 'Online'
-                  : isGeoSearch
-                    ? (distanceLabel ?? 'Location Varies')
-                    : groupHitCityLabel(hit, campusCityByName)}
-              </p>
+              <p className='text-sm font-semibold'>{footerLabel}</p>
             </div>
           </div>
         </div>

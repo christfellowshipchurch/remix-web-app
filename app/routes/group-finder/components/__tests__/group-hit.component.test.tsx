@@ -41,15 +41,30 @@ function renderGroupHit(hit: GroupType) {
 }
 
 describe('GroupHit', () => {
-  it('shows location varies when Algolia returns blank geolocation values', () => {
+  it('falls back to the group/campus city (not "Location Varies") when Algolia returns blank geolocation values', () => {
     renderGroupHit(
       createGroupHit({
+        meetingLocation: 'Jupiter, FL 33458',
         _geoloc: { lat: '', lng: '' },
         _rankingInfo: { geoDistance: 5000 * 1609.344 },
       }),
     );
 
-    expect(screen.getByText('Location Varies')).toBeInTheDocument();
+    expect(screen.getByText('Jupiter')).toBeInTheDocument();
+    expect(screen.queryByText('Location Varies')).not.toBeInTheDocument();
+    expect(screen.queryByText(/miles away/i)).not.toBeInTheDocument();
+  });
+
+  it('shows "Online" for a virtual group with blank geolocation during a geo search', () => {
+    renderGroupHit(
+      createGroupHit({
+        meetingType: 'Virtual',
+        _geoloc: { lat: '', lng: '' },
+      }),
+    );
+
+    expect(screen.getByText('Online')).toBeInTheDocument();
+    expect(screen.queryByText('Location Varies')).not.toBeInTheDocument();
     expect(screen.queryByText(/miles away/i)).not.toBeInTheDocument();
   });
 
