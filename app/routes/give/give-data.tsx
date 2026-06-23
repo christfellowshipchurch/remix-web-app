@@ -47,7 +47,7 @@ export const giveFaqData: PageBuilderSection = {
 export const giveImproveFinancesData: CollectionItem[] = [
   {
     id: 'give-improve-finances-1',
-    name: 'Raising God-Honoring Money Managers',
+    name: 'My God My Money',
     contentType: 'REDIRECT_CARD',
     pathname: '/class-finder/my-god-my-money',
     contentChannelId: 'give-improve-finances-1',
