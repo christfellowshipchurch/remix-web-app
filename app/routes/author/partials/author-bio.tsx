@@ -6,34 +6,17 @@ import { AuthorBioProps } from '../types';
 
 export function AuthorBio({
   author,
-  homeUrl,
   variant = 'default',
   hideSocialLinks = false,
 }: AuthorBioProps) {
-  const { id, fullName, profilePhoto, authorAttributes } = author;
-  const { bio, jobTitle, socialLinks, pathname } = authorAttributes;
+  const { fullName, profilePhoto, authorAttributes } = author;
+  const { bio, jobTitle, socialLinks } = authorAttributes;
 
   // Determine styling based on variant
   const isLeadersVariant = variant === 'leaders';
   const avatarRounded = isLeadersVariant ? 'rounded-[32px]' : 'rounded-full';
   const shareLinksSize = isLeadersVariant ? 10 : 8;
   const circleLoaderSize = isLeadersVariant ? 32 : 20;
-
-  // ShareLinks props based on variant
-  const authorUrl = pathname || id;
-  const shareLinksProps =
-    isLeadersVariant && authorUrl && homeUrl
-      ? {
-          overrideCopyUrl: `${homeUrl}/author/${authorUrl}`,
-          size: shareLinksSize,
-          socialMedia: socialLinks,
-        }
-      : {
-          url:
-            authorUrl && homeUrl ? `${homeUrl}/author/${authorUrl}` : undefined,
-          size: shareLinksSize,
-          socialMedia: socialLinks,
-        };
 
   return (
     <div className='flex flex-col gap-5 md:gap-8 font-light text-neutral-700 w-full'>
@@ -56,7 +39,13 @@ export function AuthorBio({
         {bio && <HTMLRenderer html={bio} />}
         {!hideSocialLinks && (
           <div className='flex gap-2'>
-            {socialLinks && <ShareLinks {...shareLinksProps} />}
+            {socialLinks && (
+              <ShareLinks
+                size={shareLinksSize}
+                socialMedia={socialLinks}
+                title={fullName}
+              />
+            )}
           </div>
         )}
       </div>
@@ -81,7 +70,13 @@ export function AuthorBio({
         </div>
         {!hideSocialLinks && (
           <div className='flex gap-2'>
-            {socialLinks && <ShareLinks {...shareLinksProps} />}
+            {socialLinks && (
+              <ShareLinks
+                size={shareLinksSize}
+                socialMedia={socialLinks}
+                title={fullName}
+              />
+            )}
           </div>
         )}
         {bio && <HTMLRenderer html={bio} />}
