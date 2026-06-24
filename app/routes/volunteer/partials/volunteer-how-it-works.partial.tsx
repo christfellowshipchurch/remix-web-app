@@ -60,24 +60,24 @@ export function VolunteerHowItWorks() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className='flex items-center gap-3 rounded-[16px] bg-white p-4 shadow-sm'
+              className='flex items-center gap-2 rounded-[16px] bg-white p-3 shadow-sm'
             >
               <div
-                className={`${step.dotClass} flex items-center justify-center size-7 rounded-full shrink-0`}
+                className={`${step.dotClass} flex items-center justify-center size-6 rounded-full shrink-0`}
               >
-                <span className='text-xs font-bold text-white'>
+                <span className='text-[10px] font-bold text-white'>
                   {index + 1}
                 </span>
               </div>
-              <div className='flex flex-col gap-1 min-w-0'>
-                <span className='text-[15px] font-bold leading-tight text-primary'>
+              <div className='flex flex-col gap-0.5 min-w-0'>
+                <span className='text-[13px] font-bold leading-tight text-primary whitespace-nowrap'>
                   {step.label}
                 </span>
-                {step.required && (
-                  <span className='text-[10px] font-bold uppercase tracking-wider text-ocean'>
-                    Required
-                  </span>
-                )}
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider text-ocean ${step.required ? '' : 'invisible'}`}
+                >
+                  Required
+                </span>
               </div>
             </div>
           ))}
