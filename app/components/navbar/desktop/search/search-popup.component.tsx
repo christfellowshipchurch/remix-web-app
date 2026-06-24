@@ -8,6 +8,8 @@ import {
   fetchGlobalSearchLocationHits,
   toDesktopLocationContentHit,
 } from '../../search-locations';
+import { shouldIncludeLocationResultsInGlobalSearch } from '../../search-page-refinements';
+import { useGlobalSearchLocationMatches } from '../../global-search-location-context';
 import { ContentHit } from './content-hit.component';
 import { SearchCustomRefinementList } from './custom-refinements.component';
 
@@ -40,18 +42,16 @@ export const SearchPopup = ({
 }) => {
   const { query } = useSearchBox();
   const { indexUiState } = useInstantSearch();
+  const { setHasMatchingLocations } = useGlobalSearchLocationMatches();
   const [contentHits, setContentHits] = useState<ContentItemHit[]>([]);
   const [locationHits, setLocationHits] = useState<ContentItemHit[]>([]);
 
-  const selectedItems =
+  const selectedContentTypes =
     (indexUiState?.refinementList?.contentType as string[]) || [];
-  const isPagesSelected =
-    selectedItems.includes('Ministry Page') ||
-    selectedItems.includes('Page Builder') ||
-    selectedItems.includes('Redirect Card');
-
   const trimmedQuery = query.trim();
-  const shouldShowLocations = trimmedQuery.length > 0 || isPagesSelected;
+  const shouldShowLocations =
+    trimmedQuery.length > 0 &&
+    shouldIncludeLocationResultsInGlobalSearch(selectedContentTypes);
 
   const searchLocations = useCallback(
     async (searchQuery: string) => {
@@ -91,6 +91,10 @@ export const SearchPopup = ({
       isCancelled = true;
     };
   }, [shouldShowLocations, trimmedQuery, searchLocations]);
+
+  useEffect(() => {
+    setHasMatchingLocations(shouldShowLocations && locationHits.length > 0);
+  }, [locationHits.length, setHasMatchingLocations, shouldShowLocations]);
 
   const combinedHits = shouldShowLocations
     ? [...contentHits, ...locationHits]

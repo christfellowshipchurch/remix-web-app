@@ -5,6 +5,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { SearchPopup } from './search-popup.component';
 import { RootLoaderData } from '~/routes/navbar/loader';
+import { GlobalSearchLocationProvider } from '../../global-search-location-context';
 import { MobileSearchCustomRefinementList } from './customRefinements.component';
 
 // Create a stable search instance ID that persists between unmounts
@@ -83,7 +84,8 @@ export const MobileSearch = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={9} />
+        <GlobalSearchLocationProvider>
+          <Configure hitsPerPage={9} />
 
         <div className='flex flex-col gap-6 pb-2 sticky top-0 bg-white shadow-sm border-b border-[#E0E0E0]'>
           {/* Search Bar */}
@@ -122,6 +124,7 @@ export const MobileSearch = ({
           searchClient={searchClient}
           locationsIndexName={locationsIndexName}
         />
+        </GlobalSearchLocationProvider>
       </InstantSearch>
     </div>
   );

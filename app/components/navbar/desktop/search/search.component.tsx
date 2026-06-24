@@ -5,6 +5,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { SearchPopup } from './search-popup.component';
 import { RootLoaderData } from '~/routes/navbar/loader';
+import { GlobalSearchLocationProvider } from '../../global-search-location-context';
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = 'navbar-search';
@@ -141,7 +142,8 @@ export const SearchBar = ({
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={10} />
+        <GlobalSearchLocationProvider>
+          <Configure hitsPerPage={10} />
 
         <div className='flex w-full items-center pb-2 border-b border-neutral-lighter gap-4'>
           <button
@@ -176,6 +178,7 @@ export const SearchBar = ({
           searchClient={searchClient}
           locationsIndexName={locationsIndexName}
         />
+        </GlobalSearchLocationProvider>
       </InstantSearch>
     </div>
   );
