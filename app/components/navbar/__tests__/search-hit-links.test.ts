@@ -25,23 +25,20 @@ describe('search hit links', () => {
   });
 
   it('normalizes redirect card paths', () => {
-    expect(
-      getSearchHitPathname('Redirect Card', '/events/diesel'),
-    ).toBe('/events/diesel');
+    expect(getSearchHitPathname('Redirect Card', '/events/diesel')).toBe(
+      '/events/diesel',
+    );
     expect(getSearchHitPathname('Redirect Card', 'events/diesel')).toBe(
       '/events/diesel',
     );
-    expect(
-      getSearchHitPathname('Redirect Card', 'https://events/diesel'),
-    ).toBe('/events/diesel');
+    expect(getSearchHitPathname('Redirect Card', 'https://events/diesel')).toBe(
+      '/events/diesel',
+    );
   });
 
   it('preserves real external redirect card URLs', () => {
     expect(
-      resolveSearchHitLink(
-        'Redirect Card',
-        'https://www.example.com/off-site',
-      ),
+      resolveSearchHitLink('Redirect Card', 'https://www.example.com/off-site'),
     ).toEqual({
       to: 'https://www.example.com/off-site',
       isExternal: true,
