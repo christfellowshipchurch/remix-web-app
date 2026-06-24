@@ -1,12 +1,6 @@
-import React from 'react';
 import { algoliasearch, SearchClient } from 'algoliasearch';
 import { useEffect, useRef } from 'react';
-import {
-  Configure,
-  InstantSearch,
-  SearchBox,
-  useSearchBox,
-} from 'react-instantsearch';
+import { Configure, InstantSearch, SearchBox } from 'react-instantsearch';
 import { useRouteLoaderData } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { SearchPopup } from './search-popup.component';
@@ -37,31 +31,6 @@ const emptySearchClient = {
       ],
     }),
 };
-
-// Create a component to provide the current query and searchClient
-function CurrentQueryProvider({
-  children,
-  searchClient,
-}: {
-  children: React.ReactNode;
-  searchClient: SearchClient | { search: () => Promise<unknown> };
-}) {
-  const { query } = useSearchBox();
-
-  // Clone the children with the current query and searchClient props
-  return React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(
-        child as React.ReactElement<{
-          query?: string;
-          searchClient?: SearchClient | { search: () => Promise<unknown> };
-        }>,
-        { query, searchClient },
-      );
-    }
-    return child;
-  });
-}
 
 export const SearchBar = ({
   mode,
@@ -202,12 +171,11 @@ export const SearchBar = ({
             }}
           />
         </div>
-        <CurrentQueryProvider searchClient={searchClient}>
-          <SearchPopup
-            setIsSearchOpen={setIsSearchOpen}
-            locationsIndexName={locationsIndexName}
-          />
-        </CurrentQueryProvider>
+        <SearchPopup
+          setIsSearchOpen={setIsSearchOpen}
+          searchClient={searchClient}
+          locationsIndexName={locationsIndexName}
+        />
       </InstantSearch>
     </div>
   );

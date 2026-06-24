@@ -1,24 +1,18 @@
-import { SearchClient } from 'algoliasearch';
-import { useState, useEffect, useCallback } from 'react';
-import { useHits, useInstantSearch } from 'react-instantsearch';
+import type { SearchClient } from 'algoliasearch';
+import { useCallback, useEffect, useState } from 'react';
+import { useHits, useInstantSearch, useSearchBox } from 'react-instantsearch';
+
+import type { ContentItemHit } from '~/routes/search/types';
+
+import {
+  fetchGlobalSearchLocationHits,
+  toDesktopLocationContentHit,
+} from '../../search-locations';
 import { ContentHit } from './content-hit.component';
 import { SearchCustomRefinementList } from './custom-refinements.component';
-import { ContentItemHit } from '~/routes/search/types';
-
-interface LocationHit {
-  campusName?: string;
-  campusUrl?: string;
-  campusCardImage?: string;
-  campusImage?: string;
-  objectID?: string;
-}
 
 function hasNonBlankUrl(hit: { url?: unknown }): boolean {
   return typeof hit.url === 'string' && hit.url.trim().length > 0;
-}
-
-function hasNonBlankCampusUrl(hit: LocationHit): boolean {
-  return typeof hit.campusUrl === 'string' && hit.campusUrl.trim().length > 0;
 }
 
 const ContentItemsHitsCollector = ({
@@ -37,15 +31,14 @@ const ContentItemsHitsCollector = ({
 
 export const SearchPopup = ({
   setIsSearchOpen,
-  query,
   searchClient,
   locationsIndexName,
 }: {
   setIsSearchOpen: (isSearchOpen: boolean) => void;
-  query?: string;
-  searchClient?: SearchClient | { search: () => Promise<unknown> };
+  searchClient: SearchClient | { search: () => Promise<unknown> };
   locationsIndexName: string;
 }) => {
+  const { query } = useSearchBox();
   const { indexUiState } = useInstantSearch();
   const [contentHits, setContentHits] = useState<ContentItemHit[]>([]);
   const [locationHits, setLocationHits] = useState<ContentItemHit[]>([]);
@@ -57,128 +50,47 @@ export const SearchPopup = ({
     selectedItems.includes('Page Builder') ||
     selectedItems.includes('Redirect Card');
 
-  const hasQuery = query && query.trim().length > 0;
-  const shouldShowLocations = hasQuery || isPagesSelected;
+  const trimmedQuery = query.trim();
+  const shouldShowLocations = trimmedQuery.length > 0 || isPagesSelected;
 
-  // Direct search for locations - bypasses InstantSearch refinements
   const searchLocations = useCallback(
     async (searchQuery: string) => {
-      if (!searchClient) {
-        setLocationHits([]);
-        return;
-      }
+      const hits = await fetchGlobalSearchLocationHits({
+        searchClient,
+        locationsIndexName,
+        query: searchQuery,
+      });
 
-      try {
-        // Check if this is the real Algolia client (has transporter property)
-        if (!('transporter' in searchClient)) {
-          // Using the empty search client, return empty results
-          setLocationHits([]);
-          return;
-        }
-
-        // Use the Algolia v5 search method with the correct format
-        const response = await (
-          searchClient as SearchClient
-        ).search<LocationHit>({
-          requests: [
-            {
-              indexName: locationsIndexName,
-              query: searchQuery,
-              hitsPerPage: 10,
-            },
-          ],
-        });
-
-        // Extract hits from the first result
-        const firstResult = response.results[0];
-        const hits =
-          'hits' in firstResult ? (firstResult.hits as LocationHit[]) : [];
-
-        const transformedHits: ContentItemHit[] = hits
-          .filter((hit) => hit?.campusName && hasNonBlankCampusUrl(hit))
-          .map((hit) => {
-            const uri = hit.campusCardImage?.trim() || hit.campusImage?.trim();
-            return {
-              title: hit.campusName || '',
-              contentType: 'Location',
-              url: hit.campusUrl || '',
-              routing: {
-                pathname: hit.campusUrl || '',
-              },
-              summary: '',
-              rockItemId: 0,
-              author: {
-                firstName: '',
-                lastName: '',
-                profileImage: '',
-              },
-              priority: 0,
-              action: '',
-              imageLabel: '',
-              sermonPrimaryCategories: [],
-              sermonSecondaryCategories: [],
-              articlePrimaryCategories: [],
-              articleSecondaryCategories: [],
-              articleReadTime: 0,
-              startDateTime: '',
-              coverImage: {
-                sources: uri ? [{ uri }] : [],
-              },
-              _typename: '',
-              objectID: hit.objectID || '',
-              _highlightResult: {
-                title: {
-                  value: hit.campusName || '',
-                  matchLevel: 'none',
-                  matchedWords: [],
-                },
-                summary: {
-                  value: '',
-                  matchLevel: 'none',
-                  matchedWords: [],
-                },
-                author: {
-                  firstName: {
-                    value: '',
-                    matchLevel: 'none',
-                    matchedWords: [],
-                  },
-                  lastName: {
-                    value: '',
-                    matchLevel: 'none',
-                    matchedWords: [],
-                  },
-                },
-                routing: {
-                  pathname: {
-                    value: hit.campusUrl || '',
-                    matchLevel: 'none',
-                    matchedWords: [],
-                  },
-                },
-                htmlContent: [],
-              },
-              __position: 0,
-            };
-          });
-
-        setLocationHits(transformedHits);
-      } catch (error) {
-        console.error('Error searching locations:', error);
-        setLocationHits([]);
-      }
+      return hits.map(toDesktopLocationContentHit);
     },
     [locationsIndexName, searchClient],
   );
 
-  // Search locations when query changes or when Pages is selected
   useEffect(() => {
-    if (shouldShowLocations) {
-      searchLocations(query || '');
-    } else {
+    if (!shouldShowLocations) {
       setLocationHits([]);
+      return;
     }
-  }, [query, shouldShowLocations, searchLocations]);
+
+    let isCancelled = false;
+
+    void searchLocations(trimmedQuery)
+      .then((hits) => {
+        if (!isCancelled) {
+          setLocationHits(hits);
+        }
+      })
+      .catch((error) => {
+        console.error('Error searching locations:', error);
+        if (!isCancelled) {
+          setLocationHits([]);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [shouldShowLocations, trimmedQuery, searchLocations]);
 
   const combinedHits = shouldShowLocations
     ? [...contentHits, ...locationHits]
@@ -195,7 +107,6 @@ export const SearchPopup = ({
         </div>
       </div>
 
-      {/* Content collector to receive search updates */}
       <ContentItemsHitsCollector onHitsChange={setContentHits} />
 
       <div className='mt-2 space-y-4'>

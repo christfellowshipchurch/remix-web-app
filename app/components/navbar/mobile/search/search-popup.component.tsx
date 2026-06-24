@@ -1,31 +1,26 @@
-import { SearchClient } from 'algoliasearch';
-import { useState, useEffect, useCallback } from 'react';
+import type { SearchClient } from 'algoliasearch';
+import { useCallback, useEffect, useState } from 'react';
 import {
   useCurrentRefinements,
   useHits,
   useInstantSearch,
   useSearchBox,
 } from 'react-instantsearch';
-import { ContentItemHit } from '~/routes/search/types';
-import { PopularSearches } from './popular-searches.component';
+
+import type { ContentItemHit } from '~/routes/search/types';
+
+import {
+  fetchGlobalSearchLocationHits,
+  toMobileLocationContentHit,
+} from '../../search-locations';
 import {
   MobileContentHit,
   MobileContentHitType,
 } from './mobile-content-hit.component';
-
-interface LocationHit {
-  campusName?: string;
-  campusUrl?: string;
-  campusCardImage?: string;
-  campusImage?: string;
-}
+import { PopularSearches } from './popular-searches.component';
 
 function hasNonBlankUrl(hit: { url?: unknown }): boolean {
   return typeof hit.url === 'string' && hit.url.trim().length > 0;
-}
-
-function hasNonBlankCampusUrl(hit: LocationHit): boolean {
-  return typeof hit.campusUrl === 'string' && hit.campusUrl.trim().length > 0;
 }
 
 const ContentItemsHitsCollector = ({
@@ -79,73 +74,49 @@ export const SearchPopup = ({
     selectedItems.includes('Page Builder') ||
     selectedItems.includes('Redirect Card');
 
+  const trimmedQuery = query.trim();
   const isSearching =
-    query.trim().length > 0 || items.length > 0 || isPagesSelected;
+    trimmedQuery.length > 0 || items.length > 0 || isPagesSelected;
+  const shouldShowLocations = isPagesSelected || trimmedQuery.length > 0;
 
-  const hasQuery = query.trim().length > 0;
-  const shouldShowLocations = isPagesSelected || hasQuery;
-
-  // Direct search for locations - bypasses InstantSearch refinements
   const searchLocations = useCallback(
     async (searchQuery: string) => {
-      try {
-        // Check if this is the real Algolia client (has transporter property)
-        if (!('transporter' in searchClient)) {
-          // Using the empty search client, return empty results
-          setLocationHits([]);
-          return;
-        }
+      const hits = await fetchGlobalSearchLocationHits({
+        searchClient,
+        locationsIndexName,
+        query: searchQuery,
+      });
 
-        // Use the Algolia v5 search method with the correct format
-        const response = await (
-          searchClient as SearchClient
-        ).search<LocationHit>({
-          requests: [
-            {
-              indexName: locationsIndexName,
-              query: searchQuery,
-              hitsPerPage: 9,
-            },
-          ],
-        });
-
-        // Extract hits from the first result
-        const firstResult = response.results[0];
-        const hits =
-          'hits' in firstResult ? (firstResult.hits as LocationHit[]) : [];
-
-        const transformedHits: MobileContentHitType[] = hits
-          .filter((hit) => hit?.campusName && hasNonBlankCampusUrl(hit))
-          .map((hit) => {
-            const uri = hit.campusCardImage?.trim() || hit.campusImage?.trim();
-            return {
-              routing: {
-                pathname: `locations/${hit.campusUrl || ''}`,
-              },
-              coverImage: uri ? { sources: [{ uri }] } : null,
-              title: hit.campusName || '',
-              contentType: 'Location',
-              summary: '',
-            };
-          });
-
-        setLocationHits(transformedHits);
-      } catch (error) {
-        console.error('Error searching locations:', error);
-        setLocationHits([]);
-      }
+      return hits.map(toMobileLocationContentHit);
     },
     [locationsIndexName, searchClient],
   );
 
-  // Search locations when query changes or when Pages is selected
   useEffect(() => {
-    if (shouldShowLocations) {
-      searchLocations(query);
-    } else {
+    if (!shouldShowLocations) {
       setLocationHits([]);
+      return;
     }
-  }, [query, shouldShowLocations, searchLocations]);
+
+    let isCancelled = false;
+
+    void searchLocations(trimmedQuery)
+      .then((hits) => {
+        if (!isCancelled) {
+          setLocationHits(hits);
+        }
+      })
+      .catch((error) => {
+        console.error('Error searching locations:', error);
+        if (!isCancelled) {
+          setLocationHits([]);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [shouldShowLocations, trimmedQuery, searchLocations]);
 
   const combinedHits = shouldShowLocations
     ? [...contentHits, ...locationHits]
@@ -153,7 +124,6 @@ export const SearchPopup = ({
 
   return (
     <div className='size-full p-4 pt-0! md:p-6 md:pt-6!'>
-      {/* Always render content collector to receive search updates */}
       <ContentItemsHitsCollector onHitsChange={setContentHits} />
 
       <div className='border-t border-[#E0E0E0] pt-6 space-y-4'>
