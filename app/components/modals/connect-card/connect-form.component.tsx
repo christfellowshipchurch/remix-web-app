@@ -89,6 +89,21 @@ type ConnectCardPrefillDebugInfo = {
   apiRequested: boolean;
   responseStatus?: ConnectCardPrefillResponse['status'];
   rawLength?: number;
+  paramName?: string;
+};
+
+const ROCK_PERSON_ID_QUERY_PARAMS = ['rckipid', 'rckpid'];
+
+const getRockPersonIdSearchParam = (searchParams: URLSearchParams) => {
+  for (const paramName of ROCK_PERSON_ID_QUERY_PARAMS) {
+    const rawValue = searchParams.get(paramName);
+    const value = rawValue?.trim();
+    if (value) {
+      return { paramName, rawValue, value };
+    }
+  }
+
+  return null;
 };
 
 export const renderCheckboxField = (
@@ -151,9 +166,8 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       return;
     }
 
-    const rawRckipid = searchParams.get('rckipid');
-    const rckipid = rawRckipid?.trim();
-    if (!rckipid) {
+    const rockPersonIdParam = getRockPersonIdSearchParam(searchParams);
+    if (!rockPersonIdParam) {
       if (isPrefillDebug) {
         processedRckipidRef.current = true;
         const debugInfo = {
@@ -168,10 +182,12 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
 
     processedRckipidRef.current = true;
-    const isValidRckipid = /^\d+$/.test(rckipid);
+    const isValidRckipid = /^\d+$/.test(rockPersonIdParam.value);
 
     const nextSearchParams = new URLSearchParams(searchParams);
-    nextSearchParams.delete('rckipid');
+    ROCK_PERSON_ID_QUERY_PARAMS.forEach((paramName) =>
+      nextSearchParams.delete(paramName),
+    );
     setSearchParams(nextSearchParams, { replace: true });
 
     if (isPrefillDebug) {
@@ -180,7 +196,8 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         valid: isValidRckipid,
         urlCleaned: true,
         apiRequested: isValidRckipid,
-        rawLength: rawRckipid?.length,
+        rawLength: rockPersonIdParam.rawValue?.length,
+        paramName: rockPersonIdParam.paramName,
       };
       setPrefillDebugInfo(debugInfo);
     }
@@ -193,7 +210,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     setPrefillStatus('loading');
     requestedPrefillRef.current = true;
     prefillFetcher.load(
-      `/api/connect-card-prefill?rckipid=${encodeURIComponent(rckipid)}`,
+      `/api/connect-card-prefill?rckipid=${encodeURIComponent(
+        rockPersonIdParam.value,
+      )}`,
     );
   }, [isPrefillDebug, prefillFetcher, searchParams, setSearchParams]);
 
@@ -219,6 +238,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         urlCleaned: current?.urlCleaned ?? true,
         apiRequested: current?.apiRequested ?? true,
         rawLength: current?.rawLength,
+        paramName: current?.paramName,
         responseStatus: response.status,
       }));
     }
@@ -319,6 +339,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           Connect Card prefill debug
         </p>
         <p>rckipid detected: {prefillDebugInfo.detected ? 'yes' : 'no'}</p>
+        <p>parameter name: {prefillDebugInfo.paramName ?? 'n/a'}</p>
         <p>
           rckipid valid:{' '}
           {prefillDebugInfo.valid == null

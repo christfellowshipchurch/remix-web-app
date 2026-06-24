@@ -250,13 +250,29 @@ describe('ConnectCardForm', () => {
     });
   });
 
+  it('loads prefill data for the mobile app rckpid alias and removes it from the URL', async () => {
+    renderForm(vi.fn(), '/connect-card?rckpid=123&foo=bar');
+
+    await waitFor(() => {
+      expect(mockPrefillLoad).toHaveBeenCalledWith(
+        '/api/connect-card-prefill?rckipid=123',
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('location-search')).toHaveTextContent(
+        '?foo=bar',
+      );
+    });
+  });
+
   it('shows opt-in prefill debug details while preserving the debug URL param', async () => {
-    renderForm(vi.fn(), '/connect-card?rckipid=123&prefillDebug=1');
+    renderForm(vi.fn(), '/connect-card?rckpid=123&prefillDebug=1');
 
     expect(
       await screen.findByText('Connect Card prefill debug'),
     ).toBeInTheDocument();
     expect(screen.getByText('rckipid detected: yes')).toBeInTheDocument();
+    expect(screen.getByText('parameter name: rckpid')).toBeInTheDocument();
     expect(screen.getByText('rckipid valid: yes')).toBeInTheDocument();
     expect(screen.getByText('rckipid length: 3')).toBeInTheDocument();
     expect(screen.getByText('URL cleaned: yes')).toBeInTheDocument();

@@ -51,6 +51,32 @@ describe('connect card prefill API', () => {
     });
   });
 
+  it('accepts the mobile app rckpid alias', async () => {
+    mockFetchRockData
+      .mockResolvedValueOnce({
+        firstName: 'Jane',
+        primaryCampusId: 10,
+      })
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([{ id: 10, guid: 'campus-guid' }]);
+
+    const response = await loader(createArgs('?rckpid=123'));
+
+    expect(readData(response)).toEqual({
+      status: 'success',
+      prefill: {
+        firstName: 'Jane',
+        campus: 'campus-guid',
+      },
+    });
+    expect(mockFetchRockData).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        endpoint: 'People/123',
+      }),
+    );
+  });
+
   it('maps Rock person, phone, and campus data to a minimal prefill response', async () => {
     mockFetchRockData
       .mockResolvedValueOnce({

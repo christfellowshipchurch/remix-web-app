@@ -41,6 +41,11 @@ type RockCampus = {
 const isRockPersonId = (value: string | null): value is string =>
   !!value && /^\d+$/.test(value.trim());
 
+const getRockPersonId = (url: URL): string | null =>
+  url.searchParams.get('rckipid')?.trim() ??
+  url.searchParams.get('rckpid')?.trim() ??
+  null;
+
 const asArray = <T,>(value: T | T[] | null | undefined): T[] => {
   if (!value) return [];
   return Array.isArray(value) ? value : [value];
@@ -165,7 +170,7 @@ const buildPrefill = async (
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
-  const personId = url.searchParams.get('rckipid')?.trim() ?? null;
+  const personId = getRockPersonId(url);
 
   if (!isRockPersonId(personId)) {
     return data<ConnectCardPrefillResponse>({ status: 'invalid-id' });
