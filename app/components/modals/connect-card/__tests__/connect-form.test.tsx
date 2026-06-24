@@ -250,6 +250,36 @@ describe('ConnectCardForm', () => {
     });
   });
 
+  it('shows opt-in prefill debug details while preserving the debug URL param', async () => {
+    renderForm(vi.fn(), '/connect-card?rckipid=123&prefillDebug=1');
+
+    expect(
+      await screen.findByText('Connect Card prefill debug'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rckipid detected: yes')).toBeInTheDocument();
+    expect(screen.getByText('rckipid valid: yes')).toBeInTheDocument();
+    expect(screen.getByText('rckipid length: 3')).toBeInTheDocument();
+    expect(screen.getByText('URL cleaned: yes')).toBeInTheDocument();
+    expect(screen.getByText('API requested: yes')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('location-search')).toHaveTextContent(
+        '?prefillDebug=1',
+      );
+    });
+  });
+
+  it('shows opt-in debug details when rckipid is missing', async () => {
+    renderForm(vi.fn(), '/connect-card?prefillDebug=1');
+
+    expect(
+      await screen.findByText('Connect Card prefill debug'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rckipid detected: no')).toBeInTheDocument();
+    expect(screen.getByText('rckipid valid: not checked')).toBeInTheDocument();
+    expect(screen.getByText('API requested: no')).toBeInTheDocument();
+    expect(mockPrefillLoad).not.toHaveBeenCalled();
+  });
+
   it('does not call the prefill API for an invalid rckipid and removes it from the URL', async () => {
     renderForm(vi.fn(), '/connect-card?rckipid=abc&foo=bar');
 

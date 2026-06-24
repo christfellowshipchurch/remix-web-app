@@ -82,6 +82,15 @@ const emptyPrefill: Required<ConnectCardPrefill> = {
   campus: '',
 };
 
+type ConnectCardPrefillDebugInfo = {
+  detected: boolean;
+  valid: boolean | null;
+  urlCleaned: boolean;
+  apiRequested: boolean;
+  responseStatus?: ConnectCardPrefillResponse['status'];
+  rawLength?: number;
+};
+
 export const renderCheckboxField = (
   checkbox: CheckboxOption,
   index: number,
@@ -117,11 +126,14 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   >('idle');
   const [prefillValues, setPrefillValues] =
     useState<Required<ConnectCardPrefill>>(emptyPrefill);
+  const [prefillDebugInfo, setPrefillDebugInfo] =
+    useState<ConnectCardPrefillDebugInfo | null>(null);
   const fetcher = useFetcher({ key: 'connect-card-form' });
   const prefillFetcher = useFetcher({ key: 'connect-card-prefill' });
   const [searchParams, setSearchParams] = useSearchParams();
   const processedRckipidRef = useRef(false);
   const requestedPrefillRef = useRef(false);
+  const isPrefillDebug = searchParams.get('prefillDebug') === '1';
 
   const [formFieldData, setFormFieldData] =
     useState<ConnectCardLoaderReturnType>({
@@ -139,18 +151,41 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       return;
     }
 
-    const rckipid = searchParams.get('rckipid')?.trim();
+    const rawRckipid = searchParams.get('rckipid');
+    const rckipid = rawRckipid?.trim();
     if (!rckipid) {
+      if (isPrefillDebug) {
+        processedRckipidRef.current = true;
+        const debugInfo = {
+          detected: false,
+          valid: null,
+          urlCleaned: false,
+          apiRequested: false,
+        };
+        setPrefillDebugInfo(debugInfo);
+      }
       return;
     }
 
     processedRckipidRef.current = true;
+    const isValidRckipid = /^\d+$/.test(rckipid);
 
     const nextSearchParams = new URLSearchParams(searchParams);
     nextSearchParams.delete('rckipid');
     setSearchParams(nextSearchParams, { replace: true });
 
-    if (!/^\d+$/.test(rckipid)) {
+    if (isPrefillDebug) {
+      const debugInfo = {
+        detected: true,
+        valid: isValidRckipid,
+        urlCleaned: true,
+        apiRequested: isValidRckipid,
+        rawLength: rawRckipid?.length,
+      };
+      setPrefillDebugInfo(debugInfo);
+    }
+
+    if (!isValidRckipid) {
       setPrefillStatus('invalid-id');
       return;
     }
@@ -160,7 +195,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     prefillFetcher.load(
       `/api/connect-card-prefill?rckipid=${encodeURIComponent(rckipid)}`,
     );
-  }, [prefillFetcher, searchParams, setSearchParams]);
+  }, [isPrefillDebug, prefillFetcher, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (prefillFetcher.state === 'loading') {
@@ -177,6 +212,16 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
 
     const response = prefillFetcher.data as ConnectCardPrefillResponse;
+    if (isPrefillDebug) {
+      setPrefillDebugInfo((current) => ({
+        detected: current?.detected ?? true,
+        valid: current?.valid ?? true,
+        urlCleaned: current?.urlCleaned ?? true,
+        apiRequested: current?.apiRequested ?? true,
+        rawLength: current?.rawLength,
+        responseStatus: response.status,
+      }));
+    }
 
     if (response.status !== 'success') {
       setPrefillStatus(response.status);
@@ -192,7 +237,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       campus: response.prefill.campus ?? current.campus,
     }));
     setPrefillStatus('success');
-  }, [prefillFetcher.state, prefillFetcher.data]);
+  }, [isPrefillDebug, prefillFetcher.state, prefillFetcher.data]);
 
   // Effect for handling form data and submissions
   useEffect(() => {
@@ -263,6 +308,33 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
   };
 
+  const renderPrefillDebug = () => {
+    if (!isPrefillDebug || !prefillDebugInfo) {
+      return null;
+    }
+
+    return (
+      <div className='col-span-2 mb-5 rounded border border-neutral-light bg-gray-50 p-3 text-left text-xs text-text-secondary'>
+        <p className='font-semibold text-text-primary'>
+          Connect Card prefill debug
+        </p>
+        <p>rckipid detected: {prefillDebugInfo.detected ? 'yes' : 'no'}</p>
+        <p>
+          rckipid valid:{' '}
+          {prefillDebugInfo.valid == null
+            ? 'not checked'
+            : prefillDebugInfo.valid
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>rckipid length: {prefillDebugInfo.rawLength ?? 'n/a'}</p>
+        <p>URL cleaned: {prefillDebugInfo.urlCleaned ? 'yes' : 'no'}</p>
+        <p>API requested: {prefillDebugInfo.apiRequested ? 'yes' : 'no'}</p>
+        <p>API status: {prefillDebugInfo.responseStatus ?? 'pending/n/a'}</p>
+      </div>
+    );
+  };
+
   const { campuses, allThatApplies } = formFieldData;
 
   const otherCheckbox = allThatApplies.find(
@@ -290,6 +362,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           {renderPrefillStatus()}
         </p>
       )}
+      {renderPrefillDebug()}
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
