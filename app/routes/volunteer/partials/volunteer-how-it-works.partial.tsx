@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { HowItWorksCard } from '../components/cards/how-it-works-card.component';
 import {
   Carousel,
@@ -9,8 +10,51 @@ import {
 const requiredBadgeClassName =
   'w-fit rounded-full bg-ocean-subdued px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ocean whitespace-nowrap';
 
-const steps = [
-  { label: 'Take the Journey', dotClass: 'bg-ocean-web', required: true },
+const linkableStepCardClassName =
+  'flex items-center gap-2 rounded-[16px] bg-white px-3 shadow-sm min-h-14 border border-[#E2E8F0] transition-all duration-200 hover:shadow-md hover:border-ocean/40';
+
+const stepCardClassName =
+  'flex items-center gap-2 rounded-[16px] bg-white px-3 shadow-sm min-h-14 border border-[#E2E8F0]';
+
+interface Step {
+  label: string;
+  dotClass: string;
+  required?: boolean;
+  href?: string;
+}
+
+function StepLabel({
+  label,
+  href,
+  className,
+  underline = false,
+}: {
+  label: string;
+  href?: string;
+  className: string;
+  underline?: boolean;
+}) {
+  if (href) {
+    return (
+      <Link
+        to={href}
+        className={`${className} text-primary transition-colors duration-200 hover:text-ocean focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean${underline ? ' underline underline-offset-2' : ''}`}
+      >
+        {label}
+      </Link>
+    );
+  }
+
+  return <span className={`${className} text-primary`}>{label}</span>;
+}
+
+const steps: Step[] = [
+  {
+    label: 'Take the Journey',
+    dotClass: 'bg-ocean-web',
+    required: true,
+    href: '/events/journey',
+  },
   { label: 'Pick an Interest', dotClass: 'bg-ocean' },
   { label: 'Get Matched', dotClass: 'bg-navy' },
   { label: 'Start Serving', dotClass: 'bg-dark-navy' },
@@ -60,28 +104,45 @@ export function VolunteerHowItWorks() {
 
         {/* Step cards */}
         <div className='grid grid-cols-2 gap-3 mt-5'>
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className='flex items-center gap-2 rounded-[16px] bg-white px-3 shadow-sm min-h-14 border border-[#E2E8F0]'
-            >
-              <div
-                className={`${step.dotClass} flex items-center justify-center size-6 rounded-full shrink-0`}
-              >
-                <span className='text-[10px] font-bold text-white'>
-                  {index + 1}
-                </span>
+          {steps.map((step, index) => {
+            const cardContent = (
+              <>
+                <div
+                  className={`${step.dotClass} flex items-center justify-center size-6 rounded-full shrink-0`}
+                >
+                  <span className='text-[10px] font-bold text-white'>
+                    {index + 1}
+                  </span>
+                </div>
+                <div className='flex flex-col gap-0.5 min-w-0'>
+                  <span className='text-[13px] font-bold leading-tight text-primary whitespace-nowrap'>
+                    {step.label}
+                  </span>
+                  {step.required && (
+                    <span className={requiredBadgeClassName}>Required</span>
+                  )}
+                </div>
+              </>
+            );
+
+            if (step.href) {
+              return (
+                <Link
+                  key={index}
+                  to={step.href}
+                  className={linkableStepCardClassName}
+                >
+                  {cardContent}
+                </Link>
+              );
+            }
+
+            return (
+              <div key={index} className={stepCardClassName}>
+                {cardContent}
               </div>
-              <div className='flex flex-col gap-0.5 min-w-0'>
-                <span className='text-[13px] font-bold leading-tight text-primary whitespace-nowrap'>
-                  {step.label}
-                </span>
-                {step.required && (
-                  <span className={requiredBadgeClassName}>Required</span>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -110,9 +171,12 @@ export function VolunteerHowItWorks() {
                       {index + 1}
                     </span>
                   </div>
-                  <span className='text-sm text-primary whitespace-nowrap'>
-                    {step.label}
-                  </span>
+                  <StepLabel
+                    label={step.label}
+                    href={step.href}
+                    underline={Boolean(step.href)}
+                    className='text-sm whitespace-nowrap'
+                  />
                   {step.required && (
                     <span className={requiredBadgeClassName}>Required</span>
                   )}
