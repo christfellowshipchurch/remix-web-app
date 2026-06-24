@@ -36,16 +36,19 @@ export function isExternalSearchHref(href: string): boolean {
 }
 
 /** Recover an in-app path from values like `https://events/diesel` (missing domain). */
-export function internalPathFromMalformedAbsoluteUrl(url: string): string | null {
+export function internalPathFromMalformedAbsoluteUrl(
+  url: string,
+): string | null {
   if (isExternalSearchHref(url)) {
     return null;
   }
 
   try {
     const parsed = new URL(url.trim());
-    const path = `/${parsed.hostname}${parsed.pathname}${parsed.search}${parsed.hash}`
-      .replace(/\/{2,}/g, '/')
-      .replace(/\/+$/, '');
+    const path =
+      `/${parsed.hostname}${parsed.pathname}${parsed.search}${parsed.hash}`
+        .replace(/\/{2,}/g, '/')
+        .replace(/\/+$/, '');
 
     return path === '' ? '/' : path;
   } catch {
@@ -75,7 +78,8 @@ export function normalizeSearchContentUrl(raw: string): string {
     }
 
     return (
-      internalPathFromMalformedAbsoluteUrl(trimmed) ?? ensureLeadingSlash(trimmed)
+      internalPathFromMalformedAbsoluteUrl(trimmed) ??
+      ensureLeadingSlash(trimmed)
     );
   }
 
