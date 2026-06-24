@@ -50,8 +50,8 @@ export function RelatedGroupsPartial({
   language,
   currentGroupName,
 }: {
-  /** Raw `topics` field from the group Algolia record (comma-separated or empty). */
-  topics: string;
+  /** `topics` field from the group Algolia record. */
+  topics: GroupType['topics'];
   /** Current group's language; used to keep related groups in the same language. */
   language?: GroupLanguage | '';
   currentGroupName?: string;
