@@ -89,7 +89,9 @@ export async function fetchGlobalSearchLocationHits({
 
   const firstResult = response.results[0];
   const hits =
-    'hits' in firstResult ? (firstResult.hits as GlobalSearchLocationHit[]) : [];
+    'hits' in firstResult
+      ? (firstResult.hits as GlobalSearchLocationHit[])
+      : [];
 
   return filterLocationHitsByQuery(hits, query);
 }

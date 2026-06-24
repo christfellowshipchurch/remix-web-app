@@ -57,7 +57,10 @@ describe('search page refinements', () => {
   it('only includes locations when search is unfiltered or pages-only', () => {
     expect(shouldIncludeLocationResultsInGlobalSearch([])).toBe(true);
     expect(
-      shouldIncludeLocationResultsInGlobalSearch(['Ministry Page', 'Page Builder']),
+      shouldIncludeLocationResultsInGlobalSearch([
+        'Ministry Page',
+        'Page Builder',
+      ]),
     ).toBe(true);
     expect(shouldIncludeLocationResultsInGlobalSearch(['Sermon'])).toBe(false);
     expect(

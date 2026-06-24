@@ -25,9 +25,9 @@ describe('filterLocationHitsByQuery', () => {
   });
 
   it('matches campus names and urls from a keyword query', () => {
-    expect(filterLocationHitsByQuery(hits, 'jupiter').map((hit) => hit.campusUrl)).toEqual([
-      'jupiter',
-    ]);
+    expect(
+      filterLocationHitsByQuery(hits, 'jupiter').map((hit) => hit.campusUrl),
+    ).toEqual(['jupiter']);
     expect(
       filterLocationHitsByQuery(hits, 'boca').map((hit) => hit.campusUrl),
     ).toEqual(['boca-raton']);

@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
-import type { UseInstantSearch } from 'react-instantsearch';
+import { useInstantSearch } from 'react-instantsearch';
+
+type SetIndexUiState = ReturnType<typeof useInstantSearch>['setIndexUiState'];
+type IndexUiState = ReturnType<typeof useInstantSearch>['indexUiState'];
 
 export const PAGE_CONTENT_TYPES = [
   'Ministry Page',
@@ -67,7 +70,7 @@ export function useClearStalePageRefinements({
   attribute: string;
   items: RefinementItem[];
   selectedItems: string[];
-  setIndexUiState: ReturnType<typeof UseInstantSearch>['setIndexUiState'];
+  setIndexUiState: SetIndexUiState;
   hasMatchingLocationResults?: boolean;
 }) {
   const isPagesSelected = isPagesRefinementSelected(selectedItems);
@@ -80,7 +83,7 @@ export function useClearStalePageRefinements({
       return;
     }
 
-    setIndexUiState((prevState) => {
+    setIndexUiState((prevState: IndexUiState) => {
       const currentSelected =
         (prevState?.refinementList?.[attribute] as string[]) || [];
       const nextSelected = withoutPageContentTypes(currentSelected);
@@ -97,5 +100,11 @@ export function useClearStalePageRefinements({
         },
       };
     });
-  }, [attribute, hasMatchingLocationResults, items, isPagesSelected, setIndexUiState]);
+  }, [
+    attribute,
+    hasMatchingLocationResults,
+    items,
+    isPagesSelected,
+    setIndexUiState,
+  ]);
 }

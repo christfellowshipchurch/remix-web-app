@@ -145,39 +145,39 @@ export const SearchBar = ({
         <GlobalSearchLocationProvider>
           <Configure hitsPerPage={10} />
 
-        <div className='flex w-full items-center pb-2 border-b border-neutral-lighter gap-4'>
-          <button
-            onClick={() => {
-              setIsSearchOpen(false);
-            }}
-            className='flex items-center'
-          >
-            <Icon
-              name='search'
-              size={20}
-              className={`text-ocean hover:text-neutral-default transition-colors cursor-pointer`}
+          <div className='flex w-full items-center pb-2 border-b border-neutral-lighter gap-4'>
+            <button
+              onClick={() => {
+                setIsSearchOpen(false);
+              }}
+              className='flex items-center'
+            >
+              <Icon
+                name='search'
+                size={20}
+                className={`text-ocean hover:text-neutral-default transition-colors cursor-pointer`}
+              />
+            </button>
+            <SearchBox
+              classNames={{
+                root: 'flex-grow',
+                form: 'flex',
+                input: `w-full justify-center ${
+                  mode === 'light'
+                    ? 'text-[#2F2F2F]'
+                    : 'text-white group-hover:text-[#2F2F2F]'
+                } px-3 outline-none appearance-none`,
+                reset: 'hidden',
+                resetIcon: 'hidden',
+                submit: 'hidden',
+              }}
             />
-          </button>
-          <SearchBox
-            classNames={{
-              root: 'flex-grow',
-              form: 'flex',
-              input: `w-full justify-center ${
-                mode === 'light'
-                  ? 'text-[#2F2F2F]'
-                  : 'text-white group-hover:text-[#2F2F2F]'
-              } px-3 outline-none appearance-none`,
-              reset: 'hidden',
-              resetIcon: 'hidden',
-              submit: 'hidden',
-            }}
+          </div>
+          <SearchPopup
+            setIsSearchOpen={setIsSearchOpen}
+            searchClient={searchClient}
+            locationsIndexName={locationsIndexName}
           />
-        </div>
-        <SearchPopup
-          setIsSearchOpen={setIsSearchOpen}
-          searchClient={searchClient}
-          locationsIndexName={locationsIndexName}
-        />
         </GlobalSearchLocationProvider>
       </InstantSearch>
     </div>
