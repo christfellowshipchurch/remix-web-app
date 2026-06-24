@@ -8,9 +8,8 @@ Provide a summary of the changes. Why are these changes necessary?
 
 ## Testing
 
-- [ ] How were these changes tested?
-- [ ] What steps can someone follow to verify functionality?
-- [ ] Was any new linter errors/warnings?
+- [ ] What steps can someone follow to verify functionality? (Write out checklist of steps to test)
+- [ ] Was any new linter/type/test errors/warnings(run `pnpm check` for linter/type/prettier check and `pnpm test` for running tests)?
 
 ## Tickets
 
