@@ -721,9 +721,7 @@ const DateStep = ({
             variant='date'
             icon='calendarAlt'
             title={formatEventFinderDatesDisplay(dateInfo.dates, dateInfo.day)}
-            subtitle={
-              dateInfo.dates.length === 1 ? dateInfo.day : undefined
-            }
+            subtitle={dateInfo.dates.length === 1 ? dateInfo.day : undefined}
             onClick={() => onSelect(dateKey)}
           />
         );

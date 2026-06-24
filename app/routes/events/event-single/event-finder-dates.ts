@@ -33,7 +33,10 @@ export const normalizeEventFinderDates = (
 ): string[] => {
   if (!date) return [];
   const dates = Array.isArray(date) ? date : [date];
-  return dates.map((value) => value.trim()).filter(Boolean).sort();
+  return dates
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .sort();
 };
 
 export const serializeEventFinderDates = (dates: string[]): string => {
@@ -56,9 +59,7 @@ export const formatEventFinderDatesDisplay = (
   if (normalizedDates.length === 1) {
     return formatEventFinderDate(normalizedDates[0], dayName);
   }
-  return normalizedDates
-    .map((date) => formatEventFinderDate(date))
-    .join(' & ');
+  return normalizedDates.map((date) => formatEventFinderDate(date)).join(' & ');
 };
 
 export const eventFinderDatesMatch = (
