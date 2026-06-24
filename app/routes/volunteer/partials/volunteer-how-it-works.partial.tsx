@@ -6,6 +6,9 @@ import {
   CarouselItem,
 } from '~/primitives/shadcn-primitives/carousel';
 
+const requiredBadgeClassName =
+  'w-fit rounded-full bg-ocean-subdued px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ocean whitespace-nowrap';
+
 const steps = [
   { label: 'Take the Journey', dotClass: 'bg-ocean-web', required: true },
   { label: 'Pick an Interest', dotClass: 'bg-ocean' },
@@ -60,7 +63,7 @@ export function VolunteerHowItWorks() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className='flex items-center gap-2 rounded-[16px] bg-white p-3 shadow-sm min-h-16'
+              className='flex items-center gap-2 rounded-[16px] bg-white px-3 shadow-sm min-h-14 border border-[#E2E8F0]'
             >
               <div
                 className={`${step.dotClass} flex items-center justify-center size-6 rounded-full shrink-0`}
@@ -74,9 +77,7 @@ export function VolunteerHowItWorks() {
                   {step.label}
                 </span>
                 {step.required && (
-                  <span className='text-[10px] font-bold uppercase tracking-wider text-ocean'>
-                    Required
-                  </span>
+                  <span className={requiredBadgeClassName}>Required</span>
                 )}
               </div>
             </div>
@@ -97,28 +98,34 @@ export function VolunteerHowItWorks() {
             </h2>
           </div>
 
-          {/* Right: numbered step pills */}
-          <div className='flex flex-wrap items-center gap-x-6 gap-y-3 lg:pt-2'>
+          {/* Right: numbered step pills with connecting lines */}
+          <ol className='flex items-center lg:pt-2'>
             {steps.map((step, index) => (
-              <div key={index} className='flex items-center gap-2'>
-                <div
-                  className={`${step.dotClass} flex items-center justify-center size-7 rounded-full shrink-0`}
-                >
-                  <span className='text-xs font-bold text-white'>
-                    {index + 1}
+              <li key={index} className='flex items-center'>
+                <div className='flex items-center gap-2 shrink-0'>
+                  <div
+                    className={`${step.dotClass} flex items-center justify-center size-7 rounded-full shrink-0`}
+                  >
+                    <span className='text-xs font-bold text-white'>
+                      {index + 1}
+                    </span>
+                  </div>
+                  <span className='text-sm text-primary whitespace-nowrap'>
+                    {step.label}
                   </span>
+                  {step.required && (
+                    <span className={requiredBadgeClassName}>Required</span>
+                  )}
                 </div>
-                <span className='text-sm font-semibold text-navy whitespace-nowrap'>
-                  {step.label}
-                </span>
-                {step.required && (
-                  <span className='text-[10px] font-bold uppercase tracking-wider text-ocean whitespace-nowrap'>
-                    Required
-                  </span>
+                {index < steps.length - 1 && (
+                  <div
+                    className='mx-3 h-px w-6 shrink-0 bg-neutral-lighter'
+                    aria-hidden='true'
+                  />
                 )}
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </div>
 
