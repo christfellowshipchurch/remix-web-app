@@ -21,6 +21,7 @@ import {
 import { scrollToAnchor } from '~/lib/scroll-to-anchor';
 import {
   eventFinderDatesMatch,
+  formatEventFinderDateLabel,
   formatEventFinderDatesDisplay,
   normalizeEventFinderDates,
   parseSerializedEventFinderDates,
@@ -76,6 +77,7 @@ export const ClickThroughRegistration = ({
   const [selectedCampus, setSelectedCampus] = useState<string>('');
   const [selectedSubGroupType, setSelectedSubGroupType] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
   const [pendingRegisterScroll, setPendingRegisterScroll] = useState(false);
@@ -86,6 +88,7 @@ export const ClickThroughRegistration = ({
     setSelectedCampus('');
     setSelectedSubGroupType('');
     setSelectedDate('');
+    setSelectedDay('');
     setSelectedTime('');
     setCampusSearchQuery('');
     previousStepRef.current = 1;
@@ -118,11 +121,13 @@ export const ClickThroughRegistration = ({
         setSelectedTime('');
       } else if (step === 4) {
         setSelectedDate('');
+        setSelectedDay('');
       } else if (step === 3) {
         if (hasSubGroups) {
           setSelectedSubGroupType('');
         } else {
           setSelectedDate('');
+          setSelectedDay('');
         }
       } else if (step === 2) {
         if (hasSubGroups) {
@@ -144,6 +149,7 @@ export const ClickThroughRegistration = ({
     }
     if (targetActualStep < 4) {
       setSelectedDate('');
+      setSelectedDay('');
     }
     if (targetActualStep < 3) {
       setSelectedSubGroupType('');
@@ -303,6 +309,7 @@ export const ClickThroughRegistration = ({
                         icon='calendarAlt'
                         text={formatEventFinderDatesDisplay(
                           parseSerializedEventFinderDates(selectedDate),
+                          selectedDay,
                         )}
                         onClick={() => navigateToStep(hasSubGroups ? 3 : 2)}
                       />
@@ -323,6 +330,7 @@ export const ClickThroughRegistration = ({
                   selectedCampus={selectedCampus}
                   selectedSubGroupType={selectedSubGroupType}
                   selectedDate={selectedDate}
+                  selectedDay={selectedDay}
                   selectedTime={selectedTime}
                   campusSearchQuery={campusSearchQuery}
                   groupType={extractedGroupType}
@@ -336,8 +344,9 @@ export const ClickThroughRegistration = ({
                     previousStepRef.current = 2;
                     setStep(3);
                   }}
-                  onDateSelect={(date) => {
+                  onDateSelect={(date, day) => {
                     setSelectedDate(date);
+                    setSelectedDay(day);
                     previousStepRef.current = hasSubGroups ? 3 : 3;
                     setStep(4);
                   }}
@@ -388,13 +397,14 @@ interface StepContentProps {
   selectedCampus: string;
   selectedSubGroupType: string;
   selectedDate: string;
+  selectedDay: string;
   selectedTime: string;
   campusSearchQuery: string;
   groupType: string;
   hasSubGroups: boolean;
   onCampusSelect: (campus: string) => void;
   onSubGroupTypeSelect: (subGroupType: string) => void;
-  onDateSelect: (date: string) => void;
+  onDateSelect: (date: string, day: string) => void;
   onTimeSelect: (time: string) => void;
   onCampusSearchChange: (query: string) => void;
   onResetRegistration: () => void;
@@ -405,6 +415,7 @@ const StepContent = ({
   selectedCampus,
   selectedSubGroupType,
   selectedDate,
+  selectedDay,
   selectedTime,
   campusSearchQuery,
   groupType,
@@ -495,6 +506,7 @@ const StepContent = ({
         groupType={groupType}
         selectedCampus={selectedCampus}
         selectedDate={selectedDate}
+        selectedDay={selectedDay}
         selectedTime={selectedTime}
         onResetRegistration={onResetRegistration}
       />
@@ -666,7 +678,7 @@ interface DateStepProps {
   selectedCampus: string;
   selectedSubGroupType: string;
   hasSubGroups: boolean;
-  onSelect: (date: string) => void;
+  onSelect: (date: string, day: string) => void;
 }
 
 const DateStep = ({
@@ -676,7 +688,6 @@ const DateStep = ({
   hasSubGroups,
   onSelect,
 }: DateStepProps) => {
-  // Get unique dates for selected campus and subGroupType (if applicable)
   const uniqueDates = useMemo(() => {
     const dateMap = new Map<string, { dates: string[]; day: string }>();
     hits
@@ -715,14 +726,16 @@ const DateStep = ({
     <div className='flex flex-wrap justify-center gap-4'>
       {uniqueDates.map((dateInfo) => {
         const dateKey = serializeEventFinderDates(dateInfo.dates);
+        const title = dateInfo.dates.map(formatEventFinderDateLabel).join(' & ');
+
         return (
           <ClickableCard
             key={dateKey}
             variant='date'
             icon='calendarAlt'
-            title={formatEventFinderDatesDisplay(dateInfo.dates, dateInfo.day)}
-            subtitle={dateInfo.dates.length === 1 ? dateInfo.day : undefined}
-            onClick={() => onSelect(dateKey)}
+            title={title}
+            subtitle={dateInfo.day}
+            onClick={() => onSelect(dateKey, dateInfo.day)}
           />
         );
       })}
@@ -849,6 +862,7 @@ interface FormStepProps {
   groupType: string;
   selectedCampus: string;
   selectedDate: string;
+  selectedDay: string;
   selectedTime: string;
   onResetRegistration: () => void;
 }
@@ -858,6 +872,7 @@ const FormStep = ({
   groupType,
   selectedCampus,
   selectedDate,
+  selectedDay,
   selectedTime,
   onResetRegistration,
 }: FormStepProps) => {
@@ -909,6 +924,7 @@ const FormStep = ({
               campus: selectedCampus,
               date: formatEventFinderDatesDisplay(
                 parseSerializedEventFinderDates(selectedDate),
+                selectedDay,
               ),
               time: `${selectedTime} ET`,
               name:

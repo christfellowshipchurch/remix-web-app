@@ -12,22 +12,6 @@ const getDaySuffix = (day: number): string => {
   }
 };
 
-export const formatEventFinderDate = (
-  dateString: string,
-  dayName?: string,
-): string => {
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-
-  const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-  const dayNum = date.getDate();
-  const suffix = getDaySuffix(dayNum);
-  const weekday =
-    dayName || date.toLocaleDateString('en-US', { weekday: 'short' });
-
-  return `${weekday} ${monthName} ${dayNum}${suffix}`;
-};
-
 export const normalizeEventFinderDates = (
   date: string | string[] | undefined | null,
 ): string[] => {
@@ -50,18 +34,6 @@ export const parseSerializedEventFinderDates = (
   return normalizeEventFinderDates(serializedDates.split('|'));
 };
 
-export const formatEventFinderDatesDisplay = (
-  dates: string[],
-  dayName?: string,
-): string => {
-  const normalizedDates = normalizeEventFinderDates(dates);
-  if (normalizedDates.length === 0) return '';
-  if (normalizedDates.length === 1) {
-    return formatEventFinderDate(normalizedDates[0], dayName);
-  }
-  return normalizedDates.map((date) => formatEventFinderDate(date)).join(' & ');
-};
-
 export const eventFinderDatesMatch = (
   hitDates: string | string[] | undefined | null,
   selectedSerializedDates: string,
@@ -70,4 +42,26 @@ export const eventFinderDatesMatch = (
     serializeEventFinderDates(normalizeEventFinderDates(hitDates)) ===
     selectedSerializedDates.trim()
   );
+};
+
+export const formatEventFinderDateLabel = (dateString: string): string => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+  const dayNum = date.getDate();
+  const suffix = getDaySuffix(dayNum);
+
+  return `${monthName} ${dayNum}${suffix}`;
+};
+
+export const formatEventFinderDatesDisplay = (
+  dates: string[],
+  day?: string,
+): string => {
+  const normalizedDates = normalizeEventFinderDates(dates);
+  if (normalizedDates.length === 0) return '';
+
+  const dateLabels = normalizedDates.map(formatEventFinderDateLabel).join(' & ');
+  return day ? `${day} ${dateLabels}` : dateLabels;
 };
