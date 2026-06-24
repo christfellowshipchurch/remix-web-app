@@ -19,6 +19,13 @@ import {
   isSpanishCampusLabel,
 } from '../registration.data';
 import { scrollToAnchor } from '~/lib/scroll-to-anchor';
+import {
+  eventFinderDatesMatch,
+  formatEventFinderDatesDisplay,
+  normalizeEventFinderDates,
+  parseSerializedEventFinderDates,
+  serializeEventFinderDates,
+} from '../event-finder-dates';
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -181,9 +188,10 @@ export const ClickThroughRegistration = ({
       filter += ` AND subGroupType:"${selectedSubGroupType.trim()}"`;
     }
     if (selectedDate) {
-      // Ensure date format matches exactly (YYYY-MM-DD)
-      const trimmedDate = selectedDate.trim();
-      filter += ` AND date:"${trimmedDate}"`;
+      const trimmedDates = parseSerializedEventFinderDates(selectedDate);
+      trimmedDates.forEach((date) => {
+        filter += ` AND date:"${date}"`;
+      });
     }
     return filter;
   };
@@ -293,7 +301,9 @@ export const ClickThroughRegistration = ({
                     {selectedDate && (
                       <SelectedBar
                         icon='calendarAlt'
-                        text={formatDateDisplay(selectedDate)}
+                        text={formatEventFinderDatesDisplay(
+                          parseSerializedEventFinderDates(selectedDate),
+                        )}
                         onClick={() => navigateToStep(hasSubGroups ? 3 : 2)}
                       />
                     )}
@@ -473,7 +483,7 @@ const StepContent = ({
         hit.campus.name &&
         hit.campus.name === selectedCampus &&
         hit.time === selectedTime &&
-        hit.date === selectedDate;
+        eventFinderDatesMatch(hit.date, selectedDate);
       if (hasSubGroups) {
         return campusMatch && hit.subGroupType === selectedSubGroupType;
       }
@@ -668,7 +678,7 @@ const DateStep = ({
 }: DateStepProps) => {
   // Get unique dates for selected campus and subGroupType (if applicable)
   const uniqueDates = useMemo(() => {
-    const dateMap = new Map<string, { date: string; day: string }>();
+    const dateMap = new Map<string, { dates: string[]; day: string }>();
     hits
       .filter((hit) => {
         const campusMatch =
@@ -685,30 +695,39 @@ const DateStep = ({
         return campusMatch;
       })
       .forEach((hit) => {
-        if (!dateMap.has(hit.date)) {
-          dateMap.set(hit.date, {
-            date: hit.date,
+        const dates = normalizeEventFinderDates(hit.date);
+        if (dates.length === 0) return;
+
+        const dateKey = serializeEventFinderDates(dates);
+        if (!dateMap.has(dateKey)) {
+          dateMap.set(dateKey, {
+            dates,
             day: hit.day,
           });
         }
       });
     return Array.from(dateMap.values()).sort((a, b) =>
-      a.date.localeCompare(b.date),
+      a.dates[0].localeCompare(b.dates[0]),
     );
   }, [hits, selectedCampus, selectedSubGroupType, hasSubGroups]);
 
   return (
     <div className='flex flex-wrap justify-center gap-4'>
-      {uniqueDates.map((dateInfo) => (
-        <ClickableCard
-          key={dateInfo.date}
-          variant='date'
-          icon='calendarAlt'
-          title={formatDateDisplay(dateInfo.date, dateInfo.day)}
-          subtitle={dateInfo.day}
-          onClick={() => onSelect(dateInfo.date)}
-        />
-      ))}
+      {uniqueDates.map((dateInfo) => {
+        const dateKey = serializeEventFinderDates(dateInfo.dates);
+        return (
+          <ClickableCard
+            key={dateKey}
+            variant='date'
+            icon='calendarAlt'
+            title={formatEventFinderDatesDisplay(dateInfo.dates, dateInfo.day)}
+            subtitle={
+              dateInfo.dates.length === 1 ? dateInfo.day : undefined
+            }
+            onClick={() => onSelect(dateKey)}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -742,7 +761,7 @@ const TimeStep = ({
         hit.campus &&
         hit.campus.name &&
         hit.campus.name.trim() === selectedCampus.trim();
-      const dateMatch = hit.date && hit.date.trim() === selectedDate.trim();
+      const dateMatch = eventFinderDatesMatch(hit.date, selectedDate);
       if (hasSubGroups) {
         return (
           campusMatch &&
@@ -890,7 +909,9 @@ const FormStep = ({
             details={{
               title: 'Journey Details',
               campus: selectedCampus,
-              date: formatDateDisplay(selectedDate),
+              date: formatEventFinderDatesDisplay(
+                parseSerializedEventFinderDates(selectedDate),
+              ),
               time: `${selectedTime} ET`,
               name:
                 nativeSuccessDetails?.firstName ||
@@ -986,35 +1007,3 @@ const RegistrationSkeleton = ({ totalSteps }: { totalSteps: number }) => (
     </div>
   </section>
 );
-
-// Helper Functions
-const formatDateDisplay = (dateString: string, dayName?: string): string => {
-  // Parse date string manually to avoid timezone issues
-  // Date format is YYYY-MM-DD
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
-
-  const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-  const dayNum = date.getDate();
-  const suffix = getDaySuffix(dayNum);
-
-  // Use provided dayName if available, otherwise calculate it
-  const weekday =
-    dayName || date.toLocaleDateString('en-US', { weekday: 'short' });
-
-  return `${weekday} ${monthName} ${dayNum}${suffix}`;
-};
-
-const getDaySuffix = (day: number): string => {
-  if (day > 3 && day < 21) return 'th';
-  switch (day % 10) {
-    case 1:
-      return 'st';
-    case 2:
-      return 'nd';
-    case 3:
-      return 'rd';
-    default:
-      return 'th';
-  }
-};
