@@ -44,6 +44,7 @@ const ContentItemsHitsCollector = ({
             (hit.routing as { pathname?: string })?.pathname ||
             (hit.url as string),
         },
+        url: hit.url as string,
         coverImage:
           (hit.coverImage as MobileContentHitType['coverImage']) || null,
         title: (hit.title as string) || '',
