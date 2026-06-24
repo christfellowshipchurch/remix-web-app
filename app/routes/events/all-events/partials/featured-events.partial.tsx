@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from '~/primitives/icon/icon';
 import { ResourceCard } from '~/primitives/cards/resource-card';
 import { ContentItemHit } from '~/routes/search/types';
-import {
-  FeaturedEventCard,
-  formatFeaturedEventDate,
-} from '../components/featured-card.component';
+import { FeaturedEventCard } from '../components/featured-card.component';
 
 export function FeaturedEventsSectionLayout({
   children,
@@ -65,7 +62,6 @@ function getFeaturedEventLocation(hit: ContentItemHit) {
 
 const OtherFeatureEventMobileCardHit = ({ hit }: { hit: ContentItemHit }) => {
   const image = hit.coverImage?.sources?.[0]?.uri || '';
-  const formattedDate = formatFeaturedEventDate(hit.startDateTime);
   const campus = getFeaturedEventLocation(hit);
 
   return (
@@ -98,7 +94,7 @@ const OtherFeatureEventMobileCardHit = ({ hit }: { hit: ContentItemHit }) => {
                 className='shrink-0'
               />
               <p className='truncate text-sm font-semibold leading-normal'>
-                {formattedDate}
+                {hit.eventCardDate}
               </p>
             </div>
             <div className='flex min-w-0 items-center gap-2'>
@@ -127,8 +123,6 @@ const OtherFeatureEventMobileCardHit = ({ hit }: { hit: ContentItemHit }) => {
 };
 
 const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
-  const formattedDate = formatFeaturedEventDate(hit.startDateTime);
-
   return (
     <ResourceCard
       className='min-w-[360px] w-[360px] md:w-full md:min-w-0'
@@ -141,7 +135,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
         summary: hit.summary || '',
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
-        startDate: formattedDate,
+        startDate: hit.eventCardDate,
         location: getFeaturedEventLocation(hit),
       }}
     />
