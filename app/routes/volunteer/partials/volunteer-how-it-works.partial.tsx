@@ -7,9 +7,10 @@ import {
 } from '~/primitives/shadcn-primitives/carousel';
 
 const steps = [
-  { label: 'Pick an interest', dotClass: 'bg-dark-navy' },
-  { label: 'Get matched', dotClass: 'bg-navy' },
-  { label: 'Start serving', dotClass: 'bg-ocean' },
+  { label: 'Take the Journey', dotClass: 'bg-ocean-web', required: true },
+  { label: 'Pick an Interest', dotClass: 'bg-ocean' },
+  { label: 'Get Matched', dotClass: 'bg-navy' },
+  { label: 'Start Serving', dotClass: 'bg-dark-navy' },
 ];
 
 const cards = [
@@ -48,22 +49,36 @@ export function VolunteerHowItWorks() {
       {/* ── MOBILE HEADER ─────────────────────────────────────────── */}
       <div className='md:hidden content-padding'>
         <p className='text-[12px] font-semibold tracking-wider text-navy'>
-          START VOLUNTEERING
+          SIGN UP PROCESS
         </p>
         <h2 className='text-[30px] font-bold leading-none text-primary'>
           How It Works
         </h2>
 
-        {/* Dot-bullet steps */}
-        <div className='flex flex-wrap items-center gap-x-5 gap-y-2 mt-4'>
+        {/* Step cards */}
+        <div className='grid grid-cols-2 gap-3 mt-5'>
           {steps.map((step, index) => (
-            <div key={index} className='flex items-center gap-2'>
-              <span
-                className={`${step.dotClass} size-3 rounded-full shrink-0`}
-              />
-              <span className='text-[13px] font-semibold text-navy whitespace-nowrap'>
-                {step.label}
-              </span>
+            <div
+              key={index}
+              className='flex items-center gap-3 rounded-[16px] bg-white p-4 shadow-sm'
+            >
+              <div
+                className={`${step.dotClass} flex items-center justify-center size-7 rounded-full shrink-0`}
+              >
+                <span className='text-xs font-bold text-white'>
+                  {index + 1}
+                </span>
+              </div>
+              <div className='flex flex-col gap-1 min-w-0'>
+                <span className='text-[15px] font-bold leading-tight text-primary'>
+                  {step.label}
+                </span>
+                {step.required && (
+                  <span className='text-[10px] font-bold uppercase tracking-wider text-ocean'>
+                    Required
+                  </span>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -75,7 +90,7 @@ export function VolunteerHowItWorks() {
           {/* Left: heading */}
           <div className='flex flex-col gap-2'>
             <p className='text-[12px] font-semibold tracking-wider text-navy'>
-              START YOUR JOURNEY
+              SIGN UP PROCESS
             </p>
             <h2 className='text-4xl font-bold leading-none text-primary'>
               How It Works
@@ -83,7 +98,7 @@ export function VolunteerHowItWorks() {
           </div>
 
           {/* Right: numbered step pills */}
-          <div className='flex items-center gap-12 lg:pt-2'>
+          <div className='flex flex-wrap items-center gap-x-6 gap-y-3 lg:pt-2'>
             {steps.map((step, index) => (
               <div key={index} className='flex items-center gap-2'>
                 <div
@@ -96,6 +111,11 @@ export function VolunteerHowItWorks() {
                 <span className='text-sm font-semibold text-navy whitespace-nowrap'>
                   {step.label}
                 </span>
+                {step.required && (
+                  <span className='text-[10px] font-bold uppercase tracking-wider text-ocean whitespace-nowrap'>
+                    Required
+                  </span>
+                )}
               </div>
             ))}
           </div>
