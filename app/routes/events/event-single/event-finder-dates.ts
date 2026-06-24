@@ -62,6 +62,8 @@ export const formatEventFinderDatesDisplay = (
   const normalizedDates = normalizeEventFinderDates(dates);
   if (normalizedDates.length === 0) return '';
 
-  const dateLabels = normalizedDates.map(formatEventFinderDateLabel).join(' & ');
+  const dateLabels = normalizedDates
+    .map(formatEventFinderDateLabel)
+    .join(' & ');
   return day ? `${day} ${dateLabels}` : dateLabels;
 };

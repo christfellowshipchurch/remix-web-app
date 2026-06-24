@@ -9,6 +9,7 @@ import { useGroupSearchBackUrl } from '../group-single-back-url';
 export function GroupSingleHero({ hit }: { hit: GroupType }) {
   const imagePath = hit.coverImage?.sources?.[0]?.uri ?? '';
   const backToGroupFinderUrl = useGroupSearchBackUrl();
+  const topicTags = splitGroupTopics(hit.topics);
 
   return (
     <>
@@ -35,9 +36,9 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
           {/* Left Side - Desktop, Mobile - EVERYTHING  */}
           <div className='flex flex-col gap-8'>
             <div className='flex md:hidden flex-col gap-2'>
-              {hit.topics && (
+              {topicTags.length > 0 ? (
                 <div className='flex flex-wrap gap-1 w-full'>
-                  {splitGroupTopics(hit.topics).map((topic, index) => (
+                  {topicTags.map((topic, index) => (
                     <TopicBadge
                       key={index}
                       label={topic}
@@ -45,7 +46,7 @@ export function GroupSingleHero({ hit }: { hit: GroupType }) {
                     />
                   ))}
                 </div>
-              )}
+              ) : null}
               <h1 className='text-4xl font-bold'>{hit.title}</h1>
             </div>
 
