@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { ContentItemHit } from '~/routes/search/types';
 import { getDisplayContentType } from '../../search-utils';
+import {
+  getSearchHitPathname,
+  resolveSearchHitLinkFromHit,
+  type SearchHitContentType,
+} from '../../search-hit-links';
 
 export type ContentHitType = {
   url: string;
@@ -9,103 +14,14 @@ export type ContentHitType = {
   contentType: string;
 };
 
-export type HitContentType =
-  | 'Article'
-  | 'Event'
-  | 'Page Builder'
-  | 'Location Page'
-  | 'Location'
-  | 'Ministry Page'
-  | 'Redirect Card'
-  | 'Sermon'
-  | 'Person';
+export type HitContentType = SearchHitContentType;
 
-const getIconName = (hit: ContentHitType) => {
-  switch (hit.contentType) {
-    case 'Article':
-      return 'file';
-    case 'Event':
-      return 'calendarAlt';
-    case 'Page Builder':
-    case 'Ministry Page':
-    case 'Redirect Card':
-    case 'Location Page':
-    case 'Location':
-      return 'windowAlt';
-    case 'Sermon':
-      return 'moviePlay';
-    case 'Person':
-      return 'user';
-    case 'Podcast':
-      return 'microphone';
-    default:
-      return 'file'; // Fallback icon
-  }
-};
-
+/** @deprecated Use {@link getSearchHitPathname} from `search-hit-links`. */
 export const getPathname = (
   contentType: HitContentType,
   pathname: string,
   hit?: ContentItemHit,
-): string => {
-  if (!contentType || !pathname || pathname === '') {
-    return pathname;
-  }
-
-  const contentTypeLower = contentType.toLowerCase();
-
-  let podcastShow = 'so-good-sisterhood';
-  if (hit) {
-    podcastShow =
-      hit.podcastShow?.toLowerCase().replace(/ /g, '-').replace(/\+/g, 'and') ||
-      'so-good-sisterhood';
-  }
-
-  // Redirect card and page builder - just use pathname (no contentType prefix)
-  if (
-    contentTypeLower === 'redirect card' ||
-    contentTypeLower === 'page builder'
-  ) {
-    if (pathname.startsWith('http')) {
-      return pathname;
-    }
-
-    return `/${pathname}`;
-  }
-
-  // Ministry Page - set to "messages"
-  if (contentTypeLower === 'ministry page') {
-    return `/ministries/${pathname}`;
-  }
-
-  // Sermon - set to "messages"
-  if (contentTypeLower === 'sermon') {
-    return `/messages/${pathname}`;
-  }
-
-  // Podcasts - set to "messages"
-  if (contentTypeLower === 'podcast') {
-    return `/podcasts/${podcastShow}/${pathname}`;
-  }
-
-  // Articles - ensure it's "articles" (add "s" if singular)
-  if (contentTypeLower === 'article') {
-    return `/articles/${pathname}`;
-  }
-
-  // Events - ensure it's "events" (add "s" if singular)
-  if (contentTypeLower === 'event') {
-    return `/events/${pathname}`;
-  }
-
-  // Location Page - set to "locations"
-  if (contentTypeLower === 'location page' || contentTypeLower === 'location') {
-    return `/locations/${pathname}`;
-  }
-
-  // Default: use contentType as-is (lowercased)
-  return `/${contentType.toLowerCase()}/${pathname}`;
-};
+): string => getSearchHitPathname(contentType, pathname, hit);
 
 export function ContentHit({
   hit,
@@ -115,6 +31,7 @@ export function ContentHit({
   query: string | null;
 }) {
   const iconName = getIconName(hit);
+  const { to: hitPath, isExternal } = resolveSearchHitLinkFromHit(hit);
 
   const highlightQuery = (title: string, query: string | null) => {
     if (!query) return title;
@@ -133,20 +50,12 @@ export function ContentHit({
     );
   };
 
-  const hitPath = getPathname(
-    hit.contentType as HitContentType,
-    hit.url || '',
-    hit as ContentItemHit,
-  );
-
-  // Disable prefetch for Page Builder and Redirect Card to avoid 404 errors
   const contentTypeLower = hit.contentType?.toLowerCase() || '';
   const shouldPrefetch =
     contentTypeLower !== 'page builder' &&
     contentTypeLower !== 'redirect card' &&
     hitPath !== '';
 
-  const isExternal = hitPath.startsWith('http');
   const sharedClassName =
     'pr-8 py-2 flex gap-2 hover:translate-x-1 transition-transform duration-300';
   const content = (
@@ -186,3 +95,26 @@ export function ContentHit({
     </Link>
   );
 }
+
+const getIconName = (hit: ContentHitType) => {
+  switch (hit.contentType) {
+    case 'Article':
+      return 'file';
+    case 'Event':
+      return 'calendarAlt';
+    case 'Page Builder':
+    case 'Ministry Page':
+    case 'Redirect Card':
+    case 'Location Page':
+    case 'Location':
+      return 'windowAlt';
+    case 'Sermon':
+      return 'moviePlay';
+    case 'Person':
+      return 'user';
+    case 'Podcast':
+      return 'microphone';
+    default:
+      return 'file';
+  }
+};

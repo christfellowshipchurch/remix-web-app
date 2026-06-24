@@ -24,7 +24,7 @@ function createGroupHit(overrides: Partial<GroupType> = {}): GroupType {
     leaders: null,
     groupFor: 'Anyone',
     language: '',
-    topics: 'Bible Study',
+    topics: ['Bible Study'],
     minMaxAge: '18 to 99',
     _geoloc: { lat: 26.839, lng: -80.101 },
     _rankingInfo: { geoDistance: 1609.344 },
