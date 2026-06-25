@@ -131,6 +131,12 @@ describe('ConnectCardForm', () => {
     expect(screen.getByText('Get Connected')).toBeInTheDocument();
   });
 
+  it('shows that no URL params were present when the page loads without query params', () => {
+    renderForm();
+    expect(screen.getByText('Connect Card URL params')).toBeInTheDocument();
+    expect(screen.getByText('none')).toBeInTheDocument();
+  });
+
   it('renders First Name, Last Name, Phone, Email fields', () => {
     renderForm();
     expect(screen.getByText('First Name')).toBeInTheDocument();
@@ -251,6 +257,8 @@ describe('ConnectCardForm', () => {
     expect(
       await screen.findByText('Connect Card prefill debug'),
     ).toBeInTheDocument();
+    expect(screen.getByText('rckipid: token-123')).toBeInTheDocument();
+    expect(screen.getByText('foo: bar')).toBeInTheDocument();
   });
 
   it('loads prefill data for the mobile app rckpid alias and removes it from the URL', async () => {
