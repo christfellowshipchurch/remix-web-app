@@ -120,6 +120,7 @@ export function RockProxyEmbed({
 
       if (messageEvent.data?.type === 'rock-iframe-scroll-top') {
         onScrollToTop?.();
+        iframeRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
         return;
       }
 

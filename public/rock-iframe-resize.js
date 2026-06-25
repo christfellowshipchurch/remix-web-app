@@ -146,15 +146,80 @@
   }
 
   function checkValidationErrors() {
-    if (shouldHoldHeight()) return;
+    if (isLoadingOverlayVisible()) return;
 
     var hasErrors = hasVisibleValidationErrors();
+
+    if (hasErrors && heightFrozen) {
+      unfreezeHeight();
+    }
 
     if (hasErrors && !hadValidationErrors) {
       requestParentScrollTop();
     }
 
     hadValidationErrors = hasErrors;
+  }
+
+  function checkValidationErrorsOnPageReady() {
+    if (isLoadingOverlayVisible()) return;
+
+    submitAttempted = true;
+    var hasErrors = hasVisibleValidationErrors();
+
+    if (hasErrors) {
+      requestParentScrollTop();
+    }
+
+    hadValidationErrors = hasErrors;
+  }
+
+  function nodeMatchesValidationSelector(node) {
+    if (!node || node.nodeType !== 1) return false;
+
+    if (node.matches) {
+      for (var i = 0; i < VALIDATION_ERROR_SELECTORS.length; i++) {
+        if (node.matches(VALIDATION_ERROR_SELECTORS[i])) return true;
+      }
+    }
+
+    for (var j = 0; j < VALIDATION_ERROR_SELECTORS.length; j++) {
+      if (node.querySelector && node.querySelector(VALIDATION_ERROR_SELECTORS[j])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function handleValidationMutation(mutations) {
+    if (isLoadingOverlayVisible()) return;
+
+    for (var i = 0; i < mutations.length; i++) {
+      var mutation = mutations[i];
+      var target = mutation.target;
+
+      if (mutation.type === 'attributes' && nodeMatchesValidationSelector(target)) {
+        submitAttempted = true;
+        if (heightFrozen) unfreezeHeight();
+        hadValidationErrors = false;
+        checkValidationErrors();
+        return;
+      }
+
+      if (mutation.type !== 'childList') continue;
+
+      var added = mutation.addedNodes;
+      for (var j = 0; j < added.length; j++) {
+        if (nodeMatchesValidationSelector(added[j])) {
+          submitAttempted = true;
+          if (heightFrozen) unfreezeHeight();
+          hadValidationErrors = false;
+          checkValidationErrors();
+          return;
+        }
+      }
+    }
   }
 
   function scheduleValidationCheck() {
@@ -169,7 +234,7 @@
       checkValidationErrors();
     }, 150);
 
-    [300, 600, 1200].forEach(function (delay) {
+    [300, 600, 1200, 2000].forEach(function (delay) {
       window.setTimeout(checkValidationErrors, delay);
     });
   }
@@ -424,6 +489,8 @@
     hadValidationErrors = false;
     submitAttempted = false;
     scheduleReportHeightImmediate();
+    checkValidationErrorsOnPageReady();
+    scheduleValidationCheck();
   }
 
   function isSubmitLikeTarget(target) {
@@ -471,6 +538,13 @@
         subtree: true,
         attributes: true,
         characterData: true,
+      });
+
+      new MutationObserver(handleValidationMutation).observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class'],
       });
     }
 
@@ -547,6 +621,8 @@
         '*',
       );
     });
+
+    checkValidationErrorsOnPageReady();
   }
 
   if (document.readyState === 'loading') {
