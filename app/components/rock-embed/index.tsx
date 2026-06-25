@@ -36,6 +36,11 @@ interface RockProxyEmbedProps {
   iframeProps?: React.IframeHTMLAttributes<HTMLIFrameElement>;
   /** Called each time the iframe finishes loading (including after in-frame navigation). */
   onLoad?: () => void;
+  /**
+   * Called when the Rock page reports validation errors and requests a parent scroll.
+   * Requires /public/rock-iframe-resize.js in the embedded Rock page.
+   */
+  onScrollToTop?: () => void;
 }
 
 export function RockProxyEmbed({
@@ -48,6 +53,7 @@ export function RockProxyEmbed({
   proxyMode = 'full',
   iframeProps = {},
   onLoad,
+  onScrollToTop,
 }: RockProxyEmbedProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -112,6 +118,11 @@ export function RockProxyEmbed({
         return;
       }
 
+      if (messageEvent.data?.type === 'rock-iframe-scroll-top') {
+        onScrollToTop?.();
+        return;
+      }
+
       if (!autoHeight || messageEvent.data?.type !== 'rock-iframe-resize') {
         return;
       }
@@ -124,7 +135,7 @@ export function RockProxyEmbed({
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [autoHeight, embedOrigin]);
+  }, [autoHeight, embedOrigin, onScrollToTop]);
 
   const requestEmbedHeight = useCallback(() => {
     if (!autoHeight || useAdvancedProxy || !embedOrigin) return;

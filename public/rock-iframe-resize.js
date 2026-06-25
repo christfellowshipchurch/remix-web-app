@@ -14,6 +14,24 @@
   var frozenHeight = 0;
   var lastReportedHeight = 0;
   var stableContentHeight = 0;
+  var hadValidationErrors = false;
+  var submitAttempted = false;
+  var lastScrollTopAt = 0;
+  var validationCheckTimer = null;
+
+  var VALIDATION_ERROR_SELECTORS = [
+    '.alert-validation',
+    '.alert.alert-validation',
+    '[id$="vsDetails"]',
+    '.validation-summary-errors',
+    '.validation-summary',
+    '.field-validation-error',
+    '.input-validation-error',
+    '.validation-error',
+    '.alert-danger',
+    '.is-invalid',
+    '.has-error .help-block',
+  ];
 
   function isElementVisible(el) {
     if (!el || el.nodeType !== 1) return false;
@@ -87,6 +105,73 @@
 
   function shouldHoldHeight() {
     return heightFrozen || isLoadingOverlayVisible();
+  }
+
+  function hasMeaningfulValidationText(el) {
+    if (!el) return false;
+    return Boolean((el.textContent || '').replace(/\s+/g, ' ').trim());
+  }
+
+  function hasVisibleValidationErrors() {
+    for (var i = 0; i < VALIDATION_ERROR_SELECTORS.length; i++) {
+      var nodes = document.querySelectorAll(VALIDATION_ERROR_SELECTORS[i]);
+
+      for (var j = 0; j < nodes.length; j++) {
+        var node = nodes[j];
+        if (isElementVisible(node) && hasMeaningfulValidationText(node)) {
+          return true;
+        }
+      }
+    }
+
+    if (submitAttempted) {
+      var invalidFields = document.querySelectorAll(
+        'input:invalid, select:invalid, textarea:invalid, [aria-invalid="true"]',
+      );
+
+      for (var k = 0; k < invalidFields.length; k++) {
+        if (isElementVisible(invalidFields[k])) return true;
+      }
+    }
+
+    return false;
+  }
+
+  function requestParentScrollTop() {
+    var now = Date.now();
+    if (now - lastScrollTopAt < 400) return;
+
+    lastScrollTopAt = now;
+    window.parent.postMessage({ type: 'rock-iframe-scroll-top' }, '*');
+  }
+
+  function checkValidationErrors() {
+    if (shouldHoldHeight()) return;
+
+    var hasErrors = hasVisibleValidationErrors();
+
+    if (hasErrors && !hadValidationErrors) {
+      requestParentScrollTop();
+    }
+
+    hadValidationErrors = hasErrors;
+  }
+
+  function scheduleValidationCheck() {
+    checkValidationErrors();
+
+    if (validationCheckTimer) {
+      window.clearTimeout(validationCheckTimer);
+    }
+
+    validationCheckTimer = window.setTimeout(function () {
+      validationCheckTimer = null;
+      checkValidationErrors();
+    }, 150);
+
+    [300, 600, 1200].forEach(function (delay) {
+      window.setTimeout(checkValidationErrors, delay);
+    });
   }
 
   function getScrollY() {
@@ -336,6 +421,8 @@
 
   function handlePageReady() {
     unfreezeHeight();
+    hadValidationErrors = false;
+    submitAttempted = false;
     scheduleReportHeightImmediate();
   }
 
@@ -358,6 +445,7 @@
       return;
     }
 
+    scheduleValidationCheck();
     scheduleReportHeightDebounced();
   }
 
@@ -391,9 +479,20 @@
     window.addEventListener('pageshow', handlePageReady);
 
     document.addEventListener(
+      'invalid',
+      function () {
+        submitAttempted = true;
+        scheduleValidationCheck();
+      },
+      true,
+    );
+
+    document.addEventListener(
       'submit',
       function () {
+        submitAttempted = true;
         freezeHeight();
+        scheduleValidationCheck();
       },
       true,
     );
@@ -415,8 +514,10 @@
         if (!target || !target.closest) return;
 
         if (isSubmitLikeTarget(target)) {
+          submitAttempted = true;
           freezeHeight();
           reportHeight();
+          scheduleValidationCheck();
           return;
         }
 

@@ -22,7 +22,8 @@ export const ROCK_PARENT_RESIZE_QUERY_PARAM = 'ParentResize';
  * Paste the contents of /public/rock-iframe-resize.js inside <script>...</script>.
  *
  * Parent scroll-to-top on form step changes is handled by the React app (rock-page
- * onLoad), not this script.
+ * onLoad). Validation errors post `rock-iframe-scroll-top` so the parent page can
+ * scroll when Rock shows inline field errors without a full navigation.
  *
  * Parent navigation from inside the iframe (when target="_top" is blocked):
  * <a href="#" data-rock-parent-navigate="https://christfellowship.church/volunteer">

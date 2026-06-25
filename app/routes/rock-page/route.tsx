@@ -13,7 +13,7 @@ export default function RockPage() {
   const { url, embed } = useLoaderData<typeof loader>();
   const backLink = getRockPageVolunteerBackLink(embed);
 
-  const handleEmbedLoad = useCallback(() => {
+  const handleParentScrollToTop = useCallback(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         window.scrollTo({ top: 0, behavior: 'auto' });
@@ -40,7 +40,8 @@ export default function RockPage() {
         autoHeight
         height={1200}
         showLoading={false}
-        onLoad={handleEmbedLoad}
+        onLoad={handleParentScrollToTop}
+        onScrollToTop={handleParentScrollToTop}
       />
     </div>
   );
