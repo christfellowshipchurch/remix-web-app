@@ -14,7 +14,7 @@ const timelineData: TimelineItem[] = [
   {
     year: '2026',
     image:
-      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3176146',
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3190355',
     imagePosition: 'object-[center_25%]',
     body: 'Today, Christ Fellowship gathers across 14 locations in South Florida, online through Christ Fellowship Everywhere, and inside # local prison locations. For over 40 years, we’ve helped thousands of people just like you to find people to do life with, break free from the pain of their past, thrive in their marriage, become a better parent, experience financial freedom, and learn how to make a difference.',
   },
@@ -27,7 +27,7 @@ const timelineData: TimelineItem[] = [
   {
     year: '2011',
     image:
-      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068098',
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3190356',
     body: 'After 25 years of faithfully leading Christ Fellowship, Pastors Tom and Donna Mullins passed the baton and transitioned the senior leadership of Christ Fellowship to Pastors Todd and Julie Mullins. Stepping into this new season, they built upon the mission statement that had been lived out by Tom and Donna: “We are called to impact our world with the love and message of Jesus Christ—everyone, every day, everywhere.”',
   },
   {
@@ -74,7 +74,7 @@ function HistoryTabs() {
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
             className={`w-full h-full object-cover ${
               timelineData[activeTab].imagePosition ?? ''
-            } shadow-xl transition-all duration-300 rounded-[1rem] md:rounded-none 2xl:!rounded-[1rem] ${
+            } shadow-xl transition-all duration-300 rounded-2xl md:rounded-none 2xl:rounded-2xl! ${
               transitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
             }`}
           />
