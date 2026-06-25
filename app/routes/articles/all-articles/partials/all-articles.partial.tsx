@@ -23,7 +23,6 @@ import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 import type { AllArticlesReturnType } from '../loader';
 import {
   ALL_ARTICLES_CATEGORY_FACET,
-  ALL_ARTICLES_INDEX_NAME,
   ALL_ARTICLES_TYPE_FILTER,
 } from '../all-articles.constants';
 import {
@@ -49,12 +48,14 @@ export function AllArticles() {
     initialArticleHits,
     articlesNbPages,
     articlesPage,
+    algoliaIndexes,
   } = useLoaderData<AllArticlesReturnType>();
+  const articlesIndexName = algoliaIndexes.contentItems;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { InstantSearchUrlSync, buildUiState } =
     createInstantSearchUrlSync<AllArticlesUrlState>({
-      indexName: ALL_ARTICLES_INDEX_NAME,
+      indexName: articlesIndexName,
       parseUrlState: parseAllArticlesUrlState,
     });
 
@@ -81,7 +82,7 @@ export function AllArticles() {
     return Object.keys(state).length > 0
       ? (state as Record<string, Record<string, unknown>>)
       : undefined;
-  }, []);
+  }, [buildAllArticlesInstantSearchUiState]);
   const { updateUrlIfChanged } = useAlgoliaUrlSync({
     searchParams,
     setSearchParams,
@@ -110,12 +111,12 @@ export function AllArticles() {
       <div className='relative max-w-screen-content mx-auto'>
         {filtersMounted ? (
           <InstantSearch
-            indexName={ALL_ARTICLES_INDEX_NAME}
+            indexName={articlesIndexName}
             searchClient={searchClient}
             initialUiState={initialUiState}
             onStateChange={({ uiState, setUiState }) => {
               setUiState(uiState);
-              const indexState = uiState[ALL_ARTICLES_INDEX_NAME];
+              const indexState = uiState[articlesIndexName];
               if (!indexState) return;
               const index = indexState as Record<string, unknown>;
 

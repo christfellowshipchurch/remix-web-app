@@ -7,7 +7,7 @@ export const AllMinistriesPartial = ({
   ministries: Ministry[];
 }) => {
   return (
-    <div className='content-padding  bg-background-secondary py-16 md:py-24 xl:py-32'>
+    <div className='content-padding  bg-background-secondary py-16 md:py-24'>
       <div className='max-w-screen-content mx-auto'>
         <div className='flex flex-col gap-8 md:gap-12 lg:gap-20'>
           <h1 className='font-extrabold text-[32px]'>

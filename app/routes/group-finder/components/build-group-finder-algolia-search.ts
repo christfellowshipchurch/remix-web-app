@@ -1,6 +1,5 @@
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 
-import { GROUPS_ALGOLIA_INDEX_NAME } from '../types';
 import type { GroupFinderUrlState } from '../group-finder-url-state';
 
 export const GROUP_FINDER_LOADER_HITS_PER_PAGE = 12;
@@ -88,6 +87,7 @@ export function buildMinMaxAgeFilter(
 export function buildGroupFinderAlgoliaSearchParams(
   urlState: GroupFinderUrlState,
   minMaxAgeValues: string[] = [],
+  indexName: string,
 ): {
   indexName: string;
   filters?: string;
@@ -112,7 +112,7 @@ export function buildGroupFinderAlgoliaSearchParams(
     aroundLatLngViaIP?: boolean;
     getRankingInfo?: boolean;
   } = {
-    indexName: GROUPS_ALGOLIA_INDEX_NAME,
+    indexName,
     hitsPerPage: GROUP_FINDER_LOADER_HITS_PER_PAGE,
     page: urlState.page ?? 0,
     aroundLatLngViaIP: false,

@@ -5,6 +5,7 @@ import { useRouteLoaderData } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { SearchPopup } from './search-popup.component';
 import { RootLoaderData } from '~/routes/navbar/loader';
+import { GlobalSearchLocationProvider } from '../../global-search-location-context';
 import { MobileSearchCustomRefinementList } from './customRefinements.component';
 
 // Create a stable search instance ID that persists between unmounts
@@ -27,7 +28,7 @@ const emptySearchClient = {
           query: '',
           params: '',
           processingTimeMS: 0,
-          index: 'dev_contentItems',
+          index: 'empty',
         },
       ],
     }),
@@ -42,7 +43,10 @@ export const MobileSearch = ({
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = rootData?.algolia ?? {
     ALGOLIA_APP_ID: '',
     ALGOLIA_SEARCH_API_KEY: '',
+    indexes: undefined,
   };
+  const contentItemsIndexName = rootData?.algolia.indexes.contentItems ?? '';
+  const locationsIndexName = rootData?.algolia.indexes.locations ?? '';
 
   // Create or retrieve the Algolia client
   useEffect(() => {
@@ -64,60 +68,63 @@ export const MobileSearch = ({
   return (
     <div className='h-full overflow-y-auto bg-white'>
       <InstantSearch
-        indexName='dev_contentItems'
+        indexName={contentItemsIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          dev_contentItems: {
+          [contentItemsIndexName]: {
             query: '',
           },
-          dev_Locations: {
+          [locationsIndexName]: {
             query: '',
           },
         }}
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={9} />
+        <GlobalSearchLocationProvider>
+          <Configure hitsPerPage={9} />
 
-        <div className='flex flex-col gap-6 pb-2 sticky top-0 bg-white shadow-sm border-b border-[#E0E0E0]'>
-          {/* Search Bar */}
-          <div className='flex w-full items-center pt-6 px-4 gap-3'>
-            <button
-              onClick={() => setIsSearchOpen(false)}
-              className='flex items-center lg:hidden'
-            >
-              <Icon
-                name='arrowBack'
-                size={20}
-                className={`text-black hover:text-neutral-default transition-colors cursor-pointer
+          <div className='flex flex-col gap-6 pb-2 sticky top-0 bg-white shadow-sm border-b border-[#E0E0E0]'>
+            {/* Search Bar */}
+            <div className='flex w-full items-center pt-6 px-4 gap-3'>
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                className='flex items-center lg:hidden'
+              >
+                <Icon
+                  name='arrowBack'
+                  size={20}
+                  className={`text-black hover:text-neutral-default transition-colors cursor-pointer
         `}
+                />
+              </button>
+              <SearchBox
+                classNames={{
+                  root: 'flex-grow',
+                  form: 'flex',
+                  input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none`,
+                  reset: 'hidden',
+                  resetIcon: 'hidden',
+                  submit: 'hidden',
+                }}
               />
-            </button>
-            <SearchBox
-              classNames={{
-                root: 'flex-grow',
-                form: 'flex',
-                input: `w-full justify-center bg-[#F4F2F5] rounded-lg py-2 px-1 text-[#2F2F2F] px-3 outline-none appearance-none`,
-                reset: 'hidden',
-                resetIcon: 'hidden',
-                submit: 'hidden',
-              }}
-            />
+            </div>
+
+            <div className='flex flex-col gap-2 w-full'>
+              <MobileSearchCustomRefinementList attribute='contentType' />
+            </div>
           </div>
 
-          <div className='flex flex-col gap-2 w-full'>
-            <MobileSearchCustomRefinementList attribute='contentType' />
-          </div>
-        </div>
-
-        {/* Search Results + Refinements */}
-        <SearchPopup
-          setIsSearchOpen={setIsSearchOpen}
-          searchClient={searchClient}
-        />
+          {/* Search Results + Refinements */}
+          <SearchPopup
+            setIsSearchOpen={setIsSearchOpen}
+            searchClient={searchClient}
+            locationsIndexName={locationsIndexName}
+          />
+        </GlobalSearchLocationProvider>
       </InstantSearch>
     </div>
   );

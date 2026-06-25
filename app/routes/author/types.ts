@@ -20,9 +20,12 @@ export type Author = {
   };
 };
 
+export type AuthorLoaderData = Author & {
+  hostUrl: string;
+};
+
 export type AuthorBioProps = {
   author: Author;
-  homeUrl?: string;
   variant?: 'default' | 'leaders';
   hideSocialLinks?: boolean;
 };

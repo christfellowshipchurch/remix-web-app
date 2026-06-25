@@ -1,12 +1,12 @@
 import React from 'react';
-import { Author } from './types';
+import { AuthorLoaderData } from './types';
 import { useLoaderData } from 'react-router-dom';
 import BackButton from './components/back-button';
 import AuthorTabs from './components/author-tabs';
 import { AuthorBio } from './partials/author-bio';
 
 export const AuthorPage: React.FC = () => {
-  const data = useLoaderData<Author>();
+  const data = useLoaderData<AuthorLoaderData>();
 
   return (
     <div className='relative'>

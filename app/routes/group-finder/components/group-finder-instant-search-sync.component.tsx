@@ -5,7 +5,6 @@ import {
   GroupFinderUrlState,
   parseGroupFinderUrlState,
 } from '../group-finder-url-state';
-import { GROUPS_ALGOLIA_INDEX_NAME } from '../types';
 
 import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.utils';
 
@@ -15,13 +14,14 @@ import { buildIndexInitialUiState } from '~/components/finders/finder-algolia.ut
  */
 export function buildGroupFinderInstantSearchUiState(
   urlState: GroupFinderUrlState,
+  indexName: string,
 ): Record<string, Record<string, unknown>> {
   const indexSlice: Record<string, unknown> = {};
-  const base = buildIndexInitialUiState(GROUPS_ALGOLIA_INDEX_NAME, {
+  const base = buildIndexInitialUiState(indexName, {
     query: urlState.query,
     refinementList: urlState.refinementList,
   });
-  const baseIndex = base?.[GROUPS_ALGOLIA_INDEX_NAME];
+  const baseIndex = base?.[indexName];
   if (baseIndex) {
     Object.assign(indexSlice, baseIndex);
   }
@@ -34,9 +34,7 @@ export function buildGroupFinderInstantSearchUiState(
     indexSlice.page = urlState.page + 1;
   }
 
-  return Object.keys(indexSlice).length > 0
-    ? { [GROUPS_ALGOLIA_INDEX_NAME]: indexSlice }
-    : {};
+  return Object.keys(indexSlice).length > 0 ? { [indexName]: indexSlice } : {};
 }
 
 /**
@@ -47,7 +45,11 @@ export function buildGroupFinderInstantSearchUiState(
  * URL → uiState (back/forward, Clear All, direct link with query string).
  * Skips `setUiState` when values are unchanged to avoid extra search cycles.
  */
-export function GroupFinderInstantSearchSync() {
+export function GroupFinderInstantSearchSync({
+  indexName,
+}: {
+  indexName: string;
+}) {
   const [searchParams] = useSearchParams();
   const { setUiState, uiState } = useInstantSearch();
 
@@ -59,14 +61,17 @@ export function GroupFinderInstantSearchSync() {
 
   useEffect(() => {
     const urlState = parseGroupFinderUrlState(searchParams);
-    const nextUiState = buildGroupFinderInstantSearchUiState(urlState);
-    const indexSlice = nextUiState[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
+    const nextUiState = buildGroupFinderInstantSearchUiState(
+      urlState,
+      indexName,
+    );
+    const indexSlice = nextUiState[indexName] ?? {};
 
     const prevRecord = uiStateRef.current as Record<
       string,
       Record<string, unknown>
     >;
-    const prevIndex = prevRecord[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
+    const prevIndex = prevRecord[indexName] ?? {};
     const nextQuery = (indexSlice.query as string) ?? '';
     const prevQuery = (prevIndex.query as string) ?? '';
     const nextRl = JSON.stringify(indexSlice.refinementList ?? {});
@@ -89,7 +94,7 @@ export function GroupFinderInstantSearchSync() {
 
     setUiState((prev) => {
       const prevRec = prev as Record<string, Record<string, unknown>>;
-      const prevIdx = prevRec[GROUPS_ALGOLIA_INDEX_NAME] ?? {};
+      const prevIdx = prevRec[indexName] ?? {};
       const nextIndex = { ...prevIdx };
       if (nextQuery) {
         nextIndex.query = nextQuery;
@@ -109,10 +114,10 @@ export function GroupFinderInstantSearchSync() {
 
       return {
         ...prevRec,
-        [GROUPS_ALGOLIA_INDEX_NAME]: nextIndex,
+        [indexName]: nextIndex,
       };
     });
-  }, [searchParams, setUiState]);
+  }, [indexName, searchParams, setUiState]);
 
   return null;
 }

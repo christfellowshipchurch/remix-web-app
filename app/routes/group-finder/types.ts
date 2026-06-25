@@ -1,6 +1,3 @@
-/** Algolia index for small-group search (finder, single group loader, related groups, class-single). */
-export const GROUPS_ALGOLIA_INDEX_NAME = 'dev_Groups';
-
 // Image source structure
 export interface ImageSource {
   sources: {
@@ -8,7 +5,7 @@ export interface ImageSource {
   }[];
 }
 
-/** One leader row as returned from the `dev_Groups` Algolia index. */
+/** One leader row as returned from the groups Algolia index. */
 export interface GroupLeaderHit {
   id: number | string;
   firstName: string;
@@ -71,7 +68,7 @@ export type GroupTopic =
 export type GroupAdultsOnlyFacet = 'True' | 'False';
 
 /**
- * Record shape for the `dev_Groups` Algolia index (UI reads these fields directly).
+ * Record shape for the groups Algolia index (UI reads these fields directly).
  * Index payloads are asserted to this type at the loader / InstantSearch boundary.
  */
 export interface GroupType {
@@ -100,21 +97,32 @@ export interface GroupType {
   peopleWhoAre?: GroupPeopleWhoAre[];
   /** Empty string when unset in Rock / Algolia. */
   language: GroupLanguage | '';
-  /** Often a comma-separated list from Rock; use {@link splitGroupTopics} for tags. */
-  topics: string;
+  /** Topic tags from Algolia (array of strings). */
+  topics: string[];
   minMaxAge: string;
   _geoloc: { lat: number | ''; lng: number | '' } | null;
   /** Present when getRankingInfo is true and aroundLatLng is set; distance in meters from search point. */
   _rankingInfo?: { geoDistance?: number };
 }
 
-/** Split `topics` from Algolia into display tags. */
-export function splitGroupTopics(topics: string | null | undefined): string[] {
-  if (topics == null || !String(topics).trim()) {
+/** Normalize `topics` from Algolia into display tags. */
+export function splitGroupTopics(
+  topics: string | string[] | null | undefined,
+): string[] {
+  if (topics == null) {
     return [];
   }
+
+  if (Array.isArray(topics)) {
+    return topics.map((topic) => String(topic).trim()).filter(Boolean);
+  }
+
+  if (!String(topics).trim()) {
+    return [];
+  }
+
   return String(topics)
     .split(',')
-    .map((s) => s.trim())
+    .map((topic) => topic.trim())
     .filter(Boolean);
 }

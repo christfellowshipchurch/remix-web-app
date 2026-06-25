@@ -15,6 +15,7 @@ import { LoaderReturnType } from '../loader';
 interface PodcastEpisodeListProps {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
+  indexName: string;
   podcastTitle: string;
 }
 
@@ -87,26 +88,29 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 
   return (
     <div className='flex flex-col pb-4 md:pb-0 gap-4 w-full min-w-3/4 md:min-w-0 md:w-[340px] lg:w-full'>
-      <div className='relative md:w-[340px] lg:w-full'>
+      <Link
+        to={cardUrl || '/podcasts'}
+        aria-label={`Play Episode: ${hit.title}`}
+        className='group relative block overflow-hidden rounded-[0.5rem] md:w-[340px] lg:w-full'
+      >
         <img
           src={
             hit.coverImage?.sources?.[0]?.uri ||
             '/assets/images/podcasts/hero.jpg'
           }
           alt={hit.title}
-          className='w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem]'
+          className='w-full relative aspect-square md:w-[340px] lg:w-full object-cover rounded-[0.5rem] transition-transform duration-300 group-hover:scale-105'
         />
-        <Link
-          to={cardUrl || '/podcasts'}
-          className='absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 transition-colors duration-300'
+        <div
+          className='absolute bottom-4 left-4 bg-white p-1 rounded-full hover:bg-gray-300 hover:scale-110 transition-all duration-300'
           style={{
             boxShadow:
               '0px 4px 8px -2px rgba(0, 0, 0, 0.20), 0px 2px 4px -2px rgba(0, 0, 0, 0.09)',
           }}
         >
           <Icon name='play' color='black' size={32} className='pl-1' />
-        </Link>
-      </div>
+        </div>
+      </Link>
       <div className='flex flex-col gap-2'>
         <p className='text-sm text-text-secondary'>
           {hit.podcastSeasonNumber && `Season ${hit.podcastSeasonNumber}`} |
@@ -121,6 +125,7 @@ const PodcastEpisodeHitComponent = ({ hit }: { hit: ContentItemHit }) => {
 export const PodcastEpisodeList = ({
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_API_KEY,
+  indexName,
   podcastTitle,
 }: PodcastEpisodeListProps) => {
   const searchClient = useMemo(
@@ -132,7 +137,7 @@ export const PodcastEpisodeList = ({
 
   return (
     <InstantSearch
-      indexName='dev_contentItems'
+      indexName={indexName}
       searchClient={searchClient}
       future={{
         preserveSharedStateOnUnmount: true,

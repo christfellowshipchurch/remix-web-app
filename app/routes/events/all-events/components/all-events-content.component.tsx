@@ -34,19 +34,9 @@ import { EventsFiltersViewport } from './events-filters-viewport.component';
 import {
   EVENT_FACET_CATEGORIES,
   EVENT_FACET_LOCATIONS,
-  EVENTS_INDEX,
   MAIN_EVENTS_GRID_HITS_PER_PAGE,
   MAIN_EVENTS_TYPE_FILTER,
 } from '../all-events.constants';
-
-const { InstantSearchUrlSync, buildUiState } =
-  createInstantSearchUrlSync<EventsFinderUrlState>({
-    indexName: EVENTS_INDEX,
-    parseUrlState: parseEventsFinderUrlState,
-  });
-
-const AllEventsInstantSearchSync = InstantSearchUrlSync;
-const buildAllEventsInstantSearchUiState = buildUiState;
 
 function formatMobileEventDateParts(isoDate: string) {
   const date = new Date(isoDate);
@@ -242,7 +232,20 @@ export function AllEventsContent() {
     mainEventHits,
     eventsNbPages,
     eventsPage,
+    algoliaIndexes,
   } = useLoaderData<AllEventsLoaderData>();
+  const eventsIndexName = algoliaIndexes.contentItems;
+  const {
+    InstantSearchUrlSync: AllEventsInstantSearchSync,
+    buildUiState: buildAllEventsInstantSearchUiState,
+  } = useMemo(
+    () =>
+      createInstantSearchUrlSync<EventsFinderUrlState>({
+        indexName: eventsIndexName,
+        parseUrlState: parseEventsFinderUrlState,
+      }),
+    [eventsIndexName],
+  );
 
   const {
     urlState,
@@ -266,7 +269,7 @@ export function AllEventsContent() {
     return Object.keys(state).length > 0
       ? (state as Record<string, Record<string, unknown>>)
       : undefined;
-  }, [urlState]);
+  }, [buildAllEventsInstantSearchUiState, urlState]);
 
   useScrollToSearchResultsOnLoad(searchParams, (params) => {
     const s = parseEventsFinderUrlState(params);
@@ -308,12 +311,12 @@ export function AllEventsContent() {
 
         {filtersMounted ? (
           <InstantSearch
-            indexName={EVENTS_INDEX}
+            indexName={eventsIndexName}
             searchClient={searchClient}
             initialUiState={initialUiState}
             onStateChange={({ uiState, setUiState }) => {
               setUiState(uiState);
-              const indexState = uiState[EVENTS_INDEX];
+              const indexState = uiState[eventsIndexName];
               if (!indexState) return;
               const index = indexState as Record<string, unknown>;
 
@@ -344,6 +347,9 @@ export function AllEventsContent() {
             />
             <AllEventsInstantFilters
               eventsMobilePinEndRef={eventsMobilePinEndRef}
+              buildAllEventsInstantSearchUiState={
+                buildAllEventsInstantSearchUiState
+              }
             />
             <AllEventsInstantResults
               initialEventHits={mainEventHits}
@@ -407,7 +413,15 @@ function mapRefinementItemsToFacets(
 
 function AllEventsInstantFilters({
   eventsMobilePinEndRef,
-}: Pick<Parameters<typeof EventsFiltersViewport>[0], 'eventsMobilePinEndRef'>) {
+  buildAllEventsInstantSearchUiState,
+}: Pick<
+  Parameters<typeof EventsFiltersViewport>[0],
+  'eventsMobilePinEndRef'
+> & {
+  buildAllEventsInstantSearchUiState: (
+    urlState: EventsFinderUrlState,
+  ) => Record<string, Record<string, unknown>>;
+}) {
   const { indexUiState, setIndexUiState } = useInstantSearch();
   const categoryItems = useRefinementList({
     attribute: EVENT_FACET_CATEGORIES,
@@ -439,7 +453,8 @@ function AllEventsInstantFilters({
     // Convert the events UI's URL-shaped update back into InstantSearch state.
     // The parent `onStateChange` then writes the canonical URL, so filter clicks
     // remain client-side without invoking the route loader.
-    const nextUiState = buildAllEventsInstantSearchUiState(next)[EVENTS_INDEX];
+    const nextState = buildAllEventsInstantSearchUiState(next);
+    const nextUiState = Object.values(nextState)[0];
     setIndexUiState((nextUiState ?? {}) as Record<string, unknown>);
   };
 

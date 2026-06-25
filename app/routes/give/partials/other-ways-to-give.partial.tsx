@@ -81,7 +81,7 @@ const otherWaysToGiveData: {
   {
     title: 'Other Online Options',
     description:
-      'Online gifts given through ApplePay, Cash App, or Venmo cannot be designated to a specific fund or campus and will not be on your End-of-Year Giving Statement.',
+      'Online gifts given through Cash App or Venmo cannot be designated to a specific fund or campus.',
     ctas: [
       {
         icon: 'paypal',
@@ -100,11 +100,11 @@ const otherWaysToGiveData: {
   {
     title: 'Cash or Check',
     description:
-      "Give at any Christ Fellowship location or mail to: <br/><br/> <span class='italic md:not-italic'>Christ Fellowship Church Contributions<br/> 5343 Northlake Blvd.Palm Beach Gardens, FL 33418</span>",
+      "Give at any Christ Fellowship location or mail to: <br/><br/> <span class='italic md:not-italic'>Christ Fellowship Church Contributions<br/> 5343 Northlake Blvd, Palm Beach Gardens, FL 33418</span>",
   },
   {
     title: 'Stocks, bonds, crypto, and other assets',
     description:
-      'To give by stock, bond, or crypto currency please contact us.',
+      "To give by stock, bond, or cryptocurrency, please <a class='text-ocean font-bold underline' href='mailto:contributions@christfellowship.church'>contact us</a>.",
   },
 ];

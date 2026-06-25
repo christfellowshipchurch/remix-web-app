@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { getDisplayContentType } from '../../search-utils';
+import { resolveSearchHitLinkFromHit } from '../../search-hit-links';
 
 export type MobileContentHitType = {
   routing: {
@@ -14,13 +15,12 @@ export type MobileContentHitType = {
   title: string;
   contentType: string;
   summary: string;
+  url?: string;
 };
 
 export function MobileContentHit({ hit }: { hit: MobileContentHitType }) {
   const imageUrl = hit.coverImage?.sources?.[0]?.uri || '';
-  const pathname = hit?.routing?.pathname || '';
-  const to = pathname.startsWith('http') ? pathname : `/${pathname}`;
-  const isExternal = to.startsWith('http');
+  const { to, isExternal } = resolveSearchHitLinkFromHit(hit);
 
   const sharedClassName = 'flex gap-2 pb-2 w-full';
   const content = (

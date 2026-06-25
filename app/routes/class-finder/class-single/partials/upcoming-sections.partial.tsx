@@ -15,10 +15,7 @@ import { cn } from '~/lib/utils';
 
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
 import { ClassSingleFiltersSkeleton } from '../components/filters/class-single-filters-skeleton.component';
-import {
-  CLASS_SINGLE_UPCOMING_INDEX_NAME,
-  useClassSingleUpcomingInstantSearch,
-} from '../hooks/use-class-single-upcoming-instant-search';
+import { useClassSingleUpcomingInstantSearch } from '../hooks/use-class-single-upcoming-instant-search';
 import type { ClassHitType } from '../../types';
 import type { LoaderReturnType } from '../loader';
 import OnDemandCard from '../components/on-demand-card.component';
@@ -108,7 +105,7 @@ export function ClassSingleUpcomingSearch({
       <div className='flex min-w-0 w-full flex-col max-md:pt-6'>
         {filtersMounted ? (
           <InstantSearch
-            indexName={CLASS_SINGLE_UPCOMING_INDEX_NAME}
+            indexName={upcoming.indexName}
             searchClient={upcoming.searchClient}
             initialUiState={upcoming.initialUiState}
             onStateChange={upcoming.onStateChange}
@@ -205,7 +202,7 @@ function ClassSingleUpcomingConfigure({
   classUrl,
   coordinates,
 }: {
-  /** `classType` on `dev_Classes` records (not necessarily the URL slug). */
+  /** `classType` on classes index records (not necessarily the URL slug). */
   classesIndexClassType: string;
   classUrl: string;
   coordinates: {
@@ -213,7 +210,7 @@ function ClassSingleUpcomingConfigure({
     lng: number | null;
   } | null;
 }) {
-  const trimmed = classesIndexClassType.trim();
+  const trimmed = classesIndexClassType?.trim() ?? '';
   const classTypeFilter = trimmed
     ? `classType:"${escapeAlgoliaFilterString(trimmed)}"`
     : undefined;

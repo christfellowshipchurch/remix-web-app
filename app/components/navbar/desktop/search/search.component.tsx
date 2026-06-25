@@ -1,16 +1,11 @@
-import React from 'react';
 import { algoliasearch, SearchClient } from 'algoliasearch';
 import { useEffect, useRef } from 'react';
-import {
-  Configure,
-  InstantSearch,
-  SearchBox,
-  useSearchBox,
-} from 'react-instantsearch';
+import { Configure, InstantSearch, SearchBox } from 'react-instantsearch';
 import { useRouteLoaderData } from 'react-router-dom';
 import Icon from '~/primitives/icon';
 import { SearchPopup } from './search-popup.component';
 import { RootLoaderData } from '~/routes/navbar/loader';
+import { GlobalSearchLocationProvider } from '../../global-search-location-context';
 
 // Create a stable search instance ID that persists between unmounts
 const SEARCH_INSTANCE_ID = 'navbar-search';
@@ -32,36 +27,11 @@ const emptySearchClient = {
           query: '',
           params: '',
           processingTimeMS: 0,
-          index: 'dev_contentItems',
+          index: 'empty',
         },
       ],
     }),
 };
-
-// Create a component to provide the current query and searchClient
-function CurrentQueryProvider({
-  children,
-  searchClient,
-}: {
-  children: React.ReactNode;
-  searchClient: SearchClient | { search: () => Promise<unknown> };
-}) {
-  const { query } = useSearchBox();
-
-  // Clone the children with the current query and searchClient props
-  return React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(
-        child as React.ReactElement<{
-          query?: string;
-          searchClient?: SearchClient | { search: () => Promise<unknown> };
-        }>,
-        { query, searchClient },
-      );
-    }
-    return child;
-  });
-}
 
 export const SearchBar = ({
   mode,
@@ -76,8 +46,11 @@ export const SearchBar = ({
   const algolia = rootData?.algolia ?? {
     ALGOLIA_APP_ID: '',
     ALGOLIA_SEARCH_API_KEY: '',
+    indexes: undefined,
   };
   const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = algolia;
+  const contentItemsIndexName = algolia.indexes?.contentItems ?? '';
+  const locationsIndexName = algolia.indexes?.locations ?? '';
 
   // Create or retrieve the Algolia client
   useEffect(() => {
@@ -153,55 +126,59 @@ export const SearchBar = ({
   return (
     <div className='relative size-full' ref={searchBarRef}>
       <InstantSearch
-        indexName='dev_contentItems'
+        indexName={contentItemsIndexName}
         searchClient={searchClient}
         future={{
           preserveSharedStateOnUnmount: true,
         }}
         initialUiState={{
-          dev_contentItems: {
+          [contentItemsIndexName]: {
             query: '',
           },
-          dev_Locations: {
+          [locationsIndexName]: {
             query: '',
           },
         }}
         insights={false}
         key={SEARCH_INSTANCE_ID}
       >
-        <Configure hitsPerPage={10} />
+        <GlobalSearchLocationProvider>
+          <Configure hitsPerPage={10} />
 
-        <div className='flex w-full items-center pb-2 border-b border-neutral-lighter gap-4'>
-          <button
-            onClick={() => {
-              setIsSearchOpen(false);
-            }}
-            className='flex items-center'
-          >
-            <Icon
-              name='search'
-              size={20}
-              className={`text-ocean hover:text-neutral-default transition-colors cursor-pointer`}
+          <div className='flex w-full items-center pb-2 border-b border-neutral-lighter gap-4'>
+            <button
+              onClick={() => {
+                setIsSearchOpen(false);
+              }}
+              className='flex items-center'
+            >
+              <Icon
+                name='search'
+                size={20}
+                className={`text-ocean hover:text-neutral-default transition-colors cursor-pointer`}
+              />
+            </button>
+            <SearchBox
+              classNames={{
+                root: 'flex-grow',
+                form: 'flex',
+                input: `w-full justify-center ${
+                  mode === 'light'
+                    ? 'text-[#2F2F2F]'
+                    : 'text-white group-hover:text-[#2F2F2F]'
+                } px-3 outline-none appearance-none`,
+                reset: 'hidden',
+                resetIcon: 'hidden',
+                submit: 'hidden',
+              }}
             />
-          </button>
-          <SearchBox
-            classNames={{
-              root: 'flex-grow',
-              form: 'flex',
-              input: `w-full justify-center ${
-                mode === 'light'
-                  ? 'text-[#2F2F2F]'
-                  : 'text-white group-hover:text-[#2F2F2F]'
-              } px-3 outline-none appearance-none`,
-              reset: 'hidden',
-              resetIcon: 'hidden',
-              submit: 'hidden',
-            }}
+          </div>
+          <SearchPopup
+            setIsSearchOpen={setIsSearchOpen}
+            searchClient={searchClient}
+            locationsIndexName={locationsIndexName}
           />
-        </div>
-        <CurrentQueryProvider searchClient={searchClient}>
-          <SearchPopup setIsSearchOpen={setIsSearchOpen} />
-        </CurrentQueryProvider>
+        </GlobalSearchLocationProvider>
       </InstantSearch>
     </div>
   );
