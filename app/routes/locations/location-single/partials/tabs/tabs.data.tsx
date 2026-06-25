@@ -11,7 +11,7 @@ export const familiesMappedChildren: ContentBlockData[] = [
     subtitle: 'During ALL Sunday Services',
     callsToAction: '',
     coverImage:
-      'https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?guid=950d64f7-96b7-47c4-9f98-5e4df3657a5e',
+      'https://cloudfront.christfellowship.church/GetImage.ashx/GetImage.ashx?id=3190351',
     featureVideo: undefined,
     aspectRatio: '4by5',
     imageLayout: 'RIGHT',
