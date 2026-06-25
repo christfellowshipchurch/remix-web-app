@@ -17,6 +17,7 @@ import { useFetcher, useSearchParams } from 'react-router-dom';
 import type {
   ConnectCardLoaderReturnType,
   ConnectCardPrefill,
+  ConnectCardPrefillDebug,
   ConnectCardPrefillResponse,
   ConnectCardPrefillStatus,
 } from '~/routes/connect-card/types';
@@ -90,9 +91,35 @@ type ConnectCardPrefillDebugInfo = {
   responseStatus?: ConnectCardPrefillResponse['status'];
   rawLength?: number;
   paramName?: string;
+  apiDebug?: ConnectCardPrefillDebug;
 };
 
 const ROCK_PERSON_ID_QUERY_PARAMS = ['rckipid', 'rckpid'];
+const ROCK_PERSON_TOKEN_MAX_LENGTH = 512;
+
+const hasControlCharacters = (value: string) =>
+  Array.from(value).some((char) => {
+    const code = char.charCodeAt(0);
+    return code <= 31 || code === 127;
+  });
+
+const isValidRockPersonToken = (value: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed.length > ROCK_PERSON_TOKEN_MAX_LENGTH) {
+    return false;
+  }
+
+  return !(
+    hasControlCharacters(trimmed) ||
+    trimmed.includes('"') ||
+    trimmed.includes('\\') ||
+    trimmed.includes('{{') ||
+    trimmed.includes('}}') ||
+    trimmed.includes('{%') ||
+    trimmed.includes('%}')
+  );
+};
 
 const getRockPersonIdSearchParam = (searchParams: URLSearchParams) => {
   for (const paramName of ROCK_PERSON_ID_QUERY_PARAMS) {
@@ -149,6 +176,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const processedRckipidRef = useRef(false);
   const requestedPrefillRef = useRef(false);
   const isPrefillDebug = searchParams.get('prefillDebug') === '1';
+  const hasInlinePrefillDebug = !!prefillDebugInfo?.detected;
 
   const [formFieldData, setFormFieldData] =
     useState<ConnectCardLoaderReturnType>({
@@ -182,7 +210,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
 
     processedRckipidRef.current = true;
-    const isValidRckipid = /^\d+$/.test(rockPersonIdParam.value);
+    const isValidRckipid = isValidRockPersonToken(rockPersonIdParam.value);
 
     const nextSearchParams = new URLSearchParams(searchParams);
     ROCK_PERSON_ID_QUERY_PARAMS.forEach((paramName) =>
@@ -190,17 +218,15 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     );
     setSearchParams(nextSearchParams, { replace: true });
 
-    if (isPrefillDebug) {
-      const debugInfo = {
-        detected: true,
-        valid: isValidRckipid,
-        urlCleaned: true,
-        apiRequested: isValidRckipid,
-        rawLength: rockPersonIdParam.rawValue?.length,
-        paramName: rockPersonIdParam.paramName,
-      };
-      setPrefillDebugInfo(debugInfo);
-    }
+    const debugInfo = {
+      detected: true,
+      valid: isValidRckipid,
+      urlCleaned: true,
+      apiRequested: isValidRckipid,
+      rawLength: rockPersonIdParam.rawValue?.length,
+      paramName: rockPersonIdParam.paramName,
+    };
+    setPrefillDebugInfo(debugInfo);
 
     if (!isValidRckipid) {
       setPrefillStatus('invalid-id');
@@ -210,7 +236,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     setPrefillStatus('loading');
     requestedPrefillRef.current = true;
     prefillFetcher.load(
-      `/api/connect-card-prefill?rckipid=${encodeURIComponent(
+      `/api/connect-card-prefill?rckpid=${encodeURIComponent(
         rockPersonIdParam.value,
       )}`,
     );
@@ -231,17 +257,15 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
 
     const response = prefillFetcher.data as ConnectCardPrefillResponse;
-    if (isPrefillDebug) {
-      setPrefillDebugInfo((current) => ({
-        detected: current?.detected ?? true,
-        valid: current?.valid ?? true,
-        urlCleaned: current?.urlCleaned ?? true,
-        apiRequested: current?.apiRequested ?? true,
-        rawLength: current?.rawLength,
-        paramName: current?.paramName,
-        responseStatus: response.status,
-      }));
-    }
+    setPrefillDebugInfo((current) =>
+      current
+        ? {
+            ...current,
+            responseStatus: response.status,
+            apiDebug: response.debug,
+          }
+        : null,
+    );
 
     if (response.status !== 'success') {
       setPrefillStatus(response.status);
@@ -329,7 +353,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   };
 
   const renderPrefillDebug = () => {
-    if (!isPrefillDebug || !prefillDebugInfo) {
+    if ((!isPrefillDebug && !hasInlinePrefillDebug) || !prefillDebugInfo) {
       return null;
     }
 
@@ -352,6 +376,67 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
         <p>URL cleaned: {prefillDebugInfo.urlCleaned ? 'yes' : 'no'}</p>
         <p>API requested: {prefillDebugInfo.apiRequested ? 'yes' : 'no'}</p>
         <p>API status: {prefillDebugInfo.responseStatus ?? 'pending/n/a'}</p>
+        <p>
+          token fingerprint:{' '}
+          {prefillDebugInfo.apiDebug?.tokenFingerprint ?? 'pending/n/a'}
+        </p>
+        <p>
+          validation passed:{' '}
+          {prefillDebugInfo.apiDebug?.validationPassed == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.validationPassed
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          decode attempted:{' '}
+          {prefillDebugInfo.apiDebug?.decodeAttempted == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.decodeAttempted
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          person resolved:{' '}
+          {prefillDebugInfo.apiDebug?.personResolved == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.personResolved
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>person id: {prefillDebugInfo.apiDebug?.personId ?? 'pending/n/a'}</p>
+        <p>
+          first name found:{' '}
+          {prefillDebugInfo.apiDebug?.hasFirstName == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasFirstName
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          email found:{' '}
+          {prefillDebugInfo.apiDebug?.hasEmail == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasEmail
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          phone found:{' '}
+          {prefillDebugInfo.apiDebug?.hasPhone == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasPhone
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          campus found:{' '}
+          {prefillDebugInfo.apiDebug?.hasCampus == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasCampus
+              ? 'yes'
+              : 'no'}
+        </p>
       </div>
     );
   };

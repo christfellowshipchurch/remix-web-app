@@ -6,7 +6,8 @@ export { TTL, deleteByPrefix } from './cache-utils';
 export type { TTLValue } from './cache-utils';
 interface RockDataRequest {
   endpoint: string;
-  body: Record<string, unknown>;
+  body: Record<string, unknown> | string;
+  contentType?: string;
 }
 
 const baseUrl = `${process.env.ROCK_API}`;
@@ -238,16 +239,20 @@ export const deleteRockData = async (endpoint: string) => {
  * Posts data to a Rock endpoint
  * @param params.endpoint - Rock endpoint to post to
  * @param params.body - the body of the post request
- * @returns response body as JSON
+ * @returns response body parsed as JSON when present
  */
-export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
+export const postRockData = async ({
+  endpoint,
+  body,
+  contentType = 'application/json',
+}: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType,
       'Authorization-Token': `${process.env.ROCK_TOKEN}`,
     },
-    body: JSON.stringify(body),
+    body: typeof body === 'string' ? body : JSON.stringify(body),
   });
 
   if (!response.ok) {

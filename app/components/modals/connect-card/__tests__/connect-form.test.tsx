@@ -236,11 +236,11 @@ describe('ConnectCardForm', () => {
   });
 
   it('loads prefill data for a valid rckipid and removes it from the URL', async () => {
-    renderForm(vi.fn(), '/connect-card?rckipid=123&foo=bar');
+    renderForm(vi.fn(), '/connect-card?rckipid=token-123&foo=bar');
 
     await waitFor(() => {
       expect(mockPrefillLoad).toHaveBeenCalledWith(
-        '/api/connect-card-prefill?rckipid=123',
+        '/api/connect-card-prefill?rckpid=token-123',
       );
     });
     await waitFor(() => {
@@ -248,14 +248,17 @@ describe('ConnectCardForm', () => {
         '?foo=bar',
       );
     });
+    expect(
+      await screen.findByText('Connect Card prefill debug'),
+    ).toBeInTheDocument();
   });
 
   it('loads prefill data for the mobile app rckpid alias and removes it from the URL', async () => {
-    renderForm(vi.fn(), '/connect-card?rckpid=123&foo=bar');
+    renderForm(vi.fn(), '/connect-card?rckpid=token-123&foo=bar');
 
     await waitFor(() => {
       expect(mockPrefillLoad).toHaveBeenCalledWith(
-        '/api/connect-card-prefill?rckipid=123',
+        '/api/connect-card-prefill?rckpid=token-123',
       );
     });
     await waitFor(() => {
@@ -266,7 +269,19 @@ describe('ConnectCardForm', () => {
   });
 
   it('shows opt-in prefill debug details while preserving the debug URL param', async () => {
-    renderForm(vi.fn(), '/connect-card?rckpid=123&prefillDebug=1');
+    mockPrefillFetcherState = {
+      state: 'idle',
+      data: {
+        status: 'not-found',
+        debug: {
+          tokenFingerprint: '034192845dc4',
+          validationPassed: true,
+          decodeAttempted: true,
+          personResolved: false,
+        },
+      },
+    };
+    renderForm(vi.fn(), '/connect-card?rckpid=token-123&prefillDebug=1');
 
     expect(
       await screen.findByText('Connect Card prefill debug'),
@@ -274,9 +289,13 @@ describe('ConnectCardForm', () => {
     expect(screen.getByText('rckipid detected: yes')).toBeInTheDocument();
     expect(screen.getByText('parameter name: rckpid')).toBeInTheDocument();
     expect(screen.getByText('rckipid valid: yes')).toBeInTheDocument();
-    expect(screen.getByText('rckipid length: 3')).toBeInTheDocument();
+    expect(screen.getByText('rckipid length: 9')).toBeInTheDocument();
     expect(screen.getByText('URL cleaned: yes')).toBeInTheDocument();
     expect(screen.getByText('API requested: yes')).toBeInTheDocument();
+    expect(screen.getByText('token fingerprint: 034192845dc4')).toBeInTheDocument();
+    expect(screen.getByText('validation passed: yes')).toBeInTheDocument();
+    expect(screen.getByText('decode attempted: yes')).toBeInTheDocument();
+    expect(screen.getByText('person resolved: no')).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByTestId('location-search')).toHaveTextContent(
         '?prefillDebug=1',
@@ -297,7 +316,7 @@ describe('ConnectCardForm', () => {
   });
 
   it('does not call the prefill API for an invalid rckipid and removes it from the URL', async () => {
-    renderForm(vi.fn(), '/connect-card?rckipid=abc&foo=bar');
+    renderForm(vi.fn(), '/connect-card?rckipid=%7B%7Bbad%7D%7D&foo=bar');
 
     await waitFor(() => {
       expect(screen.getByTestId('location-search')).toHaveTextContent(
@@ -338,10 +357,22 @@ describe('ConnectCardForm', () => {
           phone: '555-123-4567',
           campus: 'campus-guid',
         },
+        debug: {
+          tokenFingerprint: '034192845dc4',
+          validationPassed: true,
+          decodeAttempted: true,
+          personResolved: true,
+          personId: '123',
+          hasFirstName: true,
+          hasLastName: true,
+          hasEmail: true,
+          hasPhone: true,
+          hasCampus: true,
+        },
       },
     };
 
-    renderForm(vi.fn(), '/connect-card?rckipid=123');
+    renderForm(vi.fn(), '/connect-card?rckipid=token-123');
 
     expect(await screen.findByDisplayValue('Jane')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Doe')).toBeInTheDocument();
@@ -350,6 +381,8 @@ describe('ConnectCardForm', () => {
     expect(screen.getByRole('combobox', { name: 'Campus' })).toHaveValue(
       'campus-guid',
     );
+    expect(screen.getByText('person id: 123')).toBeInTheDocument();
+    expect(screen.getByText('email found: yes')).toBeInTheDocument();
 
     fireEvent.change(screen.getByDisplayValue('Jane'), {
       target: { value: 'Janet' },
@@ -363,7 +396,7 @@ describe('ConnectCardForm', () => {
       data: { status: 'error', message: 'Unable to load prefill data' },
     };
 
-    renderForm(vi.fn(), '/connect-card?rckipid=123');
+    renderForm(vi.fn(), '/connect-card?rckipid=token-123');
 
     expect(
       await screen.findByText(
