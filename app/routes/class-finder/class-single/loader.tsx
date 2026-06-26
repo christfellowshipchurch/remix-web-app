@@ -11,6 +11,7 @@ import type { GroupType } from '~/routes/group-finder/types';
 import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 import type { ClassHitType } from '../types';
+import { CLASS_INTEREST_TOGGLE_ATTRIBUTE_KEY } from '../constants';
 import {
   buildClassSingleGroupsSearchParams,
   buildClassSingleHeroSearchParams,
@@ -38,6 +39,8 @@ export type LoaderReturnType = {
   heroTitle: string;
   heroSummary: string;
   heroCoverImageUri: string;
+  /** Rock 387 "I'm Interested" toggle; gates the interest banner when no sessions. */
+  isInterestEnabled: boolean;
 };
 
 /**
@@ -58,6 +61,15 @@ function rockStringAttr(
 ): string {
   const v = item?.attributeValues?.[key]?.value;
   return typeof v === 'string' ? v.trim() : '';
+}
+
+/** Rock boolean attributes come back as strings ("True"/"False"/"1"/""). */
+function rockBoolAttr(
+  item: RockContentChannelItem | null | undefined,
+  key: string,
+): boolean {
+  const v = rockStringAttr(item, key).toLowerCase();
+  return v === 'true' || v === '1';
 }
 
 /**
@@ -90,6 +102,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   let rockTitle = '';
   let rockSummary = '';
   let rockCoverImageUri = '';
+  let isInterestEnabled = false;
 
   try {
     const classData = (await fetchRockData({
@@ -110,6 +123,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       rockSummary = classData.description?.trim() ?? '';
       const imageGuid = rockStringAttr(classData, 'image');
       rockCoverImageUri = imageGuid ? createImageUrlFromGuid(imageGuid) : '';
+      isInterestEnabled = rockBoolAttr(
+        classData,
+        CLASS_INTEREST_TOGGLE_ATTRIBUTE_KEY,
+      );
     }
   } catch (error) {
     console.warn('Failed to load class data from Rock:', error);
@@ -184,6 +201,34 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     console.error('[class-single] Algolia loader fetch failed', error);
   }
 
+  // For interest-only classes (in Rock but not yet in Algolia), build a minimal
+  // synthetic hit so the page renders. classType drives the upcoming/groups
+  // Algolia searches — using rockTitle is fine because those will return empty
+  // (the class has no sessions), which is the correct state for these pages.
+  if (!classHit && rockTitle) {
+    classHit = {
+      objectID: `rock-${classUrl}`,
+      title: rockTitle,
+      classType: rockTitle,
+      pathName: classUrl,
+      summary: rockSummary,
+      coverImage: rockCoverImageUri
+        ? { sources: [{ uri: rockCoverImageUri }] }
+        : { sources: [] },
+      campus: '',
+      groupId: 0,
+      subtitle: '',
+      topic: '' as ClassHitType['topic'],
+      language: 'English',
+      format: 'In-Person',
+      schedule: '',
+      startDate: '',
+      endDate: '',
+      _geoloc: { lat: 0, lng: 0 },
+      isInterestOnly: true,
+    } as unknown as ClassHitType;
+  }
+
   // Rock Defined Type 387 is the authoritative source for hero content.
   // Summary and cover image come from Rock only (no Algolia fallback): when the
   // Defined Value lacks them, the page shows no "What to Expect" copy and hides
@@ -209,5 +254,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     heroTitle,
     heroSummary,
     heroCoverImageUri,
+    isInterestEnabled,
   };
 }

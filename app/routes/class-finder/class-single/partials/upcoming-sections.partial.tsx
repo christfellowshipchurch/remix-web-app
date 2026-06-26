@@ -14,6 +14,7 @@ import { ActiveFilters } from '~/components/finders/search-filters/active-filter
 import { cn } from '~/lib/utils';
 
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
+import { ClassSingleInterestBanner } from '../components/class-single-interest-banner.component';
 import { ClassSingleFiltersSkeleton } from '../components/filters/class-single-filters-skeleton.component';
 import { useClassSingleUpcomingInstantSearch } from '../hooks/use-class-single-upcoming-instant-search';
 import type { ClassHitType } from '../../types';
@@ -91,7 +92,8 @@ export function ClassSingleUpcomingSearch({
   classType: string;
   onDemandUrl: string;
 }) {
-  const { upcomingHits, groupHits } = useLoaderData<LoaderReturnType>();
+  const { upcomingHits, groupHits, isInterestEnabled } =
+    useLoaderData<LoaderReturnType>();
   const upcoming = useClassSingleUpcomingInstantSearch();
 
   /** SSR/hydration: skeleton filters until react-instantsearch mounts. */
@@ -99,6 +101,12 @@ export function ClassSingleUpcomingSearch({
   useEffect(() => {
     setFiltersMounted(true);
   }, []);
+
+  // Interest-only classes have no Algolia sessions regardless of filters.
+  // Skip Filter Sessions + Join a Class entirely and go full-bleed.
+  if (upcomingHits.length === 0 && isInterestEnabled) {
+    return <ClassSingleInterestBanner />;
+  }
 
   return (
     <div className='flex w-full flex-col pagination-scroll-to' id='search'>

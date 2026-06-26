@@ -84,8 +84,13 @@ function getInitialStateFromUrl(
 
 export const ClassSearch = () => {
   const loaderData = useLoaderData<LoaderReturnType>();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classHits, algoliaIndexes } =
-    loaderData;
+  const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
+    classHits,
+    interestOnlyHits,
+    algoliaIndexes,
+  } = loaderData;
   const classIndexName = algoliaIndexes.classes;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -155,6 +160,16 @@ export const ClassSearch = () => {
   const fromClassFinderUrl =
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : '');
+
+  // Interest-only (Rock) cards can't be filtered by Algolia, so they — and the
+  // appended "Can't find a class?" card — only show in the unfiltered view.
+  const finderFiltersActive = useMemo(() => {
+    const s = parseClassFinderUrlState(searchParams);
+    return (
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      !!(s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  }, [searchParams]);
 
   /** SSR/hydration: skeleton filters until react-instantsearch mounts (same pattern as group finder). */
   const [filtersMounted, setFiltersMounted] = useState(false);
@@ -255,6 +270,8 @@ export const ClassSearch = () => {
               <div className='max-w-screen-content mx-auto md:w-full'>
                 <ClassTypeGroupedInstantSearchResults
                   initialHits={classHits}
+                  interestOnlyHits={interestOnlyHits}
+                  filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
                 />
               </div>
@@ -280,6 +297,8 @@ export const ClassSearch = () => {
                 <ClassTypeGroupedResults
                   hits={classHits}
                   isLoading={false}
+                  interestOnlyHits={interestOnlyHits}
+                  filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
                 />
               </div>
@@ -295,9 +314,13 @@ const ITEMS_PER_PAGE = 12;
 
 function ClassTypeGroupedInstantSearchResults({
   initialHits,
+  interestOnlyHits,
+  filtersActive,
   fromClassFinderUrl,
 }: {
   initialHits: ClassHitType[];
+  interestOnlyHits: ClassHitType[];
+  filtersActive: boolean;
   fromClassFinderUrl?: string;
 }) {
   const { items } = useHits<ClassHitType>();
@@ -313,6 +336,8 @@ function ClassTypeGroupedInstantSearchResults({
     <ClassTypeGroupedResults
       hits={hits}
       isLoading={isLoading}
+      interestOnlyHits={interestOnlyHits}
+      filtersActive={filtersActive}
       fromClassFinderUrl={fromClassFinderUrl}
     />
   );
@@ -321,23 +346,61 @@ function ClassTypeGroupedInstantSearchResults({
 function ClassTypeGroupedResults({
   hits,
   isLoading,
+  interestOnlyHits,
+  filtersActive,
   fromClassFinderUrl,
 }: {
   hits: ClassHitType[];
   isLoading: boolean;
+  interestOnlyHits: ClassHitType[];
+  filtersActive: boolean;
   fromClassFinderUrl?: string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams] = useSearchParams();
 
   const grouped = useMemo(() => groupClassTypeHits(hits), [hits]);
 
   // The class finder presents one card per class type group, not one raw
   // Algolia record per session. Build synthetic cards from grouped hits before
   // local pagination so the UI stays consistent with the pre-SSR behavior.
-  const mappedHits = useMemo(
+  const algoliaHits = useMemo(
     () => syntheticHitsFromGrouped(grouped),
     [grouped],
   );
+
+  // When only topic refinements are active (no text query, no other filters),
+  // filter interest-only hits client-side so they participate in the topic filter.
+  // For any other active filter (query, format, language) they have no data to
+  // match against, so they're hidden.
+  const { activeTopic, onlyTopicActive } = useMemo(() => {
+    const s = parseClassFinderUrlState(searchParams);
+    const topicList = s.refinementList?.topic ?? [];
+    const hasQuery = (s.query?.trim?.()?.length ?? 0) > 0;
+    const otherRefinements = Object.entries(s.refinementList ?? {})
+      .filter(([key]) => key !== 'topic')
+      .some(([, vals]) => vals.length > 0);
+    return {
+      activeTopic: topicList,
+      onlyTopicActive: !hasQuery && !otherRefinements && topicList.length > 0,
+    };
+  }, [searchParams]);
+
+  const mappedHits = useMemo(() => {
+    if (interestOnlyHits.length === 0) return algoliaHits;
+    const seen = new Set(algoliaHits.map((h) => h.pathName).filter(Boolean));
+    const extras = interestOnlyHits.filter(
+      (h) => h.pathName && !seen.has(h.pathName),
+    );
+    if (!filtersActive) return [...algoliaHits, ...extras];
+    if (onlyTopicActive) {
+      const topicFiltered = extras.filter(
+        (h) => h.topic && activeTopic.includes(h.topic),
+      );
+      return [...algoliaHits, ...topicFiltered];
+    }
+    return algoliaHits;
+  }, [algoliaHits, interestOnlyHits, filtersActive, onlyTopicActive, activeTopic]);
 
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
