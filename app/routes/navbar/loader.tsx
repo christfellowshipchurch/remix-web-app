@@ -66,7 +66,7 @@ const fetchFeatureCards = async () => {
         title: 'Take the Journey Class',
         url: '/events/journey',
       },
-      image: 'https://rock.christfellowship.church/GetImage.ashx?id=3166460',
+      image: 'https://rock.christfellowship.church/GetImage.ashx?id=3190466',
       navMenu: 'get involved',
     };
 
