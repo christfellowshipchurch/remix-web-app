@@ -13,6 +13,7 @@ const MISSION_TRIPS_CONTENT_CHANNEL_ID = ContentChannelIds.missionTrips;
 const fetchVolunteerTrips = async () => {
   const rawTrips = await fetchRockData({
     endpoint: 'ContentChannelItems',
+    filterByDateRange: true,
     queryParams: {
       $filter: `ContentChannelId eq ${MISSION_TRIPS_CONTENT_CHANNEL_ID}`,
       loadAttributes: 'simple',
