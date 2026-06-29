@@ -7,7 +7,11 @@ import { ClassInterestModal } from '~/components/modals/class-interest';
 import { Button } from '~/primitives/button/button.primitive';
 
 /** Figma-matched full-width ocean banner. Primary design. */
-export function ClassSingleInterestBanner() {
+export function ClassSingleInterestBanner({
+  classValueGuid,
+}: {
+  classValueGuid?: string;
+}) {
   return (
     <div className='flex w-full flex-col gap-6 bg-ocean px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10 md:py-10'>
       <div className='flex flex-col gap-2'>
@@ -20,7 +24,7 @@ export function ClassSingleInterestBanner() {
         </p>
       </div>
 
-      <ClassInterestModal>
+      <ClassInterestModal classValueGuid={classValueGuid}>
         <Button
           intent='primary'
           className='bg-navy border-navy w-full shrink-0 md:w-auto md:min-w-48'

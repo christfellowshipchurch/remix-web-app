@@ -2,6 +2,7 @@ import type { ActionFunction } from 'react-router-dom';
 import {
   fetchRockData,
   postRockData,
+  putRockData,
   TTL,
 } from '~/lib/.server/fetch-rock-data';
 import { findOrCreateRockPersonForSignup } from '~/lib/.server/rock-signup';
@@ -14,18 +15,18 @@ const PENDING_GROUP_MEMBER_STATUS = 2;
 const INTERESTED_GROUP_IDS: Record<number, number> = {
   10: 1839701, // Belle Glade
   17: 1839702, // Boca Raton
-  6: 1839703,  // Boynton Beach
-  9: 1839704,  // Online (CF Everywhere)
-  7: 1839705,  // CF Español Palm Beach Gardens
-  8: 1839706,  // CF Español Royal Palm Beach
+  6: 1839703, // Boynton Beach
+  9: 1839704, // Online (CF Everywhere)
+  7: 1839705, // CF Español Palm Beach Gardens
+  8: 1839706, // CF Español Royal Palm Beach
   14: 1839707, // Jupiter
   12: 1839708, // Okeechobee
-  2: 1839709,  // Palm Beach Gardens
+  2: 1839709, // Palm Beach Gardens
   13: 1839710, // Port St. Lucie
-  3: 1839711,  // Royal Palm Beach
-  5: 1839712,  // Stuart
+  3: 1839711, // Royal Palm Beach
+  5: 1839712, // Stuart
   21: 1839715, // Trinity
-  1: 1839716,  // Vero Beach
+  1: 1839716, // Vero Beach
   19: 1839717, // Westlake
 };
 
@@ -50,6 +51,8 @@ export const action: ActionFunction = async ({ request }) => {
     const EmailAddress = formData.get('EmailAddress')?.toString().trim();
     const PhoneNumber = formData.get('PhoneNumber')?.toString().trim();
     const Campus = formData.get('Campus')?.toString().trim();
+    const classValueGuid =
+      formData.get('ClassValueGuid')?.toString().trim() || null;
 
     if (!FirstName || !LastName || !EmailAddress || !PhoneNumber || !Campus) {
       return Response.json(
@@ -100,8 +103,11 @@ export const action: ActionFunction = async ({ request }) => {
       ttl: TTL.NONE,
     });
 
-    if (!getFirstRecord(existingMembership)) {
-      await postRockData({
+    const existing = getFirstRecord<{ id: number }>(existingMembership);
+    let memberId = existing?.id ?? null;
+
+    if (!memberId) {
+      const created = await postRockData({
         endpoint: 'GroupMembers',
         body: {
           GroupId: groupId,
@@ -110,6 +116,14 @@ export const action: ActionFunction = async ({ request }) => {
           GroupMemberStatus: PENDING_GROUP_MEMBER_STATUS,
           IsArchived: false,
         },
+      });
+      memberId = created?.id ?? null;
+    }
+
+    if (memberId && classValueGuid) {
+      await putRockData({
+        endpoint: `GroupMembers/${memberId}/AttributeValues`,
+        body: { classPreference: classValueGuid },
       });
     }
 

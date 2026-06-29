@@ -266,6 +266,33 @@ export const postRockData = async ({ endpoint, body }: RockDataRequest) => {
 };
 
 /**
+ * Updates data at a Rock endpoint using PUT
+ * @param params.endpoint - Rock endpoint to put to
+ * @param params.body - the body of the put request
+ * @returns response body as JSON
+ */
+export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
+  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorDetails = await response.text();
+    throw new Error(
+      `Failed to put data: ${response.status}, details: ${errorDetails}`,
+    );
+  }
+
+  const responseBody = await response.text();
+  return responseBody ? JSON.parse(responseBody) : {};
+};
+
+/**
  * Updates data at a Rock endpoint using PATCH
  * @param params.endpoint - Rock endpoint to patch
  * @param params.body - the body of the patch request

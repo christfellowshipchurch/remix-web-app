@@ -11,8 +11,10 @@ import { Button } from '~/primitives/button/button.primitive';
 
 export function CantFindClassCard({
   variant = 'gridCell',
+  classValueGuid,
 }: {
   variant?: 'gridCell' | 'empty';
+  classValueGuid?: string;
 }) {
   const isEmpty = variant === 'empty';
 
@@ -43,8 +45,12 @@ export function CantFindClassCard({
         </p>
       </div>
 
-      <ClassInterestModal>
-        <Button intent='primary' size='md' className={`bg-[#F59E0B] border-[#F59E0B] hover:bg-[#F59E0B]/90 ${isEmpty ? '' : 'w-full'}`}>
+      <ClassInterestModal classValueGuid={classValueGuid}>
+        <Button
+          intent='primary'
+          size='md'
+          className={`bg-[#F59E0B] border-[#F59E0B] hover:bg-[#F59E0B]/90 ${isEmpty ? '' : 'w-full'}`}
+        >
           Let Us Know
         </Button>
       </ClassInterestModal>

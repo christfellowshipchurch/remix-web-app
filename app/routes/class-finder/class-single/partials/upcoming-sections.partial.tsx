@@ -94,7 +94,7 @@ export function ClassSingleUpcomingSearch({
   classType: string;
   onDemandUrl: string;
 }) {
-  const { upcomingHits, groupHits, isInterestEnabled } =
+  const { upcomingHits, groupHits, isInterestEnabled, classDefinedValueGuid } =
     useLoaderData<LoaderReturnType>();
   const upcoming = useClassSingleUpcomingInstantSearch();
 
@@ -107,7 +107,7 @@ export function ClassSingleUpcomingSearch({
   // Interest-only classes have no Algolia sessions regardless of filters.
   // Skip Filter Sessions + Join a Class entirely and go full-bleed.
   if (upcomingHits.length === 0 && isInterestEnabled) {
-    return <ClassSingleInterestBanner />;
+    return <ClassSingleInterestBanner classValueGuid={classDefinedValueGuid} />;
   }
 
   return (
@@ -352,7 +352,8 @@ function ClassSingleUpcomingResults({
   geoActive: boolean;
   isLoading: boolean;
 }) {
-  const { isInterestEnabled } = useLoaderData<LoaderReturnType>();
+  const { isInterestEnabled, classDefinedValueGuid } =
+    useLoaderData<LoaderReturnType>();
   const [searchParams] = useSearchParams();
 
   const filtersActive = useMemo(() => {
@@ -375,9 +376,17 @@ function ClassSingleUpcomingResults({
   // Filters active + no results → show CantFindClassCard as the sole content
   if (ordered.length === 0 && isInterestEnabled && filtersActive) {
     return (
-      <div data-upcoming-sessions-results className='scroll-mt-[100px] w-full max-w-[1296px]'>
-        <h3 className='pt-2 text-2xl font-extrabold mb-6 md:pt-4'>Join a Class</h3>
-        <CantFindClassCard variant='empty' />
+      <div
+        data-upcoming-sessions-results
+        className='scroll-mt-[100px] w-full max-w-[1296px]'
+      >
+        <h3 className='pt-2 text-2xl font-extrabold mb-6 md:pt-4'>
+          Join a Class
+        </h3>
+        <CantFindClassCard
+          variant='empty'
+          classValueGuid={classDefinedValueGuid}
+        />
       </div>
     );
   }
@@ -403,7 +412,14 @@ function ClassSingleUpcomingResults({
           <UpcomingSessionsCarousel
             hits={ordered}
             resetKey={carouselResetKey}
-            extraCard={isInterestEnabled && !filtersActive ? <CantFindClassCard variant='gridCell' /> : undefined}
+            extraCard={
+              isInterestEnabled && !filtersActive ? (
+                <CantFindClassCard
+                  variant='gridCell'
+                  classValueGuid={classDefinedValueGuid}
+                />
+              ) : undefined
+            }
           />
         </div>
       )}

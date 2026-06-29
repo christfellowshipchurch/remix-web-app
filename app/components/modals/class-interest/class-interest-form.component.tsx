@@ -22,9 +22,13 @@ type CampusOption = {
 
 interface ClassInterestFormProps {
   onSuccess: () => void;
+  classValueGuid?: string;
 }
 
-const ClassInterestForm: React.FC<ClassInterestFormProps> = ({ onSuccess }) => {
+const ClassInterestForm: React.FC<ClassInterestFormProps> = ({
+  onSuccess,
+  classValueGuid,
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [campuses, setCampuses] = useState<CampusOption[]>([]);
@@ -93,6 +97,9 @@ const ClassInterestForm: React.FC<ClassInterestFormProps> = ({ onSuccess }) => {
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
+        {classValueGuid && (
+          <input type='hidden' name='ClassValueGuid' value={classValueGuid} />
+        )}
         {renderRadixInputField(
           'FirstName',
           'First Name',

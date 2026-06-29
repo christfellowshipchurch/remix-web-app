@@ -9,8 +9,10 @@ enum ClassInterestStep {
 
 const ClassInterestFlow = ({
   setOpenModal,
+  classValueGuid,
 }: {
   setOpenModal: (open: boolean) => void;
+  classValueGuid?: string;
 }) => {
   const [step, setStep] = useState<ClassInterestStep>(ClassInterestStep.FORM);
 
@@ -20,6 +22,7 @@ const ClassInterestFlow = ({
         return (
           <ClassInterestForm
             onSuccess={() => setStep(ClassInterestStep.CONFIRMATION)}
+            classValueGuid={classValueGuid}
           />
         );
       case ClassInterestStep.CONFIRMATION:

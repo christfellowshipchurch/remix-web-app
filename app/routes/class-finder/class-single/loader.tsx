@@ -41,6 +41,8 @@ export type LoaderReturnType = {
   heroCoverImageUri: string;
   /** Rock 387 "I'm Interested" toggle; gates the interest banner when no sessions. */
   isInterestEnabled: boolean;
+  /** Rock Defined Value GUID for this class — passed as `classPreference` member attribute on sign-up. */
+  classDefinedValueGuid: string;
 };
 
 /**
@@ -53,6 +55,7 @@ export type LoaderReturnType = {
 type RockClassDefinedValue = RockContentChannelItem & {
   value?: string;
   description?: string;
+  guid?: string;
 };
 
 function rockStringAttr(
@@ -103,6 +106,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   let rockSummary = '';
   let rockCoverImageUri = '';
   let isInterestEnabled = false;
+  let classDefinedValueGuid = '';
 
   try {
     const classData = (await fetchRockData({
@@ -128,6 +132,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         classData,
         CLASS_INTEREST_TOGGLE_ATTRIBUTE_KEY,
       );
+      classDefinedValueGuid = classData.guid ?? '';
     }
   } catch (error) {
     console.warn('Failed to load class data from Rock:', error);
@@ -256,5 +261,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     heroSummary,
     heroCoverImageUri,
     isInterestEnabled,
+    classDefinedValueGuid,
   };
 }

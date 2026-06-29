@@ -9,6 +9,7 @@ interface ClassInterestModalProps {
   triggerStyles?: string;
   TriggerButton?: React.ComponentType<ButtonProps>;
   children?: ReactNode;
+  classValueGuid?: string;
 }
 
 export function ClassInterestModal({
@@ -16,6 +17,7 @@ export function ClassInterestModal({
   triggerStyles,
   TriggerButton = Button,
   children,
+  classValueGuid,
 }: ClassInterestModalProps) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -38,7 +40,10 @@ export function ClassInterestModal({
         </Modal.Button>
       )}
       <Modal.Content>
-        <ClassInterestFlow setOpenModal={setOpenModal} />
+        <ClassInterestFlow
+          setOpenModal={setOpenModal}
+          classValueGuid={classValueGuid}
+        />
       </Modal.Content>
     </Modal>
   );
