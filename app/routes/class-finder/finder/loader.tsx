@@ -4,9 +4,13 @@ import { algoliasearch } from 'algoliasearch';
 
 import { AuthenticationError } from '~/lib/.server/error-types';
 import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
+import type { RockContentChannelItem } from '~/lib/types/rock-types';
+import { createImageUrlFromGuid } from '~/lib/utils';
 import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 import type { ClassHitType } from '../types';
+import { CLASS_INTEREST_TOGGLE_ATTRIBUTE_KEY } from '../constants';
 import { buildClassFinderAlgoliaSearchParams } from './components/build-class-finder-algolia-search';
 import { parseClassFinderUrlState } from './components/class-finder-url-state';
 
@@ -15,7 +19,92 @@ export type LoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
   algoliaIndexes: AlgoliaIndexMap;
   classHits: ClassHitType[];
+  /**
+   * Synthetic cards for Rock 387 classes whose "I'm Interested" toggle is on but
+   * have no Algolia sessions. Merged into the finder grid (unfiltered view only).
+   */
+  interestOnlyHits: ClassHitType[];
 };
+
+/** Rock Classes Defined Type (387) id used to source "I'm Interested" classes. */
+const CLASSES_DEFINED_TYPE_ID = 387;
+
+type RockClassDefinedValue = RockContentChannelItem & {
+  value?: string;
+  description?: string;
+};
+
+function rockAttr(item: RockClassDefinedValue, key: string): string {
+  const v = item.attributeValues?.[key]?.value;
+  return typeof v === 'string' ? v.trim() : '';
+}
+
+function rockAttrFormatted(item: RockClassDefinedValue, key: string): string {
+  const v = item.attributeValues?.[key]?.valueFormatted;
+  return typeof v === 'string' ? v.trim() : '';
+}
+
+function isToggleOn(item: RockClassDefinedValue): boolean {
+  const v = rockAttr(item, CLASS_INTEREST_TOGGLE_ATTRIBUTE_KEY).toLowerCase();
+  return v === 'true' || v === '1';
+}
+
+/**
+ * Fetch Rock 387 classes with the interest toggle on and build synthetic finder
+ * cards for the ones that have no Algolia presence (deduped by `pathName`). The
+ * toggle lives in Rock, not Algolia, so this is a second source merged on top of
+ * the Algolia hits.
+ */
+async function fetchInterestOnlyClassHits(
+  classHits: ClassHitType[],
+): Promise<ClassHitType[]> {
+  try {
+    const result = (await fetchRockData({
+      endpoint: 'DefinedValues',
+      queryParams: {
+        $filter: `DefinedTypeId eq ${CLASSES_DEFINED_TYPE_ID} and IsActive eq true`,
+        $orderby: 'Order',
+        loadAttributes: 'expanded',
+      },
+      ttl: 300, // 5 min — admin toggles should propagate quickly
+    })) as RockClassDefinedValue[] | RockClassDefinedValue | undefined;
+
+    const items = Array.isArray(result) ? result : result ? [result] : [];
+
+    const existingPaths = new Set(
+      classHits.map((h) => h.pathName).filter(Boolean),
+    );
+
+    const hits: ClassHitType[] = [];
+    for (const item of items) {
+      if (!isToggleOn(item)) continue;
+
+      const pathName = rockAttr(item, 'url');
+      if (!pathName || existingPaths.has(pathName)) continue;
+
+      const title = item.value?.trim() ?? '';
+      const imageGuid = rockAttr(item, 'image');
+
+      hits.push({
+        objectID: `interest-${pathName}`,
+        title,
+        classType: title,
+        pathName,
+        summary: item.description?.trim() ?? '',
+        topic: rockAttrFormatted(item, 'classTopic') as ClassHitType['topic'],
+        coverImage: imageGuid
+          ? { sources: [{ uri: createImageUrlFromGuid(imageGuid) }] }
+          : { sources: [] },
+        isInterestOnly: true,
+      } as unknown as ClassHitType);
+    }
+
+    return hits;
+  } catch (error) {
+    console.error('[class-finder] Rock interest-only fetch failed', error);
+    return [];
+  }
+}
 
 /**
  * Initial Algolia fetch for `/class-finder`.
@@ -59,6 +148,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.error('[class-finder] Algolia loader fetch failed', error);
   }
 
+  const interestOnlyHits = await fetchInterestOnlyClassHits(classHits);
+
   return Response.json({
     // The browser receives the search-only key so the hydrated InstantSearch
     // tree can own subsequent filtering without posting back to this loader.
@@ -66,5 +157,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     algoliaIndexes,
     classHits,
+    interestOnlyHits,
   } satisfies LoaderReturnType);
 };

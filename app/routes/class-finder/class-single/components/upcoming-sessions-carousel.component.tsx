@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type React from 'react';
 
 import { cn } from '~/lib/utils';
 import {
@@ -73,9 +74,11 @@ const DESKTOP_CAROUSEL_CHUNK = 4;
 export function UpcomingSessionsCarousel({
   hits,
   resetKey,
+  extraCard,
 }: {
   hits: ClassHitType[];
   resetKey: string;
+  extraCard?: React.ReactNode;
 }) {
   const layoutMode = useClassSingleCarouselLayoutMode();
   const isDesktopChunkGrid = layoutMode === 'chunk';
@@ -107,8 +110,9 @@ export function UpcomingSessionsCarousel({
             : null,
         )}
       >
-        {!isDesktopChunkGrid
-          ? hits.map((hit, idx) => (
+        {!isDesktopChunkGrid ? (
+          <>
+            {hits.map((hit, idx) => (
               <CarouselItem
                 key={hit.objectID ?? idx}
                 className={CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS}
@@ -117,28 +121,66 @@ export function UpcomingSessionsCarousel({
                   <UpcomingSessionCard hit={hit} />
                 </div>
               </CarouselItem>
-            ))
-          : slides.map((chunk, slideIndex) => (
-              <CarouselItem key={slideIndex} className='basis-full pl-0'>
-                <div
-                  className={cn(
-                    'grid w-full auto-rows-fr items-stretch gap-x-4 gap-y-6 xl:gap-x-8',
-                    classSingleCarouselSlideGridColsClass(
-                      DESKTOP_CAROUSEL_CHUNK,
-                    ),
-                  )}
-                >
-                  {chunk.map((hit, idx) => (
-                    <div
-                      key={idx}
-                      className='flex h-full min-h-0 w-full justify-center sm:justify-start'
-                    >
-                      <UpcomingSessionCard hit={hit} />
-                    </div>
-                  ))}
+            ))}
+            {extraCard && (
+              <CarouselItem
+                className={CLASS_SINGLE_CAROUSEL_MOBILE_PEEK_ITEM_CLASS}
+              >
+                <div className='flex h-full min-h-0 w-full min-w-0 max-w-full justify-center'>
+                  {extraCard}
                 </div>
               </CarouselItem>
-            ))}
+            )}
+          </>
+        ) : (
+          <>
+            {slides.map((chunk, slideIndex) => {
+              const isLastSlide = slideIndex === slides.length - 1;
+              const showExtraInSlide =
+                isLastSlide &&
+                extraCard &&
+                chunk.length < DESKTOP_CAROUSEL_CHUNK;
+              return (
+                <CarouselItem key={slideIndex} className='basis-full pl-0'>
+                  <div
+                    className={cn(
+                      'grid w-full auto-rows-fr items-stretch gap-x-4 gap-y-6 xl:gap-x-8',
+                      classSingleCarouselSlideGridColsClass(
+                        DESKTOP_CAROUSEL_CHUNK,
+                      ),
+                    )}
+                  >
+                    {chunk.map((hit, idx) => (
+                      <div
+                        key={idx}
+                        className='flex h-full min-h-0 w-full justify-center sm:justify-start'
+                      >
+                        <UpcomingSessionCard hit={hit} />
+                      </div>
+                    ))}
+                    {showExtraInSlide && extraCard}
+                  </div>
+                </CarouselItem>
+              );
+            })}
+            {extraCard &&
+              slides.length > 0 &&
+              slides[slides.length - 1].length === DESKTOP_CAROUSEL_CHUNK && (
+                <CarouselItem className='basis-full pl-0'>
+                  <div
+                    className={cn(
+                      'grid w-full auto-rows-fr items-stretch gap-x-4 gap-y-6 xl:gap-x-8',
+                      classSingleCarouselSlideGridColsClass(
+                        DESKTOP_CAROUSEL_CHUNK,
+                      ),
+                    )}
+                  >
+                    {extraCard}
+                  </div>
+                </CarouselItem>
+              )}
+          </>
+        )}
       </CarouselContent>
       <UpcomingCarouselNavRow />
     </Carousel>
