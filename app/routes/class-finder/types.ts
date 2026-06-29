@@ -36,6 +36,11 @@ export interface ClassHitType {
     | 'Spiritual Growth';
   language: 'English' | 'Español' | 'Multiple Languages';
   format: 'In-Person' | 'Virtual';
+  /**
+   * True for synthetic cards built from a Rock 387 class with the "I'm Interested"
+   * toggle on but no Algolia sessions. Not present on real Algolia records.
+   */
+  isInterestOnly?: boolean;
   /** Meters from search origin when `aroundLatLng` + `getRankingInfo` are set (zip / current location). */
   _rankingInfo?: {
     geoDistance?: number;

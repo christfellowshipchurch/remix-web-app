@@ -30,6 +30,13 @@ export default defineConfig(async ({ isSsrBuild, command }) => {
   }
 
   return {
+    server: {
+      fs: {
+        // When running from a git worktree the node_modules live in the repo
+        // root (one level up). Allow Vite to serve from there too.
+        allow: [__dirname, path.resolve(__dirname, '../../')],
+      },
+    },
     build: {
       // Never mark Node builtins external on the client: deps that transitively
       // import `path` (e.g. postcss) would emit bare imports the browser cannot resolve.
