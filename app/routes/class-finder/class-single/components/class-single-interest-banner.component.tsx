@@ -13,25 +13,27 @@ export function ClassSingleInterestBanner({
   classValueGuid?: string;
 }) {
   return (
-    <div className='flex w-full flex-col gap-6 bg-ocean px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10 md:py-10'>
-      <div className='flex flex-col gap-2'>
-        <h3 className='text-2xl font-extrabold leading-tight text-white'>
-          No Current Sessions Available
-        </h3>
-        <p className='text-white/80'>
-          Express your interest and we&apos;ll let you know when this class is
-          offered at a campus near you or online.
-        </p>
-      </div>
+    <div className='w-full bg-ocean content-padding py-8 md:py-10'>
+      <div className='mx-auto flex w-full max-w-screen-content flex-col gap-6 md:flex-row md:items-center md:justify-between'>
+        <div className='flex flex-col gap-2'>
+          <h3 className='text-2xl font-extrabold leading-tight text-white'>
+            No Current Sessions Available
+          </h3>
+          <p className='text-white/80'>
+            Express your interest and we&apos;ll let you know when this class is
+            offered at a campus near you or online.
+          </p>
+        </div>
 
-      <ClassInterestModal classValueGuid={classValueGuid}>
-        <Button
-          intent='primary'
-          className='bg-navy border-navy w-full shrink-0 md:w-auto md:min-w-48'
-        >
-          I am interested
-        </Button>
-      </ClassInterestModal>
+        <ClassInterestModal classValueGuid={classValueGuid}>
+          <Button
+            intent='primary'
+            className='bg-navy border-navy w-full shrink-0 md:w-auto md:min-w-48'
+          >
+            I am interested
+          </Button>
+        </ClassInterestModal>
+      </div>
     </div>
   );
 }
