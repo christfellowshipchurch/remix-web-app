@@ -117,7 +117,8 @@ export const action: ActionFunction = async ({ request }) => {
           IsArchived: false,
         },
       });
-      memberId = created?.id ?? null;
+      // Rock returns the new entity ID as a plain integer, not an object.
+      memberId = typeof created === 'number' ? created : (created?.id ?? null);
     }
 
     if (memberId && classValueGuid) {
