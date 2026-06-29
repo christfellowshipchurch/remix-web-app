@@ -400,7 +400,13 @@ function ClassTypeGroupedResults({
       return [...algoliaHits, ...topicFiltered];
     }
     return algoliaHits;
-  }, [algoliaHits, interestOnlyHits, filtersActive, onlyTopicActive, activeTopic]);
+  }, [
+    algoliaHits,
+    interestOnlyHits,
+    filtersActive,
+    onlyTopicActive,
+    activeTopic,
+  ]);
 
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
