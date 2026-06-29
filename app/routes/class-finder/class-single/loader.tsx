@@ -110,9 +110,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       queryParams: {
         attributeKey: 'Url',
         value: classUrl,
-        loadAttributes: 'simple',
+        loadAttributes: 'expanded',
         $top: '1',
       },
+      ttl: 300,
     })) as RockClassDefinedValue | undefined;
 
     if (classData) {

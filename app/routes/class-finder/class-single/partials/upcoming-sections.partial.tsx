@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useSearchParams } from 'react-router-dom';
 import {
   Configure,
   InstantSearch,
@@ -13,8 +13,10 @@ import { SearchFilters } from '~/components/finders/search-filters';
 import { ActiveFilters } from '~/components/finders/search-filters/active-filter.component';
 import { cn } from '~/lib/utils';
 
+import { parseClassSingleUrlState } from '../class-single-url-state';
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
 import { ClassSingleInterestBanner } from '../components/class-single-interest-banner.component';
+import { CantFindClassCard } from '../../finder/components/cant-find-class-card.component';
 import { ClassSingleFiltersSkeleton } from '../components/filters/class-single-filters-skeleton.component';
 import { useClassSingleUpcomingInstantSearch } from '../hooks/use-class-single-upcoming-instant-search';
 import type { ClassHitType } from '../../types';
@@ -350,12 +352,35 @@ function ClassSingleUpcomingResults({
   geoActive: boolean;
   isLoading: boolean;
 }) {
+  const { isInterestEnabled } = useLoaderData<LoaderReturnType>();
+  const [searchParams] = useSearchParams();
+
+  const filtersActive = useMemo(() => {
+    const s = parseClassSingleUrlState(searchParams);
+    const hasQuery = (s.query?.trim?.()?.length ?? 0) > 0;
+    const hasRefinement = Object.values(s.refinementList ?? {}).some(
+      (vals) => vals.length > 0,
+    );
+    const hasGeo = s.lat != null && s.lng != null;
+    return hasQuery || hasRefinement || hasGeo;
+  }, [searchParams]);
+
   const ordered = useMemo(
     () => sortUpcomingSessionHitsForDisplay(hits, geoActive),
     [hits, geoActive],
   );
 
   const carouselResetKey = ordered.map((h) => h.objectID).join('|');
+
+  // Filters active + no results → show CantFindClassCard as the sole content
+  if (ordered.length === 0 && isInterestEnabled && filtersActive) {
+    return (
+      <div data-upcoming-sessions-results className='scroll-mt-[100px] w-full max-w-[1296px]'>
+        <h3 className='pt-2 text-2xl font-extrabold mb-6 md:pt-4'>Join a Class</h3>
+        <CantFindClassCard variant='empty' />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -378,6 +403,7 @@ function ClassSingleUpcomingResults({
           <UpcomingSessionsCarousel
             hits={ordered}
             resetKey={carouselResetKey}
+            extraCard={isInterestEnabled && !filtersActive ? <CantFindClassCard variant='gridCell' /> : undefined}
           />
         </div>
       )}

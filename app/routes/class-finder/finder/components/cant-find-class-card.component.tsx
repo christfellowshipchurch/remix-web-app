@@ -29,7 +29,7 @@ export function CantFindClassCard({
           '0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       }}
     >
-      <p className='w-fit rounded-sm bg-[#EBEBEB] px-2 py-1 text-xs font-semibold uppercase'>
+      <p className='w-fit rounded-sm bg-[#F59E0B]/10 px-2 py-1 text-xs font-semibold uppercase text-[#F59E0B]'>
         Can&apos;t Find a Class?
       </p>
 
@@ -44,7 +44,7 @@ export function CantFindClassCard({
       </div>
 
       <ClassInterestModal>
-        <Button intent='primary' size='md' className={isEmpty ? '' : 'w-full'}>
+        <Button intent='primary' size='md' className={`bg-[#F59E0B] border-[#F59E0B] hover:bg-[#F59E0B]/90 ${isEmpty ? '' : 'w-full'}`}>
           Let Us Know
         </Button>
       </ClassInterestModal>
