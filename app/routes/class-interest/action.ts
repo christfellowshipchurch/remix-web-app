@@ -57,12 +57,19 @@ async function setGroupMemberClassPreference(
   memberId: number,
   classValueGuid: string,
 ): Promise<void> {
-  await postRockData({
-    endpoint: `GroupMembers/AttributeValue/${memberId}?attributeKey=classPreference&attributeValue=${encodeURIComponent(
-      classValueGuid,
-    )}`,
-    body: {},
+  // Rock matches the attribute key case-sensitively; the member attribute's
+  // key is `ClassPreference` (PascalCase), not `classPreference`.
+  const url = `${process.env.ROCK_API}GroupMembers/AttributeValue/${memberId}?attributeKey=ClassPreference&attributeValue=${encodeURIComponent(classValueGuid)}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Authorization-Token': `${process.env.ROCK_TOKEN}` },
   });
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(
+      `Failed to set classPreference: ${response.status}, details: ${details}`,
+    );
+  }
 }
 
 export const action: ActionFunction = async ({ request }) => {
