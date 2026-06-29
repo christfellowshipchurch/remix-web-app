@@ -2,7 +2,6 @@ import type { ActionFunction } from 'react-router-dom';
 import {
   fetchRockData,
   postRockData,
-  putRockData,
   TTL,
 } from '~/lib/.server/fetch-rock-data';
 import { findOrCreateRockPersonForSignup } from '~/lib/.server/rock-signup';
@@ -43,56 +42,27 @@ const getFirstRecord = <T>(result: T | T[] | null | undefined): T | null => {
 };
 
 /**
- * Sets the `classPreference` member attribute on a GroupMember via the Rock
- * AttributeValues CRUD endpoint. Rock attributes are stored in a separate table
- * so they can't be included in the GroupMembers POST body.
+ * Sets the `classPreference` member attribute on a GroupMember via Rock's
+ * dedicated `SetAttributeValue` endpoint.
  *
- * Attribute definition is fetched with a long TTL (24h) since it never changes.
+ * We use this rather than writing the AttributeValues table directly because
+ * the endpoint resolves the attribute relative to this specific GroupMember
+ * (entity type + group type qualifier), so the correct attribute is matched
+ * even though attribute keys are not globally unique, and the write goes
+ * through Rock's normal save hooks (cache invalidation, history, etc.).
+ *
+ * Create vs. update is handled by Rock — no need to look up an existing value.
  */
 async function setGroupMemberClassPreference(
   memberId: number,
   classValueGuid: string,
 ): Promise<void> {
-  const attrResult = await fetchRockData({
-    endpoint: 'Attributes',
-    queryParams: {
-      $filter: `Key eq 'classPreference'`,
-      $select: 'Id',
-      $top: '1',
-    },
-    ttl: 86400, // 24 h — attribute definitions don't change
+  await postRockData({
+    endpoint: `GroupMembers/AttributeValue/${memberId}?attributeKey=classPreference&attributeValue=${encodeURIComponent(
+      classValueGuid,
+    )}`,
+    body: {},
   });
-  const attr = getFirstRecord<{ id: number }>(attrResult);
-  if (!attr?.id) return;
-
-  const existingValue = getFirstRecord<{ id: number }>(
-    await fetchRockData({
-      endpoint: 'AttributeValues',
-      queryParams: {
-        $filter: `AttributeId eq ${attr.id} and EntityId eq ${memberId}`,
-        $select: 'Id',
-        $top: '1',
-      },
-      ttl: TTL.NONE,
-    }),
-  );
-
-  if (existingValue?.id) {
-    await putRockData({
-      endpoint: `AttributeValues/${existingValue.id}`,
-      body: {
-        Id: existingValue.id,
-        AttributeId: attr.id,
-        EntityId: memberId,
-        Value: classValueGuid,
-      },
-    });
-  } else {
-    await postRockData({
-      endpoint: 'AttributeValues',
-      body: { AttributeId: attr.id, EntityId: memberId, Value: classValueGuid },
-    });
-  }
 }
 
 export const action: ActionFunction = async ({ request }) => {
