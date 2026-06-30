@@ -29,10 +29,13 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-function renderForm(onSuccess = vi.fn()) {
+function renderForm(onSuccess = vi.fn(), initialEmail?: string) {
   return render(
     <MemoryRouter>
-      <NewsletterSubscriptionForm onSuccess={onSuccess} />
+      <NewsletterSubscriptionForm
+        onSuccess={onSuccess}
+        initialEmail={initialEmail}
+      />
     </MemoryRouter>,
   );
 }
@@ -97,6 +100,14 @@ describe('NewsletterSubscriptionForm', () => {
     renderForm();
 
     expect(mockLoad).toHaveBeenCalledWith('/newsletter-subscription');
+  });
+
+  it('prefills the email field when initialEmail is provided', () => {
+    renderForm(vi.fn(), 'reader@example.com');
+
+    expect(screen.getByLabelText('Email Address')).toHaveValue(
+      'reader@example.com',
+    );
   });
 
   it('fires the GTM event before calling onSuccess after a successful submission', () => {

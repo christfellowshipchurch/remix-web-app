@@ -1,6 +1,23 @@
+import { useState } from 'react';
+import { NewsletterSubscriptionModal } from '~/components/modals/newsletter-subscription';
 import { Button } from '~/primitives/button/button.primitive';
 
 export const ArticleNewsletter = () => {
+  const [email, setEmail] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    setOpen(true);
+  };
+
   return (
     <div className='bg-navy content-padding py-12 text-white lg:py-24'>
       <div className='max-w-screen-content mx-auto w-full'>
@@ -17,17 +34,23 @@ export const ArticleNewsletter = () => {
           </div>
           {/* Right / Bottom */}
           <div className='flex flex-col gap-4 lg:max-w-1/2'>
-            {/* Form */}
-            <form className='flex w-full flex-col xl:justify-end gap-4 xl:flex-row'>
+            <form
+              className='flex w-full flex-col xl:justify-end gap-4 xl:flex-row'
+              onSubmit={handleSubmit}
+            >
               <input
                 className='w-full xl:max-w-96 p-3 bg-white text-base text-text-secondary rounded-lg xl:rounded-none'
                 type='email'
+                name='email'
                 placeholder='Enter your email'
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
               />
               <Button
                 className='w-full xl:max-w-96 xl:w-auto rounded-lg xl:rounded-none font-normal xl:text-xl'
                 intent='primary'
-                href='#testing'
+                type='submit'
               >
                 Subscribe
               </Button>
@@ -41,6 +64,12 @@ export const ArticleNewsletter = () => {
           </div>
         </div>
       </div>
+
+      <NewsletterSubscriptionModal
+        open={open}
+        onOpenChange={setOpen}
+        initialEmail={email.trim()}
+      />
     </div>
   );
 };

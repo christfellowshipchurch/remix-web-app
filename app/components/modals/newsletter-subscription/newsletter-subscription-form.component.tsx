@@ -15,12 +15,14 @@ import { NewsletterSubscriptionLoaderReturnType } from '~/routes/newsletter-subs
 
 interface NewsletterSubscriptionFormProps {
   onSuccess: () => void;
+  initialEmail?: string;
 }
 
 export const renderInputField = renderRadixInputField;
 
 const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
   onSuccess,
+  initialEmail,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -109,6 +111,7 @@ const NewsletterSubscriptionForm: React.FC<NewsletterSubscriptionFormProps> = ({
           'Email Address',
           'email',
           'Please enter your email address',
+          initialEmail,
         )}
 
         <Form.Field
