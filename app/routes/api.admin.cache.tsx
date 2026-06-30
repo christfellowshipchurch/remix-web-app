@@ -33,6 +33,8 @@ export const action: ActionFunction = async ({ request }) => {
     return data({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
+  console.log('cache invalidation body:', JSON.stringify(body));
+
   const id = body?.id;
   if (id === undefined || id === null || `${id}`.trim() === '') {
     return data({ error: 'Missing required field: id' }, { status: 400 });
