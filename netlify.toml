@@ -9,6 +9,27 @@ NPM_FLAGS = "--no-optional"
 [dev]
 command = "pnpm dev"
 
+# Legacy URL redirects (old platform -> new site). 301 permanent.
+# User-defined rules are processed before the framework's SSR catch-all,
+# so these match first. force = true ensures the redirect always wins.
+[[redirects]]
+  from = "/ministry-breakout-presentations-and-resources"
+  to = "/link-tree/ministry-breakout-presentations-and-resources"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/events/terremoto-venezuela"
+  to = "/terremoto-venezuela"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/articles/give-to-the-crisis-fund"
+  to = "/give-to-the-crisis-fund"
+  status = 301
+  force = true
+
 # Security headers applied to all routes
 [[headers]]
   for = "/*"
