@@ -14,6 +14,7 @@ const createRequest = (language?: 'English' | 'Spanish') => {
   formData.set('phone', '5555555555');
   formData.set('email', 'test@example.com');
   formData.set('atCF', '1');
+  formData.set('reason', '3');
 
   const searchParams = new URLSearchParams({ Group: 'group-guid-123' });
   if (language) {
@@ -46,6 +47,7 @@ describe('journey finder sign up action', () => {
       body: expect.objectContaining({
         Group: 'group-guid-123',
         LaunchSource: 'app',
+        Reason: '3',
       }),
       instanceName: 'Test Person',
     });
@@ -62,6 +64,7 @@ describe('journey finder sign up action', () => {
       body: expect.objectContaining({
         Group: 'group-guid-123',
         LaunchSource: 'app',
+        Reason: '3',
       }),
       instanceName: 'Test Person',
     });

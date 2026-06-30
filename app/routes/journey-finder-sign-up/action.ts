@@ -11,6 +11,7 @@ export const action: ActionFunction = async ({ request }) => {
     const phone = formData.phone?.toString() ?? '';
     const email = formData.email?.toString() ?? '';
     const atCF = formData.atCF?.toString() ?? '';
+    const reason = formData.reason?.toString() ?? '';
     const hopeToGet = formData.hopeToGet?.toString() ?? '';
 
     const url = new URL(request.url);
@@ -19,7 +20,15 @@ export const action: ActionFunction = async ({ request }) => {
       url.searchParams.get('Language') === 'Spanish' ? 'Spanish' : 'English';
     const workflowTypeId = language === 'Spanish' ? '1835' : '1833';
 
-    if (!firstName || !lastName || !phone || !email || !atCF || !group) {
+    if (
+      !firstName ||
+      !lastName ||
+      !phone ||
+      !email ||
+      !atCF ||
+      !reason ||
+      !group
+    ) {
       return data({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -29,6 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
       PrimaryPhoneNumber: phone,
       EmailAddress: email,
       AtCF: atCF,
+      Reason: reason,
       LaunchSource: 'app',
       Group: group,
     };

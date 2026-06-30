@@ -10,9 +10,11 @@ import {
   radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixRadioClassName,
+  radixSelectClassName,
   radixTextareaClassName,
   renderRadixInputField,
   RadixFormErrorMessage,
+  RadixFormSelectShell,
 } from '~/primitives/inputs/form-radix-field';
 
 export type JourneyFinderSignUpSuccessDetails = {
@@ -44,6 +46,22 @@ const SPANISH_AT_CF_OPTIONS: { value: string; label: string }[] = [
   { value: '5', label: 'Más de 5 años' },
 ];
 
+const REASON_OPTIONS: { value: string; label: string }[] = [
+  { value: '1', label: 'Learn more about Christ Fellowship Church' },
+  { value: '2', label: 'Find community and build relationships' },
+  { value: '3', label: 'Grow in my faith' },
+  { value: '4', label: 'Join the Dream Team and start serving' },
+  { value: '5', label: 'Get more involved at Christ Fellowship' },
+];
+
+const SPANISH_REASON_OPTIONS: { value: string; label: string }[] = [
+  { value: '1', label: 'Conocer más acerca de la Iglesia Christ Fellowship' },
+  { value: '2', label: 'Encontrar comunidad y construir relaciones' },
+  { value: '3', label: 'Crecer en mi fe' },
+  { value: '4', label: 'Unirme al Dream Team y comenzar a servir' },
+  { value: '5', label: 'Involucrarme más en Christ Fellowship' },
+];
+
 const FORM_COPY = {
   English: {
     cardHeading: 'Personal Information',
@@ -52,6 +70,8 @@ const FORM_COPY = {
     phone: 'Cell Phone',
     email: 'Email Address',
     atCF: 'How long have you attended Christ Fellowship?',
+    reason: 'What is your main reason for signing up for Journey?',
+    reasonPlaceholder: 'Select a reason',
     hopeToGet: 'What do you hope to gain from this Journey Experience?',
     submit: 'Submit',
     loading: 'Loading...',
@@ -61,7 +81,9 @@ const FORM_COPY = {
     requiredPhone: 'Please enter a valid number',
     requiredEmail: 'Please enter a valid email',
     requiredAtCF: 'Please select an option',
+    requiredReason: 'Please select a reason',
     atCFOptions: AT_CF_OPTIONS,
+    reasonOptions: REASON_OPTIONS,
   },
   Spanish: {
     cardHeading: 'Información personal',
@@ -70,6 +92,8 @@ const FORM_COPY = {
     phone: 'Teléfono celular',
     email: 'Correo electrónico',
     atCF: '¿Cuánto tiempo has asistido a Christ Fellowship?',
+    reason: '¿Cuál es tu razón principal para inscribirte en Journey?',
+    reasonPlaceholder: 'Selecciona una razón',
     hopeToGet: '¿Qué esperas recibir de esta experiencia de Journey?',
     submit: 'Enviar',
     loading: 'Cargando...',
@@ -80,7 +104,9 @@ const FORM_COPY = {
     requiredPhone: 'Por favor ingresa un número válido',
     requiredEmail: 'Por favor ingresa un correo electrónico válido',
     requiredAtCF: 'Por favor selecciona una opción',
+    requiredReason: 'Por favor selecciona una razón',
     atCFOptions: SPANISH_AT_CF_OPTIONS,
+    reasonOptions: SPANISH_REASON_OPTIONS,
   },
 };
 
@@ -210,6 +236,40 @@ const JourneyFinderSignUpForm: React.FC<JourneyFinderSignUpFormProps> = ({
           </div>
           <RadixFormErrorMessage match='valueMissing'>
             {copy.requiredAtCF}
+          </RadixFormErrorMessage>
+        </Form.Field>
+
+        <Form.Field
+          name='reason'
+          className={cn(
+            'col-span-1 mt-2 md:col-span-2',
+            radixFormFieldStackClassName,
+          )}
+        >
+          <Form.Label className={radixFormLabelClassName}>
+            {copy.reason}
+          </Form.Label>
+          <RadixFormSelectShell>
+            <Form.Control asChild>
+              <select
+                name='reason'
+                required
+                defaultValue=''
+                className={radixSelectClassName}
+              >
+                <option value='' disabled>
+                  {copy.reasonPlaceholder}
+                </option>
+                {copy.reasonOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </Form.Control>
+          </RadixFormSelectShell>
+          <RadixFormErrorMessage match='valueMissing'>
+            {copy.requiredReason}
           </RadixFormErrorMessage>
         </Form.Field>
 
