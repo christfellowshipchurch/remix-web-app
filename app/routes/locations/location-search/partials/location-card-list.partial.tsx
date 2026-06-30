@@ -8,6 +8,8 @@ import { LocationsLoader } from '../components/locations-search-skeleton.compone
 export type CampusHit = {
   campusUrl: string;
   campusName: string;
+  /** Algolia custom ranking field; lower values appear first on /locations. */
+  order?: number | string;
   geoloc: {
     latitude: number;
     longitude: number;
@@ -30,6 +32,7 @@ export type CampusHit = {
 export type LocationCardListProps = {
   loading: boolean;
   initialHits?: CampusHit[];
+  sortByGeo?: boolean;
 };
 
 /** Static card art: `public/assets/images/locations/location-card-images/{campusUrl}.webp` */
@@ -44,13 +47,16 @@ function locationSearchCardImage(hitUrl: string) {
 export const LocationCardList = ({
   loading,
   initialHits = [],
+  sortByGeo = false,
 }: LocationCardListProps) => {
   const { items } = useHits<CampusHit>();
   const { status } = useInstantSearch();
   const isSearchLoading = status === 'loading' || status === 'stalled';
   const hits = isSearchLoading && items.length === 0 ? initialHits : items;
 
-  return <LocationCardGrid items={hits} loading={loading} />;
+  return (
+    <LocationCardGrid items={hits} loading={loading} sortByGeo={sortByGeo} />
+  );
 };
 
 function isOnlineCampus(item: CampusHit) {
@@ -77,26 +83,55 @@ function getDistanceFromLocation(hit: CampusHit) {
   return typeof geoDistance === 'number' ? geoDistance / 1609.34 : undefined;
 }
 
+function getCampusOrder(hit: CampusHit) {
+  const order = hit.order;
+  if (typeof order === 'number' && Number.isFinite(order)) {
+    return order;
+  }
+  if (typeof order === 'string') {
+    const parsed = Number.parseInt(order, 10);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+  return Number.MAX_SAFE_INTEGER;
+}
+
+function sortPhysicalCampusesByOrder(items: CampusHit[]) {
+  return [...items].sort(
+    (left, right) => getCampusOrder(left) - getCampusOrder(right),
+  );
+}
+
 /**
  * /location (Location Search page) always lists the Online campus first, then
- * physical campuses in Algolia order (distance when coordinates are set).
- * Home/nav location popups use different rules via `sortCampusHitsForDistanceSearch`.
+ * physical campuses by Algolia `order` (default) or by distance when coordinates
+ * are set. Home/nav location popups use different rules via
+ * `sortCampusHitsForDistanceSearch`.
  */
-export function getLocationCardDisplayItems(items: CampusHit[]) {
-  return [
-    ...items.filter((item) => isOnlineCampus(item)),
-    ...items.filter((item) => !isOnlineCampus(item)),
-  ];
+export function getLocationCardDisplayItems(
+  items: CampusHit[],
+  { sortByGeo = false }: { sortByGeo?: boolean } = {},
+) {
+  const onlineItems = items.filter((item) => isOnlineCampus(item));
+  const physicalItems = items.filter((item) => !isOnlineCampus(item));
+  const sortedPhysicalItems = sortByGeo
+    ? physicalItems
+    : sortPhysicalCampusesByOrder(physicalItems);
+
+  return [...onlineItems, ...sortedPhysicalItems];
 }
 
 export function LocationCardGrid({
   items,
   loading,
+  sortByGeo = false,
 }: {
   items: CampusHit[];
   loading: boolean;
+  sortByGeo?: boolean;
 }) {
-  const displayItems = getLocationCardDisplayItems(items);
+  const displayItems = getLocationCardDisplayItems(items, { sortByGeo });
 
   if (loading) {
     return (
