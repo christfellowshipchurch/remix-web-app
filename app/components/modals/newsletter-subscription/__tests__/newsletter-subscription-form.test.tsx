@@ -102,6 +102,26 @@ describe('NewsletterSubscriptionForm', () => {
     expect(mockLoad).toHaveBeenCalledWith('/newsletter-subscription');
   });
 
+  it('renders the terms and sms consent checkbox', () => {
+    renderForm();
+
+    expect(
+      screen.getByRole('checkbox', {
+        name: /by submitting, you agree to our terms of use and privacy policy/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Terms of Use' })).toHaveAttribute(
+      'href',
+      'https://www.christfellowship.church/terms-of-use',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Privacy Policy' }),
+    ).toHaveAttribute(
+      'href',
+      'https://www.christfellowship.church/privacy-policy',
+    );
+  });
+
   it('prefills the email field when initialEmail is provided', () => {
     renderForm(vi.fn(), 'reader@example.com');
 

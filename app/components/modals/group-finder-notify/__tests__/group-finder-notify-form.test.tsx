@@ -83,6 +83,26 @@ describe('GroupFinderNotifyForm', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the terms and email consent checkbox', () => {
+    renderForm();
+
+    expect(
+      screen.getByRole('checkbox', {
+        name: /by submitting, you agree to our terms of use and privacy policy/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Terms of Use' })).toHaveAttribute(
+      'href',
+      'https://www.christfellowship.church/terms-of-use',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Privacy Policy' }),
+    ).toHaveAttribute(
+      'href',
+      'https://www.christfellowship.church/privacy-policy',
+    );
+  });
+
   it('submits to the notify resource route', async () => {
     const user = userEvent.setup();
     mockFetcherState = {
@@ -105,6 +125,11 @@ describe('GroupFinderNotifyForm', () => {
     await user.type(screen.getByLabelText('Email Address'), 'test@example.com');
     await user.type(screen.getByLabelText('Phone'), '5555555555');
     await user.selectOptions(screen.getByLabelText('Campus'), 'campus-guid-10');
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /by submitting, you agree to our terms of use and privacy policy/i,
+      }),
+    );
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() => {
