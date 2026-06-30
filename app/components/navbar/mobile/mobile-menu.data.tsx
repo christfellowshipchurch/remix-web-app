@@ -74,7 +74,7 @@ export const nextStepsItems: SubMenuItem[] = [
     id: 'new-believer',
     title: 'New Believer',
     icon: 'heart',
-    to: '/next-steps',
+    to: '/yes',
   },
   {
     id: 'baptism',
@@ -174,9 +174,9 @@ export const ministriesItems: SubMenuItem[] = [
   },
   {
     id: 'care',
-    title: 'Care',
+    title: 'Freedom & Care',
     description: 'Freedom & Recovery',
-    to: '/ministries/care',
+    to: '/ministries/freedom-and-care',
   },
 ];
 
@@ -195,11 +195,6 @@ export const moreMenuItems: SubMenuItem[] = [
     id: 'contact-us',
     title: 'Contact Us',
     to: 'mailto:hello@christfellowship.church',
-  },
-  {
-    id: 'resources',
-    title: 'Resources',
-    to: '/resources',
   },
   {
     id: 'our-beliefs-and-values',

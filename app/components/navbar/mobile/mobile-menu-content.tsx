@@ -104,8 +104,13 @@ export default function MobileMenuContent({
         </section>
 
         {/* website feedback */}
-        {/* TODO: Add feedback form */}
-        <div className='flex items-center gap-4 border-y-1 border-gray-200 py-4 px-8'>
+        <a
+          href='https://cftestingteam.base44.app/feedback'
+          target='_blank'
+          rel='noreferrer'
+          onClick={closeMenu}
+          className='flex items-center gap-4 border-y-1 border-gray-200 py-4 px-8'
+        >
           <Icon name='messageBubble' className='size-6 text-black' />
           <div className='flex flex-col'>
             <h3 className='heading-h6 text-navy'>Website Feedback</h3>
@@ -113,7 +118,7 @@ export default function MobileMenuContent({
               Help us improve the website
             </p>
           </div>
-        </div>
+        </a>
 
         {/* More Menu Items */}
         <div className='flex flex-col gap-4 p-8'>
