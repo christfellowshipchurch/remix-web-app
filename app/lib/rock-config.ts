@@ -11,6 +11,7 @@ export const ContentChannelIds = {
   events: 78,
   locations: 88,
   messages: 63,
+  siteBanner: 100,
   studies: [79, 80],
   soGoodSisterhood: 95,
   keepTalking: 96,
