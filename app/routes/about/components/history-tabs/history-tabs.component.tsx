@@ -16,7 +16,7 @@ const timelineData: TimelineItem[] = [
     image:
       'https://cloudfront.christfellowship.church/GetImage.ashx?id=3190355',
     imagePosition: 'object-[center_25%]',
-    body: 'Today, Christ Fellowship gathers across 14 locations in South Florida, online through Christ Fellowship Everywhere, and inside # local prison locations. For over 40 years, we’ve helped thousands of people just like you to find people to do life with, break free from the pain of their past, thrive in their marriage, become a better parent, experience financial freedom, and learn how to make a difference.',
+    body: 'Today, Christ Fellowship gathers across 14 locations in South Florida, online through Christ Fellowship Everywhere, and inside local prison locations. For over 40 years, we’ve helped thousands of people just like you to find people to do life with, break free from the pain of their past, thrive in their marriage, become a better parent, experience financial freedom, and learn how to make a difference.',
   },
   {
     year: '2023',
