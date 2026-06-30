@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import { Icon } from '~/primitives/icon/icon';
 import { ResourceCard } from '~/primitives/cards/resource-card';
 import { ContentItemHit } from '~/routes/search/types';
-import { FeaturedEventCard, getEventCardDisplayDate } from '../components/featured-card.component';
+import {
+  FeaturedEventCard,
+  getEventCardDisplayDate,
+} from '../components/featured-card.component';
 
 export function FeaturedEventsSectionLayout({
   children,

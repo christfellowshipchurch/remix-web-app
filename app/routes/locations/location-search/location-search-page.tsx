@@ -316,8 +316,7 @@ export function LocationSearchPage() {
     };
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, locationIndexName]);
 
-  const hasCoordinates =
-    coordinates?.lat != null && coordinates?.lng != null;
+  const hasCoordinates = coordinates?.lat != null && coordinates?.lng != null;
 
   return (
     <div className='flex w-full flex-col min-h-screen'>

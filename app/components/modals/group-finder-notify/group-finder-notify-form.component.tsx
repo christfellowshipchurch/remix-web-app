@@ -5,6 +5,7 @@ import { pushFormEvent } from '~/lib/gtm';
 import { cn } from '~/lib/utils';
 import { Button } from '~/primitives/button/button.primitive';
 import {
+  radixCheckboxClassName,
   radixFormFieldStackClassName,
   radixFormLabelClassName,
   radixSelectClassName,
@@ -140,6 +141,46 @@ const GroupFinderNotifyForm: React.FC<GroupFinderNotifyFormProps> = ({
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
             Please select a campus
+          </RadixFormErrorMessage>
+        </Form.Field>
+
+        <Form.Field
+          name='smsConsent'
+          className={cn('mt-2 md:col-span-2', radixFormFieldStackClassName)}
+        >
+          <div className='flex gap-2 items-start'>
+            <Form.Control asChild>
+              <input
+                type='checkbox'
+                required
+                className={radixCheckboxClassName}
+              />
+            </Form.Control>
+            <Form.Label className='text-sm text-text-secondary leading-5'>
+              By submitting, you agree to our{' '}
+              <a
+                href='https://www.christfellowship.church/terms-of-use'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='underline'
+              >
+                Terms of Use
+              </a>{' '}
+              and{' '}
+              <a
+                href='https://www.christfellowship.church/privacy-policy'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='underline'
+              >
+                Privacy Policy
+              </a>
+              , and consent to receive email communications from Christ
+              Fellowship Church.
+            </Form.Label>
+          </div>
+          <RadixFormErrorMessage match='valueMissing'>
+            You must agree to continue
           </RadixFormErrorMessage>
         </Form.Field>
 

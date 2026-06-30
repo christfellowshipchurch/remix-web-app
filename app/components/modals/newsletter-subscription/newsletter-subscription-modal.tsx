@@ -11,6 +11,9 @@ interface NewsletterSubscriptionModalProps {
   triggerStyles?: string;
   TriggerButton?: React.ComponentType<ButtonProps>;
   children?: ReactNode;
+  initialEmail?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function NewsletterSubscriptionModal({
@@ -18,11 +21,21 @@ export function NewsletterSubscriptionModal({
   triggerStyles,
   TriggerButton = Button,
   children,
+  initialEmail,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: NewsletterSubscriptionModalProps) {
-  const [openModal, setOpenModal] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const openModal = isControlled ? controlledOpen : internalOpen;
 
   const handleOpenChange = (open: boolean) => {
-    setOpenModal(open);
+    if (isControlled) {
+      controlledOnOpenChange?.(open);
+    } else {
+      setInternalOpen(open);
+    }
+
     if (open) {
       pushFormEvent(
         'form_start',
@@ -32,19 +45,28 @@ export function NewsletterSubscriptionModal({
     }
   };
 
+  const setOpenModal = (open: boolean) => {
+    handleOpenChange(open);
+  };
+
   return (
     <Modal open={openModal} onOpenChange={handleOpenChange}>
-      {children ? (
-        <Modal.Button asChild>{children}</Modal.Button>
-      ) : (
-        <Modal.Button asChild className='mr-2'>
-          <TriggerButton intent='white' className={triggerStyles}>
-            {buttonTitle}
-          </TriggerButton>
-        </Modal.Button>
-      )}
+      {!isControlled &&
+        (children ? (
+          <Modal.Button asChild>{children}</Modal.Button>
+        ) : (
+          <Modal.Button asChild className='mr-2'>
+            <TriggerButton intent='white' className={triggerStyles}>
+              {buttonTitle}
+            </TriggerButton>
+          </Modal.Button>
+        ))}
       <Modal.Content>
-        <NewsletterSubscriptionFlow setOpenModal={setOpenModal} />
+        <NewsletterSubscriptionFlow
+          setOpenModal={setOpenModal}
+          initialEmail={initialEmail}
+          isOpen={openModal}
+        />
       </Modal.Content>
     </Modal>
   );
