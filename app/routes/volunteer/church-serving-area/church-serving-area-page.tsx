@@ -14,6 +14,9 @@ import {
 } from './partials/church-serving-area-partials.partial';
 import type { LoaderReturnType } from './loader';
 
+const MISSIONS_OPPORTUNITY_URL =
+  'https://www.christfellowship.church/volunteer#community';
+
 export function ChurchServingAreaPage() {
   const { bucket, roles } = useLoaderData<LoaderReturnType>();
   const navigate = useNavigate();
@@ -30,12 +33,19 @@ export function ChurchServingAreaPage() {
   const onContinue = useCallback(() => {
     const opportunityId = selectedRoleGuid?.trim();
     if (!opportunityId) return;
+
+    const selectedRole = roles.find((role) => role.id === opportunityId);
+    if (selectedRole?.title.trim().toLowerCase() === 'missions') {
+      navigate(MISSIONS_OPPORTUNITY_URL);
+      return;
+    }
+
     const searchParams = new URLSearchParams({
       embed: 'church-opportunity',
       opportunityId,
     });
     navigate(`/rock-page?${searchParams.toString()}`);
-  }, [navigate, selectedRoleGuid]);
+  }, [navigate, roles, selectedRoleGuid]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);

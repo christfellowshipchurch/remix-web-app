@@ -1,0 +1,114 @@
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it, beforeEach, vi } from 'vitest';
+
+import type { LoaderReturnType } from '../loader';
+import { ChurchServingAreaPage } from '../church-serving-area-page';
+
+const { mockNavigate, mockUseLoaderData } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockUseLoaderData: vi.fn(),
+}));
+
+vi.mock('react-router-dom', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom',
+    );
+
+  return {
+    ...actual,
+    useLoaderData: mockUseLoaderData,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock('~/hooks/use-copy-page-path', () => ({
+  useCopyPagePath: () => ({
+    copied: false,
+    copyPath: vi.fn(),
+  }),
+}));
+
+vi.mock(
+  '../../components/volunteer-detail/volunteer-detail-nav.component',
+  () => ({
+    VolunteerDetailNav: () => <nav aria-label='Volunteer detail' />,
+  }),
+);
+
+vi.mock(
+  '../../components/volunteer-detail/volunteer-detail-hero.component',
+  () => ({
+    VolunteerDetailHero: ({ title }: { title: string }) => <h1>{title}</h1>,
+  }),
+);
+
+const baseLoaderData: LoaderReturnType = {
+  bucketGuid: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+  bucket: {
+    name: 'Outreach & Missions',
+    description: 'Serve locally and globally.',
+    tag: 'Make a Difference',
+    image: 'https://example.com/outreach.jpg',
+    pathname: '/volunteer/church/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+  },
+  roles: [
+    {
+      id: 'missions-role-guid',
+      title: 'Missions',
+      description: '<p>Serve with missions.</p>',
+    },
+    {
+      id: 'care-role-guid',
+      title: 'Care Team',
+      description: '<p>Serve with care.</p>',
+    },
+  ],
+};
+
+function renderPage(loaderData: LoaderReturnType = baseLoaderData) {
+  mockUseLoaderData.mockReturnValue(loaderData);
+
+  return render(
+    <MemoryRouter>
+      <ChurchServingAreaPage />
+    </MemoryRouter>,
+  );
+}
+
+async function selectRoleAndContinue(roleName: string) {
+  const user = userEvent.setup();
+
+  await user.click(
+    screen.getAllByRole('radio', { name: new RegExp(`^${roleName}\\b`) })[0],
+  );
+  await user.click(screen.getAllByRole('button', { name: 'Continue' })[0]);
+}
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe('ChurchServingAreaPage', () => {
+  it('navigates Missions opportunities to the volunteer community URL', async () => {
+    renderPage();
+
+    await selectRoleAndContinue('Missions');
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      'https://www.christfellowship.church/volunteer#community',
+    );
+  });
+
+  it('keeps non-Missions opportunities on the Rock church opportunity form flow', async () => {
+    renderPage();
+
+    await selectRoleAndContinue('Care Team');
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/rock-page?embed=church-opportunity&opportunityId=care-role-guid',
+    );
+  });
+});
