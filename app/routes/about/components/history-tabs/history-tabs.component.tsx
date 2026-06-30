@@ -68,7 +68,7 @@ function HistoryTabs() {
     <div className='pt-6 md:pt-12 pb-12 lg:py-24 w-full relative'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-8 items-center'>
         {/* Image */}
-        <div className='relative mx-auto md:mx-0 h-full min-h-[300px] max-w-full md:max-h-[500px] md:max-w-none lg:min-h-[500px] overflow-hidden z-20 content-padding md:px-0'>
+        <div className='relative mx-auto md:mx-0 h-full min-h-[300px] max-w-full md:max-h-[500px] md:max-w-none lg:min-h-[500px]  z-20 content-padding md:px-0'>
           <img
             src={timelineData[activeTab].image}
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
@@ -94,13 +94,13 @@ function HistoryTabs() {
             handleTabChange={handleTabChange}
           />
           <div
-            className={`transition-all duration-300 mt-6 lg:mt-0space-y-4 ${
+            className={`transition-all duration-300 md:mt-6 lg:mt-0space-y-4 ${
               transitioning
                 ? 'opacity-0 translate-y-4'
                 : 'opacity-100 translate-y-0'
             }`}
           >
-            <p className='md:text-lg text-text-secondary w-full sm:w-3/4 md:w-full mt-4'>
+            <p className='md:text-lg text-text-secondary w-full sm:w-3/4 md:w-full md:mt-4'>
               {timelineData[activeTab].body}
             </p>
           </div>
