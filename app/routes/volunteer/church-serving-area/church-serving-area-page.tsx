@@ -15,7 +15,7 @@ import {
 import type { LoaderReturnType } from './loader';
 
 const MISSIONS_OPPORTUNITY_URL =
-  'https://www.christfellowship.church/volunteer#community';
+  '/volunteer#community';
 
 export function ChurchServingAreaPage() {
   const { bucket, roles } = useLoaderData<LoaderReturnType>();

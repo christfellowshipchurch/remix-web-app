@@ -97,9 +97,7 @@ describe('ChurchServingAreaPage', () => {
 
     await selectRoleAndContinue('Missions');
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      'https://www.christfellowship.church/volunteer#community',
-    );
+    expect(mockNavigate).toHaveBeenCalledWith('/volunteer#community');
   });
 
   it('keeps non-Missions opportunities on the Rock church opportunity form flow', async () => {
