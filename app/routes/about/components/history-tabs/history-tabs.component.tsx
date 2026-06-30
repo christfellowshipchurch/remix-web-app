@@ -74,7 +74,7 @@ function HistoryTabs() {
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
             className={`w-full h-full object-cover ${
               timelineData[activeTab].imagePosition ?? ''
-            } shadow-xl transition-all duration-300 rounded-2xl md:rounded-none 2xl:rounded-2xl! ${
+            } shadow-xl transition-all duration-300 rounded-2xl md:rounded-l-none 2xl:rounded-l-2xl! ${
               transitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
             }`}
           />
