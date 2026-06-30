@@ -17,7 +17,7 @@ export function JourneySection() {
             relationships so you can discover your purpose and impact the world.
           </p>
           <Button
-            href='/class-finder'
+            href='/events/journey'
             intent='secondary'
             className='border-white text-white h-auto hover:enabled:bg-white/10'
           >
