@@ -30,11 +30,12 @@ setupDevWebVitalsLogging();
 function buildCsp(nonce: string): string {
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net`,
+    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net https://www.clarity.ms https://*.clarity.ms`,
     "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
     "img-src 'self' data: https: blob:",
     // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
-    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io",
+    // Microsoft Clarity sends telemetry to *.clarity.ms and c.bing.com
+    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com",
     'frame-src https://www.googletagmanager.com https://fast.wistia.com',
     "frame-ancestors 'none'",
   ].join('; ');
@@ -78,6 +79,19 @@ export function Layout({ children }: { children: ReactNode }) {
         />
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
+        {/* Microsoft Clarity */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "ojo9prqys0");
+            `,
+          }}
+        />
         <Meta />
         <Links />
       </head>
