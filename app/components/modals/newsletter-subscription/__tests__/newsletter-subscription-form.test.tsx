@@ -29,10 +29,13 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-function renderForm(onSuccess = vi.fn()) {
+function renderForm(onSuccess = vi.fn(), initialEmail?: string) {
   return render(
     <MemoryRouter>
-      <NewsletterSubscriptionForm onSuccess={onSuccess} />
+      <NewsletterSubscriptionForm
+        onSuccess={onSuccess}
+        initialEmail={initialEmail}
+      />
     </MemoryRouter>,
   );
 }
@@ -97,6 +100,34 @@ describe('NewsletterSubscriptionForm', () => {
     renderForm();
 
     expect(mockLoad).toHaveBeenCalledWith('/newsletter-subscription');
+  });
+
+  it('renders the terms and sms consent checkbox', () => {
+    renderForm();
+
+    expect(
+      screen.getByRole('checkbox', {
+        name: /by submitting, you agree to our terms of use and privacy policy/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Terms of Use' })).toHaveAttribute(
+      'href',
+      'https://www.christfellowship.church/terms-of-use',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Privacy Policy' }),
+    ).toHaveAttribute(
+      'href',
+      'https://www.christfellowship.church/privacy-policy',
+    );
+  });
+
+  it('prefills the email field when initialEmail is provided', () => {
+    renderForm(vi.fn(), 'reader@example.com');
+
+    expect(screen.getByLabelText('Email Address')).toHaveValue(
+      'reader@example.com',
+    );
   });
 
   it('fires the GTM event before calling onSuccess after a successful submission', () => {

@@ -29,7 +29,7 @@ import { parseEventsFinderUrlState } from '../../events-url-state';
 import type { EventsFinderUrlState } from '../../events-url-state';
 import { buildEventSingleUrl } from '../../events-back-url';
 
-import { formatEventCardDate } from './featured-card.component';
+import { getEventCardDisplayDate } from './featured-card.component';
 import { EventsFiltersViewport } from './events-filters-viewport.component';
 import {
   EVENT_FACET_CATEGORIES,
@@ -73,9 +73,11 @@ function getEventHitLocation(
 }
 
 function MobileEventHitCard({ hit, to }: { hit: ContentItemHit; to: string }) {
-  const dateParts = hit.startDateTime
-    ? formatMobileEventDateParts(hit.startDateTime)
-    : null;
+  const displayDate = getEventCardDisplayDate(hit);
+  const dateParts =
+    !hit.eventCardDate && hit.startDateTime
+      ? formatMobileEventDateParts(hit.startDateTime)
+      : null;
   const location = getEventHitLocation(hit, 'Multiple campuses');
 
   return (
@@ -85,7 +87,11 @@ function MobileEventHitCard({ hit, to }: { hit: ContentItemHit; to: string }) {
       prefetch='intent'
     >
       <div className='flex h-[88px] w-[74px] shrink-0 flex-col items-center justify-center px-[7px] py-[7px] text-center leading-normal'>
-        {dateParts ? (
+        {hit.eventCardDate ? (
+          <p className='line-clamp-4 text-xs font-semibold leading-[18px]'>
+            {displayDate}
+          </p>
+        ) : dateParts ? (
           <time dateTime={hit.startDateTime} className='block'>
             <span className='block text-xs font-semibold leading-[18px] opacity-70'>
               {dateParts.month}
@@ -137,9 +143,7 @@ function EventHit({
   hit: ContentItemHit;
   fromEventsUrl: string;
 }) {
-  const formattedDate = hit.startDateTime
-    ? formatEventCardDate(hit.startDateTime)
-    : '';
+  const formattedDate = getEventCardDisplayDate(hit);
 
   const imageUri = hit.coverImage?.sources?.[0]?.uri ?? '';
   const location = getEventHitLocation(hit);

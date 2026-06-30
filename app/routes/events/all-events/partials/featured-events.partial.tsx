@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import { Icon } from '~/primitives/icon/icon';
 import { ResourceCard } from '~/primitives/cards/resource-card';
 import { ContentItemHit } from '~/routes/search/types';
-import { FeaturedEventCard } from '../components/featured-card.component';
+import {
+  FeaturedEventCard,
+  getEventCardDisplayDate,
+} from '../components/featured-card.component';
 
 export function FeaturedEventsSectionLayout({
   children,
@@ -94,7 +97,7 @@ const OtherFeatureEventMobileCardHit = ({ hit }: { hit: ContentItemHit }) => {
                 className='shrink-0'
               />
               <p className='truncate text-sm font-semibold leading-normal'>
-                {hit.eventCardDate}
+                {getEventCardDisplayDate(hit)}
               </p>
             </div>
             <div className='flex min-w-0 items-center gap-2'>
@@ -135,7 +138,7 @@ const OtherFeatureEventCardHit = ({ hit }: { hit: ContentItemHit }) => {
         summary: hit.summary || '',
         image: hit.coverImage.sources[0].uri,
         pathname: `/events/${hit.url}`,
-        startDate: hit.eventCardDate,
+        startDate: getEventCardDisplayDate(hit),
         location: getFeaturedEventLocation(hit),
       }}
     />

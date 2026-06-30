@@ -296,6 +296,7 @@ describe('fetchRockData TTL behavior', () => {
   };
 
   beforeEach(async () => {
+    vi.useRealTimers();
     vi.resetModules();
     vi.clearAllMocks();
     mockRedis.get.mockResolvedValue(null);
@@ -441,5 +442,197 @@ describe('fetchRockData TTL behavior', () => {
       'EX',
       expect.any(Number),
     );
+  });
+
+  it('uses one stable cache key for repeated single-item date-range queries', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-29T12:00:00.000Z'));
+
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+    const rockItem = {
+      id: 123,
+      title: 'Cached article',
+      startDateTime: '2026-06-01T00:00:00.000Z',
+      expireDateTime: '2026-07-01T00:00:00.000Z',
+    };
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [rockItem],
+    });
+
+    const options = {
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Pathname',
+        $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
+        value: 'example',
+        loadAttributes: 'simple' as const,
+      },
+      filterByDateRange: true,
+    };
+
+    await expect(fetchWithRedis(options)).resolves.toEqual(rockItem);
+
+    const firstCacheKey = mockRedis.set.mock.calls[0][0];
+    mockRedis.get.mockResolvedValueOnce(JSON.stringify(rockItem));
+    vi.setSystemTime(new Date('2026-06-29T12:00:01.250Z'));
+
+    await expect(fetchWithRedis(options)).resolves.toEqual(rockItem);
+
+    expect(mockRedis.get).toHaveBeenNthCalledWith(2, firstCacheKey);
+    expect(mockRedis.set).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not send the volatile date range clause for single-item date-range queries', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-29T12:00:00.000Z'));
+
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        {
+          id: 123,
+          startDateTime: '2026-06-01T00:00:00.000Z',
+          expireDateTime: null,
+        },
+      ],
+    });
+
+    await fetchWithRedis({
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Pathname',
+        $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
+        value: 'example',
+        loadAttributes: 'simple',
+      },
+      filterByDateRange: true,
+    });
+
+    const requestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    const requestFilter = new URL(requestUrl).searchParams.get('$filter');
+    expect(requestFilter).toContain(
+      "ContentChannelId eq 43 and Status eq 'Approved'",
+    );
+    expect(requestFilter).not.toContain(
+      "StartDateTime le datetime'2026-06-29T12:00:00.000Z'",
+    );
+    expect(requestFilter).not.toContain(
+      "ExpireDateTime ge datetime'2026-06-29T12:00:00.000Z'",
+    );
+  });
+
+  it('filters out-of-range single-item results in memory', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-29T12:00:00.000Z'));
+
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        {
+          id: 123,
+          startDateTime: '2026-07-01T00:00:00.000Z',
+          expireDateTime: null,
+        },
+      ],
+    });
+
+    await expect(
+      fetchWithRedis({
+        endpoint: 'ContentChannelItems/GetByAttributeValue',
+        queryParams: {
+          attributeKey: 'Pathname',
+          value: 'future-example',
+          loadAttributes: 'simple',
+        },
+        filterByDateRange: true,
+      }),
+    ).resolves.toEqual([]);
+  });
+
+  it('unwraps a filtered single item when duplicate matches include out-of-range data', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-29T12:00:00.000Z'));
+
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+    const inRangeItem = {
+      id: 123,
+      startDateTime: '2026-06-01T00:00:00.000Z',
+      expireDateTime: null,
+    };
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        inRangeItem,
+        {
+          id: 456,
+          startDateTime: '2026-07-01T00:00:00.000Z',
+          expireDateTime: null,
+        },
+      ],
+    });
+
+    await expect(
+      fetchWithRedis({
+        endpoint: 'ContentChannelItems/GetByAttributeValue',
+        queryParams: {
+          attributeKey: 'Pathname',
+          value: 'duplicate-example',
+          loadAttributes: 'simple',
+        },
+        filterByDateRange: true,
+      }),
+    ).resolves.toEqual(inRangeItem);
+  });
+
+  it('keeps status-approved filters in the stable request and cache key', async () => {
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        {
+          id: 123,
+          startDateTime: '2026-06-01T00:00:00.000Z',
+          expireDateTime: null,
+        },
+      ],
+    });
+
+    await fetchWithRedis({
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Pathname',
+        $filter: 'ContentChannelId eq 43',
+        value: 'example',
+        loadAttributes: 'simple',
+      },
+      filterByDateRange: true,
+      filterByStatusApproved: true,
+    });
+
+    const requestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    const requestFilter = new URL(requestUrl).searchParams.get('$filter');
+    const cachedValue = JSON.parse(mockRedis.set.mock.calls[0][1]);
+
+    expect(requestFilter).toContain(
+      "(ContentChannelId eq 43) and (Status eq 'Approved')",
+    );
+    expect(requestFilter).not.toContain('StartDateTime le datetime');
+    expect(cachedValue).toMatchObject({ id: 123 });
   });
 });

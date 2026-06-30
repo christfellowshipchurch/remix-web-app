@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-
 function MobileTimelineNavigation({
   timelineData,
   activeTab,
@@ -11,38 +9,14 @@ function MobileTimelineNavigation({
   activeTab: number;
   handleTabChange: (index: number) => void;
 }) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const activeButton = container.children[activeTab] as HTMLElement;
-
-      if (activeButton) {
-        const containerWidth = container.offsetWidth;
-        const buttonLeft = activeButton.offsetLeft;
-        const buttonWidth = activeButton.offsetWidth;
-        const scrollLeft = buttonLeft - containerWidth / 2 + buttonWidth / 2;
-
-        container.scrollTo({
-          left: scrollLeft,
-          behavior: 'smooth',
-        });
-      }
-    }
-  }, [activeTab]);
-
   return (
     <div className='my-6 md:hidden'>
-      <div
-        ref={scrollContainerRef}
-        className='flex items-center justify-center gap-[6px] sm:gap-[10px] flex-wrap'
-      >
+      <div className='flex items-stretch gap-1 sm:gap-[6px]'>
         {timelineData.map((item, index) => (
           <button
             key={item.year}
             onClick={() => handleTabChange(index)}
-            className={`px-3 py-2 sm:px-4 sm:py-3 rounded-full font-bold text-sm transition-all duration-300 flex-shrink-0 snap-center whitespace-nowrap flex-grow ${
+            className={`min-w-0 flex-1 px-1 py-2 sm:px-2 sm:py-3 rounded-full font-bold text-xs sm:text-sm text-center transition-all duration-300 whitespace-nowrap ${
               activeTab === index
                 ? 'bg-ocean text-white'
                 : 'border-2 border-neutral-lightest text-text-secondary hover:bg-gray-100'

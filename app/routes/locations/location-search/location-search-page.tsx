@@ -93,6 +93,7 @@ function LocationSearchIndexBody({
       <LocationCardList
         loading={geocodeLoading}
         initialHits={initialLocationHits}
+        sortByGeo={hasCoordinates}
       />
     </>
   );
@@ -315,6 +316,8 @@ export function LocationSearchPage() {
     };
   }, [ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, locationIndexName]);
 
+  const hasCoordinates = coordinates?.lat != null && coordinates?.lng != null;
+
   return (
     <div className='flex w-full flex-col min-h-screen'>
       {!algoliaBootstrapped ? (
@@ -329,6 +332,7 @@ export function LocationSearchPage() {
           <LocationCardGrid
             items={loaderData.initialLocationHits}
             loading={false}
+            sortByGeo={hasCoordinates}
           />
         </>
       ) : (
