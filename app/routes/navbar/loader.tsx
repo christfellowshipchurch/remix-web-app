@@ -4,11 +4,13 @@ import type { LoaderFunctionArgs } from 'react-router-dom';
 import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 // import { fetchTopSearches } from "~/lib/.server/fetch-top-searches";
 import type { FeatureCard } from '~/components/navbar/types';
-import { createImageUrlFromGuid } from '~/lib/utils';
+import { createImageUrlFromGuid, parseRockKeyValueList } from '~/lib/utils';
 import { getUserFromRequest } from '~/lib/.server/authentication/get-user-from-request';
 import type { User } from '~/providers/auth-provider';
 import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
+import { ContentChannelIds } from '~/lib/rock-config';
+import type { RockContentChannelItem } from '~/lib/types/rock-types';
 
 // Define the return type for the loader
 export interface RootLoaderData {
@@ -35,6 +37,23 @@ export interface RootLoaderData {
     }[];
   };
 }
+
+const EMPTY_SITE_BANNER = { content: '', link: '' };
+
+export const mapSiteBannerFromRockItem = (
+  rawSiteBanner: RockContentChannelItem | null | undefined,
+) => {
+  const siteBannerContent =
+    typeof rawSiteBanner?.content === 'string' ? rawSiteBanner.content : '';
+  const callsToActions = parseRockKeyValueList(
+    rawSiteBanner?.attributeValues?.callsToAction?.value ?? '',
+  );
+
+  return {
+    content: siteBannerContent,
+    link: callsToActions[0]?.value ?? '',
+  };
+};
 
 const fetchFeatureCards = async () => {
   try {
@@ -77,28 +96,28 @@ const fetchFeatureCards = async () => {
   }
 };
 
-const fetchSiteBanner = async () => {
-  const now = new Date();
-  // Format date to ISO 8601 to remove milliseconds and timezone
-  const formattedDate = now.toISOString().split('.')[0] + 'Z';
-
+const fetchSiteBanner = async (): Promise<RockContentChannelItem | null> => {
   try {
     const siteBanner = await fetchRockData({
       endpoint: 'ContentChannelItems',
       queryParams: {
-        $filter: `ContentChannelId eq 100 and Status eq '2' and ExpireDateTime gt datetime'${formattedDate}'`,
+        $filter: `ContentChannelId eq ${ContentChannelIds.siteBanner}`,
+        $orderby: 'StartDateTime desc',
+        $top: '1',
         loadAttributes: 'simple',
       },
+      filterByDateRange: true,
+      filterByStatusApproved: true,
     });
 
-    if (Array.isArray(siteBanner) && siteBanner.length > 0) {
-      return siteBanner[0];
-    } else {
-      return siteBanner;
+    if (Array.isArray(siteBanner)) {
+      return siteBanner[0] ?? null;
     }
+
+    return siteBanner ?? null;
   } catch (error) {
     console.error('Error fetching site banner:', error);
-    return [];
+    return null;
   }
 };
 
@@ -144,7 +163,11 @@ export async function loader({
       parsedUserData = userData as User;
     }
 
-    const rawFeatureCards = await fetchFeatureCards();
+    const [rawFeatureCards, rawSiteBanner] = await Promise.all([
+      fetchFeatureCards(),
+      fetchSiteBanner(),
+    ]);
+    const siteBanner = mapSiteBannerFromRockItem(rawSiteBanner);
 
     // If the API call failed, return empty arrays
     if (
@@ -169,11 +192,7 @@ export async function loader({
           indexes: algoliaIndexes,
         },
         popularResults: [],
-        // Site Banner Data
-        siteBanner: {
-          content: '',
-          link: '',
-        },
+        siteBanner,
       };
     }
 
@@ -208,22 +227,6 @@ export async function loader({
     const mediaCards = mappedFeatureCards.filter(
       (card) => card.navMenu.toLowerCase() === 'media',
     );
-
-    // Site Banner Data
-    const rawSiteBanner = await fetchSiteBanner();
-    const siteBannerContent =
-      typeof rawSiteBanner?.content === 'string' ? rawSiteBanner.content : '';
-    const callsToActionValue =
-      rawSiteBanner?.attributeValues?.callsToAction?.value;
-    const siteBannerLink =
-      typeof callsToActionValue === 'string' && callsToActionValue.includes('^')
-        ? (callsToActionValue.split('^').pop()?.trim() ?? '')
-        : '';
-
-    const siteBanner = {
-      content: siteBannerContent,
-      link: typeof siteBannerLink === 'string' ? siteBannerLink : '',
-    };
 
     // TODO: uncomment this once we have the real data for the popular searches
     // const popularSearches = await fetchTopSearches(
@@ -265,11 +268,7 @@ export async function loader({
         indexes: algoliaIndexes,
       },
       popularResults: [],
-      // Site Banner Data
-      siteBanner: {
-        content: '',
-        link: '',
-      },
+      siteBanner: EMPTY_SITE_BANNER,
     };
   }
 }
