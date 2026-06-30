@@ -3,7 +3,7 @@ import { Icon } from '~/primitives/icon/icon';
 
 export function JourneySection() {
   return (
-    <section className='w-full bg-gradient-to-l from-navy to-dark-navy py-32 content-padding'>
+    <section className='w-full bg-linear-to-l from-navy to-dark-navy py-32 content-padding'>
       <div className='max-w-screen-content mx-auto px-4 text-white flex flex-col md:flex-row justify-between'>
         <h2 className='text-3xl lg:text-4xl font-bold mb-6'>
           Every journey begins with <br /> a step…

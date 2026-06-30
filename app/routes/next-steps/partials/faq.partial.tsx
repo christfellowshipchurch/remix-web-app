@@ -50,11 +50,7 @@ export function FAQSection() {
           <p className='text-center'>
             Reach out to someone on our team for more information.
           </p>
-          <Button
-            href={`${ROCK_PUBLIC_SITE_ORIGIN}/contactus`}
-            target='_blank'
-            intent='secondary'
-          >
+          <Button href={`/contact-us`} intent='secondary'>
             Contact
           </Button>
         </div>
