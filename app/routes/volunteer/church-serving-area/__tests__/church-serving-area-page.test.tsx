@@ -11,6 +11,9 @@ const { mockNavigate, mockUseLoaderData } = vi.hoisted(() => ({
   mockUseLoaderData: vi.fn(),
 }));
 
+const mockLocationAssign = vi.fn();
+const originalLocation = window.location;
+
 vi.mock('react-router-dom', async () => {
   const actual =
     await vi.importActual<typeof import('react-router-dom')>(
@@ -94,6 +97,10 @@ async function selectRoleAndContinue(roleName: string) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubGlobal('location', {
+    ...originalLocation,
+    assign: mockLocationAssign,
+  });
 });
 
 describe('ChurchServingAreaPage', () => {
@@ -120,7 +127,10 @@ describe('ChurchServingAreaPage', () => {
 
     await selectRoleAndContinue('Worship');
 
-    expect(mockNavigate).toHaveBeenCalledWith(
+    expect(mockLocationAssign).toHaveBeenCalledWith(
+      'https://lnk.bio/CFWorshipLinks',
+    );
+    expect(mockNavigate).not.toHaveBeenCalledWith(
       'https://lnk.bio/CFWorshipLinks',
     );
   });

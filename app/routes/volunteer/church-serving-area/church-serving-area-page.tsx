@@ -41,6 +41,11 @@ export function ChurchServingAreaPage() {
       ? CHURCH_OPPORTUNITY_OVERRIDES[selectedRole.title.trim().toLowerCase()]
       : null;
     if (overrideUrl) {
+      if (/^https?:\/\//.test(overrideUrl)) {
+        window.location.assign(overrideUrl);
+        return;
+      }
+
       navigate(overrideUrl);
       return;
     }
