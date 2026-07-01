@@ -42,7 +42,7 @@ export function ChurchServingAreaPage() {
       : null;
     if (overrideUrl) {
       if (/^https?:\/\//.test(overrideUrl)) {
-        window.location.assign(overrideUrl);
+        window.open(overrideUrl, '_blank', 'noopener,noreferrer');
         return;
       }
 
