@@ -65,6 +65,11 @@ const baseLoaderData: LoaderReturnType = {
       title: 'Care Team',
       description: '<p>Serve with care.</p>',
     },
+    {
+      id: 'worship-role-guid',
+      title: 'Worship',
+      description: '<p>Serve with worship.</p>',
+    },
   ],
 };
 
@@ -107,6 +112,16 @@ describe('ChurchServingAreaPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       '/rock-page?embed=church-opportunity&opportunityId=care-role-guid',
+    );
+  });
+
+  it('navigates Worship opportunities to the worship links page', async () => {
+    renderPage();
+
+    await selectRoleAndContinue('Worship');
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      'https://lnk.bio/CFWorshipLinks',
     );
   });
 });

@@ -14,8 +14,10 @@ import {
 } from './partials/church-serving-area-partials.partial';
 import type { LoaderReturnType } from './loader';
 
-const MISSIONS_OPPORTUNITY_URL =
-  '/volunteer#community';
+const CHURCH_OPPORTUNITY_OVERRIDES: Record<string, string> = {
+  missions: '/volunteer#community',
+  worship: 'https://lnk.bio/CFWorshipLinks',
+};
 
 export function ChurchServingAreaPage() {
   const { bucket, roles } = useLoaderData<LoaderReturnType>();
@@ -35,8 +37,11 @@ export function ChurchServingAreaPage() {
     if (!opportunityId) return;
 
     const selectedRole = roles.find((role) => role.id === opportunityId);
-    if (selectedRole?.title.trim().toLowerCase() === 'missions') {
-      navigate(MISSIONS_OPPORTUNITY_URL);
+    const overrideUrl = selectedRole
+      ? CHURCH_OPPORTUNITY_OVERRIDES[selectedRole.title.trim().toLowerCase()]
+      : null;
+    if (overrideUrl) {
+      navigate(overrideUrl);
       return;
     }
 
