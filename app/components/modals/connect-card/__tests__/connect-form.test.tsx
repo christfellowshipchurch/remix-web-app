@@ -1,7 +1,7 @@
 import * as Form from '@radix-ui/react-form';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import ConnectCardForm, {
   renderInputField,
   renderCheckboxField,
@@ -10,12 +10,17 @@ import ConnectCardForm, {
 vi.mock('~/lib/gtm', () => ({ pushFormEvent: vi.fn() }));
 
 // Configurable fetcher state
-let mockFetcherState = {
+let mockFormFetcherState = {
+  state: 'idle' as 'idle' | 'submitting' | 'loading',
+  data: undefined as unknown,
+};
+let mockPrefillFetcherState = {
   state: 'idle' as 'idle' | 'submitting' | 'loading',
   data: undefined as unknown,
 };
 const mockLoad = vi.fn();
 const mockSubmit = vi.fn();
+const mockPrefillLoad = vi.fn();
 
 vi.mock('react-router-dom', async () => {
   const actual =
@@ -24,19 +29,33 @@ vi.mock('react-router-dom', async () => {
     );
   return {
     ...actual,
-    useFetcher: () => ({
-      state: mockFetcherState.state,
-      data: mockFetcherState.data,
-      load: mockLoad,
-      submit: mockSubmit,
-    }),
+    useFetcher: (options?: { key?: string }) =>
+      options?.key === 'connect-card-prefill'
+        ? {
+            state: mockPrefillFetcherState.state,
+            data: mockPrefillFetcherState.data,
+            load: mockPrefillLoad,
+            submit: vi.fn(),
+          }
+        : {
+            state: mockFormFetcherState.state,
+            data: mockFormFetcherState.data,
+            load: mockLoad,
+            submit: mockSubmit,
+          },
   };
 });
 
-function renderForm(onSuccess = vi.fn()) {
+function LocationProbe() {
+  const location = useLocation();
+  return <div data-testid='location-search'>{location.search}</div>;
+}
+
+function renderForm(onSuccess = vi.fn(), initialEntry = '/connect-card') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <ConnectCardForm onSuccess={onSuccess} />
+      <LocationProbe />
     </MemoryRouter>,
   );
 }
@@ -102,13 +121,20 @@ describe('renderCheckboxField', () => {
 
 describe('ConnectCardForm', () => {
   beforeEach(() => {
-    mockFetcherState = { state: 'idle', data: undefined };
+    mockFormFetcherState = { state: 'idle', data: undefined };
+    mockPrefillFetcherState = { state: 'idle', data: undefined };
     vi.clearAllMocks();
   });
 
   it("renders the 'Get Connected' heading", () => {
     renderForm();
     expect(screen.getByText('Get Connected')).toBeInTheDocument();
+  });
+
+  it('shows that no URL params were present when the page loads without query params', () => {
+    renderForm();
+    expect(screen.getByText('Connect Card URL params')).toBeInTheDocument();
+    expect(screen.getByText('none')).toBeInTheDocument();
   });
 
   it('renders First Name, Last Name, Phone, Email fields', () => {
@@ -137,7 +163,7 @@ describe('ConnectCardForm', () => {
   });
 
   it('shows campuses in select when fetcher data loads', () => {
-    mockFetcherState = {
+    mockFormFetcherState = {
       state: 'idle',
       data: {
         campuses: [
@@ -153,7 +179,7 @@ describe('ConnectCardForm', () => {
   });
 
   it("shows 'I am looking to:' section with checkboxes from fetcher data", () => {
-    mockFetcherState = {
+    mockFormFetcherState = {
       state: 'idle',
       data: {
         campuses: [],
@@ -170,7 +196,7 @@ describe('ConnectCardForm', () => {
   });
 
   it('shows Loading... on submit button when submitting', () => {
-    mockFetcherState = { state: 'submitting', data: undefined };
+    mockFormFetcherState = { state: 'submitting', data: undefined };
     renderForm();
     expect(
       screen.getByRole('button', { name: /loading/i }),
@@ -178,7 +204,7 @@ describe('ConnectCardForm', () => {
   });
 
   it('shows error message from fetcher data', () => {
-    mockFetcherState = {
+    mockFormFetcherState = {
       state: 'idle',
       data: { error: 'Something went wrong' },
     };
@@ -187,7 +213,7 @@ describe('ConnectCardForm', () => {
   });
 
   it("reveals 'Other' text input when Other checkbox is toggled", () => {
-    mockFetcherState = {
+    mockFormFetcherState = {
       state: 'idle',
       data: {
         campuses: [],
@@ -213,5 +239,183 @@ describe('ConnectCardForm', () => {
   it("calls fetcher.load('/connect-card') on mount", () => {
     renderForm();
     expect(mockLoad).toHaveBeenCalledWith('/connect-card');
+  });
+
+  it('loads prefill data for a valid rckipid and removes it from the URL', async () => {
+    renderForm(vi.fn(), '/connect-card?rckipid=token-123&foo=bar');
+
+    await waitFor(() => {
+      expect(mockPrefillLoad).toHaveBeenCalledWith(
+        '/api/connect-card-prefill?rckpid=token-123',
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('location-search')).toHaveTextContent(
+        '?foo=bar',
+      );
+    });
+    expect(
+      await screen.findByText('Connect Card prefill debug'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rckipid: token-123')).toBeInTheDocument();
+    expect(screen.getByText('foo: bar')).toBeInTheDocument();
+  });
+
+  it('loads prefill data for the mobile app rckpid alias and removes it from the URL', async () => {
+    renderForm(vi.fn(), '/connect-card?rckpid=token-123&foo=bar');
+
+    await waitFor(() => {
+      expect(mockPrefillLoad).toHaveBeenCalledWith(
+        '/api/connect-card-prefill?rckpid=token-123',
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('location-search')).toHaveTextContent(
+        '?foo=bar',
+      );
+    });
+  });
+
+  it('shows opt-in prefill debug details while preserving the debug URL param', async () => {
+    mockPrefillFetcherState = {
+      state: 'idle',
+      data: {
+        status: 'not-found',
+        debug: {
+          tokenFingerprint: '034192845dc4',
+          validationPassed: true,
+          decodeAttempted: true,
+          personResolved: false,
+        },
+      },
+    };
+    renderForm(vi.fn(), '/connect-card?rckpid=token-123&prefillDebug=1');
+
+    expect(
+      await screen.findByText('Connect Card prefill debug'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rckipid detected: yes')).toBeInTheDocument();
+    expect(screen.getByText('parameter name: rckpid')).toBeInTheDocument();
+    expect(screen.getByText('rckipid valid: yes')).toBeInTheDocument();
+    expect(screen.getByText('rckipid length: 9')).toBeInTheDocument();
+    expect(screen.getByText('URL cleaned: yes')).toBeInTheDocument();
+    expect(screen.getByText('API requested: yes')).toBeInTheDocument();
+    expect(screen.getByText('token fingerprint: 034192845dc4')).toBeInTheDocument();
+    expect(screen.getByText('validation passed: yes')).toBeInTheDocument();
+    expect(screen.getByText('decode attempted: yes')).toBeInTheDocument();
+    expect(screen.getByText('person resolved: no')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('location-search')).toHaveTextContent(
+        '?prefillDebug=1',
+      );
+    });
+  });
+
+  it('shows opt-in debug details when rckipid is missing', async () => {
+    renderForm(vi.fn(), '/connect-card?prefillDebug=1');
+
+    expect(
+      await screen.findByText('Connect Card prefill debug'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rckipid detected: no')).toBeInTheDocument();
+    expect(screen.getByText('rckipid valid: not checked')).toBeInTheDocument();
+    expect(screen.getByText('API requested: no')).toBeInTheDocument();
+    expect(mockPrefillLoad).not.toHaveBeenCalled();
+  });
+
+  it('does not call the prefill API for an invalid rckipid and removes it from the URL', async () => {
+    renderForm(vi.fn(), '/connect-card?rckipid=%7B%7Bbad%7D%7D&foo=bar');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('location-search')).toHaveTextContent(
+        '?foo=bar',
+      );
+    });
+    expect(mockPrefillLoad).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(
+        "We couldn't prefill your info, but you can still complete the form.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('does not call the prefill API when rckipid is missing', () => {
+    renderForm(vi.fn(), '/connect-card?foo=bar');
+
+    expect(mockPrefillLoad).not.toHaveBeenCalled();
+    expect(screen.getByTestId('location-search')).toHaveTextContent('?foo=bar');
+  });
+
+  it('applies successful prefill data to editable fields', async () => {
+    mockFormFetcherState = {
+      state: 'idle',
+      data: {
+        campuses: [{ guid: 'campus-guid', name: 'Palm Beach Gardens' }],
+        allThatApplies: [],
+      },
+    };
+    mockPrefillFetcherState = {
+      state: 'idle',
+      data: {
+        status: 'success',
+        prefill: {
+          firstName: 'Jane',
+          lastName: 'Doe',
+          email: 'jane@example.com',
+          phone: '555-123-4567',
+          campus: 'campus-guid',
+        },
+        debug: {
+          tokenFingerprint: '034192845dc4',
+          validationPassed: true,
+          decodeAttempted: true,
+          personResolved: true,
+          personId: '123',
+          hasFirstName: true,
+          hasLastName: true,
+          hasEmail: true,
+          hasPhone: true,
+          hasCampus: true,
+        },
+      },
+    };
+
+    renderForm(vi.fn(), '/connect-card?rckipid=token-123');
+
+    expect(await screen.findByDisplayValue('Jane')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Doe')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('jane@example.com')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('555-123-4567')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'Campus' })).toHaveValue(
+      'campus-guid',
+    );
+    expect(screen.getByText('person id: 123')).toBeInTheDocument();
+    expect(screen.getByText('email found: yes')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByDisplayValue('Jane'), {
+      target: { value: 'Janet' },
+    });
+    expect(screen.getByDisplayValue('Janet')).toBeInTheDocument();
+  });
+
+  it('shows a non-blocking message when prefill fails and still submits to connect-card', async () => {
+    mockPrefillFetcherState = {
+      state: 'idle',
+      data: { status: 'error', message: 'Unable to load prefill data' },
+    };
+
+    renderForm(vi.fn(), '/connect-card?rckipid=token-123');
+
+    expect(
+      await screen.findByText(
+        "We couldn't prefill your info, but you can still complete the form.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/connect-card',
+    });
   });
 });

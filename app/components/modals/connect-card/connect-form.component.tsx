@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import * as Form from '@radix-ui/react-form';
 import { cn } from '~/lib/utils';
@@ -13,8 +13,14 @@ import {
   radixSelectClassName,
 } from '~/primitives/inputs/form-radix-field';
 import { formFieldInvalidControlStyles } from '~/primitives/inputs/form-control.styles';
-import { useFetcher } from 'react-router-dom';
-import { ConnectCardLoaderReturnType } from '~/routes/connect-card/types';
+import { useFetcher, useSearchParams } from 'react-router-dom';
+import type {
+  ConnectCardLoaderReturnType,
+  ConnectCardPrefill,
+  ConnectCardPrefillDebug,
+  ConnectCardPrefillResponse,
+  ConnectCardPrefillStatus,
+} from '~/routes/connect-card/types';
 import { pushFormEvent } from '~/lib/gtm';
 
 interface ConnectCardProps {
@@ -29,6 +35,8 @@ export const renderInputField = (
   defaultValue?: string,
   placeholder?: string,
   fieldClassName = '',
+  value?: string,
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 ) => (
   <Form.Field
     name={name}
@@ -40,6 +48,8 @@ export const renderInputField = (
         type={type}
         required
         defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
         placeholder={placeholder}
         className={radixInputClassName}
       />
@@ -64,6 +74,72 @@ interface CheckboxOption {
 // "I am looking to:" section. Matched by Rock defined-value label, mirroring
 // the existing `Other` handling.
 const NEXT_STEP_VALUES = ['The Journey class', 'Baptism'];
+
+const emptyPrefill: Required<ConnectCardPrefill> = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  campus: '',
+};
+
+type ConnectCardPrefillDebugInfo = {
+  detected: boolean;
+  valid: boolean | null;
+  urlCleaned: boolean;
+  apiRequested: boolean;
+  responseStatus?: ConnectCardPrefillResponse['status'];
+  rawLength?: number;
+  paramName?: string;
+  apiDebug?: ConnectCardPrefillDebug;
+};
+
+type ConnectCardUrlParam = {
+  key: string;
+  value: string;
+};
+
+const ROCK_PERSON_ID_QUERY_PARAMS = ['rckipid', 'rckpid'];
+const ROCK_PERSON_TOKEN_MAX_LENGTH = 512;
+
+const hasControlCharacters = (value: string) =>
+  Array.from(value).some((char) => {
+    const code = char.charCodeAt(0);
+    return code <= 31 || code === 127;
+  });
+
+const isValidRockPersonToken = (value: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed.length > ROCK_PERSON_TOKEN_MAX_LENGTH) {
+    return false;
+  }
+
+  return !(
+    hasControlCharacters(trimmed) ||
+    trimmed.includes('"') ||
+    trimmed.includes('\\') ||
+    trimmed.includes('{{') ||
+    trimmed.includes('}}') ||
+    trimmed.includes('{%') ||
+    trimmed.includes('%}')
+  );
+};
+
+const getRockPersonIdSearchParam = (searchParams: URLSearchParams) => {
+  for (const paramName of ROCK_PERSON_ID_QUERY_PARAMS) {
+    const rawValue = searchParams.get(paramName);
+    const value = rawValue?.trim();
+    if (value) {
+      return { paramName, rawValue, value };
+    }
+  }
+
+  return null;
+};
+
+const getUrlParams = (params: URLSearchParams): ConnectCardUrlParam[] =>
+  Array.from(params.entries()).map(([key, value]) => ({ key, value }));
 
 export const renderCheckboxField = (
   checkbox: CheckboxOption,
@@ -95,7 +171,23 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const [isOther, setIsOther] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const fetcher = useFetcher();
+  const [prefillStatus, setPrefillStatus] = useState<
+    ConnectCardPrefillStatus | 'idle' | 'loading'
+  >('idle');
+  const [prefillValues, setPrefillValues] =
+    useState<Required<ConnectCardPrefill>>(emptyPrefill);
+  const [prefillDebugInfo, setPrefillDebugInfo] =
+    useState<ConnectCardPrefillDebugInfo | null>(null);
+  const fetcher = useFetcher({ key: 'connect-card-form' });
+  const prefillFetcher = useFetcher({ key: 'connect-card-prefill' });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [initialUrlParams] = useState<ConnectCardUrlParam[]>(() =>
+    getUrlParams(searchParams),
+  );
+  const processedRckipidRef = useRef(false);
+  const requestedPrefillRef = useRef(false);
+  const isPrefillDebug = searchParams.get('prefillDebug') === '1';
+  const hasInlinePrefillDebug = !!prefillDebugInfo?.detected;
 
   const [formFieldData, setFormFieldData] =
     useState<ConnectCardLoaderReturnType>({
@@ -107,6 +199,100 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   useEffect(() => {
     fetcher.load('/connect-card');
   }, []);
+
+  useEffect(() => {
+    if (processedRckipidRef.current) {
+      return;
+    }
+
+    const rockPersonIdParam = getRockPersonIdSearchParam(searchParams);
+    if (!rockPersonIdParam) {
+      if (isPrefillDebug) {
+        processedRckipidRef.current = true;
+        const debugInfo = {
+          detected: false,
+          valid: null,
+          urlCleaned: false,
+          apiRequested: false,
+        };
+        setPrefillDebugInfo(debugInfo);
+      }
+      return;
+    }
+
+    processedRckipidRef.current = true;
+    const isValidRckipid = isValidRockPersonToken(rockPersonIdParam.value);
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    ROCK_PERSON_ID_QUERY_PARAMS.forEach((paramName) =>
+      nextSearchParams.delete(paramName),
+    );
+    setSearchParams(nextSearchParams, { replace: true });
+
+    const debugInfo = {
+      detected: true,
+      valid: isValidRckipid,
+      urlCleaned: true,
+      apiRequested: isValidRckipid,
+      rawLength: rockPersonIdParam.rawValue?.length,
+      paramName: rockPersonIdParam.paramName,
+    };
+    setPrefillDebugInfo(debugInfo);
+
+    if (!isValidRckipid) {
+      setPrefillStatus('invalid-id');
+      return;
+    }
+
+    setPrefillStatus('loading');
+    requestedPrefillRef.current = true;
+    prefillFetcher.load(
+      `/api/connect-card-prefill?rckpid=${encodeURIComponent(
+        rockPersonIdParam.value,
+      )}`,
+    );
+  }, [isPrefillDebug, prefillFetcher, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (prefillFetcher.state === 'loading') {
+      setPrefillStatus('loading');
+      return;
+    }
+
+    if (
+      !requestedPrefillRef.current ||
+      prefillFetcher.state !== 'idle' ||
+      !prefillFetcher.data
+    ) {
+      return;
+    }
+
+    const response = prefillFetcher.data as ConnectCardPrefillResponse;
+    setPrefillDebugInfo((current) =>
+      current
+        ? {
+            ...current,
+            responseStatus: response.status,
+            apiDebug: response.debug,
+          }
+        : null,
+    );
+
+    if (response.status !== 'success') {
+      setPrefillStatus(response.status);
+      return;
+    }
+
+    setPrefillValues((current) => ({
+      ...current,
+      firstName: response.prefill.firstName ?? current.firstName,
+      lastName: response.prefill.lastName ?? current.lastName,
+      email: response.prefill.email ?? current.email,
+      phone: response.prefill.phone ?? current.phone,
+      campus: response.prefill.campus ?? current.campus,
+    }));
+    setPrefillStatus('success');
+  }, [isPrefillDebug, prefillFetcher.state, prefillFetcher.data]);
 
   // Effect for handling form data and submissions
   useEffect(() => {
@@ -149,6 +335,145 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     }
   };
 
+  const handlePrefillValueChange =
+    (field: keyof ConnectCardPrefill) =>
+    (
+      event:
+        | React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLSelectElement>,
+    ) => {
+      setPrefillValues((current) => ({
+        ...current,
+        [field]: event.target.value,
+      }));
+    };
+
+  const renderPrefillStatus = () => {
+    switch (prefillStatus) {
+      case 'loading':
+        return 'Loading your info...';
+      case 'success':
+        return 'We filled in what we found.';
+      case 'invalid-id':
+      case 'not-found':
+      case 'error':
+        return "We couldn't prefill your info, but you can still complete the form.";
+      default:
+        return null;
+    }
+  };
+
+  const renderPrefillDebug = () => {
+    if ((!isPrefillDebug && !hasInlinePrefillDebug) || !prefillDebugInfo) {
+      return null;
+    }
+
+    return (
+      <div className='col-span-2 mb-5 rounded border border-neutral-light bg-gray-50 p-3 text-left text-xs text-text-secondary'>
+        <p className='font-semibold text-text-primary'>
+          Connect Card prefill debug
+        </p>
+        <p>rckipid detected: {prefillDebugInfo.detected ? 'yes' : 'no'}</p>
+        <p>parameter name: {prefillDebugInfo.paramName ?? 'n/a'}</p>
+        <p>
+          rckipid valid:{' '}
+          {prefillDebugInfo.valid == null
+            ? 'not checked'
+            : prefillDebugInfo.valid
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>rckipid length: {prefillDebugInfo.rawLength ?? 'n/a'}</p>
+        <p>URL cleaned: {prefillDebugInfo.urlCleaned ? 'yes' : 'no'}</p>
+        <p>API requested: {prefillDebugInfo.apiRequested ? 'yes' : 'no'}</p>
+        <p>API status: {prefillDebugInfo.responseStatus ?? 'pending/n/a'}</p>
+        <p>
+          token fingerprint:{' '}
+          {prefillDebugInfo.apiDebug?.tokenFingerprint ?? 'pending/n/a'}
+        </p>
+        <p>
+          validation passed:{' '}
+          {prefillDebugInfo.apiDebug?.validationPassed == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.validationPassed
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          decode attempted:{' '}
+          {prefillDebugInfo.apiDebug?.decodeAttempted == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.decodeAttempted
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          person resolved:{' '}
+          {prefillDebugInfo.apiDebug?.personResolved == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.personResolved
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>person id: {prefillDebugInfo.apiDebug?.personId ?? 'pending/n/a'}</p>
+        <p>
+          first name found:{' '}
+          {prefillDebugInfo.apiDebug?.hasFirstName == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasFirstName
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          email found:{' '}
+          {prefillDebugInfo.apiDebug?.hasEmail == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasEmail
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          phone found:{' '}
+          {prefillDebugInfo.apiDebug?.hasPhone == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasPhone
+              ? 'yes'
+              : 'no'}
+        </p>
+        <p>
+          campus found:{' '}
+          {prefillDebugInfo.apiDebug?.hasCampus == null
+            ? 'pending/n/a'
+            : prefillDebugInfo.apiDebug.hasCampus
+              ? 'yes'
+              : 'no'}
+        </p>
+      </div>
+    );
+  };
+
+  const renderUrlParamsDebug = () => {
+    if (initialUrlParams.length === 0) {
+      return (
+        <div className='col-span-2 mb-5 rounded border border-neutral-light bg-amber-50 p-3 text-left text-xs text-text-secondary'>
+          <p className='font-semibold text-text-primary'>Connect Card URL params</p>
+          <p>none</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className='col-span-2 mb-5 rounded border border-neutral-light bg-amber-50 p-3 text-left text-xs text-text-secondary'>
+        <p className='font-semibold text-text-primary'>Connect Card URL params</p>
+        {initialUrlParams.map((param) => (
+          <p key={`${param.key}-${param.value}`}>
+            {param.key}: {param.value || '(empty)'}
+          </p>
+        ))}
+      </div>
+    );
+  };
+
   const { campuses, allThatApplies } = formFieldData;
 
   const otherCheckbox = allThatApplies.find(
@@ -171,6 +496,13 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   return (
     <>
       <h2 className='mb-6 text-3xl text-navy font-bold'>Get Connected</h2>
+      {renderPrefillStatus() && (
+        <p className='-mt-4 mb-5 col-span-2 text-sm text-text-secondary'>
+          {renderPrefillStatus()}
+        </p>
+      )}
+      {renderUrlParamsDebug()}
+      {renderPrefillDebug()}
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
@@ -182,6 +514,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'Please enter your first name',
           undefined,
           'First Name',
+          '',
+          prefillValues.firstName,
+          handlePrefillValueChange('firstName'),
         )}
         {renderInputField(
           'lastName',
@@ -190,6 +525,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'Please enter your last name',
           undefined,
           'Last Name',
+          '',
+          prefillValues.lastName,
+          handlePrefillValueChange('lastName'),
         )}
         {renderInputField(
           'phone',
@@ -198,6 +536,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'Please enter a valid number',
           undefined,
           'xxx-xxx-xxxx',
+          '',
+          prefillValues.phone,
+          handlePrefillValueChange('phone'),
         )}
         {renderInputField(
           'email',
@@ -206,6 +547,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           'Please enter a valid email',
           undefined,
           'Example@gmail.com',
+          '',
+          prefillValues.email,
+          handlePrefillValueChange('email'),
         )}
 
         <Form.Field name='campus' className={radixFormFieldStackClassName}>
@@ -218,7 +562,8 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 <select
                   className={radixSelectClassName}
                   required
-                  defaultValue=''
+                  value={prefillValues.campus}
+                  onChange={handlePrefillValueChange('campus')}
                 >
                   <option value=''>Select a Campus</option>
                   {campuses.map(({ guid, name }, index) => (
