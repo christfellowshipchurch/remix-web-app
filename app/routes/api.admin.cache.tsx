@@ -5,9 +5,11 @@ import { invalidateItem } from '~/lib/.server/cache-utils';
 /**
  * Admin cache-invalidation endpoint.
  *
- * POST /api/admin/cache
+ * POST /api/admin/cache?id=<contentChannelItemId>
  *   Header: x-cache-secret: <CACHE_INVALIDATION_SECRET>
- *   Body:   { "id": <contentChannelItemId> }
+ *
+ * `id` is read from the query string first (what a Rock webhook sends), falling
+ * back to a JSON body `{ "id": <contentChannelItemId> }` for manual/curl testing.
  *
  * Invalidates every cache entry containing the given content item (its own entry
  * plus any list/aggregate entry that included it). Designed to be called both
@@ -26,23 +28,31 @@ export const action: ActionFunction = async ({ request }) => {
     return data({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const raw = await request.text();
-  console.log('RAW BODY:', JSON.stringify(raw));
+  const url = new URL(request.url);
+  let id = url.searchParams.get('id');
 
-  let body: { id?: string | number };
-  try {
-    body = JSON.parse(raw);
-  } catch {
-    return data({ error: 'Invalid JSON body' }, { status: 400 });
+  // Fallback to a JSON body for curl/manual testing.
+  if (!id) {
+    try {
+      const raw = await request.text();
+      console.log('RAW BODY:', JSON.stringify(raw));
+      const body: { id?: string | number } = JSON.parse(raw);
+      console.log('cache invalidation body:', JSON.stringify(body));
+      id = body?.id != null ? String(body.id) : null;
+    } catch {
+      // no/invalid body — id stays null and is handled below
+    }
   }
 
-  console.log('cache invalidation body:', JSON.stringify(body));
-
-  const id = body?.id;
-  if (id === undefined || id === null || `${id}`.trim() === '') {
+  if (!id) {
     return data({ error: 'Missing required field: id' }, { status: 400 });
   }
 
-  const deletedKeys = await invalidateItem(redis, id);
-  return data({ success: true, id: String(id), deletedKeys });
+  const numericId = parseInt(id, 10);
+  if (Number.isNaN(numericId)) {
+    return data({ error: 'Invalid id' }, { status: 400 });
+  }
+
+  const deletedKeys = await invalidateItem(redis, numericId);
+  return data({ success: true, id: String(numericId), deletedKeys });
 };
