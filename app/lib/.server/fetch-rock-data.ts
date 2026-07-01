@@ -1,8 +1,14 @@
 import { normalize } from '~/lib/utils';
 import redis from './redis-config';
-import { buildCacheKey, TTL, type TTLValue } from './cache-utils';
+import {
+  buildCacheKey,
+  extractContentItemIds,
+  itemTagKey,
+  TTL,
+  type TTLValue,
+} from './cache-utils';
 
-export { TTL, deleteByPrefix } from './cache-utils';
+export { TTL, deleteByPrefix, invalidateItem } from './cache-utils';
 export type { TTLValue } from './cache-utils';
 interface RockDataRequest {
   endpoint: string;
@@ -221,7 +227,23 @@ export const fetchRockData = async ({
     // Cache the response if Redis is available and TTL > 0
     if (redis && effectiveTtl > 0) {
       try {
-        await redis.set(cacheKey, JSON.stringify(data), 'EX', effectiveTtl);
+        const itemIds = extractContentItemIds(data);
+        if (itemIds.length === 0) {
+          await redis.set(cacheKey, JSON.stringify(data), 'EX', effectiveTtl);
+        } else {
+          // Cache the entry and record it in each item's reverse index in one
+          // round-trip. The index lets us later invalidate a single item by
+          // deleting exactly the keys that contain it. EXPIRE caps the index so
+          // it can't grow unbounded after the entries it references age out.
+          const pipeline = redis.pipeline();
+          pipeline.set(cacheKey, JSON.stringify(data), 'EX', effectiveTtl);
+          for (const id of itemIds) {
+            const tag = itemTagKey(id);
+            pipeline.sadd(tag, cacheKey);
+            pipeline.expire(tag, TTL.LONG);
+          }
+          await pipeline.exec();
+        }
       } catch {
         console.error('⚠️ Redis cache storage failed');
       }
