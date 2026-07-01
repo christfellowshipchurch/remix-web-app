@@ -14,6 +14,7 @@ import Modal from '~/primitives/Modal';
 import { Video } from '~/primitives/video/video.primitive';
 import { Breadcrumbs } from '~/components';
 import type { IconName } from '~/primitives/button/types';
+import { useCopyPagePath } from '~/hooks/use-copy-page-path';
 
 /** Icon for the study format tag (finder + single). */
 export function iconForStudyFormat(format: string): IconName {
@@ -159,6 +160,7 @@ const RightSide = ({
   trailerWistiaId: string | null;
 }) => {
   const [trailerOpen, setTrailerOpen] = useState(false);
+  const { copyPath, copied } = useCopyPagePath();
 
   return (
     <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
@@ -212,6 +214,16 @@ const RightSide = ({
             {cta.title}
           </Button>
         ))}
+        <Button
+          type='button'
+          intent='secondaryWhite'
+          size='md'
+          className='w-full border-[#417890] md:border-[#FAFAFC]'
+          onClick={() => void copyPath()}
+          aria-label={copied ? 'Link copied' : 'Copy URL'}
+        >
+          <span aria-live='polite'>{copied ? 'Link copied' : 'Copy URL'}</span>
+        </Button>
 
         <div className='flex flex-col gap-2 border-t border-[#417890] pt-4 md:border-none md:pt-0'>
           <h3 className='text-lg font-extrabold leading-tight'>
