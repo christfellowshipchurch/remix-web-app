@@ -26,6 +26,7 @@ describe('fetchChurchRolesByPreferenceAreaGuid', () => {
       expect.objectContaining({
         endpoint: 'ConnectionOpportunities/GetByAttributeValue',
         queryParams: expect.objectContaining({
+          $orderby: 'Order',
           attributeKey: 'preferenceArea',
           value: BUCKET_GUID,
         }),
