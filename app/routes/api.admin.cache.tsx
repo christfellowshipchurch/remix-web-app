@@ -26,9 +26,12 @@ export const action: ActionFunction = async ({ request }) => {
     return data({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const raw = await request.text();
+  console.log('RAW BODY:', JSON.stringify(raw));
+
   let body: { id?: string | number };
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
     return data({ error: 'Invalid JSON body' }, { status: 400 });
   }
