@@ -29,6 +29,7 @@ export async function fetchChurchRolesByPreferenceAreaGuid(
     const raw = await fetchRockData({
       endpoint: 'ConnectionOpportunities/GetByAttributeValue',
       queryParams: {
+        $orderby: 'Order',
         attributeKey: 'preferenceArea',
         value: bucketGuid,
       },
