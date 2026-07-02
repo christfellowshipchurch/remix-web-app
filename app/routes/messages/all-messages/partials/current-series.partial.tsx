@@ -7,7 +7,8 @@ import { SectionTitle } from '~/components';
 import type { ContentItemHit } from '~/routes/search/types';
 
 const CurrentSeries = () => {
-  const { currentSeriesHit } = useLoaderData<AllMessagesLoaderReturnType>();
+  const { currentSeriesHit, currentSeriesUrl } =
+    useLoaderData<AllMessagesLoaderReturnType>();
   const navigation = useNavigation();
   const location = useLocation();
 
@@ -24,7 +25,7 @@ const CurrentSeries = () => {
         )}
       >
         <div className='flex flex-col gap-12 max-w-screen-content mx-auto'>
-          <CurrentSeriesContent hit={currentSeriesHit} />
+          <CurrentSeriesContent hit={currentSeriesHit} seriesUrl={currentSeriesUrl} />
         </div>
       </div>
     );
@@ -43,7 +44,13 @@ const CurrentSeries = () => {
   return null;
 };
 
-function CurrentSeriesContent({ hit }: { hit: ContentItemHit }) {
+function CurrentSeriesContent({
+  hit,
+  seriesUrl,
+}: {
+  hit: ContentItemHit;
+  seriesUrl: string;
+}) {
   const currentSeriesTitle = hit.seriesName || 'Current Series';
   const coverImageUri = hit.coverImage?.sources?.[0]?.uri;
 
@@ -80,7 +87,7 @@ function CurrentSeriesContent({ hit }: { hit: ContentItemHit }) {
           <div className='mt-5 lg:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-4 xl:gap-8'>
             {hit.sermonSeriesGuid && (
               <IconButton
-                to={`/series-resources/${hit.sermonSeriesGuid}`}
+                to={`/series-resources/${seriesUrl || hit.sermonSeriesGuid}`}
                 className={iconButtonClass}
               >
                 Series & Resources

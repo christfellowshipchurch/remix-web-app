@@ -15,7 +15,7 @@ export const MessageVideo: React.FC = () => {
       ? [
           {
             title: 'Sermon Series Resources',
-            href: `/series-resources/${message.seriesId}`,
+            href: `/series-resources/${message.seriesUrl || message.seriesId}`,
           },
         ]
       : []),

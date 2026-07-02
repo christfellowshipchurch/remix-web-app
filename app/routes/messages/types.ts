@@ -10,6 +10,7 @@ export type MessageType = {
   expireDateTime: string;
   seriesId: string;
   seriesTitle: string;
+  seriesUrl: string;
   url: string;
   primaryCategories: { value: string }[];
   secondaryCategories: { value: string }[];
