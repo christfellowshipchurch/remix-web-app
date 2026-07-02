@@ -14,6 +14,7 @@ import Modal from '~/primitives/Modal';
 import { Video } from '~/primitives/video/video.primitive';
 import { Breadcrumbs } from '~/components';
 import type { IconName } from '~/primitives/button/types';
+import { useCopyPagePath } from '~/hooks/use-copy-page-path';
 
 /** Icon for the study format tag (finder + single). */
 export function iconForStudyFormat(format: string): IconName {
@@ -159,11 +160,12 @@ const RightSide = ({
   trailerWistiaId: string | null;
 }) => {
   const [trailerOpen, setTrailerOpen] = useState(false);
+  const { copyPath, copied } = useCopyPagePath();
 
   return (
-    <div className='w-full flex flex-col mt-12 rounded-2xl overflow-hidden'>
+    <div className='w-full flex flex-col mt-12'>
       {createdByImage && createdByName && (
-        <div className='w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray'>
+        <div className='mb-4 w-full flex gap-2.5 items-center px-6 py-8 bg-navy md:bg-gray rounded-2xl'>
           <div className='size-[82px] flex items-center justify-center bg-white rounded-[12px]'>
             <img
               src={createdByImage}
@@ -182,7 +184,22 @@ const RightSide = ({
         </div>
       )}
 
-      <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white'>
+      <p className='mb-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-base font-semibold leading-snug text-ocean'>
+        <span>Want to share this resource?</span>
+        <button
+          type='button'
+          className='inline-flex cursor-pointer items-center gap-1 align-baseline underline underline-offset-2'
+          onClick={() => void copyPath()}
+          aria-label={copied ? 'Link copied' : 'Copy Link'}
+        >
+          <Icon name='link' size={15} className='mt-0.5 shrink-0' />
+          <span aria-live='polite'>
+            {copied ? 'Link copied' : 'Copy Link'}
+          </span>
+        </button>
+      </p>
+
+      <div className='w-full flex flex-col gap-6 px-6 py-8 bg-dark-navy text-white rounded-2xl'>
         {trailerWistiaId && (
           <Modal open={trailerOpen} onOpenChange={setTrailerOpen}>
             <Modal.Button asChild>
