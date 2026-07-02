@@ -617,6 +617,11 @@ interface SubGroupTypeStepProps {
   onSelect: (subGroupType: string) => void;
 }
 
+const getEventTypeButtonText = (groupType: string, isSpanish: boolean) =>
+  isSpanish
+    ? `Seleccionar evento de ${groupType}`
+    : `Select ${groupType} Event`;
+
 const SubGroupTypeStep = ({
   hits,
   selectedCampus,
@@ -641,6 +646,8 @@ const SubGroupTypeStep = ({
     return Array.from(subGroupTypeMap.values()).sort();
   }, [hits, selectedCampus]);
 
+  const isSpanish = isSpanishCampusLabel(selectedCampus);
+
   if (uniqueSubGroupTypes.length === 0) {
     return (
       <div className='w-full p-8 text-center'>
@@ -662,8 +669,8 @@ const SubGroupTypeStep = ({
             icon={'group'}
             title={subGroupType}
             subtitle={groupType}
-            description={getSubGroupTypeDescription(subGroupType)}
-            buttonText={`Select ${groupType} Event`}
+            description={getSubGroupTypeDescription(subGroupType, isSpanish)}
+            buttonText={getEventTypeButtonText(groupType, isSpanish)}
             onClick={() => onSelect(subGroupType)}
           />
         );
