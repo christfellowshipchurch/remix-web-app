@@ -17,7 +17,7 @@ export function ClassFinderPage() {
 From topics like building your faith, growing your marriage, managing your finances, finding Freedom, and more–there’s a class for you!'
         />
       </div>
-      <div className='flex flex-col flex-1 w-full'>
+      <div className='flex flex-col flex-1 w-full bg-gray'>
         <ClassSearch />
       </div>
     </div>

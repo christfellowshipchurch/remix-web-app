@@ -32,6 +32,7 @@ import {
 import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
 import { HubsTagsRefinementList } from '~/components/hubs-tags-refinement';
+import { Button } from '~/primitives/button/button.primitive';
 import {
   classFinderEmptyState,
   ClassFinderUrlState,
@@ -273,6 +274,7 @@ export const ClassSearch = () => {
                   interestOnlyHits={interestOnlyHits}
                   filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
+                  onClearFilters={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
@@ -300,6 +302,7 @@ export const ClassSearch = () => {
                   interestOnlyHits={interestOnlyHits}
                   filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
+                  onClearFilters={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
@@ -317,11 +320,13 @@ function ClassTypeGroupedInstantSearchResults({
   interestOnlyHits,
   filtersActive,
   fromClassFinderUrl,
+  onClearFilters,
 }: {
   initialHits: ClassHitType[];
   interestOnlyHits: ClassHitType[];
   filtersActive: boolean;
   fromClassFinderUrl?: string;
+  onClearFilters: () => void;
 }) {
   const { items } = useHits<ClassHitType>();
   const { status } = useInstantSearch();
@@ -339,6 +344,7 @@ function ClassTypeGroupedInstantSearchResults({
       interestOnlyHits={interestOnlyHits}
       filtersActive={filtersActive}
       fromClassFinderUrl={fromClassFinderUrl}
+      onClearFilters={onClearFilters}
     />
   );
 }
@@ -349,12 +355,14 @@ function ClassTypeGroupedResults({
   interestOnlyHits,
   filtersActive,
   fromClassFinderUrl,
+  onClearFilters,
 }: {
   hits: ClassHitType[];
   isLoading: boolean;
   interestOnlyHits: ClassHitType[];
   filtersActive: boolean;
   fromClassFinderUrl?: string;
+  onClearFilters: () => void;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams] = useSearchParams();
@@ -417,6 +425,8 @@ function ClassTypeGroupedResults({
     setCurrentPage(1);
   }, [mappedHits.length]);
 
+  const noResults = filtersActive && !isLoading && mappedHits.length === 0;
+
   return (
     <>
       <div
@@ -426,25 +436,39 @@ function ClassTypeGroupedResults({
       >
         <FinderResultsStats hitCount={mappedHits.length} />
 
-        <div className='flex w-full items-center justify-center md:items-start md:justify-start'>
-          <div className='grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-            {pageHits.map((hit) => (
-              <ClassHitComponent
-                key={hit.objectID}
-                hit={hit}
-                fromClassFinderUrl={fromClassFinderUrl}
-              />
-            ))}
+        {noResults ? (
+          <div className='flex flex-col items-center gap-4 py-8 text-center'>
+            <p className='text-text-secondary'>
+              No classes match your search. Try adjusting your filters, or
+              browse all classes.
+            </p>
+            <Button intent='secondary' size='md' onClick={onClearFilters}>
+              Clear All Filters
+            </Button>
           </div>
-        </div>
+        ) : (
+          <div className='flex w-full items-center justify-center md:items-start md:justify-start'>
+            <div className='grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+              {pageHits.map((hit) => (
+                <ClassHitComponent
+                  key={hit.objectID}
+                  hit={hit}
+                  fromClassFinderUrl={fromClassFinderUrl}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <ClassSearchPagination
-        totalItems={mappedHits.length}
-        itemsPerPage={ITEMS_PER_PAGE}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+      {!noResults && (
+        <ClassSearchPagination
+          totalItems={mappedHits.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </>
   );
 }
