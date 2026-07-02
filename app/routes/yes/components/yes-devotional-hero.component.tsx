@@ -58,8 +58,8 @@ const heroCardData: { link: string; copy: string }[] = [
 
 const spanishHeroCardData: { link: string; copy: string }[] = [
   {
-    link: googleLink,
-    copy: 'Un curso de dos semanas para comenzar tu relación con Jesús.',
+    link: '#devo',
+    copy: 'Un curso de tres semanas para comenzar tu relación con Jesús.',
   },
   {
     link: googleLink,

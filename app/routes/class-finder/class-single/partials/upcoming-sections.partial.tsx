@@ -404,8 +404,9 @@ function ClassSingleUpcomingResults({
       </h3>
       {ordered.length === 0 ? (
         <p className='text-text-secondary pb-4'>
-          No upcoming sessions match your filters. Try adjusting location or
-          format.
+          {filtersActive
+            ? 'No upcoming sessions match your filters. Try adjusting location or format.'
+            : 'There are no upcoming sessions for this class right now. Check back soon!'}
         </p>
       ) : (
         <div className='flex w-full justify-center md:justify-start'>
