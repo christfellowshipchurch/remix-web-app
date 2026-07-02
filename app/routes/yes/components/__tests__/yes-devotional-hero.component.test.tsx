@@ -61,4 +61,17 @@ describe('YesHero', () => {
       getCardLink('Descarga la app de la Biblia YouVersion gratis'),
     ).toHaveAttribute('href', 'https://www.bible.com/app');
   });
+
+  it('scrolls to the devotional section for the Spanish card instead of opening a new tab', () => {
+    render(<YesHero isSpanish />);
+
+    const devotionalLink = getCardLink(
+      'Un curso de tres semanas para comenzar tu relación con Jesús.',
+    );
+    expect(devotionalLink).toHaveAttribute('href', '#devo');
+    expect(devotionalLink).not.toHaveAttribute('target', '_blank');
+
+    fireEvent.click(devotionalLink);
+    expect(scrollToAnchor).toHaveBeenCalledWith('devo');
+  });
 });
