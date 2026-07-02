@@ -87,7 +87,7 @@ export default function MobileMenuContent({
         </section>
 
         <section className='p-8 border-t border-gray-200 flex flex-col gap-2'>
-          <h3 className='text-lg font-bold text-navy'>My Church</h3>
+          <h3 className='text-lg font-bold text-navy'>My Groups & Classes</h3>
           <p className='text-text-primary text-sm font-normal mb-2'>
             Stay up to date with your groups, classes, and more.
           </p>
