@@ -25,7 +25,10 @@ const CurrentSeries = () => {
         )}
       >
         <div className='flex flex-col gap-12 max-w-screen-content mx-auto'>
-          <CurrentSeriesContent hit={currentSeriesHit} seriesUrl={currentSeriesUrl} />
+          <CurrentSeriesContent
+            hit={currentSeriesHit}
+            seriesUrl={currentSeriesUrl}
+          />
         </div>
       </div>
     );

@@ -193,9 +193,7 @@ const RightSide = ({
           aria-label={copied ? 'Link copied' : 'Copy Link'}
         >
           <Icon name='link' size={15} className='mt-0.5 shrink-0' />
-          <span aria-live='polite'>
-            {copied ? 'Link copied' : 'Copy Link'}
-          </span>
+          <span aria-live='polite'>{copied ? 'Link copied' : 'Copy Link'}</span>
         </button>
       </p>
 

@@ -80,7 +80,13 @@ describe('deleteByPrefix', () => {
     const result = await deleteByPrefix(fakeRedis, 'People');
 
     expect(keysSpy).not.toHaveBeenCalled();
-    expect(scan).toHaveBeenCalledWith('0', 'MATCH', 'rock:People:*', 'COUNT', 100);
+    expect(scan).toHaveBeenCalledWith(
+      '0',
+      'MATCH',
+      'rock:People:*',
+      'COUNT',
+      100,
+    );
     expect(del).toHaveBeenCalledWith('rock:People:aaa', 'rock:People:bbb');
     expect(result).toBe(2);
   });
@@ -126,6 +132,12 @@ describe('deleteByPrefix', () => {
 
     await deleteByPrefix(fakeRedis, '/People/');
 
-    expect(scan).toHaveBeenCalledWith('0', 'MATCH', 'rock:People:*', 'COUNT', 100);
+    expect(scan).toHaveBeenCalledWith(
+      '0',
+      'MATCH',
+      'rock:People:*',
+      'COUNT',
+      100,
+    );
   });
 });
