@@ -82,10 +82,16 @@ afterEach(() => {
 });
 
 describe('StudySingleBasicContent', () => {
-  it('copies the current page URL and confirms when the Copy URL button is clicked', async () => {
+  it('copies the current page URL and confirms when the copy link control is clicked', async () => {
     renderBasicContent();
 
-    const copyButtons = screen.getAllByRole('button', { name: 'Copy URL' });
+    expect(
+      screen.getAllByText('Want to share this resource?').length,
+    ).toBeGreaterThan(0);
+
+    const copyButtons = screen.getAllByRole('button', {
+      name: 'Copy Link',
+    });
     expect(copyButtons.length).toBeGreaterThan(0);
 
     fireEvent.click(copyButtons[0]);
