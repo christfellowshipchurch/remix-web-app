@@ -338,6 +338,7 @@ export const ClickThroughRegistration = ({
                     setSelectedCampus(campus);
                     previousStepRef.current = 1;
                     setStep(hasSubGroups ? 2 : 3);
+                    setPendingRegisterScroll(true);
                   }}
                   onSubGroupTypeSelect={(subGroupType) => {
                     setSelectedSubGroupType(subGroupType);
