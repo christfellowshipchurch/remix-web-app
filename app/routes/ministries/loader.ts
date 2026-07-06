@@ -10,6 +10,12 @@ export type Ministry = {
   url: string;
 };
 
+/** Spanish ministry pages are listed separately; keep them off the main ministries index. */
+const isEspanolMinistryTitle = (title: string): boolean => {
+  const lower = title.toLowerCase();
+  return title.includes('Español') || lower.includes('espanol');
+};
+
 const mapMinistryChannelItems = async (
   ministriesData: RockContentChannelItem[],
 ): Promise<Ministry[]> => {
@@ -73,7 +79,7 @@ export const loader: LoaderFunction = async (): Promise<{
     const ministries = [
       ...(await mapMinistryChannelItems(ministriesArray)),
       ...hardCodedMinistries,
-    ];
+    ].filter((ministry) => !isEspanolMinistryTitle(ministry.title));
 
     return { ministries };
   } catch (error) {
