@@ -4,6 +4,7 @@ import { useLoaderData, useLocation } from 'react-router-dom';
 import { scrollToAnchor } from '~/lib/scroll-to-anchor';
 
 import { EventSinglePageType } from './types';
+import { useEventSectionScrollOffset } from './hooks/use-event-section-scroll-offset';
 import { EventsSingleHero } from './partials/hero.partial';
 import { EventSingleFAQ } from './partials/event-faq.partial';
 import { AboutPartial } from './partials/about.partial';
@@ -18,14 +19,15 @@ export const EventSinglePage: React.FC = () => {
   const data = useLoaderData<EventSinglePageType>();
   const location = useLocation();
   const backToEventsUrl = useEventsBackUrl();
+  const getScrollOffset = useEventSectionScrollOffset();
 
   // Scroll to section when landing with a hash (e.g. /events/baptism#register)
   useEffect(() => {
     const hash = location.hash?.slice(1);
     if (!hash || !SECTION_IDS.includes(hash as (typeof SECTION_IDS)[number]))
       return;
-    scrollToAnchor(hash, { behavior: 'auto' });
-  }, [location.hash]);
+    scrollToAnchor(hash, { behavior: 'auto', offset: getScrollOffset() });
+  }, [location.hash, getScrollOffset]);
 
   // Check if sessionScheduleCards exist
   const hasSessionRegistration =

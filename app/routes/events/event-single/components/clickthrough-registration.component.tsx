@@ -19,6 +19,7 @@ import {
   isSpanishCampusLabel,
 } from '../registration.data';
 import { scrollToAnchor } from '~/lib/scroll-to-anchor';
+import { useEventSectionScrollOffset } from '../hooks/use-event-section-scroll-offset';
 import {
   eventFinderDatesMatch,
   formatEventFinderDateLabel,
@@ -82,6 +83,7 @@ export const ClickThroughRegistration = ({
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
   const [pendingRegisterScroll, setPendingRegisterScroll] = useState(false);
   const previousStepRef = useRef<number>(1);
+  const getScrollOffset = useEventSectionScrollOffset();
 
   const resetRegistrationFlow = () => {
     setStep(1);
@@ -100,9 +102,9 @@ export const ClickThroughRegistration = ({
 
     setPendingRegisterScroll(false);
     requestAnimationFrame(() => {
-      scrollToAnchor('register');
+      scrollToAnchor('register', { offset: getScrollOffset() });
     });
-  }, [pendingRegisterScroll]);
+  }, [pendingRegisterScroll, getScrollOffset]);
 
   const searchClient = useMemo(
     () =>
