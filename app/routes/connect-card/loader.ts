@@ -8,7 +8,7 @@ export const loader: LoaderFunction = async () => {
   const rockDefineTypes = await fetchRockData({
     endpoint: 'DefinedValues',
     queryParams: {
-      $filter: `DefinedTypeId eq ${ALL_THAT_APPLIES_ID}`,
+      $filter: `DefinedTypeId eq ${ALL_THAT_APPLIES_ID} and IsActive eq true`,
       $select: 'Guid, Value',
     },
   });
