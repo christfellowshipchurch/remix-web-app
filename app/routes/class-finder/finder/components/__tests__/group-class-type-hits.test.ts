@@ -3,7 +3,8 @@ import type { ClassHitType } from '../../../types';
 import { groupClassTypeHits } from '../group-class-type-hits';
 
 function makeHit(
-  overrides: Partial<ClassHitType> & Pick<ClassHitType, 'objectID' | 'pathName'>,
+  overrides: Partial<ClassHitType> &
+    Pick<ClassHitType, 'objectID' | 'pathName'>,
 ): ClassHitType {
   return {
     title: 'Class Title',
