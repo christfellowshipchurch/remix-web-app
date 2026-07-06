@@ -2,13 +2,13 @@ import { ANCHOR_SCROLL_OFFSET } from '~/components/navbar/scroll-offset.constant
 
 export function scrollToAnchor(
   id: string,
-  options?: { behavior?: 'auto' | 'smooth' },
+  options?: { behavior?: 'auto' | 'smooth'; offset?: number },
 ): boolean {
   const element = document.getElementById(id);
   if (!element) return false;
 
-  const offsetTop =
-    element.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
+  const offset = options?.offset ?? ANCHOR_SCROLL_OFFSET;
+  const offsetTop = element.getBoundingClientRect().top + window.scrollY - offset;
 
   window.scrollTo({
     top: offsetTop,
