@@ -263,20 +263,22 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           I am looking to:
         </h3>
         {nextStepCheckboxes.length > 0 && (
-          <div className='col-span-2 my-1 flex flex-col items-start gap-3'>
+          <div className='col-span-2 flex flex-col gap-3 border-b border-gray-200 pb-4'>
             <p className='italic text-navy'>
               Take the next step in my faith through…
             </p>
-            <div className='flex flex-wrap justify-start gap-x-8 gap-y-2 pl-4'>
+            <div className='grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-6'>
               {nextStepCheckboxes.map(({ checkbox, index }) =>
                 renderCheckboxField(checkbox, index),
               )}
             </div>
           </div>
         )}
-        {generalCheckboxes.map(({ checkbox, index }) =>
-          renderCheckboxField(checkbox, index),
-        )}
+        <div className='col-span-2 grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-6'>
+          {generalCheckboxes.map(({ checkbox, index }) =>
+            renderCheckboxField(checkbox, index),
+          )}
+        </div>
 
         {otherCheckbox && (
           <Form.Field

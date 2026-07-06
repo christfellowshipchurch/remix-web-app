@@ -24,6 +24,8 @@ export type LoaderReturnType = {
    * have no Algolia sessions. Merged into the finder grid (unfiltered view only).
    */
   interestOnlyHits: ClassHitType[];
+  /** Cover images keyed by class URL slug (`pathName` / Rock `url` attribute). */
+  rockCoverImagesByPath: Record<string, string>;
 };
 
 /** Rock Classes Defined Type (387) id used to source "I'm Interested" classes. */
@@ -49,15 +51,7 @@ function isToggleOn(item: RockClassDefinedValue): boolean {
   return v === 'true' || v === '1';
 }
 
-/**
- * Fetch Rock 387 classes with the interest toggle on and build synthetic finder
- * cards for the ones that have no Algolia presence (deduped by `pathName`). The
- * toggle lives in Rock, not Algolia, so this is a second source merged on top of
- * the Algolia hits.
- */
-async function fetchInterestOnlyClassHits(
-  classHits: ClassHitType[],
-): Promise<ClassHitType[]> {
+async function fetchRockClassDefinedValues(): Promise<RockClassDefinedValue[]> {
   try {
     const result = (await fetchRockData({
       endpoint: 'DefinedValues',
@@ -69,41 +63,69 @@ async function fetchInterestOnlyClassHits(
       ttl: 300, // 5 min — admin toggles should propagate quickly
     })) as RockClassDefinedValue[] | RockClassDefinedValue | undefined;
 
-    const items = Array.isArray(result) ? result : result ? [result] : [];
-
-    const existingPaths = new Set(
-      classHits.map((h) => h.pathName).filter(Boolean),
-    );
-
-    const hits: ClassHitType[] = [];
-    for (const item of items) {
-      if (!isToggleOn(item)) continue;
-
-      const pathName = rockAttr(item, 'url');
-      if (!pathName || existingPaths.has(pathName)) continue;
-
-      const title = item.value?.trim() ?? '';
-      const imageGuid = rockAttr(item, 'image');
-
-      hits.push({
-        objectID: `interest-${pathName}`,
-        title,
-        classType: title,
-        pathName,
-        summary: item.description?.trim() ?? '',
-        topic: rockAttrFormatted(item, 'classTopic') as ClassHitType['topic'],
-        coverImage: imageGuid
-          ? { sources: [{ uri: createImageUrlFromGuid(imageGuid) }] }
-          : { sources: [] },
-        isInterestOnly: true,
-      } as unknown as ClassHitType);
-    }
-
-    return hits;
+    return Array.isArray(result) ? result : result ? [result] : [];
   } catch (error) {
-    console.error('[class-finder] Rock interest-only fetch failed', error);
+    console.error('[class-finder] Rock defined values fetch failed', error);
     return [];
   }
+}
+
+/** Rock 387 is the source of truth for class card cover art (keyed by `url`). */
+function buildRockCoverImagesByPath(
+  items: RockClassDefinedValue[],
+): Record<string, string> {
+  const coverImagesByPath: Record<string, string> = {};
+
+  for (const item of items) {
+    const pathName = rockAttr(item, 'url');
+    const imageGuid = rockAttr(item, 'image');
+    if (!pathName || !imageGuid) continue;
+
+    coverImagesByPath[pathName] = createImageUrlFromGuid(imageGuid);
+  }
+
+  return coverImagesByPath;
+}
+
+/**
+ * Fetch Rock 387 classes with the interest toggle on and build synthetic finder
+ * cards for the ones that have no Algolia presence (deduped by `pathName`). The
+ * toggle lives in Rock, not Algolia, so this is a second source merged on top of
+ * the Algolia hits.
+ */
+function buildInterestOnlyClassHits(
+  items: RockClassDefinedValue[],
+  classHits: ClassHitType[],
+): ClassHitType[] {
+  const existingPaths = new Set(
+    classHits.map((h) => h.pathName).filter(Boolean),
+  );
+
+  const hits: ClassHitType[] = [];
+  for (const item of items) {
+    if (!isToggleOn(item)) continue;
+
+    const pathName = rockAttr(item, 'url');
+    if (!pathName || existingPaths.has(pathName)) continue;
+
+    const title = item.value?.trim() ?? '';
+    const imageGuid = rockAttr(item, 'image');
+
+    hits.push({
+      objectID: `interest-${pathName}`,
+      title,
+      classType: title,
+      pathName,
+      summary: item.description?.trim() ?? '',
+      topic: rockAttrFormatted(item, 'classTopic') as ClassHitType['topic'],
+      coverImage: imageGuid
+        ? { sources: [{ uri: createImageUrlFromGuid(imageGuid) }] }
+        : { sources: [] },
+      isInterestOnly: true,
+    } as unknown as ClassHitType);
+  }
+
+  return hits;
 }
 
 /**
@@ -148,7 +170,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.error('[class-finder] Algolia loader fetch failed', error);
   }
 
-  const interestOnlyHits = await fetchInterestOnlyClassHits(classHits);
+  const rockClassDefinedValues = await fetchRockClassDefinedValues();
+  const rockCoverImagesByPath = buildRockCoverImagesByPath(
+    rockClassDefinedValues,
+  );
+  const interestOnlyHits = buildInterestOnlyClassHits(
+    rockClassDefinedValues,
+    classHits,
+  );
 
   return Response.json({
     // The browser receives the search-only key so the hydrated InstantSearch
@@ -158,5 +187,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     algoliaIndexes,
     classHits,
     interestOnlyHits,
+    rockCoverImagesByPath,
   } satisfies LoaderReturnType);
 };

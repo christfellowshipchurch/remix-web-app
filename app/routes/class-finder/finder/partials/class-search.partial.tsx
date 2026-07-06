@@ -90,6 +90,7 @@ export const ClassSearch = () => {
     ALGOLIA_SEARCH_API_KEY,
     classHits,
     interestOnlyHits,
+    rockCoverImagesByPath,
     algoliaIndexes,
   } = loaderData;
   const classIndexName = algoliaIndexes.classes;
@@ -272,6 +273,7 @@ export const ClassSearch = () => {
                 <ClassTypeGroupedInstantSearchResults
                   initialHits={classHits}
                   interestOnlyHits={interestOnlyHits}
+                  rockCoverImagesByPath={rockCoverImagesByPath}
                   filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
                   onClearFilters={clearAllFiltersFromUrl}
@@ -300,6 +302,7 @@ export const ClassSearch = () => {
                   hits={classHits}
                   isLoading={false}
                   interestOnlyHits={interestOnlyHits}
+                  rockCoverImagesByPath={rockCoverImagesByPath}
                   filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
                   onClearFilters={clearAllFiltersFromUrl}
@@ -318,12 +321,14 @@ const ITEMS_PER_PAGE = 12;
 function ClassTypeGroupedInstantSearchResults({
   initialHits,
   interestOnlyHits,
+  rockCoverImagesByPath,
   filtersActive,
   fromClassFinderUrl,
   onClearFilters,
 }: {
   initialHits: ClassHitType[];
   interestOnlyHits: ClassHitType[];
+  rockCoverImagesByPath: Record<string, string>;
   filtersActive: boolean;
   fromClassFinderUrl?: string;
   onClearFilters: () => void;
@@ -342,6 +347,7 @@ function ClassTypeGroupedInstantSearchResults({
       hits={hits}
       isLoading={isLoading}
       interestOnlyHits={interestOnlyHits}
+      rockCoverImagesByPath={rockCoverImagesByPath}
       filtersActive={filtersActive}
       fromClassFinderUrl={fromClassFinderUrl}
       onClearFilters={onClearFilters}
@@ -353,6 +359,7 @@ function ClassTypeGroupedResults({
   hits,
   isLoading,
   interestOnlyHits,
+  rockCoverImagesByPath,
   filtersActive,
   fromClassFinderUrl,
   onClearFilters,
@@ -360,6 +367,7 @@ function ClassTypeGroupedResults({
   hits: ClassHitType[];
   isLoading: boolean;
   interestOnlyHits: ClassHitType[];
+  rockCoverImagesByPath: Record<string, string>;
   filtersActive: boolean;
   fromClassFinderUrl?: string;
   onClearFilters: () => void;
@@ -367,7 +375,10 @@ function ClassTypeGroupedResults({
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams] = useSearchParams();
 
-  const grouped = useMemo(() => groupClassTypeHits(hits), [hits]);
+  const grouped = useMemo(
+    () => groupClassTypeHits(hits, rockCoverImagesByPath),
+    [hits, rockCoverImagesByPath],
+  );
 
   // The class finder presents one card per class type group, not one raw
   // Algolia record per session. Build synthetic cards from grouped hits before
