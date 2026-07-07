@@ -1,7 +1,31 @@
 import type { ClassHitType } from './types';
 
-function hasScheduledDate(value: ClassHitType['startDate']): boolean {
+function hasScheduledDate(value: ClassHitType['startDate']): value is string {
   return value != null && String(value).trim() !== '';
+}
+
+export function parseClassSessionDate(
+  value: ClassHitType['startDate'],
+): Date | null {
+  if (!hasScheduledDate(value)) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function formatClassSessionDate(
+  value: ClassHitType['startDate'],
+  options: Intl.DateTimeFormatOptions = {
+    month: 'long',
+    day: 'numeric',
+  },
+): string {
+  const date = parseClassSessionDate(value);
+  return date ? date.toLocaleDateString('en-US', options) : '';
+}
+
+export function parseClassSessionStartMs(hit: ClassHitType): number {
+  const date = parseClassSessionDate(hit.startDate);
+  return date ? date.getTime() : Number.MAX_SAFE_INTEGER;
 }
 
 /**

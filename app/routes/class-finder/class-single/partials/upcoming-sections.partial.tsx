@@ -14,7 +14,10 @@ import { ActiveFilters } from '~/components/finders/search-filters/active-filter
 import { cn } from '~/lib/utils';
 
 import { parseClassSingleUrlState } from '../class-single-url-state';
-import { filterScheduledClassSessions } from '../../class-session.utils';
+import {
+  filterScheduledClassSessions,
+  parseClassSessionStartMs,
+} from '../../class-session.utils';
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
 import { ClassSingleInterestBanner } from '../components/class-single-interest-banner.component';
 import { CantFindClassCard } from '../../finder/components/cant-find-class-card.component';
@@ -32,8 +35,7 @@ import { CLASS_SINGLE_UPCOMING_MAX_HITS } from '../components/build-class-single
 const LOCATION_FILTERS_HINT = 'Location filters are applied.';
 
 function parseStartMs(hit: ClassHitType): number {
-  const t = new Date(hit.startDate).getTime();
-  return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t;
+  return parseClassSessionStartMs(hit);
 }
 
 function compareStartDateAsc(a: ClassHitType, b: ClassHitType): number {

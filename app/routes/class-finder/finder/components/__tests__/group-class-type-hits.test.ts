@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { ClassHitType } from '../../../types';
-import { groupClassTypeHits, syntheticHitsFromGrouped } from '../group-class-type-hits';
+import {
+  groupClassTypeHits,
+  syntheticHitsFromGrouped,
+} from '../group-class-type-hits';
 
 function makeHit(
   overrides: Partial<ClassHitType> &

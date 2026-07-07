@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 
 import { Icon } from '~/primitives/icon/icon';
 import { ClassHitType } from '../../types';
+import { formatClassSessionDate } from '../../class-session.utils';
 import { cn } from '~/lib/utils';
 import { GroupConnectModal } from '~/components/modals/group-connect/group-connect-modal';
 import { ButtonProps } from '~/primitives/button/button.primitive';
@@ -46,14 +47,8 @@ const UpcomingSessionCardBody = ({ hit }: { hit: ClassHitType }) => {
       ? `${milesFromSearchOrigin.toFixed(1)} MILES`
       : format;
 
-  const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-  });
-  const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-  });
+  const formattedStartDate = formatClassSessionDate(startDate);
+  const formattedEndDate = formatClassSessionDate(endDate);
 
   return (
     <div className='flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-white'>
