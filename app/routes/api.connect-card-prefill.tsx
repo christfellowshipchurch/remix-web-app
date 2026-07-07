@@ -159,6 +159,24 @@ const resolveCampusGuid = (
   return undefined;
 };
 
+const parseRockPersonResponse = (value: unknown): RockPerson | null => {
+  let person = value;
+
+  if (typeof person === 'string') {
+    try {
+      person = JSON.parse(person) as RockPerson;
+    } catch {
+      return null;
+    }
+  }
+
+  if (!person || typeof person !== 'object') {
+    return null;
+  }
+
+  return person as RockPerson;
+};
+
 const resolveRockPersonFromToken = async (
   personToken: string,
 ): Promise<RockPerson | null> => {
@@ -166,17 +184,13 @@ const resolveRockPersonFromToken = async (
     `{% assign person = "${personToken}" | PersonTokenRead %}` +
     '{{ person | ToJSON }}';
 
-  const person = (await postRockData({
+  const response = await postRockData({
     endpoint: '/Lava/RenderTemplate',
     body: lavaTemplate,
     contentType: 'text/plain',
-  })) as RockPerson | null;
+  });
 
-  if (!person || typeof person !== 'object') {
-    return null;
-  }
-
-  return person;
+  return parseRockPersonResponse(response);
 };
 
 const buildPrefill = async (

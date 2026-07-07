@@ -274,11 +274,6 @@ describe('ConnectCardForm', () => {
       );
     });
     expect(mockPrefillLoad).not.toHaveBeenCalled();
-    expect(
-      screen.getByText(
-        "We couldn't prefill your info, but you can still complete the form.",
-      ),
-    ).toBeInTheDocument();
   });
 
   it('does not call the prefill API when rckipid is missing', () => {
@@ -326,7 +321,7 @@ describe('ConnectCardForm', () => {
     expect(screen.getByDisplayValue('Janet')).toBeInTheDocument();
   });
 
-  it('shows a non-blocking message when prefill fails and still submits to connect-card', async () => {
+  it('still submits to connect-card when prefill fails', async () => {
     mockPrefillFetcherState = {
       state: 'idle',
       data: { status: 'error', message: 'Unable to load prefill data' },
@@ -335,8 +330,8 @@ describe('ConnectCardForm', () => {
     renderForm(vi.fn(), '/connect-card?rckipid=token-123');
 
     expect(
-      await screen.findByText(
-        "We couldn't prefill your info, but you can still complete the form.",
+      screen.getByText(
+        'Fill out the form below and someone from our team will follow up with you!',
       ),
     ).toBeInTheDocument();
 

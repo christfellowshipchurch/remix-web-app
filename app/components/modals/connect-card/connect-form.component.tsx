@@ -18,7 +18,6 @@ import type {
   ConnectCardLoaderReturnType,
   ConnectCardPrefill,
   ConnectCardPrefillResponse,
-  ConnectCardPrefillStatus,
 } from '~/routes/connect-card/types';
 import { pushFormEvent } from '~/lib/gtm';
 
@@ -146,13 +145,13 @@ export const renderCheckboxField = (
   </Form.Field>
 );
 
+const CONNECT_CARD_INTRO =
+  'Fill out the form below and someone from our team will follow up with you!';
+
 const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const [isOther, setIsOther] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [prefillStatus, setPrefillStatus] = useState<
-    ConnectCardPrefillStatus | 'idle' | 'loading'
-  >('idle');
   const [prefillValues, setPrefillValues] =
     useState<Required<ConnectCardPrefill>>(emptyPrefill);
   const fetcher = useFetcher({ key: 'connect-card-form' });
@@ -192,11 +191,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     setSearchParams(nextSearchParams, { replace: true });
 
     if (!isValidRckipid) {
-      setPrefillStatus('invalid-id');
       return;
     }
 
-    setPrefillStatus('loading');
     requestedPrefillRef.current = true;
     prefillFetcher.load(
       `/api/connect-card-prefill?rckpid=${encodeURIComponent(
@@ -206,11 +203,6 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   }, [prefillFetcher, searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (prefillFetcher.state === 'loading') {
-      setPrefillStatus('loading');
-      return;
-    }
-
     if (
       !requestedPrefillRef.current ||
       prefillFetcher.state !== 'idle' ||
@@ -222,7 +214,6 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
     const response = prefillFetcher.data as ConnectCardPrefillResponse;
 
     if (response.status !== 'success') {
-      setPrefillStatus(response.status);
       return;
     }
 
@@ -234,7 +225,6 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       phone: response.prefill.phone ?? current.phone,
       campus: response.prefill.campus ?? current.campus,
     }));
-    setPrefillStatus('success');
   }, [prefillFetcher.state, prefillFetcher.data]);
 
   // Effect for handling form data and submissions
@@ -291,21 +281,6 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
       }));
     };
 
-  const renderPrefillStatus = () => {
-    switch (prefillStatus) {
-      case 'loading':
-        return 'Loading your info...';
-      case 'success':
-        return 'We filled in what we found.';
-      case 'invalid-id':
-      case 'not-found':
-      case 'error':
-        return "We couldn't prefill your info, but you can still complete the form.";
-      default:
-        return null;
-    }
-  };
-
   const { campuses, allThatApplies } = formFieldData;
 
   const otherCheckbox = allThatApplies.find(
@@ -328,11 +303,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   return (
     <>
       <h2 className='mb-6 text-3xl text-navy font-bold'>Get Connected</h2>
-      {renderPrefillStatus() && (
-        <p className='-mt-4 mb-5 col-span-2 text-sm text-text-secondary'>
-          {renderPrefillStatus()}
-        </p>
-      )}
+      <p className='mb-10 col-span-2 text-sm text-text-secondary'>
+        {CONNECT_CARD_INTRO}
+      </p>
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
@@ -434,7 +407,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
           </Form.Label>
         </Form.Field>
 
-        <h3 className='mt-6 font-bold italic col-span-2 text-lg text-navy md:mt-8 '>
+        <h3 className='col-span-2 mt-6 md:mt-8 text-lg font-bold italic text-navy'>
           I am looking to:
         </h3>
         {nextStepCheckboxes.length > 0 && (
@@ -502,7 +475,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
 
         {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
 
-        <Form.Submit className='mt-6 mx-auto col-span-1 md:col-span-2' asChild>
+        <Form.Submit className='mt-10 mx-auto col-span-1 md:col-span-2' asChild>
           <Button
             className='w-40 h-12'
             size='md'

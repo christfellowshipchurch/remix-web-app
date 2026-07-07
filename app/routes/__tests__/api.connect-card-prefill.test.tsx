@@ -54,6 +54,32 @@ describe('connect card prefill API', () => {
     expect(mockFetchRockData).not.toHaveBeenCalled();
   });
 
+  it('parses a JSON string returned by Lava RenderTemplate', async () => {
+    mockPostRockData.mockResolvedValueOnce(
+      JSON.stringify({
+        id: 123,
+        firstName: 'Jane',
+        primaryCampusId: 10,
+      }),
+    );
+    mockFetchRockData
+      .mockResolvedValueOnce({
+        numberFormatted: '555-123-4567',
+      })
+      .mockResolvedValueOnce([{ id: 10, guid: 'campus-guid' }]);
+
+    const response = await loader(createArgs('?rckpid=token-123'));
+
+    expect(readData(response)).toEqual({
+      status: 'success',
+      prefill: {
+        firstName: 'Jane',
+        phone: '555-123-4567',
+        campus: 'campus-guid',
+      },
+    });
+  });
+
   it('accepts the mobile app rckpid alias', async () => {
     mockPostRockData.mockResolvedValueOnce({
       id: 123,
