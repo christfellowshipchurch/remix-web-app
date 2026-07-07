@@ -14,9 +14,9 @@ const timelineData: TimelineItem[] = [
   {
     year: '2026',
     image:
-      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3176146',
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3190355',
     imagePosition: 'object-[center_25%]',
-    body: 'Today, Christ Fellowship gathers across 14 locations in South Florida, online through Christ Fellowship Everywhere, and inside # local prison locations. For over 40 years, we’ve helped thousands of people just like you to find people to do life with, break free from the pain of their past, thrive in their marriage, become a better parent, experience financial freedom, and learn how to make a difference.',
+    body: 'Today, Christ Fellowship gathers across 14 locations in South Florida, online through Christ Fellowship Everywhere, and inside local prison locations. For over 40 years, we’ve helped thousands of people just like you to find people to do life with, break free from the pain of their past, thrive in their marriage, become a better parent, experience financial freedom, and learn how to make a difference.',
   },
   {
     year: '2023',
@@ -27,7 +27,7 @@ const timelineData: TimelineItem[] = [
   {
     year: '2011',
     image:
-      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3068098',
+      'https://cloudfront.christfellowship.church/GetImage.ashx?id=3190356',
     body: 'After 25 years of faithfully leading Christ Fellowship, Pastors Tom and Donna Mullins passed the baton and transitioned the senior leadership of Christ Fellowship to Pastors Todd and Julie Mullins. Stepping into this new season, they built upon the mission statement that had been lived out by Tom and Donna: “We are called to impact our world with the love and message of Jesus Christ—everyone, every day, everywhere.”',
   },
   {
@@ -68,13 +68,13 @@ function HistoryTabs() {
     <div className='pt-6 md:pt-12 pb-12 lg:py-24 w-full relative'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-8 items-center'>
         {/* Image */}
-        <div className='relative mx-auto md:mx-0 h-full min-h-[300px] max-w-full md:max-h-[500px] md:max-w-none lg:min-h-[500px] overflow-hidden z-20 content-padding md:px-0'>
+        <div className='relative mx-auto md:mx-0 h-full min-h-[300px] max-w-full md:max-h-[500px] md:max-w-none lg:min-h-[500px]  z-20 content-padding md:px-0'>
           <img
             src={timelineData[activeTab].image}
             alt={`Christ Fellowship Church History - ${timelineData[activeTab].year}`}
             className={`w-full h-full object-cover ${
               timelineData[activeTab].imagePosition ?? ''
-            } shadow-xl transition-all duration-300 rounded-[1rem] md:rounded-none 2xl:!rounded-[1rem] ${
+            } shadow-xl transition-all duration-300 rounded-2xl md:rounded-l-none 2xl:rounded-l-2xl! ${
               transitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
             }`}
           />
@@ -94,13 +94,13 @@ function HistoryTabs() {
             handleTabChange={handleTabChange}
           />
           <div
-            className={`transition-all duration-300 mt-6 lg:mt-0space-y-4 ${
+            className={`transition-all duration-300 md:mt-6 lg:mt-0space-y-4 ${
               transitioning
                 ? 'opacity-0 translate-y-4'
                 : 'opacity-100 translate-y-0'
             }`}
           >
-            <p className='md:text-lg text-text-secondary w-full sm:w-3/4 md:w-full mt-4'>
+            <p className='md:text-lg text-text-secondary w-full sm:w-3/4 md:w-full md:mt-4'>
               {timelineData[activeTab].body}
             </p>
           </div>

@@ -350,7 +350,7 @@ export function Navbar() {
                               className={cn(
                                 'fixed left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50',
                                 'animate-in slide-in-from-top-2 duration-200',
-                                showSiteBanner ? 'top-[130px]' : 'top-[82px]',
+                                showSiteBanner ? 'top-[152px]' : 'top-[104px]',
                               )}
                             >
                               <MenuContent

@@ -27,75 +27,77 @@ const TabsSection = ({ isSpanish }: { isSpanish?: boolean }) => {
   );
 
   return (
-    <Tabs.Root
-      value={activeTab}
-      onValueChange={setActiveTab}
-      className='w-full flex flex-col justify-center items-center relative mt-16'
-    >
-      {/* Tabs List */}
-      <Tabs.List className='flex w-full gap-4 max-w-[978px] items-center md:justify-center md:flex-wrap overflow-x-auto md:overflow-x-hidden pb-10 scrollbar-hide'>
-        {isSpanish
-          ? spanishTwentyOneDaysDevotionalData.map((tab, index) => (
-              <Tabs.Trigger
-                key={index}
-                value={tab.value}
-                className={cn(
-                  'flex px-4 py-1 font-semibold bg-white data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[29px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer min-w-[90px] md:min-w-auto items-center justify-center text-center',
-                  index === 0 && 'md:ml-0 ml-4',
-                  index === spanishTwentyOneDaysDevotionalData.length - 1 &&
-                    'md:mr-0 mr-4',
-                )}
-              >
-                {tab.label}
-              </Tabs.Trigger>
-            ))
-          : twentyOneDaysDevotionalData.map((tab, index) => (
-              <Tabs.Trigger
-                key={index}
-                value={tab.value}
-                className={cn(
-                  'flex px-4 py-1 font-semibold bg-white data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[29px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer min-w-[90px] md:min-w-auto items-center justify-center text-center',
-                  index === 0 && 'md:ml-0 ml-4',
-                  index === twentyOneDaysDevotionalData.length - 1 &&
-                    'md:mr-0 mr-4',
-                )}
-              >
-                {tab.label}
-              </Tabs.Trigger>
-            ))}
-      </Tabs.List>
-
-      <div className='w-full content-padding bg-white pt-12 lg:pt-16 pb-32 lg:pb-56'>
-        <div className='w-full flex flex-col justify-center items-center max-w-[978px] mx-auto'>
-          {/* Tab */}
+    <section id='devo'>
+      <Tabs.Root
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className='w-full flex flex-col justify-center items-center relative mt-16'
+      >
+        {/* Tabs List */}
+        <Tabs.List className='flex w-full gap-4 max-w-[978px] items-center md:justify-center md:flex-wrap overflow-x-auto md:overflow-x-hidden pb-10 scrollbar-hide'>
           {isSpanish
             ? spanishTwentyOneDaysDevotionalData.map((tab, index) => (
-                <Tabs.Content
+                <Tabs.Trigger
                   key={index}
                   value={tab.value}
-                  className='w-full data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300'
+                  className={cn(
+                    'flex px-4 py-1 font-semibold bg-white data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[29px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer min-w-[90px] md:min-w-auto items-center justify-center text-center',
+                    index === 0 && 'md:ml-0 ml-4',
+                    index === spanishTwentyOneDaysDevotionalData.length - 1 &&
+                      'md:mr-0 mr-4',
+                  )}
                 >
-                  <HTMLRenderer
-                    html={tab.content}
-                    className='devotional-content'
-                  />
-                </Tabs.Content>
+                  {tab.label}
+                </Tabs.Trigger>
               ))
             : twentyOneDaysDevotionalData.map((tab, index) => (
-                <Tabs.Content
+                <Tabs.Trigger
                   key={index}
                   value={tab.value}
-                  className='w-full data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300'
+                  className={cn(
+                    'flex px-4 py-1 font-semibold bg-white data-[state=active]:bg-ocean data-[state=active]:text-white rounded-[29px] transition-all duration-300 hover:bg-neutral-lightest cursor-pointer min-w-[90px] md:min-w-auto items-center justify-center text-center',
+                    index === 0 && 'md:ml-0 ml-4',
+                    index === twentyOneDaysDevotionalData.length - 1 &&
+                      'md:mr-0 mr-4',
+                  )}
                 >
-                  <HTMLRenderer
-                    html={tab.content}
-                    className='devotional-content'
-                  />
-                </Tabs.Content>
+                  {tab.label}
+                </Tabs.Trigger>
               ))}
+        </Tabs.List>
+
+        <div className='w-full content-padding bg-white pt-12 lg:pt-16 pb-32 lg:pb-56'>
+          <div className='w-full flex flex-col justify-center items-center max-w-[978px] mx-auto'>
+            {/* Tab */}
+            {isSpanish
+              ? spanishTwentyOneDaysDevotionalData.map((tab, index) => (
+                  <Tabs.Content
+                    key={index}
+                    value={tab.value}
+                    className='w-full data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300'
+                  >
+                    <HTMLRenderer
+                      html={tab.content}
+                      className='devotional-content'
+                    />
+                  </Tabs.Content>
+                ))
+              : twentyOneDaysDevotionalData.map((tab, index) => (
+                  <Tabs.Content
+                    key={index}
+                    value={tab.value}
+                    className='w-full data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:zoom-in-95 data-[state=active]:duration-300'
+                  >
+                    <HTMLRenderer
+                      html={tab.content}
+                      className='devotional-content'
+                    />
+                  </Tabs.Content>
+                ))}
+          </div>
         </div>
-      </div>
-    </Tabs.Root>
+      </Tabs.Root>
+    </section>
   );
 };
 

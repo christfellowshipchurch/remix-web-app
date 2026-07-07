@@ -32,6 +32,8 @@ type RockPageEmbedKey =
   (typeof ROCK_PAGE_EMBED_KEYS)[keyof typeof ROCK_PAGE_EMBED_KEYS];
 
 type RockPageEmbedConfig = {
+  /** Document title for the in-app rock-page route. */
+  title: string;
   path: string;
   /** Maps app query param names to Rock query param names (values from request). */
   queryParams?: Record<string, string>;
@@ -39,9 +41,12 @@ type RockPageEmbedConfig = {
   fixedQueryParams?: Record<string, string>;
 };
 
+export const ROCK_PAGE_DEFAULT_META_TITLE = 'Rock Content';
+
 // Config for the embeds.
 const ROCK_PAGE_EMBEDS: Record<RockPageEmbedKey, RockPageEmbedConfig> = {
   [ROCK_PAGE_EMBED_KEYS.churchOpportunity]: {
+    title: 'Church Opportunity Application',
     path: `/page/${CHURCH_OPPORTUNITY_APPLICATION_PAGE_ID}`,
     queryParams: {
       opportunityId: 'OpportunityId',
@@ -51,6 +56,7 @@ const ROCK_PAGE_EMBEDS: Record<RockPageEmbedKey, RockPageEmbedConfig> = {
     },
   },
   [ROCK_PAGE_EMBED_KEYS.volunteerApplication]: {
+    title: 'Help Me Find a Place',
     path: '/form-embed',
     fixedQueryParams: {
       WorkflowTypeGuid: VOLUNTEER_APPLICATION_WORKFLOW_TYPE_GUID,
@@ -58,6 +64,19 @@ const ROCK_PAGE_EMBEDS: Record<RockPageEmbedKey, RockPageEmbedConfig> = {
     },
   },
 };
+
+export function getRockPageEmbedMetaTitle(
+  embed: string | null | undefined,
+): string {
+  if (!embed) {
+    return ROCK_PAGE_DEFAULT_META_TITLE;
+  }
+
+  return (
+    ROCK_PAGE_EMBEDS[embed as RockPageEmbedKey]?.title ??
+    ROCK_PAGE_DEFAULT_META_TITLE
+  );
+}
 
 export function buildRockPageEmbedUrl(
   embedKey: string,

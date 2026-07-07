@@ -32,6 +32,7 @@ import {
 import { useAlgoliaUrlSync } from '~/hooks/use-algolia-url-sync';
 import { useScrollToSearchResultsOnLoad } from '~/hooks/use-scroll-to-search-results-on-load';
 import { HubsTagsRefinementList } from '~/components/hubs-tags-refinement';
+import { Button } from '~/primitives/button/button.primitive';
 import {
   classFinderEmptyState,
   ClassFinderUrlState,
@@ -84,8 +85,14 @@ function getInitialStateFromUrl(
 
 export const ClassSearch = () => {
   const loaderData = useLoaderData<LoaderReturnType>();
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY, classHits, algoliaIndexes } =
-    loaderData;
+  const {
+    ALGOLIA_APP_ID,
+    ALGOLIA_SEARCH_API_KEY,
+    classHits,
+    interestOnlyHits,
+    rockCoverImagesByPath,
+    algoliaIndexes,
+  } = loaderData;
   const classIndexName = algoliaIndexes.classes;
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -155,6 +162,16 @@ export const ClassSearch = () => {
   const fromClassFinderUrl =
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : '');
+
+  // Interest-only (Rock) cards can't be filtered by Algolia, so they — and the
+  // appended "Can't find a class?" card — only show in the unfiltered view.
+  const finderFiltersActive = useMemo(() => {
+    const s = parseClassFinderUrlState(searchParams);
+    return (
+      (s.query?.trim?.()?.length ?? 0) > 0 ||
+      !!(s.refinementList && Object.keys(s.refinementList).length > 0)
+    );
+  }, [searchParams]);
 
   /** SSR/hydration: skeleton filters until react-instantsearch mounts (same pattern as group finder). */
   const [filtersMounted, setFiltersMounted] = useState(false);
@@ -255,7 +272,11 @@ export const ClassSearch = () => {
               <div className='max-w-screen-content mx-auto md:w-full'>
                 <ClassTypeGroupedInstantSearchResults
                   initialHits={classHits}
+                  interestOnlyHits={interestOnlyHits}
+                  rockCoverImagesByPath={rockCoverImagesByPath}
+                  filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
+                  onClearFilters={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
@@ -280,7 +301,11 @@ export const ClassSearch = () => {
                 <ClassTypeGroupedResults
                   hits={classHits}
                   isLoading={false}
+                  interestOnlyHits={interestOnlyHits}
+                  rockCoverImagesByPath={rockCoverImagesByPath}
+                  filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
+                  onClearFilters={clearAllFiltersFromUrl}
                 />
               </div>
             </div>
@@ -295,10 +320,18 @@ const ITEMS_PER_PAGE = 12;
 
 function ClassTypeGroupedInstantSearchResults({
   initialHits,
+  interestOnlyHits,
+  rockCoverImagesByPath,
+  filtersActive,
   fromClassFinderUrl,
+  onClearFilters,
 }: {
   initialHits: ClassHitType[];
+  interestOnlyHits: ClassHitType[];
+  rockCoverImagesByPath: Record<string, string>;
+  filtersActive: boolean;
   fromClassFinderUrl?: string;
+  onClearFilters: () => void;
 }) {
   const { items } = useHits<ClassHitType>();
   const { status } = useInstantSearch();
@@ -313,7 +346,11 @@ function ClassTypeGroupedInstantSearchResults({
     <ClassTypeGroupedResults
       hits={hits}
       isLoading={isLoading}
+      interestOnlyHits={interestOnlyHits}
+      rockCoverImagesByPath={rockCoverImagesByPath}
+      filtersActive={filtersActive}
       fromClassFinderUrl={fromClassFinderUrl}
+      onClearFilters={onClearFilters}
     />
   );
 }
@@ -321,23 +358,74 @@ function ClassTypeGroupedInstantSearchResults({
 function ClassTypeGroupedResults({
   hits,
   isLoading,
+  interestOnlyHits,
+  rockCoverImagesByPath,
+  filtersActive,
   fromClassFinderUrl,
+  onClearFilters,
 }: {
   hits: ClassHitType[];
   isLoading: boolean;
+  interestOnlyHits: ClassHitType[];
+  rockCoverImagesByPath: Record<string, string>;
+  filtersActive: boolean;
   fromClassFinderUrl?: string;
+  onClearFilters: () => void;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams] = useSearchParams();
 
-  const grouped = useMemo(() => groupClassTypeHits(hits), [hits]);
+  const grouped = useMemo(
+    () => groupClassTypeHits(hits, rockCoverImagesByPath),
+    [hits, rockCoverImagesByPath],
+  );
 
   // The class finder presents one card per class type group, not one raw
   // Algolia record per session. Build synthetic cards from grouped hits before
   // local pagination so the UI stays consistent with the pre-SSR behavior.
-  const mappedHits = useMemo(
+  const algoliaHits = useMemo(
     () => syntheticHitsFromGrouped(grouped),
     [grouped],
   );
+
+  // When only topic refinements are active (no text query, no other filters),
+  // filter interest-only hits client-side so they participate in the topic filter.
+  // For any other active filter (query, format, language) they have no data to
+  // match against, so they're hidden.
+  const { activeTopic, onlyTopicActive } = useMemo(() => {
+    const s = parseClassFinderUrlState(searchParams);
+    const topicList = s.refinementList?.topic ?? [];
+    const hasQuery = (s.query?.trim?.()?.length ?? 0) > 0;
+    const otherRefinements = Object.entries(s.refinementList ?? {})
+      .filter(([key]) => key !== 'topic')
+      .some(([, vals]) => vals.length > 0);
+    return {
+      activeTopic: topicList,
+      onlyTopicActive: !hasQuery && !otherRefinements && topicList.length > 0,
+    };
+  }, [searchParams]);
+
+  const mappedHits = useMemo(() => {
+    if (interestOnlyHits.length === 0) return algoliaHits;
+    const seen = new Set(algoliaHits.map((h) => h.pathName).filter(Boolean));
+    const extras = interestOnlyHits.filter(
+      (h) => h.pathName && !seen.has(h.pathName),
+    );
+    if (!filtersActive) return [...algoliaHits, ...extras];
+    if (onlyTopicActive) {
+      const topicFiltered = extras.filter(
+        (h) => h.topic && activeTopic.includes(h.topic),
+      );
+      return [...algoliaHits, ...topicFiltered];
+    }
+    return algoliaHits;
+  }, [
+    algoliaHits,
+    interestOnlyHits,
+    filtersActive,
+    onlyTopicActive,
+    activeTopic,
+  ]);
 
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);
@@ -348,6 +436,8 @@ function ClassTypeGroupedResults({
     setCurrentPage(1);
   }, [mappedHits.length]);
 
+  const noResults = filtersActive && !isLoading && mappedHits.length === 0;
+
   return (
     <>
       <div
@@ -357,25 +447,39 @@ function ClassTypeGroupedResults({
       >
         <FinderResultsStats hitCount={mappedHits.length} />
 
-        <div className='flex w-full items-center justify-center md:items-start md:justify-start'>
-          <div className='grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-            {pageHits.map((hit) => (
-              <ClassHitComponent
-                key={hit.objectID}
-                hit={hit}
-                fromClassFinderUrl={fromClassFinderUrl}
-              />
-            ))}
+        {noResults ? (
+          <div className='flex flex-col items-center gap-4 py-8 text-center'>
+            <p className='text-text-secondary'>
+              No classes match your search. Try adjusting your filters, or
+              browse all classes.
+            </p>
+            <Button intent='secondary' size='md' onClick={onClearFilters}>
+              Clear All Filters
+            </Button>
           </div>
-        </div>
+        ) : (
+          <div className='flex w-full items-center justify-center md:items-start md:justify-start'>
+            <div className='grid w-full max-w-[900px] items-stretch lg:max-w-[1296px] gap-y-6 sm:gap-x-8 md:gap-y-8 lg:gap-x-4 lg:gap-y-16 xl:gap-x-8! grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+              {pageHits.map((hit) => (
+                <ClassHitComponent
+                  key={hit.objectID}
+                  hit={hit}
+                  fromClassFinderUrl={fromClassFinderUrl}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <ClassSearchPagination
-        totalItems={mappedHits.length}
-        itemsPerPage={ITEMS_PER_PAGE}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+      {!noResults && (
+        <ClassSearchPagination
+          totalItems={mappedHits.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </>
   );
 }

@@ -14,6 +14,11 @@ import {
 } from './partials/church-serving-area-partials.partial';
 import type { LoaderReturnType } from './loader';
 
+const CHURCH_OPPORTUNITY_OVERRIDES: Record<string, string> = {
+  missions: '/volunteer#community',
+  worship: 'https://lnk.bio/CFWorshipLinks',
+};
+
 export function ChurchServingAreaPage() {
   const { bucket, roles } = useLoaderData<LoaderReturnType>();
   const navigate = useNavigate();
@@ -30,12 +35,27 @@ export function ChurchServingAreaPage() {
   const onContinue = useCallback(() => {
     const opportunityId = selectedRoleGuid?.trim();
     if (!opportunityId) return;
+
+    const selectedRole = roles.find((role) => role.id === opportunityId);
+    const overrideUrl = selectedRole
+      ? CHURCH_OPPORTUNITY_OVERRIDES[selectedRole.title.trim().toLowerCase()]
+      : null;
+    if (overrideUrl) {
+      if (/^https?:\/\//.test(overrideUrl)) {
+        window.open(overrideUrl, '_blank', 'noopener,noreferrer');
+        return;
+      }
+
+      navigate(overrideUrl);
+      return;
+    }
+
     const searchParams = new URLSearchParams({
       embed: 'church-opportunity',
       opportunityId,
     });
     navigate(`/rock-page?${searchParams.toString()}`);
-  }, [navigate, selectedRoleGuid]);
+  }, [navigate, roles, selectedRoleGuid]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);

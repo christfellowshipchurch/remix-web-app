@@ -40,7 +40,7 @@ export const VolunteerFormWelcome: React.FC = () => {
         </div>
         <span className='flex items-center gap-1 text-sm text-secondary'>
           <Icon name='timeFive' className='size-5 text-ocean' />
-          Takes 1 minute
+          Takes 1 to 3 minutes
         </span>
       </div>
     </section>

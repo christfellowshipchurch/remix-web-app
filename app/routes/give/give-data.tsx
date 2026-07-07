@@ -70,7 +70,7 @@ export const giveImproveFinancesData: CollectionItem[] = [
     id: 'give-improve-finances-2',
     name: 'Messages About Giving',
     contentType: 'REDIRECT_CARD',
-    pathname: '/series-resources/9a381c82-d93c-4b2e-aab7-3440f53a8a2e',
+    pathname: '/series-resources/how-to-master-your-money',
     contentChannelId: 'give-improve-finances-2',
     summary:
       'It’s not about what God wants from you but what He wants for you!',

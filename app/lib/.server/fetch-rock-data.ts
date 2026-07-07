@@ -123,6 +123,30 @@ const buildMergedFilter = (
   return existingFilter ? `(${existingFilter}) and (${newClause})` : newClause;
 };
 
+const isSingleItemAttributeValueFetch = (endpoint: string): boolean =>
+  endpoint.replace(/^\/+|\/+$/g, '') ===
+  'ContentChannelItems/GetByAttributeValue';
+
+const applyDateRangeFilter = <T>(data: T, now: Date): T | [] => {
+  if (Array.isArray(data)) {
+    const filteredData = data.filter((item) =>
+      isItemInDateRange(item as ItemWithDateRange, now),
+    );
+
+    return filteredData.length === 1 ? filteredData[0] : (filteredData as T);
+  }
+
+  if (
+    data &&
+    typeof data === 'object' &&
+    !isItemInDateRange(data as ItemWithDateRange, now)
+  ) {
+    return [];
+  }
+
+  return data;
+};
+
 export const fetchRockData = async ({
   endpoint,
   queryParams = {},
@@ -133,10 +157,13 @@ export const fetchRockData = async ({
   filterByStatusApproved = false,
 }: FetchRockDataOptions) => {
   const mergedQueryParams = { ...queryParams };
+  const shouldFilterDateRangeInMemory =
+    filterByDateRange && isSingleItemAttributeValueFetch(endpoint);
+
   if (filterByDateRange || filterByStatusApproved) {
     mergedQueryParams.$filter = buildMergedFilter(
       queryParams.$filter,
-      filterByDateRange,
+      shouldFilterDateRangeInMemory ? false : filterByDateRange,
       filterByStatusApproved,
     );
   }
@@ -153,7 +180,10 @@ export const fetchRockData = async ({
     try {
       const cachedData = await redis.get(cacheKey);
       if (cachedData) {
-        return JSON.parse(cachedData);
+        const parsedData = JSON.parse(cachedData);
+        return shouldFilterDateRangeInMemory
+          ? applyDateRangeFilter(parsedData, new Date())
+          : parsedData;
       }
     } catch {
       console.error(
@@ -198,7 +228,9 @@ export const fetchRockData = async ({
       }
     }
 
-    return data;
+    return shouldFilterDateRangeInMemory
+      ? applyDateRangeFilter(data, new Date())
+      : data;
   } catch (error) {
     console.error('Error fetching rock data:', error);
     throw error;
@@ -268,6 +300,33 @@ export const postRockData = async ({
   }
 
   return JSON.parse(responseBody);
+};
+
+/**
+ * Updates data at a Rock endpoint using PUT
+ * @param params.endpoint - Rock endpoint to put to
+ * @param params.body - the body of the put request
+ * @returns response body as JSON
+ */
+export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
+  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorDetails = await response.text();
+    throw new Error(
+      `Failed to put data: ${response.status}, details: ${errorDetails}`,
+    );
+  }
+
+  const responseBody = await response.text();
+  return responseBody ? JSON.parse(responseBody) : {};
 };
 
 /**

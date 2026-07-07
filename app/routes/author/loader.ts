@@ -1,7 +1,7 @@
 import { LoaderFunction } from 'react-router-dom';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import { format } from 'date-fns';
-import { Author } from './types';
+import { AuthorLoaderData } from './types';
 import {
   fetchAuthorData,
   fetchPersonAliasGuid,
@@ -276,7 +276,7 @@ export const getAuthorDetails = async (personId: string) => {
   }
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const authorPathname = params?.authorId || '';
 
   // Use the new pathname-based approach
@@ -290,12 +290,15 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const authorData: Author = {
+  const origin = new URL(request.url).origin;
+
+  const authorData: AuthorLoaderData = {
     id: data.id,
     fullName: data.fullName,
     profilePhoto: data.photo.uri ?? '',
     authorAttributes: data.authorAttributes,
+    hostUrl: origin,
   };
 
-  return <Author>authorData;
+  return authorData;
 };

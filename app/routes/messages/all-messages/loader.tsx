@@ -5,6 +5,7 @@ import { algoliasearch } from 'algoliasearch';
 import { escapeAlgoliaFilterString } from '~/components/finders/finder-algolia.utils';
 import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import { AuthenticationError } from '~/lib/.server/error-types';
+import { fetchRockData } from '~/lib/.server/fetch-rock-data';
 import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 import type { ContentItemHit } from '~/routes/search/types';
 
@@ -23,6 +24,7 @@ export type AllMessagesLoaderReturnType = {
   ALGOLIA_SEARCH_API_KEY: string;
   algoliaIndexes: AlgoliaIndexMap;
   currentSeriesHit: ContentItemHit | null;
+  currentSeriesUrl: string;
   allMessagesHits: ContentItemHit[];
   allMessagesNbPages: number;
   allMessagesPage: number;
@@ -83,6 +85,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   let currentSeriesHit: ContentItemHit | null = null;
+  let currentSeriesUrl = '';
   let allMessagesHits: ContentItemHit[] = [];
   let allMessagesNbPages = 0;
 
@@ -113,6 +116,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         ? (seriesHits[0] as unknown as ContentItemHit)
         : null;
 
+    if (currentSeriesHit?.sermonSeriesGuid) {
+      const seriesData = await fetchRockData({
+        endpoint: `DefinedValues/`,
+        queryParams: {
+          $filter: `Guid eq guid'${currentSeriesHit.sermonSeriesGuid}'`,
+          loadAttributes: 'simple',
+        },
+      });
+      currentSeriesUrl = seriesData?.attributeValues?.url?.value || '';
+    }
+
     allMessagesHits = (gridRes.hits ?? []).map(
       (h) => h as unknown as ContentItemHit,
     );
@@ -126,6 +140,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
     algoliaIndexes,
     currentSeriesHit,
+    currentSeriesUrl,
     allMessagesHits,
     allMessagesNbPages,
     allMessagesPage,

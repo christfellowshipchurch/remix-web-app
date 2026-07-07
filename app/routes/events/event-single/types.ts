@@ -62,6 +62,6 @@ export interface EventFinderHit {
   location: string;
   day: string;
   time: string;
-  date: string;
+  date: string[];
   subGroupType: string;
 }

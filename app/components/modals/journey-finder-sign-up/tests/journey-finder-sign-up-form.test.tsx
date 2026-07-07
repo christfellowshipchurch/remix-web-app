@@ -85,6 +85,33 @@ describe('JourneyFinderSignUpForm', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the required Reason select options', () => {
+    renderForm();
+    expect(
+      screen.getByText('What is your main reason for signing up for Journey?'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Learn more about Christ Fellowship Church'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Find community and build relationships'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Grow in my faith')).toBeInTheDocument();
+    expect(
+      screen.getByText('Join the Dream Team and start serving'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Get more involved at Christ Fellowship'),
+    ).toBeInTheDocument();
+
+    const select = document.querySelector(
+      "select[name='reason']",
+    ) as HTMLSelectElement;
+    expect(select).toBeInTheDocument();
+    expect(select.required).toBe(true);
+    expect(select.options.length).toBe(6);
+  });
+
   it('includes a hidden Group input populated from the URL search param', () => {
     renderForm();
     const hidden = document.querySelector(
@@ -151,6 +178,24 @@ describe('JourneyFinderSignUpForm', () => {
     expect(screen.getByText('Teléfono celular')).toBeInTheDocument();
     expect(screen.getByText('Correo electrónico')).toBeInTheDocument();
     expect(screen.getByText('Menos de 1 mes')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '¿Cuál es tu razón principal para inscribirte en Journey?',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Conocer más acerca de la Iglesia Christ Fellowship'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Encontrar comunidad y construir relaciones'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Crecer en mi fe')).toBeInTheDocument();
+    expect(
+      screen.getByText('Unirme al Dream Team y comenzar a servir'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Involucrarme más en Christ Fellowship'),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /enviar/i })).toBeInTheDocument();
   });
 

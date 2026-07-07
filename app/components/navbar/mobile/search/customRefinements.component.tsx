@@ -1,5 +1,15 @@
-import { useRefinementList, useInstantSearch } from 'react-instantsearch';
 import { useRef } from 'react';
+import { useRefinementList, useInstantSearch } from 'react-instantsearch';
+
+import {
+  getAvailablePageContentTypes,
+  hasVisiblePageRefinements,
+  isPagesRefinementSelected,
+  isPageContentType,
+  useClearStalePageRefinements,
+  withoutPageContentTypes,
+} from '../../search-page-refinements';
+import { useGlobalSearchLocationMatches } from '../../global-search-location-context';
 
 export const MobileSearchCustomRefinementList = ({
   attribute,
@@ -9,81 +19,65 @@ export const MobileSearchCustomRefinementList = ({
   const { items, refine } = useRefinementList({ attribute });
   const { indexUiState, setIndexUiState } = useInstantSearch();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { hasMatchingLocations } = useGlobalSearchLocationMatches();
 
-  // Get currently selected items from the index state
   const selectedItems =
     (indexUiState?.refinementList?.[attribute] as string[]) || [];
-
-  // Check if "Ministry Page", "Page Builder", or "Redirect Card" is selected
-  const isPagesSelected =
-    selectedItems.includes('Ministry Page') ||
-    selectedItems.includes('Page Builder') ||
-    selectedItems.includes('Redirect Card');
-
-  // Filter out "Ministry Page", "Page Builder", and "Redirect Card" from regular items
-  const filteredItems = items.filter(
-    (item) =>
-      item.value !== 'Ministry Page' &&
-      item.value !== 'Page Builder' &&
-      item.value !== 'Redirect Card',
+  const isPagesSelected = isPagesRefinementSelected(selectedItems);
+  const showPagesFilter = hasVisiblePageRefinements(
+    items,
+    hasMatchingLocations,
   );
 
-  const handleItemClick = (value: string) => {
-    refine(value);
+  useClearStalePageRefinements({
+    attribute,
+    items,
+    selectedItems,
+    setIndexUiState,
+    hasMatchingLocationResults: hasMatchingLocations,
+  });
 
-    // Scroll to the start after a short delay
+  const filteredItems = items.filter((item) => !isPageContentType(item.value));
+
+  const scrollToStart = () => {
     setTimeout(() => {
-      if (containerRef.current) {
-        containerRef.current.scrollTo({
-          left: 0,
-          behavior: 'smooth',
-        });
-      }
+      containerRef.current?.scrollTo({
+        left: 0,
+        behavior: 'smooth',
+      });
     }, 100);
   };
 
+  const handleItemClick = (value: string) => {
+    refine(value);
+    scrollToStart();
+  };
+
   const handlePagesClick = () => {
-    const currentSelected = selectedItems.filter(
-      (item) =>
-        item !== 'Ministry Page' &&
-        item !== 'Page Builder' &&
-        item !== 'Redirect Card',
-    );
+    const nonPageSelected = withoutPageContentTypes(selectedItems);
 
     if (isPagesSelected) {
-      // Deselect "Ministry Page", "Page Builder", and "Redirect Card"
       setIndexUiState((prevState) => ({
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
-          [attribute]: currentSelected,
+          [attribute]: nonPageSelected,
         },
       }));
     } else {
-      // Select "Ministry Page", "Page Builder", and "Redirect Card"
       setIndexUiState((prevState) => ({
         ...prevState,
         refinementList: {
           ...prevState.refinementList,
           [attribute]: [
-            ...currentSelected,
-            'Ministry Page',
-            'Page Builder',
-            'Redirect Card',
+            ...nonPageSelected,
+            ...getAvailablePageContentTypes(items),
           ],
         },
       }));
     }
 
-    // Scroll to the start after a short delay
-    setTimeout(() => {
-      if (containerRef.current) {
-        containerRef.current.scrollTo({
-          left: 0,
-          behavior: 'smooth',
-        });
-      }
-    }, 100);
+    scrollToStart();
   };
 
   return (
@@ -91,19 +85,19 @@ export const MobileSearchCustomRefinementList = ({
       ref={containerRef}
       className='flex gap-2 overflow-x-scroll max-w-screen pr-8 pb-2 scrollbar-hide'
     >
-      {/* Custom "Pages" button combining Ministry Page and Page Builder */}
-      <button
-        onClick={handlePagesClick}
-        className={`flex items-center justify-center text-center text-sm font-bold px-4 py-1 whitespace-nowrap transition-all duration-300 ml-4 ${
-          isPagesSelected
-            ? 'text-white bg-navy rounded-[55px]'
-            : 'text-[#7B7382]'
-        }`}
-      >
-        Pages
-      </button>
+      {showPagesFilter ? (
+        <button
+          onClick={handlePagesClick}
+          className={`flex items-center justify-center text-center text-sm font-bold px-4 py-1 whitespace-nowrap transition-all duration-300 ml-4 ${
+            isPagesSelected
+              ? 'text-white bg-navy rounded-[55px]'
+              : 'text-[#7B7382]'
+          }`}
+        >
+          Pages
+        </button>
+      ) : null}
 
-      {/* Other refinement items */}
       {filteredItems.map((item) => {
         const isSelected = selectedItems.includes(item.value);
 

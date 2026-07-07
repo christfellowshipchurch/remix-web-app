@@ -2,8 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 import { cn } from '~/lib/utils';
 
-import { ANCHOR_SCROLL_OFFSET } from '~/components/navbar/scroll-offset.constants';
+import { scrollToAnchor } from '~/lib/scroll-to-anchor';
 import { useStickyTopBelowNavbarClass } from '~/hooks/use-sticky-top-below-navbar';
+import {
+  EVENT_SECTION_NAV_ID,
+  useEventSectionScrollOffset,
+} from '../hooks/use-event-section-scroll-offset';
 
 export const EventBanner = ({
   cta,
@@ -16,6 +20,7 @@ export const EventBanner = ({
 }) => {
   const [activeSection, setActiveSection] = useState<string>('');
   const stickyTopClass = useStickyTopBelowNavbarClass();
+  const getScrollOffset = useEventSectionScrollOffset();
 
   const buttonStyles =
     'bg-navy hover:!bg-ocean text-xs font-semibold rounded-[6px] px-3 py-[6px] min-h-0 min-w-0';
@@ -26,8 +31,7 @@ export const EventBanner = ({
   // Derive active section from scroll position to improve accuracy when scrolling up - this function worked
   //  better than IntersectionObserver alone or other alternatives I tried
   const updateActiveSectionFromOffsets = useCallback(() => {
-    const offset = ANCHOR_SCROLL_OFFSET;
-    const currentY = window.scrollY + offset;
+    const currentY = window.scrollY + getScrollOffset();
     const candidates = sections
       .map(({ id }) => {
         const el = document.getElementById(id);
@@ -51,21 +55,11 @@ export const EventBanner = ({
     if (chosen) {
       setActiveSection((prev) => (chosen !== prev ? chosen : prev));
     }
-  }, [sections]);
+  }, [sections, getScrollOffset]);
 
   const handleSectionClick = (e: React.MouseEvent, targetId: string) => {
     e.preventDefault();
-    const element = document.getElementById(targetId);
-    if (element) {
-      const elementRect = element.getBoundingClientRect();
-      const absoluteElementTop = elementRect.top + window.scrollY;
-      const offsetTop = absoluteElementTop - ANCHOR_SCROLL_OFFSET;
-
-      window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth',
-      });
-    }
+    scrollToAnchor(targetId, { offset: getScrollOffset() });
   };
 
   useEffect(() => {
@@ -90,7 +84,7 @@ export const EventBanner = ({
       },
       {
         threshold: [0.1, 0.25, 0.5, 0.75, 1],
-        rootMargin: `-${ANCHOR_SCROLL_OFFSET}px 0px -35% 0px`,
+        rootMargin: `-${getScrollOffset()}px 0px -35% 0px`,
       },
     );
 
@@ -105,10 +99,11 @@ export const EventBanner = ({
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [sections, getScrollOffset]);
 
   return (
     <div
+      id={EVENT_SECTION_NAV_ID}
       className={cn(
         'w-full bg-white content-padding py-[15px] shadow-md sticky transition-all duration-300 z-10',
         stickyTopClass,

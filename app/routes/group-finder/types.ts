@@ -97,21 +97,32 @@ export interface GroupType {
   peopleWhoAre?: GroupPeopleWhoAre[];
   /** Empty string when unset in Rock / Algolia. */
   language: GroupLanguage | '';
-  /** Often a comma-separated list from Rock; use {@link splitGroupTopics} for tags. */
-  topics: string;
+  /** Topic tags from Algolia (array of strings). */
+  topics: string[];
   minMaxAge: string;
   _geoloc: { lat: number | ''; lng: number | '' } | null;
   /** Present when getRankingInfo is true and aroundLatLng is set; distance in meters from search point. */
   _rankingInfo?: { geoDistance?: number };
 }
 
-/** Split `topics` from Algolia into display tags. */
-export function splitGroupTopics(topics: string | null | undefined): string[] {
-  if (topics == null || !String(topics).trim()) {
+/** Normalize `topics` from Algolia into display tags. */
+export function splitGroupTopics(
+  topics: string | string[] | null | undefined,
+): string[] {
+  if (topics == null) {
     return [];
   }
+
+  if (Array.isArray(topics)) {
+    return topics.map((topic) => String(topic).trim()).filter(Boolean);
+  }
+
+  if (!String(topics).trim()) {
+    return [];
+  }
+
   return String(topics)
     .split(',')
-    .map((s) => s.trim())
+    .map((topic) => topic.trim())
     .filter(Boolean);
 }

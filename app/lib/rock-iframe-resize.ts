@@ -2,18 +2,28 @@
 export const ROCK_PARENT_RESIZE_QUERY_PARAM = 'ParentResize';
 
 /**
- * Add this HTML block to Rock page 5886 (or any embedded Rock page) so the
- * parent site can resize the iframe while loading Rock directly (no proxy).
+ * Rock iframe auto-height for direct embeds (rock-page uses useAdvancedProxy=false).
  *
- * Option A — inline script (recommended):
- * {% if PageParameter.ParentResize == '1' %}
- * <script>{% include '~~ paste contents of /public/rock-iframe-resize.js ~~' %}</script>
- * {% endif %}
+ * ## Where to add it in Rock
  *
- * Option B — external script from this app:
- * {% if PageParameter.ParentResize == '1' %}
+ * **Page Properties → Header Content** (raw HTML, no Lava) — paste a script tag or
+ * inline script. The `if (window.self === window.top) return` guard ensures it only
+ * runs when framed; no `{% if PageParameter.ParentResize %}` needed.
+ *
+ * **Lava HTML blocks** — same script; optional ParentResize guard if you prefer.
+ *
+ * Add to every page/template in a multi-step workflow. Step 2 often uses a different
+ * Rock page; header content on page 5886 alone is not enough.
+ *
+ * ## Recommended (stays in sync with app fixes)
  * <script src="https://YOUR_APP_ORIGIN/rock-iframe-resize.js"></script>
- * {% endif %}
+ *
+ * ## Inline fallback (Page Properties → Header Content)
+ * Paste the contents of /public/rock-iframe-resize.js inside <script>...</script>.
+ *
+ * Parent scroll-to-top on form step changes is handled by the React app (rock-page
+ * onLoad). Validation errors post `rock-iframe-scroll-top` so the parent page can
+ * scroll when Rock shows inline field errors without a full navigation.
  *
  * Parent navigation from inside the iframe (when target="_top" is blocked):
  * <a href="#" data-rock-parent-navigate="https://christfellowship.church/volunteer">

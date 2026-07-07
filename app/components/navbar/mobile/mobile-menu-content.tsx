@@ -87,7 +87,7 @@ export default function MobileMenuContent({
         </section>
 
         <section className='p-8 border-t border-gray-200 flex flex-col gap-2'>
-          <h3 className='text-lg font-bold text-navy'>My Church</h3>
+          <h3 className='text-lg font-bold text-navy'>My Groups & Classes</h3>
           <p className='text-text-primary text-sm font-normal mb-2'>
             Stay up to date with your groups, classes, and more.
           </p>
@@ -104,8 +104,13 @@ export default function MobileMenuContent({
         </section>
 
         {/* website feedback */}
-        {/* TODO: Add feedback form */}
-        <div className='flex items-center gap-4 border-y-1 border-gray-200 py-4 px-8'>
+        <a
+          href='https://cftestingteam.base44.app/feedback'
+          target='_blank'
+          rel='noreferrer'
+          onClick={closeMenu}
+          className='flex items-center gap-4 border-y-1 border-gray-200 py-4 px-8'
+        >
           <Icon name='messageBubble' className='size-6 text-black' />
           <div className='flex flex-col'>
             <h3 className='heading-h6 text-navy'>Website Feedback</h3>
@@ -113,7 +118,7 @@ export default function MobileMenuContent({
               Help us improve the website
             </p>
           </div>
-        </div>
+        </a>
 
         {/* More Menu Items */}
         <div className='flex flex-col gap-4 p-8'>

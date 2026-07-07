@@ -86,6 +86,7 @@ function makeCollectionItem(
   id: string,
   channelId: string,
   attrs: Record<string, string> = {},
+  startDateTime?: string,
 ) {
   return {
     id,
@@ -93,6 +94,7 @@ function makeCollectionItem(
     title: `Item ${id}`,
     content: `Content ${id}`,
     contentChannelId: channelId,
+    ...(startDateTime ? { startDateTime } : {}),
     attributeValues: Object.fromEntries(
       Object.entries(attrs).map(([k, v]) => [k, { value: v }]),
     ),
@@ -112,6 +114,52 @@ function indexWith(episodeChannelId: string, showPath: string) {
     ]),
   };
 }
+
+// ---------------------------------------------------------------------------
+// mapPageBuilderChildItems – collection startDate
+// ---------------------------------------------------------------------------
+
+describe('mapPageBuilderChildItems – collection startDate', () => {
+  it('omits startDate for article collection items', async () => {
+    const section = makeSection('article-section');
+    const articleItem = makeCollectionItem(
+      'article-1',
+      '43',
+      { pathname: '/articles/test-article' },
+      '2025-06-15T10:00:00',
+    );
+
+    mockBuildPodcastRoutingIndex.mockResolvedValueOnce(emptyIndex());
+    mockFetchRockData
+      .mockResolvedValueOnce([{ childContentChannelItemId: 'article-1' }])
+      .mockResolvedValueOnce(articleItem);
+
+    const sections = await mapPageBuilderChildItems([section]);
+
+    expect(sections[0].collection![0].contentType).toBe('ARTICLES');
+    expect(sections[0].collection![0].startDate).toBe('');
+  });
+
+  it('includes startDate for event collection items', async () => {
+    const section = makeSection('event-section');
+    const eventItem = makeCollectionItem(
+      'event-1',
+      '186',
+      { url: '/events/test-event' },
+      '2025-06-15T10:00:00',
+    );
+
+    mockBuildPodcastRoutingIndex.mockResolvedValueOnce(emptyIndex());
+    mockFetchRockData
+      .mockResolvedValueOnce([{ childContentChannelItemId: 'event-1' }])
+      .mockResolvedValueOnce(eventItem);
+
+    const sections = await mapPageBuilderChildItems([section]);
+
+    expect(sections[0].collection![0].contentType).toBe('EVENTS');
+    expect(sections[0].collection![0].startDate).toBe('Sun 15 Jun 2025');
+  });
+});
 
 // ---------------------------------------------------------------------------
 // mapPageBuilderChildItems – podcast routing

@@ -4,6 +4,7 @@ import {
   buildChurchOpportunityApplicationUrl,
   buildRockPageEmbedUrl,
   buildVolunteerApplicationUrl,
+  getRockPageEmbedMetaTitle,
   ROCK_PAGE_EMBED_KEYS,
 } from '../rock-page.data';
 
@@ -20,6 +21,22 @@ function expectResponse(error: unknown, status: number): void {
   expect(error).toBeInstanceOf(Response);
   expect((error as Response).status).toBe(status);
 }
+
+describe('getRockPageEmbedMetaTitle', () => {
+  it('returns configured titles for registered embeds', () => {
+    expect(
+      getRockPageEmbedMetaTitle(ROCK_PAGE_EMBED_KEYS.churchOpportunity),
+    ).toBe('Church Opportunity Application');
+    expect(
+      getRockPageEmbedMetaTitle(ROCK_PAGE_EMBED_KEYS.volunteerApplication),
+    ).toBe('Help Me Find a Place');
+  });
+
+  it('falls back to the default title for unknown or missing embeds', () => {
+    expect(getRockPageEmbedMetaTitle(null)).toBe('Rock Content');
+    expect(getRockPageEmbedMetaTitle('unknown-embed')).toBe('Rock Content');
+  });
+});
 
 describe('buildChurchOpportunityApplicationUrl', () => {
   it('builds the Rock church opportunity application URL', () => {

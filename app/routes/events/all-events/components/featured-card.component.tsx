@@ -13,6 +13,16 @@ export function formatEventCardDate(isoDate: string) {
   });
 }
 
+export function getEventCardDisplayDate(
+  hit: Pick<ContentItemHit, 'eventCardDate' | 'startDateTime'>,
+): string {
+  return hit.eventCardDate
+    ? hit.eventCardDate
+    : hit.startDateTime
+      ? formatEventCardDate(hit.startDateTime)
+      : '';
+}
+
 export function formatFeaturedEventDate(isoDate: string) {
   const date = new Date(isoDate);
   const weekday = date.toLocaleDateString('en-US', {

@@ -95,7 +95,7 @@ export const FinderHero = ({
   return (
     <section
       className={cn(
-        !topic ? 'lg:h-[65vh] lg:max-h-[590px]' : 'h-full',
+        !topic ? 'lg:min-h-[65vh] 2xl:max-h-[590px]' : 'h-full',
         'relative content-padding pt-4 lg:pt-0 pb-12 md:pb-8 flex flex-col items-center justify-center',
         bgColor === 'ocean' && 'bg-ocean',
         bgColor === 'navy' && 'bg-navy',
