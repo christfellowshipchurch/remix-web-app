@@ -24,9 +24,9 @@ export const links: LinksFunction = () => [
 
 export const meta: MetaFunction = () => {
   return createMeta({
-    title: 'Christ Fellowship Church | Get the Most Out of Life',
+    title: 'Christ Fellowship Church | Find Your People. Find Your Purpose.',
     description:
-      'Christ Fellowship Church is a multisite church in South Florida and online. Find services, groups, classes, and ways to grow in faith and serve your community.',
+      'Christ Fellowship is a place where you and your family can grow in your faith, build meaningful relationships, and discover the life you were created to live.',
     path: '/',
   });
 };

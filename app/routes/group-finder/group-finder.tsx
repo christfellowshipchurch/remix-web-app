@@ -16,8 +16,8 @@ export function GroupFinderPage() {
             sectionTitle='life together'
             sectionTitleColor='#0092BC'
             title={`Find Your Group <span className="hidden md:inline">Today</span>`}
-            mobileDescription=' Find a group today that will help you live the full life God intended for you.'
-            desktopDescription='No matter where you are in life or your journey with God, Groups connect you with people who encourage you, support you, and help you grow. Find a group today that will help you live the full life God intended for you.'
+            mobileDescription="Small groups are all about real life change through authentic relationships. God created us for community, and Groups are where we connect with others, grow in our faith, and take our next step in following Jesus. Whether you're looking for a Bible study, an activity group, or people to do life with, there's a group for you. Life is better together, and we can't wait for you to experience the difference that biblical community can make."
+            desktopDescription="Small groups are all about real life change through authentic relationships. God created us for community, and Groups are where we connect with others, grow in our faith, and take our next step in following Jesus. Whether you're looking for a Bible study, an activity group, or people to do life with, there's a group for you. Life is better together, and we can't wait for you to experience the difference that biblical community can make."
             ctas={[
               {
                 key: 'help-me-find-a-group',
@@ -49,8 +49,8 @@ export function GroupFinderPage() {
             sectionTitle='life together'
             sectionTitleColor='#0092BC'
             title={`Find Your Group <span className="hidden md:inline">Today</span>`}
-            mobileDescription=' Find a group today that will help you live the full life God intended for you.'
-            desktopDescription='No matter where you are in life or your journey with God, Groups connect you with people who encourage you, support you, and help you grow. Find a group today that will help you live the full life God intended for you.'
+            mobileDescription="Small groups are all about real life change through authentic relationships. God created us for community, and Groups are where we connect with others, grow in our faith, and take our next step in following Jesus. Whether you're looking for a Bible study, an activity group, or people to do life with, there's a group for you. Life is better together, and we can't wait for you to experience the difference that biblical community can make."
+            desktopDescription="Small groups are all about real life change through authentic relationships. God created us for community, and Groups are where we connect with others, grow in our faith, and take our next step in following Jesus. Whether you're looking for a Bible study, an activity group, or people to do life with, there's a group for you. Life is better together, and we can't wait for you to experience the difference that biblical community can make."
             ctas={[
               {
                 key: 'help-me-find-a-group',
