@@ -104,6 +104,10 @@ export async function invalidateItem(
  * Deletes all cache keys matching a given endpoint prefix.
  * Useful for invalidating all cached data for a specific Rock endpoint.
  *
+ * Uses SCAN instead of KEYS to walk the keyspace in small increments —
+ * KEYS blocks the single-threaded Redis server for the full scan duration,
+ * which is risky once the keyspace grows.
+ *
  * @returns Number of keys deleted
  */
 export async function deleteByPrefix(
@@ -114,7 +118,21 @@ export async function deleteByPrefix(
 
   const normalizedPrefix = endpointPrefix.replace(/^\/+|\/+$/g, '');
   const pattern = `rock:${normalizedPrefix}:*`;
-  const keys = await redis.keys(pattern);
+
+  const keys: string[] = [];
+  let cursor = '0';
+
+  do {
+    const [nextCursor, batch] = await redis.scan(
+      cursor,
+      'MATCH',
+      pattern,
+      'COUNT',
+      100,
+    );
+    keys.push(...batch);
+    cursor = nextCursor;
+  } while (cursor !== '0');
 
   if (keys.length === 0) return 0;
   return redis.del(...keys);

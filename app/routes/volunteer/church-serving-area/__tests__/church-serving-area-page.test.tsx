@@ -11,6 +11,8 @@ const { mockNavigate, mockUseLoaderData } = vi.hoisted(() => ({
   mockUseLoaderData: vi.fn(),
 }));
 
+const mockWindowOpen = vi.fn();
+
 vi.mock('react-router-dom', async () => {
   const actual =
     await vi.importActual<typeof import('react-router-dom')>(
@@ -65,6 +67,11 @@ const baseLoaderData: LoaderReturnType = {
       title: 'Care Team',
       description: '<p>Serve with care.</p>',
     },
+    {
+      id: 'worship-role-guid',
+      title: 'Worship',
+      description: '<p>Serve with worship.</p>',
+    },
   ],
 };
 
@@ -89,6 +96,7 @@ async function selectRoleAndContinue(roleName: string) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubGlobal('open', mockWindowOpen);
 });
 
 describe('ChurchServingAreaPage', () => {
@@ -107,6 +115,21 @@ describe('ChurchServingAreaPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       '/rock-page?embed=church-opportunity&opportunityId=care-role-guid',
+    );
+  });
+
+  it('navigates Worship opportunities to the worship links page', async () => {
+    renderPage();
+
+    await selectRoleAndContinue('Worship');
+
+    expect(mockWindowOpen).toHaveBeenCalledWith(
+      'https://lnk.bio/CFWorshipLinks',
+      '_blank',
+      'noopener,noreferrer',
+    );
+    expect(mockNavigate).not.toHaveBeenCalledWith(
+      'https://lnk.bio/CFWorshipLinks',
     );
   });
 });

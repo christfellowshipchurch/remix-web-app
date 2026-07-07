@@ -64,12 +64,14 @@ export function SeriesResourcesPage() {
         )}
 
         {/* Series Messages */}
-        <SeriesResourceCarousel
-          type='messages'
-          title='Series Messages'
-          items={messages}
-          bg='gray'
-        />
+        {messages && messages.length > 0 && (
+          <SeriesResourceCarousel
+            type='messages'
+            title='Series Messages'
+            items={messages}
+            bg='gray'
+          />
+        )}
 
         {/* Resources Section */}
         {resources && resources.length > 0 && (

@@ -24,8 +24,31 @@ export const subGroupTypeDescriptions: Record<string, SubGroupTypeDescription> =
     },
   };
 
-export const getSubGroupTypeDescription = (subGroupType: string): string => {
-  return subGroupTypeDescriptions[subGroupType]?.description || '';
+// Spanish descriptions per CFDP-4104. 'Two Days' uses the translation
+// provided directly on the ticket; the Dream Team Kickoff variant extends
+// it with a translated bonus sentence pending content-team sign-off.
+export const spanishSubGroupTypeDescriptions: Record<
+  string,
+  SubGroupTypeDescription
+> = {
+  'Two Days': {
+    description:
+      '¡Journey es el primer paso para conectarte a Christ Fellowship! Es una clase de dos sesiones donde aprenderás sobre la historia y el corazón de nuestra iglesia. Durante esta experiencia, nuestra oración es que conozcas a Dios, crezcas en tu relación personal con Él y con otros para que puedas descubrir tu propósito e impactar al mundo.',
+  },
+  'Two Days with Dream Team Kickoff': {
+    description:
+      '¡Journey es el primer paso para conectarte a Christ Fellowship! Es una clase de dos sesiones donde aprenderás sobre la historia y el corazón de nuestra iglesia. Durante esta experiencia, nuestra oración es que conozcas a Dios, crezcas en tu relación personal con Él y con otros para que puedas descubrir tu propósito e impactar al mundo. ¡Bono! La sesión 2 de Journey incluirá Dream Team Kickoff. Hay cuidado de niños disponible a través de nuestra programación regular de CFKids.',
+  },
+};
+
+export const getSubGroupTypeDescription = (
+  subGroupType: string,
+  isSpanish = false,
+): string => {
+  const descriptions = isSpanish
+    ? spanishSubGroupTypeDescriptions
+    : subGroupTypeDescriptions;
+  return descriptions[subGroupType]?.description || '';
 };
 
 // New helper to determine if groupType has subGroupTypes

@@ -4,6 +4,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { googleLink } from '~/lib/utils';
 import { YesHero } from '../yes-devotional-hero.component';
 
+vi.mock('~/lib/scroll-to-anchor', () => ({
+  scrollToAnchor: vi.fn(() => true),
+}));
+
+import { scrollToAnchor } from '~/lib/scroll-to-anchor';
+
 function getCardLink(text: string) {
   const link = screen.getByText(text).closest('a');
   if (!link) {
@@ -17,13 +23,23 @@ afterEach(() => {
 });
 
 describe('YesHero', () => {
+  it('scrolls to the devotional section instead of opening a new tab', () => {
+    render(<YesHero />);
+
+    const devotionalLink = getCardLink(
+      'A three-week course to start your relationship with Jesus.',
+    );
+    expect(devotionalLink).toHaveAttribute('href', '#devo');
+    expect(devotionalLink).not.toHaveAttribute('target', '_blank');
+
+    fireEvent.click(devotionalLink);
+    expect(scrollToAnchor).toHaveBeenCalledWith('devo');
+  });
+
   it('uses each English card link instead of overriding clicks', () => {
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
     render(<YesHero />);
 
-    expect(
-      getCardLink('A two-week course to start your relationship with Jesus.'),
-    ).toHaveAttribute('href', googleLink);
     expect(
       getCardLink(
         'Access resources, submit prayers, & get involved in our app',

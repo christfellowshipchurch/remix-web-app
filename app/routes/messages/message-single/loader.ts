@@ -90,6 +90,20 @@ export const mapRockDataToMessage = async (
     secondaryCategories = sermonSecondaryCategories;
   }
 
+  let seriesUrl = '';
+  const seriesGuid = rockItem.attributeValues?.messageSeries?.value;
+  if (seriesGuid) {
+    const seriesData = await fetchRockData({
+      endpoint: `DefinedValues/`,
+      queryParams: {
+        $filter: `Guid eq guid'${seriesGuid}'`,
+        loadAttributes: 'simple',
+      },
+      ttl: TTL.LONG,
+    });
+    seriesUrl = seriesData?.attributeValues?.url?.value || '';
+  }
+
   let video = '';
   const mediaValue = attributeValues?.media?.value;
   if (mediaValue?.trim()) {
@@ -115,6 +129,7 @@ export const mapRockDataToMessage = async (
     expireDateTime: expireDateTime || '',
     seriesId: rockItem.attributeValues?.messageSeries?.value || '',
     seriesTitle: rockItem.attributeValues?.messageSeries?.valueFormatted || '',
+    seriesUrl,
     speaker,
     url: rockItem.attributeValues?.url?.value || '',
     additionalResources: parseRockKeyValueList(

@@ -5,6 +5,7 @@ import { mapRockDataToMessage } from '../messages/message-single/loader';
 import {
   getContentType,
   getPathname,
+  isGuid,
 } from '../page-builder/components/builder-utils';
 import type { SeriesResource, SeriesEvent } from './types';
 
@@ -27,14 +28,23 @@ const getAttrValue = (
   return getStringValue(val);
 };
 
-const getSeries = async (guid: string) => {
-  const fetchSeries = await fetchRockData({
-    endpoint: 'DefinedValues',
-    queryParams: {
-      $filter: `Guid eq guid'${guid}'`,
-      loadAttributes: 'simple',
-    },
-  });
+const getSeries = async (seriesPath: string) => {
+  const fetchSeries = isGuid(seriesPath)
+    ? await fetchRockData({
+        endpoint: 'DefinedValues',
+        queryParams: {
+          $filter: `Guid eq guid'${seriesPath}'`,
+          loadAttributes: 'simple',
+        },
+      })
+    : await fetchRockData({
+        endpoint: 'DefinedValues/GetByAttributeValue',
+        queryParams: {
+          attributeKey: 'Url',
+          value: seriesPath,
+          loadAttributes: 'simple',
+        },
+      });
 
   if (!fetchSeries) {
     return null;

@@ -10,7 +10,7 @@ export default function ConnectCardFormPage() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   return (
-    <div className='flex flex-col items-center justify-center px-6 py-20 max-w-screen-sm mx-auto'>
+    <div className='flex flex-col items-center justify-center px-6 py-12 md:py-20 max-w-screen-sm mx-auto'>
       {isSuccess ? (
         <ConnectCardConfirmation />
       ) : (

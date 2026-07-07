@@ -4,7 +4,8 @@
  * Use a single offset large enough for when the navbar is visible to avoid coupling to navbar state.
  */
 
-export const NAVBAR_HEIGHT = 82;
+/** Actual rendered nav row height (logo `h-16` + `py-5` padding exceeds the `min-h-[82px]` floor). */
+export const NAVBAR_HEIGHT = 104;
 
 export const SCROLL_PADDING = 50;
 

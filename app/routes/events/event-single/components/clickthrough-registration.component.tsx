@@ -19,6 +19,7 @@ import {
   isSpanishCampusLabel,
 } from '../registration.data';
 import { scrollToAnchor } from '~/lib/scroll-to-anchor';
+import { useEventSectionScrollOffset } from '../hooks/use-event-section-scroll-offset';
 import {
   eventFinderDatesMatch,
   formatEventFinderDateLabel,
@@ -82,6 +83,7 @@ export const ClickThroughRegistration = ({
   const [campusSearchQuery, setCampusSearchQuery] = useState<string>('');
   const [pendingRegisterScroll, setPendingRegisterScroll] = useState(false);
   const previousStepRef = useRef<number>(1);
+  const getScrollOffset = useEventSectionScrollOffset();
 
   const resetRegistrationFlow = () => {
     setStep(1);
@@ -100,9 +102,9 @@ export const ClickThroughRegistration = ({
 
     setPendingRegisterScroll(false);
     requestAnimationFrame(() => {
-      scrollToAnchor('register');
+      scrollToAnchor('register', { offset: getScrollOffset() });
     });
-  }, [pendingRegisterScroll]);
+  }, [pendingRegisterScroll, getScrollOffset]);
 
   const searchClient = useMemo(
     () =>
@@ -338,6 +340,7 @@ export const ClickThroughRegistration = ({
                     setSelectedCampus(campus);
                     previousStepRef.current = 1;
                     setStep(hasSubGroups ? 2 : 3);
+                    setPendingRegisterScroll(true);
                   }}
                   onSubGroupTypeSelect={(subGroupType) => {
                     setSelectedSubGroupType(subGroupType);
@@ -617,6 +620,11 @@ interface SubGroupTypeStepProps {
   onSelect: (subGroupType: string) => void;
 }
 
+const getEventTypeButtonText = (groupType: string, isSpanish: boolean) =>
+  isSpanish
+    ? `Seleccionar evento de ${groupType}`
+    : `Select ${groupType} Event`;
+
 const SubGroupTypeStep = ({
   hits,
   selectedCampus,
@@ -641,6 +649,8 @@ const SubGroupTypeStep = ({
     return Array.from(subGroupTypeMap.values()).sort();
   }, [hits, selectedCampus]);
 
+  const isSpanish = isSpanishCampusLabel(selectedCampus);
+
   if (uniqueSubGroupTypes.length === 0) {
     return (
       <div className='w-full p-8 text-center'>
@@ -662,8 +672,8 @@ const SubGroupTypeStep = ({
             icon={'group'}
             title={subGroupType}
             subtitle={groupType}
-            description={getSubGroupTypeDescription(subGroupType)}
-            buttonText={`Select ${groupType} Event`}
+            description={getSubGroupTypeDescription(subGroupType, isSpanish)}
+            buttonText={getEventTypeButtonText(groupType, isSpanish)}
             onClick={() => onSelect(subGroupType)}
           />
         );

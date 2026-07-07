@@ -54,6 +54,7 @@ function languageLabel(
 
 export function groupClassTypeHits(
   items: ClassHitType[],
+  rockCoverImagesByPath: Record<string, string> = {},
 ): GroupedClassTypeRow[] {
   const byKey = new Map<string, Accumulator>();
 
@@ -68,10 +69,14 @@ export function groupClassTypeHits(
       existing.languagesSeen.add(hit.language);
     } else {
       const pathName = publicPathSlug(hit);
+      const rockCoverImage = pathName
+        ? rockCoverImagesByPath[pathName]
+        : undefined;
+
       byKey.set(key, {
         pathName,
         classType: hit.classType,
-        coverImage: hit.coverImage?.sources?.[0]?.uri || '',
+        coverImage: rockCoverImage || hit.coverImage?.sources?.[0]?.uri || '',
         title: hit.classType?.trim() || hit.title,
         summary: hit.summary,
         subtitle: hit.subtitle,

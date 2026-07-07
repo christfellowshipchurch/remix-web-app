@@ -11,6 +11,10 @@ export function MessagesPage() {
           imagePath={getImageUrl('3143897')}
           ctas={[
             {
+              href: 'https://www.youtube.com/@iglesiacf',
+              title: 'Messages in Español',
+            },
+            {
               href: 'https://www.youtube.com/@ChristFellowship.Church',
               title: 'Watch Live',
               target: '_blank',
