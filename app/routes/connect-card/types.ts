@@ -28,28 +28,8 @@ export type ConnectCardPrefillStatus =
   | 'not-found'
   | 'error';
 
-export type ConnectCardPrefillDebug = {
-  detectedParam?: 'rckpid' | 'rckipid' | null;
-  tokenPresent: boolean;
-  tokenLength: number;
-  tokenFingerprint?: string | null;
-  validationPassed?: boolean;
-  decodeAttempted?: boolean;
-  personResolved?: boolean;
-  personId?: string;
-  hasFirstName?: boolean;
-  hasLastName?: boolean;
-  hasEmail?: boolean;
-  hasPhone?: boolean;
-  hasCampus?: boolean;
-};
-
 export type ConnectCardPrefillResponse =
-  | {
-      status: 'success';
-      prefill: ConnectCardPrefill;
-      debug?: ConnectCardPrefillDebug;
-    }
-  | { status: 'invalid-id'; debug?: ConnectCardPrefillDebug }
-  | { status: 'not-found'; debug?: ConnectCardPrefillDebug }
-  | { status: 'error'; message: string; debug?: ConnectCardPrefillDebug };
+  | { status: 'success'; prefill: ConnectCardPrefill }
+  | { status: 'invalid-id' }
+  | { status: 'not-found' }
+  | { status: 'error'; message: string };

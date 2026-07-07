@@ -34,26 +34,8 @@ describe('connect card prefill API', () => {
     const missing = await loader(createArgs());
     const invalid = await loader(createArgs('?rckpid=%7B%7Bbad%7D%7D'));
 
-    expect(readData(missing)).toEqual({
-      status: 'invalid-id',
-      debug: {
-        detectedParam: null,
-        tokenPresent: false,
-        tokenLength: 0,
-        tokenFingerprint: null,
-        validationPassed: false,
-      },
-    });
-    expect(readData(invalid)).toEqual({
-      status: 'invalid-id',
-      debug: {
-        detectedParam: 'rckpid',
-        tokenPresent: true,
-        tokenLength: 7,
-        tokenFingerprint: 'e2605a3cad12',
-        validationPassed: false,
-      },
-    });
+    expect(readData(missing)).toEqual({ status: 'invalid-id' });
+    expect(readData(invalid)).toEqual({ status: 'invalid-id' });
     expect(mockFetchRockData).not.toHaveBeenCalled();
     expect(mockPostRockData).not.toHaveBeenCalled();
   });
@@ -63,22 +45,10 @@ describe('connect card prefill API', () => {
 
     const response = await loader(createArgs('?rckpid=token-123'));
 
-    expect(readData(response)).toEqual({
-      status: 'not-found',
-      debug: {
-        detectedParam: 'rckpid',
-        tokenPresent: true,
-        tokenLength: 9,
-        tokenFingerprint: '034192845dc4',
-        validationPassed: true,
-        decodeAttempted: true,
-        personResolved: false,
-      },
-    });
+    expect(readData(response)).toEqual({ status: 'not-found' });
     expect(mockPostRockData).toHaveBeenCalledWith({
       endpoint: '/Lava/RenderTemplate',
-      body:
-        '{% assign person = "token-123" | PersonTokenRead %}{{ person | ToJSON }}',
+      body: '{% assign person = "token-123" | PersonTokenRead %}{{ person | ToJSON }}',
       contentType: 'text/plain',
     });
     expect(mockFetchRockData).not.toHaveBeenCalled();
@@ -104,21 +74,6 @@ describe('connect card prefill API', () => {
         firstName: 'Jane',
         phone: '555-123-4567',
         campus: 'campus-guid',
-      },
-      debug: {
-        detectedParam: 'rckpid',
-        tokenPresent: true,
-        tokenLength: 9,
-        tokenFingerprint: '034192845dc4',
-        validationPassed: true,
-        decodeAttempted: true,
-        personResolved: true,
-        personId: '123',
-        hasFirstName: true,
-        hasLastName: false,
-        hasEmail: false,
-        hasPhone: true,
-        hasCampus: true,
       },
     });
     expect(mockPostRockData).toHaveBeenNthCalledWith(
@@ -166,21 +121,6 @@ describe('connect card prefill API', () => {
         phone: '555-123-4567',
         campus: 'campus-guid',
       },
-      debug: {
-        detectedParam: 'rckipid',
-        tokenPresent: true,
-        tokenLength: 9,
-        tokenFingerprint: '034192845dc4',
-        validationPassed: true,
-        decodeAttempted: true,
-        personResolved: true,
-        personId: '123',
-        hasFirstName: true,
-        hasLastName: true,
-        hasEmail: true,
-        hasPhone: true,
-        hasCampus: true,
-      },
     });
     expect(mockFetchRockData).toHaveBeenNthCalledWith(1, {
       endpoint: 'PhoneNumbers',
@@ -207,9 +147,7 @@ describe('connect card prefill API', () => {
       firstName: 'Jane',
       primaryCampus: { guid: 'direct-campus-guid' },
     });
-    mockFetchRockData
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([]);
+    mockFetchRockData.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
     const response = await loader(createArgs('?rckipid=token-123'));
 
@@ -218,21 +156,6 @@ describe('connect card prefill API', () => {
       prefill: {
         firstName: 'Jane',
         campus: 'direct-campus-guid',
-      },
-      debug: {
-        detectedParam: 'rckipid',
-        tokenPresent: true,
-        tokenLength: 9,
-        tokenFingerprint: '034192845dc4',
-        validationPassed: true,
-        decodeAttempted: true,
-        personResolved: true,
-        personId: '123',
-        hasFirstName: true,
-        hasLastName: false,
-        hasEmail: false,
-        hasPhone: false,
-        hasCampus: true,
       },
     });
   });
@@ -246,14 +169,6 @@ describe('connect card prefill API', () => {
     expect(readData(response)).toEqual({
       status: 'error',
       message: 'Unable to load prefill data',
-      debug: {
-        detectedParam: 'rckipid',
-        tokenPresent: true,
-        tokenLength: 9,
-        tokenFingerprint: '034192845dc4',
-        validationPassed: true,
-        decodeAttempted: true,
-      },
     });
   });
 });

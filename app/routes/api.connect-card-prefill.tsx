@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { type LoaderFunction, data } from 'react-router-dom';
 import {
   fetchRockData,
@@ -7,7 +6,6 @@ import {
 } from '~/lib/.server/fetch-rock-data';
 import type {
   ConnectCardPrefill,
-  ConnectCardPrefillDebug,
   ConnectCardPrefillResponse,
 } from './connect-card/types';
 
@@ -49,11 +47,6 @@ type RockCampus = {
 const ROCK_PERSON_TOKEN_MAX_LENGTH = 512;
 const ROCK_PERSON_ID_QUERY_PARAMS = ['rckpid', 'rckipid'] as const;
 
-type RockPersonTokenParam = {
-  paramName: (typeof ROCK_PERSON_ID_QUERY_PARAMS)[number];
-  value: string;
-};
-
 const hasControlCharacters = (value: string) =>
   Array.from(value).some((char) => {
     const code = char.charCodeAt(0);
@@ -80,28 +73,15 @@ const isValidRockPersonToken = (value: string | null): value is string => {
   return !hasUnsafeTokenCharacters(trimmed);
 };
 
-const getRockPersonTokenParam = (url: URL): RockPersonTokenParam | null => {
+const getRockPersonToken = (url: URL): string | null => {
   for (const paramName of ROCK_PERSON_ID_QUERY_PARAMS) {
     const value = url.searchParams.get(paramName)?.trim();
     if (value) {
-      return { paramName, value };
+      return value;
     }
   }
 
   return null;
-};
-
-const getTokenFingerprint = (value: string | null | undefined) => {
-  if (!value) return null;
-
-  return createHash('sha256').update(value).digest('hex').slice(0, 12);
-};
-
-const logPrefillDiagnostic = (
-  event: string,
-  details: Record<string, unknown>,
-) => {
-  console.warn('[connect-card-prefill]', event, details);
 };
 
 const asArray = <T,>(value: T | T[] | null | undefined): T[] => {
@@ -201,51 +181,17 @@ const resolveRockPersonFromToken = async (
 
 const buildPrefill = async (
   personToken: string,
-  requestDebug: ConnectCardPrefillDebug,
 ): Promise<ConnectCardPrefillResponse> => {
-  logPrefillDiagnostic('decode-start', {
-    tokenFingerprint: getTokenFingerprint(personToken),
-    tokenLength: personToken.length,
-  });
-
   const person = await resolveRockPersonFromToken(personToken);
 
   if (!person || typeof person !== 'object') {
-    logPrefillDiagnostic('decode-not-found', {
-      tokenFingerprint: getTokenFingerprint(personToken),
-    });
-    return {
-      status: 'not-found',
-      debug: {
-        ...requestDebug,
-        decodeAttempted: true,
-        personResolved: false,
-      },
-    };
+    return { status: 'not-found' };
   }
 
   const personId = getPersonId(person);
   if (!personId) {
-    logPrefillDiagnostic('decode-missing-person-id', {
-      tokenFingerprint: getTokenFingerprint(personToken),
-    });
-    return {
-      status: 'not-found',
-      debug: {
-        ...requestDebug,
-        decodeAttempted: true,
-        personResolved: true,
-      },
-    };
+    return { status: 'not-found' };
   }
-
-  logPrefillDiagnostic('decode-success', {
-    tokenFingerprint: getTokenFingerprint(personToken),
-    personId,
-    hasEmail: !!normalizeString(person.email ?? person.Email),
-    hasCampusId: !!getPersonCampusId(person),
-    hasCampusGuid: !!getPersonCampusGuid(person),
-  });
 
   const [phoneNumbers, campuses] = await Promise.all([
     fetchRockData({
@@ -281,100 +227,23 @@ const buildPrefill = async (
     ),
   };
 
-  logPrefillDiagnostic('prefill-built', {
-    tokenFingerprint: getTokenFingerprint(personToken),
-    personId,
-    hasFirstName: !!prefill.firstName,
-    hasLastName: !!prefill.lastName,
-    hasEmail: !!prefill.email,
-    hasPhone: !!prefill.phone,
-    hasCampus: !!prefill.campus,
-  });
-
-  return {
-    status: 'success',
-    prefill,
-    debug: {
-      ...requestDebug,
-      decodeAttempted: true,
-      personResolved: true,
-      personId,
-      hasFirstName: !!prefill.firstName,
-      hasLastName: !!prefill.lastName,
-      hasEmail: !!prefill.email,
-      hasPhone: !!prefill.phone,
-      hasCampus: !!prefill.campus,
-    },
-  };
+  return { status: 'success', prefill };
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
-  const personTokenParam = getRockPersonTokenParam(url);
-  const personToken = personTokenParam?.value ?? null;
-  const tokenFingerprint = getTokenFingerprint(personToken);
-  const tokenLength = personToken?.length ?? 0;
-  const requestDebug: ConnectCardPrefillDebug = {
-    detectedParam: personTokenParam?.paramName ?? null,
-    tokenPresent: !!personToken,
-    tokenLength,
-    tokenFingerprint,
-  };
-
-  logPrefillDiagnostic('request', {
-    pathname: url.pathname,
-    queryKeys: Array.from(url.searchParams.keys()),
-    detectedParam: personTokenParam?.paramName ?? null,
-    tokenPresent: !!personToken,
-    tokenLength,
-    tokenFingerprint,
-  });
+  const personToken = getRockPersonToken(url);
 
   if (!isValidRockPersonToken(personToken)) {
-    logPrefillDiagnostic('invalid-token', {
-      detectedParam: personTokenParam?.paramName ?? null,
-      tokenPresent: !!personToken,
-      tokenLength,
-      tokenFingerprint,
-    });
-    return data<ConnectCardPrefillResponse>({
-      status: 'invalid-id',
-      debug: {
-        ...requestDebug,
-        validationPassed: false,
-      },
-    });
+    return data<ConnectCardPrefillResponse>({ status: 'invalid-id' });
   }
 
   try {
-    const response = await buildPrefill(personToken, {
-      ...requestDebug,
-      validationPassed: true,
-    });
-    logPrefillDiagnostic('response', {
-      tokenFingerprint,
-      status: response.status,
-    });
-    return data<ConnectCardPrefillResponse>(response);
+    return data<ConnectCardPrefillResponse>(await buildPrefill(personToken));
   } catch (error) {
-    logPrefillDiagnostic('error', {
-      tokenFingerprint,
-      error:
-        error instanceof Error
-          ? { message: error.message, name: error.name }
-          : { message: 'Unknown error' },
-    });
     console.error('Connect Card prefill failed:', error);
     return data<ConnectCardPrefillResponse>(
-      {
-        status: 'error',
-        message: 'Unable to load prefill data',
-        debug: {
-          ...requestDebug,
-          validationPassed: true,
-          decodeAttempted: true,
-        },
-      },
+      { status: 'error', message: 'Unable to load prefill data' },
       { status: 500 },
     );
   }
