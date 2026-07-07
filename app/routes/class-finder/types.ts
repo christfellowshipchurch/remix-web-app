@@ -25,8 +25,8 @@ export interface ClassHitType {
     lat: number;
     lng: number;
   };
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
   schedule: string; // Sunday at 8:00 AM
   topic:
     | 'Care & Recovery'

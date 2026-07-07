@@ -14,6 +14,10 @@ import { ActiveFilters } from '~/components/finders/search-filters/active-filter
 import { cn } from '~/lib/utils';
 
 import { parseClassSingleUrlState } from '../class-single-url-state';
+import {
+  filterScheduledClassSessions,
+  parseClassSessionStartMs,
+} from '../../class-session.utils';
 import { UpcomingSessionsCarousel } from '../components/upcoming-sessions-carousel.component';
 import { ClassSingleInterestBanner } from '../components/class-single-interest-banner.component';
 import { CantFindClassCard } from '../../finder/components/cant-find-class-card.component';
@@ -31,8 +35,7 @@ import { CLASS_SINGLE_UPCOMING_MAX_HITS } from '../components/build-class-single
 const LOCATION_FILTERS_HINT = 'Location filters are applied.';
 
 function parseStartMs(hit: ClassHitType): number {
-  const t = new Date(hit.startDate).getTime();
-  return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t;
+  return parseClassSessionStartMs(hit);
 }
 
 function compareStartDateAsc(a: ClassHitType, b: ClassHitType): number {
@@ -97,6 +100,10 @@ export function ClassSingleUpcomingSearch({
   const { upcomingHits, groupHits, isInterestEnabled, classDefinedValueGuid } =
     useLoaderData<LoaderReturnType>();
   const upcoming = useClassSingleUpcomingInstantSearch();
+  const scheduledUpcomingHits = useMemo(
+    () => filterScheduledClassSessions(upcomingHits),
+    [upcomingHits],
+  );
 
   /** SSR/hydration: skeleton filters until react-instantsearch mounts. */
   const [filtersMounted, setFiltersMounted] = useState(false);
@@ -104,9 +111,9 @@ export function ClassSingleUpcomingSearch({
     setFiltersMounted(true);
   }, []);
 
-  // Interest-only classes have no Algolia sessions regardless of filters.
+  // Interest-only classes have no schedulable Algolia sessions regardless of filters.
   // Skip Filter Sessions + Join a Class entirely and go full-bleed.
-  if (upcomingHits.length === 0 && isInterestEnabled) {
+  if (scheduledUpcomingHits.length === 0 && isInterestEnabled) {
     return <ClassSingleInterestBanner classValueGuid={classDefinedValueGuid} />;
   }
 
@@ -162,7 +169,7 @@ export function ClassSingleUpcomingSearch({
               classHeroCoverImageUri={classHeroCoverImageUri}
               classType={classType}
               onDemandUrl={onDemandUrl}
-              initialUpcomingHits={upcomingHits}
+              initialUpcomingHits={scheduledUpcomingHits}
               initialGroupHits={groupHits}
               classUrl={upcoming.classUrl}
               geoActive={upcoming.geoFiltersActive}
@@ -193,7 +200,7 @@ export function ClassSingleUpcomingSearch({
               classHeroCoverImageUri={classHeroCoverImageUri}
               classType={classType}
               onDemandUrl={onDemandUrl}
-              initialUpcomingHits={upcomingHits}
+              initialUpcomingHits={scheduledUpcomingHits}
               initialGroupHits={groupHits}
               classUrl={upcoming.classUrl}
               geoActive={upcoming.geoFiltersActive}
@@ -367,7 +374,11 @@ function ClassSingleUpcomingResults({
   }, [searchParams]);
 
   const ordered = useMemo(
-    () => sortUpcomingSessionHitsForDisplay(hits, geoActive),
+    () =>
+      sortUpcomingSessionHitsForDisplay(
+        filterScheduledClassSessions(hits),
+        geoActive,
+      ),
     [hits, geoActive],
   );
 
