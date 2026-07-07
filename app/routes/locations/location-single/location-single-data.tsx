@@ -1,4 +1,3 @@
-import { icons } from '~/lib/icons';
 import { CollectionItem } from '~/routes/page-builder/types';
 
 export const englishGetInvolvedResources: CollectionItem[] = [
@@ -126,81 +125,6 @@ export const spanishGetInvolvedResources: CollectionItem[] = [
     contentType: 'REDIRECT_CARD',
     contentChannelId: '1234',
     id: '4',
-  },
-];
-
-type CampusAmenity = {
-  title: string;
-  icon: keyof typeof icons;
-};
-
-export const englishCampusAmenities: CampusAmenity[] = [
-  {
-    title: 'Free Parking',
-    icon: 'car',
-  },
-  {
-    title: 'Clean Restrooms',
-    icon: 'maleFemale',
-  },
-  {
-    title: 'Accessible Entrances & Seating',
-    icon: 'handicap',
-  },
-  {
-    title: 'Welcoming Team of Volunteers',
-    icon: 'happy',
-  },
-  {
-    title: 'Kids Ministry',
-    icon: 'face',
-  },
-  {
-    title: 'Family/Nursing Room',
-    icon: 'universalAccess',
-  },
-  {
-    title: 'Free Wifi',
-    icon: 'wifi',
-  },
-  {
-    title: 'Security & First Aid',
-    icon: 'shield',
-  },
-];
-
-export const spanishCampusAmenities: CampusAmenity[] = [
-  {
-    title: 'Estacionamiento Gratuito',
-    icon: 'car',
-  },
-  {
-    title: 'Baños Limpios',
-    icon: 'maleFemale',
-  },
-  {
-    title: 'Entradas y Asientos Accesibles',
-    icon: 'handicap',
-  },
-  {
-    title: 'Equipo de Voluntarios Amigables',
-    icon: 'happy',
-  },
-  {
-    title: 'Ministerio de Niños',
-    icon: 'face',
-  },
-  {
-    title: 'Sala Familiar / Lactancia',
-    icon: 'universalAccess',
-  },
-  {
-    title: 'Wifi Gratis',
-    icon: 'wifi',
-  },
-  {
-    title: 'Seguridad y Primeros Auxilios',
-    icon: 'shield',
   },
 ];
 

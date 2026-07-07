@@ -1,19 +1,21 @@
+import { useLoaderData } from 'react-router-dom';
+
 import { Icon } from '~/primitives/icon/icon';
-import {
-  englishCampusAmenities,
-  spanishCampusAmenities,
-} from '../../../location-single-data';
+import { icons } from '~/lib/icons';
 import { SetAReminderModal } from '~/components/modals/set-a-reminder/reminder-modal.component';
 import { LocationSingleReminderModalButton } from './what-to-expect';
 import { useResponsive } from '~/hooks/use-responsive';
 import { cn } from '~/lib/utils';
+import { LoaderReturnType } from '../../../loader';
 
 export const CampusAmenities = ({ isSpanish }: { isSpanish?: boolean }) => {
   const { isSmall } = useResponsive();
+  const { campusAmenities } = useLoaderData<LoaderReturnType>();
   const title = isSpanish ? 'Amenidades del Campus' : 'Campus Amenities';
-  const campusAmenities = isSpanish
-    ? spanishCampusAmenities
-    : englishCampusAmenities;
+
+  if (campusAmenities.length === 0) {
+    return null;
+  }
 
   return (
     <div className='w-full bg-gray content-padding flex pb-14 md:pb-16 lg:pb-28'>
@@ -25,8 +27,13 @@ export const CampusAmenities = ({ isSpanish }: { isSpanish?: boolean }) => {
               key={index}
               className='text-text-secondary font-bold flex items-center md:justify-center gap-2'
             >
-              <Icon name={amenity.icon} size={36} />
-              <h3>{amenity.title}</h3>
+              <Icon
+                name={(amenity.icon as keyof typeof icons) ?? 'star'}
+                size={36}
+              />
+              <h3>
+                {isSpanish && amenity.titleEs ? amenity.titleEs : amenity.title}
+              </h3>
             </div>
           ))}
         </div>

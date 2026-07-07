@@ -8,6 +8,12 @@ import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import type { LocationHitType } from './types';
 
+export type CampusAmenity = {
+  title: string;
+  titleEs: string;
+  icon: string;
+};
+
 export type LoaderReturnType = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_SEARCH_API_KEY: string;
@@ -15,6 +21,7 @@ export type LoaderReturnType = {
   campusName: string;
   campusImage: string;
   campusHit: LocationHitType | null;
+  campusAmenities: CampusAmenity[];
   upcomingEvents: PageBuilderSection & { type: 'EVENT_COLLECTION' };
 };
 
@@ -95,6 +102,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     attributeValues?: {
       upcomingEventsCollection?: { value?: string };
       campusImage?: { value?: string };
+      campusAmenities?: { value?: string };
     };
   };
 
@@ -163,6 +171,41 @@ export const loader: LoaderFunction = async ({ params }) => {
     campus?.attributeValues?.campusImage?.value || '',
   );
 
+  const campusAmenityGuids = String(
+    campus?.attributeValues?.campusAmenities?.value ?? '',
+  )
+    .split(',')
+    .map((guid) => guid.trim())
+    .filter(Boolean);
+
+  const campusAmenities: CampusAmenity[] = [];
+
+  for (const guid of campusAmenityGuids) {
+    try {
+      const definedValue = await fetchRockData({
+        endpoint: 'DefinedValues',
+        queryParams: {
+          $filter: `Guid eq guid'${guid}'`,
+          loadAttributes: 'simple',
+        },
+      });
+
+      const amenity = Array.isArray(definedValue)
+        ? definedValue[0]
+        : definedValue;
+
+      if (amenity?.value) {
+        campusAmenities.push({
+          title: amenity.value,
+          titleEs: amenity.attributeValues?.spanishName?.value ?? '',
+          icon: amenity.attributeValues?.icon?.value ?? '',
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to load campus amenity from Rock:', error);
+    }
+  }
+
   const pageData: LoaderReturnType = {
     ALGOLIA_APP_ID: appId,
     ALGOLIA_SEARCH_API_KEY: searchApiKey,
@@ -170,6 +213,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     campusName: campusName,
     campusImage,
     campusHit,
+    campusAmenities,
     upcomingEvents,
   };
 
