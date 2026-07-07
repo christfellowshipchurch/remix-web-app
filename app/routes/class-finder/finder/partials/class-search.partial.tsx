@@ -89,7 +89,6 @@ export const ClassSearch = () => {
     ALGOLIA_APP_ID,
     ALGOLIA_SEARCH_API_KEY,
     classHits,
-    interestOnlyHits,
     rockCoverImagesByPath,
     algoliaIndexes,
   } = loaderData;
@@ -163,8 +162,7 @@ export const ClassSearch = () => {
     location.pathname +
     (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
-  // Interest-only (Rock) cards can't be filtered by Algolia, so they — and the
-  // appended "Can't find a class?" card — only show in the unfiltered view.
+  // Interest-only classes are indexed in Algolia as catalog rows (no session dates).
   const finderFiltersActive = useMemo(() => {
     const s = parseClassFinderUrlState(searchParams);
     return (
@@ -272,7 +270,6 @@ export const ClassSearch = () => {
               <div className='max-w-screen-content mx-auto md:w-full'>
                 <ClassTypeGroupedInstantSearchResults
                   initialHits={classHits}
-                  interestOnlyHits={interestOnlyHits}
                   rockCoverImagesByPath={rockCoverImagesByPath}
                   filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
@@ -301,7 +298,6 @@ export const ClassSearch = () => {
                 <ClassTypeGroupedResults
                   hits={classHits}
                   isLoading={false}
-                  interestOnlyHits={interestOnlyHits}
                   rockCoverImagesByPath={rockCoverImagesByPath}
                   filtersActive={finderFiltersActive}
                   fromClassFinderUrl={fromClassFinderUrl}
@@ -320,14 +316,12 @@ const ITEMS_PER_PAGE = 12;
 
 function ClassTypeGroupedInstantSearchResults({
   initialHits,
-  interestOnlyHits,
   rockCoverImagesByPath,
   filtersActive,
   fromClassFinderUrl,
   onClearFilters,
 }: {
   initialHits: ClassHitType[];
-  interestOnlyHits: ClassHitType[];
   rockCoverImagesByPath: Record<string, string>;
   filtersActive: boolean;
   fromClassFinderUrl?: string;
@@ -346,7 +340,6 @@ function ClassTypeGroupedInstantSearchResults({
     <ClassTypeGroupedResults
       hits={hits}
       isLoading={isLoading}
-      interestOnlyHits={interestOnlyHits}
       rockCoverImagesByPath={rockCoverImagesByPath}
       filtersActive={filtersActive}
       fromClassFinderUrl={fromClassFinderUrl}
@@ -358,7 +351,6 @@ function ClassTypeGroupedInstantSearchResults({
 function ClassTypeGroupedResults({
   hits,
   isLoading,
-  interestOnlyHits,
   rockCoverImagesByPath,
   filtersActive,
   fromClassFinderUrl,
@@ -366,14 +358,12 @@ function ClassTypeGroupedResults({
 }: {
   hits: ClassHitType[];
   isLoading: boolean;
-  interestOnlyHits: ClassHitType[];
   rockCoverImagesByPath: Record<string, string>;
   filtersActive: boolean;
   fromClassFinderUrl?: string;
   onClearFilters: () => void;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchParams] = useSearchParams();
 
   const grouped = useMemo(
     () => groupClassTypeHits(hits, rockCoverImagesByPath),
@@ -388,44 +378,7 @@ function ClassTypeGroupedResults({
     [grouped],
   );
 
-  // When only topic refinements are active (no text query, no other filters),
-  // filter interest-only hits client-side so they participate in the topic filter.
-  // For any other active filter (query, format, language) they have no data to
-  // match against, so they're hidden.
-  const { activeTopic, onlyTopicActive } = useMemo(() => {
-    const s = parseClassFinderUrlState(searchParams);
-    const topicList = s.refinementList?.topic ?? [];
-    const hasQuery = (s.query?.trim?.()?.length ?? 0) > 0;
-    const otherRefinements = Object.entries(s.refinementList ?? {})
-      .filter(([key]) => key !== 'topic')
-      .some(([, vals]) => vals.length > 0);
-    return {
-      activeTopic: topicList,
-      onlyTopicActive: !hasQuery && !otherRefinements && topicList.length > 0,
-    };
-  }, [searchParams]);
-
-  const mappedHits = useMemo(() => {
-    if (interestOnlyHits.length === 0) return algoliaHits;
-    const seen = new Set(algoliaHits.map((h) => h.pathName).filter(Boolean));
-    const extras = interestOnlyHits.filter(
-      (h) => h.pathName && !seen.has(h.pathName),
-    );
-    if (!filtersActive) return [...algoliaHits, ...extras];
-    if (onlyTopicActive) {
-      const topicFiltered = extras.filter(
-        (h) => h.topic && activeTopic.includes(h.topic),
-      );
-      return [...algoliaHits, ...topicFiltered];
-    }
-    return algoliaHits;
-  }, [
-    algoliaHits,
-    interestOnlyHits,
-    filtersActive,
-    onlyTopicActive,
-    activeTopic,
-  ]);
+  const mappedHits = algoliaHits;
 
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pageHits = mappedHits.slice(start, start + ITEMS_PER_PAGE);

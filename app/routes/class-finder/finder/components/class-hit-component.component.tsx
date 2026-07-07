@@ -57,7 +57,9 @@ export function ClassHitComponent({
                 </h3>
 
                 {/* Description */}
-                <p className='text-sm text-black line-clamp-3'>{hit.summary}</p>
+                <p className='text-sm text-black line-clamp-3'>
+                  {hit.summary?.trim() || hit.subtitle}
+                </p>
               </div>
             </div>
           </div>

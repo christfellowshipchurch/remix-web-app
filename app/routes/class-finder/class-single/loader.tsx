@@ -12,6 +12,7 @@ import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 
 import type { ClassHitType } from '../types';
 import { CLASS_INTEREST_TOGGLE_ATTRIBUTE_KEY } from '../constants';
+import { filterScheduledClassSessions } from '../class-session.utils';
 import {
   buildClassSingleGroupsSearchParams,
   buildClassSingleHeroSearchParams,
@@ -195,8 +196,8 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
           }),
         ]);
 
-        upcomingHits = (upcomingRes.hits ?? []).map(
-          (h) => h as unknown as ClassHitType,
+        upcomingHits = filterScheduledClassSessions(
+          (upcomingRes.hits ?? []).map((h) => h as unknown as ClassHitType),
         );
         groupHits = (groupsRes.hits ?? []).map(
           (h) => h as unknown as GroupType,
