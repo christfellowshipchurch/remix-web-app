@@ -10,7 +10,14 @@ export type Ministry = {
   url: string;
 };
 
-/** Spanish ministry pages are listed separately; keep them off the main ministries index. */
+/**
+ * Hide Spanish / Español ministry cards from the `/ministries` index grid.
+ *
+ * The Español ministry page still lives at `/ministries/espanol` (ministry
+ * builder + Rock Pathname `espanol`). It should not appear as a card on the
+ * main ministries listing, which is English-facing. Match both "Español" and
+ * ASCII "espanol" / "Espanol" because Rock titles may use either form.
+ */
 const isEspanolMinistryTitle = (title: string): boolean => {
   const lower = title.toLowerCase();
   return title.includes('Español') || lower.includes('espanol');
@@ -76,6 +83,7 @@ export const loader: LoaderFunction = async (): Promise<{
       ministriesArray = ministriesData;
     }
 
+    // Drop Español from the index after mapping (+ hard-coded cards); page stays reachable by URL.
     const ministries = [
       ...(await mapMinistryChannelItems(ministriesArray)),
       ...hardCodedMinistries,
