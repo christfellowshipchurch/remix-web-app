@@ -114,4 +114,27 @@ describe('Breadcrumbs', () => {
     expect(screen.getByText('Test Path')).toBeInTheDocument();
     expect(screen.getByText('Another Segment')).toBeInTheDocument();
   });
+
+  it('maps known ASCII slugs to accented breadcrumb labels', () => {
+    render(
+      <MemoryRouter initialEntries={['/ministries/espanol']}>
+        <Breadcrumbs />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Ministries')).toBeInTheDocument();
+    expect(screen.getByText('Español')).toBeInTheDocument();
+    expect(screen.queryByText('Espanol')).not.toBeInTheDocument();
+    expect(screen.getByText('Español')).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('leaves unmapped ministry slugs capitalized from the URL', () => {
+    render(
+      <MemoryRouter initialEntries={['/ministries/young-adults']}>
+        <Breadcrumbs />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Young Adults')).toBeInTheDocument();
+  });
 });

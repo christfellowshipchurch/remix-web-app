@@ -5,6 +5,25 @@ interface BreadcrumbsProps {
   mode?: 'light' | 'dark';
 }
 
+/**
+ * ASCII slug → display label for breadcrumbs when capitalization alone
+ * cannot recover accents (e.g. `espanol` → `Español`). URLs stay unchanged.
+ */
+const BREADCRUMB_SLUG_LABELS: Record<string, string> = {
+  espanol: 'Español',
+};
+
+function breadcrumbLabelFromSegment(segment: string): string {
+  const decoded = decodeURIComponent(segment);
+  const mapped = BREADCRUMB_SLUG_LABELS[decoded.toLowerCase()];
+  if (mapped) return mapped;
+
+  return decoded
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 export function Breadcrumbs({ mode = 'dark' }: BreadcrumbsProps) {
   const location = useLocation();
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -14,11 +33,7 @@ export function Breadcrumbs({ mode = 'dark' }: BreadcrumbsProps) {
   const breadcrumbs = pathSegments.map((segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join('/')}`;
     const isCurrentPage = index === pathSegments.length - 1;
-    const pageName = segment
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-    const label = decodeURIComponent(pageName);
+    const label = breadcrumbLabelFromSegment(segment);
 
     return (
       <div
