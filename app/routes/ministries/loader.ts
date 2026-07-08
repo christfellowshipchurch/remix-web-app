@@ -15,12 +15,11 @@ export type Ministry = {
  *
  * The Español ministry page still lives at `/ministries/espanol` (ministry
  * builder + Rock Pathname `espanol`). It should not appear as a card on the
- * main ministries listing, which is English-facing. Match both "Español" and
- * ASCII "espanol" / "Espanol" because Rock titles may use either form.
+ * main ministries listing, which is English-facing.
  */
-const isEspanolMinistryTitle = (title: string): boolean => {
-  const lower = title.toLowerCase();
-  return title.includes('Español') || lower.includes('espanol');
+const isEspanolMinistryUrl = (url: string): boolean => {
+  const normalized = url.trim().toLowerCase();
+  return normalized === 'espanol' || normalized === '/espanol';
 };
 
 const mapMinistryChannelItems = async (
@@ -87,7 +86,7 @@ export const loader: LoaderFunction = async (): Promise<{
     const ministries = [
       ...(await mapMinistryChannelItems(ministriesArray)),
       ...hardCodedMinistries,
-    ].filter((ministry) => !isEspanolMinistryTitle(ministry.title));
+    ].filter((ministry) => !isEspanolMinistryUrl(ministry.url));
 
     return { ministries };
   } catch (error) {
