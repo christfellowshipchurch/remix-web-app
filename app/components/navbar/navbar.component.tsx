@@ -237,6 +237,9 @@ export function Navbar() {
             mode === 'dark' && isVisible && 'absolute',
           )}
           ref={navbarRef}
+          // Google Translate (app/lib/google-translate.ts) should leave nav
+          // labels/links untouched even when the connect card triggers it.
+          translate='no'
         >
           <div className={cn(showSiteBanner ? 'block' : 'hidden')}>
             <SiteBanner
