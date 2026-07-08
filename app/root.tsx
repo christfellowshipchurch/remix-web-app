@@ -30,12 +30,14 @@ setupDevWebVitalsLogging();
 function buildCsp(nonce: string): string {
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net https://www.clarity.ms https://*.clarity.ms`,
-    "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
+    // translate.google.com / translate.googleapis.com / gstatic: Google Translate
+    // widget used for Spanish campus connect cards (app/lib/google-translate.ts)
+    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net https://www.clarity.ms https://*.clarity.ms https://translate.google.com https://translate.googleapis.com`,
+    "style-src 'self' 'unsafe-inline' https://fast.wistia.com https://www.gstatic.com",
     "img-src 'self' data: https: blob:",
     // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
     // Microsoft Clarity sends telemetry to *.clarity.ms and c.bing.com
-    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com",
+    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com https://translate.googleapis.com https://translate-pa.googleapis.com https://translate.google.com",
     'frame-src https://www.googletagmanager.com https://fast.wistia.com',
     "frame-ancestors 'none'",
   ].join('; ');

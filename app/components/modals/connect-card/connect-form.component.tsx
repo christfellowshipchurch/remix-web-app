@@ -370,7 +370,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
                 >
                   <option value=''>Select a Campus</option>
                   {campuses.map(({ guid, name }, index) => (
-                    <option key={index} value={guid}>
+                    // translate=no: campus names are proper nouns; keep them
+                    // verbatim when the page is machine-translated to Spanish.
+                    <option key={index} value={guid} translate='no'>
                       {name}
                     </option>
                   ))}

@@ -4,6 +4,7 @@ import ConnectCardFlow from './connect-card-flow.component';
 import { Button } from '~/primitives/button/button.primitive';
 import { ButtonProps } from '~/primitives/button/button.primitive';
 import { pushFormEvent } from '~/lib/gtm';
+import { translatePageToSpanish } from '~/lib/google-translate';
 import type { ReactNode } from 'react';
 
 interface ConnectCardModalProps {
@@ -27,6 +28,9 @@ export function ConnectCardModal({
     setOpenModal(open);
     if (open) {
       pushFormEvent('form_start', 'connect_card', 'Connect Card');
+      // Spanish campuses: machine-translate the page (incl. this modal's
+      // English form + Rock-fetched options) when the card opens.
+      if (isEspanol) translatePageToSpanish();
     }
   };
 
