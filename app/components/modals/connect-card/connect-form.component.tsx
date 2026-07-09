@@ -303,7 +303,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   return (
     <>
       <h2 className='mb-6 text-3xl text-navy font-bold'>Get Connected</h2>
-      <p className='text-center md:text-left mb-10 col-span-2 text-sm text-text-secondary'>
+      <p className='w-full text-center md:text-left mb-10 col-span-2 text-sm text-text-secondary'>
         {CONNECT_CARD_INTRO}
       </p>
       <Form.Root

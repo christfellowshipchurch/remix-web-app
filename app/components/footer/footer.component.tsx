@@ -8,7 +8,12 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className='flex flex-col items-center w-full bg-navy px-4 lg:px-18 relative z-30'>
+    <footer
+      className='flex flex-col items-center w-full bg-navy px-4 lg:px-18 relative z-30'
+      // Google Translate (app/lib/google-translate.ts) should leave footer
+      // links/labels untouched, same as the navbar.
+      translate='no'
+    >
       <div className='flex flex-col items-center w-full max-w-screen-content'>
         <div className='relative w-full'>
           <div className='absolute w-full h-4 bg-ocean -top-2' />
