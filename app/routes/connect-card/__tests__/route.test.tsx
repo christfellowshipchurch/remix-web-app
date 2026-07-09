@@ -11,9 +11,13 @@ vi.mock('~/components/modals/connect-card/confirmation.component', () => ({
 }));
 vi.mock('~/lib/google-translate', () => ({
   translatePageToSpanish: vi.fn(),
+  resetPageTranslation: vi.fn(),
 }));
 
-import { translatePageToSpanish } from '~/lib/google-translate';
+import {
+  translatePageToSpanish,
+  resetPageTranslation,
+} from '~/lib/google-translate';
 
 describe('ConnectCardFormPage', () => {
   beforeEach(() => {
@@ -36,5 +40,26 @@ describe('ConnectCardFormPage', () => {
       </MemoryRouter>,
     );
     expect(translatePageToSpanish).not.toHaveBeenCalled();
+  });
+
+  it('reverts the translation when the visitor leaves the page', () => {
+    const { unmount } = render(
+      <MemoryRouter initialEntries={['/connect-card?lang=es']}>
+        <ConnectCardFormPage />
+      </MemoryRouter>,
+    );
+    expect(resetPageTranslation).not.toHaveBeenCalled();
+    unmount();
+    expect(resetPageTranslation).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not revert anything when the page was never translated', () => {
+    const { unmount } = render(
+      <MemoryRouter initialEntries={['/connect-card']}>
+        <ConnectCardFormPage />
+      </MemoryRouter>,
+    );
+    unmount();
+    expect(resetPageTranslation).not.toHaveBeenCalled();
   });
 });

@@ -77,3 +77,21 @@ export function translatePageToSpanish(): void {
   script.async = true;
   document.body.appendChild(script);
 }
+
+/**
+ * Revert to the original (English) page. Needed because this is an SPA:
+ * navigating away from a Spanish-triggered page doesn't reload, so without
+ * this the translated state would silently carry over to the next page.
+ */
+export function resetPageTranslation(): void {
+  if (typeof document === 'undefined') return;
+
+  document.cookie =
+    'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+  const combo = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+  if (combo) {
+    combo.value = 'en';
+    combo.dispatchEvent(new Event('change'));
+  }
+}
