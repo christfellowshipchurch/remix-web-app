@@ -10,6 +10,7 @@ export type BaptismSignUpFormType = {
   ShareYourStory: string;
   MyStory: string;
   LaunchSource: string; // hardcoded 'app'
+  Group: string;
   // Age-conditional — present only when the form's age logic requires them.
   AreyouinHighSchool?: string; // literal 'True' | 'False' (Rock Boolean default)
   Grade?: string;

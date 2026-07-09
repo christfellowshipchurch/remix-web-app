@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as Form from '@radix-ui/react-form';
-import { useFetcher } from 'react-router-dom';
+import { useFetcher, useSearchParams } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
 import { cn } from '~/lib/utils';
 import { pushFormEvent } from '~/lib/gtm';
@@ -20,6 +20,9 @@ import type { BaptismSignUpLoaderReturnType } from '~/routes/baptism-sign-up/typ
 
 interface BaptismSignUpFormProps {
   onSuccess: () => void;
+  groupGuid?: string;
+  isSpanish?: boolean;
+  showHeader?: boolean;
 }
 
 const MAX_STORY_LENGTH = 200;
@@ -31,7 +34,17 @@ const US_PHONE_PATTERN = '\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}';
 const T_SHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
 const GRADE_OPTIONS = ['6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
-const SHARE_STORY_OPTIONS = ['Yes', 'No', 'No Preference'];
+const SHARE_STORY_OPTIONS = [
+  { value: 'Yes', label: 'Yes' },
+  { value: 'No', label: 'No' },
+  { value: 'No Preference', label: 'No Preference' },
+];
+
+const SPANISH_SHARE_STORY_OPTIONS = [
+  { value: 'Yes', label: 'Si' },
+  { value: 'No', label: 'No' },
+  { value: 'No Preference', label: 'Sin preferencia' },
+];
 
 const US_STATES: { abbr: string; name: string }[] = [
   { abbr: 'AL', name: 'Alabama' },
@@ -124,6 +137,7 @@ const renderTextField = (
     placeholder?: string;
     pattern?: string;
     patternMessage?: string;
+    typeMismatchMessage?: string;
   } = {},
 ) => {
   const {
@@ -132,6 +146,7 @@ const renderTextField = (
     placeholder,
     pattern,
     patternMessage,
+    typeMismatchMessage = 'Please enter a valid email address',
   } = options;
 
   return (
@@ -158,7 +173,7 @@ const renderTextField = (
       )}
       {type === 'email' && (
         <RadixFormErrorMessage match='typeMismatch'>
-          Please enter a valid email address
+          {typeMismatchMessage}
         </RadixFormErrorMessage>
       )}
       {pattern && patternMessage && (
@@ -198,7 +213,161 @@ const renderSelectField = (
 const BAPTISM_SIGN_UP_INTRO =
   'Fill out the form below to sign up for baptism and someone from our team will follow up with next steps!';
 
-const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
+const FORM_COPY = {
+  English: {
+    title: 'Sign Up for Baptism',
+    intro: BAPTISM_SIGN_UP_INTRO,
+    firstName: 'First Name',
+    firstNamePlaceholder: 'First Name',
+    lastName: 'Last Name',
+    lastNamePlaceholder: 'Last Name',
+    email: 'Email Address',
+    emailPlaceholder: 'Example@gmail.com',
+    phone: 'Cell Phone',
+    phonePlaceholder: 'xxx-xxx-xxxx',
+    campus: 'Home Campus',
+    campusPlaceholder: 'Select a Campus',
+    birthdate: 'Birthdate',
+    address: 'Address',
+    addressLine1: 'Address Line 1',
+    addressLine1Placeholder: 'Street address',
+    addressLine2: 'Address Line 2',
+    addressLine2Placeholder: 'Apartment, suite, etc. (optional)',
+    city: 'City',
+    cityPlaceholder: 'City',
+    state: 'State',
+    statePlaceholder: 'Select a State',
+    zip: 'Zip Code',
+    zipPlaceholder: 'Zip Code',
+    tShirtSize: 'T-Shirt Size',
+    tShirtSizePlaceholder: 'Select a Size',
+    myStory: 'Tell us why now is your time to get baptized!',
+    charactersRemaining: 'characters remaining',
+    shareYourStory:
+      'Are you comfortable with sharing your story on platform before being baptized?',
+    areYouInHighSchool: 'Are you in High School?',
+    yes: 'Yes',
+    no: 'No',
+    guardianHeading: 'Parent / Guardian Information',
+    grade: 'Grade',
+    gradePlaceholder: 'Select a Grade',
+    guardianFirstName: "Guardian's First Name",
+    guardianLastName: "Guardian's Last Name",
+    guardianEmail: "Guardian's Email",
+    guardianPhone: "Guardian's Phone Number",
+    relationship: 'Relation to the participant',
+    relationshipPlaceholder: 'e.g. Mother, Father, Guardian',
+    submit: 'Submit',
+    loading: 'Loading...',
+    missingGroup: 'Missing group reference. Please use the link provided.',
+    submitError:
+      'An error occurred while submitting the form. Please try again.',
+    requiredFirstName: 'Please enter your first name',
+    requiredLastName: 'Please enter your last name',
+    requiredEmail: 'Please enter your email',
+    validEmail: 'Please enter a valid email address',
+    requiredPhone: 'Please enter your phone number',
+    validPhone: 'Please enter a valid phone number',
+    requiredCampus: 'Please select a campus',
+    requiredBirthdate: 'Please enter your birthdate',
+    requiredAddress: 'Please enter your address',
+    requiredCity: 'Please enter your city',
+    requiredState: 'Please select a state',
+    requiredZip: 'Please enter your zip code',
+    requiredTShirtSize: 'Please select a t-shirt size',
+    requiredMyStory: 'Please tell us why now is your time',
+    requiredOption: 'Please select an option',
+    requiredHighSchool: 'Please let us know',
+    requiredGrade: 'Please select a grade',
+    requiredGuardianFirstName: "Please enter the guardian's first name",
+    requiredGuardianLastName: "Please enter the guardian's last name",
+    requiredGuardianEmail: "Please enter the guardian's email",
+    requiredGuardianPhone: "Please enter the guardian's phone number",
+    requiredRelationship: 'Please enter your relation to the participant',
+    shareStoryOptions: SHARE_STORY_OPTIONS,
+  },
+  Spanish: {
+    title: 'Inscríbete para el bautismo',
+    intro:
+      'Completa el formulario a continuación para inscribirte para el bautismo y alguien de nuestro equipo se comunicará contigo con los próximos pasos.',
+    firstName: 'Nombre',
+    firstNamePlaceholder: 'Nombre',
+    lastName: 'Apellido',
+    lastNamePlaceholder: 'Apellido',
+    email: 'Correo electrónico',
+    emailPlaceholder: 'Ejemplo@gmail.com',
+    phone: 'Teléfono celular',
+    phonePlaceholder: 'xxx-xxx-xxxx',
+    campus: 'Campus principal',
+    campusPlaceholder: 'Selecciona un campus',
+    birthdate: 'Fecha de nacimiento',
+    address: 'Dirección',
+    addressLine1: 'Dirección línea 1',
+    addressLine1Placeholder: 'Dirección',
+    addressLine2: 'Dirección línea 2',
+    addressLine2Placeholder: 'Apartamento, suite, etc. (opcional)',
+    city: 'Ciudad',
+    cityPlaceholder: 'Ciudad',
+    state: 'Estado',
+    statePlaceholder: 'Selecciona un estado',
+    zip: 'Código postal',
+    zipPlaceholder: 'Código postal',
+    tShirtSize: 'Talla de camiseta',
+    tShirtSizePlaceholder: 'Selecciona una talla',
+    myStory: 'Cuéntanos por qué ahora es tu momento para bautizarte.',
+    charactersRemaining: 'caracteres restantes',
+    shareYourStory:
+      '¿Te sientes cómodo compartiendo tu historia en la plataforma antes de bautizarte?',
+    areYouInHighSchool: '¿Estás en la escuela secundaria?',
+    yes: 'Si',
+    no: 'No',
+    guardianHeading: 'Información del padre / tutor',
+    grade: 'Grado',
+    gradePlaceholder: 'Selecciona un grado',
+    guardianFirstName: 'Nombre del tutor',
+    guardianLastName: 'Apellido del tutor',
+    guardianEmail: 'Correo electrónico del tutor',
+    guardianPhone: 'Teléfono del tutor',
+    relationship: 'Relación con el participante',
+    relationshipPlaceholder: 'Ej. Madre, padre, tutor',
+    submit: 'Enviar',
+    loading: 'Cargando...',
+    missingGroup:
+      'Falta la referencia del grupo. Por favor usa el enlace proporcionado.',
+    submitError:
+      'Ocurrió un error al enviar el formulario. Inténtalo de nuevo.',
+    requiredFirstName: 'Por favor ingresa tu nombre',
+    requiredLastName: 'Por favor ingresa tu apellido',
+    requiredEmail: 'Por favor ingresa tu correo electrónico',
+    validEmail: 'Por favor ingresa un correo electrónico válido',
+    requiredPhone: 'Por favor ingresa tu número de teléfono',
+    validPhone: 'Por favor ingresa un número de teléfono válido',
+    requiredCampus: 'Por favor selecciona un campus',
+    requiredBirthdate: 'Por favor ingresa tu fecha de nacimiento',
+    requiredAddress: 'Por favor ingresa tu dirección',
+    requiredCity: 'Por favor ingresa tu ciudad',
+    requiredState: 'Por favor selecciona un estado',
+    requiredZip: 'Por favor ingresa tu código postal',
+    requiredTShirtSize: 'Por favor selecciona una talla de camiseta',
+    requiredMyStory: 'Por favor cuéntanos por qué ahora es tu momento',
+    requiredOption: 'Por favor selecciona una opción',
+    requiredHighSchool: 'Por favor déjanos saber',
+    requiredGrade: 'Por favor selecciona un grado',
+    requiredGuardianFirstName: 'Por favor ingresa el nombre del tutor',
+    requiredGuardianLastName: 'Por favor ingresa el apellido del tutor',
+    requiredGuardianEmail: 'Por favor ingresa el correo electrónico del tutor',
+    requiredGuardianPhone: 'Por favor ingresa el teléfono del tutor',
+    requiredRelationship: 'Por favor ingresa tu relación con el participante',
+    shareStoryOptions: SPANISH_SHARE_STORY_OPTIONS,
+  },
+};
+
+const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
+  onSuccess,
+  groupGuid,
+  isSpanish = false,
+  showHeader = true,
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [birthdate, setBirthdate] = useState('');
@@ -208,6 +377,10 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
     useState<BaptismSignUpLoaderReturnType>({ campuses: [] });
 
   const fetcher = useFetcher({ key: 'baptism-sign-up-form' });
+  const [searchParams] = useSearchParams();
+  const selectedGroupGuid = groupGuid ?? searchParams.get('Group') ?? '';
+  const language = isSpanish ? 'Spanish' : 'English';
+  const copy = FORM_COPY[language];
 
   useEffect(() => {
     fetcher.load('/baptism-sign-up');
@@ -250,17 +423,25 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!selectedGroupGuid) {
+      setError(copy.missingGroup);
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
+    const actionSearchParams = new URLSearchParams({
+      Group: selectedGroupGuid,
+      Language: language,
+    });
 
     try {
       fetcher.submit(formData, {
         method: 'post',
-        action: '/baptism-sign-up',
+        action: `/baptism-sign-up?${actionSearchParams.toString()}`,
       });
     } catch {
-      setError(
-        'An error occurred while submitting the form. Please try again.',
-      );
+      setError(copy.submitError);
       setLoading(false);
     }
   };
@@ -275,40 +456,45 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
 
   return (
     <>
-      <h2 className='mb-6 text-3xl text-navy font-bold'>Sign Up for Baptism</h2>
-      <p className='text-center md:text-left mb-10 col-span-2 text-sm text-text-secondary'>
-        {BAPTISM_SIGN_UP_INTRO}
-      </p>
+      {showHeader && (
+        <>
+          <h2 className='mb-6 text-3xl text-navy font-bold'>{copy.title}</h2>
+          <p className='text-center md:text-left mb-10 col-span-2 text-sm text-text-secondary'>
+            {copy.intro}
+          </p>
+        </>
+      )}
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
-        {renderTextField('firstName', 'First Name', 'Please enter your first name', {
-          placeholder: 'First Name',
+        {renderTextField('firstName', copy.firstName, copy.requiredFirstName, {
+          placeholder: copy.firstNamePlaceholder,
         })}
-        {renderTextField('lastName', 'Last Name', 'Please enter your last name', {
-          placeholder: 'Last Name',
+        {renderTextField('lastName', copy.lastName, copy.requiredLastName, {
+          placeholder: copy.lastNamePlaceholder,
         })}
-        {renderTextField('email', 'Email Address', 'Please enter your email', {
+        {renderTextField('email', copy.email, copy.requiredEmail, {
           type: 'email',
-          placeholder: 'Example@gmail.com',
+          placeholder: copy.emailPlaceholder,
+          typeMismatchMessage: copy.validEmail,
         })}
-        {renderTextField('phone', 'Cell Phone', 'Please enter your phone number', {
+        {renderTextField('phone', copy.phone, copy.requiredPhone, {
           type: 'tel',
-          placeholder: 'xxx-xxx-xxxx',
+          placeholder: copy.phonePlaceholder,
           pattern: US_PHONE_PATTERN,
-          patternMessage: 'Please enter a valid phone number',
+          patternMessage: copy.validPhone,
         })}
 
         <Form.Field name='campus' className={radixFormFieldStackClassName}>
           <Form.Label className={radixCompactFormLabelClassName}>
-            Home Campus
+            {copy.campus}
           </Form.Label>
           <RadixFormSelectShell>
             <Form.Control asChild>
               <select required defaultValue='' className={radixSelectClassName}>
                 <option value='' disabled>
-                  Select a Campus
+                  {copy.campusPlaceholder}
                 </option>
                 {campuses.map(({ guid, name }) => (
                   <option key={guid} value={guid}>
@@ -319,13 +505,13 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
             </Form.Control>
           </RadixFormSelectShell>
           <RadixFormErrorMessage match='valueMissing'>
-            Please select a campus
+            {copy.requiredCampus}
           </RadixFormErrorMessage>
         </Form.Field>
 
         <Form.Field name='birthdate' className={radixFormFieldStackClassName}>
           <Form.Label className={radixCompactFormLabelClassName}>
-            Birthdate
+            {copy.birthdate}
           </Form.Label>
           <Form.Control asChild>
             <input
@@ -338,44 +524,49 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
             />
           </Form.Control>
           <RadixFormErrorMessage match='valueMissing'>
-            Please enter your birthdate
+            {copy.requiredBirthdate}
           </RadixFormErrorMessage>
         </Form.Field>
 
         <h3 className='col-span-2 mt-4 text-lg font-bold italic text-navy'>
-          Address
+          {copy.address}
         </h3>
-        {renderTextField('addressLine1', 'Address Line 1', 'Please enter your address', {
-          placeholder: 'Street address',
-          type: 'text',
-        })}
-        {renderTextField('addressLine2', 'Address Line 2', '', {
+        {renderTextField(
+          'addressLine1',
+          copy.addressLine1,
+          copy.requiredAddress,
+          {
+            placeholder: copy.addressLine1Placeholder,
+            type: 'text',
+          },
+        )}
+        {renderTextField('addressLine2', copy.addressLine2, '', {
           required: false,
-          placeholder: 'Apartment, suite, etc. (optional)',
+          placeholder: copy.addressLine2Placeholder,
         })}
-        {renderTextField('city', 'City', 'Please enter your city', {
-          placeholder: 'City',
+        {renderTextField('city', copy.city, copy.requiredCity, {
+          placeholder: copy.cityPlaceholder,
         })}
         {renderSelectField(
           'state',
-          'State',
-          'Select a State',
-          'Please select a state',
+          copy.state,
+          copy.statePlaceholder,
+          copy.requiredState,
           US_STATES.map(({ abbr, name }) => (
             <option key={abbr} value={abbr}>
               {name}
             </option>
           )),
         )}
-        {renderTextField('zip', 'Zip Code', 'Please enter your zip code', {
-          placeholder: 'Zip Code',
+        {renderTextField('zip', copy.zip, copy.requiredZip, {
+          placeholder: copy.zipPlaceholder,
         })}
 
         {renderSelectField(
           'tShirtSize',
-          'T-Shirt Size',
-          'Select a Size',
-          'Please select a t-shirt size',
+          copy.tShirtSize,
+          copy.tShirtSizePlaceholder,
+          copy.requiredTShirtSize,
           T_SHIRT_SIZES.map((size) => (
             <option key={size} value={size}>
               {size}
@@ -385,10 +576,13 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
 
         <Form.Field
           name='myStory'
-          className={cn('col-span-1 md:col-span-2', radixFormFieldStackClassName)}
+          className={cn(
+            'col-span-1 md:col-span-2',
+            radixFormFieldStackClassName,
+          )}
         >
           <Form.Label className={radixFormLabelClassName}>
-            Tell us why now is your time to get baptized!
+            {copy.myStory}
           </Form.Label>
           <Form.Control asChild>
             <textarea
@@ -401,10 +595,10 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
             />
           </Form.Control>
           <p className='text-sm text-text-secondary'>
-            {remaining} characters remaining
+            {remaining} {copy.charactersRemaining}
           </p>
           <RadixFormErrorMessage match='valueMissing'>
-            Please tell us why now is your time
+            {copy.requiredMyStory}
           </RadixFormErrorMessage>
         </Form.Field>
 
@@ -416,27 +610,26 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
           )}
         >
           <Form.Label className={radixFormLabelClassName}>
-            Are you comfortable with sharing your story on platform before being
-            baptized?
+            {copy.shareYourStory}
           </Form.Label>
           <div className={formRadioGroupVerticalStyles} role='radiogroup'>
-            {SHARE_STORY_OPTIONS.map((option) => (
-              <label key={option} className='flex items-center gap-2'>
+            {copy.shareStoryOptions.map((option) => (
+              <label key={option.value} className='flex items-center gap-2'>
                 <Form.Control asChild>
                   <input
                     type='radio'
                     name='shareYourStory'
-                    value={option}
+                    value={option.value}
                     required
                     className={radixRadioClassName}
                   />
                 </Form.Control>
-                <span className='leading-4'>{option}</span>
+                <span className='leading-4'>{option.label}</span>
               </label>
             ))}
           </div>
           <RadixFormErrorMessage match='valueMissing'>
-            Please select an option
+            {copy.requiredOption}
           </RadixFormErrorMessage>
         </Form.Field>
 
@@ -449,12 +642,12 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
             )}
           >
             <Form.Label className={radixFormLabelClassName}>
-              Are you in High School?
+              {copy.areYouInHighSchool}
             </Form.Label>
             <div className={formRadioGroupVerticalStyles} role='radiogroup'>
               {[
-                { label: 'Yes', value: 'True' },
-                { label: 'No', value: 'False' },
+                { label: copy.yes, value: 'True' },
+                { label: copy.no, value: 'False' },
               ].map((option) => (
                 <label key={option.value} className='flex items-center gap-2'>
                   <Form.Control asChild>
@@ -473,7 +666,7 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
               ))}
             </div>
             <RadixFormErrorMessage match='valueMissing'>
-              Please let us know
+              {copy.requiredHighSchool}
             </RadixFormErrorMessage>
           </Form.Field>
         )}
@@ -481,13 +674,13 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
         {showGuardianBlock && (
           <>
             <h3 className='col-span-2 mt-4 text-lg font-bold italic text-navy'>
-              Parent / Guardian Information
+              {copy.guardianHeading}
             </h3>
             {renderSelectField(
               'grade',
-              'Grade',
-              'Select a Grade',
-              'Please select a grade',
+              copy.grade,
+              copy.gradePlaceholder,
+              copy.requiredGrade,
               GRADE_OPTIONS.map((grade) => (
                 <option key={grade} value={grade}>
                   {grade}
@@ -497,41 +690,47 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
             <div className='hidden md:block' />
             {renderTextField(
               'gFirstName',
-              "Guardian's First Name",
-              "Please enter the guardian's first name",
-              { placeholder: 'First Name' },
+              copy.guardianFirstName,
+              copy.requiredGuardianFirstName,
+              { placeholder: copy.firstNamePlaceholder },
             )}
             {renderTextField(
               'gLastName',
-              "Guardian's Last Name",
-              "Please enter the guardian's last name",
-              { placeholder: 'Last Name' },
+              copy.guardianLastName,
+              copy.requiredGuardianLastName,
+              { placeholder: copy.lastNamePlaceholder },
             )}
             {renderTextField(
               'guardiansEmail',
-              "Guardian's Email",
-              "Please enter the guardian's email",
-              { type: 'email', placeholder: 'Example@gmail.com' },
+              copy.guardianEmail,
+              copy.requiredGuardianEmail,
+              {
+                type: 'email',
+                placeholder: copy.emailPlaceholder,
+                typeMismatchMessage: copy.validEmail,
+              },
             )}
             {renderTextField(
               'guardiansPhone',
-              "Guardian's Phone Number",
-              "Please enter the guardian's phone number",
+              copy.guardianPhone,
+              copy.requiredGuardianPhone,
               {
                 type: 'tel',
-                placeholder: 'xxx-xxx-xxxx',
+                placeholder: copy.phonePlaceholder,
                 pattern: US_PHONE_PATTERN,
-                patternMessage: 'Please enter a valid phone number',
+                patternMessage: copy.validPhone,
               },
             )}
             {renderTextField(
               'relationship',
-              'Relation to the participant',
-              'Please enter your relation to the participant',
-              { placeholder: 'e.g. Mother, Father, Guardian' },
+              copy.relationship,
+              copy.requiredRelationship,
+              { placeholder: copy.relationshipPlaceholder },
             )}
           </>
         )}
+
+        <input type='hidden' name='Group' value={selectedGroupGuid} />
 
         {error && <p className='text-alert col-span-2 text-center'>{error}</p>}
 
@@ -542,7 +741,7 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({ onSuccess }) => {
             type='submit'
             disabled={loading}
           >
-            {loading ? 'Loading...' : 'Submit'}
+            {loading ? copy.loading : copy.submit}
           </Button>
         </Form.Submit>
       </Form.Root>

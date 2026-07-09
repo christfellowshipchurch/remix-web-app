@@ -29,10 +29,14 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-function renderForm(onSuccess = vi.fn()) {
+function renderForm(
+  onSuccess = vi.fn(),
+  initialEntries: string[] = ['/baptism-sign-up?Group=test-guid-123'],
+  props: { groupGuid?: string; isSpanish?: boolean; showHeader?: boolean } = {},
+) {
   return render(
-    <MemoryRouter initialEntries={['/baptism-sign-up']}>
-      <BaptismSignUpForm onSuccess={onSuccess} />
+    <MemoryRouter initialEntries={initialEntries}>
+      <BaptismSignUpForm onSuccess={onSuccess} {...props} />
     </MemoryRouter>,
   );
 }
@@ -65,6 +69,18 @@ describe('BaptismSignUpForm', () => {
     expect(screen.getByText('Sign Up for Baptism')).toBeInTheDocument();
   });
 
+  it('hides the heading and intro when showHeader is false', () => {
+    renderForm(vi.fn(), ['/baptism-sign-up?Group=test-guid-123'], {
+      showHeader: false,
+    });
+    expect(screen.queryByText('Sign Up for Baptism')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'Fill out the form below to sign up for baptism and someone from our team will follow up with next steps!',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders the base fields and submit button', () => {
     renderForm();
     expect(screen.getByText('First Name')).toBeInTheDocument();
@@ -92,6 +108,26 @@ describe('BaptismSignUpForm', () => {
     );
     expect(radios.length).toBe(3);
     expect(screen.getByText('No Preference')).toBeInTheDocument();
+  });
+
+  it('includes a hidden Group input populated from the URL search param', () => {
+    renderForm();
+    const hidden = document.querySelector(
+      "input[type='hidden'][name='Group']",
+    ) as HTMLInputElement;
+    expect(hidden).toBeInTheDocument();
+    expect(hidden.value).toBe('test-guid-123');
+  });
+
+  it('uses the groupGuid prop when provided', () => {
+    renderForm(vi.fn(), ['/baptism-sign-up?Group=test-guid-123'], {
+      groupGuid: 'prop-guid-456',
+    });
+    const hidden = document.querySelector(
+      "input[type='hidden'][name='Group']",
+    ) as HTMLInputElement;
+    expect(hidden).toBeInTheDocument();
+    expect(hidden.value).toBe('prop-guid-456');
   });
 
   it('shows a live remaining-character count for the story field', () => {
@@ -126,33 +162,33 @@ describe('BaptismSignUpForm', () => {
 
   it('shows no age-based fields before a birthdate is entered', () => {
     renderForm();
-    expect(screen.queryByText('Are you in High School?')).not.toBeInTheDocument();
     expect(
-      screen.queryByText("Guardian's First Name"),
+      screen.queryByText('Are you in High School?'),
     ).not.toBeInTheDocument();
+    expect(screen.queryByText("Guardian's First Name")).not.toBeInTheDocument();
   });
 
   it('shows no additional fields when age is over 18', () => {
     renderForm();
     setBirthdate(25);
-    expect(screen.queryByText('Are you in High School?')).not.toBeInTheDocument();
     expect(
-      screen.queryByText("Guardian's First Name"),
+      screen.queryByText('Are you in High School?'),
     ).not.toBeInTheDocument();
+    expect(screen.queryByText("Guardian's First Name")).not.toBeInTheDocument();
   });
 
   it('always reveals Grade + Guardian fields (no High School question) when under 18', () => {
     renderForm();
     setBirthdate(10);
-    expect(screen.queryByText('Are you in High School?')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Are you in High School?'),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Grade')).toBeInTheDocument();
     expect(screen.getByText("Guardian's First Name")).toBeInTheDocument();
     expect(screen.getByText("Guardian's Last Name")).toBeInTheDocument();
     expect(screen.getByText("Guardian's Email")).toBeInTheDocument();
     expect(screen.getByText("Guardian's Phone Number")).toBeInTheDocument();
-    expect(
-      screen.getByText('Relation to the participant'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Relation to the participant')).toBeInTheDocument();
   });
 
   it('asks the High School question at exactly 18 and reveals guardian fields only when answered Yes', () => {
@@ -161,9 +197,7 @@ describe('BaptismSignUpForm', () => {
 
     // High School question appears; guardian fields hidden until answered.
     expect(screen.getByText('Are you in High School?')).toBeInTheDocument();
-    expect(
-      screen.queryByText("Guardian's First Name"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Guardian's First Name")).not.toBeInTheDocument();
 
     // Answer Yes -> guardian block + Grade appear.
     fireEvent.click(
@@ -180,9 +214,7 @@ describe('BaptismSignUpForm', () => {
         "input[name='areYouInHighSchool'][value='False']",
       ) as HTMLInputElement,
     );
-    expect(
-      screen.queryByText("Guardian's First Name"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Guardian's First Name")).not.toBeInTheDocument();
   });
 
   it('shows Loading... and disables submit while submitting', () => {
@@ -204,13 +236,52 @@ describe('BaptismSignUpForm', () => {
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
   });
 
-  it('submits to /baptism-sign-up on form submit', () => {
+  it('submits to /baptism-sign-up with Group and English language on form submit', () => {
     renderForm();
     fireEvent.submit(document.querySelector('form') as HTMLFormElement);
     expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
       method: 'post',
-      action: '/baptism-sign-up',
+      action: '/baptism-sign-up?Group=test-guid-123&Language=English',
     });
+  });
+
+  it('submits with Spanish language when isSpanish is true', () => {
+    renderForm(vi.fn(), ['/baptism-sign-up'], {
+      groupGuid: 'spanish-guid-123',
+      isSpanish: true,
+    });
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/baptism-sign-up?Group=spanish-guid-123&Language=Spanish',
+    });
+  });
+
+  it('renders Spanish copy when isSpanish is true', () => {
+    renderForm(vi.fn(), ['/baptism-sign-up'], {
+      groupGuid: 'spanish-guid-123',
+      isSpanish: true,
+    });
+
+    expect(screen.getByText('Inscríbete para el bautismo')).toBeInTheDocument();
+    expect(screen.getByText('Nombre')).toBeInTheDocument();
+    expect(screen.getByText('Apellido')).toBeInTheDocument();
+    expect(screen.getByText('Correo electrónico')).toBeInTheDocument();
+    expect(screen.getByText('Teléfono celular')).toBeInTheDocument();
+    expect(screen.getByText('Campus principal')).toBeInTheDocument();
+    expect(screen.getByText('Fecha de nacimiento')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /enviar/i })).toBeInTheDocument();
+  });
+
+  it('shows a missing group error and does not submit when Group is unavailable', () => {
+    renderForm(vi.fn(), ['/baptism-sign-up']);
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+    expect(
+      screen.getByText(
+        'Missing group reference. Please use the link provided.',
+      ),
+    ).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 
   it('fires pushFormEvent before onSuccess when submission succeeds', () => {

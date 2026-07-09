@@ -5,6 +5,11 @@ import { postRockData } from '~/lib/.server/fetch-rock-data';
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
+    const url = new URL(request.url);
+    const group = url.searchParams.get('Group') ?? '';
+    const language =
+      url.searchParams.get('Language') === 'Spanish' ? 'Spanish' : 'English';
+    const workflowTypeId = language === 'Spanish' ? '1644' : '1465';
 
     const {
       firstName,
@@ -30,6 +35,10 @@ export const action: ActionFunction = async ({ request }) => {
       relationship,
     } = formData;
 
+    if (!group) {
+      return data({ error: 'Missing required fields' }, { status: 400 });
+    }
+
     // Combine the collected subfields into the single Rock `Address` attribute
     // (e.g. "123 Main St, Apt 2, Stuart, FL 34997"). Empty parts are dropped.
     const localityLine = [
@@ -38,7 +47,11 @@ export const action: ActionFunction = async ({ request }) => {
     ]
       .filter(Boolean)
       .join(', ');
-    const address = [addressLine1 as string, addressLine2 as string, localityLine]
+    const address = [
+      addressLine1 as string,
+      addressLine2 as string,
+      localityLine,
+    ]
       .filter(Boolean)
       .join(', ');
 
@@ -54,6 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
       ShareYourStory: shareYourStory as string,
       MyStory: myStory as string,
       LaunchSource: 'app',
+      Group: group,
     };
 
     // Age-conditional fields — the form only submits these when its age logic
@@ -82,7 +96,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
 
     await postRockData({
-      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=1465&workflowName=Baptism%20Finder%20Sign%20Up`,
+      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=${workflowTypeId}&workflowName=Baptism%20Finder%20Sign%20Up`,
       body: baptismSignUpSubmission,
     });
 

@@ -8,6 +8,8 @@ import JourneyFinderSignUpForm, {
   JourneyFinderSignUpSuccessDetails,
 } from '~/components/modals/journey-finder-sign-up/journey-finder-sign-up-form.component';
 import JourneyFinderSignUpConfirmation from '~/components/modals/journey-finder-sign-up/confirmation.component';
+import BaptismSignUpForm from '~/components/modals/baptism-sign-up/baptism-sign-up-form.component';
+import BaptismSignUpConfirmation from '~/components/modals/baptism-sign-up/confirmation.component';
 import { EventFinderHit, EventSinglePageType } from '../types';
 import { RootLoaderData } from '~/routes/navbar/loader';
 import { ClickableCard } from './clickable-card.component';
@@ -865,7 +867,10 @@ function normalizeGroupType(groupType: string): string {
 }
 
 function getRegistrationFormMode(groupType: string): 'native' | 'embed' {
-  return normalizeGroupType(groupType) === 'Journey' ? 'native' : 'embed';
+  const normalized = normalizeGroupType(groupType);
+  return normalized === 'Journey' || normalized === 'Baptism'
+    ? 'native'
+    : 'embed';
 }
 
 // Form Step Component
@@ -892,6 +897,7 @@ const FormStep = ({
   const [nativeSuccessDetails, setNativeSuccessDetails] =
     useState<JourneyFinderSignUpSuccessDetails | null>(null);
   const registrationFormMode = getRegistrationFormMode(groupType);
+  const normalizedGroupType = normalizeGroupType(groupType);
   const isSpanish = isSpanishCampusLabel(selectedCampus);
 
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
@@ -926,6 +932,32 @@ const FormStep = ({
   }
 
   if (registrationFormMode === 'native') {
+    if (normalizedGroupType === 'Baptism') {
+      if (isNativeSuccess) {
+        return (
+          <div className='w-full max-w-[600px] mx-auto rounded-xl border border-neutral-lighter bg-white shadow-sm'>
+            <BaptismSignUpConfirmation
+              onSuccess={() => {
+                setIsNativeSuccess(false);
+                onResetRegistration();
+              }}
+            />
+          </div>
+        );
+      }
+
+      return (
+        <div className='w-full max-w-[600px] mx-auto rounded-xl border border-neutral-lighter bg-white p-6 shadow-sm md:p-8'>
+          <BaptismSignUpForm
+            groupGuid={groupGuid}
+            isSpanish={isSpanish}
+            showHeader={false}
+            onSuccess={() => setIsNativeSuccess(true)}
+          />
+        </div>
+      );
+    }
+
     if (isNativeSuccess) {
       return (
         <div className='w-full max-w-[600px] mx-auto'>
