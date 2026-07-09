@@ -82,7 +82,7 @@ export const Search = ({
   };
 
   return (
-    <div className='flex h-[80vh] w-full items-center justify-center md:h-[78vh]'>
+    <div className='flex h-[90vh] w-full items-center justify-center md:h-[78vh]'>
       <div className='relative flex size-full overflow-hidden text-pretty'>
         <div
           ref={heroVideoMountRef}
