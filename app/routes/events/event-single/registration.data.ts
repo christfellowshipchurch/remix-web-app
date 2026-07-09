@@ -24,7 +24,7 @@ export const subGroupTypeDescriptions: Record<string, SubGroupTypeDescription> =
     },
     'Three Days': {
       description:
-        'Join us for a three-part conversation, where you will Know God, Grow in your Relationships, Discover your Purpose & partner together as we Impact the World.',
+        'The Journey is the starting point to learn the heartbeat of Christ Fellowship. Join us for a three-part experience in which you will Know God, Grow in your Relationships, Discover your Purpose, & partner with us as we Impact the World together.',
     },
   };
 
