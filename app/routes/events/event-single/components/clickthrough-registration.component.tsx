@@ -8,6 +8,10 @@ import JourneyFinderSignUpForm, {
   JourneyFinderSignUpSuccessDetails,
 } from '~/components/modals/journey-finder-sign-up/journey-finder-sign-up-form.component';
 import JourneyFinderSignUpConfirmation from '~/components/modals/journey-finder-sign-up/confirmation.component';
+import DreamTeamKickoffForm, {
+  DreamTeamKickoffSuccessDetails,
+} from '~/routes/dream-team-kickoff/dream-team-kickoff-form.component';
+import DreamTeamKickoffConfirmation from '~/routes/dream-team-kickoff/confirmation.component';
 import { EventFinderHit, EventSinglePageType } from '../types';
 import { RootLoaderData } from '~/routes/navbar/loader';
 import { ClickableCard } from './clickable-card.component';
@@ -865,7 +869,11 @@ function normalizeGroupType(groupType: string): string {
 }
 
 function getRegistrationFormMode(groupType: string): 'native' | 'embed' {
-  return normalizeGroupType(groupType) === 'Journey' ? 'native' : 'embed';
+  return ['Journey', 'Dream Team Kickoff'].includes(
+    normalizeGroupType(groupType),
+  )
+    ? 'native'
+    : 'embed';
 }
 
 // Form Step Component
@@ -891,6 +899,8 @@ const FormStep = ({
   const [isNativeSuccess, setIsNativeSuccess] = useState(false);
   const [nativeSuccessDetails, setNativeSuccessDetails] =
     useState<JourneyFinderSignUpSuccessDetails | null>(null);
+  const [dreamTeamSuccessDetails, setDreamTeamSuccessDetails] =
+    useState<DreamTeamKickoffSuccessDetails | null>(null);
   const registrationFormMode = getRegistrationFormMode(groupType);
   const isSpanish = isSpanishCampusLabel(selectedCampus);
 
@@ -926,6 +936,52 @@ const FormStep = ({
   }
 
   if (registrationFormMode === 'native') {
+    if (normalizeGroupType(groupType) === 'Dream Team Kickoff') {
+      if (isNativeSuccess) {
+        return (
+          <div className='w-full max-w-[600px] mx-auto'>
+            <DreamTeamKickoffConfirmation
+              buttonText='Register someone else'
+              calendarTitle='Dream Team Kickoff at Christ Fellowship Church'
+              details={{
+                title: 'Dream Team Kickoff Details',
+                campus: selectedCampus,
+                date: formatEventFinderDatesDisplay(
+                  parseSerializedEventFinderDates(selectedDate),
+                  selectedDay,
+                ),
+                time: `${selectedTime} ET`,
+                name:
+                  dreamTeamSuccessDetails?.firstName ||
+                  dreamTeamSuccessDetails?.lastName
+                    ? `${dreamTeamSuccessDetails?.firstName ?? ''} ${
+                        dreamTeamSuccessDetails?.lastName ?? ''
+                      }`.trim()
+                    : 'Dream Team Registrant',
+              }}
+              onContinue={() => {
+                setDreamTeamSuccessDetails(null);
+                setIsNativeSuccess(false);
+                onResetRegistration();
+              }}
+            />
+          </div>
+        );
+      }
+
+      return (
+        <div className='w-full max-w-[600px] mx-auto'>
+          <DreamTeamKickoffForm
+            groupGuid={groupGuid}
+            onSuccess={(details) => {
+              setDreamTeamSuccessDetails(details ?? null);
+              setIsNativeSuccess(true);
+            }}
+          />
+        </div>
+      );
+    }
+
     if (isNativeSuccess) {
       return (
         <div className='w-full max-w-[600px] mx-auto'>

@@ -1,6 +1,6 @@
 import * as Form from '@radix-ui/react-form';
 import { useEffect, useState } from 'react';
-import { useFetcher } from 'react-router-dom';
+import { useFetcher, useSearchParams } from 'react-router-dom';
 import { pushFormEvent } from '~/lib/gtm';
 import { cn } from '~/lib/utils';
 import Icon from '~/primitives/icon';
@@ -16,8 +16,14 @@ import {
 import type { DreamTeamKickoffLoaderReturnType } from './types';
 
 interface DreamTeamKickoffFormProps {
-  onSuccess: () => void;
+  onSuccess: (details?: DreamTeamKickoffSuccessDetails) => void;
+  groupGuid?: string;
 }
+
+export type DreamTeamKickoffSuccessDetails = {
+  firstName: string;
+  lastName: string;
+};
 
 type SelectOption = { value: string; label: string };
 type DreamTeamKickoffActionData = { success: true } | { error: string };
@@ -31,14 +37,19 @@ const renderInputField = renderRadixInputField;
 
 const DreamTeamKickoffForm: React.FC<DreamTeamKickoffFormProps> = ({
   onSuccess,
+  groupGuid,
 }) => {
   const [error, setError] = useState<string | null>(null);
+  const [submittedName, setSubmittedName] =
+    useState<DreamTeamKickoffSuccessDetails | null>(null);
   const fetcher = useFetcher<DreamTeamKickoffActionData>();
+  const [searchParams] = useSearchParams();
   const campusesFetcher = useFetcher<DreamTeamKickoffLoaderReturnType>({
     key: 'dream-team-kickoff-campuses',
   });
   const isSubmitting = fetcher.state === 'submitting';
   const campuses = campusesFetcher.data?.campuses ?? [];
+  const selectedGroupGuid = groupGuid ?? searchParams.get('Group') ?? '';
 
   useEffect(() => {
     campusesFetcher.load('/dream-team-kickoff');
@@ -55,7 +66,7 @@ const DreamTeamKickoffForm: React.FC<DreamTeamKickoffFormProps> = ({
           'dream_team_kickoff',
           'Dream Team Kickoff Sign Up',
         );
-        onSuccess();
+        onSuccess(submittedName ?? undefined);
       }
     }
 
@@ -67,11 +78,18 @@ const DreamTeamKickoffForm: React.FC<DreamTeamKickoffFormProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    setSubmittedName({
+      firstName: formData.get('FirstName')?.toString() ?? '',
+      lastName: formData.get('LastName')?.toString() ?? '',
+    });
+    const actionSearchParams = selectedGroupGuid
+      ? `?${new URLSearchParams({ Group: selectedGroupGuid }).toString()}`
+      : '';
 
     try {
       fetcher.submit(formData, {
         method: 'post',
-        action: '/dream-team-kickoff',
+        action: `/dream-team-kickoff${actionSearchParams}`,
       });
     } catch {
       setError(

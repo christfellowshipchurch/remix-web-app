@@ -5,6 +5,8 @@ import type { DreamTeamKickoffFormType } from './types';
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
+    const url = new URL(request.url);
+    const group = url.searchParams.get('Group') ?? '';
 
     const submission: DreamTeamKickoffFormType = {
       FirstName: formData.FirstName as string,
@@ -18,6 +20,10 @@ export const action: ActionFunction = async ({ request }) => {
       ActiveOnDreamTeam: formData.ActiveOnDreamTeam as string,
       LaunchSource: 'app',
     };
+
+    if (group) {
+      submission.Group = group;
+    }
 
     await postRockData({
       endpoint:

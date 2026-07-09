@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import DreamTeamKickoffForm from '../dream-team-kickoff-form.component';
+import DreamTeamKickoffForm, {
+  DreamTeamKickoffSuccessDetails,
+} from '../dream-team-kickoff-form.component';
 import { pushFormEvent } from '~/lib/gtm';
 
 vi.mock('~/lib/gtm', () => ({ pushFormEvent: vi.fn() }));
@@ -49,10 +51,18 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-function renderForm(onSuccess = vi.fn()) {
+function renderForm({
+  onSuccess = vi.fn(),
+  initialEntry = '/dream-team-kickoff',
+  groupGuid,
+}: {
+  onSuccess?: (details?: DreamTeamKickoffSuccessDetails) => void;
+  initialEntry?: string;
+  groupGuid?: string;
+} = {}) {
   return render(
-    <MemoryRouter initialEntries={['/dream-team-kickoff']}>
-      <DreamTeamKickoffForm onSuccess={onSuccess} />
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <DreamTeamKickoffForm onSuccess={onSuccess} groupGuid={groupGuid} />
     </MemoryRouter>,
   );
 }
@@ -178,7 +188,7 @@ describe('DreamTeamKickoffForm', () => {
     });
     mockSubmitFetcherState = { state: 'idle', data: { success: true } };
 
-    renderForm(onSuccess);
+    renderForm({ onSuccess });
 
     expect(pushFormEvent).toHaveBeenCalledWith(
       'form_complete',
@@ -187,5 +197,68 @@ describe('DreamTeamKickoffForm', () => {
     );
     expect(onSuccess).toHaveBeenCalled();
     expect(calls).toEqual(['pushFormEvent', 'onSuccess']);
+  });
+
+  it('passes the submitted name to onSuccess after submission succeeds', () => {
+    const onSuccess = vi.fn();
+    const view = renderForm({ onSuccess });
+
+    fireEvent.change(document.querySelector("input[name='FirstName']")!, {
+      target: { value: 'Test' },
+    });
+    fireEvent.change(document.querySelector("input[name='LastName']")!, {
+      target: { value: 'Person' },
+    });
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+
+    mockSubmitFetcherState = { state: 'idle', data: { success: true } };
+    view.rerender(
+      <MemoryRouter initialEntries={['/dream-team-kickoff']}>
+        <DreamTeamKickoffForm onSuccess={onSuccess} />
+      </MemoryRouter>,
+    );
+
+    expect(onSuccess).toHaveBeenCalledWith({
+      firstName: 'Test',
+      lastName: 'Person',
+    });
+  });
+
+  it('submits with the groupGuid prop when provided', () => {
+    renderForm({
+      initialEntry: '/dream-team-kickoff?Group=query-guid-123',
+      groupGuid: 'prop-guid-456',
+    });
+
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/dream-team-kickoff?Group=prop-guid-456',
+    });
+  });
+
+  it('submits with the Group query param when no groupGuid prop is provided', () => {
+    renderForm({
+      initialEntry: '/dream-team-kickoff?Group=query-guid-123',
+    });
+
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/dream-team-kickoff?Group=query-guid-123',
+    });
+  });
+
+  it('submits standalone forms without a Group query param', () => {
+    renderForm();
+
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+      method: 'post',
+      action: '/dream-team-kickoff',
+    });
   });
 });

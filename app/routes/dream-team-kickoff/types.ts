@@ -9,6 +9,7 @@ export type DreamTeamKickoffFormType = {
   FilledOutApplication: string;
   ActiveOnDreamTeam: string;
   LaunchSource: 'app';
+  Group?: string;
 };
 
 export type DreamTeamKickoffLoaderReturnType = {

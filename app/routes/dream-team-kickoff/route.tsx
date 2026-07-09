@@ -21,7 +21,7 @@ export default function DreamTeamKickoffPage() {
   return (
     <div className='flex flex-col items-center justify-center px-6 py-20 max-w-screen-sm mx-auto'>
       {isSuccess ? (
-        <DreamTeamKickoffConfirmation />
+        <DreamTeamKickoffConfirmation onSuccess={() => setIsSuccess(false)} />
       ) : (
         <DreamTeamKickoffForm onSuccess={() => setIsSuccess(true)} />
       )}
