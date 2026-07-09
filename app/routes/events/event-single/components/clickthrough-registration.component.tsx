@@ -28,6 +28,7 @@ import {
   eventFinderDatesMatch,
   formatEventFinderDateLabel,
   formatEventFinderDatesDisplay,
+  joinEventFinderDateLabels,
   normalizeEventFinderDates,
   parseSerializedEventFinderDates,
   serializeEventFinderDates,
@@ -740,9 +741,9 @@ const DateStep = ({
     <div className='flex flex-wrap justify-center gap-4'>
       {uniqueDates.map((dateInfo) => {
         const dateKey = serializeEventFinderDates(dateInfo.dates);
-        const title = dateInfo.dates
-          .map(formatEventFinderDateLabel)
-          .join(' & ');
+        const title = joinEventFinderDateLabels(
+          dateInfo.dates.map(formatEventFinderDateLabel),
+        );
 
         return (
           <ClickableCard
