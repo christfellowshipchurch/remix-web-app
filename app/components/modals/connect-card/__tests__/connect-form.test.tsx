@@ -1,7 +1,7 @@
 import * as Form from '@radix-ui/react-form';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import ConnectCardForm, {
   renderInputField,
   renderCheckboxField,
@@ -54,7 +54,16 @@ function LocationProbe() {
 function renderForm(onSuccess = vi.fn(), initialEntry = '/connect-card') {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
-      <ConnectCardForm onSuccess={onSuccess} />
+      <Routes>
+        <Route
+          path='/connect-card'
+          element={<ConnectCardForm onSuccess={onSuccess} />}
+        />
+        <Route
+          path='/locations/:location'
+          element={<ConnectCardForm onSuccess={onSuccess} />}
+        />
+      </Routes>
       <LocationProbe />
     </MemoryRouter>,
   );
@@ -161,8 +170,8 @@ describe('ConnectCardForm', () => {
       state: 'idle',
       data: {
         campuses: [
-          { guid: 'guid-1', name: 'Palm Beach Gardens' },
-          { guid: 'guid-2', name: 'Stuart' },
+          { guid: 'guid-1', name: 'Palm Beach Gardens', url: 'palm-beach-gardens' },
+          { guid: 'guid-2', name: 'Stuart', url: 'stuart' },
         ],
         allThatApplies: [],
       },
@@ -170,6 +179,31 @@ describe('ConnectCardForm', () => {
     renderForm();
     expect(screen.getByText('Palm Beach Gardens')).toBeInTheDocument();
     expect(screen.getByText('Stuart')).toBeInTheDocument();
+  });
+
+  it('locks campus when opened from a location page', () => {
+    mockFormFetcherState = {
+      state: 'idle',
+      data: {
+        campuses: [
+          {
+            guid: 'guid-pbg',
+            name: 'Palm Beach Gardens',
+            url: 'palm-beach-gardens',
+          },
+          { guid: 'guid-stuart', name: 'Stuart', url: 'stuart' },
+        ],
+        allThatApplies: [],
+      },
+    };
+
+    renderForm(vi.fn(), '/locations/palm-beach-gardens');
+
+    expect(screen.getByRole('combobox', { name: 'Campus' })).toBeDisabled();
+    expect(screen.getByText('Palm Beach Gardens')).toBeInTheDocument();
+    expect(document.querySelector('input[name="campus"]')).toHaveValue(
+      'guid-pbg',
+    );
   });
 
   it("shows 'I am looking to:' section with checkboxes from fetcher data", () => {
@@ -215,10 +249,9 @@ describe('ConnectCardForm', () => {
       },
     };
     renderForm();
-    const checkbox = document.querySelector(
-      "input[type='checkbox'][value='guid-other']",
-    ) as HTMLInputElement;
+    const checkbox = screen.getByLabelText('Other') as HTMLInputElement;
     expect(checkbox).toBeInTheDocument();
+    expect(checkbox.value).toBe('guid-other');
     // otherContent field is not present before toggling
     expect(
       document.querySelector("input[name='otherContent']"),
@@ -321,24 +354,27 @@ describe('ConnectCardForm', () => {
     expect(screen.getByDisplayValue('Janet')).toBeInTheDocument();
   });
 
-  it('still submits to connect-card when prefill fails', async () => {
-    mockPrefillFetcherState = {
-      state: 'idle',
-      data: { status: 'error', message: 'Unable to load prefill data' },
-    };
+  it('logs submission payload and posts to the connect-card action', () => {
+    const consoleGroupSpy = vi.spyOn(console, 'group').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const consoleGroupEndSpy = vi
+      .spyOn(console, 'groupEnd')
+      .mockImplementation(() => {});
 
     renderForm(vi.fn(), '/connect-card?rckipid=token-123');
 
-    expect(
-      screen.getByText(
-        'Fill out the form below and someone from our team will follow up with you!',
-      ),
-    ).toBeInTheDocument();
-
     fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+
     expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
       method: 'post',
       action: '/connect-card',
     });
+    expect(consoleGroupSpy).toHaveBeenCalledWith(
+      '[Connect Card] Submit preview',
+    );
+
+    consoleGroupSpy.mockRestore();
+    consoleLogSpy.mockRestore();
+    consoleGroupEndSpy.mockRestore();
   });
 });

@@ -1,45 +1,41 @@
 import { ActionFunction, data } from 'react-router-dom';
-import { ConnectFormType } from './types';
-import { postRockData } from '~/lib/.server/fetch-rock-data';
+import { buildConnectCardSubmission } from './build-submission';
+import {
+  buildRockWorkflowLaunchEndpoint,
+  postRockWorkflowLaunchWithApiInitiator,
+} from '~/lib/.server/rock-workflow';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
+    const submission = buildConnectCardSubmission(formData);
+    const instanceName =
+      `${submission.body.FirstName} ${submission.body.LastName}`.trim();
 
-    const allThatAppliesValues: string = Object.keys(formData)
-      .filter((key) => key.includes('allThatApplies'))
-      .map((key) => formData[key])
-      .join(',');
+    // Debug: log payload before submitting to Rock
+    // eslint-disable-next-line no-console -- temporary connect card debug
+    console.log('[Connect Card] Submitting to Rock');
+    // eslint-disable-next-line no-console -- temporary connect card debug
+    console.log('[Connect Card] Raw form data:', submission.rawFormData);
+    // eslint-disable-next-line no-console -- temporary connect card debug
+    console.log('[Connect Card] Workflow type ID:', submission.workflowTypeId);
+    // eslint-disable-next-line no-console -- temporary connect card debug
+    console.log(
+      '[Connect Card] Rock endpoint:',
+      buildRockWorkflowLaunchEndpoint(
+        submission.workflowTypeId,
+        submission.workflowName,
+      ),
+    );
+    // eslint-disable-next-line no-console -- temporary connect card debug
+    console.log('[Connect Card] Rock body:', submission.body);
 
-    const {
-      email,
-      firstName,
-      lastName,
-      phone,
-      otherContent,
-      campus,
-      decision,
-    } = formData;
-
-    const connectFormSubmission: ConnectFormType = {
-      FirstName: firstName as string,
-      LastName: lastName as string,
-      Campus: campus as string,
-      Email: email as string,
-      PhoneNumber: phone as string,
-      AllThatApplies: allThatAppliesValues,
-    };
-
-    if (decision) {
-      connectFormSubmission.Decision = decision as string;
-    }
-    if (otherContent) {
-      connectFormSubmission.Other = otherContent as string;
-    }
-
-    await postRockData({
-      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=902&workflowName=CFDP%20Web%20Connect%20Card`,
-      body: connectFormSubmission,
+    // --- Live Rock submission ---
+    await postRockWorkflowLaunchWithApiInitiator({
+      workflowTypeId: submission.workflowTypeId,
+      workflowName: submission.workflowName,
+      body: submission.body,
+      instanceName,
     });
 
     return new Response(JSON.stringify({ success: true }), {
