@@ -14,11 +14,14 @@ export const SearchBar = ({
   onSearchStateChange,
   onQueryChange,
   onSearchSubmit,
+  clearRequestId = 0,
   'data-gtm': dataGtm,
 }: {
   onSearchStateChange: (isSearching: boolean) => void;
   onQueryChange: (query: string) => void;
   onSearchSubmit: (query: string | null) => void;
+  /** Increment to clear the input while keeping the results popup open. */
+  clearRequestId?: number;
   'data-gtm'?: string;
 }) => {
   const { refine } = useSearchBox();
@@ -36,13 +39,28 @@ export const SearchBar = ({
     refine('');
   }, [refine]);
 
+  useEffect(() => {
+    if (clearRequestId === 0) return;
+    setInputValue('');
+    refine('');
+    onQueryChange('');
+    onSearchSubmit(null);
+    onSearchStateChange(true);
+  }, [
+    clearRequestId,
+    refine,
+    onQueryChange,
+    onSearchSubmit,
+    onSearchStateChange,
+  ]);
+
   const syncFromInput = (raw: string) => {
     setInputValue(raw);
 
     const trimmed = raw.trim();
     refine('');
     onQueryChange(trimmed);
-    onSearchStateChange(!!trimmed);
+    onSearchStateChange(true);
 
     // Additionally geocode when the input is a valid 5-digit ZIP.
     if (trimmed.length === 5 && isValidZip(trimmed)) {
@@ -89,7 +107,11 @@ export const SearchBar = ({
         autoComplete='off'
         value={inputValue}
         onChange={handleChange}
-        onFocus={() => setIsFocused(true)}
+        onFocus={() => {
+          setIsFocused(true);
+          // Open results (and precise-location) on focus — not only after typing.
+          onSearchStateChange(true);
+        }}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
         className='w-full grow justify-center text-black px-3 outline-none appearance-none bg-transparent'

@@ -64,15 +64,21 @@ export const SearchPopup = ({
 
       {/* Buttons */}
       <div className='flex justify-between gap-2 pt-4'>
-        <div
-          className='flex gap-1 cursor-pointer text-ocean hover:text-navy transition-colors duration-300'
+        <button
+          type='button'
+          className='flex gap-1 cursor-pointer text-ocean hover:text-navy transition-colors duration-300 bg-transparent border-0 p-0'
+          // preventDefault on pointerdown so mobile doesn't spend the tap dismissing
+          // the keyboard (which would skip click / break the geolocation user-gesture).
+          onPointerDown={(event) => {
+            event.preventDefault();
+          }}
           onClick={() => {
             onRequestPreciseLocation();
           }}
         >
           <Icon name='currentLocation' size={21} />
           <p className='text-sm font-semibold'>Use my precise location</p>
-        </div>
+        </button>
 
         <Link to='/locations' prefetch='intent'>
           <p className='text-sm font-medium hover:underline transition-all duration-300'>
