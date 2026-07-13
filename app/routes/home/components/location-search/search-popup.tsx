@@ -2,23 +2,35 @@ import { Link } from 'react-router-dom';
 import { useHits } from 'react-instantsearch';
 
 import { Icon } from '~/primitives/icon/icon';
+import { isValidZip } from '~/lib/utils';
 import { CampusHit } from './location-hit';
-import { sortCampusHitsForDistanceSearch } from './location-search-results';
+import {
+  filterCampusHitsByQuery,
+  sortCampusHitsForDistanceSearch,
+} from './location-search-results';
 import type { CampusHitType } from './location-hit';
 import type { CampusSearchHit } from './location-search-results';
 
 export const SearchPopup = ({
+  query,
   isDistanceSearch,
   onRequestPreciseLocation,
 }: {
+  query: string;
   isDistanceSearch: boolean;
   /** Must run geolocation only from this click — not from useEffect (iOS Safari). */
   onRequestPreciseLocation: () => void;
 }) => {
   const { items } = useHits<CampusSearchHit>();
+  const isZipQuery = query.length === 5 && isValidZip(query);
+  // ZIP / GPS: keep Algolia's geo-ranked list (don't filter ZIP digits as keywords —
+  // the index isn't keyword-searchable and ZIPs aren't in hit text).
+  // Keyword: filter locally because non-empty Algolia queries return 0 hits.
   const hits = isDistanceSearch
     ? sortCampusHitsForDistanceSearch(items)
-    : items;
+    : isZipQuery
+      ? items
+      : filterCampusHitsByQuery(items, query);
 
   return (
     <div className='w-full overflow-hidden min-h-[332px]'>

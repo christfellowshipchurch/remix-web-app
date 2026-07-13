@@ -12,10 +12,12 @@ import Icon from '~/primitives/icon';
 
 export const SearchBar = ({
   onSearchStateChange,
+  onQueryChange,
   onSearchSubmit,
   'data-gtm': dataGtm,
 }: {
   onSearchStateChange: (isSearching: boolean) => void;
+  onQueryChange: (query: string) => void;
   onSearchSubmit: (query: string | null) => void;
   'data-gtm'?: string;
 }) => {
@@ -24,20 +26,24 @@ export const SearchBar = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Locations index is not keyword-searchable in Algolia — keep the index
+    // query empty and filter hits client-side from `onQueryChange`.
     refine('');
   }, [refine]);
 
   const syncFromInput = (raw: string) => {
     setInputValue(raw);
-    refine('');
 
     const trimmed = raw.trim();
+    refine('');
+    onQueryChange(trimmed);
+    onSearchStateChange(!!trimmed);
+
+    // Additionally geocode when the input is a valid 5-digit ZIP.
     if (trimmed.length === 5 && isValidZip(trimmed)) {
-      onSearchStateChange(true);
       onSearchSubmit(trimmed);
     } else {
       onSearchSubmit(null);
-      onSearchStateChange(!!raw.trim());
     }
   };
 
@@ -47,15 +53,7 @@ export const SearchBar = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const trimmed = inputValue.trim();
-    refine('');
-    if (trimmed.length === 5 && isValidZip(trimmed)) {
-      onSearchStateChange(true);
-      onSearchSubmit(trimmed);
-    } else {
-      onSearchSubmit(null);
-      onSearchStateChange(!!trimmed);
-    }
+    syncFromInput(inputValue);
     inputRef.current?.blur();
   };
 
@@ -83,13 +81,12 @@ export const SearchBar = ({
       <input
         ref={inputRef}
         type='text'
-        inputMode='numeric'
-        autoComplete='postal-code'
+        autoComplete='off'
         value={inputValue}
         onChange={handleChange}
         placeholder='Find a service near you'
         className='w-full grow justify-center text-black px-3 outline-none appearance-none bg-transparent'
-        aria-label='Zip code'
+        aria-label='Find a service near you'
       />
     </form>
   );

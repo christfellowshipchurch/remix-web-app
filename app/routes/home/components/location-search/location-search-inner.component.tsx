@@ -52,6 +52,7 @@ export function LocationSearchInner({
     lng: number;
   } | null>(null);
   const [isDistanceSearch, setIsDistanceSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (ALGOLIA_APP_ID && ALGOLIA_SEARCH_API_KEY && !globalSearchClient) {
@@ -104,6 +105,10 @@ export function LocationSearchInner({
       submittedZipRef.current = null;
       submittedGeocodeRequestIdRef.current = null;
       hasPendingGeocodeResponseRef.current = false;
+      // Drop geo bias when the query is no longer a ZIP so keyword search
+      // is not mixed with stale aroundLatLng from a previous ZIP/GPS search.
+      setCoordinates(null);
+      setIsDistanceSearch(false);
       return;
     }
     const requestId = `home-location-${geocodeRequestIdRef.current + 1}`;
@@ -217,6 +222,7 @@ export function LocationSearchInner({
             >
               <div className='h-14 shrink-0' aria-hidden='true' />
               <SearchPopup
+                query={searchQuery}
                 isDistanceSearch={isDistanceSearch}
                 onRequestPreciseLocation={handlePreciseLocationRequest}
               />
@@ -230,6 +236,7 @@ export function LocationSearchInner({
           >
             <SearchBar
               onSearchStateChange={setIsSearching}
+              onQueryChange={setSearchQuery}
               onSearchSubmit={handleSearch}
               data-gtm='hero-cta'
             />
