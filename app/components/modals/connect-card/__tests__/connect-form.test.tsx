@@ -170,7 +170,11 @@ describe('ConnectCardForm', () => {
       state: 'idle',
       data: {
         campuses: [
-          { guid: 'guid-1', name: 'Palm Beach Gardens', url: 'palm-beach-gardens' },
+          {
+            guid: 'guid-1',
+            name: 'Palm Beach Gardens',
+            url: 'palm-beach-gardens',
+          },
           { guid: 'guid-2', name: 'Stuart', url: 'stuart' },
         ],
         allThatApplies: [],
@@ -355,7 +359,9 @@ describe('ConnectCardForm', () => {
   });
 
   it('logs submission payload and posts to the connect-card action', () => {
-    const consoleGroupSpy = vi.spyOn(console, 'group').mockImplementation(() => {});
+    const consoleGroupSpy = vi
+      .spyOn(console, 'group')
+      .mockImplementation(() => {});
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     const consoleGroupEndSpy = vi
       .spyOn(console, 'groupEnd')

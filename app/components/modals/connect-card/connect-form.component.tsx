@@ -19,9 +19,7 @@ import type {
   ConnectCardPrefill,
   ConnectCardPrefillResponse,
 } from '~/routes/connect-card/types';
-import {
-  buildConnectCardSubmission,
-} from '~/routes/connect-card/build-submission';
+import { buildConnectCardSubmission } from '~/routes/connect-card/build-submission';
 import { getSpanishRockSubmitValue } from '~/routes/connect-card/connect-card-rock-values';
 import { pushFormEvent } from '~/lib/gtm';
 
@@ -560,9 +558,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
 
         {otherCheckbox && (
           <Form.Field
-            name={
-              isEspanol ? 'selection-other' : otherCheckbox.guid
-            }
+            name={isEspanol ? 'selection-other' : otherCheckbox.guid}
             className={cn(
               'flex gap-2 md:items-center',
               formFieldInvalidControlStyles,
