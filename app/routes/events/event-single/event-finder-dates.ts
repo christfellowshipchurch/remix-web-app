@@ -55,6 +55,14 @@ export const formatEventFinderDateLabel = (dateString: string): string => {
   return `${monthName} ${dayNum}${suffix}`;
 };
 
+export const joinEventFinderDateLabels = (labels: string[]): string => {
+  if (labels.length === 0) return '';
+  if (labels.length === 1) return labels[0];
+
+  const allButLast = labels.slice(0, -1).join(', ');
+  return `${allButLast} & ${labels[labels.length - 1]}`;
+};
+
 export const formatEventFinderDatesDisplay = (
   dates: string[],
   day?: string,
@@ -62,8 +70,8 @@ export const formatEventFinderDatesDisplay = (
   const normalizedDates = normalizeEventFinderDates(dates);
   if (normalizedDates.length === 0) return '';
 
-  const dateLabels = normalizedDates
-    .map(formatEventFinderDateLabel)
-    .join(' & ');
+  const dateLabels = joinEventFinderDateLabels(
+    normalizedDates.map(formatEventFinderDateLabel),
+  );
   return day ? `${day} ${dateLabels}` : dateLabels;
 };
