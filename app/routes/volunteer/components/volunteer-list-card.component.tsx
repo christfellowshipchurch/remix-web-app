@@ -94,7 +94,7 @@ export function VolunteerListCard({
             </div>
           ) : null}
 
-          <ul className='grid gap-2 text-sm text-neutral-darker md:grid-cols-3'>
+          <ul className='flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-darker'>
             <li className='flex min-w-0 items-center gap-2'>
               <Icon name='map' size={20} className='shrink-0' />
               <span className='truncate'>
