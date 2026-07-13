@@ -23,7 +23,12 @@ export const SearchBar = ({
 }) => {
   const { refine } = useSearchBox();
   const [inputValue, setInputValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const placeholder =
+    isFocused && !inputValue
+      ? 'Search by city or ZIP code'
+      : 'Find a service near you';
 
   useEffect(() => {
     // Locations index is not keyword-searchable in Algolia — keep the index
@@ -84,7 +89,9 @@ export const SearchBar = ({
         autoComplete='off'
         value={inputValue}
         onChange={handleChange}
-        placeholder='Find a service near you'
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder={placeholder}
         className='w-full grow justify-center text-black px-3 outline-none appearance-none bg-transparent'
         aria-label='Find a service near you'
       />
