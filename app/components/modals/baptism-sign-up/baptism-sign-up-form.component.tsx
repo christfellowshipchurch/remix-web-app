@@ -35,8 +35,16 @@ const MAX_STORY_LENGTH = 200;
 // Permissive US phone format (e.g. 561-123-4567, (561) 123-4567, 5611234567).
 const US_PHONE_PATTERN = '\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}';
 
-// See plan decisions #3/#4 — hardcoded until confirmed against Rock admin.
-const T_SHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+const T_SHIRT_SIZES = [
+  'Youth Small',
+  'Youth Medium',
+  'Youth Large',
+  'Adult Small',
+  'Adult Medium',
+  'Adult Large',
+  'Adult XL',
+  'Adult XXL',
+];
 const GRADE_OPTIONS = ['6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
 const SHARE_STORY_OPTIONS = [
@@ -143,6 +151,7 @@ const renderTextField = (
     pattern?: string;
     patternMessage?: string;
     typeMismatchMessage?: string;
+    defaultValue?: string;
   } = {},
 ) => {
   const {
@@ -152,6 +161,7 @@ const renderTextField = (
     pattern,
     patternMessage,
     typeMismatchMessage = 'Please enter a valid email address',
+    defaultValue,
   } = options;
 
   return (
@@ -168,6 +178,7 @@ const renderTextField = (
           required={required}
           placeholder={placeholder}
           pattern={pattern}
+          defaultValue={defaultValue}
           className={radixInputClassName}
         />
       </Form.Control>
@@ -196,12 +207,13 @@ const renderSelectField = (
   placeholder: string,
   requiredMessage: string,
   optionElements: React.ReactNode,
+  defaultValue = '',
 ) => (
   <Form.Field name={name} className={radixFormFieldStackClassName}>
     <Form.Label className={radixCompactFormLabelClassName}>{label}</Form.Label>
     <RadixFormSelectShell>
       <Form.Control asChild>
-        <select required defaultValue='' className={radixSelectClassName}>
+        <select required defaultValue={defaultValue} className={radixSelectClassName}>
           <option value='' disabled>
             {placeholder}
           </option>
@@ -217,6 +229,22 @@ const renderSelectField = (
 
 const BAPTISM_SIGN_UP_INTRO =
   'Fill out the form below to sign up for baptism and someone from our team will follow up with next steps!';
+
+const DEV_PREFILL = {
+  firstName: 'Testy',
+  lastName: 'McTester',
+  email: 'testy.mctester@example.com',
+  phone: '561-555-1234',
+  birthdate: '1995-07-14',
+  addressLine1: '123 Palm Tree Ln',
+  addressLine2: 'Apt 4B',
+  city: 'Palm Beach Gardens',
+  state: 'FL',
+  zip: '33410',
+  tShirtSize: 'Adult Medium',
+  myStory: 'I am ready to take this next step and go public with my faith.',
+  shareYourStory: 'No Preference',
+} as const;
 
 const FORM_COPY = {
   English: {
@@ -373,18 +401,21 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
   isSpanish = false,
   showHeader = true,
 }) => {
+  const [searchParams] = useSearchParams();
+  const isDevPrefillEnabled =
+    import.meta.env.DEV && searchParams.get('prefill') === '1';
+  const prefillValues = isDevPrefillEnabled ? DEV_PREFILL : null;
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [birthdate, setBirthdate] = useState('');
+  const [birthdate, setBirthdate] = useState(prefillValues?.birthdate ?? '');
   const [inHighSchool, setInHighSchool] = useState('');
-  const [story, setStory] = useState('');
+  const [story, setStory] = useState(prefillValues?.myStory ?? '');
   const [submittedName, setSubmittedName] =
     useState<BaptismSignUpSuccessDetails | null>(null);
   const [formFieldData, setFormFieldData] =
     useState<BaptismSignUpLoaderReturnType>({ campuses: [] });
 
   const fetcher = useFetcher({ key: 'baptism-sign-up-form' });
-  const [searchParams] = useSearchParams();
   const selectedGroupGuid = groupGuid ?? searchParams.get('Group') ?? '';
   const language = isSpanish ? 'Spanish' : 'English';
   const copy = FORM_COPY[language];
@@ -464,6 +495,8 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
     age !== null && (age < 18 || (age === 18 && inHighSchool === 'True'));
   const today = new Date().toISOString().split('T')[0];
   const remaining = MAX_STORY_LENGTH - story.length;
+  const campusDefaultValue =
+    prefillValues && campuses.length > 0 ? campuses[0]?.guid ?? '' : '';
 
   return (
     <>
@@ -481,20 +514,24 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
       >
         {renderTextField('firstName', copy.firstName, copy.requiredFirstName, {
           placeholder: copy.firstNamePlaceholder,
+          defaultValue: prefillValues?.firstName,
         })}
         {renderTextField('lastName', copy.lastName, copy.requiredLastName, {
           placeholder: copy.lastNamePlaceholder,
+          defaultValue: prefillValues?.lastName,
         })}
         {renderTextField('email', copy.email, copy.requiredEmail, {
           type: 'email',
           placeholder: copy.emailPlaceholder,
           typeMismatchMessage: copy.validEmail,
+          defaultValue: prefillValues?.email,
         })}
         {renderTextField('phone', copy.phone, copy.requiredPhone, {
           type: 'tel',
           placeholder: copy.phonePlaceholder,
           pattern: US_PHONE_PATTERN,
           patternMessage: copy.validPhone,
+          defaultValue: prefillValues?.phone,
         })}
 
         <Form.Field name='campus' className={radixFormFieldStackClassName}>
@@ -503,7 +540,12 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
           </Form.Label>
           <RadixFormSelectShell>
             <Form.Control asChild>
-              <select required defaultValue='' className={radixSelectClassName}>
+              <select
+                key={campusDefaultValue || 'empty-campus'}
+                required
+                defaultValue={campusDefaultValue}
+                className={radixSelectClassName}
+              >
                 <option value='' disabled>
                   {copy.campusPlaceholder}
                 </option>
@@ -549,14 +591,17 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
           {
             placeholder: copy.addressLine1Placeholder,
             type: 'text',
+            defaultValue: prefillValues?.addressLine1,
           },
         )}
         {renderTextField('addressLine2', copy.addressLine2, '', {
           required: false,
           placeholder: copy.addressLine2Placeholder,
+          defaultValue: prefillValues?.addressLine2,
         })}
         {renderTextField('city', copy.city, copy.requiredCity, {
           placeholder: copy.cityPlaceholder,
+          defaultValue: prefillValues?.city,
         })}
         {renderSelectField(
           'state',
@@ -568,9 +613,11 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
               {name}
             </option>
           )),
+          prefillValues?.state,
         )}
         {renderTextField('zip', copy.zip, copy.requiredZip, {
           placeholder: copy.zipPlaceholder,
+          defaultValue: prefillValues?.zip,
         })}
 
         {renderSelectField(
@@ -583,6 +630,7 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
               {size}
             </option>
           )),
+          prefillValues?.tShirtSize,
         )}
 
         <Form.Field
@@ -632,6 +680,7 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
                     name='shareYourStory'
                     value={option.value}
                     required
+                    defaultChecked={prefillValues?.shareYourStory === option.value}
                     className={radixRadioClassName}
                   />
                 </Form.Control>

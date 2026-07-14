@@ -20,7 +20,7 @@ const createFormData = () => {
   formData.set('city', 'Palm Beach Gardens');
   formData.set('state', 'FL');
   formData.set('zip', '33418');
-  formData.set('tShirtSize', 'M');
+  formData.set('tShirtSize', 'Adult Medium');
   formData.set('myStory', 'I am ready.');
   formData.set('shareYourStory', 'Yes');
   return formData;
@@ -67,6 +67,7 @@ describe('baptism sign up action', () => {
         FirstName: 'Test',
         LastName: 'Person',
         Campus1: 'campus-guid-123',
+        'T-ShirtSize': 'Adult Medium',
       }),
     });
   });

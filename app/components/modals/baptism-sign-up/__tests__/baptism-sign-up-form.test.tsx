@@ -155,6 +155,50 @@ describe('BaptismSignUpForm', () => {
     expect(screen.getByText('Stuart')).toBeInTheDocument();
   });
 
+  it('prefills the form in dev when prefill=1 is present', () => {
+    mockFetcherState = {
+      state: 'idle',
+      data: {
+        campuses: [
+          { guid: 'guid-1', name: 'Palm Beach Gardens' },
+          { guid: 'guid-2', name: 'Stuart' },
+        ],
+      },
+    };
+
+    renderForm(
+      vi.fn(),
+      ['/baptism-sign-up?Group=test-guid-123&prefill=1'],
+    );
+
+    expect(screen.getByLabelText('First Name')).toHaveValue('Testy');
+    expect(screen.getByLabelText('Last Name')).toHaveValue('McTester');
+    expect(screen.getByLabelText('Email Address')).toHaveValue(
+      'testy.mctester@example.com',
+    );
+    expect(screen.getByLabelText('Cell Phone')).toHaveValue('561-555-1234');
+    expect(screen.getByLabelText('Birthdate')).toHaveValue('1995-07-14');
+    expect(screen.getByLabelText('Address Line 1')).toHaveValue(
+      '123 Palm Tree Ln',
+    );
+    expect(screen.getByLabelText('Address Line 2')).toHaveValue('Apt 4B');
+    expect(screen.getByLabelText('City')).toHaveValue('Palm Beach Gardens');
+    expect(screen.getByLabelText('State')).toHaveValue('FL');
+    expect(screen.getByLabelText('Zip Code')).toHaveValue('33410');
+    expect(screen.getByLabelText('T-Shirt Size')).toHaveValue(
+      'Adult Medium',
+    );
+    expect(
+      document.querySelector("input[name='shareYourStory'][value='No Preference']"),
+    ).toBeChecked();
+    expect(screen.getByLabelText('Home Campus')).toHaveValue('guid-1');
+    expect(
+      document.querySelector("textarea[name='myStory']"),
+    ).toHaveValue(
+      'I am ready to take this next step and go public with my faith.',
+    );
+  });
+
   it("calls fetcher.load('/baptism-sign-up') on mount", () => {
     renderForm();
     expect(mockLoad).toHaveBeenCalledWith('/baptism-sign-up');
