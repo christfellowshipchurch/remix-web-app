@@ -113,6 +113,7 @@ describe('connect-card action', () => {
         Campus: 'campus-guid',
         PhoneNumber: '555-123-4567',
         EmailAddress: 'test@example.com',
+        LaunchSource: 'app',
       },
       instanceName: 'Test Form',
     });
