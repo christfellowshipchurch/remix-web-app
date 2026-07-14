@@ -52,6 +52,7 @@ export function buildConnectCardSubmission(
 
   if (isSpanish) {
     body.EmailAddress = String(email ?? '');
+    body.LaunchSource = 'app';
 
     const nextStep = formData.nextStep;
     const selection = joinFormFieldValues(formData, (key) =>

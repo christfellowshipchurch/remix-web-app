@@ -10,6 +10,8 @@ export type ConnectFormType = {
   Selection?: string;
   NextStep?: string;
   Other?: string;
+  /** Present on Spanish workflow 403 only (matches other Rock form launches). */
+  LaunchSource?: 'app';
 };
 
 export type ConnectCardLoaderReturnType = {

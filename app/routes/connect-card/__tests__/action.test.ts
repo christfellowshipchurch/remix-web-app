@@ -56,6 +56,7 @@ describe('buildConnectCardSubmission', () => {
       Campus: 'campus-guid',
       PhoneNumber: '555-123-4567',
       EmailAddress: 'test@example.com',
+      LaunchSource: 'app',
       NextStep: '1',
       Selection:
         'Encontrar comunidad,Hacer la diferencia ayudando como voluntario,Otro',

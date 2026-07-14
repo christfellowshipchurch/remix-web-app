@@ -1,9 +1,6 @@
 import { ActionFunction, data } from 'react-router-dom';
 import { buildConnectCardSubmission } from './build-submission';
-import {
-  buildRockWorkflowLaunchEndpoint,
-  postRockWorkflowLaunchWithApiInitiator,
-} from '~/lib/.server/rock-workflow';
+import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -11,24 +8,6 @@ export const action: ActionFunction = async ({ request }) => {
     const submission = buildConnectCardSubmission(formData);
     const instanceName =
       `${submission.body.FirstName} ${submission.body.LastName}`.trim();
-
-    // Debug: log payload before submitting to Rock
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('[Connect Card] Submitting to Rock');
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('[Connect Card] Raw form data:', submission.rawFormData);
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('[Connect Card] Workflow type ID:', submission.workflowTypeId);
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log(
-      '[Connect Card] Rock endpoint:',
-      buildRockWorkflowLaunchEndpoint(
-        submission.workflowTypeId,
-        submission.workflowName,
-      ),
-    );
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('[Connect Card] Rock body:', submission.body);
 
     // --- Live Rock submission ---
     await postRockWorkflowLaunchWithApiInitiator({
