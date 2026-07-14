@@ -8,6 +8,7 @@ interface JourneyFinderSignUpConfirmationProps {
   onSuccess?: () => void;
   onContinue?: () => void;
   buttonText?: string;
+  calendarTitle?: string;
   details?: {
     title: string;
     campus: string;
@@ -19,7 +20,13 @@ interface JourneyFinderSignUpConfirmationProps {
 
 const JourneyFinderSignUpConfirmation: React.FC<
   JourneyFinderSignUpConfirmationProps
-> = ({ onSuccess, onContinue, buttonText = 'Continue', details }) => {
+> = ({
+  onSuccess,
+  onContinue,
+  buttonText = 'Continue',
+  calendarTitle = 'The Journey at Christ Fellowship Church',
+  details,
+}) => {
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -34,15 +41,15 @@ const JourneyFinderSignUpConfirmation: React.FC<
     }
   };
 
-  const events = icsLinkEvents({
-    title: details?.title
-      ? `The Journey at Christ Fellowship Church`
-      : undefined,
-    serviceTimes: [{ day: 'Sunday', time: details?.time ?? '' }],
-    address: details?.campus ?? '',
-    campusName: details?.title ?? '',
-    url: `https://christfellowship.church`,
-  });
+  const events = details
+    ? icsLinkEvents({
+        title: calendarTitle,
+        serviceTimes: [{ day: 'Sunday', time: details.time }],
+        address: details.campus,
+        campusName: details.title,
+        url: `https://christfellowship.church`,
+      })
+    : [];
 
   return (
     <div className='flex w-full flex-col items-center gap-6 p-4 text-center md:p-8'>
@@ -70,13 +77,14 @@ const JourneyFinderSignUpConfirmation: React.FC<
         </div>
       )}
 
-      {/* add to calendar */}
-      <AddToCalendar
-        googleHref={googleCalendarLink(events[0].event)}
-        getIcsUrl={() => icsLink(events[0].event)}
-        eventDate={events[0].event.startTime as Date}
-        className='w-full'
-      />
+      {details && events[0] && (
+        <AddToCalendar
+          googleHref={googleCalendarLink(events[0].event)}
+          getIcsUrl={() => icsLink(events[0].event)}
+          eventDate={events[0].event.startTime as Date}
+          className='w-full'
+        />
+      )}
 
       <Button
         intent='primary'

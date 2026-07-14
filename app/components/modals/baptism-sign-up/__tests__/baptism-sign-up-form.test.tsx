@@ -305,4 +305,33 @@ describe('BaptismSignUpForm', () => {
     expect(onSuccess).toHaveBeenCalled();
     expect(calls).toEqual(['pushFormEvent', 'onSuccess']);
   });
+
+  it('passes the submitted name to onSuccess', () => {
+    const onSuccess = vi.fn();
+    const { rerender } = render(
+      <MemoryRouter initialEntries={['/baptism-sign-up?Group=test-guid-123']}>
+        <BaptismSignUpForm onSuccess={onSuccess} />
+      </MemoryRouter>,
+    );
+
+    fireEvent.change(screen.getByLabelText('First Name'), {
+      target: { value: 'Ada' },
+    });
+    fireEvent.change(screen.getByLabelText('Last Name'), {
+      target: { value: 'Lovelace' },
+    });
+    fireEvent.submit(document.querySelector('form') as HTMLFormElement);
+
+    mockFetcherState = { state: 'idle', data: { success: true } };
+    rerender(
+      <MemoryRouter initialEntries={['/baptism-sign-up?Group=test-guid-123']}>
+        <BaptismSignUpForm onSuccess={onSuccess} />
+      </MemoryRouter>,
+    );
+
+    expect(onSuccess).toHaveBeenCalledWith({
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+    });
+  });
 });

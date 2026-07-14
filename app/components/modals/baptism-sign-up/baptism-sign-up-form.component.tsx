@@ -18,8 +18,13 @@ import {
 } from '~/primitives/inputs/form-radix-field';
 import type { BaptismSignUpLoaderReturnType } from '~/routes/baptism-sign-up/types';
 
+export type BaptismSignUpSuccessDetails = {
+  firstName: string;
+  lastName: string;
+};
+
 interface BaptismSignUpFormProps {
-  onSuccess: () => void;
+  onSuccess: (details?: BaptismSignUpSuccessDetails) => void;
   groupGuid?: string;
   isSpanish?: boolean;
   showHeader?: boolean;
@@ -373,6 +378,8 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
   const [birthdate, setBirthdate] = useState('');
   const [inHighSchool, setInHighSchool] = useState('');
   const [story, setStory] = useState('');
+  const [submittedName, setSubmittedName] =
+    useState<BaptismSignUpSuccessDetails | null>(null);
   const [formFieldData, setFormFieldData] =
     useState<BaptismSignUpLoaderReturnType>({ campuses: [] });
 
@@ -399,7 +406,7 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
         // Successful form submission.
         setError(null);
         pushFormEvent('form_complete', 'baptism_sign_up', 'Baptism Sign Up');
-        onSuccess();
+        onSuccess(submittedName ?? undefined);
       }
     }
 
@@ -430,6 +437,10 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
     }
 
     const formData = new FormData(event.currentTarget);
+    setSubmittedName({
+      firstName: formData.get('firstName')?.toString() ?? '',
+      lastName: formData.get('lastName')?.toString() ?? '',
+    });
     const actionSearchParams = new URLSearchParams({
       Group: selectedGroupGuid,
       Language: language,

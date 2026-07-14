@@ -8,7 +8,9 @@ import JourneyFinderSignUpForm, {
   JourneyFinderSignUpSuccessDetails,
 } from '~/components/modals/journey-finder-sign-up/journey-finder-sign-up-form.component';
 import JourneyFinderSignUpConfirmation from '~/components/modals/journey-finder-sign-up/confirmation.component';
-import BaptismSignUpForm from '~/components/modals/baptism-sign-up/baptism-sign-up-form.component';
+import BaptismSignUpForm, {
+  BaptismSignUpSuccessDetails,
+} from '~/components/modals/baptism-sign-up/baptism-sign-up-form.component';
 import BaptismSignUpConfirmation from '~/components/modals/baptism-sign-up/confirmation.component';
 import { EventFinderHit, EventSinglePageType } from '../types';
 import { RootLoaderData } from '~/routes/navbar/loader';
@@ -884,7 +886,7 @@ interface FormStepProps {
   onResetRegistration: () => void;
 }
 
-const FormStep = ({
+export const FormStep = ({
   groupGuid,
   groupType,
   selectedCampus,
@@ -896,6 +898,8 @@ const FormStep = ({
   const [isNativeSuccess, setIsNativeSuccess] = useState(false);
   const [nativeSuccessDetails, setNativeSuccessDetails] =
     useState<JourneyFinderSignUpSuccessDetails | null>(null);
+  const [baptismSuccessDetails, setBaptismSuccessDetails] =
+    useState<BaptismSignUpSuccessDetails | null>(null);
   const registrationFormMode = getRegistrationFormMode(groupType);
   const normalizedGroupType = normalizeGroupType(groupType);
   const isSpanish = isSpanishCampusLabel(selectedCampus);
@@ -935,9 +939,27 @@ const FormStep = ({
     if (normalizedGroupType === 'Baptism') {
       if (isNativeSuccess) {
         return (
-          <div className='w-full max-w-[600px] mx-auto rounded-xl border border-neutral-lighter bg-white shadow-sm'>
+          <div className='w-full max-w-[600px] mx-auto'>
             <BaptismSignUpConfirmation
-              onSuccess={() => {
+              buttonText='Register someone else'
+              details={{
+                title: 'Baptism Details',
+                campus: selectedCampus,
+                date: formatEventFinderDatesDisplay(
+                  parseSerializedEventFinderDates(selectedDate),
+                  selectedDay,
+                ),
+                time: `${selectedTime} ET`,
+                name:
+                  baptismSuccessDetails?.firstName ||
+                  baptismSuccessDetails?.lastName
+                    ? `${baptismSuccessDetails?.firstName ?? ''} ${
+                        baptismSuccessDetails?.lastName ?? ''
+                      }`.trim()
+                    : 'Baptism Registrant',
+              }}
+              onContinue={() => {
+                setBaptismSuccessDetails(null);
                 setIsNativeSuccess(false);
                 onResetRegistration();
               }}
@@ -952,7 +974,10 @@ const FormStep = ({
             groupGuid={groupGuid}
             isSpanish={isSpanish}
             showHeader={false}
-            onSuccess={() => setIsNativeSuccess(true)}
+            onSuccess={(details) => {
+              setBaptismSuccessDetails(details ?? null);
+              setIsNativeSuccess(true);
+            }}
           />
         </div>
       );
