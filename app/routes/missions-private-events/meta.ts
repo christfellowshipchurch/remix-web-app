@@ -7,4 +7,5 @@ export const meta: MetaFunction = () =>
     title: 'Christ Fellowship Missions | Private Events',
     description: 'Browse private mission events at Christ Fellowship Church.',
     path: '/missions-private-events',
+    noIndex: true,
   });
