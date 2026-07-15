@@ -46,7 +46,7 @@ export function ConnectCardModal({
         </Modal.Button>
       )}
       <Modal.Content>
-        <ConnectCardFlow setOpenModal={setOpenModal} />
+        <ConnectCardFlow setOpenModal={setOpenModal} isEspanol={isEspanol} />
       </Modal.Content>
     </Modal>
   );

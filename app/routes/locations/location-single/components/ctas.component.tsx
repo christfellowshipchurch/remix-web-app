@@ -58,7 +58,7 @@ export const CTAs = ({
           />
         </div>
         <div className={ctaSlotClassName}>
-          <ConnectCardModal>
+          <ConnectCardModal isEspanol={isSpanish}>
             <CTAButtonContent
               icon='mobileAlt'
               title={isSpanish ? 'Contáctanos' : 'Contact Us'}
