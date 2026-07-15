@@ -14,6 +14,7 @@ describe('algolia index naming', () => {
       classes: 'dev_webv3_classes',
       locations: 'dev_webv3_locations',
       missions: 'dev_webv3_missions',
+      missionsPrivate: 'dev_webv3_missionsPrivate',
       studiesAndResources: 'dev_webv3_studiesAndResources',
       eventFinderItems: 'dev_webv3_eventFinderItems',
     });
@@ -26,6 +27,7 @@ describe('algolia index naming', () => {
       classes: 'prod_webv3_classes',
       locations: 'prod_webv3_locations',
       missions: 'prod_webv3_missions',
+      missionsPrivate: 'prod_webv3_missionsPrivate',
       studiesAndResources: 'prod_webv3_studiesAndResources',
       eventFinderItems: 'prod_webv3_eventFinderItems',
     });
@@ -49,6 +51,7 @@ describe('algolia index naming', () => {
         'groups',
         'locations',
         'missions',
+        'missionsPrivate',
         'studiesAndResources',
       ].sort(),
     );
