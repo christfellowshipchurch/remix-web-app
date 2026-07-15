@@ -47,6 +47,7 @@ export const footerColumns: FooterColumn[] = [
       },
       { title: 'Get Your Degree', url: 'https://www.cfseu.com/' },
       { title: 'Shop Online', url: 'https://cf-church.square.site/home' },
+      { title: 'Cookie Settings', url: '#cookie-settings' },
     ],
   },
 ];

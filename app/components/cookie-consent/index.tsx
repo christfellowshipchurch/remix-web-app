@@ -1,34 +1,16 @@
-import { useState, useEffect } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 
 interface CookieConsentProps {
+  isVisible: boolean;
   onAccept: () => void;
   onDecline: () => void;
 }
 
-export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Check if user has already made a choice
-    const hasConsent = localStorage.getItem('cookieConsent');
-    if (!hasConsent) {
-      setIsVisible(true);
-    }
-  }, []);
-
-  const handleAccept = () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    setIsVisible(false);
-    onAccept();
-  };
-
-  const handleDecline = () => {
-    localStorage.setItem('cookieConsent', 'declined');
-    setIsVisible(false);
-    onDecline();
-  };
-
+export function CookieConsent({
+  isVisible,
+  onAccept,
+  onDecline,
+}: CookieConsentProps) {
   if (!isVisible) return null;
 
   return (
@@ -52,10 +34,10 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
             </p>
           </div>
           <div className='flex gap-3'>
-            <Button onClick={handleDecline} intent='secondary' size='sm'>
+            <Button onClick={onDecline} intent='secondary' size='sm'>
               Decline
             </Button>
-            <Button onClick={handleAccept} intent='primary' size='sm'>
+            <Button onClick={onAccept} intent='primary' size='sm'>
               Accept
             </Button>
           </div>
