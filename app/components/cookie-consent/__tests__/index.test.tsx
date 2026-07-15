@@ -7,14 +7,18 @@ describe('CookieConsent', () => {
   const mockOnDecline = vi.fn();
 
   beforeEach(() => {
-    // Clear localStorage and mock functions before each test
-    localStorage.clear();
     mockOnAccept.mockClear();
     mockOnDecline.mockClear();
   });
 
-  it('renders when no consent is stored', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('renders when isOpen is true', () => {
+    render(
+      <CookieConsent
+        isOpen
+        onAccept={mockOnAccept}
+        onDecline={mockOnDecline}
+      />,
+    );
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Cookie Settings')).toBeInTheDocument();
@@ -23,44 +27,56 @@ describe('CookieConsent', () => {
     expect(screen.getByRole('button', { name: 'Decline' })).toBeInTheDocument();
   });
 
-  it("doesn't render when consent is already accepted", () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('does not render when isOpen is false', () => {
+    render(
+      <CookieConsent
+        isOpen={false}
+        onAccept={mockOnAccept}
+        onDecline={mockOnDecline}
+      />,
+    );
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it("doesn't render when consent is already declined", () => {
-    localStorage.setItem('cookieConsent', 'declined');
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('calls onAccept when Accept is clicked', () => {
+    render(
+      <CookieConsent
+        isOpen
+        onAccept={mockOnAccept}
+        onDecline={mockOnDecline}
+      />,
+    );
 
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  });
+    fireEvent.click(screen.getByRole('button', { name: 'Accept' }));
 
-  it('handles accept action correctly', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
-
-    const acceptButton = screen.getByRole('button', { name: 'Accept' });
-    fireEvent.click(acceptButton);
-
-    expect(localStorage.getItem('cookieConsent')).toBe('accepted');
     expect(mockOnAccept).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mockOnDecline).not.toHaveBeenCalled();
   });
 
-  it('handles decline action correctly', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('calls onDecline when Decline is clicked', () => {
+    render(
+      <CookieConsent
+        isOpen
+        onAccept={mockOnAccept}
+        onDecline={mockOnDecline}
+      />,
+    );
 
-    const declineButton = screen.getByRole('button', { name: 'Decline' });
-    fireEvent.click(declineButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Decline' }));
 
-    expect(localStorage.getItem('cookieConsent')).toBe('declined');
     expect(mockOnDecline).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mockOnAccept).not.toHaveBeenCalled();
   });
 
   it('has correct accessibility attributes', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+    render(
+      <CookieConsent
+        isOpen
+        onAccept={mockOnAccept}
+        onDecline={mockOnDecline}
+      />,
+    );
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('aria-labelledby', 'cookie-consent-title');

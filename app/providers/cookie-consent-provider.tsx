@@ -1,9 +1,45 @@
-import { createContext, useContext, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 import { CookieConsent } from '../components/cookie-consent';
 
 declare global {
   interface Window {
     dataLayer: Array<Record<string, unknown> | unknown[] | IArguments>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    clarity?: any;
+  }
+}
+
+const CLARITY_PROJECT_ID = 'ojo9prqys0';
+
+// Loads Microsoft Clarity on demand. Idempotent: Clarity sets window.clarity
+// once bootstrapped, so repeat calls no-op. Only invoked after the user grants
+// consent (a fresh Accept, or a remembered "accepted" choice on mount) so the
+// tracker never fires before consent.
+function loadClarity() {
+  if (typeof window === 'undefined' || window.clarity) return;
+
+  // Minimal Clarity bootstrap (per Microsoft's snippet): queue any calls until
+  // the async tag script loads, then inject it.
+  window.clarity =
+    window.clarity ||
+    function (...args: unknown[]) {
+      (window.clarity.q = window.clarity.q || []).push(args);
+    };
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
+  const firstScript = document.getElementsByTagName('script')[0];
+  if (firstScript && firstScript.parentNode) {
+    firstScript.parentNode.insertBefore(script, firstScript);
+  } else {
+    (document.head || document.documentElement).appendChild(script);
   }
 }
 
@@ -11,6 +47,7 @@ interface CookieConsentContextType {
   hasConsent: boolean | null;
   acceptCookies: () => void;
   declineCookies: () => void;
+  openConsent: () => void;
 }
 
 const CookieConsentContext = createContext<
@@ -18,6 +55,8 @@ const CookieConsentContext = createContext<
 >(undefined);
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
+  // Banner visibility is owned here so the "Cookie Settings" link can re-open it.
+  const [isConsentOpen, setIsConsentOpen] = useState(false);
   // GTM specifically looks for the 'arguments' object to be pushed
   // Use function declaration (not arrow function) to access arguments object
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,6 +82,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         ad_personalization: 'granted',
       });
 
+      loadClarity();
+
       if (!sessionStorage.getItem('gtm_consent_fired')) {
         window.dataLayer.push({ event: 'cookie_consent_accepted' });
         sessionStorage.setItem('gtm_consent_fired', 'true');
@@ -54,6 +95,9 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         ad_user_data: 'denied',
         ad_personalization: 'denied',
       });
+    } else {
+      // No choice stored yet — prompt the user.
+      setIsConsentOpen(true);
     }
   }, []);
 
@@ -67,9 +111,12 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         ad_personalization: 'granted',
       });
 
+      loadClarity();
+
       window.dataLayer.push({ event: 'cookie_consent_accepted' });
       sessionStorage.setItem('gtm_consent_fired', 'true');
       localStorage.setItem('cookieConsent', 'true');
+      setIsConsentOpen(false);
     }
   };
 
@@ -84,6 +131,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
 
       window.dataLayer.push({ event: 'cookie_consent_declined' });
       localStorage.setItem('cookieConsent', 'false');
+      setIsConsentOpen(false);
     }
   };
 
@@ -96,10 +144,12 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
             : null,
         acceptCookies: handleAcceptCookies,
         declineCookies: handleDeclineCookies,
+        openConsent: () => setIsConsentOpen(true),
       }}
     >
       {children}
       <CookieConsent
+        isOpen={isConsentOpen}
         onAccept={handleAcceptCookies}
         onDecline={handleDeclineCookies}
       />
