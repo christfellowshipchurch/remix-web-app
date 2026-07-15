@@ -36,6 +36,7 @@ export const footerColumns: FooterColumn[] = [
       { title: 'Career Opportunities', url: '/career-opportunities' },
       { title: 'Privacy Policy', url: '/privacy-policy' },
       { title: 'Terms of Use', url: '/terms-of-use' },
+      { title: 'Cookie Settings', url: '#cookie-settings' },
     ],
   },
   {
@@ -47,7 +48,6 @@ export const footerColumns: FooterColumn[] = [
       },
       { title: 'Get Your Degree', url: 'https://www.cfseu.com/' },
       { title: 'Shop Online', url: 'https://cf-church.square.site/home' },
-      { title: 'Cookie Settings', url: '#cookie-settings' },
     ],
   },
 ];

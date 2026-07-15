@@ -43,14 +43,14 @@ describe('FooterColumnComponent', () => {
 
   it('renders Cookie Settings as a button that opens consent', () => {
     localStorage.setItem('cookieConsent', 'true');
-    const moreColumn = footerColumns.find(
-      (column) => column.title === 'More',
+    const aboutColumn = footerColumns.find(
+      (column) => column.title === 'About',
     );
 
-    expect(moreColumn).toBeDefined();
+    expect(aboutColumn).toBeDefined();
     render(
       <CookieConsentProvider>
-        <FooterColumnComponent column={moreColumn!} />
+        <FooterColumnComponent column={aboutColumn!} />
       </CookieConsentProvider>,
     );
 
