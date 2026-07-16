@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button } from '~/primitives/button/button.primitive';
 
 interface CookieConsentProps {
@@ -29,16 +30,24 @@ export function CookieConsent({
               Cookie Settings
             </h2>
             <p className='mt-1 text-sm text-gray-600'>
-              We use cookies to enhance your browsing experience and analyze our
-              traffic. You can choose to accept or decline these cookies.
+              We use optional analytics cookies to understand how our website is
+              used and improve your experience. You can allow or reject
+              analytics cookies. Necessary site features will continue to work
+              either way.{' '}
+              <Link
+                to='/privacy-policy'
+                className='underline text-ocean hover:text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean'
+              >
+                Learn more in our Privacy Policy.
+              </Link>
             </p>
           </div>
           <div className='flex gap-3'>
             <Button onClick={onDecline} intent='secondary' size='sm'>
-              Decline
+              Reject analytics
             </Button>
-            <Button onClick={onAccept} intent='primary' size='sm'>
-              Accept
+            <Button onClick={onAccept} intent='secondary' size='sm'>
+              Allow analytics
             </Button>
           </div>
         </div>
