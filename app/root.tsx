@@ -8,7 +8,10 @@ import {
   useRouteLoaderData,
 } from 'react-router-dom';
 import { type ReactNode } from 'react';
-import { type LoaderFunctionArgs } from 'react-router-dom';
+import {
+  type HeadersFunction,
+  type LoaderFunctionArgs,
+} from 'react-router-dom';
 import { randomUUID } from 'node:crypto';
 
 import { Navbar, Footer } from './components';
@@ -34,7 +37,8 @@ function buildCsp(nonce: string): string {
     "img-src 'self' data: https: blob:",
     // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
     // Microsoft Clarity sends telemetry to *.clarity.ms and c.bing.com
-    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com",
+    // GA4 collection (fetch/sendBeacon) + GTM
+    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
     'frame-src https://www.googletagmanager.com https://fast.wistia.com',
     "frame-ancestors 'none'",
   ].join('; ');
@@ -48,6 +52,13 @@ export async function loader(args: LoaderFunctionArgs) {
     { headers: { 'Content-Security-Policy': buildCsp(nonce) } },
   );
 }
+
+// Loader headers from data(..., { headers }) only auto-forward Set-Cookie on
+// document responses. Forward CSP explicitly so the nonce'd policy is enforced.
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  const csp = loaderHeaders.get('Content-Security-Policy');
+  return csp ? { 'Content-Security-Policy': csp } : {};
+};
 
 export function Layout({ children }: { children: ReactNode }) {
   const loaderData = useRouteLoaderData<typeof loader>('root');
