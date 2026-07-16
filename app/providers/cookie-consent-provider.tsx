@@ -115,6 +115,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [hasStoredDecision, setHasStoredDecision] = useState<boolean | null>(
     null,
   );
+  // Same container ID in every environment (VITE_GTM_ID). Prod vs dev GA4
+  // routing is handled inside GTM via Hostname Filter — not in app code.
   const gtmId = import.meta.env.VITE_GTM_ID as string | undefined;
 
   // Restore preference on mount: apply consent signals, load Clarity when granted,

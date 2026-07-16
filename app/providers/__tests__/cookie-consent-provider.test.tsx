@@ -151,6 +151,10 @@ describe('CookieConsentProvider', () => {
     );
     expect(loadClarityMock).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('deferred-gtm')).toBeInTheDocument();
+    expect(screen.getByTestId('deferred-gtm')).toHaveAttribute(
+      'data-gtm-id',
+      'GTM-TEST123',
+    );
     expect(screen.getByTestId('analytics-allowed')).toHaveTextContent('true');
 
     const updates = getConsentUpdates();
