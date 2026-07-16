@@ -32,14 +32,14 @@ setupDevWebVitalsLogging();
 function buildCsp(nonce: string): string {
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://fast.wistia.com https://fast.wistia.net https://www.clarity.ms https://*.clarity.ms`,
+    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://*.wistia.com https://*.wistia.net https://www.clarity.ms https://*.clarity.ms`,
     "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
     "img-src 'self' data: https: blob:",
     // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
     // Microsoft Clarity sends telemetry to *.clarity.ms and c.bing.com
     // GA4 collection (fetch/sendBeacon) + GTM
     "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
-    'frame-src https://www.googletagmanager.com https://fast.wistia.com',
+    'frame-src https://www.googletagmanager.com https://*.wistia.com https://*.wistia.net',
     "frame-ancestors 'none'",
   ].join('; ');
 }
