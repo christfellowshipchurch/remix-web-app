@@ -6,7 +6,28 @@ import {
   type ReactNode,
 } from 'react';
 import { CookieConsent } from '../components/cookie-consent';
+import { DeferredGtm } from '~/components/deferred-gtm';
 import { loadClarity } from '~/lib/load-clarity';
+
+/** Bump when consent semantics change so legacy preferences are re-prompted. */
+export const CONSENT_POLICY_VERSION = '2026-07';
+
+const CONSENT_STORAGE_KEY = 'cookieConsent';
+const CONSENT_VERSION_KEY = 'cookieConsentVersion';
+
+const DENIED_CONSENT = {
+  analytics_storage: 'denied',
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+} as const;
+
+const ANALYTICS_GRANTED_CONSENT = {
+  analytics_storage: 'granted',
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+} as const;
 
 declare global {
   interface Window {
@@ -15,9 +36,12 @@ declare global {
 }
 
 interface CookieConsentContextType {
-  hasConsent: boolean | null;
-  acceptCookies: () => void;
-  declineCookies: () => void;
+  /** Whether a valid, current-version preference is stored (accepted or rejected). */
+  hasStoredDecision: boolean | null;
+  /** Whether the user has granted analytics (not the same as hasStoredDecision). */
+  isAnalyticsAllowed: boolean;
+  acceptAnalytics: () => void;
+  rejectAnalytics: () => void;
   openConsent: () => void;
 }
 
@@ -25,85 +49,121 @@ const CookieConsentContext = createContext<
   CookieConsentContextType | undefined
 >(undefined);
 
+// GTM specifically looks for the 'arguments' object to be pushed.
+// Use function declaration (not arrow function) to access arguments object.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const gtag: (...args: any[]) => void = function () {
+  if (typeof window !== 'undefined') {
+    window.dataLayer = window.dataLayer || [];
+    // Matches Google's specification; arguments object required for GTM compatibility.
+    window.dataLayer.push(arguments);
+  }
+};
+
+function readStoredAnalyticsPreference(): boolean | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const savedConsent = localStorage.getItem(CONSENT_STORAGE_KEY);
+  const savedVersion = localStorage.getItem(CONSENT_VERSION_KEY);
+
+  // Legacy PR #358 preferences (boolean without current version) are re-prompted.
+  if (savedVersion !== CONSENT_POLICY_VERSION) {
+    return null;
+  }
+
+  if (savedConsent === 'true') {
+    return true;
+  }
+
+  if (savedConsent === 'false') {
+    return false;
+  }
+
+  return null;
+}
+
+function persistAnalyticsPreference(isAnalyticsAllowed: boolean): void {
+  localStorage.setItem(CONSENT_STORAGE_KEY, String(isAnalyticsAllowed));
+  localStorage.setItem(CONSENT_VERSION_KEY, CONSENT_POLICY_VERSION);
+}
+
+function pushConsentUpdate(
+  consent: typeof DENIED_CONSENT | typeof ANALYTICS_GRANTED_CONSENT,
+): void {
+  gtag('consent', 'update', consent);
+}
+
+function pushAcceptedEventOncePerSession(force = false): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  if (!force && sessionStorage.getItem('gtm_consent_fired')) {
+    return;
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: 'cookie_consent_accepted' });
+  sessionStorage.setItem('gtm_consent_fired', 'true');
+}
+
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [isBannerVisible, setIsBannerVisible] = useState(false);
+  const [isAnalyticsAllowed, setIsAnalyticsAllowed] = useState(false);
+  const [hasStoredDecision, setHasStoredDecision] = useState<boolean | null>(
+    null,
+  );
+  const gtmId = import.meta.env.VITE_GTM_ID as string | undefined;
 
-  // GTM specifically looks for the 'arguments' object to be pushed
-  // Use function declaration (not arrow function) to access arguments object
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const gtag: (...args: any[]) => void = function () {
-    if (typeof window !== 'undefined') {
-      window.dataLayer = window.dataLayer || [];
-      // This matches the exact specification Google provides
-      // Use arguments object for GTM compatibility
-      window.dataLayer.push(arguments);
-    }
-  };
-
-  // Re-apply consent from localStorage on mount so GTM "remembers" for returning users.
-  // Only push cookie_consent_accepted once per session so Page View fires once; History Change handles subsequent navigations.
-  // Load Clarity only when analytics consent was previously granted.
+  // Restore preference on mount: apply consent signals, load Clarity when granted,
+  // and show the banner when preference is missing, malformed, or outdated.
   useEffect(() => {
-    const savedConsent = localStorage.getItem('cookieConsent');
+    const savedPreference = readStoredAnalyticsPreference();
 
-    if (!savedConsent) {
+    if (savedPreference === null) {
+      setHasStoredDecision(false);
+      setIsAnalyticsAllowed(false);
       setIsBannerVisible(true);
       return;
     }
 
-    if (savedConsent === 'true') {
-      gtag('consent', 'update', {
-        ad_storage: 'granted',
-        analytics_storage: 'granted',
-        ad_user_data: 'granted',
-        ad_personalization: 'granted',
-      });
+    setHasStoredDecision(true);
 
-      if (!sessionStorage.getItem('gtm_consent_fired')) {
-        window.dataLayer.push({ event: 'cookie_consent_accepted' });
-        sessionStorage.setItem('gtm_consent_fired', 'true');
-      }
-
+    if (savedPreference) {
+      pushConsentUpdate(ANALYTICS_GRANTED_CONSENT);
+      pushAcceptedEventOncePerSession();
       loadClarity();
-    } else if (savedConsent === 'false') {
-      gtag('consent', 'update', {
-        ad_storage: 'denied',
-        analytics_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-      });
+      setIsAnalyticsAllowed(true);
+      return;
     }
+
+    pushConsentUpdate(DENIED_CONSENT);
+    setIsAnalyticsAllowed(false);
   }, []);
 
-  const handleAcceptCookies = () => {
+  const acceptAnalytics = () => {
     if (typeof window !== 'undefined') {
-      // This will now correctly trigger GTM's internal Consent state
-      gtag('consent', 'update', {
-        ad_storage: 'granted',
-        analytics_storage: 'granted',
-        ad_user_data: 'granted',
-        ad_personalization: 'granted',
-      });
-
-      window.dataLayer.push({ event: 'cookie_consent_accepted' });
-      sessionStorage.setItem('gtm_consent_fired', 'true');
-      localStorage.setItem('cookieConsent', 'true');
+      pushConsentUpdate(ANALYTICS_GRANTED_CONSENT);
+      pushAcceptedEventOncePerSession(true);
+      persistAnalyticsPreference(true);
       loadClarity();
+      setIsAnalyticsAllowed(true);
+      setHasStoredDecision(true);
     }
     setIsBannerVisible(false);
   };
 
-  const handleDeclineCookies = () => {
+  const rejectAnalytics = () => {
     if (typeof window !== 'undefined') {
-      gtag('consent', 'update', {
-        ad_storage: 'denied',
-        analytics_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-      });
-
+      // Send denied signals before persisting so a prior grant is revoked immediately.
+      pushConsentUpdate(DENIED_CONSENT);
+      window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: 'cookie_consent_declined' });
-      localStorage.setItem('cookieConsent', 'false');
+      persistAnalyticsPreference(false);
+      setIsAnalyticsAllowed(false);
+      setHasStoredDecision(true);
     }
     setIsBannerVisible(false);
   };
@@ -115,20 +175,19 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   return (
     <CookieConsentContext.Provider
       value={{
-        hasConsent:
-          typeof window !== 'undefined'
-            ? localStorage.getItem('cookieConsent') !== null
-            : null,
-        acceptCookies: handleAcceptCookies,
-        declineCookies: handleDeclineCookies,
+        hasStoredDecision,
+        isAnalyticsAllowed,
+        acceptAnalytics,
+        rejectAnalytics,
         openConsent,
       }}
     >
       {children}
+      {isAnalyticsAllowed && gtmId ? <DeferredGtm gtmId={gtmId} /> : null}
       <CookieConsent
         isVisible={isBannerVisible}
-        onAccept={handleAcceptCookies}
-        onDecline={handleDeclineCookies}
+        onAccept={acceptAnalytics}
+        onDecline={rejectAnalytics}
       />
     </CookieConsentContext.Provider>
   );
