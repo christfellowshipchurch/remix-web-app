@@ -1,5 +1,12 @@
-import { createContext, useContext, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { CookieConsent } from '../components/cookie-consent';
+import { loadClarity } from '~/lib/load-clarity';
 
 declare global {
   interface Window {
@@ -11,6 +18,7 @@ interface CookieConsentContextType {
   hasConsent: boolean | null;
   acceptCookies: () => void;
   declineCookies: () => void;
+  openConsent: () => void;
 }
 
 const CookieConsentContext = createContext<
@@ -18,6 +26,8 @@ const CookieConsentContext = createContext<
 >(undefined);
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
+  const [isBannerVisible, setIsBannerVisible] = useState(false);
+
   // GTM specifically looks for the 'arguments' object to be pushed
   // Use function declaration (not arrow function) to access arguments object
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,8 +42,14 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
 
   // Re-apply consent from localStorage on mount so GTM "remembers" for returning users.
   // Only push cookie_consent_accepted once per session so Page View fires once; History Change handles subsequent navigations.
+  // Load Clarity only when analytics consent was previously granted.
   useEffect(() => {
     const savedConsent = localStorage.getItem('cookieConsent');
+
+    if (!savedConsent) {
+      setIsBannerVisible(true);
+      return;
+    }
 
     if (savedConsent === 'true') {
       gtag('consent', 'update', {
@@ -47,6 +63,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
         window.dataLayer.push({ event: 'cookie_consent_accepted' });
         sessionStorage.setItem('gtm_consent_fired', 'true');
       }
+
+      loadClarity();
     } else if (savedConsent === 'false') {
       gtag('consent', 'update', {
         ad_storage: 'denied',
@@ -70,7 +88,9 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       window.dataLayer.push({ event: 'cookie_consent_accepted' });
       sessionStorage.setItem('gtm_consent_fired', 'true');
       localStorage.setItem('cookieConsent', 'true');
+      loadClarity();
     }
+    setIsBannerVisible(false);
   };
 
   const handleDeclineCookies = () => {
@@ -85,6 +105,11 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       window.dataLayer.push({ event: 'cookie_consent_declined' });
       localStorage.setItem('cookieConsent', 'false');
     }
+    setIsBannerVisible(false);
+  };
+
+  const openConsent = () => {
+    setIsBannerVisible(true);
   };
 
   return (
@@ -96,10 +121,12 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
             : null,
         acceptCookies: handleAcceptCookies,
         declineCookies: handleDeclineCookies,
+        openConsent,
       }}
     >
       {children}
       <CookieConsent
+        isVisible={isBannerVisible}
         onAccept={handleAcceptCookies}
         onDecline={handleDeclineCookies}
       />
