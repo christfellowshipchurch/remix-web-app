@@ -56,8 +56,12 @@ export async function loader(args: LoaderFunctionArgs) {
 // Loader headers from data(..., { headers }) only auto-forward Set-Cookie on
 // document responses. Forward CSP explicitly so the nonce'd policy is enforced.
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  const headers = new Headers();
   const csp = loaderHeaders.get('Content-Security-Policy');
-  return csp ? { 'Content-Security-Policy': csp } : {};
+  if (csp) {
+    headers.set('Content-Security-Policy', csp);
+  }
+  return headers;
 };
 
 export function Layout({ children }: { children: ReactNode }) {

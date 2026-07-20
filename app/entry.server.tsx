@@ -63,11 +63,7 @@ export default function handleRequest(
     );
 
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter
-        context={routerContext}
-        url={request.url}
-        nonce={nonce}
-      />,
+      <ServerRouter context={routerContext} url={request.url} nonce={nonce} />,
       {
         nonce,
         [readyOption]() {
