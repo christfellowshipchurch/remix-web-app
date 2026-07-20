@@ -31,10 +31,7 @@ setupDevWebVitalsLogging();
 export async function loader(args: LoaderFunctionArgs) {
   const nonce = randomUUID();
   const navbarData = await navbarLoader(args);
-  return data(
-    { ...navbarData, nonce },
-    { headers: { 'Content-Security-Policy': buildCsp(nonce) } },
-  );
+  return data({ ...navbarData, nonce });
 }
 
 export function Layout({ children }: { children: ReactNode }) {
