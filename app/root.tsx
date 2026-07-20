@@ -50,17 +50,6 @@ export async function loader(args: LoaderFunctionArgs) {
   );
 }
 
-export function headers({
-  loaderHeaders,
-}: {
-  loaderHeaders: Headers;
-}): Headers {
-  const headers = new Headers(loaderHeaders);
-  headers.set('Clear-Site-Data', '"cache"');
-  headers.set('Cache-Control', 'no-cache');
-  return headers;
-}
-
 export function Layout({ children }: { children: ReactNode }) {
   const loaderData = useRouteLoaderData<typeof loader>('root');
   const nonce = loaderData?.nonce;
