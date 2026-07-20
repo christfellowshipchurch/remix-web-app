@@ -22,27 +22,13 @@ import './styles/tailwind.css';
 import { loader as navbarLoader } from './routes/navbar/loader';
 import { NavbarVisibilityProvider } from './providers/navbar-visibility-context';
 import { setupDevWebVitalsLogging } from '~/lib/dev-web-vitals';
+import { buildCsp } from '~/lib/csp';
 
 export { ErrorBoundary } from './error';
 
 // Runs only in the browser (setup no-ops without window). Avoid import.meta.env.SSR here—
 // client bundles can still evaluate oddly; window check inside setup is authoritative.
 setupDevWebVitalsLogging();
-
-function buildCsp(nonce: string): string {
-  return [
-    "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://*.wistia.com https://*.wistia.net https://www.clarity.ms https://*.clarity.ms`,
-    "style-src 'self' 'unsafe-inline' https://fast.wistia.com",
-    "img-src 'self' data: https: blob:",
-    // Algolia search & related APIs: https://support.algolia.com/hc/en-us/articles/8947249849873
-    // Microsoft Clarity sends telemetry to *.clarity.ms and c.bing.com
-    // GA4 collection (fetch/sendBeacon) + GTM
-    "connect-src 'self' https://*.algolia.net https://*.algolianet.com https://*.algolia.io https://*.clarity.ms https://c.bing.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
-    'frame-src https://www.googletagmanager.com https://*.wistia.com https://*.wistia.net',
-    "frame-ancestors 'none'",
-  ].join('; ');
-}
 
 export async function loader(args: LoaderFunctionArgs) {
   const nonce = randomUUID();
