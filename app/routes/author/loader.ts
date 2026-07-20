@@ -1,7 +1,7 @@
 import { LoaderFunction } from 'react-router-dom';
 import { createImageUrlFromGuid } from '~/lib/utils';
 import { format } from 'date-fns';
-import { AuthorLoaderData } from './types';
+import { AuthorArticleProps, AuthorLoaderData } from './types';
 import {
   fetchAuthorData,
   fetchPersonAliasGuid,
@@ -117,7 +117,7 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
                   coverImage:
                     createImageUrlFromGuid(
                       article.attributeValues?.image?.value || '',
-                    ) || null,
+                    ) || '',
                   summary: article.attributeValues?.summary?.value || '',
                   url: article.attributeValues?.url?.value || '',
                 };
@@ -126,7 +126,9 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
                 return null;
               }
             })
-            .filter(Boolean),
+            .filter(
+              (article): article is AuthorArticleProps => article != null,
+            ),
           books: [],
           podcasts: [],
         },
@@ -251,7 +253,7 @@ export const getAuthorDetails = async (personId: string) => {
                   coverImage:
                     createImageUrlFromGuid(
                       article.attributeValues?.image?.value || '',
-                    ) || null,
+                    ) || '',
                   summary: article.attributeValues?.summary?.value || '',
                   url: article.attributeValues?.url?.value || '',
                 };
@@ -260,7 +262,9 @@ export const getAuthorDetails = async (personId: string) => {
                 return null;
               }
             })
-            .filter(Boolean),
+            .filter(
+              (article): article is AuthorArticleProps => article != null,
+            ),
           books: [],
           podcasts: [],
         },
