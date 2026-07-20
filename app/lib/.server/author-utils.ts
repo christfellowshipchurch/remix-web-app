@@ -1,5 +1,5 @@
 import { fetchRockData } from './fetch-rock-data';
-import { createImageUrlFromGuid } from '~/lib/utils';
+import { createImageUrlFromGuid, ensureArray } from '~/lib/utils';
 
 export const fetchAuthorData = async ({ authorId }: { authorId: string }) => {
   return fetchRockData({
@@ -62,7 +62,8 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
     },
   });
 
-  return articles;
+  // fetchRockData unwraps single-item arrays to objects; callers expect a list
+  return ensureArray(articles ?? []);
 };
 
 export const getBasicAuthorInfo = async (
