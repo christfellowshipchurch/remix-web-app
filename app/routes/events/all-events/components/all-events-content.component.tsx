@@ -189,15 +189,6 @@ const PaginationButton = ({
   );
 };
 
-function sortEventHitsByStartDateDesc(
-  hits: ContentItemHit[],
-): ContentItemHit[] {
-  return [...hits].sort(
-    (a, b) =>
-      new Date(b.startDateTime).getTime() - new Date(a.startDateTime).getTime(),
-  );
-}
-
 export function AllEventsContent() {
   const {
     ALGOLIA_APP_ID,
@@ -457,9 +448,9 @@ function AllEventsInstantResults({
   const { currentRefinement, nbPages, isFirstPage, isLastPage, refine } =
     usePagination();
 
-  // The index response is sorted by Algolia ranking; events still need the
-  // existing date-desc presentation order used by the loader-backed first paint.
-  const eventHits = sortEventHitsByStartDateDesc(hits);
+  // The index response is already ordered by Algolia's custom ranking
+  // (eventStartDate), so hits render in index order.
+  const eventHits = hits;
 
   return (
     <AllEventsResultsLayout
