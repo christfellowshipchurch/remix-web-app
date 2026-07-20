@@ -48,7 +48,7 @@ export const FooterColumnComponent = ({ column }: FooterColumnProps) => {
           <button
             key={link.title}
             type='button'
-            className='text-lg text-left hover:text-white/50 transition-colors'
+            className='text-lg text-left hover:text-white/50 transition-colors cursor-pointer'
             onClick={openConsent}
             aria-label={`${link.title}`}
           >
