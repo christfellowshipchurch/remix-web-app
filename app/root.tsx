@@ -8,10 +8,7 @@ import {
   useRouteLoaderData,
 } from 'react-router-dom';
 import { type ReactNode } from 'react';
-import {
-  type HeadersFunction,
-  type LoaderFunctionArgs,
-} from 'react-router-dom';
+import { type LoaderFunctionArgs } from 'react-router-dom';
 import { randomUUID } from 'node:crypto';
 
 import { Navbar, Footer } from './components';
@@ -21,6 +18,7 @@ import { CookieConsentProvider } from './providers/cookie-consent-provider';
 import './styles/tailwind.css';
 import { loader as navbarLoader } from './routes/navbar/loader';
 import { NavbarVisibilityProvider } from './providers/navbar-visibility-context';
+import { DeferredGtm } from './components/deferred-gtm';
 import { setupDevWebVitalsLogging } from '~/lib/dev-web-vitals';
 import { buildCsp } from '~/lib/csp';
 
@@ -39,20 +37,10 @@ export async function loader(args: LoaderFunctionArgs) {
   );
 }
 
-// Loader headers from data(..., { headers }) only auto-forward Set-Cookie on
-// document responses. Forward CSP explicitly so the nonce'd policy is enforced.
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  const headers = new Headers();
-  const csp = loaderHeaders.get('Content-Security-Policy');
-  if (csp) {
-    headers.set('Content-Security-Policy', csp);
-  }
-  return headers;
-};
-
 export function Layout({ children }: { children: ReactNode }) {
   const loaderData = useRouteLoaderData<typeof loader>('root');
   const nonce = loaderData?.nonce;
+  const gtmId = import.meta.env.VITE_GTM_ID;
 
   return (
     <html lang='en'>
@@ -83,6 +71,18 @@ export function Layout({ children }: { children: ReactNode }) {
       </head>
       {/* suppressHydrationWarning: extensions (e.g. ColorZilla) inject attrs like cz-shortcut-listen on <body> */}
       <body suppressHydrationWarning>
+        {/* GTM Noscript (Fallback) */}
+        {gtmId && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height='0'
+              width='0'
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
+        )}
+        {gtmId ? <DeferredGtm gtmId={gtmId} /> : null}
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
