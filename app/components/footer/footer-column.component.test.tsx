@@ -23,6 +23,7 @@ vi.mock('~/components', () => ({
 
 vi.mock('~/lib/load-clarity', () => ({
   loadClarity: vi.fn(),
+  setClarityConsent: vi.fn(),
 }));
 
 function renderWithProviders(ui: ReactNode) {

@@ -19,7 +19,6 @@ import './styles/tailwind.css';
 import { loader as navbarLoader } from './routes/navbar/loader';
 import { NavbarVisibilityProvider } from './providers/navbar-visibility-context';
 import { setupDevWebVitalsLogging } from '~/lib/dev-web-vitals';
-import { buildCsp } from '~/lib/csp';
 
 export { ErrorBoundary } from './error';
 

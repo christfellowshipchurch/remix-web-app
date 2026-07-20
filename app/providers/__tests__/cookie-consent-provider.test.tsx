@@ -7,9 +7,12 @@ import {
 } from '../cookie-consent-provider';
 
 const loadClarityMock = vi.fn();
+const setClarityConsentMock = vi.fn();
 
 vi.mock('~/lib/load-clarity', () => ({
   loadClarity: (...args: unknown[]) => loadClarityMock(...args),
+  setClarityConsent: (...args: unknown[]) =>
+    setClarityConsentMock(...args),
 }));
 
 vi.mock('~/components/deferred-gtm', () => ({
@@ -83,6 +86,7 @@ describe('CookieConsentProvider', () => {
     sessionStorage.clear();
     window.dataLayer = [];
     loadClarityMock.mockClear();
+    setClarityConsentMock.mockClear();
     import.meta.env.VITE_GTM_ID = 'GTM-TEST123';
   });
 
@@ -150,6 +154,7 @@ describe('CookieConsentProvider', () => {
       CONSENT_POLICY_VERSION,
     );
     expect(loadClarityMock).toHaveBeenCalledTimes(1);
+    expect(setClarityConsentMock).toHaveBeenCalledWith(true);
     expect(screen.getByTestId('deferred-gtm')).toBeInTheDocument();
     expect(screen.getByTestId('deferred-gtm')).toHaveAttribute(
       'data-gtm-id',
@@ -351,6 +356,7 @@ describe('CookieConsentProvider', () => {
 
     expect(screen.queryByTestId('deferred-gtm')).not.toBeInTheDocument();
     expect(loadClarityMock).toHaveBeenCalledTimes(1);
+    expect(setClarityConsentMock).toHaveBeenLastCalledWith(false);
     expect(getConsentUpdates().at(-1)).toEqual({
       analytics_storage: 'denied',
       ad_storage: 'denied',

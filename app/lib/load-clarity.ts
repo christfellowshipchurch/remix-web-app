@@ -50,3 +50,14 @@ export function loadClarity(projectId = DEFAULT_CLARITY_ID): void {
     (document.head || document.documentElement).appendChild(script);
   }
 }
+
+export function setClarityConsent(isAnalyticsAllowed: boolean): void {
+  if (!isProductionHost() || typeof window.clarity !== 'function') {
+    return;
+  }
+
+  window.clarity('consentv2', {
+    ad_Storage: 'denied',
+    analytics_Storage: isAnalyticsAllowed ? 'granted' : 'denied',
+  });
+}

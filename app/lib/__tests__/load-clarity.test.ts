@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { loadClarity } from '../load-clarity';
+import { loadClarity, setClarityConsent } from '../load-clarity';
 
 function stubHostname(hostname: string) {
   vi.stubGlobal('location', { hostname });
@@ -65,5 +65,22 @@ describe('loadClarity', () => {
     expect(
       document.querySelectorAll('script[src*="clarity.ms/tag/"]').length,
     ).toBe(1);
+  });
+
+  it('communicates analytics-only consent changes to Clarity', () => {
+    const clarity = vi.fn();
+    window.clarity = clarity;
+
+    setClarityConsent(true);
+    setClarityConsent(false);
+
+    expect(clarity).toHaveBeenNthCalledWith(1, 'consentv2', {
+      ad_Storage: 'denied',
+      analytics_Storage: 'granted',
+    });
+    expect(clarity).toHaveBeenNthCalledWith(2, 'consentv2', {
+      ad_Storage: 'denied',
+      analytics_Storage: 'denied',
+    });
   });
 });

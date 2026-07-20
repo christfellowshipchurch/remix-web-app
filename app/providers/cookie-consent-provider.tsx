@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { CookieConsent } from '../components/cookie-consent';
 import { DeferredGtm } from '~/components/deferred-gtm';
-import { loadClarity } from '~/lib/load-clarity';
+import { loadClarity, setClarityConsent } from '~/lib/load-clarity';
 
 /** Bump when consent semantics change so legacy preferences are re-prompted. */
 export const CONSENT_POLICY_VERSION = '2026-07';
@@ -137,6 +137,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       pushConsentUpdate(ANALYTICS_GRANTED_CONSENT);
       pushAcceptedEventOncePerSession();
       loadClarity();
+      setClarityConsent(true);
       setIsAnalyticsAllowed(true);
       return;
     }
@@ -151,6 +152,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       pushAcceptedEventOncePerSession(true);
       persistAnalyticsPreference(true);
       loadClarity();
+      setClarityConsent(true);
       setIsAnalyticsAllowed(true);
       setHasStoredDecision(true);
     }
@@ -161,6 +163,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       // Send denied signals before persisting so a prior grant is revoked immediately.
       pushConsentUpdate(DENIED_CONSENT);
+      setClarityConsent(false);
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: 'cookie_consent_declined' });
       persistAnalyticsPreference(false);
