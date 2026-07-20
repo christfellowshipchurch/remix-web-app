@@ -33,7 +33,6 @@ export default [
         AbortController: 'readonly',
         Request: 'readonly',
         Response: 'readonly',
-        Headers: 'readonly',
         URL: 'readonly',
         URLSearchParams: 'readonly',
         FormData: 'readonly',
