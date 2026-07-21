@@ -12,61 +12,32 @@ import Icon from '~/primitives/icon';
 
 export const SearchBar = ({
   onSearchStateChange,
-  onQueryChange,
   onSearchSubmit,
-  clearRequestId = 0,
   'data-gtm': dataGtm,
 }: {
   onSearchStateChange: (isSearching: boolean) => void;
-  onQueryChange: (query: string) => void;
   onSearchSubmit: (query: string | null) => void;
-  /** Increment to clear the input while keeping the results popup open. */
-  clearRequestId?: number;
   'data-gtm'?: string;
 }) => {
   const { refine } = useSearchBox();
   const [inputValue, setInputValue] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const placeholder =
-    isFocused && !inputValue
-      ? 'Search by city or ZIP code'
-      : 'Find a service near you';
 
   useEffect(() => {
-    // Locations index is not keyword-searchable in Algolia — keep the index
-    // query empty and filter hits client-side from `onQueryChange`.
     refine('');
   }, [refine]);
 
-  useEffect(() => {
-    if (clearRequestId === 0) return;
-    setInputValue('');
-    refine('');
-    onQueryChange('');
-    onSearchSubmit(null);
-    onSearchStateChange(true);
-  }, [
-    clearRequestId,
-    refine,
-    onQueryChange,
-    onSearchSubmit,
-    onSearchStateChange,
-  ]);
-
   const syncFromInput = (raw: string) => {
     setInputValue(raw);
+    refine('');
 
     const trimmed = raw.trim();
-    refine('');
-    onQueryChange(trimmed);
-    onSearchStateChange(true);
-
-    // Additionally geocode when the input is a valid 5-digit ZIP.
     if (trimmed.length === 5 && isValidZip(trimmed)) {
+      onSearchStateChange(true);
       onSearchSubmit(trimmed);
     } else {
       onSearchSubmit(null);
+      onSearchStateChange(!!raw.trim());
     }
   };
 
@@ -76,7 +47,15 @@ export const SearchBar = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    syncFromInput(inputValue);
+    const trimmed = inputValue.trim();
+    refine('');
+    if (trimmed.length === 5 && isValidZip(trimmed)) {
+      onSearchStateChange(true);
+      onSearchSubmit(trimmed);
+    } else {
+      onSearchSubmit(null);
+      onSearchStateChange(!!trimmed);
+    }
     inputRef.current?.blur();
   };
 
@@ -104,18 +83,13 @@ export const SearchBar = ({
       <input
         ref={inputRef}
         type='text'
-        autoComplete='off'
+        inputMode='numeric'
+        autoComplete='postal-code'
         value={inputValue}
         onChange={handleChange}
-        onFocus={() => {
-          setIsFocused(true);
-          // Open results (and precise-location) on focus — not only after typing.
-          onSearchStateChange(true);
-        }}
-        onBlur={() => setIsFocused(false)}
-        placeholder={placeholder}
+        placeholder='Find a service near you'
         className='w-full grow justify-center text-black px-3 outline-none appearance-none bg-transparent'
-        aria-label='Find a service near you'
+        aria-label='Zip code'
       />
     </form>
   );

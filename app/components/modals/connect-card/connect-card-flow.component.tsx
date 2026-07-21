@@ -9,10 +9,8 @@ enum ConnectCardStep {
 
 const ConnectCardFlow = ({
   setOpenModal,
-  isEspanol,
 }: {
   setOpenModal: (open: boolean) => void;
-  isEspanol?: boolean;
 }) => {
   const [step, setStep] = useState<ConnectCardStep>(
     ConnectCardStep.CONNECT_CARD,
@@ -24,7 +22,6 @@ const ConnectCardFlow = ({
         return (
           <ConnectCardForm
             onSuccess={() => setStep(ConnectCardStep.CONFIRMATION)}
-            isEspanol={isEspanol}
           />
         );
       case ConnectCardStep.CONFIRMATION:

@@ -1,20 +1,45 @@
 import { ActionFunction, data } from 'react-router-dom';
-import { buildConnectCardSubmission } from './build-submission';
-import { postRockWorkflowLaunchWithApiInitiator } from '~/lib/.server/rock-workflow';
+import { ConnectFormType } from './types';
+import { postRockData } from '~/lib/.server/fetch-rock-data';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = Object.fromEntries(await request.formData());
-    const submission = buildConnectCardSubmission(formData);
-    const instanceName =
-      `${submission.body.FirstName} ${submission.body.LastName}`.trim();
 
-    // --- Live Rock submission ---
-    await postRockWorkflowLaunchWithApiInitiator({
-      workflowTypeId: submission.workflowTypeId,
-      workflowName: submission.workflowName,
-      body: submission.body,
-      instanceName,
+    const allThatAppliesValues: string = Object.keys(formData)
+      .filter((key) => key.includes('allThatApplies'))
+      .map((key) => formData[key])
+      .join(',');
+
+    const {
+      email,
+      firstName,
+      lastName,
+      phone,
+      otherContent,
+      campus,
+      decision,
+    } = formData;
+
+    const connectFormSubmission: ConnectFormType = {
+      FirstName: firstName as string,
+      LastName: lastName as string,
+      Campus: campus as string,
+      Email: email as string,
+      PhoneNumber: phone as string,
+      AllThatApplies: allThatAppliesValues,
+    };
+
+    if (decision) {
+      connectFormSubmission.Decision = decision as string;
+    }
+    if (otherContent) {
+      connectFormSubmission.Other = otherContent as string;
+    }
+
+    await postRockData({
+      endpoint: `Workflows/LaunchWorkflow/0?workflowTypeId=902&workflowName=CFDP%20Web%20Connect%20Card`,
+      body: connectFormSubmission,
     });
 
     return new Response(JSON.stringify({ success: true }), {

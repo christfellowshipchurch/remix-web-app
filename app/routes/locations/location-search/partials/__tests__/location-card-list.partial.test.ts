@@ -37,18 +37,18 @@ function createCampusHit(
 }
 
 describe('getLocationCardDisplayItems', () => {
-  it('shows the online campus last when no distance info is available', () => {
+  it('keeps the online campus first on the /location page', () => {
     const onlineCampus = createCampusHit('cf-everywhere');
     const nearbyCampus = createCampusHit('nearby');
 
     const displayItems = getLocationCardDisplayItems([
-      onlineCampus,
       nearbyCampus,
+      onlineCampus,
     ]);
 
     expect(displayItems.map((hit) => hit.campusUrl)).toEqual([
-      'nearby',
       'cf-everywhere',
+      'nearby',
     ]);
   });
 
@@ -66,14 +66,14 @@ describe('getLocationCardDisplayItems', () => {
     ]);
 
     expect(displayItems.map((hit) => hit.campusUrl)).toEqual([
+      'cf-everywhere',
       'first',
       'second',
       'third',
-      'cf-everywhere',
     ]);
   });
 
-  it('shows online last when the closest campus is within 80 miles', () => {
+  it('keeps online first after a zip or GPS search (physical hits stay in input order)', () => {
     const onlineCampus = createCampusHit('cf-everywhere', { geoDistance: 100 });
     const nearbyCampus = createCampusHit('nearby', {
       geoDistance: 5 * 1609.344,
@@ -90,30 +90,9 @@ describe('getLocationCardDisplayItems', () => {
     );
 
     expect(displayItems.map((hit) => hit.campusUrl)).toEqual([
+      'cf-everywhere',
       'nearby',
       'farther',
-      'cf-everywhere',
-    ]);
-  });
-
-  it('shows online first when the closest campus is over 80 miles away', () => {
-    const onlineCampus = createCampusHit('cf-everywhere', { geoDistance: 100 });
-    const fartherCampus = createCampusHit('farther', {
-      geoDistance: 100 * 1609.344,
-    });
-    const farthestCampus = createCampusHit('farthest', {
-      geoDistance: 200 * 1609.344,
-    });
-
-    const displayItems = getLocationCardDisplayItems(
-      [fartherCampus, farthestCampus, onlineCampus],
-      { sortByGeo: true },
-    );
-
-    expect(displayItems.map((hit) => hit.campusUrl)).toEqual([
-      'cf-everywhere',
-      'farther',
-      'farthest',
     ]);
   });
 });
