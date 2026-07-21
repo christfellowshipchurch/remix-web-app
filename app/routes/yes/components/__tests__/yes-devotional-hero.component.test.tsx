@@ -27,7 +27,7 @@ describe('YesHero', () => {
     render(<YesHero />);
 
     const devotionalLink = getCardLink(
-      'A three-week devotional to start your relationship with Jesus.',
+      'A three-week course to start your relationship with Jesus.',
     );
     expect(devotionalLink).toHaveAttribute('href', '#devo');
     expect(devotionalLink).not.toHaveAttribute('target', '_blank');
