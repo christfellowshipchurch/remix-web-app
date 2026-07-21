@@ -8,6 +8,7 @@ import {
   CarouselItem,
 } from '~/primitives/shadcn-primitives/carousel';
 import { ResourceCard } from '~/primitives/cards/resource-card';
+import { SingleEventCard } from '~/primitives/cards/single-event-card';
 import { CollectionItem } from '~/routes/page-builder/types';
 import HTMLRenderer from '~/primitives/html-renderer';
 
@@ -110,6 +111,74 @@ export const CardCarouselSection = ({
                     mode === 'dark' && 'text-white border-white',
                     viewMoreStyles,
                   )}
+                  intent='secondary'
+                >
+                  {viewMoreText}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Event Collections with exactly one event render a single full-width card (Figma: Web 3.0, node 8082-69891) instead of a carousel
+export const SingleEventCollectionSection = ({
+  title,
+  description,
+  resource,
+  viewMoreLink,
+  viewMoreText = 'View More',
+  className,
+}: {
+  title: string;
+  description?: string;
+  resource: CollectionItem;
+  viewMoreLink?: string;
+  viewMoreText?: string;
+  className?: string;
+}) => {
+  return (
+    <div className={cn('w-full pl-5 md:pl-12 lg:pl-18 lg:pr-18', className)}>
+      <div className='flex flex-col max-w-screen-content mx-auto'>
+        <div className='w-full flex justify-center'>
+          <div className='w-full flex flex-col items-center gap-12 lg:gap-20 py-16 md:py-24'>
+            {/* Header */}
+            <div className='w-full flex items-end justify-between pr-5 md:pr-12 lg:pr-18 2xl:pr-8! 3xl:pr-0!'>
+              <div className='flex flex-col w-full gap-2'>
+                <h2 className='heading-h2 text-[24px] md:text-[52px] font-extrabold leading-tight'>
+                  {title}
+                </h2>
+                {description && (
+                  <HTMLRenderer html={description} className='md:text-lg' />
+                )}
+              </div>
+
+              {viewMoreLink && (
+                <Button
+                  href={viewMoreLink}
+                  size='md'
+                  className='hidden md:block min-w-32 w-fit whitespace-nowrap'
+                  intent='secondary'
+                >
+                  {viewMoreText}
+                </Button>
+              )}
+            </div>
+
+            <div className='w-full max-w-full pr-5 md:pr-12 lg:pr-18 2xl:pr-8! 3xl:pr-0!'>
+              <SingleEventCard resource={resource} />
+            </div>
+
+            {/* Mobile View All */}
+            {viewMoreLink && (
+              <div className='w-full flex justify-start -mt-8 md:hidden'>
+                <Button
+                  href={viewMoreLink}
+                  size='md'
+                  className='whitespace-nowrap'
                   intent='secondary'
                 >
                   {viewMoreText}
