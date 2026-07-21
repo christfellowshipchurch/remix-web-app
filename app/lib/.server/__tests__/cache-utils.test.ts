@@ -6,8 +6,13 @@ import {
   extractContentItemIds,
   invalidateItem,
   itemTagKey,
+  stabilizeFilterForCacheKey,
   TTL,
 } from '../cache-utils';
+
+/** Mirrors the clause `buildMergedFilter` injects for filterByDateRange: true */
+const dateRangeFilter = (isoNow: string) =>
+  `StartDateTime le datetime'${isoNow}' and (ExpireDateTime eq null or ExpireDateTime ge datetime'${isoNow}')`;
 
 describe('TTL constants', () => {
   it('has expected values', () => {
@@ -67,6 +72,67 @@ describe('buildCacheKey', () => {
     const key2 = buildCacheKey('People', {});
     expect(key1).toBe(key2);
     expect(key1).toMatch(/^rock:People:[a-f0-9]{12}$/);
+  });
+
+  it('produces identical keys for filterByDateRange queries with different live timestamps', () => {
+    const key1 = buildCacheKey('ContentChannelItems', {
+      $filter: `(ContentChannelId eq 100) and (${dateRangeFilter('2026-06-29T12:00:00.000Z')})`,
+      $top: '1',
+      loadAttributes: 'simple',
+    });
+    const key2 = buildCacheKey('ContentChannelItems', {
+      $filter: `(ContentChannelId eq 100) and (${dateRangeFilter('2026-06-29T12:00:01.250Z')})`,
+      $top: '1',
+      loadAttributes: 'simple',
+    });
+
+    expect(key1).toBe(key2);
+    expect(key1).toMatch(/^rock:ContentChannelItems:[a-f0-9]{12}$/);
+  });
+
+  it('still distinguishes date-range queries from otherwise identical non-date-range queries', () => {
+    const withDateRange = buildCacheKey('ContentChannelItems', {
+      $filter: `(ContentChannelId eq 100) and (${dateRangeFilter('2026-06-29T12:00:00.000Z')})`,
+      $top: '1',
+    });
+    const withoutDateRange = buildCacheKey('ContentChannelItems', {
+      $filter: 'ContentChannelId eq 100',
+      $top: '1',
+    });
+
+    expect(withDateRange).not.toBe(withoutDateRange);
+  });
+
+  it('still distinguishes different non-volatile filter clauses after stabilization', () => {
+    const channel100 = buildCacheKey('ContentChannelItems', {
+      $filter: `(ContentChannelId eq 100) and (${dateRangeFilter('2026-06-29T12:00:00.000Z')})`,
+    });
+    const channel43 = buildCacheKey('ContentChannelItems', {
+      $filter: `(ContentChannelId eq 43) and (${dateRangeFilter('2026-06-29T12:00:00.000Z')})`,
+    });
+
+    expect(channel100).not.toBe(channel43);
+  });
+});
+
+describe('stabilizeFilterForCacheKey', () => {
+  it('replaces volatile date-range timestamps with a stable placeholder', () => {
+    const stabilized = stabilizeFilterForCacheKey(
+      `(ContentChannelId eq 100) and (${dateRangeFilter('2026-06-29T12:00:00.123Z')})`,
+    );
+
+    expect(stabilized).toBe(
+      "(ContentChannelId eq 100) and (StartDateTime le datetime'{now}' and (ExpireDateTime eq null or ExpireDateTime ge datetime'{now}'))",
+    );
+  });
+
+  it('leaves filters without a date-range clause unchanged', () => {
+    const filter = "ContentChannelId eq 43 and Status eq 'Approved'";
+    expect(stabilizeFilterForCacheKey(filter)).toBe(filter);
+  });
+
+  it('returns undefined when filter is undefined', () => {
+    expect(stabilizeFilterForCacheKey(undefined)).toBeUndefined();
   });
 });
 
