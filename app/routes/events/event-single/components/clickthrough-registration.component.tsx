@@ -223,16 +223,12 @@ export const ClickThroughRegistration = ({
           preserveSharedStateOnUnmount: true,
         }}
       >
-        <Configure
-          filters={buildFilter()}
-          hitsPerPage={1000}
-          query={step === 1 && campusSearchQuery ? campusSearchQuery : ''}
-          restrictSearchableAttributes={
-            step === 1 && campusSearchQuery
-              ? ['campus.name', 'campus.city']
-              : undefined
-          }
-        />
+        {/* Campus search (step 1) is filtered client-side in CampusStep, not via
+            Algolia `query` — sending campusSearchQuery to Algolia could narrow
+            `items` to zero hits, which unmounts CampusStep's search input below
+            (see the 0-hits guard in StepContent) and strands the user with no
+            way to edit/clear their search. */}
+        <Configure filters={buildFilter()} hitsPerPage={1000} />
 
         <HitsDetector onReady={() => setHitsReady(true)} />
         {hitsReady && (
@@ -604,19 +600,25 @@ const CampusStep = ({
       </div>
 
       {/* Campus Cards */}
-      <div className='flex flex-wrap justify-center gap-4'>
-        {filteredCampuses.map((campus) => (
-          <ClickableCard
-            step={1}
-            key={campus.name}
-            variant='campus'
-            icon='map'
-            title={campus.name}
-            subtitle={campus.location || ''}
-            onClick={() => onSelect(campus.name)}
-          />
-        ))}
-      </div>
+      {filteredCampuses.length === 0 ? (
+        <p className='text-gray-600 text-center p-8'>
+          No campuses match your search. Try a different name or city.
+        </p>
+      ) : (
+        <div className='flex flex-wrap justify-center gap-4'>
+          {filteredCampuses.map((campus) => (
+            <ClickableCard
+              step={1}
+              key={campus.name}
+              variant='campus'
+              icon='map'
+              title={campus.name}
+              subtitle={campus.location || ''}
+              onClick={() => onSelect(campus.name)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

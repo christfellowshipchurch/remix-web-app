@@ -38,6 +38,7 @@ export interface ContentItemHit {
   eventStartDate?: string;
   eventCardDate?: string;
   eventCardDescription?: string;
+  eventsFeaturedCardSubtitle?: string;
   eventIsFeatured?: boolean;
   locations?: {
     name: string;
