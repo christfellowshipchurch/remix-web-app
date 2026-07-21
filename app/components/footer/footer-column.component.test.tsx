@@ -1,8 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { FooterColumnComponent } from './footer-column.component';
 import { footerColumns } from './footer-data';
-import { CookieConsentProvider } from '~/providers/cookie-consent-provider';
+import {
+  CONSENT_POLICY_VERSION,
+  CookieConsentProvider,
+} from '~/providers/cookie-consent-provider';
 
 vi.mock('~/components', () => ({
   ConnectCardModal: ({ buttonTitle }: { buttonTitle?: string }) => (
@@ -18,7 +23,16 @@ vi.mock('~/components', () => ({
 
 vi.mock('~/lib/load-clarity', () => ({
   loadClarity: vi.fn(),
+  setClarityConsent: vi.fn(),
 }));
+
+function renderWithProviders(ui: ReactNode) {
+  return render(
+    <MemoryRouter>
+      <CookieConsentProvider>{ui}</CookieConsentProvider>
+    </MemoryRouter>,
+  );
+}
 
 describe('FooterColumnComponent', () => {
   it('renders Subscribe to Updates as the newsletter subscription modal trigger', () => {
@@ -27,11 +41,7 @@ describe('FooterColumnComponent', () => {
     );
 
     expect(connectColumn).toBeDefined();
-    render(
-      <CookieConsentProvider>
-        <FooterColumnComponent column={connectColumn!} />
-      </CookieConsentProvider>,
-    );
+    renderWithProviders(<FooterColumnComponent column={connectColumn!} />);
 
     expect(
       screen.getByTestId('newsletter-subscription-modal'),
@@ -43,16 +53,13 @@ describe('FooterColumnComponent', () => {
 
   it('renders Cookie Settings as a button that opens consent', () => {
     localStorage.setItem('cookieConsent', 'true');
+    localStorage.setItem('cookieConsentVersion', CONSENT_POLICY_VERSION);
     const aboutColumn = footerColumns.find(
       (column) => column.title === 'About',
     );
 
     expect(aboutColumn).toBeDefined();
-    render(
-      <CookieConsentProvider>
-        <FooterColumnComponent column={aboutColumn!} />
-      </CookieConsentProvider>,
-    );
+    renderWithProviders(<FooterColumnComponent column={aboutColumn!} />);
 
     const cookieSettings = screen.getByRole('button', {
       name: 'Cookie Settings',
