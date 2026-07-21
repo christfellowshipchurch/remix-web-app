@@ -20,6 +20,11 @@
       "source": "/articles/give-to-the-crisis-fund",
       "destination": "/give-to-the-crisis-fund",
       "statusCode": 301
+    },
+    {
+      "source": "/ministry-breakout-presentations-and-resources",
+      "destination": "/link-tree/ministry-breakout-presentations-and-resources",
+      "statusCode": 301
     }
   ]
 }

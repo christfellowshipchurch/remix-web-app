@@ -25,6 +25,7 @@ import {
 } from '~/primitives/shadcn-primitives/carousel';
 
 import { VolunteerCard } from './volunteer-card.component';
+import { VolunteerListCard } from './volunteer-list-card.component';
 import type { Volunteer } from '../types';
 import {
   parseVolunteerAlgoliaUrlState,
@@ -130,6 +131,34 @@ function VolunteerHitsCarousel() {
   );
 }
 
+function VolunteerHitsList() {
+  const { items: hits } = useHits<Volunteer>();
+  const location = useLocation();
+
+  if (hits.length === 0) {
+    return (
+      <p className='text-neutral-default content-padding py-8 text-center text-lg 2xl:px-0'>
+        No volunteer opportunities match your filters right now. Try clearing a
+        filter or check back soon.
+      </p>
+    );
+  }
+
+  return (
+    <div className='content-padding py-6'>
+      <ul className='mx-auto flex w-full max-w-[1280px] flex-col gap-4'>
+        {hits.map((hit) => (
+          <VolunteerListCard
+            key={hit.objectID}
+            volunteer={hit}
+            listingSearch={location.search}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function CampusFilterSelect() {
   const { items, refine } = useRefinementList({
     attribute: FACET_CAMPUS,
@@ -152,7 +181,7 @@ function CampusFilterSelect() {
       <select
         aria-label='Filter by location'
         className={cn(
-          'w-fit appearance-none rounded-[8px] border py-2.5 pl-9 pr-6 text-sm font-semibold focus:outline-none focus:ring-0 cursor-pointer transition-all duration-300',
+          'w-fit appearance-none rounded-[8px] border py-2.5 pl-9 pr-10 text-sm font-semibold focus:outline-none focus:ring-0 cursor-pointer transition-all duration-300',
           hasCampusSelected
             ? 'border-ocean bg-ocean/5 text-ocean hover:border-ocean'
             : 'border-[#DEE0E3] bg-white text-neutral-default hover:border-neutral-default',
@@ -188,12 +217,14 @@ export function VolunteerAlgolia({
   apiKey,
   indexName,
   onVolunteerUiReady,
+  resultsLayout = 'carousel',
 }: {
   appId: string;
   apiKey: string;
   indexName: string;
   /** Called once when credentials are missing, or when the first Algolia search reaches `idle`. */
   onVolunteerUiReady?: () => void;
+  resultsLayout?: 'carousel' | 'list';
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -307,7 +338,11 @@ export function VolunteerAlgolia({
         </div>
       </div>
 
-      <VolunteerHitsCarousel />
+      {resultsLayout === 'list' ? (
+        <VolunteerHitsList />
+      ) : (
+        <VolunteerHitsCarousel />
+      )}
     </InstantSearch>
   );
 }

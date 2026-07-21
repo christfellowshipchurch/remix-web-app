@@ -28,10 +28,15 @@ import {
   eventFinderDatesMatch,
   formatEventFinderDateLabel,
   formatEventFinderDatesDisplay,
+  joinEventFinderDateLabels,
   normalizeEventFinderDates,
   parseSerializedEventFinderDates,
   serializeEventFinderDates,
 } from '../event-finder-dates';
+import DreamTeamKickoffForm, {
+  DreamTeamKickoffSuccessDetails,
+} from '~/routes/dream-team-kickoff/dream-team-kickoff-form.component';
+import DreamTeamKickoffConfirmation from '~/routes/dream-team-kickoff/confirmation.component';
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -740,9 +745,9 @@ const DateStep = ({
     <div className='flex flex-wrap justify-center gap-4'>
       {uniqueDates.map((dateInfo) => {
         const dateKey = serializeEventFinderDates(dateInfo.dates);
-        const title = dateInfo.dates
-          .map(formatEventFinderDateLabel)
-          .join(' & ');
+        const title = joinEventFinderDateLabels(
+          dateInfo.dates.map(formatEventFinderDateLabel),
+        );
 
         return (
           <ClickableCard
@@ -869,8 +874,9 @@ function normalizeGroupType(groupType: string): string {
 }
 
 function getRegistrationFormMode(groupType: string): 'native' | 'embed' {
-  const normalized = normalizeGroupType(groupType);
-  return normalized === 'Journey' || normalized === 'Baptism'
+  return ['Journey', 'Baptism', 'Dream Team Kickoff'].includes(
+    normalizeGroupType(groupType),
+  )
     ? 'native'
     : 'embed';
 }
@@ -900,6 +906,8 @@ export const FormStep = ({
     useState<JourneyFinderSignUpSuccessDetails | null>(null);
   const [baptismSuccessDetails, setBaptismSuccessDetails] =
     useState<BaptismSignUpSuccessDetails | null>(null);
+  const [dreamTeamSuccessDetails, setDreamTeamSuccessDetails] =
+    useState<DreamTeamKickoffSuccessDetails | null>(null);
   const registrationFormMode = getRegistrationFormMode(groupType);
   const normalizedGroupType = normalizeGroupType(groupType);
   const isSpanish = isSpanishCampusLabel(selectedCampus);
@@ -976,6 +984,52 @@ export const FormStep = ({
             showHeader={false}
             onSuccess={(details) => {
               setBaptismSuccessDetails(details ?? null);
+              setIsNativeSuccess(true);
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (normalizedGroupType === 'Dream Team Kickoff') {
+      if (isNativeSuccess) {
+        return (
+          <div className='w-full max-w-[600px] mx-auto'>
+            <DreamTeamKickoffConfirmation
+              buttonText='Register someone else'
+              calendarTitle='Dream Team Kickoff at Christ Fellowship Church'
+              details={{
+                title: 'Dream Team Kickoff Details',
+                campus: selectedCampus,
+                date: formatEventFinderDatesDisplay(
+                  parseSerializedEventFinderDates(selectedDate),
+                  selectedDay,
+                ),
+                time: `${selectedTime} ET`,
+                name:
+                  dreamTeamSuccessDetails?.firstName ||
+                  dreamTeamSuccessDetails?.lastName
+                    ? `${dreamTeamSuccessDetails?.firstName ?? ''} ${
+                        dreamTeamSuccessDetails?.lastName ?? ''
+                      }`.trim()
+                    : 'Dream Team Registrant',
+              }}
+              onContinue={() => {
+                setDreamTeamSuccessDetails(null);
+                setIsNativeSuccess(false);
+                onResetRegistration();
+              }}
+            />
+          </div>
+        );
+      }
+
+      return (
+        <div className='w-full max-w-[600px] mx-auto'>
+          <DreamTeamKickoffForm
+            groupGuid={groupGuid}
+            onSuccess={(details) => {
+              setDreamTeamSuccessDetails(details ?? null);
               setIsNativeSuccess(true);
             }}
           />

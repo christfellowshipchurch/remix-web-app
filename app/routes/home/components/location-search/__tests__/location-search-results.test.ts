@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { sortCampusHitsForDistanceSearch } from '../location-search-results';
+import {
+  filterCampusHitsByQuery,
+  sortCampusHitsForDistanceSearch,
+} from '../location-search-results';
 import type { CampusSearchHit } from '../location-search-results';
 
 function createCampusHit(
   campusUrl: string,
   geoDistance?: number,
+  overrides: Partial<CampusSearchHit> = {},
 ): CampusSearchHit {
   return {
     campusUrl,
@@ -28,6 +32,7 @@ function createCampusHit(
         : {
             geoDistance,
           },
+    ...overrides,
   };
 }
 
@@ -81,5 +86,43 @@ describe('sortCampusHitsForDistanceSearch', () => {
       'physical',
       'cf-everywhere',
     ]);
+  });
+});
+
+describe('filterCampusHitsByQuery', () => {
+  const hits = [
+    createCampusHit('jupiter', undefined, {
+      campusName: 'Jupiter',
+      campusLocation: {
+        street1: '1200 W Indiantown Rd',
+        street2: '',
+        city: 'Jupiter',
+        state: 'FL',
+        zip: '33458',
+      },
+    }),
+    createCampusHit('boca-raton', undefined, {
+      campusName: 'Boca Raton',
+      campusLocation: {
+        street1: '9087 Glades Rd',
+        street2: '',
+        city: 'Boca Raton',
+        state: 'FL',
+        zip: '33434',
+      },
+    }),
+  ];
+
+  it('returns all hits when the query is empty so distance/browse UIs stay intact', () => {
+    expect(filterCampusHitsByQuery(hits, '')).toEqual(hits);
+  });
+
+  it('matches campus name, url, and city because Algolia keyword search cannot', () => {
+    expect(
+      filterCampusHitsByQuery(hits, 'jupiter').map((hit) => hit.campusUrl),
+    ).toEqual(['jupiter']);
+    expect(
+      filterCampusHitsByQuery(hits, 'boca').map((hit) => hit.campusUrl),
+    ).toEqual(['boca-raton']);
   });
 });
