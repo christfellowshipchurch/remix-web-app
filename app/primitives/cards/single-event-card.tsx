@@ -12,7 +12,8 @@ export const SingleEventCard = ({
   resource: CollectionItem;
   className?: string;
 }) => {
-  const { summary, startDate, location, image, name, pathname } = resource;
+  const { summary, cardSubtitle, startDate, location, image, name, pathname } =
+    resource;
 
   return (
     <Link
@@ -56,8 +57,9 @@ export const SingleEventCard = ({
           </h3>
 
           <HtmlRenderer
-            html={summary || ''}
+            html={cardSubtitle || summary || ''}
             className='line-clamp-3 md:text-lg'
+            stripFormattingTags={!cardSubtitle}
           />
         </div>
       </div>
