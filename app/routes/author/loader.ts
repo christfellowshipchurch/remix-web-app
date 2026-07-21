@@ -62,7 +62,8 @@ export const getAuthorDetailsByPathname = async (pathname: string) => {
     }
 
     // Get articles by the author
-    const authorArticles = await fetchAuthorArticles(personAliasGuid);
+    const authorArticles: ArticleData[] =
+      await fetchAuthorArticles(personAliasGuid);
 
     // Get the author's social links with null checks
     const socialLinks = [
@@ -200,7 +201,8 @@ export const getAuthorDetails = async (personId: string) => {
     }
 
     // Get articles by the author
-    const authorArticles = await fetchAuthorArticles(personAliasGuid);
+    const authorArticles: ArticleData[] =
+      await fetchAuthorArticles(personAliasGuid);
 
     // Get the author's social links with null checks
     const socialLinks = [
