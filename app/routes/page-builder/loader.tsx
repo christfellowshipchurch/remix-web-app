@@ -356,6 +356,15 @@ export const mapPageBuilderChildItems = async (
                 (summaryFallbackToContent ? item.content : '') ||
                 '';
 
+              // Events have a dedicated "Card Subtitle" attribute (plain text,
+              // no HTML) that takes priority over `summary` as the collection
+              // card description.
+              const cardSubtitle =
+                contentType === 'EVENTS'
+                  ? getStringValue(itemAttributeValues?.cardSubtitle || '') ||
+                    undefined
+                  : undefined;
+
               // Generate the pathname for the item
               let pathname: string;
               switch (contentType) {
@@ -406,6 +415,7 @@ export const mapPageBuilderChildItems = async (
                   contentType: contentType,
                   name: item.title,
                   summary,
+                  cardSubtitle,
                   image:
                     createImageUrlFromGuid(
                       getStringValue(itemAttributeValues?.image || ''),
