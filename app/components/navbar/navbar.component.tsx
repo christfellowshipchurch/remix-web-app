@@ -106,14 +106,7 @@ export function Navbar() {
         return;
       }
 
-      // Clamp to the real scroll range — iOS rubber-band overscroll reports
-      // out-of-range values whose deltas flip visibility at the page edges.
-      const maxScrollY =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const currentScrollY = Math.min(
-        Math.max(window.scrollY, 0),
-        Math.max(maxScrollY, 0),
-      );
+      const currentScrollY = window.scrollY;
       const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollYRef.current;
 
@@ -239,17 +232,9 @@ export function Navbar() {
       {!isNavbarHidden && (
         <nav
           className={cn(
-            'group w-full top-0 z-400 transition-transform duration-300',
-            // Position must not change with scroll state: moving the nav in and
-            // out of document flow changes the page height, which snaps the
-            // scroll position on mobile (CFDP-4123). Overlay (dark-hero) routes
-            // never take flow space; other routes always keep it via sticky.
-            defaultMode === 'dark'
-              ? mode === 'dark' && isVisible
-                ? 'absolute'
-                : 'fixed'
-              : 'sticky',
-            !isVisible && '-translate-y-full',
+            'group w-full sticky top-0 z-400 transition-transform duration-300',
+            !isVisible && '-translate-y-full absolute',
+            mode === 'dark' && isVisible && 'absolute',
           )}
           ref={navbarRef}
         >

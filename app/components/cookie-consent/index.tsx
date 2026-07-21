@@ -1,17 +1,34 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Button } from '~/primitives/button/button.primitive';
 
 interface CookieConsentProps {
-  isVisible: boolean;
   onAccept: () => void;
   onDecline: () => void;
 }
 
-export function CookieConsent({
-  isVisible,
-  onAccept,
-  onDecline,
-}: CookieConsentProps) {
+export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Check if user has already made a choice
+    const hasConsent = localStorage.getItem('cookieConsent');
+    if (!hasConsent) {
+      setIsVisible(true);
+    }
+  }, []);
+
+  const handleAccept = () => {
+    localStorage.setItem('cookieConsent', 'accepted');
+    setIsVisible(false);
+    onAccept();
+  };
+
+  const handleDecline = () => {
+    localStorage.setItem('cookieConsent', 'declined');
+    setIsVisible(false);
+    onDecline();
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -30,24 +47,16 @@ export function CookieConsent({
               Cookie Settings
             </h2>
             <p className='mt-1 text-sm text-gray-600'>
-              We use optional analytics cookies to understand how our website is
-              used and improve your experience. You can allow or reject
-              analytics cookies. Necessary site features will continue to work
-              either way.{' '}
-              <Link
-                to='/privacy-policy'
-                className='underline text-ocean hover:text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean'
-              >
-                Learn more in our Privacy Policy.
-              </Link>
+              We use cookies to enhance your browsing experience and analyze our
+              traffic. You can choose to accept or decline these cookies.
             </p>
           </div>
           <div className='flex gap-3'>
-            <Button onClick={onDecline} intent='secondary' size='sm'>
-              Reject analytics
+            <Button onClick={handleDecline} intent='secondary' size='sm'>
+              Decline
             </Button>
-            <Button onClick={onAccept} intent='secondary' size='sm'>
-              Allow analytics
+            <Button onClick={handleAccept} intent='primary' size='sm'>
+              Accept
             </Button>
           </div>
         </div>

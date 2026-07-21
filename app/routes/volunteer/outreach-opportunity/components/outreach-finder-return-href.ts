@@ -3,10 +3,8 @@
  */
 export type VolunteerFinderBackPayload = {
   missionGroupGuid: string;
-  /** `location.search` on the originating finder (`""` or `?category=…`). */
+  /** `location.search` on `/volunteer` (`""` or `?category=…`). */
   volunteerListSearch: string;
-  /** Omitted by existing volunteer cards; they continue to use the volunteer finder. */
-  origin?: 'missions-private-events';
 };
 
 export const VOLUNTEER_FINDER_BACK_STORAGE_KEY =
@@ -23,13 +21,9 @@ function parseFinderBackPayload(
     return null;
   }
   if (typeof o.volunteerListSearch !== 'string') return null;
-  if (o.origin !== undefined && o.origin !== 'missions-private-events') {
-    return null;
-  }
   return {
     missionGroupGuid: o.missionGroupGuid,
     volunteerListSearch: o.volunteerListSearch,
-    origin: o.origin,
   };
 }
 

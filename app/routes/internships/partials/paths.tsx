@@ -37,7 +37,7 @@ const Paths = () => {
             title='College Internships'
             description='A year-round opportunity designed to equip and develop students for future ministry leadership. Grow personally, professionally, and spiritually while learning from experienced leaders.'
             imageSrc={getImageUrl('3149959')}
-            duration='Year Round Program'
+            duration='12-Week Program'
             pills={['August – August', 'Part-Time · 25 hrs/wk', 'Hourly Wage']}
             ctaLink='/year-round-internships'
           />

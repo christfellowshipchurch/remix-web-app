@@ -36,7 +36,6 @@ export const footerColumns: FooterColumn[] = [
       { title: 'Career Opportunities', url: '/career-opportunities' },
       { title: 'Privacy Policy', url: '/privacy-policy' },
       { title: 'Terms of Use', url: '/terms-of-use' },
-      { title: 'Cookie Settings', url: '#cookie-settings' },
     ],
   },
   {
