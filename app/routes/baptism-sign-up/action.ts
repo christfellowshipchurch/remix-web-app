@@ -1,6 +1,10 @@
 import { ActionFunction, data } from 'react-router-dom';
 import { BaptismSignUpFormType } from './types';
-import { fetchRockData, postRockData, TTL } from '~/lib/.server/fetch-rock-data';
+import {
+  fetchRockData,
+  postRockData,
+  TTL,
+} from '~/lib/.server/fetch-rock-data';
 
 type RockLocation = {
   guid: string;
@@ -15,7 +19,9 @@ type RockLocation = {
 type AddressInput = Omit<RockLocation, 'guid'>;
 
 const normalizeAddressPart = (value: unknown) =>
-  String(value ?? '').trim().replace(/\s+/g, ' ');
+  String(value ?? '')
+    .trim()
+    .replace(/\s+/g, ' ');
 
 const escapeODataValue = (value: string) => value.replace(/'/g, "''");
 
@@ -27,9 +33,11 @@ const hasMatchingAddress = (location: RockLocation, address: AddressInput) =>
     ['state', address.state],
     ['postalCode', address.postalCode],
     ['country', address.country ?? ''],
-  ].every(([key, value]) =>
-    normalizeAddressPart(location[key as keyof RockLocation]).toLowerCase() ===
-    value.toLowerCase(),
+  ].every(
+    ([key, value]) =>
+      normalizeAddressPart(
+        location[key as keyof RockLocation],
+      ).toLowerCase() === value.toLowerCase(),
   );
 
 const findMatchingRockLocation = async (address: AddressInput) => {

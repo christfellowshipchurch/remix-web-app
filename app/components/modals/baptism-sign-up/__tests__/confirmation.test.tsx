@@ -55,10 +55,9 @@ describe('BaptismSignUpConfirmation', () => {
     expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Calendar' }));
-    expect(screen.getByRole('link', { name: 'Google Calendar' })).toHaveAttribute(
-      'href',
-      'https://calendar.google.com/baptism',
-    );
+    expect(
+      screen.getByRole('link', { name: 'Google Calendar' }),
+    ).toHaveAttribute('href', 'https://calendar.google.com/baptism');
     expect(
       screen.getByRole('button', { name: 'Apple Calendar (.ics)' }),
     ).toBeInTheDocument();
@@ -83,7 +82,9 @@ describe('BaptismSignUpConfirmation', () => {
     const onSuccess = vi.fn();
     renderConfirmation({ onSuccess });
 
-    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Continue' }),
+    ).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Add to Calendar' }),
     ).not.toBeInTheDocument();
