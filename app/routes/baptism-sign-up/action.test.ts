@@ -1,10 +1,12 @@
 import type { ActionFunctionArgs } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { postRockData } from '~/lib/.server/fetch-rock-data';
+import { fetchRockData, postRockData } from '~/lib/.server/fetch-rock-data';
 import { action } from './action';
 
 vi.mock('~/lib/.server/fetch-rock-data', () => ({
+  fetchRockData: vi.fn(),
   postRockData: vi.fn(),
+  TTL: { NONE: 0 },
 }));
 
 const createFormData = () => {
@@ -51,6 +53,15 @@ describe('baptism sign up action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(postRockData).mockResolvedValue(undefined);
+    vi.mocked(fetchRockData).mockResolvedValue({
+      guid: 'location-guid-123',
+      street1: '123 Main St',
+      street2: 'Apt 2',
+      city: 'Palm Beach Gardens',
+      state: 'FL',
+      postalCode: '33418',
+      country: 'US',
+    });
   });
 
   it('posts English submissions to workflow ID 1465 by default', async () => {
@@ -67,9 +78,84 @@ describe('baptism sign up action', () => {
         FirstName: 'Test',
         LastName: 'Person',
         Campus1: 'campus-guid-123',
+        Address: 'location-guid-123',
         'T-ShirtSize': 'Adult Medium',
       }),
     });
+  });
+
+  it('creates a location before launching the workflow when none matches', async () => {
+    vi.mocked(fetchRockData).mockResolvedValue([]);
+    vi.mocked(postRockData)
+      .mockResolvedValueOnce({ guid: 'new-location-guid-123' })
+      .mockResolvedValueOnce(undefined);
+
+    await action({
+      request: createRequest({ group: 'group-guid-123' }),
+    } as ActionFunctionArgs);
+
+    expect(postRockData).toHaveBeenNthCalledWith(1, {
+      endpoint: 'locations',
+      body: {
+        Street1: '123 Main St',
+        Street2: 'Apt 2',
+        City: 'Palm Beach Gardens',
+        State: 'FL',
+        PostalCode: '33418',
+        Country: 'US',
+      },
+    });
+    expect(postRockData).toHaveBeenNthCalledWith(2, {
+      endpoint:
+        'Workflows/LaunchWorkflow/0?workflowTypeId=1465&workflowName=Baptism%20Finder%20Sign%20Up',
+      body: expect.objectContaining({ Address: 'new-location-guid-123' }),
+    });
+  });
+
+  it('looks up a newly created location when Rock returns an empty response', async () => {
+    vi.mocked(fetchRockData)
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce({
+        guid: 'new-location-guid-123',
+        street1: '123 Main St',
+        street2: 'Apt 2',
+        city: 'Palm Beach Gardens',
+        state: 'FL',
+        postalCode: '33418',
+        country: 'US',
+      });
+    vi.mocked(postRockData)
+      .mockResolvedValueOnce({})
+      .mockResolvedValueOnce(undefined);
+
+    await action({
+      request: createRequest({ group: 'group-guid-123' }),
+    } as ActionFunctionArgs);
+
+    expect(fetchRockData).toHaveBeenCalledTimes(2);
+    expect(postRockData).toHaveBeenNthCalledWith(2, {
+      endpoint:
+        'Workflows/LaunchWorkflow/0?workflowTypeId=1465&workflowName=Baptism%20Finder%20Sign%20Up',
+      body: expect.objectContaining({ Address: 'new-location-guid-123' }),
+    });
+  });
+
+  it('does not launch the workflow when location creation fails', async () => {
+    vi.mocked(fetchRockData).mockResolvedValue([]);
+    vi.mocked(postRockData).mockRejectedValueOnce(
+      new Error('Rock Locations API unavailable'),
+    );
+
+    const response = (await action({
+      request: createRequest({ group: 'group-guid-123' }),
+    } as ActionFunctionArgs)) as {
+      data: { error: string };
+      init: { status: number };
+    };
+
+    expect(response.init.status).toBe(400);
+    expect(response.data).toEqual({ error: 'Rock Locations API unavailable' });
+    expect(postRockData).toHaveBeenCalledTimes(1);
   });
 
   it('posts Spanish submissions to workflow ID 1644', async () => {

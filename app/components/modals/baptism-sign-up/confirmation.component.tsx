@@ -25,6 +25,7 @@ const BaptismSignUpConfirmation: React.FC<BaptismSignUpConfirmationProps> = ({
       onContinue={onContinue}
       buttonText={buttonText}
       calendarTitle='Baptism at Christ Fellowship Church'
+      calendarDescription='We are so excited for you to take your next step in your faith!'
       details={details}
     />
   );
