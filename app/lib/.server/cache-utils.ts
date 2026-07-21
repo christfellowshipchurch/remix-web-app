@@ -16,12 +16,42 @@ export const TTL = {
 export type TTLValue = (typeof TTL)[keyof typeof TTL] | number;
 
 /**
+ * Matches the volatile date-range clause that `buildMergedFilter` injects into
+ * Rock `$filter` values (`StartDateTime le datetime'<iso>' and ...`).
+ *
+ * Those timestamps change on every request, so hashing them verbatim produces a
+ * unique cache key each time (effectively disabling cache and orphaning keys).
+ */
+const VOLATILE_DATE_RANGE_FILTER_PATTERN =
+  /StartDateTime le datetime'[^']+' and \(ExpireDateTime eq null or ExpireDateTime ge datetime'[^']+'\)/g;
+
+/** Stable placeholder substituted before hashing so date-range queries share a key. */
+const STABLE_DATE_RANGE_FILTER =
+  "StartDateTime le datetime'{now}' and (ExpireDateTime eq null or ExpireDateTime ge datetime'{now}')";
+
+/**
+ * Replaces live date-range timestamps in a `$filter` with a stable placeholder.
+ * The live filter is still sent to Rock; only the cache-key hash input is stabilized.
+ */
+export function stabilizeFilterForCacheKey(
+  filter: string | undefined,
+): string | undefined {
+  if (filter === undefined) return undefined;
+  return filter.replace(
+    VOLATILE_DATE_RANGE_FILTER_PATTERN,
+    STABLE_DATE_RANGE_FILTER,
+  );
+}
+
+/**
  * Builds a deterministic, namespaced Redis cache key.
  *
  * Format: `rock:{endpoint}:{hash12}`
  * - Endpoint is normalized (no leading/trailing slashes)
  * - Query params are sorted alphabetically and hashed (SHA-256, first 12 hex chars)
  * - Identical params in any order produce the same key
+ * - Volatile `filterByDateRange` timestamps in `$filter` are normalized so
+ *   repeat requests for the same logical query reuse one key (CFDP-4087)
  */
 export function buildCacheKey(
   endpoint: string,
@@ -30,7 +60,11 @@ export function buildCacheKey(
   const normalizedEndpoint = endpoint.replace(/^\/+|\/+$/g, '');
 
   const sortedEntries = Object.entries(queryParams)
-    .filter(([, v]) => v !== undefined)
+    .filter((entry): entry is [string, string] => entry[1] !== undefined)
+    .map(([key, value]): [string, string] => [
+      key,
+      key === '$filter' ? (stabilizeFilterForCacheKey(value) ?? value) : value,
+    ])
     .sort(([a], [b]) => a.localeCompare(b));
 
   const paramString = JSON.stringify(sortedEntries);
