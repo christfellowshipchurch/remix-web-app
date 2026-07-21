@@ -11,8 +11,7 @@ const setClarityConsentMock = vi.fn();
 
 vi.mock('~/lib/load-clarity', () => ({
   loadClarity: (...args: unknown[]) => loadClarityMock(...args),
-  setClarityConsent: (...args: unknown[]) =>
-    setClarityConsentMock(...args),
+  setClarityConsent: (...args: unknown[]) => setClarityConsentMock(...args),
 }));
 
 vi.mock('~/components/deferred-gtm', () => ({
