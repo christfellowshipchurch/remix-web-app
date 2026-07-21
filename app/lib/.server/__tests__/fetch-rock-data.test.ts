@@ -387,6 +387,41 @@ describe('fetchRockData TTL behavior', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
+  it('indexes content items by id on cache write (reverse index)', async () => {
+    // A content item carries both id and contentChannelId, so its cache entry
+    // must be recorded under cfitem:{id} so it can later be invalidated per-item.
+    const exec = vi.fn().mockResolvedValue([]);
+    const pipeline = { set: vi.fn(), sadd: vi.fn(), expire: vi.fn(), exec };
+    const contentRedis = {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn(),
+      pipeline: vi.fn().mockReturnValue(pipeline),
+    };
+    vi.doMock('../redis-config', () => ({ default: contentRedis }));
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ id: 7, contentChannelId: 43 }],
+    });
+
+    await fetchWithRedis({ endpoint: 'ContentChannelItems' });
+
+    expect(pipeline.set).toHaveBeenCalledWith(
+      expect.stringMatching(/^rock:ContentChannelItems:/),
+      expect.any(String),
+      'EX',
+      TTL.DEFAULT,
+    );
+    expect(pipeline.sadd).toHaveBeenCalledWith(
+      'cfitem:7',
+      expect.stringMatching(/^rock:ContentChannelItems:/),
+    );
+    expect(pipeline.expire).toHaveBeenCalledWith('cfitem:7', TTL.LONG);
+    expect(contentRedis.set).not.toHaveBeenCalled();
+  });
+
   it('uses buildCacheKey format for cache key', async () => {
     const { fetchRockData: fetchWithRedis } =
       await import('../fetch-rock-data');
