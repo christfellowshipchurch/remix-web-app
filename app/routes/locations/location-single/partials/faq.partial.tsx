@@ -40,7 +40,7 @@ export const LocationFAQ = ({
                 ? `Alguien de nuestro equipo estará encatado de responder a tus preguntas`
                 : `Someone from our team is happy to answer any of your questions!`}
             </p>
-            <ConnectCardModal isEspanol={isEspanol}>
+            <ConnectCardModal>
               <Button
                 className='w-full max-w-[200px] rounded-sm'
                 intent='secondary'

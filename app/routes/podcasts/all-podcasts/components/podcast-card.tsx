@@ -89,7 +89,7 @@ export function PodcastHubCard({ podcast, className = '' }: PodcastCardProps) {
 
   const platformLinks: PlatformLink[] = [
     {
-      label: 'Apple Podcasts',
+      label: 'Apple Music',
       icon: 'appleLogo',
       href: apple,
     },

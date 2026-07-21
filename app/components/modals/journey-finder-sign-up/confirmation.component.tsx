@@ -9,6 +9,7 @@ interface JourneyFinderSignUpConfirmationProps {
   onContinue?: () => void;
   buttonText?: string;
   calendarTitle?: string;
+  calendarDescription?: string;
   details?: {
     title: string;
     campus: string;
@@ -25,6 +26,7 @@ const JourneyFinderSignUpConfirmation: React.FC<
   onContinue,
   buttonText = 'Continue',
   calendarTitle = 'The Journey at Christ Fellowship Church',
+  calendarDescription,
   details,
 }) => {
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ const JourneyFinderSignUpConfirmation: React.FC<
   const events = details
     ? icsLinkEvents({
         title: calendarTitle,
+        description: calendarDescription,
         serviceTimes: [{ day: 'Sunday', time: details.time }],
         address: details.campus,
         campusName: details.title,

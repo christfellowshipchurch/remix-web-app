@@ -63,10 +63,6 @@ export function OutreachOpportunityPage() {
         navigate('/volunteer#community');
         return;
       }
-      if (payload.origin === 'missions-private-events') {
-        navigate(`/missions-private-events${payload.volunteerListSearch}`);
-        return;
-      }
       if (payload.volunteerListSearch.trim().length > 1) {
         navigate(-1);
         return;

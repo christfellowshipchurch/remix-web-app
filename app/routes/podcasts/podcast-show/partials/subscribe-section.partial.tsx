@@ -16,7 +16,7 @@ export const SubscribeSection = ({
 }) => {
   const links = [
     {
-      label: 'Apple Podcasts',
+      label: 'Apple Music',
       icon: 'appleLogo',
       href: apple,
     },

@@ -6,10 +6,8 @@ import { cn } from '~/lib/utils';
  */
 export function VolunteerAlgoliaSkeleton({
   className,
-  resultsLayout = 'carousel',
 }: {
   className?: string;
-  resultsLayout?: 'carousel' | 'list';
 }) {
   return (
     <div className={cn('animate-pulse', className)} aria-hidden>
@@ -25,18 +23,6 @@ export function VolunteerAlgoliaSkeleton({
         </div>
       </div>
 
-      {resultsLayout === 'list' ? (
-        <VolunteerListSkeleton />
-      ) : (
-        <VolunteerCarouselSkeleton />
-      )}
-    </div>
-  );
-}
-
-function VolunteerCarouselSkeleton() {
-  return (
-    <>
       <div className='pl-5 md:pl-12 lg:pl-18 2xl:pl-0!'>
         <div className='mt-8 flex py-2 items-stretch gap-6 overflow-hidden max-w-[1280px] mx-auto'>
           {[0, 1, 2].map((i) => (
@@ -65,6 +51,7 @@ function VolunteerCarouselSkeleton() {
           ))}
         </div>
       </div>
+
       <div className='pl-5 md:pl-12 lg:pl-18 2xl:pl-0!'>
         <div className='max-w-[1280px] mx-auto relative mt-8 min-h-[4.5rem] pb-14 sm:pb-16 md:pb-8'>
           <div className='absolute left-4 top-1 flex gap-2 md:left-0 md:top-7'>
@@ -76,32 +63,6 @@ function VolunteerCarouselSkeleton() {
             ))}
           </div>
         </div>
-      </div>
-    </>
-  );
-}
-
-function VolunteerListSkeleton() {
-  return (
-    <div className='content-padding py-6'>
-      <div className='mx-auto flex max-w-[1280px] flex-col gap-4'>
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className='flex min-h-36 overflow-hidden rounded-lg border border-neutral-lighter bg-white shadow-sm'
-          >
-            <div className='w-32 shrink-0 bg-neutral-light sm:w-48' />
-            <div className='flex flex-1 flex-col gap-3 p-4 md:p-6'>
-              <div className='h-6 w-2/5 rounded bg-neutral-light' />
-              <div className='flex gap-2'>
-                <div className='h-7 w-24 rounded-full bg-neutral-light' />
-                <div className='h-7 w-28 rounded bg-neutral-light' />
-              </div>
-              <div className='h-4 w-4/5 rounded bg-neutral-light' />
-              <div className='h-4 w-3/5 rounded bg-neutral-light' />
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );
