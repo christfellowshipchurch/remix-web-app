@@ -9,6 +9,7 @@ export type Author = {
   profilePhoto: string;
   authorAttributes: {
     bio: string;
+    authorId?: string;
     jobTitle: string;
     socialLinks: SocialMedia[];
     publications: {
