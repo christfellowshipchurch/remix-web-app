@@ -18,6 +18,7 @@ export const ResourceCard = ({
 }) => {
   const {
     summary,
+    cardSubtitle,
     startDate,
     location,
     author,
@@ -28,6 +29,7 @@ export const ResourceCard = ({
     disableCard,
   } = resource;
 
+  const isEvent = contentType === 'EVENTS';
   const isDisabledRedirectCard = contentType === 'REDIRECT_CARD' && disableCard;
 
   const innerContent = (
@@ -69,8 +71,9 @@ export const ResourceCard = ({
           </h4>
 
           <HtmlRenderer
-            html={summary || ''}
+            html={(isEvent && cardSubtitle) || summary || ''}
             className={cn('line-clamp-3', summaryClassName)}
+            stripFormattingTags={isEvent}
           />
         </div>
       </div>

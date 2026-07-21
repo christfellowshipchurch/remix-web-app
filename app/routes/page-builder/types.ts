@@ -83,6 +83,8 @@ export type CollectionItem = {
   startDate?: string; // for Events, Sermons, Devotionals, Podcasts
   author?: string; // for Sermons, Articles, Devotionals, Podcasts
   location?: string; // for Events
+  /** Events only. Plain text (no HTML) "Card Subtitle" attribute from Rock; takes priority over `summary` as the card description. */
+  cardSubtitle?: string;
   /** Redirect Card only (Rock `disableCard`). When true, carousel renders static content without link/card chrome. */
   disableCard?: boolean;
 };

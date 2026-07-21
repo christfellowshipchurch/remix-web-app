@@ -1,7 +1,10 @@
 import { useLoaderData } from 'react-router-dom';
 import kebabCase from 'lodash/kebabCase';
 import { PageBuilderLoader, PageBuilderSection } from './types';
-import { CardCarouselSection } from '~/components/resource-carousel';
+import {
+  CardCarouselSection,
+  SingleEventCollectionSection,
+} from '~/components/resource-carousel';
 import { CTACollectionSection } from './components/cta-collection';
 import { ContentBlock } from './components/content-block';
 import { ContentBlockData } from './types';
@@ -19,8 +22,42 @@ export function renderSection(
   const anchorId = kebabCase(sectionName?.toLowerCase() || '');
 
   switch (section.type) {
+    case 'EVENT_COLLECTION': {
+      const events = section.collection || [];
+
+      if (events.length === 1) {
+        return (
+          <div key={section.id} id={anchorId} className='scroll-mt-18'>
+            <SingleEventCollectionSection
+              title={section.titleOverride || section.name}
+              description={section.content}
+              resource={events[0]}
+              viewMoreLink={section.viewMoreLink || undefined}
+              className={
+                options?.collectionBackground === 'gray'
+                  ? 'bg-gray'
+                  : 'bg-white'
+              }
+            />
+          </div>
+        );
+      }
+
+      return (
+        <div key={section.id} id={anchorId} className='scroll-mt-18'>
+          <CardCarouselSection
+            title={section.titleOverride || section.name}
+            description={section.content}
+            resources={events}
+            viewMoreLink={section.viewMoreLink || undefined}
+            className={
+              options?.collectionBackground === 'gray' ? 'bg-gray' : 'bg-white'
+            }
+          />
+        </div>
+      );
+    }
     case 'RESOURCE_COLLECTION':
-    case 'EVENT_COLLECTION':
       return (
         <div key={section.id} id={anchorId} className='scroll-mt-18'>
           <CardCarouselSection
