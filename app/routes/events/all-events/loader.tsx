@@ -79,15 +79,6 @@ function buildMainEventsSearchParams(urlState: EventsFinderUrlState): {
   return params;
 }
 
-function sortEventHitsByStartDateDesc(
-  hits: ContentItemHit[],
-): ContentItemHit[] {
-  return [...hits].sort(
-    (a, b) =>
-      new Date(b.startDateTime).getTime() - new Date(a.startDateTime).getTime(),
-  );
-}
-
 /** Single featured "Journey" card (title match) moved to the front when present. */
 function moveFeaturedJourneyCardFirst(
   hits: ContentItemHit[],
@@ -142,9 +133,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       );
 
       const rawMain = mainRes.hits ?? [];
-      mainEventHits = sortEventHitsByStartDateDesc(
-        rawMain.map((h) => h as unknown as ContentItemHit),
-      );
+      mainEventHits = rawMain.map((h) => h as unknown as ContentItemHit);
       eventsNbPages = mainRes.nbPages ?? 0;
     } catch (error) {
       console.error('[events/all-events] Algolia loader fetch failed', error);

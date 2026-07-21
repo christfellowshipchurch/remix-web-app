@@ -101,8 +101,10 @@ export function Navbar() {
     }
 
     const handleScroll = () => {
-      // Don't close search or change navbar visibility when search is open
-      if (isSearchOpen) {
+      // Don't hide/translate the navbar while search or a mega-menu is open.
+      // `-translate-y-full` uses the CSS `translate` property, which makes
+      // fixed/absolute dropdowns position relative to the nav and detaches them.
+      if (isSearchOpen || openDropdown) {
         return;
       }
 
@@ -135,7 +137,7 @@ export function Navbar() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [defaultMode, isNavbarHidden, isSearchOpen]);
+  }, [defaultMode, isNavbarHidden, isSearchOpen, openDropdown]);
 
   // Initial mode setup
   useEffect(() => {
@@ -227,14 +229,28 @@ export function Navbar() {
     }
   };
 
+  const activeDropdown = menuLinks.find(
+    (menuLink) => menuLink.title === openDropdown,
+  );
+
   return (
     <>
       {!isNavbarHidden && (
         <nav
           className={cn(
-            'group w-full sticky top-0 z-400 transition-transform duration-300',
-            !isVisible && '-translate-y-full absolute',
-            mode === 'dark' && isVisible && 'absolute',
+            'group w-full top-0 z-400 transition-transform duration-300',
+            // Position must not change with scroll state: moving the nav in and
+            // out of document flow changes the page height, which snaps the
+            // scroll position on mobile (CFDP-4123). Overlay (dark-hero) routes
+            // never take flow space; other routes always keep it via sticky.
+            // While a mega-menu is open, force fixed so the menu stays pinned
+            // instead of scrolling away with an absolute overlay nav.
+            defaultMode === 'dark'
+              ? mode === 'dark' && isVisible && !openDropdown
+                ? 'absolute'
+                : 'fixed'
+              : 'sticky',
+            !isVisible && !openDropdown && '-translate-y-full',
           )}
           ref={navbarRef}
         >
@@ -317,51 +333,32 @@ export function Navbar() {
 
                     {menuLinks.map((menuLink) =>
                       menuLink.content ? (
-                        <div key={menuLink.title} className='relative'>
-                          <button
-                            onClick={() => handleDropdownToggle(menuLink.title)}
-                            className={cn(
-                              'transition-colors xl:text-lg cursor-pointer',
-                              openDropdown === menuLink.title &&
-                                'border-b-3 border-ocean',
-                              mode === 'light'
+                        <button
+                          key={menuLink.title}
+                          onClick={() => handleDropdownToggle(menuLink.title)}
+                          className={cn(
+                            'transition-colors xl:text-lg cursor-pointer',
+                            openDropdown === menuLink.title &&
+                              'border-b-3 border-ocean',
+                            mode === 'light'
+                              ? 'text-neutral-dark'
+                              : openDropdown
                                 ? 'text-neutral-dark'
-                                : openDropdown
-                                  ? 'text-neutral-dark'
-                                  : 'text-white group-hover:text-text',
-                            )}
-                          >
-                            <span className='hover:text-ocean flex items-center gap-1'>
-                              {menuLink.title}
-                              <Icon
-                                name='chevronDown'
-                                className={cn(
-                                  'relative top-px size-4 lg:size-6 transition duration-200',
-                                  openDropdown === menuLink.title &&
-                                    'rotate-180',
-                                )}
-                                aria-hidden='true'
-                              />
-                            </span>
-                          </button>
-
-                          {openDropdown === menuLink.title && (
-                            <div
-                              className={cn(
-                                'fixed left-0 w-full bg-white shadow-sm border-t border-gray-100 z-50',
-                                'animate-in slide-in-from-top-2 duration-200',
-                                showSiteBanner ? 'top-[152px]' : 'top-[104px]',
-                              )}
-                            >
-                              <MenuContent
-                                menuType={lowerCase(menuLink.title)}
-                                isLoading={false}
-                                mainContent={menuLink.content.mainContent}
-                                featureCards={menuLink.content.featureCards}
-                              />
-                            </div>
+                                : 'text-white group-hover:text-text',
                           )}
-                        </div>
+                        >
+                          <span className='hover:text-ocean flex items-center gap-1'>
+                            {menuLink.title}
+                            <Icon
+                              name='chevronDown'
+                              className={cn(
+                                'relative top-px size-4 lg:size-6 transition duration-200',
+                                openDropdown === menuLink.title && 'rotate-180',
+                              )}
+                              aria-hidden='true'
+                            />
+                          </span>
+                        </button>
                       ) : null,
                     )}
                   </nav>
@@ -456,6 +453,25 @@ export function Navbar() {
               />
             </div>
           </div>
+
+          {/* Mega-menu panel: absolute under the nav so it stays attached when
+              the nav uses CSS `translate` (scroll hide) and so banner height
+              is included via top-full instead of hardcoded offsets. */}
+          {activeDropdown?.content && (
+            <div
+              className={cn(
+                'absolute left-0 w-full top-full bg-white shadow-sm border-t border-gray-100 z-50',
+                'animate-in slide-in-from-top-2 duration-200',
+              )}
+            >
+              <MenuContent
+                menuType={lowerCase(activeDropdown.title)}
+                isLoading={false}
+                mainContent={activeDropdown.content.mainContent}
+                featureCards={activeDropdown.content.featureCards}
+              />
+            </div>
+          )}
         </nav>
       )}
     </>

@@ -52,6 +52,7 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
     startDateTime,
     eventCardDate,
     eventCardDescription,
+    eventsFeaturedCardSubtitle,
     eventLocations,
     locations,
     summary,
@@ -65,7 +66,8 @@ export const FeaturedEventCard = ({ card }: { card: ContentItemHit }) => {
     : startDateTime
       ? formatFeaturedEventDate(startDateTime)
       : '';
-  const description = eventCardDescription || summary;
+  const description =
+    eventsFeaturedCardSubtitle || eventCardDescription || summary;
   const campus =
     eventLocations && eventLocations.length > 1
       ? 'Multiple Locations'

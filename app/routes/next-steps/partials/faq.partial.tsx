@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     title: 'What resources does Christ Fellowship offer?',
-    content: `Every week, we create a collection of personalized resources including encouraging messages and practical articles, devotionals, and podcasts. We also offer <a className='underline text-ocean' href='/ministries/care'>care ministries</a> throughout the week for every hurt, habit, or hangup. Have something we can be praying with you for? <a className='underline text-ocean' target='_blank' href='${ROCK_PUBLIC_SITE_ORIGIN}/RequestPrayer'>Share your prayer request!</a>`,
+    content: `Every week, we create a collection of personalized resources including encouraging messages and practical articles, devotionals, and podcasts. We also offer <a className='underline text-ocean' href='/ministries/freedom-and-care'>care ministries</a> throughout the week for every hurt, habit, or hangup. Have something we can be praying with you for? <a className='underline text-ocean' target='_blank' href='${ROCK_PUBLIC_SITE_ORIGIN}/RequestPrayer'>Share your prayer request!</a>`,
   },
   {
     title: 'Where is Christ Fellowship located?',

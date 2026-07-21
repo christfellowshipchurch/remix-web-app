@@ -102,7 +102,8 @@ export const parsePartyTime = (partyTimeValue: string) => {
   const parsedTime = parse(partyTimeValue, inputFormat, referenceDate) || null;
   let partyTime = '';
   if (parsedTime && !isNaN(parsedTime.getTime())) {
-    const formattedTime = format(parsedTime, 'ha').toLowerCase();
+    const outputFormat = parsedTime.getMinutes() === 0 ? 'ha' : 'h:mma';
+    const formattedTime = format(parsedTime, outputFormat).toLowerCase();
     partyTime = formattedTime;
   }
 

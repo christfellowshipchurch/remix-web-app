@@ -200,6 +200,15 @@ interface GroupedStudyType {
   source: StudyHitType['source'] | 'Multiple';
 }
 
+/**
+ * Default result ordering: Christ Fellowship resources first, then alphabetical (CFDP-4154).
+ * Matches the CF-detection convention used in studies-hit-component.component.tsx — the raw
+ * Algolia `source` value doesn't reliably match the `StudyHitType['source']` union at runtime.
+ */
+function isChristFellowshipSource(source: string): boolean {
+  return source.toLowerCase().includes('christ fellowship');
+}
+
 function StudyTypeGroupedResults({
   fromStudiesFinderUrl,
 }: {
@@ -209,7 +218,7 @@ function StudyTypeGroupedResults({
   const [currentPage, setCurrentPage] = useState(1);
 
   const groupedStudyTypes: GroupedStudyType[] = useMemo(() => {
-    return items.reduce((acc, hit) => {
+    const groups = items.reduce((acc, hit) => {
       const studyType = hit.studyType;
       const existingGroup = acc.find((group) => group.title === studyType);
 
@@ -235,6 +244,12 @@ function StudyTypeGroupedResults({
 
       return acc;
     }, [] as GroupedStudyType[]);
+
+    return groups.sort((a, b) => {
+      const aIsCf = isChristFellowshipSource(a.source) ? 0 : 1;
+      const bIsCf = isChristFellowshipSource(b.source) ? 0 : 1;
+      return aIsCf !== bIsCf ? aIsCf - bIsCf : a.title.localeCompare(b.title);
+    });
   }, [items]);
 
   const mappedStudyTypes: StudyHitType[] = useMemo(() => {
