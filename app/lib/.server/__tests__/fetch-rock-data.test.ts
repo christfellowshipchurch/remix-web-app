@@ -451,6 +451,63 @@ describe('fetchRockData TTL behavior', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  it('uses one stable cache key for list date-range queries while still sending live Rock filters', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-29T12:00:00.000Z'));
+
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+    const rockItem = {
+      id: 456,
+      title: 'Site banner',
+      startDateTime: '2026-06-01T00:00:00.000Z',
+      expireDateTime: null,
+    };
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [rockItem],
+    });
+
+    const options = {
+      endpoint: 'ContentChannelItems',
+      queryParams: {
+        $filter: 'ContentChannelId eq 100',
+        $top: '1',
+        loadAttributes: 'simple' as const,
+      },
+      filterByDateRange: true,
+    };
+
+    await expect(fetchWithRedis(options)).resolves.toEqual(rockItem);
+
+    const firstRequestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    const firstRequestFilter = new URL(firstRequestUrl).searchParams.get(
+      '$filter',
+    );
+    expect(firstRequestFilter).toContain(
+      "StartDateTime le datetime'2026-06-29T12:00:00.000Z'",
+    );
+
+    const firstCacheKey = mockRedis.set.mock.calls[0][0];
+    const expectedStableKey = buildCacheKey('ContentChannelItems', {
+      $filter: `(ContentChannelId eq 100) and (StartDateTime le datetime'2026-06-29T12:00:00.000Z' and (ExpireDateTime eq null or ExpireDateTime ge datetime'2026-06-29T12:00:00.000Z'))`,
+      $top: '1',
+      loadAttributes: 'simple',
+    });
+    expect(firstCacheKey).toBe(expectedStableKey);
+
+    mockRedis.get.mockResolvedValueOnce(JSON.stringify(rockItem));
+    vi.setSystemTime(new Date('2026-06-29T12:00:01.250Z'));
+
+    await expect(fetchWithRedis(options)).resolves.toEqual(rockItem);
+
+    expect(mockRedis.get).toHaveBeenNthCalledWith(2, firstCacheKey);
+    expect(mockRedis.set).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('does not send the volatile date range clause for single-item date-range queries', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-29T12:00:00.000Z'));
