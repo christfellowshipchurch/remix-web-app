@@ -11,6 +11,7 @@ import { getServerAlgoliaIndexes } from '~/lib/.server/algolia-indexes.server';
 import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 import { ContentChannelIds } from '~/lib/rock-config';
 import type { RockContentChannelItem } from '~/lib/types/rock-types';
+import { buildPodcastRoutingIndex } from '~/routes/podcasts/podcast-routing.server';
 
 // Define the return type for the loader
 export interface RootLoaderData {
@@ -55,27 +56,124 @@ export const mapSiteBannerFromRockItem = (
   };
 };
 
+/** Latest podcast episode found across every show's episode channel, plus the show's URL slug needed to build its link. */
+interface LatestPodcastEpisode {
+  episode: RockContentChannelItem;
+  showPath: string;
+}
+
+/**
+ * Podcast episodes live on a separate ContentChannel per show (resolved via
+ * buildPodcastRoutingIndex), so "latest episode" requires querying across
+ * every show's episode channel rather than a single fixed ContentChannelId.
+ */
+const fetchLatestPodcastEpisode =
+  async (): Promise<LatestPodcastEpisode | null> => {
+    try {
+      const { byEpisodeChannelId } = await buildPodcastRoutingIndex();
+      const channelIds = Array.from(byEpisodeChannelId.keys());
+
+      if (channelIds.length === 0) {
+        return null;
+      }
+
+      const channelFilter = channelIds
+        .map((id) => `ContentChannelId eq ${id}`)
+        .join(' or ');
+
+      const latestEpisodeData = await fetchRockData({
+        endpoint: 'ContentChannelItems',
+        queryParams: {
+          $filter: `(${channelFilter}) and Status eq 'Approved'`,
+          $orderby: 'StartDateTime desc',
+          $top: '1',
+          loadAttributes: 'simple',
+        },
+      });
+
+      const episode = (
+        Array.isArray(latestEpisodeData)
+          ? latestEpisodeData[0]
+          : latestEpisodeData
+      ) as RockContentChannelItem | undefined;
+
+      const showPath = episode
+        ? byEpisodeChannelId.get(String(episode.contentChannelId))?.showPath
+        : undefined;
+
+      if (!episode || !showPath) {
+        return null;
+      }
+
+      return { episode, showPath };
+    } catch (error) {
+      console.error('Error fetching latest podcast episode:', error);
+      return null;
+    }
+  };
+
+/** Picks whichever of the latest article/podcast episode has the more recent startDateTime. */
+const pickMostRecentContentItem = (
+  article: RockContentChannelItem | undefined,
+  podcast: LatestPodcastEpisode | null,
+) => {
+  if (!article)
+    return podcast
+      ? {
+          ...podcast.episode,
+          contentType: 'podcast' as const,
+          showPath: podcast.showPath,
+        }
+      : null;
+  if (!podcast) return { ...article, contentType: 'article' as const };
+
+  const articleDate = new Date(article.startDateTime).getTime();
+  const podcastDate = new Date(podcast.episode.startDateTime).getTime();
+
+  return podcastDate > articleDate
+    ? {
+        ...podcast.episode,
+        contentType: 'podcast' as const,
+        showPath: podcast.showPath,
+      }
+    : { ...article, contentType: 'article' as const };
+};
+
 const fetchFeatureCards = async () => {
   try {
-    const latestArticleData = await fetchRockData({
-      endpoint: 'ContentChannelItems',
-      queryParams: {
-        $filter: `ContentChannelId eq 43 and Status eq 'Approved'`,
-        $orderby: 'StartDateTime desc',
-        $top: '1',
-        loadAttributes: 'simple',
-      },
-    });
+    const [latestArticleData, latestPodcastEpisode, latestSermonData] =
+      await Promise.all([
+        fetchRockData({
+          endpoint: 'ContentChannelItems',
+          queryParams: {
+            $filter: `ContentChannelId eq ${ContentChannelIds.articles} and Status eq 'Approved'`,
+            $orderby: 'StartDateTime desc',
+            $top: '1',
+            loadAttributes: 'simple',
+          },
+        }),
+        fetchLatestPodcastEpisode(),
+        fetchRockData({
+          endpoint: 'ContentChannelItems',
+          queryParams: {
+            $filter: `ContentChannelId eq 63 and Status eq 'Approved'`,
+            $orderby: 'StartDateTime desc',
+            $top: '1',
+            loadAttributes: 'simple',
+          },
+        }),
+      ]);
 
-    const latestSermonData = await fetchRockData({
-      endpoint: 'ContentChannelItems',
-      queryParams: {
-        $filter: `ContentChannelId eq 63 and Status eq 'Approved'`,
-        $orderby: 'StartDateTime desc',
-        $top: '1',
-        loadAttributes: 'simple',
-      },
-    });
+    const article = (
+      Array.isArray(latestArticleData)
+        ? latestArticleData[0]
+        : latestArticleData
+    ) as RockContentChannelItem | undefined;
+
+    const latestArticleOrPodcastCard = pickMostRecentContentItem(
+      article,
+      latestPodcastEpisode,
+    );
 
     // TODO: remove this once we have the real data for the get involved card(s)
     const mockGetInvolvedData = {
@@ -89,7 +187,11 @@ const fetchFeatureCards = async () => {
       navMenu: 'get involved',
     };
 
-    return [latestSermonData, latestArticleData, mockGetInvolvedData];
+    return [
+      latestSermonData,
+      latestArticleOrPodcastCard,
+      mockGetInvolvedData,
+    ].filter(Boolean);
   } catch (error) {
     console.error('Error fetching feature cards:', error);
     return [];
@@ -204,7 +306,24 @@ export async function loader({
       }
 
       const attributes = card.attributeValues;
-      const isArticle = card.contentChannelId === 43;
+
+      if (card.contentType === 'podcast') {
+        const episodePath =
+          attributes.pathname?.value || attributes.url?.value || '';
+
+        return {
+          title: card.title || '',
+          subtitle: 'New Podcast Episode',
+          callToAction: {
+            title: 'Listen Now',
+            url: `/podcasts/${card.showPath}/${episodePath}`,
+          },
+          image: createImageUrlFromGuid(attributes.image?.value || ''),
+          navMenu: 'media',
+        };
+      }
+
+      const isArticle = card.contentType === 'article';
 
       return {
         title: card.title || '',
