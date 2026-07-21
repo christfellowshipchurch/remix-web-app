@@ -382,14 +382,13 @@ export const mapPageBuilderChildItems = async (
               }
 
               // Generate the start date for the item.
-              // Page Builder, Redirect Card, Article, and Ministry Page items have
-              // no meaningful start date in a collection context, so skip it.
+              // Page Builder, Redirect Card, and Article items have no meaningful
+              // start date in a collection context, so skip it.
               let startDate = '';
               if (
                 contentType !== 'REDIRECT_CARD' &&
                 contentType !== 'PAGE_BUILDER' &&
-                contentType !== 'ARTICLES' &&
-                contentType !== 'MINISTRY_PAGE'
+                contentType !== 'ARTICLES'
               ) {
                 const startDateTime = item.startDateTime || '';
                 if (startDateTime) {

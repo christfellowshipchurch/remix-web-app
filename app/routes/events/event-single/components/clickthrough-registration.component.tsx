@@ -8,10 +8,10 @@ import JourneyFinderSignUpForm, {
   JourneyFinderSignUpSuccessDetails,
 } from '~/components/modals/journey-finder-sign-up/journey-finder-sign-up-form.component';
 import JourneyFinderSignUpConfirmation from '~/components/modals/journey-finder-sign-up/confirmation.component';
-import DreamTeamKickoffForm, {
-  DreamTeamKickoffSuccessDetails,
-} from '~/routes/dream-team-kickoff/dream-team-kickoff-form.component';
-import DreamTeamKickoffConfirmation from '~/routes/dream-team-kickoff/confirmation.component';
+import BaptismSignUpForm, {
+  BaptismSignUpSuccessDetails,
+} from '~/components/modals/baptism-sign-up/baptism-sign-up-form.component';
+import BaptismSignUpConfirmation from '~/components/modals/baptism-sign-up/confirmation.component';
 import { EventFinderHit, EventSinglePageType } from '../types';
 import { RootLoaderData } from '~/routes/navbar/loader';
 import { ClickableCard } from './clickable-card.component';
@@ -33,6 +33,10 @@ import {
   parseSerializedEventFinderDates,
   serializeEventFinderDates,
 } from '../event-finder-dates';
+import DreamTeamKickoffForm, {
+  DreamTeamKickoffSuccessDetails,
+} from '~/routes/dream-team-kickoff/dream-team-kickoff-form.component';
+import DreamTeamKickoffConfirmation from '~/routes/dream-team-kickoff/confirmation.component';
 
 interface ClickThroughRegistrationProps {
   title: string;
@@ -870,7 +874,7 @@ function normalizeGroupType(groupType: string): string {
 }
 
 function getRegistrationFormMode(groupType: string): 'native' | 'embed' {
-  return ['Journey', 'Dream Team Kickoff'].includes(
+  return ['Journey', 'Baptism', 'Dream Team Kickoff'].includes(
     normalizeGroupType(groupType),
   )
     ? 'native'
@@ -888,7 +892,7 @@ interface FormStepProps {
   onResetRegistration: () => void;
 }
 
-const FormStep = ({
+export const FormStep = ({
   groupGuid,
   groupType,
   selectedCampus,
@@ -900,9 +904,12 @@ const FormStep = ({
   const [isNativeSuccess, setIsNativeSuccess] = useState(false);
   const [nativeSuccessDetails, setNativeSuccessDetails] =
     useState<JourneyFinderSignUpSuccessDetails | null>(null);
+  const [baptismSuccessDetails, setBaptismSuccessDetails] =
+    useState<BaptismSignUpSuccessDetails | null>(null);
   const [dreamTeamSuccessDetails, setDreamTeamSuccessDetails] =
     useState<DreamTeamKickoffSuccessDetails | null>(null);
   const registrationFormMode = getRegistrationFormMode(groupType);
+  const normalizedGroupType = normalizeGroupType(groupType);
   const isSpanish = isSpanishCampusLabel(selectedCampus);
 
   const workflowTypeGuid = getWorkflowTypeGuidForGroupType(groupType, {
@@ -937,7 +944,54 @@ const FormStep = ({
   }
 
   if (registrationFormMode === 'native') {
-    if (normalizeGroupType(groupType) === 'Dream Team Kickoff') {
+    if (normalizedGroupType === 'Baptism') {
+      if (isNativeSuccess) {
+        return (
+          <div className='w-full max-w-[600px] mx-auto'>
+            <BaptismSignUpConfirmation
+              buttonText='Register someone else'
+              details={{
+                title: 'Baptism Details',
+                campus: selectedCampus,
+                date: formatEventFinderDatesDisplay(
+                  parseSerializedEventFinderDates(selectedDate),
+                  selectedDay,
+                ),
+                time: `${selectedTime} ET`,
+                name:
+                  baptismSuccessDetails?.firstName ||
+                  baptismSuccessDetails?.lastName
+                    ? `${baptismSuccessDetails?.firstName ?? ''} ${
+                        baptismSuccessDetails?.lastName ?? ''
+                      }`.trim()
+                    : 'Baptism Registrant',
+              }}
+              onContinue={() => {
+                setBaptismSuccessDetails(null);
+                setIsNativeSuccess(false);
+                onResetRegistration();
+              }}
+            />
+          </div>
+        );
+      }
+
+      return (
+        <div className='w-full max-w-[600px] mx-auto rounded-xl border border-neutral-lighter bg-white p-6 shadow-sm md:p-8'>
+          <BaptismSignUpForm
+            groupGuid={groupGuid}
+            isSpanish={isSpanish}
+            showHeader={false}
+            onSuccess={(details) => {
+              setBaptismSuccessDetails(details ?? null);
+              setIsNativeSuccess(true);
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (normalizedGroupType === 'Dream Team Kickoff') {
       if (isNativeSuccess) {
         return (
           <div className='w-full max-w-[600px] mx-auto'>
