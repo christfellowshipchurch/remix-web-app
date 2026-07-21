@@ -141,4 +141,3 @@ build/
 .vercel
 .env*.local
 .claude/launch.json
-.codex/

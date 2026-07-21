@@ -113,17 +113,15 @@ describe('baptism sign up action', () => {
   });
 
   it('looks up a newly created location when Rock returns an empty response', async () => {
-    vi.mocked(fetchRockData)
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce({
-        guid: 'new-location-guid-123',
-        street1: '123 Main St',
-        street2: 'Apt 2',
-        city: 'Palm Beach Gardens',
-        state: 'FL',
-        postalCode: '33418',
-        country: 'US',
-      });
+    vi.mocked(fetchRockData).mockResolvedValueOnce([]).mockResolvedValueOnce({
+      guid: 'new-location-guid-123',
+      street1: '123 Main St',
+      street2: 'Apt 2',
+      city: 'Palm Beach Gardens',
+      state: 'FL',
+      postalCode: '33418',
+      country: 'US',
+    });
     vi.mocked(postRockData)
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce(undefined);

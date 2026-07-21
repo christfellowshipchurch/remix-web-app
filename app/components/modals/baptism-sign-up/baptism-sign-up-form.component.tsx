@@ -213,7 +213,11 @@ const renderSelectField = (
     <Form.Label className={radixCompactFormLabelClassName}>{label}</Form.Label>
     <RadixFormSelectShell>
       <Form.Control asChild>
-        <select required defaultValue={defaultValue} className={radixSelectClassName}>
+        <select
+          required
+          defaultValue={defaultValue}
+          className={radixSelectClassName}
+        >
           <option value='' disabled>
             {placeholder}
           </option>
@@ -496,7 +500,7 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
   const today = new Date().toISOString().split('T')[0];
   const remaining = MAX_STORY_LENGTH - story.length;
   const campusDefaultValue =
-    prefillValues && campuses.length > 0 ? campuses[0]?.guid ?? '' : '';
+    prefillValues && campuses.length > 0 ? (campuses[0]?.guid ?? '') : '';
 
   return (
     <>
@@ -680,7 +684,9 @@ const BaptismSignUpForm: React.FC<BaptismSignUpFormProps> = ({
                     name='shareYourStory'
                     value={option.value}
                     required
-                    defaultChecked={prefillValues?.shareYourStory === option.value}
+                    defaultChecked={
+                      prefillValues?.shareYourStory === option.value
+                    }
                     className={radixRadioClassName}
                   />
                 </Form.Control>

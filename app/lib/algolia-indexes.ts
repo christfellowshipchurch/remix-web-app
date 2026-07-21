@@ -6,7 +6,6 @@ export type AlgoliaIndexName =
   | 'classes'
   | 'locations'
   | 'missions'
-  | 'missionsPrivate'
   | 'studiesAndResources'
   | 'eventFinderItems';
 
@@ -18,7 +17,6 @@ export const ALGOLIA_INDEX_NAMES = [
   'classes',
   'locations',
   'missions',
-  'missionsPrivate',
   'studiesAndResources',
   'eventFinderItems',
 ] as const satisfies readonly AlgoliaIndexName[];

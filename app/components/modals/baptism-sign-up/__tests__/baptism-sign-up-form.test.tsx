@@ -166,10 +166,7 @@ describe('BaptismSignUpForm', () => {
       },
     };
 
-    renderForm(
-      vi.fn(),
-      ['/baptism-sign-up?Group=test-guid-123&prefill=1'],
-    );
+    renderForm(vi.fn(), ['/baptism-sign-up?Group=test-guid-123&prefill=1']);
 
     expect(screen.getByLabelText('First Name')).toHaveValue('Testy');
     expect(screen.getByLabelText('Last Name')).toHaveValue('McTester');
@@ -185,16 +182,14 @@ describe('BaptismSignUpForm', () => {
     expect(screen.getByLabelText('City')).toHaveValue('Palm Beach Gardens');
     expect(screen.getByLabelText('State')).toHaveValue('FL');
     expect(screen.getByLabelText('Zip Code')).toHaveValue('33410');
-    expect(screen.getByLabelText('T-Shirt Size')).toHaveValue(
-      'Adult Medium',
-    );
+    expect(screen.getByLabelText('T-Shirt Size')).toHaveValue('Adult Medium');
     expect(
-      document.querySelector("input[name='shareYourStory'][value='No Preference']"),
+      document.querySelector(
+        "input[name='shareYourStory'][value='No Preference']",
+      ),
     ).toBeChecked();
     expect(screen.getByLabelText('Home Campus')).toHaveValue('guid-1');
-    expect(
-      document.querySelector("textarea[name='myStory']"),
-    ).toHaveValue(
+    expect(document.querySelector("textarea[name='myStory']")).toHaveValue(
       'I am ready to take this next step and go public with my faith.',
     );
   });

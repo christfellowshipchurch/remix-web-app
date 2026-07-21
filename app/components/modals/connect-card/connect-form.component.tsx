@@ -13,19 +13,16 @@ import {
   radixSelectClassName,
 } from '~/primitives/inputs/form-radix-field';
 import { formFieldInvalidControlStyles } from '~/primitives/inputs/form-control.styles';
-import { useFetcher, useParams, useSearchParams } from 'react-router-dom';
+import { useFetcher, useSearchParams } from 'react-router-dom';
 import type {
   ConnectCardLoaderReturnType,
   ConnectCardPrefill,
   ConnectCardPrefillResponse,
 } from '~/routes/connect-card/types';
-import { buildConnectCardSubmission } from '~/routes/connect-card/build-submission';
-import { getSpanishRockSubmitValue } from '~/routes/connect-card/connect-card-rock-values';
 import { pushFormEvent } from '~/lib/gtm';
 
 interface ConnectCardProps {
   onSuccess: () => void;
-  isEspanol?: boolean;
 }
 
 export const renderInputField = (
@@ -76,22 +73,6 @@ interface CheckboxOption {
 // the existing `Other` handling.
 const NEXT_STEP_VALUES = ['The Journey class', 'Baptism'];
 
-const CONNECT_CARD_OPTION_LABELS_ES: Record<string, string> = {
-  'The Journey class': 'la clase Journey',
-  Baptism: 'bautismo',
-  'Find community': 'Encontrar comunidad',
-  'Make a difference by serving as a volunteer':
-    'Hacer la diferencia ayudando como voluntario',
-  'Make a difference by volunteering':
-    'Hacer la diferencia ayudando como voluntario',
-  'Discover a place where my kids feel at home':
-    'Descubrir un lugar donde mis hijos se sientan en casa',
-  Other: 'Otro',
-};
-
-const getConnectCardOptionLabel = (value: string, isEspanol?: boolean) =>
-  isEspanol ? (CONNECT_CARD_OPTION_LABELS_ES[value] ?? value) : value;
-
 const emptyPrefill: Required<ConnectCardPrefill> = {
   firstName: '',
   lastName: '',
@@ -141,20 +122,17 @@ const getRockPersonIdSearchParam = (searchParams: URLSearchParams) => {
 export const renderCheckboxField = (
   checkbox: CheckboxOption,
   index: number,
-  label = checkbox.value,
-  namePrefix = 'allThatApplies',
-  submitValue = checkbox.guid,
 ) => (
   <Form.Field
     key={index}
-    name={`${namePrefix}-${index}`}
+    name={`allThatApplies-${index}`}
     className={cn('flex gap-2 md:items-center', formFieldInvalidControlStyles)}
   >
     <Form.Control asChild>
       <input
         type='checkbox'
         id={checkbox.guid}
-        value={submitValue}
+        value={checkbox.guid}
         className={radixCheckboxClassName}
       />
     </Form.Control>
@@ -162,7 +140,7 @@ export const renderCheckboxField = (
       htmlFor={checkbox.guid}
       className={radixCheckboxOptionLabelClassName}
     >
-      {label}
+      {checkbox.value}
     </Form.Label>
   </Form.Field>
 );
@@ -170,21 +148,12 @@ export const renderCheckboxField = (
 const CONNECT_CARD_INTRO =
   'Fill out the form below and someone from our team will follow up with you!';
 
-const CONNECT_CARD_INTRO_ES =
-  'Completa el formulario a continuación y alguien de nuestro equipo se comunicará contigo.';
-
-const ConnectCardForm: React.FC<ConnectCardProps> = ({
-  onSuccess,
-  isEspanol,
-}) => {
+const ConnectCardForm: React.FC<ConnectCardProps> = ({ onSuccess }) => {
   const [isOther, setIsOther] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [prefillValues, setPrefillValues] =
     useState<Required<ConnectCardPrefill>>(emptyPrefill);
-  const [campusSelectKey, setCampusSelectKey] = useState(0);
-  const { location: campusUrlFromPath } = useParams();
-  const isCampusLocked = Boolean(campusUrlFromPath);
   const fetcher = useFetcher({ key: 'connect-card-form' });
   const prefillFetcher = useFetcher({ key: 'connect-card-prefill' });
   const [searchParams, setSearchParams] = useSearchParams();
@@ -254,15 +223,9 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
       lastName: response.prefill.lastName ?? current.lastName,
       email: response.prefill.email ?? current.email,
       phone: response.prefill.phone ?? current.phone,
-      campus: isCampusLocked
-        ? current.campus
-        : (response.prefill.campus ?? current.campus),
+      campus: response.prefill.campus ?? current.campus,
     }));
-
-    if (response.prefill.campus && !isCampusLocked) {
-      setCampusSelectKey((key) => key + 1);
-    }
-  }, [isCampusLocked, prefillFetcher.state, prefillFetcher.data]);
+  }, [prefillFetcher.state, prefillFetcher.data]);
 
   // Effect for handling form data and submissions
   useEffect(() => {
@@ -291,24 +254,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const rawFormData = Object.fromEntries(formData.entries());
-    const submission = buildConnectCardSubmission(rawFormData);
 
-    // Debug: log payload before submitting
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.group('[Connect Card] Submit preview');
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('Raw form fields:', submission.rawFormData);
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('Workflow type ID:', submission.workflowTypeId);
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('Rock endpoint:', submission.endpoint);
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.log('Rock body:', submission.body);
-    // eslint-disable-next-line no-console -- temporary connect card debug
-    console.groupEnd();
-
-    // --- Live form submission ---
     try {
       fetcher.submit(formData, {
         method: 'post',
@@ -336,9 +282,6 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
     };
 
   const { campuses, allThatApplies } = formFieldData;
-  const lockedCampus = campusUrlFromPath
-    ? campuses.find((campus) => campus.url === campusUrlFromPath)
-    : undefined;
 
   const otherCheckbox = allThatApplies.find(
     (checkbox) => checkbox.value === 'Other',
@@ -359,48 +302,41 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
 
   return (
     <>
-      <h2 className='mb-6 text-3xl text-navy font-bold'>
-        {isEspanol ? 'Conéctate' : 'Get Connected'}
-      </h2>
-      <p className='text-center mb-10 col-span-2 text-sm text-text-secondary'>
-        {isEspanol ? CONNECT_CARD_INTRO_ES : CONNECT_CARD_INTRO}
+      <h2 className='mb-6 text-3xl text-navy font-bold'>Get Connected</h2>
+      <p className='text-center md:text-left mb-10 col-span-2 text-sm text-text-secondary'>
+        {CONNECT_CARD_INTRO}
       </p>
       <Form.Root
         onSubmit={handleSubmit}
         className='flex flex-col md:grid text-left grid-cols-1 gap-y-3 gap-x-6 md:grid-cols-2'
       >
-        {isEspanol && <input type='hidden' name='language' value='Spanish' />}
         {renderInputField(
           'firstName',
-          isEspanol ? 'Nombre' : 'First Name',
+          'First Name',
           'text',
-          isEspanol ? 'Nombre es obligatorio.' : 'Please enter your first name',
+          'Please enter your first name',
           undefined,
-          isEspanol ? 'Nombre' : 'First Name',
+          'First Name',
           '',
           prefillValues.firstName,
           handlePrefillValueChange('firstName'),
         )}
         {renderInputField(
           'lastName',
-          isEspanol ? 'Apellido' : 'Last Name',
+          'Last Name',
           'text',
-          isEspanol
-            ? 'Apellido es obligatorio.'
-            : 'Please enter your last name',
+          'Please enter your last name',
           undefined,
-          isEspanol ? 'Apellido' : 'Last Name',
+          'Last Name',
           '',
           prefillValues.lastName,
           handlePrefillValueChange('lastName'),
         )}
         {renderInputField(
           'phone',
-          isEspanol ? 'Teléfono' : 'Phone',
+          'Phone',
           'tel',
-          isEspanol
-            ? 'Teléfono es obligatorio.'
-            : 'Please enter a valid number',
+          'Please enter a valid number',
           undefined,
           'xxx-xxx-xxxx',
           '',
@@ -411,61 +347,39 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
           'email',
           'Email',
           'text',
-          isEspanol ? 'Email es obligatorio.' : 'Please enter a valid email',
+          'Please enter a valid email',
           undefined,
-          isEspanol ? 'Email' : 'Example@gmail.com',
+          'Example@gmail.com',
           '',
           prefillValues.email,
           handlePrefillValueChange('email'),
         )}
 
         <Form.Field name='campus' className={radixFormFieldStackClassName}>
-          <Form.Label
-            className={radixCompactFormLabelClassName}
-            htmlFor={lockedCampus ? 'connect-card-campus' : undefined}
-          >
+          <Form.Label className={radixCompactFormLabelClassName}>
             Campus
           </Form.Label>
-          {lockedCampus ? (
-            <>
-              <input type='hidden' name='campus' value={lockedCampus.guid} />
-              <RadixFormSelectShell>
+          {campuses && (
+            <RadixFormSelectShell>
+              <Form.Control asChild>
                 <select
-                  id='connect-card-campus'
                   className={radixSelectClassName}
-                  disabled
-                  aria-readonly
+                  required
+                  value={prefillValues.campus}
+                  onChange={handlePrefillValueChange('campus')}
                 >
-                  <option>{lockedCampus.name}</option>
-                </select>
-              </RadixFormSelectShell>
-            </>
-          ) : (
-            campuses && (
-              <RadixFormSelectShell>
-                <Form.Control asChild>
-                  <select
-                    key={`campus-${campusSelectKey}`}
-                    name='campus'
-                    className={radixSelectClassName}
-                    required
-                    defaultValue={prefillValues.campus}
-                  >
-                    <option value=''>
-                      {isEspanol ? 'Seleccione un campus' : 'Select a Campus'}
+                  <option value=''>Select a Campus</option>
+                  {campuses.map(({ guid, name }, index) => (
+                    <option key={index} value={guid}>
+                      {name}
                     </option>
-                    {campuses.map(({ guid, name }, index) => (
-                      <option key={index} value={guid}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </Form.Control>
-              </RadixFormSelectShell>
-            )
+                  ))}
+                </select>
+              </Form.Control>
+            </RadixFormSelectShell>
           )}
           <RadixFormErrorMessage match='valueMissing'>
-            {isEspanol ? 'Campus es obligatorio.' : 'Please select a campus'}
+            Please select a campus
           </RadixFormErrorMessage>
         </Form.Field>
 
@@ -481,11 +395,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               type='checkbox'
               id='decision'
               name='decision'
-              value={
-                isEspanol
-                  ? 'Hoy tomé la decisión de seguir a Cristo.'
-                  : 'I made a decision to follow Christ today.'
-              }
+              value='I made a decision to follow Christ today.'
               className={radixCheckboxClassName}
             />
           </Form.Control>
@@ -493,72 +403,34 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
             htmlFor='decision'
             className={radixCheckboxOptionLabelClassName}
           >
-            {isEspanol
-              ? 'Hoy tomé la decisión de seguir a Cristo.'
-              : 'I made a decision to follow Christ today'}
+            I made a decision to follow Christ today
           </Form.Label>
         </Form.Field>
 
         <h3 className='col-span-2 mt-6 md:mt-8 text-lg font-bold italic text-navy'>
-          {isEspanol ? 'Estoy buscondo:' : 'I am looking to:'}
+          I am looking to:
         </h3>
         {nextStepCheckboxes.length > 0 && (
           <div className='col-span-2 flex flex-col gap-3 border-b border-gray-200 pb-4'>
             <p className='italic text-navy'>
-              {isEspanol
-                ? 'Tomar mi siguiente paso en la fe a través de...'
-                : 'Take the next step in my faith through…'}
+              Take the next step in my faith through…
             </p>
-            {isEspanol ? (
-              <div className='flex flex-wrap gap-x-6 gap-y-2'>
-                {nextStepCheckboxes.map(({ checkbox }) => (
-                  <label
-                    key={checkbox.guid}
-                    className={cn(
-                      'flex gap-2 md:items-center',
-                      radixCheckboxOptionLabelClassName,
-                    )}
-                  >
-                    <input
-                      type='radio'
-                      name='nextStep'
-                      value={getSpanishRockSubmitValue(checkbox.guid)}
-                      className={radixCheckboxClassName}
-                    />
-                    {getConnectCardOptionLabel(checkbox.value, isEspanol)}
-                  </label>
-                ))}
-              </div>
-            ) : (
-              <div className='grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-6'>
-                {nextStepCheckboxes.map(({ checkbox, index }) =>
-                  renderCheckboxField(
-                    checkbox,
-                    index,
-                    getConnectCardOptionLabel(checkbox.value, isEspanol),
-                  ),
-                )}
-              </div>
-            )}
+            <div className='grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-6'>
+              {nextStepCheckboxes.map(({ checkbox, index }) =>
+                renderCheckboxField(checkbox, index),
+              )}
+            </div>
           </div>
         )}
         <div className='col-span-2 grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-6'>
           {generalCheckboxes.map(({ checkbox, index }) =>
-            renderCheckboxField(
-              checkbox,
-              index,
-              getConnectCardOptionLabel(checkbox.value, isEspanol),
-              isEspanol ? 'selection' : 'allThatApplies',
-              isEspanol
-                ? getSpanishRockSubmitValue(checkbox.guid)
-                : checkbox.guid,
-            ),
+            renderCheckboxField(checkbox, index),
           )}
         </div>
 
         {otherCheckbox && (
           <Form.Field
-            name={isEspanol ? 'selection-other' : otherCheckbox.guid}
+            name='other'
             className={cn(
               'flex gap-2 md:items-center',
               formFieldInvalidControlStyles,
@@ -568,11 +440,8 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               <input
                 type='checkbox'
                 id={otherCheckbox.guid}
-                value={
-                  isEspanol
-                    ? getSpanishRockSubmitValue(otherCheckbox.guid)
-                    : otherCheckbox.guid
-                }
+                name={otherCheckbox.guid}
+                value={otherCheckbox.guid}
                 className={radixCheckboxClassName}
                 onChange={(_e) => setIsOther(!isOther)}
               />
@@ -581,7 +450,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               htmlFor={otherCheckbox.guid}
               className={radixCheckboxOptionLabelClassName}
             >
-              {getConnectCardOptionLabel(otherCheckbox.value, isEspanol)}
+              {otherCheckbox.value}
             </Form.Label>
           </Form.Field>
         )}
@@ -596,9 +465,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
               <Form.Control asChild>
                 <input
                   type='text'
-                  placeholder={
-                    isEspanol ? 'Porfavor especifique' : 'Please specify'
-                  }
+                  placeholder='Please specify'
                   className={radixInputClassName}
                 />
               </Form.Control>
@@ -615,7 +482,7 @@ const ConnectCardForm: React.FC<ConnectCardProps> = ({
             type='submit'
             disabled={loading}
           >
-            {loading ? 'Loading...' : isEspanol ? 'Complete' : 'Submit'}
+            {loading ? 'Loading...' : 'Submit'}
           </Button>
         </Form.Submit>
       </Form.Root>

@@ -2,16 +2,19 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { FormStep } from './clickthrough-registration.component';
 
-vi.mock('~/components/modals/baptism-sign-up/baptism-sign-up-form.component', () => ({
-  default: ({ onSuccess }: { onSuccess: (details: object) => void }) => (
-    <button
-      type='button'
-      onClick={() => onSuccess({ firstName: 'Ada', lastName: 'Lovelace' })}
-    >
-      Submit Baptism form
-    </button>
-  ),
-}));
+vi.mock(
+  '~/components/modals/baptism-sign-up/baptism-sign-up-form.component',
+  () => ({
+    default: ({ onSuccess }: { onSuccess: (details: object) => void }) => (
+      <button
+        type='button'
+        onClick={() => onSuccess({ firstName: 'Ada', lastName: 'Lovelace' })}
+      >
+        Submit Baptism form
+      </button>
+    ),
+  }),
+);
 
 vi.mock('~/components/modals/baptism-sign-up/confirmation.component', () => ({
   default: ({
@@ -50,7 +53,9 @@ describe('FormStep', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Submit Baptism form' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Submit Baptism form' }),
+    );
 
     expect(screen.getByText('Baptism Details')).toBeInTheDocument();
     expect(screen.getByText('Palm Beach Gardens')).toBeInTheDocument();
