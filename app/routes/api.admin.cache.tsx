@@ -34,10 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
   // Fallback to a JSON body for curl/manual testing.
   if (!id) {
     try {
-      const raw = await request.text();
-      console.log('RAW BODY:', JSON.stringify(raw));
-      const body: { id?: string | number } = JSON.parse(raw);
-      console.log('cache invalidation body:', JSON.stringify(body));
+      const body: { id?: string | number } = await request.json();
       id = body?.id != null ? String(body.id) : null;
     } catch {
       // no/invalid body — id stays null and is handled below
