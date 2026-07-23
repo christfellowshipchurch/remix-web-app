@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   fetchRockData,
   deleteRockData,
@@ -691,5 +691,120 @@ describe('fetchRockData TTL behavior', () => {
     );
     expect(requestFilter).not.toContain('StartDateTime le datetime');
     expect(cachedValue).toMatchObject({ id: 123 });
+  });
+});
+
+// ─── preview mode (CFDP-4143) ───────────────────────────────────────────────
+
+describe('fetchRockData preview mode', () => {
+  const mockRedis = {
+    get: vi.fn(),
+    set: vi.fn(),
+    del: vi.fn(),
+  };
+
+  beforeEach(async () => {
+    vi.useRealTimers();
+    vi.resetModules();
+    vi.clearAllMocks();
+    mockRedis.get.mockResolvedValue(null);
+    mockRedis.set.mockResolvedValue('OK');
+    mockRedis.del.mockResolvedValue(1);
+    vi.doMock('../redis-config', () => ({ default: mockRedis }));
+    process.env.SHOW_UNAPPROVED_CONTENT = 'true';
+  });
+
+  afterEach(() => {
+    delete process.env.SHOW_UNAPPROVED_CONTENT;
+  });
+
+  it("strips a hardcoded Status eq 'Approved' clause embedded in $filter", async () => {
+    const { fetchRockData: fetchPreview } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ id: 1 }],
+    });
+
+    await fetchPreview({
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Pathname',
+        $filter: "ContentChannelId eq 43 and Status eq 'Approved'",
+        value: 'example',
+        loadAttributes: 'simple',
+      },
+      filterByDateRange: true,
+    });
+
+    const requestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    const requestFilter = new URL(requestUrl).searchParams.get('$filter');
+    expect(requestFilter).toBe('ContentChannelId eq 43');
+  });
+
+  it('skips filterByStatusApproved instead of merging it into $filter', async () => {
+    const { fetchRockData: fetchPreview } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ id: 1 }],
+    });
+
+    await fetchPreview({
+      endpoint: 'ContentChannelItems',
+      queryParams: { $filter: 'ContentChannelId eq 78' },
+      filterByStatusApproved: true,
+    });
+
+    const requestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    const requestFilter = new URL(requestUrl).searchParams.get('$filter');
+    expect(requestFilter).toBe('ContentChannelId eq 78');
+  });
+
+  it('does not filter out a not-yet-started or expired item', async () => {
+    const { fetchRockData: fetchPreview } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        {
+          id: 123,
+          startDateTime: '2099-01-01T00:00:00.000Z',
+          expireDateTime: null,
+        },
+      ],
+    });
+
+    const result = await fetchPreview({
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Pathname',
+        value: 'future-example',
+        loadAttributes: 'simple',
+      },
+      filterByDateRange: true,
+    });
+
+    expect(result).toMatchObject({ id: 123 });
+  });
+
+  it('never reads or writes the shared Redis cache', async () => {
+    const { fetchRockData: fetchPreview } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ id: 1 }],
+    });
+
+    await fetchPreview({ endpoint: 'People' });
+
+    expect(mockRedis.get).not.toHaveBeenCalled();
+    expect(mockRedis.set).not.toHaveBeenCalled();
   });
 });
