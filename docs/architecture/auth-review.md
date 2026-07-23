@@ -493,6 +493,249 @@ change invalidation, so stale personal data can persist after logout.
 
 ---
 
+## Proposed helper APIs (for the My Groups spike)
+
+These are the concrete signatures the recommendations above imply, written to
+match existing conventions (option-object params like `fetchRockData`, the
+`AuthenticationError`/`RockAPIError` hierarchy in `error-types.ts`, the `rock:`
+cache namespace in `cache-utils.ts`, and the `generateToken`/`registerToken`
+split in `token.ts`). They are proposals to *exercise* in the spike, not merged
+code. Each entry says which Concern it closes.
+
+### A. `requireUser` / `getAuthContext` — closes C6, enables C1 & C7
+
+New file: `app/lib/.server/authentication/require-user.ts`. Replaces the
+ambiguous `getUserFromRequest` return contract with one server-side context that
+also carries the Rock cookie (so writes can act *as* the user) and the ids the
+group guards need.
+
+```ts
+export interface AuthContext {
+  /** Rock PersonId (from People/GetCurrentPerson). */
+  personId: number;
+  /** Rock PersonAliasId — required in many write payloads (e.g. GroupMembers). */
+  primaryAliasId: number;
+  /** Identity fields GetCurrentPerson already returns; no extra Rock calls. */
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  /**
+   * SERVER-ONLY. The decrypted Rock forms-auth cookie. Pass as
+   * `customHeaders: { Cookie: rockCookie }` to fetchRockData / the write helpers
+   * to have Rock authorize the call as this user. Never serialize to the client.
+   */
+  rockCookie: string;
+  /** Rock InteractionSession id captured at login. */
+  sessionId: string;
+}
+
+/**
+ * Resolve the auth context from the request cookie, or null when the request is
+ * unauthenticated OR the token is expired/invalid. Never throws for auth failure
+ * (contrast with today's mixed null | {message} | Response | data() returns).
+ * One Rock call (People/GetCurrentPerson), uncached.
+ */
+export const getAuthContext = (request: Request): Promise<AuthContext | null>;
+
+/**
+ * Require an authenticated user. Returns the context, or THROWS a
+ * redirect(...) Response for the loader/action to propagate (fixes C6: expired
+ * tokens redirect to login instead of rendering a broken authed page).
+ *   - loginPath: where to send anonymous users (default '/').
+ *   - returnTo:  when true, append ?returnTo=<current path+search> to loginPath.
+ */
+export const requireUser: (
+  request: Request,
+  options?: { loginPath?: string; returnTo?: boolean },
+) => Promise<AuthContext>;
+```
+
+Companion (C7): once `AuthContext` exists, the client-facing `currentUser`
+(`app/routes/auth/current-user.tsx`) should be refactored to build on
+`getAuthContext` and the assembled `User` cached briefly under a user-scoped key
+(see C below), collapsing the 3-calls-per-request cost.
+
+### B. `requireGroupLeader` — closes C1
+
+New file: `app/lib/.server/authentication/require-group-leader.ts`. The
+application-level authorization boundary that does not exist today. Takes an
+already-resolved `AuthContext` so it composes explicitly after `requireUser`.
+
+```ts
+export interface GroupLeadership {
+  /** The caller's GroupMember row id for this group. */
+  groupMemberId: number;
+  groupRoleId: number;
+  isLeader: true;
+}
+
+/**
+ * Assert the current user is an ACTIVE LEADER of `groupId`. Returns the
+ * leadership record on success; THROWS AuthorizationError (mapped to 403 by the
+ * route handler, mirroring how AuthenticationError -> 401 is handled today) when
+ * the user is not an active leader.
+ *
+ * Implementation: one Rock read, authorized as the user, uncached —
+ *   GroupMembers?$filter=GroupId eq {groupId} and PersonId eq {auth.personId}
+ *     and GroupMemberStatus eq 1&$expand=GroupRole
+ * then require some member with groupRole.isLeader === true.
+ * (GroupMemberStatus 1 = Active; verify the enum value against this Rock instance
+ *  during the spike.)
+ */
+export const requireGroupLeader: (
+  auth: AuthContext,
+  groupId: number,
+) => Promise<GroupLeadership>;
+```
+
+New error class in `app/lib/.server/error-types.ts` (matches the existing shape):
+
+```ts
+export class AuthorizationError extends Error {
+  constructor(message: string, options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = 'AuthorizationError';
+  }
+}
+```
+
+**Companion change C1 needs (write-as-user):** the write helpers in
+`app/lib/.server/fetch-rock-data.ts` currently take no headers. Add an optional
+`customHeaders` so a guarded action can forward the user cookie:
+
+```ts
+export const postRockData: (params: {
+  endpoint: string;
+  body: Record<string, unknown> | string;
+  contentType?: string;
+  customHeaders?: Record<string, string>; // NEW — e.g. { Cookie: auth.rockCookie }
+}) => Promise<unknown>;
+// same optional customHeaders added to putRockData / patchRockData, and a headers
+// arg to deleteRockData(endpoint, customHeaders?).
+```
+
+Decide in the spike whether writes run as the user (forward `rockCookie`) or stay
+on `ROCK_TOKEN` with `requireGroupLeader` as the sole boundary — and document it.
+
+### C. User-scoped cache keys — closes C2
+
+Additions to `app/lib/.server/cache-utils.ts` (keeps the existing `rock:`
+namespace; adds a per-user sub-namespace so "my groups" can never collide across
+users):
+
+```ts
+/**
+ * Per-user cache key. Format: `rock:u{personId}:{endpoint}:{hash12}`.
+ * Same hashing/sorting as buildCacheKey, just under a user sub-namespace.
+ */
+export function buildUserCacheKey(
+  personId: string | number,
+  endpoint: string,
+  queryParams: Record<string, string | undefined>,
+): string;
+
+/**
+ * Delete every cache entry for a user (call on logout and on token change).
+ * SCAN over `rock:u{personId}:*` (no KEYS), like deleteByPrefix. Returns count.
+ */
+export function invalidateUser(
+  redis: Redis | null,
+  personId: string | number,
+): Promise<number>;
+```
+
+And one option on `fetchRockData` (`FetchRockDataOptions`) to opt a read into the
+per-user namespace:
+
+```ts
+interface FetchRockDataOptions {
+  // ...existing fields...
+  /**
+   * When set, cache under buildUserCacheKey(cacheUserId, ...) instead of the
+   * shared buildCacheKey. Use for any per-viewer data ("my group list"). Purely
+   * per-GROUP data ("members of group X") can stay in the shared namespace since
+   * GroupId in queryParams already discriminates the key.
+   */
+  cacheUserId?: string | number;
+}
+```
+
+Wire-up: `fetch-rock-data.ts:217` chooses `cacheUserId != null ?
+buildUserCacheKey(cacheUserId, endpoint, mergedQueryParams) : buildCacheKey(...)`.
+The `logout` handler (`app/routes/auth/route.tsx:53`) must resolve the context
+(via `getAuthContext`) *before* clearing the cookie so it can call
+`invalidateUser(redis, personId)`.
+
+### D. Token refresh flow — closes C3
+
+Minimal change in `app/lib/.server/token.ts`: parametrize expiry so the same
+signer mints both token kinds (default stays short).
+
+```ts
+export function generateToken(
+  params: Record<string, unknown>,
+  options?: { expiresIn?: string | number }, // default '1h' (access)
+): string;
+```
+
+Two HttpOnly cookies instead of one. Add the refresh key next to `AUTH_TOKEN_KEY`
+in `app/providers/auth-provider/index.tsx`:
+
+```ts
+export const AUTH_TOKEN_KEY = 'auth-token';       // access; Max-Age aligned to 1h
+export const AUTH_REFRESH_KEY = 'auth-refresh';   // refresh; Max-Age aligned to 30d
+```
+
+New handler `app/routes/auth/refresh.tsx`, dispatched by a new
+`case 'refresh':` in `route.tsx`:
+
+```ts
+/**
+ * Re-mint the access token from a valid refresh cookie (the refresh token wraps
+ * the same encrypted { cookie, sessionId }). Returns 200 with fresh Set-Cookie
+ * for BOTH cookies; returns 401 and clears both when the refresh token is
+ * missing/expired/invalid.
+ */
+export const refresh: (request: Request) => Promise<Response>;
+```
+
+Client: `AuthProvider` calls `formType=refresh` once on a 401 from `currentUser`
+and retries. To DRY the four near-identical `Set-Cookie` builders across the auth
+handlers, add:
+
+```ts
+/** Build a hardened auth Set-Cookie value (HttpOnly, Secure in prod, SameSite=Strict, Path=/). */
+export function buildAuthCookie(
+  name: string,
+  value: string,
+  maxAgeSeconds: number,
+): string;
+```
+
+**Smaller alternative (if two cookies is too much for the spike):** keep one
+cookie but make it a *sliding session* — align `auth-token` `Max-Age` with the
+JWT expiry and have `getAuthContext` re-issue the cookie when the token is within
+N minutes of expiry, returning the refreshed value for the caller to `Set-Cookie`.
+This closes the 24h/400-day contradiction with no second token, at the cost of
+loaders needing to forward a refreshed cookie header.
+
+### How they compose (a guarded write action)
+
+```ts
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const auth = await requireUser(request);                    // A — 401 -> redirect
+  await requireGroupLeader(auth, Number(params.groupId));     // B — not leader -> 403
+  return postRockData({                                       // B companion — as the user
+    endpoint: 'GroupMembers',
+    body: { GroupId: params.groupId, PersonId: newMemberId, GroupRoleId, GroupMemberStatus: 1 },
+    customHeaders: { Cookie: auth.rockCookie },
+  });
+  // then: invalidateUser(redis, auth.personId) or a group-scoped invalidation (C)
+};
+```
+
+---
+
 *Prepared as a read-only review of `remix-web-app` at branch
 `claude/my-groups-auth-review-cur0gi`. `legacy-my-groups` was consulted for §6;
 the `services` monorepo was not needed because the current `remix-web-app` auth
