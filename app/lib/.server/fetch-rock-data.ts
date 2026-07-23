@@ -23,6 +23,13 @@ const defaultHeaders = {
 };
 
 /**
+ * When true, this deployment shows Pending/unapproved content and skips the
+ * shared Redis cache — used by the preview domain (CFDP-4143). Never set on prod.
+ */
+export const isPreviewMode = (): boolean =>
+  process.env.SHOW_UNAPPROVED_CONTENT === 'true';
+
+/**
  *
  * @param endpoint - the Rock endpoint to fetch data from
  * @param queryParams - query parameters to append to the request
@@ -133,6 +140,24 @@ const isSingleItemAttributeValueFetch = (endpoint: string): boolean =>
   endpoint.replace(/^\/+|\/+$/g, '') ===
   'ContentChannelItems/GetByAttributeValue';
 
+/**
+ * Removes a literal Status eq 'Approved' clause from a caller-built $filter
+ * string. Several loaders embed this clause directly rather than going
+ * through `filterByStatusApproved`, so preview mode strips it here instead
+ * of touching every call site.
+ */
+const stripApprovedStatusFilter = (
+  filter: string | undefined,
+): string | undefined => {
+  if (!filter) return filter;
+  const stripped = filter
+    .replace(/\s+and\s+Status eq 'Approved'/gi, '')
+    .replace(/Status eq 'Approved'\s+and\s+/gi, '')
+    .replace(/Status eq 'Approved'/gi, '')
+    .trim();
+  return stripped || undefined;
+};
+
 const applyDateRangeFilter = <T>(data: T, now: Date): T | [] => {
   if (Array.isArray(data)) {
     const filteredData = data.filter((item) =>
@@ -162,15 +187,30 @@ export const fetchRockData = async ({
   filterByDateRange = false,
   filterByStatusApproved = false,
 }: FetchRockDataOptions) => {
+  const previewMode = isPreviewMode();
+  // Preview mode only bypasses the Status filter — date-range filtering still
+  // applies, so a not-yet-scheduled or already-expired item stays hidden.
+  const effectiveFilterByDateRange = filterByDateRange;
+  const effectiveFilterByStatusApproved =
+    filterByStatusApproved && !previewMode;
+
   const mergedQueryParams = { ...queryParams };
   const shouldFilterDateRangeInMemory =
-    filterByDateRange && isSingleItemAttributeValueFetch(endpoint);
+    effectiveFilterByDateRange && isSingleItemAttributeValueFetch(endpoint);
 
-  if (filterByDateRange || filterByStatusApproved) {
+  if (effectiveFilterByDateRange || effectiveFilterByStatusApproved) {
     mergedQueryParams.$filter = buildMergedFilter(
       queryParams.$filter,
-      shouldFilterDateRangeInMemory ? false : filterByDateRange,
-      filterByStatusApproved,
+      shouldFilterDateRangeInMemory ? false : effectiveFilterByDateRange,
+      effectiveFilterByStatusApproved,
+    );
+  }
+
+  // Some loaders embed Status eq 'Approved' directly in their $filter string
+  // instead of using filterByStatusApproved — strip it here too.
+  if (previewMode) {
+    mergedQueryParams.$filter = stripApprovedStatusFilter(
+      mergedQueryParams.$filter,
     );
   }
 
@@ -178,8 +218,15 @@ export const fetchRockData = async ({
     endpoint,
     mergedQueryParams as Record<string, string>,
   );
-  const effectiveTtl: number =
-    ttl !== undefined ? ttl : cache === false ? TTL.NONE : TTL.DEFAULT;
+  // Preview never reads or writes the shared Redis cache — this deployment's
+  // results (unapproved content) must never be served to or poison prod's cache.
+  const effectiveTtl: number = previewMode
+    ? TTL.NONE
+    : ttl !== undefined
+      ? ttl
+      : cache === false
+        ? TTL.NONE
+        : TTL.DEFAULT;
 
   // Try to use Redis cache if available and TTL > 0
   if (redis && effectiveTtl > 0) {

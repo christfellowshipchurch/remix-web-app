@@ -20,6 +20,7 @@ import { loader as navbarLoader } from './routes/navbar/loader';
 import { NavbarVisibilityProvider } from './providers/navbar-visibility-context';
 import { DeferredGtm } from './components/deferred-gtm';
 import { setupDevWebVitalsLogging } from '~/lib/dev-web-vitals';
+import { isPreviewMode } from '~/lib/.server/fetch-rock-data';
 
 export { ErrorBoundary } from './error';
 
@@ -44,10 +45,15 @@ function buildCsp(nonce: string): string {
 export async function loader(args: LoaderFunctionArgs) {
   const nonce = randomUUID();
   const navbarData = await navbarLoader(args);
-  return data(
-    { ...navbarData, nonce },
-    { headers: { 'Content-Security-Policy': buildCsp(nonce) } },
-  );
+  const headers: Record<string, string> = {
+    'Content-Security-Policy': buildCsp(nonce),
+  };
+  // Preview deployments render Pending/unapproved content — keep it out of
+  // search indexes even if Deployment Protection is ever misconfigured.
+  if (isPreviewMode()) {
+    headers['X-Robots-Tag'] = 'noindex, nofollow';
+  }
+  return data({ ...navbarData, nonce }, { headers });
 }
 
 export function Layout({ children }: { children: ReactNode }) {
