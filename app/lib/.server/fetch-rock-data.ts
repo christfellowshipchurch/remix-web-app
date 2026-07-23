@@ -188,11 +188,11 @@ export const fetchRockData = async ({
   filterByStatusApproved = false,
 }: FetchRockDataOptions) => {
   const previewMode = isPreviewMode();
-  // Preview mode shows Pending/unapproved content, so neither filter applies:
-  // Status is meant to be bypassed, and date-range would otherwise hide
-  // not-yet-scheduled or already-expired items a manager still wants to check.
-  const effectiveFilterByDateRange = filterByDateRange && !previewMode;
-  const effectiveFilterByStatusApproved = filterByStatusApproved && !previewMode;
+  // Preview mode only bypasses the Status filter — date-range filtering still
+  // applies, so a not-yet-scheduled or already-expired item stays hidden.
+  const effectiveFilterByDateRange = filterByDateRange;
+  const effectiveFilterByStatusApproved =
+    filterByStatusApproved && !previewMode;
 
   const mergedQueryParams = { ...queryParams };
   const shouldFilterDateRangeInMemory =
@@ -219,8 +219,7 @@ export const fetchRockData = async ({
     mergedQueryParams as Record<string, string>,
   );
   // Preview never reads or writes the shared Redis cache — this deployment's
-  // results (unapproved content, no date-range filtering) must never be
-  // served to or poison prod's cache.
+  // results (unapproved content) must never be served to or poison prod's cache.
   const effectiveTtl: number = previewMode
     ? TTL.NONE
     : ttl !== undefined

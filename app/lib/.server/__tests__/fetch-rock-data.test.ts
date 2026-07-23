@@ -719,8 +719,7 @@ describe('fetchRockData preview mode', () => {
   });
 
   it("strips a hardcoded Status eq 'Approved' clause embedded in $filter", async () => {
-    const { fetchRockData: fetchPreview } =
-      await import('../fetch-rock-data');
+    const { fetchRockData: fetchPreview } = await import('../fetch-rock-data');
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
@@ -745,8 +744,7 @@ describe('fetchRockData preview mode', () => {
   });
 
   it('skips filterByStatusApproved instead of merging it into $filter', async () => {
-    const { fetchRockData: fetchPreview } =
-      await import('../fetch-rock-data');
+    const { fetchRockData: fetchPreview } = await import('../fetch-rock-data');
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
@@ -765,9 +763,8 @@ describe('fetchRockData preview mode', () => {
     expect(requestFilter).toBe('ContentChannelId eq 78');
   });
 
-  it('does not filter out a not-yet-started or expired item', async () => {
-    const { fetchRockData: fetchPreview } =
-      await import('../fetch-rock-data');
+  it('still filters out a not-yet-started item — only Status is bypassed', async () => {
+    const { fetchRockData: fetchPreview } = await import('../fetch-rock-data');
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
@@ -790,12 +787,11 @@ describe('fetchRockData preview mode', () => {
       filterByDateRange: true,
     });
 
-    expect(result).toMatchObject({ id: 123 });
+    expect(result).toEqual([]);
   });
 
   it('never reads or writes the shared Redis cache', async () => {
-    const { fetchRockData: fetchPreview } =
-      await import('../fetch-rock-data');
+    const { fetchRockData: fetchPreview } = await import('../fetch-rock-data');
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
