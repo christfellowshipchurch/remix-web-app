@@ -44,7 +44,7 @@ export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
 const heroCardData: { link: string; copy: string }[] = [
   {
     link: '#devo',
-    copy: 'A three-week course to start your relationship with Jesus.',
+    copy: 'A three-week devotional to start your relationship with Jesus.',
   },
   {
     link: isAppleDevice() ? appleLink : googleLink,
@@ -59,7 +59,7 @@ const heroCardData: { link: string; copy: string }[] = [
 const spanishHeroCardData: { link: string; copy: string }[] = [
   {
     link: '#devo',
-    copy: 'Un curso de tres semanas para comenzar tu relación con Jesús.',
+    copy: 'Un devocional de tres semanas para comenzar tu relación con Jesús.',
   },
   {
     link: googleLink,
