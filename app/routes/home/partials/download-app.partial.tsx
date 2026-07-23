@@ -45,7 +45,7 @@ const DesktopVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
             alt='Christ Fellowship App on a phone'
             width={696}
             height={1774}
-            className={cn('w-full aspect-9/21 max-w-122.5')}
+            className={cn('w-full aspect-9/21 max-w-72')}
           />
         </div>
       </div>
@@ -77,7 +77,12 @@ const MobileVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
             alt='Christ Fellowship App on a phone'
             width={696}
             height={1774}
-            className={cn('w-[50vw]', 'aspect-9/21', 'max-w-35')}
+            className={cn(
+              'w-[50vw]',
+              'aspect-9/21',
+              'max-w-44',
+              '-rotate-[6.47deg]',
+            )}
           />
         </div>
 
