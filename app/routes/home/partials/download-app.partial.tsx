@@ -33,7 +33,7 @@ const DesktopVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
               </h2>
               <p className='text-lg'>{copy.subtitle}</p>
             </div>
-            <p className='max-w-[490px]'>{copy.summary}</p>
+            <p className='max-w-122.5'>{copy.summary}</p>
           </div>
 
           <DownloadAppButtons />
@@ -41,11 +41,11 @@ const DesktopVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
 
         <div className='flex justify-center items-center'>
           <img
-            src='/assets/images/home/app-left.webp'
+            src='/assets/images/home/app-image.webp'
             alt='Christ Fellowship App on a phone'
             width={696}
             height={1774}
-            className={cn('w-full aspect-9/21 max-w-[220px]')}
+            className={cn('w-full aspect-9/21 max-w-72')}
           />
         </div>
       </div>
@@ -65,7 +65,7 @@ const MobileVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
       <div className='max-w-screen-content mx-auto flex flex-col gap-8 items-center'>
         <h2
           className={cn(
-            'text-white text-center text-[32px] leading-tight max-w-[340px]',
+            'text-white text-center text-[32px] leading-tight max-w-85',
           )}
         >
           <HTMLRenderer html={copy.title as string} />
@@ -73,15 +73,20 @@ const MobileVersion = ({ isSpanish }: { isSpanish?: boolean }) => {
 
         <div className='flex justify-center items-center'>
           <img
-            src='/assets/images/home/app-left.webp'
+            src='/assets/images/home/app-image.webp'
             alt='Christ Fellowship App on a phone'
             width={696}
             height={1774}
-            className={cn('w-[50vw]', 'aspect-9/21', 'max-w-[140px]')}
+            className={cn(
+              'w-[50vw]',
+              'aspect-9/21',
+              'max-w-44',
+              '-rotate-[6.47deg]',
+            )}
           />
         </div>
 
-        <p className='text-white text-center leading-tight max-w-[420px]'>
+        <p className='text-white text-center leading-tight max-w-105'>
           {copy.summary}
         </p>
 
@@ -136,12 +141,12 @@ const StoreButton = ({
         'bg-navy text-white',
         'rounded-full px-6 py-3',
         'hover:bg-navy/50 transition-colors duration-200',
-        'min-w-[170px]',
+        'min-w-42.5',
         'shadow-lg',
         'border border-white/10',
       )}
     >
-      <Icon name={iconName} size={40} className='flex-shrink-0' />
+      <Icon name={iconName} size={40} className='shrink-0' />
       <div className='flex flex-col leading-tight font-bold'>
         <span className='text-[10px] uppercase opacity-60 tracking-wide'>
           {eyebrow}
