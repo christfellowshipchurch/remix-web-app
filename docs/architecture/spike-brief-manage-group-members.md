@@ -1,12 +1,36 @@
 # Spike Brief — Manage Group Members (My Groups on Rock REST + Redis + RR7)
 
-**Type:** Time-boxed spike (3–5 days). **Output:** a decision, not a shippable feature.
+**Type:** Time-boxed spike (5 days, floor not target). **Output:** a decision, not a shippable feature.
 **Owner:** _unassigned_ · **Prepared:** 2026-07-24 · **Repo for spike work:** `remix-web-app`
 
 > This brief is self-contained and pasteable into a ticket. It tells you exactly
 > what to read, what to build, what to measure, and what "done" looks like for
 > each question. Where something can't be settled from the code as it stands
 > today, it is called out as a **Day 1 question** rather than assumed.
+
+---
+
+## Day 0 — Gate: confirm Rock dev write-access before anything else
+
+**Do not start Day 1 reading until these three checks pass.** The entire spike
+is a write-path validation; if the Rock dev instance can't accept authenticated
+writes or lacks realistic config, Days 2–5 cannot run regardless of how sound
+the plan is. (The instance has been confirmed usable — this is fast
+confirmation, not open investigation, but the executing developer must verify
+their own access before building.)
+
+1. **Authenticate as a test leader.** Confirm credentials for a test person who
+   is an active leader of at least one test group, and that you can resolve them
+   via `GET /api/People/GetCurrentPerson`.
+2. **Round-trip a GroupMember write.** Confirm you can `POST /api/GroupMembers`
+   to add a throwaway member and `DELETE /api/GroupMembers/{id}` (or PATCH to
+   Inactive) to remove them, against a test group you don't mind mutating.
+3. **See a workflow config to test against.** Confirm at least one
+   GroupMember-related workflow exists and is inspectable in Rock admin, so Q2
+   has something real to verify.
+
+If any of the three fail, **stop and fix environment access first** — the spike
+is blocked, and that is itself the Day-0 finding to report.
 
 ---
 
@@ -17,7 +41,7 @@ app follows `remix-web-app`'s architecture: **React Router v7**, **direct Rock
 RMS REST calls**, **Redis caching via Vercel** — no Apollos/GraphQL, no
 `services` backend.
 
-Most of My Groups is *authenticated reads* (a user's groups, group details,
+Most of My Groups is _authenticated reads_ (a user's groups, group details,
 member lists, profile). We expect those to work cleanly against Rock's REST API.
 The one feature we are genuinely uncertain about is **Manage Group Members** —
 the leader-only flow for adding, removing, and updating members of a group. It
@@ -89,8 +113,8 @@ evidence yet, and this spike is exactly where that evidence should be generated.
   onto classic v1 regardless of any lean toward v2. Note this wherever it bites.
 
 **Day 1 question (from survey open-question #5):** the Rock CMS build/version
-number is **not shown in Swagger**. Determine it on Day 1 (Rock admin → *Power
-Tools / Settings → Rock Update* or the footer of the internal admin UI), because
+number is **not shown in Swagger**. Determine it on Day 1 (Rock admin → _Power
+Tools / Settings → Rock Update_ or the footer of the internal admin UI), because
 version-specific behavior matters when you check Rock's official docs/changelog
 for the CRUD, cascade, and workflow-trigger questions below.
 
@@ -134,7 +158,7 @@ export const requireUser: (
   `getUserFromRequest` (`app/lib/.server/authentication/get-user-from-request.ts:5-21`),
   which returns `null | { message } | Response | data()-error-object` — callers
   must currently distinguish all four.
-- **The C6 fix is in-scope.** Today, on an *expired* token, `currentUser` returns
+- **The C6 fix is in-scope.** Today, on an _expired_ token, `currentUser` returns
   a `data({ error }, { status: 401 })` object — **not** a `Response` — so
   `profile.tsx` treats it as a truthy user and renders a broken authed page
   instead of redirecting (auth review §3, C6). The spike depends on correct auth
@@ -189,6 +213,7 @@ export const requireGroupLeader: (
 > **Day 1 semantics check (do not skip).** Grep the `services` repo for the
 > Apollos "is this user a leader of this group" resolver and **match
 > `requireGroupLeader`'s semantics to it** — specifically:
+>
 > - **co-leaders** (multiple leader roles / more than one leader per group),
 > - **deactivated / archived leaders** (`GroupMemberStatus`, `IsArchived`),
 > - **group-hierarchy / parent-group** edge cases (does leading a parent group
@@ -269,14 +294,20 @@ write should take. Build toward it:
 
 ```ts
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const auth = await requireUser(request);                    // 4.1 — 401 -> redirect
-  await requireGroupLeader(auth, Number(params.groupId));     // 4.2 — not leader -> 403
-  const result = await postRockData({                         // 4.3 — as the user
+  const auth = await requireUser(request); // 4.1 — 401 -> redirect
+  await requireGroupLeader(auth, Number(params.groupId)); // 4.2 — not leader -> 403
+  const result = await postRockData({
+    // 4.3 — as the user
     endpoint: 'GroupMembers',
-    body: { GroupId: params.groupId, PersonId: newMemberId, GroupRoleId, GroupMemberStatus: 1 },
+    body: {
+      GroupId: params.groupId,
+      PersonId: newMemberId,
+      GroupRoleId,
+      GroupMemberStatus: 1,
+    },
     customHeaders: { Cookie: auth.rockCookie },
   });
-  await invalidateUser(redis, auth.personId);                 // 4.4 (or group-scoped)
+  await invalidateUser(redis, auth.personId); // 4.4 (or group-scoped)
   return result;
 };
 ```
@@ -296,7 +327,7 @@ recognized as an auth expiry, not misdiagnosed as a write failure).
 
 - **Where:** a **single throwaway branch in `remix-web-app`**, as a temporary
   route (e.g. `app/routes/spike-manage-members/`). **Recommended over a new
-  sandbox repo** because the whole point is to exercise the *real* helpers, cache,
+  sandbox repo** because the whole point is to exercise the _real_ helpers, cache,
   and loader/action conventions in situ — a sandbox would force you to
   re-stub `fetchRockData`, Redis, token decryption, and the auth flow, which is
   most of what you're trying to evaluate. Keep the branch clearly disposable.
@@ -321,7 +352,7 @@ service account, **Rock will not reject an unauthorized write** — so test the
 viable.
 
 - **Write model (a) — service-account + app gate.** Verify `requireGroupLeader`
-  (§4.2) **allows a leader and blocks a non-leader** *before* the Rock call is
+  (§4.2) **allows a leader and blocks a non-leader** _before_ the Rock call is
   made. Confirm the error response shape (**403** / `AuthorizationError`).
 - **Write model (b) — user-cookie forwarded.** Using `customHeaders?` (§4.3) to
   forward `AuthContext.rockCookie`, test whether Rock's REST API **accepts it**
@@ -341,6 +372,15 @@ viable.
 write models**, with example requests/responses; a clear statement of **which
 model we can actually rely on**; and **documented DELETE cascade behavior** (plus
 a recommendation on hard-delete vs. soft-remove).
+
+**Effort split (recommended prior):** lead with **model (a)** — service-account
+write + app-side `requireGroupLeader` gate — as the primary path to validate
+fully. Treat **model (b)** (forwarding the user's `.ROCK` cookie via
+`customHeaders?`) as a **time-boxed probe** (~half a day): does Rock accept the
+forwarded cookie and enforce its own group security — yes or no? Because (b)'s
+viability hinges on the unresolved survey open-question #14 (real Rock credential
+type), don't sink equal effort into it, but do get a definitive yes/no — a
+working (b) buys defense-in-depth worth having later.
 
 ### Q2 — Do Rock workflows fire correctly on REST-driven member changes?
 
@@ -382,7 +422,7 @@ recommendation on **default page size** and **field-selection approach**.
 - **Cache-key caution (auth review C2):** keys currently omit the user
   (`buildCacheKey` hashes endpoint+params only, `cache-utils.ts:56-77`). Any
   per-user caching **must** go through `buildUserCacheKey` (§4.4) or it risks a
-  cross-user leak (the `GetCurrentPerson` trap). Purely per-*group* data ("members
+  cross-user leak (the `GetCurrentPerson` trap). Purely per-_group_ data ("members
   of group X") can stay in the shared namespace since `GroupId` in the query
   already discriminates the key.
 - Propose and validate **one** invalidation strategy: TTL-only,
@@ -403,7 +443,7 @@ complex (per Rule 12 — surface it, don't paper over it).
   24h-JWT-in-a-400-day-cookie issue means a session can **silently expire
   mid-flow**. The spike must **recognize an auth expiry as an auth expiry**, not
   misdiagnose it as a REST/write failure. (Refresh is out of scope §4.6 — but the
-  *diagnosis* is in scope here.)
+  _diagnosis_ is in scope here.)
 - Note the operational reality: **Redis down ≠ hard failure** — the app falls
   back to direct API calls (`redis-config.ts:50-64`); and SMS rate-limiting
   silently no-ops when Redis is null (auth review "Minor"). Factor these into the
@@ -443,18 +483,18 @@ etc.).
 
 Per the survey — note v1/v2 availability. Pick per-endpoint and document (§3).
 
-| Need | Endpoint | v2 available? |
-| --- | --- | --- |
-| Members of a group | `GET /api/GroupMembers?$filter=GroupId eq {id}` (+`$top`/`$skip`) | ✅ `/api/v2/models/groupmembers` (`search`) |
-| A user's groups | `GET /api/GroupMembers?$filter=PersonId eq {id}&$expand=Group,GroupRole` | ✅ |
-| Add member | `POST /api/GroupMembers` — min body `GroupId`, `PersonId`, `GroupRoleId` | ✅ |
-| Remove member | `DELETE /api/GroupMembers/{id}` (hard) **or** `PATCH` → `GroupMemberStatus: Inactive` / `IsArchived: true` (soft) | ✅ |
-| Change role | `PATCH`/`PUT /api/GroupMembers/{id}` set `GroupRoleId` | ✅ |
-| Role ids (e.g. "Leader") | `GET /api/GroupTypeRoles?$filter=GroupTypeId eq {id}` | ❌ **v1 only** |
-| Member/person attributes | v1 `POST /api/{Controller}/AttributeValue/{id}` · v2 `PATCH /api/v2/models/{entity}/{id}/attributevalues` | mixed |
-| Person lookup (add-by-email) | `GET /api/People/GetByEmail/{email}`, `GetByPersonAliasId/{id}` | ✅ (People) |
-| Current person | `GET /api/People/GetCurrentPerson` | — |
-| Trigger workflow (explicit) | `POST /api/{Controller}/LaunchWorkflow/{id}` · `POST /api/Workflows/WorkflowEntry/{workflowTypeId}` | ❌ no v2 on `Workflows` |
+| Need                         | Endpoint                                                                                                          | v2 available?                               |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| Members of a group           | `GET /api/GroupMembers?$filter=GroupId eq {id}` (+`$top`/`$skip`)                                                 | ✅ `/api/v2/models/groupmembers` (`search`) |
+| A user's groups              | `GET /api/GroupMembers?$filter=PersonId eq {id}&$expand=Group,GroupRole`                                          | ✅                                          |
+| Add member                   | `POST /api/GroupMembers` — min body `GroupId`, `PersonId`, `GroupRoleId`                                          | ✅                                          |
+| Remove member                | `DELETE /api/GroupMembers/{id}` (hard) **or** `PATCH` → `GroupMemberStatus: Inactive` / `IsArchived: true` (soft) | ✅                                          |
+| Change role                  | `PATCH`/`PUT /api/GroupMembers/{id}` set `GroupRoleId`                                                            | ✅                                          |
+| Role ids (e.g. "Leader")     | `GET /api/GroupTypeRoles?$filter=GroupTypeId eq {id}`                                                             | ❌ **v1 only**                              |
+| Member/person attributes     | v1 `POST /api/{Controller}/AttributeValue/{id}` · v2 `PATCH /api/v2/models/{entity}/{id}/attributevalues`         | mixed                                       |
+| Person lookup (add-by-email) | `GET /api/People/GetByEmail/{email}`, `GetByPersonAliasId/{id}`                                                   | ✅ (People)                                 |
+| Current person               | `GET /api/People/GetCurrentPerson`                                                                                | —                                           |
+| Trigger workflow (explicit)  | `POST /api/{Controller}/LaunchWorkflow/{id}` · `POST /api/Workflows/WorkflowEntry/{workflowTypeId}`               | ❌ no v2 on `Workflows`                     |
 
 No dedicated "groups by person" endpoint exists (survey Key Finding #1); no
 nested `GET /api/People/{id}/Groups` — relational reads go through `$filter` on
@@ -526,17 +566,29 @@ Apollos** (`services`), not in the client.
 
 ## 10. Timeline & deliverables
 
-- **Day 1 — orient & verify.** Read both docs (§2). Verify environment and that
-  the Rock dev instance is usable. **Determine the Rock CMS version** (§3). Grep
-  `services` for the leader resolver and **reconcile `requireGroupLeader`
-  semantics** (§4.2). **Verify the `GroupMemberStatus eq 1` assumption** against
-  our instance. Read the `legacy-my-groups` Manage implementation (§8).
+The go/no-go hinges primarily on **Q1** (can we authorize and write at all) and
+**Q2** (do workflows fire). Q3 (performance), Q4 (cache), and Q6 (gaps) inform
+_how_ to build, not _whether_ — so if time compresses, protect Q1/Q2 depth and
+take honest first-pass answers on the rest.
+
+- **Day 0 — gate.** The three Rock-dev write-access checks above. Blocked here =
+  stop and report.
+- **Day 1 — orient.** Read both docs (§2). Determine the Rock CMS version (§3).
+  Grep `services` for the leader resolver and reconcile `requireGroupLeader`
+  semantics (§4.2). Verify the `GroupMemberStatus eq 1` assumption. Read the
+  `legacy-my-groups` Manage implementation (§8).
 - **Day 2–3 — build.** The minimal auth prerequisites (§4.1–4.4) and the
-  prototype flow: **view → add → remove** (§5), composed per §4.5.
-- **Day 4 — exercise.** Measure Q3; test failure modes Q5; evaluate cache
-  strategy Q4; run the authorization + workflow + attribute-persistence +
-  DELETE-cascade checks (Q1, Q2, Q6).
-- **Day 5 — write up.** Answer Q1–Q6 with evidence; end with **go / no-go**.
+  prototype flow: view → add → remove (§5), composed per §4.5.
+- **Day 4 — exercise, in priority order.** First **Q1 and Q2** (go/no-go
+  critical) — authorization gate, both write models, DELETE cascade, workflow
+  firing. Then **Q3/Q4/Q6** as lighter first passes. Track **Q5** failure modes
+  throughout rather than as a separate step.
+- **Day 5 — write up.** Answer Q1–Q6 with evidence; end with go/no-go.
+
+**Realistic duration:** 5 days is a floor, not a target. If Q1 model (b),
+attribute persistence, or DELETE cascade throw surprises, expect Day 4 to spill
+into Day 5 and the write-up to compress — that's fine, protect the Q1/Q2
+evidence over polish.
 
 **Final deliverable:** a markdown doc at
 **`docs/architecture/spike-manage-group-members.md`** — in the new My Groups repo
