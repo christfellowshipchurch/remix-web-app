@@ -20,6 +20,11 @@
       "source": "/articles/give-to-the-crisis-fund",
       "destination": "/give-to-the-crisis-fund",
       "statusCode": 301
+    },
+    {
+      "source": "/young-adults",
+      "destination": "/ministries/young-adults",
+      "statusCode": 301
     }
   ]
 }
