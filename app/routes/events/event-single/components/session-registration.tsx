@@ -2,6 +2,7 @@ import { useLoaderData } from 'react-router-dom';
 import { EventSinglePageType, SessionRegistrationCardType } from '../types';
 import Icon from '~/primitives/icon';
 import { Button } from '~/primitives/button/button.primitive';
+import HtmlRenderer from '~/primitives/html-renderer';
 
 export function SessionRegistration() {
   const { title, sessionScheduleCards } = useLoaderData<EventSinglePageType>();
@@ -92,7 +93,10 @@ const SessionRegistrationCard = ({
         {card.additionalInfo && (
           <div className='flex items-center gap-3'>
             <Icon name='foodMenu' size={20} className='shrink-0 text-ocean' />
-            <p className='text-sm text-gray-500'>{card.additionalInfo}</p>
+            <HtmlRenderer
+              html={card.additionalInfo}
+              className='text-sm text-gray-500'
+            />
           </div>
         )}
       </div>
