@@ -614,3 +614,64 @@ building My Groups on **REST + Redis + React Router v7**.
    GroupMember entity type? (Q2, survey #12.)
 8. **`legacy-my-groups` path confirmation** — the §8 paths are carried from the
    auth review; confirm them against the legacy repo when it's in scope.
+
+---
+
+## Day 0 findings
+
+**Day 0 — gate result: PASS.** All three Rock dev write-access checks passed on
+`dev-rock.christfellowship.church`. Findings below go beyond pass/fail and
+correct several assumptions in the brief and auth-review.
+
+### Environment / identity
+
+- **Auth:** Option A, `Authorization-Token: $ROCK_TOKEN` (service account).
+  `GET /api/People/GetCurrentPerson` returned `personId` 389650,
+  `primaryAliasId` 389595, name `"apollos"`. This is the service account, not a
+  test leader — correct identity for write model (a), but app-side leader
+  authorization (`requireGroupLeader`, Day 2–3) is still untested.
+
+### OData / query findings (affect `requireGroupLeader`, §4.2)
+
+- `GroupMemberStatus eq 1` in an OData `$filter` returns **HTTP 400**
+  (`Edm.String` vs `Edm.Int32`). Must use `GroupMemberStatus eq 'Active'` or
+  `'Inactive'`. The brief's and auth-review's `GroupMemberStatus eq 1` reference
+  filter is **wrong for this Rock instance**.
+- **Nuance:** `$filter` requires the string enum, but entity JSON returns
+  numeric (`0`/`1`), and write payloads accept numeric (`GroupMemberStatus: 1`
+  worked on `POST`). Same field, different representation depending on context.
+- `$expand=Group` on `GroupMembers` errors — `Group` is not a navigation
+  property on `Rock.Model.GroupMember`. Fetch the group separately via
+  `GET /api/Groups/{id}`. `$expand=GroupRole` works (needed for the `isLeader`
+  check).
+- **Corrected `requireGroupLeader` filter:**
+  `GroupMembers?$filter=GroupId eq {groupId} and PersonId eq {personId} and GroupMemberStatus eq 'Active'&$expand=GroupRole`
+
+### Write-path shape (affects Q1 and the §4.5 action)
+
+- `POST /api/GroupMembers` returns a **bare integer id** (e.g. `8862280`), not
+  entity JSON, and no `Location` header. To confirm or return member state, the
+  action must `GET`-by-id after `POST`. This makes an add **2 round-trips**
+  (`POST` + `GET`) — relevant to Q3.
+- `PATCH /api/GroupMembers/{id}` returns **204** with an empty body. Confirm
+  state via a follow-up `GET`.
+- Gate reversal used `PATCH` → Inactive (soft remove), not `DELETE`. `DELETE`
+  cascade behavior remains unverified (Q1, survey #4).
+
+### Workflows (Q2 — preliminary, per-group-type)
+
+- Group type **31** (a primary group type) has **4** active GroupMember workflow
+  triggers:
+  - **"Web and App Cache Flush"** (Group Member Cache Clear) on Member
+    Added/Active and Member Removed
+  - **"Activity Indicators for Data Automation"** (Write Interaction) on
+    Added/Active and Added/Pending
+- **Open question (top Q2 priority for Day 4):** after a confirmed REST `POST`,
+  no visible workflow run entry was found for the Activity Indicator workflow.
+  Undetermined whether REST writes don't trip the triggers the way UI writes do,
+  or whether these are no-persist workflows that leave no run log. Resolve Day 4.
+- **Q4 input:** two triggers already flush some web/app cache on member change.
+  Determine Day 4 whether that flush touches our Redis-via-Vercel or only legacy
+  cache.
+- These findings are **per-group-type**; triggers vary by type and are not
+  global.
