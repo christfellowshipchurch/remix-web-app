@@ -101,7 +101,11 @@ export function EventHit({
             contentChannelId: '78',
             contentType: 'EVENTS',
             name: hit.title,
-            summary: hit.summary ?? '',
+            summary:
+              hit.eventsFeaturedCardSubtitle ||
+              hit.eventCardDescription ||
+              hit.summary ||
+              '',
             image: imageUri,
             pathname: eventSingleUrl,
             startDate: formattedDate,
