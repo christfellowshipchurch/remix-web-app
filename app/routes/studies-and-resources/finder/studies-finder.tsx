@@ -13,9 +13,13 @@ export function StudiesFinderPage() {
             image='/assets/images/classes-hero.webp'
             imageAlt='Studies Hero'
             subtitle='Explore studies and resources designed to help you grow in your faith and strengthen your relationship with God and others. Study with a group, through a class, or on your own. '
+            button={{
+              text: 'Study Gateway - Create an Account',
+              href: 'https://www.studygateway.com/invite/O0R96',
+            }}
             secondaryButton={{
-              text: 'Help me to find a Study',
-              href: '#search',
+              text: 'Study Gateway',
+              href: 'https://www.studygateway.com/',
             }}
           />
         </div>
