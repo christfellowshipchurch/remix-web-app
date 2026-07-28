@@ -92,9 +92,14 @@ export const AboutPartial = ({
                 key={`${blurb.title}-${index}`}
                 className='bg-white border border-[#BEBDC3] rounded-[12px] flex items-center p-4'
               >
-                <div className='flex gap-1 text-black'>
+                <div className='text-black'>
                   <b>{blurb.title}</b>
-                  <HtmlRenderer html={blurb.description} className='inline' />
+                  <br />
+                  <br />
+                  <HtmlRenderer
+                    html={blurb.description}
+                    className='inline [&>p:first-child]:inline'
+                  />
                 </div>
               </div>
             ))}
