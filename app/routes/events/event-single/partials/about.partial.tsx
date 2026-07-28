@@ -80,9 +80,10 @@ export const AboutPartial = ({
                 <h3 className='text-black text-xl font-semibold'>
                   {moreInfoTitle}
                 </h3>
-                <p className='text-[#717182] text-sm font-medium'>
-                  {moreInfoText}
-                </p>
+                <HtmlRenderer
+                  html={moreInfoText}
+                  className='text-[#717182] text-sm font-medium'
+                />
               </div>
             )}
 
