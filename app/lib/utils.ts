@@ -380,13 +380,20 @@ export const parseRockKeyValueList = (
 }[] => {
   if (!input || input === '') return [];
 
-  return input.split('|').map((item) => {
-    const [key, value] = item.split('^');
-    return {
-      key: decodeURIComponent(key.trim()), // decode the key to handle special characters like %20 for CTAs
-      value: value.trim(),
-    };
-  });
+  return input
+    .split('|')
+    .map((item) => {
+      const [key, value] = item.split('^');
+      // Malformed/empty segments (e.g. a stray trailing `|`, or a Rock
+      // matrix row with no `^` pair) have no value to destructure — skip them
+      // instead of crashing or rendering a blank entry.
+      if (value === undefined) return null;
+      return {
+        key: decodeURIComponent(key.trim()), // decode the key to handle special characters like %20 for CTAs
+        value: value.trim(),
+      };
+    })
+    .filter((item): item is { key: string; value: string } => item !== null);
 };
 
 export const parseRockValueList = (input: string): string[] => {

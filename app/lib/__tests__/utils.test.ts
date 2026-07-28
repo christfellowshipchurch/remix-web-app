@@ -382,6 +382,18 @@ describe('parseRockKeyValueList', () => {
   it('returns empty array for null input', () => {
     expect(parseRockKeyValueList(null as unknown as string)).toEqual([]);
   });
+
+  it('ignores a trailing pipe instead of crashing on the empty segment it leaves behind', () => {
+    const result = parseRockKeyValueList('Learn More^/learn|');
+    expect(result).toEqual([{ key: 'Learn More', value: '/learn' }]);
+  });
+
+  it('drops a segment missing the ^ delimiter instead of crashing', () => {
+    const result = parseRockKeyValueList(
+      'Learn More^/learn|44979e1e-660c-4e12-a7f8-79b53b7f5c47',
+    );
+    expect(result).toEqual([{ key: 'Learn More', value: '/learn' }]);
+  });
 });
 
 describe('parseRockValueList', () => {
