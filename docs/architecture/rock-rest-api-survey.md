@@ -45,9 +45,10 @@ Surveyed the Swagger UI at `https://rock.christfellowship.church/api/docs/index`
 
 ## Endpoint catalog
 
-Note on format: nearly every entity controller in this Rock instance exposes an identical boilerplate set of endpoints in addition to standard CRUD. To avoid repetition, that boilerplate is documented once here and only *deviations or additions* are listed per controller below.
+Note on format: nearly every entity controller in this Rock instance exposes an identical boilerplate set of endpoints in addition to standard CRUD. To avoid repetition, that boilerplate is documented once here and only _deviations or additions_ are listed per controller below.
 
 **Standard CRUD (present on every controller in this survey):**
+
 ```
 GET    /api/{Controller}                    Queryable GET (list) — supports $expand, $filter, $select, $orderby, $top, $skip, loadAttributes, attributeKeys
 POST   /api/{Controller}                    Add a record — body: full model object
@@ -60,6 +61,7 @@ DELETE /api/{Controller}/AttributeValue/{id} Delete a single attribute value
 ```
 
 **Generic "utility" endpoints (present on almost every controller):**
+
 ```
 GET    /api/{Controller}/DataView/{id}                          List of records represented by a Data View
 GET    /api/{Controller}/InDataView/{dataViewId}/{entityId}      Whether entityId is in the given Data View
@@ -70,6 +72,7 @@ PUT    /api/{Controller}/SetContext/{id}                         Set the Rock "c
 ```
 
 **v2 model API (present alongside almost every classic controller, lowercase plural entity name):**
+
 ```
 POST   /api/v2/models/{entity}                          Create
 GET    /api/v2/models/{entity}/{id}                     Get single
@@ -85,7 +88,9 @@ GET/POST /api/v2/models/{entity}/search/{searchKey}      Search by a named syste
 ### Tier 1: Core My Groups
 
 #### Controller: Groups
+
 Standard CRUD + generic utility + v2 model API, plus:
+
 ```
 GET  /api/Groups/ByLatLong                                             Groups surrounding a lat/long, optional geofence group type
 GET  /api/Groups/ByLocation                                            Groups surrounding a location, optional geofence group type
@@ -99,26 +104,34 @@ POST /api/Groups/GetMapInfoWindow/{groupId}/{locationId}               Map info 
 GET  /api/Groups/GroupTypeCheckinConfiguration/{groupTypeGuid}         Simplified check-in config structure (used by "FrontPorch")
 PUT  /api/Groups/SaveAddress/{groupId}/{locationTypeId}                Save a group's address
 ```
+
 **Notable:** No dedicated "groups by person" endpoint — see Key Finding #1.
 
 #### Controller: GroupMembers
+
 Standard CRUD + generic utility + v2 model API, plus:
+
 ```
 GET    /api/GroupMembers/KnownRelationship             Get a known relationship
 POST   /api/GroupMembers/KnownRelationship             Create a known relationship
 DELETE /api/GroupMembers/KnownRelationship             Delete a known relationship
 POST   /api/GroupMembers/GetGroupPlacementGroupMembers Get group-placement group members — body: GetGroupPlacementGroupMembersParameters
 ```
+
 **Notable:** `GroupMember` model fields relevant to My Groups: `GroupId`, `PersonId`, `GroupRoleId`, `GroupMemberStatus` (enum: Inactive/Active/Pending), `IsArchived`/`ArchivedDateTime`, `Note`, `GuestCount`, `CommunicationPreference`, plus schedule-related fields (`ScheduleTemplateId`, `ScheduleStartDate`, etc.) for groups that use scheduling/check-in.
 
 #### Controller: GroupTypes
+
 Standard CRUD + generic utility + v2 model API only — no additional business endpoints found.
 
 #### Controller: GroupTypeRoles
+
 Standard CRUD + generic utility only — **no v2 model API detected** for this controller, and no additional business endpoints. Use this controller to look up role ids (e.g. "Leader") needed for GroupMember role updates.
 
 #### Controller: People
+
 Standard CRUD + generic utility + v2 model API, plus a large custom surface:
+
 ```
 GET  /api/People({key})                                     Queryable GET, with option to include deceased records
 POST /api/People/AddExistingPersonToFamily                  Add an existing person to a family (optionally removing from others)
@@ -143,18 +156,23 @@ GET  /api/People/Search                                       Results for the Pe
 POST /api/People/UpdatePersonProfilePhoto / UpdateProfilePhoto  Update profile photo — body: string (image data)
 GET  /api/People/VCard/{personGuid}                            VCard for a person
 ```
+
 **Notable:** `GetCurrentPerson` and the impersonation-token endpoints are the two auth-adjacent tools most relevant to per-user authorization in My Groups.
 
 #### Controller: PersonAlias(es)
+
 (Controller name in Swagger is singular `PersonAlias`.) Standard CRUD + generic utility only — no additional business endpoints found. Relevant because most Rock APIs reference people by `PersonAliasId` rather than raw `PersonId`; use `GET /api/People/GetByPersonAliasId/{id}` to resolve.
 
 ### Tier 2: Likely needed
 
 #### Controller: GroupLocations
+
 Standard CRUD + generic utility + v2 model API only — no additional business endpoints found.
 
 #### Controller: Attendance / Attendances
+
 Standard CRUD + generic utility + v2 model API, plus a substantial scheduling/check-in surface:
+
 ```
 PUT  /api/Attendances/AddAttendance                                     Add/update attendance (creates AttendanceOccurrence if missing)
 GET  /api/Attendances/CanSchedulePerson                                 Whether a person can be scheduled for an occurrence
@@ -167,27 +185,36 @@ PUT  /api/Attendances/ScheduledPersonAddConfirmed / AddPending           Schedul
 PUT  /api/Attendances/ScheduledPersonConfirm / Decline / Pending / Remove  Update a scheduled person's status
 PUT  /api/Attendances/ScheduledPersonSendConfirmationCommunication       (Re)send confirmation email
 ```
+
 **Notable:** This is Rock's group-scheduling/check-in engine surface — relevant if My Groups will show attendance or scheduling, otherwise skippable.
 
 #### Controller: Schedules
+
 Standard CRUD + generic utility + v2 model API only — no additional business endpoints found.
 
 #### Controller: AttributeValues
+
 Standard CRUD + generic utility only — no additional business endpoints, and no v2 model route detected (attribute values are written via the entity's own `AttributeValue/{id}` or `.../attributevalues` routes instead, not directly here).
 
 #### Controller: Attributes
+
 Standard CRUD + generic utility, plus:
+
 ```
 PUT /api/attributes/flush          Flush all global attributes from cache
 PUT /api/attributes/flush/{id}     Flush a single attribute from cache
 ```
-**Notable:** This controller manages attribute *definitions*, not values.
+
+**Notable:** This controller manages attribute _definitions_, not values.
 
 #### Controller: Workflows
+
 Standard CRUD + generic utility, plus:
+
 ```
 POST /api/Workflows/WorkflowEntry/{workflowTypeId}   Initiate a new workflow
 ```
+
 **Notable:** No v2 model route detected. See Key Finding #11 for the two ways to trigger a workflow.
 
 ### Tier 3: Noted for reference

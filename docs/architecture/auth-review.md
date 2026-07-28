@@ -11,7 +11,7 @@ rather than guessed.
 
 **TL;DR:** A working email + SMS login flow exists and stores a Rock session
 cookie inside an encrypted, signed JWT in an HttpOnly cookie. It is sound for
-*read-as-current-user* scenarios but has three gaps that block My Groups as-is:
+_read-as-current-user_ scenarios but has three gaps that block My Groups as-is:
 (1) **all write helpers execute as the app service account (`ROCK_TOKEN`), not
 as the logged-in user, and there is no application-level authorization layer** —
 so nothing stops one logged-in user from writing another group's data;
@@ -31,15 +31,15 @@ All auth form submissions funnel through a single action:
 `app/routes/auth/route.tsx`. It reads `formType` from the posted `FormData` and
 dispatches (`app/routes/auth/route.tsx:20-78`):
 
-| `formType`        | Handler                                             |
-| ----------------- | --------------------------------------------------- |
-| `authenticate`    | `authenticate()` — `app/routes/auth/authenticate.tsx` |
+| `formType`        | Handler                                                              |
+| ----------------- | -------------------------------------------------------------------- |
+| `authenticate`    | `authenticate()` — `app/routes/auth/authenticate.tsx`                |
 | `requestSmsPin`   | `requestSmsPinLogin()` — `app/routes/auth/request-sms-pin-login.tsx` |
-| `loginWithSms`    | `authenticateSms()` — `app/routes/auth/authenticate-sms.tsx` |
-| `currentUser`     | `currentUser()` — `app/routes/auth/current-user.tsx` |
-| `logout`          | inline in `route.tsx:53-62`                          |
-| `checkUserExists` | `userExists()` — `app/routes/auth/userExists.tsx`   |
-| `registerPerson`  | `registerPerson()` — `app/routes/auth/register-person.tsx` |
+| `loginWithSms`    | `authenticateSms()` — `app/routes/auth/authenticate-sms.tsx`         |
+| `currentUser`     | `currentUser()` — `app/routes/auth/current-user.tsx`                 |
+| `logout`          | inline in `route.tsx:53-62`                                          |
+| `checkUserExists` | `userExists()` — `app/routes/auth/userExists.tsx`                    |
+| `registerPerson`  | `registerPerson()` — `app/routes/auth/register-person.tsx`           |
 
 The client side of these calls lives in the `AuthProvider`
 (`app/providers/auth-provider/index.tsx`), which `fetch`es `/auth` with the
@@ -53,13 +53,15 @@ matching `formType`.
 1. **`fetchUserCookie(identity, password)`**
    (`app/lib/.server/authentication/rock-authentication.ts:17-68`)
    `POST ${ROCK_API}/Auth/Login` with body:
+
    ```json
    { "Username": "...", "Password": "...", "Persisted": true }
    ```
+
    Rock does **not** return a token in the body. It returns a **`set-cookie`
    header** (Rock's `.ROCK` forms-auth cookie), which is read verbatim from
    `response.headers.get('set-cookie')` (`rock-authentication.ts:51`). That
-   cookie string *is* the credential.
+   cookie string _is_ the credential.
 
 2. **`createRockSession(cookie)`**
    (`rock-authentication.ts:120-171`) first calls
@@ -117,6 +119,7 @@ HMAC + rate limiting is the chosen mitigation.
 
 `registerPerson()` (`app/routes/auth/register-person.tsx`) validates input with
 Zod (`register-person.tsx:7-18`) and branches:
+
 - **`email`** → `registerPersonWithEmail()`
   (`rock-authentication.ts:238-285`): guards against existing user
   (`checkUserExists`), creates a `People` record with `RecordStatusValueId: 5`
@@ -167,13 +170,13 @@ the Rock cookie inside it.
 
 ### Cookie attributes
 
-| Attribute  | Value                                              |
-| ---------- | ------------------------------------------------- |
-| `HttpOnly` | ✅ always                                          |
-| `Secure`   | ✅ prod only (`NODE_ENV === 'production'`)          |
-| `SameSite` | `Strict`                                           |
-| `Path`     | `/`                                                |
-| `Max-Age`  | `34560000` (**400 days**)                          |
+| Attribute  | Value                                      |
+| ---------- | ------------------------------------------ |
+| `HttpOnly` | ✅ always                                  |
+| `Secure`   | ✅ prod only (`NODE_ENV === 'production'`) |
+| `SameSite` | `Strict`                                   |
+| `Path`     | `/`                                        |
+| `Max-Age`  | `34560000` (**400 days**)                  |
 
 Set identically in `authenticate.tsx:37`, `authenticate-sms.tsx:40`,
 `register-person.tsx:61` and `:91`.
@@ -183,6 +186,7 @@ Set identically in `authenticate.tsx:37`, `authenticate-sms.tsx:40`,
 The **cookie** lives 400 days, but the **JWT inside it expires in 24h**
 (`token.ts:54-58`, `expiresIn: '24h'`; the code comment at `token.ts:50-53`
 confirms this was deliberately reduced from 400d). After 24h:
+
 - `parseToken` throws `TokenExpiredError`;
 - `registerToken` catches it and returns `{}` (`token.ts:30-32`);
 - `currentUser` then throws `AuthenticationError('rockCookie is undefined')`
@@ -220,6 +224,7 @@ It regex-extracts `auth-token` from the `Cookie` header
 ### Resolving "current user"
 
 `currentUser(token)` (`app/routes/auth/current-user.tsx`):
+
 1. `decrypt(token)` → JWT string;
 2. `registerToken(decrypted)` → `{ rockCookie, sessionId }` (`token.ts:20-41`);
 3. `getCurrentPerson(rockCookie)` → `People/GetCurrentPerson` **using the user's
@@ -243,12 +248,14 @@ plus `ttl: TTL.NONE` by hand (see `current-user.tsx:38-43, 52-56` and
 `'Authorization-Token': ''` to suppress the default app token).
 
 Signature (`fetch-rock-data.ts:73-86`):
+
 ```ts
 fetchRockData({ endpoint, queryParams?, customHeaders?, cache?, ttl?,
                 filterByDateRange?, filterByStatusApproved? })
 ```
+
 Default headers are `Content-Type` + `Authorization-Token: ROCK_TOKEN`
-(`fetch-rock-data.ts:20-23`); `customHeaders` are spread *after*, so a caller can
+(`fetch-rock-data.ts:20-23`); `customHeaders` are spread _after_, so a caller can
 override/add the `Cookie`.
 
 ### 🚩 Write helpers ignore the user entirely
@@ -263,6 +270,7 @@ Concerns C1).
 ### Missing/expired token in a loader — redirect pattern
 
 Two consumers, handled ad hoc:
+
 - **`app/routes/profile.tsx:16-36`**: `if (!userData) return redirect('/')`.
 - **`app/routes/navbar/loader.tsx:233-259`**: shape-checks the result and
   degrades to `parsedUserData = null`.
@@ -291,6 +299,7 @@ No role checks, no ownership checks, no group-leader checks exist anywhere in
 returns nothing relevant.)
 
 Authorization is **partly delegated to Rock, but only for reads**:
+
 - **Reads** that pass the user `Cookie` (e.g. `getCurrentPerson`) are evaluated
   by Rock under that user's permissions.
 - **Writes** do **not** pass the user cookie — they use `ROCK_TOKEN`
@@ -307,13 +316,14 @@ Net: for writes, neither the app nor Rock enforces per-user authorization today.
 ### What is cached
 
 Redis (`app/lib/.server/redis-config.ts`) backs:
+
 - **Content reads** via `fetchRockData` (default `ttl: TTL.DEFAULT` = 3600s)
   (`fetch-rock-data.ts:223-298`).
 - **SMS rate-limit counters**: `sms:pin_request:<number>` and
   `sms:login_attempt:<number>` (`sms-authentication.ts:151`,
   `authenticate-or-register-with-sms.ts:25`).
 
-**Per-user profile data is deliberately *not* cached today** — every
+**Per-user profile data is deliberately _not_ cached today** — every
 authenticated read passes `ttl: TTL.NONE` (`current-user.tsx:43, 56`;
 `getCurrentPerson` at `rock-authentication.ts:92`).
 
@@ -324,13 +334,14 @@ hashes **only the endpoint + query params**. `customHeaders` (i.e. the user
 `Cookie`) are **not part of the key** (`fetch-rock-data.ts:217-220`).
 
 Consequences:
+
 - Per-user data keyed by an explicit user-scoped param (e.g.
-  `GroupMembers?$filter=PersonId eq 123`) is *incidentally* safe — the differing
+  `GroupMembers?$filter=PersonId eq 123`) is _incidentally_ safe — the differing
   `$filter` yields a different key.
 - Per-user data behind a **user-agnostic URL** is **not** safe. The clearest
   example is `People/GetCurrentPerson`: the URL/params are identical for every
   user, so if it were ever cached with `ttl > 0`, the first user's record would
-  be served to everyone. It is safe *only* because it currently uses
+  be served to everyone. It is safe _only_ because it currently uses
   `TTL.NONE`. This is a latent cross-user-leak trap, not a present leak.
 
 ### Invalidation
@@ -369,7 +380,7 @@ directly.
   before touching Rock. The browser never holds Rock credentials and never calls
   Rock directly.
 
-### Gap list — what legacy does that remix's REST auth does *not* yet handle
+### Gap list — what legacy does that remix's REST auth does _not_ yet handle
 
 1. **Per-user server-side authorization.** Apollos authorized every read/write as
    the token's user. In remix, writes run as the service account and nothing
@@ -393,8 +404,9 @@ server-side encryption of the token, and Redis-based rate limiting.)
 My Groups needs group leaders to `POST/PATCH/DELETE` `/api/GroupMembers` etc. as
 themselves. Today's write helpers can't do that: they send `ROCK_TOKEN` and
 accept no user cookie (§3). Two things are missing:
+
 - a way to make writes carry the user's Rock cookie (or otherwise run under the
-  user), **or** a deliberate decision to keep writes on `ROCK_TOKEN` *plus* an
+  user), **or** a deliberate decision to keep writes on `ROCK_TOKEN` _plus_ an
   app-level authorization layer; and
 - that **authorization layer** itself (verify the caller actually leads the group
   before writing), which does not exist at all (§4).
@@ -432,7 +444,7 @@ change invalidation, so stale personal data can persist after logout.
   `GroupMembers` filtered to the user + leader role) that every group mutation
   action calls first; and (b) either add an optional `customHeaders`/`asUser`
   parameter to the write helpers so writes carry the user cookie, or consciously
-  keep `ROCK_TOKEN` for writes *and* treat the app guard as the sole
+  keep `ROCK_TOKEN` for writes _and_ treat the app guard as the sole
   authorization boundary. Document whichever you pick — do not leave it implicit.
 - **C2:** Introduce a small user-scoped cache convention: namespace per-user keys
   (e.g. `user:{personId}:...`) or require a `PersonId`/`GroupId` in the cache
@@ -499,14 +511,14 @@ These are the concrete signatures the recommendations above imply, written to
 match existing conventions (option-object params like `fetchRockData`, the
 `AuthenticationError`/`RockAPIError` hierarchy in `error-types.ts`, the `rock:`
 cache namespace in `cache-utils.ts`, and the `generateToken`/`registerToken`
-split in `token.ts`). They are proposals to *exercise* in the spike, not merged
+split in `token.ts`). They are proposals to _exercise_ in the spike, not merged
 code. Each entry says which Concern it closes.
 
 ### A. `requireUser` / `getAuthContext` — closes C6, enables C1 & C7
 
 New file: `app/lib/.server/authentication/require-user.ts`. Replaces the
 ambiguous `getUserFromRequest` return contract with one server-side context that
-also carries the Rock cookie (so writes can act *as* the user) and the ids the
+also carries the Rock cookie (so writes can act _as_ the user) and the ids the
 group guards need.
 
 ```ts
@@ -663,7 +675,7 @@ interface FetchRockDataOptions {
 Wire-up: `fetch-rock-data.ts:217` chooses `cacheUserId != null ?
 buildUserCacheKey(cacheUserId, endpoint, mergedQueryParams) : buildCacheKey(...)`.
 The `logout` handler (`app/routes/auth/route.tsx:53`) must resolve the context
-(via `getAuthContext`) *before* clearing the cookie so it can call
+(via `getAuthContext`) _before_ clearing the cookie so it can call
 `invalidateUser(redis, personId)`.
 
 ### D. Token refresh flow — closes C3
@@ -682,8 +694,8 @@ Two HttpOnly cookies instead of one. Add the refresh key next to `AUTH_TOKEN_KEY
 in `app/providers/auth-provider/index.tsx`:
 
 ```ts
-export const AUTH_TOKEN_KEY = 'auth-token';       // access; Max-Age aligned to 1h
-export const AUTH_REFRESH_KEY = 'auth-refresh';   // refresh; Max-Age aligned to 30d
+export const AUTH_TOKEN_KEY = 'auth-token'; // access; Max-Age aligned to 1h
+export const AUTH_REFRESH_KEY = 'auth-refresh'; // refresh; Max-Age aligned to 30d
 ```
 
 New handler `app/routes/auth/refresh.tsx`, dispatched by a new
@@ -713,7 +725,7 @@ export function buildAuthCookie(
 ```
 
 **Smaller alternative (if two cookies is too much for the spike):** keep one
-cookie but make it a *sliding session* — align `auth-token` `Max-Age` with the
+cookie but make it a _sliding session_ — align `auth-token` `Max-Age` with the
 JWT expiry and have `getAuthContext` re-issue the cookie when the token is within
 N minutes of expiry, returning the refreshed value for the caller to `Set-Cookie`.
 This closes the 24h/400-day contradiction with no second token, at the cost of
@@ -723,11 +735,17 @@ loaders needing to forward a refreshed cookie header.
 
 ```ts
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const auth = await requireUser(request);                    // A — 401 -> redirect
-  await requireGroupLeader(auth, Number(params.groupId));     // B — not leader -> 403
-  return postRockData({                                       // B companion — as the user
+  const auth = await requireUser(request); // A — 401 -> redirect
+  await requireGroupLeader(auth, Number(params.groupId)); // B — not leader -> 403
+  return postRockData({
+    // B companion — as the user
     endpoint: 'GroupMembers',
-    body: { GroupId: params.groupId, PersonId: newMemberId, GroupRoleId, GroupMemberStatus: 1 },
+    body: {
+      GroupId: params.groupId,
+      PersonId: newMemberId,
+      GroupRoleId,
+      GroupMemberStatus: 1,
+    },
     customHeaders: { Cookie: auth.rockCookie },
   });
   // then: invalidateUser(redis, auth.personId) or a group-scoped invalidation (C)
@@ -736,7 +754,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 ---
 
-*Prepared as a read-only review of `remix-web-app` at branch
+_Prepared as a read-only review of `remix-web-app` at branch
 `claude/my-groups-auth-review-cur0gi`. `legacy-my-groups` was consulted for §6;
 the `services` monorepo was not needed because the current `remix-web-app` auth
-flow talks to Rock directly and never touches Apollos.*
+flow talks to Rock directly and never touches Apollos._
