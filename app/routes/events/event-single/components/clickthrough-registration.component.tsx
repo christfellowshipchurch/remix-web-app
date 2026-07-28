@@ -850,6 +850,7 @@ const TimeStep = ({
 const EMBED_HEIGHT_BY_GROUP_TYPE: Record<string, number> = {
   'Kids Dedication': 890,
   'Kids Starting Line': 890,
+  'Kids Worship': 890,
   Baptism: 1440,
   'Dream Team Kickoff': 1000,
 };
@@ -919,7 +920,9 @@ export const FormStep = ({
   });
 
   const isKidsGroupType =
-    groupType === 'Kids Dedication' || groupType === 'Kids Starting Line';
+    groupType === 'Kids Dedication' ||
+    groupType === 'Kids Starting Line' ||
+    groupType === 'Kids Worship';
 
   const rockEmbedUrl = `${ROCK_PUBLIC_SITE_ORIGIN}/${isKidsGroupType ? 'kids-' : ''}form-embed?WorkflowTypeGuid=${workflowTypeGuid}&Group=${groupGuid}&Embed=true"}`;
 
