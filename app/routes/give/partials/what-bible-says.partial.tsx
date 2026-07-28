@@ -35,7 +35,7 @@ export const WhatBibleSaysAboutGiving = () => {
           <Card
             title='Offerings'
             description='GIVING BEYOND THE TITHE.'
-            content={`As Pastor Todd has shared, "We're never more like Jesus than when we serve and give." In Scripture, we're told that God so loved the world that He gave. Our offerings go beyond the obedience of the tithe; they are a reflection of a life marked by generosity. We believe generosity has a divine purpose connected to it, which is why we invite our church family to give beyond the tithe in one of these ways throughout the year. <br/><br/>Learn more about special offerings like <a class='text-ocean font-bold underline' target="_blank" href="https://www.impactoffering.church">Impact Offering</a> and <a class='text-ocean font-bold underline' href="/ministries/kingdom-builder">Kingdom Builders.</a>`}
+            content={`As Pastor Todd has shared, "We're never more like Jesus than when we serve and give." In Scripture, we're told that God so loved the world that He gave. Our offerings go beyond the obedience of the tithe; they are a reflection of a life marked by generosity. We believe generosity has a divine purpose connected to it, which is why we invite our church family to give beyond the tithe in one of these ways throughout the year. <br/><br/>Learn more about special offerings like <a class='text-ocean font-bold underline' target="_blank" href="https://www.impactoffering.church">Impact Offering</a> and <a class='text-ocean font-bold underline' href="/ministries/kingdom-builders">Kingdom Builders.</a>`}
           />
         </div>
 
