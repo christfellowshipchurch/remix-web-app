@@ -1,5 +1,6 @@
 import { icons } from '~/lib/icons';
 import Icon from '~/primitives/icon';
+import HtmlRenderer from '~/primitives/html-renderer';
 
 export const AboutPartial = ({
   aboutTitle,
@@ -79,9 +80,10 @@ export const AboutPartial = ({
                 <h3 className='text-black text-xl font-semibold'>
                   {moreInfoTitle}
                 </h3>
-                <p className='text-[#717182] text-sm font-medium'>
-                  {moreInfoText}
-                </p>
+                <HtmlRenderer
+                  html={moreInfoText}
+                  className='text-[#717182] text-sm font-medium'
+                />
               </div>
             )}
 
@@ -90,10 +92,14 @@ export const AboutPartial = ({
                 key={`${blurb.title}-${index}`}
                 className='bg-white border border-[#BEBDC3] rounded-[12px] flex items-center p-4'
               >
-                <div className='flex gap-1'>
-                  <p className='text-black'>
-                    <b>{blurb.title}</b> {blurb.description}
-                  </p>
+                <div className='text-black'>
+                  <b>{blurb.title}</b>
+                  <br />
+                  <br />
+                  <HtmlRenderer
+                    html={blurb.description}
+                    className='inline [&>p:first-child]:inline'
+                  />
                 </div>
               </div>
             ))}

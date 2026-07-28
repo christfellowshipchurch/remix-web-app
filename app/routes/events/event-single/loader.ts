@@ -34,6 +34,17 @@ export const loader: LoaderFunction = async ({ params }) => {
     sessionScheduleCardsRockItems,
   );
 
+  // Optional Blurb and FAQs are Rock Matrix attributes (Header/Content rows),
+  // not the pipe/caret "key^value" string format — resolve their rows instead
+  // of parsing the raw value (which is just the AttributeMatrix guid).
+  const optionalBlurbRockItems = await getAttributeMatrixItems({
+    attributeMatrixGuid: eventData.attributeValues?.optionalBlurb?.value || '',
+  });
+
+  const faqItemsRockItems = await getAttributeMatrixItems({
+    attributeMatrixGuid: eventData.attributeValues?.faqs?.value || '',
+  });
+
   const groupTypeGuid =
     eventData.attributeValues?.groupType?.value?.trim() || '';
   let groupType: EventSinglePageType['groupType'] = undefined;
@@ -78,17 +89,13 @@ export const loader: LoaderFunction = async ({ params }) => {
     })),
     moreInfoTitle: eventData.attributeValues?.moreInfoTitle?.value,
     moreInfoText: eventData.attributeValues?.moreInfoText?.value,
-    optionalBlurb: parseRockKeyValueList(
-      decodeURIComponent(eventData.attributeValues?.optionalBlurb?.value) || '',
-    ).map((item) => ({
-      title: item.key,
-      description: item.value,
+    optionalBlurb: optionalBlurbRockItems.map((item) => ({
+      title: item.attributeValues?.header?.value || '',
+      description: item.attributeValues?.content?.value || '',
     })),
-    faqItems: parseRockKeyValueList(
-      eventData.attributeValues?.faqs?.value || '',
-    ).map((item) => ({
-      question: item.key,
-      answer: item.value,
+    faqItems: faqItemsRockItems.map((item) => ({
+      question: item.attributeValues?.header?.value || '',
+      answer: item.attributeValues?.content?.value || '',
     })),
     // faqEmail attribute key from Rock Events Content Channel.
     // Optional — falls back to the default contact email when absent.
