@@ -1,0 +1,9 @@
+# Block secrets if they appear under this workspace (symlink/copy/checkout).
+# Home-dir secrets also covered by ~/.cursorignore + global ignore list.
+
+.local_secrets/
+.local_secrets/**
+**/.local_secrets/
+**/.local_secrets/**
+.zshrc
+**/.zshrc
