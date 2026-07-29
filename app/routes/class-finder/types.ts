@@ -37,6 +37,13 @@ export interface ClassHitType {
   language: 'English' | 'Español' | 'Multiple Languages';
   format: 'In-Person' | 'Virtual';
   /**
+   * Rock-managed registration override. Present but empty on most records; when
+   * populated, the session card links here instead of opening the signup modal.
+   * Spelled `registrationURL` to match the Algolia record (CFDP-4174 describes it
+   * as `registrationUrl`).
+   */
+  registrationURL?: string;
+  /**
    * True for synthetic cards built from a Rock 387 class with the "I'm Interested"
    * toggle on but no Algolia sessions. Not present on real Algolia records.
    */

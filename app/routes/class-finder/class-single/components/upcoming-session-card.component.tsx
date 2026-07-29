@@ -118,6 +118,27 @@ const FullCardModalTrigger = forwardRef<HTMLButtonElement, ButtonProps>(
 
 export const UpcomingSessionCard = ({ hit }: { hit: ClassHitType }) => {
   const displayClassType = hit.classType?.trim() ?? '';
+  const registrationUrl = hit.registrationURL?.trim() ?? '';
+
+  // A Rock-provided registration URL takes precedence over the signup modal:
+  // these sessions register through an external Rock page, so the in-app form
+  // would create a duplicate/incorrect registration.
+  if (registrationUrl) {
+    return (
+      <a
+        href={registrationUrl}
+        target='_blank'
+        rel='noopener noreferrer'
+        aria-label={`Sign up — ${displayClassType}`}
+        className={cn(
+          cardShellClassName,
+          'cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2',
+        )}
+      >
+        <UpcomingSessionCardBody hit={hit} />
+      </a>
+    );
+  }
 
   if (hit.groupId) {
     return (
