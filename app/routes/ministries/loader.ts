@@ -49,7 +49,7 @@ const hardCodedMinistries: Ministry[] = [
     title: 'CFSEU',
     description:
       'Earn your degree through Southeastern University at Christ Fellowship.',
-    image: getImageUrl('2966341'),
+    image: getImageUrl('3203078'),
     url: 'https://www.cfseu.com',
   },
 ];
