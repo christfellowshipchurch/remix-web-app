@@ -33,7 +33,12 @@ export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
         {/* Card Sections */}
         <div className='flex flex-col lg:flex-row gap-4 md:gap-6'>
           {cardData.map((card, index) => (
-            <HeroCard key={index} copy={card.copy} link={card.link} />
+            <HeroCard
+              key={index}
+              copy={card.copy}
+              link={card.link}
+              isAppStoreLink={card.isAppStoreLink}
+            />
           ))}
         </div>
       </div>
@@ -41,13 +46,18 @@ export const YesHero = ({ isSpanish }: { isSpanish?: boolean }) => {
   );
 };
 
-const heroCardData: { link: string; copy: string }[] = [
+type HeroCardData = { link: string; copy: string; isAppStoreLink?: boolean };
+
+const heroCardData: HeroCardData[] = [
   {
     link: '#devo',
     copy: 'A three-week devotional to start your relationship with Jesus.',
   },
   {
-    link: isAppleDevice() ? appleLink : googleLink,
+    // href is the Android fallback; Apple devices are redirected on click,
+    // since the device can only be detected in the browser.
+    link: googleLink,
+    isAppStoreLink: true,
     copy: 'Access resources, submit prayers, & get involved in our app',
   },
   {
@@ -56,13 +66,14 @@ const heroCardData: { link: string; copy: string }[] = [
   },
 ];
 
-const spanishHeroCardData: { link: string; copy: string }[] = [
+const spanishHeroCardData: HeroCardData[] = [
   {
     link: '#devo',
     copy: 'Un devocional de tres semanas para comenzar tu relación con Jesús.',
   },
   {
     link: googleLink,
+    isAppStoreLink: true,
     copy: 'Accede a recursos, envía oraciones y participa en nuestra app',
   },
   {
@@ -71,7 +82,7 @@ const spanishHeroCardData: { link: string; copy: string }[] = [
   },
 ];
 
-const HeroCard = ({ copy, link }: { copy: string; link: string }) => {
+const HeroCard = ({ copy, link, isAppStoreLink }: HeroCardData) => {
   const isHashLink = link.startsWith('#');
 
   return (
@@ -81,14 +92,18 @@ const HeroCard = ({ copy, link }: { copy: string; link: string }) => {
         target: '_blank',
         rel: 'noopener noreferrer',
       })}
-      onClick={
-        isHashLink
-          ? (event) => {
-              event.preventDefault();
-              scrollToAnchor(link.slice(1));
-            }
-          : undefined
-      }
+      onClick={(event) => {
+        if (isHashLink) {
+          event.preventDefault();
+          scrollToAnchor(link.slice(1));
+          return;
+        }
+
+        if (isAppStoreLink && isAppleDevice()) {
+          event.preventDefault();
+          window.open(appleLink, '_blank');
+        }
+      }}
       className='bg-white lg:bg-transparent relative flex justify-between items-center lg:justify-center gap-4 border-2 border-white w-full lg:max-w-[200px] pl-4 pr-3 lg:px-2 pt-2 pb-2 lg:pt-8 lg:pb-14 rounded-[36px] group hover:bg-white transition-all duration-400 cursor-pointer'
     >
       <p className='max-w-[85%] md:max-w-[92%] lg:max-w-none lg:text-lg lg:text-center text-text-secondary lg:text-[#FAFAFC] font-semibold group-hover:text-text-secondary transition-all duration-400'>
