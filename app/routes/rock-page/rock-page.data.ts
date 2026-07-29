@@ -10,7 +10,7 @@ import { ROCK_PARENT_RESIZE_QUERY_PARAM } from '~/lib/rock-iframe-resize';
 // Page IDs for Rock pages that this app embeds by name.
 export const CHURCH_OPPORTUNITY_APPLICATION_PAGE_ID = '5886';
 
-/** Rock workflow form for "Help Me Find a Place" volunteer applications. */
+/** Rock workflow form for "Help Me Find My Fit" volunteer applications. */
 export const VOLUNTEER_APPLICATION_WORKFLOW_TYPE_GUID =
   '119671db-8ad4-4654-ab45-32d7e79e55e0';
 
@@ -56,7 +56,7 @@ const ROCK_PAGE_EMBEDS: Record<RockPageEmbedKey, RockPageEmbedConfig> = {
     },
   },
   [ROCK_PAGE_EMBED_KEYS.volunteerApplication]: {
-    title: 'Help Me Find a Place',
+    title: 'Help Me Find My Fit',
     path: '/form-embed',
     fixedQueryParams: {
       WorkflowTypeGuid: VOLUNTEER_APPLICATION_WORKFLOW_TYPE_GUID,
