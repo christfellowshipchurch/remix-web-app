@@ -29,7 +29,7 @@ describe('getRockPageEmbedMetaTitle', () => {
     ).toBe('Church Opportunity Application');
     expect(
       getRockPageEmbedMetaTitle(ROCK_PAGE_EMBED_KEYS.volunteerApplication),
-    ).toBe('Help Me Find a Place');
+    ).toBe('Help Me Find My Fit');
   });
 
   it('falls back to the default title for unknown or missing embeds', () => {
