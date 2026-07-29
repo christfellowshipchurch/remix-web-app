@@ -6,6 +6,7 @@ export const EVENT_REGISTRATION_GROUP_TYPES = [
   'Journey',
   'Kids Starting Line',
   'Kids Dedication',
+  'Kids Worship',
   'Dream Team Kickoff',
 ] as const;
 
