@@ -84,11 +84,13 @@ const fetchLatestPodcastEpisode =
       const latestEpisodeData = await fetchRockData({
         endpoint: 'ContentChannelItems',
         queryParams: {
-          $filter: `(${channelFilter}) and Status eq 'Approved'`,
+          $filter: `(${channelFilter})`,
           $orderby: 'StartDateTime desc',
           $top: '1',
           loadAttributes: 'simple',
         },
+        filterByDateRange: true,
+        filterByStatusApproved: true,
       });
 
       const episode = (
@@ -146,21 +148,25 @@ const fetchFeatureCards = async () => {
         fetchRockData({
           endpoint: 'ContentChannelItems',
           queryParams: {
-            $filter: `ContentChannelId eq ${ContentChannelIds.articles} and Status eq 'Approved'`,
+            $filter: `ContentChannelId eq ${ContentChannelIds.articles}`,
             $orderby: 'StartDateTime desc',
             $top: '1',
             loadAttributes: 'simple',
           },
+          filterByDateRange: true,
+          filterByStatusApproved: true,
         }),
         fetchLatestPodcastEpisode(),
         fetchRockData({
           endpoint: 'ContentChannelItems',
           queryParams: {
-            $filter: `ContentChannelId eq 63 and Status eq 'Approved'`,
+            $filter: `ContentChannelId eq 63`,
             $orderby: 'StartDateTime desc',
             $top: '1',
             loadAttributes: 'simple',
           },
+          filterByDateRange: true,
+          filterByStatusApproved: true,
         }),
       ]);
 
@@ -169,6 +175,13 @@ const fetchFeatureCards = async () => {
         ? latestArticleData[0]
         : latestArticleData
     ) as RockContentChannelItem | undefined;
+
+    // A date-range-filtered fetch can come back as an empty array, which
+    // `.filter(Boolean)` would keep (empty arrays are truthy) and then break
+    // the card mapping below — so unwrap to a single item or undefined.
+    const sermon = Array.isArray(latestSermonData)
+      ? latestSermonData[0]
+      : latestSermonData;
 
     const latestArticleOrPodcastCard = pickMostRecentContentItem(
       article,
@@ -187,11 +200,9 @@ const fetchFeatureCards = async () => {
       navMenu: 'get involved',
     };
 
-    return [
-      latestSermonData,
-      latestArticleOrPodcastCard,
-      mockGetInvolvedData,
-    ].filter(Boolean);
+    return [sermon, latestArticleOrPodcastCard, mockGetInvolvedData].filter(
+      Boolean,
+    );
   } catch (error) {
     console.error('Error fetching feature cards:', error);
     return [];
