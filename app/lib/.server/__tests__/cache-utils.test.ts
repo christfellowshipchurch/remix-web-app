@@ -2,9 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import type Redis from 'ioredis';
 import {
   buildCacheKey,
+  buildUserCacheKey,
   deleteByPrefix,
   extractContentItemIds,
   invalidateItem,
+  invalidateUser,
   itemTagKey,
   stabilizeFilterForCacheKey,
   TTL,
@@ -314,5 +316,95 @@ describe('deleteByPrefix', () => {
       'COUNT',
       100,
     );
+  });
+});
+
+// ─── buildUserCacheKey ──────────────────────────────────────────────────────
+
+describe('buildUserCacheKey', () => {
+  it('namespaces the key by person so one user cannot read another cache entry', () => {
+    // The whole point of the per-user namespace: identical queries by different
+    // people must never collide, or a leader-only member list gets served to
+    // someone else.
+    const params = { $filter: 'GroupId eq 241543' };
+    const a = buildUserCacheKey(907, 'GroupMembers', params);
+    const b = buildUserCacheKey(21567, 'GroupMembers', params);
+
+    expect(a).not.toBe(b);
+    expect(a).toMatch(/^rock:u907:GroupMembers:[0-9a-f]{12}$/);
+    expect(b).toMatch(/^rock:u21567:GroupMembers:[0-9a-f]{12}$/);
+  });
+
+  it('never collides with the shared keyspace for the same query', () => {
+    const params = { $filter: 'GroupId eq 241543' };
+    expect(buildUserCacheKey(907, 'GroupMembers', params)).not.toBe(
+      buildCacheKey('GroupMembers', params),
+    );
+  });
+
+  it('is deterministic and param-order independent, like buildCacheKey', () => {
+    expect(
+      buildUserCacheKey(907, 'GroupMembers', { $top: '5', $select: 'Id' }),
+    ).toBe(
+      buildUserCacheKey(907, 'GroupMembers', { $select: 'Id', $top: '5' }),
+    );
+  });
+});
+
+// ─── invalidateUser ─────────────────────────────────────────────────────────
+
+describe('invalidateUser', () => {
+  it('returns 0 without touching redis when redis is null', async () => {
+    expect(await invalidateUser(null, 907)).toBe(0);
+  });
+
+  it('never calls KEYS — SCANs the per-user prefix', async () => {
+    // KEYS blocks the single-threaded server for the full scan; a write path
+    // that invalidates on every mutation must not do that.
+    const keysSpy = vi.fn();
+    const scan = vi
+      .fn()
+      .mockResolvedValue(['0', ['rock:u907:GroupMembers:aaa']]);
+    const del = vi.fn().mockResolvedValue(1);
+    const fakeRedis = { keys: keysSpy, scan, del } as unknown as Redis;
+
+    const result = await invalidateUser(fakeRedis, 907);
+
+    expect(keysSpy).not.toHaveBeenCalled();
+    expect(scan).toHaveBeenCalledWith(
+      '0',
+      'MATCH',
+      'rock:u907:*',
+      'COUNT',
+      100,
+    );
+    expect(del).toHaveBeenCalledWith('rock:u907:GroupMembers:aaa');
+    expect(result).toBe(1);
+  });
+
+  it('follows a multi-page cursor so no keys survive a large invalidation', async () => {
+    // Stopping at page one would leave stale authed data readable.
+    const scan = vi
+      .fn()
+      .mockResolvedValueOnce(['42', ['rock:u907:a:1']])
+      .mockResolvedValueOnce(['0', ['rock:u907:b:2']]);
+    const del = vi.fn().mockResolvedValue(2);
+    const fakeRedis = { scan, del } as unknown as Redis;
+
+    await invalidateUser(fakeRedis, 907);
+
+    expect(scan).toHaveBeenCalledTimes(2);
+    expect(del).toHaveBeenCalledWith('rock:u907:a:1', 'rock:u907:b:2');
+  });
+
+  it('does not call del when nothing matched', async () => {
+    const del = vi.fn();
+    const fakeRedis = {
+      scan: vi.fn().mockResolvedValue(['0', []]),
+      del,
+    } as unknown as Redis;
+
+    expect(await invalidateUser(fakeRedis, 907)).toBe(0);
+    expect(del).not.toHaveBeenCalled();
   });
 });

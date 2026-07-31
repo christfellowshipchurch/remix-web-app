@@ -2,18 +2,31 @@ import { normalize } from '~/lib/utils';
 import redis from './redis-config';
 import {
   buildCacheKey,
+  buildUserCacheKey,
   extractContentItemIds,
   itemTagKey,
   TTL,
   type TTLValue,
 } from './cache-utils';
 
-export { TTL, deleteByPrefix, invalidateItem } from './cache-utils';
+export {
+  TTL,
+  deleteByPrefix,
+  invalidateItem,
+  buildUserCacheKey,
+  invalidateUser,
+} from './cache-utils';
 export type { TTLValue } from './cache-utils';
 interface RockDataRequest {
   endpoint: string;
   body: Record<string, unknown> | string;
   contentType?: string;
+  /**
+   * Additional headers, merged over the defaults. Pass
+   * `{ Cookie: auth.rockCookie }` to write as the user; add
+   * `'Authorization-Token': ''` to also suppress the service-account token.
+   */
+  customHeaders?: Record<string, string>;
 }
 
 const baseUrl = `${process.env.ROCK_API}`;
@@ -83,6 +96,13 @@ interface FetchRockDataOptions {
   filterByDateRange?: boolean;
   /** When true, merge $filter with Status eq 'Approved' */
   filterByStatusApproved?: boolean;
+  /**
+   * Scopes the cache entry to one person (`rock:u{id}:...`) instead of the
+   * shared keyspace. Required for anything read as the user — a per-user result
+   * cached under a shared key would be served to other people. Invalidate with
+   * `invalidateUser`.
+   */
+  cacheUserId?: string | number;
 }
 
 /**
@@ -186,6 +206,7 @@ export const fetchRockData = async ({
   ttl,
   filterByDateRange = false,
   filterByStatusApproved = false,
+  cacheUserId,
 }: FetchRockDataOptions) => {
   const previewMode = isPreviewMode();
   // Preview mode only bypasses the Status filter — date-range filtering still
@@ -214,10 +235,14 @@ export const fetchRockData = async ({
     );
   }
 
-  const cacheKey = buildCacheKey(
-    endpoint,
-    mergedQueryParams as Record<string, string>,
-  );
+  const cacheKey =
+    cacheUserId === undefined
+      ? buildCacheKey(endpoint, mergedQueryParams as Record<string, string>)
+      : buildUserCacheKey(
+          cacheUserId,
+          endpoint,
+          mergedQueryParams as Record<string, string>,
+        );
   // Preview never reads or writes the shared Redis cache — this deployment's
   // results (unapproved content) must never be served to or poison prod's cache.
   const effectiveTtl: number = previewMode
@@ -309,15 +334,20 @@ export const fetchRockData = async ({
 /**
  *
  * @param endpoint - a string representing the Rock endpoint to delete
+ * @param customHeaders - additional headers, merged over the defaults
  * @returns the status code of the response
  */
-export const deleteRockData = async (endpoint: string) => {
+export const deleteRockData = async (
+  endpoint: string,
+  customHeaders?: Record<string, string>,
+) => {
   try {
     const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
       method: 'DELETE',
       headers: {
         'Authorization-Token': `${process.env.ROCK_TOKEN}`,
         'Content-Type': 'application/json',
+        ...customHeaders,
       },
     });
 
@@ -346,12 +376,14 @@ export const postRockData = async ({
   endpoint,
   body,
   contentType = 'application/json',
+  customHeaders,
 }: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': contentType,
       'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+      ...customHeaders,
     },
     body: typeof body === 'string' ? body : JSON.stringify(body),
   });
@@ -377,12 +409,17 @@ export const postRockData = async ({
  * @param params.body - the body of the put request
  * @returns response body as JSON
  */
-export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
+export const putRockData = async ({
+  endpoint,
+  body,
+  customHeaders,
+}: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+      ...customHeaders,
     },
     body: JSON.stringify(body),
   });
@@ -404,11 +441,16 @@ export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
  * @param params.body - the body of the patch request
  * @returns response status code
  */
-export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
+export const patchRockData = async ({
+  endpoint,
+  body,
+  customHeaders,
+}: RockDataRequest) => {
   const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
     method: 'PATCH',
     headers: {
       ...defaultHeaders,
+      ...customHeaders,
     },
     body: JSON.stringify(body),
   });

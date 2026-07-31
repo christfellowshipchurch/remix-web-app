@@ -77,6 +77,64 @@ export function buildCacheKey(
 }
 
 /**
+ * Builds a cache key scoped to one person.
+ *
+ * Format: `rock:u{personId}:{endpoint}:{hash12}` — the same hashing as
+ * `buildCacheKey`, with the person id in the namespace rather than folded into
+ * the hash. Two reasons it goes in the namespace: a per-user read can never
+ * collide with the shared `rock:{endpoint}:` keyspace, and `invalidateUser` can
+ * find every one of a person's keys by prefix without an index.
+ *
+ * Use for anything read as the user (their groups, their memberships) — caching
+ * those under a shared key would serve one person's data to another.
+ */
+export function buildUserCacheKey(
+  personId: string | number,
+  endpoint: string,
+  queryParams: Record<string, string | undefined>,
+): string {
+  return buildCacheKey(endpoint, queryParams).replace(
+    /^rock:/,
+    `rock:u${personId}:`,
+  );
+}
+
+/**
+ * Invalidates every per-user cache entry for `personId`.
+ *
+ * SCANs `rock:u{personId}:*` rather than using KEYS — KEYS blocks the
+ * single-threaded Redis server for the full scan. No reverse index is needed
+ * because the person id is already the key prefix.
+ *
+ * @returns Number of keys deleted (0 when redis is unavailable)
+ */
+export async function invalidateUser(
+  redis: Redis | null,
+  personId: string | number,
+): Promise<number> {
+  if (!redis) return 0;
+
+  const pattern = `rock:u${personId}:*`;
+  const keys: string[] = [];
+  let cursor = '0';
+
+  do {
+    const [nextCursor, batch] = await redis.scan(
+      cursor,
+      'MATCH',
+      pattern,
+      'COUNT',
+      100,
+    );
+    keys.push(...batch);
+    cursor = nextCursor;
+  } while (cursor !== '0');
+
+  if (keys.length === 0) return 0;
+  return redis.del(...keys);
+}
+
+/**
  * Redis key namespace for the per-item reverse index (a Set of cache keys that
  * contain the given content item). Kept separate from the `rock:` cache namespace
  * so a future full flush of `rock:*` won't clear the index, and vice versa.
