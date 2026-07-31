@@ -87,6 +87,10 @@ describe('requireGroupLeader', () => {
       "GroupMemberStatus eq 'Active'",
     );
     expect(options.queryParams.$filter).toContain('GroupRole/IsLeader eq true');
+    // An archived membership must never authorize. Dev suggests REST hides
+    // archived rows anyway, but that is unproven and prod is a major version
+    // behind, so the predicate is the guarantee rather than the observation.
+    expect(options.queryParams.$filter).toContain('IsArchived eq false');
     expect(options.queryParams.$filter).not.toMatch(/GroupMemberStatus eq 1\b/);
     expect(options.ttl).toBe(0);
   });

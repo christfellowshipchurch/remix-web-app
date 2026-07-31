@@ -633,10 +633,13 @@ correct several assumptions in the brief and auth-review.
 
 ### OData / query findings (affect `requireGroupLeader`, §4.2)
 
-- `GroupMemberStatus eq 1` in an OData `$filter` returns **HTTP 400**
-  (`Edm.String` vs `Edm.Int32`). Must use `GroupMemberStatus eq 'Active'` or
-  `'Inactive'`. The brief's and auth-review's `GroupMemberStatus eq 1` reference
-  filter is **wrong for this Rock instance**.
+- **Bare** `GroupMemberStatus eq 1` (unquoted int) in an OData `$filter` returns
+  **HTTP 400** (`Edm.String` vs `Edm.Int32`). The value must be quoted. **Both
+  quoted forms work and are equivalent:** `eq 'Active'` and `eq '1'` coerce to the
+  same predicate and return byte-identical rows on dev and prod (verified Day 2
+  §2). So the brief's and auth-review's `GroupMemberStatus eq 1` reference filter
+  needs **quoting only** — its *semantics* were correct, and legacy's `eq '1'`
+  form was never broken. Prefer `'Active'` for readability, not correctness.
 - **Nuance:** `$filter` requires the string enum, but entity JSON returns
   numeric (`0`/`1`), and write payloads accept numeric (`GroupMemberStatus: 1`
   worked on `POST`). Same field, different representation depending on context.

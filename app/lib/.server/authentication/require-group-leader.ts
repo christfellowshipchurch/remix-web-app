@@ -28,7 +28,16 @@ interface GroupMemberRow {
 
 /**
  * Asserts the caller is an ACTIVE LEADER of `groupId`, returning the membership
- * row that grants it. Throws `AuthorizationError` (→ 403) otherwise.
+ * row that grants it. Throws `AuthorizationError` otherwise.
+ *
+ * NOTE — `AuthorizationError` does NOT currently produce a 403. It is a plain
+ * `Error`, not a `Response`, and nothing maps it: React Router treats a thrown
+ * non-`Response` as an unhandled error, so the route answers **500** and the root
+ * `ErrorBoundary` renders the generic `NotFound` page. Verified Day 2 §11. The
+ * one-line fix is to throw `data({...}, { status: 403 })` here (or map it in a
+ * route-level boundary) — deliberately not done in this spike because it changes
+ * the error contract for every future caller. Deny is safe today; the status code
+ * is simply wrong.
  *
  * Takes an already-resolved `AuthContext` rather than a `Request` so the
  * 401-before-403 ordering stays explicit at the call site: the caller must have
@@ -43,8 +52,14 @@ interface GroupMemberRow {
  *   integer in entity JSON.
  * - `GroupRole/IsLeader eq true` — filtering on the nav property works, so Rock
  *   returns only leader rows and there is no app-side scan to get wrong.
- * - No `IsArchived` predicate: REST does not appear to return archived rows at
- *   all, making it dead weight (§5 — flagged as not decisively proven).
+ * - `IsArchived eq false` — kept deliberately even though it is very likely a
+ *   no-op. Adding it to this exact query on dev did not change the row count
+ *   (§5), which is consistent with REST excluding archived rows before OData is
+ *   applied. But that was never decisively proven, and dev is a major version
+ *   ahead of prod (§1) — so on prod the predicate may be the only thing standing
+ *   between an archived membership row and a granted authorization. It costs
+ *   nothing and it is verified not to over-deny. Free insurance; do not remove it
+ *   on the grounds that it looks redundant.
  *
  * `IsLeader` is deliberately the predicate rather than `CanManageMembers`. In
  * group type 31 that authorizes Group Leader (50) and Co-Leader (47) only, and
@@ -74,6 +89,7 @@ export const requireGroupLeader = async (
         `GroupId eq ${groupId}`,
         `PersonId eq ${auth.personId}`,
         `GroupMemberStatus eq 'Active'`,
+        `IsArchived eq false`,
         `GroupRole/IsLeader eq true`,
       ].join(' and '),
       $expand: 'GroupRole',
