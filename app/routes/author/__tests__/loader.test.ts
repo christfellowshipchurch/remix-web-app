@@ -22,6 +22,8 @@ const PERSON = {
 
 const ARTICLE = {
   title: 'Unbound',
+  // 2 = Approved. Unapproved articles are filtered out of the author feed.
+  status: 2,
   content: 'word '.repeat(400),
   startDateTime: '2025-08-29T13:24:00',
   attributeValues: {

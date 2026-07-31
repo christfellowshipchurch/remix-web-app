@@ -49,6 +49,22 @@ export const fetchAuthorId = async (authorId: string) => {
   });
 };
 
+/** Most articles an author page lists. */
+const AUTHOR_ARTICLE_LIMIT = 6;
+
+/**
+ * Rock applies `$top` before fetchRockData filters the date range in memory, so
+ * asking for exactly AUTHOR_ARTICLE_LIMIT would let expired articles consume
+ * slots and silently shrink the feed. Over-fetch, then trim to the limit.
+ */
+const AUTHOR_ARTICLE_FETCH_WINDOW = 30;
+
+/** Rock ContentChannelItem status: 1 = Pending, 2 = Approved, 3 = Denied. */
+const ROCK_STATUS_APPROVED = 2;
+
+const isApproved = (article: { status?: number }) =>
+  article?.status === ROCK_STATUS_APPROVED;
+
 export const fetchAuthorArticles = async (personAliasGuid: string) => {
   const articles = await fetchRockData({
     endpoint: 'ContentChannelItems/GetByAttributeValue',
@@ -57,16 +73,25 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
       value: personAliasGuid,
       $filter: "Status eq 'Approved' and ContentChannelId eq 43",
       $orderby: 'StartDateTime desc',
-      $top: '6',
+      $top: String(AUTHOR_ARTICLE_FETCH_WINDOW),
       loadAttributes: 'simple',
     },
+    // An author page must not advertise articles that have expired or aren't
+    // live yet.
+    filterByDateRange: true,
   });
 
   // fetchRockData collapses a single-item array response into a bare object, so
   // an author with exactly one approved article would otherwise return a
   // non-iterable value and break the callers that map over this list.
   if (!articles) return [];
-  return Array.isArray(articles) ? articles : [articles];
+  const liveArticles = Array.isArray(articles) ? articles : [articles];
+
+  // The $filter above is dropped in preview mode (SHOW_UNAPPROVED_CONTENT),
+  // which would surface Pending and — worse — Denied articles in an author's
+  // publication list. An author page is a public index rather than a draft
+  // preview, so approval is enforced here where preview mode can't strip it.
+  return liveArticles.filter(isApproved).slice(0, AUTHOR_ARTICLE_LIMIT);
 };
 
 export const getBasicAuthorInfo = async (

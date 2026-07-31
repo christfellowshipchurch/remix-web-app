@@ -52,4 +52,59 @@ describe('ArticleAuthor', () => {
       ),
     ).toBe(false);
   });
+
+  it('links the byline to the author page when a pathname exists', () => {
+    renderArticleAuthor({
+      fullName: 'Ryan McDermott',
+      authorAttributes: { authorId: '85081', pathname: 'ryan-mcdermott' },
+    });
+
+    const nameLink = screen.getByRole('link', { name: 'Ryan McDermott' });
+    expect(nameLink).toHaveAttribute('href', '/author/ryan-mcdermott');
+    // Counterpart to the no-pathname case: a real author page keeps the underline.
+    expect(nameLink).toHaveClass('underline');
+  });
+
+  // Authors with no Rock Pathname have no author page — /author/:slug resolves by
+  // pathname alone, so linking the byline to the authorId GUID sent readers to a
+  // 404. The name must still be shown, just not as a link.
+  describe('author with no pathname', () => {
+    const authorWithoutPathname: AuthorProps = {
+      fullName: 'Amanda Gonzalez',
+      authorAttributes: {
+        authorId: 'f2a3bea3-7c3c-44e5-a052-8924e3bc43c0',
+        pathname: '',
+      },
+    };
+
+    it('still displays the author name', () => {
+      renderArticleAuthor(authorWithoutPathname);
+
+      expect(screen.getByText(/Authored by/i)).toHaveTextContent(
+        'Authored by Amanda Gonzalez',
+      );
+    });
+
+    it('renders no link at all, so nothing points at a 404', () => {
+      renderArticleAuthor(authorWithoutPathname);
+
+      expect(screen.queryAllByRole('link')).toHaveLength(0);
+    });
+
+    it('does not underline the name', () => {
+      renderArticleAuthor(authorWithoutPathname);
+
+      const byline = screen.getByText(/Authored by/i);
+      expect(byline.querySelector('.underline')).toBeNull();
+    });
+
+    it('treats the literal string "undefined" as no pathname', () => {
+      renderArticleAuthor({
+        ...authorWithoutPathname,
+        authorAttributes: { authorId: 'abc', pathname: 'undefined' },
+      });
+
+      expect(screen.queryAllByRole('link')).toHaveLength(0);
+    });
+  });
 });
