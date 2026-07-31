@@ -59,7 +59,9 @@ export interface StudyHitType {
     | 'Couples'
     | 'Youth'
     | 'Parents'
-    | 'New Believers';
+    | 'New Believers'
+    | 'Spanish'
+    | 'New Group Leader';
   source: 'Christ Fellowship' | 'Recommended External';
   /** From Algolia when set in Rock; not required for every study. */
   author?: StudyAuthor;
