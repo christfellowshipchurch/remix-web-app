@@ -62,7 +62,11 @@ export const fetchAuthorArticles = async (personAliasGuid: string) => {
     },
   });
 
-  return articles;
+  // fetchRockData collapses a single-item array response into a bare object, so
+  // an author with exactly one approved article would otherwise return a
+  // non-iterable value and break the callers that map over this list.
+  if (!articles) return [];
+  return Array.isArray(articles) ? articles : [articles];
 };
 
 export const getBasicAuthorInfo = async (
