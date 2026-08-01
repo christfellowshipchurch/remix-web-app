@@ -3,33 +3,35 @@ import type { ReactNode } from 'react';
 import * as Avatar from '@radix-ui/react-avatar';
 
 import { CircleLoader } from '~/primitives/loading-states/circle-loader.primitive';
+import { cn } from '~/lib/utils';
 
 import type { AuthorProps } from '../partials/hero.partial';
 
-const DEFAULT_AUTHOR_PATHNAME = 'christ-fellowship-team';
 const TODD_AND_JULIE_AUTHOR_PATHNAME = 'todd-julie-mullins';
 const TODD_AUTHOR_PATHNAME = 'todd-mullins';
 const JULIE_AUTHOR_PATHNAME = 'julie-mullins';
 
-function getAuthorPathname(author: AuthorProps) {
-  if (
-    author?.authorAttributes?.pathname &&
-    author?.authorAttributes?.pathname !== 'undefined'
-  ) {
-    return author.authorAttributes.pathname;
+/**
+ * The author's page slug, or null when they have no author page.
+ *
+ * `/author/:slug` resolves by Rock Pathname alone, so a bare authorId GUID has
+ * no page — authors missing a Pathname are shown as plain text rather than
+ * linked somewhere that 404s.
+ */
+function getAuthorPathname(author: AuthorProps): string | null {
+  const pathname = author?.authorAttributes?.pathname;
+
+  if (pathname && pathname !== 'undefined') {
+    return pathname;
   }
 
-  if (
-    author?.authorAttributes?.authorId &&
-    author?.authorAttributes?.authorId !== 'undefined'
-  ) {
-    return author.authorAttributes.authorId;
-  }
-
-  return DEFAULT_AUTHOR_PATHNAME;
+  return null;
 }
 
-function isToddAndJulieAuthor(author: AuthorProps, authorPathname: string) {
+function isToddAndJulieAuthor(
+  author: AuthorProps,
+  authorPathname: string | null,
+) {
   const normalizedFullName = author.fullName.trim().toLowerCase();
 
   return (
@@ -43,14 +45,38 @@ function AuthorNameLink({
   pathname,
 }: {
   children: ReactNode;
-  pathname: string;
+  pathname: string | null;
 }) {
+  // No author page to link to — show the name as plain text, without the
+  // underline that would otherwise signal a link.
+  if (!pathname) {
+    return <>{children}</>;
+  }
+
   return (
     <Link
       to={`/author/${pathname}`}
       prefetch='intent'
       className='underline hover:text-text-secondary'
     >
+      {children}
+    </Link>
+  );
+}
+
+function AuthorAvatarLink({
+  children,
+  pathname,
+}: {
+  children: ReactNode;
+  pathname: string | null;
+}) {
+  if (!pathname) {
+    return <>{children}</>;
+  }
+
+  return (
+    <Link prefetch='intent' to={`/author/${pathname}`}>
       {children}
     </Link>
   );
@@ -73,8 +99,14 @@ export default function ArticleAuthor({
 
   return (
     <div className='flex'>
-      <Link prefetch='intent' to={`/author/${avatarAuthorPathname}`}>
-        <Avatar.Root className='flex cursor-pointer duration-300 hover:scale-105'>
+      <AuthorAvatarLink pathname={avatarAuthorPathname}>
+        <Avatar.Root
+          className={cn(
+            'flex',
+            avatarAuthorPathname &&
+              'cursor-pointer duration-300 hover:scale-105',
+          )}
+        >
           <Avatar.Image
             className='size-16 rounded-full'
             src={
@@ -87,7 +119,7 @@ export default function ArticleAuthor({
             <CircleLoader size={20} />
           </Avatar.Fallback>
         </Avatar.Root>
-      </Link>
+      </AuthorAvatarLink>
 
       <div className='ml-4 flex flex-col justify-center'>
         <h2 className='semibold mb-2'>

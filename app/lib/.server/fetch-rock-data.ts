@@ -246,9 +246,17 @@ export const fetchRockData = async ({
   }
 
   try {
-    const queryString = new URLSearchParams(
-      mergedQueryParams as Record<string, string>,
-    ).toString();
+    // Filter merging and preview-mode stripping can leave a param set to
+    // undefined. URLSearchParams would serialize that as the literal string
+    // "undefined" (e.g. `$filter=undefined`), which Rock rejects with a 400, so
+    // drop empty params here — matching how buildCacheKey already ignores them.
+    const definedQueryParams = Object.fromEntries(
+      Object.entries(mergedQueryParams).filter(
+        ([, value]) => value !== undefined && value !== null,
+      ),
+    ) as Record<string, string>;
+
+    const queryString = new URLSearchParams(definedQueryParams).toString();
     const url = `${baseUrl}${endpoint}?${queryString}`;
 
     const res = await fetch(url, {

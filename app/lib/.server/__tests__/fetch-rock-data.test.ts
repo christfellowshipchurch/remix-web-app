@@ -692,6 +692,41 @@ describe('fetchRockData TTL behavior', () => {
     expect(requestFilter).not.toContain('StartDateTime le datetime');
     expect(cachedValue).toMatchObject({ id: 123 });
   });
+
+  // This endpoint filters by date range in memory, so buildMergedFilter is
+  // called with no clauses and hands back the caller's absent $filter. Assigning
+  // that undefined back onto the params used to send `$filter=undefined`, which
+  // Rock rejects with a 400 — on prod as well as preview.
+  it('omits $filter when date-range filtering happens in memory and the caller passes none', async () => {
+    const { fetchRockData: fetchWithRedis } =
+      await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        {
+          id: 123,
+          startDateTime: '2020-01-01T00:00:00.000Z',
+          expireDateTime: null,
+        },
+      ],
+    });
+
+    await fetchWithRedis({
+      endpoint: 'ContentChannelItems/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Author',
+        value: 'some-guid',
+        loadAttributes: 'simple',
+      },
+      filterByDateRange: true,
+    });
+
+    const requestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    expect(requestUrl).not.toContain('undefined');
+    expect(new URL(requestUrl).searchParams.has('$filter')).toBe(false);
+  });
 });
 
 // ─── preview mode (CFDP-4143) ───────────────────────────────────────────────
@@ -761,6 +796,34 @@ describe('fetchRockData preview mode', () => {
       .calls[0][0] as string;
     const requestFilter = new URL(requestUrl).searchParams.get('$filter');
     expect(requestFilter).toBe('ContentChannelId eq 78');
+  });
+
+  // Regression: stripApprovedStatusFilter returns undefined for a caller that
+  // passes no $filter, which used to be assigned back onto the query params and
+  // serialized as the literal string "undefined". Rock answers that with a 400,
+  // so every filterless request 404'd on the preview deployment.
+  it('omits $filter entirely when the caller passes none', async () => {
+    const { fetchRockData: fetchPreview } = await import('../fetch-rock-data');
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ id: 1 }],
+    });
+
+    await fetchPreview({
+      endpoint: 'People/GetByAttributeValue',
+      queryParams: {
+        attributeKey: 'Pathname',
+        value: 'ryan-mcdermott',
+        $expand: 'Photo',
+        loadAttributes: 'simple',
+      },
+    });
+
+    const requestUrl = (global.fetch as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as string;
+    expect(requestUrl).not.toContain('undefined');
+    expect(new URL(requestUrl).searchParams.has('$filter')).toBe(false);
   });
 
   it('still filters out a not-yet-started item — only Status is bypassed', async () => {
