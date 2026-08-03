@@ -32,11 +32,22 @@ Use me for: classification, drafting, summarization, extraction.
 Do NOT use me for: routing, retries, deterministic transforms.
 If code can answer, code answers.
 
-## Rule 6 — Token budgets are not advisory
+## Rule 6 — Context budget
 
-Per-task: 4,000 tokens. Per-session: 30,000 tokens.
-If approaching budget, summarize and start fresh.
-Surface the breach. Do not silently overrun.
+Unit: total context consumed, measured as percentage of the window.
+Per-task soft ceiling: 15%. Per-session: 70%.
+At 70%, stop at a clean boundary, write findings, report what remains.
+Surface the breach. Never silently overrun.
+
+Read hygiene (applies before the budget does):
+- Every Rock list read uses $select. No exceptions. Unfiltered entity JSON
+  is ~3.1 KB per row; $select cuts it ~17x.
+- Never read more than 5 rows into context to establish a shape. Read 1-5,
+  then use $top and $select for the rest.
+- Large responses: write to a file and read back only the fields needed.
+  Do not page a 50-row payload through context.
+- Full request/response capture for evidence goes in the findings file,
+  not repeated inline in the reply.
 
 ## Rule 7 — Surface conflicts, don't average them
 
