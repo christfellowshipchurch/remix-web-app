@@ -140,7 +140,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const currentUser = await response.json();
       setUser(currentUser);
       revalidate();
-      navigate(ROUTES.LOGIN);
+      // Temp login page (`/login?returnTo=...`) — only same-origin relative paths.
+      const returnTo = new URLSearchParams(window.location.search).get(
+        'returnTo',
+      );
+      const safeReturnTo =
+        returnTo?.startsWith('/') && !returnTo.startsWith('//')
+          ? returnTo
+          : null;
+      navigate(safeReturnTo ?? ROUTES.LOGIN);
     } catch (error) {
       handleError(error, 'Error fetching user data after login:');
     }
