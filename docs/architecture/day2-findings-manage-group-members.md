@@ -404,8 +404,23 @@ through with a pointer to where they were settled._
   Rock does **not** require the reason attribute for a status change at all
   (§29) — the mandatory-reason rule is an app/legacy invariant with nothing
   enforcing it underneath.
-- **Neither spec (§28, §29) is implemented.** Both are written to be landed
-  together; each alone leaves the other path trusting a client-supplied id.
+- ~~**Neither spec (§28, §29) is implemented**~~ — **both now implemented together
+  (§31)**, with 10 tests, two of them mutation-checked. The group-scope check and
+  the second `invalidateUser` are in place.
+- **`MemberInactiveReason` cannot be cleared via the attribute-write endpoint**
+  (§31) — an empty `attributeValue=` is a **400**, omitting it is a **404**.
+  Clearing requires `GET AttributeValues` + `PATCH AttributeValues/{id}` with
+  `{"Value":""}`. **This falsified §29 as originally written.**
+- **The remove path's compensating rollback had never worked** (§31) — it issued
+  exactly the 400-ing call above, so it always reported `rolledBack: false`.
+  Invisible because the `catch` never ran. Now fixed and sharing the verified
+  helper. §17's description of it as merely "hand-rolled" was too generous.
+- **The spike route has never been exercised end-to-end** (§31) — `requireUser`
+  needs a `.ROCK` cookie and **`ROCK_TEST_PASS` is absent from both `.env` and
+  `.env.local`** on this machine. Control flow is mock-covered, wire behaviour is
+  dev-verified, but the two have not run together. **Close before shipping.**
+- **Role change is still unspecified and unimplemented** (§26) — the third write
+  shape. The add path detects it and declines; nothing performs it.
 
 ---
 
@@ -1628,7 +1643,7 @@ Per the session scope, nothing above was changed. If it is picked up later:
 
 ---
 
-## 28. SPEC — remove-path `personId` (not implemented)
+## 28. SPEC — remove-path `personId` (**implemented — see §31**)
 
 Closes the §25 blocker: `removeMember` must invalidate the removed person's cache
 but is keyed entirely on `groupMemberId` and never learns their id.
@@ -1771,7 +1786,7 @@ security bug.** That is the whole argument for option 2.
 
 ---
 
-## 29. SPEC — add-path upsert (not implemented)
+## 29. SPEC — add-path upsert (**implemented — see §31**)
 
 Fixes §17: a soft-removed member cannot be re-`POST`ed, so `POST`-only is wrong.
 
@@ -1855,12 +1870,17 @@ carries a stale removal reason, invisible in any UI (§17), and the *next* remov
 compensating rollback (`action.ts`, `attributeValue=`) would restore a reason from
 a previous removal cycle rather than clearing it.
 
-The clearing mechanism is already proven in-tree — it is exactly what the existing
-rollback does:
+**CORRECTION — the mechanism named here was wrong.** This section originally said
+clearing was "already proven in-tree" because the existing rollback issues:
 
 ```http
 POST /api/GroupMembers/AttributeValue/{id}?attributeKey=MemberInactiveReason&attributeValue=
 ```
+
+That call is a **400**. It was never proven, only assumed — the rollback that uses
+it has never successfully run. See **§31**, which establishes the mechanism that
+does work (`PATCH /api/AttributeValues/{id}` with `{"Value":""}`) and the cost of
+finding the row first.
 
 Order it **after** the status `PATCH`, the mirror of the remove path's ordering
 argument (§17): if the process dies between them, the member is Active with a
@@ -1961,3 +1981,126 @@ hardcoded throughout; `ROCK_API` still points at prod in both `.env` and
    (30-day lifetime, §20), and the **removal-cache-flush gap** (§22).
 
 None of the four items this session touched any of these.
+
+---
+
+# Session 5, part 2 — the specs implemented (2026-08-03)
+
+## 31. Both specs built — and one of them was wrong
+
+§28 and §29 are now implemented in
+`app/routes/spike-manage-members.$groupId/action.ts`, with tests in
+`action.test.ts`. Implementing them **falsified part of §29**, which is recorded
+here rather than quietly patched.
+
+### The correction: `MemberInactiveReason` cannot be cleared the way §29 said
+
+§29 asserted the clearing mechanism was "already proven in-tree" because the
+existing compensating rollback issues an empty-value attribute write. Executed
+against dev for the first time:
+
+```http
+POST /api/GroupMembers/AttributeValue/8862385?attributeKey=MemberInactiveReason&attributeValue=
+Content-Length: 0
+
+HTTP/1.1 400 Bad Request
+{"id":"","attributeKey":"","attributeValue":"",
+ "attributeValue.String":"A value is required but was not present in the request."}
+```
+
+**That endpoint can only SET a value. It cannot clear one.** Omitting the
+parameter entirely is worse — **404**, no route match. (A first attempt without
+`Content-Length` returned **411**; the 400 above is the real answer, with the
+header present.)
+
+What does work is patching the `AttributeValue` row itself:
+
+```http
+PATCH /api/AttributeValues/541832959
+{"Value":""}
+
+HTTP/1.1 204 No Content
+```
+
+Verified: `Value` became `""` and `ModifiedDateTime` advanced to
+`2026-08-03T14:32:53.987`. The row is emptied, not deleted — no `DELETE` was used.
+
+**So clearing costs two calls, not one**, because the `AttributeValue` id has to be
+found first:
+
+```
+GET /api/AttributeValues
+    ?$filter=EntityId eq {groupMemberId} and Attribute/Key eq 'MemberInactiveReason'
+    &$select=Id
+PATCH /api/AttributeValues/{id}   {"Value":""}
+```
+
+§29's reactivation cost estimate of ~480 ms therefore becomes **~630 ms** (4 calls:
+pre-read, status `PATCH`, attribute lookup, attribute `PATCH`). Still bounded, and
+still infinitely better than the permanent 400 it replaces.
+
+### The second-order finding: the existing rollback has never worked
+
+`removeMember`'s compensating rollback issued **exactly the call above that 400s**.
+So on every invocation it would have failed, been swallowed by its own `catch`, and
+reported `rolledBack: false`. Nobody noticed because the rollback only runs when the
+status `PATCH` fails — which never happened in any session.
+
+**§17 called this rollback "hand-rolled"; it was in fact non-functional.** The
+inconsistency window it exists to close was never actually closed. It now shares the
+verified helper.
+
+This is the general lesson of the by-id sweep repeating itself: **an untaken code
+path is an unverified claim.** Both defects — the null `$expand` read-back and this
+rollback — sat in code that looked reviewed.
+
+### What was built
+
+| Piece | Where | Notes |
+| ----- | ----- | ----- |
+| `readGroupMemberRows(filter)` | shared by both intents | Collection form, `$select`, `TTL.NONE`, **no status predicate** |
+| `clearInactiveReason(id)` | shared by add-reactivate and the remove rollback | Lookup + `PATCH` per the correction above; returns a result, never throws |
+| Remove pre-read + **group-scope check** | `removeMember` | Throws `AuthorizationError` when the row's `GroupId` ≠ the URL's. **The security fix.** |
+| Add upsert, 4 branches | `addMember` | `already-active` / `reactivated` / declined role change / `inserted` |
+| Second `invalidateUser` | `action` | Keyed on `affectedPersonId` from the pre-read, both intents, gated on `ok` |
+
+The add path's by-id read-back (§27 hit #3) was **left in place**, with a comment
+saying its `groupRole` is always null. §27's conclusion stands: the durable fix is a
+guard inside `fetchRockData`, not scattered edits.
+
+### Verification — and its limits, stated plainly
+
+- **Typecheck:** 0 errors. **ESLint:** clean. **Full suite: 858 tests, 99 files, all
+  passing** — no regression elsewhere.
+- **10 new tests**, each asserting on the *writes issued* rather than just the
+  returned value, because a test that only checked `ok` would pass while POSTing
+  into a permanent 400.
+- **The two most important tests were mutation-checked**, not merely observed green:
+  neutering the group-scope check failed exactly one test, and adding
+  `GroupMemberStatus eq 'Active'` back into the pre-read filter failed exactly one
+  test. Both reverted; suite green again. Per Rule 9, a test that cannot fail when
+  the logic changes is not a test.
+- **Every REST call the new code emits was executed against dev individually** — the
+  collection-form pre-read, the status `PATCH` both directions, the attribute
+  lookup, the attribute `PATCH`, and the reason-set write (which returns **202**,
+  not 200).
+- **NOT verified: the route end-to-end.** `requireUser` needs a `.ROCK` cookie from
+  `/Auth/Login`, and **`ROCK_TEST_PASS` is not present in either `.env` or
+  `.env.local`** on this machine, so no login was possible. Control flow is covered
+  by mocks; wire behaviour is covered by the direct dev calls; the two have not been
+  exercised together. **That gap is real and should close before this ships.**
+
+### Records — session 5 part 2, all restored
+
+| Record | Start | Mutations | Final | Reversed? |
+| ------ | ----- | --------- | ----- | --------- |
+| `GroupMember` **8862385** | role 44, status **0**, reason `993f485b-…` | status → 1 → 0; reason cleared to `""` then reset | **role 44, status 0, reason `993f485b-…`** | **Yes — identical to start** |
+| `AttributeValue` **541832959** (the reason on 8862385) | `Value: 993f485b-…` | → `""` → `993f485b-…` | **`Value: 993f485b-…`** | **Yes — emptied, never deleted** |
+| `GroupMember` **8862387** | role 49, status 0 (from §26) | none | role 49, status 0 | Untouched |
+
+Only `ModifiedDateTime` on 541832959 differs from the start state, which is not
+resettable and is the expected trace of any write. Confirmed by `GET`. No `DELETE`
+was issued anywhere this session. Groups other than **1055022** were not written to.
+
+**Reactivation fires no triggers (§22), so this sequence created no `Workflow` or
+`Interaction` rows** — unlike §26's `POST`.
