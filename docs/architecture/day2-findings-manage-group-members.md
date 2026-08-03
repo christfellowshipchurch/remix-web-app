@@ -373,10 +373,12 @@ a pointer to where they were settled._
 - **`WorkflowType` 700 `IsPersisted` must be reverted to `false`** — flipped for
   the §22 test, deliberately not flipped back by us.
 - **Confirming 654** against the deployed `ROCK_MAPPINGS` (§6).
-- **Q4 cache invalidation** (brief Q4) — not exercised. Whether invalidating the
-  _actor_ also clears the _removed member's_ own "my groups" list is unanswered;
-  the two triggers on group type 31 flush a legacy cache, and whether that
-  touches our Redis is still unknown.
+- ~~**Q4 cache invalidation**~~ — **RESOLVED (§25): YES, a second invalidation
+  keyed to the affected person is required.** Actor invalidation provably cannot
+  reach it. **Blocked on a small refactor:** `removeMember` is keyed on
+  `groupMemberId` and does not know the removed person's id, so the remove path
+  cannot issue the second call today. Compounds §22 — a removed member sits stale
+  in *two* caches at once.
 - **`DELETE` cascade behavior** — never probed, by policy (reversibility rule).
 
 ---
@@ -1310,3 +1312,86 @@ fired no triggers at all, which is itself §22's finding.
 
 **Still owed to the Rock team (not ours to change):** `WorkflowType` 700
 `IsPersisted` back to **`false`**.
+
+---
+
+## 25. Q4 — **YES, a second invalidation is required.** And the remove path cannot currently issue it
+
+Redis confirmed live locally (`PING` → `PONG`, empty keyspace).
+
+### The answer
+
+**Invalidating the actor does not clear the removed member's "my groups" list.**
+Proven, not reasoned:
+
+```
+seeded:
+  ACTOR  my-groups     rock:u394626:GroupMembers:1d7803140d67
+  ACTOR  member-list   rock:u394626:GroupMembers:68d2754a4e9b
+  TARGET my-groups     rock:u389650:GroupMembers:51e5f404c57f
+
+invalidateUser(redis, 394626)  ->  deleted 2
+
+  ACTOR  my-groups     cleared
+  ACTOR  member-list   cleared
+  TARGET my-groups     SURVIVES
+```
+
+This is inherent to the design, not a bug in it. `buildUserCacheKey` puts the
+person in the **namespace** (`rock:u{personId}:…`) and `invalidateUser` SCANs
+`rock:u{personId}:*`. That is exactly why no reverse index is needed — and it is
+also why one person's invalidation can never reach another's keys. The property
+that makes the helper cheap is the property that makes a second call mandatory.
+
+`action.ts:73` calls `invalidateUser(redis, auth.personId)` — **the actor only** —
+for both intents.
+
+### Why this is worse than it looks
+
+**§22 established that Rock fires nothing on a soft remove.** So on the remove
+path there is no legacy cache flush *and*, without a second invalidation, no flush
+of the removed member's own cached view. A removed member keeps seeing the group
+in **two independent caches at once**, ours and legacy's, until TTL expiry or an
+unrelated write. The add path is fine on both counts: trigger 49 fires, and the
+added member's stale "my groups" is a *missing* group rather than a phantom one —
+still wrong, but it fails toward under-showing rather than showing access the
+person no longer has.
+
+### Where it belongs — and the blocker
+
+The natural insertion point is beside the existing call at
+`app/routes/spike-manage-members.$groupId/action.ts:73`:
+
+```ts
+await invalidateUser(redis, auth.personId);
+if (result.ok && result.affectedPersonId) {
+  await invalidateUser(redis, result.affectedPersonId);
+}
+```
+
+**But `removeMember` does not return a `personId`, and does not know one.** It is
+keyed entirely on `groupMemberId` (form field → `GroupMembers/{id}` for both the
+attribute write and the `PATCH`); its result is
+`{ ok, intent, groupMemberId, patchStatus, timings }`. `addMember` *does* read
+`personId` from the form (`action.ts:87`), so **the add path can do this today and
+the remove path cannot.**
+
+Two ways to close it:
+
+1. **Pass `personId` through the remove form** alongside `groupMemberId` — the
+   member list already has it, so it costs nothing. **Safe despite being
+   client-supplied**, because it is used *only* as a cache key: a forged value
+   invalidates some unrelated person's cache, which is a wasted round trip, not a
+   disclosure. It must never be used for the authorization decision.
+2. **Resolve it server-side** before the `PATCH`, from the row being removed.
+   Costs a round trip the remove path does not currently make (it is 2 writes + 1
+   read today, §15) — but note the upsert spec in the outstanding work already
+   proposes a pre-read on the *add* path, so a symmetric pre-read on remove may be
+   the more coherent design.
+
+**Recommendation: option 1**, with a comment stating the value is cache-only and
+must not reach `requireGroupLeader`. Option 2 if the upsert work lands first, so
+both paths share one shape.
+
+**Both writes should invalidate both people.** An add changes the added person's
+"my groups" just as a remove changes the removed person's.
