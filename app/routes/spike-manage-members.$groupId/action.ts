@@ -39,13 +39,15 @@ import redis from '~/lib/.server/redis-config';
  *
  * `false` → the service account writes (model (a)): the token can do anything,
  * so every invariant Rock would otherwise enforce has to live in this file.
- * `true` → the caller's Rock cookie writes (model (b)). Note that passing the
- * Cookie alone is NOT enough — Rock prefers the `Authorization-Token`, so the
- * write silently runs as the service account unless the token is also blanked.
- * That is the trap flagged in auth-review; hence the explicit `''`.
+ * `true` → the caller's Rock cookie writes (model (b)). Passing Cookie alone is
+ * NOT enough — also blank `Authorization-Token`. With a valid `.ROCK` cookie
+ * present, Rock authenticates as that person (cookie wins over the service
+ * token); entity REST controllers then 401 because ordinary users have no ACL
+ * (day2 §20). Blanking the token makes the call truly cookie-only. Earlier
+ * comments claiming Rock "prefers" the token were wrong.
  *
- * Model (b) is untestable until a real test user exists — the `.ROCK` cookie
- * only comes from `/Auth/Login`. Left at `false`.
+ * Model (b) is DEAD on current Rock REST ACLs (day2 §20), not for lack of a
+ * test user. Left at `false`.
  */
 const WRITE_AS_USER = false;
 

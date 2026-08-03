@@ -37,9 +37,6 @@ export const currentUser = async (token: string) => {
       queryParams: {
         $filter: `PersonId eq ${id}`,
       },
-      customHeaders: {
-        Cookie: rockCookie,
-      },
       ttl: TTL.NONE,
     });
 
@@ -49,9 +46,6 @@ export const currentUser = async (token: string) => {
       queryParams: {
         $filter: `Id eq ${id}`,
         $expand: 'Photo',
-      },
-      customHeaders: {
-        Cookie: rockCookie,
       },
       ttl: TTL.NONE,
     });
