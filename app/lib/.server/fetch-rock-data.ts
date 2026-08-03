@@ -22,9 +22,10 @@ interface RockDataRequest {
   body: Record<string, unknown> | string;
   contentType?: string;
   /**
-   * Additional headers, merged over the defaults. Pass
-   * `{ Cookie: auth.rockCookie }` to write as the user; add
-   * `'Authorization-Token': ''` to also suppress the service-account token.
+   * Additional headers, merged over the defaults. For cookie-as-user calls,
+   * pass `{ Cookie: auth.rockCookie, 'Authorization-Token': '' }` — a valid
+   * `.ROCK` cookie wins over the service token, so blanking the token is what
+   * makes the request truly cookie-only (day2 §20).
    */
   customHeaders?: Record<string, string>;
 }

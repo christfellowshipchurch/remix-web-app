@@ -329,14 +329,30 @@ the filter.
 
 ## 9. Still open
 
-_Updated at the end of session 3 (2026-07-31). Resolved items struck through with
-a pointer to where they were settled._
+_Updated at the end of session 5 (Day 4, 2026-08-03). Resolved items struck
+through with a pointer to where they were settled._
 
+- **`removeMember` does not verify that `groupMemberId` belongs to `groupId`**
+  (§28) — **NEW, and the most serious item in this list.** A leader of any group
+  can soft-remove **any `GroupMember` row in the instance** by posting its id.
+  Per §20 there is no backstop: no controller `Auth` rules, service-account
+  writes, app-side gate is the only control. **Closed by §28's pre-read**, which
+  is the same read that fixes Q4 — one change, both problems. Spike code, not
+  shipped; must not ship.
 - ~~**Whether a REST `POST` trips Rock's `GroupMemberWorkflowTriggers`**~~ —
   **RESOLVED: it does.** See §14.
 - **Re-adding a soft-removed member is a 400** and the prototype's add path does
-  not handle it (§15). This is the highest-priority functional gap found this
-  session — it makes remove-then-re-add, an obvious leader workflow, fail.
+  not handle it (§15). Still the highest-priority *functional* gap. **Spec now
+  written (§29); not implemented.**
+- **Changing a member's role collides the same way** (§26) — `PATCH GroupRoleId`
+  returns the byte-identical 400 when a dormant row holds the target role. Role
+  change is therefore a **third** write shape, not covered by §29's upsert, and
+  is out of prototype scope until specified deliberately.
+- **Three by-id `$expand`/`$select` call sites** (§27). Only one expects a nav
+  property and it is the spike's own read-back; the two shipped sites `$select`
+  scalars, so they overfetch ~17× uncached but are **not** incorrect. The durable
+  fix is a guard in `fetchRockData`, not three edits. **No shipped correctness
+  bug — recorded so this is not re-escalated.**
 - **`AuthorizationError` does not produce a 403** — it produces a 500 rendered as
   the generic "not found" page (§13). Decide the error contract before build.
 - ~~**Role 48 / `CanManageMembers` disagreement**~~ — **RESOLVED (product,
@@ -378,8 +394,33 @@ a pointer to where they were settled._
   reach it. **Blocked on a small refactor:** `removeMember` is keyed on
   `groupMemberId` and does not know the removed person's id, so the remove path
   cannot issue the second call today. Compounds §22 — a removed member sits stale
-  in *two* caches at once.
+  in *two* caches at once. **The refactor is now specified (§28) — resolve
+  `personId` server-side, not via the form, because the same read closes the
+  authorization hole above. This reverses §25's own recommendation; §25 did not
+  know about the missing group-scope check.**
 - **`DELETE` cascade behavior** — never probed, by policy (reversibility rule).
+- **`MemberInactiveReason` survives reactivation untouched** (§29) — proven by
+  `ModifiedDateTime`. The app must clear it on reactivation; Rock will not. Also:
+  Rock does **not** require the reason attribute for a status change at all
+  (§29) — the mandatory-reason rule is an app/legacy invariant with nothing
+  enforcing it underneath.
+- ~~**Neither spec (§28, §29) is implemented**~~ — **both now implemented together
+  (§31)**, with 10 tests, two of them mutation-checked. The group-scope check and
+  the second `invalidateUser` are in place.
+- **`MemberInactiveReason` cannot be cleared via the attribute-write endpoint**
+  (§31) — an empty `attributeValue=` is a **400**, omitting it is a **404**.
+  Clearing requires `GET AttributeValues` + `PATCH AttributeValues/{id}` with
+  `{"Value":""}`. **This falsified §29 as originally written.**
+- **The remove path's compensating rollback had never worked** (§31) — it issued
+  exactly the 400-ing call above, so it always reported `rolledBack: false`.
+  Invisible because the `catch` never ran. Now fixed and sharing the verified
+  helper. §17's description of it as merely "hand-rolled" was too generous.
+- **The spike route has never been exercised end-to-end** (§31) — `requireUser`
+  needs a `.ROCK` cookie and **`ROCK_TEST_PASS` is absent from both `.env` and
+  `.env.local`** on this machine. Control flow is mock-covered, wire behaviour is
+  dev-verified, but the two have not run together. **Close before shipping.**
+- **Role change is still unspecified and unimplemented** (§26) — the third write
+  shape. The add path detects it and declines; nothing performs it.
 
 ---
 
@@ -1395,3 +1436,671 @@ both paths share one shape.
 
 **Both writes should invalidate both people.** An add changes the added person's
 "my groups" just as a remove changes the removed person's.
+
+---
+
+# Session 5 (Day 4) — role-change collision, by-id `$select` sweep, two specs (2026-08-03)
+
+All REST calls below are **dev only** (`dev-rock.christfellowship.church`,
+hardcoded — both `.env` and `.env.local` point `ROCK_API` at prod). Service-account
+token only; no user credential was used this session, so no password appears in any
+artifact.
+
+---
+
+## 26. Role change collides with a dormant row — **the same 400 as the re-add bug**
+
+### The hypothesis
+
+Uniqueness is on `(GroupId, PersonId, GroupRoleId)` and **ignores status** (§17).
+So changing a member's role — an ordinary leader action — should fail whenever the
+target role already has a soft-removed row for that person. §17 proved this for
+`POST`; this is the `PATCH GroupRoleId` case, which is a different code path in
+Rock and had to be tested rather than inferred.
+
+### The construction
+
+Person **389650** (service account) in group **1055022** already held the dormant
+row from Day 2: `GroupMember` **8862385**, role **44**, `GroupMemberStatus: 0`.
+A second, **Active** row was created at a role with no existing row, then PATCHed
+onto role 44.
+
+```http
+POST /api/GroupMembers
+{"GroupId":1055022,"PersonId":389650,"GroupRoleId":49,"GroupMemberStatus":1}
+
+HTTP/1.1 201 Created
+8862387
+```
+
+Role **49** (Group Coach) was chosen deliberately: `IsLeader: false` (§4), so no
+leader privilege was granted even momentarily.
+
+### The result — 400, and byte-identical to the re-add bug
+
+```http
+PATCH /api/GroupMembers/8862387
+{"GroupRoleId":44}
+
+HTTP/1.1 400 Bad Request
+{"Message":" apollos already belongs to the group member role for this group
+ (Group Id: 1055022), and cannot be added again with the same role"}
+```
+
+**153 ms.** The message is **character-for-character the §17 message**, including
+the leading space and the service-account name "apollos". Rock does not
+distinguish "you tried to add a duplicate" from "you tried to rename into a
+duplicate" — the same validator fires with the same string.
+
+### The control — role change itself is fine
+
+To rule out "PATCH `GroupRoleId` is simply not supported":
+
+```http
+PATCH /api/GroupMembers/8862387
+{"GroupRoleId":46}          # no row exists at role 46 for this person
+
+HTTP/1.1 204 No Content     # 165 ms
+```
+
+Confirmed by `GET`: the row moved to role 46. **So `PATCH GroupRoleId` works
+normally; the 400 is specifically the dormant-row collision.**
+
+### The failed PATCH is atomic — nothing partially applied
+
+`GET` immediately after the 400:
+
+```
+8862385  role 44  status 0     <- dormant row, untouched
+8862387  role 49  status 1     <- still on its original role
+```
+
+The rejected write left **no** partial mutation. Good news: no compensating
+rollback is needed for this failure.
+
+### What this means for the build
+
+1. **The upsert fix in item 4 does not cover role change.** That spec keys the
+   pre-read on `(groupId, personId, groupRoleId)` and reactivates the match. Role
+   change is a *third* shape: an Active row at role A, a dormant row at role B,
+   and an intent to end up Active at B only. Handling it means **reactivate the
+   dormant B row and deactivate the A row** — two writes, no `GroupRoleId` PATCH
+   at all — or Rock-side cleanup of the dormant row first.
+2. **A role-change UI cannot be shipped on a naive `PATCH GroupRoleId`.** It works
+   until the leader demotes/promotes someone who was previously in the target role
+   and got removed, and then it fails permanently and opaquely for that one person.
+   Exactly the §17 failure profile: rare enough to pass QA, permanent once hit.
+3. **The 400 body must never reach a user** — same reason as §17. One catch can
+   cover both call sites, because the string is identical. That is also the
+   trap: **the app cannot tell the two causes apart from the response**, so the
+   handler must key off the *intent it sent*, not off the message.
+4. Role change is **out of the current prototype's scope** (add and remove only).
+   This finding is the argument for keeping it out until the dormant-row problem
+   has one deliberate answer that covers all three shapes.
+
+### Records — reversed
+
+| Record | Start | Mutations | Final | Reversed? |
+| ------ | ----- | --------- | ----- | --------- |
+| `GroupMember` **8862387** (person 389650, group 1055022) — **created this session** | did not exist | `POST` role 49 status 1 → PATCH role 44 **rejected 400** → PATCH role 46 (204) → PATCH role 49 + status 0 | **role 49, `GroupMemberStatus: 0`, `IsArchived: false`** | **Yes — soft-removed per the reversibility rule; never `DELETE`d** |
+| `GroupMember` **8862385** (the designated disposable row) | role 44, status 0, `IsArchived: false` | none — only read | **role 44, status 0, `IsArchived: false`** | **Untouched, as instructed** |
+
+Fixture rows **8862386** (group 1838823, role 50, Active) and **3329432** (group
+1055022, role 44, Active) re-verified unchanged after the probe. No group other
+than 1055022 was written to.
+
+**Rock-side side effect, not reversible:** the `POST` fired the add triggers 49 /
+63 / 64 (§14), so workflow 700 and 730 ran once more and one further
+`AddedToGroup` `Interaction` row exists for alias 389595. Expected, unavoidable for
+any `POST`, and consistent with §18.
+
+---
+
+## 27. By-id `$select` / `$expand` sweep — **the shipped blast radius is smaller than feared**
+
+### Method
+
+`$expand` / `$select` reach Rock as `queryParams` **object keys**, not as literal
+query strings (`RockQueryParams`, `fetch-rock-data.ts:57–70`), so a text grep for
+`$expand=` finds almost nothing — it matches one file. The sweep therefore
+brace-matched every `fetchRockData` / `postRockData` / `patchRockData` /
+`putRockData` / `deleteRockData` call in `app/`, pulled the `endpoint` literal out
+of each block, and classified a call as **by-id** when a path segment after the
+first is an interpolation or bare digits.
+
+**55 call sites** pass `$expand` or `$select`. **3 are by-id.** The other 52 are
+collection form, where both parameters work correctly (§7).
+
+Gaps closed explicitly, all empty: no call site builds `endpoint` from a variable
+(only type declarations match), none embeds a query string inside the endpoint
+literal, and no interpolated endpoint was classified as a collection — so the
+three below are the complete set, not a sample.
+
+### The hit list
+
+| # | Site | Endpoint | Param | Property expected | Actual | Verdict |
+| - | ---- | -------- | ----- | ----------------- | ------ | ------- |
+| 1 | `app/lib/.server/rock-person.ts:52` | `People/${id}` | `$select: 'Email'` | `emailInRock.email` (scalar) | full ~104-field person; `email` **present** | **Waste, not a bug** |
+| 2 | `app/routes/volunteer/outreach-opportunity/outreach-mission-rock.server.ts:236` | `People/${personId}` | `$select: 'FirstName,LastName,NickName,Email'` | `p.firstName`, `p.lastName`, `p.nickName`, `p.email` (all scalar) | full person; all four **present** | **Waste, not a bug** |
+| 3 | `app/routes/spike-manage-members.$groupId/action.ts:127` | `GroupMembers/${newGroupMemberId}` | `$expand: 'GroupRole'` | `GroupRole` (**nav property**) | **`null`** (§15) | **Real — spike code, not shipped** |
+
+### The distinction that matters
+
+`$select` being ignored and `$expand` being ignored fail **differently**:
+
+- **`$select` on scalars is silently harmless.** The whole entity comes back, so
+  every property the caller wanted is there. The cost is payload, not correctness
+  — and per §16 that is roughly a **17×** overfetch. Both live sites run at
+  `ttl: TTL.NONE`, so they pay it on **every** call, uncached.
+- **`$expand` of a nav property returns `null`.** That is the crash shape: the
+  fetch succeeds, the property is `null`, and the failure surfaces later in
+  whatever reads `.Name` off it.
+
+**Only one site is in the second category, and it is the spike's own read-back.**
+So the concern that motivated this sweep — shipped code reading a nav property off
+a by-id fetch and crashing downstream — **does not currently exist in shipped
+code.** Recording that plainly, because it changes the priority: this is a
+cleanup, not a latent production incident.
+
+### One near-miss, tested rather than assumed
+
+`app/lib/.server/author-utils.ts:16` fetches `People/GetByAttributeValue` with
+`$expand: 'Photo'` — a nav property, and its callers read
+`authorData.photo?.guid` (`author-utils.ts:79`, `:95`). It looks like hit #4. It
+is not:
+
+```
+GET /api/People/GetByAttributeValue?attributeKey=Pathname&value=tom-mullins&$expand=Photo
+  -> returns a LIST; Photo = {"FileName":"PastorTom.jpg", …}   POPULATED
+
+GET /api/People/224061?$expand=Photo
+  -> Photo = null                                             IGNORED (104 keys)
+
+GET /api/People?$filter=Id eq 224061&$expand=Photo&$select=Id,PhotoId,Photo/Guid
+  -> [{"PhotoId":2346410,"Id":224061,"Photo":{"Guid":"f83a25a6-…"}}]  WORKS
+```
+
+**So the defect is specific to the `Entity/{id}` route, not to "single-entity
+fetches" as a class.** `GetByAttributeValue` honors `$expand` — it returns a list
+and serializes differently (76 top-level keys vs 104 for by-id). Two different
+Rock code paths.
+
+This also **generalizes §15**: by-id ignoring `$expand` is not a `GroupRole`
+quirk, it is any nav property. And the callers are optional-chained
+(`photo?.guid`), so even had it been ignored the failure would have been a missing
+image, not a crash.
+
+### Not fixed, deliberately
+
+Per the session scope, nothing above was changed. If it is picked up later:
+
+- Sites 1 and 2 want the **collection form** (`People?$filter=Id eq {id}` +
+  `$select`), which is one call, the same latency, and actually honors `$select`.
+- Site 3 needs the collection form or a third call, per §15.
+- A **lint rule or a guard inside `fetchRockData`** that warns when `$expand` or
+  `$select` is passed with an `Entity/{id}` endpoint would stop this recurring.
+  That is the durable fix; the three edits are not.
+
+---
+
+## 28. SPEC — remove-path `personId` (**implemented — see §31**)
+
+Closes the §25 blocker: `removeMember` must invalidate the removed person's cache
+but is keyed entirely on `groupMemberId` and never learns their id.
+
+### Decision: **option 2, resolve it server-side.** This reverses §25's lean, for a reason §25 did not have
+
+§25 recommended option 1 (pass `personId` through the form) on cost grounds — the
+member list already has the id, so it is free — and held option 2 in reserve "if
+the upsert work lands first". Writing the spec surfaced a third reason that
+settles it independently of coherence or cost.
+
+**`removeMember` currently has no check that `groupMemberId` belongs to
+`groupId`.** The gate authorizes the actor against `groupId` from the URL
+(`require-group-leader.ts`, `params.groupId`), and returns *the actor's own*
+membership row. The write then targets `GroupMembers/{groupMemberId}` taken
+straight from the form (`action.ts:151`). The only validation is that the id is a
+positive integer and is **not the actor's own row** (`action.ts:162`). Nothing
+binds the two together.
+
+So a leader of any group can soft-remove **any `GroupMember` row in the Rock
+instance** by posting its id to their own group's endpoint. Per §20 there is **no
+backstop**: the `GroupMembers` controller has no `Auth` rules, the write runs as
+the service account with full rights, and the app-side gate is the only
+authorization control in the system. The happy path is completely correct, which
+is exactly why this would ship.
+
+**The pre-read that resolves `personId` is the same read that closes this.** One
+call yields both. That makes option 2 not merely more coherent — it is required
+anyway, and `personId` comes free.
+
+### The pre-read
+
+**Collection form, not by-id** — and this is a direct consequence of §27: a by-id
+`GET GroupMembers/{id}?$select=…` silently returns the entire ~3.1 KB entity,
+because `$select` is ignored there. The collection form honors it.
+
+```
+GET /api/GroupMembers
+    ?$filter=Id eq {groupMemberId}
+    &$select=Id,GroupId,PersonId,GroupRoleId,GroupMemberStatus
+```
+
+No `$expand`. No status predicate — a row already Inactive must be *recognised*,
+not hidden (the §17 lesson). Uncached: `ttl: TTL.NONE`, same as the gate, since
+this read now carries an authorization decision.
+
+Then, in order, before either write:
+
+| Check | Failure |
+| ----- | ------- |
+| Exactly one row returned | `ok: false`, "member not found" |
+| **`row.groupId === groupId`** | **`AuthorizationError`** — same class as the gate, not a validation error |
+| `row.id !== leadership.groupMemberId` | existing "cannot change your own record" (keep it; now redundant but harmless) |
+| `row.groupMemberStatus !== 0` | `ok: true`, no-op — already removed; still invalidate both caches |
+
+`row.personId` is then the cache key, and `row.groupRoleId` is available for
+symmetry with item 4.
+
+**The group-scope check is the security fix; the `personId` extraction is the
+cache fix. Ship them together — they are one read.**
+
+### Cost
+
+**+1 round trip.** Measured shape from §16: a `$select`ed single-row collection
+read is **~150 ms** on dev. Remove goes from 2 writes to 1 read + 2 writes,
+~190 ms → ~340 ms. Acceptable for a leader-initiated action, and it buys an
+authorization check the system does not currently have.
+
+The read also **shrinks the failure window** flagged in §17: the pre-read catches
+"row doesn't exist" and "wrong group" *before* the attribute write, so the
+two-write window is entered only for requests already known to be valid.
+
+### Interaction with item 4's pre-read — the two paths become one shape
+
+Item 4 puts a pre-read on the add path keyed on `(GroupId, PersonId, GroupRoleId)`.
+This puts one on the remove path keyed on `Id`. **Same endpoint, same
+`$select`, same collection form, same `TTL.NONE` — different `$filter`.** One
+helper serves both:
+
+```ts
+// Reads a GroupMember with NO status predicate — dormant rows must be visible
+// (§17). Collection form because by-id ignores $select (§27).
+const readGroupMemberRows = (filter: string) =>
+  fetchRockData({
+    endpoint: 'GroupMembers',
+    queryParams: {
+      $filter: filter,
+      $select: 'Id,GroupId,PersonId,GroupRoleId,GroupMemberStatus',
+    },
+    ttl: TTL.NONE,
+  });
+```
+
+Both write paths then read the same shape, validate group scope the same way, and
+end with the same two invalidations. If item 4 lands first this is nearly free; if
+this lands first, item 4 inherits the helper. **Either order works — but both
+should land together, because each one alone leaves an asymmetry that invites the
+next bug.**
+
+### Both intents invalidate both people
+
+At `action.ts:73`, replacing the single call:
+
+```ts
+// The actor's own member-list view is cached per-user, so it always drops.
+await invalidateUser(redis, auth.personId);
+
+// The affected person's "my groups" lives in a DIFFERENT namespace
+// (rock:u{personId}:*) that the actor's invalidation provably cannot reach —
+// §25. Both intents need it: an add gives them a group, a remove takes one away.
+if (result.ok && result.affectedPersonId !== auth.personId) {
+  await invalidateUser(redis, result.affectedPersonId);
+}
+```
+
+Both `addMember` and `removeMember` add **`affectedPersonId`** to their result:
+`addMember` already has it (`form.get('personId')`, `action.ts:87`); `removeMember`
+takes it from the pre-read. One field name for both intents, so the call site does
+not branch on intent.
+
+Gated on `result.ok` because a failed write changed nothing. The actor call stays
+unconditional — that is existing behaviour and it is cheap. Note the second call
+is **not** rolled back if the write later fails: a spurious invalidation costs one
+cache miss, so it fails safe in the harmless direction.
+
+### If option 1 is chosen instead — the one thing that must be written down
+
+Should the form route be taken anyway (it is strictly cheaper, and the loader
+already exposes `PersonId` on every row), then:
+
+> **The form-supplied `personId` is a cache key and nothing else. It must never
+> reach `requireGroupLeader`, the group-scope check, or any write payload.** A
+> forged value then buys the attacker one wasted `SCAN` over an unrelated
+> namespace — a needless cache miss, not a disclosure and not an escalation.
+
+That comment belongs *at the point of use*, not in a doc. But note what option 1
+does **not** buy: it leaves the group-scope hole open, because it supplies an id
+rather than verifying one. **Option 1 closes the cache bug and none of the
+security bug.** That is the whole argument for option 2.
+
+---
+
+## 29. SPEC — add-path upsert (**implemented — see §31**)
+
+Fixes §17: a soft-removed member cannot be re-`POST`ed, so `POST`-only is wrong.
+
+### The baseline shape
+
+```
+GET /api/GroupMembers
+    ?$filter=GroupId eq {groupId} and PersonId eq {personId} and GroupRoleId eq {groupRoleId}
+    &$select=Id,GroupId,PersonId,GroupRoleId,GroupMemberStatus
+
+row found -> PATCH GroupMembers/{id}  { GroupMemberStatus: 1 }   + clear the reason
+no row    -> POST  GroupMembers       { GroupId, PersonId, GroupRoleId, GroupMemberStatus: 1 }
+```
+
+**No status predicate** — the entire point is to see dormant rows. Collection form,
+because by-id ignores `$select` (§27). `ttl: TTL.NONE`.
+
+### Recommended refinement: drop `GroupRoleId` from the *filter*, keep it in the *decision*
+
+The baseline filter is blind to a row for the same person at a **different** role,
+and Rock's uniqueness key is per-role — so it will happily `POST`, leaving that
+person with **two rows in one group**. A leader who adds an existing Group Member
+as a Group Leader gets a duplicate in the member list, not a promotion. Legacy
+never hit this because it went through workflow `GROUP_ADD_PERSON`, not a direct
+entity write.
+
+Reading **all** rows for `(GroupId, PersonId)` costs the *same single round trip*
+and is strictly more informative:
+
+```
+?$filter=GroupId eq {groupId} and PersonId eq {personId}
+&$select=Id,GroupId,PersonId,GroupRoleId,GroupMemberStatus
+```
+
+| Pre-read result | Action |
+| --------------- | ------ |
+| No rows | `POST` — the only genuine insert |
+| Row at the requested role, `GroupMemberStatus: 0` | `PATCH` → 1, **and clear `MemberInactiveReason`** |
+| Row at the requested role, already `1` | **No-op, report success.** Idempotent; also the correct recovery from §17's "my retry landed" ambiguity |
+| Rows only at *other* roles | **Do not `POST`.** Surface it: this is a role change, not an add (see below) |
+
+The last row is the one the baseline gets wrong, and it costs nothing to get right.
+
+### Interaction with item 1 — the case this spec must refuse to handle silently
+
+§26 proved that `PATCH GroupRoleId` **400s** when a dormant row already holds the
+target role, with the byte-identical message to §17. So the "rows only at other
+roles" branch cannot be resolved by patching the role:
+
+- Active at 44, want Active at 50, **no** row at 50 → `PATCH GroupRoleId` works
+  (§26 control, 204). But it is a *role change*, and calling it an "add" hides that.
+- Active at 44, want Active at 50, **dormant row at 50 exists** → `PATCH
+  GroupRoleId` is a permanent, opaque **400**. The correct sequence is
+  **reactivate the dormant 50 row, then deactivate the 44 row** — two writes, no
+  `GroupRoleId` write at all.
+
+**Three shapes, not two: insert, reactivate, and role change.** The upsert covers
+the first two. Role change is out of the current prototype's scope and should stay
+out until it is specified deliberately — the add path must **detect** it and
+decline, not improvise into it. Anything else ships §26's permanent 400.
+
+### `MemberInactiveReason` must be cleared on reactivation — proven, not assumed
+
+Direct evidence this session:
+
+```
+GET /api/AttributeValues
+    ?$filter=EntityId eq 8862385 and Attribute/Key eq 'MemberInactiveReason'
+    &$select=Id,EntityId,Value,ModifiedDateTime
+
+[{"Id":541832959,"EntityId":8862385,
+  "Value":"993f485b-52d7-4b65-b7d0-f758324fa1ae",
+  "ModifiedDateTime":"2026-07-31T13:31:57.717"}]
+```
+
+That `ModifiedDateTime` **predates §22's reactivation of the same row** (workflow
+timestamps put it at 14:22 the same day). The row was removed, reactivated, and
+removed again, and the attribute was **never touched**. So **Rock does not clear
+it on a status transition — the app must.** Otherwise every reactivated member
+carries a stale removal reason, invisible in any UI (§17), and the *next* remove's
+compensating rollback (`action.ts`, `attributeValue=`) would restore a reason from
+a previous removal cycle rather than clearing it.
+
+**CORRECTION — the mechanism named here was wrong.** This section originally said
+clearing was "already proven in-tree" because the existing rollback issues:
+
+```http
+POST /api/GroupMembers/AttributeValue/{id}?attributeKey=MemberInactiveReason&attributeValue=
+```
+
+That call is a **400**. It was never proven, only assumed — the rollback that uses
+it has never successfully run. See **§31**, which establishes the mechanism that
+does work (`PATCH /api/AttributeValues/{id}` with `{"Value":""}`) and the cost of
+finding the row first.
+
+Order it **after** the status `PATCH`, the mirror of the remove path's ordering
+argument (§17): if the process dies between them, the member is Active with a
+stale reason attached — the benign, already-existing inconsistency — rather than
+reason-cleared but still Inactive, which would look like a successful add that
+did nothing.
+
+Also observed: `GroupMember` 8862387 was PATCHed to `GroupMemberStatus: 0` in §26
+with **no reason attribute written at all**, and Rock returned 204. **The
+mandatory-reason rule is an app/legacy invariant, not a Rock constraint.** Nothing
+below the app enforces it — same posture as §20's authorization finding.
+
+### Round-trip cost
+
+| Path | Today | With upsert |
+| ---- | ----- | ----------- |
+| Insert (no existing row) | `POST` 275 ms + read-back `GET` 154 ms = **435 ms** | + pre-read ~150 ms = **~585 ms** |
+| Reactivate (dormant row) | **permanent 400** (§17) | pre-read ~150 + `PATCH` ~165 + clear ~165 = **~480 ms** |
+| Already active | opaque 400 | pre-read only = **~150 ms** |
+| Role change / other-role row | silent duplicate row | pre-read only, declines = **~150 ms** |
+
+Latencies from §16 / §26 measurements on dev. **One extra round trip on the insert
+path buys three broken paths becoming correct.**
+
+The pre-read also **subsumes the §17 recovery advice**. §17 concluded the app must
+`GET` on a 400 and treat an existing Active row as success. With the pre-read, that
+400 is not reached — the check moves from an error handler, which is only exercised
+when something goes wrong, to the main line, which is exercised every time. That is
+the more testable placement.
+
+### Both paths become one shape
+
+Yes. With §28's remove pre-read, both intents open with the same collection-form
+read of the same fields with the same `TTL.NONE` and no status predicate, differing
+only in `$filter` — `Id eq {groupMemberId}` for remove, `GroupId eq X and PersonId
+eq Y` for add. Both then validate group scope from the returned row rather than
+trusting the form, and both end with the same two invalidations (§28).
+
+**Land them together.** Each alone leaves the other path trusting a client-supplied
+id and reading a different shape, which is the asymmetry that produced both bugs.
+
+### Out of scope, deliberately
+
+`GroupMemberStatus: 2` (Pending) is untouched — the upsert reactivates to **1**
+regardless of prior status. If a Pending row should stay Pending, that is a
+product decision, not a defaultable one.
+
+---
+
+## 30. Records created or mutated — session 5 (Day 4), all reversed
+
+**Nothing was `DELETE`d.** One row was created (unavoidable — the §26 collision
+needs two rows for one person) and soft-removed per the reversibility rule.
+
+| Record | Start state | Mutations | Final state | Reversed? |
+| ------ | ----------- | --------- | ----------- | --------- |
+| `GroupMember` **8862387** — person 389650 (service account), group **1055022** | **did not exist** | `POST` role 49 status 1 → `PATCH` role 44 **rejected 400** → `PATCH` role 46 (204) → `PATCH` role 49 + status 0 (204) | **role 49, `GroupMemberStatus: 0`, `IsArchived: false`** | **Yes — soft-removed** |
+| `GroupMember` **8862385** — the designated disposable row | role 44, status 0, `IsArchived: false` | **none — read only** | role 44, status 0, `IsArchived: false` | **Untouched, as instructed** |
+
+Re-verified by `GET` after the final write:
+
+```
+GET /api/GroupMembers?$filter=GroupId eq 1055022 and PersonId eq 389650
+    &$select=Id,GroupRoleId,GroupMemberStatus,IsArchived
+
+[{"Id":8862385,"GroupRoleId":44,"GroupMemberStatus":0,"IsArchived":false},
+ {"Id":8862387,"GroupRoleId":49,"GroupMemberStatus":0,"IsArchived":false}]
+```
+
+Fixture rows re-verified unchanged: **8862386** (group 1838823, role 50, Active)
+and **3329432** (group 1055022, role 44, Active). **No group other than 1055022
+was written to.** Groups 241543 and 1829030 were not touched.
+
+**Rock-side side effects, not reversible:** the one `POST` fired add triggers 49 /
+63 / 64 (§14), so `WorkflowType` 700 and 730 each ran once more and one further
+`AddedToGroup` `Interaction` row exists for alias 389595. Unavoidable for any
+`POST`; consistent with §18.
+
+**Reads only, no mutation:** `AttributeValues` (§29 evidence), `People/224061` and
+`People/GetByAttributeValue` (§27 `$expand` controls), `AttributeValues` for
+`Pathname` (§27 fixture lookup).
+
+### Credential handling
+
+**No user credential was used this session.** All calls ran on the
+service-account token, read from the gitignored `.env` by variable reference and
+never written to a file, log, findings doc, fixture, or commit. `ROCK_TEST_PASS`
+was not read at all. The dev host `dev-rock.christfellowship.church` was
+hardcoded throughout; `ROCK_API` still points at prod in both `.env` and
+`.env.local` and was deliberately not relied upon.
+
+### Not ours to do — still outstanding, carried forward
+
+1. Revert `WorkflowType` **700** `IsPersisted` to **`false`** (flipped for §22).
+2. Fix the **`ROCK_TEST_USER`** env var — it holds `ani@jedi.order`; the real
+   username is `anakin@jedi.order` (§19).
+3. Raise with the Rock team: the **missing `Secure` flag** on the `.ROCK` cookie
+   (30-day lifetime, §20), and the **removal-cache-flush gap** (§22).
+
+None of the four items this session touched any of these.
+
+---
+
+# Session 5, part 2 — the specs implemented (2026-08-03)
+
+## 31. Both specs built — and one of them was wrong
+
+§28 and §29 are now implemented in
+`app/routes/spike-manage-members.$groupId/action.ts`, with tests in
+`action.test.ts`. Implementing them **falsified part of §29**, which is recorded
+here rather than quietly patched.
+
+### The correction: `MemberInactiveReason` cannot be cleared the way §29 said
+
+§29 asserted the clearing mechanism was "already proven in-tree" because the
+existing compensating rollback issues an empty-value attribute write. Executed
+against dev for the first time:
+
+```http
+POST /api/GroupMembers/AttributeValue/8862385?attributeKey=MemberInactiveReason&attributeValue=
+Content-Length: 0
+
+HTTP/1.1 400 Bad Request
+{"id":"","attributeKey":"","attributeValue":"",
+ "attributeValue.String":"A value is required but was not present in the request."}
+```
+
+**That endpoint can only SET a value. It cannot clear one.** Omitting the
+parameter entirely is worse — **404**, no route match. (A first attempt without
+`Content-Length` returned **411**; the 400 above is the real answer, with the
+header present.)
+
+What does work is patching the `AttributeValue` row itself:
+
+```http
+PATCH /api/AttributeValues/541832959
+{"Value":""}
+
+HTTP/1.1 204 No Content
+```
+
+Verified: `Value` became `""` and `ModifiedDateTime` advanced to
+`2026-08-03T14:32:53.987`. The row is emptied, not deleted — no `DELETE` was used.
+
+**So clearing costs two calls, not one**, because the `AttributeValue` id has to be
+found first:
+
+```
+GET /api/AttributeValues
+    ?$filter=EntityId eq {groupMemberId} and Attribute/Key eq 'MemberInactiveReason'
+    &$select=Id
+PATCH /api/AttributeValues/{id}   {"Value":""}
+```
+
+§29's reactivation cost estimate of ~480 ms therefore becomes **~630 ms** (4 calls:
+pre-read, status `PATCH`, attribute lookup, attribute `PATCH`). Still bounded, and
+still infinitely better than the permanent 400 it replaces.
+
+### The second-order finding: the existing rollback has never worked
+
+`removeMember`'s compensating rollback issued **exactly the call above that 400s**.
+So on every invocation it would have failed, been swallowed by its own `catch`, and
+reported `rolledBack: false`. Nobody noticed because the rollback only runs when the
+status `PATCH` fails — which never happened in any session.
+
+**§17 called this rollback "hand-rolled"; it was in fact non-functional.** The
+inconsistency window it exists to close was never actually closed. It now shares the
+verified helper.
+
+This is the general lesson of the by-id sweep repeating itself: **an untaken code
+path is an unverified claim.** Both defects — the null `$expand` read-back and this
+rollback — sat in code that looked reviewed.
+
+### What was built
+
+| Piece | Where | Notes |
+| ----- | ----- | ----- |
+| `readGroupMemberRows(filter)` | shared by both intents | Collection form, `$select`, `TTL.NONE`, **no status predicate** |
+| `clearInactiveReason(id)` | shared by add-reactivate and the remove rollback | Lookup + `PATCH` per the correction above; returns a result, never throws |
+| Remove pre-read + **group-scope check** | `removeMember` | Throws `AuthorizationError` when the row's `GroupId` ≠ the URL's. **The security fix.** |
+| Add upsert, 4 branches | `addMember` | `already-active` / `reactivated` / declined role change / `inserted` |
+| Second `invalidateUser` | `action` | Keyed on `affectedPersonId` from the pre-read, both intents, gated on `ok` |
+
+The add path's by-id read-back (§27 hit #3) was **left in place**, with a comment
+saying its `groupRole` is always null. §27's conclusion stands: the durable fix is a
+guard inside `fetchRockData`, not scattered edits.
+
+### Verification — and its limits, stated plainly
+
+- **Typecheck:** 0 errors. **ESLint:** clean. **Full suite: 858 tests, 99 files, all
+  passing** — no regression elsewhere.
+- **10 new tests**, each asserting on the *writes issued* rather than just the
+  returned value, because a test that only checked `ok` would pass while POSTing
+  into a permanent 400.
+- **The two most important tests were mutation-checked**, not merely observed green:
+  neutering the group-scope check failed exactly one test, and adding
+  `GroupMemberStatus eq 'Active'` back into the pre-read filter failed exactly one
+  test. Both reverted; suite green again. Per Rule 9, a test that cannot fail when
+  the logic changes is not a test.
+- **Every REST call the new code emits was executed against dev individually** — the
+  collection-form pre-read, the status `PATCH` both directions, the attribute
+  lookup, the attribute `PATCH`, and the reason-set write (which returns **202**,
+  not 200).
+- **NOT verified: the route end-to-end.** `requireUser` needs a `.ROCK` cookie from
+  `/Auth/Login`, and **`ROCK_TEST_PASS` is not present in either `.env` or
+  `.env.local`** on this machine, so no login was possible. Control flow is covered
+  by mocks; wire behaviour is covered by the direct dev calls; the two have not been
+  exercised together. **That gap is real and should close before this ships.**
+
+### Records — session 5 part 2, all restored
+
+| Record | Start | Mutations | Final | Reversed? |
+| ------ | ----- | --------- | ----- | --------- |
+| `GroupMember` **8862385** | role 44, status **0**, reason `993f485b-…` | status → 1 → 0; reason cleared to `""` then reset | **role 44, status 0, reason `993f485b-…`** | **Yes — identical to start** |
+| `AttributeValue` **541832959** (the reason on 8862385) | `Value: 993f485b-…` | → `""` → `993f485b-…` | **`Value: 993f485b-…`** | **Yes — emptied, never deleted** |
+| `GroupMember` **8862387** | role 49, status 0 (from §26) | none | role 49, status 0 | Untouched |
+
+Only `ModifiedDateTime` on 541832959 differs from the start state, which is not
+resettable and is the expected trace of any write. Confirmed by `GET`. No `DELETE`
+was issued anywhere this session. Groups other than **1055022** were not written to.
+
+**Reactivation fires no triggers (§22), so this sequence created no `Workflow` or
+`Interaction` rows** — unlike §26's `POST`.
