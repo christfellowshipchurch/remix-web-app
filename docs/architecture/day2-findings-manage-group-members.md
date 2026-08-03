@@ -339,17 +339,39 @@ a pointer to where they were settled._
   session — it makes remove-then-re-add, an obvious leader workflow, fail.
 - **`AuthorizationError` does not produce a 403** — it produces a 500 rendered as
   the generic "not found" page (§13). Decide the error contract before build.
-- **Role 48 / `CanManageMembers` disagreement** (§12) — product owner has ruled
-  `IsLeader: false` intentional; still needs confirmation from the Rock team, and
-  carries a standing risk because `IsLeader` is admin-editable.
-- **Test leader and non-leader credentials (checklist #7).** Still not
-  provisioned. §8, §13 cover the authorization _logic_ against real members, but
-  **the authentication half of Q1 remains blocked**: every call in this document
-  ran on the service-account token, so nothing here exercises `/Auth/Login`, the
-  `.ROCK` cookie, or write model (b). Q1 model (b) was explicitly out of scope
-  for session 3.
-- **The `IsArchived` write probe** (§5). Still not run — §12's soft remove left
-  `IsArchived: false`, so it did not double as this probe.
+- ~~**Role 48 / `CanManageMembers` disagreement**~~ — **RESOLVED (product,
+  2026-07-31): Campus Hub Leader (role 48) does not need to manage members. The
+  `IsLeader` gate stands as-is.** No code change; §12's gate is correct as built.
+  **The second-order risk in §12 is not closed by this decision:** `IsLeader`
+  remains **admin-editable in the Rock UI**, so who can add and remove members can
+  still change with no deploy, no code review, and no audit trail on our side.
+  That coupling stays on the table as an architecture concern.
+- ~~**Test leader and non-leader credentials (checklist #7)**~~ — **PROVISIONED
+  and used in session 4.** `/Auth/Login` and the `.ROCK` cookie are now
+  characterized (§20). **Q1 model (b) is resolved: DEAD as configured** — a
+  per-user cookie cannot read or write group entities on this Rock, because the
+  `GroupMembers` REST controller has no `Auth` rules and defaults to deny.
+- **Whether Rock enforces per-group security on REST writes — now known to be
+  UNTESTED, not merely unverified** (§20). The controller-level 401 masks it
+  entirely. This matters because under model (a) **the app-side gate is the only
+  authorization control in the system**, with no demonstrated backstop.
+- **`ROCK_TEST_USER` env var holds the wrong username** (`ani@jedi.order`; actual
+  is `anakin@jedi.order`). Fails login with a misleading `Invalid login type.`
+- **The `.ROCK` cookie is issued without a `Secure` flag** and lives 30 days
+  (§20). Rock-side setting; worth raising with the Rock team.
+- ~~**The `IsArchived` write probe** (§5)~~ — **RESOLVED (§23).** Archived rows are
+  excluded by REST **before** OData applies, so `IsArchived eq false` is a proven
+  no-op. Harmless to keep; stop calling it protection. REST archive also leaves
+  `ArchivedDateTime` **null** — a half-archived row with no audit trail.
+- ~~**Whether a soft remove fires trigger 53**~~ — **RESOLVED (§22): it does not.**
+  Neither does an archive, nor does reactivation fire the add trigger. Group type
+  31's triggers respond to row creation/deletion, not status transitions.
+- **Removals never flush the legacy web/app cache** (§22) — the confirmed
+  consequence of the above. Adds flush (trigger 49, now proven); removes do not.
+  **Needs a decision before build:** explicitly launch workflow 700 after a remove,
+  ask Rock to add a `MemberStatusChanged` trigger, or accept stale legacy surfaces.
+- **`WorkflowType` 700 `IsPersisted` must be reverted to `false`** — flipped for
+  the §22 test, deliberately not flipped back by us.
 - **Confirming 654** against the deployed `ROCK_MAPPINGS` (§6).
 - **Q4 cache invalidation** (brief Q4) — not exercised. Whether invalidating the
   _actor_ also clears the _removed member's_ own "my groups" list is unanswered;
@@ -460,6 +482,11 @@ in our gate and in legacy, an *authorization* control.
 The role config is deliberate; what is unconfirmed is whether the Rock team agrees
 that `IsLeader` should also be the authorization predicate, given they may be
 setting it for presentation reasons.
+
+> **Superseded 2026-07-31 (Day 3).** Product has decided **Campus Hub Leader does
+> not need to manage members**, so the `IsLeader` gate stands as-is and no Rock-team
+> confirmation is required. The paragraph above is retained for the reasoning trail.
+> **The admin-editable risk below is unaffected by that decision.**
 
 **Second-order risk — the important part.** `IsLeader` is **admin-editable in the
 Rock UI**. Because the gate keys on it, **authorization for this feature can
@@ -903,3 +930,383 @@ The service account was chosen as the test person deliberately: it is not a real
 congregant, so no actual person's group membership or communication preferences
 were touched, and the dev database is a clone of production containing real
 people's rows.
+
+---
+
+# Session 4 (Day 3) — Q1 write model (b), tested for the first time (2026-07-31)
+
+A dev user login now exists, so model (b) — forwarding a per-user `.ROCK` cookie
+on a write — was in scope for the first time. All calls below are **dev only**.
+
+**Credential handling.** The password lives only in a gitignored `.env`
+(`.gitignore:76`, untracked) and is passed by variable reference. It appears in no
+file, log line, captured request body, or commit in this repository.
+
+---
+
+## 19. Test fixtures — verified before use
+
+Test user resolved from the `UserLogin` table: **PersonId 394626, "Ani
+Skywalker"**, `UserLogin` 31560, `IsConfirmed: true`, `IsLockedOut: false`.
+
+| Group   | Name                    | `GroupTypeId` | `GroupMember.Id` | `GroupRoleId`       | `IsLeader` | Status       | `IsArchived` |
+| ------- | ----------------------- | ------------- | ---------------- | ------------------- | ---------- | ------------ | ------------ |
+| 1838823 | Jedi Council Test Group | **31**        | 8862386          | **50** Group Leader | **true**   | **1 Active** | false        |
+| 1055022 | CFDP Testing Group      | **31**        | 3329432          | **44** Group Member | **false**  | **1 Active** | false        |
+
+Both memberships present and Active, exactly as the fixture spec required.
+
+### Group 1838823 examined for the first time
+
+**Both groups are `GroupTypeId` 31 — the same group type.** Write results across
+the two are therefore **directly comparable**, and Tier 2 was free to stay on
+1055022's group type, where workflow 700 lives, without losing anything.
+
+Its `GroupMemberWorkflowTriggers` are **the same four rows already documented in
+§14**, because all four are scoped to the group type with `GroupId: null`:
+
+```
+GET /api/GroupMemberWorkflowTriggers?$filter=GroupTypeId eq 31
+    or GroupId eq 1838823 or GroupId eq 1055022
+```
+
+| Id | `WorkflowTypeId` | `TriggerType` | `GroupId` |
+| -- | ---------------- | ------------- | --------- |
+| 49 | 700              | 0 (added)     | null      |
+| 53 | 700              | 1 (removed)   | null      |
+| 63 | 730              | 0 (added)     | null      |
+| 64 | 730              | 0 (added)     | null      |
+
+**Neither fixture group has any group-specific trigger.** Nothing about 1838823
+is special.
+
+### Correction — the `ROCK_TEST_USER` value is wrong
+
+`ROCK_TEST_USER` is set to **`ani@jedi.order`**. The account's actual
+`UserLogin.UserName` is **`anakin@jedi.order`**. The supplied value fails
+authentication with **401 `{"Message":"Invalid login type."}`**. Note the message
+says *invalid login type*, not *invalid username* — a misleading error that would
+cost a developer real time. The correct username was used for everything below.
+**Fix the env var.**
+
+### Correction to the session brief — applied
+
+The brief described `GroupMember` **3183436** (group 1055022) as role **50**; it is
+role **47 Group Co-Leader**. This was already recorded in the session-3 preamble
+above and needed no further in-place edit: **the brief document contains no
+fixture ids, group ids, or role claims at all** — the role-50 statement exists
+only in the session prompt, not in any committed file.
+
+---
+
+## 20. Q1 model (b) — **DEAD as currently configured**
+
+### Step 1 — login succeeds
+
+```http
+POST https://dev-rock.christfellowship.church/api/Auth/Login
+Content-Type: Application/Json
+
+{"Username":"anakin@jedi.order","Password":"<REDACTED>","Persisted":true}
+```
+
+```http
+HTTP/1.1 204 No Content
+Set-Cookie: .ROCK=<424 chars, REDACTED>; expires=Sun, 30-Aug-2026 18:50:17 GMT;
+            path=/; SameSite=Lax; HttpOnly
+```
+
+| Property   | Value                                                              |
+| ---------- | ------------------------------------------------------------------ |
+| Endpoint   | `POST /api/Auth/Login`                                             |
+| Payload    | `{Username, Password, Persisted}` — matches `rock-authentication.ts:27` |
+| Success    | **204 No Content**, empty body                                     |
+| Cookie     | **`.ROCK`**, 424 chars                                             |
+| Lifetime   | **30 days** (`Persisted: true`); expiry is absolute, not a session cookie |
+| Flags      | `path=/`, `HttpOnly`, `SameSite=Lax`, **no `Secure` attribute**     |
+| Latency    | 336 ms                                                             |
+
+**Finding — the `.ROCK` cookie is issued without a `Secure` flag** over an HTTPS
+origin. Nothing in our flow downgrades to HTTP, but a cookie that authenticates a
+real person and lives 30 days should be marked `Secure`. Worth raising with the
+Rock team; it is a Rock-side setting, not something the app controls.
+
+The cookie is genuinely valid: with **no `Authorization-Token` header at all**,
+
+```
+GET /api/People/GetCurrentPerson   →  200   { "Id": 394626, "PrimaryAliasId": 394571 }
+```
+
+It resolves to the test person. **Authentication works. Model (b) does not fail at
+the login step.**
+
+### Step 2 — leader accept test: **REFUSED**
+
+Group 1838823, where the test user is a **role-50 Group Leader, `IsLeader: true`,
+Active**. Cookie only, no service header:
+
+```http
+POST /api/GroupMembers
+Cookie: .ROCK=<REDACTED>          (no Authorization-Token)
+
+{"GroupId":1838823,"PersonId":389650,"GroupRoleId":44,"GroupMemberStatus":1}
+```
+
+```http
+HTTP/1.1 401 Unauthorized
+(empty body)
+```
+
+**A verified group leader cannot write to their own group with their own cookie.**
+
+### Why — it is not group security, and not a stale cookie
+
+Both competing explanations were ruled out:
+
+**1. The cookie had not expired.** Re-checked immediately after the failure:
+`GET /People/GetCurrentPerson` → **200, person 394626**. Live throughout.
+
+**2. It is not write-specific.** Every entity endpoint refuses the same way:
+
+| Call (cookie only)                            | Status  |
+| --------------------------------------------- | ------- |
+| `GET /People/GetCurrentPerson`                | **200** |
+| `GET /GroupMembers?$filter=GroupId eq 1838823` | **401** |
+| `GET /GroupMembers/8862386` (own row)         | **401** |
+| `GET /Groups/1838823`                         | **401** |
+| `PATCH /GroupMembers/8862386` (own row)       | **401** |
+
+**Reads fail too.** So this is not group security and not a write restriction —
+it is **REST controller authorization**. Confirmed against the security tables:
+
+```
+RestController 39 = Rock.Rest.Controllers.GroupMembersController
+Auths where EntityTypeId eq 180 and EntityId eq 39   →  []
+```
+
+**There are no `Auth` rules on the `GroupMembers` REST controller at all**, so an
+ordinary authenticated person falls through to Rock's default deny. The service
+account works because its API key sits in an administrative role that bypasses
+this. `GetCurrentPerson` works because it is the one endpoint scoped to "whoever
+you are", not to a secured entity controller.
+
+### Step 3 — non-leader deny test: uninterpretable, as predicted
+
+Run for completeness, and explicitly **not** the designed test:
+
+```http
+POST /api/GroupMembers    Cookie: .ROCK=<REDACTED>
+{"GroupId":1055022,"PersonId":389650,"GroupRoleId":44,"GroupMemberStatus":1}
+→ HTTP/1.1 401 Unauthorized   (empty body)
+```
+
+**Byte-for-byte identical to the leader result.** Since a *leader* on their own
+group gets the same 401, this refusal carries **no information about whether Rock
+enforces group security**. The brief anticipated exactly this: the result is
+uninterpretable and is recorded as such. Nothing was created — a service-token
+`GET` confirms the only row for person 389650 in group 1055022 is still Day 2's
+`8862385` at status 0.
+
+### The gap that stays open — and it is now bigger than expected
+
+The known gap was that with only two groups, a Rock refusal could not distinguish
+"members are denied writes" from "only leaders are allowed". **That gap is now
+wider:** because the denial happens at the REST controller layer, these results
+cannot distinguish *any* group-security hypothesis. **Whether Rock independently
+enforces per-group security on REST writes remains completely untested** — not
+merely under-specified. No third group would have helped; the blocker is
+controller ACLs, not fixture coverage.
+
+### Verdict: **DEAD as currently configured**
+
+Not "viable with caveats". A per-user cookie cannot read or write group data on
+this Rock at all, so model (b) cannot be built today.
+
+It is **revivable only by a Rock security change**: granting the `GroupMembers`
+REST controller (and every other controller the feature touches) permissions for
+ordinary authenticated users. **That change has a system-wide blast radius** — it
+would hand every logged-in user REST access to group data across the entire
+instance, with Rock's per-entity group security as the only remaining control, and
+that control is precisely what these tests **could not verify exists**. Anyone
+proposing it should be required to demonstrate group-level enforcement first.
+
+### What this implies for shipping service-account-plus-app-gate
+
+**Model (a) — service account plus the app-side `requireGroupLeader` gate — is the
+only implementable option, and it should ship.** But the honest framing of what it
+buys:
+
+> **The app-side gate is the only control protecting every group in the system.**
+
+That sentence was written into the brief as the *bad* outcome of test 3. It is
+true anyway — arrived at by a different route. Under model (a) every write carries
+the service account's administrative authority, so Rock applies no per-group
+check; `requireGroupLeader` is the entire authorization surface. This is not a new
+risk introduced by the test — it is the standing architecture, now confirmed to
+have no backstop rather than an unverified one.
+
+Three consequences worth carrying into build:
+
+1. **A bug in `requireGroupLeader` is a full authorization bypass**, not a
+   degraded check. It deserves the test coverage and review attention of a
+   security control.
+2. **§12's admin-editable `IsLeader` risk compounds this.** The single control is
+   keyed on a field that a Rock admin can toggle in the UI with no deploy and no
+   audit trail on our side.
+3. **Defense in depth is unavailable, not merely unused.** It cannot be added
+   later by "also forwarding the user cookie" — that path is closed until Rock's
+   REST security changes.
+
+---
+
+## 21. Records created or mutated in session 4
+
+**None.** Both `POST` attempts returned 401 and created nothing; verified by
+service-token `GET` after the fact. No `PATCH` succeeded. Nothing to reverse.
+
+The only state change anywhere was **one successful login**, which issued a
+`.ROCK` cookie (30-day lifetime) and updated `UserLogin` 31560's last-login
+timestamp. The cookie was held in the scratchpad for the duration of the session
+and is not committed.
+
+_(Superseded by §23 — Tier 2 mutated and restored one row after this was written.)_
+
+---
+
+## 22. Q2 — **RESOLVED in full.** Trigger 53 does not fire on a soft remove
+
+With `WorkflowType` 700 now `IsPersisted: true`, a completed run leaves a
+`Workflow` row. Note `LoggingLevel` is **still 0**, so `WorkflowLog` stays empty
+either way — the `Workflow` row is the only signal. (`/api/WorkflowLogs` is
+**not a route at all** on this Rock: `No HTTP resource was found`.)
+
+### The add trigger fires — trigger 49 confirmed, no longer an inference
+
+The baseline query already contained exactly one row, before this session touched
+anything:
+
+```
+GET /api/Workflows?$filter=WorkflowTypeId eq 700
+```
+
+```json
+{ "Id": 5696074,
+  "Name": "Web and App Cache Flush (Adds members to groups on web and app quickly)",
+  "ActivatedDateTime": "2026-07-31T14:22:07.883",
+  "CompletedDateTime": "2026-07-31T14:22:07.977",
+  "Status": "Completed" }
+```
+
+`GroupMember` **8862386** — the test user's own membership in group 1838823 — has
+`DateTimeAdded: 2026-07-31T14:22:07.837`. **Workflow 700 activated 46 ms later.**
+
+**This retroactively confirms §14's trigger-49 inference.** §14 could only argue by
+analogy that the cache-flush trigger fired alongside the observable one; the
+persisted row now proves it directly. `IsPersisted: true` paid for itself before
+the first deliberate test ran.
+
+### The remove trigger does not fire — on either kind of removal
+
+Both probes ran on `GroupMember` **8862385** (service account, group 1055022),
+chosen because Day 2 left it Inactive, so the sequence nets to zero state change.
+
+| Step | Write | `Workflow` rows for type 700 |
+| ---- | ----- | ---------------------------- |
+| baseline | — | **1** (5696074) |
+| reactivate | `PATCH {GroupMemberStatus: 1}` → 204 | **1** — unchanged |
+| **soft remove** | `PATCH {GroupMemberStatus: 0}` → 204 | **1** — unchanged |
+| **archive** | `PATCH {IsArchived: true}` → 204 | **1** — unchanged |
+
+Each check waited 3–5 s for the async transaction to land.
+
+**Answer: a soft remove does not fire trigger 53. Neither does an archive.** This
+is not a "fired but left no row" result — the mechanism that would have hidden
+that is gone, and the add trigger proves rows do appear when a trigger fires.
+
+**Also worth recording: reactivating (status 0 → 1) did not fire the *add* trigger
+49 either.** So group type 31's triggers respond to **row creation and deletion,
+not to status transitions in either direction.** Rock's `MemberStatusChanged`
+trigger type would cover that, and **group type 31 has none configured** (§14's
+table lists only trigger types 0 and 1).
+
+### Why this matters — §14's warning is confirmed
+
+§14 flagged the risk that "a soft remove never flushes the legacy web/app cache,
+and removed members could linger in legacy surfaces." **That is now the confirmed
+behavior, not a hypothesis.**
+
+Our remove path writes `GroupMemberStatus: 0`. Rock fires nothing. **The legacy
+web and app caches are never flushed on removal**, so a member removed through
+this feature can continue to appear in legacy surfaces until some other event
+flushes the cache. The add path is fine — trigger 49 fires and flushes.
+
+**This is an asymmetry the build must handle**, and it is not fixable by choosing
+archive over soft remove, because archive does not fire it either. Options:
+explicitly `LaunchWorkflow` 700 after a remove, ask the Rock team to add a
+`MemberStatusChanged` trigger to group type 31, or accept the staleness. **This
+should go to the Rock team alongside the `IsPersisted` revert.**
+
+### `IsPersisted` must be reverted
+
+It was flipped to `true` **for this test only** and has **not** been flipped back —
+per instruction, not by me. **It should be returned to `false`.** Left as-is,
+every group-member add on group type 31 permanently accumulates a `Workflow` row.
+
+---
+
+## 23. Tier 3 item 7 done early — `IsArchived`, and §5 is now decisively proven
+
+Run as part of the trigger-53 probe above, since it was the same write.
+
+**Setting `IsArchived: true` removes the row from REST results entirely — even
+with no `IsArchived` predicate in the query at all:**
+
+| Query on group 1055022, person 389650 | Before archive | After archive |
+| -------------------------------------- | -------------- | ------------- |
+| `…&$filter=… and IsArchived eq false`  | `[{"Id":8862385}]` | **`[]`** |
+| `…&$filter=…` (**no** archive predicate) | `[{"Id":8862385}]` | **`[]`** |
+
+**This is the decisive experiment §5 asked for, and it settles §5 and §12.**
+Rock's REST layer excludes archived rows from the `GroupMembers` queryable
+*before* OData is applied. The row vanishes whether or not you filter for it.
+
+So **`IsArchived eq false` in `require-group-leader.ts` is confirmed to be a
+genuine no-op** — not "probably a no-op" as §5 had it. §12 kept the predicate as
+"free insurance" on the grounds that it was never decisively proven and prod is a
+major version behind. **The first half of that reasoning is now closed; the second
+half still stands.** The predicate cannot over-deny (it excludes only rows REST
+already hides), so leaving it costs nothing — but it should no longer be described
+as protection. It is documentation of an invariant Rock enforces itself.
+
+**Secondary finding — REST archive does not stamp `ArchivedDateTime`.**
+`ArchivedDateTime` stayed **`null`** through the archive, and `ArchivedByPersonAliasId`
+likewise. Contrast §15, where Rock stamped `InactiveDateTime` itself on a status
+change. **A REST `PATCH {IsArchived: true}` produces a half-archived row**: hidden
+from REST, but with no audit trail of when or by whom. That is a good reason to
+prefer the soft remove the prototype already implements, and a reason not to
+"upgrade" the remove path to archive later without going through Rock's service
+layer.
+
+---
+
+## 24. Records created or mutated — sessions 4 and Tier 2, all reversed
+
+**Nothing was created. Nothing was `DELETE`d.** One pre-existing row was mutated
+and restored to its exact starting state.
+
+| Record | Start state | Mutations | Final state | Reversed? |
+| ------ | ----------- | --------- | ----------- | --------- |
+| `GroupMember` **8862385** (person 389650, group 1055022, role 44) | `GroupMemberStatus: 0`, `IsArchived: false` | → status 1 → status 0 → archived true → archived false | **`GroupMemberStatus: 0`, `IsArchived: false`** | **Yes — identical to start** |
+
+Verified by `GET` after the final write. The row is the one Day 2 created and left
+Inactive (§18); it is the service account, not a real congregant.
+
+The two Tier 1 `POST` attempts (groups 1838823 and 1055022) both returned **401
+and created nothing** — confirmed by service-token `GET`.
+
+**Side effects created by Rock, not reversible:** none observed this session. No
+new `Workflow` row, no new `Interaction` — the reactivate/remove/archive sequence
+fired no triggers at all, which is itself §22's finding.
+
+**Still owed to the Rock team (not ours to change):** `WorkflowType` 700
+`IsPersisted` back to **`false`**.
