@@ -1,7 +1,15 @@
 # Spike Brief — Manage Group Members (My Groups on Rock REST + Redis + RR7)
 
 **Type:** Time-boxed spike (5 days, floor not target). **Output:** a decision, not a shippable feature.
-**Owner:** _unassigned_ · **Prepared:** 2026-07-24 · **Repo for spike work:** `remix-web-app`
+**Owner:** Danny Wood · **Prepared:** 2026-07-24 · **Repo for spike work:** `remix-web-app`
+
+> **CLOSED 2026-08-03.** The spike is over. The verdict, the three write shapes,
+> and the next steps are in
+> [`manage-group-members-decision.md`](manage-group-members-decision.md); what
+> crosses into the new project is in
+> [`manage-group-members-port-manifest.md`](manage-group-members-port-manifest.md).
+> **The feature will be built in a separate React Router v7 project, not in
+> `remix-web-app`** — the "Repo for spike work" above refers to the spike only.
 
 > This brief is self-contained and pasteable into a ticket. It tells you exactly
 > what to read, what to build, what to measure, and what "done" looks like for
