@@ -7,10 +7,7 @@ import HtmlRenderer from '~/primitives/html-renderer';
 export function SessionRegistration() {
   const { title, sessionScheduleCards } = useLoaderData<EventSinglePageType>();
   return (
-    <section
-      className='w-full py-8 md:py-16 content-padding bg-gray'
-      id='register'
-    >
+    <section className='w-full py-8 md:py-16 content-padding bg-gray'>
       <div className='w-full flex flex-col gap-4 mx-auto text-center max-w-xl'>
         <h2 className='heading-h3 text-center'>Get Tickets for {title}</h2>
         <p className='text-gray-500'>

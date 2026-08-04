@@ -181,7 +181,7 @@ function CampusFilterSelect() {
       <select
         aria-label='Filter by location'
         className={cn(
-          'w-fit appearance-none rounded-[8px] border py-2.5 pl-9 pr-6 text-sm font-semibold focus:outline-none focus:ring-0 cursor-pointer transition-all duration-300',
+          'w-fit appearance-none rounded-[8px] border py-2.5 pl-9 pr-10 text-sm font-semibold focus:outline-none focus:ring-0 cursor-pointer transition-all duration-300',
           hasCampusSelected
             ? 'border-ocean bg-ocean/5 text-ocean hover:border-ocean'
             : 'border-[#DEE0E3] bg-white text-neutral-default hover:border-neutral-default',

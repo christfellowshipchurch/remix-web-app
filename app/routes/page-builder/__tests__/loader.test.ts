@@ -140,6 +140,26 @@ describe('mapPageBuilderChildItems – collection startDate', () => {
     expect(sections[0].collection![0].startDate).toBe('');
   });
 
+  it('omits startDate for ministry page collection items', async () => {
+    const section = makeSection('ministry-section');
+    const ministryItem = makeCollectionItem(
+      'ministry-1',
+      '171',
+      { pathname: 'students' },
+      '2025-06-15T10:00:00',
+    );
+
+    mockBuildPodcastRoutingIndex.mockResolvedValueOnce(emptyIndex());
+    mockFetchRockData
+      .mockResolvedValueOnce([{ childContentChannelItemId: 'ministry-1' }])
+      .mockResolvedValueOnce(ministryItem);
+
+    const sections = await mapPageBuilderChildItems([section]);
+
+    expect(sections[0].collection![0].contentType).toBe('MINISTRY_PAGE');
+    expect(sections[0].collection![0].startDate).toBe('');
+  });
+
   it('includes startDate for event collection items', async () => {
     const section = makeSection('event-section');
     const eventItem = makeCollectionItem(

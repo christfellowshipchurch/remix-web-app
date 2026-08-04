@@ -26,7 +26,7 @@ export const WhatBibleSaysAboutGiving = () => {
           </p>
         </div>
 
-        <div className='flex flex-col md:flex-row gap-8 md:gap-4 lg:gap-8 xl:!gap-16 w-full py-8'>
+        <div className='flex flex-col md:flex-row gap-8 md:gap-4 lg:gap-8 xl:gap-16! w-full py-8'>
           <Card
             title='Tithing'
             description='TRUSTING GOD WITH YOUR FINANCES.'

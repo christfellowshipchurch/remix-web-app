@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLoaderData, useLocation } from 'react-router-dom';
 
 import { scrollToAnchor } from '~/lib/scroll-to-anchor';
@@ -20,12 +20,21 @@ export const EventSinglePage: React.FC = () => {
   const location = useLocation();
   const backToEventsUrl = useEventsBackUrl();
   const getScrollOffset = useEventSectionScrollOffset();
+  const scrolledHashRef = useRef('');
 
-  // Scroll to section when landing with a hash (e.g. /events/baptism#register)
+  // Scroll to section when landing with a hash (e.g. /events/baptism#register).
+  // Only react to hash changes — not scroll-offset updates from navbar hide/show,
+  // which would otherwise re-snap the page while the user scrolls in the section.
   useEffect(() => {
     const hash = location.hash?.slice(1);
-    if (!hash || !SECTION_IDS.includes(hash as (typeof SECTION_IDS)[number]))
+    if (!hash || !SECTION_IDS.includes(hash as (typeof SECTION_IDS)[number])) {
+      scrolledHashRef.current = '';
       return;
+    }
+
+    if (scrolledHashRef.current === location.hash) return;
+    scrolledHashRef.current = location.hash;
+
     scrollToAnchor(hash, { behavior: 'auto', offset: getScrollOffset() });
   }, [location.hash, getScrollOffset]);
 
