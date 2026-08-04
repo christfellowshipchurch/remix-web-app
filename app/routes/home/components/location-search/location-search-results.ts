@@ -50,3 +50,32 @@ export function sortCampusHitsForDistanceSearch(hits: CampusSearchHit[]) {
 
   return [...physicalHits, ...onlineHits];
 }
+
+/**
+ * The locations Algolia index only returns hits for an empty query — campus
+ * names/addresses are not keyword-searchable server-side. Match locally like
+ * the navbar global search does.
+ */
+export function filterCampusHitsByQuery(
+  hits: CampusSearchHit[],
+  query: string,
+): CampusSearchHit[] {
+  const normalizedQuery = query.trim().toLowerCase();
+  if (!normalizedQuery) return hits;
+
+  return hits.filter((hit) => {
+    const searchableValues = [
+      hit.campusName,
+      hit.campusUrl,
+      hit.campusLocation?.city,
+      hit.campusLocation?.state,
+      hit.campusLocation?.street1,
+      hit.campusLocation?.street2,
+      hit.campusLocation?.zip,
+    ];
+
+    return searchableValues.some((value) =>
+      value?.toLowerCase().includes(normalizedQuery),
+    );
+  });
+}
