@@ -30,7 +30,7 @@ function makeHit(
 }
 
 describe('isCompleteClassFinderHit', () => {
-  it('requires a non-empty pathName and classType', () => {
+  it('requires pathName, classType, title, and a cover image', () => {
     expect(
       isCompleteClassFinderHit(
         makeHit({ objectID: '1', pathName: 'marriage-matters' }),
@@ -54,11 +54,42 @@ describe('isCompleteClassFinderHit', () => {
         }),
       ),
     ).toBe(false);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '4',
+          pathName: 'marriage-matters',
+          title: '',
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '5',
+          pathName: 'marriage-matters',
+          coverImage: { sources: [] },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('accepts Rock cover art when Algolia coverImage is missing', () => {
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '1',
+          pathName: 'marriage-matters',
+          coverImage: { sources: [] },
+        }),
+        { 'marriage-matters': 'https://rock.example/marriage-matters.jpg' },
+      ),
+    ).toBe(true);
   });
 });
 
 describe('groupClassTypeHits', () => {
-  it('excludes incomplete hits missing pathName or classType', () => {
+  it('excludes incomplete hits missing required card fields', () => {
     const hits = [
       makeHit({ objectID: 'good', pathName: 'marriage-matters' }),
       makeHit({
@@ -67,6 +98,16 @@ describe('groupClassTypeHits', () => {
         classType: '',
         title: 'Marriage Matters - Jupiter - Wednesday - 6:30pm - August 26',
         topic: '' as ClassHitType['topic'],
+        coverImage: { sources: [] },
+      }),
+      makeHit({
+        objectID: 'no-title',
+        pathName: 'no-title',
+        title: '',
+      }),
+      makeHit({
+        objectID: 'no-cover',
+        pathName: 'no-cover',
         coverImage: { sources: [] },
       }),
     ];
