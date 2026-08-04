@@ -32,6 +32,33 @@ function publicPathSlug(hit: ClassHitType): string {
   return (hit.pathName || '').trim();
 }
 
+function hitCoverImageUri(hit: ClassHitType): string {
+  return hit.coverImage?.sources?.[0]?.uri?.trim() ?? '';
+}
+
+/**
+ * True when a classes-index hit has the fields the finder needs to render a
+ * class-type card. Incomplete session rows (missing `pathName`, `classType`,
+ * `title`, or cover art) otherwise surface as broken one-off cards keyed by
+ * `objectID`. Cover may come from Algolia or Rock (`rockCoverImagesByPath`).
+ */
+export function isCompleteClassFinderHit(
+  hit: ClassHitType,
+  rockCoverImagesByPath: Record<string, string> = {},
+): boolean {
+  const pathName = publicPathSlug(hit);
+  const hasCover = Boolean(
+    hitCoverImageUri(hit) || (pathName && rockCoverImagesByPath[pathName]),
+  );
+
+  return Boolean(
+    pathName &&
+      (hit.classType || '').trim() &&
+      (hit.title || '').trim() &&
+      hasCover,
+  );
+}
+
 /** Groups hits that share the same public class URL; falls back to `objectID` if no slug. */
 function pathNameGroupKey(hit: ClassHitType): string {
   return publicPathSlug(hit) || hit.objectID;
@@ -59,6 +86,9 @@ export function groupClassTypeHits(
   const byKey = new Map<string, Accumulator>();
 
   for (const hit of items) {
+    // Skip incomplete Algolia rows (e.g. session records missing required card fields).
+    if (!isCompleteClassFinderHit(hit, rockCoverImagesByPath)) continue;
+
     const key = pathNameGroupKey(hit);
     const campusLabel = hit.campus?.trim() ?? '';
     const existing = byKey.get(key);
