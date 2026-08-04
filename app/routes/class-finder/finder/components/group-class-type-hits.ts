@@ -32,6 +32,15 @@ function publicPathSlug(hit: ClassHitType): string {
   return (hit.pathName || '').trim();
 }
 
+/**
+ * True when a classes-index hit has the fields the finder needs to render a
+ * class-type card. Incomplete session rows (empty `pathName` / `classType`)
+ * otherwise surface as broken one-off cards keyed by `objectID`.
+ */
+export function isCompleteClassFinderHit(hit: ClassHitType): boolean {
+  return Boolean(publicPathSlug(hit) && (hit.classType || '').trim());
+}
+
 /** Groups hits that share the same public class URL; falls back to `objectID` if no slug. */
 function pathNameGroupKey(hit: ClassHitType): string {
   return publicPathSlug(hit) || hit.objectID;
@@ -59,6 +68,9 @@ export function groupClassTypeHits(
   const byKey = new Map<string, Accumulator>();
 
   for (const hit of items) {
+    // Skip incomplete Algolia rows (e.g. session records missing pathName/classType).
+    if (!isCompleteClassFinderHit(hit)) continue;
+
     const key = pathNameGroupKey(hit);
     const campusLabel = hit.campus?.trim() ?? '';
     const existing = byKey.get(key);

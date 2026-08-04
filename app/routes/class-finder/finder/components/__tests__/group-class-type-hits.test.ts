@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ClassHitType } from '../../../types';
 import {
   groupClassTypeHits,
+  isCompleteClassFinderHit,
   syntheticHitsFromGrouped,
 } from '../group-class-type-hits';
 
@@ -28,7 +29,54 @@ function makeHit(
   };
 }
 
+describe('isCompleteClassFinderHit', () => {
+  it('requires a non-empty pathName and classType', () => {
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({ objectID: '1', pathName: 'marriage-matters' }),
+      ),
+    ).toBe(true);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '2',
+          pathName: '',
+          classType: 'Marriage Matters',
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '3',
+          pathName: 'marriage-matters',
+          classType: '',
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
 describe('groupClassTypeHits', () => {
+  it('excludes incomplete hits missing pathName or classType', () => {
+    const hits = [
+      makeHit({ objectID: 'good', pathName: 'marriage-matters' }),
+      makeHit({
+        objectID: '62825140002',
+        pathName: '',
+        classType: '',
+        title: 'Marriage Matters - Jupiter - Wednesday - 6:30pm - August 26',
+        topic: '' as ClassHitType['topic'],
+        coverImage: { sources: [] },
+      }),
+    ];
+
+    const grouped = groupClassTypeHits(hits, {});
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0].pathName).toBe('marriage-matters');
+  });
+
   it('uses Rock cover image for grouped class rows when available', () => {
     const hits = [
       makeHit({ objectID: '1', pathName: 'financial-peace' }),
