@@ -26,11 +26,14 @@ feature needs is proven against live Rock: the leader gate is a single OData cal
 §16), and all three write shapes — add, remove, role change — have been executed
 and characterised on the wire (§15, §17, §26, §31). A REST `POST` **does** trip
 Rock's own `GroupMemberWorkflowTriggers` (§14), so the write path does not have to
-reimplement Rock's internal side effects. The costs are real but bounded and known:
-authorization lives entirely in the app because Rock's REST layer provides no
-backstop (§20); there is no server-side row count, which constrains the pagination
-UX (§4 below); and `ADD` is an upsert rather than an insert because Rock's
-uniqueness constraint ignores member status (§3a below). **Version basis: verified
+reimplement Rock's internal side effects. The costs are real and bounded. Most are
+known: authorization lives entirely in the app because Rock's REST layer provides
+no backstop (§20); there is no server-side row count, which constrains the
+pagination UX (§4 below); and `ADD` is an upsert rather than an insert because
+Rock's uniqueness constraint ignores member status (§3a below). One cost remains
+untested — whether Rock enforces per-group security on REST writes (§6 item 2) —
+but under model (a) that answer cannot change the design, so it is not a blocker.
+**Version basis: verified
 on dev Rock 18.3 → 18.4.1.0 — a range, because the host moved mid-spike — targeting
 an 18.x launch; prod is 17.7.0.0.** Note that **19.1 and 20.x have already
 shipped**, so launching on 18 puts us two majors behind. That is not spike-blocking
@@ -102,19 +105,38 @@ because its key sits in an administrative role that bypasses this. **Reviving mo
 (b) requires a Rock security change with instance-wide blast radius** — it would
 grant every logged-in user REST access to group data across the instance, with
 Rock's per-entity group security as the only remaining control, and that control is
-exactly what these tests could not verify exists.
+exactly what these tests could not verify exists. Independently re-verified by curl
+on 2026-08-04 (§20) — human-verified, not only agent-reported.
 
 > **The recorded gap, stated as a gap:** because the refusal happens at the
 > controller layer, **whether Rock independently enforces per-group security on REST
-> writes is completely UNTESTED** — not merely unverified. Only two groups were
-> available, so a refusal cannot distinguish "members are denied" from "leaders
-> only"; but no third group would have helped, because the blocker is controller ACLs,
-> not fixture coverage. **So model (a) — service account + app-side gate — is the
-> only implementable option, and under it the app-side gate is the entire
-> authorization surface for every group in the instance, with no demonstrated
-> backstop.** A bug in the gate is a full authorization bypass, not a degraded check.
-> Defense in depth is *unavailable*, not merely unused: it cannot be added later by
-> "also forwarding the user cookie."
+> writes is completely UNTESTED** — not merely unverified. That question bears on
+> whether model (b) could ever be revived (§6 item 2); it does **not** invent a
+> second layer under model (a). Under model (a) the service account holds
+> administrative rights, so Rock's per-group security cannot apply to it regardless
+> of the answer. **Model (a) — service account + app-side gate — is the only
+> implementable option, and under it the app-side gate is the entire authorization
+> surface for every group in the instance, with no Rock-side backstop.** A bug in
+> the gate is a full authorization bypass, not a degraded check. Defense in depth is
+> *unavailable*, not merely unused: it cannot be added later by "also forwarding the
+> user cookie."
+
+### 2a. Authorization model — DECIDED
+
+**DECIDED (2026-08-04):** authorization for group member writes is enforced entirely
+in the application. Rock provides no backstop — the service account holds
+administrative rights and Rock's per-group security cannot apply to it. The
+throwaway-Rock test in §6 item 2 is explicitly **not** a prerequisite for the MVP,
+because its answer would not change the design.
+
+Accepted consequences, to be carried into the new project as requirements:
+
+- Every member write is audit-logged with actor, target, group, and outcome.
+- The gate keys on a **role allow-list owned in application code**, not on Rock's
+  `IsLeader` flag — an admin-editable checkbox that also controls role visibility
+  inside the group (see §7's standing risk; the two are one argument).
+- Tests covering the gate are treated as **security tests**: no merge on failure,
+  and changes to them require a second reviewer.
 
 ---
 
@@ -259,6 +281,11 @@ Acceptable for a leader-initiated action, and it buys an authorization check the
 system does not otherwise have. It also shrinks the untransacted two-write window
 (§17): "row missing" and "wrong group" are rejected *before* the first write, so the
 window is entered only for requests already known to be valid.
+
+> **Open product question (undecided by omission):** may a co-leader remove the
+> group leader, or a leader remove another leader? Rock will not prevent it, and
+> the checks above do not address it. The pre-read already returns `GroupRoleId`,
+> so enforcing a rule costs no extra call once the rule exists.
 
 **Cache invalidation — both intents must invalidate both people.** Per-user cache
 keys put the person in the key **namespace** (`rock:u{personId}:…`), so
@@ -405,13 +432,16 @@ cleanup and the closing test. *Closing test:* with 700 `IsPersisted: true`, run 
 soft remove and one archive, and confirm no `Workflow` row appears; then revert.
 
 **2. Whether Rock enforces per-group security on REST writes — completely
-untested.** The controller-level 401 masks it entirely (§20). This is the one that
-matters most, because under model (a) it is the difference between "the app gate is
-the only control" and "the app gate is the outer of two controls." *Closing test:*
+untested.** The controller-level 401 masks it entirely (§20). This question bears
+on whether **model (b) could ever be revived**, not on whether model (a) has a
+backstop. Under model (a) the request runs as the service account, which holds
+administrative rights and bypasses per-group security — so there is **no second
+layer**, and the answer would not change what gets built (§2a). *Closing test:*
 grant the `GroupMembers` REST controller an `Auth` rule for authenticated users **in
 a throwaway Rock environment**, then have a non-leader attempt a write to a group
-they do not lead. If Rock refuses, per-group security exists. Do not run this on dev
-or prod — the grant has instance-wide blast radius.
+they do not lead. If Rock refuses, per-group security exists and model (b) has a
+credible remaining control. Do not run this on dev or prod — the grant has
+instance-wide blast radius. **Not a prerequisite for the MVP.**
 
 **3. The outsider test — missing, and no fixture would have fixed it.** With only
 two groups available, a refusal cannot distinguish "members are denied" from
@@ -439,8 +469,8 @@ that a non-leader is denied and sees the generic not-found page. It was **read p
 only** — no add, no remove, and specifically **not** the reactivation path from §3a,
 which is the single most load-bearing behaviour in the add path. Control flow is
 covered by 10 tests (two mutation-checked) and every REST call was executed
-individually against dev, but the two have not run together. *Closing test:* §33
-items 1–3.
+individually against dev, but the two have not run together. *Closing test:* the
+§33 write-path sequence on group 1838823 (add → remove → re-add as reactivate).
 
 **7. Production is unaudited for spike-era writes.** A read-only prod sweep was
 attempted at close-out and blocked by local tool policy (§32 flag 4). All spike
@@ -497,12 +527,12 @@ control and an *authorization* control. Gating on `IsLeader` matches legacy exac
 
 > **The standing risk that decision does not close: `IsLeader` is admin-editable in
 > the Rock UI.** Because the gate keys on it, and because under model (a) the gate is
-> the only authorization control in the system (§2), **who can add and remove members
-> can change with no deploy, no code review, and no audit trail on our side.** Someone
-> toggling a checkbox to change who is *visible* in a group also silently changes who
-> can *write* to it. Carry this into the new project as an architecture concern:
-> gating on a purpose-built predicate or a role allow-list we own would at least make
-> the authorization surface intentional.
+> the only authorization control in the system (§2, §2a), **who can add and remove
+> members can change with no deploy, no code review, and no audit trail on our side.**
+> Someone toggling a checkbox to change who is *visible* in a group also silently
+> changes who can *write* to it. §2a accepts this by requiring an application-owned
+> role allow-list instead — so the authorization surface is intentional rather than
+> inherited from an admin checkbox.
 
 ---
 
@@ -515,12 +545,19 @@ The full file-by-file list is in the
 **Sequence — this order is deliberate:**
 
 ```
+0. Run the §33 write-path sequence (group 1838823)  BEFORE deleting the spike
 1. Fix ticket 1 (ROCK_API defaults to production)  in remix-web-app
 2. Fix ticket 3 (fetchRockData by-id guard)        in remix-web-app
 3. TAKE THE COPY of the Rock layer into the new project
 4. Build, with ticket 2b as a REQUIREMENT of the new project
-5. Delete the spike route + ticket 4 (/login) from remix-web-app
+5. Delete the spike route AND ticket 4 (/login) in the SAME PR
+6. Open a separate PR moving manage-group-members-*.md onto the default branch
 ```
+
+**Why step 0 comes first.** The spike route is throwaway, but its group-scope check
+and four-branch upsert become build requirements in the new project, and they are
+currently documented from code that has never run end to end. Run the §33 sequence
+while the route still exists.
 
 **Why 1 and 2 come before 3.** The Rock layer is **copied**, not shared. A defect
 fixed before the copy is fixed once; the same defect fixed after is fixed twice, in
@@ -539,10 +576,19 @@ routes, so there is nothing to fix there. **Do not carry that boundary across.**
 **Ticket 2a is independent of the sequence** — a live bug in `remix-web-app`, which
 keeps `auth-provider`. It does not gate the copy.
 
+**Step 5 couples the two removals.** `requireUser` redirects to `/login`
+(observed: unauthenticated `GET /spike-manage-members/1055022` → **302** →
+`/login?returnTo=…` — fail-closed, and the reason the removals must ship together).
+Removing one without the other leaves a redirect at a dead route.
+
 **Before step 5, the spike route's two surviving requirements must be recorded in
 the new project's build**: the **group-scope check** (§3b) and the **four-branch
 upsert** (§3a). They are behaviours, not files. Delete the route after they are
 written down, not before — they are lost with it otherwise.
+
+**Step 6 lands the durable output.** `manage-my-groups-research` will never merge —
+`remix-web-app` is not getting My Groups — so these documents are otherwise stranded
+on a dead branch. They are the spike's durable output and the new project's input.
 
 **Worth doing while step 1 is in flight:** §6 item 1's removal probe, because
 `WorkflowType` 700 `IsPersisted` is still `true` and that flag is the only instrument

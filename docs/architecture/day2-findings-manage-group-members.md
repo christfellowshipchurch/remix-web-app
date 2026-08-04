@@ -1193,6 +1193,23 @@ enforces per-group security on REST writes remains completely untested** — not
 merely under-specified. No third group would have helped; the blocker is
 controller ACLs, not fixture coverage.
 
+### Independent human re-verification (2026-08-04)
+
+**Distinct from the agent-run tests above.** Independently re-verified by Danny
+Wood on 2026-08-04, by curl against dev, with the dev host hardcoded:
+
+```
+POST /api/Auth/Login (anakin@jedi.order)                       → 204, Set-Cookie: .ROCK
+GET  /api/People/GetCurrentPerson         (cookie only)        → 200, person 394626
+GET  /api/GroupMembers/3329432            (cookie only)        → 401
+GET  /api/GroupMembers?$filter=GroupId eq 1838823 (cookie only) → 401
+```
+
+No `Authorization-Token` header was sent on any request. The 200 on
+`GetCurrentPerson` establishes that Rock recognises the session, so the 401s are
+Rock refusing the endpoint rather than refusing the credential. **Model (b) is
+confirmed dead at the controller layer — human-verified, not only agent-reported.**
+
 ### Verdict: **DEAD as currently configured**
 
 Not "viable with caveats". A per-user cookie cannot read or write group data on
@@ -2265,32 +2282,42 @@ what Danny confirmed directly. What is recorded is the boundary:
 
 ### What the run did NOT verify — and the tests that close each
 
-1. **No write path was exercised at all.** The run was **read paths only** —
-   confirmed by Danny and corroborated by §32 flag 2. So `addMember` and
-   `removeMember` have still never run through the route. Their control flow is
-   mock-covered (10 tests, two mutation-checked) and every REST call they emit was
-   executed individually against dev (§31), but **the writes have not run end to
-   end behind a real cookie.** *Test that closes it:* perform one add and one remove
-   through the route on group 1838823 as `anakin@jedi.order` (role 50 leader there),
-   and confirm the `GroupMember` row changes state.
-2. **The re-add-of-a-soft-removed-member path was not exercised.** This is the §17
-   bug and the §29/§31 fix — the single most load-bearing behaviour in the add path,
-   and the one whose absence originally shipped. *Test that closes it:* through the
-   route, add a person who already holds a dormant (`GroupMemberStatus` 0) row at
-   the requested role, and confirm the result is `outcome: 'reactivated'` with a
-   **204** status `PATCH` — **not a 400.** Person 389650 in group 1055022 is already
-   in exactly that state at role 44 and role 49 (§32), so the fixture exists.
-3. **The HTTP status of the denial was not observed.** The page was seen; the status
+1. **No write path was exercised at all — including reactivation.** The run was
+   **read paths only** — confirmed by Danny and corroborated by §32 flag 2. So
+   `addMember` and `removeMember` have still never run through the route. Their
+   control flow is mock-covered (10 tests, two mutation-checked) and every REST
+   call they emit was executed individually against dev (§31), but **the writes
+   have not run end to end behind a real cookie.** The earlier split of "add/
+   remove" and "reactivation" into two closing tests cannot both be run as
+   written: the reactivation fixture (person 389650, dormant at roles 44 and 49)
+   sits in group **1055022**, where `anakin@jedi.order` is role **44** — not a
+   leader — so the route denies him.
+
+   *Closing test — one sequence on group 1838823*, where `anakin@jedi.order` is a
+   role-50 leader:
+
+   ```
+   add person 389650       → insert branch
+   remove person 389650    → soft remove; exercises the §3b / §28 group-scope check
+   add person 389650 again → expect outcome: 'reactivated' with a 204 PATCH, NOT a 400
+   ```
+
+   This exercises **three of the four upsert branches** (insert, soft-remove, reactivate)
+   plus the group-scope check in one session. It creates a dormant `GroupMember` row
+   and — because WorkflowType 700 `IsPersisted` is still `true` — an `Interaction`
+   row and a `Workflow` row on 1838823, which should be added to the §32 ledger once
+   run.
+2. **The HTTP status of the denial was not observed.** The page was seen; the status
    code was not. §13 establishes the mechanism — a thrown non-`Response` is an
    unhandled error, so React Router answers **500** while `app/error.tsx:11` renders
    `NotFound` unconditionally — and the observed page is consistent with it. But the
    **500 itself remains unobserved.** *Test that closes it:* re-request
    `/spike-manage-members/1055022` as `anakin@jedi.order` with the network panel
-   open, or `curl -i` with the cookie, and record the status line.
-4. **Production is unaudited** (§32 flag 4). Not implicated by this run — the run
-   was on dev — but still open, and ticket 1 is why it matters.
+   open, or `curl -i` with the cookie, and record the status line. **Still open.**
+3. **Production is unaudited** (§32 flag 4). Not implicated by this run — the run
+   was on dev — but still open, and ticket 1 is why it matters. **Still open.**
 
 **Do not upgrade "human-verified" to "verified" in any downstream document without
-closing items 1 and 2.** The route is throwaway code (see the port manifest) — but
-its group-scope check and its four-branch upsert are requirements that survive it,
-and items 1 and 2 are precisely the tests that exercise them.
+closing item 1.** The route is throwaway code (see the port manifest) — but its
+group-scope check and its four-branch upsert are requirements that survive it, and
+item 1 is precisely the test that exercises them.
