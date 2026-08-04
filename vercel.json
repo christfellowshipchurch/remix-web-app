@@ -25,6 +25,11 @@
       "source": "/young-adults",
       "destination": "/ministries/young-adults",
       "statusCode": 301
+    },
+    {
+      "source": "/groups",
+      "destination": "/group-finder",
+      "statusCode": 301
     }
   ]
 }
