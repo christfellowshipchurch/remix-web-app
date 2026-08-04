@@ -108,7 +108,14 @@ export function Navbar() {
         return;
       }
 
-      const currentScrollY = window.scrollY;
+      // Clamp to the real scroll range — iOS rubber-band overscroll reports
+      // out-of-range values whose deltas flip visibility at the page edges.
+      const maxScrollY =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const currentScrollY = Math.min(
+        Math.max(window.scrollY, 0),
+        Math.max(maxScrollY, 0),
+      );
       const scrollThreshold = 10;
       const scrollDelta = currentScrollY - lastScrollYRef.current;
 

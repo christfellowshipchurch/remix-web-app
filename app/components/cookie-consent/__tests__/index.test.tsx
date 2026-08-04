@@ -1,71 +1,112 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { CookieConsent } from '../index';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+function renderBanner(props: {
+  isVisible: boolean;
+  onAccept: () => void;
+  onDecline: () => void;
+}) {
+  return render(
+    <MemoryRouter>
+      <CookieConsent {...props} />
+    </MemoryRouter>,
+  );
+}
 
 describe('CookieConsent', () => {
   const mockOnAccept = vi.fn();
   const mockOnDecline = vi.fn();
 
   beforeEach(() => {
-    // Clear localStorage and mock functions before each test
-    localStorage.clear();
     mockOnAccept.mockClear();
     mockOnDecline.mockClear();
   });
 
-  it('renders when no consent is stored', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('renders when visible with analytics-scoped copy and actions', () => {
+    renderBanner({
+      isVisible: true,
+      onAccept: mockOnAccept,
+      onDecline: mockOnDecline,
+    });
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Cookie Settings')).toBeInTheDocument();
-    expect(screen.getByText(/We use cookies/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Accept' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Decline' })).toBeInTheDocument();
+    expect(screen.getByText(/optional analytics cookies/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Allow analytics' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Reject analytics' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /learn more in our privacy policy/i }),
+    ).toHaveAttribute('href', '/privacy-policy');
   });
 
-  it("doesn't render when consent is already accepted", () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('does not render when not visible', () => {
+    renderBanner({
+      isVisible: false,
+      onAccept: mockOnAccept,
+      onDecline: mockOnDecline,
+    });
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it("doesn't render when consent is already declined", () => {
-    localStorage.setItem('cookieConsent', 'declined');
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('handles accept action correctly without writing localStorage', () => {
+    localStorage.clear();
+    renderBanner({
+      isVisible: true,
+      onAccept: mockOnAccept,
+      onDecline: mockOnDecline,
+    });
 
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  });
+    fireEvent.click(screen.getByRole('button', { name: 'Allow analytics' }));
 
-  it('handles accept action correctly', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
-
-    const acceptButton = screen.getByRole('button', { name: 'Accept' });
-    fireEvent.click(acceptButton);
-
-    expect(localStorage.getItem('cookieConsent')).toBe('accepted');
+    expect(localStorage.getItem('cookieConsent')).toBeNull();
     expect(mockOnAccept).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('handles decline action correctly', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+  it('handles decline action correctly without writing localStorage', () => {
+    localStorage.clear();
+    renderBanner({
+      isVisible: true,
+      onAccept: mockOnAccept,
+      onDecline: mockOnDecline,
+    });
 
-    const declineButton = screen.getByRole('button', { name: 'Decline' });
-    fireEvent.click(declineButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Reject analytics' }));
 
-    expect(localStorage.getItem('cookieConsent')).toBe('declined');
+    expect(localStorage.getItem('cookieConsent')).toBeNull();
     expect(mockOnDecline).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('has correct accessibility attributes', () => {
-    render(<CookieConsent onAccept={mockOnAccept} onDecline={mockOnDecline} />);
+    renderBanner({
+      isVisible: true,
+      onAccept: mockOnAccept,
+      onDecline: mockOnDecline,
+    });
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('aria-labelledby', 'cookie-consent-title');
 
     const title = screen.getByText('Cookie Settings');
     expect(title).toHaveAttribute('id', 'cookie-consent-title');
+  });
+
+  it('gives accept and reject comparable visual prominence', () => {
+    renderBanner({
+      isVisible: true,
+      onAccept: mockOnAccept,
+      onDecline: mockOnDecline,
+    });
+
+    const allow = screen.getByRole('button', { name: 'Allow analytics' });
+    const reject = screen.getByRole('button', { name: 'Reject analytics' });
+
+    expect(allow.className).toBe(reject.className);
   });
 });
