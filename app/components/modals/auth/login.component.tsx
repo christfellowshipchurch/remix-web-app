@@ -46,9 +46,14 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       return;
     }
 
-    let userExists = false;
-    if (isEmail || isPhoneNumber) {
+    let userExists: boolean;
+    try {
       userExists = await checkUserExists(identity);
+    } catch {
+      // The server did not answer, so we cannot say the account is missing.
+      setLoading(false);
+      setError('An error occurred. Please try again.');
+      return;
     }
 
     if (!userExists) {
