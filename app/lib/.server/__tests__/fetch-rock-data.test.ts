@@ -3,8 +3,10 @@ import {
   fetchRockData,
   deleteRockData,
   postRockData,
+  putRockData,
   patchRockData,
   deleteCacheKey,
+  getRockApiBaseUrl,
   isItemInDateRange,
   TTL,
 } from '../fetch-rock-data';
@@ -266,6 +268,65 @@ describe('patchRockData', () => {
     await expect(
       patchRockData({ endpoint: 'People/1', body: {} }),
     ).rejects.toThrow('Failed to patch data');
+  });
+});
+
+// ─── ROCK_API validation ────────────────────────────────────────────────────
+
+/**
+ * An absent ROCK_API used to interpolate as the literal string "undefined" and
+ * every request was built against it. Rock answered those URLs in a way that
+ * read as "user does not exist", so the misconfiguration was invisible and the
+ * debugging went after the wrong thing. Missing config must fail as config.
+ */
+describe.each([
+  { label: 'unset', value: undefined },
+  { label: 'empty', value: '' },
+  { label: 'whitespace-only', value: '   ' },
+])('ROCK_API $label', ({ value }: { label: string; value?: string }) => {
+  let errorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    if (value === undefined) {
+      delete process.env.ROCK_API;
+    } else {
+      process.env.ROCK_API = value;
+    }
+  });
+
+  afterEach(() => {
+    errorSpy.mockRestore();
+  });
+
+  it('makes fetchRockData fail naming the variable, without calling fetch', async () => {
+    await expect(fetchRockData({ endpoint: 'People' })).rejects.toThrow(
+      /ROCK_API/,
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('explains that a new worktree has no env files', async () => {
+    await expect(fetchRockData({ endpoint: 'People' })).rejects.toThrow(
+      /worktree/,
+    );
+  });
+
+  it.each([
+    ['deleteRockData', () => deleteRockData('People/1')],
+    ['postRockData', () => postRockData({ endpoint: 'People', body: {} })],
+    ['putRockData', () => putRockData({ endpoint: 'People/1', body: {} })],
+    ['patchRockData', () => patchRockData({ endpoint: 'People/1', body: {} })],
+  ])('makes %s fail before it can build a URL', async (_name, call) => {
+    await expect(call()).rejects.toThrow(/ROCK_API/);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+});
+
+describe('getRockApiBaseUrl', () => {
+  it('returns the configured base URL', () => {
+    process.env.ROCK_API = 'https://rock.example.com/api/';
+    expect(getRockApiBaseUrl()).toBe('https://rock.example.com/api/');
   });
 });
 

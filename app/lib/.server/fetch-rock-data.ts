@@ -16,10 +16,34 @@ interface RockDataRequest {
   contentType?: string;
 }
 
-const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {
   'Content-Type': 'application/json',
   'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+};
+
+/**
+ * Single validated accessor for ROCK_API. Interpolating the env var directly
+ * turns an absent value into the literal string "undefined" and builds every
+ * request against it, which surfaces as Rock answering "user does not exist"
+ * rather than as missing configuration.
+ *
+ * Read lazily rather than at module load: importing this module must not
+ * require env to be present, or the test suite and the build break.
+ */
+export const getRockApiBaseUrl = (): string => {
+  const baseUrl = process.env.ROCK_API?.trim();
+
+  if (!baseUrl) {
+    throw new Error(
+      'ROCK_API is not set, so no Rock request can be built. .env and ' +
+        '.env.local are gitignored, so `git worktree add` creates a tree with ' +
+        'no env files at all and says nothing about it — copy them from your ' +
+        'main checkout and start the app with `netlify dev`, which is what ' +
+        'loads them.',
+    );
+  }
+
+  return baseUrl;
 };
 
 /**
@@ -257,7 +281,7 @@ export const fetchRockData = async ({
     ) as Record<string, string>;
 
     const queryString = new URLSearchParams(definedQueryParams).toString();
-    const url = `${baseUrl}${endpoint}?${queryString}`;
+    const url = `${getRockApiBaseUrl()}${endpoint}?${queryString}`;
 
     const res = await fetch(url, {
       headers: {
@@ -321,7 +345,7 @@ export const fetchRockData = async ({
  */
 export const deleteRockData = async (endpoint: string) => {
   try {
-    const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
+    const response = await fetch(`${getRockApiBaseUrl()}/${endpoint}`, {
       method: 'DELETE',
       headers: {
         'Authorization-Token': `${process.env.ROCK_TOKEN}`,
@@ -355,7 +379,7 @@ export const postRockData = async ({
   body,
   contentType = 'application/json',
 }: RockDataRequest) => {
-  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+  const response = await fetch(`${getRockApiBaseUrl()}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': contentType,
@@ -386,7 +410,7 @@ export const postRockData = async ({
  * @returns response body as JSON
  */
 export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
-  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+  const response = await fetch(`${getRockApiBaseUrl()}${endpoint}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -413,7 +437,7 @@ export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
  * @returns response status code
  */
 export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
-  const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
+  const response = await fetch(`${getRockApiBaseUrl()}/${endpoint}`, {
     method: 'PATCH',
     headers: {
       ...defaultHeaders,
