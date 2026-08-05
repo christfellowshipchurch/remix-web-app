@@ -330,6 +330,107 @@ describe('getRockApiBaseUrl', () => {
   });
 });
 
+// ─── by-id $expand / $select guard ──────────────────────────────────────────
+
+/**
+ * Rock silently ignores $expand and $select on Entity/{id} routes: an ignored
+ * $select overfetches the whole entity, and an ignored $expand resolves the
+ * navigation property to null, so the fetch succeeds and the crash lands later
+ * in whatever reads a field off it. The guard has to key on that route shape —
+ * People/GetByAttributeValue also returns one row but does honor $expand, so a
+ * guard keying on "returns one row" would fire on a working endpoint.
+ */
+describe('by-id $expand / $select guard', () => {
+  let warnSpy: ReturnType<typeof vi.spyOn>;
+  let errorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => [{ id: 1 }],
+    });
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
+  });
+
+  const personId = 123;
+
+  it.each([
+    ['numeric id with $select', 'People/1', { $select: 'Email' }],
+    [
+      'interpolated id with $expand',
+      `GroupMembers/${personId}`,
+      { $expand: 'GroupRole' },
+    ],
+    [
+      'guid id with $select',
+      'PersonAlias/6c2a1b70-4f2a-4a5e-9d1c-2f3b4a5c6d7e',
+      { $select: 'Guid' },
+    ],
+    [
+      'leading slash and both params',
+      '/People/1',
+      { $expand: 'Photo', $select: 'Email' },
+    ],
+  ])('fires on %s', async (_label, endpoint, queryParams) => {
+    await expect(fetchRockData({ endpoint, queryParams })).rejects.toThrow(
+      /silently ignores/,
+    );
+    expect(warnSpy).toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [
+      'People/GetByAttributeValue, which does honor $expand',
+      'People/GetByAttributeValue',
+      { attributeKey: 'Pathname', value: 'ryan-mcdermott', $expand: 'Photo' },
+    ],
+    [
+      'the collection form of a by-id lookup',
+      'People',
+      { $filter: `Id eq ${personId}`, $select: 'Email' },
+    ],
+    [
+      'a trailing-slash collection endpoint',
+      'DefinedValues/',
+      { $filter: "Guid eq guid'abc'", $select: 'Value' },
+    ],
+    [
+      'ContentChannelItems/GetByAttributeValue',
+      'ContentChannelItems/GetByAttributeValue',
+      { attributeKey: 'Pathname', value: 'some-article', $select: 'Title' },
+    ],
+    ['a by-id endpoint carrying neither param', 'PersonAlias/7', {}],
+  ])('does not fire on %s', async (_label, endpoint, queryParams) => {
+    await expect(
+      fetchRockData({ endpoint, queryParams }),
+    ).resolves.toBeDefined();
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  it('warns but still fetches in production, where waste beats an outage', async () => {
+    const nodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    try {
+      await expect(
+        fetchRockData({ endpoint: 'People/1', queryParams: { $select: 'Email' } }),
+      ).resolves.toBeDefined();
+      expect(warnSpy).toHaveBeenCalled();
+      expect(global.fetch).toHaveBeenCalled();
+    } finally {
+      process.env.NODE_ENV = nodeEnv;
+    }
+  });
+});
+
 // ─── deleteCacheKey ─────────────────────────────────────────────────────────
 
 describe('deleteCacheKey', () => {

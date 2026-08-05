@@ -233,13 +233,18 @@ async function fetchPersonNameEmail(
   personId: string,
 ): Promise<{ name?: string; email?: string }> {
   try {
-    const p = await fetchRockData({
-      endpoint: `People/${personId}`,
+    // Collection form, not People/{id}: Rock ignores $select on by-id routes and
+    // returns the whole entity. A single match arrives unwrapped as an object, a
+    // miss as an empty array.
+    const res = await fetchRockData({
+      endpoint: 'People',
       queryParams: {
+        $filter: `Id eq ${personId}`,
         $select: 'FirstName,LastName,NickName,Email',
       },
       ttl: TTL.NONE,
     });
+    const p = Array.isArray(res) ? res[0] : res;
     if (!p || typeof p !== 'object') return {};
     const nick = typeof p.nickName === 'string' ? p.nickName.trim() : '';
     const first = typeof p.firstName === 'string' ? p.firstName.trim() : '';
