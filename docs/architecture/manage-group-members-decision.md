@@ -58,9 +58,10 @@ survives `IsPersisted: false`. `POST /api/GroupMembers` at 13:31:27.84 produced
 `Interaction` **73324746**, `Operation: "AddedToGroup"`, at 13:31:28.383 — **0.54 s
 later**, on `InteractionComponentId` 273491 (`"Group: CFDP Testing Group"`, scoped
 to the exact group written). Baseline: that alias had 3 `AddedToGroup` interactions
-in its entire history. Trigger 49 (the cache flush) was later confirmed directly
-once `IsPersisted` was flipped: `GroupMember` 8862386 added at 14:22:07.837, workflow
-700 activated at 14:22:07.883 — **46 ms later** (§22).
+in its entire history. Trigger 49 (workflow 700 — an Apollos GraphQL cache flush,
+not a Rock-internal one; §22) was later confirmed directly once `IsPersisted` was
+flipped: `GroupMember` 8862386 added at 14:22:07.837, workflow 700 activated at
+14:22:07.883 — **46 ms later** (§22).
 
 > **Consequence for the build: the add path does not need to launch workflow 654
 > (`GROUP_ADD_PERSON`) to keep Rock's internal state consistent.** Rock's own
@@ -296,12 +297,31 @@ against live Redis). An add gives someone a group; a remove takes one away. Gate
 second call on write success; do not roll it back on later failure — a spurious
 invalidation costs one cache miss.
 
-**And Rock flushes nothing on a soft remove (§22).** Trigger 53 does not fire on a
-status change; neither does an archive; and reactivation does not fire the *add*
-trigger either. Group type 31's triggers respond to **row creation and deletion, not
-status transitions**, and no `MemberStatusChanged` trigger is configured. So without
-the second invalidation a removed member sits stale in **two independent caches at
-once** — ours and legacy's. See ask 3.
+**And Rock fires no membership trigger on a soft remove (§22).** Trigger 53 does
+not fire on a status change; neither does an archive; and reactivation does not
+fire the *add* trigger either. Group type 31's triggers respond to **row creation
+and deletion, not status transitions**, and no `MemberStatusChanged` trigger is
+configured. Workflow 700 — despite Rock's "Web and App Cache Flush" label — is an
+**Apollos-only** GraphQL `flushRock` for one person (§22); it never touched Rock
+cache and has no relationship to this project's Redis. Legacy-my-groups retires the
+day the new app launches, so Apollos-side staleness is moot (ask 3 withdrawn).
+
+**What the spike did *not* prove — Redis invalidation for writes originating in
+Rock.** `invalidateUser` works for writes **originating in the app** (§25). A staff
+edit in the Rock admin UI, a data import, or another Rock workflow writing a
+membership goes straight to the database; this project's Redis never hears about
+it, so a cached member list or "my groups" read can stay stale indefinitely. Apollos
+hit the same problem and solved it by having Rock push invalidation — that is what
+workflow 700 is, scoped per person at `entityTypeId` 15, matching the granularity
+§25 landed on (`rock:u{personId}:…`). The pattern is proven; this project has no
+equivalent. **MVP architecture decision (deliberate either way):**
+
+- **(a)** Expose an authenticated invalidation endpoint and point a Rock trigger at
+  it. The trigger must fire on **status transitions**, not only creation/deletion —
+  group type 31 currently has no `MemberStatusChanged` trigger (§22). Do not copy
+  700's plaintext-shared-key pattern; authenticate properly. Implies a Rock-side
+  ask that does not exist yet.
+- **(b)** Short TTLs on group-membership reads, accepting bounded staleness.
 
 ### 3c. ROLE CHANGE is a distinct third shape the upsert does not cover
 
@@ -417,19 +437,20 @@ want is a moving target until prod catches up.
 
 ## 6. What this spike did not answer
 
-Short and honest. Each item names the test that would close it.
+Short and honest. Each item names the test that would close it — or why it no
+longer can.
 
-**1. Whether a soft remove fires trigger 53 — *partially* answered, and the residue
-is unobservable by design.** §22 established that no `Workflow` row appears for a
-soft remove, an archive, or a reactivation, while an add reliably produces one — so
-the mechanism that would hide a firing is gone and the negative result is real. What
-remains genuinely unobservable is the *inverse* question: trigger 53 points at
-workflow **700**, a cache flush, which writes **no queryable side effect** of its
-own, and the only interaction-writing workflow (730) is an *added* trigger that
-would not fire on a removal anyway. **The `IsPersisted` flip is what settles it** —
-and it is currently still `true` on dev (verified §32), which is why ask 1 is both a
-cleanup and the closing test. *Closing test:* with 700 `IsPersisted: true`, run one
-soft remove and one archive, and confirm no `Workflow` row appears; then revert.
+**1. Whether a soft remove fires trigger 53 — answered negatively; the closing
+instrument is gone.** §22 established that no `Workflow` row appears for a soft
+remove, an archive, or a reactivation, while an add reliably produces one — so
+the mechanism that would hide a firing is gone and the negative result stands.
+A follow-up that depended on `WorkflowType` 700 `IsPersisted: true` (the flag
+that makes a 700 run observable) is **no longer runnable**: that flag was
+reverted to `false` by a Rock admin on 2026-08-04. Re-running the probe now
+would produce a guaranteed-empty result and prove nothing new. The consequence
+this item tracked — Apollos-cache staleness on soft remove — is also **moot**:
+700 is Apollos-specific (§22), and legacy-my-groups retires at launch (ask 3
+withdrawn). **Retained for the record, not as work.**
 
 **2. Whether Rock enforces per-group security on REST writes — completely
 untested.** The controller-level 401 masks it entirely (§20). This question bears
@@ -463,55 +484,62 @@ held for the whole spike; `DELETE` was never issued against any entity on any ho
 *Closing test:* a hard-delete probe against a throwaway group in a throwaway
 environment. Not on a prod clone.
 
-**6. The write paths have never run end to end behind a real cookie (§33).** The
-route was exercised manually on dev, which verified the auth chain, the loader, and
-that a non-leader is denied and sees the generic not-found page. It was **read paths
-only** — no add, no remove, and specifically **not** the reactivation path from §3a,
-which is the single most load-bearing behaviour in the add path. Control flow is
-covered by 10 tests (two mutation-checked) and every REST call was executed
-individually against dev, but the two have not run together. *Closing test:* the
-§33 write-path sequence on group 1838823 (add → remove → re-add as reactivate).
+**6. The write paths have never run end to end behind a real cookie (§33 item 1).**
+The route was exercised manually on dev: auth chain, loader, non-leader denial
+(**HTTP 500** + not-found page — §33 item 3, CLOSED), and unauthenticated **302**
+to `/login?returnTo=…`. Remaining open: **no add, no remove, and specifically not
+the reactivation path from §3a** — the single most load-bearing behaviour in the
+add path. Control flow is covered by 10 tests (two mutation-checked) and every
+REST call was executed individually against dev, but the writes have not run
+through the route. *Closing test:* the §33 write-path sequence on group 1838823
+(add → remove → re-add as reactivate).
 
-**7. Production is unaudited for spike-era writes.** A read-only prod sweep was
-attempted at close-out and blocked by local tool policy (§32 flag 4). All spike
-writes were made against a deliberately hardcoded dev host, and the manual run was on
-dev — so there is no positive reason to expect prod writes. But given that `ROCK_API`
-defaults to prod (ticket 1), "no reason to expect" is not "verified". *Closing test:*
-the query is recorded verbatim in §32 flag 4.
+**7. CLOSED. Production spike-era writes — none.** Read-only prod sweep run by
+Danny Wood, 2026-08-04. Both queries returned `[]`: the group-scoped query on
+1838823 and 1055022, and the unscoped `PersonId eq 389650` query. No spike-era
+write reached production. Queries recorded in §32 flag 4.
 
 ---
 
 ## 7. Asks of the Rock team
 
-Numbered so this section can be sent as-is.
+Numbered so this section can be sent as-is. **One live ask; one done; one
+withdrawn.**
 
-1. **Revert `WorkflowType` 700 `IsPersisted` to `false`.** It was flipped to `true`
-   to answer the trigger question in §22 and has not been flipped back — **verified
-   still `true` on dev at close-out.** Left as-is, **every group-member add on group
-   type 31 permanently accumulates a `Workflow` row**; two have already accrued
-   (5696074, 5696075). Needs a Rock admin. *Before reverting, it is worth running the
-   one remaining removal probe in §6 item 1 — the flag is the instrument that makes
-   it observable, so the two-minute test is free while it is still set.*
+### Live
 
-2. **The `.ROCK` cookie is issued without a `Secure` flag, on a 30-day lifetime.**
-   Observed over an HTTPS origin: `Set-Cookie: .ROCK=<424 chars>; expires=<+30 days>;
-   path=/; SameSite=Lax; HttpOnly` — `HttpOnly` and `SameSite=Lax` present,
-   **`Secure` absent** (§20). This is a Rock-side setting, not something the app
-   controls. **Please treat this as a design input, not a footnote: the new My Groups
-   project owns login**, so this cookie is the credential a real person's session
-   rests on for 30 days, and the project is being designed around it now. A cookie
-   that authenticates a real person for a month should be marked `Secure`.
+**2. The `.ROCK` cookie is issued without a `Secure` flag, on a 30-day lifetime.**
+Observed over an HTTPS origin: `Set-Cookie: .ROCK=<424 chars>; expires=<+30 days>;
+path=/; SameSite=Lax; HttpOnly` — `HttpOnly` and `SameSite=Lax` present,
+**`Secure` absent** (§20). This is a Rock-side setting, not something the app
+controls. **Please treat this as a design input, not a footnote: the new My Groups
+project owns login**, so this cookie is the credential a real person's session
+rests on for 30 days, and the project is being designed around it now. A cookie
+that authenticates a real person for a month should be marked `Secure`.
 
-3. **Removals never flush the legacy web/app cache.** Confirmed, not hypothesised
-   (§22): group type 31's triggers fire on row creation and deletion, **not on status
-   transitions**. Trigger 49 fires on an add; trigger 53 does not fire on a soft
-   remove, and an archive does not fire it either. So a member removed through this
-   feature can keep appearing in legacy surfaces until some unrelated event flushes
-   the cache. Three options, and we would like the Rock team's preference: **(a)** add
-   a `MemberStatusChanged` trigger to group type 31 — group type 31 has none
-   configured; **(b)** we explicitly `LaunchWorkflow` 700 after each remove; or
-   **(c)** accept the staleness. This is **not** fixable by choosing archive over soft
-   remove.
+Unaffected by model (b) being dead (§20). The new project still calls
+`POST /api/Auth/Login` and still relies on the `.ROCK` cookie for identity, per
+the identity-vs-permission split. A cookie that authenticates a real person for
+30 days should be marked `Secure` regardless of which endpoints accept it.
+
+### Done
+
+**1. DONE (2026-08-04).** Revert `WorkflowType` 700 `IsPersisted` to `false`.
+Flipped to `true` for the §22 trigger probe; two `Workflow` rows accrued
+(5696074, 5696075) while set. A Rock admin reverted it.
+
+### Withdrawn
+
+**3. WITHDRAWN (2026-08-04).** Removals never flush the legacy web/app cache.
+The underlying Rock behaviour is real and confirmed (§22): group type 31's
+triggers fire on row creation and deletion, **not on status transitions**, and
+no `MemberStatusChanged` trigger is configured. Withdrawn on two independent
+grounds: (1) workflow 700 is **Apollos-specific** — a GraphQL `flushRock` POST,
+not a Rock-internal cache flush (§22) — so the ask misidentified what was being
+flushed; (2) **legacy-my-groups retires the day the new app launches**, so there
+is no coexistence window in which Apollos-side staleness could be observed. The
+durable residue — Rock-originated writes never invalidate this project's Redis —
+is a build requirement in §3b, not a Rock-team ask about legacy.
 
 **Deliberately not asked: the Campus Hub Leader / `CanManageMembers` question.**
 **DECIDED (product, 2026-07-31): role 48 (Campus Hub Leader) does not need to manage
@@ -568,10 +596,11 @@ missing guard the new project will otherwise regenerate from first principles.
 
 **Ticket 2b is a requirement of the new project, not a fix to an existing one.**
 `AuthorizationError` must carry `.status = 403` and the error boundary must respect
-it. In `remix-web-app` today a denial surfaces as **HTTP 500 with a 404 body** — it
-fails closed and leaks nothing, but only by accident, and the accident does not
-survive a boundary that starts reading errors. `remix-web-app` has no authenticated
-routes, so there is nothing to fix there. **Do not carry that boundary across.**
+it. In `remix-web-app` today a denial surfaces as **HTTP 500 with a 404 body**
+(observed 2026-08-04, §33 item 3) — it fails closed and leaks nothing, but only by
+accident, and the accident does not survive a boundary that starts reading errors.
+`remix-web-app` has no authenticated routes, so there is nothing to fix there.
+**Do not carry that boundary across.**
 
 **Ticket 2a is independent of the sequence** — a live bug in `remix-web-app`, which
 keeps `auth-provider`. It does not gate the copy.
@@ -584,13 +613,10 @@ Removing one without the other leaves a redirect at a dead route.
 **Before step 5, the spike route's two surviving requirements must be recorded in
 the new project's build**: the **group-scope check** (§3b) and the **four-branch
 upsert** (§3a). They are behaviours, not files. Delete the route after they are
-written down, not before — they are lost with it otherwise.
+written down, not before — they are lost with it otherwise. Also record the
+§3b MVP choice on Rock-originated cache invalidation (endpoint + trigger vs short
+TTLs) before treating membership reads as settled.
 
 **Step 6 lands the durable output.** `manage-my-groups-research` will never merge —
 `remix-web-app` is not getting My Groups — so these documents are otherwise stranded
 on a dead branch. They are the spike's durable output and the new project's input.
-
-**Worth doing while step 1 is in flight:** §6 item 1's removal probe, because
-`WorkflowType` 700 `IsPersisted` is still `true` and that flag is the only instrument
-that makes the answer observable. It is a two-minute test that gets cheaper now and
-impossible after ask 1 is actioned.

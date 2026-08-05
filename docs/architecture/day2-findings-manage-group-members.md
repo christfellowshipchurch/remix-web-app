@@ -410,17 +410,18 @@ through with a pointer to where they were settled._
 - ~~**Whether a soft remove fires trigger 53**~~ — **RESOLVED (§22): it does not.**
   Neither does an archive, nor does reactivation fire the add trigger. Group type
   31's triggers respond to row creation/deletion, not status transitions.
-- **Removals never flush the legacy web/app cache** (§22) — the confirmed
-  consequence of the above. Adds flush (trigger 49, now proven); removes do not.
-  **Needs a decision before build:** explicitly launch workflow 700 after a remove,
-  ask Rock to add a `MemberStatusChanged` trigger, or accept stale legacy surfaces.
-- **`WorkflowType` 700 `IsPersisted` must be reverted to `false`** — flipped for
-  the §22 test, deliberately not flipped back by us. **STILL OPEN. Re-verified by
-  read on 2026-08-03 (close-out): `IsPersisted: true`, `LoggingLevel: 0`.** This
-  needs a Rock **admin** to revert; it is not ours to change and this session did
-  not change it. Two `Workflow` rows have accumulated so far (5696074, 5696075 —
-  §32); every further add on group type 31 adds another, permanently. Keep this
-  item in §9 until an admin confirms the revert.
+- ~~**Removals never flush the legacy web/app cache**~~ (§22) — **CONFIRMED as
+  Rock behaviour, WITHDRAWN as a legacy ask (2026-08-04).** Trigger 49 fires on
+  add; trigger 53 does not fire on soft remove or archive. But workflow 700 is
+  Apollos-specific (a GraphQL `flushRock` POST — see §22), not a Rock-internal
+  cache flush, and legacy-my-groups retires the day the new app launches, so
+  there is no coexistence window. The durable residue is that **writes
+  originating in Rock never invalidate the new project's Redis** — see the
+  decision memo's cache-invalidation build requirement.
+- ~~**`WorkflowType` 700 `IsPersisted` must be reverted to `false`**~~ —
+  **CLOSED (2026-08-04).** Reverted to `false` by a Rock admin. Two `Workflow`
+  rows accumulated while it was `true` (5696074, 5696075 — §32); no further
+  accrual.
 - **Confirming 654** against the deployed `ROCK_MAPPINGS` (§6).
 - ~~**Q4 cache invalidation**~~ — **RESOLVED (§25): YES, a second invalidation
   keyed to the affected person is required.** Actor invalidation provably cannot
@@ -701,11 +702,13 @@ under a second, with no involvement from us.
   matters for legacy parity on the *email confirmations* 654 sends, not for
   keeping Rock's internal state consistent.
 - **Corollary — POSTing is not side-effect-free.** Any spike or test that adds a
-  member is also writing interactions and flushing legacy caches. Budget for that
-  when testing against prod.
-- **Trigger 49 (cache flush on add) almost certainly also fired.** It shares the
-  dispatch mechanism just proven for 63. It cannot be observed directly — a cache
-  flush leaves no queryable row — so this is inference, clearly labelled.
+  member is also writing interactions and firing workflow 700 (an Apollos GraphQL
+  cache flush — §22) and 730. Budget for that when testing against prod.
+- **Trigger 49 (Apollos flush on add) almost certainly also fired.** It shares the
+  dispatch mechanism just proven for 63. At the time of this section it could not
+  be observed directly — a non-persisted workflow leaves no queryable row — so this
+  was inference, clearly labelled. Later confirmed directly once `IsPersisted` was
+  flipped (§22).
 
 ### The one part still genuinely open
 
@@ -718,8 +721,9 @@ second interaction is uninformative here, for the same reason Day 0's absence wa
 
 Worth flagging on its own merits, because Rock's `MemberRemovedFromGroup` trigger
 conventionally fires on **delete/archive**, and a status change to Inactive may
-well not count as "removed" at all. If it does not, **a soft remove never flushes
-the legacy web/app cache**, and removed members could linger in legacy surfaces.
+well not count as "removed" at all. If it does not, **a soft remove never runs
+workflow 700** (the Apollos per-person flush — §22), and removed members could
+linger in Apollos surfaces. Resolved later: it does not fire (§22).
 
 **The test that would settle it:** temporarily set workflow type 700
 `IsPersisted: true` (or `LoggingLevel: 3`) in the Rock admin UI, run one soft
@@ -1268,10 +1272,36 @@ _(Superseded by §23 — Tier 2 mutated and restored one row after this was writ
 
 ## 22. Q2 — **RESOLVED in full.** Trigger 53 does not fire on a soft remove
 
-With `WorkflowType` 700 now `IsPersisted: true`, a completed run leaves a
-`Workflow` row. Note `LoggingLevel` is **still 0**, so `WorkflowLog` stays empty
-either way — the `Workflow` row is the only signal. (`/api/WorkflowLogs` is
-**not a route at all** on this Rock: `No HTTP resource was found`.)
+With `WorkflowType` 700 temporarily `IsPersisted: true` (since reverted —
+2026-08-04), a completed run leaves a `Workflow` row. Note `LoggingLevel` stayed
+**0**, so `WorkflowLog` stays empty either way — the `Workflow` row is the only
+signal. (`/api/WorkflowLogs` is **not a route at all** on this Rock: `No HTTP
+resource was found`.)
+
+### What WorkflowType 700 actually does — correction (2026-08-04)
+
+Rock labels 700 **"Web and App Cache Flush"**, which reads as though it flushes
+something belonging to Rock. **It does not.** Inspected in the Rock admin UI on
+2026-08-04, it has three actions:
+
+1. **"Get Group Member"** — Attribute Set from Entity, populating a `GroupMember`
+   workflow attribute.
+2. **"POST Cache Clear"** — a Web Request action: `POST` to
+   `{{ 'Global' | Attribute:'ApollosAPIUrl' }}` with a GraphQL body,
+   `mutation flushRock(entityId, entityTypeId, key)`, where `entityId` is the
+   GroupMember's `Person.Id`, `entityTypeId` is **15**, and `key` is a shared
+   secret carried in the workflow config **in plaintext**.
+3. **"If Group Member is Blank, Complete"** — Workflow Complete.
+
+**700 is entirely Apollos-specific.** It tells the Apollos GraphQL API to drop its
+cache for one person. It touches no Rock cache, and it has no relationship to the
+new project's Redis. The `Workflow` rows 700 accumulated during the spike
+(5696074, 5696075) were runs of that Apollos cache-flush call — harmless, and why
+they had no observable Rock-side effect.
+
+**Decommissioning note:** the plaintext shared key in the workflow config, and
+this trigger + workflow, should be removed when Apollos is retired rather than
+left pointing at a dead host with a live secret in Rock's configuration.
 
 ### The add trigger fires — trigger 49 confirmed, no longer an inference
 
@@ -1294,7 +1324,7 @@ GET /api/Workflows?$filter=WorkflowTypeId eq 700
 `DateTimeAdded: 2026-07-31T14:22:07.837`. **Workflow 700 activated 46 ms later.**
 
 **This retroactively confirms §14's trigger-49 inference.** §14 could only argue by
-analogy that the cache-flush trigger fired alongside the observable one; the
+analogy that the Apollos-flush trigger fired alongside the observable one; the
 persisted row now proves it directly. `IsPersisted: true` paid for itself before
 the first deliberate test ran.
 
@@ -1322,28 +1352,29 @@ not to status transitions in either direction.** Rock's `MemberStatusChanged`
 trigger type would cover that, and **group type 31 has none configured** (§14's
 table lists only trigger types 0 and 1).
 
-### Why this matters — §14's warning is confirmed
+### Why this matters — §14's warning, corrected
 
-§14 flagged the risk that "a soft remove never flushes the legacy web/app cache,
-and removed members could linger in legacy surfaces." **That is now the confirmed
-behavior, not a hypothesis.**
+§14 flagged that "a soft remove never flushes the legacy web/app cache." **The
+Rock behaviour is confirmed: our remove path writes `GroupMemberStatus: 0`, and
+Rock fires nothing** — not on soft remove, not on archive, and reactivation does
+not fire the add trigger either. Group type 31 has no `MemberStatusChanged`
+trigger configured.
 
-Our remove path writes `GroupMemberStatus: 0`. Rock fires nothing. **The legacy
-web and app caches are never flushed on removal**, so a member removed through
-this feature can continue to appear in legacy surfaces until some other event
-flushes the cache. The add path is fine — trigger 49 fires and flushes.
+**What that means, corrected (2026-08-04):** trigger 49/53 → workflow 700 is an
+**Apollos** cache flush, not a Rock-internal one (see above). Legacy-my-groups
+retires the day the new app launches, so there is **no coexistence window** in
+which Apollos-side staleness could be observed. The ask that followed from this
+finding is **withdrawn** (decision memo §7 ask 3).
 
-**This is an asymmetry the build must handle**, and it is not fixable by choosing
-archive over soft remove, because archive does not fire it either. Options:
-explicitly `LaunchWorkflow` 700 after a remove, ask the Rock team to add a
-`MemberStatusChanged` trigger to group type 31, or accept the staleness. **This
-should go to the Rock team alongside the `IsPersisted` revert.**
+**What survives:** writes originating **in Rock** (admin UI, imports, other
+workflows) never notify the new project's Redis. That is a build requirement, not
+a Rock-team ask about legacy — see the decision memo.
 
-### `IsPersisted` must be reverted
+### `IsPersisted` — reverted (2026-08-04)
 
-It was flipped to `true` **for this test only** and has **not** been flipped back —
-per instruction, not by me. **It should be returned to `false`.** Left as-is,
-every group-member add on group type 31 permanently accumulates a `Workflow` row.
+It was flipped to `true` **for this test only**. **CLOSED:** a Rock admin
+reverted it to `false` on 2026-08-04. Two `Workflow` rows accrued while it was
+set (5696074, 5696075); no further accrual.
 
 ---
 
@@ -1401,8 +1432,9 @@ and created nothing** — confirmed by service-token `GET`.
 new `Workflow` row, no new `Interaction` — the reactivate/remove/archive sequence
 fired no triggers at all, which is itself §22's finding.
 
-**Still owed to the Rock team (not ours to change):** `WorkflowType` 700
-`IsPersisted` back to **`false`**.
+**Still owed to the Rock team (not ours to change):** none from this session.
+`WorkflowType` 700 `IsPersisted` was later reverted to **`false`** by a Rock
+admin (2026-08-04) — see §22 / §32.
 
 ---
 
@@ -2022,13 +2054,15 @@ was not read at all. The dev host `dev-rock.christfellowship.church` was
 hardcoded throughout; `ROCK_API` still points at prod in both `.env` and
 `.env.local` and was deliberately not relied upon.
 
-### Not ours to do — still outstanding, carried forward
+### Not ours to do — carried forward / closed
 
-1. Revert `WorkflowType` **700** `IsPersisted` to **`false`** (flipped for §22).
+1. ~~Revert `WorkflowType` **700** `IsPersisted` to **`false`**~~ — **DONE
+   (2026-08-04)** by a Rock admin (§22 / §32).
 2. Fix the **`ROCK_TEST_USER`** env var — it holds `ani@jedi.order`; the real
    username is `anakin@jedi.order` (§19).
 3. Raise with the Rock team: the **missing `Secure` flag** on the `.ROCK` cookie
-   (30-day lifetime, §20), and the **removal-cache-flush gap** (§22).
+   (30-day lifetime, §20). ~~The removal-cache-flush gap (§22)~~ was raised as
+   ask 3 and is **WITHDRAWN (2026-08-04)** — see decision memo §7.
 
 None of the four items this session touched any of these.
 
@@ -2211,20 +2245,21 @@ that make a re-add or a role change 400 (§17, §26), so anyone re-testing perso
 | ------ | ---- | ------ |
 | `Interaction` **73324746** | `AddedToGroup`, alias 389595, component 273491, 2026-07-31T13:31:28.383 | Workflow 730 via trigger 63, fired by §15's `POST`. **This row is the Q2 evidence** — deliberately left in place |
 | `Interaction` **73329123** | `AddedToGroup`, alias 389595, 2026-08-03T13:57:19.11 | Same mechanism, fired by §26's `POST` |
-| `Workflow` **5696074** | Type 700 "Web and App Cache Flush", Completed, 2026-07-31T14:22:07.883 | Trigger 49, fired by the creation of fixture 8862386. Exists only because `IsPersisted` was flipped |
-| `Workflow` **5696075** | Type 700, Completed, 2026-08-03T13:57:18.11 | Trigger 49, fired by §26's `POST` |
+| `Workflow` **5696074** | Type 700 "Web and App Cache Flush", Completed, 2026-07-31T14:22:07.883 | Trigger 49, fired by the creation of fixture 8862386. Exists only because `IsPersisted` was flipped. **Apollos flush call** (GraphQL `flushRock` for the member's `Person.Id`) — not a Rock-internal cache write; see §22 |
+| `Workflow` **5696075** | Type 700, Completed, 2026-08-03T13:57:18.11 | Trigger 49, fired by §26's `POST`. Same Apollos flush; harmless, no Rock-side effect |
 
 Any `POST` to `GroupMembers` on group type 31 writes an `Interaction` and runs
-workflows 700 and 730 (§14). That is unavoidable, and it is a cost to budget for
-in any future testing — **especially against prod.**
+workflows 700 and 730 (§14). Workflow 700 POSTs an Apollos GraphQL cache flush
+(§22); 730 writes the `Interaction`. Budget for both when testing — **especially
+against prod.**
 
-### Configuration changed and NOT reverted
+### Configuration changed — resolved
 
-| Setting | Changed to | Should be | Status |
-| ------- | ---------- | --------- | ------ |
-| `WorkflowType` **700** `IsPersisted` | **`true`** (flipped for the §22 trigger-53 test) | `false` | **STILL OPEN.** Re-verified `true` by read on 2026-08-03. Needs a Rock **admin**; not ours to revert and this session did not attempt it. Ask 1 in the decision memo |
+| Setting | Changed to | Reverted to | Status |
+| ------- | ---------- | ----------- | ------ |
+| `WorkflowType` **700** `IsPersisted` | **`true`** (flipped for the §22 trigger-53 test) | **`false`** | **CLOSED (2026-08-04).** Reverted by a Rock admin. Two `Workflow` rows accrued while set (5696074, 5696075); no further accrual |
 
-`WorkflowType` 730 was re-read at the same time and is unchanged
+`WorkflowType` 730 was re-read at close-out and was unchanged
 (`IsPersisted: false`, `LoggingLevel: 0`).
 
 ### Flags from the verification sweep
@@ -2241,11 +2276,10 @@ in any future testing — **especially against prod.**
    open question, not a finding.
 3. **Only one `GroupMember` row was created on dev on 2026-08-03: 8862387.**
    Verified by `$filter=DateTimeAdded gt datetime'2026-08-03T00:00:00'`.
-4. **NOT verified: production.** A read-only sweep of prod for spike-era writes was
-   attempted during close-out and **blocked by a local tool-permission policy**, so
-   it did not run. Prod is therefore **unaudited**, not audited-clean. Given that
-   `ROCK_API` defaults to prod (ticket 1), this should be closed by someone with
-   the access to run it. The query is:
+4. **CLOSED. Read-only prod sweep run by Danny Wood, 2026-08-04.** Both queries
+   returned an empty array: the group-scoped query on 1838823 and 1055022, and the
+   unscoped `PersonId eq 389650` query. **No spike-era write reached production.**
+   Recorded for reproducibility:
    `GroupMembers?$filter=ModifiedDateTime gt datetime'2026-07-30T00:00:00' and (GroupId eq 1838823 or GroupId eq 1055022)&$select=Id,GroupId,PersonId,GroupRoleId,GroupMemberStatus,ModifiedDateTime`
    plus the same filter on `PersonId eq 389650` unscoped by group.
 
@@ -2276,9 +2310,13 @@ what Danny confirmed directly. What is recorded is the boundary:
 - **The gate denies a non-leader through the route.** Person 394626 is role **44**
   on group 1055022, and the route refused. §13 proved `requireGroupLeader` throws
   for that person when called directly; this confirms the *route* refuses too.
-- **The denial renders the generic "not found" page** — confirmed visually. This is
-  the first live confirmation of §13's predicted page, and it is the ticket 2b
-  defect observed rather than reasoned.
+- **The denial is HTTP 500 rendering the generic not-found page** — status and
+  page both observed (item 3 below). Ticket 2b is confirmed by observation.
+- **Unauthenticated requests fail closed via redirect.** A signed-out document
+  request to the same route returns **302** to
+  `/login?returnTo=%2Fspike-manage-members%2F1055022` — `requireUser` redirects
+  before the gate runs. This is why removing `/login` (ticket 4) must be coupled
+  with removing the spike route.
 
 ### What the run did NOT verify — and the tests that close each
 
@@ -2304,18 +2342,25 @@ what Danny confirmed directly. What is recorded is the boundary:
 
    This exercises **three of the four upsert branches** (insert, soft-remove, reactivate)
    plus the group-scope check in one session. It creates a dormant `GroupMember` row
-   and — because WorkflowType 700 `IsPersisted` is still `true` — an `Interaction`
-   row and a `Workflow` row on 1838823, which should be added to the §32 ledger once
-   run.
-2. **The HTTP status of the denial was not observed.** The page was seen; the status
-   code was not. §13 establishes the mechanism — a thrown non-`Response` is an
-   unhandled error, so React Router answers **500** while `app/error.tsx:11` renders
-   `NotFound` unconditionally — and the observed page is consistent with it. But the
-   **500 itself remains unobserved.** *Test that closes it:* re-request
-   `/spike-manage-members/1055022` as `anakin@jedi.order` with the network panel
-   open, or `curl -i` with the cookie, and record the status line. **Still open.**
-3. **Production is unaudited** (§32 flag 4). Not implicated by this run — the run
-   was on dev — but still open, and ticket 1 is why it matters. **Still open.**
+   and an `Interaction` row on 1838823 (workflow 700 no longer persists a `Workflow`
+   row — `IsPersisted` reverted 2026-08-04), which should be added to the §32 ledger
+   once run.
+2. **CLOSED.** Production sweep — see §32 flag 4. No spike-era write reached
+   production.
+3. **CLOSED. Observed by Danny Wood, 2026-08-04, browser on localhost, signed in as
+   `anakin@jedi.order` (person 394626, role 44 on group 1055022 — not a leader).**
+   The document request to `/spike-manage-members/1055022` returned **HTTP 500**
+   while rendering the generic not-found page. The server console confirms the
+   mechanism directly: `AuthorizationError: Person 394626 is not an active leader
+   of group 1055022`, thrown at `require-group-leader.ts:111` and propagating
+   uncaught through `spike-manage-members.$groupId/loader.ts:51`. A thrown
+   non-`Response` is an unhandled error, so React Router answers 500 while
+   `app/error.tsx:11` renders `NotFound` unconditionally. **Ticket 2b is now
+   confirmed by observation, not inference.** Separately confirmed: an
+   unauthenticated request to the same route returns **302** to
+   `/login?returnTo=%2Fspike-manage-members%2F1055022` — `requireUser` redirects
+   before the gate runs. Fails closed. This is why removing `/login` (ticket 4)
+   must be coupled with removing the spike route.
 
 **Do not upgrade "human-verified" to "verified" in any downstream document without
 closing item 1.** The route is throwaway code (see the port manifest) — but its
