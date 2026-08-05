@@ -1,7 +1,9 @@
 import type { SearchClient } from 'algoliasearch';
 import { useCallback, useEffect, useState } from 'react';
 import { useHits, useInstantSearch, useSearchBox } from 'react-instantsearch';
+import { useRouteLoaderData } from 'react-router-dom';
 
+import type { RootLoaderData } from '~/routes/navbar/loader';
 import type { ContentItemHit } from '~/routes/search/types';
 
 import {
@@ -43,12 +45,15 @@ export const SearchPopup = ({
   const { query } = useSearchBox();
   const { indexUiState } = useInstantSearch();
   const { setHasMatchingLocations } = useGlobalSearchLocationMatches();
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const [contentHits, setContentHits] = useState<ContentItemHit[]>([]);
   const [locationHits, setLocationHits] = useState<ContentItemHit[]>([]);
 
   const selectedContentTypes =
     (indexUiState?.refinementList?.contentType as string[]) || [];
   const trimmedQuery = query.trim();
+  const isSearching =
+    trimmedQuery.length > 0 || selectedContentTypes.length > 0;
   const shouldShowLocations =
     trimmedQuery.length > 0 &&
     shouldIncludeLocationResultsInGlobalSearch(selectedContentTypes);
@@ -100,6 +105,12 @@ export const SearchPopup = ({
     ? [...contentHits, ...locationHits]
     : contentHits;
 
+  // Before a query is typed, show the curated latest-content list instead of the
+  // index's default ranking.
+  const displayedHits = isSearching
+    ? combinedHits
+    : (rootData?.defaultSearchHits ?? []);
+
   return (
     <div className='absolute left-0 top-[52px] w-full bg-gray rounded-b-lg shadow-lg px-12 z-4 popup-search-container transition-all duration-800 ease-in-out max-h-0 overflow-hidden'>
       <div className='flex items-center gap-2 pb-4'>
@@ -115,7 +126,7 @@ export const SearchPopup = ({
 
       <div className='mt-2 space-y-4'>
         <div className='flex flex-col overflow-y-scroll max-h-[300px] scrollbar-thin [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-neutral-default/60 [&::-webkit-scrollbar-track]:bg-gray'>
-          {combinedHits.map((hit) => (
+          {displayedHits.map((hit) => (
             <div
               key={hit.objectID}
               onClick={() => setIsSearchOpen(false)}
