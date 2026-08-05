@@ -321,7 +321,11 @@ describe('useAuth - checkUserExists', () => {
   const errorResponses: Array<[string, Record<string, unknown>]> = [
     [
       'a 500 with an error body',
-      { ok: false, status: 500, json: async () => ({ error: 'Rock exploded' }) },
+      {
+        ok: false,
+        status: 500,
+        json: async () => ({ error: 'Rock exploded' }),
+      },
     ],
     [
       'a 200 whose body has no userExists',

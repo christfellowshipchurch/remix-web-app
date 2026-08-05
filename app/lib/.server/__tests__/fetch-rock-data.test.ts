@@ -421,7 +421,10 @@ describe('by-id $expand / $select guard', () => {
 
     try {
       await expect(
-        fetchRockData({ endpoint: 'People/1', queryParams: { $select: 'Email' } }),
+        fetchRockData({
+          endpoint: 'People/1',
+          queryParams: { $select: 'Email' },
+        }),
       ).resolves.toBeDefined();
       expect(warnSpy).toHaveBeenCalled();
       expect(global.fetch).toHaveBeenCalled();
