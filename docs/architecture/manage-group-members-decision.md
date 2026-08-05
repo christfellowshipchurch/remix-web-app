@@ -1,7 +1,9 @@
 # Decision Memo — Manage Group Members on Rock REST + Redis + React Router v7
 
-**Owner:** Danny Wood · **Prepared:** 2026-08-03 · **Audience:** engineering ·
+**Owner:** Danny Wood · **Prepared:** 2026-08-03, revised 2026-08-05 · **Audience:** engineering ·
 **Spike:** closed
+
+**Reading path:** §1 and §3 are what a builder needs; the rest is context.
 
 Appendix: [`day2-findings-manage-group-members.md`](day2-findings-manage-group-members.md)
 — cited by section (§n) throughout rather than restated. **Read its top warning
@@ -133,11 +135,26 @@ because its answer would not change the design.
 Accepted consequences, to be carried into the new project as requirements:
 
 - Every member write is audit-logged with actor, target, group, and outcome.
+  The spike route's JSON response already carries `outcome`, `groupMemberId`, and
+  `affectedPersonId` — three of the four fields. **It does not carry the actor's
+  person id.** Add the actor id to both the response body and the audit log line.
+  Because `outcome` is already present in the JSON, branch selection is observable
+  at the route boundary: §2a's audit requirement is implementable as designed and
+  needs no workaround.
 - The gate keys on a **role allow-list owned in application code**, not on Rock's
   `IsLeader` flag — an admin-editable checkbox that also controls role visibility
   inside the group (see §7's standing risk; the two are one argument).
 - Tests covering the gate are treated as **security tests**: no merge on failure,
   and changes to them require a second reviewer.
+
+**Concrete illustration of the accepted `IsLeader` risk (2026-08-05):** during the
+§33 write-path session the actor granted himself a leader role in group 1838823
+through Rock's admin UI and immediately passed the app gate and performed member
+writes. The gate behaved correctly — its input is simply data a Rock admin can
+edit about themselves in seconds. That is the precise risk §2a accepted when
+choosing a code-owned role allow-list over `IsLeader`, and it is why the app-side
+audit log is a requirement rather than a nice-to-have: the app log is the only
+place a grant-then-write sequence becomes visible.
 
 ---
 
@@ -229,7 +246,15 @@ reactivation **~630 ms** (4 calls: pre-read, status `PATCH`, attribute lookup,
 attribute `PATCH`); already-active and declined-role-change are the pre-read only,
 **~150 ms**. One extra round trip on the insert path makes three broken paths
 correct. The pre-read also moves the check from an error handler — exercised only
-when something goes wrong — onto the main line, exercised every time.
+when something goes wrong — onto the main line, exercised every time. The
+documented ~630 ms reactivation cost is corroborated: the §33 route run observed
+**638 ms** end to end.
+
+**Partially exercised through the spike route (2026-08-05, §33):** the **insert**
+branch, the **reactivate** branch, and the two-call `MemberInactiveReason` clear
+all ran end to end behind a real cookie. **Not exercised:** the no-op branch (row
+at the requested role already Active) and the decline/role-change branch. Unit
+tests cover those two; the live route has not.
 
 *`GroupMemberStatus: 2` (Pending) is deliberately out of scope: the upsert reactivates
 to 1 regardless of prior status. Whether a Pending row should stay Pending is a
@@ -283,6 +308,13 @@ system does not otherwise have. It also shrinks the untransacted two-write windo
 (§17): "row missing" and "wrong group" are rejected *before* the first write, so the
 window is entered only for requests already known to be valid.
 
+**Partially exercised through the spike route (2026-08-05, §33):** the group-scope
+check's **PASS** path ran (remove of a row that belonged to the URL's group).
+**Not exercised:** the `AuthorizationError` path (a `GroupMember` row from a
+different group was never submitted) and the "cannot change your own record"
+guard (actor and target were different people). Unit tests cover the deny path;
+the live route has not.
+
 > **Open product question (undecided by omission):** may a co-leader remove the
 > group leader, or a leader remove another leader? Rock will not prevent it, and
 > the checks above do not address it. The pre-read already returns `GroupRoleId`,
@@ -314,7 +346,11 @@ it, so a cached member list or "my groups" read can stay stale indefinitely. Apo
 hit the same problem and solved it by having Rock push invalidation — that is what
 workflow 700 is, scoped per person at `entityTypeId` 15, matching the granularity
 §25 landed on (`rock:u{personId}:…`). The pattern is proven; this project has no
-equivalent. **MVP architecture decision (deliberate either way):**
+equivalent. **Observational support, not a new requirement (§34):** status changes
+made directly in Rock's admin UI were reflected by the app's leader gate
+immediately — because the gate runs at `TTL.NONE` — while the same edit would have
+gone stale in any cached membership-list read. That is exactly this hole, observed
+directly. **MVP architecture decision (deliberate either way):**
 
 - **(a)** Expose an authenticated invalidation endpoint and point a Rock trigger at
   it. The trigger must fire on **status transitions**, not only creation/deletion —
@@ -484,27 +520,33 @@ held for the whole spike; `DELETE` was never issued against any entity on any ho
 *Closing test:* a hard-delete probe against a throwaway group in a throwaway
 environment. Not on a prod clone.
 
-**6. The write paths have never run end to end behind a real cookie (§33 item 1).**
-The route was exercised manually on dev: auth chain, loader, non-leader denial
-(**HTTP 500** + not-found page — §33 item 3, CLOSED), and unauthenticated **302**
-to `/login?returnTo=…`. Remaining open: **no add, no remove, and specifically not
-the reactivation path from §3a** — the single most load-bearing behaviour in the
-add path. Control flow is covered by 10 tests (two mutation-checked) and every
-REST call was executed individually against dev, but the writes have not run
-through the route. *Closing test:* the §33 write-path sequence on group 1838823
-(add → remove → re-add as reactivate).
+**6. DONE (2026-08-05). The write-path sequence ran end to end behind a real cookie
+(§33).** Target was person **394626** (`anakin@jedi.order`), substituted for the
+originally written 389650 to avoid involving additional real people. Actor was
+Danny Wood's own account, granted a leader role in group **1838823** via Rock's
+admin UI to pass the gate. All three steps ran through
+`/spike-manage-members/1838823`: insert created `GroupMember` **8862392**; remove
+and re-add followed; re-add returned `outcome: 'reactivated'`, `reasonCleared:
+{ cleared: true }`, **638 ms** total. Externally verified: same id, status 1,
+`ModifiedDateTime` after `CreatedDateTime` — a `PATCH` against the existing row,
+not a fresh insert. **Partially exercised** — see §3a / §3b / §33 for the
+branch-by-branch breakdown of what ran and what did not.
 
-**7. CLOSED. Production spike-era writes — none.** Read-only prod sweep run by
-Danny Wood, 2026-08-04. Both queries returned `[]`: the group-scoped query on
-1838823 and 1055022, and the unscoped `PersonId eq 389650` query. No spike-era
-write reached production. Queries recorded in §32 flag 4.
+**7. CLOSED. Production spike-era writes — none matching the sweep predicates.**
+Read-only prod sweep run by Danny Wood, 2026-08-04. Both queries returned `[]`:
+the group-scoped query on 1838823 and 1055022, and the unscoped
+`PersonId eq 389650` query. The sweep window began **2026-07-30** and those were
+its filters — person **394626** was never in the filter and nothing before 07-30
+was in the window — so `[]` means "nothing matching those predicates," not
+"nothing anywhere." Queries recorded in §32 flag 4.
 
 ---
 
 ## 7. Asks of the Rock team
 
 Numbered so this section can be sent as-is. **One live ask; one done; one
-withdrawn.**
+withdrawn.** Numbering preserved from the original three asks so cross-references
+hold; only ask 2 requires action.
 
 ### Live
 
@@ -514,8 +556,7 @@ path=/; SameSite=Lax; HttpOnly` — `HttpOnly` and `SameSite=Lax` present,
 **`Secure` absent** (§20). This is a Rock-side setting, not something the app
 controls. **Please treat this as a design input, not a footnote: the new My Groups
 project owns login**, so this cookie is the credential a real person's session
-rests on for 30 days, and the project is being designed around it now. A cookie
-that authenticates a real person for a month should be marked `Secure`.
+rests on for 30 days, and the project is being designed around it now.
 
 Unaffected by model (b) being dead (§20). The new project still calls
 `POST /api/Auth/Login` and still relies on the `.ROCK` cookie for identity, per
@@ -573,7 +614,7 @@ The full file-by-file list is in the
 **Sequence — this order is deliberate:**
 
 ```
-0. Run the §33 write-path sequence (group 1838823)  BEFORE deleting the spike
+0. DONE (2026-08-05). §33 write-path sequence on group 1838823
 1. Fix ticket 1 (ROCK_API defaults to production)  in remix-web-app
 2. Fix ticket 3 (fetchRockData by-id guard)        in remix-web-app
 3. TAKE THE COPY of the Rock layer into the new project
@@ -582,10 +623,13 @@ The full file-by-file list is in the
 6. Open a separate PR moving manage-group-members-*.md onto the default branch
 ```
 
-**Why step 0 comes first.** The spike route is throwaway, but its group-scope check
-and four-branch upsert become build requirements in the new project, and they are
-currently documented from code that has never run end to end. Run the §33 sequence
-while the route still exists.
+**Why step 0 came first.** The spike route is throwaway, but its group-scope check
+and four-branch upsert become build requirements in the new project. As of
+2026-08-05 they are **partially exercised** through the live route (insert,
+reactivate, reason clear, group-scope PASS — §3a, §3b, §33); the no-op,
+decline/role-change, group-scope deny, and self-edit branches remain unit-test
+only. Step 0 is closed; do not delete the spike until the surviving requirements
+are written into the new project's build (below).
 
 **Why 1 and 2 come before 3.** The Rock layer is **copied**, not shared. A defect
 fixed before the copy is fixed once; the same defect fixed after is fixed twice, in
