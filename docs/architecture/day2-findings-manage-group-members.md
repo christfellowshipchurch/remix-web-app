@@ -13,6 +13,34 @@ and the Day 0 findings appended to `spike-brief-manage-group-members.md`.
 
 ---
 
+> # ⚠️ READ FIRST — every id in this document is dev-only
+>
+> **Dev is a clone of production, but the ids have DRIFTED. The same id is a
+> different entity on each host.**
+>
+> Two proven cases, both of them fixtures used throughout this document:
+>
+> | Id        | On **dev** (`dev-rock.christfellowship.church`)      | On **PROD** (`rock.christfellowship.church`)                    |
+> | --------- | ---------------------------------------------------- | --------------------------------------------------------------- |
+> | Group **1838823** | "Jedi Council Test Group", group type **31** — a disposable spike fixture | A **Known Relationship system group, group type 11** — not a test group at all |
+> | Group **1055022** | "CFDP Testing Group", group type 31, 37 members       | A **real group** under the same id                                |
+>
+> **The rule: never assume an id means the same entity across hosts.** Resolve
+> every id against the host you are actually talking to, by name or by a
+> `$select`ed read, before you use it in a `$filter` and *especially* before you
+> use it in a write. A fixture id copy-pasted from this document into a session
+> pointed at prod does not fail loudly — it succeeds, against the wrong entity.
+>
+> This is not hypothetical. `ROCK_API` in both `.env` and `.env.local` points at
+> **production** (§30, and follow-up ticket 1), so a session that does not
+> hardcode the dev host is writing to prod by default. Every write recorded in
+> this document was made against a **deliberately hardcoded dev host** for exactly
+> this reason.
+>
+> Consolidated ledger of every record this spike touched: **§32**.
+
+---
+
 ## 0. Summary
 
 Six of the seven checklist items are resolved. Headline results:
@@ -382,12 +410,18 @@ through with a pointer to where they were settled._
 - ~~**Whether a soft remove fires trigger 53**~~ — **RESOLVED (§22): it does not.**
   Neither does an archive, nor does reactivation fire the add trigger. Group type
   31's triggers respond to row creation/deletion, not status transitions.
-- **Removals never flush the legacy web/app cache** (§22) — the confirmed
-  consequence of the above. Adds flush (trigger 49, now proven); removes do not.
-  **Needs a decision before build:** explicitly launch workflow 700 after a remove,
-  ask Rock to add a `MemberStatusChanged` trigger, or accept stale legacy surfaces.
-- **`WorkflowType` 700 `IsPersisted` must be reverted to `false`** — flipped for
-  the §22 test, deliberately not flipped back by us.
+- ~~**Removals never flush the legacy web/app cache**~~ (§22) — **CONFIRMED as
+  Rock behaviour, WITHDRAWN as a legacy ask (2026-08-04).** Trigger 49 fires on
+  add; trigger 53 does not fire on soft remove or archive. But workflow 700 is
+  Apollos-specific (a GraphQL `flushRock` POST — see §22), not a Rock-internal
+  cache flush, and legacy-my-groups retires the day the new app launches, so
+  there is no coexistence window. The durable residue is that **writes
+  originating in Rock never invalidate the new project's Redis** — see the
+  decision memo's cache-invalidation build requirement.
+- ~~**`WorkflowType` 700 `IsPersisted` must be reverted to `false`**~~ —
+  **CLOSED (2026-08-04).** Reverted to `false` by a Rock admin. Two `Workflow`
+  rows accumulated while it was `true` (5696074, 5696075 — §32); no further
+  accrual.
 - **Confirming 654** against the deployed `ROCK_MAPPINGS` (§6).
 - ~~**Q4 cache invalidation**~~ — **RESOLVED (§25): YES, a second invalidation
   keyed to the affected person is required.** Actor invalidation provably cannot
@@ -415,10 +449,12 @@ through with a pointer to where they were settled._
   exactly the 400-ing call above, so it always reported `rolledBack: false`.
   Invisible because the `catch` never ran. Now fixed and sharing the verified
   helper. §17's description of it as merely "hand-rolled" was too generous.
-- **The spike route has never been exercised end-to-end** (§31) — `requireUser`
-  needs a `.ROCK` cookie and **`ROCK_TEST_PASS` is absent from both `.env` and
-  `.env.local`** on this machine. Control flow is mock-covered, wire behaviour is
-  dev-verified, but the two have not run together. **Close before shipping.**
+- ~~**The spike route has never been exercised end-to-end**~~ — **partially
+  closed (2026-08-05, §33).** Auth chain, loader, non-leader denial, and the
+  write-path sequence (insert → remove → reactivate) all ran behind a real
+  cookie on group 1838823. **Still not exercised live:** upsert no-op and
+  decline/role-change branches; group-scope `AuthorizationError` path; self-edit
+  guard. See §3a / §3b / §33.
 - **Role change is still unspecified and unimplemented** (§26) — the third write
   shape. The add path detects it and declines; nothing performs it.
 
@@ -668,11 +704,13 @@ under a second, with no involvement from us.
   matters for legacy parity on the *email confirmations* 654 sends, not for
   keeping Rock's internal state consistent.
 - **Corollary — POSTing is not side-effect-free.** Any spike or test that adds a
-  member is also writing interactions and flushing legacy caches. Budget for that
-  when testing against prod.
-- **Trigger 49 (cache flush on add) almost certainly also fired.** It shares the
-  dispatch mechanism just proven for 63. It cannot be observed directly — a cache
-  flush leaves no queryable row — so this is inference, clearly labelled.
+  member is also writing interactions and firing workflow 700 (an Apollos GraphQL
+  cache flush — §22) and 730. Budget for that when testing against prod.
+- **Trigger 49 (Apollos flush on add) almost certainly also fired.** It shares the
+  dispatch mechanism just proven for 63. At the time of this section it could not
+  be observed directly — a non-persisted workflow leaves no queryable row — so this
+  was inference, clearly labelled. Later confirmed directly once `IsPersisted` was
+  flipped (§22).
 
 ### The one part still genuinely open
 
@@ -685,8 +723,9 @@ second interaction is uninformative here, for the same reason Day 0's absence wa
 
 Worth flagging on its own merits, because Rock's `MemberRemovedFromGroup` trigger
 conventionally fires on **delete/archive**, and a status change to Inactive may
-well not count as "removed" at all. If it does not, **a soft remove never flushes
-the legacy web/app cache**, and removed members could linger in legacy surfaces.
+well not count as "removed" at all. If it does not, **a soft remove never runs
+workflow 700** (the Apollos per-person flush — §22), and removed members could
+linger in Apollos surfaces. Resolved later: it does not fire (§22).
 
 **The test that would settle it:** temporarily set workflow type 700
 `IsPersisted: true` (or `LoggingLevel: 3`) in the Rock admin UI, run one soft
@@ -994,10 +1033,13 @@ Skywalker"**, `UserLogin` 31560, `IsConfirmed: true`, `IsLockedOut: false`.
 
 | Group   | Name                    | `GroupTypeId` | `GroupMember.Id` | `GroupRoleId`       | `IsLeader` | Status       | `IsArchived` |
 | ------- | ----------------------- | ------------- | ---------------- | ------------------- | ---------- | ------------ | ------------ |
-| 1838823 | Jedi Council Test Group | **31**        | 8862386          | **50** Group Leader | **true**   | **1 Active** | false        |
+| 1838823 | Jedi Council Test Group | **31**        | **8862392** (was **8862386**, hard-deleted 2026-08-05 — §32) | **50** Group Leader | **true**   | **1 Active** | false        |
 | 1055022 | CFDP Testing Group      | **31**        | 3329432          | **44** Group Member | **false**  | **1 Active** | false        |
 
-Both memberships present and Active, exactly as the fixture spec required.
+Both memberships present and Active as of the §33 write-path run. **8862386** was
+the original role-50 fixture for person 394626 in group 1838823; it was
+hard-deleted through Rock's admin UI on 2026-08-05 and replaced by **8862392**
+(created by the §33 insert). See §32.
 
 ### Group 1838823 examined for the first time
 
@@ -1160,6 +1202,23 @@ enforces per-group security on REST writes remains completely untested** — not
 merely under-specified. No third group would have helped; the blocker is
 controller ACLs, not fixture coverage.
 
+### Independent human re-verification (2026-08-04)
+
+**Distinct from the agent-run tests above.** Independently re-verified by Danny
+Wood on 2026-08-04, by curl against dev, with the dev host hardcoded:
+
+```
+POST /api/Auth/Login (anakin@jedi.order)                       → 204, Set-Cookie: .ROCK
+GET  /api/People/GetCurrentPerson         (cookie only)        → 200, person 394626
+GET  /api/GroupMembers/3329432            (cookie only)        → 401
+GET  /api/GroupMembers?$filter=GroupId eq 1838823 (cookie only) → 401
+```
+
+No `Authorization-Token` header was sent on any request. The 200 on
+`GetCurrentPerson` establishes that Rock recognises the session, so the 401s are
+Rock refusing the endpoint rather than refusing the credential. **Model (b) is
+confirmed dead at the controller layer — human-verified, not only agent-reported.**
+
 ### Verdict: **DEAD as currently configured**
 
 Not "viable with caveats". A per-user cookie cannot read or write group data on
@@ -1218,10 +1277,36 @@ _(Superseded by §23 — Tier 2 mutated and restored one row after this was writ
 
 ## 22. Q2 — **RESOLVED in full.** Trigger 53 does not fire on a soft remove
 
-With `WorkflowType` 700 now `IsPersisted: true`, a completed run leaves a
-`Workflow` row. Note `LoggingLevel` is **still 0**, so `WorkflowLog` stays empty
-either way — the `Workflow` row is the only signal. (`/api/WorkflowLogs` is
-**not a route at all** on this Rock: `No HTTP resource was found`.)
+With `WorkflowType` 700 temporarily `IsPersisted: true` (since reverted —
+2026-08-04), a completed run leaves a `Workflow` row. Note `LoggingLevel` stayed
+**0**, so `WorkflowLog` stays empty either way — the `Workflow` row is the only
+signal. (`/api/WorkflowLogs` is **not a route at all** on this Rock: `No HTTP
+resource was found`.)
+
+### What WorkflowType 700 actually does — correction (2026-08-04)
+
+Rock labels 700 **"Web and App Cache Flush"**, which reads as though it flushes
+something belonging to Rock. **It does not.** Inspected in the Rock admin UI on
+2026-08-04, it has three actions:
+
+1. **"Get Group Member"** — Attribute Set from Entity, populating a `GroupMember`
+   workflow attribute.
+2. **"POST Cache Clear"** — a Web Request action: `POST` to
+   `{{ 'Global' | Attribute:'ApollosAPIUrl' }}` with a GraphQL body,
+   `mutation flushRock(entityId, entityTypeId, key)`, where `entityId` is the
+   GroupMember's `Person.Id`, `entityTypeId` is **15**, and `key` is a shared
+   secret carried in the workflow config **in plaintext**.
+3. **"If Group Member is Blank, Complete"** — Workflow Complete.
+
+**700 is entirely Apollos-specific.** It tells the Apollos GraphQL API to drop its
+cache for one person. It touches no Rock cache, and it has no relationship to the
+new project's Redis. The `Workflow` rows 700 accumulated during the spike
+(5696074, 5696075) were runs of that Apollos cache-flush call — harmless, and why
+they had no observable Rock-side effect.
+
+**Decommissioning note:** the plaintext shared key in the workflow config, and
+this trigger + workflow, should be removed when Apollos is retired rather than
+left pointing at a dead host with a live secret in Rock's configuration.
 
 ### The add trigger fires — trigger 49 confirmed, no longer an inference
 
@@ -1244,7 +1329,7 @@ GET /api/Workflows?$filter=WorkflowTypeId eq 700
 `DateTimeAdded: 2026-07-31T14:22:07.837`. **Workflow 700 activated 46 ms later.**
 
 **This retroactively confirms §14's trigger-49 inference.** §14 could only argue by
-analogy that the cache-flush trigger fired alongside the observable one; the
+analogy that the Apollos-flush trigger fired alongside the observable one; the
 persisted row now proves it directly. `IsPersisted: true` paid for itself before
 the first deliberate test ran.
 
@@ -1272,28 +1357,29 @@ not to status transitions in either direction.** Rock's `MemberStatusChanged`
 trigger type would cover that, and **group type 31 has none configured** (§14's
 table lists only trigger types 0 and 1).
 
-### Why this matters — §14's warning is confirmed
+### Why this matters — §14's warning, corrected
 
-§14 flagged the risk that "a soft remove never flushes the legacy web/app cache,
-and removed members could linger in legacy surfaces." **That is now the confirmed
-behavior, not a hypothesis.**
+§14 flagged that "a soft remove never flushes the legacy web/app cache." **The
+Rock behaviour is confirmed: our remove path writes `GroupMemberStatus: 0`, and
+Rock fires nothing** — not on soft remove, not on archive, and reactivation does
+not fire the add trigger either. Group type 31 has no `MemberStatusChanged`
+trigger configured.
 
-Our remove path writes `GroupMemberStatus: 0`. Rock fires nothing. **The legacy
-web and app caches are never flushed on removal**, so a member removed through
-this feature can continue to appear in legacy surfaces until some other event
-flushes the cache. The add path is fine — trigger 49 fires and flushes.
+**What that means, corrected (2026-08-04):** trigger 49/53 → workflow 700 is an
+**Apollos** cache flush, not a Rock-internal one (see above). Legacy-my-groups
+retires the day the new app launches, so there is **no coexistence window** in
+which Apollos-side staleness could be observed. The ask that followed from this
+finding is **withdrawn** (decision memo §7 ask 3).
 
-**This is an asymmetry the build must handle**, and it is not fixable by choosing
-archive over soft remove, because archive does not fire it either. Options:
-explicitly `LaunchWorkflow` 700 after a remove, ask the Rock team to add a
-`MemberStatusChanged` trigger to group type 31, or accept the staleness. **This
-should go to the Rock team alongside the `IsPersisted` revert.**
+**What survives:** writes originating **in Rock** (admin UI, imports, other
+workflows) never notify the new project's Redis. That is a build requirement, not
+a Rock-team ask about legacy — see the decision memo.
 
-### `IsPersisted` must be reverted
+### `IsPersisted` — reverted (2026-08-04)
 
-It was flipped to `true` **for this test only** and has **not** been flipped back —
-per instruction, not by me. **It should be returned to `false`.** Left as-is,
-every group-member add on group type 31 permanently accumulates a `Workflow` row.
+It was flipped to `true` **for this test only**. **CLOSED:** a Rock admin
+reverted it to `false` on 2026-08-04. Two `Workflow` rows accrued while it was
+set (5696074, 5696075); no further accrual.
 
 ---
 
@@ -1351,8 +1437,9 @@ and created nothing** — confirmed by service-token `GET`.
 new `Workflow` row, no new `Interaction` — the reactivate/remove/archive sequence
 fired no triggers at all, which is itself §22's finding.
 
-**Still owed to the Rock team (not ours to change):** `WorkflowType` 700
-`IsPersisted` back to **`false`**.
+**Still owed to the Rock team (not ours to change):** none from this session.
+`WorkflowType` 700 `IsPersisted` was later reverted to **`false`** by a Rock
+admin (2026-08-04) — see §22 / §32.
 
 ---
 
@@ -1972,13 +2059,15 @@ was not read at all. The dev host `dev-rock.christfellowship.church` was
 hardcoded throughout; `ROCK_API` still points at prod in both `.env` and
 `.env.local` and was deliberately not relied upon.
 
-### Not ours to do — still outstanding, carried forward
+### Not ours to do — carried forward / closed
 
-1. Revert `WorkflowType` **700** `IsPersisted` to **`false`** (flipped for §22).
+1. ~~Revert `WorkflowType` **700** `IsPersisted` to **`false`**~~ — **DONE
+   (2026-08-04)** by a Rock admin (§22 / §32).
 2. Fix the **`ROCK_TEST_USER`** env var — it holds `ani@jedi.order`; the real
    username is `anakin@jedi.order` (§19).
 3. Raise with the Rock team: the **missing `Secure` flag** on the `.ROCK` cookie
-   (30-day lifetime, §20), and the **removal-cache-flush gap** (§22).
+   (30-day lifetime, §20). ~~The removal-cache-flush gap (§22)~~ was raised as
+   ask 3 and is **WITHDRAWN (2026-08-04)** — see decision memo §7.
 
 None of the four items this session touched any of these.
 
@@ -2104,3 +2193,239 @@ was issued anywhere this session. Groups other than **1055022** were not written
 
 **Reactivation fires no triggers (§22), so this sequence created no `Workflow` or
 `Interaction` rows** — unlike §26's `POST`.
+
+---
+
+# Close-out (2026-08-03, revised 2026-08-05)
+
+## 32. Consolidated record ledger — every record touched, Days 0–4
+
+The per-session tables (§18, §21, §24, §26, §30, §31) scattered these ids across
+six sections. This is the single table. **Every `GroupMember` row below was
+re-verified by a live `$select`ed READ against dev on 2026-08-03 as part of the
+close-out, except where a later 2026-08-05 note says otherwise.** No write of any
+kind was issued during the 2026-08-03 verification. The §33 write-path sequence
+(2026-08-05) then created and mutated rows recorded below.
+
+**Nothing was ever `DELETE`d by the spike's REST sessions.** The reversibility
+rule held for the whole spike: `DELETE` was never issued against any entity via
+the API, on any host, in any session — the `DELETE`-cascade question was
+deliberately never probed (§9). Every reversal was a soft remove or a
+restore-to-prior-value. **Exception outside REST:** `GroupMember` **8862386** was
+hard-deleted through Rock's admin UI on 2026-08-05 (exploratory, before the route
+sequence) — recorded below.
+
+**All ids below are DEV ids. See the warning at the top of this document.**
+
+### Rows we created
+
+| Id | Entity | Group | What changed | Current state (read-verified 2026-08-03 unless noted) | Reversed? |
+| -- | ------ | ----- | ------------ | ---------------------------------------- | --------- |
+| **8862385** | `GroupMember` — person **389650** (service account "apollos"), role **44** | 1055022 | Created by §15's `POST`; soft-removed by §15; reactivated + re-removed + archived + un-archived (§22); status cycled 0→1→0 again in §31 | `GroupMemberStatus` **0**, `IsArchived` false, role 44, `DateTimeAdded` 2026-07-31T13:31:27.84, `ModifiedDateTime` 2026-08-03T14:33:21.36 | **Yes** — soft-removed, never deleted |
+| **8862387** | `GroupMember` — person **389650**, role **49** | 1055022 | Created by §26's `POST` to construct the role-change collision; PATCHed 49→44 (**rejected 400**) →46 (204) →49 + status 0 | `GroupMemberStatus` **0**, `IsArchived` false, role 49, `DateTimeAdded` 2026-08-03T13:57:18.017 | **Yes** — soft-removed, never deleted |
+| **8862392** | `GroupMember` — person **394626** (`anakin@jedi.order`), role **50** | 1838823 | Created by the §33 write-path **insert** through `/spike-manage-members/1838823` at 2026-08-05T10:55:25.323; soft-removed then reactivated in the same sequence | **Active (status 1)**, role 50, `CreatedDateTime` 2026-08-05T10:55:25.323, `ModifiedDateTime` 2026-08-05T11:24:55.157 (verified by GET) | **No — spike residue on dev.** Soft-remove → reactivate left it Active. Cleanup: soft-remove or admin-delete when the spike route is retired |
+| **541832959** | `AttributeValue` — `MemberInactiveReason` on `GroupMember` 8862385 | — | Set by §15; cleared to `""` and reset in §31 | `Value` = `993f485b-…` ("No longer interested"), `ModifiedDateTime` 2026-08-03T14:33:21.127 | **Yes** — restored to its original value; emptied, never deleted |
+
+**Both created `GroupMember` rows at status 0 (8862385, 8862387) belong to the
+service account, not to a real congregant.** They are dormant fixtures, not live
+memberships. Deliberately left in place rather than deleted, per the reversibility
+rule — and note that leaving them is not neutral: they are exactly the dormant rows
+that make a re-add or a role change 400 (§17, §26), so anyone re-testing person
+389650 in group 1055022 will hit the upsert path, not the insert path.
+**8862392** is different: it is an Active row for a real test user, left by the
+§33 sequence — spike residue, flagged for cleanup.
+
+### Rows that pre-existed and were only read, or read and restored
+
+| Id | Entity | Group | What changed | Current state (read-verified 2026-08-03 unless noted) | Reversed? |
+| -- | ------ | ----- | ------------ | ---------------------------------------- | --------- |
+| **3183436** | `GroupMember` — person **27099**, role **47 Group Co-Leader** | 1055022 | **Nothing — read only.** Used as the ALLOW fixture for the gate (§13) | Active (status 1), role **47**, `ModifiedDateTime` 2024-03-01 — predates the spike | N/A — never written |
+| **3329432** | `GroupMember` — person **394626** ("Ani Skywalker"), role **44 Group Member** | 1055022 | **Nothing — read only.** The DENY fixture (§13) and the non-leader identity for §20 | Active (status 1), role 44 | N/A — never written |
+| **8862386** | `GroupMember` — person **394626**, role **50 Group Leader** | 1838823 | Provisioned as a fixture on 2026-07-31T14:22:07.837, outside our REST sessions. Its creation is what produced the baseline `Workflow` row that proved trigger 49 fires (§22). **Hard-deleted through Rock's admin UI on 2026-08-05** during an earlier exploratory round, before the §33 route sequence. Replaced by **8862392** | **NO LONGER EXISTS** (confirmed absent; not a live fixture) | **Deleted outside REST** — admin UI, 2026-08-05 |
+| **TODO — Danny Wood leader row** | `GroupMember` — Danny Wood's own person, leader role in group **1838823** | 1838823 | Created via Rock's admin UI on 2026-08-05 so the actor could pass `requireGroupLeader` for the §33 sequence | Active leader — **spike residue on dev.** **TODO: record the `GroupMember.Id` once known** — do not invent one | **No — spike residue.** Cleanup when the spike route is retired |
+| **31560** | `UserLogin` — person 394626 | — | Last-login timestamp advanced by the one successful `/Auth/Login` in §20 | Not resettable; unremarkable | No — nothing to reverse |
+| 799452 · 822084 · 800501 · 800502 | `GroupMember` rows, roles 50/49/47/48 | 241543 | **Nothing — read only.** The §2/§3 filter-shootout fixtures, dev **and** prod | Untouched | N/A — never written |
+
+> **Correction, applied here and in the session-3 preamble:** `GroupMember`
+> **3183436 is role 47 (Group Co-Leader), not role 50 (Group Leader).** The
+> role-50 description originated in a session prompt and never entered a committed
+> file. It is immaterial to the ALLOW result — 47 is `IsLeader: true` (§4) — but
+> the result must not be read as evidence about role 50. Role 50 was exercised
+> separately, via `GroupMember` 8862386 in group 1838823 (now deleted; successor
+> fixture is **8862392**).
+
+### Rock-side side effects — not reversible, listed for auditability
+
+| Record | What | Origin |
+| ------ | ---- | ------ |
+| `Interaction` **73324746** | `AddedToGroup`, alias 389595, component 273491, 2026-07-31T13:31:28.383 | Workflow 730 via trigger 63, fired by §15's `POST`. **This row is the Q2 evidence** — deliberately left in place |
+| `Interaction` **73329123** | `AddedToGroup`, alias 389595, 2026-08-03T13:57:19.11 | Same mechanism, fired by §26's `POST` |
+| `Workflow` **5696074** | Type 700 "Web and App Cache Flush", Completed, 2026-07-31T14:22:07.883 | Trigger 49, fired by the creation of fixture 8862386. Exists only because `IsPersisted` was flipped. **Apollos flush call** (GraphQL `flushRock` for the member's `Person.Id`) — not a Rock-internal cache write; see §22 |
+| `Workflow` **5696075** | Type 700, Completed, 2026-08-03T13:57:18.11 | Trigger 49, fired by §26's `POST`. Same Apollos flush; harmless, no Rock-side effect |
+
+Any `POST` to `GroupMembers` on group type 31 writes an `Interaction` and runs
+workflows 700 and 730 (§14). Workflow 700 POSTs an Apollos GraphQL cache flush
+(§22); 730 writes the `Interaction`. Budget for both when testing — **especially
+against prod.**
+
+### Configuration changed — resolved
+
+| Setting | Changed to | Reverted to | Status |
+| ------- | ---------- | ----------- | ------ |
+| `WorkflowType` **700** `IsPersisted` | **`true`** (flipped for the §22 trigger-53 test) | **`false`** | **CLOSED (2026-08-04).** Reverted by a Rock admin. Two `Workflow` rows accrued while set (5696074, 5696075); no further accrual |
+
+`WorkflowType` 730 was re-read at close-out and was unchanged
+(`IsPersisted: false`, `LoggingLevel: 0`).
+
+### Flags from the verification sweep
+
+1. **Two rows are not at `GroupMemberStatus` 0 — and both are correct (as of
+   2026-08-03).** 3183436 and 3329432 are pre-existing Active memberships of real
+   people that the spike only ever read. At that sweep, **8862386** was also an
+   Active fixture leader row; it was hard-deleted on 2026-08-05 (§32) and replaced
+   by **8862392**, which the §33 sequence left Active. **Every row the spike
+   *created via REST before 2026-08-05* is at status 0.** 8862392 is the
+   exception — Active spike residue from the write-path run.
+2. **As of the 2026-08-03 close-out sweep:** no `GroupMember` row anywhere on
+   dev had been modified since 2026-08-03T14:33:30 — the timestamp of the last
+   write recorded in §31. Verified by
+   `$filter=ModifiedDateTime gt datetime'2026-08-03T14:33:30'`, which returned
+   `[]`. **Superseded 2026-08-05:** the §33 write-path sequence created and
+   mutated `GroupMember` **8862392** (and related attribute writes) on group
+   1838823. Flag 2's empty result described the state *before* that run, not
+   after.
+3. **Only one `GroupMember` row was created on dev on 2026-08-03: 8862387.**
+   Verified by `$filter=DateTimeAdded gt datetime'2026-08-03T00:00:00'`.
+   **Addendum 2026-08-05:** `GroupMember` **8862392** was created that day by
+   the §33 insert.
+4. **CLOSED. Read-only prod sweep run by Danny Wood, 2026-08-04.** Both queries
+   returned an empty array: the group-scoped query on 1838823 and 1055022, and the
+   unscoped `PersonId eq 389650` query. The sweep's window began
+   **2026-07-30** and its filters were `(GroupId eq 1838823 or GroupId eq
+   1055022)` and `PersonId eq 389650`. Person **394626** was never in the filter
+   and nothing before 07-30 was in the window, so `[]` means "nothing matching
+   those predicates," not "nothing anywhere." If the spike's first session
+   predates 2026-07-30, one further sweep with `PersonId eq 394626` and an
+   earlier start would close it fully. Recorded for reproducibility:
+   `GroupMembers?$filter=ModifiedDateTime gt datetime'2026-07-30T00:00:00' and (GroupId eq 1838823 or GroupId eq 1055022)&$select=Id,GroupId,PersonId,GroupRoleId,GroupMemberStatus,ModifiedDateTime`
+   plus the same filter on `PersonId eq 389650` unscoped by group.
+
+---
+
+## 33. The end-to-end run — human-verified, and exactly how far it reaches
+
+**Status: the spike route was exercised end to end manually by Danny Wood, in a
+browser, against dev, and reports as working.** That closes the §31 gap — "the
+route has never been exercised end to end" — for the auth chain, the loader, the
+non-leader denial, **and** (as of 2026-08-05) the write-path sequence. What
+remains unexercised is named branch-by-branch below; do not read "DONE" as
+"every branch ran."
+
+### Earlier run (auth / loader / denial) — boundary
+
+| | |
+| --- | --- |
+| **Verified by** | Danny Wood, manually, in a browser, on **dev**, as `anakin@jedi.order` |
+| **Agent-observed** | **No.** No request, response, status code, or rendered page from that run was captured (original run — see item 3 for the later, instrumented observation) |
+| **Host** | Dev, confirmed. Corroborated independently at the time: no `GroupMember` row anywhere on dev was modified after the last agent write (§32 flag 2 as of 2026-08-03; superseded by the 2026-08-05 write sequence below) |
+
+### What the earlier run DID verify
+
+- **The auth chain runs.** `requireUser` → `requireGroupLeader` → loader, together,
+  with a real `.ROCK` cookie, for the first time. Until this run, control flow was
+  mock-covered and wire behaviour was dev-verified but the two had never been
+  exercised together (§31).
+- **The gate denies a non-leader through the route.** Person 394626 is role **44**
+  on group 1055022, and the route refused. §13 proved `requireGroupLeader` throws
+  for that person when called directly; this confirms the *route* refuses too.
+- **The denial is HTTP 500 rendering the generic not-found page** — status and
+  page both observed (item 3 below). Ticket 2b is confirmed by observation.
+- **Unauthenticated requests fail closed via redirect.** A signed-out document
+  request to the same route returns **302** to
+  `/login?returnTo=%2Fspike-manage-members%2F1055022` — `requireUser` redirects
+  before the gate runs. This is why removing `/login` (ticket 4) must be coupled
+  with removing the spike route.
+
+### Write-path sequence — DONE (2026-08-05)
+
+1. **DONE (2026-08-05). Write-path sequence ran through the spike route.**
+
+   **Substitution:** target was person **394626** (`anakin@jedi.order`), **not**
+   389650 as originally written. Reason: avoid involving additional real people.
+   Actor was **Danny Wood's own account**, granted a leader role in group
+   **1838823** via Rock's admin UI in order to pass the gate (see §32 TODO row
+   for that membership; id not yet recorded). All three steps ran at
+   `/spike-manage-members/1838823`.
+
+   **Observed:**
+
+   - **Insert** created `GroupMember` **8862392** (group 1838823, role 50) at
+     `2026-08-05T10:55:25.323`.
+   - **Remove** and **re-add** followed. The re-add returned:
+     `ok: true`, `intent: 'add'`, `outcome: 'reactivated'`, `groupMemberId:
+     8862392`, `affectedPersonId: 394626`, `patchStatus: 204`, `reasonCleared:
+     { cleared: true }`, `preReadMs: 56`, `totalMs: 638`.
+   - **Externally verified:** `GET /api/GroupMembers?$filter=Id eq 8862392`
+     returns one row, status **1**, `CreatedDateTime` 10:55:25.323,
+     `ModifiedDateTime` 11:24:55.157 — same id, modified after created,
+     therefore a `PATCH` against the existing row and not a fresh insert.
+   - The documented ~630 ms reactivation cost is corroborated (**638 ms**
+     observed).
+
+   **Partially exercised — precise breakdown:**
+
+   | Exercised end to end | Not exercised |
+   | -------------------- | ------------- |
+   | Insert branch | No-op branch (row at requested role already Active) |
+   | Reactivate branch | Decline / role-change branch |
+   | Two-call `MemberInactiveReason` clear | Group-scope check's `AuthorizationError` path (a row from a different group was never submitted) |
+   | Group-scope check's **PASS** path | "Cannot change your own record" guard (actor and target were different people) |
+
+   Unit tests still cover the unexercised branches; the live route has not.
+   Residue: `GroupMember` **8862392** and Danny's leader row on 1838823 — both
+   flagged in §32 for cleanup.
+2. **CLOSED.** Production sweep — see §32 flag 4. Nothing matching the sweep
+   predicates reached production; see the flag for what the empty result does and
+   does not mean.
+3. **CLOSED. Observed by Danny Wood, 2026-08-04, browser on localhost, signed in as
+   `anakin@jedi.order` (person 394626, role 44 on group 1055022 — not a leader).**
+   The document request to `/spike-manage-members/1055022` returned **HTTP 500**
+   while rendering the generic not-found page. The server console confirms the
+   mechanism directly: `AuthorizationError: Person 394626 is not an active leader
+   of group 1055022`, thrown at `require-group-leader.ts:111` and propagating
+   uncaught through `spike-manage-members.$groupId/loader.ts:51`. A thrown
+   non-`Response` is an unhandled error, so React Router answers 500 while
+   `app/error.tsx:11` renders `NotFound` unconditionally. **Ticket 2b is now
+   confirmed by observation, not inference.** Separately confirmed: an
+   unauthenticated request to the same route returns **302** to
+   `/login?returnTo=%2Fspike-manage-members%2F1055022` — `requireUser` redirects
+   before the gate runs. Fails closed. This is why removing `/login` (ticket 4)
+   must be coupled with removing the spike route.
+
+**Do not upgrade "partially exercised" to "fully verified" without the
+unexercised branches above.** The route is throwaway code (see the port
+manifest) — but its group-scope check and its four-branch upsert are requirements
+that survive it, and the live run covered only the subset named in the table.
+
+---
+
+## 34. Rock-UI status edits reach the gate immediately — and expose the cached-read gap
+
+**Observational support for the §3b invalidation build requirement — not a new
+requirement.**
+
+During the 2026-08-05 session, status changes made directly in Rock's admin UI
+were reflected by the app's leader gate immediately, with no invalidation step.
+That is expected and validating: the gate query runs at `TTL.NONE`, so it always
+re-reads. The observation specifically supports:
+
+- the quoted `GroupMemberStatus eq 'Active'` filter,
+- the `GroupRole/IsLeader eq true` predicate, and
+- the choice of `TTL.NONE` for an authorization decision.
+
+It is also the spike's only **direct** observation of the Rock-originated
+staleness gap named in decision memo §3b: the same admin-UI edit would have gone
+stale in any **cached** membership-list read, because this project's Redis never
+hears about writes that originate outside the app. Present as corroboration of
+the existing invalidation requirement (endpoint + trigger vs short TTLs) — not as
+an additional one.
