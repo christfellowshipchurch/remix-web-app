@@ -48,15 +48,23 @@ export const updatePerson = async (
   id: string,
   fields: { email: string; phoneNumber: string },
 ) => {
-  // Update User email if user does not have one in Rock
+  // Update User email if user does not have one in Rock.
+  // Collection form, not People/{id}: Rock ignores $select on by-id routes and
+  // returns the whole entity. fetchRockData unwraps a single match to an object
+  // and leaves a miss as an empty array, so handle both shapes.
   const emailInRock = await fetchRockData({
-    endpoint: `People/${id}`,
+    endpoint: 'People',
     queryParams: {
+      $filter: `Id eq ${id}`,
       $select: 'Email',
     },
     ttl: TTL.NONE, // no cache
   });
-  if (!emailInRock.email) {
+  const personInRock = Array.isArray(emailInRock)
+    ? emailInRock[0]
+    : emailInRock;
+
+  if (!personInRock?.email) {
     await patchRockData({
       endpoint: `People/${id}`,
       body: {

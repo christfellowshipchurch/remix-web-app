@@ -289,6 +289,86 @@ describe('useAuth - checkUserExists', () => {
       expect(screen.getByTestId('result').textContent).toBe('true'),
     );
   });
+
+  /**
+   * A 500, a Rock timeout or a malformed body leaves userExists absent. Reading
+   * that as false told the user their account does not exist on the strength of
+   * a server failure, so the failure has to reach the caller as a failure. The
+   * response itself stays uniform on purpose — it must not become an oracle for
+   * whether an identity has an account.
+   */
+  function CheckUserOutcomeConsumer() {
+    const { checkUserExists } = useAuth();
+    const [outcome, setOutcome] = React.useState('none');
+    return (
+      <div>
+        <span data-testid='outcome'>{outcome}</span>
+        <button
+          onClick={async () => {
+            try {
+              setOutcome(String(await checkUserExists('user@test.com')));
+            } catch {
+              setOutcome('error');
+            }
+          }}
+        >
+          check
+        </button>
+      </div>
+    );
+  }
+
+  const errorResponses: Array<[string, Record<string, unknown>]> = [
+    [
+      'a 500 with an error body',
+      {
+        ok: false,
+        status: 500,
+        json: async () => ({ error: 'Rock exploded' }),
+      },
+    ],
+    [
+      'a 200 whose body has no userExists',
+      { ok: true, status: 200, json: async () => ({ error: 'Rock exploded' }) },
+    ],
+    [
+      'a body that is not JSON at all',
+      {
+        ok: true,
+        status: 200,
+        json: async () => {
+          throw new Error('Unexpected token');
+        },
+      },
+    ],
+  ];
+
+  it.each(errorResponses)(
+    'does not take the userExists === false path on %s',
+    async (_label, response) => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      (global.fetch as ReturnType<typeof vi.fn>)
+        .mockResolvedValueOnce({ ok: false, status: 401 }) // mount
+        .mockResolvedValueOnce(response);
+
+      await act(async () => {
+        renderWithRouter(
+          <AuthProvider>
+            <CheckUserOutcomeConsumer />
+          </AuthProvider>,
+        );
+      });
+
+      await act(async () => {
+        screen.getByText('check').click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByTestId('outcome').textContent).toBe('error'),
+      );
+      expect(screen.getByTestId('outcome').textContent).not.toBe('false');
+    },
+  );
 });
 
 describe('AuthProvider - exports', () => {

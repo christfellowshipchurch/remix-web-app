@@ -16,10 +16,34 @@ interface RockDataRequest {
   contentType?: string;
 }
 
-const baseUrl = `${process.env.ROCK_API}`;
 const defaultHeaders = {
   'Content-Type': 'application/json',
   'Authorization-Token': `${process.env.ROCK_TOKEN}`,
+};
+
+/**
+ * Single validated accessor for ROCK_API. Interpolating the env var directly
+ * turns an absent value into the literal string "undefined" and builds every
+ * request against it, which surfaces as Rock answering "user does not exist"
+ * rather than as missing configuration.
+ *
+ * Read lazily rather than at module load: importing this module must not
+ * require env to be present, or the test suite and the build break.
+ */
+export const getRockApiBaseUrl = (): string => {
+  const baseUrl = process.env.ROCK_API?.trim();
+
+  if (!baseUrl) {
+    throw new Error(
+      'ROCK_API is not set, so no Rock request can be built. .env and ' +
+        '.env.local are gitignored, so `git worktree add` creates a tree with ' +
+        'no env files at all and says nothing about it — copy them from your ' +
+        'main checkout and start the app with `netlify dev`, which is what ' +
+        'loads them.',
+    );
+  }
+
+  return baseUrl;
 };
 
 /**
@@ -158,6 +182,58 @@ const stripApprovedStatusFilter = (
   return stripped || undefined;
 };
 
+/**
+ * True for Entity/{id} route shapes — a path segment after the first that is
+ * bare digits or a GUID. The defect below belongs to that route shape, not to
+ * single-entity fetches as a class: People/GetByAttributeValue returns one row
+ * and does honor $expand, and its second segment is a word, not an id.
+ */
+const isByIdEndpoint = (endpoint: string): boolean => {
+  const segments = endpoint.replace(/^\/+|\/+$/g, '').split('/');
+  const idPattern =
+    /^(\d+|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+
+  return segments.slice(1).some((segment) => idPattern.test(segment));
+};
+
+/**
+ * Rock silently ignores $expand and $select on Entity/{id} routes — no error,
+ * no warning, the full entity comes back. An ignored $select is ~17x payload
+ * waste (3.1 KB vs 187 B per row); an ignored $expand of a navigation property
+ * returns null, so the fetch succeeds and the failure surfaces later in
+ * whatever reads a field off it.
+ *
+ * Use the collection form instead, where both are honored:
+ *   People?$filter=Id eq {id}&$select=Email
+ *
+ * Throws outside production because a warning in a server log is exactly what
+ * the next generated call site will slip past. In production it only warns —
+ * the consequence there is waste, which is not worth an outage.
+ */
+const assertByIdEndpointHasNoIgnoredParams = (
+  endpoint: string,
+  queryParams: RockQueryParams,
+): void => {
+  if (!isByIdEndpoint(endpoint)) return;
+
+  const ignoredParams = (['$expand', '$select'] as const).filter(
+    (param) => queryParams[param],
+  );
+  if (ignoredParams.length === 0) return;
+
+  const message =
+    `⚠️ Rock silently ignores ${ignoredParams.join(' and ')} on the by-id ` +
+    `endpoint "${endpoint}" — the full entity is returned and an $expand ` +
+    'resolves to null. Use the collection form instead, e.g. ' +
+    'People?$filter=Id eq 123&$select=Email';
+
+  console.warn(message);
+
+  if (process.env.NODE_ENV !== 'production') {
+    throw new Error(message);
+  }
+};
+
 const applyDateRangeFilter = <T>(data: T, now: Date): T | [] => {
   if (Array.isArray(data)) {
     const filteredData = data.filter((item) =>
@@ -187,6 +263,8 @@ export const fetchRockData = async ({
   filterByDateRange = false,
   filterByStatusApproved = false,
 }: FetchRockDataOptions) => {
+  assertByIdEndpointHasNoIgnoredParams(endpoint, queryParams);
+
   const previewMode = isPreviewMode();
   // Preview mode only bypasses the Status filter — date-range filtering still
   // applies, so a not-yet-scheduled or already-expired item stays hidden.
@@ -257,7 +335,7 @@ export const fetchRockData = async ({
     ) as Record<string, string>;
 
     const queryString = new URLSearchParams(definedQueryParams).toString();
-    const url = `${baseUrl}${endpoint}?${queryString}`;
+    const url = `${getRockApiBaseUrl()}${endpoint}?${queryString}`;
 
     const res = await fetch(url, {
       headers: {
@@ -321,7 +399,7 @@ export const fetchRockData = async ({
  */
 export const deleteRockData = async (endpoint: string) => {
   try {
-    const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
+    const response = await fetch(`${getRockApiBaseUrl()}/${endpoint}`, {
       method: 'DELETE',
       headers: {
         'Authorization-Token': `${process.env.ROCK_TOKEN}`,
@@ -355,7 +433,7 @@ export const postRockData = async ({
   body,
   contentType = 'application/json',
 }: RockDataRequest) => {
-  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+  const response = await fetch(`${getRockApiBaseUrl()}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': contentType,
@@ -386,7 +464,7 @@ export const postRockData = async ({
  * @returns response body as JSON
  */
 export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
-  const response = await fetch(`${process.env.ROCK_API}${endpoint}`, {
+  const response = await fetch(`${getRockApiBaseUrl()}${endpoint}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -413,7 +491,7 @@ export const putRockData = async ({ endpoint, body }: RockDataRequest) => {
  * @returns response status code
  */
 export const patchRockData = async ({ endpoint, body }: RockDataRequest) => {
-  const response = await fetch(`${process.env.ROCK_API}/${endpoint}`, {
+  const response = await fetch(`${getRockApiBaseUrl()}/${endpoint}`, {
     method: 'PATCH',
     headers: {
       ...defaultHeaders,
