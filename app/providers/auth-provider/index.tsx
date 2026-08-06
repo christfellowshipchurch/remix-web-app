@@ -186,6 +186,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     revalidate(); // revalidate the loader data to update page
   };
 
+  /**
+   * Rejects rather than answering false when the server did not answer. A 500, a
+   * Rock timeout or a malformed body leaves `userExists` absent, and returning
+   * that (or catching it as false) told the user their account does not exist on
+   * the strength of a server failure. Callers must render a failure as a failure.
+   */
   const checkUserExists = async (identity: string): Promise<boolean> => {
     try {
       const formData = new FormData();
@@ -197,12 +203,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: formData,
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || typeof result?.userExists !== 'boolean') {
+        throw new Error(
+          `Could not determine whether the user exists (status ${response.status})`,
+        );
+      }
 
       return result.userExists;
     } catch (error) {
-      handleError(error, 'Error checking user existence:');
-      return false;
+      // Logged and rethrown rather than routed through handleError: a failed
+      // existence check is not a reason to clear the auth cookie.
+      console.error('Error checking user existence:', error);
+      throw error;
     }
   };
 

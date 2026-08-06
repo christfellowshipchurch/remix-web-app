@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async () => {
     queryParams: {
       $filter: 'IsActive eq true',
       $orderby: 'Order',
-      $select: 'Name, Guid',
+      $select: 'Name, Guid, Url',
     },
   });
 

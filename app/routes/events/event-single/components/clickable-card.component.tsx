@@ -77,7 +77,7 @@ export const ClickableCard = ({
               e.stopPropagation();
               onClick();
             }}
-            className='mt-auto w-full bg-ocean text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-ocean-dark transition-colors'
+            className='mt-auto w-full cursor-pointer bg-ocean text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-ocean-dark transition-colors'
           >
             {buttonText}
           </button>

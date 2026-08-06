@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ClassHitType } from '../../../types';
 import {
   groupClassTypeHits,
+  isCompleteClassFinderHit,
   syntheticHitsFromGrouped,
 } from '../group-class-type-hits';
 
@@ -28,7 +29,95 @@ function makeHit(
   };
 }
 
+describe('isCompleteClassFinderHit', () => {
+  it('requires pathName, classType, title, and a cover image', () => {
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({ objectID: '1', pathName: 'marriage-matters' }),
+      ),
+    ).toBe(true);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '2',
+          pathName: '',
+          classType: 'Marriage Matters',
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '3',
+          pathName: 'marriage-matters',
+          classType: '',
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '4',
+          pathName: 'marriage-matters',
+          title: '',
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '5',
+          pathName: 'marriage-matters',
+          coverImage: { sources: [] },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('accepts Rock cover art when Algolia coverImage is missing', () => {
+    expect(
+      isCompleteClassFinderHit(
+        makeHit({
+          objectID: '1',
+          pathName: 'marriage-matters',
+          coverImage: { sources: [] },
+        }),
+        { 'marriage-matters': 'https://rock.example/marriage-matters.jpg' },
+      ),
+    ).toBe(true);
+  });
+});
+
 describe('groupClassTypeHits', () => {
+  it('excludes incomplete hits missing required card fields', () => {
+    const hits = [
+      makeHit({ objectID: 'good', pathName: 'marriage-matters' }),
+      makeHit({
+        objectID: '62825140002',
+        pathName: '',
+        classType: '',
+        title: 'Marriage Matters - Jupiter - Wednesday - 6:30pm - August 26',
+        topic: '' as ClassHitType['topic'],
+        coverImage: { sources: [] },
+      }),
+      makeHit({
+        objectID: 'no-title',
+        pathName: 'no-title',
+        title: '',
+      }),
+      makeHit({
+        objectID: 'no-cover',
+        pathName: 'no-cover',
+        coverImage: { sources: [] },
+      }),
+    ];
+
+    const grouped = groupClassTypeHits(hits, {});
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0].pathName).toBe('marriage-matters');
+  });
+
   it('uses Rock cover image for grouped class rows when available', () => {
     const hits = [
       makeHit({ objectID: '1', pathName: 'financial-peace' }),

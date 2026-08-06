@@ -103,11 +103,30 @@ function sortPhysicalCampusesByOrder(items: CampusHit[]) {
   );
 }
 
+const METERS_PER_MILE = 1609.344;
+const ONLINE_FIRST_DISTANCE_THRESHOLD_MILES = 80;
+const onlineFirstDistanceThresholdMeters =
+  ONLINE_FIRST_DISTANCE_THRESHOLD_MILES * METERS_PER_MILE;
+
+function getClosestPhysicalDistanceMeters(items: CampusHit[]) {
+  return items.reduce<number | null>((closestDistance, item) => {
+    const distance = item._rankingInfo?.geoDistance;
+    if (typeof distance !== 'number' || !Number.isFinite(distance)) {
+      return closestDistance;
+    }
+
+    return closestDistance === null
+      ? distance
+      : Math.min(closestDistance, distance);
+  }, null);
+}
+
 /**
- * /location (Location Search page) always lists the Online campus first, then
- * physical campuses by Algolia `order` (default) or by distance when coordinates
- * are set. Home/nav location popups use different rules via
- * `sortCampusHitsForDistanceSearch`.
+ * /location (Location Search page) lists physical campuses by Algolia `order`
+ * (default) or by distance when coordinates are set, with the Online campus
+ * last — unless the closest physical campus is over
+ * ONLINE_FIRST_DISTANCE_THRESHOLD_MILES away, in which case Online is first.
+ * Mirrors the home hero's `sortCampusHitsForDistanceSearch`.
  */
 export function getLocationCardDisplayItems(
   items: CampusHit[],
@@ -119,7 +138,17 @@ export function getLocationCardDisplayItems(
     ? physicalItems
     : sortPhysicalCampusesByOrder(physicalItems);
 
-  return [...onlineItems, ...sortedPhysicalItems];
+  const closestPhysicalDistanceMeters =
+    getClosestPhysicalDistanceMeters(physicalItems);
+
+  if (
+    closestPhysicalDistanceMeters != null &&
+    closestPhysicalDistanceMeters > onlineFirstDistanceThresholdMeters
+  ) {
+    return [...onlineItems, ...sortedPhysicalItems];
+  }
+
+  return [...sortedPhysicalItems, ...onlineItems];
 }
 
 export function LocationCardGrid({
