@@ -14,9 +14,11 @@ import {
   parseEventsFinderUrlState,
   type EventsFinderUrlState,
 } from '../events-url-state';
-
-const FEATURED_FILTER = 'contentType:"Event" AND eventIsFeatured:true';
-const FEATURED_HITS_PER_PAGE = 4;
+import {
+  FEATURED_EVENTS_FILTER,
+  FEATURED_EVENTS_HITS_PER_PAGE,
+  moveFeaturedJourneyCardFirst,
+} from '../featured-events';
 
 export type EventFinderFacetItem = {
   value: string;
@@ -79,21 +81,6 @@ function buildMainEventsSearchParams(urlState: EventsFinderUrlState): {
   return params;
 }
 
-/** Single featured "Journey" card (title match) moved to the front when present. */
-function moveFeaturedJourneyCardFirst(
-  hits: ContentItemHit[],
-): ContentItemHit[] {
-  const i = hits.findIndex((h) =>
-    (h.title ?? '').toLowerCase().includes('journey'),
-  );
-  if (i < 1) {
-    return hits;
-  }
-  const copy = [...hits];
-  const [journey] = copy.splice(i, 1);
-  return [journey, ...copy];
-}
-
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appId = process.env.ALGOLIA_APP_ID ?? '';
   const searchApiKey = process.env.ALGOLIA_SEARCH_API_KEY ?? '';
@@ -116,8 +103,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           {
             indexName: algoliaIndexes.contentItems,
             params: {
-              filters: FEATURED_FILTER,
-              hitsPerPage: FEATURED_HITS_PER_PAGE,
+              filters: FEATURED_EVENTS_FILTER,
+              hitsPerPage: FEATURED_EVENTS_HITS_PER_PAGE,
             },
           },
         ]),

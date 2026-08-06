@@ -37,11 +37,12 @@ export function CantFindClassCard({
 
       <div className='flex flex-col gap-2'>
         <h3 className='text-lg font-bold leading-tight'>
-          Tell Us What You&apos;re Looking For
+          Looking for this class?
         </h3>
         <p className='text-sm text-black'>
-          If enough people are interested, we may offer this class in a future
-          season. Let us know and we&apos;ll keep you posted.
+          If this class isn&apos;t currently offered at your campus, let us know
+          you&apos;re interested. We&apos;ll reach out when it&apos;s scheduled
+          at your location.
         </p>
       </div>
 
