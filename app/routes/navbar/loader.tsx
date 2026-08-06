@@ -12,6 +12,8 @@ import type { AlgoliaIndexMap } from '~/lib/algolia-indexes';
 import { ContentChannelIds } from '~/lib/rock-config';
 import type { RockContentChannelItem } from '~/lib/types/rock-types';
 import { buildPodcastRoutingIndex } from '~/routes/podcasts/podcast-routing.server';
+import type { ContentItemHit } from '~/routes/search/types';
+import { fetchDefaultSearchHits } from './default-search-hits.server';
 
 // Define the return type for the loader
 export interface RootLoaderData {
@@ -29,6 +31,8 @@ export interface RootLoaderData {
   };
   /** Popular results (content users click most). From Algolia getTopHits when available; else empty and UI uses hardcoded fallback. */
   popularResults: { title: string; pathname: string }[];
+  /** Desktop site search's initial-open list, before a query is typed. */
+  defaultSearchHits: ContentItemHit[];
   siteBanner: {
     content: string;
     link?: string;
@@ -276,10 +280,12 @@ export async function loader({
       parsedUserData = userData as User;
     }
 
-    const [rawFeatureCards, rawSiteBanner] = await Promise.all([
-      fetchFeatureCards(),
-      fetchSiteBanner(),
-    ]);
+    const [rawFeatureCards, rawSiteBanner, defaultSearchHits] =
+      await Promise.all([
+        fetchFeatureCards(),
+        fetchSiteBanner(),
+        fetchDefaultSearchHits(algoliaIndexes.contentItems),
+      ]);
     const siteBanner = mapSiteBannerFromRockItem(rawSiteBanner);
 
     // If the API call failed, return empty arrays
@@ -305,6 +311,7 @@ export async function loader({
           indexes: algoliaIndexes,
         },
         popularResults: [],
+        defaultSearchHits,
         siteBanner,
       };
     }
@@ -381,6 +388,7 @@ export async function loader({
         indexes: algoliaIndexes,
       },
       popularResults: [],
+      defaultSearchHits,
       // Site Banner Data
       siteBanner: siteBanner,
     };
@@ -398,6 +406,7 @@ export async function loader({
         indexes: algoliaIndexes,
       },
       popularResults: [],
+      defaultSearchHits: [],
       siteBanner: EMPTY_SITE_BANNER,
     };
   }
