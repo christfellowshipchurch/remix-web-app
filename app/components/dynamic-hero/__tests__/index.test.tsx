@@ -33,6 +33,19 @@ describe('DynamicHero', () => {
     expect(title).toHaveTextContent(customTitle);
   });
 
+  it('renders the title without a heading when titleAs is div', () => {
+    // Location pages put their single <h1> in the campus info section (SEO),
+    // so the hero title must not compete for it.
+    render(
+      <MemoryRouter>
+        <DynamicHero {...defaultProps} customTitle='Hero Title' titleAs='div' />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument();
+    expect(screen.getByText('Hero Title')).toBeInTheDocument();
+  });
+
   it('renders CTAs when provided', () => {
     const ctas = [
       { href: '/link1', title: 'CTA 1' },

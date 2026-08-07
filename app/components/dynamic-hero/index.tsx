@@ -19,6 +19,8 @@ export type DynamicHeroTypes = {
     target?: string;
   }[];
   customTitle?: string;
+  /** Element used for the hero title. Use 'div' when the page's only <h1> lives elsewhere (SEO). */
+  titleAs?: 'h1' | 'div';
   mobileHeight?: string;
   ipadHeight?: string;
   desktopHeight?: string;
@@ -31,6 +33,7 @@ export const DynamicHero = ({
   imagePath,
   ctas,
   customTitle,
+  titleAs: TitleTag = 'h1',
   mobileHeight,
   ipadHeight,
   desktopHeight,
@@ -135,9 +138,9 @@ export const DynamicHero = ({
             !hasCtas && 'max-md:gap-0',
           )}
         >
-          <h1 className='font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[100px] text-white'>
+          <TitleTag className='font-extrabold heading-h1 text-[3rem] md:text-[4rem] lg:text-[100px] text-white'>
             {customTitle ? <HTMLRenderer html={customTitle} /> : pagePath}
-          </h1>
+          </TitleTag>
           <div className={cn(!hasCtas && 'max-md:hidden')}>
             <div
               role='separator'

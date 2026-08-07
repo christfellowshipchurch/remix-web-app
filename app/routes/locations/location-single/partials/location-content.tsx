@@ -172,7 +172,8 @@ export function LocationSingle({ hit }: { hit: LocationHitType }) {
         wistiaId={wistiaId}
         imagePath={heroBackgroundImage}
         desktopHeight='800px'
-        customTitle={`<h1 style='font-weight: 800;'><span style='color: #0092BC;'>${heading1}</span> <br/>${heading2}</h1>`}
+        titleAs='div'
+        customTitle={`<span style='font-weight: 800;'><span style='color: #0092BC;'>${heading1}</span> <br/>${heading2}</span>`}
         ctas={ctas}
       />
 
@@ -258,7 +259,8 @@ const OnlineCampus = ({ hit }: { hit: LocationHitType }) => {
         wistiaId={wistiaId}
         imagePath={heroBackgroundImage}
         desktopHeight='800px'
-        customTitle="<h1 style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</h1>"
+        titleAs='div'
+        customTitle="<span style='font-weight: 800;'><span style='color: #0092BC;'>You're</span> <br/>welcome here</span>"
         ctas={[
           { title: 'Set a Reminder', href: '#', isSetAReminder: true },
           {

@@ -28,7 +28,7 @@ function getLocationTitle(locationData: LoaderReturnType): string {
   if (locationData.campusName?.toLowerCase().includes('iglesia')) {
     return `Christ Fellowship Español en ${espanolCampusName}, FL | Christ Fellowship Church`;
   }
-  return `Church in ${locationData.campusName},  Fl | Christ Fellowship Church`;
+  return `Christ Fellowship Church | ${locationData.campusName?.trim()}, FL`;
 }
 
 function getLocationDescription(locationData: LoaderReturnType): string {
@@ -47,7 +47,7 @@ function getLocationDescription(locationData: LoaderReturnType): string {
   if (locationData.campusName?.toLowerCase().includes('iglesia')) {
     return `Únete a Christ Fellowship Español en ${espanolCampusName}, FL.`;
   }
-  return `Join us at Christ Fellowship Church in ${locationData.campusName?.trim()}, FL for uplifting worship and community.`;
+  return `Looking for a church in ${locationData.campusName?.trim()}, FL? Visit Christ Fellowship this Sunday! Enjoy live worship music, biblical teachings, and programs for all ages.`;
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
