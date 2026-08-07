@@ -48,7 +48,15 @@ const InitialSignUp: React.FC<InitialSignUpProps> = ({ onSubmit }) => {
       return;
     }
 
-    const userExists = await checkUserExists(identity);
+    let userExists: boolean;
+    try {
+      userExists = await checkUserExists(identity);
+    } catch {
+      // The server did not answer, so we cannot say the account is available.
+      setLoading(false);
+      setError('An error occurred. Please try again.');
+      return;
+    }
 
     if (userExists) {
       setLoading(false);
