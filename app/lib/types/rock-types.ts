@@ -40,4 +40,5 @@ export type AttributeMatrixItem = {
   attributeMatrixItemTemplateId: number;
   attributeValues: attributeValuesProps;
   attributes: attributeProps;
+  order?: number;
 };

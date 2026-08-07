@@ -180,6 +180,57 @@ describe('getAttributeMatrixItems', () => {
     }
   });
 
+  // Rock's OData parser caps a query at 100 nodes and each `(Id eq N)` clause
+  // costs 5, so a single filter holding more than 20 ids 400s and the caller
+  // silently renders no curriculum (studies like marriage-matters have 24).
+  it('splits ids across requests so the OData node limit is never exceeded', async () => {
+    const matrixItems = Array.from({ length: 24 }, (_, i) => ({ id: i + 1 }));
+    mockFetch
+      .mockResolvedValueOnce({ attributeMatrixItems: matrixItems })
+      .mockResolvedValueOnce(
+        matrixItems.slice(0, 20).map((m, i) => ({ ...m, order: i })),
+      )
+      .mockResolvedValueOnce(
+        matrixItems.slice(20).map((m, i) => ({ ...m, order: i + 20 })),
+      );
+
+    const result = await getAttributeMatrixItems({
+      attributeMatrixGuid: 'guid-large',
+    });
+
+    const idFilters = mockFetch.mock.calls
+      .slice(1)
+      .map((call) => call[0].queryParams.$filter as string);
+    expect(idFilters).toHaveLength(2);
+    for (const filter of idFilters) {
+      expect(filter.split(' or ')).toHaveLength(
+        filter === idFilters[0] ? 20 : 4,
+      );
+    }
+    expect(result.map((item) => item.id)).toEqual(matrixItems.map((m) => m.id));
+  });
+
+  it('restores matrix-wide order when batches come back interleaved', async () => {
+    const matrixItems = Array.from({ length: 21 }, (_, i) => ({ id: i + 1 }));
+    // Rock sorts within each request only, so the trailing batch can hold an
+    // item that belongs at the front of the overall matrix.
+    mockFetch
+      .mockResolvedValueOnce({ attributeMatrixItems: matrixItems })
+      .mockResolvedValueOnce(
+        matrixItems.slice(0, 20).map((m, i) => ({ ...m, order: i + 1 })),
+      )
+      .mockResolvedValueOnce([{ id: 21, order: 0 }]);
+
+    const result = await getAttributeMatrixItems({
+      attributeMatrixGuid: 'guid-interleaved',
+    });
+
+    expect(result.map((item) => item.id)).toEqual([
+      21,
+      ...matrixItems.slice(0, 20).map((m) => m.id),
+    ]);
+  });
+
   it('returns [] when fetchRockData throws', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     try {
